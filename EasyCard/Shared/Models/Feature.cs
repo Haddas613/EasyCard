@@ -17,7 +17,10 @@ namespace Shared.Models
         //Disable double transactions(time to check double transaction)
 
         //Send recite by sms to consumer(payable feature)
-
+        public long FeatureID { get; set; }
+        public string NameEN { get; set; }
+        public string NameHE { get; set; }
         public decimal Price { get; set; }
+        public string FeatureCode { get; set; }
     }
 }
