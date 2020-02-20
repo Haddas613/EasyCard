@@ -10,6 +10,14 @@ namespace Shared.Models
 {
     public class OperationResponse
     {
+        public OperationResponse() { }
+        public OperationResponse(string message, StatusEnum status, long? entityId = null) 
+        {
+            Message = message;
+            Status = status;
+            EntityID = entityId;
+        }
+
         public string Message { get; set; }
 
         [EnumDataType(typeof(StatusEnum))]

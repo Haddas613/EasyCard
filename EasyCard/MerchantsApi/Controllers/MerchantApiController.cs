@@ -6,6 +6,7 @@ using MerchantsApi.Business.Services;
 using MerchantsApi.Models.Merchant;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Shared.Models;
 
 namespace MerchantsApi.Controllers
@@ -36,7 +37,13 @@ namespace MerchantsApi.Controllers
         [Route("{merchantID}")]
         public async Task<IActionResult> GetMerchant([FromRoute]long merchantID)
         {
-            throw new NotImplementedException();
+            var merchant = await merchantsService.GetMerchants().FirstOrDefaultAsync(m => m.MerchantID == merchantID);
+
+            if (merchant == null)
+                return NotFound(new OperationResponse($"Merchant {merchantID} not found", Shared.Models.Enums.StatusEnum.Error));
+
+            //TODO: Automapper
+            return new JsonResult(new MerchantResponse { MerchantID = merchant.MerchantID, BusinessName = merchant.BusinessName }) { StatusCode = 200 };
         }
 
         [HttpGet]
@@ -53,7 +60,15 @@ namespace MerchantsApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]
         public async Task<IActionResult> CreateMerchant([FromBody]MerchantRequest merchant)
         {
-            throw new NotImplementedException();
+            //todo: Automapper
+            var entity = new Business.Entities.Merchant();
+            entity.BusinessName = merchant.BusinessName;
+            entity.Created = DateTime.UtcNow;
+
+            merchantsService.AddMerchant(entity);
+            await merchantsService.SaveChanges();//todo: <- Return this
+
+            return new JsonResult(new OperationResponse("ok", Shared.Models.Enums.StatusEnum.Success, entity.MerchantID)) { StatusCode = 201 };
         }
 
         [HttpPut]

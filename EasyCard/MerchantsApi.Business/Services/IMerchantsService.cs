@@ -12,6 +12,6 @@ namespace MerchantsApi.Business.Services
     {
         IQueryable<Merchant> GetMerchants();
 
-
+        void AddMerchant(Merchant merchant);
     }
 }

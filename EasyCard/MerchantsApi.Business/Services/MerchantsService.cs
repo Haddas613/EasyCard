@@ -1,4 +1,5 @@
-﻿using MerchantsApi.Business.Entities;
+﻿using MerchantsApi.Business.Data;
+using MerchantsApi.Business.Entities;
 using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
 using System;
@@ -11,14 +12,36 @@ namespace MerchantsApi.Business.Services
 {
     public class MerchantsService : IMerchantsService
     {
-        public IQueryable<Merchant> GetMerchants()
+        private readonly MerchantsContext context;
+        public MerchantsService(MerchantsContext context)
         {
-            throw new NotImplementedException();
+            this.context = context;
         }
 
-        public Task<OperationResponse> SaveChanges(IDbContextTransaction dbTransaction = null)
+        public void AddMerchant(Merchant merchant)
         {
-            throw new NotImplementedException();
+            context.Add(merchant);
+        }
+
+        public IQueryable<Merchant> GetMerchants()
+        {
+            return context.Merchants;
+        }
+
+        public async Task<OperationResponse> SaveChanges(IDbContextTransaction dbTransaction = null)
+        {
+            var result = new OperationResponse();
+
+            try
+            {
+                await context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                //todo: logger
+            }
+
+            return result;
         }
     }
 }
