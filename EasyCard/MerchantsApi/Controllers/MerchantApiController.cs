@@ -60,6 +60,9 @@ namespace MerchantsApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]
         public async Task<IActionResult> CreateMerchant([FromBody]MerchantRequest merchant)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             //todo: Automapper
             var entity = new Business.Entities.Merchant();
             entity.BusinessName = merchant.BusinessName;
@@ -74,6 +77,7 @@ namespace MerchantsApi.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(OperationResponse))]
         [Route("{merchantID}")]
         public async Task<IActionResult> UpdateMerchant([FromRoute]long merchantID, [FromBody]UpdateMerchantRequest merchant)
         {

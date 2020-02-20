@@ -38,21 +38,6 @@ namespace MerchantsApi.Tests
             Assert.NotNull(responseData.Message);
         }
 
-        [Fact(DisplayName = "CreateMerchant: 400 when model is incorrect"), Order(2)]
-        public async Task CreateMerchant_Returns400WhenModelIsIncorrect()
-        {
-            var controller = new MerchantApiController(merchantsFixture.MerchantsService);
-            var merchantModel = new MerchantRequest();
-            var actionResult = await controller.CreateMerchant(merchantModel);
-
-            var response = actionResult as Microsoft.AspNetCore.Mvc.BadRequestObjectResult;
-            var responseData = response.Value as OperationResponse;
-
-            Assert.Equal(400, response.StatusCode);
-            Assert.NotNull(responseData);
-            Assert.Equal(StatusEnum.Error, responseData.Status);
-            Assert.NotNull(responseData.Message);
-        }
 
         [Fact(DisplayName = "CreateMerchant: Creates when model is correct"), Order(3)]
         public async Task CreateMerchant_CreatesWhenModelIsCorrect()
@@ -86,24 +71,6 @@ namespace MerchantsApi.Tests
             var responseData = response.Value as OperationResponse;
 
             Assert.Equal(404, response.StatusCode);
-            Assert.NotNull(responseData);
-            Assert.Equal(StatusEnum.Error, responseData.Status);
-            Assert.NotNull(responseData.Message);
-        }
-
-        [Fact(DisplayName = "UpdateMerchant: 400 when model is incorrect"), Order(5)]
-        public async Task UpdateMerchant_Returns400WhenModelIsIncorrect()
-        {
-            var controller = new MerchantApiController(merchantsFixture.MerchantsService);
-            var merchantModel = new UpdateMerchantRequest();
-            var existingMerchant = await merchantsFixture.MerchantsService.GetMerchants().FirstOrDefaultAsync();
-
-            var actionResult = await controller.UpdateMerchant(existingMerchant.MerchantID, merchantModel);
-
-            var response = actionResult as Microsoft.AspNetCore.Mvc.BadRequestObjectResult;
-            var responseData = response.Value as OperationResponse;
-
-            Assert.Equal(400, response.StatusCode);
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Error, responseData.Status);
             Assert.NotNull(responseData.Message);

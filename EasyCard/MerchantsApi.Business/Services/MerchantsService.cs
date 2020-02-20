@@ -38,7 +38,7 @@ namespace MerchantsApi.Business.Services
             }
             catch(Exception ex)
             {
-                //todo: logger
+                throw ex;
             }
 
             return result;
