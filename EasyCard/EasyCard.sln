@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServerClient", "Ide
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{EAE60B00-9D03-4A75-894F-2543F59E523C}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "MerchantsApi.Database", "Data\MerchantsApi.Database\MerchantsApi.Database.sqlproj", "{2071F920-89DB-4571-8507-4848A246BADF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,12 @@ Global
 		{AE0632C9-CC39-4697-A94E-E934F01E6FCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE0632C9-CC39-4697-A94E-E934F01E6FCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE0632C9-CC39-4697-A94E-E934F01E6FCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2071F920-89DB-4571-8507-4848A246BADF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2071F920-89DB-4571-8507-4848A246BADF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2071F920-89DB-4571-8507-4848A246BADF}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2071F920-89DB-4571-8507-4848A246BADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2071F920-89DB-4571-8507-4848A246BADF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2071F920-89DB-4571-8507-4848A246BADF}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +124,7 @@ Global
 		{9F26E581-0C7C-4E90-9158-4DE1AC891A29} = {BD9E08F4-001A-4C24-8779-290E3656E697}
 		{235933C8-B70C-4922-9539-C8C806A30B07} = {34997AED-FDD6-463F-861F-1C376A83326C}
 		{AE0632C9-CC39-4697-A94E-E934F01E6FCE} = {34997AED-FDD6-463F-861F-1C376A83326C}
+		{2071F920-89DB-4571-8507-4848A246BADF} = {9B8C2352-522A-4F75-A1AA-F5E4226EEB83}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB40244C-6EBC-4B97-8F95-FB108B33F76E}
