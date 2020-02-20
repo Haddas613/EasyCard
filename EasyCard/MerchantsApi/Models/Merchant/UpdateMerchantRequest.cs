@@ -7,6 +7,6 @@ namespace MerchantsApi.Models.Merchant
 {
     public class UpdateMerchantRequest
     {
-        public long MerchantID { get; set; }
+        public string BusinessName { get; set; }
     }
 }

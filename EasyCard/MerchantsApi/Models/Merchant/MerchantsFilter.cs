@@ -8,6 +8,6 @@ namespace MerchantsApi.Models.Merchant
 {
     public class MerchantsFilter: FilterBase
     {
-        public string MerchantName { get; set; }
+        public string BusinessName { get; set; }
     }
 }
