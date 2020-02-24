@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Identity\IdentityServerClient\IdentityServerClient.csproj" />
     <ProjectReference Include="..\MerchantsApi.Business\MerchantsApi.Business.csproj" />
     <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>

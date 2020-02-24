@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shared.Models.Identity
+namespace IdentityServerClient
 {
     public class CreateUserRequestModel
     {
