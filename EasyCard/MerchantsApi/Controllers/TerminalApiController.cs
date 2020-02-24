@@ -18,16 +18,18 @@ namespace MerchantsApi.Controllers
     public class TerminalApiController : ControllerBase
     {
         private readonly IMerchantsService merchantsService;
+        private readonly ITerminalsService terminalsService;
 
-        public TerminalApiController(IMerchantsService merchantsService)
+        public TerminalApiController(IMerchantsService merchantsService, ITerminalsService terminalsService)
         {
             this.merchantsService = merchantsService;
+            this.terminalsService = terminalsService;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type=typeof(SummariesResponse<TerminalSummary>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]
-        public async Task<IActionResult> GetTerminals(GetTerminalsFilter filter)
+        public async Task<IActionResult> GetTerminals(TerminalsFilter filter)
         {
             throw new NotImplementedException();
         }
@@ -38,7 +40,13 @@ namespace MerchantsApi.Controllers
         [Route("{terminalID}")]
         public async Task<IActionResult> GetTerminal([FromRoute]long terminalID)
         {
-            throw new NotImplementedException();
+            var terminal = await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID);
+
+            if (terminal == null)
+                return NotFound(new OperationResponse($"Terminal {terminalID} not found", Shared.Models.Enums.StatusEnum.Error));
+
+            //TODO: Automapper
+            return new JsonResult(new TerminalResponse { MerchantID = terminal.MerchantID, Label = terminal.Label, TerminalID = terminal.TerminalID }) { StatusCode = 200 };
         }
 
         [HttpPost]
@@ -53,13 +61,18 @@ namespace MerchantsApi.Controllers
                 return NotFound(new OperationResponse { Status = Shared.Models.Enums.StatusEnum.Error });
             }
 
-            var newTerminal = new Terminal();
+            var newTerminal = new Terminal 
+            {
+                MerchantID = terminal.MerchantID,
+                Label = terminal.Label,
+                Created = DateTime.UtcNow
+            };
 
             merchant.Terminals.Add(newTerminal);
 
             var res = await merchantsService.SaveChanges();
 
-            return new JsonResult(res);
+            return new JsonResult(new OperationResponse("ok", Shared.Models.Enums.StatusEnum.Success, newTerminal.TerminalID)) { StatusCode = 201 };
 
         }
 

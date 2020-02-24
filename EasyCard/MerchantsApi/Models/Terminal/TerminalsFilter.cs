@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MerchantsApi.Models.Terminal
 {
-    public class GetTerminalsFilter: FilterBase
+    public class TerminalsFilter: FilterBase
     {
         public long? TerminalID { get; set; }
 

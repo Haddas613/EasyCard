@@ -6,6 +6,9 @@ using Xunit;
 
 namespace MerchantsApi.Tests
 {
+    /// <summary>
+    /// Used for all MerchantApi ingeration tests. Contains Database context and required services
+    /// </summary>
     [CollectionDefinition("MerchantsCollection")]
     public class MerchantsCollection : ICollectionFixture<MerchantsFixture>
     {

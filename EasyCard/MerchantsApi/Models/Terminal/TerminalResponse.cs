@@ -13,6 +13,8 @@ namespace MerchantsApi.Models.Terminal
     {
         public long TerminalID { get; set; }
 
+        public long MerchantID { get; set; }
+
         public string Label { get; set; }
 
         public TerminalStatusEnum Status { get; set; }

@@ -6,6 +6,11 @@ namespace MerchantsApi.Business.Entities
 {
     public class Merchant
     {
+        public Merchant()
+        {
+            Terminals = new HashSet<Terminal>();
+        }
+
         public long MerchantID { get; set; }
 
         public byte[] UpdateTimestamp { get; set; }
