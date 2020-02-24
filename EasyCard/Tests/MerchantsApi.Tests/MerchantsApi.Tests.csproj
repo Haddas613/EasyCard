@@ -20,4 +20,8 @@
     <ProjectReference Include="..\..\MerchantsApi\MerchantsApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SharedMethods\" />
+  </ItemGroup>
+
 </Project>

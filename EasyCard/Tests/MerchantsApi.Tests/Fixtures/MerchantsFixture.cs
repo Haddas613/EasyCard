@@ -10,6 +10,7 @@ namespace MerchantsApi.Tests.Fixtures
     public class MerchantsFixture : IDisposable
     {
         public IMerchantsService MerchantsService { get; private set; }
+        public ITerminalsService TerminalsService { get; private set; }
         public MerchantsContext MerchantsContext { get; private set; }
 
         public MerchantsFixture()
@@ -21,6 +22,7 @@ namespace MerchantsApi.Tests.Fixtures
             MerchantsContext.Database.EnsureCreated();
 
             MerchantsService = new MerchantsService(MerchantsContext);
+            TerminalsService = new TerminalsService(MerchantsContext);
         }
 
         public void Dispose()

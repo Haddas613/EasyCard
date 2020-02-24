@@ -22,24 +22,7 @@ namespace MerchantsApi.Tests
             this.merchantsFixture = merchantsFixture;
         }
 
-        [Fact(DisplayName = "GetMerchant: 404 when merchant with given id does not exist"), Order(1)]
-        public async Task GetMerchant_Returns404WhenMerchantDoesNotExists()
-        {
-            var controller = new MerchantApiController(merchantsFixture.MerchantsService);
-
-            var actionResult = await controller.GetMerchant(-1);
-
-            var response = actionResult as Microsoft.AspNetCore.Mvc.NotFoundObjectResult;
-            var responseData = response.Value as OperationResponse;
-
-            Assert.Equal(404, response.StatusCode);
-            Assert.NotNull(responseData);
-            Assert.Equal(StatusEnum.Error, responseData.Status);
-            Assert.NotNull(responseData.Message);
-        }
-
-
-        [Fact(DisplayName = "CreateMerchant: Creates when model is correct"), Order(3)]
+        [Fact(DisplayName = "CreateMerchant: Creates when model is correct"), Order(1)]
         public async Task CreateMerchant_CreatesWhenModelIsCorrect()
         {
             var controller = new MerchantApiController(merchantsFixture.MerchantsService);
@@ -49,6 +32,7 @@ namespace MerchantsApi.Tests
             var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
             var responseData = response.Value as OperationResponse;
 
+            Assert.NotNull(response);
             Assert.Equal(201, response.StatusCode);
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Success, responseData.Status);
@@ -60,24 +44,8 @@ namespace MerchantsApi.Tests
             Assert.Equal(merchantModel.BusinessName, merchant.BusinessName);
         }
 
-        [Fact(DisplayName = "UpdateMerchant: 404 when merchant cannot be found"), Order(4)]
-        public async Task UpdateMerchant_Returns404WhenMerchantNotFound()
-        {
-            var controller = new MerchantApiController(merchantsFixture.MerchantsService);
-            var merchantModel = new UpdateMerchantRequest();
-            var actionResult = await controller.UpdateMerchant(-1, merchantModel);
-
-            var response = actionResult as Microsoft.AspNetCore.Mvc.NotFoundObjectResult;
-            var responseData = response.Value as OperationResponse;
-
-            Assert.Equal(404, response.StatusCode);
-            Assert.NotNull(responseData);
-            Assert.Equal(StatusEnum.Error, responseData.Status);
-            Assert.NotNull(responseData.Message);
-        }
-
-        [Fact(DisplayName = "UpdateMerchant: Updates when model is correct"), Order(6)]
-        public async Task UpdateMerchant_CreatesWhenModelIsCorrect()
+        [Fact(DisplayName = "UpdateMerchant: Updates when model is correct"), Order(2)]
+        public async Task UpdateMerchant_UpdatesWhenModelIsCorrect()
         {
             var controller = new MerchantApiController(merchantsFixture.MerchantsService);
             var newName = Guid.NewGuid().ToString();
@@ -88,6 +56,7 @@ namespace MerchantsApi.Tests
             var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
             var responseData = response.Value as OperationResponse;
 
+            Assert.NotNull(response);
             Assert.Equal(201, response.StatusCode);
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Success, responseData.Status);
@@ -99,7 +68,7 @@ namespace MerchantsApi.Tests
             Assert.Equal(merchantModel.BusinessName, merchant.BusinessName);
         }
 
-        [Fact(DisplayName = "GetMerchants: Returns collection of merchants"), Order(7)]
+        [Fact(DisplayName = "GetMerchants: Returns collection of merchants"), Order(3)]
         public async Task GetMerchants_ReturnsCollectionOfMerchants()
         {
             var controller = new MerchantApiController(merchantsFixture.MerchantsService);
@@ -109,11 +78,12 @@ namespace MerchantsApi.Tests
             var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
             var responseData = response.Value as SummariesResponse<MerchantSummary>;
 
+            Assert.NotNull(response);
             Assert.Equal(200, response.StatusCode);
             Assert.True(responseData.NumberOfRecords > 0);
         }
 
-        [Fact(DisplayName = "GetMerchants: Filters collection of merchants"), Order(8)]
+        [Fact(DisplayName = "GetMerchants: Filters collection of merchants"), Order(4)]
         public async Task GetMerchants_FiltersAndReturnsCollectionOfMerchants()
         {
             var controller = new MerchantApiController(merchantsFixture.MerchantsService);
@@ -123,6 +93,7 @@ namespace MerchantsApi.Tests
             var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
             var responseData = response.Value as SummariesResponse<MerchantSummary>;
 
+            Assert.NotNull(response);
             Assert.Equal(200, response.StatusCode);
             Assert.NotNull(responseData);
             Assert.NotNull(responseData.Data);
@@ -133,6 +104,7 @@ namespace MerchantsApi.Tests
             response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
             responseData = response.Value as SummariesResponse<MerchantSummary>;
 
+            Assert.NotNull(response);
             Assert.Equal(200, response.StatusCode);
             Assert.NotNull(responseData);
             Assert.NotNull(responseData.Data);

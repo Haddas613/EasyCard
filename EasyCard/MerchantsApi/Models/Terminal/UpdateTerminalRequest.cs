@@ -8,5 +8,6 @@ namespace MerchantsApi.Models.Terminal
     public class UpdateTerminalRequest
     {
         public long TerminalID { get; set; }
+        public string Label { get; set; }
     }
 }
