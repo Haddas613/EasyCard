@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServerClient;
 using MerchantsApi.Models.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,13 @@ namespace MerchantsApi.Controllers
     [ApiController]
     public class UserApiController : ControllerBase
     {
+        private readonly IUserManagementClient userManagementClient;
+
+        public UserApiController(IUserManagementClient userManagementClient)
+        {
+            this.userManagementClient = userManagementClient;
+        }
+
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SummariesResponse<UserSummary>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]

@@ -25,5 +25,7 @@ namespace Shared.Models
         public StatusEnum? Status { get; set; }
 
         public long? EntityID { get; set; }
+
+        public string EntityReference { get; set; }
     }
 }
