@@ -39,7 +39,7 @@ namespace Shared.Helpers
         }
 
 
-        public async Task<T> Get<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null) where T : class
+        public async Task<T> Get<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null)
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath, querystr);
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -65,7 +65,9 @@ namespace Shared.Helpers
             }
         }
 
-        public async Task<T> Post<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null, IntegrationMessage integrationMessage = null) where T : class
+        public async Task<T> Post<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
+            ProcessRequest onRequest = null, ProcessResponse onResponse = null
+            )
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
@@ -84,21 +86,13 @@ namespace Shared.Helpers
 
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            if (integrationMessage != null)
-            {
-                integrationMessage.Address = url;
-                integrationMessage.Request = json;
-            }
+            onRequest?.Invoke(url, json);
 
             HttpResponseMessage response = await httpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
 
-            if (integrationMessage != null)
-            {
-                integrationMessage.Response = res;
-                integrationMessage.ResponseStatus = response.StatusCode.ToString();
-            }
+            onResponse?.Invoke(res, response.StatusCode, response.Headers);
 
             if (response.IsSuccessStatusCode)
             {
@@ -110,7 +104,9 @@ namespace Shared.Helpers
             }
         }
 
-        public async Task<T> Put<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null) where T : class
+        public async Task<T> Put<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
+            ProcessRequest onRequest = null, ProcessResponse onResponse = null
+            )
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
@@ -129,9 +125,14 @@ namespace Shared.Helpers
 
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
+            onRequest?.Invoke(url, json);
+
             HttpResponseMessage response = await httpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
+
+            onResponse?.Invoke(res, response.StatusCode, response.Headers);
+
             if (response.IsSuccessStatusCode)
             {
                 return JsonConvert.DeserializeObject<T>(res);
@@ -142,7 +143,9 @@ namespace Shared.Helpers
             }
         }
 
-        public async Task<T> PostXml<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null, IntegrationMessage integrationMessage = null) where T : class
+        public async Task<T> PostXml<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
+            ProcessRequest onRequest = null, ProcessResponse onResponse = null
+            ) 
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
@@ -161,21 +164,13 @@ namespace Shared.Helpers
 
             request.Content = new StringContent(xml, Encoding.UTF8, "text/xml");
 
-            if (integrationMessage != null)
-            {
-                integrationMessage.Address = url;
-                integrationMessage.Request = xml;
-            }
+            onRequest?.Invoke(url, xml);
 
             HttpResponseMessage response = await httpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
 
-            if (integrationMessage != null)
-            {
-                integrationMessage.Response = res;
-                integrationMessage.ResponseStatus = response.StatusCode.ToString();
-            }
+            onResponse?.Invoke(res, response.StatusCode, response.Headers);
 
             if (response.IsSuccessStatusCode)
             {
@@ -187,7 +182,9 @@ namespace Shared.Helpers
             }
         }
 
-        public async Task<string> PostRaw(string enpoint, string actionPath, string payload, string contentType, Func<Task<NameValueCollection>> getHeaders = null)
+        public async Task<string> PostRaw(string enpoint, string actionPath, string payload, string contentType, Func<Task<NameValueCollection>> getHeaders = null,
+            ProcessRequest onRequest = null, ProcessResponse onResponse = null
+            )
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
@@ -204,9 +201,14 @@ namespace Shared.Helpers
 
             request.Content = new StringContent(payload, Encoding.UTF8, contentType ?? "text/xml");
 
+            onRequest?.Invoke(url, payload);
+
             HttpResponseMessage response = await httpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
+
+            onResponse?.Invoke(res, response.StatusCode, response.Headers);
+
             if (response.IsSuccessStatusCode)
             {
                 return res;
@@ -217,7 +219,10 @@ namespace Shared.Helpers
             }
         }
 
-        public async Task<RawRequestResult> PostRawWithHeaders(string enpoint, string actionPath, string payload, string contentType, Func<Task<NameValueCollection>> getHeaders = null)
+
+        public async Task<string> PostRawForm(string enpoint, string actionPath, IDictionary<string,string> payload, Func<Task<NameValueCollection>> getHeaders = null,
+            ProcessRequest onRequest = null, ProcessResponse onResponse = null
+            )
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
@@ -231,64 +236,16 @@ namespace Shared.Helpers
                     request.Headers.Add(header, headers.GetValues(header).FirstOrDefault());
                 }
             }
-
-            request.Content = new StringContent(payload, Encoding.UTF8, contentType ?? "text/xml");
-
-            HttpResponseMessage response = await httpClient.SendAsync(request);
-
-            var operationResponse = new RawRequestResult();
-            operationResponse.StatusCode = response.StatusCode;
-            
-
-            foreach (var header in response.Headers)
-            {
-                operationResponse.ResponseHeaders.Add(header.Key, header.Value?.FirstOrDefault());
-            }
-
-            var res = await response.Content.ReadAsStringAsync();
-            if (response.IsSuccessStatusCode)
-            {
-                return operationResponse;
-            }
-            else
-            {
-                throw new ApplicationException($"Failed POST to {url}: {response.StatusCode}");
-            }
-        }
-
-        public async Task<string> PostRawForm(string enpoint, string actionPath, IDictionary<string,string> payload, Func<Task<NameValueCollection>> getHeaders = null, IntegrationMessage integrationMessage = null)
-        {
-            var url = UrlHelper.BuildUrl(enpoint, actionPath);
-
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-
-            if (getHeaders != null)
-            {
-                var headers = await getHeaders();
-                foreach (var header in headers.AllKeys)
-                {
-                    request.Headers.Add(header, headers.GetValues(header).FirstOrDefault());
-                }
-            }
-
-
 
             request.Content = new FormUrlEncodedContent(payload);
 
-            if (integrationMessage != null)
-            {
-                integrationMessage.Address = url;
-            }
+            onRequest?.Invoke(url, JsonConvert.SerializeObject(payload));
 
             HttpResponseMessage response = await httpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
 
-            if (integrationMessage != null)
-            {
-                integrationMessage.Response = res;
-                integrationMessage.ResponseStatus = response.StatusCode.ToString();
-            }
+            onResponse?.Invoke(res, response.StatusCode, response.Headers);
 
             if (response.IsSuccessStatusCode)
             {
@@ -300,7 +257,9 @@ namespace Shared.Helpers
             }
         }
 
-        public async Task<T> Delete<T>(string enpoint, string actionPath, Func<Task<NameValueCollection>> getHeaders = null)
+        public async Task<T> Delete<T>(string enpoint, string actionPath, Func<Task<NameValueCollection>> getHeaders = null,
+            ProcessRequest onRequest = null, ProcessResponse onResponse = null
+            )
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
@@ -315,7 +274,12 @@ namespace Shared.Helpers
                 }
             }
 
+            onRequest?.Invoke(url, string.Empty);
+
             var response = await httpClient.SendAsync(request);
+
+            onResponse?.Invoke(string.Empty, response.StatusCode, response.Headers);
+
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();

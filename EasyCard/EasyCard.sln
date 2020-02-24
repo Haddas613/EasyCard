@@ -43,6 +43,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "MerchantsApi.Database", "Data\MerchantsApi.Database\MerchantsApi.Database.sqlproj", "{2071F920-89DB-4571-8507-4848A246BADF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Integration", "Shared.Integration\Shared.Integration.csproj", "{CE287F0F-0450-494C-BF21-26B29255888C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{2071F920-89DB-4571-8507-4848A246BADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2071F920-89DB-4571-8507-4848A246BADF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2071F920-89DB-4571-8507-4848A246BADF}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{CE287F0F-0450-494C-BF21-26B29255888C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE287F0F-0450-494C-BF21-26B29255888C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE287F0F-0450-494C-BF21-26B29255888C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE287F0F-0450-494C-BF21-26B29255888C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
