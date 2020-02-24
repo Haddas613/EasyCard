@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shared.Models
+namespace Shared.Integration
 {
     public class IntegrationMessage : TableEntity
     {

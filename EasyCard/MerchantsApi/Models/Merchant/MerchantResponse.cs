@@ -9,16 +9,6 @@ namespace MerchantsApi.Models.Merchant
 {
     public class MerchantResponse: MerchantBase
     {
-        public long MerchantID { get; set; }
-
-        public string BusinessName { get; set; }
-
-        public string MerketingName { get; set; }
-
-        public string BusinessID { get; set; }
-
-        public string ContactPerson { get; set; }
-
         public IEnumerable<TerminalSummary> Terminals { get; set; }
 
         public IEnumerable<UserSummary> Users { get; set; }

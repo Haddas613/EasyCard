@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\MerchantsApi.Business\MerchantsApi.Business.csproj" />
     <ProjectReference Include="..\..\MerchantsApi\MerchantsApi.csproj" />
   </ItemGroup>
 

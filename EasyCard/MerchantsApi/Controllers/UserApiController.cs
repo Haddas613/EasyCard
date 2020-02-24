@@ -6,6 +6,7 @@ using IdentityServerClient;
 using MerchantsApi.Models.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Api.Models;
 using Shared.Models;
 
 namespace MerchantsApi.Controllers
@@ -24,7 +25,6 @@ namespace MerchantsApi.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SummariesResponse<UserSummary>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]
         public async Task<IActionResult> GetUsers(GetUsersFilter filter)
         {
             throw new NotImplementedException();
@@ -32,7 +32,6 @@ namespace MerchantsApi.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]
         [Route("{userID}")]
         public async Task<IActionResult> GetUser([FromRoute]string userID)
         {
@@ -46,8 +45,6 @@ namespace MerchantsApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]
-        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(OperationResponse))]
         public async Task<IActionResult> CreateUser([FromBody]UserRequest user)
         {
             throw new NotImplementedException();
@@ -55,8 +52,6 @@ namespace MerchantsApi.Controllers
 
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]
-        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(OperationResponse))]
         [Route("{userID}")]
         public async Task<IActionResult> UpdateUser([FromRoute]string userID, [FromBody]UpdateUserRequest user)
         {
@@ -65,7 +60,6 @@ namespace MerchantsApi.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]
         [Route("{userID}/invite")]
         public async Task<IActionResult> InviteUser([FromRoute]string userID, [FromBody]InviteUserRequest user)
         {
@@ -74,7 +68,6 @@ namespace MerchantsApi.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]
         [Route("{userID}/lock")]
         public async Task<IActionResult> LockUser([FromRoute]string userID)
         {
@@ -83,7 +76,6 @@ namespace MerchantsApi.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]
         [Route("{userID}/resetPassword")]
         public async Task<IActionResult> ResetPasswordForUser([FromRoute]string userID)
         {
@@ -92,7 +84,6 @@ namespace MerchantsApi.Controllers
 
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]
         [Route("{userID}/linkToTerminal/{terminalID}")]
         public async Task<IActionResult> LinkUserToTerminal([FromRoute]string userID, [FromRoute]long terminalID)
         {
@@ -101,7 +92,6 @@ namespace MerchantsApi.Controllers
 
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]
         [Route("{userID}/unlinkFromTerminal/{terminalID}")]
         public async Task<IActionResult> UnlinkUserFromTerminal([FromRoute]string userID, [FromRoute]long terminalID)
         {
@@ -110,7 +100,6 @@ namespace MerchantsApi.Controllers
 
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(OperationResponse))]
         [Route("{userID}/unlinkFromMerchant/{terminalID}")]
         public async Task<IActionResult> UnlinkUserFromMerchant([FromRoute]string userID, [FromRoute]long merchantID)
         {

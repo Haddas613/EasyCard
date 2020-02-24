@@ -7,43 +7,47 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransactionsApi", "Transact
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MerchantsApi", "MerchantsApi\MerchantsApi.csproj", "{B3DBEB25-2F02-4D1A-B6E5-2D38EE716E73}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{BF9EB461-5F78-47BD-BCE3-2990BEC5B210}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{9B8C2352-522A-4F75-A1AA-F5E4226EEB83}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MerchantsApi.Business", "MerchantsApi.Business\MerchantsApi.Business.csproj", "{202FE78F-1475-4538-BB85-C0749D3CBF59}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Business", "Shared.Business\Shared.Business.csproj", "{925F8E77-1643-417B-BABE-6DAD30D999FF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BD9E08F4-001A-4C24-8779-290E3656E697}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantsApi.Tests", "Tests\MerchantsApi.Tests\MerchantsApi.Tests.csproj", "{D24105CB-76D3-403E-9F07-BA0A9EACE28F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MerchantsApi.Tests", "Tests\MerchantsApi.Tests\MerchantsApi.Tests.csproj", "{D24105CB-76D3-403E-9F07-BA0A9EACE28F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransactionsApi.Tests", "Tests\TransactionsApi.Tests\TransactionsApi.Tests.csproj", "{B42751E7-2DB3-46B5-8451-69A7BCBE2F23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TransactionsApi.Tests", "Tests\TransactionsApi.Tests\TransactionsApi.Tests.csproj", "{B42751E7-2DB3-46B5-8451-69A7BCBE2F23}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{68126764-B9A1-45D9-9C33-E84873A9124E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClearingHouse", "Integration\ClearingHouse\ClearingHouse.csproj", "{64298F90-7FFB-481D-8BBD-3F8C1DA4F758}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClearingHouse", "Integration\ClearingHouse\ClearingHouse.csproj", "{64298F90-7FFB-481D-8BBD-3F8C1DA4F758}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyInvoice", "Integration\EasyInvoice\EasyInvoice.csproj", "{5793F9DF-845B-41AE-AD0D-C49DF57203F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyInvoice", "Integration\EasyInvoice\EasyInvoice.csproj", "{5793F9DF-845B-41AE-AD0D-C49DF57203F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shva", "Integration\Shva\Shva.csproj", "{A7AEC277-FDF9-4691-B762-0A07155206BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shva", "Integration\Shva\Shva.csproj", "{A7AEC277-FDF9-4691-B762-0A07155206BA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MerchantProfileApi", "MerchantProfileApi\MerchantProfileApi.csproj", "{C2B54074-1A54-4945-8772-EFB72EF32A1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantProfileApi.Tests", "Tests\MerchantProfileApi.Tests\MerchantProfileApi.Tests.csproj", "{9F26E581-0C7C-4E90-9158-4DE1AC891A29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MerchantProfileApi.Tests", "Tests\MerchantProfileApi.Tests\MerchantProfileApi.Tests.csproj", "{9F26E581-0C7C-4E90-9158-4DE1AC891A29}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{34997AED-FDD6-463F-861F-1C376A83326C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer", "Identity\IdentityServer\IdentityServer.csproj", "{235933C8-B70C-4922-9539-C8C806A30B07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer", "Identity\IdentityServer\IdentityServer.csproj", "{235933C8-B70C-4922-9539-C8C806A30B07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServerClient", "Identity\IdentityServerClient\IdentityServerClient.csproj", "{AE0632C9-CC39-4697-A94E-E934F01E6FCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServerClient", "Identity\IdentityServerClient\IdentityServerClient.csproj", "{AE0632C9-CC39-4697-A94E-E934F01E6FCE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{EAE60B00-9D03-4A75-894F-2543F59E523C}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "MerchantsApi.Database", "Data\MerchantsApi.Database\MerchantsApi.Database.sqlproj", "{2071F920-89DB-4571-8507-4848A246BADF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Integration", "Shared.Integration\Shared.Integration.csproj", "{CE287F0F-0450-494C-BF21-26B29255888C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Integration", "Shared.Integration\Shared.Integration.csproj", "{CE287F0F-0450-494C-BF21-26B29255888C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merchants.Business", "Merchants.Business\Merchants.Business.csproj", "{889AA6AC-E653-4839-B7D6-AFA007488AD9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared.Api", "Shared.Api\Shared.Api.csproj", "{29F9126E-B826-4383-BB36-4FA628E6B3F6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Merchants.Shared", "Merchants.Shared\Merchants.Shared.csproj", "{12A2734C-2FF4-4FDA-B163-F8D6FB1CFFAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Helpers", "Shared.Helpers\Shared.Helpers.csproj", "{3873AF32-18D7-4C21-B9B7-C5BE107CC261}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,14 +63,6 @@ Global
 		{B3DBEB25-2F02-4D1A-B6E5-2D38EE716E73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3DBEB25-2F02-4D1A-B6E5-2D38EE716E73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3DBEB25-2F02-4D1A-B6E5-2D38EE716E73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BF9EB461-5F78-47BD-BCE3-2990BEC5B210}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF9EB461-5F78-47BD-BCE3-2990BEC5B210}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BF9EB461-5F78-47BD-BCE3-2990BEC5B210}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BF9EB461-5F78-47BD-BCE3-2990BEC5B210}.Release|Any CPU.Build.0 = Release|Any CPU
-		{202FE78F-1475-4538-BB85-C0749D3CBF59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{202FE78F-1475-4538-BB85-C0749D3CBF59}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{202FE78F-1475-4538-BB85-C0749D3CBF59}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{202FE78F-1475-4538-BB85-C0749D3CBF59}.Release|Any CPU.Build.0 = Release|Any CPU
 		{925F8E77-1643-417B-BABE-6DAD30D999FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{925F8E77-1643-417B-BABE-6DAD30D999FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{925F8E77-1643-417B-BABE-6DAD30D999FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -117,6 +113,22 @@ Global
 		{CE287F0F-0450-494C-BF21-26B29255888C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE287F0F-0450-494C-BF21-26B29255888C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE287F0F-0450-494C-BF21-26B29255888C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{889AA6AC-E653-4839-B7D6-AFA007488AD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{889AA6AC-E653-4839-B7D6-AFA007488AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{889AA6AC-E653-4839-B7D6-AFA007488AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{889AA6AC-E653-4839-B7D6-AFA007488AD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29F9126E-B826-4383-BB36-4FA628E6B3F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29F9126E-B826-4383-BB36-4FA628E6B3F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29F9126E-B826-4383-BB36-4FA628E6B3F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29F9126E-B826-4383-BB36-4FA628E6B3F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12A2734C-2FF4-4FDA-B163-F8D6FB1CFFAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12A2734C-2FF4-4FDA-B163-F8D6FB1CFFAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12A2734C-2FF4-4FDA-B163-F8D6FB1CFFAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12A2734C-2FF4-4FDA-B163-F8D6FB1CFFAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3873AF32-18D7-4C21-B9B7-C5BE107CC261}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3873AF32-18D7-4C21-B9B7-C5BE107CC261}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3873AF32-18D7-4C21-B9B7-C5BE107CC261}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3873AF32-18D7-4C21-B9B7-C5BE107CC261}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

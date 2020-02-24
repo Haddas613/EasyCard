@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 
 namespace Shared.Business
 {
-    public interface IServiceBase
+    public interface IServiceBase<T> where T : class, IEntityBase
     {
-        Task<OperationResponse> SaveChanges(Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction dbTransaction = null);
+        Task UpdateEntity(T entity, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction dbTransaction = null);
+
+        Task CreateEntity(T entity, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction dbTransaction = null);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Shared.Models;
+﻿using Shared.Api.Models;
+using Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
