@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Business.Extensions;
 
 namespace Merchants.Api.Controllers
 {
@@ -38,7 +39,7 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}")]
         public async Task<IActionResult> GetTerminal([FromRoute]long terminalID)
         {
-            var terminal = await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID);
+            var terminal = await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID).EnsureExists();
 
             if (terminal == null)
                 return NotFound(new OperationResponse($"Terminal {terminalID} not found", StatusEnum.Error));
