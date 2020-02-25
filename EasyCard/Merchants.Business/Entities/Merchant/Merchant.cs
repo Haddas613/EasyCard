@@ -9,7 +9,7 @@ namespace Merchants.Business.Entities.Merchant
     {
         public Merchant()
         {
-            Terminals = new HashSet<Merchants.Business.Entities.Terminal.Terminal>();
+            //Terminals = new HashSet<Merchants.Business.Entities.Terminal.Terminal>();
         }
 
         public long MerchantID { get; set; }
@@ -24,7 +24,8 @@ namespace Merchants.Business.Entities.Merchant
 
         public string ContactPerson { get; set; }
 
-        public ICollection<Merchants.Business.Entities.Terminal.Terminal> Terminals { get; set; }
+        // lets try to live without collections
+        //public ICollection<Merchants.Business.Entities.Terminal.Terminal> Terminals { get; set; }
 
         public string Users { get; set; }
         public DateTime? Created { get; set; }

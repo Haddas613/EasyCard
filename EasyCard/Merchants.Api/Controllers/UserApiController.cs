@@ -7,7 +7,6 @@ using Merchants.Api.Models.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api.Models;
-using Shared.Models;
 
 namespace Merchants.Api.Controllers
 {

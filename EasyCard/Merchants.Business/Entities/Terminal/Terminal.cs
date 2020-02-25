@@ -1,4 +1,5 @@
 ﻿using Merchants.Business.Entities.Merchant;
+using Merchants.Shared.Enums;
 using Shared.Business;
 using System;
 using System.Collections.Generic;

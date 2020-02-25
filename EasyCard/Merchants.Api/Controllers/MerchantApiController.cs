@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Shared.Api;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
-using Shared.Models;
 
 namespace Merchants.Api.Controllers
 {

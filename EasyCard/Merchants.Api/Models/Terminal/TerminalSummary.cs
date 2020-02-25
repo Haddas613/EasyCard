@@ -1,6 +1,6 @@
 ﻿using Merchants.Api.Models.Merchant;
+using Merchants.Shared.Enums;
 using Newtonsoft.Json.Converters;
-using Shared.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

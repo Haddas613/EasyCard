@@ -1,7 +1,6 @@
 ﻿using IdentityServerClient;
 using Merchants.Api.Models.User;
 using Moq;
-using Shared.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;

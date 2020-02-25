@@ -5,8 +5,6 @@ using Merchants.Tests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
-using Shared.Models;
-using Shared.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shared.Models.Enums
+namespace Merchants.Shared.Enums
 {
     public enum ExternalSystemTypeEnum
     {

@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
-using Shared.Models.Enums;
+﻿using Merchants.Shared.Enums;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;

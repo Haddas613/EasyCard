@@ -1,7 +1,6 @@
 ﻿using Merchants.Api.Models.User;
+using Merchants.Shared.Enums;
 using Newtonsoft.Json.Linq;
-using Shared.Models;
-using Shared.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

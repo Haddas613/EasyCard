@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
-using Shared.Models;
 
 namespace Merchants.Api.Controllers
 {
@@ -66,7 +65,7 @@ namespace Merchants.Api.Controllers
                 Created = DateTime.UtcNow
             };
 
-            merchant.Terminals.Add(newTerminal);
+            //merchant.Terminals.Add(newTerminal);
 
             await merchantsService.UpdateEntity(merchant);
 
