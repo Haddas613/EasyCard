@@ -46,41 +46,24 @@ namespace MerchantsApi.Tests
             clientMockSetup.MockObj.Verify(m => m.CreateUser(It.IsAny<CreateUserRequestModel>()), Times.Once);
         }
 
-        [Fact(DisplayName = "GetUsers: Returns any collection"), Order(2)]
-        public async Task GetUsers_ReturnsAnyCollection()
-        {
-            var clientMockSetup = new UserManagementClientMockSetup();
-            var controller = new UserApiController(clientMockSetup.MockObj.Object);
-
-            var actionResult = await controller.GetUsers(new Merchants.Api.Models.User.GetUsersFilter());
-
-            var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
-            var responseData = response.Value as SummariesResponse<UserSummary>;
-
-            Assert.NotNull(response);
-            Assert.Equal(200, response.StatusCode);
-            Assert.NotNull(responseData);
-            Assert.NotNull(responseData.Data);
-        }
-
         [Fact(DisplayName = "LockUser: Locks when model is correct"), Order(3)]
         public async Task LockUser_LocksWhenModelIsCorrect()
         {
             var clientMockSetup = new UserManagementClientMockSetup();
             var controller = new UserApiController(clientMockSetup.MockObj.Object);
-            var userId = Guid.NewGuid().ToString();
 
-            var actionResult = await controller.LockUser(userId);
+            var actionResult = await controller.LockUser(clientMockSetup.UserEmail);
 
             var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
             var responseData = response.Value as OperationResponse;
 
             Assert.NotNull(response);
-            Assert.Equal(201, response.StatusCode);
+            Assert.Equal(200, response.StatusCode);
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
-            clientMockSetup.MockObj.Verify(m => m.LockUser(userId), Times.Once);
+            clientMockSetup.MockObj.Verify(m => m.GetUserByEmail(clientMockSetup.UserEmail), Times.Once);
+            clientMockSetup.MockObj.Verify(m => m.LockUser(It.IsAny<string>()), Times.Once);
         }
 
         [Fact(DisplayName = "UnLockUser: Unlocks when model is correct"), Order(4)]
@@ -88,9 +71,9 @@ namespace MerchantsApi.Tests
         {
             var clientMockSetup = new UserManagementClientMockSetup();
             var controller = new UserApiController(clientMockSetup.MockObj.Object);
-            var userId = Guid.NewGuid().ToString();
+            var userEmail = Guid.NewGuid().ToString();
 
-            var actionResult = await controller.UnLockUser(userId);
+            var actionResult = await controller.UnLockUser(userEmail);
 
             var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
             var responseData = response.Value as OperationResponse;
@@ -100,7 +83,8 @@ namespace MerchantsApi.Tests
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
-            clientMockSetup.MockObj.Verify(m => m.UnLockUser(userId), Times.Once);
+            clientMockSetup.MockObj.Verify(m => m.GetUserByEmail(userEmail), Times.Once);
+            clientMockSetup.MockObj.Verify(m => m.UnLockUser(It.IsAny<string>()), Times.Once);
         }
 
         [Fact(DisplayName = "ResetPassword: Resets when model is correct"), Order(5)]
@@ -108,9 +92,8 @@ namespace MerchantsApi.Tests
         {
             var clientMockSetup = new UserManagementClientMockSetup();
             var controller = new UserApiController(clientMockSetup.MockObj.Object);
-            var userId = Guid.NewGuid().ToString();
 
-            var actionResult = await controller.ResetPasswordForUser(userId);
+            var actionResult = await controller.ResetPasswordForUser(clientMockSetup.UserEmail);
 
             var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
             var responseData = response.Value as OperationResponse;
@@ -120,7 +103,8 @@ namespace MerchantsApi.Tests
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
-            clientMockSetup.MockObj.Verify(m => m.ResetPassword(userId), Times.Once);
+            clientMockSetup.MockObj.Verify(m => m.GetUserByEmail(clientMockSetup.UserEmail), Times.Once);
+            clientMockSetup.MockObj.Verify(m => m.ResetPassword(It.IsAny<string>()), Times.Once);
         }
 
         [Fact(DisplayName = "LinkToTerminal: Links user to terminal"), Order(6)]
@@ -128,24 +112,48 @@ namespace MerchantsApi.Tests
         {
             var clientMockSetup = new UserManagementClientMockSetup();
             var controller = new UserApiController(clientMockSetup.MockObj.Object);
-            var userId = Guid.NewGuid().ToString();
 
             //Get terminal ID which is guaranteed to be not linked to current user
-            var terminalID = (await merchantsFixture.MerchantsContext.UserTerminalMappings.Where(u => u.UserID != userId).FirstOrDefaultAsync())?.TerminalID 
+            var terminalID = (await merchantsFixture.MerchantsContext.UserTerminalMappings.Where(u => u.UserID != clientMockSetup.UserEntityId).FirstOrDefaultAsync())?.TerminalID 
                 ?? await merchantsFixture.MerchantsContext.Terminals.Select(s => s.TerminalID).FirstAsync();
 
-            var actionResult = await controller.LinkUserToTerminal(userId, terminalID);
+            var actionResult = await controller.LinkUserToTerminal(clientMockSetup.UserEmail, terminalID);
 
             var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
             var responseData = response.Value as OperationResponse;
-            var linkedTerminal = await merchantsFixture.MerchantsContext.UserTerminalMappings.FirstOrDefaultAsync(t => t.TerminalID == terminalID && t.UserID == userId);
+            var linkedTerminal = await merchantsFixture.MerchantsContext.UserTerminalMappings.FirstOrDefaultAsync(t => t.TerminalID == terminalID && t.UserID == clientMockSetup.UserEntityId);
 
             Assert.NotNull(response);
             Assert.Equal(201, response.StatusCode);
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
+            clientMockSetup.MockObj.Verify(m => m.GetUserByEmail(clientMockSetup.UserEmail), Times.Once);
+        }
 
+        [Fact(DisplayName = "UnlinkFromTerminal: UnLinks user to terminal"), Order(7)]
+        public async Task UnlinkFromTerminal_UnLinksUserToTerminal()
+        {
+            var clientMockSetup = new UserManagementClientMockSetup();
+            var controller = new UserApiController(clientMockSetup.MockObj.Object);
+
+            //Get terminal ID which is guaranteed to be not linked to current user
+            var terminalID = (await merchantsFixture.MerchantsContext.UserTerminalMappings.Where(u => u.UserID != clientMockSetup.UserEntityId).FirstOrDefaultAsync())?.TerminalID
+                ?? throw new Exception("There is no linked terminals");
+
+            var actionResult = await controller.UnlinkUserFromTerminal(clientMockSetup.UserEmail, terminalID);
+
+            var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
+            var responseData = response.Value as OperationResponse;
+            var linkedTerminal = await merchantsFixture.MerchantsContext.UserTerminalMappings
+                .FirstOrDefaultAsync(t => t.TerminalID == terminalID && t.UserID == clientMockSetup.UserEntityId);
+
+            Assert.NotNull(response);
+            Assert.Equal(201, response.StatusCode);
+            Assert.NotNull(responseData);
+            Assert.Equal(StatusEnum.Success, responseData.Status);
+            Assert.NotNull(responseData.Message);
+            clientMockSetup.MockObj.Verify(m => m.GetUserByEmail(clientMockSetup.UserEmail), Times.Once);
         }
     }
 }

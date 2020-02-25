@@ -9,7 +9,8 @@ namespace IdentityServerClient
     {
         Task<UserOperationResponse> CreateUser(CreateUserRequestModel model);
 
-        Task<UserOperationResponse> DeleteUser(string email);
+        Task<UserOperationResponse> GetUserByEmail(string email);
+
         Task<UserOperationResponse> DeleteUser(string userId);
 
         Task<UserOperationResponse> ResetPassword(string userId);
