@@ -7,13 +7,13 @@ namespace Merchants.Business.Entities.User
 {
     public class UserTerminalMapping
     {
-        public string UserTerminalMappingID { get; set; }
+        public long UserTerminalMappingID { get; set; }
 
         public string UserID { get; set; }
 
         public long TerminalID { get; set; }
 
-        public Merchants.Business.Entities.Terminal.Terminal Terminal { get; set; }
+        public Terminal.Terminal Terminal { get; set; }
 
         public DateTime OperationDate { get; set; }
 

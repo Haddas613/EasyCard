@@ -37,6 +37,7 @@ namespace Merchants.Business.Data
             modelBuilder.ApplyConfiguration(new FeatureConfiguration());
             modelBuilder.ApplyConfiguration(new ExternalSystemConfiguration());
             modelBuilder.ApplyConfiguration(new TerminalExternalSystemConfiguration());
+            modelBuilder.ApplyConfiguration(new UserTerminalMappingConfiguration());
 
 
             // security filters
@@ -76,7 +77,6 @@ namespace Merchants.Business.Data
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
                 builder.Property(b => b.Label).IsRequired(true).HasMaxLength(50).IsUnicode(true);
-                builder.Property(b => b.Users).IsRequired(false).IsUnicode(false);
                 builder.Property(b => b.ActivityStartDate).IsRequired(false);
 
                 builder.OwnsOne(b => b.Settings, s =>
@@ -143,6 +143,23 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.ExternalProcessorReference).IsRequired(false).HasMaxLength(50).IsUnicode(false);
                 builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true);
+            }
+        }
+
+        class UserTerminalMappingConfiguration : IEntityTypeConfiguration<UserTerminalMapping>
+        {
+            public void Configure(EntityTypeBuilder<UserTerminalMapping> builder)
+            {
+                builder.ToTable("UserTerminalMapping");
+
+                builder.HasKey(b => b.UserTerminalMappingID);
+                builder.Property(b => b.UserTerminalMappingID).ValueGeneratedOnAdd();
+
+                builder.Property(b => b.OperationDoneBy).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                builder.Property(b => b.UserID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.HasIndex(idx => new { idx.UserID, idx.TerminalID }).IsUnique(true);
             }
         }
     }

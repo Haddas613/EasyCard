@@ -75,6 +75,14 @@ namespace Merchants.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
+        [Route("{userID}/unlock")]
+        public async Task<IActionResult> UnLockUser([FromRoute]string userID)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userID}/resetPassword")]
         public async Task<IActionResult> ResetPasswordForUser([FromRoute]string userID)
         {
