@@ -71,19 +71,18 @@ namespace MerchantsApi.Tests
         {
             var clientMockSetup = new UserManagementClientMockSetup();
             var controller = new UserApiController(clientMockSetup.MockObj.Object);
-            var userEmail = Guid.NewGuid().ToString();
 
-            var actionResult = await controller.UnLockUser(userEmail);
+            var actionResult = await controller.UnLockUser(clientMockSetup.UserEmail);
 
             var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
             var responseData = response.Value as OperationResponse;
 
             Assert.NotNull(response);
-            Assert.Equal(201, response.StatusCode);
+            Assert.Equal(200, response.StatusCode);
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
-            clientMockSetup.MockObj.Verify(m => m.GetUserByEmail(userEmail), Times.Once);
+            clientMockSetup.MockObj.Verify(m => m.GetUserByEmail(clientMockSetup.UserEmail), Times.Once);
             clientMockSetup.MockObj.Verify(m => m.UnLockUser(It.IsAny<string>()), Times.Once);
         }
 
@@ -99,7 +98,7 @@ namespace MerchantsApi.Tests
             var responseData = response.Value as OperationResponse;
 
             Assert.NotNull(response);
-            Assert.Equal(201, response.StatusCode);
+            Assert.Equal(200, response.StatusCode);
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);

@@ -76,7 +76,11 @@ namespace Merchants.Api.Controllers
         [Route("{userID}/unlock")]
         public async Task<IActionResult> UnLockUser([FromRoute]string userEmail)
         {
-            throw new NotImplementedException();
+            var user = await userManagementClient.GetUserByEmail(userEmail);
+
+            var opResult = await userManagementClient.UnLockUser(user.EntityReference);
+
+            return new JsonResult(new OperationResponse { Message = "ok", Status = StatusEnum.Success }) { StatusCode = 200 };
         }
 
         [HttpPost]
@@ -84,7 +88,11 @@ namespace Merchants.Api.Controllers
         [Route("{userID}/resetPassword")]
         public async Task<IActionResult> ResetPasswordForUser([FromRoute]string userEmail)
         {
-            throw new NotImplementedException();
+            var user = await userManagementClient.GetUserByEmail(userEmail);
+
+            var opResult = await userManagementClient.ResetPassword(user.EntityReference);
+
+            return new JsonResult(new OperationResponse { Message = "ok", Status = StatusEnum.Success }) { StatusCode = 200 };
         }
 
         [HttpPut]
