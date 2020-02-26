@@ -55,6 +55,8 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Merchants.Database", "Data\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transactions", "Transactions", "{A7ABD632-D9CC-4F40-9AEB-9FE369CF2FE0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailSender", "Functions\EmailSender\EmailSender.csproj", "{359CB5B8-4DCF-4AEB-8249-0F8ABECEBB92}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,6 +137,10 @@ Global
 		{2071F920-89DB-4571-8507-4848A246BADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2071F920-89DB-4571-8507-4848A246BADF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2071F920-89DB-4571-8507-4848A246BADF}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{359CB5B8-4DCF-4AEB-8249-0F8ABECEBB92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{359CB5B8-4DCF-4AEB-8249-0F8ABECEBB92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{359CB5B8-4DCF-4AEB-8249-0F8ABECEBB92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{359CB5B8-4DCF-4AEB-8249-0F8ABECEBB92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -157,6 +163,7 @@ Global
 		{13693EDF-2D85-4AC5-B042-F2B02141BCCA} = {A7ABD632-D9CC-4F40-9AEB-9FE369CF2FE0}
 		{4BD52327-0B61-4BF1-AA2D-17627E7CDE6A} = {BD9E08F4-001A-4C24-8779-290E3656E697}
 		{2071F920-89DB-4571-8507-4848A246BADF} = {9B8C2352-522A-4F75-A1AA-F5E4226EEB83}
+		{359CB5B8-4DCF-4AEB-8249-0F8ABECEBB92} = {EAE60B00-9D03-4A75-894F-2543F59E523C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB40244C-6EBC-4B97-8F95-FB108B33F76E}
