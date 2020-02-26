@@ -7,6 +7,7 @@ using Merchants.Api.Models.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api.Models;
+using Shared.Api.Models.Enums;
 
 namespace Merchants.Api.Controllers
 {
@@ -20,13 +21,6 @@ namespace Merchants.Api.Controllers
         public UserApiController(IUserManagementClient userManagementClient)
         {
             this.userManagementClient = userManagementClient;
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SummariesResponse<UserSummary>))]
-        public async Task<IActionResult> GetUsers(GetUsersFilter filter)
-        {
-            throw new NotImplementedException();
         }
 
         [HttpGet]
@@ -52,7 +46,7 @@ namespace Merchants.Api.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userID}")]
-        public async Task<IActionResult> UpdateUser([FromRoute]string userID, [FromBody]UpdateUserRequest user)
+        public async Task<IActionResult> UpdateUser([FromRoute]string userEmail, [FromBody]UpdateUserRequest user)
         {
             throw new NotImplementedException();
         }
@@ -60,7 +54,7 @@ namespace Merchants.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userID}/invite")]
-        public async Task<IActionResult> InviteUser([FromRoute]string userID, [FromBody]InviteUserRequest user)
+        public async Task<IActionResult> InviteUser([FromRoute]string userEmail, [FromBody]InviteUserRequest user)
         {
             throw new NotImplementedException();
         }
@@ -68,23 +62,43 @@ namespace Merchants.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userID}/lock")]
-        public async Task<IActionResult> LockUser([FromRoute]string userID)
+        public async Task<IActionResult> LockUser([FromRoute]string userEmail)
         {
-            throw new NotImplementedException();
+            var user = await userManagementClient.GetUserByEmail(userEmail);
+
+            var opResult = await userManagementClient.LockUser(user.EntityReference);
+
+            return new JsonResult(new OperationResponse { Message = "ok", Status = StatusEnum.Success }) { StatusCode = 200 };
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
+        [Route("{userID}/unlock")]
+        public async Task<IActionResult> UnLockUser([FromRoute]string userEmail)
+        {
+            var user = await userManagementClient.GetUserByEmail(userEmail);
+
+            var opResult = await userManagementClient.UnLockUser(user.EntityReference);
+
+            return new JsonResult(new OperationResponse { Message = "ok", Status = StatusEnum.Success }) { StatusCode = 200 };
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userID}/resetPassword")]
-        public async Task<IActionResult> ResetPasswordForUser([FromRoute]string userID)
+        public async Task<IActionResult> ResetPasswordForUser([FromRoute]string userEmail)
         {
-            throw new NotImplementedException();
+            var user = await userManagementClient.GetUserByEmail(userEmail);
+
+            var opResult = await userManagementClient.ResetPassword(user.EntityReference);
+
+            return new JsonResult(new OperationResponse { Message = "ok", Status = StatusEnum.Success }) { StatusCode = 200 };
         }
 
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userID}/linkToTerminal/{terminalID}")]
-        public async Task<IActionResult> LinkUserToTerminal([FromRoute]string userID, [FromRoute]long terminalID)
+        public async Task<IActionResult> LinkUserToTerminal([FromRoute]string userEmail, [FromRoute]long terminalID)
         {
             throw new NotImplementedException();
         }
@@ -92,7 +106,7 @@ namespace Merchants.Api.Controllers
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userID}/unlinkFromTerminal/{terminalID}")]
-        public async Task<IActionResult> UnlinkUserFromTerminal([FromRoute]string userID, [FromRoute]long terminalID)
+        public async Task<IActionResult> UnlinkUserFromTerminal([FromRoute]string userEmail, [FromRoute]long terminalID)
         {
             throw new NotImplementedException();
         }
@@ -100,7 +114,8 @@ namespace Merchants.Api.Controllers
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userID}/unlinkFromMerchant/{terminalID}")]
-        public async Task<IActionResult> UnlinkUserFromMerchant([FromRoute]string userID, [FromRoute]long merchantID)
+        [Obsolete("Users will be linked to merchant by terminals")]
+        public async Task<IActionResult> UnlinkUserFromMerchant([FromRoute]string userEmail, [FromRoute]long merchantID)
         {
             throw new NotImplementedException();
         }

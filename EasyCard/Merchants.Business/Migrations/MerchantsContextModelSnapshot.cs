@@ -15,11 +15,11 @@ namespace Merchants.Business.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.1")
+                .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("MerchantsApi.Business.Entities.ExternalSystem", b =>
+            modelBuilder.Entity("Merchants.Business.Entities.Integration.ExternalSystem", b =>
                 {
                     b.Property<long>("ExternalSystemID")
                         .ValueGeneratedOnAdd()
@@ -50,7 +50,7 @@ namespace Merchants.Business.Migrations
                     b.ToTable("ExternalSystem");
                 });
 
-            modelBuilder.Entity("MerchantsApi.Business.Entities.Feature", b =>
+            modelBuilder.Entity("Merchants.Business.Entities.Merchant.Feature", b =>
                 {
                     b.Property<long>("FeatureID")
                         .ValueGeneratedOnAdd()
@@ -93,7 +93,7 @@ namespace Merchants.Business.Migrations
                     b.ToTable("Feature");
                 });
 
-            modelBuilder.Entity("MerchantsApi.Business.Entities.Merchant", b =>
+            modelBuilder.Entity("Merchants.Business.Entities.Merchant.Merchant", b =>
                 {
                     b.Property<long>("MerchantID")
                         .ValueGeneratedOnAdd()
@@ -136,7 +136,7 @@ namespace Merchants.Business.Migrations
                     b.ToTable("Merchant");
                 });
 
-            modelBuilder.Entity("MerchantsApi.Business.Entities.Terminal", b =>
+            modelBuilder.Entity("Merchants.Business.Entities.Terminal.Terminal", b =>
                 {
                     b.Property<long>("TerminalID")
                         .ValueGeneratedOnAdd()
@@ -166,10 +166,6 @@ namespace Merchants.Business.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Users")
-                        .HasColumnType("varchar(max)")
-                        .IsUnicode(false);
-
                     b.HasKey("TerminalID");
 
                     b.HasIndex("MerchantID");
@@ -177,7 +173,7 @@ namespace Merchants.Business.Migrations
                     b.ToTable("Terminal");
                 });
 
-            modelBuilder.Entity("MerchantsApi.Business.Entities.TerminalExternalSystem", b =>
+            modelBuilder.Entity("Merchants.Business.Entities.Terminal.TerminalExternalSystem", b =>
                 {
                     b.Property<long>("TerminalExternalSystemID")
                         .ValueGeneratedOnAdd()
@@ -216,49 +212,61 @@ namespace Merchants.Business.Migrations
                     b.ToTable("TerminalExternalSystem");
                 });
 
-            modelBuilder.Entity("MerchantsApi.Business.Entities.UserTerminalMapping", b =>
+            modelBuilder.Entity("Merchants.Business.Entities.User.UserTerminalMapping", b =>
                 {
-                    b.Property<string>("UserTerminalMappingID")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("UserTerminalMappingID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("OperationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OperationDoneBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
 
                     b.Property<string>("OperationDoneByID")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
 
                     b.Property<long>("TerminalID")
                         .HasColumnType("bigint");
 
                     b.Property<string>("UserID")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
 
                     b.HasKey("UserTerminalMappingID");
 
                     b.HasIndex("TerminalID");
 
-                    b.ToTable("UserTerminalMappings");
+                    b.HasIndex("UserID", "TerminalID")
+                        .IsUnique()
+                        .HasFilter("[UserID] IS NOT NULL");
+
+                    b.ToTable("UserTerminalMapping");
                 });
 
-            modelBuilder.Entity("MerchantsApi.Business.Entities.Feature", b =>
+            modelBuilder.Entity("Merchants.Business.Entities.Merchant.Feature", b =>
                 {
-                    b.HasOne("MerchantsApi.Business.Entities.Terminal", null)
+                    b.HasOne("Merchants.Business.Entities.Terminal.Terminal", null)
                         .WithMany("EnabledFeatures")
                         .HasForeignKey("TerminalID");
                 });
 
-            modelBuilder.Entity("MerchantsApi.Business.Entities.Terminal", b =>
+            modelBuilder.Entity("Merchants.Business.Entities.Terminal.Terminal", b =>
                 {
-                    b.HasOne("MerchantsApi.Business.Entities.Merchant", "Merchant")
-                        .WithMany("Terminals")
+                    b.HasOne("Merchants.Business.Entities.Merchant.Merchant", "Merchant")
+                        .WithMany()
                         .HasForeignKey("MerchantID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("MerchantsApi.Business.Entities.TerminalBillingSettings", "BillingSettings", b1 =>
+                    b.OwnsOne("Merchants.Business.Entities.Terminal.TerminalBillingSettings", "BillingSettings", b1 =>
                         {
                             b1.Property<long>("TerminalID")
                                 .ValueGeneratedOnAdd()
@@ -276,7 +284,7 @@ namespace Merchants.Business.Migrations
                                 .HasForeignKey("TerminalID");
                         });
 
-                    b.OwnsOne("MerchantsApi.Business.Entities.TerminalSettings", "Settings", b1 =>
+                    b.OwnsOne("Merchants.Business.Entities.Terminal.TerminalSettings", "Settings", b1 =>
                         {
                             b1.Property<long>("TerminalID")
                                 .ValueGeneratedOnAdd()
@@ -327,24 +335,24 @@ namespace Merchants.Business.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MerchantsApi.Business.Entities.TerminalExternalSystem", b =>
+            modelBuilder.Entity("Merchants.Business.Entities.Terminal.TerminalExternalSystem", b =>
                 {
-                    b.HasOne("MerchantsApi.Business.Entities.ExternalSystem", "ExternalSystem")
+                    b.HasOne("Merchants.Business.Entities.Integration.ExternalSystem", "ExternalSystem")
                         .WithMany()
                         .HasForeignKey("ExternalSystemID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MerchantsApi.Business.Entities.Terminal", "Terminal")
+                    b.HasOne("Merchants.Business.Entities.Terminal.Terminal", "Terminal")
                         .WithMany("Integrations")
                         .HasForeignKey("TerminalID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MerchantsApi.Business.Entities.UserTerminalMapping", b =>
+            modelBuilder.Entity("Merchants.Business.Entities.User.UserTerminalMapping", b =>
                 {
-                    b.HasOne("MerchantsApi.Business.Entities.Terminal", "Terminal")
+                    b.HasOne("Merchants.Business.Entities.Terminal.Terminal", "Terminal")
                         .WithMany()
                         .HasForeignKey("TerminalID")
                         .OnDelete(DeleteBehavior.Cascade)

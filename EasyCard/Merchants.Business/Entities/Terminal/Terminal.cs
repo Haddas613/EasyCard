@@ -1,4 +1,5 @@
 ﻿using Merchants.Business.Entities.Merchant;
+using Merchants.Business.Entities.User;
 using Merchants.Shared.Enums;
 using Shared.Business;
 using System;
@@ -35,8 +36,6 @@ namespace Merchants.Business.Entities.Terminal
         public TerminalSettings Settings { get; set; }
 
         public TerminalBillingSettings BillingSettings { get; set; }
-
-        public string Users { get; set; }
 
         public IEnumerable<TerminalExternalSystem> Integrations { get; set; }
 

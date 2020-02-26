@@ -16,6 +16,10 @@ namespace Merchants.Tests.MockSetups
         /// This user is always present in the list (unless deleted) and can be used as reference for tests
         /// </summary>
         public readonly string UserEntityId = Guid.NewGuid().ToString();
+        /// <summary>
+        /// This user is always present in the list (unless deleted) and can be used as reference for tests
+        /// </summary>
+        public readonly string UserEmail = Guid.NewGuid().ToString();
 
         public UserManagementClientMockSetup()
         {
@@ -25,24 +29,32 @@ namespace Merchants.Tests.MockSetups
 
         private void Setup()
         {
+            MockObj.Setup(m => m.GetUserByEmail(UserEmail))
+                .Returns(Task.FromResult(new UserOperationResponse { EntityReference = UserEntityId }))
+                .Verifiable();
+
+            MockObj.Setup(m => m.GetUserByEmail(It.IsNotIn(new string[] { UserEmail })))
+                .Returns(Task.FromResult<UserOperationResponse>(null))
+                .Verifiable();
+
             MockObj.Setup(m => m.CreateUser(It.IsAny<CreateUserRequestModel>()))
                 .Returns(Task.FromResult(new UserOperationResponse { EntityReference = UserEntityId }))
                 .Verifiable();
 
             MockObj.Setup(m => m.DeleteUser(UserEntityId))
-                .Returns(Task.FromResult(new UserOperationResponse { }))
+                .Returns(Task.FromResult(new UserOperationResponse { EntityReference = UserEntityId }))
                 .Verifiable();
 
             MockObj.Setup(m => m.LockUser(UserEntityId))
-                .Returns(Task.FromResult(new UserOperationResponse { }))
+                .Returns(Task.FromResult(new UserOperationResponse { EntityReference = UserEntityId }))
                 .Verifiable();
 
             MockObj.Setup(m => m.ResetPassword(UserEntityId))
-                .Returns(Task.FromResult(new UserOperationResponse { }))
+                .Returns(Task.FromResult(new UserOperationResponse { EntityReference = UserEntityId }))
                 .Verifiable();
 
             MockObj.Setup(m => m.UnLockUser(UserEntityId))
-                .Returns(Task.FromResult(new UserOperationResponse { }))
+                .Returns(Task.FromResult(new UserOperationResponse { EntityReference = UserEntityId }))
                 .Verifiable();
         }
     }
