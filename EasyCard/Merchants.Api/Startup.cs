@@ -1,24 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+using AutoMapper;
 using Merchants.Business.Data;
+using Merchants.Business.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Converters;
 using Shared.Api;
 using Shared.Business.Security;
+using System;
+using System.IO;
+using System.Reflection;
 
 namespace MerchantsApi
 {
@@ -58,6 +53,9 @@ namespace MerchantsApi
             services.AddSingleton<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
 
             services.AddDbContext<MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IMerchantsService, MerchantsService>();
+            services.AddScoped<ITerminalsService, TerminalsService>();
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

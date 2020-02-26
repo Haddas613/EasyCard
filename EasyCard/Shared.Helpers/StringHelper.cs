@@ -33,5 +33,13 @@ namespace Shared.Helpers
                    );
         }
 
+        /// <summary>
+        /// Will replace all '*' symbols in string with '%'. Depending on param may also enclose string with '%'
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="encloseInPercents">If true string will be enclosed with '%'. E.g. "%some text%" </param>
+        /// <returns></returns>
+        public static string UseWildCard(this string src, bool encloseInPercents) => encloseInPercents ? $"%{src.Replace("*", "%")}%" : $"{src.Replace("*", "%")}";
+
     }
 }

@@ -16,34 +16,9 @@
             SHVA or other system terminal ID
             </summary>
         </member>
-        <member name="P:Merchants.Api.Models.Terminal.TerminalResponse.MinInstallments">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Merchants.Api.Models.Terminal.TerminalResponse.MaxInstallments">
+        <member name="P:Merchants.Api.Models.Terminal.TerminalResponseSettings.MaxInstallments">
             <summary>
             If we set it to zero means installments blocked
-            </summary>
-        </member>
-        <member name="P:Merchants.Api.Models.Terminal.TerminalSummary.Processor">
-            <summary>
-            Shva or other processor
-            </summary>
-        </member>
-        <member name="P:Merchants.Api.Models.Terminal.TerminalSummary.Aggregator">
-            <summary>
-            Clearing House or Upay
-            </summary>
-        </member>
-        <member name="P:Merchants.Api.Models.Terminal.TerminalSummary.Invoicing">
-            <summary>
-            EasyInvoice or RapidOne
-            </summary>
-        </member>
-        <member name="P:Merchants.Api.Models.Terminal.TerminalSummary.Marketer">
-            <summary>
-            TODO: change ExternalSystemSummary to (?)
             </summary>
         </member>
         <member name="P:Merchants.Api.Models.Terminal.TerminalSummary.ExternalProcessorReference">

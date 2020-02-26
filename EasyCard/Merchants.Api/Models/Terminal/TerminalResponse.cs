@@ -1,4 +1,5 @@
-﻿using Merchants.Api.Models.User;
+﻿using Merchants.Api.Models.Merchant;
+using Merchants.Api.Models.User;
 using Merchants.Shared.Enums;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10,6 +11,12 @@ namespace Merchants.Api.Models.Terminal
 {
     public class TerminalResponse
     {
+        public TerminalResponse()
+        {
+            Settings = new TerminalResponseSettings();
+            BillingSettings = new TerminalResponseBillingSettings();
+        }
+
         public long TerminalID { get; set; }
 
         public long MerchantID { get; set; }
@@ -19,6 +26,10 @@ namespace Merchants.Api.Models.Terminal
         public TerminalStatusEnum Status { get; set; }
 
         public DateTime? ActivityStartDate { get; set; }
+
+        public DateTime? Created { get; set; }
+
+        public MerchantResponse Merchant { get; set; }
 
         public IEnumerable<UserSummary> Users { get; set; }
 
@@ -32,9 +43,13 @@ namespace Merchants.Api.Models.Terminal
 
         public JObject PaymentButtonSettings { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        public TerminalResponseSettings Settings { get; set; }
+
+        public TerminalResponseBillingSettings BillingSettings { get; set; }
+    }
+
+    public class TerminalResponseSettings
+    {
         public int? MinInstallments { get; set; }
 
         /// <summary>
@@ -46,12 +61,15 @@ namespace Merchants.Api.Models.Terminal
 
         public int? MaxCreditInstallments { get; set; }
 
-        public IEnumerable<string> BillingNotificationsEmails { get; set; } 
-
         public bool EnableDeletionOfUntransmittedTransactions { get; set; }
 
         public bool NationalIDRequired { get; set; }
 
         public bool CvvRequired { get; set; }
+    }
+
+    public class TerminalResponseBillingSettings
+    {
+        public IEnumerable<string> BillingNotificationsEmails { get; set; }
     }
 }

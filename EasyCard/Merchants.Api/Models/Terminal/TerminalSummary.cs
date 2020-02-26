@@ -18,25 +18,26 @@ namespace Merchants.Api.Models.Terminal
 
         public MerchantSummary Merchant { get; set; }
 
+        //TODO: implement
         /// <summary>
         /// Shva or other processor
         /// </summary>
-        public ExternalSystemSummary Processor { get; set; }
+        //public ExternalSystemSummary Processor { get; set; }
 
-        /// <summary>
-        /// Clearing House or Upay
-        /// </summary>
-        public ExternalSystemSummary Aggregator { get; set; }
+        ///// <summary>
+        ///// Clearing House or Upay
+        ///// </summary>
+        //public ExternalSystemSummary Aggregator { get; set; }
 
-        /// <summary>
-        /// EasyInvoice or RapidOne
-        /// </summary>
-        public ExternalSystemSummary Invoicing { get; set; }
+        ///// <summary>
+        ///// EasyInvoice or RapidOne
+        ///// </summary>
+        //public ExternalSystemSummary Invoicing { get; set; }
 
-        /// <summary>
-        /// TODO: change ExternalSystemSummary to (?)
-        /// </summary>
-        public ExternalSystemSummary Marketer { get; set; }
+        ///// <summary>
+        ///// TODO: change ExternalSystemSummary to (?)
+        ///// </summary>
+        //public ExternalSystemSummary Marketer { get; set; }
 
         /// <summary>
         /// SHVA or other system terminal ID

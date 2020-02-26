@@ -1,12 +1,10 @@
 ﻿using Merchants.Business.Entities.Terminal;
-using System;
-using System.Collections.Generic;
+using Shared.Business;
 using System.Linq;
-using System.Text;
 
 namespace Merchants.Business.Services
 {
-    public interface ITerminalsService
+    public interface ITerminalsService : IServiceBase<Terminal>
     {
         public IQueryable<Terminal> GetTerminals();
     }
