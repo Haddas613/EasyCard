@@ -13,9 +13,6 @@ namespace Merchants.Api.Extensions.Filtering
     {
         public static IQueryable<Terminal> Filter(this IQueryable<Terminal> src, TerminalsFilter filter)
         {
-            if (filter.TerminalID.HasValue)
-                src = src.Where(t => t.TerminalID == filter.TerminalID.Value);
-
             if (!string.IsNullOrWhiteSpace(filter.Label))
                 src = src.Where(t => EF.Functions.Like(t.Label, filter.Label.UseWildCard(true)));
 

@@ -48,12 +48,10 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}")]
         public async Task<IActionResult> GetTerminal([FromRoute]long terminalID)
         {
-            var terminal = await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID).EnsureExists();
-
-            //TODO: users, features, external systems
-            var result = mapper.Map<TerminalResponse>(terminal);
+            var terminal = await mapper.ProjectTo<TerminalResponse>(terminalsService.GetTerminals())
+                .FirstOrDefaultAsync(m => m.TerminalID == terminalID).EnsureExists();
             
-            return new JsonResult(result) { StatusCode = 200 };
+            return new JsonResult(terminal) { StatusCode = 200 };
         }
 
         [HttpPost]

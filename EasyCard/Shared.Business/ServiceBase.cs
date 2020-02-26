@@ -28,7 +28,10 @@ namespace Shared.Business
 
         public async Task CreateEntity(T entity, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction dbTransaction = null)
         {
-            throw new NotImplementedException();
+
+            entities.Add(entity);
+
+            await dbContext.SaveChangesAsync();
         }
     }
 }

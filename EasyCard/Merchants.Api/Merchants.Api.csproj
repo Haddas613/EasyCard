@@ -28,11 +28,5 @@
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="MerchantsApi.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 
 </Project>

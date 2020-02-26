@@ -8,8 +8,6 @@ namespace Merchants.Api.Models.Merchant
 {
     public class MerchantRequest
     {
-        public string MerchantID { get; set; }
-
         [Required]
         public string BusinessName { get; set; }
     }
