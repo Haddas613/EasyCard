@@ -6,5 +6,6 @@ namespace IdentityServerClient
 {
     public class CreateUserRequestModel
     {
+        public string Email { get; set; }
     }
 }
