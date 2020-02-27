@@ -35,7 +35,9 @@ namespace Merchants.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SummariesResponse<MerchantSummary>))]
         public async Task<IActionResult> GetMerchants([FromQuery]MerchantsFilter filter)
         {
-            var query = merchantsService.GetMerchants().Filter(filter);
+            var query = merchantsService.GetMerchants();//.Filter(filter);
+
+            var q = query.ToSql();
 
             var response = new SummariesResponse<MerchantSummary> { NumberOfRecords = await query.CountAsync() };
 

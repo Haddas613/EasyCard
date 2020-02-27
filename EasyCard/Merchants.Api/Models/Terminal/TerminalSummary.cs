@@ -19,9 +19,9 @@ namespace Merchants.Api.Models.Terminal
         public MerchantSummary Merchant { get; set; }
 
         //TODO: implement
-        /// <summary>
-        /// Shva or other processor
-        /// </summary>
+        ///// <summary>
+        ///// Shva or other processor
+        ///// </summary>
         //public ExternalSystemSummary Processor { get; set; }
 
         ///// <summary>
