@@ -1,8 +1,12 @@
-﻿using System;
+﻿
+using Shared.Helpers;
+using ShvaEMV;
+using System;
 
 namespace Shva
 {
-    public class Class1
+    public class Class1 
     {
+        
     }
 }
