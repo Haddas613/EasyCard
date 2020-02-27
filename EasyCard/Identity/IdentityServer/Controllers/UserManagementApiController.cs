@@ -22,7 +22,7 @@ namespace IdentityServer.Controllers
     [Produces("application/json")]
     [Route("api/admin")]
     [Authorize(AuthenticationSchemes = "token")]
-    public class AdminController : ControllerBase
+    public class UserManagementApiController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -32,12 +32,12 @@ namespace IdentityServer.Controllers
         private readonly ICryptoService _cryptoService;
         private readonly ApplicationSettings _configuration;
 
-        public AdminController(
+        public UserManagementApiController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILoggerFactory loggerFactory,
             ApplicationDbContext dataContext,
-            ILogger<AdminController> logger,
+            ILogger<UserManagementApiController> logger,
             IEmailSender emailSender,
             ICryptoService cryptoService,
             IOptions<ApplicationSettings> configuration
