@@ -25,7 +25,7 @@ namespace Merchants.Business.Services
 
         public IQueryable<Merchant> GetMerchants()
         {
-            return context.Merchants;
+            return context.Merchants.AsQueryable();
         }
 
         //public async Task<OperationResponse> SaveChanges(IDbContextTransaction dbTransaction = null)

@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.Merchant;
+using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Shared.Api;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Business.Extensions;
 
 namespace Merchants.Api.Controllers
 {
@@ -19,17 +23,25 @@ namespace Merchants.Api.Controllers
     public class MerchantApiController : ApiControllerBase
     {
         private readonly IMerchantsService merchantsService;
+        private readonly IMapper mapper;
 
-        public MerchantApiController(IMerchantsService merchantsService)
+        public MerchantApiController(IMerchantsService merchantsService, IMapper mapper)
         {
             this.merchantsService = merchantsService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SummariesResponse<MerchantSummary>))]
         public async Task<IActionResult> GetMerchants([FromQuery]MerchantsFilter filter)
         {
-            throw new NotImplementedException();
+            var query = merchantsService.GetMerchants().Filter(filter);
+
+            var response = new SummariesResponse<MerchantSummary> { NumberOfRecords = await query.CountAsync() };
+
+            response.Data = await mapper.ProjectTo<MerchantSummary>(query.ApplyPagination(filter)).ToListAsync();
+
+            return new JsonResult(response) { StatusCode = 200 };
         }
 
         [HttpGet]
@@ -37,13 +49,10 @@ namespace Merchants.Api.Controllers
         [Route("{merchantID}")]
         public async Task<IActionResult> GetMerchant([FromRoute]long merchantID)
         {
-            var merchant = await merchantsService.GetMerchants().FirstOrDefaultAsync(m => m.MerchantID == merchantID);
+            var merchant = await mapper.ProjectTo<MerchantResponse>(merchantsService.GetMerchants())
+                .FirstOrDefaultAsync(m => m.MerchantID == merchantID).EnsureExists();
 
-            if (merchant == null)
-                return NotFound(new OperationResponse($"Merchant {merchantID} not found", StatusEnum.Error));
-
-            //TODO: Automapper
-            return new JsonResult(new MerchantResponse { MerchantID = merchant.MerchantID, BusinessName = merchant.BusinessName }) { StatusCode = 200 };
+            return new JsonResult(merchant) { StatusCode = 200 };
         }
 
         [HttpGet]
@@ -61,15 +70,10 @@ namespace Merchants.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            //todo: Automapper
-            var entity = new Merchants.Business.Entities.Merchant.Merchant();
-            entity.BusinessName = merchant.BusinessName;
-            entity.Created = DateTime.UtcNow;
+            var newMerchant = mapper.Map<Merchant>(merchant);
+            await merchantsService.CreateEntity(newMerchant);
 
-            await merchantsService.CreateEntity(entity);
-            
-
-            return new JsonResult(new OperationResponse("ok", StatusEnum.Success, entity.MerchantID)) { StatusCode = 201 };
+            return new JsonResult(new OperationResponse("ok", StatusEnum.Success, newMerchant.MerchantID)) { StatusCode = 201 };
         }
 
         [HttpPut]

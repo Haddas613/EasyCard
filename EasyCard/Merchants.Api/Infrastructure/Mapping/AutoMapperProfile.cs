@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Merchants.Api.Models.Merchant;
 using Merchants.Api.Models.Terminal;
+using Merchants.Api.Models.User;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.Terminal;
 using System;
@@ -35,6 +36,11 @@ namespace Merchants.Api.Infrastructure.Mapping
         {
             CreateMap<Merchant, MerchantSummary>();
             CreateMap<Merchant, MerchantResponse>();
+            CreateMap<MerchantRequest, Merchant>()
+                .ForMember(m => m.Created, o => o.MapFrom((src, tgt) => tgt.Created = DateTime.UtcNow));
+            CreateMap<UpdateMerchantRequest, Merchant>();
         }
+
+        void RegisterUserMappings(){}
     }
 }
