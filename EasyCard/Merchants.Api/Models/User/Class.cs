@@ -10,5 +10,7 @@ namespace Merchants.Api.Models.User
         public long MerchantID { get; set; }
 
         public string InviteMessage { get; set; }
+
+        public string Email { get; set; }
     }
 }
