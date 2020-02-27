@@ -66,7 +66,7 @@ namespace Merchants.Api.Controllers
         {
             var user = await userManagementClient.GetUserByEmail(userEmail);
 
-            var opResult = await userManagementClient.LockUser(user.EntityReference);
+            var opResult = await userManagementClient.LockUser(user.UserID);
 
             return new JsonResult(new OperationResponse { Message = "ok", Status = StatusEnum.Success }) { StatusCode = 200 };
         }
@@ -78,7 +78,7 @@ namespace Merchants.Api.Controllers
         {
             var user = await userManagementClient.GetUserByEmail(userEmail);
 
-            var opResult = await userManagementClient.UnLockUser(user.EntityReference);
+            var opResult = await userManagementClient.UnLockUser(user.UserID);
 
             return new JsonResult(new OperationResponse { Message = "ok", Status = StatusEnum.Success }) { StatusCode = 200 };
         }
@@ -90,7 +90,7 @@ namespace Merchants.Api.Controllers
         {
             var user = await userManagementClient.GetUserByEmail(userEmail);
 
-            var opResult = await userManagementClient.ResetPassword(user.EntityReference);
+            var opResult = await userManagementClient.ResetPassword(user.UserID);
 
             return new JsonResult(new OperationResponse { Message = "ok", Status = StatusEnum.Success }) { StatusCode = 200 };
         }
