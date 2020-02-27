@@ -6,6 +6,10 @@ namespace Shva.Configuration
 {
     public class ShvaSettings
     {
-        public string BaseUrl { get; internal set; }
+        public string BaseUrl { get; set; }
+
+        public string UserName { get; set; }
+
+        public string Password { get; set; }
     }
 }

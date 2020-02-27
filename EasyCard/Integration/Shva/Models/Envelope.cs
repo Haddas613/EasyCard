@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShvaEMV;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
@@ -24,11 +25,8 @@ namespace Shva.Models
     [XmlRoot(ElementName = "Body", Namespace = "http://schemas.xmlsoap.org/soap/envelope/")]
     public class Body
     {
-        [XmlElement("GetNewToken", Type = typeof(GetNewTokenRequest), Namespace = "http://tempuri.org/")]
-        [XmlElement("GetNewTokenResponse", Type = typeof(GetNewTokenResponse), Namespace = "http://tempuri.org/")]
-
-        [XmlElement("DoDealWithToken", Type = typeof(ShvaPaymentTransactionRequest), Namespace = "http://tempuri.org/")]
-        [XmlElement("DoDealWithTokenResponse", Type = typeof(ShvaPaymentTransactionResponse), Namespace = "http://tempuri.org/")]
+        [XmlElement("AshStartResponse", Type = typeof(AshStartResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        [XmlElement("AshStart", Type = typeof(AshStartRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         public object Content { get; set; }
     }
 }

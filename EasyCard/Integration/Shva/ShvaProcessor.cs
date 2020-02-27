@@ -6,6 +6,7 @@ using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using Shva.Configuration;
 using Shva.Models;
+using ShvaEMV;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -34,22 +35,23 @@ namespace Shva
              correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
         {
             // TODO: implement mapping
-            var inValue = new ShvaPaymentTransactionRequest();
-            inValue.Amount = paymentTransactionRequest.Amount;
-            inValue.CreditCardNumber = paymentTransactionRequest.CreditCardNumber;
-            inValue.DealDescription = paymentTransactionRequest.DealDescription;
-            inValue.TerminalReference = paymentTransactionRequest.TerminalReference;
+            var inValue = new AshStartRequestBody();
+            inValue.UserName = configuration.UserName;
+            inValue.Password = configuration.Password;
+            inValue.MerchantNumber = paymentTransactionRequest.TerminalReference;
+            // TODO: other fields
+           
 
 
             var result = await this.DoRequest(inValue, "http://tempuri.org/GetNewToken", messageId, correlationId, handleIntegrationMessage);
 
-            var resultBody = (ShvaPaymentTransactionResponse)result?.Body?.Content;
+            var resultBody = (AshStartResponseBody)result?.Body?.Content;
 
             if (resultBody == null) return null;
 
             // TODO: implement mapping
             var res = new ExternalPaymentTransactionResponse();
-            res.TransactionReference = resultBody.TransactionReference;
+            res.TransactionReference = resultBody.pinpad.track2; // TODO: use right fields
 
             return res;
         }
