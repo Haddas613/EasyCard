@@ -42,7 +42,7 @@ namespace Merchants.Business.Data
 
             // security filters
 
-            modelBuilder.Entity<Merchant>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
+            //modelBuilder.Entity<Merchant>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
 
             base.OnModelCreating(modelBuilder);
         }

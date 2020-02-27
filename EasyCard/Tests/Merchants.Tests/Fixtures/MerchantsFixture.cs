@@ -1,4 +1,6 @@
-﻿using Merchants.Business.Data;
+﻿using AutoMapper;
+using Merchants.Api.Infrastructure.Mapping;
+using Merchants.Business.Data;
 using Merchants.Business.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,6 +14,7 @@ namespace Merchants.Tests.Fixtures
         public IMerchantsService MerchantsService { get; private set; }
         public ITerminalsService TerminalsService { get; private set; }
         public MerchantsContext MerchantsContext { get; private set; }
+        public IMapper Mapper { get; private set; }
 
         public MerchantsFixture()
         {
@@ -23,6 +26,10 @@ namespace Merchants.Tests.Fixtures
 
             MerchantsService = new MerchantsService(MerchantsContext);
             TerminalsService = new TerminalsService(MerchantsContext);
+
+            var myProfile = new AutoMapperProfile();
+            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
+            Mapper = new Mapper(configuration);
         }
 
         public void Dispose()

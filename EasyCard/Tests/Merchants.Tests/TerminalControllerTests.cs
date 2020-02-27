@@ -28,7 +28,7 @@ namespace MerchantsApi.Tests
         [Fact(DisplayName = "CreateTerminal: Creates when model is correct"), Order(1)]
         public async Task CreateTerminal_CreatesWhenModelIsCorrect()
         {
-            var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService);
+            var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper);
             var merchant = await merchantsFixture.MerchantsService.GetMerchants().FirstAsync();
             var terminalModel = new TerminalRequest { Label = Guid.NewGuid().ToString(), MerchantID = merchant.MerchantID };
             var actionResult = await controller.CreateTerminal(terminalModel);
@@ -52,10 +52,10 @@ namespace MerchantsApi.Tests
         [Fact(DisplayName = "UpdateTerminal: Updates when model is correct"), Order(2)]
         public async Task UpdateTerminal_UpdatesWhenModelIsCorrect()
         {
-            var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService);
+            var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper);
             var newName = Guid.NewGuid().ToString();
             var existingTerminal = await merchantsFixture.TerminalsService.GetTerminals().FirstOrDefaultAsync();
-            var terminalModel = new UpdateTerminalRequest {  Label = newName };
+            var terminalModel = new UpdateTerminalRequest { Label = newName };
             var actionResult = await controller.UpdateTerminal(existingTerminal.TerminalID, terminalModel);
 
             var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
@@ -76,7 +76,7 @@ namespace MerchantsApi.Tests
         [Fact(DisplayName = "GetTerminals: Returns collection of Terminals"), Order(3)]
         public async Task GetTerminals_ReturnsCollectionOfTerminals()
         {
-            var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService);
+            var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper);
             var filter = new TerminalsFilter();
             var actionResult = await controller.GetTerminals(filter);
 
@@ -91,7 +91,7 @@ namespace MerchantsApi.Tests
         [Fact(DisplayName = "GetTerminals: Filters collection of Terminals"), Order(4)]
         public async Task GetTerminals_FiltersAndReturnsCollectionOfTerminals()
         {
-            var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService);
+            var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper);
             var filter = new TerminalsFilter { Label = Guid.NewGuid().ToString() }; //assumed unique non-taken name
             var actionResult = await controller.GetTerminals(filter);
 
@@ -120,7 +120,7 @@ namespace MerchantsApi.Tests
         //TODO: move to tests: common
         private async Task<MerchantResponse> GetMerchant(long merchantID)
         {
-            var controller = new MerchantApiController(merchantsFixture.MerchantsService);
+            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
 
             var actionResult = await controller.GetMerchant(merchantID);
 
@@ -132,7 +132,7 @@ namespace MerchantsApi.Tests
 
         private async Task<TerminalResponse> GetTerminal(long terminalID)
         {
-            var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService);
+            var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper);
 
             var actionResult = await controller.GetTerminal(terminalID);
 
