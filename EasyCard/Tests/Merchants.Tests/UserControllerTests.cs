@@ -124,6 +124,7 @@ namespace MerchantsApi.Tests
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
+            Assert.NotNull(linkedTerminal);
             clientMockSetup.MockObj.Verify(m => m.GetUserByID(clientMockSetup.UserEntityId), Times.Once);
         }
 
@@ -148,6 +149,8 @@ namespace MerchantsApi.Tests
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
+            Assert.Null(linkedTerminal);
+            clientMockSetup.MockObj.Verify(m => m.GetUserByID(terminal.UserID), Times.Once);
         }
 
     }
