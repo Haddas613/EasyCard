@@ -43,7 +43,7 @@ namespace Shva
            
 
 
-            var result = await this.DoRequest(inValue, "http://tempuri.org/GetNewToken", messageId, correlationId, handleIntegrationMessage);
+            var result = await this.DoRequest(inValue, "http://shva.co.il/xmlwebservices/AshStart", messageId, correlationId, handleIntegrationMessage);
 
             var resultBody = (AshStartResponseBody)result?.Body?.Content;
 
