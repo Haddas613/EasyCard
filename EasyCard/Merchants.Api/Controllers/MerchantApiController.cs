@@ -35,9 +35,7 @@ namespace Merchants.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SummariesResponse<MerchantSummary>))]
         public async Task<IActionResult> GetMerchants([FromQuery]MerchantsFilter filter)
         {
-            var query = merchantsService.GetMerchants();//.Filter(filter);
-
-            var q = query.ToSql();
+            var query = merchantsService.GetMerchants().Filter(filter);
 
             var response = new SummariesResponse<MerchantSummary> { NumberOfRecords = await query.CountAsync() };
 
@@ -69,9 +67,6 @@ namespace Merchants.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<IActionResult> CreateMerchant([FromBody]MerchantRequest merchant)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var newMerchant = mapper.Map<Merchant>(merchant);
             await merchantsService.CreateEntity(newMerchant);
 
@@ -81,9 +76,15 @@ namespace Merchants.Api.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         [Route("{merchantID}")]
-        public async Task<IActionResult> UpdateMerchant([FromRoute]long merchantID, [FromBody]UpdateMerchantRequest merchant)
+        public async Task<IActionResult> UpdateMerchant([FromRoute]long merchantID, [FromBody]UpdateMerchantRequest model)
         {
-            throw new NotImplementedException();
+            var merchant = await merchantsService.GetMerchants().FirstOrDefaultAsync(d => d.MerchantID == merchantID).EnsureExists();
+
+            mapper.Map(model, merchant);
+
+            await merchantsService.UpdateEntity(merchant);
+
+            return new JsonResult(new OperationResponse("ok", StatusEnum.Success, merchantID)) { StatusCode = 201 };
         }
 
     }

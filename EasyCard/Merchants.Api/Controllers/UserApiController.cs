@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using IdentityServerClient;
 using Merchants.Api.Models.User;
+using Merchants.Business.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Business.Extensions;
 
 namespace Merchants.Api.Controllers
 {
@@ -17,10 +20,14 @@ namespace Merchants.Api.Controllers
     public class UserApiController : ControllerBase
     {
         private readonly IUserManagementClient userManagementClient;
+        private readonly IMapper mapper;
+        private readonly ITerminalsService terminalsService;
 
-        public UserApiController(IUserManagementClient userManagementClient)
+        public UserApiController(ITerminalsService terminalsService, IUserManagementClient userManagementClient, IMapper mapper)
         {
             this.userManagementClient = userManagementClient;
+            this.terminalsService = terminalsService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -28,7 +35,9 @@ namespace Merchants.Api.Controllers
         [Route("{userID}")]
         public async Task<IActionResult> GetUser([FromRoute]string userID)
         {
-            throw new NotImplementedException();
+            var userData = mapper.Map<UserResponse>(await userManagementClient.GetUserByID(userID).EnsureExists());
+
+            return new JsonResult(userData) { StatusCode = 200 };
         }
 
         /// <summary>
@@ -40,12 +49,14 @@ namespace Merchants.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<IActionResult> CreateUser([FromBody]UserRequest user)
         {
-            throw new NotImplementedException();
+            var opResult = await userManagementClient.CreateUser(mapper.Map<CreateUserRequestModel>(user));
+            return new JsonResult(new OperationResponse("ok", StatusEnum.Success, opResult.EntityReference)) { StatusCode = 201 };
         }
 
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
-        [Route("{userID}")]
+        [Route("{userEmail}")]
+        [Obsolete("Candidate for removal")]
         public async Task<IActionResult> UpdateUser([FromRoute]string userEmail, [FromBody]UpdateUserRequest user)
         {
             throw new NotImplementedException();
@@ -53,8 +64,8 @@ namespace Merchants.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
-        [Route("{userID}/invite")]
-        public async Task<IActionResult> InviteUser([FromRoute]string userEmail, [FromBody]InviteUserRequest user)
+        [Route("invite")]
+        public async Task<IActionResult> InviteUser([FromBody]InviteUserRequest user)
         {
             throw new NotImplementedException();
         }
@@ -62,11 +73,9 @@ namespace Merchants.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userID}/lock")]
-        public async Task<IActionResult> LockUser([FromRoute]string userEmail)
+        public async Task<IActionResult> LockUser([FromRoute]string userID)
         {
-            var user = await userManagementClient.GetUserByEmail(userEmail);
-
-            var opResult = await userManagementClient.LockUser(user.EntityReference);
+            var opResult = await userManagementClient.LockUser(userID);
 
             return new JsonResult(new OperationResponse { Message = "ok", Status = StatusEnum.Success }) { StatusCode = 200 };
         }
@@ -74,11 +83,9 @@ namespace Merchants.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userID}/unlock")]
-        public async Task<IActionResult> UnLockUser([FromRoute]string userEmail)
-        {
-            var user = await userManagementClient.GetUserByEmail(userEmail);
-
-            var opResult = await userManagementClient.UnLockUser(user.EntityReference);
+        public async Task<IActionResult> UnLockUser([FromRoute]string userID)
+        { 
+            var opResult = await userManagementClient.UnLockUser(userID);
 
             return new JsonResult(new OperationResponse { Message = "ok", Status = StatusEnum.Success }) { StatusCode = 200 };
         }
@@ -86,11 +93,9 @@ namespace Merchants.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userID}/resetPassword")]
-        public async Task<IActionResult> ResetPasswordForUser([FromRoute]string userEmail)
+        public async Task<IActionResult> ResetPasswordForUser([FromRoute]string userID)
         {
-            var user = await userManagementClient.GetUserByEmail(userEmail);
-
-            var opResult = await userManagementClient.ResetPassword(user.EntityReference);
+            var opResult = await userManagementClient.ResetPassword(userID);
 
             return new JsonResult(new OperationResponse { Message = "ok", Status = StatusEnum.Success }) { StatusCode = 200 };
         }
@@ -98,26 +103,27 @@ namespace Merchants.Api.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userID}/linkToTerminal/{terminalID}")]
-        public async Task<IActionResult> LinkUserToTerminal([FromRoute]string userEmail, [FromRoute]long terminalID)
+        public async Task<IActionResult> LinkUserToTerminal([FromRoute]string userID, [FromRoute]long terminalID)
         {
-            throw new NotImplementedException();
+            //Check if user exists
+            var userData = mapper.Map<UserResponse>(await userManagementClient.GetUserByID(userID).EnsureExists());
+
+            await terminalsService.LinkUserToTerminal(userID, terminalID);
+
+            return new JsonResult(new OperationResponse { Message = "ok", Status = StatusEnum.Success }) { StatusCode = 200 };
         }
 
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userID}/unlinkFromTerminal/{terminalID}")]
-        public async Task<IActionResult> UnlinkUserFromTerminal([FromRoute]string userEmail, [FromRoute]long terminalID)
+        public async Task<IActionResult> UnlinkUserFromTerminal([FromRoute]string userID, [FromRoute]long terminalID)
         {
-            throw new NotImplementedException();
-        }
+            //Check if user exists
+            var userData = mapper.Map<UserResponse>(await userManagementClient.GetUserByID(userID).EnsureExists());
 
-        [HttpDelete]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
-        [Route("{userID}/unlinkFromMerchant/{terminalID}")]
-        [Obsolete("Users will be linked to merchant by terminals")]
-        public async Task<IActionResult> UnlinkUserFromMerchant([FromRoute]string userEmail, [FromRoute]long merchantID)
-        {
-            throw new NotImplementedException();
+            await terminalsService.UnLinkUserFromTerminal(userID, terminalID);
+
+            return new JsonResult(new OperationResponse { Message = "ok", Status = StatusEnum.Success }) { StatusCode = 200 };
         }
     }
 }

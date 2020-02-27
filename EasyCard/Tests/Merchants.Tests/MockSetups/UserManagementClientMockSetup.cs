@@ -30,11 +30,11 @@ namespace Merchants.Tests.MockSetups
         private void Setup()
         {
             MockObj.Setup(m => m.GetUserByEmail(UserEmail))
-                .Returns(Task.FromResult(new UserOperationResponse { EntityReference = UserEntityId }))
+                .Returns(Task.FromResult(new UserProfileDataResponse { UserID = UserEntityId, Email = UserEmail }))
                 .Verifiable();
 
             MockObj.Setup(m => m.GetUserByEmail(It.IsNotIn(new string[] { UserEmail })))
-                .Returns(Task.FromResult<UserOperationResponse>(null))
+                .Returns(Task.FromResult<UserProfileDataResponse>(null))
                 .Verifiable();
 
             MockObj.Setup(m => m.CreateUser(It.IsAny<CreateUserRequestModel>()))

@@ -35,7 +35,7 @@ namespace Merchants.Api.Models.Terminal
 
         public IEnumerable<ExternalSystemDetails> Integrations { get; set; }
 
-        public IEnumerable<Feature> EnabledFeatures { get; set; }
+        public IEnumerable<FeatureResponse> EnabledFeatures { get; set; }
 
         // TODO: move settings to TerminalSettings class
 

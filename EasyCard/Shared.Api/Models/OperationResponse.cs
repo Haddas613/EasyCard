@@ -18,6 +18,13 @@ namespace Shared.Api.Models
             EntityID = entityId;
         }
 
+        public OperationResponse(string message, StatusEnum status, string entityReference = null)
+        {
+            Message = message;
+            Status = status;
+            EntityReference = entityReference;
+        }
+
         public string Message { get; set; }
 
         [EnumDataType(typeof(StatusEnum))]

@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using IdentityServerClient;
+using Merchants.Api.Models;
 using Merchants.Api.Models.Merchant;
 using Merchants.Api.Models.Terminal;
 using Merchants.Api.Models.User;
+using Merchants.Business.Entities.Integration;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.Terminal;
 using System;
@@ -16,6 +19,7 @@ namespace Merchants.Api.Infrastructure.Mapping
         {
             RegisterMerchantMappings();
             RegisterTerminalMappings();
+            RegisterUserMappings();
         }
 
         void RegisterTerminalMappings()
@@ -30,6 +34,8 @@ namespace Merchants.Api.Infrastructure.Mapping
                  .ForPath(m => m.BillingSettings.BillingNotificationsEmails, o => o.MapFrom((src) => 
                     src.BillingSettings.BillingNotificationsEmails.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries)));
             CreateMap<Terminal, TerminalSummary>();
+            CreateMap<ExternalSystem, ExternalSystemSummary>();
+            CreateMap<TerminalExternalSystem, ExternalSystemDetails>();
         }
 
         void RegisterMerchantMappings()
@@ -39,8 +45,13 @@ namespace Merchants.Api.Infrastructure.Mapping
             CreateMap<MerchantRequest, Merchant>()
                 .ForMember(m => m.Created, o => o.MapFrom((src, tgt) => tgt.Created = DateTime.UtcNow));
             CreateMap<UpdateMerchantRequest, Merchant>();
+            CreateMap<Feature, FeatureResponse>();
         }
 
-        void RegisterUserMappings(){}
+        void RegisterUserMappings()
+        {
+            CreateMap<UserProfileDataResponse, UserResponse>();
+            CreateMap<UserRequest, CreateUserRequestModel>();
+        }
     }
 }

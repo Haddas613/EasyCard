@@ -75,11 +75,11 @@ namespace Merchants.Api.Controllers
         {
             var terminal = await terminalsService.GetTerminals().FirstOrDefaultAsync(d => d.TerminalID == terminalID).EnsureExists();
 
-            var newTerminal = mapper.Map<Terminal>(terminal);
+            mapper.Map(model, terminal);
 
-            await terminalsService.UpdateEntity(newTerminal);
+            await terminalsService.UpdateEntity(terminal);
 
-            return new JsonResult(new OperationResponse("ok", StatusEnum.Success, newTerminal.TerminalID)) { StatusCode = 201 };
+            return new JsonResult(new OperationResponse("ok", StatusEnum.Success, terminalID)) { StatusCode = 201 };
         }
     }
 }

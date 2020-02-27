@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Merchants.Api.Models
 {
-    public class Feature
+    public class FeatureResponse
     {
         //Enabe REST API(will be payed) - and regenerate key
 
