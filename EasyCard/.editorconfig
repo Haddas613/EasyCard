@@ -36,3 +36,6 @@ dotnet_diagnostic.SA1616.severity = none
 
 # SA1512: Single-line comments should not be followed by blank line
 dotnet_diagnostic.SA1512.severity = none
+
+# SA1602: Enumeration items should be documented
+dotnet_diagnostic.SA1602.severity = none

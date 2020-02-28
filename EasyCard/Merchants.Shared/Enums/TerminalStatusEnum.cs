@@ -8,6 +8,6 @@ namespace Merchants.Shared.Enums
     {
         PendingApproval = 0,
         Approved = 1,
-        Disabled = -1
+        Disabled = -1,
     }
 }

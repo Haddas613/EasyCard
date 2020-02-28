@@ -9,6 +9,6 @@ namespace Merchants.Shared.Enums
         Processor,
         Aggregator,
         Invoicing,
-        Marketer
+        Marketer,
     }
 }
