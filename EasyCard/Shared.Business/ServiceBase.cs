@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Shared.Business
 {
-    public class ServiceBase<T> where T : class, IEntityBase
+    public class ServiceBase<T>
+        where T : class, IEntityBase
     {
-        readonly DbContext dbContext;
-        readonly DbSet<T> entities;
+        private readonly DbContext dbContext;
+        private readonly DbSet<T> entities;
 
         public ServiceBase(DbContext context)
         {
@@ -28,7 +29,6 @@ namespace Shared.Business
 
         public async Task CreateEntity(T entity, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction dbTransaction = null)
         {
-
             entities.Add(entity);
 
             await dbContext.SaveChangesAsync();

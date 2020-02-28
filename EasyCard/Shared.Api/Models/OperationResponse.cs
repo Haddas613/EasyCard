@@ -10,8 +10,11 @@ namespace Shared.Api.Models
 {
     public class OperationResponse
     {
-        public OperationResponse() { }
-        public OperationResponse(string message, StatusEnum status, long? entityId = null) 
+        public OperationResponse()
+        {
+        }
+
+        public OperationResponse(string message, StatusEnum status, long? entityId = null)
         {
             Message = message;
             Status = status;

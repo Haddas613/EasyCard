@@ -23,8 +23,13 @@ namespace Shared.Integration
 
         public DateTime MessageDate
         {
-            get { return messageDate; }
-            set { messageDate = value; this.PartitionKey = this.messageDate.ToString("yy-MM-dd"); }
+            get => messageDate;
+
+            set
+            {
+                messageDate = value;
+                this.PartitionKey = this.messageDate.ToString("yy-MM-dd");
+            }
         }
 
         public string Request { get; set; }
@@ -40,6 +45,9 @@ namespace Shared.Integration
         public long? MerchantID { get; set; }
 
         [IgnoreProperty]
-        public string MessageId { get { return this.RowKey; } set { this.RowKey = value; } }
+        public string MessageId
+        {
+            get { return this.RowKey; } set { this.RowKey = value; }
+        }
     }
 }

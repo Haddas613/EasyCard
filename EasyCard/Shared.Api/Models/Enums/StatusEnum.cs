@@ -23,6 +23,6 @@ namespace Shared.Api.Models.Enums
         /// Enum ErrorEnum for "error"
         /// </summary>
         [EnumMember(Value = "error")]
-        Error = -1
+        Error = -1,
     }
 }

@@ -10,7 +10,6 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace Shared.Helpers
 {
     public class WebApiClient : IWebApiClient, IDisposable
@@ -36,7 +35,6 @@ namespace Shared.Helpers
                 httpClient = null;
             }
         }
-
 
         public async Task<T> Get<T>(string enpoint, string actionPath, object querystr = null, Func<Task<NameValueCollection>> getHeaders = null)
         {
@@ -144,7 +142,7 @@ namespace Shared.Helpers
 
         public async Task<T> PostXml<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
             ProcessRequest onRequest = null, ProcessResponse onResponse = null
-            ) 
+            )
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
@@ -218,8 +216,7 @@ namespace Shared.Helpers
             }
         }
 
-
-        public async Task<string> PostRawForm(string enpoint, string actionPath, IDictionary<string,string> payload, Func<Task<NameValueCollection>> getHeaders = null,
+        public async Task<string> PostRawForm(string enpoint, string actionPath, IDictionary<string, string> payload, Func<Task<NameValueCollection>> getHeaders = null,
             ProcessRequest onRequest = null, ProcessResponse onResponse = null
             )
         {
@@ -285,7 +282,7 @@ namespace Shared.Helpers
                 return JsonConvert.DeserializeObject<T>(data);
             }
 
-            throw new ApplicationException($"Failed PUT to {url}: {response.StatusCode}");          
+            throw new ApplicationException($"Failed PUT to {url}: {response.StatusCode}");
         }
     }
 }

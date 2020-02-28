@@ -31,6 +31,7 @@ namespace Merchants.Business.Entities.Terminal
         public TerminalStatusEnum Status { get; set; }
 
         public DateTime? ActivityStartDate { get; set; }
+
         public DateTime? Created { get; set; }
 
         public TerminalSettings Settings { get; set; }

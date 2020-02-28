@@ -7,6 +7,7 @@ namespace Shared.Api.Models
     public class FilterBase
     {
         public int? Take { get; set; }
+
         public int? Skip { get; set; }
     }
 }

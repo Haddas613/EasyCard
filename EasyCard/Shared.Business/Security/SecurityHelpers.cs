@@ -5,7 +5,6 @@ using System.Security.Claims;
 
 namespace Shared.Business.Security
 {
-
     public static class SecurityHelpers
     {
         public const string MerchantIDClaim = "extension_MerchantID";
@@ -17,10 +16,9 @@ namespace Shared.Business.Security
         public const string UserIdClaim = ClaimTypes.NameIdentifier;
         public const string SubjClaim = JwtClaimTypes.Subject;
 
-
         public static bool IsAdmin(this ClaimsPrincipal user)
         {
-            return user.HasClaim("scope", "admin_api") 
+            return user.HasClaim("scope", "admin_api")
                    && (user?.IsInRole(Roles.BillingAdministrator) == true || user?.IsInRole(Roles.BusinessAdministrator) == true);
         }
 
@@ -31,8 +29,8 @@ namespace Shared.Business.Security
 
         public static bool IsImpersonatedAdmin(this ClaimsPrincipal user)
         {
-            return user.HasClaim("scope", "merchant_api") && (
-                (user?.IsInRole(Roles.BillingAdministrator) == true || user?.IsInRole(Roles.BusinessAdministrator) == true));
+            return user.HasClaim("scope", "merchant_api") &&
+                (user?.IsInRole(Roles.BillingAdministrator) == true || user?.IsInRole(Roles.BusinessAdministrator) == true);
         }
 
         public static bool IsBillingAdmin(this ClaimsPrincipal user)
@@ -49,7 +47,10 @@ namespace Shared.Business.Security
         public static long? GetMerchantID(this ClaimsPrincipal user)
         {
             var merchantID = user?.FindFirst(MerchantIDClaim)?.Value;
-            if (string.IsNullOrWhiteSpace(merchantID)) return null;
+            if (string.IsNullOrWhiteSpace(merchantID))
+            {
+                return null;
+            }
 
             return Convert.ToInt64(merchantID);
         }
@@ -69,7 +70,10 @@ namespace Shared.Business.Security
         {
             var userId = user?.FindFirst(UserIdClaim)?.Value;
 
-            if (userId == null) userId = user?.FindFirst(SubjClaim)?.Value;
+            if (userId == null)
+            {
+                userId = user?.FindFirst(SubjClaim)?.Value;
+            }
 
             return userId;
         }
