@@ -50,7 +50,7 @@ namespace Merchants.Api.Controllers
         {
             var terminal = await mapper.ProjectTo<TerminalResponse>(terminalsService.GetTerminals())
                 .FirstOrDefaultAsync(m => m.TerminalID == terminalID).EnsureExists();
-            
+
             return new JsonResult(terminal) { StatusCode = 200 };
         }
 
@@ -65,7 +65,6 @@ namespace Merchants.Api.Controllers
             await terminalsService.CreateEntity(newTerminal);
 
             return new JsonResult(new OperationResponse("ok", StatusEnum.Success, newTerminal.TerminalID)) { StatusCode = 201 };
-
         }
 
         [HttpPut]

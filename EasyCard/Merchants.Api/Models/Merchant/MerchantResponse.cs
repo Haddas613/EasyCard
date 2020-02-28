@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Merchants.Api.Models.Merchant
 {
-    public class MerchantResponse: MerchantBase
+    public class MerchantResponse : MerchantBase
     {
         public IEnumerable<TerminalSummary> Terminals { get; set; }
 

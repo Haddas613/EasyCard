@@ -11,7 +11,9 @@ namespace Merchants.Api.Extensions.Filtering
         public static IQueryable<Merchant> Filter(this IQueryable<Merchant> src, MerchantsFilter filter)
         {
             if (!string.IsNullOrWhiteSpace(filter.BusinessName))
+            {
                 src = src.Where(t => EF.Functions.Like(t.BusinessName, filter.BusinessName.UseWildCard(true)));
+            }
 
             return src;
         }

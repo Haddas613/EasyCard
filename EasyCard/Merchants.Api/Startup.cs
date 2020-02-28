@@ -40,7 +40,6 @@ namespace MerchantsApi
                     Version = "v1",
                     Title = "Merchants API",
                 });
-               
 
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -66,7 +65,6 @@ namespace MerchantsApi
             app.UseStaticFiles();
 
             app.UseHttpsRedirection();
-
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();

@@ -15,30 +15,30 @@ namespace Merchants.Api.Infrastructure.Mapping
     {
         public AutoMapperProfile() => RegisterMappings();
 
-        void RegisterMappings()
+        internal void RegisterMappings()
         {
             RegisterMerchantMappings();
             RegisterTerminalMappings();
             RegisterUserMappings();
         }
 
-        void RegisterTerminalMappings()
+        internal void RegisterTerminalMappings()
         {
             CreateMap<TerminalRequest, Terminal>()
                 .ForMember(m => m.Created, o => o.MapFrom((src, tgt) => tgt.Created = DateTime.UtcNow));
             CreateMap<UpdateTerminalRequest, Terminal>();
-            
+
             CreateMap<TerminalSettings, TerminalResponseSettings>();
             CreateMap<TerminalBillingSettings, TerminalResponseBillingSettings>();
             CreateMap<Terminal, TerminalResponse>()
-                 .ForPath(m => m.BillingSettings.BillingNotificationsEmails, o => o.MapFrom((src) => 
+                 .ForPath(m => m.BillingSettings.BillingNotificationsEmails, o => o.MapFrom((src) =>
                     src.BillingSettings.BillingNotificationsEmails.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries)));
             CreateMap<Terminal, TerminalSummary>();
             CreateMap<ExternalSystem, ExternalSystemSummary>();
             CreateMap<TerminalExternalSystem, ExternalSystemDetails>();
         }
 
-        void RegisterMerchantMappings()
+        internal void RegisterMerchantMappings()
         {
             CreateMap<Merchant, MerchantSummary>();
             CreateMap<Merchant, MerchantResponse>();
@@ -48,7 +48,7 @@ namespace Merchants.Api.Infrastructure.Mapping
             CreateMap<Feature, FeatureResponse>();
         }
 
-        void RegisterUserMappings()
+        internal void RegisterUserMappings()
         {
             CreateMap<UserProfileDataResponse, UserResponse>();
             CreateMap<UserRequest, CreateUserRequestModel>();

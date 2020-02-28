@@ -84,7 +84,7 @@ namespace Merchants.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userID}/unlock")]
         public async Task<IActionResult> UnLockUser([FromRoute]string userID)
-        { 
+        {
             var opResult = await userManagementClient.UnLockUser(userID);
 
             return new JsonResult(new OperationResponse { Message = "ok", Status = StatusEnum.Success }) { StatusCode = 200 };

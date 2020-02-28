@@ -86,6 +86,5 @@ namespace Merchants.Api.Controllers
 
             return new JsonResult(new OperationResponse("ok", StatusEnum.Success, merchantID)) { StatusCode = 201 };
         }
-
     }
 }
