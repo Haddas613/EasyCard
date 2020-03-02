@@ -16,6 +16,7 @@ namespace Merchants.Tests.MockSetups
         /// This user is always present in the list (unless deleted) and can be used as reference for tests
         /// </summary>
         public readonly string UserEntityId = Guid.NewGuid().ToString();
+
         /// <summary>
         /// This user is always present in the list (unless deleted) and can be used as reference for tests
         /// </summary>
