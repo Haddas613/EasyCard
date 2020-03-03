@@ -24,7 +24,7 @@ namespace Merchants.Business.Migrations
                     TerminalID = table.Column<long>(nullable: false),
                     OperationDate = table.Column<DateTime>(nullable: false),
                     OperationDoneBy = table.Column<string>(maxLength: 50, nullable: true),
-                    OperationDoneByID = table.Column<string>(unicode: false, maxLength: 50, nullable: true)
+                    OperationDoneByID = table.Column<string>(unicode: false, maxLength: 50, nullable: true),
                 },
                 constraints: table =>
                 {
@@ -71,7 +71,7 @@ namespace Merchants.Business.Migrations
                     OperationDoneBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OperationDoneByID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TerminalID = table.Column<long>(type: "bigint", nullable: false),
-                    UserID = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                 },
                 constraints: table =>
                 {

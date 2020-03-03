@@ -7,6 +7,7 @@ namespace IdentityServerClient
     public class UserProfileDataResponse
     {
         public string UserID { get; set; }
+
         public string DisplayName { get; set; }
 
         public string Email { get; set; }

@@ -8,7 +8,8 @@ namespace Shared.Integration.Exceptions
     {
         public string MessageId { get; }
 
-        public IntegrationException(string message, string messageId) : base(message)
+        public IntegrationException(string message, string messageId)
+            : base(message)
         {
             this.MessageId = messageId;
         }

@@ -16,7 +16,7 @@ namespace Merchants.Business.Migrations
                     Type = table.Column<int>(nullable: false),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     Settings = table.Column<string>(nullable: false),
-                    UpdateTimestamp = table.Column<byte[]>(rowVersion: true, nullable: true)
+                    UpdateTimestamp = table.Column<byte[]>(rowVersion: true, nullable: true),
                 },
                 constraints: table =>
                 {
@@ -35,7 +35,7 @@ namespace Merchants.Business.Migrations
                     BusinessID = table.Column<string>(nullable: true),
                     ContactPerson = table.Column<string>(maxLength: 50, nullable: true),
                     Users = table.Column<string>(unicode: false, nullable: true),
-                    Created = table.Column<DateTime>(nullable: true)
+                    Created = table.Column<DateTime>(nullable: true),
                 },
                 constraints: table =>
                 {
@@ -64,7 +64,7 @@ namespace Merchants.Business.Migrations
                     Settings_NationalIDRequired = table.Column<bool>(nullable: true, defaultValue: false),
                     Settings_CvvRequired = table.Column<bool>(nullable: true, defaultValue: false),
                     BillingSettings_BillingNotificationsEmails = table.Column<string>(nullable: true),
-                    Users = table.Column<string>(unicode: false, nullable: true)
+                    Users = table.Column<string>(unicode: false, nullable: true),
                 },
                 constraints: table =>
                 {
@@ -88,7 +88,7 @@ namespace Merchants.Business.Migrations
                     Price = table.Column<decimal>(type: "decimal(19,4)", nullable: true, defaultValue: 0m),
                     FeatureCode = table.Column<string>(maxLength: 50, nullable: false),
                     UpdateTimestamp = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    TerminalID = table.Column<long>(nullable: true)
+                    TerminalID = table.Column<long>(nullable: true),
                 },
                 constraints: table =>
                 {
@@ -112,7 +112,7 @@ namespace Merchants.Business.Migrations
                     ExternalProcessorReference = table.Column<string>(unicode: false, maxLength: 50, nullable: true),
                     Settings = table.Column<string>(nullable: true),
                     UpdateTimestamp = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    Created = table.Column<DateTime>(nullable: true)
+                    Created = table.Column<DateTime>(nullable: true),
                 },
                 constraints: table =>
                 {
@@ -140,7 +140,7 @@ namespace Merchants.Business.Migrations
                     TerminalID = table.Column<long>(nullable: false),
                     OperationDate = table.Column<DateTime>(nullable: false),
                     OperationDoneBy = table.Column<string>(nullable: true),
-                    OperationDoneByID = table.Column<string>(nullable: true)
+                    OperationDoneByID = table.Column<string>(nullable: true),
                 },
                 constraints: table =>
                 {

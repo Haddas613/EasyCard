@@ -8,10 +8,14 @@ using System.Text;
 
 namespace Shared.Api.Models
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class OperationResponse
     {
-        public OperationResponse() { }
-        public OperationResponse(string message, StatusEnum status, long? entityId = null) 
+        public OperationResponse()
+        {
+        }
+
+        public OperationResponse(string message, StatusEnum status, long? entityId = null)
         {
             Message = message;
             Status = status;
@@ -33,6 +37,7 @@ namespace Shared.Api.Models
 
         public long? EntityID { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string EntityReference { get; set; }
 
         public string CorrelationId { get; internal set; }

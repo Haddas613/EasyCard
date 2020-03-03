@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 
-
 namespace Merchants.Business.Entities.User
 {
     public class UserTerminalMapping

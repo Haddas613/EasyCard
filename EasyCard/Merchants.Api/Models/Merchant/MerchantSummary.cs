@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 
 namespace Merchants.Api.Models.Merchant
 {
-    public class MerchantSummary: MerchantBase
+    public class MerchantSummary : MerchantBase
     {
-
     }
 }

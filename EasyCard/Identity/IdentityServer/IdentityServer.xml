@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>IdentityServer</name>
+    </assembly>
+    <members>
+        <member name="M:IdentityServer.Controllers.AccountController.Login(System.String)">
+            <summary>
+            Entry point into the login workflow
+            </summary>
+        </member>
+        <member name="M:IdentityServer.Controllers.AccountController.Login(IdentityServer.Models.LoginInputModel,System.String)">
+            <summary>
+            Handle postback from username/password login
+            </summary>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:IdentityServer.Controllers.AccountController.Logout(System.String)">
+            <summary>
+            Show logout page
+            </summary>
+        </member>
+        <member name="M:IdentityServer.Controllers.AccountController.Logout(IdentityServer.Models.LogoutInputModel)">
+            <summary>
+            Handle logout page postback
+            </summary>
+        </member>
+        <member name="M:IdentityServer.Controllers.UserManagementApiController.GetUser(System.String)">
+            <summary>
+            Get User
+            </summary>
+            <param name="userId"></param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> representing the result of the asynchronous operation.</returns>
+        </member>
+        <member name="M:IdentityServer.Controllers.UserManagementApiController.CreateUser(IdentityServerClient.CreateUserRequestModel)">
+            <summary>
+            Create user
+            </summary>
+            <param name="model">Create User Request</param>
+            <returns>Operation Response</returns>
+        </member>
+        <member name="M:IdentityServer.Helpers.Extensions.IsPkceClientAsync(IdentityServer4.Stores.IClientStore,System.String)">
+            <summary>
+            Determines whether the client is configured to use PKCE.
+            </summary>
+            <param name="store">The store.</param>
+            <param name="client_id">The client identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="T:IdentityServer.Messages.IdentityMessages">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Messages.IdentityMessages.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Messages.IdentityMessages.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Messages.IdentityMessages.ConfirmAccount">
+            <summary>
+              Looks up a localized string similar to Please confirm your account.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Messages.IdentityMessages.ForgotPasswordInvalidEmail">
+            <summary>
+              Looks up a localized string similar to Please check your email to reset your password.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Messages.IdentityMessages.ForgotPasswordPasswordReseted">
+            <summary>
+              Looks up a localized string similar to Password reset link has been sent on your email.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Messages.IdentityMessages.ResetPassword">
+            <summary>
+              Looks up a localized string similar to Please set new password.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Messages.IdentityMessages.TwoFactorAuth">
+            <summary>
+              Looks up a localized string similar to Two Factor Authentication Code.
+            </summary>
+        </member>
+    </members>
+</doc>

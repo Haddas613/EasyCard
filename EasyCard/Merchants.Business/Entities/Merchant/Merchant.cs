@@ -28,6 +28,7 @@ namespace Merchants.Business.Entities.Merchant
         //public ICollection<Merchants.Business.Entities.Terminal.Terminal> Terminals { get; set; }
 
         public string Users { get; set; }
+
         public DateTime? Created { get; set; }
 
         public long GetID()

@@ -29,7 +29,7 @@ namespace Shared.Api
                 // TODO: log errors
                 //_logger.LogError(ex, $"Exception {correlationId}: {ex.Message}");
 
-                if(ex is EntityNotFoundException)
+                if (ex is EntityNotFoundException)
                 {
                     //TODO: log details
                     var enfeEx = (EntityNotFoundException)ex;

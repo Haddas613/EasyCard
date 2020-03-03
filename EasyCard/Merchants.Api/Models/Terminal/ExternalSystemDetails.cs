@@ -22,8 +22,5 @@ namespace Merchants.Api.Models.Terminal
         public string ExternalProcessorReference { get; set; }
 
         //public JObject Configuration { get; set; }
-
-        //
-
     }
 }

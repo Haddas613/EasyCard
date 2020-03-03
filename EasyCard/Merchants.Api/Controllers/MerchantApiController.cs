@@ -7,6 +7,7 @@ using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.Merchant;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Services;
+using Merchants.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ using Shared.Business.Extensions;
 namespace Merchants.Api.Controllers
 {
     [Produces("application/json")]
+    [Consumes("application/json")]
     [Route("api/merchant")]
     [ApiController]
     public class MerchantApiController : ApiControllerBase
@@ -32,8 +34,7 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SummariesResponse<MerchantSummary>))]
-        public async Task<IActionResult> GetMerchants([FromQuery]MerchantsFilter filter)
+        public async Task<ActionResult<SummariesResponse<MerchantSummary>>> GetMerchants([FromQuery]MerchantsFilter filter)
         {
             var query = merchantsService.GetMerchants().Filter(filter);
 
@@ -41,22 +42,20 @@ namespace Merchants.Api.Controllers
 
             response.Data = await mapper.ProjectTo<MerchantSummary>(query.ApplyPagination(filter)).ToListAsync();
 
-            return new JsonResult(response) { StatusCode = 200 };
+            return Ok(response);
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MerchantResponse))]
         [Route("{merchantID}")]
-        public async Task<IActionResult> GetMerchant([FromRoute]long merchantID)
+        public async Task<ActionResult<MerchantResponse>> GetMerchant([FromRoute]long merchantID)
         {
             var merchant = await mapper.ProjectTo<MerchantResponse>(merchantsService.GetMerchants())
                 .FirstOrDefaultAsync(m => m.MerchantID == merchantID).EnsureExists();
 
-            return new JsonResult(merchant) { StatusCode = 200 };
+            return Ok(merchant);
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SummariesResponse<MerchantHistory>))]
         [Route("{merchantID}/history")]
         public async Task<IActionResult> GetMerchantHistory([FromRoute]long merchantID)
         {
@@ -64,19 +63,18 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
-        public async Task<IActionResult> CreateMerchant([FromBody]MerchantRequest merchant)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<OperationResponse>> CreateMerchant([FromBody]MerchantRequest merchant)
         {
             var newMerchant = mapper.Map<Merchant>(merchant);
             await merchantsService.CreateEntity(newMerchant);
 
-            return new JsonResult(new OperationResponse("ok", StatusEnum.Success, newMerchant.MerchantID)) { StatusCode = 201 };
+            return CreatedAtAction(nameof(GetMerchant), new { merchantID = newMerchant.MerchantID }, new OperationResponse(Messages.MerchantCreated, StatusEnum.Success, newMerchant.MerchantID));
         }
 
         [HttpPut]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         [Route("{merchantID}")]
-        public async Task<IActionResult> UpdateMerchant([FromRoute]long merchantID, [FromBody]UpdateMerchantRequest model)
+        public async Task<ActionResult<OperationResponse>> UpdateMerchant([FromRoute]long merchantID, [FromBody]UpdateMerchantRequest model)
         {
             var merchant = await merchantsService.GetMerchants().FirstOrDefaultAsync(d => d.MerchantID == merchantID).EnsureExists();
 
@@ -84,8 +82,7 @@ namespace Merchants.Api.Controllers
 
             await merchantsService.UpdateEntity(merchant);
 
-            return new JsonResult(new OperationResponse("ok", StatusEnum.Success, merchantID)) { StatusCode = 201 };
+            return Ok(new OperationResponse(Messages.MerchantUpdated, StatusEnum.Success, merchantID));
         }
-
     }
 }

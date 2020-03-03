@@ -13,7 +13,9 @@ namespace Merchants.Business.Services
     public class MerchantsService : ServiceBase<Merchant>, IMerchantsService
     {
         private readonly MerchantsContext context;
-        public MerchantsService(MerchantsContext context): base(context)
+
+        public MerchantsService(MerchantsContext context)
+            : base(context)
         {
             this.context = context;
         }

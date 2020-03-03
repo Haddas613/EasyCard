@@ -47,29 +47,4 @@ namespace Merchants.Api.Models.Terminal
 
         public TerminalResponseBillingSettings BillingSettings { get; set; }
     }
-
-    public class TerminalResponseSettings
-    {
-        public int? MinInstallments { get; set; }
-
-        /// <summary>
-        /// If we set it to zero means installments blocked
-        /// </summary>
-        public int? MaxInstallments { get; set; }
-
-        public int? MinCreditInstallments { get; set; }
-
-        public int? MaxCreditInstallments { get; set; }
-
-        public bool EnableDeletionOfUntransmittedTransactions { get; set; }
-
-        public bool NationalIDRequired { get; set; }
-
-        public bool CvvRequired { get; set; }
-    }
-
-    public class TerminalResponseBillingSettings
-    {
-        public IEnumerable<string> BillingNotificationsEmails { get; set; }
-    }
 }

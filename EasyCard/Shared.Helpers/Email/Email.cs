@@ -17,11 +17,4 @@ namespace Shared.Helpers.Email
 
         public string Attachment { get; set; }
     }
-
-    public class EmailSubstitution
-    {
-        public string Substitution { get; set; }
-
-        public string Value { get; set; }
-    }
 }

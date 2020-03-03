@@ -7,8 +7,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using Shared.Api;
 using Shared.Business.Security;
 using System;
@@ -29,8 +32,23 @@ namespace MerchantsApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(logging =>
+            {
+                logging.AddConfiguration(Configuration.GetSection("Logging"));
+                logging.AddConsole();
+                logging.AddDebug();
+                logging.AddAzureWebAppDiagnostics();
+            });
+
             services.AddControllers()
-                .AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new StringEnumConverter()));
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
+
+                    // Note: do not use options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; - use [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)] attribute in place
+                });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -40,7 +58,6 @@ namespace MerchantsApi
                     Version = "v1",
                     Title = "Merchants API",
                 });
-               
 
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -66,7 +83,6 @@ namespace MerchantsApi
             app.UseStaticFiles();
 
             app.UseHttpsRedirection();
-
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();

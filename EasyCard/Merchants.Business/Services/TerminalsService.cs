@@ -12,9 +12,10 @@ namespace Merchants.Business.Services
 {
     public class TerminalsService : ServiceBase<Terminal>, ITerminalsService
     {
-
         private readonly MerchantsContext context;
-        public TerminalsService(MerchantsContext context) : base(context)
+
+        public TerminalsService(MerchantsContext context)
+            : base(context)
         {
             this.context = context;
         }
@@ -35,7 +36,7 @@ namespace Merchants.Business.Services
                 OperationDoneBy = null,
                 OperationDoneByID = null,
                 TerminalID = terminalID,
-                UserID = userID
+                UserID = userID,
             });
 
             await context.SaveChangesAsync();

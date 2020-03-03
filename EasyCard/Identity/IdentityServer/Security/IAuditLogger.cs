@@ -8,7 +8,9 @@ namespace IdentityServer.Security
     public interface IAuditLogger
     {
         Task ValidateUser(string email, string bankAccount);
+
         Task RegisterForgotPassword(string email);
+
         Task RegisterSetPassword(string email);
     }
 }

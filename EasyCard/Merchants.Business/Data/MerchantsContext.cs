@@ -16,10 +16,15 @@ namespace Merchants.Business.Data
     public class MerchantsContext : DbContext
     {
         public DbSet<Merchant> Merchants { get; set; }
+
         public DbSet<Feature> Features { get; set; }
+
         public DbSet<Terminal> Terminals { get; set; }
+
         public DbSet<ExternalSystem> ExternalSystems { get; set; }
+
         public DbSet<TerminalExternalSystem> TerminalExternalSystems { get; set; }
+
         public DbSet<UserTerminalMapping> UserTerminalMappings { get; set; }
 
         private readonly ClaimsPrincipal user;
@@ -39,7 +44,6 @@ namespace Merchants.Business.Data
             modelBuilder.ApplyConfiguration(new TerminalExternalSystemConfiguration());
             modelBuilder.ApplyConfiguration(new UserTerminalMappingConfiguration());
 
-
             // security filters
 
             //modelBuilder.Entity<Merchant>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
@@ -47,7 +51,7 @@ namespace Merchants.Business.Data
             base.OnModelCreating(modelBuilder);
         }
 
-        class MerchantConfiguration : IEntityTypeConfiguration<Merchant>
+        internal class MerchantConfiguration : IEntityTypeConfiguration<Merchant>
         {
             public void Configure(EntityTypeBuilder<Merchant> builder)
             {
@@ -65,7 +69,7 @@ namespace Merchants.Business.Data
             }
         }
 
-        class TerminalConfiguration : IEntityTypeConfiguration<Terminal>
+        internal class TerminalConfiguration : IEntityTypeConfiguration<Terminal>
         {
             public void Configure(EntityTypeBuilder<Terminal> builder)
             {
@@ -95,7 +99,7 @@ namespace Merchants.Business.Data
             }
         }
 
-        class FeatureConfiguration : IEntityTypeConfiguration<Feature>
+        internal class FeatureConfiguration : IEntityTypeConfiguration<Feature>
         {
             public void Configure(EntityTypeBuilder<Feature> builder)
             {
@@ -114,7 +118,7 @@ namespace Merchants.Business.Data
             }
         }
 
-        class ExternalSystemConfiguration : IEntityTypeConfiguration<ExternalSystem>
+        internal class ExternalSystemConfiguration : IEntityTypeConfiguration<ExternalSystem>
         {
             public void Configure(EntityTypeBuilder<ExternalSystem> builder)
             {
@@ -130,7 +134,7 @@ namespace Merchants.Business.Data
             }
         }
 
-        class TerminalExternalSystemConfiguration : IEntityTypeConfiguration<TerminalExternalSystem>
+        internal class TerminalExternalSystemConfiguration : IEntityTypeConfiguration<TerminalExternalSystem>
         {
             public void Configure(EntityTypeBuilder<TerminalExternalSystem> builder)
             {
@@ -146,7 +150,7 @@ namespace Merchants.Business.Data
             }
         }
 
-        class UserTerminalMappingConfiguration : IEntityTypeConfiguration<UserTerminalMapping>
+        internal class UserTerminalMappingConfiguration : IEntityTypeConfiguration<UserTerminalMapping>
         {
             public void Configure(EntityTypeBuilder<UserTerminalMapping> builder)
             {

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Shared.Helpers.Email;
 using Shared.Helpers.Security;
 using System;
@@ -26,21 +27,21 @@ namespace IdentityServer.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IIdentityServerInteractionService _interaction;
-        private readonly IClientStore _clientStore;
-        private readonly IAuthenticationSchemeProvider _schemeProvider;
-        private readonly IEventService _events;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly IIdentityServerInteractionService interaction;
+        private readonly IClientStore clientStore;
+        private readonly IAuthenticationSchemeProvider schemeProvider;
+        private readonly IEventService events;
 
-        private readonly IEmailSender _emailSender;
-        private readonly ILogger _logger;
+        private readonly IEmailSender emailSender;
+        private readonly ILogger logger;
 
-        private readonly ICryptoService _cryptoService;
+        private readonly ICryptoService cryptoService;
 
-        private readonly ApplicationSettings _configuration;
+        private readonly ApplicationSettings configuration;
 
-        private readonly IAuditLogger _managementApiClient;
+        private readonly IAuditLogger auditLogger;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -48,14 +49,25 @@ namespace IdentityServer.Controllers
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
-            IEventService events)
+            IEventService events,
+            IEmailSender emailSender,
+            ILogger logger,
+            ICryptoService cryptoService,
+            IOptions<ApplicationSettings> configuration,
+            IAuditLogger managementApiClient)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _interaction = interaction;
-            _clientStore = clientStore;
-            _schemeProvider = schemeProvider;
-            _events = events;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+            this.interaction = interaction;
+            this.clientStore = clientStore;
+            this.schemeProvider = schemeProvider;
+            this.events = events;
+
+            this.emailSender = emailSender;
+            this.logger = logger;
+            this.cryptoService = cryptoService;
+            this.configuration = configuration.Value;
+            this.auditLogger = managementApiClient;
         }
 
         /// <summary>
@@ -79,25 +91,26 @@ namespace IdentityServer.Controllers
         /// <summary>
         /// Handle postback from username/password login
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginInputModel model, string button)
         {
             // check if we are in the context of an authorization request
-            var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+            var context = await interaction.GetAuthorizationContextAsync(model.ReturnUrl);
 
             // the user clicked the "cancel" button
             if (button != "login")
             {
                 if (context != null)
                 {
-                    // if the user cancels, send a result back into IdentityServer as if they 
+                    // if the user cancels, send a result back into IdentityServer as if they
                     // denied the consent (even if this client does not require consent).
                     // this will send back an access denied OIDC error response to the client.
-                    await _interaction.GrantConsentAsync(context, ConsentResponse.Denied);
+                    await interaction.GrantConsentAsync(context, ConsentResponse.Denied);
 
                     // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                    if (await _clientStore.IsPkceClientAsync(context.ClientId))
+                    if (await clientStore.IsPkceClientAsync(context.ClientId))
                     {
                         // if the client is PKCE then we assume it's native, so this change in how to
                         // return the response is for better UX for the end user.
@@ -115,15 +128,15 @@ namespace IdentityServer.Controllers
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
+                var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.FindByNameAsync(model.Username);
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.ClientId));
+                    var user = await userManager.FindByNameAsync(model.Username);
+                    await events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.ClientId));
 
                     if (context != null)
                     {
-                        if (await _clientStore.IsPkceClientAsync(context.ClientId))
+                        if (await clientStore.IsPkceClientAsync(context.ClientId))
                         {
                             // if the client is PKCE then we assume it's native, so this change in how to
                             // return the response is for better UX for the end user.
@@ -150,7 +163,7 @@ namespace IdentityServer.Controllers
                     }
                 }
 
-                await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId:context?.ClientId));
+                await events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.ClientId));
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
 
@@ -159,7 +172,6 @@ namespace IdentityServer.Controllers
             return View(vm);
         }
 
-        
         /// <summary>
         /// Show logout page
         /// </summary>
@@ -192,10 +204,10 @@ namespace IdentityServer.Controllers
             if (User?.Identity.IsAuthenticated == true)
             {
                 // delete local authentication cookie
-                await _signInManager.SignOutAsync();
+                await signInManager.SignOutAsync();
 
                 // raise the logout event
-                await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
+                await events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
             }
 
             // check if we need to trigger sign-out at an upstream identity provider
@@ -228,18 +240,18 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            var userId = _cryptoService.DecryptWithExpiration(code);
+            var userId = cryptoService.DecryptWithExpiration(code);
 
             if (userId == null)
             {
-                _logger.LogError($"Confirmation code expired or invalid");
+                logger.LogError($"Confirmation code expired or invalid");
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                _logger.LogError($"Confirmation code is invalid");
+                logger.LogError($"Confirmation code is invalid");
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
@@ -258,7 +270,7 @@ namespace IdentityServer.Controllers
         {
             if (model.Code == null)
             {
-                _logger.LogError($"Confirmation code not specified");
+                logger.LogError($"Confirmation code not specified");
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
@@ -283,30 +295,30 @@ namespace IdentityServer.Controllers
             // var model = new ConfirmEmailViewModel { Code = code };
             //return View(model);
 
-            var userId = _cryptoService.DecryptWithExpiration(model.Code);
+            var userId = cryptoService.DecryptWithExpiration(model.Code);
 
             // TODO: show error message
             if (userId == null)
             {
-                _logger.LogError($"Confirmation code expired or invalid");
+                logger.LogError($"Confirmation code expired or invalid");
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                _logger.LogError($"Confirmation code is invalid");
+                logger.LogError($"Confirmation code is invalid");
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            var addPasswordResult = await _userManager.AddPasswordAsync(user, model.Password);
+            var addPasswordResult = await userManager.AddPasswordAsync(user, model.Password);
             if (addPasswordResult.Succeeded)
             {
                 // TODO: return RedirectToAction(nameof(ManageController.EnableAuthenticator), "Manage");
             }
 
             var pwderrors = string.Join(", ", addPasswordResult.Errors.Select(err => err.Code + ":" + err.Description));
-            _logger.LogError($"Set password failed: {pwderrors}");
+            logger.LogError($"Set password failed: {pwderrors}");
 
             AddErrors(addPasswordResult);
             return View();
@@ -316,10 +328,10 @@ namespace IdentityServer.Controllers
         [AllowAnonymous]
         public IActionResult ForgotPassword()
         {
-            ViewData["CompanyName"] = _configuration.CompanyName;
+            ViewData["CompanyName"] = configuration.CompanyName;
             var model = new ForgotPasswordViewModel
             {
-                CheckBankAccount = _configuration.ForgotPasswordCheckBankAccountNumber
+                CheckBankAccount = configuration.ForgotPasswordCheckBankAccountNumber
             };
             return View(model);
         }
@@ -331,20 +343,23 @@ namespace IdentityServer.Controllers
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (!model.CheckBankAccount)
-                ModelState.Remove(nameof(model.BankAccount));
+            {
+                _ = ModelState.Remove(nameof(model.BankAccount));
+            }
 
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
-                    _logger.LogError($"User {model.Email} does not exist");
+                    logger.LogError($"User {model.Email} does not exist");
+
                     // Don't reveal that the user does not exist or is not confirmed
                     return RedirectToAction(nameof(ForgotPasswordConfirmation), new { Message = IdentityMessages.ForgotPasswordInvalidEmail });
                 }
 
-                //Validate user bank account 
-                if (_configuration.ForgotPasswordCheckBankAccountNumber)
+                //Validate user bank account
+                if (configuration.ForgotPasswordCheckBankAccountNumber)
                 {
                     // TODO:
 
@@ -361,24 +376,24 @@ namespace IdentityServer.Controllers
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
                 //var code = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-                var code = _cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(_configuration.ResetPasswordEmailExpirationInHours));
+                var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ResetPasswordEmailExpirationInHours));
 
                 var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, Request.Scheme);
 
-                var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
+                var disable2faResult = await userManager.SetTwoFactorEnabledAsync(user, false);
                 if (!disable2faResult.Succeeded)
                 {
-                    _logger.LogError($"Unexpected error occurred disabling 2FA for user with ID '{user.Id}'.");
+                    logger.LogError($"Unexpected error occurred disabling 2FA for user with ID '{user.Id}'.");
                 }
 
-                await _emailSender.SendEmailResetPasswordAsync(model.Email, callbackUrl);
+                await emailSender.SendEmailResetPasswordAsync(model.Email, callbackUrl);
 
-                await _managementApiClient.RegisterForgotPassword(model.Email);
+                await auditLogger.RegisterForgotPassword(model.Email);
                 return RedirectToAction(nameof(ForgotPasswordConfirmation), new { Message = IdentityMessages.ForgotPasswordPasswordReseted });
             }
 
             // If we got this far, something failed, redisplay form
-            model.CheckBankAccount = _configuration.ForgotPasswordCheckBankAccountNumber;
+            model.CheckBankAccount = configuration.ForgotPasswordCheckBankAccountNumber;
             return View(model);
         }
 
@@ -400,18 +415,18 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            var userId = _cryptoService.DecryptWithExpiration(code);
+            var userId = cryptoService.DecryptWithExpiration(code);
 
             if (userId == null)
             {
-                _logger.LogError($"Confirmation code expired or invalid");
+                logger.LogError($"Confirmation code expired or invalid");
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                _logger.LogError($"Confirmation code is invalid");
+                logger.LogError($"Confirmation code is invalid");
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
@@ -428,12 +443,14 @@ namespace IdentityServer.Controllers
             {
                 return View(model);
             }
-            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            var user = await userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
+
             //var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
             //if (result.Succeeded)
             //{
@@ -445,30 +462,30 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
 
-            var userId = _cryptoService.DecryptWithExpiration(model.Code);
+            var userId = cryptoService.DecryptWithExpiration(model.Code);
 
             if (userId == null)
             {
-                _logger.LogError($"Confirmation code expired or invalid");
+                logger.LogError($"Confirmation code expired or invalid");
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
 
             if (userId != user.Id)
             {
-                _logger.LogError($"Invalid email address provided: userId = {userId} and email = {model.Email}");
+                logger.LogError($"Invalid email address provided: userId = {userId} and email = {model.Email}");
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
 
-            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, model.Password);
+            user.PasswordHash = userManager.PasswordHasher.HashPassword(user, model.Password);
 
-            var result = await _userManager.UpdateAsync(user);
+            var result = await userManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
                 //throw exception......
             }
             else
             {
-                await _managementApiClient.RegisterSetPassword(model.Email);
+                await auditLogger.RegisterSetPassword(model.Email);
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
 
@@ -482,7 +499,6 @@ namespace IdentityServer.Controllers
         {
             return View();
         }
-
 
         /*****************************************/
         /* helper APIs for the AccountController */
@@ -498,8 +514,8 @@ namespace IdentityServer.Controllers
 
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
-            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-            if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
+            var context = await interaction.GetAuthorizationContextAsync(returnUrl);
+            if (context?.IdP != null && await schemeProvider.GetSchemeAsync(context.IdP) != null)
             {
                 var local = context.IdP == IdentityServer4.IdentityServerConstants.LocalIdentityProvider;
 
@@ -519,11 +535,11 @@ namespace IdentityServer.Controllers
                 return vm;
             }
 
-            var schemes = await _schemeProvider.GetAllSchemesAsync();
+            var schemes = await schemeProvider.GetAllSchemesAsync();
 
             var providers = schemes
                 .Where(x => x.DisplayName != null ||
-                            (x.Name.Equals(AccountOptions.WindowsAuthenticationSchemeName, StringComparison.OrdinalIgnoreCase))
+                            x.Name.Equals(AccountOptions.WindowsAuthenticationSchemeName, StringComparison.OrdinalIgnoreCase)
                 )
                 .Select(x => new ExternalProvider
                 {
@@ -534,7 +550,7 @@ namespace IdentityServer.Controllers
             var allowLocal = true;
             if (context?.ClientId != null)
             {
-                var client = await _clientStore.FindEnabledClientByIdAsync(context.ClientId);
+                var client = await clientStore.FindEnabledClientByIdAsync(context.ClientId);
                 if (client != null)
                 {
                     allowLocal = client.EnableLocalLogin;
@@ -575,7 +591,7 @@ namespace IdentityServer.Controllers
                 return vm;
             }
 
-            var context = await _interaction.GetLogoutContextAsync(logoutId);
+            var context = await interaction.GetLogoutContextAsync(logoutId);
             if (context?.ShowSignoutPrompt == false)
             {
                 // it's safe to automatically sign-out
@@ -591,7 +607,7 @@ namespace IdentityServer.Controllers
         private async Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(string logoutId)
         {
             // get context information (client name, post logout redirect URI and iframe for federated signout)
-            var logout = await _interaction.GetLogoutContextAsync(logoutId);
+            var logout = await interaction.GetLogoutContextAsync(logoutId);
 
             var vm = new LoggedOutViewModel
             {
@@ -615,7 +631,7 @@ namespace IdentityServer.Controllers
                             // if there's no current logout context, we need to create one
                             // this captures necessary info from the current logged in user
                             // before we signout and redirect away to the external IdP for signout
-                            vm.LogoutId = await _interaction.CreateLogoutContextAsync();
+                            vm.LogoutId = await interaction.CreateLogoutContextAsync();
                         }
 
                         vm.ExternalAuthenticationScheme = idp;

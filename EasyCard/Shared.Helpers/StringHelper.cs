@@ -13,24 +13,32 @@ namespace Shared.Helpers
 
         public static string Left(this string value, int maxLength)
         {
-            if (string.IsNullOrEmpty(value)) return value;
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+
             maxLength = Math.Abs(maxLength);
 
-            return (value.Length <= maxLength
+            return value.Length <= maxLength
                    ? value
                    : value.Substring(0, maxLength)
-                   );
+                   ;
         }
 
         public static string Right(this string value, int maxLength)
         {
-            if (string.IsNullOrEmpty(value)) return value;
+            if (string.IsNullOrEmpty(value))
+            {
+                return value;
+            }
+
             maxLength = Math.Abs(maxLength);
 
-            return (value.Length <= maxLength
+            return value.Length <= maxLength
                    ? value
                    : value.Substring(value.Length - maxLength, maxLength)
-                   );
+                   ;
         }
 
         /// <summary>
@@ -40,6 +48,5 @@ namespace Shared.Helpers
         /// <param name="encloseInPercents">If true string will be enclosed with '%'. E.g. "%some text%" </param>
         /// <returns></returns>
         public static string UseWildCard(this string src, bool encloseInPercents) => encloseInPercents ? $"%{src.Replace("*", "%")}%" : $"{src.Replace("*", "%")}";
-
     }
 }

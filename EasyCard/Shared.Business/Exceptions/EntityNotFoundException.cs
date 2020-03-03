@@ -10,7 +10,8 @@ namespace Shared.Business.Exceptions
 
         public string EntityType { get; }
 
-        public EntityNotFoundException(string message, string entityType, string entityReference) : base(message)
+        public EntityNotFoundException(string message, string entityType, string entityReference)
+            : base(message)
         {
             this.EntityType = entityType;
 

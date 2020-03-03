@@ -20,6 +20,7 @@ namespace Shared.Helpers
             if (querystr != null)
             {
                 var keyValueContent = querystr.ToKeyValue();
+
                 //var formUrlEncodedContent = new FormUrlEncodedContent(keyValueContent);
                 builder.Query = keyValueContent.ToString();
             }
@@ -34,8 +35,7 @@ namespace Shared.Helpers
                 return null;
             }
 
-            JToken token = metaToken as JToken;
-            if (token == null)
+            if (!(metaToken is JToken token))
             {
                 return ToKeyValue(JObject.FromObject(metaToken));
             }
@@ -68,8 +68,5 @@ namespace Shared.Helpers
 
             return new Dictionary<string, string> { { token.Path, System.Net.WebUtility.UrlEncode(value) } };
         }
-
     }
-
-
 }
