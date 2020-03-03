@@ -64,4 +64,23 @@ Try to use latest C# features, including pattern matching (use Visual Studio sug
 
 TBC
 
+## API convention
+
+1. Please keep API methods as simple as possible. We have decided to use `ActionResult<T>` as response (instead of `T` itself or abstract `IActionResult`). It allows to return not only object result itself, but for example `NotFoundObjectResult` etc. Use `Ok(...);` or `CreatedAtAction(...)` (or other appropriate controller base methods) to generate response. You can use `MerchantApiController` as reference. Please keep next headers on controller class: `[Produces("application/json")]` and `[Consumes("application/json")]`.
+
+2. Please use `EnsureExists()` extension to check if entity exists. It will generate `EntityNotFoundException` which automatically catches by global exception handler and appropriate response will be generated automatically.
+
+3. General json settings are configured at startup:
+
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
+                });
+
+    Note: do not use `options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;`: please use `[JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]` attribute _only_ on models, which you want to keep clean from `null` json values                
+
+4. Models validation - TBC
 
