@@ -15,7 +15,8 @@ using Xunit.Extensions.Ordering;
 
 namespace MerchantsApi.Tests
 {
-    [Collection("MerchantsCollection"), Order(2)]
+    [Collection("MerchantsCollection")]
+    [Order(2)]
     public class TerminalControllerTests
     {
         private MerchantsFixture merchantsFixture;
@@ -25,7 +26,8 @@ namespace MerchantsApi.Tests
             this.merchantsFixture = merchantsFixture;
         }
 
-        [Fact(DisplayName = "CreateTerminal: Creates when model is correct"), Order(1)]
+        [Fact(DisplayName = "CreateTerminal: Creates when model is correct")]
+        [Order(1)]
         public async Task CreateTerminal_CreatesWhenModelIsCorrect()
         {
             var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper);
@@ -49,7 +51,8 @@ namespace MerchantsApi.Tests
             Assert.Equal(terminalModel.MerchantID, terminal.MerchantID);
         }
 
-        [Fact(DisplayName = "UpdateTerminal: Updates when model is correct"), Order(2)]
+        [Fact(DisplayName = "UpdateTerminal: Updates when model is correct")]
+        [Order(2)]
         public async Task UpdateTerminal_UpdatesWhenModelIsCorrect()
         {
             var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper);
@@ -73,7 +76,8 @@ namespace MerchantsApi.Tests
             Assert.Equal(terminalModel.Label, terminal.Label);
         }
 
-        [Fact(DisplayName = "GetTerminals: Returns collection of Terminals"), Order(3)]
+        [Fact(DisplayName = "GetTerminals: Returns collection of Terminals")]
+        [Order(3)]
         public async Task GetTerminals_ReturnsCollectionOfTerminals()
         {
             var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper);
@@ -88,7 +92,8 @@ namespace MerchantsApi.Tests
             Assert.True(responseData.NumberOfRecords > 0);
         }
 
-        [Fact(DisplayName = "GetTerminals: Filters collection of Terminals"), Order(4)]
+        [Fact(DisplayName = "GetTerminals: Filters collection of Terminals")]
+        [Order(4)]
         public async Task GetTerminals_FiltersAndReturnsCollectionOfTerminals()
         {
             var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper);
@@ -116,8 +121,6 @@ namespace MerchantsApi.Tests
             Assert.True(responseData.NumberOfRecords == 1); //assuming the name is unique
         }
 
-        #region NotTests
-        //TODO: move to tests: common
         private async Task<MerchantResponse> GetMerchant(long merchantID)
         {
             var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
@@ -141,6 +144,5 @@ namespace MerchantsApi.Tests
 
             return responseData;
         }
-        #endregion
     }
 }
