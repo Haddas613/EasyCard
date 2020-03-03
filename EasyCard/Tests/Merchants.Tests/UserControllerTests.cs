@@ -17,7 +17,8 @@ using Xunit.Extensions.Ordering;
 
 namespace MerchantsApi.Tests
 {
-    [Collection("MerchantsCollection"), Order(3)]
+    [Collection("MerchantsCollection")]
+    [Order(3)]
     public class UserControllerTests
     {
         private MerchantsFixture merchantsFixture;
@@ -27,7 +28,8 @@ namespace MerchantsApi.Tests
             this.merchantsFixture = merchantsFixture;
         }
 
-        [Fact(DisplayName = "CreateUser: Creates when model is correct"), Order(1)]
+        [Fact(DisplayName = "CreateUser: Creates when model is correct")]
+        [Order(1)]
         public async Task CreateUser_CreatesWhenModelIsCorrect()
         {
             var clientMockSetup = new UserManagementClientMockSetup();
@@ -46,7 +48,8 @@ namespace MerchantsApi.Tests
             clientMockSetup.MockObj.Verify(m => m.CreateUser(It.IsAny<CreateUserRequestModel>()), Times.Once);
         }
 
-        [Fact(DisplayName = "LockUser: Locks when model is correct"), Order(3)]
+        [Fact(DisplayName = "LockUser: Locks when model is correct")]
+        [Order(3)]
         public async Task LockUser_LocksWhenModelIsCorrect()
         {
             var clientMockSetup = new UserManagementClientMockSetup();
@@ -65,7 +68,8 @@ namespace MerchantsApi.Tests
             clientMockSetup.MockObj.Verify(m => m.LockUser(clientMockSetup.UserEntityId), Times.Once);
         }
 
-        [Fact(DisplayName = "UnLockUser: Unlocks when model is correct"), Order(4)]
+        [Fact(DisplayName = "UnLockUser: Unlocks when model is correct")]
+        [Order(4)]
         public async Task UnLockUser_UnlocksWhenModelIsCorrect()
         {
             var clientMockSetup = new UserManagementClientMockSetup();
@@ -84,7 +88,8 @@ namespace MerchantsApi.Tests
             clientMockSetup.MockObj.Verify(m => m.UnLockUser(clientMockSetup.UserEntityId), Times.Once);
         }
 
-        [Fact(DisplayName = "ResetPassword: Resets when model is correct"), Order(5)]
+        [Fact(DisplayName = "ResetPassword: Resets when model is correct")]
+        [Order(5)]
         public async Task ResetPassword_ResetsWhenModelIsCorrect()
         {
             var clientMockSetup = new UserManagementClientMockSetup();
@@ -103,14 +108,15 @@ namespace MerchantsApi.Tests
             clientMockSetup.MockObj.Verify(m => m.ResetPassword(clientMockSetup.UserEntityId), Times.Once);
         }
 
-        [Fact(DisplayName = "LinkToTerminal: Links user to terminal"), Order(6)]
+        [Fact(DisplayName = "LinkToTerminal: Links user to terminal")]
+        [Order(6)]
         public async Task LinkToTerminal_LinksUserToTerminal()
         {
             var clientMockSetup = new UserManagementClientMockSetup();
             var controller = new UserApiController(merchantsFixture.TerminalsService, clientMockSetup.MockObj.Object, merchantsFixture.Mapper);
 
             //Get terminal ID which is guaranteed to be not linked to current user
-            var terminalID = (await merchantsFixture.MerchantsContext.UserTerminalMappings.Where(u => u.UserID != clientMockSetup.UserEntityId).FirstOrDefaultAsync())?.TerminalID 
+            var terminalID = (await merchantsFixture.MerchantsContext.UserTerminalMappings.Where(u => u.UserID != clientMockSetup.UserEntityId).FirstOrDefaultAsync())?.TerminalID
                 ?? await merchantsFixture.MerchantsContext.Terminals.Select(s => s.TerminalID).FirstAsync();
 
             var actionResult = await controller.LinkUserToTerminal(clientMockSetup.UserEntityId, terminalID);
@@ -128,7 +134,8 @@ namespace MerchantsApi.Tests
             clientMockSetup.MockObj.Verify(m => m.GetUserByID(clientMockSetup.UserEntityId), Times.Once);
         }
 
-        [Fact(DisplayName = "UnlinkFromTerminal: UnLinks user to terminal"), Order(7)]
+        [Fact(DisplayName = "UnlinkFromTerminal: UnLinks user to terminal")]
+        [Order(7)]
         public async Task UnlinkFromTerminal_UnLinksUserToTerminal()
         {
             var clientMockSetup = new UserManagementClientMockSetup();
@@ -152,6 +159,5 @@ namespace MerchantsApi.Tests
             Assert.Null(linkedTerminal);
             clientMockSetup.MockObj.Verify(m => m.GetUserByID(terminal.UserID), Times.Once);
         }
-
     }
 }

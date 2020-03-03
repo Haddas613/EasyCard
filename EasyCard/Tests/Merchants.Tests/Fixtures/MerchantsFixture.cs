@@ -12,8 +12,11 @@ namespace Merchants.Tests.Fixtures
     public class MerchantsFixture : IDisposable
     {
         public IMerchantsService MerchantsService { get; private set; }
+
         public ITerminalsService TerminalsService { get; private set; }
+
         public MerchantsContext MerchantsContext { get; private set; }
+
         public IMapper Mapper { get; private set; }
 
         public MerchantsFixture()
@@ -35,7 +38,9 @@ namespace Merchants.Tests.Fixtures
         public void Dispose()
         {
             if (MerchantsContext != null)
+            {
                 MerchantsContext.Database.EnsureDeleted();
+            }
         }
     }
 }

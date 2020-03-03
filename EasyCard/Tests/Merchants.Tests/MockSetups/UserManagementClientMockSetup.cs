@@ -15,12 +15,12 @@ namespace Merchants.Tests.MockSetups
         /// <summary>
         /// This user is always present in the list (unless deleted) and can be used as reference for tests
         /// </summary>
-        public readonly string UserEntityId = Guid.NewGuid().ToString();
+        public string UserEntityId { get; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// This user is always present in the list (unless deleted) and can be used as reference for tests
         /// </summary>
-        public readonly string UserEmail = Guid.NewGuid().ToString();
+        public string UserEmail { get; } = Guid.NewGuid().ToString();
 
         public UserManagementClientMockSetup()
         {

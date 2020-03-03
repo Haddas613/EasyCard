@@ -12,7 +12,8 @@ using Xunit.Extensions.Ordering;
 
 namespace MerchantsApi.Tests
 {
-    [Collection("MerchantsCollection"), Order(1)]
+    [Collection("MerchantsCollection")]
+    [Order(1)]
     public class MerchantControllerTests
     {
         private MerchantsFixture merchantsFixture;
@@ -22,7 +23,8 @@ namespace MerchantsApi.Tests
             this.merchantsFixture = merchantsFixture;
         }
 
-        [Fact(DisplayName = "CreateMerchant: Creates when model is correct"), Order(1)]
+        [Fact(DisplayName = "CreateMerchant: Creates when model is correct")]
+        [Order(1)]
         public async Task CreateMerchant_CreatesWhenModelIsCorrect()
         {
             var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
@@ -44,7 +46,8 @@ namespace MerchantsApi.Tests
             Assert.Equal(merchantModel.BusinessName, merchant.BusinessName);
         }
 
-        [Fact(DisplayName = "UpdateMerchant: Updates when model is correct"), Order(2)]
+        [Fact(DisplayName = "UpdateMerchant: Updates when model is correct")]
+        [Order(2)]
         public async Task UpdateMerchant_UpdatesWhenModelIsCorrect()
         {
             var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
@@ -68,7 +71,8 @@ namespace MerchantsApi.Tests
             Assert.Equal(merchantModel.BusinessName, merchant.BusinessName);
         }
 
-        [Fact(DisplayName = "GetMerchants: Returns collection of merchants"), Order(3)]
+        [Fact(DisplayName = "GetMerchants: Returns collection of merchants")]
+        [Order(3)]
         public async Task GetMerchants_ReturnsCollectionOfMerchants()
         {
             var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
@@ -83,7 +87,8 @@ namespace MerchantsApi.Tests
             Assert.True(responseData.NumberOfRecords > 0);
         }
 
-        [Fact(DisplayName = "GetMerchants: Filters collection of merchants"), Order(4)]
+        [Fact(DisplayName = "GetMerchants: Filters collection of merchants")]
+        [Order(4)]
         public async Task GetMerchants_FiltersAndReturnsCollectionOfMerchants()
         {
             var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
@@ -111,7 +116,6 @@ namespace MerchantsApi.Tests
             Assert.True(responseData.NumberOfRecords == 1); //assuming the name is unique
         }
 
-        #region NotTests
         private async Task<MerchantResponse> GetMerchant(long merchantID)
         {
             var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
@@ -123,6 +127,5 @@ namespace MerchantsApi.Tests
 
             return responseData;
         }
-        #endregion
     }
 }
