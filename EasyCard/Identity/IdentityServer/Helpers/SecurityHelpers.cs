@@ -24,7 +24,6 @@ namespace IdentityServer.Helpers
                 }
                 else
                 {
-
                     var claim = allClaims.FirstOrDefault(c => c.Type == type);
                     if (claim == null)
                     {

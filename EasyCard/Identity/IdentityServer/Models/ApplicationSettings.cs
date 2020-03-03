@@ -10,7 +10,9 @@ namespace IdentityServer.Models
         public int ConfirmationEmailExpirationInHours { get; set; } = 72;
 
         public int ResetPasswordEmailExpirationInHours { get; set; } = 4;
+
         public bool ForgotPasswordCheckBankAccountNumber { get; internal set; }
+
         public object CompanyName { get; internal set; }
     }
 }

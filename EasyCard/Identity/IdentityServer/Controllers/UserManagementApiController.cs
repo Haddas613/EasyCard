@@ -10,6 +10,7 @@ using IdentityServer.Helpers;
 using IdentityServer.Models;
 using IdentityServerClient;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -20,22 +21,22 @@ using Shared.Helpers.Security;
 namespace IdentityServer.Controllers
 {
     [Produces("application/json")]
-    [Route("api/admin")]
-    [Authorize(AuthenticationSchemes = "token")]
+    [Consumes("application/json")]
+    [Route("api/userManagement")]
+    //[Authorize(AuthenticationSchemes = "token")]
     public class UserManagementApiController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ILogger _logger;
-        private readonly ApplicationDbContext _dataContext;
-        private readonly IEmailSender _emailSender;
-        private readonly ICryptoService _cryptoService;
-        private readonly ApplicationSettings _configuration;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly ILogger logger;
+        private readonly ApplicationDbContext dataContext;
+        private readonly IEmailSender emailSender;
+        private readonly ICryptoService cryptoService;
+        private readonly ApplicationSettings configuration;
 
         public UserManagementApiController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILoggerFactory loggerFactory,
             ApplicationDbContext dataContext,
             ILogger<UserManagementApiController> logger,
             IEmailSender emailSender,
@@ -43,62 +44,84 @@ namespace IdentityServer.Controllers
             IOptions<ApplicationSettings> configuration
             )
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _logger = logger;
-            _dataContext = dataContext;
-            _emailSender = emailSender;
-            _cryptoService = cryptoService;
-            _configuration = configuration?.Value;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+            this.logger = logger;
+            this.dataContext = dataContext;
+            this.emailSender = emailSender;
+            this.cryptoService = cryptoService;
+            this.configuration = configuration?.Value;
         }
 
+        /// <summary>
+        /// Get User
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         [HttpGet]
         [Route("user/{userId}")]
-        public async Task<IActionResult> GetUser([FromRoute]string userId)
+        public async Task<ActionResult<UserProfileDataResponse>> GetUser([FromRoute]string userId)
         {
-            var result = await _userManager.FindByEmailAsync(userId);
+            var user = await userManager.FindByEmailAsync(userId);
 
-            return new ObjectResult(result);
+            if (user == null)
+            {
+                return new NotFoundObjectResult(new { Status = "error", Message = "User does not exist" });
+            }
+
+            var result = new UserProfileDataResponse
+            {
+
+            };
+
+            return Ok(result);
         }
 
         // TODO: validate model
+
+        /// <summary>
+        /// Create user
+        /// </summary>
+        /// <param name="model">Create User Request</param>
+        /// <returns>Operation Response</returns>
         [HttpPost]
         [Route("user")]
-        public async Task<IActionResult> CreateUser([FromBody]CreateUserRequestModel model)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<UserOperationResponse>> CreateUser([FromBody]CreateUserRequestModel model)
         {
             try
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await userManager.FindByEmailAsync(model.Email);
 
                 if (user == null)
                 {
                     user = new ApplicationUser { UserName = model.Email, Email = model.Email, /*PhoneNumber = model.CellPhone*/ };
-                    var result = await _userManager.CreateAsync(user);
+                    var result = await userManager.CreateAsync(user);
                     if (!result.Succeeded)
                     {
-                        _logger.LogInformation("User is not created");
+                        logger.LogInformation("User is not created");
+
                         // TODO: error details
                         return new BadRequestResult();
                     }
 
-                    _logger.LogInformation("User created a new account");
+                    logger.LogInformation("User created a new account");
                 }
 
                 //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var code = _cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(_configuration.ConfirmationEmailExpirationInHours));
-
+                var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ConfirmationEmailExpirationInHours));
 
                 var callbackUrl = Url.EmailConfirmationLink(code, Request.Scheme);
-                await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+                await emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
-                var allClaims = await _userManager.GetClaimsAsync(user);
+                var allClaims = await userManager.GetClaimsAsync(user);
 
                 //await _userManager.AddClaim(allClaims, user, "extension_PaymentGatewayID", model.PaymentGatewayID.ToString());
                 //await _userManager.AddClaim(allClaims, user, "extension_MerchantID", model.MerchantID.ToString());
                 //await _userManager.AddClaim(allClaims, user, "extension_FirstName", model.FirstName);
                 //await _userManager.AddClaim(allClaims, user, "extension_LastName", model.LastName);
 
-                await _userManager.AddToRoleAsync(user, "Merchant");
+                await userManager.AddToRoleAsync(user, "Merchant");
 
                 var operationResult = new UserOperationResponse
                 {
@@ -106,13 +129,13 @@ namespace IdentityServer.Controllers
                 };
 
                 // TODO: config
-                await _userManager.SetTwoFactorEnabledAsync(user, true);
+                await userManager.SetTwoFactorEnabledAsync(user, true);
 
                 return new ObjectResult(operationResult);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Cannot process user {model.Email}");
+                logger.LogError(ex, $"Cannot process user {model.Email}");
                 return StatusCode(500);
             }
         }
@@ -124,14 +147,14 @@ namespace IdentityServer.Controllers
         {
             try
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await userManager.FindByEmailAsync(model.Email);
 
                 if (user == null)
                 {
-                    return new ObjectResult("User does not exist") { StatusCode = 404 } ;
+                    return new ObjectResult("User does not exist") { StatusCode = 404 };
                 }
 
-                var allClaims = await _userManager.GetClaimsAsync(user);
+                var allClaims = await userManager.GetClaimsAsync(user);
 
                 //await _userManager.AddClaim(allClaims, user, "extension_MerchantID", model.MerchantID.ToString(), true);
 
@@ -141,13 +164,13 @@ namespace IdentityServer.Controllers
                 };
 
                 // TODO: config
-                await _userManager.SetTwoFactorEnabledAsync(user, true);
+                await userManager.SetTwoFactorEnabledAsync(user, true);
 
                 return new ObjectResult(operationResult);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Cannot process user {model.Email}");
+                logger.LogError(ex, $"Cannot process user {model.Email}");
                 return StatusCode(500);
             }
         }
@@ -157,19 +180,23 @@ namespace IdentityServer.Controllers
         public async Task<IActionResult> DeleteUser([FromRoute]string userId)
         {
             if (string.IsNullOrEmpty(userId))
+            {
                 throw new ArgumentException("User ID is required");
+            }
 
-            var user = _userManager.Users.FirstOrDefault(x => x.Id == userId);
+            var user = userManager.Users.FirstOrDefault(x => x.Id == userId);
 
             if (user == null)
+            {
                 return NotFound($"User {userId} does not exist");
+            }
 
             var operationResult = new UserOperationResponse
             {
                 EntityReference = user.Id,
             };
 
-            var result = await _userManager.DeleteAsync(user);
+            var result = await userManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
                 // TODO
@@ -178,7 +205,8 @@ namespace IdentityServer.Controllers
                 //    .ToList();
 
                 return new ObjectResult(operationResult) { StatusCode = 400 };
-            }     
+            }
+
             return new ObjectResult(operationResult);
         }
 
@@ -186,26 +214,30 @@ namespace IdentityServer.Controllers
         [Route("user/{userId}/resetPassword")]
         public async Task<IActionResult> ResetPassword([FromRoute]string userId)
         {
-            var user = _userManager.Users.FirstOrDefault(x => x.Id == userId);
+            var user = userManager.Users.FirstOrDefault(x => x.Id == userId);
 
-            if (user == null) return NotFound($"User {userId} does not exist");
+            if (user == null)
+            {
+                return NotFound($"User {userId} does not exist");
+            }
 
-            var code = _cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(_configuration.ResetPasswordEmailExpirationInHours));
+            var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ResetPasswordEmailExpirationInHours));
 
             var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, Request.Scheme);
 
-            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, Guid.NewGuid().ToString());
+            user.PasswordHash = userManager.PasswordHasher.HashPassword(user, Guid.NewGuid().ToString());
 
-            var result = await _userManager.UpdateAsync(user);
+            var result = await userManager.UpdateAsync(user);
+
             //if (!result.Succeeded)
 
-            var disable2faResult = await _userManager.SetTwoFactorEnabledAsync(user, false);
+            var disable2faResult = await userManager.SetTwoFactorEnabledAsync(user, false);
             if (!disable2faResult.Succeeded)
             {
-                _logger.LogError($"Unexpected error occurred disabling 2FA for user with ID '{user.Id}'.");
+                logger.LogError($"Unexpected error occurred disabling 2FA for user with ID '{user.Id}'.");
             }
 
-            await _emailSender.SendEmailResetPasswordAsync(user.Email, callbackUrl);
+            await emailSender.SendEmailResetPasswordAsync(user.Email, callbackUrl);
 
             var operationResult = new UserOperationResponse
             {
@@ -219,11 +251,14 @@ namespace IdentityServer.Controllers
         [Route("user/{userId}/lock")]
         public async Task<IActionResult> Lock([FromRoute]string userId)
         {
-            var user = _userManager.Users.FirstOrDefault(x => x.Id == userId);
+            var user = userManager.Users.FirstOrDefault(x => x.Id == userId);
 
-            if (user == null) return NotFound($"User {userId} does not exist");
+            if (user == null)
+            {
+                return NotFound($"User {userId} does not exist");
+            }
 
-            var res = await _userManager.SetLockoutEnabledAsync(user, true);
+            var res = await userManager.SetLockoutEnabledAsync(user, true);
 
             if (!res.Succeeded)
             {
@@ -231,7 +266,7 @@ namespace IdentityServer.Controllers
                 return new JsonResult(new { Status = "error", Errors = res.Errors }) { StatusCode = 500 };
             }
 
-            res = await _userManager.SetLockoutEndDateAsync(user, DateTime.UtcNow.AddYears(100));
+            res = await userManager.SetLockoutEndDateAsync(user, DateTime.UtcNow.AddYears(100));
 
             if (!res.Succeeded)
             {
@@ -247,11 +282,14 @@ namespace IdentityServer.Controllers
         [Route("user/{userId}/unlock")]
         public async Task<IActionResult> UnLock([FromRoute]string userId)
         {
-            var user = _userManager.Users.FirstOrDefault(x => x.Id == userId);
+            var user = userManager.Users.FirstOrDefault(x => x.Id == userId);
 
-            if (user == null) return NotFound($"User {userId} does not exist");
+            if (user == null)
+            {
+                return NotFound($"User {userId} does not exist");
+            }
 
-            var res = await _userManager.SetLockoutEnabledAsync(user, true);
+            var res = await userManager.SetLockoutEnabledAsync(user, true);
 
             if (!res.Succeeded)
             {
@@ -259,7 +297,7 @@ namespace IdentityServer.Controllers
                 return new JsonResult(new { Status = "error", Errors = res.Errors }) { StatusCode = 500 };
             }
 
-            res = await _userManager.SetLockoutEndDateAsync(user, null);
+            res = await userManager.SetLockoutEndDateAsync(user, null);
 
             if (!res.Succeeded)
             {

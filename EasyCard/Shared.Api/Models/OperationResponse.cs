@@ -8,6 +8,7 @@ using System.Text;
 
 namespace Shared.Api.Models
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class OperationResponse
     {
         public OperationResponse()
@@ -36,6 +37,7 @@ namespace Shared.Api.Models
 
         public long? EntityID { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string EntityReference { get; set; }
 
         public string CorrelationId { get; internal set; }
