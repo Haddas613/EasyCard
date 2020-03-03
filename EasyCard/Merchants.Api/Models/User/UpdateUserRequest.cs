@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Merchants.Api.Models.User
 {
+    [Obsolete]
     public class UpdateUserRequest
     {
         public string UserID { get; set; }
