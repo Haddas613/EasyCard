@@ -47,8 +47,8 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}")]
         public async Task<ActionResult<TerminalResponse>> GetTerminal([FromRoute]long terminalID)
         {
-            var terminal = mapper.Map<TerminalResponse>(await terminalsService.GetTerminals()
-                .FirstOrDefaultAsync(m => m.TerminalID == terminalID).EnsureExists());
+            var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminals()
+                .FirstOrDefaultAsync(m => m.TerminalID == terminalID)));
 
             return Ok(terminal);
         }
@@ -57,7 +57,7 @@ namespace Merchants.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateTerminal([FromBody]TerminalRequest model)
         {
-            var merchant = await merchantsService.GetMerchants().FirstOrDefaultAsync(d => d.MerchantID == model.MerchantID).EnsureExists();
+            var merchant = EnsureExists(await merchantsService.GetMerchants().FirstOrDefaultAsync(d => d.MerchantID == model.MerchantID));
 
             var newTerminal = mapper.Map<Terminal>(model);
 
@@ -70,7 +70,7 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}")]
         public async Task<ActionResult<OperationResponse>> UpdateTerminal([FromRoute]long terminalID, [FromBody]UpdateTerminalRequest model)
         {
-            var terminal = await terminalsService.GetTerminals().FirstOrDefaultAsync(d => d.TerminalID == terminalID).EnsureExists();
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(d => d.TerminalID == terminalID));
 
             mapper.Map(model, terminal);
 

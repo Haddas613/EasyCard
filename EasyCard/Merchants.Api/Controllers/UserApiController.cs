@@ -35,7 +35,7 @@ namespace Merchants.Api.Controllers
         [Route("{userID}")]
         public async Task<ActionResult<UserResponse>> GetUser([FromRoute]string userID)
         {
-            var userData = mapper.Map<UserResponse>(await userManagementClient.GetUserByID(userID).EnsureExists());
+            var userData = mapper.Map<UserResponse>(EnsureExists(await userManagementClient.GetUserByID(userID)));
 
             return Ok(userData);
         }
@@ -96,7 +96,7 @@ namespace Merchants.Api.Controllers
         public async Task<ActionResult<OperationResponse>> LinkUserToTerminal([FromRoute]string userID, [FromRoute]long terminalID)
         {
             //Check if user exists
-            _ = await userManagementClient.GetUserByID(userID).EnsureExists();
+            _ = EnsureExists(await userManagementClient.GetUserByID(userID));
 
             await terminalsService.LinkUserToTerminal(userID, terminalID);
 
@@ -108,7 +108,7 @@ namespace Merchants.Api.Controllers
         public async Task<ActionResult<OperationResponse>> UnlinkUserFromTerminal([FromRoute]string userID, [FromRoute]long terminalID)
         {
             //Check if user exists
-            _ = await userManagementClient.GetUserByID(userID).EnsureExists();
+            _ = EnsureExists(await userManagementClient.GetUserByID(userID));
 
             await terminalsService.UnLinkUserFromTerminal(userID, terminalID);
 

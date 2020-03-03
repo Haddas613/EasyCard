@@ -12,6 +12,7 @@ namespace Merchants.Api.Models.Terminal
 {
     public class TerminalSettings
     {
+        [Range(0, int.MaxValue)]
         public int? MinInstallments { get; set; }
 
         /// <summary>

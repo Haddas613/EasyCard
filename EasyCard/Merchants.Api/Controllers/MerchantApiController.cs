@@ -49,8 +49,7 @@ namespace Merchants.Api.Controllers
         [Route("{merchantID}")]
         public async Task<ActionResult<MerchantResponse>> GetMerchant([FromRoute]long merchantID)
         {
-            var merchant = await mapper.ProjectTo<MerchantResponse>(merchantsService.GetMerchants())
-                .FirstOrDefaultAsync(m => m.MerchantID == merchantID).EnsureExists();
+            var merchant = mapper.Map<MerchantResponse>(EnsureExists(await merchantsService.GetMerchants().FirstOrDefaultAsync(m => m.MerchantID == merchantID)));
 
             return Ok(merchant);
         }
@@ -76,7 +75,7 @@ namespace Merchants.Api.Controllers
         [Route("{merchantID}")]
         public async Task<ActionResult<OperationResponse>> UpdateMerchant([FromRoute]long merchantID, [FromBody]UpdateMerchantRequest model)
         {
-            var merchant = await merchantsService.GetMerchants().FirstOrDefaultAsync(d => d.MerchantID == merchantID).EnsureExists();
+            var merchant = EnsureExists(await merchantsService.GetMerchants().FirstOrDefaultAsync(d => d.MerchantID == merchantID));
 
             mapper.Map(model, merchant);
 

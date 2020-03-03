@@ -41,5 +41,7 @@ namespace Shared.Api.Models
         public string EntityReference { get; set; }
 
         public string CorrelationId { get; internal set; }
+
+        public string EntityType { get; set; }
     }
 }

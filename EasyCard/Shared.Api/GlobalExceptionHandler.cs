@@ -29,12 +29,10 @@ namespace Shared.Api
                 // TODO: log errors
                 //_logger.LogError(ex, $"Exception {correlationId}: {ex.Message}");
 
-                if (ex is EntityNotFoundException)
+                if (ex is EntityNotFoundException enfeEx)
                 {
                     //TODO: log details
-                    var enfeEx = (EntityNotFoundException)ex;
-                    result = JsonConvert.SerializeObject(new OperationResponse { Message = enfeEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId });
-
+                    result = JsonConvert.SerializeObject(new OperationResponse { Message = enfeEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId, EntityType = enfeEx.EntityType });
                     responseStatusCode = 404;
                 }
                 else
