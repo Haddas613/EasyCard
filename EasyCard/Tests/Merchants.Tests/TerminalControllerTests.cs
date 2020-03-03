@@ -127,8 +127,7 @@ namespace MerchantsApi.Tests
 
             var actionResult = await controller.GetMerchant(merchantID);
 
-            var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
-            var responseData = response.Value as MerchantResponse;
+            var responseData = actionResult.Value;
 
             return responseData;
         }
