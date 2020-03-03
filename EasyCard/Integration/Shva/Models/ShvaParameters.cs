@@ -15,6 +15,7 @@ namespace Shva.Models
         public string AuthNum { get; set; }
 
         public bool IsNewInitDeal { get; set; }
+        public InitDealResultModel InitDealModel { get; set; }
 
 
     }

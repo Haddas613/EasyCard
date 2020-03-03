@@ -9,64 +9,66 @@ namespace Shva.Models
 {
     internal static class EMVDealHelper
     {
-        public static void InitInputObj(string expDate_YYMM, string transactionType, string currency, string code, string cardNum, string creditTerms, string amount, string cvv2, string authNum,
-          string id, ParamJEnum paramJ, string numOfPayment, string firstAmount, string nonFirstAmount, InitDealResultModel initDealM, bool isNewInitDeal, ref clsInput inputObj)
+        public static void InitInputObj( InitInputObjRequest req, ref clsInput inputObj)
         {
-
-            int paramJInt = (int)paramJ;
+            int paramJInt = (int)req.ParamJ;
             bool notvalidParamJ = paramJInt != (int)ParamJEnum.MakeDeal && paramJInt != (int)ParamJEnum.J5Deal && paramJInt != (int)ParamJEnum.Check;
-            int parameterJValue = notvalidParamJ ? (int)ParamJEnum.MakeDeal : (int)paramJ;//J4 is default
+            int parameterJValue = notvalidParamJ ? (int)ParamJEnum.MakeDeal : (int)req.ParamJ;//J4 is default
 
 
             //initialization deal
-            if ("11".Equals(transactionType))
+            if ("11".Equals(req.TransactionType))
             {
-                inputObj.panEntryMode = code;
-                inputObj.clientInputPan = cardNum;
-                inputObj.expirationDate = expDate_YYMM;
+                inputObj.panEntryMode = req.Code;
+                inputObj.clientInputPan = req.CardNum;
+                inputObj.expirationDate =req.ExpDate_YYMM;
 
 
-                if (isNewInitDeal)
+                if (req.IsNewInitDeal)
                 {
                     //CVV
-                    if (!String.IsNullOrWhiteSpace(cvv2))
-                        inputObj.cvv2 = cvv2;
+                    if (!string.IsNullOrWhiteSpace(req.Cvv2))
+                    {
+                        inputObj.cvv2 = req.Cvv2;
+                    }
 
                     //תעודת זהות
-                    if (!String.IsNullOrWhiteSpace(id))
-                        inputObj.id = id;
+                    if (!string.IsNullOrWhiteSpace(req.Id))
+                    {
+                        inputObj.id = req.Id;
+                    }
 
                     inputObj.parameterJ = parameterJValue.ToString();
-                    inputObj.creditTerms = creditTerms;
-                    inputObj.tranType = transactionType;
+                    inputObj.creditTerms = req.CreditTerms;
+                    inputObj.tranType = req.TransactionType;
 
                     inputObj.amount = "1";
                     inputObj.stndOrdrFreq = "4";
                     inputObj.stndOrdrTotalNo = "999";
                     inputObj.stndOrdrNo = "0";
                 }
-                else if (initDealM != null)
+                else if (req.InitDealM != null)
                 {
                     //חיוב עסקת הוראת קבע אחרי אתחול
-                    inputObj.creditTerms = creditTerms;
-                    inputObj.tranType = transactionType;
-                    inputObj.amount = Math.Round(Convert.ToDecimal(amount) / 100, 2).ToString("00.00").Replace(".", String.Empty);
+                    inputObj.creditTerms = req.CreditTerms;
+                    inputObj.tranType = req.TransactionType;
+                    inputObj.amount = Math.Round(Convert.ToDecimal(req.Amount) / 100, 2).ToString("00.00").Replace(".", string.Empty);
 
-                    inputObj.originalUid = initDealM.OriginalUid;
-                    inputObj.originalTranDate = initDealM.OriginalTranDate;
-                    inputObj.originalTranTime = initDealM.OriginalTranTime;
+                    inputObj.originalUid = req.InitDealM.OriginalUid;
+                    inputObj.originalTranDate = req.InitDealM.OriginalTranDate;
+                    inputObj.originalTranTime = req.InitDealM.OriginalTranTime;
                     inputObj.stndOrdrTotalNo = "999";
-                    inputObj.originalAmount = initDealM.Amount;
-                    inputObj.stndOrdrNo = initDealM.DealsCounter.ToString();
-                    if (!string.IsNullOrEmpty(initDealM.OriginalAuthSolekNum))
+                    inputObj.originalAmount = req.InitDealM.Amount;
+                    inputObj.stndOrdrNo = req.InitDealM.DealsCounter.ToString();
+                    if (!string.IsNullOrEmpty(req.InitDealM.OriginalAuthSolekNum))
                     {
-                        inputObj.originalAuthSolekNum = initDealM.OriginalAuthSolekNum;
+                        inputObj.originalAuthSolekNum = req.InitDealM.OriginalAuthSolekNum;
                         inputObj.originalAuthorizationCodeSolek = "7";// initDealM.OriginalAuthorizationCodeSolek;
                     }
 
-                    if (!string.IsNullOrEmpty(initDealM.OriginalAuthNum))
+                    if (!string.IsNullOrEmpty(req.InitDealM.OriginalAuthNum))
                     {
-                        inputObj.originalAuthNum = initDealM.OriginalAuthNum;
+                        inputObj.originalAuthNum = req.InitDealM.OriginalAuthNum;
                         inputObj.originalAuthorizationCodeManpik = "7";//initDealM.OriginalAuthorizationCodeManpik;
                     }
                 }
@@ -74,26 +76,30 @@ namespace Shva.Models
             else
             {
                 inputObj.parameterJ = parameterJValue.ToString();
-                inputObj.amount = Math.Round(Convert.ToDecimal(amount) / 100, 2).ToString("00.00").Replace(".", String.Empty);
+                inputObj.amount = Math.Round(Convert.ToDecimal(req.Amount) / 100, 2).ToString("00.00").Replace(".", string.Empty);
                 ///* "840";//USD   "978";//Euro   "376";//ILS*/
-                inputObj.currency = currency;
-                inputObj.creditTerms = creditTerms;
-                inputObj.tranType = transactionType;
-                inputObj.clientInputPan = cardNum;
-                inputObj.expirationDate = expDate_YYMM;
-                inputObj.panEntryMode = code;
+                inputObj.currency = req.Currency;
+                inputObj.creditTerms = req.CreditTerms;
+                inputObj.tranType = req.TransactionType;
+                inputObj.clientInputPan =req.CardNum;
+                inputObj.expirationDate = req.ExpDate_YYMM;
+                inputObj.panEntryMode =req.Code;
                 //CVV
-                if (!String.IsNullOrWhiteSpace(cvv2))
-                    inputObj.cvv2 = cvv2;
+                if (!string.IsNullOrWhiteSpace(req.Cvv2))
+                {
+                    inputObj.cvv2 = req.Cvv2;
+                }
 
                 //תעודת זהות
-                if (!String.IsNullOrWhiteSpace(id))
-                    inputObj.id = id;
+                if (!string.IsNullOrWhiteSpace(req.Id))
+                {
+                    inputObj.id = req.Id;
+                }
 
                 //מספר אישור
-                if (!String.IsNullOrWhiteSpace(authNum))
+                if (!string.IsNullOrWhiteSpace(req.AuthNum))
                 {
-                    inputObj.authorizationNo = authNum;
+                    inputObj.authorizationNo = req.AuthNum;
                     inputObj.authorizationCodeManpik = "5";
                 }
 
@@ -102,19 +108,19 @@ namespace Shva.Models
                 int numOfPaymentI;
                 double firstAmountD;
                 double nonFirstAmountD;
-                if ("89".Contains(creditTerms) && int.TryParse(numOfPayment, out numOfPaymentI) && double.TryParse(firstAmount, out firstAmountD) && double.TryParse(nonFirstAmount, out nonFirstAmountD))//Payments 8 OR 9
+                if ("89".Contains(req.CreditTerms) && int.TryParse(req.NumOfPayment, out numOfPaymentI) && double.TryParse(req.FirstAmount, out firstAmountD) && double.TryParse(req.NonFirstAmount, out nonFirstAmountD))//Payments 8 OR 9
                 {
                     inputObj.noPayments = numOfPaymentI.ToString();
-                    inputObj.firstPayment = Math.Round(Convert.ToDecimal(firstAmountD) / 100, 2).ToString("00.00").Replace(".", String.Empty);
-                    inputObj.notFirstPayment = Math.Round(Convert.ToDecimal(nonFirstAmountD) / 100, 2).ToString("00.00").Replace(".", String.Empty);
+                    inputObj.firstPayment = Math.Round(Convert.ToDecimal(firstAmountD) / 100, 2).ToString("00.00").Replace(".", string.Empty);
+                    inputObj.notFirstPayment = Math.Round(Convert.ToDecimal(nonFirstAmountD) / 100, 2).ToString("00.00").Replace(".", string.Empty);
                 }
 
                 //קרדיט
-                if ("56".Contains(creditTerms) && int.TryParse(numOfPayment, out numOfPaymentI))//Credit 5 OR 6
+                if ("56".Contains(req.CreditTerms) && int.TryParse(req.NumOfPayment, out numOfPaymentI))//Credit 5 OR 6
+                {
                     inputObj.noPayments = numOfPaymentI.ToString();
+                }
             }
         }
-
-
     }
 }
