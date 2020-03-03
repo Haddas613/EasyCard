@@ -4,13 +4,6 @@
         <name>Merchants.Api</name>
     </assembly>
     <members>
-        <member name="M:Merchants.Api.Controllers.UserApiController.CreateUser(Merchants.Api.Models.User.UserRequest)">
-            <summary>
-            409 response means that user with given email already exists
-            </summary>
-            <param name="user"></param>
-            <returns></returns>
-        </member>
         <member name="P:Merchants.Api.Models.Terminal.ExternalSystemDetails.ExternalProcessorReference">
             <summary>
             SHVA or other system terminal ID

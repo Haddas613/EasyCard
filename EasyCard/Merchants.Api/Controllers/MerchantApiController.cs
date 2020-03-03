@@ -52,11 +52,6 @@ namespace Merchants.Api.Controllers
             var merchant = await mapper.ProjectTo<MerchantResponse>(merchantsService.GetMerchants())
                 .FirstOrDefaultAsync(m => m.MerchantID == merchantID).EnsureExists();
 
-            if (merchant == null)
-            {
-                return new NotFoundObjectResult(new { });
-            }
-
             return Ok(merchant);
         }
 

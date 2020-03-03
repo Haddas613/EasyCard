@@ -37,7 +37,7 @@ namespace MerchantsApi.Tests
 
             var actionResult = await controller.CreateUser(new UserRequest());
 
-            var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;
 
             Assert.NotNull(response);
@@ -57,7 +57,7 @@ namespace MerchantsApi.Tests
 
             var actionResult = await controller.LockUser(clientMockSetup.UserEntityId);
 
-            var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;
 
             Assert.NotNull(response);
@@ -77,7 +77,7 @@ namespace MerchantsApi.Tests
 
             var actionResult = await controller.UnLockUser(clientMockSetup.UserEntityId);
 
-            var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;
 
             Assert.NotNull(response);
@@ -97,7 +97,7 @@ namespace MerchantsApi.Tests
 
             var actionResult = await controller.ResetPasswordForUser(clientMockSetup.UserEntityId);
 
-            var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;
 
             Assert.NotNull(response);
@@ -121,7 +121,7 @@ namespace MerchantsApi.Tests
 
             var actionResult = await controller.LinkUserToTerminal(clientMockSetup.UserEntityId, terminalID);
 
-            var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;
             var linkedTerminal = await merchantsFixture.MerchantsContext.UserTerminalMappings.FirstOrDefaultAsync(t => t.TerminalID == terminalID && t.UserID == clientMockSetup.UserEntityId);
 
@@ -146,7 +146,7 @@ namespace MerchantsApi.Tests
 
             var actionResult = await controller.UnlinkUserFromTerminal(terminal.UserID, terminal.TerminalID);
 
-            var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;
             var linkedTerminal = await merchantsFixture.MerchantsContext.UserTerminalMappings
                 .FirstOrDefaultAsync(t => t.TerminalID == terminal.TerminalID && t.UserID == terminal.UserID);
