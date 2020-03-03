@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Shared.Api.Models;
 using Shared.Helpers;
 using Shared.Integration;
 using Shared.Integration.Exceptions;
@@ -34,24 +35,65 @@ namespace Shva
         public async Task<ExternalPaymentTransactionResponse> CreateTransaction(ExternalPaymentTransactionRequest paymentTransactionRequest, string messageId, string
              correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
         {
-            // TODO: implement mapping
-            var inValue = new AshStartRequestBody();
-            inValue.UserName = configuration.UserName;
-            inValue.Password = configuration.Password;
-            inValue.MerchantNumber = paymentTransactionRequest.TerminalReference;
-            // TODO: other fields
-           
-
-
-            var result = await this.DoRequest(inValue, "http://shva.co.il/xmlwebservices/AshStart", messageId, correlationId, handleIntegrationMessage);
-
-            var resultBody = (AshStartResponseBody)result?.Body?.Content;
-
-            if (resultBody == null) return null;
-
-            // TODO: implement mapping
             var res = new ExternalPaymentTransactionResponse();
-            res.TransactionReference = resultBody.pinpad.track2; // TODO: use right fields
+            var ashStartReq = new AshStartRequestBody();
+            ShvaParameters shvaParameters = (ShvaParameters)paymentTransactionRequest.ProcessorSettings;
+            ashStartReq.UserName = shvaParameters.UserName;
+            ashStartReq.Password = shvaParameters.Password;
+            ashStartReq.MerchantNumber = shvaParameters.MerchantNumber;
+            clsInput cls = new clsInput();
+            InitDealResultModel initDealResultModel = new InitDealResultModel();//TODO   billingModel.IsNewInitDeal ? null : Common.BL.Billing.GetInitDealCardDataByCustomerID(billingModel.CustomerID);
+            EMVDealHelper.InitInputObj(paymentTransactionRequest.ExpDate_YYMM, paymentTransactionRequest.TransactionType, paymentTransactionRequest.Currency, paymentTransactionRequest.Code,
+                String.IsNullOrWhiteSpace(paymentTransactionRequest.CreditCardNumber) ? paymentTransactionRequest.Urack2 : paymentTransactionRequest.CreditCardNumber,
+               paymentTransactionRequest.CreditTerms, paymentTransactionRequest.Amount.ToString(), paymentTransactionRequest.CVV, shvaParameters.AuthNum, paymentTransactionRequest.IdentityNumber, paymentTransactionRequest.ParamJ, paymentTransactionRequest.NumOfInstallment, paymentTransactionRequest.FirstAmount,
+               paymentTransactionRequest.NonFirstAmount, initDealResultModel, shvaParameters.IsNewInitDeal, ref cls);
+            ashStartReq.inputObj = cls;
+            ashStartReq.pinpad = new clsPinPad();
+            ashStartReq.globalObj = new ShvaEMV.clsGlobal();
+
+            var result = await this.DoRequest(ashStartReq, "http://shva.co.il/xmlwebservices/AshStart", messageId, correlationId, handleIntegrationMessage);
+
+            var ashStartResultBody = (AshStartResponseBody)result?.Body?.Content;
+
+            if (ashStartResultBody == null)
+            {
+                return null;
+            }
+
+
+            if (ashStartResultBody.AshStartResult == 777)
+            {
+                var ashAuthReq = new AshAuthRequestBody();
+                var ashEndReq = new AshEndRequestBody();
+                ashAuthReq.pinpad = ashStartResultBody.pinpad;
+                ashAuthReq.globalObj = ashStartResultBody.globalObj;
+                ashStartReq.inputObj = ashEndReq.inputObj = cls;
+                ashAuthReq.MerchantNumber = ashEndReq.MerchantNumber = shvaParameters.MerchantNumber;
+                ashAuthReq.UserName = ashEndReq.UserName = shvaParameters.UserName;
+                ashAuthReq.Password = ashEndReq.Password = shvaParameters.Password;
+
+                var resultAuth = await this.DoRequest(ashAuthReq, "http://shva.co.il/xmlwebservices/AshAuth", messageId, correlationId, handleIntegrationMessage);
+
+                var authResultBody = (AshAuthResponse)result?.Body?.Content;
+
+                ashEndReq.globalObj = authResultBody.Body.globalObj;
+                ashEndReq.pinpad = authResultBody.Body.pinpad;
+                var resultAshEnd = await this.DoRequest(ashEndReq, "http://shva.co.il/xmlwebservices/AshEnd", messageId, correlationId, handleIntegrationMessage);
+                var resultAshEndBody = (AshEndResponseBody)result?.Body?.Content;
+                int resCode = resultAshEndBody.AshEndResult;
+                //if (resultAshEndBody.AshEndResult == 777)//   TODO
+                //{
+                //    if (resultStatus == 777 && transactionType == "11" && !billingModel.IsNewInitDeal && initDealResultModel != null)
+                //    {
+                //        מימוש עסקת אתחול שהצליחה, 0 כדי שתישמר בtblcard כרגיל לשידור
+                //        resultStatus = 0;
+                //    }
+                //}
+               
+                res.ShvaCode = resCode;
+                res.DealNumber = resultAshEndBody.globalObj.receiptObj.voucherNumber.valueTag;
+                res.TransactionReference = resultAshEndBody.globalObj.outputObj.tranRecord.valueTag;
+            }
 
             return res;
         }
@@ -75,7 +117,7 @@ namespace Shva
 
             try
             {
-                svcRes = await this.apiClient.PostXml<Envelope>(this.configuration.BaseUrl, "/Service/Service.asmx", soap, () => BuildHeaders(soapAction), 
+                svcRes = await this.apiClient.PostXml<Envelope>(this.configuration.BaseUrl, "/Service/Service.asmx", soap, () => BuildHeaders(soapAction),
                     (url, request) => { requestStr = request; requestUrl = url; },
                     (response, responseStatus, responseHeaders) => { responseStr = response; responseStatusStr = responseStatus.ToString(); });
 
