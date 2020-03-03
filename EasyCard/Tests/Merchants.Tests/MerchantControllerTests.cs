@@ -31,9 +31,11 @@ namespace MerchantsApi.Tests
             var merchantModel = new MerchantRequest { BusinessName = Guid.NewGuid().ToString() };
             var actionResult = await controller.CreateMerchant(merchantModel);
 
-            var responseData = actionResult.Value;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
+            var responseData = response.Value as OperationResponse;
 
-            //Assert.Equal(201, response.StatusCode);
+            Assert.NotNull(response);
+            Assert.Equal(201, response.StatusCode);
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
@@ -54,9 +56,11 @@ namespace MerchantsApi.Tests
             var merchantModel = new UpdateMerchantRequest { BusinessName = newName };
             var actionResult = await controller.UpdateMerchant(existingMerchant.MerchantID, merchantModel);
 
-            var responseData = actionResult.Value;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
+            var responseData = response.Value as OperationResponse;
 
-            //Assert.Equal(201, response.StatusCode);
+            Assert.NotNull(response);
+            Assert.Equal(200, response.StatusCode);
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
@@ -75,9 +79,11 @@ namespace MerchantsApi.Tests
             var filter = new MerchantsFilter();
             var actionResult = await controller.GetMerchants(filter);
 
-            var responseData = actionResult.Value;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
+            var responseData = response.Value as SummariesResponse<MerchantSummary>;
 
-            //Assert.Equal(200, response.StatusCode);
+            Assert.NotNull(response);
+            Assert.Equal(200, response.StatusCode);
             Assert.True(responseData.NumberOfRecords > 0);
         }
 
@@ -89,19 +95,22 @@ namespace MerchantsApi.Tests
             var filter = new MerchantsFilter { BusinessName = Guid.NewGuid().ToString() }; //assumed unique non-taken name
             var actionResult = await controller.GetMerchants(filter);
 
-            var responseData = actionResult.Value;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
+            var responseData = response.Value as SummariesResponse<MerchantSummary>;
 
-            //Assert.Equal(200, response.StatusCode);
+            Assert.NotNull(response);
+            Assert.Equal(200, response.StatusCode);
             Assert.NotNull(responseData);
             Assert.NotNull(responseData.Data);
             Assert.True(responseData.NumberOfRecords == 0);
 
             var existingMerchant = await merchantsFixture.MerchantsService.GetMerchants().FirstOrDefaultAsync();
             actionResult = await controller.GetMerchants(new MerchantsFilter { BusinessName = existingMerchant.BusinessName });
+            response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
+            responseData = response.Value as SummariesResponse<MerchantSummary>;
 
-            responseData = actionResult.Value;
-
-            //Assert.Equal(200, response.StatusCode);
+            Assert.NotNull(response);
+            Assert.Equal(200, response.StatusCode);
             Assert.NotNull(responseData);
             Assert.NotNull(responseData.Data);
             Assert.True(responseData.NumberOfRecords == 1); //assuming the name is unique
@@ -113,7 +122,8 @@ namespace MerchantsApi.Tests
 
             var actionResult = await controller.GetMerchant(merchantID);
 
-            var responseData = actionResult.Value;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
+            var responseData = response.Value as MerchantResponse;
 
             return responseData;
         }

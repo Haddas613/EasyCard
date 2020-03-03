@@ -59,5 +59,23 @@ namespace Merchants.Shared {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merchant Created.
+        /// </summary>
+        public static string MerchantCreated {
+            get {
+                return ResourceManager.GetString("MerchantCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merchant Updated.
+        /// </summary>
+        public static string MerchantUpdated {
+            get {
+                return ResourceManager.GetString("MerchantUpdated", resourceCulture);
+            }
+        }
     }
 }

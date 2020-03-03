@@ -7,6 +7,7 @@ using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.Merchant;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Services;
+using Merchants.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -73,7 +74,7 @@ namespace Merchants.Api.Controllers
             var newMerchant = mapper.Map<Merchant>(merchant);
             await merchantsService.CreateEntity(newMerchant);
 
-            return CreatedAtAction(nameof(GetMerchant), new { merchantID = newMerchant.MerchantID }, new OperationResponse("ok", StatusEnum.Success, newMerchant.MerchantID));
+            return CreatedAtAction(nameof(GetMerchant), new { merchantID = newMerchant.MerchantID }, new OperationResponse(Messages.MerchantCreated, StatusEnum.Success, newMerchant.MerchantID));
         }
 
         [HttpPut]
@@ -86,7 +87,7 @@ namespace Merchants.Api.Controllers
 
             await merchantsService.UpdateEntity(merchant);
 
-            return Ok(new OperationResponse("ok", StatusEnum.Success, merchantID));
+            return Ok(new OperationResponse(Messages.MerchantUpdated, StatusEnum.Success, merchantID));
         }
     }
 }
