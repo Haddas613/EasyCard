@@ -14,5 +14,9 @@ namespace IdentityServer.Models
         public bool ForgotPasswordCheckBankAccountNumber { get; internal set; }
 
         public object CompanyName { get; internal set; }
+
+        public string EventHubConnectionString { get; internal set; }
+
+        public string EventHub { get; internal set; }
     }
 }

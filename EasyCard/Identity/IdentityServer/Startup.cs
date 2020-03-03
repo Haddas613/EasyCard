@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -93,7 +94,11 @@ namespace IdentityServer
 
             services.AddAuthentication();
 
-            services.AddSingleton<IEmailSender, EventHubEmailSender>();
+            services.AddSingleton<IEmailSender, EventHubEmailSender>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
+                return new EventHubEmailSender(cfg.EventHubConnectionString, cfg.EventHub);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
