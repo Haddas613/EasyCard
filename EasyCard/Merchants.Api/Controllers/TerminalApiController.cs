@@ -6,6 +6,7 @@ using Merchants.Business.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shared.Api;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Business.Extensions;
@@ -17,7 +18,7 @@ namespace Merchants.Api.Controllers
     [Produces("application/json")]
     [Route("api/terminal")]
     [ApiController]
-    public class TerminalApiController : ControllerBase
+    public class TerminalApiController : ApiControllerBase
     {
         private readonly IMerchantsService merchantsService;
         private readonly ITerminalsService terminalsService;
@@ -31,8 +32,7 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SummariesResponse<TerminalSummary>))]
-        public async Task<IActionResult> GetTerminals([FromQuery] TerminalsFilter filter)
+        public async Task<ActionResult<SummariesResponse<TerminalSummary>>> GetTerminals([FromQuery] TerminalsFilter filter)
         {
             var query = terminalsService.GetTerminals().Filter(filter);
 
@@ -40,23 +40,22 @@ namespace Merchants.Api.Controllers
 
             response.Data = await mapper.ProjectTo<TerminalSummary>(query.ApplyPagination(filter)).ToListAsync();
 
-            return new JsonResult(response) { StatusCode = 200 };
+            return Ok(response);
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TerminalResponse))]
         [Route("{terminalID}")]
-        public async Task<IActionResult> GetTerminal([FromRoute]long terminalID)
+        public async Task<ActionResult<TerminalResponse>> GetTerminal([FromRoute]long terminalID)
         {
             var terminal = await mapper.ProjectTo<TerminalResponse>(terminalsService.GetTerminals())
                 .FirstOrDefaultAsync(m => m.TerminalID == terminalID).EnsureExists();
 
-            return new JsonResult(terminal) { StatusCode = 200 };
+            return Ok(terminal);
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
-        public async Task<IActionResult> CreateTerminal([FromBody]TerminalRequest model)
+        public async Task<ActionResult<OperationResponse>> CreateTerminal([FromBody]TerminalRequest model)
         {
             var merchant = await merchantsService.GetMerchants().FirstOrDefaultAsync(d => d.MerchantID == model.MerchantID).EnsureExists();
 
@@ -64,13 +63,12 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.CreateEntity(newTerminal);
 
-            return new JsonResult(new OperationResponse("ok", StatusEnum.Success, newTerminal.TerminalID)) { StatusCode = 201 };
+            return CreatedAtAction(nameof(GetTerminal), new { terminalID = newTerminal.TerminalID }, new OperationResponse("ok", StatusEnum.Success, newTerminal.TerminalID));
         }
 
         [HttpPut]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         [Route("{terminalID}")]
-        public async Task<IActionResult> UpdateTerminal([FromRoute]long terminalID, [FromBody]UpdateTerminalRequest model)
+        public async Task<ActionResult<OperationResponse>> UpdateTerminal([FromRoute]long terminalID, [FromBody]UpdateTerminalRequest model)
         {
             var terminal = await terminalsService.GetTerminals().FirstOrDefaultAsync(d => d.TerminalID == terminalID).EnsureExists();
 
@@ -78,7 +76,7 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.UpdateEntity(terminal);
 
-            return new JsonResult(new OperationResponse("ok", StatusEnum.Success, terminalID)) { StatusCode = 201 };
+            return Ok(new OperationResponse("ok", StatusEnum.Success, terminalID));
         }
     }
 }

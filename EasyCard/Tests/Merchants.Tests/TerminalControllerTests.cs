@@ -35,7 +35,7 @@ namespace MerchantsApi.Tests
             var terminalModel = new TerminalRequest { Label = Guid.NewGuid().ToString(), MerchantID = merchant.MerchantID };
             var actionResult = await controller.CreateTerminal(terminalModel);
 
-            var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;
 
             Assert.NotNull(response);
@@ -61,11 +61,11 @@ namespace MerchantsApi.Tests
             var terminalModel = new UpdateTerminalRequest { Label = newName };
             var actionResult = await controller.UpdateTerminal(existingTerminal.TerminalID, terminalModel);
 
-            var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;
 
             Assert.NotNull(response);
-            Assert.Equal(201, response.StatusCode);
+            Assert.Equal(200, response.StatusCode);
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
@@ -84,7 +84,7 @@ namespace MerchantsApi.Tests
             var filter = new TerminalsFilter();
             var actionResult = await controller.GetTerminals(filter);
 
-            var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as SummariesResponse<TerminalSummary>;
 
             Assert.NotNull(response);
@@ -100,7 +100,7 @@ namespace MerchantsApi.Tests
             var filter = new TerminalsFilter { Label = Guid.NewGuid().ToString() }; //assumed unique non-taken name
             var actionResult = await controller.GetTerminals(filter);
 
-            var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as SummariesResponse<TerminalSummary>;
 
             Assert.NotNull(response);
@@ -111,7 +111,7 @@ namespace MerchantsApi.Tests
 
             var existingTerminal = await merchantsFixture.TerminalsService.GetTerminals().FirstOrDefaultAsync();
             actionResult = await controller.GetTerminals(new TerminalsFilter { Label = existingTerminal.Label });
-            response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
+            response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             responseData = response.Value as SummariesResponse<TerminalSummary>;
 
             Assert.NotNull(response);
@@ -138,7 +138,7 @@ namespace MerchantsApi.Tests
 
             var actionResult = await controller.GetTerminal(terminalID);
 
-            var response = actionResult as Microsoft.AspNetCore.Mvc.JsonResult;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as TerminalResponse;
 
             return responseData;
