@@ -47,8 +47,8 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}")]
         public async Task<ActionResult<TerminalResponse>> GetTerminal([FromRoute]long terminalID)
         {
-            var terminal = await mapper.ProjectTo<TerminalResponse>(terminalsService.GetTerminals())
-                .FirstOrDefaultAsync(m => m.TerminalID == terminalID).EnsureExists();
+            var terminal = mapper.Map<TerminalResponse>(await terminalsService.GetTerminals()
+                .FirstOrDefaultAsync(m => m.TerminalID == terminalID).EnsureExists());
 
             return Ok(terminal);
         }

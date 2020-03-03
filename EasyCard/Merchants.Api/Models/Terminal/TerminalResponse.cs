@@ -13,8 +13,8 @@ namespace Merchants.Api.Models.Terminal
     {
         public TerminalResponse()
         {
-            Settings = new TerminalResponseSettings();
-            BillingSettings = new TerminalResponseBillingSettings();
+            Settings = new TerminalSettings();
+            BillingSettings = new TerminalBillingSettings();
         }
 
         public long TerminalID { get; set; }
@@ -43,8 +43,8 @@ namespace Merchants.Api.Models.Terminal
 
         public JObject PaymentButtonSettings { get; set; }
 
-        public TerminalResponseSettings Settings { get; set; }
+        public TerminalSettings Settings { get; set; }
 
-        public TerminalResponseBillingSettings BillingSettings { get; set; }
+        public TerminalBillingSettings BillingSettings { get; set; }
     }
 }
