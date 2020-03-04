@@ -120,4 +120,7 @@
   <data name="EntityNotFound" xml:space="preserve">
     <value>Entity not found</value>
   </data>
+  <data name="ValidationErrors" xml:space="preserve">
+    <value>Validation errors</value>
+  </data>
 </root>

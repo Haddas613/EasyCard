@@ -43,5 +43,7 @@ namespace Shared.Api.Models
         public string CorrelationId { get; internal set; }
 
         public string EntityType { get; set; }
+
+        public List<Error> Errors { get; set; } = new List<Error>();
     }
 }
