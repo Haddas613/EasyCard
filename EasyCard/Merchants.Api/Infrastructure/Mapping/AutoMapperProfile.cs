@@ -23,7 +23,7 @@ namespace Merchants.Api.Infrastructure.Mapping
             RegisterUserMappings();
         }
 
-        internal void RegisterTerminalMappings()
+        private void RegisterTerminalMappings()
         {
             CreateMap<TerminalRequest, Terminal>()
                 .ForMember(m => m.Created, o => o.MapFrom((src, tgt) => tgt.Created = DateTime.UtcNow));
@@ -39,7 +39,7 @@ namespace Merchants.Api.Infrastructure.Mapping
             CreateMap<TerminalExternalSystem, ExternalSystemDetails>();
         }
 
-        internal void RegisterMerchantMappings()
+        private void RegisterMerchantMappings()
         {
             CreateMap<Merchant, MerchantSummary>();
             CreateMap<Merchant, MerchantResponse>();
@@ -49,7 +49,7 @@ namespace Merchants.Api.Infrastructure.Mapping
             CreateMap<Feature, FeatureResponse>();
         }
 
-        internal void RegisterUserMappings()
+        private void RegisterUserMappings()
         {
             CreateMap<UserProfileDataResponse, UserResponse>();
             CreateMap<UserRequest, CreateUserRequestModel>();

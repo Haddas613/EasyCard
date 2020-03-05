@@ -11,5 +11,8 @@ namespace Transactions.Shared.Enums
     /// </summary>
     public enum TransactionTypeEnum
     {
+        Initialization,
+        RegularDeal,
+        Refund
     }
 }

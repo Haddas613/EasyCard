@@ -18,6 +18,11 @@ using Newtonsoft.Json.Serialization;
 using Shared.Api;
 using Transactions.Business.Data;
 using Microsoft.EntityFrameworkCore;
+using Merchants.Business.Services;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Shared.Business.Security;
+using Transactions.Business.Services;
 
 namespace TransactionsApi
 {
@@ -76,7 +81,13 @@ namespace TransactionsApi
                 c.IncludeXmlComments(xmlPath);
             });
 
-            //services.AddDbContext<TransactionsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddSingleton<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
+
+            services.AddDbContext<TransactionsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<ITransactionsService, TransactionsService>();
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -95,7 +106,7 @@ namespace TransactionsApi
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Transactions Api V1");
             });
 
 
