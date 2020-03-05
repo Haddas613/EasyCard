@@ -39,23 +39,23 @@ namespace Merchants.Tests.MockSetups
                 .Verifiable();
 
             MockObj.Setup(m => m.CreateUser(It.IsAny<CreateUserRequestModel>()))
-                .Returns(Task.FromResult(new UserOperationResponse { EntityReference = UserEntityId }))
+                .Returns(Task.FromResult(new UserOperationResponse { UserID = UserEntityId }))
                 .Verifiable();
 
             MockObj.Setup(m => m.DeleteUser(UserEntityId))
-                .Returns(Task.FromResult(new UserOperationResponse { EntityReference = UserEntityId }))
+                .Returns(Task.FromResult(new UserOperationResponse { UserID = UserEntityId }))
                 .Verifiable();
 
             MockObj.Setup(m => m.LockUser(UserEntityId))
-                .Returns(Task.FromResult(new UserOperationResponse { EntityReference = UserEntityId }))
+                .Returns(Task.FromResult(new UserOperationResponse { UserID = UserEntityId }))
                 .Verifiable();
 
             MockObj.Setup(m => m.ResetPassword(UserEntityId))
-                .Returns(Task.FromResult(new UserOperationResponse { EntityReference = UserEntityId }))
+                .Returns(Task.FromResult(new UserOperationResponse { UserID = UserEntityId }))
                 .Verifiable();
 
             MockObj.Setup(m => m.UnLockUser(UserEntityId))
-                .Returns(Task.FromResult(new UserOperationResponse { EntityReference = UserEntityId }))
+                .Returns(Task.FromResult(new UserOperationResponse { UserID = UserEntityId }))
                 .Verifiable();
         }
     }

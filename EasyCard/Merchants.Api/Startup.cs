@@ -1,6 +1,7 @@
 using AutoMapper;
 using Merchants.Business.Data;
 using Merchants.Business.Services;
+using Merchants.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -64,6 +65,8 @@ namespace MerchantsApi
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
+            services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

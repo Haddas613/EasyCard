@@ -57,12 +57,11 @@ namespace IdentityServer.Controllers
         /// Get User
         /// </summary>
         /// <param name="userId"></param>
-        /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         [HttpGet]
         [Route("user/{userId}")]
         public async Task<ActionResult<UserProfileDataResponse>> GetUser([FromRoute]string userId)
         {
-            var user = await userManager.FindByEmailAsync(userId);
+            var user = await userManager.FindByIdAsync(userId);
 
             if (user == null)
             {
@@ -71,7 +70,9 @@ namespace IdentityServer.Controllers
 
             var result = new UserProfileDataResponse
             {
-
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                UserID = user.Id,
             };
 
             return Ok(result);
@@ -89,55 +90,53 @@ namespace IdentityServer.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<UserOperationResponse>> CreateUser([FromBody]CreateUserRequestModel model)
         {
-            try
+            var user = await userManager.FindByEmailAsync(model.Email);
+
+            if (user != null)
             {
-                var user = await userManager.FindByEmailAsync(model.Email);
+                return Conflict(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserAlreadyExists });
+            }
 
-                if (user == null)
+            if (user == null)
+            {
+                user = new ApplicationUser { UserName = model.Email, Email = model.Email, /*PhoneNumber = model.CellPhone*/ };
+                var result = await userManager.CreateAsync(user);
+                if (!result.Succeeded)
                 {
-                    user = new ApplicationUser { UserName = model.Email, Email = model.Email, /*PhoneNumber = model.CellPhone*/ };
-                    var result = await userManager.CreateAsync(user);
-                    if (!result.Succeeded)
-                    {
-                        logger.LogInformation("User is not created");
+                    logger.LogInformation("User is not created");
 
-                        // TODO: error details
-                        return new BadRequestResult();
-                    }
-
-                    logger.LogInformation("User created a new account");
+                    // TODO: error details
+                    return new BadRequestResult();
                 }
 
-                //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ConfirmationEmailExpirationInHours));
-
-                var callbackUrl = Url.EmailConfirmationLink(code, Request.Scheme);
-                await emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-
-                var allClaims = await userManager.GetClaimsAsync(user);
-
-                //await _userManager.AddClaim(allClaims, user, "extension_PaymentGatewayID", model.PaymentGatewayID.ToString());
-                //await _userManager.AddClaim(allClaims, user, "extension_MerchantID", model.MerchantID.ToString());
-                //await _userManager.AddClaim(allClaims, user, "extension_FirstName", model.FirstName);
-                //await _userManager.AddClaim(allClaims, user, "extension_LastName", model.LastName);
-
-                await userManager.AddToRoleAsync(user, "Merchant");
-
-                var operationResult = new UserOperationResponse
-                {
-                    EntityReference = user.Id,
-                };
-
-                // TODO: config
-                await userManager.SetTwoFactorEnabledAsync(user, true);
-
-                return new ObjectResult(operationResult);
+                logger.LogInformation("User created a new account");
             }
-            catch (Exception ex)
+
+            //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ConfirmationEmailExpirationInHours));
+
+            var callbackUrl = Url.EmailConfirmationLink(code, Request.Scheme);
+            await emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+
+            var allClaims = await userManager.GetClaimsAsync(user);
+
+            //await _userManager.AddClaim(allClaims, user, "extension_PaymentGatewayID", model.PaymentGatewayID.ToString());
+            //await _userManager.AddClaim(allClaims, user, "extension_MerchantID", model.MerchantID.ToString());
+            //await _userManager.AddClaim(allClaims, user, "extension_FirstName", model.FirstName);
+            //await _userManager.AddClaim(allClaims, user, "extension_LastName", model.LastName);
+
+            await userManager.AddToRoleAsync(user, "Merchant");
+
+            var operationResult = new UserOperationResponse
             {
-                logger.LogError(ex, $"Cannot process user {model.Email}");
-                return StatusCode(500);
-            }
+                UserID = user.Id,
+                ResponseCode = UserOperationResponseCodeEnum.UserCreated
+            };
+
+            // TODO: config
+            await userManager.SetTwoFactorEnabledAsync(user, true);
+
+            return new ObjectResult(operationResult);
         }
 
         // TODO: validate model
@@ -160,7 +159,8 @@ namespace IdentityServer.Controllers
 
                 var operationResult = new UserOperationResponse
                 {
-                    EntityReference = user.Id,
+                    UserID = user.Id,
+                    ResponseCode = UserOperationResponseCodeEnum.UserUpdated
                 };
 
                 // TODO: config
@@ -193,7 +193,8 @@ namespace IdentityServer.Controllers
 
             var operationResult = new UserOperationResponse
             {
-                EntityReference = user.Id,
+                UserID = user.Id,
+                ResponseCode = UserOperationResponseCodeEnum.UserDeleted
             };
 
             var result = await userManager.DeleteAsync(user);
@@ -241,7 +242,8 @@ namespace IdentityServer.Controllers
 
             var operationResult = new UserOperationResponse
             {
-                EntityReference = user.Id,
+                UserID = user.Id,
+                ResponseCode = UserOperationResponseCodeEnum.PasswordReseted
             };
 
             return new ObjectResult(operationResult);
