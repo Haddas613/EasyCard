@@ -27,6 +27,8 @@ namespace Merchants.Business.Data
 
         public DbSet<UserTerminalMapping> UserTerminalMappings { get; set; }
 
+        public DbSet<MerchantHistory> MerchantHistories { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         public MerchantsContext(DbContextOptions<MerchantsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
@@ -43,6 +45,7 @@ namespace Merchants.Business.Data
             modelBuilder.ApplyConfiguration(new ExternalSystemConfiguration());
             modelBuilder.ApplyConfiguration(new TerminalExternalSystemConfiguration());
             modelBuilder.ApplyConfiguration(new UserTerminalMappingConfiguration());
+            modelBuilder.ApplyConfiguration(new MerchantHistoryConfiguration());
 
             // security filters
 
@@ -164,6 +167,37 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.UserID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.HasIndex(idx => new { idx.UserID, idx.TerminalID }).IsUnique(true);
+            }
+        }
+
+        internal class MerchantHistoryConfiguration : IEntityTypeConfiguration<MerchantHistory>
+        {
+            public void Configure(EntityTypeBuilder<MerchantHistory> builder)
+            {
+                builder.ToTable("MerchantHistory");
+
+                builder.HasKey(b => b.MerchantHistoryID);
+                builder.Property(b => b.MerchantHistoryID).ValueGeneratedOnAdd();
+
+                builder.Property(b => b.MerchantID).IsRequired();
+
+                builder.Property(b => b.OperationDate).IsRequired();
+
+                builder.Property(b => b.OperationCode).IsRequired().HasMaxLength(30).IsUnicode(false);
+
+                builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.OperationDescription).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+
+                builder.Property(b => b.AdditionalDetails).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+
+                builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.SourceIP).IsRequired().HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.ReasonForChange).IsRequired().HasMaxLength(50).IsUnicode(true);
             }
         }
     }
