@@ -16,6 +16,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Shared.Api;
+using Transactions.Business.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace TransactionsApi
 {
@@ -31,6 +33,14 @@ namespace TransactionsApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(logging =>
+            {
+                logging.AddConfiguration(Configuration.GetSection("Logging"));
+                logging.AddConsole();
+                logging.AddDebug();
+                logging.AddAzureWebAppDiagnostics();
+            });
+
             services.AddControllers(opts =>
             {
                 // Adding global custom validation filter
@@ -66,6 +76,7 @@ namespace TransactionsApi
                 c.IncludeXmlComments(xmlPath);
             });
 
+            //services.AddDbContext<TransactionsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
