@@ -21,5 +21,10 @@ namespace Shared.Business.Security
         {
             return this.user;
         }
+
+        public string GetIP()
+        {
+            return httpContextAccessor.HttpContext.Connection?.RemoteIpAddress?.ToString();
+        }
     }
 }

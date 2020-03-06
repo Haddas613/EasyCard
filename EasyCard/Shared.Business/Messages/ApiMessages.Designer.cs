@@ -68,5 +68,14 @@ namespace Shared.Business.Messages {
                 return ResourceManager.GetString("EntityNotFound", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation errors.
+        /// </summary>
+        public static string ValidationErrors {
+            get {
+                return ResourceManager.GetString("ValidationErrors", resourceCulture);
+            }
+        }
     }
 }

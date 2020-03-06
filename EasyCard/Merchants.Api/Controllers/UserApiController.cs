@@ -8,6 +8,7 @@ using Merchants.Api.Models.User;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Shared.Api;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
@@ -40,14 +41,6 @@ namespace Merchants.Api.Controllers
             return Ok(userData);
         }
 
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
-        public async Task<ActionResult<OperationResponse>> CreateUser([FromBody]UserRequest user)
-        {
-            var opResult = await userManagementClient.CreateUser(mapper.Map<CreateUserRequestModel>(user));
-            return CreatedAtAction(nameof(GetUser), new { userID = opResult.EntityReference }, new OperationResponse("ok", StatusEnum.Success, opResult.EntityReference));
-        }
-
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userEmail}")]
@@ -58,10 +51,22 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpPost]
-        [Route("invite")]
-        public async Task<ActionResult<OperationResponse>> InviteUser([FromBody]InviteUserRequest user)
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        [Route("invite")][ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        public async Task<ActionResult<OperationResponse>> InviteUser([FromBody]InviteUserRequest request)
         {
-            throw new NotImplementedException();
+            _ = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(t => t.TerminalID == request.TerminalID));
+
+            var user = await userManagementClient.GetUserByEmail(request.Email);
+            if (user == null)
+            {
+                _ = await userManagementClient.CreateUser(mapper.Map<CreateUserRequestModel>(request));
+                user = await userManagementClient.GetUserByEmail(request.Email);
+            }
+
+            await terminalsService.LinkUserToTerminal(user.UserID, request.TerminalID);
+
+            return CreatedAtAction(nameof(GetUser), new { userID = user.UserID }, new OperationResponse("ok", StatusEnum.Success, user.UserID));
         }
 
         [HttpPost]

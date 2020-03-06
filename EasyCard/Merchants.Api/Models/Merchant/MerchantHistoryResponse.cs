@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Merchants.Api.Models.Merchant
 {
-    public class MerchantHistory
+    public class MerchantHistoryResponse
     {
         public long MerchantHistoryID { get; set; }
 
@@ -18,5 +18,9 @@ namespace Merchants.Api.Models.Merchant
         public string OperationCode { get; set; }
 
         public string OperationDescription { get; set; }
+
+        public string SourceIP { get; set; }
+
+        public string ReasonForChange { get; set; }
     }
 }

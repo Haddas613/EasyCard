@@ -56,9 +56,15 @@ namespace Merchants.Api.Controllers
 
         [HttpGet]
         [Route("{merchantID}/history")]
-        public async Task<IActionResult> GetMerchantHistory([FromRoute]long merchantID)
+        public async Task<ActionResult<SummariesResponse<MerchantHistoryResponse>>> GetMerchantHistory([FromRoute]long merchantID, [FromQuery] MerchantHistoryFilter filter)
         {
-            throw new NotImplementedException();
+            var query = merchantsService.GetMerchantHistories().Where(h => h.MerchantID == merchantID).Filter(filter);
+
+            var response = new SummariesResponse<MerchantHistoryResponse> { NumberOfRecords = await query.CountAsync() };
+
+            response.Data = await mapper.ProjectTo<MerchantHistoryResponse>(query.ApplyPagination(filter)).ToListAsync();
+
+            return Ok(response);
         }
 
         [HttpPost]

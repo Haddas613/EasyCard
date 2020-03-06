@@ -34,7 +34,7 @@ namespace Merchants.Tests.MockSetups
                 .Returns(Task.FromResult(new UserProfileDataResponse { UserID = UserEntityId, Email = UserEmail }))
                 .Verifiable();
 
-            MockObj.Setup(m => m.GetUserByEmail(It.IsAny<string>()))
+            MockObj.Setup(m => m.GetUserByEmail(It.IsNotNull<string>()))
                 .Returns(Task.FromResult(new UserProfileDataResponse { UserID = UserEntityId, Email = UserEmail }))
                 .Verifiable();
 

@@ -18,7 +18,7 @@ namespace Shared.Business
             this.entities = context.Set<T>();
         }
 
-        public async Task UpdateEntity(T entity, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction dbTransaction = null)
+        public virtual async Task UpdateEntity(T entity, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction dbTransaction = null)
         {
             T exist = this.entities.Find(entity.GetID());
 
@@ -27,7 +27,7 @@ namespace Shared.Business
             await this.dbContext.SaveChangesAsync();
         }
 
-        public async Task CreateEntity(T entity, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction dbTransaction = null)
+        public virtual async Task CreateEntity(T entity, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction dbTransaction = null)
         {
             entities.Add(entity);
 

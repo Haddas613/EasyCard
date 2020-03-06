@@ -4,18 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Api;
 using TransactionsApi.Models;
 
 namespace TransactionsApi.Controllers
 {
     [Route("api/authorizationKeys")]
     [ApiController]
-    public class AuthorizationKeysApiController : ControllerBase
+    public class AuthorizationKeysApiController : ApiControllerBase
     {
         [HttpPost]
         [Route("reset")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorizationKeys))]
-        public async Task<IActionResult> ResetKeys()
+        public async Task<ActionResult<AuthorizationKeys>> ResetKeys()
         {
             // TODO: implementation
             var keys = new AuthorizationKeys

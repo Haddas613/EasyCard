@@ -22,7 +22,7 @@ namespace Merchants.Business.Entities.Terminal
 
         public long MerchantID { get; set; }
 
-        public Merchants.Business.Entities.Merchant.Merchant Merchant { get; set; }
+        public Merchant.Merchant Merchant { get; set; }
 
         public string Label { get; set; }
 
@@ -38,9 +38,9 @@ namespace Merchants.Business.Entities.Terminal
 
         public TerminalBillingSettings BillingSettings { get; set; }
 
-        public IEnumerable<TerminalExternalSystem> Integrations { get; set; }
+        public virtual IEnumerable<TerminalExternalSystem> Integrations { get; set; }
 
-        public IEnumerable<Feature> EnabledFeatures { get; set; }
+        public virtual IEnumerable<Feature> EnabledFeatures { get; set; }
 
         public long GetID()
         {

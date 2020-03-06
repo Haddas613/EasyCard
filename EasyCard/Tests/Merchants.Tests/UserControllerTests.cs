@@ -28,14 +28,17 @@ namespace MerchantsApi.Tests
             this.merchantsFixture = merchantsFixture;
         }
 
-        [Fact(DisplayName = "CreateUser: Creates when model is correct")]
+        [Fact(DisplayName = "InviteUser: Invites when user exists and model is correct")]
         [Order(1)]
-        public async Task CreateUser_CreatesWhenModelIsCorrect()
+        public async Task InviteUser_InvitesWhenUserExistsModelIsCorrect()
         {
             var clientMockSetup = new UserManagementClientMockSetup();
             var controller = new UserApiController(merchantsFixture.TerminalsService, clientMockSetup.MockObj.Object, merchantsFixture.Mapper);
+            var userEmail = Guid.NewGuid().ToString();
+            var terminal = (await merchantsFixture.MerchantsContext.Terminals.FirstOrDefaultAsync())
+                ?? throw new Exception("There is no terminals");
 
-            var actionResult = await controller.CreateUser(new UserRequest());
+            var actionResult = await controller.InviteUser(new InviteUserRequest { Email = userEmail, TerminalID = terminal.TerminalID });
 
             var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;
@@ -45,7 +48,7 @@ namespace MerchantsApi.Tests
             Assert.NotNull(responseData);
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
-            clientMockSetup.MockObj.Verify(m => m.CreateUser(It.IsAny<CreateUserRequestModel>()), Times.Once);
+            clientMockSetup.MockObj.Verify(m => m.CreateUser(It.IsAny<CreateUserRequestModel>()), Times.Never);
         }
 
         [Fact(DisplayName = "LockUser: Locks when model is correct")]
