@@ -18,5 +18,9 @@ namespace Merchants.Api.Models.Merchant
         public string OperationCode { get; set; }
 
         public string OperationDescription { get; set; }
+
+        public string SourceIP { get; set; }
+
+        public string ReasonForChange { get; set; }
     }
 }

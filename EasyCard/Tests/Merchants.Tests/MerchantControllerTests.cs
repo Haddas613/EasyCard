@@ -4,6 +4,7 @@ using Merchants.Tests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Business.Audit;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -44,6 +45,13 @@ namespace MerchantsApi.Tests
             var merchant = await GetMerchant(responseData.EntityID.Value);
             Assert.NotNull(merchant);
             Assert.Equal(merchantModel.BusinessName, merchant.BusinessName);
+
+            //check if merchant history was created
+            var history = (await merchantsFixture.MerchantsService.GetMerchantHistories().ToListAsync()).
+               LastOrDefault(h => h.MerchantID == merchant.MerchantID && h.OperationCode == OperationCodesEnum.MerchantCreated.ToString());
+            Assert.NotNull(history);
+            Assert.NotNull(history.OperationDoneBy);
+            Assert.True(history.OperationDoneByID == merchantsFixture.HttpContextAccessorWrapper.UserIdClaim);
         }
 
         [Fact(DisplayName = "UpdateMerchant: Updates when model is correct")]
@@ -69,6 +77,14 @@ namespace MerchantsApi.Tests
             var merchant = await GetMerchant(existingMerchant.MerchantID);
             Assert.NotNull(merchant);
             Assert.Equal(merchantModel.BusinessName, merchant.BusinessName);
+
+            //check if merchant history was updated
+            //TODO: check if OperationDoneBy is current user
+            var history = (await merchantsFixture.MerchantsService.GetMerchantHistories().ToListAsync()).
+                LastOrDefault(h => h.MerchantID == merchant.MerchantID && h.OperationCode == OperationCodesEnum.MerchantUpdated.ToString());
+            Assert.NotNull(history);
+            Assert.NotNull(history.OperationDoneBy);
+            Assert.True(history.OperationDoneByID == merchantsFixture.HttpContextAccessorWrapper.UserIdClaim);
         }
 
         [Fact(DisplayName = "GetMerchants: Returns collection of merchants")]

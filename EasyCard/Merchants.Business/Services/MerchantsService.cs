@@ -1,10 +1,16 @@
 ﻿using Merchants.Business.Data;
 using Merchants.Business.Entities.Merchant;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
+using Shared.Business.Audit;
+using Shared.Business.AutoHistory;
+using Shared.Business.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,37 +19,74 @@ namespace Merchants.Business.Services
     public class MerchantsService : ServiceBase<Merchant>, IMerchantsService
     {
         private readonly MerchantsContext context;
+        private readonly ClaimsPrincipal user;
+        private readonly IHttpContextAccessorWrapper httpContextAccessor;
 
-        public MerchantsService(MerchantsContext context)
+        public MerchantsService(MerchantsContext context, IHttpContextAccessorWrapper httpContextAccessor)
             : base(context)
         {
             this.context = context;
+            this.httpContextAccessor = httpContextAccessor;
+            this.user = httpContextAccessor.GetUser();
         }
 
-        //public void AddMerchant(Merchant merchant)
-        //{
-        //    context.Add(merchant);
-        //}
+        public IQueryable<MerchantHistory> GetMerchantHistories()
+        {
+            return context.MerchantHistories;
+        }
 
         public IQueryable<Merchant> GetMerchants()
         {
-            return context.Merchants.AsQueryable();
+            return context.Merchants;
         }
 
-        //public async Task<OperationResponse> SaveChanges(IDbContextTransaction dbTransaction = null)
-        //{
-        //    var result = new OperationResponse();
+        public async override Task UpdateEntity(Merchant entity, IDbContextTransaction dbTransaction = null)
+        {
+            List<string> changes = new List<string>();
 
-        //    try
-        //    {
-        //        await context.SaveChangesAsync();
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        throw ex;
-        //    }
+            // Must ToArray() here for excluding the AutoHistory model.
+            var entries = this.context.ChangeTracker.Entries().Where(e => e.State == EntityState.Modified || e.State == EntityState.Deleted || e.State == EntityState.Added).ToArray();
+            foreach (var entry in entries)
+            {
+                changes.Add(entry.AutoHistory().Changed);
+            }
 
-        //    return result;
-        //}
+            //var changesStr = JsonConvert.SerializeObject(entries);
+            var changesStr = string.Concat("[", string.Join(",", changes), "]");
+
+            await base.UpdateEntity(entity, dbTransaction);
+
+            var history = new MerchantHistory
+            {
+                OperationCode = OperationCodesEnum.MerchantUpdated.ToString(),
+                OperationDate = DateTime.UtcNow,
+                OperationDoneBy = user?.GetDoneBy(),
+                OperationDoneByID = user?.GetDoneByID(),
+                MerchantID = entity.MerchantID,
+                OperationDescription = changesStr
+
+                // TODO: SourceIP = user?.GetSourceIp()
+            };
+            context.MerchantHistories.Add(history);
+            await context.SaveChangesAsync();
+        }
+
+        public async override Task CreateEntity(Merchant entity, IDbContextTransaction dbTransaction = null)
+        {
+            await base.CreateEntity(entity, dbTransaction);
+
+            var history = new MerchantHistory
+            {
+                OperationCode = OperationCodesEnum.MerchantCreated.ToString(),
+                OperationDate = DateTime.UtcNow,
+                OperationDoneBy = user?.GetDoneBy(),
+                OperationDoneByID = user?.GetDoneByID(),
+                MerchantID = entity.MerchantID,
+
+                // TODO: SourceIP = user?.GetSourceIp()
+            };
+            context.MerchantHistories.Add(history);
+            await context.SaveChangesAsync();
+        }
     }
 }

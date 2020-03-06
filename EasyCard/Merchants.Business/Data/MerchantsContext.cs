@@ -193,11 +193,11 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.AdditionalDetails).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
 
-                builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
+                builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
-                builder.Property(b => b.SourceIP).IsRequired().HasMaxLength(50).IsUnicode(false);
+                builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
-                builder.Property(b => b.ReasonForChange).IsRequired().HasMaxLength(50).IsUnicode(true);
+                builder.Property(b => b.ReasonForChange).IsRequired(false).HasMaxLength(50).IsUnicode(true);
             }
         }
     }

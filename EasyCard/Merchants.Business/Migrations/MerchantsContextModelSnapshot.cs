@@ -148,7 +148,6 @@ namespace Merchants.Business.Migrations
                         .IsUnicode(true);
 
                     b.Property<string>("CorrelationId")
-                        .IsRequired()
                         .HasColumnType("varchar(50)")
                         .HasMaxLength(50)
                         .IsUnicode(false);
@@ -183,13 +182,11 @@ namespace Merchants.Business.Migrations
                         .IsUnicode(false);
 
                     b.Property<string>("ReasonForChange")
-                        .IsRequired()
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50)
                         .IsUnicode(true);
 
                     b.Property<string>("SourceIP")
-                        .IsRequired()
                         .HasColumnType("varchar(50)")
                         .HasMaxLength(50)
                         .IsUnicode(false);
