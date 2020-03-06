@@ -47,6 +47,7 @@ namespace Merchants.Api.Infrastructure.Mapping
                 .ForMember(m => m.Created, o => o.MapFrom((src, tgt) => tgt.Created = DateTime.UtcNow));
             CreateMap<UpdateMerchantRequest, Merchant>();
             CreateMap<Feature, FeatureResponse>();
+            CreateMap<MerchantHistory, MerchantHistoryResponse>();
         }
 
         private void RegisterUserMappings()

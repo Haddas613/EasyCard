@@ -8,5 +8,7 @@ namespace Shared.Business.Security
     public interface IHttpContextAccessorWrapper
     {
         ClaimsPrincipal GetUser();
+
+        string GetIP();
     }
 }

@@ -42,6 +42,7 @@ namespace Merchants.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        [Obsolete("Move To: Invite User")]
         public async Task<ActionResult<OperationResponse>> CreateUser([FromBody]UserRequest user)
         {
             var opResult = await userManagementClient.CreateUser(mapper.Map<CreateUserRequestModel>(user));

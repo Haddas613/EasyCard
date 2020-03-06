@@ -29,6 +29,11 @@ namespace Merchants.Tests.Fixtures
         /// </summary>
         public string UserIdClaim { get; set; }
 
+        /// <summary>
+        /// Get or set current user IP
+        /// </summary>
+        public string UserIp { get; set; }
+
         public HttpContextAccessorWrapperFixture()
         {
             UserClaims = new ClaimsPrincipal();
@@ -36,6 +41,7 @@ namespace Merchants.Tests.Fixtures
             UserFirstNameClaim = Guid.NewGuid().ToString().Substring(0, 8);
             UserLastNameClaim = Guid.NewGuid().ToString().Substring(0, 8);
             UserIdClaim = Guid.NewGuid().ToString();
+            UserIp = Guid.NewGuid().ToString();
 
             UserClaims.AddIdentity(new ClaimsIdentity(new List<Claim>
             {
@@ -48,6 +54,11 @@ namespace Merchants.Tests.Fixtures
         public ClaimsPrincipal GetUser()
         {
             return UserClaims;
+        }
+
+        public string GetIP()
+        {
+            return UserIp;
         }
     }
 }

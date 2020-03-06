@@ -12,6 +12,10 @@ namespace Merchants.Business.Entities.Merchant
 
         public virtual Merchant Merchant { get; set; }
 
+        public long? TerminalID { get; set; }
+
+        public virtual Terminal.Terminal Terminal { get; set; }
+
         public DateTime? OperationDate { get; set; }
 
         public string OperationCode { get; set; }

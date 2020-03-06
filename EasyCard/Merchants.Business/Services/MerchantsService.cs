@@ -51,7 +51,6 @@ namespace Merchants.Business.Services
                 changes.Add(entry.AutoHistory().Changed);
             }
 
-            //var changesStr = JsonConvert.SerializeObject(entries);
             var changesStr = string.Concat("[", string.Join(",", changes), "]");
 
             await base.UpdateEntity(entity, dbTransaction);
@@ -63,9 +62,8 @@ namespace Merchants.Business.Services
                 OperationDoneBy = user?.GetDoneBy(),
                 OperationDoneByID = user?.GetDoneByID(),
                 MerchantID = entity.MerchantID,
-                OperationDescription = changesStr
-
-                // TODO: SourceIP = user?.GetSourceIp()
+                OperationDescription = changesStr,
+                SourceIP = httpContextAccessor.GetIP()
             };
             context.MerchantHistories.Add(history);
             await context.SaveChangesAsync();
@@ -82,8 +80,7 @@ namespace Merchants.Business.Services
                 OperationDoneBy = user?.GetDoneBy(),
                 OperationDoneByID = user?.GetDoneByID(),
                 MerchantID = entity.MerchantID,
-
-                // TODO: SourceIP = user?.GetSourceIp()
+                SourceIP = httpContextAccessor.GetIP()
             };
             context.MerchantHistories.Add(history);
             await context.SaveChangesAsync();

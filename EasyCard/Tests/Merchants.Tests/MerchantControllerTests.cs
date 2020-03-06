@@ -51,6 +51,7 @@ namespace MerchantsApi.Tests
                LastOrDefault(h => h.MerchantID == merchant.MerchantID && h.OperationCode == OperationCodesEnum.MerchantCreated.ToString());
             Assert.NotNull(history);
             Assert.NotNull(history.OperationDoneBy);
+            Assert.NotNull(history.SourceIP);
             Assert.True(history.OperationDoneByID == merchantsFixture.HttpContextAccessorWrapper.UserIdClaim);
         }
 
@@ -79,11 +80,11 @@ namespace MerchantsApi.Tests
             Assert.Equal(merchantModel.BusinessName, merchant.BusinessName);
 
             //check if merchant history was updated
-            //TODO: check if OperationDoneBy is current user
             var history = (await merchantsFixture.MerchantsService.GetMerchantHistories().ToListAsync()).
                 LastOrDefault(h => h.MerchantID == merchant.MerchantID && h.OperationCode == OperationCodesEnum.MerchantUpdated.ToString());
             Assert.NotNull(history);
             Assert.NotNull(history.OperationDoneBy);
+            Assert.NotNull(history.SourceIP);
             Assert.True(history.OperationDoneByID == merchantsFixture.HttpContextAccessorWrapper.UserIdClaim);
         }
 
@@ -130,6 +131,26 @@ namespace MerchantsApi.Tests
             Assert.NotNull(responseData);
             Assert.NotNull(responseData.Data);
             Assert.True(responseData.NumberOfRecords == 1); //assuming the name is unique
+        }
+
+        [Fact(DisplayName = "GetMerchants: GetHistory return result")]
+        [Order(5)]
+        public async Task GetMerchants_GetHistoryReturnsResult()
+        {
+            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
+            var filter = new MerchantHistoryFilter();
+            var referenceHistory = merchantsFixture.MerchantsService.GetMerchantHistories().FirstOrDefault(h => h.MerchantID != null) 
+                ?? throw new Exception("Couldn't get reference merchant id");
+            var actionResult = await controller.GetMerchantHistory(referenceHistory.MerchantID.Value, filter);
+
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
+            var responseData = response.Value as SummariesResponse<MerchantHistoryResponse>;
+
+            Assert.NotNull(response);
+            Assert.Equal(200, response.StatusCode);
+            Assert.NotNull(responseData);
+            Assert.NotNull(responseData.Data);
+            Assert.True(responseData.NumberOfRecords > 0);
         }
 
         private async Task<MerchantResponse> GetMerchant(long merchantID)
