@@ -23,6 +23,7 @@ namespace Shared.Business.Audit
         AccountLocked,
         AccountUnlocked,
 
-        TerminalAdded
+        TerminalCreated,
+        TerminalUpdated
     }
 }

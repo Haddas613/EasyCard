@@ -31,7 +31,7 @@ namespace Merchants.Tests.Fixtures
             MerchantsContext.Database.EnsureCreated();
 
             MerchantsService = new MerchantsService(MerchantsContext, HttpContextAccessorWrapper);
-            TerminalsService = new TerminalsService(MerchantsContext);
+            TerminalsService = new TerminalsService(MerchantsContext, HttpContextAccessorWrapper);
 
             var myProfile = new AutoMapperProfile();
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));

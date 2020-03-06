@@ -85,6 +85,7 @@ namespace MerchantsApi.Tests
             Assert.NotNull(history);
             Assert.NotNull(history.OperationDoneBy);
             Assert.NotNull(history.SourceIP);
+            Assert.NotNull(history.OperationDescription);
             Assert.True(history.OperationDoneByID == merchantsFixture.HttpContextAccessorWrapper.UserIdClaim);
         }
 
