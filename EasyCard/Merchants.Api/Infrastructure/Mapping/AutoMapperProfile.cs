@@ -53,7 +53,7 @@ namespace Merchants.Api.Infrastructure.Mapping
         private void RegisterUserMappings()
         {
             CreateMap<UserProfileDataResponse, UserResponse>();
-            CreateMap<UserRequest, CreateUserRequestModel>();
+            CreateMap<InviteUserRequest, CreateUserRequestModel>();
         }
     }
 }

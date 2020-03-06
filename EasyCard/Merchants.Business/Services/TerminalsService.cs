@@ -37,14 +37,11 @@ namespace Merchants.Business.Services
 
         public async Task LinkUserToTerminal(string userID, long terminalID)
         {
-            var terminal = await context.Terminals.FirstAsync(t => t.TerminalID == terminalID);
-
-            //TODO: provide missing data
             context.UserTerminalMappings.Add(new Entities.User.UserTerminalMapping
             {
                 OperationDate = DateTime.UtcNow,
-                OperationDoneBy = null,
-                OperationDoneByID = null,
+                OperationDoneBy = user.GetDoneBy(),
+                OperationDoneByID = user.GetDoneByID(),
                 TerminalID = terminalID,
                 UserID = userID,
             });
