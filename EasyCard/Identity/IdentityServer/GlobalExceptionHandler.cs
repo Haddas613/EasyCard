@@ -10,7 +10,7 @@ using System.Text;
 
 namespace IdentityServer
 {
-    public static class GlobalExceptionHandler
+    public class GlobalExceptionHandler
     {
         public static void HandleException(IApplicationBuilder applicationBuilder)
         {
@@ -25,7 +25,7 @@ namespace IdentityServer
                 int responseStatusCode = 500;
                 string result = string.Empty;
 
-                var logger = applicationBuilder.ApplicationServices.GetService<ILogger>();
+                var logger = applicationBuilder.ApplicationServices.GetService<ILogger<GlobalExceptionHandler>>();
                 logger.LogError(ex, $"Exception {correlationId}: {ex.Message}");
 
                 result = JsonConvert.SerializeObject(new { Message = "System error occurred. Please contact support", Status = "error", CorrelationId = correlationId });

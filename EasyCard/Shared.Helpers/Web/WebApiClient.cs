@@ -16,6 +16,11 @@ namespace Shared.Helpers
     {
         private HttpClient httpClient;
 
+        public HttpClient HttpClient
+        {
+            get { return httpClient; }
+        }
+
         public WebApiClient()
         {
             var hadler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip };

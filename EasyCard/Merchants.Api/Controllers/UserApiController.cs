@@ -42,7 +42,6 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpPut]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
         [Route("{userEmail}")]
         [Obsolete("Candidate for removal")]
         public async Task<ActionResult<OperationResponse>> UpdateUser([FromRoute]string userEmail, [FromBody]UpdateUserRequest user)
@@ -52,7 +51,8 @@ namespace Merchants.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
-        [Route("invite")][ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        [Route("invite")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> InviteUser([FromBody]InviteUserRequest request)
         {
             _ = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(t => t.TerminalID == request.TerminalID));

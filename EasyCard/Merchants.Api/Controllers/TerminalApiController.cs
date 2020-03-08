@@ -3,6 +3,7 @@ using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.Terminal;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Services;
+using Merchants.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -63,7 +64,7 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.CreateEntity(newTerminal);
 
-            return CreatedAtAction(nameof(GetTerminal), new { terminalID = newTerminal.TerminalID }, new OperationResponse("ok", StatusEnum.Success, newTerminal.TerminalID));
+            return CreatedAtAction(nameof(GetTerminal), new { terminalID = newTerminal.TerminalID }, new OperationResponse(Messages.TerminalCreated, StatusEnum.Success, newTerminal.TerminalID));
         }
 
         [HttpPut]
@@ -76,7 +77,7 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.UpdateEntity(terminal);
 
-            return Ok(new OperationResponse("ok", StatusEnum.Success, terminalID));
+            return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID));
         }
     }
 }

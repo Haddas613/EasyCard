@@ -25,11 +25,17 @@
             Handle logout page postback
             </summary>
         </member>
-        <member name="M:IdentityServer.Controllers.UserManagementApiController.GetUser(System.String)">
+        <member name="M:IdentityServer.Controllers.UserManagementApiController.GetUserByID(System.String)">
             <summary>
-            Get User
+            Get User by ID
             </summary>
             <param name="userId"></param>
+        </member>
+        <member name="M:IdentityServer.Controllers.UserManagementApiController.GetUserByEmail(System.String)">
+            <summary>
+            Get User by Email
+            </summary>
+            <param name="email"></param>
         </member>
         <member name="M:IdentityServer.Controllers.UserManagementApiController.CreateUser(IdentityServerClient.CreateUserRequestModel)">
             <summary>

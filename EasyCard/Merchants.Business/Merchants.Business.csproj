@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Merchants.Shared\Merchants.Shared.csproj" />
     <ProjectReference Include="..\Shared.Business\Shared.Business.csproj" />
+    <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
   </ItemGroup>
 
 </Project>

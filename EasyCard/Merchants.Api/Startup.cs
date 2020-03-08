@@ -1,4 +1,5 @@
 using AutoMapper;
+using IdentityServerClient;
 using Merchants.Business.Data;
 using Merchants.Business.Services;
 using Merchants.Shared;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -16,6 +18,8 @@ using Newtonsoft.Json.Serialization;
 using Shared.Api;
 using Shared.Api.Validation;
 using Shared.Business.Security;
+using Shared.Helpers;
+using Shared.Helpers.Security;
 using System;
 using System.IO;
 using System.Reflection;
@@ -77,16 +81,31 @@ namespace MerchantsApi
                 c.IncludeXmlComments(xmlPath);
             });
 
+            // DI: basics
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddSingleton<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
 
+            // DI: services
             services.AddDbContext<MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IMerchantsService, MerchantsService>();
             services.AddScoped<ITerminalsService, TerminalsService>();
             services.AddAutoMapper(typeof(Startup));
+
+            // DI: identity client
+            services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
+
+            services.AddSingleton<IUserManagementClient, UserManagementClient>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<UserManagementClient>>();
+                var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
+
+                return new UserManagementClient(webApiClient, logger, cfg, tokenService);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

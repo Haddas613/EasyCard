@@ -7,6 +7,7 @@ using Shared.Business;
 using Shared.Business.Audit;
 using Shared.Business.AutoHistory;
 using Shared.Business.Security;
+using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;

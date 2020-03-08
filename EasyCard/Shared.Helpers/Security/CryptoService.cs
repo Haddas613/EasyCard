@@ -121,6 +121,5 @@ namespace Shared.Helpers.Security
 
             return parsed[1];
         }
-
     }
 }

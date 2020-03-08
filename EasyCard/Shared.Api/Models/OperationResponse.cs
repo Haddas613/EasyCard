@@ -44,6 +44,8 @@ namespace Shared.Api.Models
 
         public string EntityType { get; set; }
 
-        public List<Error> Errors { get; set; } = new List<Error>();
+        public IEnumerable<Error> Errors { get; set; }
+
+        public string ConcurrencyToken { get; set; }
     }
 }

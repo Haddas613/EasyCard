@@ -51,7 +51,7 @@ namespace IdentityServer.Controllers
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
             IEmailSender emailSender,
-            ILogger logger,
+            ILogger<AccountController> logger,
             ICryptoService cryptoService,
             IOptions<ApplicationSettings> configuration,
             IAuditLogger managementApiClient)

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shared.Business.Security
+namespace Shared.Helpers.Security
 {
     public class Roles
     {

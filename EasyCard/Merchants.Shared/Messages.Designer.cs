@@ -77,5 +77,23 @@ namespace Merchants.Shared {
                 return ResourceManager.GetString("MerchantUpdated", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal Created.
+        /// </summary>
+        public static string TerminalCreated {
+            get {
+                return ResourceManager.GetString("TerminalCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal Updated.
+        /// </summary>
+        public static string TerminalUpdated {
+            get {
+                return ResourceManager.GetString("TerminalUpdated", resourceCulture);
+            }
+        }
     }
 }

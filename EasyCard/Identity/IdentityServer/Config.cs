@@ -15,7 +15,15 @@ namespace IdentityServer
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
-                new ApiResource("api1", "My API #1")
+                new ApiResource("merchants_api", "Merchants Api"),
+                new ApiResource("transactions_api", "Transactions Api"),
+                new ApiResource("management_api", "User Management")
+                {
+                    ApiSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                },
             };
 
         public static IEnumerable<Client> Clients =>
@@ -73,7 +81,38 @@ namespace IdentityServer
                     PostLogoutRedirectUris = { "http://localhost:5002/index.html" },
                     AllowedCorsOrigins = { "http://localhost:5002" },
 
-                    AllowedScopes = { "openid", "profile", "api1" }
+                    AllowedScopes = { "openid", "profile", "merchants_api" }
+                },
+                new Client
+                {
+                    ClientId = "management_api",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    RequireConsent = false,
+                    AllowOfflineAccess = true,
+                    ClientSecrets =
+                    {
+                        new Secret("yuwsCT8cbJVgw2W6".Sha256())
+                    },
+                    AllowedScopes = { "management_api" },
+                    AccessTokenType = AccessTokenType.Jwt,
+                },
+                new Client
+                {
+                    ClientId = "terminal",
+
+                    RequireClientSecret = false,
+
+                    //ClientSecrets = new List<Secret>
+                    //{
+                    //    new Secret("secret".Sha256())
+                    //},
+
+                    AllowedGrantTypes = { "my_crap_grant" },
+
+                    AllowedScopes = new List<string>
+                    {
+                        "transactions_api"
+                    }
                 }
             };
     }

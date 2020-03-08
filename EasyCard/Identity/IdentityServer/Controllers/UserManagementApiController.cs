@@ -54,15 +54,33 @@ namespace IdentityServer.Controllers
         }
 
         /// <summary>
-        /// Get User
+        /// Get User by ID
         /// </summary>
         /// <param name="userId"></param>
         [HttpGet]
         [Route("user/{userId}")]
-        public async Task<ActionResult<UserProfileDataResponse>> GetUser([FromRoute]string userId)
+        public async Task<ActionResult<UserProfileDataResponse>> GetUserByID([FromRoute]string userId)
         {
             var user = await userManager.FindByIdAsync(userId);
 
+            return await GetUser(user);
+        }
+
+        /// <summary>
+        /// Get User by Email
+        /// </summary>
+        /// <param name="email"></param>
+        [HttpGet]
+        [Route("user")]
+        public async Task<ActionResult<UserProfileDataResponse>> GetUserByEmail([FromQuery]string email)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+
+            return await GetUser(user);
+        }
+
+        private async Task<ActionResult<UserProfileDataResponse>> GetUser(ApplicationUser user)
+        {
             if (user == null)
             {
                 return new NotFoundObjectResult(new { Status = "error", Message = "User does not exist" });
@@ -73,7 +91,10 @@ namespace IdentityServer.Controllers
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 UserID = user.Id,
+                Roles = await userManager.GetRolesAsync(user)
             };
+
+            var allClaims = await userManager.GetClaimsAsync(user);
 
             return Ok(result);
         }

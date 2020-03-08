@@ -1,4 +1,5 @@
 ﻿using Shared.Business.Security;
+using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -45,9 +46,9 @@ namespace Merchants.Tests.Fixtures
 
             UserClaims.AddIdentity(new ClaimsIdentity(new List<Claim>
             {
-                new Claim(SecurityHelpers.FirstNameClaim, UserFirstNameClaim),
-                new Claim(SecurityHelpers.LastNameClaim, UserLastNameClaim),
-                new Claim(SecurityHelpers.UserIdClaim, UserIdClaim)
+                new Claim(Claims.FirstNameClaim, UserFirstNameClaim),
+                new Claim(Claims.LastNameClaim, UserLastNameClaim),
+                new Claim(Claims.UserIdClaim, UserIdClaim)
             }));
         }
 

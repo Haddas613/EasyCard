@@ -140,7 +140,7 @@ namespace MerchantsApi.Tests
         {
             var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
             var filter = new MerchantHistoryFilter();
-            var referenceHistory = merchantsFixture.MerchantsService.GetMerchantHistories().FirstOrDefault(h => h.MerchantID != null) 
+            var referenceHistory = merchantsFixture.MerchantsService.GetMerchantHistories().FirstOrDefault(h => h.MerchantID != null)
                 ?? throw new Exception("Couldn't get reference merchant id");
             var actionResult = await controller.GetMerchantHistory(referenceHistory.MerchantID.Value, filter);
 

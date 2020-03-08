@@ -14,6 +14,8 @@ namespace Shared.Api.Validation
         {
             var result = new OperationResponse { Status = StatusEnum.Error, Message = ApiMessages.ValidationErrors, CorrelationId = correlationId };
 
+            var allErrors = new List<Error>();
+
             foreach (var state in modelState)
             {
                 var error = new Error
@@ -37,8 +39,10 @@ namespace Shared.Api.Validation
 
                 error.Description = string.Join("; ", errors);
 
-                result.Errors.Add(error);
+                allErrors.Add(error);
             }
+
+            result.Errors = allErrors;
 
             return result;
         }

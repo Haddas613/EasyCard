@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using BasicServices;
 using IdentityServer.Data;
 using IdentityServer.Models;
+using IdentityServer.Security;
+using IdentityServer.Services;
+using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -86,7 +89,7 @@ namespace IdentityServer
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders(); // TODO: replace
 
             var builder = services.AddIdentityServer(options =>
             {
@@ -98,7 +101,11 @@ namespace IdentityServer
             .AddInMemoryIdentityResources(Config.Ids)
             .AddInMemoryApiResources(Config.Apis)
             .AddInMemoryClients(Config.Clients)
-            .AddAspNetIdentity<ApplicationUser>();
+            .AddAspNetIdentity<ApplicationUser>()
+
+            .AddExtensionGrantValidator<DelegationGrantValidator>();
+
+            services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
@@ -135,6 +142,8 @@ namespace IdentityServer
 
             // TODO: certificate
             services.AddSingleton<ICryptoService>(new CryptoService(cert));
+
+            services.AddSingleton<IAuditLogger, AuditLogger>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

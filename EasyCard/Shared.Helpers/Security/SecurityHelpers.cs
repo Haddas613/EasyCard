@@ -3,19 +3,10 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 
-namespace Shared.Business.Security
+namespace Shared.Helpers.Security
 {
     public static class SecurityHelpers
     {
-        public const string MerchantIDClaim = "extension_MerchantID";
-        public const string TerminalIDClaim = "extension_TerminalID";
-
-        public const string FirstNameClaim = "extension_FirstName";
-        public const string LastNameClaim = "extension_LastName";
-
-        public const string UserIdClaim = ClaimTypes.NameIdentifier;
-        public const string SubjClaim = JwtClaimTypes.Subject;
-
         public static bool IsAdmin(this ClaimsPrincipal user)
         {
             return user.HasClaim("scope", "admin_api")
@@ -46,7 +37,7 @@ namespace Shared.Business.Security
 
         public static long? GetMerchantID(this ClaimsPrincipal user)
         {
-            var merchantID = user?.FindFirst(MerchantIDClaim)?.Value;
+            var merchantID = user?.FindFirst(Claims.MerchantIDClaim)?.Value;
             if (string.IsNullOrWhiteSpace(merchantID))
             {
                 return null;
@@ -57,8 +48,8 @@ namespace Shared.Business.Security
 
         public static string GetDoneBy(this ClaimsPrincipal user)
         {
-            var firstName = user?.FindFirst(FirstNameClaim)?.Value;
-            var lastName = user?.FindFirst(LastNameClaim)?.Value;
+            var firstName = user?.FindFirst(Claims.FirstNameClaim)?.Value;
+            var lastName = user?.FindFirst(Claims.LastNameClaim)?.Value;
             var fullName = (firstName + " " + lastName).Trim();
 
             var doneBy = !string.IsNullOrWhiteSpace(fullName) ? fullName : "Service";
@@ -68,11 +59,11 @@ namespace Shared.Business.Security
 
         public static string GetDoneByID(this ClaimsPrincipal user)
         {
-            var userId = user?.FindFirst(UserIdClaim)?.Value;
+            var userId = user?.FindFirst(Claims.UserIdClaim)?.Value;
 
             if (userId == null)
             {
-                userId = user?.FindFirst(SubjClaim)?.Value;
+                userId = user?.FindFirst(Claims.SubjClaim)?.Value;
             }
 
             return userId;
