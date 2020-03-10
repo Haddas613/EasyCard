@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Shared.Api;
 using Shared.Api.Models;
+using Shared.Helpers.KeyValueStorage;
 using Shared.Integration.Models;
 using Transactions.Api.Models.Transactions;
 using Transactions.Business.Services;
@@ -22,13 +23,13 @@ namespace Transactions.Api.Controllers
     public class TransactionsApiController : ApiControllerBase
     {
         private readonly ITransactionsService transactionsService;
-        private readonly SecretClient secretClient;
         private readonly IMapper mapper;
+        private readonly IKeyValueStorage<CreditCardToken> keyValueStorage;
 
-        public TransactionsApiController(ITransactionsService transactionsService, SecretClient secretClient, IMapper mapper)
+        public TransactionsApiController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardToken> keyValueStorage, IMapper mapper)
         {
             this.transactionsService = transactionsService;
-            this.secretClient = secretClient;
+            this.keyValueStorage = keyValueStorage;
             this.mapper = mapper;
         }
 
@@ -60,9 +61,9 @@ namespace Transactions.Api.Controllers
                 //data.TerminalID = ...;
                 //data.UserID = ...;
 
-                var resp = await secretClient.SetSecretAsync(new KeyVaultSecret(key, JsonConvert.SerializeObject(data)));
+                await keyValueStorage.Save(key, JsonConvert.SerializeObject(data));
 
-                return CreatedAtAction(nameof(CreateToken), resp.Value.Name);
+                return CreatedAtAction(nameof(CreateToken), new { token = key});
 
             }catch(Exception e)
             {
