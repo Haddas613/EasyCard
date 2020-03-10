@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace Transactions.Api.Infrastructure.Mapping
             CreateMap<TransactionRequest, PaymentTransaction>();
             CreateMap<PaymentTransaction, TransactionResponse>();
             CreateMap<PaymentTransaction, TransactionSummary>();
+            CreateMap<TokenRequest, CreditCardToken>();
         }
     }
 }
