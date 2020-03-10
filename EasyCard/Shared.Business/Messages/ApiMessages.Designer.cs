@@ -61,6 +61,15 @@ namespace Shared.Business.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Conflict.
+        /// </summary>
+        public static string Conflict {
+            get {
+                return ResourceManager.GetString("Conflict", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Entity not found.
         /// </summary>
         public static string EntityNotFound {

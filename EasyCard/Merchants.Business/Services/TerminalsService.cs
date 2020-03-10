@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
 using Shared.Business.Audit;
 using Shared.Business.AutoHistory;
+using Shared.Business.Exceptions;
+using Shared.Business.Messages;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
 using System;
@@ -38,6 +40,13 @@ namespace Merchants.Business.Services
 
         public async Task LinkUserToTerminal(string userID, long terminalID)
         {
+            // if user is already linked to terminal, throw error
+            if ((await context.UserTerminalMappings.CountAsync(m => m.UserID == userID && m.TerminalID == terminalID)) > 0)
+            {
+                throw new EntityConflictException(ApiMessages.Conflict, nameof(Entities.User.UserTerminalMapping),
+                    $"{nameof(userID)}:{userID};{nameof(terminalID)}:{terminalID}");
+            }
+
             context.UserTerminalMappings.Add(new Entities.User.UserTerminalMapping
             {
                 OperationDate = DateTime.UtcNow,
