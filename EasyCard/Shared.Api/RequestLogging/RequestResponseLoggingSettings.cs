@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Merchants.Shared
+namespace Shared.Api
 {
-    public class ApplicationSettings
+    public class RequestResponseLoggingSettings
     {
-        public string DefaultStorageConnectionString { get; set; }
+        public string StorageConnectionString { get; set; }
 
         public string RequestsLogStorageTable { get; set; }
     }

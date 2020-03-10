@@ -26,6 +26,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using Shared.Api;
 using Shared.Helpers.Email;
 using Shared.Helpers.Security;
 
@@ -114,24 +115,31 @@ namespace IdentityServer
 
             X509Certificate2 cert = null;
 
-            if (environment.IsDevelopment())
+            try
             {
-                cert = new X509Certificate2(Convert.FromBase64String(config.InternalCertificate), "idsrv");
-            }
-            else
-            {
-                using (X509Store certStore = new X509Store(StoreName.My, StoreLocation.CurrentUser))
+                if (environment.IsDevelopment())
                 {
-                    certStore.Open(OpenFlags.ReadOnly);
-                    X509Certificate2Collection certCollection = certStore.Certificates.Find(
-                        X509FindType.FindByThumbprint,
-                        config.InternalCertificate,
-                        false);
-                    if (certCollection.Count > 0)
+                    cert = new X509Certificate2(Convert.FromBase64String(config.InternalCertificate), "idsrv");
+                }
+                else
+                {
+                    using (X509Store certStore = new X509Store(StoreName.My, StoreLocation.CurrentUser))
                     {
-                        cert = certCollection[0];
+                        certStore.Open(OpenFlags.ReadOnly);
+                        X509Certificate2Collection certCollection = certStore.Certificates.Find(
+                            X509FindType.FindByThumbprint,
+                            config.InternalCertificate,
+                            false);
+                        if (certCollection.Count > 0)
+                        {
+                            cert = certCollection[0];
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Cannot load certificate {config.InternalCertificate}: {ex.Message}");
             }
 
             services.AddSingleton<IEmailSender, EventHubEmailSender>(serviceProvider =>
@@ -140,16 +148,27 @@ namespace IdentityServer
                 return new EventHubEmailSender(cfg.EmailEventHubConnectionString, cfg.EmailEventHubName);
             });
 
-            // TODO: certificate
             services.AddSingleton<ICryptoService>(new CryptoService(cert));
 
             services.AddSingleton<IAuditLogger, AuditLogger>();
+
+            // DI: request logging
+
+            services.Configure<RequestResponseLoggingSettings>((options) =>
+            {
+                options.RequestsLogStorageTable = config.RequestsLogStorageTable;
+                options.StorageConnectionString = config.DefaultStorageConnectionString;
+            });
+
+            services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
+
+            app.UseRequestResponseLogging();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -195,7 +214,15 @@ namespace IdentityServer
 
             var config = serviceProvider.GetRequiredService<IConfiguration>();
             var connectionString = config.GetConnectionString("DefaultConnection");
-            SeedData.EnsureSeedData(connectionString);
+
+            try
+            {
+                SeedData.EnsureSeedData(connectionString);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
     }
 }

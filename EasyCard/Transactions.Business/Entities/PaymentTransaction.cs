@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Shared.Helpers;
+using Shared.Integration.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Transactions.Shared.Enums;
@@ -20,24 +22,30 @@ namespace Transactions.Business.Entities
 
         public decimal Amount { get; set; }
 
+        /// <summary>
+        /// TODO: Please fill description for this field
+        /// </summary>
         public string Urack2 { get; set; }
 
+        /// <summary>
+        /// Do not store full card number. Please use 123456****1234 pattern CreditCardHelpers.GetCardDigits()
+        /// </summary>
         public string CreditCardNumber { get; set; }
 
-        public string ExpirationDate { get; set; }
+        public CardExpiration CardExpiration { get; set; }
 
         public TransactionTypeEnum TransactionType { get; set; }
 
         /// <summary>
-        /// ///* "840";//USD   "978";//Euro   "376";//ILS*/
+        /// Currency
         /// </summary>
-        public string Currency { get; set; }
+        public CurrencyEnum Currency { get; set; }
 
         /// <summary>
         /// 50 telephone deal
         /// 00 regular (megnetic)
         /// </summary>
-        public string Code { get; set; }
+        public CardPresenceEnum CardPresence { get; set; }
 
         /// <summary>
         /// 1 regular

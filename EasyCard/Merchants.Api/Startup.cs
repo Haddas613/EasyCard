@@ -38,6 +38,8 @@ namespace MerchantsApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var appConfig = Configuration.GetSection("AppConfig").Get<ApplicationSettings>();
+
             services.AddLogging(logging =>
             {
                 logging.AddConfiguration(Configuration.GetSection("Logging"));
@@ -95,6 +97,7 @@ namespace MerchantsApi
             services.AddAutoMapper(typeof(Startup));
 
             // DI: identity client
+
             services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
 
             services.AddSingleton<IUserManagementClient, UserManagementClient>(serviceProvider =>
@@ -106,12 +109,24 @@ namespace MerchantsApi
 
                 return new UserManagementClient(webApiClient, logger, cfg, tokenService);
             });
+
+            // DI: request logging
+
+            services.Configure<RequestResponseLoggingSettings>((options) =>
+            {
+                options.RequestsLogStorageTable = appConfig.RequestsLogStorageTable;
+                options.StorageConnectionString = appConfig.DefaultStorageConnectionString;
+            });
+
+            services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
+
+            app.UseRequestResponseLogging();
 
             app.UseStaticFiles();
 

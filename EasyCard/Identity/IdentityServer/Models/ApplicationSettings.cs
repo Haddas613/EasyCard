@@ -20,5 +20,9 @@ namespace IdentityServer.Models
         public string EmailEventHubName { get; set; }
 
         public string InternalCertificate { get; set; }
+
+        public string DefaultStorageConnectionString { get; set; }
+
+        public string RequestsLogStorageTable { get; set; }
     }
 }

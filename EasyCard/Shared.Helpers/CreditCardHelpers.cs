@@ -57,7 +57,7 @@ namespace Shared.Helpers
             return last4digits?.Substring(last4digits.Length - 4, 4);
         }
 
-        public static DateTime? ParseCardExpiration(string expirationStr)
+        public static CardExpiration ParseCardExpiration(string expirationStr)
         {
             if (string.IsNullOrWhiteSpace(expirationStr))
             {
@@ -80,12 +80,12 @@ namespace Shared.Helpers
 
             int.TryParse(parts[1], out var year);
 
-            if (year < 18 || year > 38)
+            if (year < 18 || year > 99)
             {
                 return null;
             }
 
-            return new DateTime(year + 2000, month, 1);
+            return new CardExpiration() { Year = year, Month = month };
         }
 
         public static string FormatCardExpiration(DateTime? expirationDate)
