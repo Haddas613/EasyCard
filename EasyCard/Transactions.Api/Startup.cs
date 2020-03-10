@@ -23,6 +23,11 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Shared.Business.Security;
 using Transactions.Business.Services;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Identity;
+using Azure.Core;
+using Microsoft.Azure.KeyVault;
+using Transactions.Shared.Settings;
 
 namespace TransactionsApi
 {
@@ -60,7 +65,7 @@ namespace TransactionsApi
                 // Note: do not use options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; - use [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)] attribute in place
             });
 
-            services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options =>
+            services.Configure<ApiBehaviorOptions>(options =>
             {
                 // Disables [ApiController] automatic bad request result for invalid models
                 options.SuppressModelStateInvalidFilter = true;
@@ -88,6 +93,27 @@ namespace TransactionsApi
             services.AddDbContext<TransactionsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<ITransactionsService, TransactionsService>();
             services.AddAutoMapper(typeof(Startup));
+
+            services.AddSingleton<SecretClient, SecretClient>(fact =>
+            {
+                var azureKvCfg = Configuration.GetSection("AzureKeyVault").Get<AzureKeyVaultSettings>();
+
+                //string clientId = Environment.GetEnvironmentVariable("akvClientId");
+                //string clientSecret = Environment.GetEnvironmentVariable("akvClientSecret");
+
+                //KeyVaultClient kvClient = new KeyVaultClient(async (authority, resource, scope) =>
+                //{
+                //    var adCredential = new Microsoft.IdentityModel.Clients.ActiveDirectory.ClientCredential(clientId, clientSecret);
+                //    var authenticationContext = new Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext(authority, null);
+                //    return (await authenticationContext.AcquireTokenAsync(resource, adCredential)).AccessToken;
+                //});
+
+                var client = new SecretClient(
+                    new Uri(azureKvCfg.KeyVaultUrl),
+                    new ClientSecretCredential(azureKvCfg.AzureADApplicationTenant, azureKvCfg.AzureADApplicationId, azureKvCfg.AzureADApplicationSecret));
+
+                return client;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
