@@ -54,7 +54,7 @@ namespace IdentityServer.Controllers
             ILogger<AccountController> logger,
             ICryptoService cryptoService,
             IOptions<ApplicationSettings> configuration,
-            IAuditLogger managementApiClient)
+            IAuditLogger auditLogger)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -67,7 +67,7 @@ namespace IdentityServer.Controllers
             this.logger = logger;
             this.cryptoService = cryptoService;
             this.configuration = configuration.Value;
-            this.auditLogger = managementApiClient;
+            this.auditLogger = auditLogger;
         }
 
         /// <summary>

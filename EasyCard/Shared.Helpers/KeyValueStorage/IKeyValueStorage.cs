@@ -12,6 +12,7 @@ namespace Shared.Helpers.KeyValueStorage
 
         Task<T> Get(string key);
 
+        [Obsolete("Remove. No use?")]
         Task Delete(string key);
     }
 }

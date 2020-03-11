@@ -21,8 +21,7 @@ namespace BasicServices.KeyValueStorage
                 new Uri(options.Value.KeyVaultUrl),
                     new ClientSecretCredential(options.Value.AzureADApplicationTenant, options.Value.AzureADApplicationId, options.Value.AzureADApplicationSecret));
         }
-
-        [Obsolete("Remove. No use?")]
+        
         public async Task Delete(string key) => throw new NotImplementedException();
 
         public async Task<T> Get(string key)

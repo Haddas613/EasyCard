@@ -312,7 +312,7 @@ namespace IdentityServer.Controllers
                 return NotFound($"User {userId} does not exist");
             }
 
-            var res = await userManager.SetLockoutEnabledAsync(user, true);
+            var res = await userManager.SetLockoutEnabledAsync(user, false);
 
             if (!res.Succeeded)
             {
