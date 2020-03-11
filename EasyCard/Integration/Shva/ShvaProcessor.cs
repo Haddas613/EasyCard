@@ -23,6 +23,8 @@ namespace Shva
         private const string AshStartUrl = "AshStart";
         private const string AshAuthUrl = "AshAuth";
         private const string AshEndUrl = "AshEnd";
+        private const string GetTerminalDataUrl = "GetTerminalData";//ShvaParamsUpdate
+        private const string TransEMVUrl = "TransEMV";
 
         private readonly IWebApiClient apiClient;
         private readonly ShvaSettings configuration;
@@ -91,13 +93,61 @@ namespace Shva
                 //    }
                 //}
 
-                res.ShvaCode = resCode;
+                res.ProcessorCode = resCode;
                 res.DealNumber = resultAshEndBody.globalObj.receiptObj.voucherNumber.valueTag;
                 res.TransactionReference = resultAshEndBody.globalObj.outputObj.tranRecord.valueTag;
             }
 
             return res;
         }
+
+
+        public async Task<ExternalPaymentTransactionResponse> ParamsUpdateTransaction(ShvaParameters updateParamRequest, string messageId, string
+            correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
+        {
+            var res = new ExternalPaymentTransactionResponse();
+            var updateParamsReq = new GetTerminalDataRequestBody();
+            updateParamsReq.UserName = updateParamRequest.UserName;
+            updateParamsReq.Password = updateParamRequest.Password;
+            updateParamsReq.MerchantNumber = updateParamRequest.MerchantNumber;
+
+            var result = await this.DoRequest(updateParamsReq, string.Format("{0}{1}", BaseUrl,GetTerminalDataUrl), messageId, correlationId, handleIntegrationMessage);
+
+            var getTerminalDataResultBody = (GetTerminalDataResponseBody)result?.Body?.Content;
+
+            if (getTerminalDataResultBody == null)
+            {
+                return null;
+            }
+
+            res.ProcessorCode = getTerminalDataResultBody.GetTerminalDataResult;
+            return res;
+        }
+
+        public async Task<ExternalPaymentTransactionResponse> TransactTransaction(ExternalPaymentTransTrasactionRequest transRequest, string messageId, string
+            correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
+        {
+            var res = new ExternalPaymentTransTrasactionRequest();
+            ShvaParameters shvaParameters = (ShvaParameters)transRequest.ProcessorSettings;
+            var tranEMV = new TransEMVRequestBody();
+            tranEMV.UserName = shvaParameters.UserName;
+            tranEMV.Password = shvaParameters.Password;
+            tranEMV.MerchantNumber = shvaParameters.MerchantNumber;
+            tranEMV.DATA = transRequest.DATAToTrans;
+
+            var result = await this.DoRequest(tranEMV, string.Format("{0}{1}", BaseUrl, TransEMVUrl), messageId, correlationId, handleIntegrationMessage);
+
+            var transResultBody = (TransEMVResponseBody)result?.Body?.Content;
+
+            if (transResultBody == null)
+            {
+                return null;
+            }
+
+            res.ProcessorCode = transResultBody.;
+            return res;
+        }
+
 
         private static void InitInitObjRequest(ExternalPaymentTransactionRequest paymentTransactionRequest, AshStartRequestBody ashStartReq, ShvaParameters shvaParameters, out clsInput cls, out InitInputObjRequest initObjReq)
         {

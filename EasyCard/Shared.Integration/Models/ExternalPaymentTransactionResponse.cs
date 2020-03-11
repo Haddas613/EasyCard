@@ -11,7 +11,7 @@ namespace Shared.Integration.Models
 
         public string ErrorMessage { get; set; }
 
-        public int ShvaCode { get; set; }
+        public int ProcessorCode { get; set; }
         public bool Success { get; set; }
 
 
