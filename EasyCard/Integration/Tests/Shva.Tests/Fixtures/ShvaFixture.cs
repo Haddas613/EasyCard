@@ -11,6 +11,9 @@ namespace Shva.Tests.Fixtures
     public class ShvaFixture : IDisposable
     {
         public ShvaSettings ShvaSettings { get; private set; }
+
+        public ILogger<ShvaProcessor> Logger { get; } = new NullLogger<ShvaProcessor>();
+
         public ShvaFixture()
         {
             //TODO: assign values

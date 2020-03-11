@@ -8,6 +8,7 @@ using Merchants.Business.Entities.Integration;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.Terminal;
 using System;
+using System.Collections.Generic;
 
 namespace Merchants.Api.Infrastructure.Mapping
 {
@@ -28,11 +29,11 @@ namespace Merchants.Api.Infrastructure.Mapping
                 .ForMember(m => m.Created, o => o.MapFrom((src, tgt) => tgt.Created = DateTime.UtcNow));
             CreateMap<UpdateTerminalRequest, Terminal>();
 
-            CreateMap<TerminalSettings, TerminalResponseSettings>();
-            CreateMap<TerminalBillingSettings, TerminalResponseBillingSettings>();
-            CreateMap<Terminal, TerminalResponse>()
-                 .ForPath(m => m.BillingSettings.BillingNotificationsEmails, o => o.MapFrom((src) =>
-                    src.BillingSettings.BillingNotificationsEmails.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries)));
+            CreateMap<Business.Entities.Terminal.TerminalSettings, Models.Terminal.TerminalSettings>().ReverseMap();
+            CreateMap<Business.Entities.Terminal.TerminalBillingSettings, Models.Terminal.TerminalBillingSettings>()
+                .ForMember(m => m.BillingNotificationsEmails, o => o.MapFrom(
+                    (src) => src.BillingNotificationsEmails.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))).ReverseMap();
+            CreateMap<Terminal, TerminalResponse>();
             CreateMap<Terminal, TerminalSummary>();
             CreateMap<ExternalSystem, ExternalSystemSummary>();
             CreateMap<TerminalExternalSystem, ExternalSystemDetails>();

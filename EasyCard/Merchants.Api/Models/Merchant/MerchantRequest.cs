@@ -8,7 +8,17 @@ namespace Merchants.Api.Models.Merchant
 {
     public class MerchantRequest
     {
-        [Required]
+        [Required(AllowEmptyStrings = false)]
+        [StringLength(50, MinimumLength = 6)]
         public string BusinessName { get; set; }
+
+        [StringLength(50, MinimumLength = 6)]
+        public string MarketingName { get; set; }
+
+        [StringLength(50)]
+        public string BusinessID { get; set; }
+
+        [StringLength(50, MinimumLength = 6)]
+        public string ContactPerson { get; set; }
     }
 }

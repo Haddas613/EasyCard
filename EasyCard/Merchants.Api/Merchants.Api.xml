@@ -9,7 +9,7 @@
             SHVA or other system terminal ID
             </summary>
         </member>
-        <member name="P:Merchants.Api.Models.Terminal.TerminalResponseSettings.MaxInstallments">
+        <member name="P:Merchants.Api.Models.Terminal.TerminalSettings.MaxInstallments">
             <summary>
             If we set it to zero means installments blocked
             </summary>
