@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Shared.Api;
 using Shared.Api.Models;
+using Shared.Api.Models.Enums;
+using Shared.Helpers.KeyValueStorage;
 using Shared.Integration.Models;
 using Transactions.Api.Models.Transactions;
 using Transactions.Business.Services;
@@ -22,13 +24,13 @@ namespace Transactions.Api.Controllers
     public class TransactionsApiController : ApiControllerBase
     {
         private readonly ITransactionsService transactionsService;
-        private readonly SecretClient secretClient;
         private readonly IMapper mapper;
+        private readonly IKeyValueStorage<CreditCardToken> keyValueStorage;
 
-        public TransactionsApiController(ITransactionsService transactionsService, SecretClient secretClient, IMapper mapper)
+        public TransactionsApiController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardToken> keyValueStorage, IMapper mapper)
         {
             this.transactionsService = transactionsService;
-            this.secretClient = secretClient;
+            this.keyValueStorage = keyValueStorage;
             this.mapper = mapper;
         }
 
@@ -50,24 +52,17 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateToken([FromBody] TokenRequest model)
         {
-            try
-            {
-                // todo: encrypt auth data
-                var key = Guid.NewGuid().ToString();
-                var data = mapper.Map<CreditCardToken>(model);
+            // todo: encrypt auth data
+            var key = Guid.NewGuid().ToString();
+            var data = mapper.Map<CreditCardToken>(model);
 
-                // todo: implement
-                //data.TerminalID = ...;
-                //data.UserID = ...;
+            // todo: implement
+            //data.TerminalID = ...;
+            //data.UserID = ...;
 
-                var resp = await secretClient.SetSecretAsync(new KeyVaultSecret(key, JsonConvert.SerializeObject(data)));
+            await keyValueStorage.Save(key, JsonConvert.SerializeObject(data));
 
-                return CreatedAtAction(nameof(CreateToken), resp.Value.Name);
-
-            }catch(Exception e)
-            {
-                throw e;
-            }
+            return CreatedAtAction(nameof(CreateToken), new OperationResponse("ok", StatusEnum.Success, key));
         }
 
         [HttpPost]
