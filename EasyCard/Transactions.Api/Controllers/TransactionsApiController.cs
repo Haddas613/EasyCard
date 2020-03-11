@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Shared.Api;
 using Shared.Api.Models;
+using Shared.Api.Models.Enums;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Integration.Models;
 using Transactions.Api.Models.Transactions;
@@ -51,24 +52,17 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateToken([FromBody] TokenRequest model)
         {
-            try
-            {
-                // todo: encrypt auth data
-                var key = Guid.NewGuid().ToString();
-                var data = mapper.Map<CreditCardToken>(model);
+            // todo: encrypt auth data
+            var key = Guid.NewGuid().ToString();
+            var data = mapper.Map<CreditCardToken>(model);
 
-                // todo: implement
-                //data.TerminalID = ...;
-                //data.UserID = ...;
+            // todo: implement
+            //data.TerminalID = ...;
+            //data.UserID = ...;
 
-                await keyValueStorage.Save(key, JsonConvert.SerializeObject(data));
+            await keyValueStorage.Save(key, JsonConvert.SerializeObject(data));
 
-                return CreatedAtAction(nameof(CreateToken), new { token = key});
-
-            }catch(Exception e)
-            {
-                throw e;
-            }
+            return CreatedAtAction(nameof(CreateToken), new OperationResponse("ok", StatusEnum.Success, key));
         }
 
         [HttpPost]
