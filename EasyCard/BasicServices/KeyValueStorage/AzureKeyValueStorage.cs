@@ -1,6 +1,7 @@
 ﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Shared.Helpers.KeyValueStorage;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 namespace BasicServices.KeyValueStorage
 {
     public class AzureKeyValueStorage<T> : IKeyValueStorage<T>
+        where T : class
     {
         private readonly SecretClient secretClient;
 
@@ -20,19 +22,21 @@ namespace BasicServices.KeyValueStorage
                     new ClientSecretCredential(options.Value.AzureADApplicationTenant, options.Value.AzureADApplicationId, options.Value.AzureADApplicationSecret));
         }
 
-        public Task Delete(string key)
+        [Obsolete("Remove. No use?")]
+        public async Task Delete(string key) => throw new NotImplementedException();
+
+        public async Task<T> Get(string key)
         {
-            throw new NotImplementedException();
+            var azureResponse = await secretClient.GetSecretAsync(key);
+
+            if (azureResponse?.Value?.Value != null)
+            {
+                return JsonConvert.DeserializeObject<T>(azureResponse.Value.Value);
+            }
+
+            return default(T);
         }
 
-        public Task<T> Get(string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task Save(string key, string value)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task Save(string key, string value) => _ = await secretClient.SetSecretAsync(new KeyVaultSecret(key, value));
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 namespace Shared.Helpers.KeyValueStorage
 {
     public interface IKeyValueStorage<T>
+        where T : class
     {
         Task Save(string key, string value);
 
