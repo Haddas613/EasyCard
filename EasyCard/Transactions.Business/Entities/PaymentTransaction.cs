@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Transactions.Shared.Enums;
+using TransactionTypeEnum = Shared.Integration.Models.TransactionTypeEnum;
 
 namespace Transactions.Business.Entities
 {
