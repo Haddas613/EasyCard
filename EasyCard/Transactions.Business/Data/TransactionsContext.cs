@@ -45,10 +45,10 @@ namespace Transactions.Business.Data
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
-                builder.Property(b => b.CreditCardNumber).IsRequired(true).HasMaxLength(16).IsUnicode(false);
-                builder.Property(b => b.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter);
+                //builder.Property(b => b.CardNumber).IsRequired(true).HasMaxLength(16).IsUnicode(false);
+                //builder.Property(b => b.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter);
 
-                builder.Property(b => b.Amount).HasColumnType("decimal(19,4)").IsRequired(false);
+                //builder.Property(b => b.Amount).HasColumnType("decimal(19,4)").IsRequired(false);
             }
         }
     }

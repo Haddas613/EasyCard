@@ -31,7 +31,7 @@ namespace Shared.Api
 
         public async Task Invoke(HttpContext context)
         {
-            if (context.Request.Method == HttpMethods.Get)
+            if (context.Request.Method == HttpMethods.Get || context.Request.Method == HttpMethods.Head || context.Request.Method == HttpMethods.Options)
             {
                 await next(context);
                 return;

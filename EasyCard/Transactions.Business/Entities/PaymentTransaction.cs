@@ -1,4 +1,5 @@
-﻿using Shared.Helpers;
+﻿using Shared.Business;
+using Shared.Helpers;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,14 @@ using TransactionTypeEnum = Shared.Integration.Models.TransactionTypeEnum;
 
 namespace Transactions.Business.Entities
 {
-    public class PaymentTransaction
+    public class PaymentTransaction : IEntityBase
     {
         public long PaymentTransactionID { get; set; }
+
+        /// <summary>
+        /// Reference to first installment or to original transaction in case of refund
+        /// </summary>
+        public long? InitialTransactionID { get; set; }
 
         /// <summary>
         /// Individual counter per terminal
@@ -21,21 +27,34 @@ namespace Transactions.Business.Entities
 
         public long MerchantID { get; set; }
 
-        public decimal Amount { get; set; }
+        /// <summary>
+        /// Shva or other processor
+        /// </summary>
+        public long? ProcessorID { get; set; }
 
         /// <summary>
-        /// TODO: Please fill description for this field
+        /// Clearing House or Upay
         /// </summary>
-        public string Urack2 { get; set; }
+        public long? AggregatorID { get; set; }
 
         /// <summary>
-        /// Do not store full card number. Please use 123456****1234 pattern CreditCardHelpers.GetCardDigits()
+        /// EasyInvoice or RapidOne
         /// </summary>
-        public string CreditCardNumber { get; set; }
+        public long? InvoicingID { get; set; }
 
-        public CardExpiration CardExpiration { get; set; }
+        /// <summary>
+        /// TODO: change ExternalSystemSummary to (?)
+        /// </summary>
+        public long? MarketerID { get; set; }
+
+        public TransactionStatusEnum Status { get; set; }
 
         public TransactionTypeEnum TransactionType { get; set; }
+
+        /// <summary>
+        /// Rejection Reason
+        /// </summary>
+        public RejectionReasonEnum? RejectionReason { get; set; }
 
         /// <summary>
         /// Currency
@@ -49,33 +68,74 @@ namespace Transactions.Business.Entities
         public CardPresenceEnum CardPresence { get; set; }
 
         /// <summary>
-        /// 1 regular
-        /// 6 credit
-        /// 8 intallmets
+        /// Number Of Installments
         /// </summary>
-        public string CreditTerms { get; set; }
+        public int NumberOfInstallments { get; set; }
 
         /// <summary>
-        /// ""  in case of regular deal
+        /// Current installment
         /// </summary>
-        public string NumOfInstallment { get; set; }
+        public int CurrentInstallment { get; set; }
 
         /// <summary>
-        /// ""  in case of regular deal
+        /// This transaction amount
         /// </summary>
-        public string FirstAmount { get; set; }
+        public decimal TransactionAmount { get; set; }
 
         /// <summary>
-        /// "" in case of regular deal
+        /// Initial installment payment
         /// </summary>
-        public string NonFirstAmount { get; set; }
+        public decimal InitialPaymentAmount { get; set; }
 
-        public string DealDescription { get; set; }
+        /// <summary>
+        /// TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+        /// </summary>
+        public decimal TotalAmount { get; set; }
 
-        public string IdentityNumber { get; set; }
+        /// <summary>
+        /// Amount of one instalment payment
+        /// </summary>
+        public decimal InstallmentPaymentAmount { get; set; }
 
-        public DateTime Created { get; set; }
+        /// <summary>
+        /// Legal transaction day
+        /// </summary>
+        public DateTime? TransactionDate { get; set; }
 
+        /// <summary>
+        /// Date-time when transaction created initially
+        /// </summary>
+        public DateTime? TransactionTimestamp { get; set; }
+
+        /// <summary>
+        /// Date-time when transaction status updated
+        /// </summary>
+        public DateTime? UpdatedDate { get; set; }
+
+        /// <summary>
+        /// Reference to billing system
+        /// </summary>
+        public long? BillingOrderID { get; set; }
+
+        /// <summary>
+        /// Concurrency key
+        /// </summary>
         public byte[] UpdateTimestamp { get; set; }
+
+        public CreditCardDetails CreditCardDetails { get; set; }
+
+        /// <summary>
+        /// Deal information
+        /// </summary>
+        public DealDetails DealDetails { get; set; }
+
+        public ShvaTransactionDetails ShvaTransactionDetails { get; set; }
+
+        public ClearingHouseTransactionDetails ClearingHouseTransactionDetails { get; set; }
+
+        public long GetID()
+        {
+            return PaymentTransactionID;
+        }
     }
 }

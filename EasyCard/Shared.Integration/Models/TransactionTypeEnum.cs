@@ -7,7 +7,7 @@ namespace Shared.Integration.Models
     /// <summary>
     /// TransactionTypeEnum
     /// </summary>
-    public enum TransactionTypeEnum
+    public enum TransactionTypeEnum : short
     {
         RegularDeal = 0,
         FirstInstallment = 1,

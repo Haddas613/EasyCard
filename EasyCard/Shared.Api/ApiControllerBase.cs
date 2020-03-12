@@ -17,5 +17,10 @@ namespace Shared.Api
 
             return src;
         }
+
+        public string GetCorrelationID()
+        {
+            return this.HttpContext.TraceIdentifier;
+        }
     }
 }

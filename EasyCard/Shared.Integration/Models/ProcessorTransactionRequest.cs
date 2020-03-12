@@ -6,7 +6,7 @@ using System.Text;
 namespace Shared.Integration.Models
 {
     // TODO: fill required fields
-    public class ExternalPaymentTransactionRequest
+    public class ProcessorTransactionRequest
     {
         public Object ProcessorSettings { get; set; }
        

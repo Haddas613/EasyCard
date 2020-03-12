@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Transactions.Business.Data;
 using Transactions.Business.Entities;
 
@@ -16,6 +18,16 @@ namespace Transactions.Business.Services
             this.context = context;
         }
 
+        public Task CreateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public IQueryable<PaymentTransaction> GetTransactions() => context.PaymentTransactions;
+
+        public Task UpdateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

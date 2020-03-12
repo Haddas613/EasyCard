@@ -32,10 +32,10 @@ namespace Shva
             this.logger = logger;
         }
 
-        public async Task<ExternalPaymentTransactionResponse> CreateTransaction(ExternalPaymentTransactionRequest paymentTransactionRequest, string messageId, string
+        public async Task<ProcessorTransactionResponse> CreateTransaction(ProcessorTransactionRequest paymentTransactionRequest, string messageId, string
              correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
         {
-            var res = new ExternalPaymentTransactionResponse();
+            var res = new ProcessorTransactionResponse();
             var ashStartReq = new AshStartRequestBody();
             ShvaParameters shvaParameters = (ShvaParameters)paymentTransactionRequest.ProcessorSettings;
             ashStartReq.UserName = shvaParameters.UserName;
