@@ -111,7 +111,7 @@ namespace Shva
             updateParamsReq.Password = updateParamRequest.Password;
             updateParamsReq.MerchantNumber = updateParamRequest.MerchantNumber;
 
-            var result = await this.DoRequest(updateParamsReq, string.Format("{0}{1}", BaseUrl,GetTerminalDataUrl), messageId, correlationId, handleIntegrationMessage);
+            var result = await this.DoRequest(updateParamsReq, string.Format("{0}{1}", BaseUrl, GetTerminalDataUrl), messageId, correlationId, handleIntegrationMessage);
 
             var getTerminalDataResultBody = (GetTerminalDataResponseBody)result?.Body?.Content;
 
@@ -124,10 +124,10 @@ namespace Shva
             return res;
         }
 
-        public async Task<ExternalPaymentTransactionResponse> TransactTransaction(ExternalPaymentTransTrasactionRequest transRequest, string messageId, string
+        public async Task<ExternalPaymentTransmissionResponse> TransactTransaction(ExternalPaymentTransTrasactionRequest transRequest, string messageId, string
             correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
         {
-            var res = new ExternalPaymentTransTrasactionRequest();
+            var res = new ExternalPaymentTransmissionResponse();
             ShvaParameters shvaParameters = (ShvaParameters)transRequest.ProcessorSettings;
             var tranEMV = new TransEMVRequestBody();
             tranEMV.UserName = shvaParameters.UserName;
@@ -144,7 +144,13 @@ namespace Shva
                 return null;
             }
 
-            res.ProcessorCode = transResultBody.;
+            res.ProcessorCode = transResultBody.TransEMVResult;
+            res.BadTrans = transResultBody.BadTrans;
+            res.RefNumber = transResultBody.RefNumber;
+            res.Report = transResultBody.Report;
+            res.TotalCreditTransSum = transResultBody.TotalCreditTransSum;
+            res.TotalDebitTransSum = transResultBody.TotalDebitTransSum;
+            res.TotalXML = transResultBody.TotalXML;
             return res;
         }
 
