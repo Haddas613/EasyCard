@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Shared.Helpers
@@ -107,6 +108,24 @@ namespace Shared.Helpers
         {
             var cardDigits = GetCardDigits(cardBin, cardLastFourDigits);
             return GetCardReference(cardDigits, cardOwnerNationalId);
+        }
+
+        public static string GetCardHash(string cardNumber, long terminalId, long merchantID, string expiration)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                // ComputeHash - returns byte array
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes($"{cardNumber}{terminalId}{merchantID}{expiration}"));
+
+                // Convert byte array to a string
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+
+                return builder.ToString();
+            }
         }
     }
 }

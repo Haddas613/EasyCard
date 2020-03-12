@@ -13,7 +13,7 @@ namespace Shared.Integration.Models
 
         public long TerminalID { get; set; }
 
-        public string UserID { get; set; }
+        public long MerchantID { get; set; }
 
         public CardExpiration CardExpiration { get; set; }
     }

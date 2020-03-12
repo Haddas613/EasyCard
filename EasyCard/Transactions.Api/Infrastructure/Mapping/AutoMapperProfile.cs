@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Shared.Helpers;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,9 @@ namespace Transactions.Api.Infrastructure.Mapping
             CreateMap<PaymentTransaction, TransactionResponse>();
             CreateMap<PaymentTransaction, TransactionSummary>();
             CreateMap<TokenRequest, CreditCardToken>();
+
+            CreateMap<CreditCardToken, CreditCardTokenDetails>()
+                .ForMember(m => m.Hash, src => src.MapFrom(f => CreditCardHelpers.GetCardHash(f.CardNumber, f.TerminalID, f.MerchantID, f.CardExpiration.ToString())));
         }
     }
 }

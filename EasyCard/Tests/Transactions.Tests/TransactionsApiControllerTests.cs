@@ -3,6 +3,7 @@ using Shared.Api.Models.Enums;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Transactions.Api.Controllers;
@@ -49,6 +50,9 @@ namespace Transactions.Tests
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
             keyValueStorageMock.Verify(m => m.Save(responseData.EntityReference, Moq.It.IsAny<string>()), Moq.Times.Once);
+
+            var dbToken = transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefault(t => t.PublicKey == responseData.EntityReference);
+            Assert.NotNull(dbToken);
         }
     }
 }

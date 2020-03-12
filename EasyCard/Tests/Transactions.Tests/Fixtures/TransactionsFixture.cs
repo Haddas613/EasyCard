@@ -25,8 +25,8 @@ namespace Transactions.Tests.Fixtures
             opts.UseSqlServer($"Data Source=(LocalDB)\\MSSQLLocalDB;Initial Catalog=TEST_TransactionsDatabase-{Guid.NewGuid().ToString().Substring(0, 6)};Integrated Security=True");
             HttpContextAccessorWrapper = new HttpContextAccessorWrapperFixture();
 
-            //TransactionsContext = new TransactionsContext(opts.Options, HttpContextAccessorWrapper);
-            //TransactionsContext.Database.EnsureCreated();
+            TransactionsContext = new TransactionsContext(opts.Options, HttpContextAccessorWrapper);
+            TransactionsContext.Database.EnsureCreated();
 
             TransactionsService = new TransactionsService(TransactionsContext);
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
+using Shared.Business;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,25 +10,38 @@ using Transactions.Business.Entities;
 
 namespace Transactions.Business.Services
 {
-    public class TransactionsService : ITransactionsService
+    public class TransactionsService : ServiceBase<PaymentTransaction>, ITransactionsService
     {
         private readonly TransactionsContext context;
 
-        public TransactionsService(TransactionsContext context)
+        public TransactionsService(TransactionsContext context) : base(context)
         {
             this.context = context;
         }
 
-        public Task CreateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
+        public async override Task CreateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
         {
-            throw new NotImplementedException();
+            context.PaymentTransactions.Add(entity);
+
+            await context.SaveChangesAsync();
+        }
+
+        public async Task CreateToken(CreditCardTokenDetails tokenDetails)
+        {
+            context.CreditCardTokenDetails.Add(tokenDetails);
+
+            await context.SaveChangesAsync();
         }
 
         public IQueryable<PaymentTransaction> GetTransactions() => context.PaymentTransactions;
 
-        public Task UpdateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
+        public async override Task UpdateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
         {
-            throw new NotImplementedException();
+            var exist = context.PaymentTransactions.Find(entity.GetID());
+
+            context.Entry(exist).CurrentValues.SetValues(entity);
+
+            await this.context.SaveChangesAsync();
         }
     }
 }

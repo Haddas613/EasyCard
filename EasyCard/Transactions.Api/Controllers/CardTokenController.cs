@@ -15,6 +15,7 @@ using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Services;
+using Transactions.Business.Entities;
 using Transactions.Business.Services;
 
 namespace Transactions.Api.Controllers
@@ -41,13 +42,19 @@ namespace Transactions.Api.Controllers
         {
             // todo: encrypt auth data
             var key = Guid.NewGuid().ToString();
-            var data = mapper.Map<CreditCardToken>(model);
+            var storageData = mapper.Map<CreditCardToken>(model);
 
             // todo: implement
-            //data.TerminalID = ...;
-            //data.UserID = ...;
+            storageData.TerminalID = 1;
+            storageData.MerchantID = 1;
 
-            await keyValueStorage.Save(key, JsonConvert.SerializeObject(data));
+            await keyValueStorage.Save(key, JsonConvert.SerializeObject(storageData));
+
+            var dbData = mapper.Map<CreditCardTokenDetails>(storageData);
+            dbData.CardOwnerNationalID = "test";
+            dbData.CardVendor = "test";
+            dbData.PublicKey = key;
+            await transactionsService.CreateToken(dbData);
 
             return CreatedAtAction(nameof(CreateToken), new OperationResponse("ok", StatusEnum.Success, key));
         }
