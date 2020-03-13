@@ -66,7 +66,7 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<SummariesResponse<CreditCardTokenSummary>>> GetTokens([FromBody] CreditCardTokenFilter filter)
+        public async Task<ActionResult<SummariesResponse<CreditCardTokenSummary>>> GetTokens([FromQuery] CreditCardTokenFilter filter)
         {
             var query = creditCardTokenService.GetTokens();
 
