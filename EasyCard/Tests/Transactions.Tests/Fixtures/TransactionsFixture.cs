@@ -17,6 +17,8 @@ namespace Transactions.Tests.Fixtures
 
         public TransactionsService TransactionsService { get; private set; }
 
+        public CreditCardTokenService CreditCardTokenService { get; private set; }
+
         public IMapper Mapper { get; private set; }
 
         public TransactionsFixture()
@@ -29,6 +31,7 @@ namespace Transactions.Tests.Fixtures
             TransactionsContext.Database.EnsureCreated();
 
             TransactionsService = new TransactionsService(TransactionsContext);
+            CreditCardTokenService = new CreditCardTokenService(TransactionsContext);
 
             var myProfile = new AutoMapperProfile();
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));

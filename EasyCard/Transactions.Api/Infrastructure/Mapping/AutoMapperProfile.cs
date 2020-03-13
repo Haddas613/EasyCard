@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Business.Entities;
 
@@ -28,6 +29,8 @@ namespace Transactions.Api.Infrastructure.Mapping
 
             CreateMap<CreditCardToken, CreditCardTokenDetails>()
                 .ForMember(m => m.Hash, src => src.MapFrom(f => CreditCardHelpers.GetCardHash(f.CardNumber, f.TerminalID, f.MerchantID, f.CardExpiration.ToString())));
+
+            CreateMap<CreditCardTokenDetails, CreditCardTokenSummary>();
         }
     }
 }

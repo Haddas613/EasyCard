@@ -11,7 +11,5 @@ namespace Transactions.Business.Services
     public interface ITransactionsService : IServiceBase<PaymentTransaction>
     {
         IQueryable<PaymentTransaction> GetTransactions();
-
-        Task CreateToken(CreditCardTokenDetails tokenDetails);
     }
 }

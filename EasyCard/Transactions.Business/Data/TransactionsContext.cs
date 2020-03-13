@@ -34,6 +34,9 @@ namespace Transactions.Business.Data
         {
             modelBuilder.ApplyConfiguration(new PaymentTransactionConfiguration());
             modelBuilder.ApplyConfiguration(new CreditCardTokenDetailsConfiguration());
+
+            modelBuilder.Entity<CreditCardTokenDetails>().HasQueryFilter(t => t.Active);
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -98,6 +101,7 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter);
                 builder.Property(b => b.CardVendor).IsRequired(true);
                 builder.Property(b => b.CardOwnerNationalID).IsRequired(true);
+                builder.Property(b => b.Active).HasDefaultValue(true);
             }
         }
     }

@@ -22,7 +22,10 @@ namespace BasicServices.KeyValueStorage
                     new ClientSecretCredential(options.Value.AzureADApplicationTenant, options.Value.AzureADApplicationId, options.Value.AzureADApplicationSecret));
         }
         
-        public async Task Delete(string key) => throw new NotImplementedException();
+        public async Task Delete(string key)
+        {
+            await secretClient.StartDeleteSecretAsync(key);
+        }
 
         public async Task<T> Get(string key)
         {

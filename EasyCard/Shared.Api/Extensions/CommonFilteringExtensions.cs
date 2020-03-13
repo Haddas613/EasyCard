@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace Merchants.Api.Extensions.Filtering
+namespace Shared.Api.Extensions
 {
     public static class CommonFilteringExtensions
     {

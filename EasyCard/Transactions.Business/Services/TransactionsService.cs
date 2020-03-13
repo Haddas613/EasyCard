@@ -21,27 +21,19 @@ namespace Transactions.Business.Services
 
         public async override Task CreateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
         {
-            context.PaymentTransactions.Add(entity);
-
-            await context.SaveChangesAsync();
+            //TODO: audit
+            await base.CreateEntity(entity, dbTransaction);
         }
 
-        public async Task CreateToken(CreditCardTokenDetails tokenDetails)
-        {
-            context.CreditCardTokenDetails.Add(tokenDetails);
 
-            await context.SaveChangesAsync();
-        }
+        public IQueryable<CreditCardTokenDetails> GetTokens() => context.CreditCardTokenDetails;
 
         public IQueryable<PaymentTransaction> GetTransactions() => context.PaymentTransactions;
 
         public async override Task UpdateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
         {
-            var exist = context.PaymentTransactions.Find(entity.GetID());
-
-            context.Entry(exist).CurrentValues.SetValues(entity);
-
-            await this.context.SaveChangesAsync();
+            //TODO: audit
+            await base.UpdateEntity(entity, dbTransaction);
         }
     }
 }

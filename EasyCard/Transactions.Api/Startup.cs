@@ -92,6 +92,7 @@ namespace TransactionsApi
 
             services.AddDbContext<TransactionsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<ITransactionsService, TransactionsService>();
+            services.AddScoped<ICreditCardTokenService, CreditCardTokenService>();
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSingleton<IKeyValueStorage<CreditCardToken>, AzureKeyValueStorage<CreditCardToken>>();

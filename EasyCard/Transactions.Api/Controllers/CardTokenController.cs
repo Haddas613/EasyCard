@@ -6,13 +6,16 @@ using AutoMapper;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Shared.Api;
+using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
+using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Services;
 using Transactions.Business.Entities;
@@ -20,17 +23,20 @@ using Transactions.Business.Services;
 
 namespace Transactions.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cardtokens")]
     [ApiController]
-    public class CardTokenController : ControllerBase
+    public class CardTokenController : ApiControllerBase
     {
         private readonly ITransactionsService transactionsService;
+        private readonly ICreditCardTokenService creditCardTokenService;
         private readonly IMapper mapper;
         private readonly IKeyValueStorage<CreditCardToken> keyValueStorage;
 
-        public CardTokenController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardToken> keyValueStorage, IMapper mapper)
+        public CardTokenController(ITransactionsService transactionsService, ICreditCardTokenService creditCardTokenService,
+            IKeyValueStorage<CreditCardToken> keyValueStorage, IMapper mapper)
         {
             this.transactionsService = transactionsService;
+            this.creditCardTokenService = creditCardTokenService;
             this.keyValueStorage = keyValueStorage;
             this.mapper = mapper;
         }
@@ -54,9 +60,35 @@ namespace Transactions.Api.Controllers
             dbData.CardOwnerNationalID = "test";
             dbData.CardVendor = "test";
             dbData.PublicKey = key;
-            await transactionsService.CreateToken(dbData);
+            await creditCardTokenService.CreateEntity(dbData);
 
             return CreatedAtAction(nameof(CreateToken), new OperationResponse("ok", StatusEnum.Success, key));
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<SummariesResponse<CreditCardTokenSummary>>> GetTokens([FromBody] CreditCardTokenFilter filter)
+        {
+            var query = creditCardTokenService.GetTokens();
+
+            var response = new SummariesResponse<CreditCardTokenSummary> { NumberOfRecords = await query.CountAsync() };
+
+            response.Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).ToListAsync();
+
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        [Route("{key}")]
+        public async Task<ActionResult<OperationResponse>> DeleteToken(string key)
+        {
+            var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(t => t.PublicKey == key));
+
+            await keyValueStorage.Delete(key);
+
+            token.Active = false;
+            await creditCardTokenService.UpdateEntity(token);
+
+            return Ok(new OperationResponse("ok", StatusEnum.Success, key));
         }
     }
 }

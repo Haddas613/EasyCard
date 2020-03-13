@@ -1,18 +1,16 @@
-﻿using Shared.Business;
-using Shared.Helpers;
+﻿using Shared.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Transactions.Business.Entities
+namespace Transactions.Api.Models.Tokens
 {
-    public class CreditCardTokenDetails : IEntityBase
+    public class CreditCardTokenSummary
     {
         public long CreditCardTokenID { get; set; }
 
         public string PublicKey { get; set; }
-
-        public string Hash { get; set; }
 
         public long TerminalID { get; set; }
 
@@ -27,9 +25,5 @@ namespace Transactions.Business.Entities
         public string CardOwnerNationalID { get; set; }
 
         public DateTime Created { get; set; }
-
-        public bool Active { get; set; }
-
-        public long GetID() => CreditCardTokenID;
     }
 }
