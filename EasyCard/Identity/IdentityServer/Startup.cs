@@ -10,7 +10,7 @@ using BasicServices;
 using IdentityServer.Data;
 using IdentityServer.Models;
 using IdentityServer.Security;
-using IdentityServer.Services;
+using IdentityServer.Security.Auditing;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -150,7 +150,7 @@ namespace IdentityServer
 
             services.AddSingleton<ICryptoService>(new CryptoService(cert));
 
-            services.AddSingleton<IAuditLogger, AuditLogger>();
+            services.AddScoped<IAuditLogger, AuditLogger>();
 
             // DI: request logging
 

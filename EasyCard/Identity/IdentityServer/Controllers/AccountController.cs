@@ -3,6 +3,7 @@ using IdentityServer.Helpers;
 using IdentityServer.Messages;
 using IdentityServer.Models;
 using IdentityServer.Security;
+using IdentityServer.Security.Auditing;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
