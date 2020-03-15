@@ -77,6 +77,8 @@ namespace ClearingHouse.Models
         [DataMember(Name = "cardExpiration")]
         public string CardExpiration { get; set; }
 
+        // TODO: enum
+
         /// <summary>
         /// Clearing company
         /// </summary>
@@ -95,12 +97,6 @@ namespace ClearingHouse.Models
         /// </summary>
         [DataMember(Name = "cardBin")]
         public string CardBin { get; set; }
-
-        /// <summary>
-        /// Credit Card Last Four and First Six Digits - XXXXXX****XXXX
-        /// </summary>
-        [DataMember(Name = "cardDigits")]
-        public string CardDigits { get; set; }
 
         /// <summary>
         /// Credit Card owner national ID

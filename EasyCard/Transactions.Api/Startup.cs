@@ -26,6 +26,7 @@ using Transactions.Business.Services;
 using Shared.Helpers.KeyValueStorage;
 using BasicServices.KeyValueStorage;
 using Shared.Integration.Models;
+using Transactions.Api.Models.Tokens;
 
 namespace TransactionsApi
 {
@@ -95,7 +96,7 @@ namespace TransactionsApi
             services.AddScoped<ICreditCardTokenService, CreditCardTokenService>();
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddSingleton<IKeyValueStorage<CreditCardToken>, AzureKeyValueStorage<CreditCardToken>>();
+            services.AddSingleton<IKeyValueStorage<CreditCardTokenKeyVault>, AzureKeyValueStorage<CreditCardTokenKeyVault>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

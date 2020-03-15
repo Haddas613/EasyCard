@@ -15,7 +15,7 @@ namespace ClearingHouse.Models
         public string ShvaShovarNumber { get; set; }
 
         /// <summary>
-        /// Shva Shovar Data
+        /// Shva deal ID
         /// </summary>
         [DataMember(Name = "shvaShovarData")]
         public string ShvaShovarData { get; set; }

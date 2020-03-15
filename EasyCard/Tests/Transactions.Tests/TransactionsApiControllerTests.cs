@@ -32,7 +32,7 @@ namespace Transactions.Tests
         public async Task CreateToken_CreatesWhenModelIsCorrect()
         {
             var keyValueStorageMock = new KeyValueStorageMockSetup().MockObj;
-            var controller = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService, 
+            var controller = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService,
                 keyValueStorageMock.Object, transactionsFixture.Mapper);
             var tokenRequest = new TokenRequest
             {

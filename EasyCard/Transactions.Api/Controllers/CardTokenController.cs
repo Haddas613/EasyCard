@@ -30,10 +30,10 @@ namespace Transactions.Api.Controllers
         private readonly ITransactionsService transactionsService;
         private readonly ICreditCardTokenService creditCardTokenService;
         private readonly IMapper mapper;
-        private readonly IKeyValueStorage<CreditCardToken> keyValueStorage;
+        private readonly IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage;
 
         public CardTokenController(ITransactionsService transactionsService, ICreditCardTokenService creditCardTokenService,
-            IKeyValueStorage<CreditCardToken> keyValueStorage, IMapper mapper)
+            IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -48,7 +48,7 @@ namespace Transactions.Api.Controllers
         {
             // todo: encrypt auth data
             var key = Guid.NewGuid().ToString();
-            var storageData = mapper.Map<CreditCardToken>(model);
+            var storageData = mapper.Map<CreditCardTokenKeyVault>(model);
 
             // todo: implement
             storageData.TerminalID = 1;

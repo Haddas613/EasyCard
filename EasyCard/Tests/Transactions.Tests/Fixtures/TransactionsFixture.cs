@@ -2,8 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
-using Transactions.Api.Infrastructure.Mapping;
+using Transactions.Api.Mapping;
 using Transactions.Business.Data;
 using Transactions.Business.Services;
 
@@ -33,8 +34,7 @@ namespace Transactions.Tests.Fixtures
             TransactionsService = new TransactionsService(TransactionsContext);
             CreditCardTokenService = new CreditCardTokenService(TransactionsContext);
 
-            var myProfile = new AutoMapperProfile();
-            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
+            var configuration = new MapperConfiguration(cfg => cfg.AddMaps(Assembly.GetAssembly(typeof(Api.Controllers.TransactionsApiController))));
             Mapper = new Mapper(configuration);
         }
 

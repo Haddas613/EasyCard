@@ -27,12 +27,6 @@ namespace ClearingHouse.Models
         public string ConcurrencyToken { get; set; }
 
         /// <summary>
-        /// Tourist charges
-        /// </summary>
-        [DataMember(Name = "touristCharges")]
-        public decimal? TouristCharges { get; set; }
-
-        /// <summary>
         /// Clearing company
         /// </summary>
         [DataMember(Name = "solek")]

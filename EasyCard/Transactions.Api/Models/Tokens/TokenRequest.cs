@@ -5,12 +5,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Transactions.Api.Models.Transactions
+namespace Transactions.Api.Models.Tokens
 {
     public class TokenRequest
     {
-        [Required]
-        [StringLength(3, MinimumLength = 3)]
+        /// <summary>
+        /// cvv presense should be validated according business settings
+        /// </summary>
+        //[Required]
+        [StringLength(4, MinimumLength = 3)]
         public string Cvv { get; set; }
 
         /// <summary>
@@ -27,7 +30,7 @@ namespace Transactions.Api.Models.Transactions
         /// China UnionPay: 16 (the only domestic bank card organization in the People's Republic of China)
         /// </summary>
         [Required]
-        [StringLength(19, MinimumLength = 12)] // TODO: change rules?
+        [StringLength(19, MinimumLength = 10)] // TODO: change rules?
         public string CardNumber { get; set; }
 
         public CardExpiration CardExpiration { get; set; }

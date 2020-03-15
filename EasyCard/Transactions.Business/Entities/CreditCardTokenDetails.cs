@@ -6,25 +6,26 @@ using System.Text;
 
 namespace Transactions.Business.Entities
 {
-    public class CreditCardTokenDetails : IEntityBase
+    /// <summary>
+    /// Entity to store in SQL database to control tokens operations
+    /// </summary>
+    public class CreditCardTokenDetails : CreditCardDetailsBase, IEntityBase
     {
         public long CreditCardTokenID { get; set; }
 
+        /// <summary>
+        /// Refrerence to be used by merchant
+        /// </summary>
         public string PublicKey { get; set; }
 
+        /// <summary>
+        /// Provate credit card token reference
+        /// </summary>
         public string Hash { get; set; }
 
         public long TerminalID { get; set; }
 
         public long MerchantID { get; set; }
-
-        public string CardNumber { get; set; }
-
-        public CardExpiration CardExpiration { get; set; }
-
-        public string CardVendor { get; set; }
-
-        public string CardOwnerNationalID { get; set; }
 
         public DateTime Created { get; set; }
 

@@ -9,11 +9,11 @@ using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Business.Entities;
 
-namespace Transactions.Api.Infrastructure.Mapping
+namespace Transactions.Api.Mapping
 {
-    public class AutoMapperProfile : Profile
+    public class TransactionsProfile : Profile
     {
-        public AutoMapperProfile() => RegisterMappings();
+        public TransactionsProfile() => RegisterMappings();
 
         internal void RegisterMappings()
         {
@@ -25,12 +25,6 @@ namespace Transactions.Api.Infrastructure.Mapping
             CreateMap<TransactionRequest, PaymentTransaction>();
             CreateMap<PaymentTransaction, TransactionResponse>();
             CreateMap<PaymentTransaction, TransactionSummary>();
-            CreateMap<TokenRequest, CreditCardToken>();
-
-            CreateMap<CreditCardToken, CreditCardTokenDetails>()
-                .ForMember(m => m.Hash, src => src.MapFrom(f => CreditCardHelpers.GetCardHash(f.CardNumber, f.TerminalID, f.MerchantID, f.CardExpiration.ToString())));
-
-            CreateMap<CreditCardTokenDetails, CreditCardTokenSummary>();
         }
     }
 }
