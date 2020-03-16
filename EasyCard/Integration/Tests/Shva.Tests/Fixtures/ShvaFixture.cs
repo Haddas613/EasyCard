@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+﻿using Shared.Helpers;
+using Shared.Integration.Models;
 using Shva.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Shva.Tests.Fixtures
 {
@@ -17,6 +18,14 @@ namespace Shva.Tests.Fixtures
         {
             //TODO: assign values
             ShvaSettings = new ShvaSettings { };
+            ShvaSettings.BaseUrl = "";
+
+         
+            ExternalPaymentTransactionRequest shvaReq = new ExternalPaymentTransactionRequest();
+            WebApiClient jh = new WebApiClient();
+             ShvaProcessor shvaperoc = new ShvaProcessor(jh, ShvaSettings, null); 
+
+            var task = Task.Run(async () => await shvaperoc.CreateTransaction(shvaReq, "", ""));
         }
 
         public void Dispose()
