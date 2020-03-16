@@ -5,6 +5,7 @@ using Merchants.Tests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Business.Audit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,6 +62,14 @@ namespace MerchantsApi.Tests
             Assert.Equal(20, terminal.Settings.MaxInstallments);
             Assert.True(terminal.Settings.CvvRequired);
             Assert.True(billingEmails.All(m => terminalModel.BillingSettings.BillingNotificationsEmails.Contains(m)));
+
+            //check if merchant history was updated
+            var history = (await merchantsFixture.MerchantsService.GetMerchantHistories().ToListAsync()).
+                LastOrDefault(h => h.MerchantID == merchant.MerchantID && h.OperationCode == OperationCodesEnum.TerminalCreated.ToString());
+            Assert.NotNull(history);
+            Assert.NotNull(history.OperationDoneBy);
+            Assert.NotNull(history.SourceIP);
+            Assert.True(history.OperationDoneByID == merchantsFixture.HttpContextAccessorWrapper.UserIdClaim);
         }
 
         [Fact(DisplayName = "UpdateTerminal: Updates when model is correct")]
@@ -94,6 +103,15 @@ namespace MerchantsApi.Tests
             Assert.Equal(50, terminal.Settings.MaxInstallments);
             Assert.False(terminal.Settings.CvvRequired);
             Assert.True(terminal.BillingSettings.BillingNotificationsEmails.Count() == 0);
+
+            //check if merchant history was updated
+            var history = (await merchantsFixture.MerchantsService.GetMerchantHistories().ToListAsync()).
+                LastOrDefault(h => h.MerchantID == existingTerminal.MerchantID && h.OperationCode == OperationCodesEnum.TerminalUpdated.ToString());
+            Assert.NotNull(history);
+            Assert.NotNull(history.OperationDoneBy);
+            Assert.NotNull(history.SourceIP);
+            Assert.NotNull(history.OperationDescription);
+            Assert.True(history.OperationDoneByID == merchantsFixture.HttpContextAccessorWrapper.UserIdClaim);
         }
 
         [Fact(DisplayName = "GetTerminals: Returns collection of Terminals")]

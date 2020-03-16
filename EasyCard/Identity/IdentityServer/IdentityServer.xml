@@ -25,12 +25,17 @@
             Handle logout page postback
             </summary>
         </member>
-        <member name="M:IdentityServer.Controllers.UserManagementApiController.GetUser(System.String)">
+        <member name="M:IdentityServer.Controllers.UserManagementApiController.GetUserByID(System.String)">
             <summary>
-            Get User
+            Get User by ID
             </summary>
             <param name="userId"></param>
-            <returns>A <see cref="T:System.Threading.Tasks.Task`1"/> representing the result of the asynchronous operation.</returns>
+        </member>
+        <member name="M:IdentityServer.Controllers.UserManagementApiController.GetUserByEmail(System.String)">
+            <summary>
+            Get User by Email
+            </summary>
+            <param name="email"></param>
         </member>
         <member name="M:IdentityServer.Controllers.UserManagementApiController.CreateUser(IdentityServerClient.CreateUserRequestModel)">
             <summary>

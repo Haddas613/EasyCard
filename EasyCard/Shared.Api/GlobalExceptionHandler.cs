@@ -7,6 +7,7 @@ using Shared.Api.Models.Enums;
 using Shared.Business.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Security;
 using System.Text;
 
 namespace Shared.Api
@@ -34,6 +35,18 @@ namespace Shared.Api
                     //TODO: log details
                     result = JsonConvert.SerializeObject(new OperationResponse { Message = enfeEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId, EntityType = enfeEx.EntityType });
                     responseStatusCode = 404;
+                }
+                else if (ex is EntityConflictException econEx)
+                {
+                    //TODO: log details
+                    result = JsonConvert.SerializeObject(new OperationResponse { Message = econEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId, EntityType = econEx.EntityType });
+                    responseStatusCode = 409;
+                }
+                else if (ex is SecurityException securityEx)
+                {
+                    //TODO: log details
+                    result = JsonConvert.SerializeObject(new OperationResponse { Message = securityEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId });
+                    responseStatusCode = 403;
                 }
                 else
                 {

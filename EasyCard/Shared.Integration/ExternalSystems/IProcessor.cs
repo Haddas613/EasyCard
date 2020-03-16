@@ -6,7 +6,7 @@ namespace Shared.Integration.ExternalSystems
 {
     public interface IProcessor
     {
-        Task<ExternalPaymentTransactionResponse> CreateTransaction(ExternalPaymentTransactionRequest paymentTransactionRequest, string messageId, string
+        Task<ProcessorTransactionResponse> CreateTransaction(ProcessorTransactionRequest paymentTransactionRequest, string messageId, string
              correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null);
     }
 }

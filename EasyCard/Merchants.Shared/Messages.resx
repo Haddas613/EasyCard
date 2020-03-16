@@ -123,4 +123,10 @@
   <data name="MerchantUpdated" xml:space="preserve">
     <value>Merchant Updated</value>
   </data>
+  <data name="TerminalCreated" xml:space="preserve">
+    <value>Terminal Created</value>
+  </data>
+  <data name="TerminalUpdated" xml:space="preserve">
+    <value>Terminal Updated</value>
+  </data>
 </root>

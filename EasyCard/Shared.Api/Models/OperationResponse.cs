@@ -43,5 +43,9 @@ namespace Shared.Api.Models
         public string CorrelationId { get; internal set; }
 
         public string EntityType { get; set; }
+
+        public IEnumerable<Error> Errors { get; set; }
+
+        public string ConcurrencyToken { get; set; }
     }
 }

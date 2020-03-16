@@ -21,8 +21,7 @@ namespace Shared.Helpers
             {
                 var keyValueContent = querystr.ToKeyValue();
 
-                //var formUrlEncodedContent = new FormUrlEncodedContent(keyValueContent);
-                builder.Query = keyValueContent.ToString();
+                return Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString(builder.ToString(), keyValueContent);
             }
 
             return builder.ToString();
@@ -49,7 +48,7 @@ namespace Shared.Helpers
                     if (childContent != null)
                     {
                         contentData = contentData.Concat(childContent)
-                            .ToDictionary(k => k.Key, v => System.Net.WebUtility.UrlEncode(v.Value));
+                            .ToDictionary(k => k.Key, v => v.Value);
                     }
                 }
 
@@ -66,7 +65,7 @@ namespace Shared.Helpers
                             jValue?.ToString("o", CultureInfo.InvariantCulture) :
                             jValue?.ToString(CultureInfo.InvariantCulture);
 
-            return new Dictionary<string, string> { { token.Path, System.Net.WebUtility.UrlEncode(value) } };
+            return new Dictionary<string, string> { { token.Path, value } };
         }
     }
 }

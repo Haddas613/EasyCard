@@ -136,6 +136,73 @@ namespace Merchants.Business.Migrations
                     b.ToTable("Merchant");
                 });
 
+            modelBuilder.Entity("Merchants.Business.Entities.Merchant.MerchantHistory", b =>
+                {
+                    b.Property<long>("MerchantHistoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AdditionalDetails")
+                        .HasColumnType("nvarchar(max)")
+                        .IsUnicode(true);
+
+                    b.Property<string>("CorrelationId")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<long?>("MerchantID")
+                        .IsRequired()
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("OperationCode")
+                        .IsRequired()
+                        .HasColumnType("varchar(30)")
+                        .HasMaxLength(30)
+                        .IsUnicode(false);
+
+                    b.Property<DateTime?>("OperationDate")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OperationDescription")
+                        .HasColumnType("nvarchar(max)")
+                        .IsUnicode(true);
+
+                    b.Property<string>("OperationDoneBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
+
+                    b.Property<string>("OperationDoneByID")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<string>("ReasonForChange")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
+
+                    b.Property<string>("SourceIP")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<long?>("TerminalID")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("MerchantHistoryID");
+
+                    b.HasIndex("MerchantID");
+
+                    b.HasIndex("TerminalID");
+
+                    b.ToTable("MerchantHistory");
+                });
+
             modelBuilder.Entity("Merchants.Business.Entities.Terminal.Terminal", b =>
                 {
                     b.Property<long>("TerminalID")
@@ -255,6 +322,19 @@ namespace Merchants.Business.Migrations
                 {
                     b.HasOne("Merchants.Business.Entities.Terminal.Terminal", null)
                         .WithMany("EnabledFeatures")
+                        .HasForeignKey("TerminalID");
+                });
+
+            modelBuilder.Entity("Merchants.Business.Entities.Merchant.MerchantHistory", b =>
+                {
+                    b.HasOne("Merchants.Business.Entities.Merchant.Merchant", "Merchant")
+                        .WithMany()
+                        .HasForeignKey("MerchantID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Merchants.Business.Entities.Terminal.Terminal", "Terminal")
+                        .WithMany()
                         .HasForeignKey("TerminalID");
                 });
 

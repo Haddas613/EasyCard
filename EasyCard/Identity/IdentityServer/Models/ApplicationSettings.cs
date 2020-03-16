@@ -11,8 +11,18 @@ namespace IdentityServer.Models
 
         public int ResetPasswordEmailExpirationInHours { get; set; } = 4;
 
-        public bool ForgotPasswordCheckBankAccountNumber { get; internal set; }
+        public bool ForgotPasswordCheckBankAccountNumber { get; set; }
 
-        public object CompanyName { get; internal set; }
+        public object CompanyName { get; set; }
+
+        public string EmailEventHubConnectionString { get; set; }
+
+        public string EmailEventHubName { get; set; }
+
+        public string InternalCertificate { get; set; }
+
+        public string DefaultStorageConnectionString { get; set; }
+
+        public string RequestsLogStorageTable { get; set; }
     }
 }

@@ -16,6 +16,11 @@ namespace Shared.Helpers
     {
         private HttpClient httpClient;
 
+        public HttpClient HttpClient
+        {
+            get { return httpClient; }
+        }
+
         public WebApiClient()
         {
             var hadler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip };
@@ -58,7 +63,18 @@ namespace Shared.Helpers
             }
             else
             {
-                throw new ApplicationException($"Failed GET from {url}: {response.StatusCode}");
+                if ((int)response.StatusCode >= 500)
+                {
+                    throw new WebApiServerErrorException($"Failed GET from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else if ((int)response.StatusCode >= 400)
+                {
+                    throw new WebApiClientErrorException($"Failed GET from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else
+                {
+                    throw new ApplicationException($"Failed GET from {url}: {response.StatusCode}");
+                }
             }
         }
 
@@ -97,7 +113,18 @@ namespace Shared.Helpers
             }
             else
             {
-                throw new ApplicationException($"Failed POST to {url}: {response.StatusCode}");
+                if ((int)response.StatusCode >= 500)
+                {
+                    throw new WebApiServerErrorException($"Failed POST from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else if ((int)response.StatusCode >= 400)
+                {
+                    throw new WebApiClientErrorException($"Failed POST from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else
+                {
+                    throw new ApplicationException($"Failed POST from {url}: {response.StatusCode}");
+                }
             }
         }
 
@@ -136,7 +163,18 @@ namespace Shared.Helpers
             }
             else
             {
-                throw new ApplicationException($"Failed PUT to {url}: {response.StatusCode}");
+                if ((int)response.StatusCode >= 500)
+                {
+                    throw new WebApiServerErrorException($"Failed PUT from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else if ((int)response.StatusCode >= 400)
+                {
+                    throw new WebApiClientErrorException($"Failed PUT from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else
+                {
+                    throw new ApplicationException($"Failed PUT from {url}: {response.StatusCode}");
+                }
             }
         }
 
@@ -175,7 +213,18 @@ namespace Shared.Helpers
             }
             else
             {
-                throw new ApplicationException($"Failed POST to {url}: {response.StatusCode}");
+                if ((int)response.StatusCode >= 500)
+                {
+                    throw new WebApiServerErrorException($"Failed POST from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else if ((int)response.StatusCode >= 400)
+                {
+                    throw new WebApiClientErrorException($"Failed POST from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else
+                {
+                    throw new ApplicationException($"Failed POST from {url}: {response.StatusCode}");
+                }
             }
         }
 
@@ -212,7 +261,18 @@ namespace Shared.Helpers
             }
             else
             {
-                throw new ApplicationException($"Failed POST to {url}: {response.StatusCode}");
+                if ((int)response.StatusCode >= 500)
+                {
+                    throw new WebApiServerErrorException($"Failed POST from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else if ((int)response.StatusCode >= 400)
+                {
+                    throw new WebApiClientErrorException($"Failed POST from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else
+                {
+                    throw new ApplicationException($"Failed POST from {url}: {response.StatusCode}");
+                }
             }
         }
 
@@ -249,7 +309,18 @@ namespace Shared.Helpers
             }
             else
             {
-                throw new ApplicationException($"Failed POST to {url}: {response.StatusCode}");
+                if ((int)response.StatusCode >= 500)
+                {
+                    throw new WebApiServerErrorException($"Failed POST from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else if ((int)response.StatusCode >= 400)
+                {
+                    throw new WebApiClientErrorException($"Failed POST from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else
+                {
+                    throw new ApplicationException($"Failed POST from {url}: {response.StatusCode}");
+                }
             }
         }
 
@@ -276,13 +347,26 @@ namespace Shared.Helpers
 
             onResponse?.Invoke(string.Empty, response.StatusCode, response.Headers);
 
+            var data = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                var data = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<T>(data);
             }
-
-            throw new ApplicationException($"Failed PUT to {url}: {response.StatusCode}");
+            else
+            {
+                if ((int)response.StatusCode >= 500)
+                {
+                    throw new WebApiServerErrorException($"Failed DELETE from {url}: {response.StatusCode}", response.StatusCode, data);
+                }
+                else if ((int)response.StatusCode >= 400)
+                {
+                    throw new WebApiClientErrorException($"Failed DELETE from {url}: {response.StatusCode}", response.StatusCode, data);
+                }
+                else
+                {
+                    throw new ApplicationException($"Failed DELETE from {url}: {response.StatusCode}");
+                }
+            }
         }
     }
 }

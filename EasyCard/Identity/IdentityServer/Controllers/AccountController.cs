@@ -3,6 +3,7 @@ using IdentityServer.Helpers;
 using IdentityServer.Messages;
 using IdentityServer.Models;
 using IdentityServer.Security;
+using IdentityServer.Security.Auditing;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
@@ -51,10 +52,10 @@ namespace IdentityServer.Controllers
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
             IEmailSender emailSender,
-            ILogger logger,
+            ILogger<AccountController> logger,
             ICryptoService cryptoService,
             IOptions<ApplicationSettings> configuration,
-            IAuditLogger managementApiClient)
+            IAuditLogger auditLogger)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -67,7 +68,7 @@ namespace IdentityServer.Controllers
             this.logger = logger;
             this.cryptoService = cryptoService;
             this.configuration = configuration.Value;
-            this.auditLogger = managementApiClient;
+            this.auditLogger = auditLogger;
         }
 
         /// <summary>

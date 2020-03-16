@@ -4,6 +4,7 @@ using Merchants.Tests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Business.Audit;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -44,6 +45,14 @@ namespace MerchantsApi.Tests
             var merchant = await GetMerchant(responseData.EntityID.Value);
             Assert.NotNull(merchant);
             Assert.Equal(merchantModel.BusinessName, merchant.BusinessName);
+
+            //check if merchant history was created
+            var history = (await merchantsFixture.MerchantsService.GetMerchantHistories().ToListAsync()).
+               LastOrDefault(h => h.MerchantID == merchant.MerchantID && h.OperationCode == OperationCodesEnum.MerchantCreated.ToString());
+            Assert.NotNull(history);
+            Assert.NotNull(history.OperationDoneBy);
+            Assert.NotNull(history.SourceIP);
+            Assert.True(history.OperationDoneByID == merchantsFixture.HttpContextAccessorWrapper.UserIdClaim);
         }
 
         [Fact(DisplayName = "UpdateMerchant: Updates when model is correct")]
@@ -69,6 +78,15 @@ namespace MerchantsApi.Tests
             var merchant = await GetMerchant(existingMerchant.MerchantID);
             Assert.NotNull(merchant);
             Assert.Equal(merchantModel.BusinessName, merchant.BusinessName);
+
+            //check if merchant history was updated
+            var history = (await merchantsFixture.MerchantsService.GetMerchantHistories().ToListAsync()).
+                LastOrDefault(h => h.MerchantID == merchant.MerchantID && h.OperationCode == OperationCodesEnum.MerchantUpdated.ToString());
+            Assert.NotNull(history);
+            Assert.NotNull(history.OperationDoneBy);
+            Assert.NotNull(history.SourceIP);
+            Assert.NotNull(history.OperationDescription);
+            Assert.True(history.OperationDoneByID == merchantsFixture.HttpContextAccessorWrapper.UserIdClaim);
         }
 
         [Fact(DisplayName = "GetMerchants: Returns collection of merchants")]
@@ -114,6 +132,26 @@ namespace MerchantsApi.Tests
             Assert.NotNull(responseData);
             Assert.NotNull(responseData.Data);
             Assert.True(responseData.NumberOfRecords == 1); //assuming the name is unique
+        }
+
+        [Fact(DisplayName = "GetMerchants: GetHistory return result")]
+        [Order(5)]
+        public async Task GetMerchants_GetHistoryReturnsResult()
+        {
+            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
+            var filter = new MerchantHistoryFilter();
+            var referenceHistory = merchantsFixture.MerchantsService.GetMerchantHistories().FirstOrDefault(h => h.MerchantID != null)
+                ?? throw new Exception("Couldn't get reference merchant id");
+            var actionResult = await controller.GetMerchantHistory(referenceHistory.MerchantID.Value, filter);
+
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
+            var responseData = response.Value as SummariesResponse<MerchantHistoryResponse>;
+
+            Assert.NotNull(response);
+            Assert.Equal(200, response.StatusCode);
+            Assert.NotNull(responseData);
+            Assert.NotNull(responseData.Data);
+            Assert.True(responseData.NumberOfRecords > 0);
         }
 
         private async Task<MerchantResponse> GetMerchant(long merchantID)

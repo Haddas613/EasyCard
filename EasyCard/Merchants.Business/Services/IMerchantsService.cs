@@ -11,5 +11,7 @@ namespace Merchants.Business.Services
     public interface IMerchantsService : IServiceBase<Merchant>
     {
         IQueryable<Merchant> GetMerchants();
+
+        IQueryable<MerchantHistory> GetMerchantHistories();
     }
 }

@@ -8,7 +8,8 @@ namespace Shared.Api
 {
     public class ApiControllerBase : ControllerBase
     {
-        public T EnsureExists<T>(T src, string entityName = null)
+        [NonAction]
+        protected T EnsureExists<T>(T src, string entityName = null)
         {
             if (src == null)
             {
@@ -16,6 +17,12 @@ namespace Shared.Api
             }
 
             return src;
+        }
+
+        [NonAction]
+        protected string GetCorrelationID()
+        {
+            return this.HttpContext.TraceIdentifier;
         }
     }
 }

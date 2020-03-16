@@ -1,12 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using BasicServices;
 using IdentityServer.Data;
 using IdentityServer.Models;
+using IdentityServer.Security;
+using IdentityServer.Security.Auditing;
+using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -16,26 +21,35 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using Shared.Api;
 using Shared.Helpers.Email;
+using Shared.Helpers.Security;
 
 namespace IdentityServer
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+
+            this.environment = environment;
         }
 
         public IConfiguration Configuration { get; }
 
+        private IWebHostEnvironment environment;
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var config = Configuration.GetSection("AppConfig")?.Get<ApplicationSettings>();
+
             services.AddLogging(logging =>
             {
                 logging.AddConfiguration(Configuration.GetSection("Logging"));
@@ -69,12 +83,14 @@ namespace IdentityServer
                 c.IncludeXmlComments(xmlPath);
             });
 
+            services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders(); // TODO: replace
 
             var builder = services.AddIdentityServer(options =>
             {
@@ -86,30 +102,73 @@ namespace IdentityServer
             .AddInMemoryIdentityResources(Config.Ids)
             .AddInMemoryApiResources(Config.Apis)
             .AddInMemoryClients(Config.Clients)
-            .AddAspNetIdentity<ApplicationUser>();
+            .AddAspNetIdentity<ApplicationUser>()
+
+            .AddExtensionGrantValidator<DelegationGrantValidator>();
+
+            services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
 
             services.AddAuthentication();
 
-            services.AddSingleton<IEmailSender, EventHubEmailSender>();
+            X509Certificate2 cert = null;
+
+            try
+            {
+                if (environment.IsDevelopment())
+                {
+                    cert = new X509Certificate2(Convert.FromBase64String(config.InternalCertificate), "idsrv");
+                }
+                else
+                {
+                    using (X509Store certStore = new X509Store(StoreName.My, StoreLocation.CurrentUser))
+                    {
+                        certStore.Open(OpenFlags.ReadOnly);
+                        X509Certificate2Collection certCollection = certStore.Certificates.Find(
+                            X509FindType.FindByThumbprint,
+                            config.InternalCertificate,
+                            false);
+                        if (certCollection.Count > 0)
+                        {
+                            cert = certCollection[0];
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Cannot load certificate {config.InternalCertificate}: {ex.Message}");
+            }
+
+            services.AddSingleton<IEmailSender, EventHubEmailSender>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
+                return new EventHubEmailSender(cfg.EmailEventHubConnectionString, cfg.EmailEventHubName);
+            });
+
+            services.AddSingleton<ICryptoService>(new CryptoService(cert));
+
+            services.AddScoped<IAuditLogger, AuditLogger>();
+
+            // DI: request logging
+
+            services.Configure<RequestResponseLoggingSettings>((options) =>
+            {
+                options.RequestsLogStorageTable = config.RequestsLogStorageTable;
+                options.StorageConnectionString = config.DefaultStorageConnectionString;
+            });
+
+            services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
+            app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
 
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+            app.UseRequestResponseLogging();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -136,9 +195,34 @@ namespace IdentityServer
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
+            Microsoft.AspNetCore.Identity.RoleManager<IdentityRole> roleManager = serviceProvider.GetService<Microsoft.AspNetCore.Identity.RoleManager<IdentityRole>>();
+
+            try
+            {
+                foreach (var role in new[] { "Merchant", "BusinessAdministrator", "BillingAdministrator" })
+                {
+                    if (!roleManager.RoleExistsAsync(role).Result)
+                    {
+                        roleManager.CreateAsync(new IdentityRole(role)).Wait();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
             var config = serviceProvider.GetRequiredService<IConfiguration>();
             var connectionString = config.GetConnectionString("DefaultConnection");
-            SeedData.EnsureSeedData(connectionString);
+
+            try
+            {
+                SeedData.EnsureSeedData(connectionString);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
     }
 }
