@@ -10,8 +10,11 @@ namespace IdentityServer.Security.Auditing
         Unknown,
 
         EmailConfirmed,
+
         PasswordResetted,
         PasswordSet,
+        PasswordForgot,
+
         UserValidated,
 
         LoggedIn,

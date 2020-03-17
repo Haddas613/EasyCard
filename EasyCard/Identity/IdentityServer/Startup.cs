@@ -74,7 +74,7 @@ namespace IdentityServer
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Merchants API",
+                    Title = "Identity Server",
                 });
 
                 // Set the comments path for the Swagger JSON and UI.

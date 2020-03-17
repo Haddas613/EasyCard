@@ -134,6 +134,7 @@ namespace IdentityServer.Controllers
                 {
                     var user = await userManager.FindByNameAsync(model.Username);
                     await events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.ClientId));
+                    await auditLogger.RegisterLogin(user);
 
                     if (context != null)
                     {
@@ -209,6 +210,8 @@ namespace IdentityServer.Controllers
 
                 // raise the logout event
                 await events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
+                var user = await userManager.FindByIdAsync(User.GetSubjectId());
+                await auditLogger.RegisterLogout(user);
             }
 
             // check if we need to trigger sign-out at an upstream identity provider
@@ -315,6 +318,8 @@ namespace IdentityServer.Controllers
             var addPasswordResult = await userManager.AddPasswordAsync(user, model.Password);
             if (addPasswordResult.Succeeded)
             {
+                await auditLogger.RegisterConfirmEmail(user);
+
                 // TODO: return RedirectToAction(nameof(ManageController.EnableAuthenticator), "Manage");
             }
 
@@ -486,7 +491,7 @@ namespace IdentityServer.Controllers
             }
             else
             {
-                await auditLogger.RegisterSetPassword(model.Email);
+                await auditLogger.RegisterResetPassword(user);
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
 
