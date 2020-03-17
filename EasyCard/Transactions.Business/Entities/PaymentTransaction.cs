@@ -16,6 +16,10 @@ namespace Transactions.Business.Entities
         /// </summary>
         public long? InitialTransactionID { get; set; }
 
+        public string AggregatorTerminalID { get; set; }
+
+        public string ProcessorTerminalID { get; set; }
+
         /// <summary>
         /// Individual counter per terminal
         /// </summary>
