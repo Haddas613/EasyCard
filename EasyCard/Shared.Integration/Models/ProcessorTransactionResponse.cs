@@ -7,6 +7,7 @@ namespace Shared.Integration.Models
     public class ProcessorTransactionResponse
     {
         public string TransactionReference { get; set; }
+
         public string DealNumber { get; set; }
 
         /// <summary>
@@ -15,9 +16,7 @@ namespace Shared.Integration.Models
         public string ErrorMessage { get; set; }
 
         public int ProcessorCode { get; set; }
+
         public bool Success { get; set; }
-
-        public string DealNumber { get; set; }
-
     }
 }

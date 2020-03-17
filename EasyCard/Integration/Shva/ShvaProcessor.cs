@@ -63,7 +63,6 @@ namespace Shva
                 return null;
             }
 
-
             if (ashStartResultBody.AshStartResult == 777)
             {
                 var ashAuthReq = new AshAuthRequestBody();
@@ -101,11 +100,10 @@ namespace Shva
             return res;
         }
 
-
-        public async Task<ExternalPaymentTransactionResponse> ParamsUpdateTransaction(ShvaParameters updateParamRequest, string messageId, string
+        public async Task<ProcessorTransactionResponse> ParamsUpdateTransaction(ShvaParameters updateParamRequest, string messageId, string
             correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
         {
-            var res = new ExternalPaymentTransactionResponse();
+            var res = new ProcessorTransactionResponse();
             var updateParamsReq = new GetTerminalDataRequestBody();
             updateParamsReq.UserName = updateParamRequest.UserName;
             updateParamsReq.Password = updateParamRequest.Password;
@@ -154,8 +152,7 @@ namespace Shva
             return res;
         }
 
-
-        private static void InitInitObjRequest(ExternalPaymentTransactionRequest paymentTransactionRequest, AshStartRequestBody ashStartReq, ShvaParameters shvaParameters, out clsInput cls, out InitInputObjRequest initObjReq)
+        private static void InitInitObjRequest(ProcessorTransactionRequest paymentTransactionRequest, AshStartRequestBody ashStartReq, ShvaParameters shvaParameters, out clsInput cls, out InitInputObjRequest initObjReq)
         {
             ashStartReq.UserName = shvaParameters.UserName;
             ashStartReq.Password = shvaParameters.Password;
