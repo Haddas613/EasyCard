@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Shared.Api.Models;
 using Shared.Helpers;
 using Shared.Integration;
@@ -6,6 +7,7 @@ using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using Shva.Configuration;
+using Shva.Conveters;
 using Shva.Models;
 using ShvaEMV;
 using System;
@@ -19,20 +21,19 @@ namespace Shva
 {
     public class ShvaProcessor : IProcessor
     {
-        private const string BaseUrl = "http://shva.co.il/xmlwebservices/";
         private const string AshStartUrl = "AshStart";
         private const string AshAuthUrl = "AshAuth";
         private const string AshEndUrl = "AshEnd";
-        private const string GetTerminalDataUrl = "GetTerminalData";//ShvaParamsUpdate
+        private const string GetTerminalDataUrl = "GetTerminalData";
         private const string TransEMVUrl = "TransEMV";
 
         private readonly IWebApiClient apiClient;
-        private readonly ShvaSettings configuration;
+        private readonly ShvaGlobalSettings configuration;
         private readonly ILogger logger;
 
-        public ShvaProcessor(IWebApiClient apiClient, ShvaSettings configuration, ILogger<ShvaProcessor> logger)
+        public ShvaProcessor(IWebApiClient apiClient, IOptions<ShvaGlobalSettings> configuration, ILogger<ShvaProcessor> logger)
         {
-            this.configuration = configuration;
+            this.configuration = configuration.Value;
 
             this.apiClient = apiClient;
 
@@ -42,48 +43,46 @@ namespace Shva
         public async Task<ProcessorTransactionResponse> CreateTransaction(ProcessorTransactionRequest paymentTransactionRequest, string messageId, string
              correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
         {
-            var res = new ProcessorTransactionResponse();
-            var ashStartReq = new AshStartRequestBody();
-            ShvaParameters shvaParameters = (ShvaParameters)paymentTransactionRequest.ProcessorSettings;
-            clsInput cls;
-            InitInputObjRequest initObjReq;
-            InitInitObjRequest(paymentTransactionRequest, ashStartReq, shvaParameters, out cls, out initObjReq);
+            ShvaTerminalSettings shvaParameters = paymentTransactionRequest.ProcessorSettings as ShvaTerminalSettings;
 
-            EMVDealHelper.InitInputObj(initObjReq, ref cls);
+            var ashStartReq = shvaParameters.GetAshStartRequestBody();
+
+            clsInput cls = paymentTransactionRequest.GetInitInitObjRequest();
+
             ashStartReq.inputObj = cls;
             ashStartReq.pinpad = new clsPinPad();
             ashStartReq.globalObj = new ShvaEMV.clsGlobal();
 
-            var result = await this.DoRequest(ashStartReq, string.Format("{0}{1}", BaseUrl, AshStartUrl), messageId, correlationId, handleIntegrationMessage);
+            var ashStartReqResult = await this.DoRequest(ashStartReq, AshStartUrl, messageId, correlationId, handleIntegrationMessage);
 
-            var ashStartResultBody = (AshStartResponseBody)result?.Body?.Content;
+            var ashStartResultBody = (AshStartResponseBody)ashStartReqResult?.Body?.Content;
 
             if (ashStartResultBody == null)
             {
-                return null;
+                // return failed response
+                return new ProcessorTransactionResponse(Messages.EmptyResponse, RejectionReasonEnum.Unknown);
             }
 
-            if (ashStartResultBody.AshStartResult == 777)
+            // Please describe this case
+            if (ashStartResultBody.AshStartResult == (int)AshStartResultEnum.PleaseDescribeWhat777Mean)
             {
-                var ashAuthReq = new AshAuthRequestBody();
-                var ashEndReq = new AshEndRequestBody();
-                ashAuthReq.pinpad = ashStartResultBody.pinpad;
-                ashAuthReq.globalObj = ashStartResultBody.globalObj;
+                var ashAuthReq = ashStartResultBody.GetAshAuthRequestBody(shvaParameters);
+                var ashEndReq = shvaParameters.GetAshEndRequestBody();
+
                 ashStartReq.inputObj = ashEndReq.inputObj = cls;
-                ashAuthReq.MerchantNumber = ashEndReq.MerchantNumber = shvaParameters.MerchantNumber;
-                ashAuthReq.UserName = ashEndReq.UserName = shvaParameters.UserName;
-                ashAuthReq.Password = ashEndReq.Password = shvaParameters.Password;
 
-                var resultAuth = await this.DoRequest(ashAuthReq, string.Format("{0}{1}", BaseUrl, AshAuthUrl), messageId, correlationId, handleIntegrationMessage);
-
-                var authResultBody = (AshAuthResponse)result?.Body?.Content;
+                // what we are doing in this place ?
+                var resultAuth = await this.DoRequest(ashAuthReq, AshAuthUrl, messageId, correlationId, handleIntegrationMessage);
+                var authResultBody = (AshAuthResponse)resultAuth?.Body?.Content;
 
                 ashEndReq.globalObj = authResultBody.Body.globalObj;
                 ashEndReq.pinpad = authResultBody.Body.pinpad;
-                var resultAshEnd = await this.DoRequest(ashEndReq, string.Format("{0}{1}", BaseUrl, AshEndUrl), messageId, correlationId, handleIntegrationMessage);
-                var resultAshEndBody = (AshEndResponseBody)result?.Body?.Content;
-                int resCode = resultAshEndBody.AshEndResult;
-                //if (resultAshEndBody.AshEndResult == 777)//   TODO
+
+                var resultAshEnd = await this.DoRequest(ashEndReq, AshEndUrl, messageId, correlationId, handleIntegrationMessage);
+                var resultAshEndBody = (AshEndResponseBody)resultAshEnd?.Body?.Content;
+
+                //   TODO: what should be done in this place ?
+                //if (resultAshEndBody.AshEndResult == 777)
                 //{
                 //    if (resultStatus == 777 && transactionType == "11" && !billingModel.IsNewInitDeal && initDealResultModel != null)
                 //    {
@@ -92,15 +91,24 @@ namespace Shva
                 //    }
                 //}
 
-                res.ProcessorCode = resCode;
-                res.DealNumber = resultAshEndBody.globalObj.receiptObj.voucherNumber.valueTag;
-                res.TransactionReference = resultAshEndBody.globalObj.outputObj.tranRecord.valueTag;
+                return resultAshEndBody.GetProcessorTransactionResponse();
             }
-
-            return res;
+            else
+            {
+                // TODO: is it failed case ?
+                return new ProcessorTransactionResponse(/*TODO: procide error message*/);
+            }
         }
 
-        public async Task<ProcessorTransactionResponse> ParamsUpdateTransaction(ShvaParameters updateParamRequest, string messageId, string
+        /// <summary>
+        /// TODO: What is this method purpose ?
+        /// </summary>
+        /// <param name="updateParamRequest"></param>
+        /// <param name="messageId"></param>
+        /// <param name="correlationId"></param>
+        /// <param name="handleIntegrationMessage"></param>
+        /// <returns></returns>
+        public async Task ParamsUpdateTransaction(ShvaTerminalSettings updateParamRequest, string messageId, string
             correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
         {
             var res = new ProcessorTransactionResponse();
@@ -109,31 +117,40 @@ namespace Shva
             updateParamsReq.Password = updateParamRequest.Password;
             updateParamsReq.MerchantNumber = updateParamRequest.MerchantNumber;
 
-            var result = await this.DoRequest(updateParamsReq, string.Format("{0}{1}", BaseUrl, GetTerminalDataUrl), messageId, correlationId, handleIntegrationMessage);
+            var result = await this.DoRequest(updateParamsReq, GetTerminalDataUrl, messageId, correlationId, handleIntegrationMessage);
 
             var getTerminalDataResultBody = (GetTerminalDataResponseBody)result?.Body?.Content;
 
             if (getTerminalDataResultBody == null)
             {
-                return null;
+                // TODO: error response
             }
 
-            res.ProcessorCode = getTerminalDataResultBody.GetTerminalDataResult;
-            return res;
+            var code = getTerminalDataResultBody.GetTerminalDataResult;
+
+            // TODO: validate response and return error is required response
         }
 
-        public async Task<ExternalPaymentTransmissionResponse> TransactTransaction(ExternalPaymentTransTrasactionRequest transRequest, string messageId, string
+        /// <summary>
+        /// TODO: Is it transmission method? It will be executed per merchant?
+        /// </summary>
+        /// <param name="transRequest"></param>
+        /// <param name="messageId"></param>
+        /// <param name="correlationId"></param>
+        /// <param name="handleIntegrationMessage"></param>
+        /// <returns></returns>
+        public async Task<ShvaTransmissionResponse> TransactTransaction(ShvaTransmissionRequest transRequest, string messageId, string
             correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
         {
-            var res = new ExternalPaymentTransmissionResponse();
-            ShvaParameters shvaParameters = (ShvaParameters)transRequest.ProcessorSettings;
+            var res = new ShvaTransmissionResponse();
+            ShvaTerminalSettings shvaParameters = (ShvaTerminalSettings)transRequest.ProcessorSettings;
             var tranEMV = new TransEMVRequestBody();
             tranEMV.UserName = shvaParameters.UserName;
             tranEMV.Password = shvaParameters.Password;
             tranEMV.MerchantNumber = shvaParameters.MerchantNumber;
             tranEMV.DATA = transRequest.DATAToTrans;
 
-            var result = await this.DoRequest(tranEMV, string.Format("{0}{1}", BaseUrl, TransEMVUrl), messageId, correlationId, handleIntegrationMessage);
+            var result = await this.DoRequest(tranEMV, TransEMVUrl, messageId, correlationId, handleIntegrationMessage);
 
             var transResultBody = (TransEMVResponseBody)result?.Body?.Content;
 
@@ -150,32 +167,6 @@ namespace Shva
             res.TotalDebitTransSum = transResultBody.TotalDebitTransSum;
             res.TotalXML = transResultBody.TotalXML;
             return res;
-        }
-
-        private static void InitInitObjRequest(ProcessorTransactionRequest paymentTransactionRequest, AshStartRequestBody ashStartReq, ShvaParameters shvaParameters, out clsInput cls, out InitInputObjRequest initObjReq)
-        {
-            ashStartReq.UserName = shvaParameters.UserName;
-            ashStartReq.Password = shvaParameters.Password;
-            ashStartReq.MerchantNumber = shvaParameters.MerchantNumber;
-            cls = new clsInput();
-            InitDealResultModel initDealResultModel = shvaParameters.IsNewInitDeal ? null : shvaParameters.InitDealModel;
-            initObjReq = new InitInputObjRequest();
-            initObjReq.ExpDate_YYMM = paymentTransactionRequest.ExpDate_YYMM;
-            initObjReq.TransactionType = paymentTransactionRequest.TransactionType;
-            initObjReq.Currency = paymentTransactionRequest.Currency;
-            initObjReq.Code = paymentTransactionRequest.Code;
-            initObjReq.CardNum = string.IsNullOrWhiteSpace(paymentTransactionRequest.CreditCardNumber) ? paymentTransactionRequest.Urack2 : paymentTransactionRequest.CreditCardNumber;
-            initObjReq.CreditTerms = paymentTransactionRequest.CreditTerms;
-            initObjReq.Amount = paymentTransactionRequest.Amount.ToString();
-            initObjReq.Cvv2 = paymentTransactionRequest.CVV;
-            initObjReq.AuthNum = shvaParameters.AuthNum;
-            initObjReq.Id = paymentTransactionRequest.IdentityNumber;
-            initObjReq.ParamJ = paymentTransactionRequest.ParamJ;
-            initObjReq.NumOfPayment = paymentTransactionRequest.NumOfInstallment;
-            initObjReq.FirstAmount = paymentTransactionRequest.FirstAmount;
-            initObjReq.NonFirstAmount = paymentTransactionRequest.NonFirstAmount;
-            initObjReq.InitDealM = initDealResultModel;
-            initObjReq.IsNewInitDeal = shvaParameters.IsNewInitDeal;
         }
 
         protected async Task<Envelope> DoRequest(object request, string soapAction, string messageId, string correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
@@ -197,11 +188,17 @@ namespace Shva
 
             try
             {
-                svcRes = await this.apiClient.PostXml<Envelope>(this.configuration.BaseUrl, "/Service/Service.asmx", soap, () => BuildHeaders(soapAction),
-                    (url, request) => { requestStr = request; requestUrl = url; },
-                    (response, responseStatus, responseHeaders) => { responseStr = response; responseStatusStr = responseStatus.ToString(); });
-
-
+                svcRes = await this.apiClient.PostXml<Envelope>(configuration.BaseUrl, $"/{soapAction}" /* TODO: please check which url Shva used for each request */, soap, () => BuildHeaders($"{configuration.BaseUrl}/{soapAction}"),
+                    (url, request) =>
+                    {
+                        requestStr = request;
+                        requestUrl = url;
+                    },
+                    (response, responseStatus, responseHeaders) =>
+                    {
+                        responseStr = response;
+                        responseStatusStr = responseStatus.ToString();
+                    });
             }
             catch (Exception ex)
             {
@@ -233,11 +230,10 @@ namespace Shva
         {
             NameValueCollection headers = new NameValueCollection();
 
-            // TODO: implement headers
-            headers.Add("Authorization", new AuthenticationHeaderValue("Bearer", "TODO: AccessToken").ToString());
+            // TODO: do we need any additional headers (?)
+            //headers.Add("Authorization", new AuthenticationHeaderValue("Bearer", "TODO: AccessToken").ToString());
 
             headers.Add("SOAPAction", $"{soapAction}");
-
 
             return headers;
         }

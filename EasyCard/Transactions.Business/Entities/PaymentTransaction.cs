@@ -68,7 +68,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Number Of Installments
         /// </summary>
-        public int NumberOfInstallments { get; set; }
+        public int NumberOfPayments { get; set; }
 
         /// <summary>
         /// Current installment

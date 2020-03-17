@@ -74,6 +74,9 @@ namespace Shared.Integration.Models
         /// </summary>
         public DateTime? TransactionDate { get; set; }
 
+        /// <summary>
+        /// Does not have real credit card number
+        /// </summary>
         public CreditCardDetails CreditCardDetails { get; set; }
 
         /// <summary>

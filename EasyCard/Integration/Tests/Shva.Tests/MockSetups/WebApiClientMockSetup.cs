@@ -11,6 +11,7 @@ namespace Shva.Tests.MockSetups
     public class WebApiClientMockSetup
     {
         public Mock<IWebApiClient> MockObj { get; private set; }
+
         public WebApiClientMockSetup()
         {
             MockObj = new Mock<IWebApiClient>();

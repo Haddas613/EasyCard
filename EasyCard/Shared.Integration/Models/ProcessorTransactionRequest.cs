@@ -1,62 +1,86 @@
 ﻿using Shared.Api.Models.Enums;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Shared.Integration.Models
 {
-    // TODO: fill required fields
     public class ProcessorTransactionRequest
     {
-        public Object ProcessorSettings { get; set; }
-       
-
-        //public clsInput ClsInput { get; set; }
-        public decimal Amount { get; set; }
-
-        public string CreditCardNumber { get; set; }
-        public string CVV { get; set; }
-
-        public string Urack2 { get; set; }
-
-        public string ExpDate_YYMM { get; set; }
         /// <summary>
-        /// 11 initialization/after initialization transaction
-        /// 01 regular deal
-        /// 53 refund
+        /// Shva terminal settings
         /// </summary>
-        public string TransactionType { get; set; }
+        public object ProcessorSettings { get; set; }
+
         /// <summary>
-        /// ///* "840";//USD   "978";//Euro   "376";//ILS*/
+        /// Unique transaction ID
         /// </summary>
-        public string Currency { get; set; }
+        public string TransactionID { get; set; }
+
+        public string EasyCardTerminalID { get; set; }
+
+        /// <summary>
+        /// Shva terminal ID
+        /// </summary>
+        public string ProcessorTerminalID { get; set; }
+
+        public TransactionTypeEnum TransactionType { get; set; }
+
+        /// <summary>
+        /// Currency
+        /// </summary>
+        public CurrencyEnum Currency { get; set; }
+
         /// <summary>
         /// 50 telephone deal
         /// 00 regular (megnetic)
         /// </summary>
-        public string Code { get; set; }
-        /// <summary>
-        /// 1 regular
-        /// 6 credit
-        /// 8 intallmets
-        /// </summary>
-        public string CreditTerms { get; set; }
-        /// <summary>
-        /// ""  in case of regular deal
-        /// </summary>
-        public string NumOfInstallment { get; set; }
-        /// <summary>
-        /// ""  in case of regular deal
-        /// </summary>
-        public string FirstAmount { get; set; }
+        public CardPresenceEnum CardPresence { get; set; }
 
         /// <summary>
-        /// "" in case of regular deal
+        /// Current installment
         /// </summary>
-        public string NonFirstAmount { get; set; }
-        public string DealDescription { get; set; }
-        public string IdentityNumber { get; set; }
-        public ParamJEnum ParamJ { get; set; }
+        public int CurrentInstallment { get; set; }
 
+        /// <summary>
+        /// This transaction amount
+        /// </summary>
+        public decimal TransactionAmount { get; set; }
+
+        /// <summary>
+        /// Initial installment payment
+        /// </summary>
+        public decimal InitialPaymentAmount { get; set; }
+
+        /// <summary>
+        /// TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+        /// </summary>
+        public decimal TotalAmount { get; set; }
+
+        /// <summary>
+        /// Amount of one instalment payment
+        /// </summary>
+        public decimal InstallmentPaymentAmount { get; set; }
+
+        /// <summary>
+        /// Legal transaction day
+        /// </summary>
+        public DateTime? TransactionDate { get; set; }
+
+        /// <summary>
+        /// Real credit card number
+        /// </summary>
+        public CreditCardToken CreditCardToken { get; set; }
+
+        /// <summary>
+        /// Will be ShvaCreatedTransactionDetails; TODO: possible needs to be used additional model or ProcessorTransactionRequest
+        /// </summary>
+        public object InitialTransaction { get; set; }
+
+        /// <summary>
+        /// To be used for credit or installments ?
+        /// </summary>
+        public int NumberOfPayments { get; set; }
     }
 }
