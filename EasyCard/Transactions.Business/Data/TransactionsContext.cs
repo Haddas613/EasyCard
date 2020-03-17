@@ -49,6 +49,9 @@ namespace Transactions.Business.Data
                 builder.HasKey(b => b.PaymentTransactionID);
                 builder.Property(b => b.PaymentTransactionID).ValueGeneratedOnAdd();
 
+                builder.Property(b => b.AggregatorTerminalID).IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                builder.Property(b => b.ProcessorTerminalID).IsRequired(false).HasMaxLength(20).IsUnicode(false);
+
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
                 //builder.Property(b => b.CardNumber).IsRequired(true).HasMaxLength(16).IsUnicode(false);
