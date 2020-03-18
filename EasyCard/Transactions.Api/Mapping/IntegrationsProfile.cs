@@ -35,7 +35,8 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.TransactionType, s => s.MapFrom(src => src.TransactionType))
                 .ForMember(m => m.Currency, s => s.MapFrom(src => src.Currency))
                 .ForMember(m => m.CardPresence, s => s.MapFrom(src => src.CardPresence))
-                .ForMember(m => m.NumberOfInstallments, s => s.MapFrom(src => src.NumberOfInstallments))
+
+                //.ForMember(m => m.NumberOfInstallments, s => s.MapFrom(src => src.NumberOfInstallments))
                 .ForMember(m => m.CurrentInstallment, s => s.MapFrom(src => src.CurrentInstallment))
                 .ForMember(m => m.TransactionAmount, s => s.MapFrom(src => src.TransactionAmount))
                 .ForMember(m => m.InitialPaymentAmount, s => s.MapFrom(src => src.InitialPaymentAmount))

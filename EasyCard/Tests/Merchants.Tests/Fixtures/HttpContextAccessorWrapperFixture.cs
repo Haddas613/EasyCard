@@ -1,4 +1,5 @@
-﻿using Shared.Business.Security;
+﻿using Microsoft.AspNetCore.Http;
+using Shared.Business.Security;
 using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,8 @@ namespace Merchants.Tests.Fixtures
         /// Get or set current user IP
         /// </summary>
         public string UserIp { get; set; }
+
+        public HttpContext HttpContext => throw new NotImplementedException();
 
         public HttpContextAccessorWrapperFixture()
         {

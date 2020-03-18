@@ -11,6 +11,8 @@ namespace Shared.Business.Security
         private readonly ClaimsPrincipal user;
         private readonly IHttpContextAccessor httpContextAccessor;
 
+        public HttpContext HttpContext { get => httpContextAccessor?.HttpContext; }
+
         public HttpContextAccessorWrapper(IHttpContextAccessor httpContextAccessor)
         {
             this.httpContextAccessor = httpContextAccessor;

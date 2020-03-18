@@ -31,7 +31,7 @@ namespace Transactions.Tests.Fixtures
             TransactionsContext = new TransactionsContext(opts.Options, HttpContextAccessorWrapper);
             TransactionsContext.Database.EnsureCreated();
 
-            TransactionsService = new TransactionsService(TransactionsContext);
+            TransactionsService = new TransactionsService(TransactionsContext, HttpContextAccessorWrapper);
             CreditCardTokenService = new CreditCardTokenService(TransactionsContext);
 
             var configuration = new MapperConfiguration(cfg => cfg.AddMaps(Assembly.GetAssembly(typeof(Api.Controllers.TransactionsApiController))));
