@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Transactions.Api.Mapping;
+using Transactions.Api.Services;
 using Transactions.Business.Data;
 using Transactions.Business.Services;
 
@@ -16,9 +17,9 @@ namespace Transactions.Tests.Fixtures
 
         public HttpContextAccessorWrapperFixture HttpContextAccessorWrapper { get; private set; }
 
-        public TransactionsService TransactionsService { get; private set; }
+        public ITransactionsService TransactionsService { get; private set; }
 
-        public CreditCardTokenService CreditCardTokenService { get; private set; }
+        public ICreditCardTokenService CreditCardTokenService { get; private set; }
 
         public IMapper Mapper { get; private set; }
 

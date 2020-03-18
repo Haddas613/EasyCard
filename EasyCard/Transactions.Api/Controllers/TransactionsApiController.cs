@@ -38,7 +38,8 @@ namespace Transactions.Api.Controllers
         // TODO: service client
         private readonly ITerminalsService terminalsService;
 
-        public TransactionsApiController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper, IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver)
+        public TransactionsApiController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper, 
+            IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver, ITerminalsService terminalsService)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -46,6 +47,7 @@ namespace Transactions.Api.Controllers
 
             this.aggregatorResolver = aggregatorResolver;
             this.processorResolver = processorResolver;
+            this.terminalsService = terminalsService;
         }
 
         [HttpGet]
