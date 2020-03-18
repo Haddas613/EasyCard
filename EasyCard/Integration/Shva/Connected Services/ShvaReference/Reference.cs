@@ -10,197 +10,197 @@
 namespace ShvaEMV
 {
     using System.Runtime.Serialization;
-    
-    
+
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsInput", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsInput", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsInput : object
     {
-        
+
         private string sTimeRequestField;
-        
+
         private string zDataField;
-        
+
         private string field55Field;
-        
+
         private string conversionProviderField;
-        
+
         private string addendumP2PEField;
-        
+
         private string dccField;
-        
+
         private bool bAnalysisXmlStrField;
-        
+
         private string xmlStrField;
-        
+
         private string shortDataField;
-        
+
         private string expirationDateField;
-        
+
         private string mtiField;
-        
+
         private string tranTypeField;
-        
+
         private string amountField;
-        
+
         private string conversionAmountField;
-        
+
         private string conversionRateField;
-        
+
         private string termNoField;
-        
+
         private string panEntryModeField;
-        
+
         private string cardSeqNumberField;
-        
+
         private string rrnField;
-        
+
         private string authorizationNoField;
-        
+
         private string authorizationCodeManpikField;
-        
+
         private string cvv2Field;
-        
+
         private string idField;
-        
+
         private string specialProjectInfo1Field;
-        
+
         private string specialProjectCodeField;
-        
+
         private string currencyField;
-        
+
         private string conversionCurrencyField;
-        
+
         private string eciField;
-        
+
         private string cavvUcafField;
-        
+
         private string xidField;
-        
+
         private string otpField;
-        
+
         private string capDpaField;
-        
+
         private string cashbackAmountField;
-        
+
         private string tipField;
-        
+
         private string commissionField;
-        
+
         private string creditTermsField;
-        
+
         private string firstPaymentField;
-        
+
         private string notFirstPaymentField;
-        
+
         private string noPaymentsField;
-        
+
         private string indexPaymentField;
-        
+
         private string stndOrdrNoField;
-        
+
         private string stndOrdrTotalNoField;
-        
+
         private string stndOrdrTotalSumField;
-        
+
         private string stndOrdrUniqueRefField;
-        
+
         private string stndOrdrFreqField;
-        
+
         private string deferMonthsField;
-        
+
         private string ipayAmountField;
-        
+
         private string ipayNumberField;
-        
+
         private string offerCodeField;
-        
+
         private string dueDateField;
-        
+
         private string ipayCodeField;
-        
+
         private string ipayPercentField;
-        
+
         private string productCodeField;
-        
+
         private string selfServiceTransField;
-        
+
         private string originalUidField;
-        
+
         private string originalTranDateField;
-        
+
         private string originalTranTimeField;
-        
+
         private string originalAmountField;
-        
+
         private string originalAuthorizedAmountField;
-        
+
         private string originalAuthNumField;
-        
+
         private string originalAuthorizationCodeSolekField;
-        
+
         private string originalAuthorizationCodeManpikField;
-        
+
         private string originalPinkIncrAuthField;
-        
+
         private string originalAuthSolekNumField;
-        
+
         private string addendum1SettlField;
-        
+
         private string addendum1Field;
-        
+
         private string sapakMutavNoField;
-        
+
         private string addendum2Field;
-        
+
         private string addendum2SettlField;
-        
+
         private string addressField;
-        
+
         private string cityField;
-        
+
         private string zipField;
-        
+
         private string addendum3SettlField;
-        
+
         private string addendum4SettlField;
-        
+
         private string addendum5SettlField;
-        
+
         private string gasolineTypeField;
-        
+
         private string gasolineLiterField;
-        
+
         private string oilLiterField;
-        
+
         private string oilAmountField;
-        
+
         private string speedometerField;
-        
+
         private string carNumberField;
-        
+
         private string serviceAmountField;
-        
+
         private string clubNumberField;
-        
+
         private ShvaEMV.ErrorGlobal statusField;
-        
+
         private string sExceptionField;
-        
+
         private string ashReasonCreditField;
-        
+
         private string parameterJField;
-        
+
         private string giftCodeField;
-        
+
         private string cellularField;
-        
+
         private string clientInputPanField;
-        
+
         private string specialPanEntryDescField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public string sTimeRequest
         {
             get
@@ -212,8 +212,8 @@ namespace ShvaEMV
                 this.sTimeRequestField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public string zData
         {
             get
@@ -225,8 +225,8 @@ namespace ShvaEMV
                 this.zDataField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string field55
         {
             get
@@ -238,8 +238,8 @@ namespace ShvaEMV
                 this.field55Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public string conversionProvider
         {
             get
@@ -251,8 +251,8 @@ namespace ShvaEMV
                 this.conversionProviderField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public string addendumP2PE
         {
             get
@@ -264,8 +264,8 @@ namespace ShvaEMV
                 this.addendumP2PEField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public string dcc
         {
             get
@@ -277,8 +277,8 @@ namespace ShvaEMV
                 this.dccField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 6)]
         public bool bAnalysisXmlStr
         {
             get
@@ -290,8 +290,8 @@ namespace ShvaEMV
                 this.bAnalysisXmlStrField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 7)]
         public string xmlStr
         {
             get
@@ -303,8 +303,8 @@ namespace ShvaEMV
                 this.xmlStrField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=8)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 8)]
         public string shortData
         {
             get
@@ -316,8 +316,8 @@ namespace ShvaEMV
                 this.shortDataField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=9)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 9)]
         public string expirationDate
         {
             get
@@ -329,8 +329,8 @@ namespace ShvaEMV
                 this.expirationDateField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=10)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 10)]
         public string mti
         {
             get
@@ -342,8 +342,8 @@ namespace ShvaEMV
                 this.mtiField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=11)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 11)]
         public string tranType
         {
             get
@@ -355,8 +355,8 @@ namespace ShvaEMV
                 this.tranTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=12)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 12)]
         public string amount
         {
             get
@@ -368,8 +368,8 @@ namespace ShvaEMV
                 this.amountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=13)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 13)]
         public string conversionAmount
         {
             get
@@ -381,8 +381,8 @@ namespace ShvaEMV
                 this.conversionAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=14)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 14)]
         public string conversionRate
         {
             get
@@ -394,8 +394,8 @@ namespace ShvaEMV
                 this.conversionRateField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=15)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 15)]
         public string termNo
         {
             get
@@ -407,8 +407,8 @@ namespace ShvaEMV
                 this.termNoField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=16)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 16)]
         public string panEntryMode
         {
             get
@@ -420,8 +420,8 @@ namespace ShvaEMV
                 this.panEntryModeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=17)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 17)]
         public string cardSeqNumber
         {
             get
@@ -433,8 +433,8 @@ namespace ShvaEMV
                 this.cardSeqNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=18)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 18)]
         public string rrn
         {
             get
@@ -446,8 +446,8 @@ namespace ShvaEMV
                 this.rrnField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=19)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 19)]
         public string authorizationNo
         {
             get
@@ -459,8 +459,8 @@ namespace ShvaEMV
                 this.authorizationNoField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=20)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 20)]
         public string authorizationCodeManpik
         {
             get
@@ -472,8 +472,8 @@ namespace ShvaEMV
                 this.authorizationCodeManpikField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=21)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 21)]
         public string cvv2
         {
             get
@@ -485,8 +485,8 @@ namespace ShvaEMV
                 this.cvv2Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=22)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 22)]
         public string id
         {
             get
@@ -498,8 +498,8 @@ namespace ShvaEMV
                 this.idField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=23)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 23)]
         public string specialProjectInfo1
         {
             get
@@ -511,8 +511,8 @@ namespace ShvaEMV
                 this.specialProjectInfo1Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=24)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 24)]
         public string specialProjectCode
         {
             get
@@ -524,8 +524,8 @@ namespace ShvaEMV
                 this.specialProjectCodeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=25)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 25)]
         public string currency
         {
             get
@@ -537,8 +537,8 @@ namespace ShvaEMV
                 this.currencyField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=26)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 26)]
         public string conversionCurrency
         {
             get
@@ -550,8 +550,8 @@ namespace ShvaEMV
                 this.conversionCurrencyField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=27)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 27)]
         public string eci
         {
             get
@@ -563,8 +563,8 @@ namespace ShvaEMV
                 this.eciField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=28)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 28)]
         public string cavvUcaf
         {
             get
@@ -576,8 +576,8 @@ namespace ShvaEMV
                 this.cavvUcafField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=29)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 29)]
         public string xid
         {
             get
@@ -589,8 +589,8 @@ namespace ShvaEMV
                 this.xidField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=30)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 30)]
         public string otp
         {
             get
@@ -602,8 +602,8 @@ namespace ShvaEMV
                 this.otpField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=31)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 31)]
         public string capDpa
         {
             get
@@ -615,8 +615,8 @@ namespace ShvaEMV
                 this.capDpaField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=32)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 32)]
         public string cashbackAmount
         {
             get
@@ -628,8 +628,8 @@ namespace ShvaEMV
                 this.cashbackAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=33)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 33)]
         public string tip
         {
             get
@@ -641,8 +641,8 @@ namespace ShvaEMV
                 this.tipField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=34)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 34)]
         public string commission
         {
             get
@@ -654,8 +654,8 @@ namespace ShvaEMV
                 this.commissionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=35)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 35)]
         public string creditTerms
         {
             get
@@ -667,8 +667,8 @@ namespace ShvaEMV
                 this.creditTermsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=36)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 36)]
         public string firstPayment
         {
             get
@@ -680,8 +680,8 @@ namespace ShvaEMV
                 this.firstPaymentField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=37)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 37)]
         public string notFirstPayment
         {
             get
@@ -693,8 +693,8 @@ namespace ShvaEMV
                 this.notFirstPaymentField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=38)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 38)]
         public string noPayments
         {
             get
@@ -706,8 +706,8 @@ namespace ShvaEMV
                 this.noPaymentsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=39)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 39)]
         public string indexPayment
         {
             get
@@ -719,8 +719,8 @@ namespace ShvaEMV
                 this.indexPaymentField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=40)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 40)]
         public string stndOrdrNo
         {
             get
@@ -732,8 +732,8 @@ namespace ShvaEMV
                 this.stndOrdrNoField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=41)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 41)]
         public string stndOrdrTotalNo
         {
             get
@@ -745,8 +745,8 @@ namespace ShvaEMV
                 this.stndOrdrTotalNoField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=42)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 42)]
         public string stndOrdrTotalSum
         {
             get
@@ -758,8 +758,8 @@ namespace ShvaEMV
                 this.stndOrdrTotalSumField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=43)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 43)]
         public string stndOrdrUniqueRef
         {
             get
@@ -771,8 +771,8 @@ namespace ShvaEMV
                 this.stndOrdrUniqueRefField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=44)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 44)]
         public string stndOrdrFreq
         {
             get
@@ -784,8 +784,8 @@ namespace ShvaEMV
                 this.stndOrdrFreqField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=45)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 45)]
         public string deferMonths
         {
             get
@@ -797,8 +797,8 @@ namespace ShvaEMV
                 this.deferMonthsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=46)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 46)]
         public string ipayAmount
         {
             get
@@ -810,8 +810,8 @@ namespace ShvaEMV
                 this.ipayAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=47)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 47)]
         public string ipayNumber
         {
             get
@@ -823,8 +823,8 @@ namespace ShvaEMV
                 this.ipayNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=48)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 48)]
         public string offerCode
         {
             get
@@ -836,8 +836,8 @@ namespace ShvaEMV
                 this.offerCodeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=49)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 49)]
         public string dueDate
         {
             get
@@ -849,8 +849,8 @@ namespace ShvaEMV
                 this.dueDateField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=50)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 50)]
         public string ipayCode
         {
             get
@@ -862,8 +862,8 @@ namespace ShvaEMV
                 this.ipayCodeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=51)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 51)]
         public string ipayPercent
         {
             get
@@ -875,8 +875,8 @@ namespace ShvaEMV
                 this.ipayPercentField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=52)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 52)]
         public string productCode
         {
             get
@@ -888,8 +888,8 @@ namespace ShvaEMV
                 this.productCodeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=53)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 53)]
         public string selfServiceTrans
         {
             get
@@ -901,8 +901,8 @@ namespace ShvaEMV
                 this.selfServiceTransField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=54)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 54)]
         public string originalUid
         {
             get
@@ -914,8 +914,8 @@ namespace ShvaEMV
                 this.originalUidField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=55)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 55)]
         public string originalTranDate
         {
             get
@@ -927,8 +927,8 @@ namespace ShvaEMV
                 this.originalTranDateField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=56)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 56)]
         public string originalTranTime
         {
             get
@@ -940,8 +940,8 @@ namespace ShvaEMV
                 this.originalTranTimeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=57)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 57)]
         public string originalAmount
         {
             get
@@ -953,8 +953,8 @@ namespace ShvaEMV
                 this.originalAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=58)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 58)]
         public string originalAuthorizedAmount
         {
             get
@@ -966,8 +966,8 @@ namespace ShvaEMV
                 this.originalAuthorizedAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=59)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 59)]
         public string originalAuthNum
         {
             get
@@ -979,8 +979,8 @@ namespace ShvaEMV
                 this.originalAuthNumField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=60)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 60)]
         public string originalAuthorizationCodeSolek
         {
             get
@@ -992,8 +992,8 @@ namespace ShvaEMV
                 this.originalAuthorizationCodeSolekField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=61)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 61)]
         public string originalAuthorizationCodeManpik
         {
             get
@@ -1005,8 +1005,8 @@ namespace ShvaEMV
                 this.originalAuthorizationCodeManpikField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=62)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 62)]
         public string originalPinkIncrAuth
         {
             get
@@ -1018,8 +1018,8 @@ namespace ShvaEMV
                 this.originalPinkIncrAuthField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=63)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 63)]
         public string originalAuthSolekNum
         {
             get
@@ -1031,8 +1031,8 @@ namespace ShvaEMV
                 this.originalAuthSolekNumField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=64)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 64)]
         public string addendum1Settl
         {
             get
@@ -1044,8 +1044,8 @@ namespace ShvaEMV
                 this.addendum1SettlField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=65)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 65)]
         public string addendum1
         {
             get
@@ -1057,8 +1057,8 @@ namespace ShvaEMV
                 this.addendum1Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=66)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 66)]
         public string sapakMutavNo
         {
             get
@@ -1070,8 +1070,8 @@ namespace ShvaEMV
                 this.sapakMutavNoField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=67)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 67)]
         public string addendum2
         {
             get
@@ -1083,8 +1083,8 @@ namespace ShvaEMV
                 this.addendum2Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=68)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 68)]
         public string addendum2Settl
         {
             get
@@ -1096,8 +1096,8 @@ namespace ShvaEMV
                 this.addendum2SettlField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=69)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 69)]
         public string address
         {
             get
@@ -1109,8 +1109,8 @@ namespace ShvaEMV
                 this.addressField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=70)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 70)]
         public string city
         {
             get
@@ -1122,8 +1122,8 @@ namespace ShvaEMV
                 this.cityField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=71)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 71)]
         public string zip
         {
             get
@@ -1135,8 +1135,8 @@ namespace ShvaEMV
                 this.zipField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=72)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 72)]
         public string addendum3Settl
         {
             get
@@ -1148,8 +1148,8 @@ namespace ShvaEMV
                 this.addendum3SettlField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=73)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 73)]
         public string addendum4Settl
         {
             get
@@ -1161,8 +1161,8 @@ namespace ShvaEMV
                 this.addendum4SettlField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=74)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 74)]
         public string addendum5Settl
         {
             get
@@ -1174,8 +1174,8 @@ namespace ShvaEMV
                 this.addendum5SettlField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=75)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 75)]
         public string gasolineType
         {
             get
@@ -1187,8 +1187,8 @@ namespace ShvaEMV
                 this.gasolineTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=76)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 76)]
         public string gasolineLiter
         {
             get
@@ -1200,8 +1200,8 @@ namespace ShvaEMV
                 this.gasolineLiterField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=77)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 77)]
         public string oilLiter
         {
             get
@@ -1213,8 +1213,8 @@ namespace ShvaEMV
                 this.oilLiterField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=78)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 78)]
         public string oilAmount
         {
             get
@@ -1226,8 +1226,8 @@ namespace ShvaEMV
                 this.oilAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=79)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 79)]
         public string speedometer
         {
             get
@@ -1239,8 +1239,8 @@ namespace ShvaEMV
                 this.speedometerField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=80)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 80)]
         public string carNumber
         {
             get
@@ -1252,8 +1252,8 @@ namespace ShvaEMV
                 this.carNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=81)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 81)]
         public string serviceAmount
         {
             get
@@ -1265,8 +1265,8 @@ namespace ShvaEMV
                 this.serviceAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=82)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 82)]
         public string clubNumber
         {
             get
@@ -1278,8 +1278,8 @@ namespace ShvaEMV
                 this.clubNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=83)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 83)]
         public ShvaEMV.ErrorGlobal status
         {
             get
@@ -1291,8 +1291,8 @@ namespace ShvaEMV
                 this.statusField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=84)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 84)]
         public string sException
         {
             get
@@ -1304,8 +1304,8 @@ namespace ShvaEMV
                 this.sExceptionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=85)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 85)]
         public string ashReasonCredit
         {
             get
@@ -1317,8 +1317,8 @@ namespace ShvaEMV
                 this.ashReasonCreditField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=86)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 86)]
         public string parameterJ
         {
             get
@@ -1330,8 +1330,8 @@ namespace ShvaEMV
                 this.parameterJField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=87)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 87)]
         public string giftCode
         {
             get
@@ -1343,8 +1343,8 @@ namespace ShvaEMV
                 this.giftCodeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=88)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 88)]
         public string cellular
         {
             get
@@ -1356,8 +1356,8 @@ namespace ShvaEMV
                 this.cellularField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=89)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 89)]
         public string clientInputPan
         {
             get
@@ -1369,8 +1369,8 @@ namespace ShvaEMV
                 this.clientInputPanField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=90)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 90)]
         public string specialPanEntryDesc
         {
             get
@@ -1383,1261 +1383,1261 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ErrorGlobal", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "ErrorGlobal", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum ErrorGlobal : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         OK = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_00 = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_01 = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_02 = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_03 = 4,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_04 = 5,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_05 = 6,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_06 = 7,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_07 = 8,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_08 = 9,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_09 = 10,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_10 = 11,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_11 = 12,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_12 = 13,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_13 = 14,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_14 = 15,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_COMMUNICATION = 16,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_16 = 17,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_17 = 18,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RESPONSE_CODE_26 = 19,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MUST_EXIT_TO_TANDEM_ONLY_CEILING_J2 = 20,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MUST_EXIT_TO_TANDEM_J2 = 21,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_1 = 22,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_4 = 23,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_6 = 24,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_11 = 25,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_12 = 26,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_15 = 27,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_18 = 28,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_31 = 29,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_34 = 30,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_41 = 31,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_44 = 32,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_64 = 33,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_80 = 34,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_81 = 35,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_82 = 36,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_83 = 37,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_90 = 38,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_91 = 39,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_92 = 40,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VECTOR_93 = 41,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PARAM_3_1 = 42,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PARAM_3_2 = 43,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PARAM_3_3 = 44,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PARAM_3_4 = 45,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PARAM_361 = 46,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PARAM_363 = 47,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PARAM_364 = 48,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PARAM_61 = 49,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PARAM_62 = 50,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PARAM_63 = 51,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CEIL_41 = 52,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CEIL_42 = 53,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CEIL_43 = 54,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CEIL_44 = 55,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DATA = 56,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         JENR = 57,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         START = 58,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         NEG = 59,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_1 = 60,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_4 = 61,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_6 = 62,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_11 = 63,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_12 = 64,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_15 = 65,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_18 = 66,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_31 = 67,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_34 = 68,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_41 = 69,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_44 = 70,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_64 = 71,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_81 = 72,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_82 = 73,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_83 = 74,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_90 = 75,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_91 = 76,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_92 = 77,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_VECTOR_93 = 78,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         NO_MORE_ENTRY_VECTOR_83 = 79,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_PARAM_3_2 = 80,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_PARAM_3_3 = 81,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_PARAM_361 = 82,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_PARAM_363 = 83,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_PARAM_364 = 84,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_CEILING_41 = 85,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_CEILING_42 = 86,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_CEILING_43 = 87,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_CEILING_44 = 88,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_PARAM_61 = 89,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_PARAM_62 = 90,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ENTRY_PARAM_63 = 91,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_VALUE_VECTOR_4 = 92,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_VALUE_VECTOR_6_OR_12 = 93,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_VALUE_VECTOR_18 = 94,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_VALUE_VECTOR_34 = 95,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_VALUE_VECTOR_64 = 96,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_VALUE_VECTOR_90 = 97,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_VALUE_AUTH_VECTOR = 98,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_VALUE_PARAM_3_2 = 99,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_VALUE_PARAM_3_4 = 100,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_NameOrPasswordWrong = 101,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_BuildAuthIsWrong = 102,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_ConnectIsWrong = 103,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_StartProtocolIsWrong = 104,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_SocketExceptionError = 105,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_ExceptionError = 106,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_UniqueNumberWrong = 107,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_RecordNotFound = 108,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_CancelTransactionStatus = 109,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_DBLoginError = 110,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_ParameterError = 111,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_LocalCheckingExecuteError = 112,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_DepositedContainErrorRecord = 113,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_UsingPinPadIsRejected = 114,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_ExceptionErrorRedirectPage = 115,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_PendingDealForRedirectPage = 116,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_DealStatusForRedirectPage = 117,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_ParameterErrorForRedirectPage = 118,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_InServerAppError = 119,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_InServerConnectFailure = 120,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_InServerNameFailure = 121,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_OutServerAppError = 122,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_OutServerConnectFailure = 123,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_OutServerNameFailure = 124,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_RetailerShort = 125,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_RetailerNotBelong = 126,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_WS_DepositedTransaction = 127,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_TRAN_TYPE = 128,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_CURRENCY = 129,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_PHONE = 130,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_CREDIT = 131,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_FOREIGN = 132,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_DUE_DATE = 133,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_KEYED_AUTH = 134,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_SERVICE_CODE_587 = 135,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_DEFERRED = 136,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_IPAY = 137,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_OFFER = 138,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_OFFER_CODE = 139,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_TOP_UP = 140,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_TOP_UP_UNITS = 141,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_CURRENCY_CREDIT = 142,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_TIP = 143,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_TOP_UP_UNITS_SPECIAL = 144,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_PARAMETER_J5_PREPAID = 145,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_PARAMETER_J5 = 146,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SOLEK_AUTH_PARAMETER_J6 = 147,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MANPIK_AUTH_TRAN_TYPE = 148,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MANPIK_AUTH_CURRENCY = 149,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MANPIK_AUTH_PHONE = 150,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MANPIK_AUTH_CREDIT = 151,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MANPIK_AUTH_IPAY = 152,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MANPIK_AUTH_DEFERRED = 153,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MANPIK_AUTH_TOP_UP = 154,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MANPIK_AUTH_TOP_UP_UNITS = 155,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MANPIK_AUTH_CURRENCY_CREDIT = 156,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MANPIK_AUTH_TOP_UP_UNITS_SPECIAL = 157,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_TERMINAL_MAX_COLTACTLESS = 158,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_TERMINAL_CAT_LEVEL_SELF_SERVICE = 159,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_TERMINAL_IS_RAV_SAPAK_MUTAV = 160,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_TERMINAL_IS_ELECTRONIC_TRAFFIC_MUST_ECI = 161,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_CREDIT_MAX_NO_PAY = 162,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_CREDIT_MIN_NO_PAY = 163,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MIN_AMOUNT = 164,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_NO_PAY_NOT_ENTER = 165,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_FIRST_PAYMENT_OR_NOT_FIRST_PAYMENT_MISSING = 166,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_IN_CALCULATE_SUM = 167,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_INCORRECT_TRACK2 = 168,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SHORT_TRACK2 = 169,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_DCODE_SERVICE_CODE = 170,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_DCODE = 171,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_INCORRECT_UID = 172,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SERVICE_CODE = 173,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_DUE_DATE_LARGE_MORE_ONE_YEAR = 174,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_INPUT_DATA = 175,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_EXPIRATION_DATE = 176,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RETAILER_NUMBER = 177,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_NECESSARY_FIELD_MISSING = 178,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_IN_CLIENTINPUTPAN_PROPERTY = 179,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_INVALID_CARD_NUMBER = 180,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_INVALID_DATA = 181,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_IN_BUILD_ISO_MESER = 182,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_IN_BUILD_STRING_TO_TRANSFER = 183,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_VALUE_NOT_NUMERIC = 184,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_DUPLICATE_RECORD = 185,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_AMOUNT_CHANGE_AFTER_ASH_START_FUNCTION = 186,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MISSING_SERVICE_CODE = 187,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CARD_NOT_VALID_TKEFIM_FILE = 188,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_VALUE = 189,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MISSING_AUTH_MAGNET_IN_PP_STATUS = 190,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MUST_TRANSFER_IN_PINPAD_PP_STATUS = 191,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_FORBID_TRANSFER_IN_PINPAD_PP_STATUS = 192,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_FORBID_TRANSFER_IN_CTL_MAGNET_PP_STATUS = 193,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_FORBID_TRANSFER_IN_CTL_EMV_PP_STATUS = 194,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_TRAN_TYPE_AUTH_CREDIT = 195,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_TOURIST_CARD_AUTH_CREDIT = 196,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_CARD_EXIST_IN_VECTOR_80 = 197,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RECORD_NOT_EXIT_IN_TRAN_FILE = 198,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DEBIT_CARD_ONLY_CREDIT_TERMS_3 = 199,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         INVALID_CARD_NUMBER = 200,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MUST_ENTER_ADDRESS = 201,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MUST_ENTER_ZIP = 202,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_OFFER_CODE_OUT_OF_LIMIT = 203,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_DURING_CREATION_TRAN_RECORD = 204,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MISSING_IPAY_CODE_IN_TRAN_TYPE_55_30 = 205,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_CANT_DELETE_TRAN_TYPE_02 = 206,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_TRAN_TYPE_03_WITH_ASH_REASON = 207,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PRE_RECORD_WITH_RESPONSE_CODE_BLOCK = 208,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DEBIT_CARD_ALLOWED_FOR_TRANSACTION = 209,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CLUB_CODE_OUT_OF_RANGE = 210,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_STND_ORDR_TOTAL_SUM_LARG_THEN_AMOUNT = 211,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_STND_ORDR_NO_LARG_THEN_STND_ORDR_TOTAL_NO = 212,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MUST_HAVE_CASHBACK_AMOUNT_IN_TRAN_TYPE_06 = 213,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CASHBACK_AMOUNT_LARG_THEN_TRANS_AMOUNT_TRAN_TYPE_06 = 214,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_INITIALIZATION_TRAN_TYPE_11_MUST_HAVE_J5 = 215,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MISSING_STND_ORDER_TOTAL_NO_OR_SUM = 216,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_STND_ORDER_NO_IN_TRAN_TYPE_11 = 217,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ORIGINAL_UID_IN_TRAN_TYPE_11 = 218,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ORIGINAL_AUTH_NUM_IN_TRAN_TYPE_11 = 219,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ORIGINAL_DATE_TIME_IN_TRAN_TYPE_11 = 220,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_ORIGINAL_AUTH_CODE_INT_TRAN_11 = 221,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_IPAY_NUMBER_TRAN_TYPE_55_02 = 222,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PREPAID_CARD_ALLOWED_FOR_TRANSACTION = 223,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSIMG_CAR_NUMBER = 224,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         INVALID_CAR_NUMBER = 225,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         LEUMICARD_INVALID_CAR_NUMBER = 226,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_SPEEDOMETER = 227,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         J49_JUST_IN_ASH_TERM_TYPE_2 = 228,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PHASE_REQUEST_2_MUST_HAVE_ORIGIN_DETAILS = 229,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DALKAN_CARD_ALLOWED_FOR_TRANSACTION = 230,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DALKAN_DELEK_CLUB_DELEK_CARD_ALLOWED_IN_DELEK_TERMINAL = 231,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CONVERSION_TRANSACTION_MUST_HAVE_FIELDS_06_09_51 = 232,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CONVERSION_TRANSACTION_RELATION_CURRENCY = 233,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_IMPROVEMENT_TRANSACTION = 234,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RETAILER_NUMBER_CHANGE = 235,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISSING_FALLBACK_AUTH = 236,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_FOREIGN_FOR_CREDIT_CODE = 237,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_INDX_PAYMENT_DIFFRENT_FORM_CURRENCY_376 = 238,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         LOCAL_ISR_CARD_SEPERATOR_NOT_IN_18_POS = 239,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_CANCLE_BY_USER = 240,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FORCE_REVESAL = 241,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MISMATCH_BETWEEN_PANENTRYMODE_AND_PAN = 242,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERROR_IN_TRAN_TYPE_FIELD = 243,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERROR_IN_ECI_FIELD = 244,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         AMOUNT_LARG_FROM_AUTH_AMOUNT = 245,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         IPAY_AMOUNT_LARG_THEN_TRANS_AMOUNT = 246,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_DURING_ADD_RECORD_TO_TRAN_FILE = 247,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_START_FILE_IS_NOT_CORRECT = 248,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_DURING_READ_RECORD_FROM_TRAN_FILE = 249,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_NO_PERMIT_TO_ENTER_AUTH_NUMNER = 250,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_IN_XMLSTR_INPUT = 251,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_SPECIAL_PAYMENT_TOURIST = 252,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MISSING_FILE_NOT_FOUND_TranFinalDll64 = 253,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MISSING_FILE_NOT_FOUND_TranFinalDll = 254,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MISSING_SETUP_Visual_cpp = 255,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_MISSING_SETUP_Visual_cpp_64 = 256,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_DELETE_RECORD_EXIST = 257,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DCC_DISABLED = 258,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_DCCOBJ_FILLING = 259,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_DCC_REQUEST = 260,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_NO_REQUIRED_QUERY = 261,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_CHECK_TRAN_RECORD = 262,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_EXCEPTION = 263,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DORIT_OPEN_QUESTION = 264,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERROR_IN_NEG_FILE = 265,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_NOT_SUIT = 266,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_INCORRECT_FIELD55 = 267,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_TANDEM = 268,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_NOT_SUIT_MISSING_FIELD18 = 269,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_NOT_SUIT_MISSING_FIELD25 = 270,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_NOT_SUIT_MISSING_FIELD37 = 271,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_NOT_SUIT_MISSING_FIELD42 = 272,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_NOT_SUIT_MISSING_FIELD43 = 273,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_NOT_SUIT_MISSING_FIELD39 = 274,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_FORMAT_FIELD38 = 275,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_NOT_SUIT_MISSING_FIELD48 = 276,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_NOT_SUIT_MISSING_FIELD06_09_51 = 277,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_NOT_SUIT_MISSING_FIELD54 = 278,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_NOT_SUIT_FIELD25 = 279,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_NOT_SUIT_MISSING_FIELD90_119 = 280,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_NOT_SUIT_2_PHASE_REQUEST = 281,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_FIELDS_39_AND_114_NOT_MATCH = 282,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_RESPONSE_FIELDS_39_AND_25_NOT_MATCH = 283,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_DECLINE = 284,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_IN_PINPAD = 285,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PIN_PAD_COM = 286,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_TransactionError = 287,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_TransactionCancelled = 288,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_UserCancelled = 289,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_UserTimeout = 290,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_UserCardRemoved = 291,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_UserRetriesExceeded = 292,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_PINPadTimeout = 293,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_PINPadCommsError = 294,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_PINPadMessageError = 295,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_PINPadNotInitialized = 296,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_PINPadCardReadError = 297,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_ReaderTimeout = 298,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_ReaderCommsError = 299,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_ReaderMessageError = 300,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_HostMessageError = 301,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_HostConfigError = 302,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_HostKeyError = 303,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_HostConnectError = 304,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_HostTransmitError = 305,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_HostReceiveError = 306,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_HostTimeout = 307,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_PINVerificationNotSupportedByCard = 308,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_PINVerificationFailed = 309,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_SetConfiguration = 310,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PINPAD_APPROVED = 311,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PINPAD_APPROVED_AGAINST_ASH_DECISION = 312,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ERR_PINPAD_CardNotEntered = 313,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DEFAULT = 314,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         GENERAL_ERROR = 315,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RULE_10_4_4 = 316,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         REQUIRED_PERMISSION_EXCEPTION = 317,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INSERT_SWIPE_TAP = 318,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_SWIPE_TAP = 319,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_SWIPE_INSERT = 320,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INSERT_CARD = 321,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_TAP_INSERT_CARD = 322,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_TAP = 323,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_REMOVE_CRAD = 324,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_SWIPE_CARD_AGAIN = 325,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_USE_MAGNETIC_READER = 326,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_OPTION_NOT_ALLOWED_FOR_MERCHANT = 327,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_PLEASE_WAIT_DO_NOT_REMOVE_CARD = 328,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_CARD_ERROR = 329,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_UNRECOGNIZED_CARD = 330,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_ACTIVATE_SESSION_TO_SHVA = 331,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_ACTIVATE_SESSION_TO_SHVA_NEG = 332,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INVALID_CREDIT_TERMS_FOR_CARD = 333,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_NO_AUTH_FOR_CURRENCY = 334,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INVALID_CARD_NUMBER = 335,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_CARD_NOT_ALLOWED_FOR_TERMINAL = 336,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_CARD_NOT_ALLOWED_FOR_TRANSACTION = 337,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_OUT_OF_RANGE_CARD_NUMBER = 338,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_CLUB_CODE_OUT_OF_RANGE = 339,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INVALID_ISSUER_CODE = 340,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INVALID_BRAND_CODE = 341,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INVALID_VEHICLE_NUMBER = 342,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_CARD_EXPIRED = 343,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_ENTER_ADD_ON_PARAM = 344,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_ENTER_LAST_3_DGTS_ON_CARD_BACK = 345,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_ENTER_LAST_4_DGTS_PRNTD_ON_CARD = 346,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_ENTER_ID_CHECK_DGTS = 347,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INVALID_ID = 348,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INVALID_ID_TRY_AGAIN = 349,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_PLEASE_ENTER_COSTOMERS_ADDRESS = 350,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_FORCE_OR_GO_ONLINE = 351,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_TYPE_F1_FOR_AUTHORIZATION_REQUEST = 352,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_CALL = 353,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_AUTHORIZATION_CODE = 354,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_DECLINED = 355,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_NO_COMMUNICATION = 356,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_DECLINE_INVALID_CVV2_ID = 357,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_DECLINE_INVALID_CARD_FOR_CHAIN = 358,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_DECLINE_INVALID_CAVV_UCAF = 359,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_DECLINE_INVALID_AVS = 360,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_CARD_STOLEN_PICKUP = 361,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_CARD_BLOCKED = 362,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_COUNTERFEIT_CARD_PICKUP = 363,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INVALID_BALANCE_CODE = 364,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_DECLINE_INSUFFICIENT_POINTS_OTHER_BENEFITS = 365,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_WAIT_FOR_AUTH = 366,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_APPROVED_REMOVE_CARD = 367,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_TYPE_CREDIT_CARD_AUTH_NUMBER = 368,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_WRONGE_VARSION = 369,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INVALID_TRANSACTION_DATA = 370,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_PLEASE_INITIATE_TERMINAL = 371,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_CARD_NOT_SUPPORTED_SVC = 372,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INVALID_ACQUIRER = 373,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INVALID_PARAMETER_SET = 374,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_DECLINE_TOP_UP_CARD = 375,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INVALID_IPAY_TRANSACTION_DATA = 376,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_NO_AUTH_FOR_TRANS = 377,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_PLEASE_ENTER_COSTOMERS_ZIP_CODE = 378,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_INVALID_UID = 379,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_MESSAGE_ERR_APPLICATIVE = 380,
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsPinPad", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsPinPad", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsPinPad : object
     {
-        
+
         private int tag9AField;
-        
+
         private int tag9F21Field;
-        
+
         private int tag9F02Field;
-        
+
         private int tag5F2AField;
-        
+
         private int tag9F03Field;
-        
+
         private ShvaEMV.TxnType authTxnAuthTypeField;
-        
+
         private ShvaEMV.PTxEngineStateCode statusCodeField;
-        
+
         private int endTransactionField;
-        
+
         private ShvaEMV.TxnStatus txnStatusField;
-        
+
         private int resultField;
-        
+
         private string sResultField;
-        
+
         private string errDescriptionField;
-        
+
         private string pinpadHashConfigField;
-        
+
         private string pinpadSoftwareVersionField;
-        
+
         private ShvaEMV.Fallback fallbackField;
-        
+
         private bool mobileField;
-        
+
         private bool authForceManualEntryField;
-        
+
         private ShvaEMV.CardEntryMethod cardEntryModeField;
-        
+
         private string track2Field;
-        
+
         private bool bForceOnlineField;
-        
+
         private bool bBlackListField;
-        
+
         private bool bFloorLimitField;
-        
+
         private bool bRandomSelectionField;
-        
+
         private ShvaEMV.TxnType originalAuthTxnAuthTypeField;
-        
+
         private ShvaEMV.HostResult hostResultField;
-        
+
         private ShvaEMV.TxnOutcome txnOutcomeField;
-        
+
         private bool bStopExamineField;
-        
+
         private ShvaEMV.ErrorGlobal statusField;
-        
+
         private ShvaEMV.ServerOffMsg serverOffDemandField;
-        
+
         private ShvaEMV.ResorceTransferCard resourceTransferCardField;
-        
+
         private string field55Field;
-        
+
         private string f39ResponseField;
-        
+
         private bool bAshReason22Field;
-        
+
         private bool bIgnorePPField;
-        
+
         private string sExceptionField;
-        
+
         private string workingDirectoryField;
-        
+
         private ShvaEMV.pinpadType typeField;
-        
+
         private ShvaEMV.DeviceConnectionType connectionTypeField;
-        
+
         private string ipAddressField;
-        
+
         private int ipPortField;
-        
+
         private string cvmRequiredLimitField;
-        
+
         private string serialCommPortField;
-        
+
         private int tag9CField;
-        
+
         private string pinpadSerialNumberField;
-        
+
         private ShvaEMV.ErrorGlobal ashStatusField;
-        
+
         private ShvaEMV.AshReason ashReasonField;
-        
+
         private byte[] ashreasField;
-        
+
         private string notCorrectTagsField;
-        
+
         private string emptyTagsField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true)]
         public int tag9A
         {
             get
@@ -2649,8 +2649,8 @@ namespace ShvaEMV
                 this.tag9AField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true)]
         public int tag9F21
         {
             get
@@ -2662,8 +2662,8 @@ namespace ShvaEMV
                 this.tag9F21Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 2)]
         public int tag9F02
         {
             get
@@ -2675,8 +2675,8 @@ namespace ShvaEMV
                 this.tag9F02Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 3)]
         public int tag5F2A
         {
             get
@@ -2688,8 +2688,8 @@ namespace ShvaEMV
                 this.tag5F2AField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 4)]
         public int tag9F03
         {
             get
@@ -2701,8 +2701,8 @@ namespace ShvaEMV
                 this.tag9F03Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 5)]
         public ShvaEMV.TxnType authTxnAuthType
         {
             get
@@ -2714,8 +2714,8 @@ namespace ShvaEMV
                 this.authTxnAuthTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 6)]
         public ShvaEMV.PTxEngineStateCode statusCode
         {
             get
@@ -2727,8 +2727,8 @@ namespace ShvaEMV
                 this.statusCodeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 7)]
         public int endTransaction
         {
             get
@@ -2740,8 +2740,8 @@ namespace ShvaEMV
                 this.endTransactionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=8)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 8)]
         public ShvaEMV.TxnStatus txnStatus
         {
             get
@@ -2753,8 +2753,8 @@ namespace ShvaEMV
                 this.txnStatusField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=9)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 9)]
         public int result
         {
             get
@@ -2766,8 +2766,8 @@ namespace ShvaEMV
                 this.resultField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=10)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 10)]
         public string sResult
         {
             get
@@ -2779,8 +2779,8 @@ namespace ShvaEMV
                 this.sResultField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=11)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 11)]
         public string errDescription
         {
             get
@@ -2792,8 +2792,8 @@ namespace ShvaEMV
                 this.errDescriptionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=12)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 12)]
         public string pinpadHashConfig
         {
             get
@@ -2805,8 +2805,8 @@ namespace ShvaEMV
                 this.pinpadHashConfigField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=13)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 13)]
         public string pinpadSoftwareVersion
         {
             get
@@ -2818,8 +2818,8 @@ namespace ShvaEMV
                 this.pinpadSoftwareVersionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=14)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 14)]
         public ShvaEMV.Fallback fallback
         {
             get
@@ -2831,8 +2831,8 @@ namespace ShvaEMV
                 this.fallbackField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=15)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 15)]
         public bool mobile
         {
             get
@@ -2844,8 +2844,8 @@ namespace ShvaEMV
                 this.mobileField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=16)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 16)]
         public bool authForceManualEntry
         {
             get
@@ -2857,8 +2857,8 @@ namespace ShvaEMV
                 this.authForceManualEntryField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=17)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 17)]
         public ShvaEMV.CardEntryMethod cardEntryMode
         {
             get
@@ -2870,8 +2870,8 @@ namespace ShvaEMV
                 this.cardEntryModeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=18)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 18)]
         public string track2
         {
             get
@@ -2883,8 +2883,8 @@ namespace ShvaEMV
                 this.track2Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=19)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 19)]
         public bool bForceOnline
         {
             get
@@ -2896,8 +2896,8 @@ namespace ShvaEMV
                 this.bForceOnlineField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=20)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 20)]
         public bool bBlackList
         {
             get
@@ -2909,8 +2909,8 @@ namespace ShvaEMV
                 this.bBlackListField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=21)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 21)]
         public bool bFloorLimit
         {
             get
@@ -2922,8 +2922,8 @@ namespace ShvaEMV
                 this.bFloorLimitField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=22)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 22)]
         public bool bRandomSelection
         {
             get
@@ -2935,8 +2935,8 @@ namespace ShvaEMV
                 this.bRandomSelectionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=23)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 23)]
         public ShvaEMV.TxnType originalAuthTxnAuthType
         {
             get
@@ -2948,8 +2948,8 @@ namespace ShvaEMV
                 this.originalAuthTxnAuthTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=24)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 24)]
         public ShvaEMV.HostResult hostResult
         {
             get
@@ -2961,8 +2961,8 @@ namespace ShvaEMV
                 this.hostResultField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=25)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 25)]
         public ShvaEMV.TxnOutcome txnOutcome
         {
             get
@@ -2974,8 +2974,8 @@ namespace ShvaEMV
                 this.txnOutcomeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=26)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 26)]
         public bool bStopExamine
         {
             get
@@ -2987,8 +2987,8 @@ namespace ShvaEMV
                 this.bStopExamineField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=27)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 27)]
         public ShvaEMV.ErrorGlobal status
         {
             get
@@ -3000,8 +3000,8 @@ namespace ShvaEMV
                 this.statusField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=28)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 28)]
         public ShvaEMV.ServerOffMsg serverOffDemand
         {
             get
@@ -3013,8 +3013,8 @@ namespace ShvaEMV
                 this.serverOffDemandField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=29)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 29)]
         public ShvaEMV.ResorceTransferCard resourceTransferCard
         {
             get
@@ -3026,8 +3026,8 @@ namespace ShvaEMV
                 this.resourceTransferCardField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=30)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 30)]
         public string field55
         {
             get
@@ -3039,8 +3039,8 @@ namespace ShvaEMV
                 this.field55Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=31)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 31)]
         public string f39Response
         {
             get
@@ -3052,8 +3052,8 @@ namespace ShvaEMV
                 this.f39ResponseField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=32)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 32)]
         public bool bAshReason22
         {
             get
@@ -3065,8 +3065,8 @@ namespace ShvaEMV
                 this.bAshReason22Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=33)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 33)]
         public bool bIgnorePP
         {
             get
@@ -3078,8 +3078,8 @@ namespace ShvaEMV
                 this.bIgnorePPField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=34)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 34)]
         public string sException
         {
             get
@@ -3091,8 +3091,8 @@ namespace ShvaEMV
                 this.sExceptionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=35)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 35)]
         public string workingDirectory
         {
             get
@@ -3104,8 +3104,8 @@ namespace ShvaEMV
                 this.workingDirectoryField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=36)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 36)]
         public ShvaEMV.pinpadType type
         {
             get
@@ -3117,8 +3117,8 @@ namespace ShvaEMV
                 this.typeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=37)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 37)]
         public ShvaEMV.DeviceConnectionType connectionType
         {
             get
@@ -3130,8 +3130,8 @@ namespace ShvaEMV
                 this.connectionTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=38)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 38)]
         public string ipAddress
         {
             get
@@ -3143,8 +3143,8 @@ namespace ShvaEMV
                 this.ipAddressField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=39)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 39)]
         public int ipPort
         {
             get
@@ -3156,8 +3156,8 @@ namespace ShvaEMV
                 this.ipPortField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=40)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 40)]
         public string cvmRequiredLimit
         {
             get
@@ -3169,8 +3169,8 @@ namespace ShvaEMV
                 this.cvmRequiredLimitField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=41)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 41)]
         public string serialCommPort
         {
             get
@@ -3182,8 +3182,8 @@ namespace ShvaEMV
                 this.serialCommPortField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=42)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 42)]
         public int tag9C
         {
             get
@@ -3195,8 +3195,8 @@ namespace ShvaEMV
                 this.tag9CField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=43)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 43)]
         public string pinpadSerialNumber
         {
             get
@@ -3208,8 +3208,8 @@ namespace ShvaEMV
                 this.pinpadSerialNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=44)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 44)]
         public ShvaEMV.ErrorGlobal ashStatus
         {
             get
@@ -3221,8 +3221,8 @@ namespace ShvaEMV
                 this.ashStatusField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=45)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 45)]
         public ShvaEMV.AshReason ashReason
         {
             get
@@ -3234,8 +3234,8 @@ namespace ShvaEMV
                 this.ashReasonField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=46)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 46)]
         public byte[] ashreas
         {
             get
@@ -3247,8 +3247,8 @@ namespace ShvaEMV
                 this.ashreasField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=47)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 47)]
         public string notCorrectTags
         {
             get
@@ -3260,8 +3260,8 @@ namespace ShvaEMV
                 this.notCorrectTagsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=48)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 48)]
         public string emptyTags
         {
             get
@@ -3274,669 +3274,669 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="TxnType", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "TxnType", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum TxnType : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Purchase = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Return = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VoidPurchase = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VoidReturn = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PreAuth = 4,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VoidPreAuth = 5,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Completion = 6,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         AuthOnly = 7,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ForcePostPurchase = 8,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         TelephoneAuthorizedPurchase = 9,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MailOrderTelephoneOrderPurchase = 10,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RecurringPurchase = 11,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FloorLimitPurchase = 12,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Adjustment = 13,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CashAdvance = 14,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         BalanceInquiry = 15,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CardVerifyAvsInquiry = 16,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VoucherClearPurchase = 17,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Discharge = 18,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         HostParameterDownload = 19,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         KeyRequest = 20,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Settlement = 21,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PINVerify = 22,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PINSet = 23,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PINChange = 24,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="PTxEngineStateCode", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "PTxEngineStateCode", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum PTxEngineStateCode : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PromptForCardEntry = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CardEntered = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ProcessEmv = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         HostAuthRequired = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FinishEmv = 4,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MerchantStandIn = 5,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FinishTxn = 6,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         HostSendChipReversal = 7,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         HostSendAdjustment = 8,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Finished = 9,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="TxnStatus", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "TxnStatus", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum TxnStatus : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         OK = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         TransactionError = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         TransactionCancelled = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         UserCancelled = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         UserTimeout = 4,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         UserCardRemoved = 5,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         UserRetriesExceeded = 6,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PINPadTimeout = 7,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PINPadCommsError = 8,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PINPadMessageError = 9,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PINPadNotInitialized = 10,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PINPadCardReadError = 11,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         HostMessageError = 12,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         HostConfigError = 13,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         HostKeyError = 14,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         HostConnectError = 15,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         HostTransmitError = 16,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         HostReceiveError = 17,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         HostTimeout = 18,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PINVerificationNotSupportedByCard = 19,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PINVerificationFailed = 20,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Fallback", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "Fallback", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum Fallback : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         None = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         BrandNotPresent = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Technical = 2,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="CardEntryMethod", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "CardEntryMethod", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum CardEntryMethod : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         NotEntered = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Manual = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Msr = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MsrContactless = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         EmvInserted = 4,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         EmvContactless = 5,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="HostResult", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "HostResult", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum HostResult : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         None = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ConnectionError = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Approved = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ApprovedPartial = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Declined = 4,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DeclinedAllowOtherInterface = 5,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Reversal = 6,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PendingReversalFailed = 7,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         AdminCompleted = 8,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         AdminOutOfBalance = 9,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="TxnOutcome", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "TxnOutcome", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum TxnOutcome : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         NotCompleted = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         NotCompletedCardRemoved = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         NotCompletedUseOtherCard = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ApprovedOnline = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ApprovedOffline = 4,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ApprovedMerchantStandin = 5,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ApprovedPartial = 6,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DeclinedOnline = 7,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DeclinedOffline = 8,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DeclinedChipReversal = 9,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DeclinedUseOtherInterface = 10,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         AdminCompleted = 11,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         AdminOutOfBalance = 12,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PINOperationSuccessful = 13,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ServerOffMsg", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "ServerOffMsg", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum ServerOffMsg : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DEFAULT = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CARD_BLOCKED_0 = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         COUNTERFEIT_CARD_PICKUP_1 = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CARD_STOLEN_PICKUP_2 = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         REJECT_3 = 4,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         REJECT_CARD_EXPIRED_4 = 5,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MUST_COMMIT_PHONE_AUTH_5 = 6,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         COMMIT_PHONE_AUTH_6 = 7,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DECLINED_7 = 8,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CALL_TO_CREDIT_COMPANY_10 = 9,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         SEND_TRANSACTION_AFTER_COMEBACK_COMMUNICATION_11 = 10,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RULE_10_4_4 = 11,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RULE_7_6 = 12,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RULE_8_5_5_1 = 13,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CALL_TO_CREDIT_COMPANY_NEG_REASON_03 = 14,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         OK = 15,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         OK_UNDER_REGULAL_CEIL = 16,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         REJECT_3_DCODE = 17,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         REJECT_3_SERVICE_CODE = 18,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         REJECT_3_CEILING = 19,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ResorceTransferCard", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "ResorceTransferCard", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum ResorceTransferCard : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DEFAULT_VALUE = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PIN_PAD = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         TYPING = 2,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="pinpadType", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "pinpadType", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum pinpadType : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         None = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         verifone = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Caspit = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Uicpp791 = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         IngenicoCPX = 4,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         IngenicoRBA = 5,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         IngenicoUIA = 6,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ModularityMP3 = 7,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MSC = 8,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VeriFoneCXPI = 9,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Wizarpos = 10,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Vega3000 = 11,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Pax = 12,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Xac = 13,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         VerifoneVx805 = 14,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DangotUICpp791 = 15,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         JbXACpp8006 = 16,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         EditecPAXs300 = 17,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="DeviceConnectionType", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "DeviceConnectionType", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum DeviceConnectionType : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         SerialPort = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Ethernet = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         UsbHid = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         BlueTooth = 3,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="AshReason", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "AshReason", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum AshReason : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DEFAULT = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_0 = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_1 = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_2 = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_3 = 4,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_4 = 5,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_5 = 6,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_6 = 7,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_7 = 8,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_10 = 9,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_11 = 10,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_12 = 11,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_13 = 12,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_14 = 13,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_15 = 14,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_16 = 15,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_17 = 16,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_20 = 17,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_21 = 18,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_22 = 19,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_23 = 20,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_24 = 21,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_25 = 22,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_26 = 23,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_27 = 24,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_30 = 25,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_31 = 26,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_32 = 27,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_33 = 28,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_34 = 29,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_35 = 30,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_36 = 31,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_37 = 32,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_40 = 33,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_41 = 34,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_42 = 35,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_43 = 36,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_44 = 37,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_45 = 38,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_46 = 39,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_47 = 40,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_50 = 41,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_51 = 42,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_52 = 43,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_53 = 44,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_54 = 45,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_55 = 46,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_56 = 47,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_57 = 48,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_60 = 49,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_61 = 50,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_62 = 51,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_63 = 52,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_64 = 53,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_65 = 54,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_66 = 55,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASH_REASON_67 = 56,
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsGlobal", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsGlobal", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsGlobal : object
     {
-        
+
         private ShvaEMV.clsShareDetails shareDField;
-        
+
         private ShvaEMV.clsISO requestObjField;
-        
+
         private ShvaEMV.clsOutput outputObjField;
-        
+
         private ShvaEMV.clsReceipt receiptObjField;
-        
+
         private ShvaEMV.clsDcc dccObjField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.clsShareDetails shareD
         {
             get
@@ -3948,8 +3948,8 @@ namespace ShvaEMV
                 this.shareDField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.clsISO requestObj
         {
             get
@@ -3961,8 +3961,8 @@ namespace ShvaEMV
                 this.requestObjField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.clsOutput outputObj
         {
             get
@@ -3974,8 +3974,8 @@ namespace ShvaEMV
                 this.outputObjField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.clsReceipt receiptObj
         {
             get
@@ -3987,8 +3987,8 @@ namespace ShvaEMV
                 this.receiptObjField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.clsDcc dccObj
         {
             get
@@ -4001,76 +4001,76 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsShareDetails", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsShareDetails", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsShareDetails : object
     {
-        
+
         private ShvaEMV.DealType dealTypeField;
-        
+
         private int moadonCheckField;
-        
+
         private int noTranLogField;
-        
+
         private ShvaEMV.clsBooleanItem bAddCvv2Field;
-        
+
         private ShvaEMV.clsBooleanItem bAddTzField;
-        
+
         private ShvaEMV.clsBooleanItem bAddAvs1Field;
-        
+
         private ShvaEMV.clsBooleanItem bAddAvs2Field;
-        
+
         private bool bTelAuthAbilityField;
-        
+
         private int receiptField;
-        
+
         private int minReceiptSumField;
-        
+
         private int ctlMinReceiptSumField;
-        
+
         private string ppStatusField;
-        
+
         private int catLevelParamField;
-        
+
         private int ashTermTypeField;
-        
+
         private int ravSapakMutavField;
-        
+
         private int needTraceField;
-        
+
         private int uflField;
-        
+
         private byte[] ashreasField;
-        
+
         private byte[] serveroffdemandField;
-        
+
         private string sExceptionField;
-        
+
         private bool bStopExamineField;
-        
+
         private ShvaEMV.AshraitDecision ashraitDecisionField;
-        
+
         private int fileNumberField;
-        
+
         private bool resultSendAuthField;
-        
+
         private bool sendReversalField;
-        
+
         private bool bNeutralAuthNumberField;
-        
+
         private bool dccField;
-        
+
         private ShvaEMV.ErrorGlobal statusField;
-        
+
         private ShvaEMV.ErrorGlobal ashStatusField;
-        
+
         private ShvaEMV.Ashtsi ashtsiCodeField;
-        
+
         private int infoRequestField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true)]
         public ShvaEMV.DealType dealType
         {
             get
@@ -4082,8 +4082,8 @@ namespace ShvaEMV
                 this.dealTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true)]
         public int moadonCheck
         {
             get
@@ -4095,8 +4095,8 @@ namespace ShvaEMV
                 this.moadonCheckField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true)]
         public int noTranLog
         {
             get
@@ -4108,8 +4108,8 @@ namespace ShvaEMV
                 this.noTranLogField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.clsBooleanItem bAddCvv2
         {
             get
@@ -4121,8 +4121,8 @@ namespace ShvaEMV
                 this.bAddCvv2Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.clsBooleanItem bAddTz
         {
             get
@@ -4134,8 +4134,8 @@ namespace ShvaEMV
                 this.bAddTzField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.clsBooleanItem bAddAvs1
         {
             get
@@ -4147,8 +4147,8 @@ namespace ShvaEMV
                 this.bAddAvs1Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public ShvaEMV.clsBooleanItem bAddAvs2
         {
             get
@@ -4160,8 +4160,8 @@ namespace ShvaEMV
                 this.bAddAvs2Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 7)]
         public bool bTelAuthAbility
         {
             get
@@ -4173,8 +4173,8 @@ namespace ShvaEMV
                 this.bTelAuthAbilityField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=8)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 8)]
         public int receipt
         {
             get
@@ -4186,8 +4186,8 @@ namespace ShvaEMV
                 this.receiptField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=9)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 9)]
         public int minReceiptSum
         {
             get
@@ -4199,8 +4199,8 @@ namespace ShvaEMV
                 this.minReceiptSumField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=10)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 10)]
         public int ctlMinReceiptSum
         {
             get
@@ -4212,8 +4212,8 @@ namespace ShvaEMV
                 this.ctlMinReceiptSumField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=11)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 11)]
         public string ppStatus
         {
             get
@@ -4225,8 +4225,8 @@ namespace ShvaEMV
                 this.ppStatusField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=12)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 12)]
         public int catLevelParam
         {
             get
@@ -4238,8 +4238,8 @@ namespace ShvaEMV
                 this.catLevelParamField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=13)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 13)]
         public int ashTermType
         {
             get
@@ -4251,8 +4251,8 @@ namespace ShvaEMV
                 this.ashTermTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=14)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 14)]
         public int ravSapakMutav
         {
             get
@@ -4264,8 +4264,8 @@ namespace ShvaEMV
                 this.ravSapakMutavField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=15)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 15)]
         public int needTrace
         {
             get
@@ -4277,8 +4277,8 @@ namespace ShvaEMV
                 this.needTraceField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=16)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 16)]
         public int ufl
         {
             get
@@ -4290,8 +4290,8 @@ namespace ShvaEMV
                 this.uflField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=17)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 17)]
         public byte[] ashreas
         {
             get
@@ -4303,8 +4303,8 @@ namespace ShvaEMV
                 this.ashreasField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=18)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 18)]
         public byte[] serveroffdemand
         {
             get
@@ -4316,8 +4316,8 @@ namespace ShvaEMV
                 this.serveroffdemandField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=19)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 19)]
         public string sException
         {
             get
@@ -4329,8 +4329,8 @@ namespace ShvaEMV
                 this.sExceptionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=20)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 20)]
         public bool bStopExamine
         {
             get
@@ -4342,8 +4342,8 @@ namespace ShvaEMV
                 this.bStopExamineField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=21)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 21)]
         public ShvaEMV.AshraitDecision ashraitDecision
         {
             get
@@ -4355,8 +4355,8 @@ namespace ShvaEMV
                 this.ashraitDecisionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=22)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 22)]
         public int fileNumber
         {
             get
@@ -4368,8 +4368,8 @@ namespace ShvaEMV
                 this.fileNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=23)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 23)]
         public bool resultSendAuth
         {
             get
@@ -4381,8 +4381,8 @@ namespace ShvaEMV
                 this.resultSendAuthField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=24)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 24)]
         public bool sendReversal
         {
             get
@@ -4394,8 +4394,8 @@ namespace ShvaEMV
                 this.sendReversalField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=25)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 25)]
         public bool bNeutralAuthNumber
         {
             get
@@ -4407,8 +4407,8 @@ namespace ShvaEMV
                 this.bNeutralAuthNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=26)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 26)]
         public bool dcc
         {
             get
@@ -4420,8 +4420,8 @@ namespace ShvaEMV
                 this.dccField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=27)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 27)]
         public ShvaEMV.ErrorGlobal status
         {
             get
@@ -4433,8 +4433,8 @@ namespace ShvaEMV
                 this.statusField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=28)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 28)]
         public ShvaEMV.ErrorGlobal ashStatus
         {
             get
@@ -4446,8 +4446,8 @@ namespace ShvaEMV
                 this.ashStatusField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=29)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 29)]
         public ShvaEMV.Ashtsi ashtsiCode
         {
             get
@@ -4459,8 +4459,8 @@ namespace ShvaEMV
                 this.ashtsiCodeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=30)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 30)]
         public int infoRequest
         {
             get
@@ -4473,116 +4473,116 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsISO", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsISO", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsISO : object
     {
-        
+
         private ShvaEMV.clsPetrol petrol_127Field;
-        
+
         private ShvaEMV.Field addendum5Settl_126Field;
-        
+
         private ShvaEMV.Field ashraitDecision_124Field;
-        
+
         private ShvaEMV.Field addendum4Settl_123Field;
-        
+
         private ShvaEMV.Field addendum3Settl_122Field;
-        
+
         private ShvaEMV.Field addendumP2PE_121Field;
-        
+
         private ShvaEMV.clsAvs avs_120Field;
-        
+
         private ShvaEMV.Field phaseRequest_119Field;
-        
+
         private ShvaEMV.Field addendum2Settl_118Field;
-        
+
         private ShvaEMV.Field specialPanEntryDesc_117Field;
-        
+
         private ShvaEMV.clsTestFields testFields_116Field;
-        
+
         private ShvaEMV.clsSoftwareDetails softwareDetails_115Field;
-        
+
         private ShvaEMV.clsSpecialInfo specialInfo_114Field;
-        
+
         private ShvaEMV.Field addendum2_113Field;
-        
+
         private ShvaEMV.clsRavSapakMutav ravSapakMutav_112Field;
-        
+
         private ShvaEMV.Field addendum1_111Field;
-        
+
         private ShvaEMV.Field addendum1Settl_104Field;
-        
+
         private ShvaEMV.clsOriginalData originalData_90Field;
-        
+
         private ShvaEMV.clsPosData posData_61Field;
-        
+
         private ShvaEMV.Field ashReason_60Field;
-        
+
         private ShvaEMV.clsMessageSpecs messageSpecs_59Field;
-        
+
         private ShvaEMV.clsSpecialPaymentTerms specialPaymentTerms_58Field;
-        
+
         private ShvaEMV.clsCreditTerms creditTerms_57Field;
-        
+
         private ShvaEMV.Field emvData_55Field;
-        
+
         private ShvaEMV.clsAdditionalAmounts additionalAmounts_54Field;
-        
+
         private ShvaEMV.clsSecurity security_53Field;
-        
+
         private ShvaEMV.Field conversionCurrency_51Field;
-        
+
         private ShvaEMV.Field currency_49Field;
-        
+
         private ShvaEMV.clsAdditionalData additionalData_48Field;
-        
+
         private ShvaEMV.clsDspMessages dspMessages_47Field;
-        
+
         private ShvaEMV.clsAuthCode authCode_43Field;
-        
+
         private ShvaEMV.Field compRetailerNum_42Field;
-        
+
         private ShvaEMV.Field retailer_41Field;
-        
+
         private ShvaEMV.Field f39Response_39Field;
-        
+
         private ShvaEMV.Field authorizationNo_38Field;
-        
+
         private ShvaEMV.Field rrn_37Field;
-        
+
         private ShvaEMV.Field track2Data_35Field;
-        
+
         private ShvaEMV.Field responseCode_25Field;
-        
+
         private ShvaEMV.Field cardSeqNumber_23Field;
-        
+
         private ShvaEMV.clsPosEntryMode posEntryMode_22Field;
-        
+
         private ShvaEMV.Field mcc_18Field;
-        
+
         private ShvaEMV.Field expirationDate_14Field;
-        
+
         private ShvaEMV.clsSystemTraceNo systemTraceNo_11Field;
-        
+
         private ShvaEMV.clsConversionRate conversionRate_09Field;
-        
+
         private ShvaEMV.clsTransDateTime transDateTime_07Field;
-        
+
         private ShvaEMV.Field conversionAmount_06Field;
-        
+
         private ShvaEMV.Field transAmount_04Field;
-        
+
         private ShvaEMV.Field tranType_03Field;
-        
+
         private ShvaEMV.Field pan_02Field;
-        
+
         private ShvaEMV.Field bitMap_01Field;
-        
+
         private ShvaEMV.Field mti_00Field;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.clsPetrol petrol_127
         {
             get
@@ -4594,8 +4594,8 @@ namespace ShvaEMV
                 this.petrol_127Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.Field addendum5Settl_126
         {
             get
@@ -4607,8 +4607,8 @@ namespace ShvaEMV
                 this.addendum5Settl_126Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.Field ashraitDecision_124
         {
             get
@@ -4620,8 +4620,8 @@ namespace ShvaEMV
                 this.ashraitDecision_124Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.Field addendum4Settl_123
         {
             get
@@ -4633,8 +4633,8 @@ namespace ShvaEMV
                 this.addendum4Settl_123Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.Field addendum3Settl_122
         {
             get
@@ -4646,8 +4646,8 @@ namespace ShvaEMV
                 this.addendum3Settl_122Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.Field addendumP2PE_121
         {
             get
@@ -4659,8 +4659,8 @@ namespace ShvaEMV
                 this.addendumP2PE_121Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public ShvaEMV.clsAvs avs_120
         {
             get
@@ -4672,8 +4672,8 @@ namespace ShvaEMV
                 this.avs_120Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 7)]
         public ShvaEMV.Field phaseRequest_119
         {
             get
@@ -4685,8 +4685,8 @@ namespace ShvaEMV
                 this.phaseRequest_119Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=8)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 8)]
         public ShvaEMV.Field addendum2Settl_118
         {
             get
@@ -4698,8 +4698,8 @@ namespace ShvaEMV
                 this.addendum2Settl_118Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=9)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 9)]
         public ShvaEMV.Field specialPanEntryDesc_117
         {
             get
@@ -4711,8 +4711,8 @@ namespace ShvaEMV
                 this.specialPanEntryDesc_117Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=10)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 10)]
         public ShvaEMV.clsTestFields testFields_116
         {
             get
@@ -4724,8 +4724,8 @@ namespace ShvaEMV
                 this.testFields_116Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=11)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 11)]
         public ShvaEMV.clsSoftwareDetails softwareDetails_115
         {
             get
@@ -4737,8 +4737,8 @@ namespace ShvaEMV
                 this.softwareDetails_115Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=12)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 12)]
         public ShvaEMV.clsSpecialInfo specialInfo_114
         {
             get
@@ -4750,8 +4750,8 @@ namespace ShvaEMV
                 this.specialInfo_114Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=13)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 13)]
         public ShvaEMV.Field addendum2_113
         {
             get
@@ -4763,8 +4763,8 @@ namespace ShvaEMV
                 this.addendum2_113Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=14)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 14)]
         public ShvaEMV.clsRavSapakMutav ravSapakMutav_112
         {
             get
@@ -4776,8 +4776,8 @@ namespace ShvaEMV
                 this.ravSapakMutav_112Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=15)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 15)]
         public ShvaEMV.Field addendum1_111
         {
             get
@@ -4789,8 +4789,8 @@ namespace ShvaEMV
                 this.addendum1_111Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=16)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 16)]
         public ShvaEMV.Field addendum1Settl_104
         {
             get
@@ -4802,8 +4802,8 @@ namespace ShvaEMV
                 this.addendum1Settl_104Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=17)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 17)]
         public ShvaEMV.clsOriginalData originalData_90
         {
             get
@@ -4815,8 +4815,8 @@ namespace ShvaEMV
                 this.originalData_90Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=18)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 18)]
         public ShvaEMV.clsPosData posData_61
         {
             get
@@ -4828,8 +4828,8 @@ namespace ShvaEMV
                 this.posData_61Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=19)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 19)]
         public ShvaEMV.Field ashReason_60
         {
             get
@@ -4841,8 +4841,8 @@ namespace ShvaEMV
                 this.ashReason_60Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=20)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 20)]
         public ShvaEMV.clsMessageSpecs messageSpecs_59
         {
             get
@@ -4854,8 +4854,8 @@ namespace ShvaEMV
                 this.messageSpecs_59Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=21)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 21)]
         public ShvaEMV.clsSpecialPaymentTerms specialPaymentTerms_58
         {
             get
@@ -4867,8 +4867,8 @@ namespace ShvaEMV
                 this.specialPaymentTerms_58Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=22)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 22)]
         public ShvaEMV.clsCreditTerms creditTerms_57
         {
             get
@@ -4880,8 +4880,8 @@ namespace ShvaEMV
                 this.creditTerms_57Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=23)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 23)]
         public ShvaEMV.Field emvData_55
         {
             get
@@ -4893,8 +4893,8 @@ namespace ShvaEMV
                 this.emvData_55Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=24)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 24)]
         public ShvaEMV.clsAdditionalAmounts additionalAmounts_54
         {
             get
@@ -4906,8 +4906,8 @@ namespace ShvaEMV
                 this.additionalAmounts_54Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=25)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 25)]
         public ShvaEMV.clsSecurity security_53
         {
             get
@@ -4919,8 +4919,8 @@ namespace ShvaEMV
                 this.security_53Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=26)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 26)]
         public ShvaEMV.Field conversionCurrency_51
         {
             get
@@ -4932,8 +4932,8 @@ namespace ShvaEMV
                 this.conversionCurrency_51Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=27)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 27)]
         public ShvaEMV.Field currency_49
         {
             get
@@ -4945,8 +4945,8 @@ namespace ShvaEMV
                 this.currency_49Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=28)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 28)]
         public ShvaEMV.clsAdditionalData additionalData_48
         {
             get
@@ -4958,8 +4958,8 @@ namespace ShvaEMV
                 this.additionalData_48Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=29)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 29)]
         public ShvaEMV.clsDspMessages dspMessages_47
         {
             get
@@ -4971,8 +4971,8 @@ namespace ShvaEMV
                 this.dspMessages_47Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=30)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 30)]
         public ShvaEMV.clsAuthCode authCode_43
         {
             get
@@ -4984,8 +4984,8 @@ namespace ShvaEMV
                 this.authCode_43Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=31)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 31)]
         public ShvaEMV.Field compRetailerNum_42
         {
             get
@@ -4997,8 +4997,8 @@ namespace ShvaEMV
                 this.compRetailerNum_42Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=32)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 32)]
         public ShvaEMV.Field retailer_41
         {
             get
@@ -5010,8 +5010,8 @@ namespace ShvaEMV
                 this.retailer_41Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=33)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 33)]
         public ShvaEMV.Field f39Response_39
         {
             get
@@ -5023,8 +5023,8 @@ namespace ShvaEMV
                 this.f39Response_39Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=34)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 34)]
         public ShvaEMV.Field authorizationNo_38
         {
             get
@@ -5036,8 +5036,8 @@ namespace ShvaEMV
                 this.authorizationNo_38Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=35)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 35)]
         public ShvaEMV.Field rrn_37
         {
             get
@@ -5049,8 +5049,8 @@ namespace ShvaEMV
                 this.rrn_37Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=36)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 36)]
         public ShvaEMV.Field track2Data_35
         {
             get
@@ -5062,8 +5062,8 @@ namespace ShvaEMV
                 this.track2Data_35Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=37)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 37)]
         public ShvaEMV.Field responseCode_25
         {
             get
@@ -5075,8 +5075,8 @@ namespace ShvaEMV
                 this.responseCode_25Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=38)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 38)]
         public ShvaEMV.Field cardSeqNumber_23
         {
             get
@@ -5088,8 +5088,8 @@ namespace ShvaEMV
                 this.cardSeqNumber_23Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=39)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 39)]
         public ShvaEMV.clsPosEntryMode posEntryMode_22
         {
             get
@@ -5101,8 +5101,8 @@ namespace ShvaEMV
                 this.posEntryMode_22Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=40)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 40)]
         public ShvaEMV.Field mcc_18
         {
             get
@@ -5114,8 +5114,8 @@ namespace ShvaEMV
                 this.mcc_18Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=41)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 41)]
         public ShvaEMV.Field expirationDate_14
         {
             get
@@ -5127,8 +5127,8 @@ namespace ShvaEMV
                 this.expirationDate_14Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=42)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 42)]
         public ShvaEMV.clsSystemTraceNo systemTraceNo_11
         {
             get
@@ -5140,8 +5140,8 @@ namespace ShvaEMV
                 this.systemTraceNo_11Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=43)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 43)]
         public ShvaEMV.clsConversionRate conversionRate_09
         {
             get
@@ -5153,8 +5153,8 @@ namespace ShvaEMV
                 this.conversionRate_09Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=44)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 44)]
         public ShvaEMV.clsTransDateTime transDateTime_07
         {
             get
@@ -5166,8 +5166,8 @@ namespace ShvaEMV
                 this.transDateTime_07Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=45)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 45)]
         public ShvaEMV.Field conversionAmount_06
         {
             get
@@ -5179,8 +5179,8 @@ namespace ShvaEMV
                 this.conversionAmount_06Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=46)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 46)]
         public ShvaEMV.Field transAmount_04
         {
             get
@@ -5192,8 +5192,8 @@ namespace ShvaEMV
                 this.transAmount_04Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=47)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 47)]
         public ShvaEMV.Field tranType_03
         {
             get
@@ -5205,8 +5205,8 @@ namespace ShvaEMV
                 this.tranType_03Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=48)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 48)]
         public ShvaEMV.Field pan_02
         {
             get
@@ -5218,8 +5218,8 @@ namespace ShvaEMV
                 this.pan_02Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=49)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 49)]
         public ShvaEMV.Field bitMap_01
         {
             get
@@ -5231,8 +5231,8 @@ namespace ShvaEMV
                 this.bitMap_01Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=50)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 50)]
         public ShvaEMV.Field mti_00
         {
             get
@@ -5245,180 +5245,180 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsOutput", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsOutput", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsOutput : object
     {
-        
+
         private ShvaEMV.OField statusField;
-        
+
         private ShvaEMV.OField ashStatusField;
-        
+
         private ShvaEMV.OField ashStatusDesField;
-        
+
         private ShvaEMV.OField panField;
-        
+
         private ShvaEMV.OField cardNameField;
-        
+
         private ShvaEMV.OField expirationDateField;
-        
+
         private ShvaEMV.OField manpikField;
-        
+
         private ShvaEMV.OField brandField;
-        
+
         private ShvaEMV.OField solekField;
-        
+
         private ShvaEMV.OField amountField;
-        
+
         private ShvaEMV.OField tranTypeField;
-        
+
         private ShvaEMV.OField mtiField;
-        
+
         private ShvaEMV.OField creditTermsField;
-        
+
         private ShvaEMV.OField currencyField;
-        
+
         private ShvaEMV.OField currencyNameField;
-        
+
         private ShvaEMV.OField fileNoField;
-        
+
         private ShvaEMV.OField termNoField;
-        
+
         private ShvaEMV.OField termSeqField;
-        
+
         private ShvaEMV.OField responseIdField;
-        
+
         private ShvaEMV.OField responseCvv2Field;
-        
+
         private ShvaEMV.OField cavvUcafResultField;
-        
+
         private ShvaEMV.OField authManpikNoField;
-        
+
         private ShvaEMV.OField authCodeManpikField;
-        
+
         private ShvaEMV.OField authSolekNoField;
-        
+
         private ShvaEMV.OField authCodeSolekField;
-        
+
         private ShvaEMV.OField firstPaymentField;
-        
+
         private ShvaEMV.OField notFirstPaymentField;
-        
+
         private ShvaEMV.OField noPaymentsField;
-        
+
         private ShvaEMV.OField uidField;
-        
+
         private ShvaEMV.OField rrnField;
-        
+
         private ShvaEMV.OField addDspBalanceField;
-        
+
         private ShvaEMV.OField addDspF111Field;
-        
+
         private ShvaEMV.OField authorizedAmountField;
-        
+
         private ShvaEMV.OField addendum1Field;
-        
+
         private ShvaEMV.OField addendum2Field;
-        
+
         private ShvaEMV.OField addendum1SettlField;
-        
+
         private ShvaEMV.OField addendum2SettlField;
-        
+
         private ShvaEMV.OField addendum3SettlField;
-        
+
         private ShvaEMV.OField addendum4SettlField;
-        
+
         private ShvaEMV.OField addendum5SettlField;
-        
+
         private ShvaEMV.OField addendumP2PEField;
-        
+
         private ShvaEMV.OField aidField;
-        
+
         private ShvaEMV.OField atcField;
-        
+
         private ShvaEMV.OField appVersionField;
-        
+
         private ShvaEMV.OField cashbackField;
-        
+
         private ShvaEMV.OField cardTypeField;
-        
+
         private ShvaEMV.OField cardSeqNumberField;
-        
+
         private ShvaEMV.OField compRetailerNumField;
-        
+
         private ShvaEMV.OField deferredField;
-        
+
         private ShvaEMV.OField dueDateField;
-        
+
         private ShvaEMV.OField dspBalanceField;
-        
+
         private ShvaEMV.OField dateTimeField;
-        
+
         private ShvaEMV.OField f39ResponseField;
-        
+
         private ShvaEMV.OField indxPaymentField;
-        
+
         private ShvaEMV.OField ipayAmountField;
-        
+
         private ShvaEMV.OField ipayNumberField;
-        
+
         private ShvaEMV.OField ipayPercentField;
-        
+
         private ShvaEMV.OField mustTzField;
-        
+
         private ShvaEMV.OField mustCvvField;
-        
+
         private ShvaEMV.OField mustZipField;
-        
+
         private ShvaEMV.OField mustAvsField;
-        
+
         private ShvaEMV.OField phaseRequest2Field;
-        
+
         private ShvaEMV.OField panEntryModeField;
-        
+
         private ShvaEMV.OField parameterJField;
-        
+
         private ShvaEMV.OField responseAvsField;
-        
+
         private ShvaEMV.OField retailerField;
-        
+
         private ShvaEMV.OField spTypeField;
-        
+
         private ShvaEMV.OField track2Field;
-        
+
         private ShvaEMV.OField tranRecordField;
-        
+
         private ShvaEMV.OField terminalNameField;
-        
+
         private ShvaEMV.OField telAuthAbilityField;
-        
+
         private ShvaEMV.OField telNoComField;
-        
+
         private ShvaEMV.OField tipField;
-        
+
         private ShvaEMV.OField tvrField;
-        
+
         private ShvaEMV.OField tsiField;
-        
+
         private ShvaEMV.OField arcField;
-        
+
         private ShvaEMV.OField verifiedByPinField;
-        
+
         private ShvaEMV.OField xmlStrField;
-        
+
         private ShvaEMV.OField zDataField;
-        
+
         private ShvaEMV.OField field55Field;
-        
+
         private ShvaEMV.OField dccEnabledField;
-        
+
         private ShvaEMV.OField addOnParamDemandField;
-        
+
         private ShvaEMV.OField conversionProviderField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.OField status
         {
             get
@@ -5430,8 +5430,8 @@ namespace ShvaEMV
                 this.statusField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.OField ashStatus
         {
             get
@@ -5443,8 +5443,8 @@ namespace ShvaEMV
                 this.ashStatusField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.OField ashStatusDes
         {
             get
@@ -5456,8 +5456,8 @@ namespace ShvaEMV
                 this.ashStatusDesField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.OField pan
         {
             get
@@ -5469,8 +5469,8 @@ namespace ShvaEMV
                 this.panField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.OField cardName
         {
             get
@@ -5482,8 +5482,8 @@ namespace ShvaEMV
                 this.cardNameField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.OField expirationDate
         {
             get
@@ -5495,8 +5495,8 @@ namespace ShvaEMV
                 this.expirationDateField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public ShvaEMV.OField manpik
         {
             get
@@ -5508,8 +5508,8 @@ namespace ShvaEMV
                 this.manpikField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 7)]
         public ShvaEMV.OField brand
         {
             get
@@ -5521,8 +5521,8 @@ namespace ShvaEMV
                 this.brandField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=8)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 8)]
         public ShvaEMV.OField solek
         {
             get
@@ -5534,8 +5534,8 @@ namespace ShvaEMV
                 this.solekField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=9)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 9)]
         public ShvaEMV.OField amount
         {
             get
@@ -5547,8 +5547,8 @@ namespace ShvaEMV
                 this.amountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=10)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 10)]
         public ShvaEMV.OField tranType
         {
             get
@@ -5560,8 +5560,8 @@ namespace ShvaEMV
                 this.tranTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=11)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 11)]
         public ShvaEMV.OField mti
         {
             get
@@ -5573,8 +5573,8 @@ namespace ShvaEMV
                 this.mtiField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=12)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 12)]
         public ShvaEMV.OField creditTerms
         {
             get
@@ -5586,8 +5586,8 @@ namespace ShvaEMV
                 this.creditTermsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=13)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 13)]
         public ShvaEMV.OField currency
         {
             get
@@ -5599,8 +5599,8 @@ namespace ShvaEMV
                 this.currencyField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=14)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 14)]
         public ShvaEMV.OField currencyName
         {
             get
@@ -5612,8 +5612,8 @@ namespace ShvaEMV
                 this.currencyNameField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=15)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 15)]
         public ShvaEMV.OField fileNo
         {
             get
@@ -5625,8 +5625,8 @@ namespace ShvaEMV
                 this.fileNoField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=16)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 16)]
         public ShvaEMV.OField termNo
         {
             get
@@ -5638,8 +5638,8 @@ namespace ShvaEMV
                 this.termNoField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=17)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 17)]
         public ShvaEMV.OField termSeq
         {
             get
@@ -5651,8 +5651,8 @@ namespace ShvaEMV
                 this.termSeqField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=18)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 18)]
         public ShvaEMV.OField responseId
         {
             get
@@ -5664,8 +5664,8 @@ namespace ShvaEMV
                 this.responseIdField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=19)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 19)]
         public ShvaEMV.OField responseCvv2
         {
             get
@@ -5677,8 +5677,8 @@ namespace ShvaEMV
                 this.responseCvv2Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=20)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 20)]
         public ShvaEMV.OField cavvUcafResult
         {
             get
@@ -5690,8 +5690,8 @@ namespace ShvaEMV
                 this.cavvUcafResultField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=21)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 21)]
         public ShvaEMV.OField authManpikNo
         {
             get
@@ -5703,8 +5703,8 @@ namespace ShvaEMV
                 this.authManpikNoField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=22)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 22)]
         public ShvaEMV.OField authCodeManpik
         {
             get
@@ -5716,8 +5716,8 @@ namespace ShvaEMV
                 this.authCodeManpikField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=23)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 23)]
         public ShvaEMV.OField authSolekNo
         {
             get
@@ -5729,8 +5729,8 @@ namespace ShvaEMV
                 this.authSolekNoField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=24)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 24)]
         public ShvaEMV.OField authCodeSolek
         {
             get
@@ -5742,8 +5742,8 @@ namespace ShvaEMV
                 this.authCodeSolekField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=25)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 25)]
         public ShvaEMV.OField firstPayment
         {
             get
@@ -5755,8 +5755,8 @@ namespace ShvaEMV
                 this.firstPaymentField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=26)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 26)]
         public ShvaEMV.OField notFirstPayment
         {
             get
@@ -5768,8 +5768,8 @@ namespace ShvaEMV
                 this.notFirstPaymentField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=27)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 27)]
         public ShvaEMV.OField noPayments
         {
             get
@@ -5781,8 +5781,8 @@ namespace ShvaEMV
                 this.noPaymentsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=28)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 28)]
         public ShvaEMV.OField uid
         {
             get
@@ -5794,8 +5794,8 @@ namespace ShvaEMV
                 this.uidField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=29)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 29)]
         public ShvaEMV.OField rrn
         {
             get
@@ -5807,8 +5807,8 @@ namespace ShvaEMV
                 this.rrnField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=30)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 30)]
         public ShvaEMV.OField addDspBalance
         {
             get
@@ -5820,8 +5820,8 @@ namespace ShvaEMV
                 this.addDspBalanceField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=31)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 31)]
         public ShvaEMV.OField addDspF111
         {
             get
@@ -5833,8 +5833,8 @@ namespace ShvaEMV
                 this.addDspF111Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=32)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 32)]
         public ShvaEMV.OField authorizedAmount
         {
             get
@@ -5846,8 +5846,8 @@ namespace ShvaEMV
                 this.authorizedAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=33)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 33)]
         public ShvaEMV.OField addendum1
         {
             get
@@ -5859,8 +5859,8 @@ namespace ShvaEMV
                 this.addendum1Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=34)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 34)]
         public ShvaEMV.OField addendum2
         {
             get
@@ -5872,8 +5872,8 @@ namespace ShvaEMV
                 this.addendum2Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=35)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 35)]
         public ShvaEMV.OField addendum1Settl
         {
             get
@@ -5885,8 +5885,8 @@ namespace ShvaEMV
                 this.addendum1SettlField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=36)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 36)]
         public ShvaEMV.OField addendum2Settl
         {
             get
@@ -5898,8 +5898,8 @@ namespace ShvaEMV
                 this.addendum2SettlField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=37)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 37)]
         public ShvaEMV.OField addendum3Settl
         {
             get
@@ -5911,8 +5911,8 @@ namespace ShvaEMV
                 this.addendum3SettlField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=38)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 38)]
         public ShvaEMV.OField addendum4Settl
         {
             get
@@ -5924,8 +5924,8 @@ namespace ShvaEMV
                 this.addendum4SettlField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=39)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 39)]
         public ShvaEMV.OField addendum5Settl
         {
             get
@@ -5937,8 +5937,8 @@ namespace ShvaEMV
                 this.addendum5SettlField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=40)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 40)]
         public ShvaEMV.OField addendumP2PE
         {
             get
@@ -5950,8 +5950,8 @@ namespace ShvaEMV
                 this.addendumP2PEField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=41)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 41)]
         public ShvaEMV.OField aid
         {
             get
@@ -5963,8 +5963,8 @@ namespace ShvaEMV
                 this.aidField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=42)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 42)]
         public ShvaEMV.OField atc
         {
             get
@@ -5976,8 +5976,8 @@ namespace ShvaEMV
                 this.atcField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=43)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 43)]
         public ShvaEMV.OField appVersion
         {
             get
@@ -5989,8 +5989,8 @@ namespace ShvaEMV
                 this.appVersionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=44)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 44)]
         public ShvaEMV.OField cashback
         {
             get
@@ -6002,8 +6002,8 @@ namespace ShvaEMV
                 this.cashbackField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=45)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 45)]
         public ShvaEMV.OField cardType
         {
             get
@@ -6015,8 +6015,8 @@ namespace ShvaEMV
                 this.cardTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=46)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 46)]
         public ShvaEMV.OField cardSeqNumber
         {
             get
@@ -6028,8 +6028,8 @@ namespace ShvaEMV
                 this.cardSeqNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=47)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 47)]
         public ShvaEMV.OField compRetailerNum
         {
             get
@@ -6041,8 +6041,8 @@ namespace ShvaEMV
                 this.compRetailerNumField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=48)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 48)]
         public ShvaEMV.OField deferred
         {
             get
@@ -6054,8 +6054,8 @@ namespace ShvaEMV
                 this.deferredField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=49)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 49)]
         public ShvaEMV.OField dueDate
         {
             get
@@ -6067,8 +6067,8 @@ namespace ShvaEMV
                 this.dueDateField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=50)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 50)]
         public ShvaEMV.OField dspBalance
         {
             get
@@ -6080,8 +6080,8 @@ namespace ShvaEMV
                 this.dspBalanceField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=51)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 51)]
         public ShvaEMV.OField dateTime
         {
             get
@@ -6093,8 +6093,8 @@ namespace ShvaEMV
                 this.dateTimeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=52)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 52)]
         public ShvaEMV.OField f39Response
         {
             get
@@ -6106,8 +6106,8 @@ namespace ShvaEMV
                 this.f39ResponseField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=53)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 53)]
         public ShvaEMV.OField indxPayment
         {
             get
@@ -6119,8 +6119,8 @@ namespace ShvaEMV
                 this.indxPaymentField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=54)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 54)]
         public ShvaEMV.OField ipayAmount
         {
             get
@@ -6132,8 +6132,8 @@ namespace ShvaEMV
                 this.ipayAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=55)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 55)]
         public ShvaEMV.OField ipayNumber
         {
             get
@@ -6145,8 +6145,8 @@ namespace ShvaEMV
                 this.ipayNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=56)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 56)]
         public ShvaEMV.OField ipayPercent
         {
             get
@@ -6158,8 +6158,8 @@ namespace ShvaEMV
                 this.ipayPercentField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=57)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 57)]
         public ShvaEMV.OField mustTz
         {
             get
@@ -6171,8 +6171,8 @@ namespace ShvaEMV
                 this.mustTzField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=58)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 58)]
         public ShvaEMV.OField mustCvv
         {
             get
@@ -6184,8 +6184,8 @@ namespace ShvaEMV
                 this.mustCvvField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=59)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 59)]
         public ShvaEMV.OField mustZip
         {
             get
@@ -6197,8 +6197,8 @@ namespace ShvaEMV
                 this.mustZipField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=60)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 60)]
         public ShvaEMV.OField mustAvs
         {
             get
@@ -6210,8 +6210,8 @@ namespace ShvaEMV
                 this.mustAvsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=61)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 61)]
         public ShvaEMV.OField phaseRequest2
         {
             get
@@ -6223,8 +6223,8 @@ namespace ShvaEMV
                 this.phaseRequest2Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=62)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 62)]
         public ShvaEMV.OField panEntryMode
         {
             get
@@ -6236,8 +6236,8 @@ namespace ShvaEMV
                 this.panEntryModeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=63)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 63)]
         public ShvaEMV.OField parameterJ
         {
             get
@@ -6249,8 +6249,8 @@ namespace ShvaEMV
                 this.parameterJField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=64)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 64)]
         public ShvaEMV.OField responseAvs
         {
             get
@@ -6262,8 +6262,8 @@ namespace ShvaEMV
                 this.responseAvsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=65)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 65)]
         public ShvaEMV.OField retailer
         {
             get
@@ -6275,8 +6275,8 @@ namespace ShvaEMV
                 this.retailerField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=66)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 66)]
         public ShvaEMV.OField spType
         {
             get
@@ -6288,8 +6288,8 @@ namespace ShvaEMV
                 this.spTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=67)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 67)]
         public ShvaEMV.OField track2
         {
             get
@@ -6301,8 +6301,8 @@ namespace ShvaEMV
                 this.track2Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=68)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 68)]
         public ShvaEMV.OField tranRecord
         {
             get
@@ -6314,8 +6314,8 @@ namespace ShvaEMV
                 this.tranRecordField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=69)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 69)]
         public ShvaEMV.OField terminalName
         {
             get
@@ -6327,8 +6327,8 @@ namespace ShvaEMV
                 this.terminalNameField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=70)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 70)]
         public ShvaEMV.OField telAuthAbility
         {
             get
@@ -6340,8 +6340,8 @@ namespace ShvaEMV
                 this.telAuthAbilityField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=71)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 71)]
         public ShvaEMV.OField telNoCom
         {
             get
@@ -6353,8 +6353,8 @@ namespace ShvaEMV
                 this.telNoComField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=72)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 72)]
         public ShvaEMV.OField tip
         {
             get
@@ -6366,8 +6366,8 @@ namespace ShvaEMV
                 this.tipField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=73)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 73)]
         public ShvaEMV.OField tvr
         {
             get
@@ -6379,8 +6379,8 @@ namespace ShvaEMV
                 this.tvrField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=74)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 74)]
         public ShvaEMV.OField tsi
         {
             get
@@ -6392,8 +6392,8 @@ namespace ShvaEMV
                 this.tsiField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=75)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 75)]
         public ShvaEMV.OField arc
         {
             get
@@ -6405,8 +6405,8 @@ namespace ShvaEMV
                 this.arcField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=76)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 76)]
         public ShvaEMV.OField verifiedByPin
         {
             get
@@ -6418,8 +6418,8 @@ namespace ShvaEMV
                 this.verifiedByPinField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=77)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 77)]
         public ShvaEMV.OField xmlStr
         {
             get
@@ -6431,8 +6431,8 @@ namespace ShvaEMV
                 this.xmlStrField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=78)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 78)]
         public ShvaEMV.OField zData
         {
             get
@@ -6444,8 +6444,8 @@ namespace ShvaEMV
                 this.zDataField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=79)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 79)]
         public ShvaEMV.OField field55
         {
             get
@@ -6457,8 +6457,8 @@ namespace ShvaEMV
                 this.field55Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=80)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 80)]
         public ShvaEMV.OField dccEnabled
         {
             get
@@ -6470,8 +6470,8 @@ namespace ShvaEMV
                 this.dccEnabledField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=81)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 81)]
         public ShvaEMV.OField addOnParamDemand
         {
             get
@@ -6483,8 +6483,8 @@ namespace ShvaEMV
                 this.addOnParamDemandField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=82)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 82)]
         public ShvaEMV.OField conversionProvider
         {
             get
@@ -6497,114 +6497,114 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsReceipt", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsReceipt", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsReceipt : object
     {
-        
+
         private ShvaEMV.RField terminalNameField;
-        
+
         private ShvaEMV.RField terminalNumberField;
-        
+
         private ShvaEMV.RField appVersionField;
-        
+
         private ShvaEMV.RField compRetailerNumField;
-        
+
         private ShvaEMV.RField transDateTimeField;
-        
+
         private ShvaEMV.RField cardNameField;
-        
+
         private ShvaEMV.RField cardNumberField;
-        
+
         private ShvaEMV.RField clientCardNumberField;
-        
+
         private ShvaEMV.RField voucherNumberField;
-        
+
         private ShvaEMV.RField uidField;
-        
+
         private ShvaEMV.RField rrnField;
-        
+
         private ShvaEMV.RField atcField;
-        
+
         private ShvaEMV.RField cardSeqNumberField;
-        
+
         private ShvaEMV.RField tsiField;
-        
+
         private ShvaEMV.RField arcField;
-        
+
         private ShvaEMV.RField tvrField;
-        
+
         private ShvaEMV.RField tranTypeField;
-        
+
         private ShvaEMV.RField tranTypeEField;
-        
+
         private ShvaEMV.RField authNoField;
-        
+
         private ShvaEMV.RField authCodeManpikField;
-        
+
         private ShvaEMV.RField authCodeManpikEField;
-        
+
         private ShvaEMV.RField panEntryModeField;
-        
+
         private ShvaEMV.RField panEntryModeEField;
-        
+
         private ShvaEMV.RField aidField;
-        
+
         private ShvaEMV.RField creditTermsField;
-        
+
         private ShvaEMV.RField creditTermsEField;
-        
+
         private ShvaEMV.RField transAmountField;
-        
+
         private ShvaEMV.RField currencyField;
-        
+
         private ShvaEMV.RField conversionAmountField;
-        
+
         private ShvaEMV.RField conversionCurrencyField;
-        
+
         private ShvaEMV.RField conversionRateField;
-        
+
         private ShvaEMV.RField commisionField;
-        
+
         private ShvaEMV.RField markupField;
-        
+
         private ShvaEMV.RField conversionProviderField;
-        
+
         private ShvaEMV.RField noPaymentsField;
-        
+
         private ShvaEMV.RField firstPaymentField;
-        
+
         private ShvaEMV.RField notFirstPaymentField;
-        
+
         private ShvaEMV.RField deferMonthsField;
-        
+
         private ShvaEMV.RField dueDateField;
-        
+
         private ShvaEMV.RField tipField;
-        
+
         private ShvaEMV.RField ipayAmountField;
-        
+
         private ShvaEMV.RField ipayNumberField;
-        
+
         private ShvaEMV.RField netAmountField;
-        
+
         private ShvaEMV.RField cashbackAmountField;
-        
+
         private ShvaEMV.RField dspBalanceField;
-        
+
         private ShvaEMV.RField dspF111Field;
-        
+
         private ShvaEMV.RField lumpSumField;
-        
+
         private ShvaEMV.RField clientSignatureField;
-        
+
         private ShvaEMV.RField clientPhoneField;
-        
+
         private ShvaEMV.RField constMsgField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.RField terminalName
         {
             get
@@ -6616,8 +6616,8 @@ namespace ShvaEMV
                 this.terminalNameField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.RField terminalNumber
         {
             get
@@ -6629,8 +6629,8 @@ namespace ShvaEMV
                 this.terminalNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.RField appVersion
         {
             get
@@ -6642,8 +6642,8 @@ namespace ShvaEMV
                 this.appVersionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.RField compRetailerNum
         {
             get
@@ -6655,8 +6655,8 @@ namespace ShvaEMV
                 this.compRetailerNumField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.RField transDateTime
         {
             get
@@ -6668,8 +6668,8 @@ namespace ShvaEMV
                 this.transDateTimeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.RField cardName
         {
             get
@@ -6681,8 +6681,8 @@ namespace ShvaEMV
                 this.cardNameField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public ShvaEMV.RField cardNumber
         {
             get
@@ -6694,8 +6694,8 @@ namespace ShvaEMV
                 this.cardNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 7)]
         public ShvaEMV.RField clientCardNumber
         {
             get
@@ -6707,8 +6707,8 @@ namespace ShvaEMV
                 this.clientCardNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=8)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 8)]
         public ShvaEMV.RField voucherNumber
         {
             get
@@ -6720,8 +6720,8 @@ namespace ShvaEMV
                 this.voucherNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=9)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 9)]
         public ShvaEMV.RField uid
         {
             get
@@ -6733,8 +6733,8 @@ namespace ShvaEMV
                 this.uidField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=10)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 10)]
         public ShvaEMV.RField rrn
         {
             get
@@ -6746,8 +6746,8 @@ namespace ShvaEMV
                 this.rrnField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=11)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 11)]
         public ShvaEMV.RField atc
         {
             get
@@ -6759,8 +6759,8 @@ namespace ShvaEMV
                 this.atcField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=12)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 12)]
         public ShvaEMV.RField cardSeqNumber
         {
             get
@@ -6772,8 +6772,8 @@ namespace ShvaEMV
                 this.cardSeqNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=13)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 13)]
         public ShvaEMV.RField tsi
         {
             get
@@ -6785,8 +6785,8 @@ namespace ShvaEMV
                 this.tsiField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=14)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 14)]
         public ShvaEMV.RField arc
         {
             get
@@ -6798,8 +6798,8 @@ namespace ShvaEMV
                 this.arcField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=15)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 15)]
         public ShvaEMV.RField tvr
         {
             get
@@ -6811,8 +6811,8 @@ namespace ShvaEMV
                 this.tvrField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=16)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 16)]
         public ShvaEMV.RField tranType
         {
             get
@@ -6824,8 +6824,8 @@ namespace ShvaEMV
                 this.tranTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=17)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 17)]
         public ShvaEMV.RField tranTypeE
         {
             get
@@ -6837,8 +6837,8 @@ namespace ShvaEMV
                 this.tranTypeEField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=18)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 18)]
         public ShvaEMV.RField authNo
         {
             get
@@ -6850,8 +6850,8 @@ namespace ShvaEMV
                 this.authNoField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=19)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 19)]
         public ShvaEMV.RField authCodeManpik
         {
             get
@@ -6863,8 +6863,8 @@ namespace ShvaEMV
                 this.authCodeManpikField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=20)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 20)]
         public ShvaEMV.RField authCodeManpikE
         {
             get
@@ -6876,8 +6876,8 @@ namespace ShvaEMV
                 this.authCodeManpikEField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=21)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 21)]
         public ShvaEMV.RField panEntryMode
         {
             get
@@ -6889,8 +6889,8 @@ namespace ShvaEMV
                 this.panEntryModeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=22)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 22)]
         public ShvaEMV.RField panEntryModeE
         {
             get
@@ -6902,8 +6902,8 @@ namespace ShvaEMV
                 this.panEntryModeEField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=23)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 23)]
         public ShvaEMV.RField aid
         {
             get
@@ -6915,8 +6915,8 @@ namespace ShvaEMV
                 this.aidField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=24)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 24)]
         public ShvaEMV.RField creditTerms
         {
             get
@@ -6928,8 +6928,8 @@ namespace ShvaEMV
                 this.creditTermsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=25)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 25)]
         public ShvaEMV.RField creditTermsE
         {
             get
@@ -6941,8 +6941,8 @@ namespace ShvaEMV
                 this.creditTermsEField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=26)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 26)]
         public ShvaEMV.RField transAmount
         {
             get
@@ -6954,8 +6954,8 @@ namespace ShvaEMV
                 this.transAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=27)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 27)]
         public ShvaEMV.RField currency
         {
             get
@@ -6967,8 +6967,8 @@ namespace ShvaEMV
                 this.currencyField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=28)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 28)]
         public ShvaEMV.RField conversionAmount
         {
             get
@@ -6980,8 +6980,8 @@ namespace ShvaEMV
                 this.conversionAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=29)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 29)]
         public ShvaEMV.RField conversionCurrency
         {
             get
@@ -6993,8 +6993,8 @@ namespace ShvaEMV
                 this.conversionCurrencyField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=30)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 30)]
         public ShvaEMV.RField conversionRate
         {
             get
@@ -7006,8 +7006,8 @@ namespace ShvaEMV
                 this.conversionRateField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=31)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 31)]
         public ShvaEMV.RField commision
         {
             get
@@ -7019,8 +7019,8 @@ namespace ShvaEMV
                 this.commisionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=32)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 32)]
         public ShvaEMV.RField markup
         {
             get
@@ -7032,8 +7032,8 @@ namespace ShvaEMV
                 this.markupField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=33)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 33)]
         public ShvaEMV.RField conversionProvider
         {
             get
@@ -7045,8 +7045,8 @@ namespace ShvaEMV
                 this.conversionProviderField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=34)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 34)]
         public ShvaEMV.RField noPayments
         {
             get
@@ -7058,8 +7058,8 @@ namespace ShvaEMV
                 this.noPaymentsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=35)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 35)]
         public ShvaEMV.RField firstPayment
         {
             get
@@ -7071,8 +7071,8 @@ namespace ShvaEMV
                 this.firstPaymentField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=36)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 36)]
         public ShvaEMV.RField notFirstPayment
         {
             get
@@ -7084,8 +7084,8 @@ namespace ShvaEMV
                 this.notFirstPaymentField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=37)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 37)]
         public ShvaEMV.RField deferMonths
         {
             get
@@ -7097,8 +7097,8 @@ namespace ShvaEMV
                 this.deferMonthsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=38)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 38)]
         public ShvaEMV.RField dueDate
         {
             get
@@ -7110,8 +7110,8 @@ namespace ShvaEMV
                 this.dueDateField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=39)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 39)]
         public ShvaEMV.RField tip
         {
             get
@@ -7123,8 +7123,8 @@ namespace ShvaEMV
                 this.tipField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=40)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 40)]
         public ShvaEMV.RField ipayAmount
         {
             get
@@ -7136,8 +7136,8 @@ namespace ShvaEMV
                 this.ipayAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=41)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 41)]
         public ShvaEMV.RField ipayNumber
         {
             get
@@ -7149,8 +7149,8 @@ namespace ShvaEMV
                 this.ipayNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=42)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 42)]
         public ShvaEMV.RField netAmount
         {
             get
@@ -7162,8 +7162,8 @@ namespace ShvaEMV
                 this.netAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=43)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 43)]
         public ShvaEMV.RField cashbackAmount
         {
             get
@@ -7175,8 +7175,8 @@ namespace ShvaEMV
                 this.cashbackAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=44)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 44)]
         public ShvaEMV.RField dspBalance
         {
             get
@@ -7188,8 +7188,8 @@ namespace ShvaEMV
                 this.dspBalanceField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=45)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 45)]
         public ShvaEMV.RField dspF111
         {
             get
@@ -7201,8 +7201,8 @@ namespace ShvaEMV
                 this.dspF111Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=46)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 46)]
         public ShvaEMV.RField lumpSum
         {
             get
@@ -7214,8 +7214,8 @@ namespace ShvaEMV
                 this.lumpSumField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=47)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 47)]
         public ShvaEMV.RField clientSignature
         {
             get
@@ -7227,8 +7227,8 @@ namespace ShvaEMV
                 this.clientSignatureField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=48)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 48)]
         public ShvaEMV.RField clientPhone
         {
             get
@@ -7240,8 +7240,8 @@ namespace ShvaEMV
                 this.clientPhoneField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=49)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 49)]
         public ShvaEMV.RField constMsg
         {
             get
@@ -7254,36 +7254,36 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsDcc", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsDcc", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsDcc : object
     {
-        
+
         private string cAmountField;
-        
+
         private string cRateField;
-        
+
         private string cCurrencyField;
-        
+
         private string commissionField;
-        
+
         private string cProviderField;
-        
+
         private string alphaCurrencyField;
-        
+
         private string timestampField;
-        
+
         private string validityField;
-        
+
         private string ratePercentageField;
-        
+
         private string statusDccField;
-        
+
         private string statusDccDesField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public string cAmount
         {
             get
@@ -7295,8 +7295,8 @@ namespace ShvaEMV
                 this.cAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public string cRate
         {
             get
@@ -7308,8 +7308,8 @@ namespace ShvaEMV
                 this.cRateField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string cCurrency
         {
             get
@@ -7321,8 +7321,8 @@ namespace ShvaEMV
                 this.cCurrencyField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public string commission
         {
             get
@@ -7334,8 +7334,8 @@ namespace ShvaEMV
                 this.commissionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public string cProvider
         {
             get
@@ -7347,8 +7347,8 @@ namespace ShvaEMV
                 this.cProviderField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public string alphaCurrency
         {
             get
@@ -7360,8 +7360,8 @@ namespace ShvaEMV
                 this.alphaCurrencyField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public string timestamp
         {
             get
@@ -7373,8 +7373,8 @@ namespace ShvaEMV
                 this.timestampField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 7)]
         public string validity
         {
             get
@@ -7386,8 +7386,8 @@ namespace ShvaEMV
                 this.validityField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=8)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 8)]
         public string ratePercentage
         {
             get
@@ -7399,8 +7399,8 @@ namespace ShvaEMV
                 this.ratePercentageField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=9)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 9)]
         public string statusDcc
         {
             get
@@ -7412,8 +7412,8 @@ namespace ShvaEMV
                 this.statusDccField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=10)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 10)]
         public string statusDccDes
         {
             get
@@ -7426,18 +7426,18 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsBooleanItem", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsBooleanItem", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsBooleanItem : object
     {
-        
+
         private bool bExistField;
-        
+
         private int valueField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true)]
         public bool bExist
         {
             get
@@ -7449,8 +7449,8 @@ namespace ShvaEMV
                 this.bExistField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true)]
         public int value
         {
             get
@@ -7463,224 +7463,224 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="DealType", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "DealType", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum DealType : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         EMV = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MAGNET = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CARD_TYPING = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         MOBILE = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RFU = 4,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="AshraitDecision", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "AshraitDecision", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum AshraitDecision : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         REJECT = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         OK = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         BLACK_LIST = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FLOOR_LIMIT = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FORCE_ONLINE = 4,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RANDOM_SELECTION = 5,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Ashtsi", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "Ashtsi", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum Ashtsi : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_1 = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_2 = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_3 = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_4 = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_5 = 4,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_6 = 5,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_7 = 6,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_8 = 7,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_9 = 8,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_10 = 9,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_11 = 10,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_12 = 11,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_13 = 12,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_14 = 13,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_15 = 14,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_16 = 15,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_17 = 16,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_18 = 17,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_19 = 18,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_20 = 19,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_21 = 20,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_22 = 21,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_23 = 22,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_24 = 23,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_25 = 24,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_26 = 25,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_27 = 26,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_28 = 27,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_29 = 28,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_30 = 29,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_31 = 30,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_32 = 31,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_33 = 32,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_34 = 33,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_35 = 34,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_36 = 35,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_37 = 36,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_38 = 37,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_39 = 38,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_40 = 39,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_41 = 40,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_42 = 41,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_43 = 42,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_44 = 43,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_45 = 44,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_46 = 45,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ASHTSI_47 = 46,
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsPetrol", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsPetrol", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsPetrol : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field serviceAmountField;
-        
+
         private ShvaEMV.Field carNumberField;
-        
+
         private ShvaEMV.Field speedometerField;
-        
+
         private ShvaEMV.Field oilAmountField;
-        
+
         private ShvaEMV.Field oilLiterField;
-        
+
         private ShvaEMV.Field gasolineLiterField;
-        
+
         private ShvaEMV.Field gasolineTypeField;
-        
+
         private ShvaEMV.Field tidlukField;
-        
+
         private ShvaEMV.Field authInShvaField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field serviceAmount
         {
             get
@@ -7692,8 +7692,8 @@ namespace ShvaEMV
                 this.serviceAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.Field carNumber
         {
             get
@@ -7705,8 +7705,8 @@ namespace ShvaEMV
                 this.carNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.Field speedometer
         {
             get
@@ -7718,8 +7718,8 @@ namespace ShvaEMV
                 this.speedometerField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.Field oilAmount
         {
             get
@@ -7731,8 +7731,8 @@ namespace ShvaEMV
                 this.oilAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.Field oilLiter
         {
             get
@@ -7744,8 +7744,8 @@ namespace ShvaEMV
                 this.oilLiterField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.Field gasolineLiter
         {
             get
@@ -7757,8 +7757,8 @@ namespace ShvaEMV
                 this.gasolineLiterField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public ShvaEMV.Field gasolineType
         {
             get
@@ -7770,8 +7770,8 @@ namespace ShvaEMV
                 this.gasolineTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 7)]
         public ShvaEMV.Field tidluk
         {
             get
@@ -7783,8 +7783,8 @@ namespace ShvaEMV
                 this.tidlukField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=8)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 8)]
         public ShvaEMV.Field authInShva
         {
             get
@@ -7797,22 +7797,22 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Field", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "Field", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class Field : ShvaEMV.General
     {
-        
+
         private string tagNameField;
-        
+
         private ShvaEMV.FieldType typeField;
-        
+
         private string valueField;
-        
+
         private ShvaEMV.FieldKind kindField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public string tagName
         {
             get
@@ -7824,8 +7824,8 @@ namespace ShvaEMV
                 this.tagNameField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true)]
         public ShvaEMV.FieldType type
         {
             get
@@ -7837,8 +7837,8 @@ namespace ShvaEMV
                 this.typeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public string value
         {
             get
@@ -7850,8 +7850,8 @@ namespace ShvaEMV
                 this.valueField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 3)]
         public ShvaEMV.FieldKind kind
         {
             get
@@ -7864,24 +7864,24 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsAvs", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsAvs", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsAvs : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field mustAvsField;
-        
+
         private ShvaEMV.Field zipField;
-        
+
         private ShvaEMV.Field addrField;
-        
+
         private ShvaEMV.Field cityField;
-        
+
         private ShvaEMV.Field responseAvsField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field mustAvs
         {
             get
@@ -7893,8 +7893,8 @@ namespace ShvaEMV
                 this.mustAvsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field zip
         {
             get
@@ -7906,8 +7906,8 @@ namespace ShvaEMV
                 this.zipField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.Field addr
         {
             get
@@ -7919,8 +7919,8 @@ namespace ShvaEMV
                 this.addrField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.Field city
         {
             get
@@ -7932,8 +7932,8 @@ namespace ShvaEMV
                 this.cityField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.Field responseAvs
         {
             get
@@ -7946,18 +7946,18 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsTestFields", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsTestFields", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsTestFields : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field ashtsiField;
-        
+
         private ShvaEMV.Field ashtvrField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field ashtsi
         {
             get
@@ -7969,8 +7969,8 @@ namespace ShvaEMV
                 this.ashtsiField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field ashtvr
         {
             get
@@ -7983,28 +7983,28 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsSoftwareDetails", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsSoftwareDetails", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsSoftwareDetails : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field pinpadConfigHashField;
-        
+
         private ShvaEMV.Field pinpadSoftwareVersionField;
-        
+
         private ShvaEMV.Field pinpadSerialNumberField;
-        
+
         private ShvaEMV.Field ashVersionField;
-        
+
         private ShvaEMV.Field termSerialNumberField;
-        
+
         private ShvaEMV.Field manufUseField;
-        
+
         private ShvaEMV.Field manufIdField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field pinpadConfigHash
         {
             get
@@ -8016,8 +8016,8 @@ namespace ShvaEMV
                 this.pinpadConfigHashField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field pinpadSoftwareVersion
         {
             get
@@ -8029,8 +8029,8 @@ namespace ShvaEMV
                 this.pinpadSoftwareVersionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.Field pinpadSerialNumber
         {
             get
@@ -8042,8 +8042,8 @@ namespace ShvaEMV
                 this.pinpadSerialNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.Field ashVersion
         {
             get
@@ -8055,8 +8055,8 @@ namespace ShvaEMV
                 this.ashVersionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.Field termSerialNumber
         {
             get
@@ -8068,8 +8068,8 @@ namespace ShvaEMV
                 this.termSerialNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.Field manufUse
         {
             get
@@ -8081,8 +8081,8 @@ namespace ShvaEMV
                 this.manufUseField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public ShvaEMV.Field manufId
         {
             get
@@ -8095,30 +8095,30 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsSpecialInfo", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsSpecialInfo", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsSpecialInfo : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field cardNameField;
-        
+
         private ShvaEMV.Field infoRequestField;
-        
+
         private ShvaEMV.Field moadonNumberField;
-        
+
         private ShvaEMV.Field cardTypeField;
-        
+
         private ShvaEMV.Field currencyAlfaCodeField;
-        
+
         private ShvaEMV.Field exchangeRateTimestampField;
-        
+
         private ShvaEMV.Field dccOfferValidityField;
-        
+
         private ShvaEMV.Field dccMarginRatePercentangeField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field cardName
         {
             get
@@ -8130,8 +8130,8 @@ namespace ShvaEMV
                 this.cardNameField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field infoRequest
         {
             get
@@ -8143,8 +8143,8 @@ namespace ShvaEMV
                 this.infoRequestField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field moadonNumber
         {
             get
@@ -8156,8 +8156,8 @@ namespace ShvaEMV
                 this.moadonNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.Field cardType
         {
             get
@@ -8169,8 +8169,8 @@ namespace ShvaEMV
                 this.cardTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.Field currencyAlfaCode
         {
             get
@@ -8182,8 +8182,8 @@ namespace ShvaEMV
                 this.currencyAlfaCodeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.Field exchangeRateTimestamp
         {
             get
@@ -8195,8 +8195,8 @@ namespace ShvaEMV
                 this.exchangeRateTimestampField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public ShvaEMV.Field dccOfferValidity
         {
             get
@@ -8208,8 +8208,8 @@ namespace ShvaEMV
                 this.dccOfferValidityField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 7)]
         public ShvaEMV.Field dccMarginRatePercentange
         {
             get
@@ -8222,18 +8222,18 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsRavSapakMutav", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsRavSapakMutav", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsRavSapakMutav : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field sapakMutavField;
-        
+
         private ShvaEMV.Field sapakMutavNoField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field sapakMutav
         {
             get
@@ -8245,8 +8245,8 @@ namespace ShvaEMV
                 this.sapakMutavField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field sapakMutavNo
         {
             get
@@ -8259,32 +8259,32 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsOriginalData", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsOriginalData", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsOriginalData : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field pinkIncrAuthField;
-        
+
         private ShvaEMV.Field authCodeField;
-        
+
         private ShvaEMV.Field authNumField;
-        
+
         private ShvaEMV.Field authorizedAmountField;
-        
+
         private ShvaEMV.Field amountField;
-        
+
         private ShvaEMV.Field tranTimeField;
-        
+
         private ShvaEMV.Field tranDateField;
-        
+
         private ShvaEMV.Field uidField;
-        
+
         private ShvaEMV.Field authSolekNumField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field pinkIncrAuth
         {
             get
@@ -8296,8 +8296,8 @@ namespace ShvaEMV
                 this.pinkIncrAuthField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.Field authCode
         {
             get
@@ -8309,8 +8309,8 @@ namespace ShvaEMV
                 this.authCodeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.Field authNum
         {
             get
@@ -8322,8 +8322,8 @@ namespace ShvaEMV
                 this.authNumField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.Field authorizedAmount
         {
             get
@@ -8335,8 +8335,8 @@ namespace ShvaEMV
                 this.authorizedAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.Field amount
         {
             get
@@ -8348,8 +8348,8 @@ namespace ShvaEMV
                 this.amountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.Field tranTime
         {
             get
@@ -8361,8 +8361,8 @@ namespace ShvaEMV
                 this.tranTimeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public ShvaEMV.Field tranDate
         {
             get
@@ -8374,8 +8374,8 @@ namespace ShvaEMV
                 this.tranDateField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 7)]
         public ShvaEMV.Field uid
         {
             get
@@ -8387,8 +8387,8 @@ namespace ShvaEMV
                 this.uidField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=8)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 8)]
         public ShvaEMV.Field authSolekNum
         {
             get
@@ -8401,24 +8401,24 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsPosData", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsPosData", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsPosData : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field selfServiceTransField;
-        
+
         private ShvaEMV.Field ppStatusField;
-        
+
         private ShvaEMV.Field catLevelField;
-        
+
         private ShvaEMV.Field ashTermTypeField;
-        
+
         private ShvaEMV.Field mposDeviceTypeField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field selfServiceTrans
         {
             get
@@ -8430,8 +8430,8 @@ namespace ShvaEMV
                 this.selfServiceTransField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.Field ppStatus
         {
             get
@@ -8443,8 +8443,8 @@ namespace ShvaEMV
                 this.ppStatusField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.Field catLevel
         {
             get
@@ -8456,8 +8456,8 @@ namespace ShvaEMV
                 this.catLevelField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.Field ashTermType
         {
             get
@@ -8469,8 +8469,8 @@ namespace ShvaEMV
                 this.ashTermTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.Field mposDeviceType
         {
             get
@@ -8483,22 +8483,22 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsMessageSpecs", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsMessageSpecs", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsMessageSpecs : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field uidField;
-        
+
         private ShvaEMV.Field manpikField;
-        
+
         private ShvaEMV.Field solekField;
-        
+
         private ShvaEMV.Field brandField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field uid
         {
             get
@@ -8510,8 +8510,8 @@ namespace ShvaEMV
                 this.uidField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.Field manpik
         {
             get
@@ -8523,8 +8523,8 @@ namespace ShvaEMV
                 this.manpikField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.Field solek
         {
             get
@@ -8536,8 +8536,8 @@ namespace ShvaEMV
                 this.solekField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.Field brand
         {
             get
@@ -8550,32 +8550,32 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsSpecialPaymentTerms", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsSpecialPaymentTerms", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsSpecialPaymentTerms : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field moadonCheckField;
-        
+
         private ShvaEMV.Field productCodeField;
-        
+
         private ShvaEMV.Field ipayPercentField;
-        
+
         private ShvaEMV.Field ipayCodeField;
-        
+
         private ShvaEMV.Field dueDateField;
-        
+
         private ShvaEMV.Field offerCodeField;
-        
+
         private ShvaEMV.Field ipayNumberField;
-        
+
         private ShvaEMV.Field ipayAmountField;
-        
+
         private ShvaEMV.Field deferMonthsField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field moadonCheck
         {
             get
@@ -8587,8 +8587,8 @@ namespace ShvaEMV
                 this.moadonCheckField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field productCode
         {
             get
@@ -8600,8 +8600,8 @@ namespace ShvaEMV
                 this.productCodeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.Field ipayPercent
         {
             get
@@ -8613,8 +8613,8 @@ namespace ShvaEMV
                 this.ipayPercentField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.Field ipayCode
         {
             get
@@ -8626,8 +8626,8 @@ namespace ShvaEMV
                 this.ipayCodeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.Field dueDate
         {
             get
@@ -8639,8 +8639,8 @@ namespace ShvaEMV
                 this.dueDateField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.Field offerCode
         {
             get
@@ -8652,8 +8652,8 @@ namespace ShvaEMV
                 this.offerCodeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public ShvaEMV.Field ipayNumber
         {
             get
@@ -8665,8 +8665,8 @@ namespace ShvaEMV
                 this.ipayNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 7)]
         public ShvaEMV.Field ipayAmount
         {
             get
@@ -8678,8 +8678,8 @@ namespace ShvaEMV
                 this.ipayAmountField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=8)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 8)]
         public ShvaEMV.Field deferMonths
         {
             get
@@ -8692,36 +8692,36 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsCreditTerms", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsCreditTerms", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsCreditTerms : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field indxPaymentField;
-        
+
         private ShvaEMV.Field noPaymentsField;
-        
+
         private ShvaEMV.Field creditNoPaymentsField;
-        
+
         private ShvaEMV.Field notFirstPaymentField;
-        
+
         private ShvaEMV.Field firstPaymentField;
-        
+
         private ShvaEMV.Field CreditTermsField;
-        
+
         private ShvaEMV.Field stndOrdrFreqField;
-        
+
         private ShvaEMV.Field stndOrdrUniqueRefField;
-        
+
         private ShvaEMV.Field stndOrdrTotalSumField;
-        
+
         private ShvaEMV.Field stndOrdrTotalNoField;
-        
+
         private ShvaEMV.Field stndOrdrNoField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field indxPayment
         {
             get
@@ -8733,8 +8733,8 @@ namespace ShvaEMV
                 this.indxPaymentField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field noPayments
         {
             get
@@ -8746,8 +8746,8 @@ namespace ShvaEMV
                 this.noPaymentsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.Field creditNoPayments
         {
             get
@@ -8759,8 +8759,8 @@ namespace ShvaEMV
                 this.creditNoPaymentsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.Field notFirstPayment
         {
             get
@@ -8772,8 +8772,8 @@ namespace ShvaEMV
                 this.notFirstPaymentField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.Field firstPayment
         {
             get
@@ -8785,8 +8785,8 @@ namespace ShvaEMV
                 this.firstPaymentField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.Field CreditTerms
         {
             get
@@ -8798,8 +8798,8 @@ namespace ShvaEMV
                 this.CreditTermsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public ShvaEMV.Field stndOrdrFreq
         {
             get
@@ -8811,8 +8811,8 @@ namespace ShvaEMV
                 this.stndOrdrFreqField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 7)]
         public ShvaEMV.Field stndOrdrUniqueRef
         {
             get
@@ -8824,8 +8824,8 @@ namespace ShvaEMV
                 this.stndOrdrUniqueRefField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=8)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 8)]
         public ShvaEMV.Field stndOrdrTotalSum
         {
             get
@@ -8837,8 +8837,8 @@ namespace ShvaEMV
                 this.stndOrdrTotalSumField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=9)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 9)]
         public ShvaEMV.Field stndOrdrTotalNo
         {
             get
@@ -8850,8 +8850,8 @@ namespace ShvaEMV
                 this.stndOrdrTotalNoField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=10)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 10)]
         public ShvaEMV.Field stndOrdrNo
         {
             get
@@ -8864,20 +8864,20 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsAdditionalAmounts", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsAdditionalAmounts", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsAdditionalAmounts : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field commissionField;
-        
+
         private ShvaEMV.Field tipField;
-        
+
         private ShvaEMV.Field cashbackAmountField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field commission
         {
             get
@@ -8889,8 +8889,8 @@ namespace ShvaEMV
                 this.commissionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field tip
         {
             get
@@ -8902,8 +8902,8 @@ namespace ShvaEMV
                 this.tipField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.Field cashbackAmount
         {
             get
@@ -8916,30 +8916,30 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsSecurity", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsSecurity", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsSecurity : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field capResultsField;
-        
+
         private ShvaEMV.Field capDpaField;
-        
+
         private ShvaEMV.Field cavvUcafResultField;
-        
+
         private ShvaEMV.Field xidField;
-        
+
         private ShvaEMV.Field cavvUcafField;
-        
+
         private ShvaEMV.Field eciField;
-        
+
         private ShvaEMV.Field otpField;
-        
+
         private ShvaEMV.Field infoTranCodeField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field capResults
         {
             get
@@ -8951,8 +8951,8 @@ namespace ShvaEMV
                 this.capResultsField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.Field capDpa
         {
             get
@@ -8964,8 +8964,8 @@ namespace ShvaEMV
                 this.capDpaField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.Field cavvUcafResult
         {
             get
@@ -8977,8 +8977,8 @@ namespace ShvaEMV
                 this.cavvUcafResultField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.Field xid
         {
             get
@@ -8990,8 +8990,8 @@ namespace ShvaEMV
                 this.xidField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.Field cavvUcaf
         {
             get
@@ -9003,8 +9003,8 @@ namespace ShvaEMV
                 this.cavvUcafField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.Field eci
         {
             get
@@ -9016,8 +9016,8 @@ namespace ShvaEMV
                 this.eciField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public ShvaEMV.Field otp
         {
             get
@@ -9029,8 +9029,8 @@ namespace ShvaEMV
                 this.otpField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 7)]
         public ShvaEMV.Field infoTranCode
         {
             get
@@ -9043,40 +9043,40 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsAdditionalData", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsAdditionalData", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsAdditionalData : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field solekAuthNoField;
-        
+
         private ShvaEMV.Field conversionProviderField;
-        
+
         private ShvaEMV.Field specialProjectInfo1Field;
-        
+
         private ShvaEMV.Field specialProjectCodeField;
-        
+
         private ShvaEMV.Field authValidationField;
-        
+
         private ShvaEMV.Field responseIdField;
-        
+
         private ShvaEMV.Field idNumberField;
-        
+
         private ShvaEMV.Field flagIdField;
-        
+
         private ShvaEMV.Field mustTzField;
-        
+
         private ShvaEMV.Field responseCvv2Field;
-        
+
         private ShvaEMV.Field flagCvv2Field;
-        
+
         private ShvaEMV.Field cvv2NumberField;
-        
+
         private ShvaEMV.Field mustCvvField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field solekAuthNo
         {
             get
@@ -9088,8 +9088,8 @@ namespace ShvaEMV
                 this.solekAuthNoField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.Field conversionProvider
         {
             get
@@ -9101,8 +9101,8 @@ namespace ShvaEMV
                 this.conversionProviderField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.Field specialProjectInfo1
         {
             get
@@ -9114,8 +9114,8 @@ namespace ShvaEMV
                 this.specialProjectInfo1Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.Field specialProjectCode
         {
             get
@@ -9127,8 +9127,8 @@ namespace ShvaEMV
                 this.specialProjectCodeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.Field authValidation
         {
             get
@@ -9140,8 +9140,8 @@ namespace ShvaEMV
                 this.authValidationField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.Field responseId
         {
             get
@@ -9153,8 +9153,8 @@ namespace ShvaEMV
                 this.responseIdField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public ShvaEMV.Field idNumber
         {
             get
@@ -9166,8 +9166,8 @@ namespace ShvaEMV
                 this.idNumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 7)]
         public ShvaEMV.Field flagId
         {
             get
@@ -9179,8 +9179,8 @@ namespace ShvaEMV
                 this.flagIdField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=8)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 8)]
         public ShvaEMV.Field mustTz
         {
             get
@@ -9192,8 +9192,8 @@ namespace ShvaEMV
                 this.mustTzField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=9)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 9)]
         public ShvaEMV.Field responseCvv2
         {
             get
@@ -9205,8 +9205,8 @@ namespace ShvaEMV
                 this.responseCvv2Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=10)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 10)]
         public ShvaEMV.Field flagCvv2
         {
             get
@@ -9218,8 +9218,8 @@ namespace ShvaEMV
                 this.flagCvv2Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=11)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 11)]
         public ShvaEMV.Field cvv2Number
         {
             get
@@ -9231,8 +9231,8 @@ namespace ShvaEMV
                 this.cvv2NumberField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=12)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 12)]
         public ShvaEMV.Field mustCvv
         {
             get
@@ -9245,22 +9245,22 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsDspMessages", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsDspMessages", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsDspMessages : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field addDspBalanceField;
-        
+
         private ShvaEMV.Field addDspF111Field;
-        
+
         private ShvaEMV.Field zDataField;
-        
+
         private ShvaEMV.Field dspBalanceField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field addDspBalance
         {
             get
@@ -9272,8 +9272,8 @@ namespace ShvaEMV
                 this.addDspBalanceField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field addDspF111
         {
             get
@@ -9285,8 +9285,8 @@ namespace ShvaEMV
                 this.addDspF111Field = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field zData
         {
             get
@@ -9298,8 +9298,8 @@ namespace ShvaEMV
                 this.zDataField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.Field dspBalance
         {
             get
@@ -9312,18 +9312,18 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsAuthCode", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsAuthCode", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsAuthCode : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field authCodeSolekField;
-        
+
         private ShvaEMV.Field authCodeManpikField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field authCodeSolek
         {
             get
@@ -9335,8 +9335,8 @@ namespace ShvaEMV
                 this.authCodeSolekField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.Field authCodeManpik
         {
             get
@@ -9349,18 +9349,18 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsPosEntryMode", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsPosEntryMode", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsPosEntryMode : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field pinEntryModeField;
-        
+
         private ShvaEMV.Field panEntryModeField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field pinEntryMode
         {
             get
@@ -9372,8 +9372,8 @@ namespace ShvaEMV
                 this.pinEntryModeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.Field panEntryMode
         {
             get
@@ -9386,20 +9386,20 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsSystemTraceNo", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsSystemTraceNo", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsSystemTraceNo : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field fileNoField;
-        
+
         private ShvaEMV.Field termSeqField;
-        
+
         private ShvaEMV.Field termNoField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field fileNo
         {
             get
@@ -9411,8 +9411,8 @@ namespace ShvaEMV
                 this.fileNoField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field termSeq
         {
             get
@@ -9424,8 +9424,8 @@ namespace ShvaEMV
                 this.termSeqField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.Field termNo
         {
             get
@@ -9438,18 +9438,18 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsConversionRate", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsConversionRate", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsConversionRate : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field changeRateField;
-        
+
         private ShvaEMV.Field decimalIndField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field changeRate
         {
             get
@@ -9461,8 +9461,8 @@ namespace ShvaEMV
                 this.changeRateField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field decimalInd
         {
             get
@@ -9475,18 +9475,18 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="clsTransDateTime", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "clsTransDateTime", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class clsTransDateTime : ShvaEMV.General
     {
-        
+
         private ShvaEMV.Field transTimeField;
-        
+
         private ShvaEMV.Field transDateField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public ShvaEMV.Field transTime
         {
             get
@@ -9498,8 +9498,8 @@ namespace ShvaEMV
                 this.transTimeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.Field transDate
         {
             get
@@ -9512,10 +9512,10 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="General", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "General", Namespace = "http://shva.co.il/xmlwebservices/")]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(ShvaEMV.clsTransDateTime))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(ShvaEMV.Field))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(ShvaEMV.clsConversionRate))]
@@ -9539,26 +9539,26 @@ namespace ShvaEMV
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(ShvaEMV.clsPetrol))]
     public partial class General : object
     {
-        
+
         private string subFieldNameField;
-        
+
         private int resultField;
-        
+
         private string exceptionField;
-        
+
         private ShvaEMV.FieldNumber fieldIndexField;
-        
+
         private ShvaEMV.FixSize fixSizeField;
-        
+
         private int maxSizeField;
-        
+
         private bool bIsExistField;
-        
+
         private ShvaEMV.FieldType clsTypeField;
-        
+
         private bool bAllFieldNotExistField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public string subFieldName
         {
             get
@@ -9570,8 +9570,8 @@ namespace ShvaEMV
                 this.subFieldNameField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 1)]
         public int result
         {
             get
@@ -9583,8 +9583,8 @@ namespace ShvaEMV
                 this.resultField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string exception
         {
             get
@@ -9596,8 +9596,8 @@ namespace ShvaEMV
                 this.exceptionField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 3)]
         public ShvaEMV.FieldNumber fieldIndex
         {
             get
@@ -9609,8 +9609,8 @@ namespace ShvaEMV
                 this.fieldIndexField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 4)]
         public ShvaEMV.FixSize fixSize
         {
             get
@@ -9622,8 +9622,8 @@ namespace ShvaEMV
                 this.fixSizeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 5)]
         public int maxSize
         {
             get
@@ -9635,8 +9635,8 @@ namespace ShvaEMV
                 this.maxSizeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 6)]
         public bool bIsExist
         {
             get
@@ -9648,8 +9648,8 @@ namespace ShvaEMV
                 this.bIsExistField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 7)]
         public ShvaEMV.FieldType clsType
         {
             get
@@ -9661,8 +9661,8 @@ namespace ShvaEMV
                 this.clsTypeField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=8)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 8)]
         public bool bAllFieldNotExist
         {
             get
@@ -9675,249 +9675,249 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="FieldNumber", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "FieldNumber", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum FieldNumber : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DEFAULT = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_00 = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_01 = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_02 = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_03 = 4,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_04 = 5,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_05 = 6,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_06 = 7,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_07 = 8,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_08 = 9,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_09 = 10,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_10 = 11,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_11 = 12,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_12 = 13,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_13 = 14,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_14 = 15,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_18 = 16,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_22 = 17,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_23 = 18,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_25 = 19,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_35 = 20,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_37 = 21,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_38 = 22,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_39 = 23,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_41 = 24,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_42 = 25,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_43 = 26,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_47 = 27,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_48 = 28,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_49 = 29,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_51 = 30,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_53 = 31,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_54 = 32,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_55 = 33,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_57 = 34,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_58 = 35,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_59 = 36,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_60 = 37,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_61 = 38,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_90 = 39,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_104 = 40,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_111 = 41,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_112 = 42,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_113 = 43,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_114 = 44,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_115 = 45,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_116 = 46,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_117 = 47,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_118 = 48,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_119 = 49,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_120 = 50,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_121 = 51,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_122 = 52,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_123 = 53,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_124 = 54,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_126 = 55,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIELD_127 = 56,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="FixSize", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "FixSize", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum FixSize : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         FIX = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         UNFIX = 1,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="FieldType", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "FieldType", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum FieldType : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         DEFAULT = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         TYPE_A = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         TYPE_N = 2,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         TYPE_AN = 3,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         TYPE_ANS = 4,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         TYPE_B = 5,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         TYPE_Z = 6,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="FieldKind", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "FieldKind", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum FieldKind : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PAD_LEFT = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PAD_RIGHT = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         PAD_RIGHT_COMPRESS_LEN = 2,
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="OField", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "OField", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class OField : object
     {
-        
+
         private string nameTagField;
-        
+
         private string valueTagField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public string nameTag
         {
             get
@@ -9929,8 +9929,8 @@ namespace ShvaEMV
                 this.nameTagField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public string valueTag
         {
             get
@@ -9943,32 +9943,32 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="RField", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "RField", Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class RField : object
     {
-        
+
         private string nameTagField;
-        
+
         private ShvaEMV.ReceiptCategory categoryField;
-        
+
         private int indexField;
-        
+
         private int lenValueField;
-        
+
         private int lenDesField;
-        
+
         private int lenDesEngField;
-        
+
         private string desTagField;
-        
+
         private string desTagEngField;
-        
+
         private string valueTagField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false)]
         public string nameTag
         {
             get
@@ -9980,8 +9980,8 @@ namespace ShvaEMV
                 this.nameTagField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 1)]
         public ShvaEMV.ReceiptCategory category
         {
             get
@@ -9993,8 +9993,8 @@ namespace ShvaEMV
                 this.categoryField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 2)]
         public int index
         {
             get
@@ -10006,8 +10006,8 @@ namespace ShvaEMV
                 this.indexField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 3)]
         public int lenValue
         {
             get
@@ -10019,8 +10019,8 @@ namespace ShvaEMV
                 this.lenValueField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 4)]
         public int lenDes
         {
             get
@@ -10032,8 +10032,8 @@ namespace ShvaEMV
                 this.lenDesField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired = true, Order = 5)]
         public int lenDesEng
         {
             get
@@ -10045,8 +10045,8 @@ namespace ShvaEMV
                 this.lenDesEngField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public string desTag
         {
             get
@@ -10058,8 +10058,8 @@ namespace ShvaEMV
                 this.desTagField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 7)]
         public string desTagEng
         {
             get
@@ -10071,8 +10071,8 @@ namespace ShvaEMV
                 this.desTagEngField = value;
             }
         }
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=8)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 8)]
         public string valueTag
         {
             get
@@ -10085,117 +10085,117 @@ namespace ShvaEMV
             }
         }
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ReceiptCategory", Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "ReceiptCategory", Namespace = "http://shva.co.il/xmlwebservices/")]
     public enum ReceiptCategory : int
     {
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         BOTH = 0,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         CLIENT = 1,
-        
+
         [System.Runtime.Serialization.EnumMemberAttribute()]
         SELLER = 2,
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="http://shva.co.il/xmlwebservices/", ConfigurationName="ShvaEMV.EmvRequestSoap")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/", ConfigurationName = "ShvaEMV.EmvRequestSoap")]
     public interface EmvRequestSoap
     {
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://shva.co.il/xmlwebservices/AshFull", ReplyAction="*")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://shva.co.il/xmlwebservices/AshFull", ReplyAction = "*")]
         System.Threading.Tasks.Task<ShvaEMV.AshFullResponse> AshFullAsync(ShvaEMV.AshFullRequest request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://shva.co.il/xmlwebservices/GetVariousParamsInfo", ReplyAction="*")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://shva.co.il/xmlwebservices/GetVariousParamsInfo", ReplyAction = "*")]
         System.Threading.Tasks.Task<ShvaEMV.GetVariousParamsInfoResponse> GetVariousParamsInfoAsync(ShvaEMV.GetVariousParamsInfoRequest request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://shva.co.il/xmlwebservices/AshGen", ReplyAction="*")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://shva.co.il/xmlwebservices/AshGen", ReplyAction = "*")]
         System.Threading.Tasks.Task<ShvaEMV.AshGenResponse> AshGenAsync(ShvaEMV.AshGenRequest request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://shva.co.il/xmlwebservices/AshGenXML", ReplyAction="*")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://shva.co.il/xmlwebservices/AshGenXML", ReplyAction = "*")]
         System.Threading.Tasks.Task<ShvaEMV.AshGenXMLResponse> AshGenXMLAsync(ShvaEMV.AshGenXMLRequest request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://shva.co.il/xmlwebservices/TransEMV", ReplyAction="*")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://shva.co.il/xmlwebservices/TransEMV", ReplyAction = "*")]
         System.Threading.Tasks.Task<ShvaEMV.TransEMVResponse> TransEMVAsync(ShvaEMV.TransEMVRequest request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://shva.co.il/xmlwebservices/GetTransEMVInformation", ReplyAction="*")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://shva.co.il/xmlwebservices/GetTransEMVInformation", ReplyAction = "*")]
         System.Threading.Tasks.Task<ShvaEMV.GetTransEMVInformationResponse> GetTransEMVInformationAsync(ShvaEMV.GetTransEMVInformationRequest request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://shva.co.il/xmlwebservices/ChangePassword", ReplyAction="*")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://shva.co.il/xmlwebservices/ChangePassword", ReplyAction = "*")]
         System.Threading.Tasks.Task<ShvaEMV.ChangePasswordResponse> ChangePasswordAsync(ShvaEMV.ChangePasswordRequest request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://shva.co.il/xmlwebservices/AshStart", ReplyAction="*")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://shva.co.il/xmlwebservices/AshStart", ReplyAction = "*")]
         System.Threading.Tasks.Task<ShvaEMV.AshStartResponse> AshStartAsync(ShvaEMV.AshStartRequest request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://shva.co.il/xmlwebservices/AshAuth", ReplyAction="*")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://shva.co.il/xmlwebservices/AshAuth", ReplyAction = "*")]
         System.Threading.Tasks.Task<ShvaEMV.AshAuthResponse> AshAuthAsync(ShvaEMV.AshAuthRequest request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://shva.co.il/xmlwebservices/AshEnd", ReplyAction="*")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://shva.co.il/xmlwebservices/AshEnd", ReplyAction = "*")]
         System.Threading.Tasks.Task<ShvaEMV.AshEndResponse> AshEndAsync(ShvaEMV.AshEndRequest request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://shva.co.il/xmlwebservices/AshDcc", ReplyAction="*")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://shva.co.il/xmlwebservices/AshDcc", ReplyAction = "*")]
         System.Threading.Tasks.Task<ShvaEMV.AshDccResponse> AshDccAsync(ShvaEMV.AshDccRequest request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://shva.co.il/xmlwebservices/DeviceInit", ReplyAction="*")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://shva.co.il/xmlwebservices/DeviceInit", ReplyAction = "*")]
         System.Threading.Tasks.Task<ShvaEMV.DeviceInitResponse> DeviceInitAsync(ShvaEMV.DeviceInitRequest request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://shva.co.il/xmlwebservices/DeviceDownload", ReplyAction="*")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://shva.co.il/xmlwebservices/DeviceDownload", ReplyAction = "*")]
         System.Threading.Tasks.Task<ShvaEMV.DeviceDownloadResponse> DeviceDownloadAsync(ShvaEMV.DeviceDownloadRequest request);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://shva.co.il/xmlwebservices/GetTerminalData", ReplyAction="*")]
+
+        [System.ServiceModel.OperationContractAttribute(Action = "http://shva.co.il/xmlwebservices/GetTerminalData", ReplyAction = "*")]
         System.Threading.Tasks.Task<ShvaEMV.GetTerminalDataResponse> GetTerminalDataAsync(ShvaEMV.GetTerminalDataRequest request);
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class AshFullRequest
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="AshFull", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "AshFull", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.AshFullRequestBody Body;
-        
+
         public AshFullRequest()
         {
         }
-        
+
         public AshFullRequest(ShvaEMV.AshFullRequestBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class AshFullRequestBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
         public string MerchantNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string UserName;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Password;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.clsInput inputObj;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.clsPinPad pinpad;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.clsGlobal globalObj;
-        
+
         public AshFullRequestBody()
         {
         }
-        
+
         public AshFullRequestBody(string MerchantNumber, string UserName, string Password, ShvaEMV.clsInput inputObj, ShvaEMV.clsPinPad pinpad, ShvaEMV.clsGlobal globalObj)
         {
             this.MerchantNumber = MerchantNumber;
@@ -10206,96 +10206,96 @@ namespace ShvaEMV
             this.globalObj = globalObj;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class AshFullResponse
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="AshFullResponse", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "AshFullResponse", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.AshFullResponseBody Body;
-        
+
         public AshFullResponse()
         {
         }
-        
+
         public AshFullResponse(ShvaEMV.AshFullResponseBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class AshFullResponseBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
         public int AshFullResult;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.clsGlobal globalObj;
-        
+
         public AshFullResponseBody()
         {
         }
-        
+
         public AshFullResponseBody(int AshFullResult, ShvaEMV.clsGlobal globalObj)
         {
             this.AshFullResult = AshFullResult;
             this.globalObj = globalObj;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class GetVariousParamsInfoRequest
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetVariousParamsInfo", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "GetVariousParamsInfo", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.GetVariousParamsInfoRequestBody Body;
-        
+
         public GetVariousParamsInfoRequest()
         {
         }
-        
+
         public GetVariousParamsInfoRequest(ShvaEMV.GetVariousParamsInfoRequestBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class GetVariousParamsInfoRequestBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
         public string MerchantNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string UserName;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Password;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public string ppstatus;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public string IsrParam;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public string TourParam;
-        
+
         public GetVariousParamsInfoRequestBody()
         {
         }
-        
+
         public GetVariousParamsInfoRequestBody(string MerchantNumber, string UserName, string Password, string ppstatus, string IsrParam, string TourParam)
         {
             this.MerchantNumber = MerchantNumber;
@@ -10306,48 +10306,48 @@ namespace ShvaEMV
             this.TourParam = TourParam;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class GetVariousParamsInfoResponse
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetVariousParamsInfoResponse", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "GetVariousParamsInfoResponse", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.GetVariousParamsInfoResponseBody Body;
-        
+
         public GetVariousParamsInfoResponse()
         {
         }
-        
+
         public GetVariousParamsInfoResponse(ShvaEMV.GetVariousParamsInfoResponseBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class GetVariousParamsInfoResponseBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
         public int GetVariousParamsInfoResult;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string ppstatus;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string IsrParam;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public string TourParam;
-        
+
         public GetVariousParamsInfoResponseBody()
         {
         }
-        
+
         public GetVariousParamsInfoResponseBody(int GetVariousParamsInfoResult, string ppstatus, string IsrParam, string TourParam)
         {
             this.GetVariousParamsInfoResult = GetVariousParamsInfoResult;
@@ -10356,51 +10356,51 @@ namespace ShvaEMV
             this.TourParam = TourParam;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class AshGenRequest
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="AshGen", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "AshGen", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.AshGenRequestBody Body;
-        
+
         public AshGenRequest()
         {
         }
-        
+
         public AshGenRequest(ShvaEMV.AshGenRequestBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class AshGenRequestBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
         public string MerchantNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string UserName;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Password;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.clsInput inputObj;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.clsGlobal globalObj;
-        
+
         public AshGenRequestBody()
         {
         }
-        
+
         public AshGenRequestBody(string MerchantNumber, string UserName, string Password, ShvaEMV.clsInput inputObj, ShvaEMV.clsGlobal globalObj)
         {
             this.MerchantNumber = MerchantNumber;
@@ -10410,90 +10410,90 @@ namespace ShvaEMV
             this.globalObj = globalObj;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class AshGenResponse
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="AshGenResponse", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "AshGenResponse", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.AshGenResponseBody Body;
-        
+
         public AshGenResponse()
         {
         }
-        
+
         public AshGenResponse(ShvaEMV.AshGenResponseBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class AshGenResponseBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
         public int AshGenResult;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.clsGlobal globalObj;
-        
+
         public AshGenResponseBody()
         {
         }
-        
+
         public AshGenResponseBody(int AshGenResult, ShvaEMV.clsGlobal globalObj)
         {
             this.AshGenResult = AshGenResult;
             this.globalObj = globalObj;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class AshGenXMLRequest
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="AshGenXML", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "AshGenXML", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.AshGenXMLRequestBody Body;
-        
+
         public AshGenXMLRequest()
         {
         }
-        
+
         public AshGenXMLRequest(ShvaEMV.AshGenXMLRequestBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class AshGenXMLRequestBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
         public string MerchantNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string UserName;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Password;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public string xmlStr;
-        
+
         public AshGenXMLRequestBody()
         {
         }
-        
+
         public AshGenXMLRequestBody(string MerchantNumber, string UserName, string Password, string xmlStr)
         {
             this.MerchantNumber = MerchantNumber;
@@ -10502,90 +10502,90 @@ namespace ShvaEMV
             this.xmlStr = xmlStr;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class AshGenXMLResponse
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="AshGenXMLResponse", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "AshGenXMLResponse", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.AshGenXMLResponseBody Body;
-        
+
         public AshGenXMLResponse()
         {
         }
-        
+
         public AshGenXMLResponse(ShvaEMV.AshGenXMLResponseBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class AshGenXMLResponseBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
         public int AshGenXMLResult;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string xmlOutStr;
-        
+
         public AshGenXMLResponseBody()
         {
         }
-        
+
         public AshGenXMLResponseBody(int AshGenXMLResult, string xmlOutStr)
         {
             this.AshGenXMLResult = AshGenXMLResult;
             this.xmlOutStr = xmlOutStr;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class TransEMVRequest
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="TransEMV", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "TransEMV", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.TransEMVRequestBody Body;
-        
+
         public TransEMVRequest()
         {
         }
-        
+
         public TransEMVRequest(ShvaEMV.TransEMVRequestBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class TransEMVRequestBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
         public string MerchantNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string UserName;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Password;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public string DATA;
-        
+
         public TransEMVRequestBody()
         {
         }
-        
+
         public TransEMVRequestBody(string MerchantNumber, string UserName, string Password, string DATA)
         {
             this.MerchantNumber = MerchantNumber;
@@ -10594,57 +10594,57 @@ namespace ShvaEMV
             this.DATA = DATA;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class TransEMVResponse
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="TransEMVResponse", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "TransEMVResponse", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.TransEMVResponseBody Body;
-        
+
         public TransEMVResponse()
         {
         }
-        
+
         public TransEMVResponse(ShvaEMV.TransEMVResponseBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class TransEMVResponseBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
         public int TransEMVResult;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string RefNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Report;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 3)]
         public long TotalDebitTransSum;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 4)]
         public long TotalCreditTransSum;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public string TotalXML;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public string BadTrans;
-        
+
         public TransEMVResponseBody()
         {
         }
-        
+
         public TransEMVResponseBody(int TransEMVResult, string RefNumber, string Report, long TotalDebitTransSum, long TotalCreditTransSum, string TotalXML, string BadTrans)
         {
             this.TransEMVResult = TransEMVResult;
@@ -10656,51 +10656,51 @@ namespace ShvaEMV
             this.BadTrans = BadTrans;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class GetTransEMVInformationRequest
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetTransEMVInformation", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "GetTransEMVInformation", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.GetTransEMVInformationRequestBody Body;
-        
+
         public GetTransEMVInformationRequest()
         {
         }
-        
+
         public GetTransEMVInformationRequest(ShvaEMV.GetTransEMVInformationRequestBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class GetTransEMVInformationRequestBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
         public string MerchantNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string UserName;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Password;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public string TransmitDate_yyyyMMdd;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 4)]
         public int SequenceNumTrans;
-        
+
         public GetTransEMVInformationRequestBody()
         {
         }
-        
+
         public GetTransEMVInformationRequestBody(string MerchantNumber, string UserName, string Password, string TransmitDate_yyyyMMdd, int SequenceNumTrans)
         {
             this.MerchantNumber = MerchantNumber;
@@ -10710,57 +10710,57 @@ namespace ShvaEMV
             this.SequenceNumTrans = SequenceNumTrans;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class GetTransEMVInformationResponse
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetTransEMVInformationResponse", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "GetTransEMVInformationResponse", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.GetTransEMVInformationResponseBody Body;
-        
+
         public GetTransEMVInformationResponse()
         {
         }
-        
+
         public GetTransEMVInformationResponse(ShvaEMV.GetTransEMVInformationResponseBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class GetTransEMVInformationResponseBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
         public int GetTransEMVInformationResult;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 1)]
         public int SequenceNumTrans;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string RefNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public string Report;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 4)]
         public long TotalDebitTransSum;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 5)]
         public long TotalCreditTransSum;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public string TotalXML;
-        
+
         public GetTransEMVInformationResponseBody()
         {
         }
-        
+
         public GetTransEMVInformationResponseBody(int GetTransEMVInformationResult, int SequenceNumTrans, string RefNumber, string Report, long TotalDebitTransSum, long TotalCreditTransSum, string TotalXML)
         {
             this.GetTransEMVInformationResult = GetTransEMVInformationResult;
@@ -10772,50 +10772,50 @@ namespace ShvaEMV
             this.TotalXML = TotalXML;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class ChangePasswordRequest
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="ChangePassword", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "ChangePassword", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.ChangePasswordRequestBody Body;
-        
+
         public ChangePasswordRequest()
         {
         }
-        
+
         public ChangePasswordRequest(ShvaEMV.ChangePasswordRequestBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class ChangePasswordRequestBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
         public string MerchantNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string UserName;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Password;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public string NewPassword;
-        
+
         public ChangePasswordRequestBody()
         {
         }
-        
+
         public ChangePasswordRequestBody(string MerchantNumber, string UserName, string Password, string NewPassword)
         {
             this.MerchantNumber = MerchantNumber;
@@ -10824,94 +10824,94 @@ namespace ShvaEMV
             this.NewPassword = NewPassword;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class ChangePasswordResponse
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="ChangePasswordResponse", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "ChangePasswordResponse", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.ChangePasswordResponseBody Body;
-        
+
         public ChangePasswordResponse()
         {
         }
-        
+
         public ChangePasswordResponse(ShvaEMV.ChangePasswordResponseBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class ChangePasswordResponseBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
         public int ChangePasswordResult;
-        
+
         public ChangePasswordResponseBody()
         {
         }
-        
+
         public ChangePasswordResponseBody(int ChangePasswordResult)
         {
             this.ChangePasswordResult = ChangePasswordResult;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class AshStartRequest
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="AshStart", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "AshStart", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.AshStartRequestBody Body;
-        
+
         public AshStartRequest()
         {
         }
-        
+
         public AshStartRequest(ShvaEMV.AshStartRequestBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class AshStartRequestBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
         public string MerchantNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string UserName;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Password;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.clsInput inputObj;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.clsPinPad pinpad;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.clsGlobal globalObj;
-        
+
         public AshStartRequestBody()
         {
         }
-        
+
         public AshStartRequestBody(string MerchantNumber, string UserName, string Password, ShvaEMV.clsInput inputObj, ShvaEMV.clsPinPad pinpad, ShvaEMV.clsGlobal globalObj)
         {
             this.MerchantNumber = MerchantNumber;
@@ -10922,45 +10922,45 @@ namespace ShvaEMV
             this.globalObj = globalObj;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class AshStartResponse
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="AshStartResponse", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "AshStartResponse", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.AshStartResponseBody Body;
-        
+
         public AshStartResponse()
         {
         }
-        
+
         public AshStartResponse(ShvaEMV.AshStartResponseBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class AshStartResponseBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
         public int AshStartResult;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.clsPinPad pinpad;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.clsGlobal globalObj;
-        
+
         public AshStartResponseBody()
         {
         }
-        
+
         public AshStartResponseBody(int AshStartResult, ShvaEMV.clsPinPad pinpad, ShvaEMV.clsGlobal globalObj)
         {
             this.AshStartResult = AshStartResult;
@@ -10968,54 +10968,54 @@ namespace ShvaEMV
             this.globalObj = globalObj;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class AshAuthRequest
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="AshAuth", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "AshAuth", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.AshAuthRequestBody Body;
-        
+
         public AshAuthRequest()
         {
         }
-        
+
         public AshAuthRequest(ShvaEMV.AshAuthRequestBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class AshAuthRequestBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
         public string MerchantNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string UserName;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Password;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.clsInput inputObj;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.clsPinPad pinpad;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.clsGlobal globalObj;
-        
+
         public AshAuthRequestBody()
         {
         }
-        
+
         public AshAuthRequestBody(string MerchantNumber, string UserName, string Password, ShvaEMV.clsInput inputObj, ShvaEMV.clsPinPad pinpad, ShvaEMV.clsGlobal globalObj)
         {
             this.MerchantNumber = MerchantNumber;
@@ -11026,45 +11026,45 @@ namespace ShvaEMV
             this.globalObj = globalObj;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class AshAuthResponse
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="AshAuthResponse", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "AshAuthResponse", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.AshAuthResponseBody Body;
-        
+
         public AshAuthResponse()
         {
         }
-        
+
         public AshAuthResponse(ShvaEMV.AshAuthResponseBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class AshAuthResponseBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
         public int AshAuthResult;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.clsPinPad pinpad;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.clsGlobal globalObj;
-        
+
         public AshAuthResponseBody()
         {
         }
-        
+
         public AshAuthResponseBody(int AshAuthResult, ShvaEMV.clsPinPad pinpad, ShvaEMV.clsGlobal globalObj)
         {
             this.AshAuthResult = AshAuthResult;
@@ -11072,54 +11072,54 @@ namespace ShvaEMV
             this.globalObj = globalObj;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class AshEndRequest
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="AshEnd", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "AshEnd", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.AshEndRequestBody Body;
-        
+
         public AshEndRequest()
         {
         }
-        
+
         public AshEndRequest(ShvaEMV.AshEndRequestBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class AshEndRequestBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
         public string MerchantNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string UserName;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Password;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.clsInput inputObj;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.clsPinPad pinpad;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.clsGlobal globalObj;
-        
+
         public AshEndRequestBody()
         {
         }
-        
+
         public AshEndRequestBody(string MerchantNumber, string UserName, string Password, ShvaEMV.clsInput inputObj, ShvaEMV.clsPinPad pinpad, ShvaEMV.clsGlobal globalObj)
         {
             this.MerchantNumber = MerchantNumber;
@@ -11130,45 +11130,45 @@ namespace ShvaEMV
             this.globalObj = globalObj;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class AshEndResponse
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="AshEndResponse", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "AshEndResponse", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.AshEndResponseBody Body;
-        
+
         public AshEndResponse()
         {
         }
-        
+
         public AshEndResponse(ShvaEMV.AshEndResponseBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class AshEndResponseBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
         public int AshEndResult;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.clsPinPad pinpad;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.clsGlobal globalObj;
-        
+
         public AshEndResponseBody()
         {
         }
-        
+
         public AshEndResponseBody(int AshEndResult, ShvaEMV.clsPinPad pinpad, ShvaEMV.clsGlobal globalObj)
         {
             this.AshEndResult = AshEndResult;
@@ -11176,54 +11176,54 @@ namespace ShvaEMV
             this.globalObj = globalObj;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class AshDccRequest
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="AshDcc", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "AshDcc", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.AshDccRequestBody Body;
-        
+
         public AshDccRequest()
         {
         }
-        
+
         public AshDccRequest(ShvaEMV.AshDccRequestBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class AshDccRequestBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
         public string MerchantNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string UserName;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Password;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public ShvaEMV.clsInput inputObj;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public ShvaEMV.clsPinPad pinpad;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public ShvaEMV.clsGlobal globalObj;
-        
+
         public AshDccRequestBody()
         {
         }
-        
+
         public AshDccRequestBody(string MerchantNumber, string UserName, string Password, ShvaEMV.clsInput inputObj, ShvaEMV.clsPinPad pinpad, ShvaEMV.clsGlobal globalObj)
         {
             this.MerchantNumber = MerchantNumber;
@@ -11234,45 +11234,45 @@ namespace ShvaEMV
             this.globalObj = globalObj;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class AshDccResponse
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="AshDccResponse", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "AshDccResponse", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.AshDccResponseBody Body;
-        
+
         public AshDccResponse()
         {
         }
-        
+
         public AshDccResponse(ShvaEMV.AshDccResponseBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class AshDccResponseBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
         public int AshDccResult;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public ShvaEMV.clsPinPad pinpad;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public ShvaEMV.clsGlobal globalObj;
-        
+
         public AshDccResponseBody()
         {
         }
-        
+
         public AshDccResponseBody(int AshDccResult, ShvaEMV.clsPinPad pinpad, ShvaEMV.clsGlobal globalObj)
         {
             this.AshDccResult = AshDccResult;
@@ -11280,57 +11280,57 @@ namespace ShvaEMV
             this.globalObj = globalObj;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class DeviceInitRequest
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="DeviceInit", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "DeviceInit", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.DeviceInitRequestBody Body;
-        
+
         public DeviceInitRequest()
         {
         }
-        
+
         public DeviceInitRequest(ShvaEMV.DeviceInitRequestBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class DeviceInitRequestBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
         public string MerchantNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string UserName;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Password;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public string CONFIG;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public string BINTABLE;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public string CAKEY;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 6)]
         public string ERROR;
-        
+
         public DeviceInitRequestBody()
         {
         }
-        
+
         public DeviceInitRequestBody(string MerchantNumber, string UserName, string Password, string CONFIG, string BINTABLE, string CAKEY, string ERROR)
         {
             this.MerchantNumber = MerchantNumber;
@@ -11342,51 +11342,51 @@ namespace ShvaEMV
             this.ERROR = ERROR;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class DeviceInitResponse
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="DeviceInitResponse", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "DeviceInitResponse", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.DeviceInitResponseBody Body;
-        
+
         public DeviceInitResponse()
         {
         }
-        
+
         public DeviceInitResponse(ShvaEMV.DeviceInitResponseBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class DeviceInitResponseBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
         public int DeviceInitResult;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string CONFIG;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string BINTABLE;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public string CAKEY;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public string ERROR;
-        
+
         public DeviceInitResponseBody()
         {
         }
-        
+
         public DeviceInitResponseBody(int DeviceInitResult, string CONFIG, string BINTABLE, string CAKEY, string ERROR)
         {
             this.DeviceInitResult = DeviceInitResult;
@@ -11396,54 +11396,54 @@ namespace ShvaEMV
             this.ERROR = ERROR;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class DeviceDownloadRequest
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="DeviceDownload", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "DeviceDownload", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.DeviceDownloadRequestBody Body;
-        
+
         public DeviceDownloadRequest()
         {
         }
-        
+
         public DeviceDownloadRequest(ShvaEMV.DeviceDownloadRequestBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class DeviceDownloadRequestBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
         public string MerchantNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string UserName;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Password;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public byte[] VX;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=4)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 4)]
         public byte[] Evo;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 5)]
         public string ERROR;
-        
+
         public DeviceDownloadRequestBody()
         {
         }
-        
+
         public DeviceDownloadRequestBody(string MerchantNumber, string UserName, string Password, byte[] VX, byte[] Evo, string ERROR)
         {
             this.MerchantNumber = MerchantNumber;
@@ -11454,48 +11454,48 @@ namespace ShvaEMV
             this.ERROR = ERROR;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class DeviceDownloadResponse
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="DeviceDownloadResponse", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "DeviceDownloadResponse", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.DeviceDownloadResponseBody Body;
-        
+
         public DeviceDownloadResponse()
         {
         }
-        
+
         public DeviceDownloadResponse(ShvaEMV.DeviceDownloadResponseBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class DeviceDownloadResponseBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
         public int DeviceDownloadResult;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public byte[] VX;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public byte[] Evo;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 3)]
         public string ERROR;
-        
+
         public DeviceDownloadResponseBody()
         {
         }
-        
+
         public DeviceDownloadResponseBody(int DeviceDownloadResult, byte[] VX, byte[] Evo, string ERROR)
         {
             this.DeviceDownloadResult = DeviceDownloadResult;
@@ -11504,45 +11504,45 @@ namespace ShvaEMV
             this.ERROR = ERROR;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class GetTerminalDataRequest
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetTerminalData", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "GetTerminalData", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.GetTerminalDataRequestBody Body;
-        
+
         public GetTerminalDataRequest()
         {
         }
-        
+
         public GetTerminalDataRequest(ShvaEMV.GetTerminalDataRequestBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class GetTerminalDataRequestBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 0)]
         public string MerchantNumber;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string UserName;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 2)]
         public string Password;
-        
+
         public GetTerminalDataRequestBody()
         {
         }
-        
+
         public GetTerminalDataRequestBody(string MerchantNumber, string UserName, string Password)
         {
             this.MerchantNumber = MerchantNumber;
@@ -11550,98 +11550,98 @@ namespace ShvaEMV
             this.Password = Password;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped = false)]
     public partial class GetTerminalDataResponse
     {
-        
-        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetTerminalDataResponse", Namespace="http://shva.co.il/xmlwebservices/", Order=0)]
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Name = "GetTerminalDataResponse", Namespace = "http://shva.co.il/xmlwebservices/", Order = 0)]
         public ShvaEMV.GetTerminalDataResponseBody Body;
-        
+
         public GetTerminalDataResponse()
         {
         }
-        
+
         public GetTerminalDataResponse(ShvaEMV.GetTerminalDataResponseBody Body)
         {
             this.Body = Body;
         }
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
-    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://shva.co.il/xmlwebservices/")]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace = "http://shva.co.il/xmlwebservices/")]
     public partial class GetTerminalDataResponseBody
     {
-        
-        [System.Runtime.Serialization.DataMemberAttribute(Order=0)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(Order = 0)]
         public int GetTerminalDataResult;
-        
-        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue = false, Order = 1)]
         public string TermDataXML;
-        
+
         public GetTerminalDataResponseBody()
         {
         }
-        
+
         public GetTerminalDataResponseBody(int GetTerminalDataResult, string TermDataXML)
         {
             this.GetTerminalDataResult = GetTerminalDataResult;
             this.TermDataXML = TermDataXML;
         }
     }
-    
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     public interface EmvRequestSoapChannel : ShvaEMV.EmvRequestSoap, System.ServiceModel.IClientChannel
     {
     }
-    
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.2")]
     public partial class EmvRequestSoapClient : System.ServiceModel.ClientBase<ShvaEMV.EmvRequestSoap>, ShvaEMV.EmvRequestSoap
     {
-        
+
         /// <summary>
         /// Implement this partial method to configure the service endpoint.
         /// </summary>
         /// <param name="serviceEndpoint">The endpoint to configure</param>
         /// <param name="clientCredentials">The client credentials</param>
         static partial void ConfigureEndpoint(System.ServiceModel.Description.ServiceEndpoint serviceEndpoint, System.ServiceModel.Description.ClientCredentials clientCredentials);
-        
-        public EmvRequestSoapClient(EndpointConfiguration endpointConfiguration) : 
+
+        public EmvRequestSoapClient(EndpointConfiguration endpointConfiguration) :
                 base(EmvRequestSoapClient.GetBindingForEndpoint(endpointConfiguration), EmvRequestSoapClient.GetEndpointAddress(endpointConfiguration))
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
-        
-        public EmvRequestSoapClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
+
+        public EmvRequestSoapClient(EndpointConfiguration endpointConfiguration, string remoteAddress) :
                 base(EmvRequestSoapClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
-        
-        public EmvRequestSoapClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
+
+        public EmvRequestSoapClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) :
                 base(EmvRequestSoapClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
-        
-        public EmvRequestSoapClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+
+        public EmvRequestSoapClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) :
                 base(binding, remoteAddress)
         {
         }
-        
+
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<ShvaEMV.AshFullResponse> ShvaEMV.EmvRequestSoap.AshFullAsync(ShvaEMV.AshFullRequest request)
         {
             return base.Channel.AshFullAsync(request);
         }
-        
+
         public System.Threading.Tasks.Task<ShvaEMV.AshFullResponse> AshFullAsync(string MerchantNumber, string UserName, string Password, ShvaEMV.clsInput inputObj, ShvaEMV.clsPinPad pinpad, ShvaEMV.clsGlobal globalObj)
         {
             ShvaEMV.AshFullRequest inValue = new ShvaEMV.AshFullRequest();
@@ -11654,13 +11654,13 @@ namespace ShvaEMV
             inValue.Body.globalObj = globalObj;
             return ((ShvaEMV.EmvRequestSoap)(this)).AshFullAsync(inValue);
         }
-        
+
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<ShvaEMV.GetVariousParamsInfoResponse> ShvaEMV.EmvRequestSoap.GetVariousParamsInfoAsync(ShvaEMV.GetVariousParamsInfoRequest request)
         {
             return base.Channel.GetVariousParamsInfoAsync(request);
         }
-        
+
         public System.Threading.Tasks.Task<ShvaEMV.GetVariousParamsInfoResponse> GetVariousParamsInfoAsync(string MerchantNumber, string UserName, string Password, string ppstatus, string IsrParam, string TourParam)
         {
             ShvaEMV.GetVariousParamsInfoRequest inValue = new ShvaEMV.GetVariousParamsInfoRequest();
@@ -11673,13 +11673,13 @@ namespace ShvaEMV
             inValue.Body.TourParam = TourParam;
             return ((ShvaEMV.EmvRequestSoap)(this)).GetVariousParamsInfoAsync(inValue);
         }
-        
+
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<ShvaEMV.AshGenResponse> ShvaEMV.EmvRequestSoap.AshGenAsync(ShvaEMV.AshGenRequest request)
         {
             return base.Channel.AshGenAsync(request);
         }
-        
+
         public System.Threading.Tasks.Task<ShvaEMV.AshGenResponse> AshGenAsync(string MerchantNumber, string UserName, string Password, ShvaEMV.clsInput inputObj, ShvaEMV.clsGlobal globalObj)
         {
             ShvaEMV.AshGenRequest inValue = new ShvaEMV.AshGenRequest();
@@ -11691,13 +11691,13 @@ namespace ShvaEMV
             inValue.Body.globalObj = globalObj;
             return ((ShvaEMV.EmvRequestSoap)(this)).AshGenAsync(inValue);
         }
-        
+
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<ShvaEMV.AshGenXMLResponse> ShvaEMV.EmvRequestSoap.AshGenXMLAsync(ShvaEMV.AshGenXMLRequest request)
         {
             return base.Channel.AshGenXMLAsync(request);
         }
-        
+
         public System.Threading.Tasks.Task<ShvaEMV.AshGenXMLResponse> AshGenXMLAsync(string MerchantNumber, string UserName, string Password, string xmlStr)
         {
             ShvaEMV.AshGenXMLRequest inValue = new ShvaEMV.AshGenXMLRequest();
@@ -11708,13 +11708,13 @@ namespace ShvaEMV
             inValue.Body.xmlStr = xmlStr;
             return ((ShvaEMV.EmvRequestSoap)(this)).AshGenXMLAsync(inValue);
         }
-        
+
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<ShvaEMV.TransEMVResponse> ShvaEMV.EmvRequestSoap.TransEMVAsync(ShvaEMV.TransEMVRequest request)
         {
             return base.Channel.TransEMVAsync(request);
         }
-        
+
         public System.Threading.Tasks.Task<ShvaEMV.TransEMVResponse> TransEMVAsync(string MerchantNumber, string UserName, string Password, string DATA)
         {
             ShvaEMV.TransEMVRequest inValue = new ShvaEMV.TransEMVRequest();
@@ -11725,13 +11725,13 @@ namespace ShvaEMV
             inValue.Body.DATA = DATA;
             return ((ShvaEMV.EmvRequestSoap)(this)).TransEMVAsync(inValue);
         }
-        
+
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<ShvaEMV.GetTransEMVInformationResponse> ShvaEMV.EmvRequestSoap.GetTransEMVInformationAsync(ShvaEMV.GetTransEMVInformationRequest request)
         {
             return base.Channel.GetTransEMVInformationAsync(request);
         }
-        
+
         public System.Threading.Tasks.Task<ShvaEMV.GetTransEMVInformationResponse> GetTransEMVInformationAsync(string MerchantNumber, string UserName, string Password, string TransmitDate_yyyyMMdd, int SequenceNumTrans)
         {
             ShvaEMV.GetTransEMVInformationRequest inValue = new ShvaEMV.GetTransEMVInformationRequest();
@@ -11743,13 +11743,13 @@ namespace ShvaEMV
             inValue.Body.SequenceNumTrans = SequenceNumTrans;
             return ((ShvaEMV.EmvRequestSoap)(this)).GetTransEMVInformationAsync(inValue);
         }
-        
+
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<ShvaEMV.ChangePasswordResponse> ShvaEMV.EmvRequestSoap.ChangePasswordAsync(ShvaEMV.ChangePasswordRequest request)
         {
             return base.Channel.ChangePasswordAsync(request);
         }
-        
+
         public System.Threading.Tasks.Task<ShvaEMV.ChangePasswordResponse> ChangePasswordAsync(string MerchantNumber, string UserName, string Password, string NewPassword)
         {
             ShvaEMV.ChangePasswordRequest inValue = new ShvaEMV.ChangePasswordRequest();
@@ -11760,13 +11760,13 @@ namespace ShvaEMV
             inValue.Body.NewPassword = NewPassword;
             return ((ShvaEMV.EmvRequestSoap)(this)).ChangePasswordAsync(inValue);
         }
-        
+
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<ShvaEMV.AshStartResponse> ShvaEMV.EmvRequestSoap.AshStartAsync(ShvaEMV.AshStartRequest request)
         {
             return base.Channel.AshStartAsync(request);
         }
-        
+
         public System.Threading.Tasks.Task<ShvaEMV.AshStartResponse> AshStartAsync(string MerchantNumber, string UserName, string Password, ShvaEMV.clsInput inputObj, ShvaEMV.clsPinPad pinpad, ShvaEMV.clsGlobal globalObj)
         {
             ShvaEMV.AshStartRequest inValue = new ShvaEMV.AshStartRequest();
@@ -11779,13 +11779,13 @@ namespace ShvaEMV
             inValue.Body.globalObj = globalObj;
             return ((ShvaEMV.EmvRequestSoap)(this)).AshStartAsync(inValue);
         }
-        
+
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<ShvaEMV.AshAuthResponse> ShvaEMV.EmvRequestSoap.AshAuthAsync(ShvaEMV.AshAuthRequest request)
         {
             return base.Channel.AshAuthAsync(request);
         }
-        
+
         public System.Threading.Tasks.Task<ShvaEMV.AshAuthResponse> AshAuthAsync(string MerchantNumber, string UserName, string Password, ShvaEMV.clsInput inputObj, ShvaEMV.clsPinPad pinpad, ShvaEMV.clsGlobal globalObj)
         {
             ShvaEMV.AshAuthRequest inValue = new ShvaEMV.AshAuthRequest();
@@ -11798,13 +11798,13 @@ namespace ShvaEMV
             inValue.Body.globalObj = globalObj;
             return ((ShvaEMV.EmvRequestSoap)(this)).AshAuthAsync(inValue);
         }
-        
+
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<ShvaEMV.AshEndResponse> ShvaEMV.EmvRequestSoap.AshEndAsync(ShvaEMV.AshEndRequest request)
         {
             return base.Channel.AshEndAsync(request);
         }
-        
+
         public System.Threading.Tasks.Task<ShvaEMV.AshEndResponse> AshEndAsync(string MerchantNumber, string UserName, string Password, ShvaEMV.clsInput inputObj, ShvaEMV.clsPinPad pinpad, ShvaEMV.clsGlobal globalObj)
         {
             ShvaEMV.AshEndRequest inValue = new ShvaEMV.AshEndRequest();
@@ -11817,13 +11817,13 @@ namespace ShvaEMV
             inValue.Body.globalObj = globalObj;
             return ((ShvaEMV.EmvRequestSoap)(this)).AshEndAsync(inValue);
         }
-        
+
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<ShvaEMV.AshDccResponse> ShvaEMV.EmvRequestSoap.AshDccAsync(ShvaEMV.AshDccRequest request)
         {
             return base.Channel.AshDccAsync(request);
         }
-        
+
         public System.Threading.Tasks.Task<ShvaEMV.AshDccResponse> AshDccAsync(string MerchantNumber, string UserName, string Password, ShvaEMV.clsInput inputObj, ShvaEMV.clsPinPad pinpad, ShvaEMV.clsGlobal globalObj)
         {
             ShvaEMV.AshDccRequest inValue = new ShvaEMV.AshDccRequest();
@@ -11836,13 +11836,13 @@ namespace ShvaEMV
             inValue.Body.globalObj = globalObj;
             return ((ShvaEMV.EmvRequestSoap)(this)).AshDccAsync(inValue);
         }
-        
+
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<ShvaEMV.DeviceInitResponse> ShvaEMV.EmvRequestSoap.DeviceInitAsync(ShvaEMV.DeviceInitRequest request)
         {
             return base.Channel.DeviceInitAsync(request);
         }
-        
+
         public System.Threading.Tasks.Task<ShvaEMV.DeviceInitResponse> DeviceInitAsync(string MerchantNumber, string UserName, string Password, string CONFIG, string BINTABLE, string CAKEY, string ERROR)
         {
             ShvaEMV.DeviceInitRequest inValue = new ShvaEMV.DeviceInitRequest();
@@ -11856,13 +11856,13 @@ namespace ShvaEMV
             inValue.Body.ERROR = ERROR;
             return ((ShvaEMV.EmvRequestSoap)(this)).DeviceInitAsync(inValue);
         }
-        
+
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<ShvaEMV.DeviceDownloadResponse> ShvaEMV.EmvRequestSoap.DeviceDownloadAsync(ShvaEMV.DeviceDownloadRequest request)
         {
             return base.Channel.DeviceDownloadAsync(request);
         }
-        
+
         public System.Threading.Tasks.Task<ShvaEMV.DeviceDownloadResponse> DeviceDownloadAsync(string MerchantNumber, string UserName, string Password, byte[] VX, byte[] Evo, string ERROR)
         {
             ShvaEMV.DeviceDownloadRequest inValue = new ShvaEMV.DeviceDownloadRequest();
@@ -11875,13 +11875,13 @@ namespace ShvaEMV
             inValue.Body.ERROR = ERROR;
             return ((ShvaEMV.EmvRequestSoap)(this)).DeviceDownloadAsync(inValue);
         }
-        
+
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
         System.Threading.Tasks.Task<ShvaEMV.GetTerminalDataResponse> ShvaEMV.EmvRequestSoap.GetTerminalDataAsync(ShvaEMV.GetTerminalDataRequest request)
         {
             return base.Channel.GetTerminalDataAsync(request);
         }
-        
+
         public System.Threading.Tasks.Task<ShvaEMV.GetTerminalDataResponse> GetTerminalDataAsync(string MerchantNumber, string UserName, string Password)
         {
             ShvaEMV.GetTerminalDataRequest inValue = new ShvaEMV.GetTerminalDataRequest();
@@ -11891,17 +11891,17 @@ namespace ShvaEMV
             inValue.Body.Password = Password;
             return ((ShvaEMV.EmvRequestSoap)(this)).GetTerminalDataAsync(inValue);
         }
-        
+
         public virtual System.Threading.Tasks.Task OpenAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
         }
-        
+
         public virtual System.Threading.Tasks.Task CloseAsync()
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginClose(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndClose));
         }
-        
+
         private static System.ServiceModel.Channels.Binding GetBindingForEndpoint(EndpointConfiguration endpointConfiguration)
         {
             if ((endpointConfiguration == EndpointConfiguration.EmvRequestSoap))
@@ -11929,7 +11929,7 @@ namespace ShvaEMV
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }
-        
+
         private static System.ServiceModel.EndpointAddress GetEndpointAddress(EndpointConfiguration endpointConfiguration)
         {
             if ((endpointConfiguration == EndpointConfiguration.EmvRequestSoap))
@@ -11942,12 +11942,12 @@ namespace ShvaEMV
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }
-        
+
         public enum EndpointConfiguration
         {
-            
+
             EmvRequestSoap,
-            
+
             EmvRequestSoap12,
         }
     }

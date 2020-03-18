@@ -12,6 +12,22 @@
 
 3. Each commit should contain only logical related set of changes if possible. Even if you are working with one task, it have sense to split changes to several commits in case of large amount of changes.
 
+## General C# code convention
+
+1. Please do not use `out` and `ref` modifiers in your code parameters.
+
+2. Please do not use string and numeric values directly in code - use enums or constants. Please add description for each value.
+
+3. Try to do not update object which is passed as parameter.
+
+4. Please try to set comments, at least for public methods.
+
+5. Please do not use `string.Format`, use string interpolation.
+
+6. Please use comment in English.
+
+7. Please do not use `double` for money values - use `decimal`.
+
 ## Code style
 
 Projects used Stylecop code style analyzers. Please follow refactoring suggestions ("show potential fixes" context menu in Visual Studio). _Note: build should not contain any warnings!_ (at least projects which you working on). Please take into account, that in nearest future all workings will be converted to errors.

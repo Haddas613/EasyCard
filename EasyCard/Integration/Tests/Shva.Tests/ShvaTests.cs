@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Options;
+using Shva.Configuration;
 using Shva.Tests.Fixtures;
 using Shva.Tests.MockSetups;
 using System;
@@ -19,12 +21,10 @@ namespace Shva.Tests
         [Fact]
         public void Test()
         {
-            var clientMockSetup = new WebApiClientMockSetup();
-            var processor = new ShvaProcessor(clientMockSetup.MockObj.Object, shvaFixture.ShvaSettings, null);//TODO: add ILogger mock
-
+            var webApiClient = new WebApiClientMockSetup();
+            var processor = new ShvaProcessor(webApiClient.MockObj.Object, Options.Create<ShvaGlobalSettings>(shvaFixture.ShvaSettings), shvaFixture.Logger);
             
             //processor.CreateTransaction(...);
-
         }
     }
 }

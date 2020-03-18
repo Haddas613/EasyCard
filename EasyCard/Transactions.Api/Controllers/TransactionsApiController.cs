@@ -15,6 +15,7 @@ using Shared.Api.Models.Enums;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
+using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Services;
 using Transactions.Business.Entities;
@@ -30,14 +31,14 @@ namespace Transactions.Api.Controllers
     {
         private readonly ITransactionsService transactionsService;
         private readonly IMapper mapper;
-        private readonly IKeyValueStorage<CreditCardToken> keyValueStorage;
+        private readonly IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage;
         private readonly IAggregatorResolver aggregatorResolver;
         private readonly IProcessorResolver processorResolver;
 
         // TODO: service client
         private readonly ITerminalsService terminalsService;
 
-        public TransactionsApiController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardToken> keyValueStorage, IMapper mapper, IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver)
+        public TransactionsApiController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper, IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;

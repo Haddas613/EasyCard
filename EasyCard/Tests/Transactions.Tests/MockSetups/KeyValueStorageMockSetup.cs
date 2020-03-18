@@ -4,16 +4,17 @@ using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Transactions.Api.Models.Tokens;
 
 namespace Transactions.Tests.MockSetups
 {
     public class KeyValueStorageMockSetup
     {
-        public Mock<IKeyValueStorage<CreditCardToken>> MockObj { get; set; }
+        public Mock<IKeyValueStorage<CreditCardTokenKeyVault>> MockObj { get; set; }
 
         public KeyValueStorageMockSetup(bool useDefaultSetup = true)
         {
-            MockObj = new Mock<IKeyValueStorage<CreditCardToken>>();
+            MockObj = new Mock<IKeyValueStorage<CreditCardTokenKeyVault>>();
 
             if (useDefaultSetup)
             {

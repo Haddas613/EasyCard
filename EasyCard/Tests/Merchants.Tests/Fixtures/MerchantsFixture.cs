@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Merchants.Api.Infrastructure.Mapping;
+using Merchants.Api.Mapping;
 using Merchants.Business.Data;
 using Merchants.Business.Services;
 using Microsoft.EntityFrameworkCore;

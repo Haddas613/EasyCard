@@ -12,7 +12,9 @@ namespace IdentityServer.Security.Auditing
 
         Task RegisterForgotPassword(string email);
 
-        Task RegisterSetPassword(string email);
+        Task RegisterSetPassword(ApplicationUser user);
+
+        Task RegisterResetPassword(ApplicationUser user);
 
         Task RegisterLogin(ApplicationUser user);
 

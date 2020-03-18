@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shared.Api.Models.Enums
+namespace Shva.Models
 {
-    public enum ParamJEnum
+    public enum ShvaParamJEnum
     {
         Check = 2,
         J5Deal = 5,

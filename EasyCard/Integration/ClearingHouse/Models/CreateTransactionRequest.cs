@@ -52,5 +52,11 @@ namespace ClearingHouse.Models
 
         [DataMember(Name = "cardNotPresent")]
         public bool? CardNotPresent { get; set; }
+
+        /// <summary>
+        /// Gets or Sets EasyCard terminal
+        /// </summary>
+        [DataMember(Name = "easyCardTerminalReference")]
+        public string EasyCardTerminalReference { get; set; }
     }
 }

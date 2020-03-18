@@ -31,6 +31,9 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
+                    b.Property<string>("CardBin")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CardExpiration")
                         .HasColumnType("varchar(5)")
                         .HasMaxLength(5)
@@ -86,6 +89,11 @@ namespace Transactions.Business.Migrations
                     b.Property<long?>("AggregatorID")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("AggregatorTerminalID")
+                        .HasColumnType("varchar(20)")
+                        .HasMaxLength(20)
+                        .IsUnicode(false);
+
                     b.Property<long?>("BillingOrderID")
                         .HasColumnType("bigint");
 
@@ -122,6 +130,11 @@ namespace Transactions.Business.Migrations
                     b.Property<long?>("ProcessorID")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("ProcessorTerminalID")
+                        .HasColumnType("varchar(20)")
+                        .HasMaxLength(20)
+                        .IsUnicode(false);
+
                     b.Property<int?>("RejectionReason")
                         .HasColumnType("int");
 
@@ -146,8 +159,8 @@ namespace Transactions.Business.Migrations
                     b.Property<DateTime?>("TransactionTimestamp")
                         .HasColumnType("datetime2");
 
-                    b.Property<short>("TransactionType")
-                        .HasColumnType("smallint");
+                    b.Property<int>("TransactionType")
+                        .HasColumnType("int");
 
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()
@@ -205,7 +218,7 @@ namespace Transactions.Business.Migrations
                             b1.Property<string>("CardOwnerName")
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("CardOwnerNationalId")
+                            b1.Property<string>("CardOwnerNationalID")
                                 .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("CardToken")
@@ -213,6 +226,9 @@ namespace Transactions.Business.Migrations
 
                             b1.Property<string>("CardVendor")
                                 .HasColumnType("nvarchar(max)");
+
+                            b1.Property<bool?>("IsTourist")
+                                .HasColumnType("bit");
 
                             b1.HasKey("PaymentTransactionID");
 

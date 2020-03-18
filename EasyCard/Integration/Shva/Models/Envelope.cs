@@ -27,6 +27,10 @@ namespace Shva.Models
     {
         [XmlElement("AshStartResponse", Type = typeof(AshStartResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         [XmlElement("AshStart", Type = typeof(AshStartRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        [XmlElement("AshEndResponse", Type = typeof(AshEndResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        [XmlElement("AshEnd", Type = typeof(AshEndRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        [XmlElement("AshAuthRespons", Type = typeof(AshAuthResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        [XmlElement("AshAuth", Type = typeof(AshAuthRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         public object Content { get; set; }
     }
 }

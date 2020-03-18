@@ -1,11 +1,9 @@
 ﻿using Shared.Business;
 using Shared.Helpers;
-using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Transactions.Shared.Enums;
-using TransactionTypeEnum = Shared.Integration.Models.TransactionTypeEnum;
 
 namespace Transactions.Business.Entities
 {
@@ -17,6 +15,10 @@ namespace Transactions.Business.Entities
         /// Reference to first installment or to original transaction in case of refund
         /// </summary>
         public long? InitialTransactionID { get; set; }
+
+        public string AggregatorTerminalID { get; set; }
+
+        public string ProcessorTerminalID { get; set; }
 
         /// <summary>
         /// Individual counter per terminal
@@ -70,7 +72,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Number Of Installments
         /// </summary>
-        public int NumberOfInstallments { get; set; }
+        public int NumberOfPayments { get; set; }
 
         /// <summary>
         /// Current installment

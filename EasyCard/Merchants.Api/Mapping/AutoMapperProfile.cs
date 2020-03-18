@@ -10,7 +10,7 @@ using Merchants.Business.Entities.Terminal;
 using System;
 using System.Collections.Generic;
 
-namespace Merchants.Api.Infrastructure.Mapping
+namespace Merchants.Api.Mapping
 {
     public class AutoMapperProfile : Profile
     {

@@ -14,30 +14,25 @@ namespace Shared.Helpers
 {
     public class WebApiClient : IWebApiClient, IDisposable
     {
-        private HttpClient httpClient;
-
-        public HttpClient HttpClient
-        {
-            get { return httpClient; }
-        }
+        public HttpClient HttpClient { get; private set; }
 
         public WebApiClient()
         {
             var hadler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip };
             hadler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; }; // TODO: this can be used only during dev cycle
 
-            httpClient = new HttpClient(hadler);
+            HttpClient = new HttpClient(hadler);
 
-            httpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("gzip"));
-            httpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("defalte"));
+            HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("gzip"));
+            HttpClient.DefaultRequestHeaders.AcceptEncoding.Add(StringWithQualityHeaderValue.Parse("defalte"));
         }
 
         public void Dispose()
         {
-            if (httpClient != null)
+            if (HttpClient != null)
             {
-                httpClient.Dispose();
-                httpClient = null;
+                HttpClient.Dispose();
+                HttpClient = null;
             }
         }
 
@@ -55,7 +50,7 @@ namespace Shared.Helpers
                 }
             }
 
-            HttpResponseMessage response = await httpClient.SendAsync(request);
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
             var res = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
@@ -101,7 +96,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, json);
 
-            HttpResponseMessage response = await httpClient.SendAsync(request);
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
 
@@ -151,7 +146,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, json);
 
-            HttpResponseMessage response = await httpClient.SendAsync(request);
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
 
@@ -201,7 +196,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, xml);
 
-            HttpResponseMessage response = await httpClient.SendAsync(request);
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
 
@@ -249,7 +244,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, payload);
 
-            HttpResponseMessage response = await httpClient.SendAsync(request);
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
 
@@ -297,7 +292,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, JsonConvert.SerializeObject(payload));
 
-            HttpResponseMessage response = await httpClient.SendAsync(request);
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
 
@@ -343,7 +338,7 @@ namespace Shared.Helpers
 
             onRequest?.Invoke(url, string.Empty);
 
-            var response = await httpClient.SendAsync(request);
+            var response = await HttpClient.SendAsync(request);
 
             onResponse?.Invoke(string.Empty, response.StatusCode, response.Headers);
 

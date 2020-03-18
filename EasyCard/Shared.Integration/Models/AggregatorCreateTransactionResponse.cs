@@ -12,5 +12,9 @@ namespace Shared.Integration.Models
         /// TODO: error codes
         /// </summary>
         public string ErrorMessage { get; set; }
+
+        public string AggregatorTransactionID { get; set; }
+
+        public string ConcurrencyToken { get; set; }
     }
 }

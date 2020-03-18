@@ -4,7 +4,17 @@
         <name>Transactions.Api</name>
     </assembly>
     <members>
-        <member name="P:Transactions.Api.Models.Transactions.TokenRequest.CardNumber">
+        <member name="T:Transactions.Api.Models.Tokens.CreditCardTokenKeyVault">
+            <summary>
+            Entity to store in KeyVault
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.TokenRequest.Cvv">
+            <summary>
+            cvv presense should be validated according business settings
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.TokenRequest.CardNumber">
             <summary>
             Visa and Visa Electron: 13 or 16
             Mastercard: 16
