@@ -1,4 +1,6 @@
-﻿using Shared.Helpers;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Shared.Helpers;
 using Shared.Integration.Models;
 using Shva.Configuration;
 using System;
@@ -20,8 +22,8 @@ namespace Shva.Tests.Fixtures
             ShvaSettings = new ShvaSettings { };
             ShvaSettings.BaseUrl = "";
 
-         
-            ExternalPaymentTransactionRequest shvaReq = new ExternalPaymentTransactionRequest();
+
+            ProcessorTransactionRequest shvaReq = new ProcessorTransactionRequest();
             WebApiClient jh = new WebApiClient();
              ShvaProcessor shvaperoc = new ShvaProcessor(jh, ShvaSettings, null); 
 

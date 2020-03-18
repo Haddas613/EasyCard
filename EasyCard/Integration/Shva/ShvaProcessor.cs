@@ -102,10 +102,10 @@ namespace Shva
         }
 
 
-        public async Task<ExternalPaymentTransactionResponse> ParamsUpdateTransaction(ShvaParameters updateParamRequest, string messageId, string
+        public async Task<ProcessorTransactionRequest> ParamsUpdateTransaction(ShvaParameters updateParamRequest, string messageId, string
             correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
         {
-            var res = new ExternalPaymentTransactionResponse();
+            var res = new ProcessorTransactionRequest();
             var updateParamsReq = new GetTerminalDataRequestBody();
             updateParamsReq.UserName = updateParamRequest.UserName;
             updateParamsReq.Password = updateParamRequest.Password;
@@ -120,7 +120,7 @@ namespace Shva
                 return null;
             }
 
-            res.ProcessorCode = getTerminalDataResultBody.GetTerminalDataResult;
+            res.Code = getTerminalDataResultBody.GetTerminalDataResult.ToString();
             return res;
         }
 
@@ -155,7 +155,7 @@ namespace Shva
         }
 
 
-        private static void InitInitObjRequest(ExternalPaymentTransactionRequest paymentTransactionRequest, AshStartRequestBody ashStartReq, ShvaParameters shvaParameters, out clsInput cls, out InitInputObjRequest initObjReq)
+        private static void InitInitObjRequest(ProcessorTransactionRequest paymentTransactionRequest, AshStartRequestBody ashStartReq, ShvaParameters shvaParameters, out clsInput cls, out InitInputObjRequest initObjReq)
         {
             ashStartReq.UserName = shvaParameters.UserName;
             ashStartReq.Password = shvaParameters.Password;
