@@ -180,7 +180,7 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.TransactionNumber)); // TODO: convert message
             }
 
-            return CreatedAtAction(nameof(CreateTransaction), new OperationResponse("ok", StatusEnum.Success, transaction.PaymentTransactionID));
+            return CreatedAtAction(nameof(CreateTransaction), new OperationResponse("ok", StatusEnum.Success, transaction.TransactionNumber));
         }
     }
 }
