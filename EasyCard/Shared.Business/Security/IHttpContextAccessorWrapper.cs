@@ -12,6 +12,6 @@ namespace Shared.Business.Security
 
         string GetIP();
 
-        HttpContext HttpContext { get; }
+        string GetCorrelationId();
     }
 }

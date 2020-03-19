@@ -35,8 +35,6 @@ namespace Transactions.Tests.Fixtures
         /// </summary>
         public string UserIp { get; set; }
 
-        public HttpContext HttpContext => throw new NotImplementedException();
-
         public HttpContextAccessorWrapperFixture()
         {
             UserClaims = new ClaimsPrincipal();
@@ -62,6 +60,11 @@ namespace Transactions.Tests.Fixtures
         public string GetIP()
         {
             return UserIp;
+        }
+
+        public string GetCorrelationId()
+        {
+            return Guid.NewGuid().ToString();
         }
     }
 }

@@ -73,7 +73,7 @@ namespace Transactions.Business.Services
                 OperationCode = operationCode.ToString(),
                 OperationDate = DateTime.UtcNow,
                 OperationDescription = opDescription,
-                CorrelationId = httpContextAccessor?.HttpContext?.TraceIdentifier,
+                CorrelationId = httpContextAccessor.GetCorrelationId(),
                 OperationMessage = message,
                 IntegrationMessageId = integrationMessageId
             };

@@ -28,5 +28,10 @@ namespace Shared.Business.Security
         {
             return httpContextAccessor.HttpContext.Connection?.RemoteIpAddress?.ToString();
         }
+
+        public string GetCorrelationId()
+        {
+            return HttpContext?.TraceIdentifier;
+        }
     }
 }
