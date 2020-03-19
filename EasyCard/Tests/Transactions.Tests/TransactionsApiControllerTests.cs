@@ -36,8 +36,8 @@ namespace Transactions.Tests
         [Order(1)]
         public async Task CreateToken_CreatesWhenModelIsCorrect()
         {
-            var (procResolverMock, aggrResolverMock, keyValueStorageMock)
-                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup().MockObj);
+            var (procResolverMock, aggrResolverMock, keyValueStorageMock, terminalSrvMock)
+                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup().MockObj, new TerminalsServiceMockSetup());
 
             var cardTokenController = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService,
                 keyValueStorageMock.Object, transactionsFixture.Mapper);
@@ -50,7 +50,7 @@ namespace Transactions.Tests
             await cardTokenController.CreateToken(tokenRequest); //To ensure that there is available token
 
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.Object, transactionsFixture.Mapper,
-                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, null);
+                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object);
 
             var existingToken = (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefaultAsync())
                 ?? throw new Exception("No existing token was found");
@@ -92,14 +92,14 @@ namespace Transactions.Tests
         [Order(2)]
         public async Task GetOneTransaction_ReturnsExistingTransaction()
         {
-            var (procResolverMock, aggrResolverMock, keyValueStorageMock)
-                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup().MockObj);
+            var (procResolverMock, aggrResolverMock, keyValueStorageMock, terminalSrvMock)
+                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup().MockObj, new TerminalsServiceMockSetup());
 
             var existingTransaction = await transactionsFixture.TransactionsContext.PaymentTransactions.FirstOrDefaultAsync()
                 ?? throw new Exception("No existing transactions found");
 
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.Object, transactionsFixture.Mapper,
-                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, null);
+                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object);
 
             var actionResult = await controller.GetTransaction(existingTransaction.PaymentTransactionID);
 
@@ -116,14 +116,14 @@ namespace Transactions.Tests
         [Order(3)]
         public async Task CreateTransaction_ReturnsErrorWhenTokenDoesNotExist()
         {
-            var (procResolverMock, aggrResolverMock, keyValueStorageMock)
-                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup(false).MockObj);
+            var (procResolverMock, aggrResolverMock, keyValueStorageMock, terminalSrvMock)
+                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup().MockObj, new TerminalsServiceMockSetup());
 
             var nonExistingKey = Guid.NewGuid().ToString();
             keyValueStorageMock.Setup(m => m.Get(nonExistingKey)).Returns(Task.FromResult<CreditCardTokenKeyVault>(null));
 
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.Object, transactionsFixture.Mapper,
-                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, null);
+                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object);
 
             var transactionRequest = new TransactionRequest
             {
