@@ -18,7 +18,6 @@ namespace Transactions.Tests.MockSetups
 
         public Mock<IQueryable<Terminal>> TerminalsListMock { get; }
 
-
         public Mock<ITerminalsService> MockObj { get; set; }
 
         public TerminalsServiceMockSetup(bool useDefaultSetup = true)

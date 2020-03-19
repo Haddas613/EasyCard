@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Business.Exceptions;
 using Shared.Helpers;
 using Shared.Integration;
 using Shared.Integration.Models;
@@ -58,7 +59,12 @@ namespace Transactions.Tests
             var transactionRequest = new TransactionRequest
             {
                 CardToken = existingToken.PublicKey,
-                TerminalID = existingToken.TerminalID
+                TerminalID = existingToken.TerminalID,
+                TransactionType = Shared.Enums.TransactionTypeEnum.RegularDeal,
+                Currency = CurrencyEnum.ILS,
+                TransactionAmount = 100,
+                InstallmentPaymentAmount = 1,
+                TotalAmount = 100
             };
 
             var actionResult = await controller.CreateTransaction(transactionRequest);
@@ -73,8 +79,6 @@ namespace Transactions.Tests
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
 
-            keyValueStorageMock.Verify(m => m.Save(responseData.EntityReference, It.IsAny<string>()), Times.Once);
-
             aggrResolverMock.ResolverMock.Verify(m => m.GetAggregator(It.IsAny<Terminal>()), Times.Once);
             aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>()), Times.Once);
             aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>()), Times.Once);
@@ -88,8 +92,31 @@ namespace Transactions.Tests
             Assert.True(historyEntries > 0);
         }
 
-        [Fact(DisplayName = "GetOneTransaction: Returns existing transaction")]
+        [Fact(DisplayName = "CreateTransaction: Returns error when token does not exist")]
         [Order(2)]
+        public async Task CreateTransaction_ReturnsErrorWhenTokenDoesNotExist()
+        {
+            var (procResolverMock, aggrResolverMock, keyValueStorageMock, terminalSrvMock)
+                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup().MockObj, new TerminalsServiceMockSetup());
+
+            var nonExistingKey = Guid.NewGuid().ToString();
+            keyValueStorageMock.Setup(m => m.Get(nonExistingKey)).Returns(Task.FromResult<CreditCardTokenKeyVault>(null));
+
+            var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.Object, transactionsFixture.Mapper,
+                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object);
+
+            var transactionRequest = new TransactionRequest
+            {
+                CardToken = nonExistingKey,
+                TerminalID = 0
+            };
+
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => controller.CreateTransaction(transactionRequest));
+            keyValueStorageMock.Verify(m => m.Get(nonExistingKey), Times.Once);
+        }
+
+        [Fact(DisplayName = "GetOneTransaction: Returns existing transaction")]
+        [Order(3)]
         public async Task GetOneTransaction_ReturnsExistingTransaction()
         {
             var (procResolverMock, aggrResolverMock, keyValueStorageMock, terminalSrvMock)
@@ -112,39 +139,31 @@ namespace Transactions.Tests
             Assert.Equal(responseData.PaymentTransactionID, existingTransaction.PaymentTransactionID);
         }
 
-        [Fact(DisplayName = "CreateTransaction: Returns error when token does not exist")]
-        [Order(3)]
-        public async Task CreateTransaction_ReturnsErrorWhenTokenDoesNotExist()
+        [Fact(DisplayName = "GetManyTransactions: Returns filtered collection")]
+        [Order(4)]
+        public async Task GetManyTransactions_ReturnsFilteredCollection()
         {
             var (procResolverMock, aggrResolverMock, keyValueStorageMock, terminalSrvMock)
                 = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup().MockObj, new TerminalsServiceMockSetup());
 
-            var nonExistingKey = Guid.NewGuid().ToString();
-            keyValueStorageMock.Setup(m => m.Get(nonExistingKey)).Returns(Task.FromResult<CreditCardTokenKeyVault>(null));
+            var existingTransaction = await transactionsFixture.TransactionsContext.PaymentTransactions.FirstOrDefaultAsync()
+                ?? throw new Exception("No existing transactions found");
 
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.Object, transactionsFixture.Mapper,
                 aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object);
 
-            var transactionRequest = new TransactionRequest
-            {
-                CardToken = nonExistingKey,
-                TerminalID = 0
-            };
+            var filter = new TransactionsFilter { TerminalID = existingTransaction.TerminalID };
 
-            var actionResult = await controller.CreateTransaction(transactionRequest);
+            var actionResult = await controller.GetTransactions(filter);
 
             var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
-            var responseData = response.Value as OperationResponse;
+            var responseData = response.Value as SummariesResponse<TransactionSummary>;
 
             Assert.NotNull(response);
-            Assert.NotEqual(201, response.StatusCode);
+            Assert.Equal(200, response.StatusCode);
             Assert.NotNull(responseData);
-            Assert.Null(responseData.EntityID);
-            Assert.Equal(StatusEnum.Error, responseData.Status);
-            Assert.NotNull(responseData.Message);
-
-            keyValueStorageMock.Verify(m => m.Get(nonExistingKey), Times.Once);
+            Assert.True(responseData.NumberOfRecords > 0);
+            Assert.True(responseData.Data.All(t => t.TerminalID == filter.TerminalID));
         }
-
     }
 }

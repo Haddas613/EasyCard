@@ -29,7 +29,11 @@ namespace Transactions.Tests.MockSetups
         private void Setup()
         {
             AggregatorMock.Setup(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>()))
-                .ReturnsAsync(new AggregatorCreateTransactionResponse())
+                .ReturnsAsync(new AggregatorCreateTransactionResponse { Success = true })
+                .Verifiable();
+
+            AggregatorMock.Setup(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>()))
+                .ReturnsAsync(new AggregatorCommitTransactionResponse { Success = true })
                 .Verifiable();
 
             ResolverMock.Setup(m => m.GetAggregator(It.IsAny<Terminal>()))

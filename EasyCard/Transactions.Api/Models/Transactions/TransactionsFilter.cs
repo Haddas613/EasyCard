@@ -8,6 +8,6 @@ namespace Transactions.Api.Models.Transactions
 {
     public class TransactionsFilter : FilterBase
     {
-        public long TerminalID { get; set; }
+        public long? TerminalID { get; set; }
     }
 }

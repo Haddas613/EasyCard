@@ -47,6 +47,10 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.DealDetails, s => s.MapFrom(src => src.DealDetails));
 
             CreateMap<PaymentTransaction, ProcessorTransactionRequest>();
+            CreateMap<AggregatorCreateTransactionResponse, PaymentTransaction>();
+            CreateMap<ProcessorTransactionResponse, PaymentTransaction>();
+            CreateMap<PaymentTransaction, AggregatorCommitTransactionRequest>();
+            CreateMap<AggregatorCommitTransactionResponse, PaymentTransaction>();
         }
     }
 }

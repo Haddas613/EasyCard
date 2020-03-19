@@ -1,6 +1,8 @@
 ﻿using Merchants.Business.Entities.Terminal;
 using Moq;
+using Shared.Integration;
 using Shared.Integration.ExternalSystems;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,6 +29,11 @@ namespace Transactions.Tests.MockSetups
 
         private void Setup()
         {
+            ProcessorMock.Setup(m => m.CreateTransaction(It.IsAny<ProcessorTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>(), 
+                It.IsAny<Func<IntegrationMessage, IntegrationMessage>>()))
+                .ReturnsAsync(new ProcessorTransactionResponse { Success = true })
+                .Verifiable();
+
             ResolverMock.Setup(m => m.GetProcessor(It.IsAny<Terminal>()))
                 .Returns(ProcessorMock.Object)
                 .Verifiable();
