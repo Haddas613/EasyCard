@@ -86,7 +86,7 @@ namespace Shared.Integration.Models
         public object InitialTransaction { get; set; }
 
         /// <summary>
-        /// To be used for credit or installments ?
+        /// To be used for credit or installments 
         /// </summary>
         public int NumberOfPayments { get; set; }
     }

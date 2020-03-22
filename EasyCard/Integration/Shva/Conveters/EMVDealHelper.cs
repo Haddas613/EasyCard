@@ -50,7 +50,6 @@ namespace Shva.Conveters
 
         public static ProcessorTransactionResponse GetProcessorTransactionResponse(this AshEndResponseBody resultAshEndBody)
         {
-            // TODO: please fill result codes
             var resCode = (AshEndResultEnum)resultAshEndBody.AshEndResult;
 
             if (resCode.IsSuccessful())
@@ -59,8 +58,8 @@ namespace Shva.Conveters
                 {
                     ShvaShovarNumber = resultAshEndBody.globalObj.receiptObj.voucherNumber.valueTag,
                     ShvaDealID = resultAshEndBody.globalObj.outputObj.tranRecord.valueTag,
-
-                    // TODO: AuthCode, AuthSolekNum ?
+                    AuthSolekNum = resultAshEndBody.globalObj.outputObj.authSolekNo.valueTag,
+                    AuthNum = resultAshEndBody.globalObj.outputObj.authManpikNo.valueTag,
                 };
 
                 return new ProcessorTransactionResponse() { ProcessorTransactionDetails = shvaDetails };
@@ -68,8 +67,8 @@ namespace Shva.Conveters
             else
             {
                 var errorCode = resCode.GetErrorCode();
-
-                return new ProcessorTransactionResponse(Messages.Failed, errorCode);
+                string errorCodeStr = resultAshEndBody.AshEndResult.ToString();
+                return new ProcessorTransactionResponse(Messages.Failed, errorCode,errorCodeStr);
             }
         }
 
@@ -100,15 +99,13 @@ namespace Shva.Conveters
                 {
                     //CVV
                     inputObj.cvv2 = req.CreditCardToken.Cvv;
-                    inputObj.clientInputPan = req.CreditCardToken.CardNumber; // TODO: how to use Urack2 ?
+                    inputObj.clientInputPan = req.CreditCardToken.CardNumber; // can be card number or track2 value for example 5100460000371892=21102010000024291000
                     inputObj.expirationDate = shvaExpDate;
 
-                    // TODO: how to get this ID ?
-                    //תעודת זהות
-                    //if (!string.IsNullOrWhiteSpace(req.Id))
-                    //{
-                    //    inputObj.id = req.Id;
-                    //}
+                    if (!string.IsNullOrWhiteSpace(req.CreditCardToken))
+                    {
+                        inputObj.id = req.Id;
+                    }
 
                     // TODO: describe this values
                     inputObj.amount = "1";
@@ -118,8 +115,7 @@ namespace Shva.Conveters
                 }
                 else
                 {
-                    // TODO: Please use comment in English
-                    //חיוב עסקת הוראת קבע אחרי אתחול
+                    //implement billing deal after initialization
                     inputObj.amount = req.TransactionAmount.ToShvaDecimalStr();
 
                     //inputObj.originalUid = req.InitialTransaction.OriginalUid; TODO: How to get this value ?

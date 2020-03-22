@@ -135,18 +135,18 @@ namespace Shva
         }
 
         /// <summary>
-        /// TODO: Is it transmission method? It will be executed per merchant?
+        /// TODO: Transmission method, It will be executed per merchant?
         /// </summary>
         /// <param name="transRequest"></param>
         /// <param name="messageId"></param>
         /// <param name="correlationId"></param>
         /// <param name="handleIntegrationMessage"></param>
         /// <returns></returns>
-        public async Task<ShvaTransmissionResponse> TransactTransaction(ShvaTransmissionRequest transRequest, string messageId, string
+        public async Task<ShvaTransmissionResponse> TransmissionTransaction(ShvaTransmissionRequest transRequest, string messageId, string
             correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
         {
             var res = new ShvaTransmissionResponse();
-            ShvaTerminalSettings shvaParameters = (ShvaTerminalSettings)transRequest.ProcessorSettings;
+            ShvaTerminalSettings shvaParameters = transRequest.ProcessorSettings;
             var tranEMV = new TransEMVRequestBody();
             tranEMV.UserName = shvaParameters.UserName;
             tranEMV.Password = shvaParameters.Password;

@@ -6,6 +6,8 @@ namespace Shva.Models
 {
     public enum AshEndResultEnum
     {
-        // TODO: please fill result codes
+        Success = 0,
+        SuccessJ5 = 777,
+        Unknown
     }
 }

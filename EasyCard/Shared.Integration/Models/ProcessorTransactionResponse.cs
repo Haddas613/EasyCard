@@ -21,11 +21,12 @@ namespace Shared.Integration.Models
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <param name="rejectionReasonEnum"></param>
-        public ProcessorTransactionResponse(string errorMessage, RejectionReasonEnum errorCode)
+        public ProcessorTransactionResponse(string errorMessage, RejectionReasonEnum errorCode, string errorCodeStr)
         {
             Success = false;
             ErrorMessage = errorMessage;
             RejectReasonCode = errorCode;
+            ErrorCode = errorCodeStr;
         }
 
         /// <summary>

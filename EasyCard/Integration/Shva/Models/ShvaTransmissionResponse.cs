@@ -22,11 +22,9 @@ namespace Shva.Models
 
         public bool Success { get; set; }
 
-        // TODO: decimal ?
-        public long TotalCreditTransSum { get; set; }
+        public decimal TotalCreditTransSum { get; set; }
 
-        // TODO: decimal ?
-        public long TotalDebitTransSum { get; set; }
+        public decimal TotalDebitTransSum { get; set; }
 
         // TODO: what s this fiels, how we can use this information?
         public string TotalXML { get; set; }

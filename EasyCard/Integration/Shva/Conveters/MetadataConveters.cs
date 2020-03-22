@@ -21,14 +21,14 @@ namespace Shva.Conveters
 
         public static string GetShvaExpDate(this CardExpiration cardExpiration)
         {
-            // TODO: validate conversion
-            return cardExpiration.ToString();
+            string cardExpMYY = cardExpiration.ToString();//MM/yy
+            string[] arrCardExpValues = cardExpMYY.Split('/');
+            return string.Format("{0}{1}", arrCardExpValues[1], arrCardExpValues[0]);
         }
 
         public static string ToShvaDecimalStr(this decimal amount)
         {
-            // TODO: Please describe this conversion ? why we cannot use just round and format ?
-            return Math.Round(amount / 100, 2).ToString("00.00").Replace(".", string.Empty);
+            return (amount * 100).ToString();// sum in Agurut
         }
 
         public static ShvaParamJEnum GetParamJ5(this JDealTypeEnum transactionType)
@@ -51,14 +51,18 @@ namespace Shva.Conveters
 
         public static bool IsSuccessful(this AshEndResultEnum ashEndResult)
         {
-            // TODO: implement validation
-            return true;
+            return ashEndResult == AshEndResultEnum.Success || ashEndResult ==  AshEndResultEnum.SuccessJ5;
         }
 
         public static RejectionReasonEnum GetErrorCode(this AshEndResultEnum ashEndResult)
         {
-            // TODO: implement conversion
             return RejectionReasonEnum.Unknown;
+        }
+
+        public static string GetErrorCodeStr(this AshEndResultEnum ashEndResult)
+        {
+            
+            return ashEndResult;
         }
 
         // TODO ?
