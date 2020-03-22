@@ -89,5 +89,15 @@ namespace Shared.Integration.Models
         /// To be used for credit or installments 
         /// </summary>
         public int NumberOfPayments { get; set; }
+
+        /// <summary>
+        /// for billing deal
+        /// </summary>
+        public object InitDealResultData { get; set; }
+
+        /// <summary>
+        /// after code 3 or 4 user can insert this value from credit company
+        /// </summary>
+        public string AuthNum { get; set; }
     }
 }

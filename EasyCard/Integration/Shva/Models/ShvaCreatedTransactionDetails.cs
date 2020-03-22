@@ -23,7 +23,7 @@ namespace Shva.Models
         public string AuthSolekNum { get; set; }
 
         /// <summary>
-        /// TODO: when to fill it ?
+        /// Deal Date
         /// </summary>
         public DateTime? TransactionDate { get; set; }
     }

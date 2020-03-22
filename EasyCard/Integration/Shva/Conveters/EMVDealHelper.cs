@@ -75,7 +75,7 @@ namespace Shva.Conveters
         public static clsInput GetInitInitObjRequest(this ProcessorTransactionRequest req)
         {
             clsInput inputObj = new clsInput();
-
+            InitDealResultModel initialDealData = req.InitDealResultData as InitDealResultModel;
             int parameterJValue = (int)req.JDealType.GetParamJ5();
             var transactionType = req.TransactionType.GetShvaTransactionType();
             var cardPresence = req.CardPresence.GetShvaCardPresence();
@@ -83,7 +83,6 @@ namespace Shva.Conveters
             var creditTerms = req.TransactionType.GetShvaCreditTerms();
             var currency = req.Currency.GetShvaCurrency();
 
-            // initialization deal. TODO: what is transaction type ?
             if (transactionType == ShvaTransactionTypeEnum.InitialDeal)
             {
                 inputObj.panEntryMode = cardPresence.GetShvaCardPresenceStr();
@@ -93,50 +92,48 @@ namespace Shva.Conveters
                 inputObj.tranType = transactionType.GetShvaTransactionTypeStr();
                 inputObj.currency = currency.GetShvaCurrencyStr();
 
-                var initialTransaction = req.InitialTransaction as ShvaCreatedTransactionDetails;
-
-                if (initialTransaction == null)
+                if (initialDealData == null)
                 {
                     //CVV
                     inputObj.cvv2 = req.CreditCardToken.Cvv;
-                    inputObj.clientInputPan = req.CreditCardToken.CardNumber; // can be card number or track2 value for example 5100460000371892=21102010000024291000
+                    inputObj.clientInputPan = req.CreditCardToken.CardNumber; 
                     inputObj.expirationDate = shvaExpDate;
 
-                    if (!string.IsNullOrWhiteSpace(req.CreditCardToken))
+                    if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalId))
                     {
-                        inputObj.id = req.Id;
+                        inputObj.id = req.CreditCardToken.CardOwnerNationalId;
                     }
 
-                    // TODO: describe this values
+                    // static values for initial deal
                     inputObj.amount = "1";
                     inputObj.stndOrdrFreq = "4";
                     inputObj.stndOrdrTotalNo = "999";
                     inputObj.stndOrdrNo = "0";
                 }
-                else
+                else //this case is billing deal after initialization
                 {
                     //implement billing deal after initialization
                     inputObj.amount = req.TransactionAmount.ToShvaDecimalStr();
 
-                    //inputObj.originalUid = req.InitialTransaction.OriginalUid; TODO: How to get this value ?
-                    inputObj.originalTranDate = initialTransaction.TransactionDate?.ToString("yyyy-MM-dd"); // TODO: format ?
-                    inputObj.originalTranTime = initialTransaction.TransactionDate?.ToString("HH:mm:ss"); // TODO: format, timezone ?
+                    inputObj.originalUid = initialDealData.OriginalUid;
+                    inputObj.originalTranDate = initialDealData.OriginalTranTime;
+                    inputObj.originalTranTime = initialDealData.OriginalTranTime;
 
-                    // TODO: describe this value
+                    //maximum of billing deals with the same details
                     inputObj.stndOrdrTotalNo = "999";
 
-                    //inputObj.originalAmount = req.InitialTransaction.TransactionAmount.ToString(); // TODO: what value it should be ?
-                    inputObj.stndOrdrNo = req.CurrentInstallment.ToString(); // TODO: what value it should be ?
+                    inputObj.originalAmount = initialDealData.Amount.ToString(); //return from initialzation deal
+                    inputObj.stndOrdrNo = req.CurrentInstallment.ToString(); // counter of billing deal with the same details
 
-                    if (!string.IsNullOrEmpty(initialTransaction.AuthSolekNum))
+                    if (!string.IsNullOrEmpty(initialDealData.OriginalAuthSolekNum))
                     {
-                        inputObj.originalAuthSolekNum = initialTransaction.AuthSolekNum;
+                        inputObj.originalAuthSolekNum = initialDealData.OriginalAuthSolekNum;
                         inputObj.originalAuthorizationCodeSolek = "7"; // TODO: constant ot enum
                     }
 
-                    if (!string.IsNullOrEmpty(initialTransaction.AuthNum))
+                    if (!string.IsNullOrEmpty(initialDealData.OriginalAuthNum))
                     {
-                        inputObj.originalAuthNum = initialTransaction.AuthNum;
+                        inputObj.originalAuthNum = initialDealData.OriginalAuthNum;
                         inputObj.originalAuthorizationCodeManpik = "7"; // TODO: constant ot enum
                     }
                 }
@@ -144,38 +141,28 @@ namespace Shva.Conveters
             else
             {
                 inputObj.amount = req.TransactionAmount.ToShvaDecimalStr();
-
                 inputObj.cvv2 = req.CreditCardToken.Cvv;
                 inputObj.clientInputPan = req.CreditCardToken.CardNumber;
                 inputObj.expirationDate = shvaExpDate;
 
-                // TODO: how to get this ?
-                //תעודת זהות
-                //if (!string.IsNullOrWhiteSpace(req.Id))
-                //{
-                //    inputObj.id = req.Id;
-                //}
+                if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalId))
+                {
+                    inputObj.id = req.CreditCardToken.CardOwnerNationalId;
+                }
 
-                // TODO: how to get this ?
-                //מספר אישור
-                //if (!string.IsNullOrWhiteSpace(req.AuthNum))
-                //{
-                //    inputObj.authorizationNo = req.AuthNum;
-                //    inputObj.authorizationCodeManpik = "5";
-                //}
+                if (!string.IsNullOrWhiteSpace(req.AuthNum))
+                {
+                    inputObj.authorizationNo = req.AuthNum;
+                    inputObj.authorizationCodeManpik = "5";
+                }
 
-                //תשלומים
-                // TODO: //Payments 8 OR 9
                 if (creditTerms == ShvaCreditTermsEnum.Installment && req.NumberOfPayments > 1)
                 {
                     inputObj.noPayments = req.NumberOfPayments.ToString();
                     inputObj.firstPayment = req.InitialPaymentAmount.ToShvaDecimalStr();
-                    inputObj.notFirstPayment = req.InstallmentPaymentAmount.ToShvaDecimalStr(); // TODO: what amount is it ?
+                    inputObj.notFirstPayment = req.InstallmentPaymentAmount.ToShvaDecimalStr(); // amount in other installments
                 }
 
-                //קרדיט
-                // TODO: what is Credit 5 OR 6
-                // TODO: what NumberOfPayments should be ?
                 if (creditTerms == ShvaCreditTermsEnum.Credit && req.NumberOfPayments > 1)
                 {
                     inputObj.noPayments = req.NumberOfPayments.ToString();

@@ -28,7 +28,7 @@ namespace Shva.Conveters
 
         public static string ToShvaDecimalStr(this decimal amount)
         {
-            return (amount * 100).ToString();// sum in Agurut
+            return (amount * 100).ToString(); // sum in Agurut
         }
 
         public static ShvaParamJEnum GetParamJ5(this JDealTypeEnum transactionType)

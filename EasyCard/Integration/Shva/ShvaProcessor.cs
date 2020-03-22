@@ -44,6 +44,7 @@ namespace Shva
              correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
         {
             ShvaTerminalSettings shvaParameters = paymentTransactionRequest.ProcessorSettings as ShvaTerminalSettings;
+           
 
             var ashStartReq = shvaParameters.GetAshStartRequestBody();
 
