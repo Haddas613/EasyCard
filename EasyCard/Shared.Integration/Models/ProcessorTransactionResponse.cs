@@ -25,6 +25,19 @@ namespace Shared.Integration.Models
         {
             Success = false;
             ErrorMessage = errorMessage;
+            RejectReasonCode = errorCode;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProcessorTransactionResponse"/> class.
+        /// Use this in case of error response
+        /// </summary>
+        /// <param name="errorMessage"></param>
+        /// <param name="errorCode"></param>
+        public ProcessorTransactionResponse(string errorMessage, string errorCode)
+        {
+            Success = false;
+            ErrorMessage = errorMessage;
             ErrorCode = errorCode;
         }
 
@@ -35,7 +48,9 @@ namespace Shared.Integration.Models
 
         public string ErrorMessage { get; set; }
 
-        public RejectionReasonEnum ErrorCode { get; set; }
+        public string ErrorCode { get; set; }
+
+        public RejectionReasonEnum RejectReasonCode { get; set; }
 
         public bool Success { get; set; }
     }

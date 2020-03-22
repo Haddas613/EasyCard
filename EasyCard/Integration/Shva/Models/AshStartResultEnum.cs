@@ -6,9 +6,6 @@ namespace Shva.Models
 {
     public enum AshStartResultEnum
     {
-        /// <summary>
-        /// TODO: Please describe what 777 response code mean
-        /// </summary>
-        PleaseDescribeWhat777Mean = 777
+        Success = 777
     }
 }
