@@ -16,5 +16,7 @@ namespace Shared.Integration.Models
         public string CardNumber { get; set; }
 
         public CardExpiration CardExpiration { get; set; }
+
+        public string CardOwnerNationalId { get; set; }
     }
 }
