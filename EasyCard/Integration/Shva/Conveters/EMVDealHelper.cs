@@ -77,7 +77,7 @@ namespace Shva.Conveters
         {
             clsInput inputObj = new clsInput();
 
-            int parameterJValue = (int)req.TransactionType.GetParamJ5();
+            int parameterJValue = (int)req.JDealType.GetParamJ5();
             var transactionType = req.TransactionType.GetShvaTransactionType();
             var cardPresence = req.CardPresence.GetShvaCardPresence();
             var shvaExpDate = req.CreditCardToken.CardExpiration.GetShvaExpDate();
@@ -85,7 +85,7 @@ namespace Shva.Conveters
             var currency = req.Currency.GetShvaCurrency();
 
             // initialization deal. TODO: what is transaction type ?
-            if (transactionType == ShvaTransactionTypeEnum.FirstInstallment)
+            if (transactionType == ShvaTransactionTypeEnum.InitialDeal)
             {
                 inputObj.panEntryMode = cardPresence.GetShvaCardPresenceStr();
 

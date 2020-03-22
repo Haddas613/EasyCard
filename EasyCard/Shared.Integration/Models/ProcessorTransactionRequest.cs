@@ -27,6 +27,13 @@ namespace Shared.Integration.Models
 
         public TransactionTypeEnum TransactionType { get; set; }
 
+        public JDealTypeEnum JDealType { get; set; }
+
+        /// <summary>
+        /// Indicates ths this is refund deal
+        /// </summary>
+        public bool Refund { get; set; }
+
         /// <summary>
         /// Currency
         /// </summary>

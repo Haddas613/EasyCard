@@ -31,19 +31,17 @@ namespace Shva.Conveters
             return Math.Round(amount / 100, 2).ToString("00.00").Replace(".", string.Empty);
         }
 
-        public static ShvaParamJEnum GetParamJ5(this TransactionTypeEnum transactionType)
+        public static ShvaParamJEnum GetParamJ5(this JDealTypeEnum transactionType)
         {
             switch (transactionType)
             {
-                case TransactionTypeEnum.RegularDeal:
-                case TransactionTypeEnum.Credit:
-                case TransactionTypeEnum.FirstInstallment:
+                case JDealTypeEnum.J4:
                     return ShvaParamJEnum.MakeDeal;
 
-                case TransactionTypeEnum.Check:
+                case JDealTypeEnum.J2:
                     return ShvaParamJEnum.Check;
 
-                case TransactionTypeEnum.J5Block:
+                case JDealTypeEnum.J5:
                     return ShvaParamJEnum.J5Deal;
 
                 default:
@@ -63,6 +61,7 @@ namespace Shva.Conveters
             return RejectionReasonEnum.Unknown;
         }
 
+        // TODO ?
         public static ShvaTransactionTypeEnum GetShvaTransactionType(this TransactionTypeEnum transactionType)
         {
             switch (transactionType)
@@ -73,16 +72,7 @@ namespace Shva.Conveters
                 case TransactionTypeEnum.Credit:
                     return ShvaTransactionTypeEnum.RegularDeal;
 
-                case TransactionTypeEnum.FirstInstallment:
-                    return ShvaTransactionTypeEnum.FirstInstallment;
-
-                case TransactionTypeEnum.Refund:
-                    return ShvaTransactionTypeEnum.Refund;
-
-                case TransactionTypeEnum.Check:
-                    return ShvaTransactionTypeEnum.RegularDeal;
-
-                case TransactionTypeEnum.J5Block:
+                case TransactionTypeEnum.Installments:
                     return ShvaTransactionTypeEnum.RegularDeal;
 
                 default:
@@ -105,17 +95,8 @@ namespace Shva.Conveters
                 case TransactionTypeEnum.Credit:
                     return ShvaCreditTermsEnum.Credit;
 
-                case TransactionTypeEnum.FirstInstallment:
+                case TransactionTypeEnum.Installments:
                     return ShvaCreditTermsEnum.Installment;
-
-                case TransactionTypeEnum.Refund:
-                    return ShvaCreditTermsEnum.Regular;
-
-                case TransactionTypeEnum.Check:
-                    return ShvaCreditTermsEnum.Regular;
-
-                case TransactionTypeEnum.J5Block:
-                    return ShvaCreditTermsEnum.Regular;
 
                 default:
                     throw new NotSupportedException($"Given transaction type {transactionType} is not supported by Shva");
