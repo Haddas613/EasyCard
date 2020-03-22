@@ -105,7 +105,7 @@ namespace Transactions.Business.Entities
         public DateTime? TransactionDate { get; set; }
 
         /// <summary>
-        /// Date-time when transaction created initially
+        /// Date-time when transaction created initially in UTC
         /// </summary>
         public DateTime? TransactionTimestamp { get; set; }
 

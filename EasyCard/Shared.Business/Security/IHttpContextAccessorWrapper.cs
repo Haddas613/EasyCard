@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
@@ -10,5 +11,7 @@ namespace Shared.Business.Security
         ClaimsPrincipal GetUser();
 
         string GetIP();
+
+        string GetCorrelationId();
     }
 }

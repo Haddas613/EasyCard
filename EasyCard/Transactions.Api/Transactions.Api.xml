@@ -29,5 +29,182 @@
             China UnionPay: 16 (the only domestic bank card organization in the People's Republic of China)
             </summary>
         </member>
+        <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">
+            <summary>
+            Do not store full card number. Please use 123456****1234 pattern CreditCardHelpers.GetCardDigits()
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreditCardDetails.CardToken">
+            <summary>
+            Stored token reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.InitialTransactionID">
+            <summary>
+            Reference to first installment or to original transaction in case of refund
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.CardPresence">
+            <summary>
+            50 telephone deal
+            00 regular (megnetic)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.NumberOfPayments">
+            <summary>
+            Number Of Installments
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.CurrentInstallment">
+            <summary>
+            Current installment
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.TransactionAmount">
+            <summary>
+            This transaction amount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.InitialPaymentAmount">
+            <summary>
+            Initial installment payment
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.TotalAmount">
+            <summary>
+            TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.InstallmentPaymentAmount">
+            <summary>
+            Amount of one instalment payment
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.DealDetails">
+            <summary>
+            Deal information
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.InitialTransactionID">
+            <summary>
+            Reference to first installment or to original transaction in case of refund
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AggregatorTerminalID">
+            <summary>
+            Clearing house merchant reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.ProcessorTerminalID">
+            <summary>
+            Shva terminal ID
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TransactionNumber">
+            <summary>
+            Individual counter per terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.ProcessorID">
+            <summary>
+            Shva or other processor
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AggregatorID">
+            <summary>
+            Clearing House or Upay
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.InvoicingID">
+            <summary>
+            EasyInvoice or RapidOne
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.MarketerID">
+            <summary>
+            TODO: change ExternalSystemSummary to (?)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.RejectionReason">
+            <summary>
+            Rejection Reason
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.CardPresence">
+            <summary>
+            50 telephone deal
+            00 regular (megnetic)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.NumberOfPayments">
+            <summary>
+            Number Of Installments
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.CurrentInstallment">
+            <summary>
+            Current installment
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TransactionAmount">
+            <summary>
+            This transaction amount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.InitialPaymentAmount">
+            <summary>
+            Initial installment payment
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TotalAmount">
+            <summary>
+            TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.InstallmentPaymentAmount">
+            <summary>
+            Amount of one instalment payment
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TransactionDate">
+            <summary>
+            Legal transaction day
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TransactionTimestamp">
+            <summary>
+            Date-time when transaction created initially in UTC
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.UpdatedDate">
+            <summary>
+            Date-time when transaction status updated
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.BillingOrderID">
+            <summary>
+            Reference to billing system
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.UpdateTimestamp">
+            <summary>
+            Concurrency key
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.DealDetails">
+            <summary>
+            Deal information
+            </summary>
+        </member>
     </members>
 </doc>

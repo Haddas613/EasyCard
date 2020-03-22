@@ -1,4 +1,5 @@
 ﻿using Moq;
+using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Integration.Models;
 using System;
@@ -24,7 +25,15 @@ namespace Transactions.Tests.MockSetups
 
         private void Setup()
         {
-            MockObj.Setup(m => m.Get(It.IsAny<string>())).Verifiable();
+            MockObj.Setup(m => m.Get(It.IsAny<string>())).ReturnsAsync(new CreditCardTokenKeyVault
+                {
+                    Cvv = "123",
+                    CardExpiration = new CardExpiration() { Month = 10, Year = 25 },
+                    CardNumber = "1111222233334444",
+                    TerminalID = 1,
+                    MerchantID = 1
+                })
+                .Verifiable();
         }
     }
 }

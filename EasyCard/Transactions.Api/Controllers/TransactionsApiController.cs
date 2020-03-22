@@ -10,16 +10,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Shared.Api;
+using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
+using Transactions.Api.Extensions.Filtering;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Services;
 using Transactions.Business.Entities;
 using Transactions.Business.Services;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Controllers
 {
@@ -38,7 +41,8 @@ namespace Transactions.Api.Controllers
         // TODO: service client
         private readonly ITerminalsService terminalsService;
 
-        public TransactionsApiController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper, IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver)
+        public TransactionsApiController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper,
+            IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver, ITerminalsService terminalsService)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -46,28 +50,41 @@ namespace Transactions.Api.Controllers
 
             this.aggregatorResolver = aggregatorResolver;
             this.processorResolver = processorResolver;
+            this.terminalsService = terminalsService;
         }
 
         [HttpGet]
         [Route("{transactionID}")]
         public async Task<ActionResult<TransactionResponse>> GetTransaction([FromRoute] long transactionID)
         {
-            throw new NotImplementedException();
+            var transaction = mapper.Map<TransactionResponse>(EnsureExists(await transactionsService.GetTransactions()
+                .FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
+
+            return Ok(transaction);
         }
 
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetTransactions([FromQuery] TransactionsFilter filter)
         {
-            throw new NotImplementedException();
+            var query = transactionsService.GetTransactions().Filter(filter);
+
+            var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
+
+            response.Data = await mapper.ProjectTo<TransactionSummary>(query.ApplyPagination(filter)).ToListAsync();
+
+            return Ok(response);
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateTransaction([FromBody] TransactionRequest model)
         {
-            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync()); // TODO: 403
-
             // TODO: business vlidators (not only model validation)
+
+            var token = EnsureExists(await keyValueStorage.Get(model.CardToken), "CardToken");
+
+            // TODO: get terminalID from token
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync()); // TODO: 403
 
             var aggregator = aggregatorResolver.GetAggregator(terminal);
             var processor = processorResolver.GetProcessor(terminal);
@@ -94,7 +111,6 @@ namespace Transactions.Api.Controllers
                 mapper.Map(aggregatorResponse, transaction);
 
                 // TODO: change transaction status
-
                 await transactionsService.UpdateEntity(transaction);
             }
             catch (Exception ex)
@@ -164,7 +180,7 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.TransactionNumber)); // TODO: convert message
             }
 
-            return Ok(/*TODO: response*/);
+            return CreatedAtAction(nameof(CreateTransaction), new OperationResponse("ok", StatusEnum.Success, transaction.TransactionNumber));
         }
     }
 }

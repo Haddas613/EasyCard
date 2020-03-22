@@ -1,4 +1,5 @@
-﻿using Shared.Business.Security;
+﻿using Microsoft.AspNetCore.Http;
+using Shared.Business.Security;
 using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
@@ -59,6 +60,11 @@ namespace Transactions.Tests.Fixtures
         public string GetIP()
         {
             return UserIp;
+        }
+
+        public string GetCorrelationId()
+        {
+            return Guid.NewGuid().ToString();
         }
     }
 }

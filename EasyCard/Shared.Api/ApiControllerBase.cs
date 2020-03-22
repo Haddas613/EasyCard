@@ -22,7 +22,7 @@ namespace Shared.Api
         [NonAction]
         protected string GetCorrelationID()
         {
-            return this.HttpContext.TraceIdentifier;
+            return HttpContext?.TraceIdentifier;
         }
     }
 }

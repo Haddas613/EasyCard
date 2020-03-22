@@ -18,6 +18,8 @@ namespace Transactions.Business.Data
 
         public DbSet<CreditCardTokenDetails> CreditCardTokenDetails { get; set; }
 
+        public DbSet<TransactionHistory> TransactionHistories { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         private static readonly ValueConverter CardExpirationConverter = new ValueConverter<CardExpiration, string>(
@@ -34,6 +36,7 @@ namespace Transactions.Business.Data
         {
             modelBuilder.ApplyConfiguration(new PaymentTransactionConfiguration());
             modelBuilder.ApplyConfiguration(new CreditCardTokenDetailsConfiguration());
+            modelBuilder.ApplyConfiguration(new TransactionHistoryConfiguration());
 
             modelBuilder.Entity<CreditCardTokenDetails>().HasQueryFilter(t => t.Active);
 
@@ -68,20 +71,20 @@ namespace Transactions.Business.Data
 
                 builder.OwnsOne(b => b.ShvaTransactionDetails, s =>
                 {
-                    s.Property(p => p.ShvaDealID).HasColumnName("ShvaDealID");
-                    s.Property(p => p.ShvaShovarNumber).HasColumnName("ShvaShovarNumber");
+                    s.Property(p => p.ShvaDealID).HasColumnName("ShvaDealID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.ShvaShovarNumber).HasColumnName("ShvaShovarNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.ManuallyTransmitted).HasColumnName("ManuallyTransmitted");
-                    s.Property(p => p.ShvaTerminalID).HasColumnName("ShvaTerminalID");
-                    s.Property(p => p.ShvaTransmissionNumber).HasColumnName("ShvaTransmissionNumber");
+                    s.Property(p => p.ShvaTerminalID).HasColumnName("ShvaTerminalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.ShvaTransmissionNumber).HasColumnName("ShvaTransmissionNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                 });
 
                 builder.OwnsOne(b => b.DealDetails, s =>
                 {
-                    s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail");
-                    s.Property(p => p.ConsumerIP).HasColumnName("ConsumerIP");
-                    s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone");
-                    s.Property(p => p.DealDescription).HasColumnName("DealDescription");
-                    s.Property(p => p.MerchantIP).HasColumnName("MerchantIP");
+                    s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerIP).HasColumnName("ConsumerIP").IsRequired(false).HasMaxLength(32).IsUnicode(false);
+                    s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+                    s.Property(p => p.MerchantIP).HasColumnName("MerchantIP").IsRequired(false).HasMaxLength(32).IsUnicode(false);
                 });
 
                 //builder.Property(b => b.CreditCardDetails.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter);
@@ -105,6 +108,35 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.CardVendor).IsRequired(true);
                 builder.Property(b => b.CardOwnerNationalID).IsRequired(true);
                 builder.Property(b => b.Active).HasDefaultValue(true);
+            }
+        }
+
+        internal class TransactionHistoryConfiguration : IEntityTypeConfiguration<TransactionHistory>
+        {
+            public void Configure(EntityTypeBuilder<TransactionHistory> builder)
+            {
+                builder.ToTable("TransactionHistory");
+
+                builder.HasKey(b => b.TransactionHistoryID);
+                builder.Property(b => b.TransactionHistoryID).ValueGeneratedOnAdd();
+
+                builder.Property(b => b.PaymentTransactionID).IsRequired();
+
+                builder.Property(b => b.OperationDate).IsRequired();
+
+                builder.Property(b => b.OperationCode).IsRequired().HasMaxLength(30).IsUnicode(false);
+
+                builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.OperationDescription).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+
+                builder.Property(b => b.OperationMessage).IsRequired(false).HasMaxLength(250).IsUnicode(true);
+
+                builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(r => r.IntegrationMessageId).IsRequired(false).HasMaxLength(50).HasColumnName("IntegrationMessageId").IsUnicode(false);
             }
         }
     }

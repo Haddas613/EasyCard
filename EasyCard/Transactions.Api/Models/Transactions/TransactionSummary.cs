@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Converters;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -19,15 +20,13 @@ namespace Transactions.Api.Models.Transactions
 
         public long MerchantID { get; set; }
 
-        public decimal Amount { get; set; }
+        public decimal TransactionAmount { get; set; }
 
         [EnumDataType(typeof(TransactionTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public TransactionTypeEnum TransactionType { get; set; }
 
-        public string Currency { get; set; }
-
-        public string Code { get; set; }
+        public CurrencyEnum Currency { get; set; }
 
         public DateTime Created { get; set; }
     }

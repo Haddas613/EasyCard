@@ -21,6 +21,8 @@ namespace Transactions.Business.Entities
 
         public string OperationDescription { get; set; }
 
+        public string OperationMessage { get; set; }
+
         /// <summary>
         /// additional details
         /// </summary>

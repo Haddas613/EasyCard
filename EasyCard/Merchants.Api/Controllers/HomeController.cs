@@ -10,17 +10,17 @@ namespace Merchants.Api.Controllers
 {
     public class HomeController : Controller
     {
-        private IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment hostingEnvironment;
 
-        public HomeController(IHostingEnvironment environment)
+        public HomeController(IWebHostEnvironment environment)
         {
-            _hostingEnvironment = environment;
+            hostingEnvironment = environment;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var path = Path.Combine(_hostingEnvironment.WebRootPath, "index.html");
+            var path = Path.Combine(hostingEnvironment.WebRootPath, "index.html");
             var stream = System.IO.File.OpenRead(path);
             var response = File(stream, "text/html"); // FileStreamResult
             return response;
