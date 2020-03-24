@@ -1,0 +1,7 @@
+{
+  "ConnectionStrings": {
+    "TemporaryDatabase": "Data Source=(LocalDB)\\MSSQLLocalDB;Initial Catalog=TEST_MerchantsDatabase-{{uniqueid}};Integrated Security=True",
+    "DefaultDatabase": ""
+  },
+  "UseTemporaryDatabase":  true
+}

@@ -34,6 +34,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Merchants.Api\Merchants.Api.csproj" />
+    <ProjectReference Include="..\Shared.Tests\Shared.Tests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Shared.Business.Security;
+﻿using Shared.Business.Security;
 using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
 
-namespace Transactions.Tests.Fixtures
+namespace Shared.Tests.Fixtures
 {
     public class HttpContextAccessorWrapperFixture : IHttpContextAccessorWrapper
     {

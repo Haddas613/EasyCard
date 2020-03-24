@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared.Business\Shared.Business.csproj" />
+    <ProjectReference Include="..\..\Shared.Helpers\Shared.Helpers.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -3,6 +3,9 @@ using Merchants.Api.Mapping;
 using Merchants.Business.Data;
 using Merchants.Business.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Shared.Tests.Configuration;
+using Shared.Tests.Fixtures;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,7 +27,21 @@ namespace Merchants.Tests.Fixtures
         public MerchantsFixture()
         {
             var opts = new DbContextOptionsBuilder<MerchantsContext>();
-            opts.UseSqlServer($"Data Source=(LocalDB)\\MSSQLLocalDB;Initial Catalog=TEST_MerchantsDatabase-{Guid.NewGuid().ToString().Substring(0, 6)};Integrated Security=True");
+
+            var config = new ConfigurationBuilder()
+                 .AddJsonFile("config.json")
+                 .Build();
+
+            var settings = config.Get<TestSettings>();
+
+            if (settings.UseTemporaryDatabase)
+            {
+                opts.UseSqlServer(config.GetConnectionString("TemporaryDatabase").Replace("{{uniqueid}}", Guid.NewGuid().ToString().Substring(0, 6)));
+            }
+            else
+            {
+                opts.UseSqlServer(config.GetConnectionString("DefaultDatabase"));
+            }
             HttpContextAccessorWrapper = new HttpContextAccessorWrapperFixture();
 
             MerchantsContext = new MerchantsContext(opts.Options, HttpContextAccessorWrapper);
