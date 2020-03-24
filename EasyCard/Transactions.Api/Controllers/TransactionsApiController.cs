@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
 using AutoMapper;
 using Azure.Security.KeyVault.Secrets;
@@ -77,12 +78,35 @@ namespace Transactions.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
-        public async Task<ActionResult<OperationResponse>> CreateTransaction([FromBody] TransactionRequest model)
+        [Route("create/withtoken")]
+        public async Task<ActionResult<OperationResponse>> CreateTransactionWithToken([FromBody] TransactionRequestWithToken model)
         {
             // TODO: business vlidators (not only model validation)
 
             var token = EnsureExists(await keyValueStorage.Get(model.CardToken), "CardToken");
 
+            return await ProcessTransaction(model, mapper.Map<ProcessTransactionOptions>(token), nameof(CreateTransactionWithToken));
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        [Route("create/withcc")]
+        public async Task<ActionResult<OperationResponse>> CreateTransactionWithCreditCard([FromBody] TransactionRequestWithCreditCard model)
+        {
+            // TODO: business vlidators (not only model validation)
+
+            var transactionOptions = new ProcessTransactionOptions
+            {
+                CreditCardSecureDetails = model.CreditCardSecureDetails,
+                TerminalID = 1, //TODO
+                MerchantID = 1, //TODO
+            };
+
+            return await ProcessTransaction(model, transactionOptions, nameof(CreateTransactionWithCreditCard));
+        }
+
+        private async Task<ActionResult<OperationResponse>> ProcessTransaction(TransactionRequest model, ProcessTransactionOptions transactionOptions, string actionName)
+        {
             // TODO: get terminalID from token
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync()); // TODO: 403
 
@@ -180,7 +204,7 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.TransactionNumber)); // TODO: convert message
             }
 
-            return CreatedAtAction(nameof(CreateTransaction), new OperationResponse("ok", StatusEnum.Success, transaction.TransactionNumber));
+            return CreatedAtAction(actionName, new OperationResponse("ok", StatusEnum.Success, transaction.TransactionNumber));
         }
     }
 }

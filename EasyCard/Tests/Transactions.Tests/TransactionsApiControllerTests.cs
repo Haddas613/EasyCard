@@ -44,7 +44,6 @@ namespace Transactions.Tests
                 keyValueStorageMock.Object, transactionsFixture.Mapper);
             var tokenRequest = new TokenRequest
             {
-                Cvv = "123",
                 CardExpiration = new CardExpiration { Month = 1, Year = 25 },
                 CardNumber = "1111222233334444"
             };
@@ -56,7 +55,7 @@ namespace Transactions.Tests
             var existingToken = (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefaultAsync())
                 ?? throw new Exception("No existing token was found");
 
-            var transactionRequest = new TransactionRequest
+            var transactionRequest = new TransactionRequestWithToken
             {
                 CardToken = existingToken.PublicKey,
                 TerminalID = existingToken.TerminalID,
@@ -67,7 +66,7 @@ namespace Transactions.Tests
                 TotalAmount = 100
             };
 
-            var actionResult = await controller.CreateTransaction(transactionRequest);
+            var actionResult = await controller.CreateTransactionWithToken(transactionRequest);
 
             var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;
@@ -112,13 +111,13 @@ namespace Transactions.Tests
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.Object, transactionsFixture.Mapper,
                 aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object);
 
-            var transactionRequest = new TransactionRequest
+            var transactionRequest = new TransactionRequestWithToken
             {
                 CardToken = nonExistingKey,
                 TerminalID = 0
             };
 
-            await Assert.ThrowsAsync<EntityNotFoundException>(() => controller.CreateTransaction(transactionRequest));
+            await Assert.ThrowsAsync<EntityNotFoundException>(() => controller.CreateTransactionWithToken(transactionRequest));
             keyValueStorageMock.Verify(m => m.Get(nonExistingKey), Times.Once);
         }
 
@@ -135,7 +134,6 @@ namespace Transactions.Tests
                     keyValueStorageMock.Object, transactionsFixture.Mapper);
                 var tokenRequest = new TokenRequest
                 {
-                    Cvv = "123",
                     CardExpiration = new CardExpiration { Month = 1, Year = 25 },
                     CardNumber = "1111222233334444"
                 };
@@ -153,7 +151,7 @@ namespace Transactions.Tests
             var existingToken = (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefaultAsync())
                 ?? throw new Exception("No existing token was found");
 
-            var transactionRequest = new TransactionRequest
+            var transactionRequest = new TransactionRequestWithToken
             {
                 CardToken = existingToken.PublicKey,
                 TerminalID = existingToken.TerminalID,
@@ -164,7 +162,7 @@ namespace Transactions.Tests
                 TotalAmount = 100
             };
 
-            var actionResult = await controller.CreateTransaction(transactionRequest);
+            var actionResult = await controller.CreateTransactionWithToken(transactionRequest);
 
             var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;
@@ -204,7 +202,6 @@ namespace Transactions.Tests
                     keyValueStorageMock.Object, transactionsFixture.Mapper);
                 var tokenRequest = new TokenRequest
                 {
-                    Cvv = "123",
                     CardExpiration = new CardExpiration { Month = 1, Year = 25 },
                     CardNumber = "1111222233334444"
                 };
@@ -223,7 +220,7 @@ namespace Transactions.Tests
             var existingToken = (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefaultAsync())
                 ?? throw new Exception("No existing token was found");
 
-            var transactionRequest = new TransactionRequest
+            var transactionRequest = new TransactionRequestWithToken
             {
                 CardToken = existingToken.PublicKey,
                 TerminalID = existingToken.TerminalID,
@@ -234,7 +231,7 @@ namespace Transactions.Tests
                 TotalAmount = 100
             };
 
-            var actionResult = await controller.CreateTransaction(transactionRequest);
+            var actionResult = await controller.CreateTransactionWithToken(transactionRequest);
 
             var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;

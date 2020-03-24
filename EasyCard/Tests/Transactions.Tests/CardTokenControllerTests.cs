@@ -36,7 +36,6 @@ namespace Transactions.Tests
                 keyValueStorageMock.Object, transactionsFixture.Mapper);
             var tokenRequest = new TokenRequest
             {
-                Cvv = "123",
                 CardExpiration = new CardExpiration { Month = 1, Year = 25 },
                 CardNumber = "1111222233334444"
             };

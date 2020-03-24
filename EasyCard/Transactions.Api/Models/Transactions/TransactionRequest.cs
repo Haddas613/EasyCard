@@ -15,9 +15,6 @@ namespace Transactions.Api.Models.Transactions
     {
         public long TerminalID { get; set; }
 
-        [Required]
-        public string CardToken { get; set; }
-
         /// <summary>
         /// Reference to first installment or to original transaction in case of refund
         /// </summary>
@@ -67,8 +64,6 @@ namespace Transactions.Api.Models.Transactions
         /// Amount of one instalment payment
         /// </summary>
         public decimal InstallmentPaymentAmount { get; set; }
-
-        public CreditCardDetails CreditCardDetails { get; set; }
 
         /// <summary>
         /// Deal information

@@ -11,8 +11,6 @@ namespace Transactions.Api.Models.Tokens
     /// </summary>
     public class CreditCardTokenKeyVault
     {
-        public string Cvv { get; set; }
-
         public string CardNumber { get; set; }
 
         public long TerminalID { get; set; }

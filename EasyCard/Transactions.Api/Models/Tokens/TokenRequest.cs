@@ -10,13 +10,6 @@ namespace Transactions.Api.Models.Tokens
     public class TokenRequest
     {
         /// <summary>
-        /// cvv presense should be validated according business settings
-        /// </summary>
-        //[Required]
-        [StringLength(4, MinimumLength = 3)]
-        public string Cvv { get; set; }
-
-        /// <summary>
         /// Visa and Visa Electron: 13 or 16
         /// Mastercard: 16
         /// Discover: 16
