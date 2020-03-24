@@ -21,29 +21,27 @@ namespace Shva.Conveters
 
         public static string GetShvaExpDate(this CardExpiration cardExpiration)
         {
-            // TODO: validate conversion
-            return cardExpiration.ToString();
+            string cardExpMYY = cardExpiration.ToString();//MM/yy
+            string[] arrCardExpValues = cardExpMYY.Split('/');
+            return string.Format("{0}{1}", arrCardExpValues[1], arrCardExpValues[0]);
         }
 
         public static string ToShvaDecimalStr(this decimal amount)
         {
-            // TODO: Please describe this conversion ? why we cannot use just round and format ?
-            return Math.Round(amount / 100, 2).ToString("00.00").Replace(".", string.Empty);
+            return (amount * 100).ToString(); // sum in Agurut
         }
 
-        public static ShvaParamJEnum GetParamJ5(this TransactionTypeEnum transactionType)
+        public static ShvaParamJEnum GetParamJ5(this JDealTypeEnum transactionType)
         {
             switch (transactionType)
             {
-                case TransactionTypeEnum.RegularDeal:
-                case TransactionTypeEnum.Credit:
-                case TransactionTypeEnum.FirstInstallment:
+                case JDealTypeEnum.J4:
                     return ShvaParamJEnum.MakeDeal;
 
-                case TransactionTypeEnum.Check:
+                case JDealTypeEnum.J2:
                     return ShvaParamJEnum.Check;
 
-                case TransactionTypeEnum.J5Block:
+                case JDealTypeEnum.J5:
                     return ShvaParamJEnum.J5Deal;
 
                 default:
@@ -53,16 +51,15 @@ namespace Shva.Conveters
 
         public static bool IsSuccessful(this AshEndResultEnum ashEndResult)
         {
-            // TODO: implement validation
-            return true;
+            return ashEndResult == AshEndResultEnum.Success || ashEndResult ==  AshEndResultEnum.SuccessJ5;
         }
 
         public static RejectionReasonEnum GetErrorCode(this AshEndResultEnum ashEndResult)
         {
-            // TODO: implement conversion
             return RejectionReasonEnum.Unknown;
         }
 
+        // TODO ?
         public static ShvaTransactionTypeEnum GetShvaTransactionType(this TransactionTypeEnum transactionType)
         {
             switch (transactionType)
@@ -73,16 +70,7 @@ namespace Shva.Conveters
                 case TransactionTypeEnum.Credit:
                     return ShvaTransactionTypeEnum.RegularDeal;
 
-                case TransactionTypeEnum.FirstInstallment:
-                    return ShvaTransactionTypeEnum.FirstInstallment;
-
-                case TransactionTypeEnum.Refund:
-                    return ShvaTransactionTypeEnum.Refund;
-
-                case TransactionTypeEnum.Check:
-                    return ShvaTransactionTypeEnum.RegularDeal;
-
-                case TransactionTypeEnum.J5Block:
+                case TransactionTypeEnum.Installments:
                     return ShvaTransactionTypeEnum.RegularDeal;
 
                 default:
@@ -105,17 +93,8 @@ namespace Shva.Conveters
                 case TransactionTypeEnum.Credit:
                     return ShvaCreditTermsEnum.Credit;
 
-                case TransactionTypeEnum.FirstInstallment:
+                case TransactionTypeEnum.Installments:
                     return ShvaCreditTermsEnum.Installment;
-
-                case TransactionTypeEnum.Refund:
-                    return ShvaCreditTermsEnum.Regular;
-
-                case TransactionTypeEnum.Check:
-                    return ShvaCreditTermsEnum.Regular;
-
-                case TransactionTypeEnum.J5Block:
-                    return ShvaCreditTermsEnum.Regular;
 
                 default:
                     throw new NotSupportedException($"Given transaction type {transactionType} is not supported by Shva");

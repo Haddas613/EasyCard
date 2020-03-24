@@ -98,10 +98,10 @@ namespace ClearingHouse.Converters
             {
                 case Shared.Integration.Models.TransactionTypeEnum.Credit:
                     return Models.TransactionTypeEnum.Credit;
-                case Shared.Integration.Models.TransactionTypeEnum.FirstInstallment:
+                case Shared.Integration.Models.TransactionTypeEnum.Installments:
                     return Models.TransactionTypeEnum.Installments;
-                case Shared.Integration.Models.TransactionTypeEnum.Refund:
-                    return Models.TransactionTypeEnum.Refund;
+                //case Shared.Integration.Models.TransactionTypeEnum.Refund: // TODO
+                //    return Models.TransactionTypeEnum.Refund;
                 case Shared.Integration.Models.TransactionTypeEnum.RegularDeal:
                     return Models.TransactionTypeEnum.Regular;
                 default:

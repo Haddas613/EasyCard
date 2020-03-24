@@ -12,9 +12,13 @@ namespace Shared.Integration.Models
     {
         public string Cvv { get; set; }
 
-        // TODO: how to use Urack2 ?
+        /// <summary>
+        /// can be card number or track2 value for example 5100460000371892=21102010000024291000 or 5100460000371892
+        /// </summary>
         public string CardNumber { get; set; }
 
         public CardExpiration CardExpiration { get; set; }
+
+        public string CardOwnerNationalId { get; set; }
     }
 }

@@ -27,6 +27,13 @@ namespace Shared.Integration.Models
 
         public TransactionTypeEnum TransactionType { get; set; }
 
+        public JDealTypeEnum JDealType { get; set; }
+
+        /// <summary>
+        /// Indicates ths this is refund deal
+        /// </summary>
+        public bool Refund { get; set; }
+
         /// <summary>
         /// Currency
         /// </summary>
@@ -79,8 +86,18 @@ namespace Shared.Integration.Models
         public object InitialTransaction { get; set; }
 
         /// <summary>
-        /// To be used for credit or installments ?
+        /// To be used for credit or installments 
         /// </summary>
         public int NumberOfPayments { get; set; }
+
+        /// <summary>
+        /// for billing deal
+        /// </summary>
+        public object InitDealResultData { get; set; }
+
+        /// <summary>
+        /// after code 3 or 4 user can insert this value from credit company
+        /// </summary>
+        public string AuthNum { get; set; }
     }
 }

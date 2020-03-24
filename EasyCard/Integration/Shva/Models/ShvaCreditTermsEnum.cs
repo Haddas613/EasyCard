@@ -12,7 +12,7 @@ namespace Shva.Models
     public enum ShvaCreditTermsEnum
     {
         Regular = 1,
-        Credit = 6, // TODO: what is Credit 5 OR 6
-        Installment = 8 // TODO: what is Credit 8 OR 9
+        Credit = 6,
+        Installment = 8
     }
 }

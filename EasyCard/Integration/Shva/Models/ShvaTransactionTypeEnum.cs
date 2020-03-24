@@ -12,7 +12,7 @@ namespace Shva.Models
     public enum ShvaTransactionTypeEnum
     {
         RegularDeal = 01,
-        FirstInstallment = 11, // TODO: is it first installment or any installment ?
+        InitialDeal = 11,
         Refund = 53,
     }
 }
