@@ -44,7 +44,6 @@ namespace Shva
              correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
         {
             ShvaTerminalSettings shvaParameters = paymentTransactionRequest.ProcessorSettings as ShvaTerminalSettings;
-           
 
             var ashStartReq = shvaParameters.GetAshStartRequestBody();
 
@@ -61,7 +60,7 @@ namespace Shva
             if (ashStartResultBody == null)
             {
                 // return failed response
-                return new ProcessorTransactionResponse(Messages.EmptyResponse, RejectionReasonEnum.Unknown);
+                return new ProcessorTransactionResponse(Messages.EmptyResponse, RejectionReasonEnum.Unknown, string.Empty);
             }
 
             // Success situation
@@ -100,7 +99,7 @@ namespace Shva
             }
             else
             {
-                return new ProcessorTransactionResponse("Unknown", RejectionReasonEnum.Unknown);
+                return new ProcessorTransactionResponse("Unknown", RejectionReasonEnum.Unknown, ashStartResultBody.AshStartResult.ToString());
             }
         }
 

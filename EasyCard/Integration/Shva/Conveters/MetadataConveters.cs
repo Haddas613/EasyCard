@@ -59,12 +59,6 @@ namespace Shva.Conveters
             return RejectionReasonEnum.Unknown;
         }
 
-        public static string GetErrorCodeStr(this AshEndResultEnum ashEndResult)
-        {
-            
-            return ashEndResult;
-        }
-
         // TODO ?
         public static ShvaTransactionTypeEnum GetShvaTransactionType(this TransactionTypeEnum transactionType)
         {
