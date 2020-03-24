@@ -50,6 +50,11 @@ namespace Transactions.Api.Mapping
             CreateMap<ProcessorTransactionResponse, PaymentTransaction>();
             CreateMap<PaymentTransaction, AggregatorCommitTransactionRequest>();
             CreateMap<AggregatorCommitTransactionResponse, PaymentTransaction>();
+
+            CreateMap<CreditCardTokenKeyVault, ProcessTransactionOptions>()
+                .ForMember(m => m.TerminalID, s => s.MapFrom(src => src.TerminalID))
+                .ForMember(m => m.MerchantID, s => s.MapFrom(src => src.MerchantID))
+                .ForMember(m => m.CreditCardSecureDetails, s => s.MapFrom(src => new CreditCardSecureDetails { CardExpiration = src.CardExpiration, CardNumber = src.CardNumber }));
         }
     }
 }
