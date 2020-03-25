@@ -231,6 +231,9 @@
   <data name="MerchantDoesNotExist" xml:space="preserve">
     <value>Merchant does not exist</value>
   </data>
+  <data name="MerchantInaccessible" xml:space="preserve">
+    <value>Given Merchant is not accessible for current user</value>
+  </data>
   <data name="MerchantlNotUniqueueFields" xml:space="preserve">
     <value>Merchant with "{0}" already exists</value>
   </data>

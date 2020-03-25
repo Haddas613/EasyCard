@@ -15,6 +15,7 @@ using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Helpers.KeyValueStorage;
+using Shared.Helpers.Security;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using Transactions.Api.Extensions.Filtering;
@@ -98,7 +99,7 @@ namespace Transactions.Api.Controllers
             var transactionOptions = new ProcessTransactionOptions
             {
                 CreditCardSecureDetails = model.CreditCardSecureDetails,
-                TerminalID = 1, //TODO
+                TerminalID = model.TerminalID, //TODO: check claims
                 MerchantID = 1, //TODO
             };
 

@@ -403,6 +403,15 @@ namespace Transactions.Shared.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Given Merchant is not accessible for current user.
+        /// </summary>
+        public static string MerchantInaccessible {
+            get {
+                return ResourceManager.GetString("MerchantInaccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merchant with &quot;{0}&quot; already exists.
         /// </summary>
         public static string MerchantlNotUniqueueFields {

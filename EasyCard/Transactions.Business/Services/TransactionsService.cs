@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
 using Shared.Business.AutoHistory;
+using Shared.Business.Exceptions;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
 using System;
@@ -36,6 +37,12 @@ namespace Transactions.Business.Services
 
         public async override Task CreateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
         {
+            if (user.GetMerchantID() != entity.MerchantID)
+            {
+                throw new EntityConflictException(ApiMessages.MerchantInaccessible, "Merchant",
+                    $"Expected MerchantID: {user.GetMerchantID()}; Got: {entity.MerchantID}");
+            }
+
             await base.CreateEntity(entity, dbTransaction);
 
             await AddHistory(entity.PaymentTransactionID, string.Empty, DbLayerMessages.TransactionCreated, TransactionOperationCodesEnum.TransactionCreated, null);
