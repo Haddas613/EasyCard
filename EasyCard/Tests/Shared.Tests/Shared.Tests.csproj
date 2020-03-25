@@ -5,8 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Moq" Version="4.13.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Shared.Business\Shared.Business.csproj" />
     <ProjectReference Include="..\..\Shared.Helpers\Shared.Helpers.csproj" />
+    <ProjectReference Include="..\..\Shared.Integration\Shared.Integration.csproj" />
   </ItemGroup>
 
 </Project>

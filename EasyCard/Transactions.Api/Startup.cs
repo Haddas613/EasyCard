@@ -27,6 +27,10 @@ using Shared.Helpers.KeyValueStorage;
 using BasicServices.KeyValueStorage;
 using Shared.Integration.Models;
 using Transactions.Api.Models.Tokens;
+using Transactions.Api.Services;
+using Microsoft.Extensions.Options;
+using Shared.Helpers;
+using BasicServices;
 
 namespace TransactionsApi
 {
@@ -97,6 +101,24 @@ namespace TransactionsApi
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSingleton<IKeyValueStorage<CreditCardTokenKeyVault>, AzureKeyValueStorage<CreditCardTokenKeyVault>>();
+
+            // integration
+            services.Configure<Shva.Configuration.ShvaGlobalSettings>(Configuration.GetSection("ShvaGlobalSettings"));
+            services.Configure<ClearingHouse.ClearingHouseGlobalSettings>(Configuration.GetSection("ClearingHouseGlobalSettings"));
+
+            services.AddSingleton<IAggregatorResolver, AggregatorResolver>();
+            services.AddSingleton<IProcessorResolver, ProcessorResolver>();
+
+            services.AddSingleton<Shva.ShvaProcessor, Shva.ShvaProcessor>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<Shva.Configuration.ShvaGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<Shva.ShvaProcessor>>();
+                var storageService = new IntegrationRequestLogStorageService(null, null); // TODO
+
+                return new Shva.ShvaProcessor(webApiClient, cfg, logger, storageService);
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

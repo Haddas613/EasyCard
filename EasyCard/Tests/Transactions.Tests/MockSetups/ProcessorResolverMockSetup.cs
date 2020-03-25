@@ -29,8 +29,7 @@ namespace Transactions.Tests.MockSetups
 
         private void Setup()
         {
-            ProcessorMock.Setup(m => m.CreateTransaction(It.IsAny<ProcessorTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>(), 
-                It.IsAny<Func<IntegrationMessage, IntegrationMessage>>()))
+            ProcessorMock.Setup(m => m.CreateTransaction(It.IsAny<ProcessorTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new ProcessorTransactionResponse { Success = true })
                 .Verifiable();
 

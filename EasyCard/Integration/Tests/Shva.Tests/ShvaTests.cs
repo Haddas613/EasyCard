@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using Shared.Tests.Fixtures;
 using Shva.Configuration;
 using Shva.Tests.Fixtures;
 using Shva.Tests.MockSetups;
@@ -22,7 +23,9 @@ namespace Shva.Tests
         public void Test()
         {
             var webApiClient = new WebApiClientMockSetup();
-            var processor = new ShvaProcessor(webApiClient.MockObj.Object, Options.Create<ShvaGlobalSettings>(shvaFixture.ShvaSettings), shvaFixture.Logger);
+            var integrationStorage = new IntegrationRequestLogStorageServiceMock();
+
+            var processor = new ShvaProcessor(webApiClient.MockObj.Object, Options.Create<ShvaGlobalSettings>(shvaFixture.ShvaSettings), shvaFixture.Logger, integrationStorage.MockObj.Object);
             
             //processor.CreateTransaction(...);
         }

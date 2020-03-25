@@ -85,7 +85,7 @@ namespace Transactions.Tests
             procResolverMock.ResolverMock.Verify(m => m.GetProcessor(It.IsAny<Terminal>()), Times.Once);
             procResolverMock.ProcessorMock.Verify(
                 m => m.CreateTransaction(It.IsAny<ProcessorTransactionRequest>(), It.IsAny<string>(),
-                It.IsAny<string>(), It.IsAny<Func<IntegrationMessage, IntegrationMessage>>()), Times.Once);
+                It.IsAny<string>()), Times.Once);
 
             var transactionEntry = await transactionsFixture.TransactionsContext.PaymentTransactions
                .FirstOrDefaultAsync(t => t.TerminalID == transactionRequest.TerminalID && t.TransactionNumber == responseData.EntityID);
@@ -209,8 +209,7 @@ namespace Transactions.Tests
             }
 
             //Ensure that processor will not successfully create transaction
-            procResolverMock.ProcessorMock.Setup(m => m.CreateTransaction(It.IsAny<ProcessorTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>(),
-                It.IsAny<Func<IntegrationMessage, IntegrationMessage>>()))
+            procResolverMock.ProcessorMock.Setup(m => m.CreateTransaction(It.IsAny<ProcessorTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new ProcessorTransactionResponse { Success = false, ErrorMessage = "something is wrong" })
                 .Verifiable();
 
@@ -247,7 +246,7 @@ namespace Transactions.Tests
             procResolverMock.ResolverMock.Verify(m => m.GetProcessor(It.IsAny<Terminal>()), Times.Once);
             procResolverMock.ProcessorMock.Verify(
                 m => m.CreateTransaction(It.IsAny<ProcessorTransactionRequest>(), It.IsAny<string>(),
-                It.IsAny<string>(), It.IsAny<Func<IntegrationMessage, IntegrationMessage>>()), Times.Once);
+                It.IsAny<string>()), Times.Once);
 
             var transactionEntry = await transactionsFixture.TransactionsContext.PaymentTransactions
                .FirstOrDefaultAsync(t => t.TerminalID == transactionRequest.TerminalID && t.TransactionNumber == responseData.EntityID);

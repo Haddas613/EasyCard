@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Shared.Helpers;
 using Shared.Integration.Models;
+using Shared.Tests.Fixtures;
 using Shva.Configuration;
 using Shva.Tests.MockSetups;
 using System;
@@ -27,7 +28,9 @@ namespace Shva.Tests.Fixtures
 
             ProcessorTransactionRequest shvaReq = new ProcessorTransactionRequest();
             WebApiClientMockSetup webApiClient = new WebApiClientMockSetup();
-            ShvaProcessor shvaperoc = new ShvaProcessor(webApiClient.MockObj.Object, Options.Create<ShvaGlobalSettings>(ShvaSettings), Logger);
+            var integrationStorage = new IntegrationRequestLogStorageServiceMock();
+
+            ShvaProcessor shvaperoc = new ShvaProcessor(webApiClient.MockObj.Object, Options.Create<ShvaGlobalSettings>(ShvaSettings), Logger, integrationStorage.MockObj.Object);
 
             var task = Task.Run(async () => await shvaperoc.CreateTransaction(shvaReq, "", ""));
         }

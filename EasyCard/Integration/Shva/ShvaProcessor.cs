@@ -30,18 +30,26 @@ namespace Shva
         private readonly IWebApiClient apiClient;
         private readonly ShvaGlobalSettings configuration;
         private readonly ILogger logger;
+        private readonly IIntegrationRequestLogStorageService integrationRequestLogStorageService;
 
-        public ShvaProcessor(IWebApiClient apiClient, IOptions<ShvaGlobalSettings> configuration, ILogger<ShvaProcessor> logger)
+        public ShvaProcessor(IWebApiClient apiClient, IOptions<ShvaGlobalSettings> configuration, ILogger<ShvaProcessor> logger, IIntegrationRequestLogStorageService integrationRequestLogStorageService)
         {
             this.configuration = configuration.Value;
 
             this.apiClient = apiClient;
 
             this.logger = logger;
+
+            this.integrationRequestLogStorageService = integrationRequestLogStorageService;
+        }
+
+        private async Task HandleIntegrationMessage(IntegrationMessage msg)
+        {
+            await integrationRequestLogStorageService.Save(msg);
         }
 
         public async Task<ProcessorTransactionResponse> CreateTransaction(ProcessorTransactionRequest paymentTransactionRequest, string messageId, string
-             correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
+             correlationId)
         {
             ShvaTerminalSettings shvaParameters = paymentTransactionRequest.ProcessorSettings as ShvaTerminalSettings;
 
@@ -53,7 +61,7 @@ namespace Shva
             ashStartReq.pinpad = new clsPinPad();
             ashStartReq.globalObj = new ShvaEMV.clsGlobal();
 
-            var ashStartReqResult = await this.DoRequest(ashStartReq, AshStartUrl, messageId, correlationId, handleIntegrationMessage);
+            var ashStartReqResult = await this.DoRequest(ashStartReq, AshStartUrl, messageId, correlationId, HandleIntegrationMessage);
 
             var ashStartResultBody = (AshStartResponseBody)ashStartReqResult?.Body?.Content;
 
@@ -72,13 +80,13 @@ namespace Shva
                 ashStartReq.inputObj = ashEndReq.inputObj = cls;
 
                 //call to the next function for make shva tansaction
-                var resultAuth = await this.DoRequest(ashAuthReq, AshAuthUrl, messageId, correlationId, handleIntegrationMessage);
+                var resultAuth = await this.DoRequest(ashAuthReq, AshAuthUrl, messageId, correlationId, HandleIntegrationMessage);
                 var authResultBody = (AshAuthResponse)resultAuth?.Body?.Content;
 
                 ashEndReq.globalObj = authResultBody.Body.globalObj;
                 ashEndReq.pinpad = authResultBody.Body.pinpad;
 
-                var resultAshEnd = await this.DoRequest(ashEndReq, AshEndUrl, messageId, correlationId, handleIntegrationMessage);
+                var resultAshEnd = await this.DoRequest(ashEndReq, AshEndUrl, messageId, correlationId, HandleIntegrationMessage);
                 var resultAshEndBody = (AshEndResponseBody)resultAshEnd?.Body?.Content;
 
                 //   TODO: what should be done in this place ?
@@ -109,10 +117,9 @@ namespace Shva
         /// <param name="updateParamRequest"></param>
         /// <param name="messageId"></param>
         /// <param name="correlationId"></param>
-        /// <param name="handleIntegrationMessage"></param>
         /// <returns></returns>
         public async Task ParamsUpdateTransaction(ShvaTerminalSettings updateParamRequest, string messageId, string
-            correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
+            correlationId)
         {
             var res = new ProcessorTransactionResponse();
             var updateParamsReq = new GetTerminalDataRequestBody();
@@ -120,7 +127,7 @@ namespace Shva
             updateParamsReq.Password = updateParamRequest.Password;
             updateParamsReq.MerchantNumber = updateParamRequest.MerchantNumber;
 
-            var result = await this.DoRequest(updateParamsReq, GetTerminalDataUrl, messageId, correlationId, handleIntegrationMessage);
+            var result = await this.DoRequest(updateParamsReq, GetTerminalDataUrl, messageId, correlationId, HandleIntegrationMessage);
 
             var getTerminalDataResultBody = (GetTerminalDataResponseBody)result?.Body?.Content;
 
@@ -143,7 +150,7 @@ namespace Shva
         /// <param name="handleIntegrationMessage"></param>
         /// <returns></returns>
         public async Task<ShvaTransmissionResponse> TransmissionTransaction(ShvaTransmissionRequest transRequest, string messageId, string
-            correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
+            correlationId)
         {
             var res = new ShvaTransmissionResponse();
             ShvaTerminalSettings shvaParameters = transRequest.ProcessorSettings;
@@ -153,7 +160,7 @@ namespace Shva
             tranEMV.MerchantNumber = shvaParameters.MerchantNumber;
             tranEMV.DATA = transRequest.DATAToTrans;
 
-            var result = await this.DoRequest(tranEMV, TransEMVUrl, messageId, correlationId, handleIntegrationMessage);
+            var result = await this.DoRequest(tranEMV, TransEMVUrl, messageId, correlationId, HandleIntegrationMessage);
 
             var transResultBody = (TransEMVResponseBody)result?.Body?.Content;
 
@@ -172,7 +179,7 @@ namespace Shva
             return res;
         }
 
-        protected async Task<Envelope> DoRequest(object request, string soapAction, string messageId, string correlationId, Func<IntegrationMessage, IntegrationMessage> handleIntegrationMessage = null)
+        protected async Task<Envelope> DoRequest(object request, string soapAction, string messageId, string correlationId, Func<IntegrationMessage, Task> handleIntegrationMessage = null)
         {
             var soap = new Envelope
             {
@@ -222,7 +229,7 @@ namespace Shva
                     integrationMessage.ResponseStatus = responseStatusStr;
                     integrationMessage.Address = requestUrl;
 
-                    handleIntegrationMessage?.Invoke(integrationMessage);
+                    await handleIntegrationMessage?.Invoke(integrationMessage);
                 }
             }
 
