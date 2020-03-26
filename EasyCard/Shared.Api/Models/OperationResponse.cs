@@ -16,7 +16,13 @@ namespace Shared.Api.Models
         {
         }
 
-        public OperationResponse(string message, StatusEnum status, long? entityId = null, string correlationId = null, IEnumerable<Api.Models.Error> errors = null)
+        public OperationResponse(string message, StatusEnum status)
+        {
+            Message = message;
+            Status = status;
+        }
+
+        public OperationResponse(string message, StatusEnum status, long? entityId = null)
         {
             Message = message;
             Status = status;
@@ -25,7 +31,7 @@ namespace Shared.Api.Models
             Errors = errors?.Select(d => d).ToList();
         }
 
-        public OperationResponse(string message, StatusEnum status, string entityReference = null)
+        public OperationResponse(string message, StatusEnum status, string entityReference)
         {
             Message = message;
             Status = status;

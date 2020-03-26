@@ -19,6 +19,30 @@ namespace IdentityServer.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("IdentityServer.Data.Entities.TerminalApiAuthKey", b =>
+                {
+                    b.Property<long>("TerminalApiAuthKeyID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AuthKey")
+                        .IsRequired()
+                        .HasColumnType("varchar(512)")
+                        .HasMaxLength(512)
+                        .IsUnicode(false);
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("TerminalID")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("TerminalApiAuthKeyID");
+
+                    b.ToTable("TerminalApiAuthKey");
+                });
+
             modelBuilder.Entity("IdentityServer.Data.Entities.UserAudit", b =>
                 {
                     b.Property<long>("UserAuditID")
