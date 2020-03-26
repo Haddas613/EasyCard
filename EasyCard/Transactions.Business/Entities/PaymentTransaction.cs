@@ -9,6 +9,12 @@ namespace Transactions.Business.Entities
 {
     public class PaymentTransaction : IEntityBase
     {
+        public PaymentTransaction()
+        {
+            TransactionDate = DateTime.UtcNow; // TODO: timezone
+            TransactionTimestamp = DateTime.UtcNow;
+        }
+
         public long PaymentTransactionID { get; set; }
 
         /// <summary>
@@ -134,6 +140,17 @@ namespace Transactions.Business.Entities
         public ShvaTransactionDetails ShvaTransactionDetails { get; set; }
 
         public ClearingHouseTransactionDetails ClearingHouseTransactionDetails { get; set; }
+
+        [Obsolete]
+        public void Calculate()
+        {
+            if (InitialPaymentAmount == 0)
+            {
+                InitialPaymentAmount = TransactionAmount;
+            }
+
+            TotalAmount = InitialPaymentAmount + InstallmentPaymentAmount * (NumberOfPayments - 1);
+        }
 
         public long GetID()
         {

@@ -5,26 +5,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Update="Messages\ApiMessages.Designer.cs">
+    <Folder Include="Messages\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Messages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>ApiMessages.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Messages\DbLayerMessages.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DbLayerMessages.resx</DependentUpon>
+      <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Messages\ApiMessages.resx">
+    <EmbeddedResource Update="Messages.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>ApiMessages.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Messages\DbLayerMessages.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>DbLayerMessages.Designer.cs</LastGenOutput>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

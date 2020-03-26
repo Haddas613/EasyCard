@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ClearingHouse.Converters
 {
     public static class TransactionsConveter
     {
-        public static Models.CreateTransactionRequest GetCreateTransactionRequest(this Shared.Integration.Models.AggregatorCreateTransactionRequest createTransactionRequest)
+        public static Models.CreateTransactionRequest GetCreateTransactionRequest(this Shared.Integration.Models.AggregatorCreateTransactionRequest createTransactionRequest, ClearingHouseGlobalSettings configuration)
         {
             var chRequest = new Models.CreateTransactionRequest();
 
@@ -27,7 +28,8 @@ namespace ClearingHouse.Converters
 
             //response.IsTourist TODO:
             //details.Solek TODO:
-            //response.PaymentGatewayID TODO:
+
+            chRequest.PaymentGatewayID = configuration.PaymentGatewayID;
 
             details.CardOwnerName = createTransactionRequest.CreditCardDetails.CardOwnerName;
             details.CardOwnerNationalId = createTransactionRequest.CreditCardDetails.CardOwnerNationalId;
@@ -54,31 +56,50 @@ namespace ClearingHouse.Converters
             return chRequest;
         }
 
-        public static Models.CommitTransactionRequest GetCommitTransactionRequest(this Shared.Integration.Models.AggregatorCommitTransactionRequest commitTransactionRequest)
+        public static Models.CommitTransactionRequest GetCommitTransactionRequest(this Shared.Integration.Models.AggregatorCommitTransactionRequest commitTransactionRequest, ClearingHouseGlobalSettings configuration)
         {
-            var response = new Models.CommitTransactionRequest();
+            var chRequest = new Models.CommitTransactionRequest();
 
-            response.CardBin = commitTransactionRequest.CreditCardDetails.CardBin;
-            response.CardLastFourDigits = commitTransactionRequest.CreditCardDetails.CardLastFourDigits;
-            response.CreditCardVendor = commitTransactionRequest.CreditCardDetails.CardVendor;
-            response.DealReference = commitTransactionRequest.TransactionID;
+            chRequest.ConcurrencyToken = commitTransactionRequest.ConcurrencyToken;
+
+            chRequest.CardBin = commitTransactionRequest.CreditCardDetails.CardBin;
+            chRequest.CardLastFourDigits = commitTransactionRequest.CreditCardDetails.CardLastFourDigits;
+            chRequest.CreditCardVendor = commitTransactionRequest.CreditCardDetails.CardVendor;
+            chRequest.DealReference = commitTransactionRequest.TransactionID;
 
             //response.IsTourist TODO:
             //details.Solek TODO:
-            //response.PaymentGatewayID TODO:
+
+            chRequest.PaymentGatewayID = configuration.PaymentGatewayID;
 
             var shvaDetails = commitTransactionRequest.ProcessorTransactionDetails as Models.PaymentGatewayAdditionalDetails;
 
-            response.PaymentGatewayAdditionalDetails = shvaDetails;
+            chRequest.PaymentGatewayAdditionalDetails = shvaDetails;
 
-            return response;
+            return chRequest;
         }
 
-        public static Shared.Integration.Models.AggregatorCreateTransactionResponse GetAggregatorCreateTransactionResponse(this Models.OperationResponse operationResponse)
+        public static ClearingHouseCreateTransactionResponse GetAggregatorCreateTransactionResponse(this Models.OperationResponse operationResponse)
         {
-            var response = new Shared.Integration.Models.AggregatorCreateTransactionResponse();
+            var response = new ClearingHouseCreateTransactionResponse();
 
-            // TODO:
+            response.CorrelationID = operationResponse.CorrelationId;
+
+            response.AggregatorTransactionID = operationResponse.EntityID;
+
+            response.Success = operationResponse.Status == Models.StatusEnum.Success;
+
+            response.ConcurrencyToken = operationResponse.ConcurrencyToken;
+
+            if (!response.Success)
+            {
+                response.ErrorMessage = operationResponse.Message;
+
+                if (operationResponse.Errors?.Count > 0)
+                {
+                    response.Errors = operationResponse.Errors.Select(d => new Shared.Api.Models.Error { Code = d.Code, Description = d.Description }).ToList();
+                }
+            }
 
             return response;
         }
@@ -87,7 +108,19 @@ namespace ClearingHouse.Converters
         {
             var response = new Shared.Integration.Models.AggregatorCommitTransactionResponse();
 
-            // TODO:
+            response.CorrelationID = operationResponse.CorrelationId;
+
+            response.Success = operationResponse.Status == Models.StatusEnum.Success;
+
+            if (!response.Success)
+            {
+                response.ErrorMessage = operationResponse.Message;
+
+                if (operationResponse.Errors?.Count > 0)
+                {
+                    response.Errors = operationResponse.Errors.Select(d => new Shared.Api.Models.Error { Code = d.Code, Description = d.Description }).ToList();
+                }
+            }
 
             return response;
         }

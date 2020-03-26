@@ -55,11 +55,6 @@
             Number Of Installments
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.CurrentInstallment">
-            <summary>
-            Current installment
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.TransactionAmount">
             <summary>
             This transaction amount

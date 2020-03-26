@@ -9,6 +9,11 @@ namespace Shared.Helpers
     {
         public static T TryConvert<T>(this WebApiClientErrorException webApiClientErrorEx, T defaultValue)
         {
+            if (webApiClientErrorEx.Response == null)
+            {
+                return defaultValue;
+            }
+
             try
             {
                 return JsonConvert.DeserializeObject<T>(webApiClientErrorEx.Response);

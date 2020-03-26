@@ -48,7 +48,7 @@ namespace Shva.Conveters
             return ashAuthReq;
         }
 
-        public static ProcessorTransactionResponse GetProcessorTransactionResponse(this AshEndResponseBody resultAshEndBody)
+        public static ShvaCreateTransactionResponse GetProcessorTransactionResponse(this AshEndResponseBody resultAshEndBody)
         {
             var resCode = (AshEndResultEnum)resultAshEndBody.AshEndResult;
 
@@ -56,23 +56,23 @@ namespace Shva.Conveters
             {
                 var shvaDetails = new ShvaCreatedTransactionDetails
                 {
-                    ShvaShovarNumber = resultAshEndBody.globalObj.receiptObj.voucherNumber.valueTag,
-                    ShvaDealID = resultAshEndBody.globalObj.outputObj.tranRecord.valueTag,
-                    AuthSolekNum = resultAshEndBody.globalObj.outputObj.authSolekNo.valueTag,
-                    AuthNum = resultAshEndBody.globalObj.outputObj.authManpikNo.valueTag,
+                    ShvaShovarNumber = resultAshEndBody.globalObj?.receiptObj?.voucherNumber?.valueTag,
+                    ShvaDealID = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag,
+                    AuthSolekNum = resultAshEndBody.globalObj?.outputObj?.authSolekNo?.valueTag,
+                    AuthNum = resultAshEndBody.globalObj?.outputObj?.authManpikNo?.valueTag,
                 };
 
-                return new ProcessorTransactionResponse() { ProcessorTransactionDetails = shvaDetails };
+                return new ShvaCreateTransactionResponse() { ProcessorTransactionDetails = shvaDetails };
             }
             else
             {
                 var errorCode = resCode.GetErrorCode();
                 string errorCodeStr = resultAshEndBody.AshEndResult.ToString();
-                return new ProcessorTransactionResponse(Messages.Failed, errorCode,errorCodeStr);
+                return new ShvaCreateTransactionResponse(Messages.Failed, errorCode, errorCodeStr);
             }
         }
 
-        public static clsInput GetInitInitObjRequest(this ProcessorTransactionRequest req)
+        public static clsInput GetInitInitObjRequest(this ProcessorCreateTransactionRequest req)
         {
             clsInput inputObj = new clsInput();
             InitDealResultModel initialDealData = req.InitDealResultData as InitDealResultModel;
@@ -96,7 +96,7 @@ namespace Shva.Conveters
                 {
                     //CVV
                     inputObj.cvv2 = req.CreditCardToken.Cvv;
-                    inputObj.clientInputPan = req.CreditCardToken.CardNumber; 
+                    inputObj.clientInputPan = req.CreditCardToken.CardNumber;
                     inputObj.expirationDate = shvaExpDate;
 
                     if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalId))

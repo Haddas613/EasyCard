@@ -27,27 +27,36 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Currency
         /// </summary>
+        [EnumDataType(typeof(CurrencyEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyEnum Currency { get; set; }
 
         /// <summary>
         /// 50 telephone deal
         /// 00 regular (megnetic)
         /// </summary>
+        [EnumDataType(typeof(Enums.CardPresenceEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
         public Enums.CardPresenceEnum CardPresence { get; set; }
 
         /// <summary>
         /// Number Of Installments
         /// </summary>
+        [Range(1, 100)]
+        [Required(AllowEmptyStrings = false)]
         public int NumberOfPayments { get; set; }
 
         /// <summary>
         /// Current installment
         /// </summary>
-        public int CurrentInstallment { get; set; }
+        //public int CurrentInstallment { get; set; }
 
         /// <summary>
         /// This transaction amount
         /// </summary>
+        [Range(0.01, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        [Required(AllowEmptyStrings = false)]
         public decimal TransactionAmount { get; set; }
 
         /// <summary>

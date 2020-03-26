@@ -12,8 +12,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Transactions.Business.Data;
 using Transactions.Business.Entities;
+using Transactions.Shared;
 using Transactions.Shared.Enums;
-using Transactions.Shared.Messages;
 
 namespace Transactions.Business.Services
 {
@@ -38,12 +38,12 @@ namespace Transactions.Business.Services
         {
             await base.CreateEntity(entity, dbTransaction);
 
-            await AddHistory(entity.PaymentTransactionID, string.Empty, DbLayerMessages.TransactionCreated, TransactionOperationCodesEnum.TransactionCreated, null);
+            await AddHistory(entity.PaymentTransactionID, string.Empty, Messages.TransactionCreated, TransactionOperationCodesEnum.TransactionCreated, null);
         }
 
 
         public async override Task UpdateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null) 
-            => await UpdateEntityWithStatus(entity, DbLayerMessages.TransactionUpdated, TransactionOperationCodesEnum.TransactionUpdated, dbTransaction);
+            => await UpdateEntityWithStatus(entity, Messages.TransactionUpdated, TransactionOperationCodesEnum.TransactionUpdated, dbTransaction);
 
         public async Task UpdateEntityWithStatus(PaymentTransaction entity, string historyMessage, TransactionOperationCodesEnum operationCode, 
             IDbContextTransaction dbTransaction = null, string integrationMessageId = null)

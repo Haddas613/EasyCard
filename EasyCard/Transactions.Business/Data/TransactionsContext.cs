@@ -67,6 +67,7 @@ namespace Transactions.Business.Data
                 builder.OwnsOne(b => b.ClearingHouseTransactionDetails, s =>
                 {
                     s.Property(p => p.ClearingHouseTransactionID).HasColumnName("ClearingHouseTransactionID");
+                    s.Ignore(p => p.ConcurrencyToken);
                 });
 
                 builder.OwnsOne(b => b.ShvaTransactionDetails, s =>

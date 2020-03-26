@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 
 namespace Shva.Models
 {
-    [XmlRoot(ElementName = "Envelope", Namespace = "http://schemas.xmlsoap.org/soap/envelope/")]
+    [XmlRoot(ElementName = "Envelope", Namespace = "http://www.w3.org/2003/05/soap-envelope")]
     public class Envelope
     {
         [XmlElement("Header")]
@@ -16,20 +16,20 @@ namespace Shva.Models
         public Body Body { get; set; }
     }
 
-    [XmlRoot(ElementName = "Header", Namespace = "http://schemas.xmlsoap.org/soap/envelope/")]
+    [XmlRoot(ElementName = "Header", Namespace = "http://www.w3.org/2003/05/soap-envelope")]
     public class Header
     {
         public object Content { get; set; }
     }
 
-    [XmlRoot(ElementName = "Body", Namespace = "http://schemas.xmlsoap.org/soap/envelope/")]
+    [XmlRoot(ElementName = "Body", Namespace = "http://www.w3.org/2003/05/soap-envelope")]
     public class Body
     {
         [XmlElement("AshStartResponse", Type = typeof(AshStartResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         [XmlElement("AshStart", Type = typeof(AshStartRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         [XmlElement("AshEndResponse", Type = typeof(AshEndResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         [XmlElement("AshEnd", Type = typeof(AshEndRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
-        [XmlElement("AshAuthRespons", Type = typeof(AshAuthResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        [XmlElement("AshAuthResponse", Type = typeof(AshAuthResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         [XmlElement("AshAuth", Type = typeof(AshAuthRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         public object Content { get; set; }
     }

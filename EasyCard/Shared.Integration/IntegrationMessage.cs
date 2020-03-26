@@ -9,14 +9,16 @@ namespace Shared.Integration
     {
         public IntegrationMessage()
         {
+            this.RowKey = Guid.NewGuid().ToString();
             this.messageDate = DateTime.UtcNow;
         }
 
         public IntegrationMessage(DateTime messageDate, string messageId)
         {
-            this.RowKey = messageId;
+            this.RowKey = Guid.NewGuid().ToString();
+            this.MessageId = messageId;
             this.MessageDate = messageDate;
-            this.PartitionKey = this.MessageDate.ToString("yy-MM-dd");
+            this.PartitionKey = $"{this.MessageDate.ToString("yy-MM-dd")}-{this.MessageId}";
         }
 
         private DateTime messageDate;
@@ -28,7 +30,7 @@ namespace Shared.Integration
             set
             {
                 messageDate = value;
-                this.PartitionKey = this.messageDate.ToString("yy-MM-dd");
+                this.PartitionKey = $"{this.MessageDate.ToString("yy-MM-dd")}-{this.MessageId}";
             }
         }
 
@@ -44,10 +46,8 @@ namespace Shared.Integration
 
         public long? MerchantID { get; set; }
 
-        [IgnoreProperty]
-        public string MessageId
-        {
-            get { return this.RowKey; } set { this.RowKey = value; }
-        }
+        public string MessageId { get; set; }
+
+        public string Action { get; set; }
     }
 }

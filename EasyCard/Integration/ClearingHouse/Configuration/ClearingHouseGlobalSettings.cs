@@ -10,7 +10,7 @@ namespace ClearingHouse
         /// <summary>
         /// Payment gateway ID
         /// </summary>
-        public long? PaymentGatewayID { get; set; }
+        public int? PaymentGatewayID { get; set; }
 
         public string ApiBaseAddress { get; set; }
     }

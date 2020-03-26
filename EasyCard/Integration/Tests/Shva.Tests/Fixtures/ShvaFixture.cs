@@ -26,7 +26,7 @@ namespace Shva.Tests.Fixtures
             ShvaSettings.BaseUrl = "";
 
 
-            ProcessorTransactionRequest shvaReq = new ProcessorTransactionRequest();
+            ProcessorCreateTransactionRequest shvaReq = new ProcessorCreateTransactionRequest();
             WebApiClientMockSetup webApiClient = new WebApiClientMockSetup();
             var integrationStorage = new IntegrationRequestLogStorageServiceMock();
 

@@ -4,6 +4,7 @@ using Shared.Api.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
 
 namespace Shared.Api.Models
@@ -15,11 +16,13 @@ namespace Shared.Api.Models
         {
         }
 
-        public OperationResponse(string message, StatusEnum status, long? entityId = null)
+        public OperationResponse(string message, StatusEnum status, long? entityId = null, string correlationId = null, IEnumerable<Api.Models.Error> errors = null)
         {
             Message = message;
             Status = status;
             EntityID = entityId;
+            CorrelationId = correlationId;
+            Errors = errors?.Select(d => d).ToList();
         }
 
         public OperationResponse(string message, StatusEnum status, string entityReference = null)

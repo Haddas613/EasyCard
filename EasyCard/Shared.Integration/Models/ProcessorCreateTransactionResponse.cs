@@ -4,24 +4,24 @@ using System.Text;
 
 namespace Shared.Integration.Models
 {
-    public class ProcessorTransactionResponse
+    public class ProcessorCreateTransactionResponse
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProcessorTransactionResponse"/> class.
+        /// Initializes a new instance of the <see cref="ProcessorCreateTransactionResponse"/> class.
         /// Use in case of success
         /// </summary>
-        public ProcessorTransactionResponse()
+        public ProcessorCreateTransactionResponse()
         {
             Success = true;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProcessorTransactionResponse"/> class.
+        /// Initializes a new instance of the <see cref="ProcessorCreateTransactionResponse"/> class.
         /// Use this in case of error response
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <param name="rejectionReasonEnum"></param>
-        public ProcessorTransactionResponse(string errorMessage, RejectionReasonEnum errorCode, string errorCodeStr)
+        public ProcessorCreateTransactionResponse(string errorMessage, RejectionReasonEnum errorCode, string errorCodeStr)
         {
             Success = false;
             ErrorMessage = errorMessage;
@@ -30,12 +30,12 @@ namespace Shared.Integration.Models
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProcessorTransactionResponse"/> class.
+        /// Initializes a new instance of the <see cref="ProcessorCreateTransactionResponse"/> class.
         /// Use this in case of error response
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <param name="errorCode"></param>
-        public ProcessorTransactionResponse(string errorMessage, string errorCode)
+        public ProcessorCreateTransactionResponse(string errorMessage, string errorCode)
         {
             Success = false;
             ErrorMessage = errorMessage;

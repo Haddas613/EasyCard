@@ -43,12 +43,7 @@ namespace Shva
             this.integrationRequestLogStorageService = integrationRequestLogStorageService;
         }
 
-        private async Task HandleIntegrationMessage(IntegrationMessage msg)
-        {
-            await integrationRequestLogStorageService.Save(msg);
-        }
-
-        public async Task<ProcessorTransactionResponse> CreateTransaction(ProcessorTransactionRequest paymentTransactionRequest, string messageId, string
+        public async Task<ProcessorCreateTransactionResponse> CreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest, string messageId, string
              correlationId)
         {
             ShvaTerminalSettings shvaParameters = paymentTransactionRequest.ProcessorSettings as ShvaTerminalSettings;
@@ -68,7 +63,7 @@ namespace Shva
             if (ashStartResultBody == null)
             {
                 // return failed response
-                return new ProcessorTransactionResponse(Messages.EmptyResponse, RejectionReasonEnum.Unknown, string.Empty);
+                return new ProcessorCreateTransactionResponse(Messages.EmptyResponse, RejectionReasonEnum.Unknown, string.Empty);
             }
 
             // Success situation
@@ -81,10 +76,10 @@ namespace Shva
 
                 //call to the next function for make shva tansaction
                 var resultAuth = await this.DoRequest(ashAuthReq, AshAuthUrl, messageId, correlationId, HandleIntegrationMessage);
-                var authResultBody = (AshAuthResponse)resultAuth?.Body?.Content;
+                var authResultBody = (AshAuthResponseBody)resultAuth?.Body?.Content;
 
-                ashEndReq.globalObj = authResultBody.Body.globalObj;
-                ashEndReq.pinpad = authResultBody.Body.pinpad;
+                ashEndReq.globalObj = authResultBody.globalObj;
+                ashEndReq.pinpad = authResultBody.pinpad;
 
                 var resultAshEnd = await this.DoRequest(ashEndReq, AshEndUrl, messageId, correlationId, HandleIntegrationMessage);
                 var resultAshEndBody = (AshEndResponseBody)resultAshEnd?.Body?.Content;
@@ -101,13 +96,13 @@ namespace Shva
 
                 return resultAshEndBody.GetProcessorTransactionResponse();
             }
-            else if (ashStartResultBody.globalObj != null && ashStartResultBody.globalObj.outputObj != null && ashStartResultBody.globalObj.outputObj.ashStatus != null && ashStartResultBody.globalObj.outputObj.ashStatusDes != null)
+            else if (ashStartResultBody.globalObj?.outputObj?.ashStatus != null && ashStartResultBody.globalObj?.outputObj?.ashStatusDes != null)
             {
-                return new ProcessorTransactionResponse(ashStartResultBody.globalObj.outputObj.ashStatus.valueTag, ashStartResultBody.globalObj.outputObj.ashStatusDes.valueTag);
+                return new ProcessorCreateTransactionResponse(ashStartResultBody.globalObj.outputObj.ashStatus.valueTag, ashStartResultBody.globalObj.outputObj.ashStatusDes.valueTag);
             }
             else
             {
-                return new ProcessorTransactionResponse("Unknown", RejectionReasonEnum.Unknown, ashStartResultBody.AshStartResult.ToString());
+                return new ProcessorCreateTransactionResponse(Messages.ResponseCannotBeParsed, RejectionReasonEnum.Unknown, ashStartResultBody.AshStartResult.ToString());
             }
         }
 
@@ -121,7 +116,7 @@ namespace Shva
         public async Task ParamsUpdateTransaction(ShvaTerminalSettings updateParamRequest, string messageId, string
             correlationId)
         {
-            var res = new ProcessorTransactionResponse();
+            var res = new ProcessorCreateTransactionResponse();
             var updateParamsReq = new GetTerminalDataRequestBody();
             updateParamsReq.UserName = updateParamRequest.UserName;
             updateParamsReq.Password = updateParamRequest.Password;
@@ -198,7 +193,7 @@ namespace Shva
 
             try
             {
-                svcRes = await this.apiClient.PostXml<Envelope>(configuration.BaseUrl, $"/{soapAction}" /* TODO: please check which url Shva used for each request */, soap, () => BuildHeaders($"{configuration.BaseUrl}/{soapAction}"),
+                svcRes = await this.apiClient.PostXml<Envelope>(configuration.BaseUrl, string.Empty /* TODO: please check which url Shva used for each request */, soap, () => BuildHeaders($"{configuration.BaseUrl}/{soapAction}"),
                     (url, request) =>
                     {
                         requestStr = request;
@@ -224,10 +219,12 @@ namespace Shva
 
                     integrationMessage.MessageId = messageId;
                     integrationMessage.MessageDate = DateTime.UtcNow;
-                    integrationMessage.Request = requestStr;
-                    integrationMessage.Response = responseStr;
+                    integrationMessage.Request = requestStr?.Left(30000);
+                    integrationMessage.Response = responseStr?.Left(30000);
                     integrationMessage.ResponseStatus = responseStatusStr;
                     integrationMessage.Address = requestUrl;
+                    integrationMessage.Action = soapAction;
+                    integrationMessage.CorrelationId = correlationId;
 
                     await handleIntegrationMessage?.Invoke(integrationMessage);
                 }
@@ -246,6 +243,11 @@ namespace Shva
             headers.Add("SOAPAction", $"{soapAction}");
 
             return headers;
+        }
+
+        private async Task HandleIntegrationMessage(IntegrationMessage msg)
+        {
+            await integrationRequestLogStorageService.Save(msg);
         }
     }
 }

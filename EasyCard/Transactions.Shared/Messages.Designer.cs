@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Shva {
+namespace Transactions.Shared {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Shva {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Shva.Messages", typeof(Messages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Transactions.Shared.Messages", typeof(Messages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,29 +61,29 @@ namespace Shva {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty Response.
+        ///   Looks up a localized string similar to Failed To Process Transaction.
         /// </summary>
-        public static string EmptyResponse {
+        public static string FailedToProcessTransaction {
             get {
-                return ResourceManager.GetString("EmptyResponse", resourceCulture);
+                return ResourceManager.GetString("FailedToProcessTransaction", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction Failed.
+        ///   Looks up a localized string similar to Transaction Created.
         /// </summary>
-        public static string Failed {
+        public static string TransactionCreated {
             get {
-                return ResourceManager.GetString("Failed", resourceCulture);
+                return ResourceManager.GetString("TransactionCreated", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Response parsing failed.
+        ///   Looks up a localized string similar to Transaction Updated.
         /// </summary>
-        public static string ResponseCannotBeParsed {
+        public static string TransactionUpdated {
             get {
-                return ResourceManager.GetString("ResponseCannotBeParsed", resourceCulture);
+                return ResourceManager.GetString("TransactionUpdated", resourceCulture);
             }
         }
     }

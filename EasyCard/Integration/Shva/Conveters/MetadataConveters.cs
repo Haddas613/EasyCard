@@ -51,7 +51,7 @@ namespace Shva.Conveters
 
         public static bool IsSuccessful(this AshEndResultEnum ashEndResult)
         {
-            return ashEndResult == AshEndResultEnum.Success || ashEndResult ==  AshEndResultEnum.SuccessJ5;
+            return ashEndResult == AshEndResultEnum.Success || ashEndResult == AshEndResultEnum.SuccessJ5;
         }
 
         public static RejectionReasonEnum GetErrorCode(this AshEndResultEnum ashEndResult)

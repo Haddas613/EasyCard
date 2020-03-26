@@ -28,9 +28,16 @@ namespace BasicServices
 
         public async Task Save(IntegrationMessage entity)
         {
-            TableOperation insertOperation = TableOperation.Insert(entity);
+            try
+            {
+                TableOperation insertOperation = TableOperation.Insert(entity);
 
-            await _table.ExecuteAsync(insertOperation);
+                await _table.ExecuteAsync(insertOperation);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task<IntegrationMessage> Get(DateTime requestDate, string correlationId)

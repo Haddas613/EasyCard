@@ -21,5 +21,7 @@ namespace Shared.Integration.Models
         /// Shva details
         /// </summary>
         public object ProcessorTransactionDetails { get; set; }
+
+        public object AggregatorSettings { get; set; }
     }
 }

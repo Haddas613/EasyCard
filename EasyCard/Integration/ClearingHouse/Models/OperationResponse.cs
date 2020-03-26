@@ -37,8 +37,8 @@ namespace ClearingHouse.Models
         /// <summary>
         /// Exception unique Id
         /// </summary>
-        [DataMember(Name = "corellationId")]
-        public string CorellationId { get; set; }
+        [DataMember(Name = "correlationId")]
+        public string CorrelationId { get; set; }
 
         /// <summary>
         /// Operation Status

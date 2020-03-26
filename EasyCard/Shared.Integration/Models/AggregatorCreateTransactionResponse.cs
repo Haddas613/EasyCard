@@ -13,8 +13,14 @@ namespace Shared.Integration.Models
         /// </summary>
         public string ErrorMessage { get; set; }
 
-        public string AggregatorTransactionID { get; set; }
+        public long? AggregatorTransactionID { get; set; }
 
         public string ConcurrencyToken { get; set; }
+
+        public IEnumerable<Api.Models.Error> Errors { get; set; }
+
+        public string CorrelationID { get; set; }
+
+        public int? OriginalHttpResponseCode { get; set; }
     }
 }

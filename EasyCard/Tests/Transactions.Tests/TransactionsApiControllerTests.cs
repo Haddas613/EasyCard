@@ -50,7 +50,7 @@ namespace Transactions.Tests
             await cardTokenController.CreateToken(tokenRequest); //To ensure that there is available token
 
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.Object, transactionsFixture.Mapper,
-                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object);
+                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object, transactionsFixture.Logger);
 
             var existingToken = (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefaultAsync())
                 ?? throw new Exception("No existing token was found");
@@ -84,7 +84,7 @@ namespace Transactions.Tests
 
             procResolverMock.ResolverMock.Verify(m => m.GetProcessor(It.IsAny<Terminal>()), Times.Once);
             procResolverMock.ProcessorMock.Verify(
-                m => m.CreateTransaction(It.IsAny<ProcessorTransactionRequest>(), It.IsAny<string>(),
+                m => m.CreateTransaction(It.IsAny<ProcessorCreateTransactionRequest>(), It.IsAny<string>(),
                 It.IsAny<string>()), Times.Once);
 
             var transactionEntry = await transactionsFixture.TransactionsContext.PaymentTransactions
@@ -109,7 +109,7 @@ namespace Transactions.Tests
             keyValueStorageMock.Setup(m => m.Get(nonExistingKey)).Returns(Task.FromResult<CreditCardTokenKeyVault>(null));
 
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.Object, transactionsFixture.Mapper,
-                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object);
+                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object, transactionsFixture.Logger);
 
             var transactionRequest = new TransactionRequestWithToken
             {
@@ -146,7 +146,7 @@ namespace Transactions.Tests
                 .Verifiable();
 
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.Object, transactionsFixture.Mapper,
-                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object);
+                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object, transactionsFixture.Logger);
 
             var existingToken = (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefaultAsync())
                 ?? throw new Exception("No existing token was found");
@@ -209,12 +209,12 @@ namespace Transactions.Tests
             }
 
             //Ensure that processor will not successfully create transaction
-            procResolverMock.ProcessorMock.Setup(m => m.CreateTransaction(It.IsAny<ProcessorTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(new ProcessorTransactionResponse { Success = false, ErrorMessage = "something is wrong" })
+            procResolverMock.ProcessorMock.Setup(m => m.CreateTransaction(It.IsAny<ProcessorCreateTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new ProcessorCreateTransactionResponse { Success = false, ErrorMessage = "something is wrong" })
                 .Verifiable();
 
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.Object, transactionsFixture.Mapper,
-                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object);
+                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object, transactionsFixture.Logger);
 
             var existingToken = (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefaultAsync())
                 ?? throw new Exception("No existing token was found");
@@ -245,7 +245,7 @@ namespace Transactions.Tests
 
             procResolverMock.ResolverMock.Verify(m => m.GetProcessor(It.IsAny<Terminal>()), Times.Once);
             procResolverMock.ProcessorMock.Verify(
-                m => m.CreateTransaction(It.IsAny<ProcessorTransactionRequest>(), It.IsAny<string>(),
+                m => m.CreateTransaction(It.IsAny<ProcessorCreateTransactionRequest>(), It.IsAny<string>(),
                 It.IsAny<string>()), Times.Once);
 
             var transactionEntry = await transactionsFixture.TransactionsContext.PaymentTransactions
@@ -271,7 +271,7 @@ namespace Transactions.Tests
                 ?? throw new Exception("No existing transactions found");
 
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.Object, transactionsFixture.Mapper,
-                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object);
+                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object, transactionsFixture.Logger);
 
             var actionResult = await controller.GetTransaction(existingTransaction.PaymentTransactionID);
 
@@ -295,7 +295,7 @@ namespace Transactions.Tests
                 ?? throw new Exception("No existing transactions found");
 
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.Object, transactionsFixture.Mapper,
-                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object);
+                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object, transactionsFixture.Logger);
 
             var filter = new TransactionsFilter { TerminalID = existingTransaction.TerminalID };
 

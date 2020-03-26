@@ -31,6 +31,8 @@ using Transactions.Api.Services;
 using Microsoft.Extensions.Options;
 using Shared.Helpers;
 using BasicServices;
+using Transactions.Shared;
+using Shared.Helpers.Security;
 
 namespace TransactionsApi
 {
@@ -89,6 +91,12 @@ namespace TransactionsApi
                 c.IncludeXmlComments(xmlPath);
             });
 
+            // DI
+            services.AddDbContext<Merchants.Business.Data.MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("MerchantsConnection")));
+            services.AddScoped<IMerchantsService, MerchantsService>();
+            services.AddScoped<ITerminalsService, TerminalsService>();
+
+            services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
             services.Configure<AzureKeyVaultSettings>(Configuration.GetSection("AzureKeyVaultTokenStorageSettings"));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -111,14 +119,26 @@ namespace TransactionsApi
 
             services.AddSingleton<Shva.ShvaProcessor, Shva.ShvaProcessor>(serviceProvider =>
             {
-                var cfg = serviceProvider.GetRequiredService<IOptions<Shva.Configuration.ShvaGlobalSettings>>();
+                var shvaCfg = serviceProvider.GetRequiredService<IOptions<Shva.Configuration.ShvaGlobalSettings>>();
                 var webApiClient = new WebApiClient();
                 var logger = serviceProvider.GetRequiredService<ILogger<Shva.ShvaProcessor>>();
-                var storageService = new IntegrationRequestLogStorageService(null, null); // TODO
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.ShvaRequestsLogStorageTable);
 
-                return new Shva.ShvaProcessor(webApiClient, cfg, logger, storageService);
+                return new Shva.ShvaProcessor(webApiClient, shvaCfg, logger, storageService);
             });
 
+            services.AddSingleton<ClearingHouse.ClearingHouseAggregator, ClearingHouse.ClearingHouseAggregator>(serviceProvider =>
+            {
+                var chCfg = serviceProvider.GetRequiredService<IOptions<ClearingHouse.ClearingHouseGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<ClearingHouse.ClearingHouseAggregator>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.ClearingHouseRequestsLogStorageTable);
+                var tokenSvc = new WebApiClientTokenService(webApiClient.HttpClient, chCfg);
+
+                return new ClearingHouse.ClearingHouseAggregator(webApiClient, logger, chCfg, tokenSvc, storageService);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

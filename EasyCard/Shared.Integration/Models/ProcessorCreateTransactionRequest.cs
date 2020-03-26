@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Shared.Integration.Models
 {
-    public class ProcessorTransactionRequest
+    public class ProcessorCreateTransactionRequest
     {
         /// <summary>
         /// Shva terminal settings

@@ -9,11 +9,13 @@ using Merchants.Business.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Api.Validation;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
@@ -23,6 +25,7 @@ using Transactions.Api.Models.Transactions;
 using Transactions.Api.Services;
 using Transactions.Business.Entities;
 using Transactions.Business.Services;
+using Transactions.Shared;
 using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Controllers
@@ -38,12 +41,13 @@ namespace Transactions.Api.Controllers
         private readonly IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage;
         private readonly IAggregatorResolver aggregatorResolver;
         private readonly IProcessorResolver processorResolver;
+        private readonly ILogger logger;
 
         // TODO: service client
         private readonly ITerminalsService terminalsService;
 
         public TransactionsApiController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper,
-            IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver, ITerminalsService terminalsService)
+            IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver, ITerminalsService terminalsService, ILogger<TransactionsApiController> logger)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -52,6 +56,7 @@ namespace Transactions.Api.Controllers
             this.aggregatorResolver = aggregatorResolver;
             this.processorResolver = processorResolver;
             this.terminalsService = terminalsService;
+            this.logger = logger;
         }
 
         [HttpGet]
@@ -79,6 +84,7 @@ namespace Transactions.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         [Route("create/withtoken")]
+        [ValidateModelState]
         public async Task<ActionResult<OperationResponse>> CreateTransactionWithToken([FromBody] TransactionRequestWithToken model)
         {
             // TODO: business vlidators (not only model validation)
@@ -115,6 +121,12 @@ namespace Transactions.Api.Controllers
 
             var transaction = mapper.Map<PaymentTransaction>(model);
 
+            mapper.Map(transactionOptions, transaction);
+
+            transaction.Calculate();
+
+            transaction.ProcessorTerminalID = "123456"; // TODO: map from terminal settings
+
             await transactionsService.CreateEntity(transaction);
 
             // create transaction in aggregator (Clearing House)
@@ -122,13 +134,16 @@ namespace Transactions.Api.Controllers
             {
                 var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
 
+                var chSettings = new ClearingHouse.ClearingHouseTerminalSettings() { MerchantReference = "5eb62fca-a37b-4192-b7f1-e75784561682" }; // TODO: get from terminal
+                aggregatorRequest.AggregatorSettings = chSettings;
+
                 var aggregatorResponse = await aggregator.CreateTransaction(aggregatorRequest);
 
                 if (!aggregatorResponse.Success)
                 {
                     // TODO: can be 403
                     // TODO: update transaction
-                    return BadRequest(new OperationResponse(aggregatorResponse.ErrorMessage, StatusEnum.Error, transaction.TransactionNumber)); // TODO: convert message
+                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.TransactionNumber, HttpContext.TraceIdentifier, aggregatorResponse.Errors));
                 }
 
                 // TODO: use converter instead of mapper (?)
@@ -141,13 +156,21 @@ namespace Transactions.Api.Controllers
             {
                 // TODO: can be 403
                 // TODO: update transaction
+                logger.LogError("Aggregator Create Transaction request failed", ex);
+
                 return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.TransactionNumber)); // TODO: convert message
             }
+
+            // TODO: cc vendorm isTourist
 
             // create transaction in processor (Shva)
             try
             {
-                var processorRequest = mapper.Map<ProcessorTransactionRequest>(transaction);
+                var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
+
+                mapper.Map(transactionOptions, processorRequest);
+
+                processorRequest.ProcessorSettings = new Shva.Configuration.ShvaTerminalSettings { MerchantNumber = "123", UserName = "test", Password = "test" }; // TODO: get from terminal
 
                 var processorMessageID = Guid.NewGuid().ToString();
 
@@ -179,6 +202,9 @@ namespace Transactions.Api.Controllers
             {
                 var commitAggregatorRequest = mapper.Map<AggregatorCommitTransactionRequest>(transaction);
 
+                var chSettings = new ClearingHouse.ClearingHouseTerminalSettings() { MerchantReference = "5eb62fca-a37b-4192-b7f1-e75784561682" }; // TODO: get from terminal
+                commitAggregatorRequest.AggregatorSettings = chSettings;
+
                 var commitAggregatorResponse = await aggregator.CommitTransaction(commitAggregatorRequest);
 
                 if (!commitAggregatorResponse.Success)
@@ -187,7 +213,7 @@ namespace Transactions.Api.Controllers
 
                     // TODO: can be 403
                     // TODO: update transaction
-                    return BadRequest(new OperationResponse(commitAggregatorResponse.ErrorMessage, StatusEnum.Error, transaction.TransactionNumber)); // TODO: convert message
+                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.TransactionNumber, HttpContext.TraceIdentifier, commitAggregatorResponse.Errors));
                 }
 
                 // TODO: use converter instead of mapper (?)

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Shared.Tests.Configuration;
 using Shared.Tests.Fixtures;
 using System;
@@ -25,6 +27,8 @@ namespace Transactions.Tests.Fixtures
         public ICreditCardTokenService CreditCardTokenService { get; private set; }
 
         public IMapper Mapper { get; private set; }
+
+        public ILogger<Api.Controllers.TransactionsApiController> Logger { get; } = new NullLogger<Api.Controllers.TransactionsApiController>();
 
         public TransactionsFixture()
         {

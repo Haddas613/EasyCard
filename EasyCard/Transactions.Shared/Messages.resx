@@ -117,13 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EmptyResponse" xml:space="preserve">
-    <value>Empty Response</value>
+  <data name="FailedToProcessTransaction" xml:space="preserve">
+    <value>Failed To Process Transaction</value>
   </data>
-  <data name="Failed" xml:space="preserve">
-    <value>Transaction Failed</value>
+  <data name="TransactionCreated" xml:space="preserve">
+    <value>Transaction Created</value>
   </data>
-  <data name="ResponseCannotBeParsed" xml:space="preserve">
-    <value>Response parsing failed</value>
+  <data name="TransactionUpdated" xml:space="preserve">
+    <value>Transaction Updated</value>
   </data>
 </root>
