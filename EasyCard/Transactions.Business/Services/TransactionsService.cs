@@ -8,6 +8,7 @@ using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,8 +40,7 @@ namespace Transactions.Business.Services
         {
             if (user.GetMerchantID() != entity.MerchantID)
             {
-                throw new EntityConflictException(ApiMessages.MerchantInaccessible, "Merchant",
-                    $"Expected MerchantID: {user.GetMerchantID()}; Got: {entity.MerchantID}");
+                throw new SecurityException(Messages.PleaseCheckValues);
             }
 
             await base.CreateEntity(entity, dbTransaction);

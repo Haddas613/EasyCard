@@ -107,7 +107,7 @@ namespace Transactions.Tests
                 keyValueStorageMock.Object, transactionsFixture.Mapper);
 
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.Object, transactionsFixture.Mapper,
-                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object);
+                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object, transactionsFixture.Logger);
 
             var transactionRequest = new TransactionRequestWithCreditCard
             {
@@ -142,7 +142,7 @@ namespace Transactions.Tests
 
             procResolverMock.ResolverMock.Verify(m => m.GetProcessor(It.IsAny<Terminal>()), Times.Once);
             procResolverMock.ProcessorMock.Verify(
-                m => m.CreateTransaction(It.IsAny<ProcessorTransactionRequest>(), It.IsAny<string>(),
+                m => m.CreateTransaction(It.IsAny<ProcessorCreateTransactionRequest>(), It.IsAny<string>(),
                 It.IsAny<string>()), Times.Once);
 
             var transactionEntry = await transactionsFixture.TransactionsContext.PaymentTransactions

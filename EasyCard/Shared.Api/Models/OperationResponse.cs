@@ -22,7 +22,7 @@ namespace Shared.Api.Models
             Status = status;
         }
 
-        public OperationResponse(string message, StatusEnum status, long? entityId = null)
+        public OperationResponse(string message, StatusEnum status, long? entityId = null, string correlationId = null, IEnumerable<Api.Models.Error> errors = null)
         {
             Message = message;
             Status = status;
@@ -31,7 +31,7 @@ namespace Shared.Api.Models
             Errors = errors?.Select(d => d).ToList();
         }
 
-        public OperationResponse(string message, StatusEnum status, string entityReference)
+        public OperationResponse(string message, StatusEnum status, string entityReference = null)
         {
             Message = message;
             Status = status;

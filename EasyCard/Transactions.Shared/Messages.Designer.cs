@@ -70,6 +70,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please check specified values.
+        /// </summary>
+        public static string PleaseCheckValues {
+            get {
+                return ResourceManager.GetString("PleaseCheckValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transaction Created.
         /// </summary>
         public static string TransactionCreated {
