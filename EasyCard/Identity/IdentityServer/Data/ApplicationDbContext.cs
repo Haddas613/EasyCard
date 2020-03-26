@@ -12,6 +12,7 @@ namespace IdentityServer.Data
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<UserAudit> UserAudits { get; set; }
+        public DbSet<TerminalApiAuthKey> TerminalApiAuthKeys { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -21,6 +22,7 @@ namespace IdentityServer.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserAuditConfiguration());
+            modelBuilder.ApplyConfiguration(new TerminalApiAuthKeyConfiguration());
             base.OnModelCreating(modelBuilder);
         }
 
@@ -44,6 +46,23 @@ namespace IdentityServer.Data
                 builder.Property(b => b.Email).IsRequired(true).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+            }
+        }
+
+        internal class TerminalApiAuthKeyConfiguration : IEntityTypeConfiguration<TerminalApiAuthKey>
+        {
+            public void Configure(EntityTypeBuilder<TerminalApiAuthKey> builder)
+            {
+                builder.ToTable("TerminalApiAuthKey");
+
+                builder.HasKey(b => b.TerminalApiAuthKeyID);
+                builder.Property(b => b.TerminalApiAuthKeyID).ValueGeneratedOnAdd();
+
+                builder.Property(b => b.TerminalID).IsRequired(true);
+
+                builder.Property(b => b.Created).IsRequired();
+
+                builder.Property(b => b.AuthKey).IsRequired(true).HasMaxLength(512).IsUnicode(false);
             }
         }
     }
