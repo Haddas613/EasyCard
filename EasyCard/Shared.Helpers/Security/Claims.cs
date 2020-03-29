@@ -16,5 +16,6 @@ namespace Shared.Helpers.Security
 
         public const string UserIdClaim = ClaimTypes.NameIdentifier;
         public const string SubjClaim = JwtClaimTypes.Subject;
+        public const string NameClaim = JwtClaimTypes.Name;
     }
 }

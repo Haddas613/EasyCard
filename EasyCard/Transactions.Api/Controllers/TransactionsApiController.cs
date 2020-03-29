@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Azure.Security.KeyVault.Secrets;
 using Merchants.Business.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +35,7 @@ namespace Transactions.Api.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Route("api/transactions")]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontend)]
     [ApiController]
     public class TransactionsApiController : ApiControllerBase
     {
@@ -114,6 +116,8 @@ namespace Transactions.Api.Controllers
 
         private async Task<ActionResult<OperationResponse>> ProcessTransaction(TransactionRequest model, ProcessTransactionOptions transactionOptions, string actionName)
         {
+            var terminalID = User.GetTerminalID();
+
             // TODO: get terminalID from token
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync()); // TODO: 403
 
@@ -171,7 +175,7 @@ namespace Transactions.Api.Controllers
 
                 mapper.Map(transactionOptions, processorRequest);
 
-                processorRequest.ProcessorSettings = new Shva.Configuration.ShvaTerminalSettings { MerchantNumber = "123", UserName = "test", Password = "test" }; // TODO: get from terminal
+                processorRequest.ProcessorSettings = new Shva.Configuration.ShvaTerminalSettings { MerchantNumber = "0882021014", UserName = "ABLCH", Password = "E9900C" }; // TODO: get from terminal
 
                 var processorMessageID = Guid.NewGuid().ToString();
 

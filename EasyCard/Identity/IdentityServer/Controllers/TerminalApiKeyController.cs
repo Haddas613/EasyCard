@@ -29,20 +29,24 @@ namespace IdentityServer.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Route("api/terminalapikeys")]
-    //[Authorize(AuthenticationSchemes = "token")]
+    [Authorize(Policy = Policy.ManagementApi, AuthenticationSchemes = "token")]
     public class TerminalApiKeyController : ApiControllerBase
     {
         private readonly ILogger logger;
         private readonly ICryptoService cryptoService;
         private readonly ITerminalApiKeyService terminalApiKeyService;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public TerminalApiKeyController(
             ILogger<UserManagementApiController> logger,
-            ICryptoService cryptoService, ITerminalApiKeyService terminalApiKeyService)
+            ICryptoService cryptoService,
+            ITerminalApiKeyService terminalApiKeyService,
+            UserManager<ApplicationUser> userManager)
         {
             this.logger = logger;
             this.cryptoService = cryptoService;
             this.terminalApiKeyService = terminalApiKeyService;
+            this.userManager = userManager;
         }
 
         [HttpGet]
@@ -60,9 +64,12 @@ namespace IdentityServer.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> Create([FromBody]CreateTerminalApiKeyRequest model)
         {
+            var user = new ApplicationUser { UserName = $"terminal_{model.TerminalID:0000000000}" };
+            var result = await userManager.CreateAsync(user);
+
             var newApiKey = new TerminalApiAuthKey
             {
-                AuthKey = cryptoService.Encrypt(Guid.NewGuid().ToString()), //TODO: encrypt actual data
+                AuthKey = cryptoService.Encrypt(user.Id), //TODO: encrypt actual data
                 TerminalID = model.TerminalID,
                 Created = DateTime.UtcNow
             };

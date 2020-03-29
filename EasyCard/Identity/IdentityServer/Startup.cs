@@ -12,6 +12,7 @@ using IdentityServer.Models;
 using IdentityServer.Security;
 using IdentityServer.Security.Auditing;
 using IdentityServer.Services;
+using IdentityServer4;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -50,6 +51,7 @@ namespace IdentityServer
         public void ConfigureServices(IServiceCollection services)
         {
             var config = Configuration.GetSection("AppConfig")?.Get<ApplicationSettings>();
+            var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
 
             services.AddLogging(logging =>
             {
@@ -109,10 +111,41 @@ namespace IdentityServer
 
             services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
 
-            // not recommended for production - you need to store your key material somewhere secure
+            // TODO: not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
 
-            services.AddAuthentication();
+            services.AddAuthentication()
+                .AddIdentityServerAuthentication("token", options =>
+                {
+                    options.Authority = identity.Authority;
+                    options.RequireHttpsMetadata = true;
+                    options.ApiName = "management_api";
+                    options.EnableCaching = true;
+                });
+
+                //.AddOpenIdConnect("oidc", "OpenID Connect", options =>
+                //{
+                //    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                //    options.SignOutScheme = IdentityServerConstants.SignoutScheme;
+
+                //    options.Authority = identity.AzureAdAuthority;
+                //    options.ClientId = identity.AzureAdClientId;
+                //    options.ResponseType = "id_token";
+                //    options.SaveTokens = true;
+                //    options.GetClaimsFromUserInfoEndpoint = true;
+
+                //    options.TokenValidationParameters = new TokenValidationParameters
+                //    {
+                //        ValidateAudience = false,
+                //    };
+                //});
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(
+                    Policy.ManagementApi,
+                    policy => policy.RequireClaim("scope", "management_api"));
+            });
 
             X509Certificate2 cert = null;
 
@@ -168,9 +201,9 @@ namespace IdentityServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
-            app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
-
             app.UseRequestResponseLogging();
+
+            app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

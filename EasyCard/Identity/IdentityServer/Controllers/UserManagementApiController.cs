@@ -23,7 +23,7 @@ namespace IdentityServer.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Route("api/userManagement")]
-    //[Authorize(AuthenticationSchemes = "token")]
+    [Authorize(Policy = Policy.ManagementApi, AuthenticationSchemes = "token")]
     public class UserManagementApiController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -77,26 +77,6 @@ namespace IdentityServer.Controllers
             var user = await userManager.FindByEmailAsync(email);
 
             return await GetUser(user);
-        }
-
-        private async Task<ActionResult<UserProfileDataResponse>> GetUser(ApplicationUser user)
-        {
-            if (user == null)
-            {
-                return new NotFoundObjectResult(new { Status = "error", Message = "User does not exist" });
-            }
-
-            var result = new UserProfileDataResponse
-            {
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                UserID = user.Id,
-                Roles = await userManager.GetRolesAsync(user)
-            };
-
-            var allClaims = await userManager.GetClaimsAsync(user);
-
-            return Ok(result);
         }
 
         // TODO: validate model
@@ -330,6 +310,26 @@ namespace IdentityServer.Controllers
 
             // TODO
             return new JsonResult(new { Status = "success" });
+        }
+
+        private async Task<ActionResult<UserProfileDataResponse>> GetUser(ApplicationUser user)
+        {
+            if (user == null)
+            {
+                return new NotFoundObjectResult(new { Status = "error", Message = "User does not exist" });
+            }
+
+            var result = new UserProfileDataResponse
+            {
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                UserID = user.Id,
+                Roles = await userManager.GetRolesAsync(user)
+            };
+
+            var allClaims = await userManager.GetClaimsAsync(user);
+
+            return Ok(result);
         }
     }
 }

@@ -86,9 +86,9 @@ namespace MerchantsApi
             // DI: basics
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpContextAccessor();
 
-            services.AddSingleton<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
+            services.AddScoped<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
 
             // DI: services
             services.AddDbContext<MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));

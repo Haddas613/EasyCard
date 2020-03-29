@@ -33,8 +33,9 @@ using Shared.Helpers;
 using BasicServices;
 using Transactions.Shared;
 using Shared.Helpers.Security;
+using IdentityServer4.AccessTokenValidation;
 
-namespace TransactionsApi
+namespace Transactions.Api
 {
     public class Startup
     {
@@ -54,6 +55,33 @@ namespace TransactionsApi
                 logging.AddConsole();
                 logging.AddDebug();
                 logging.AddAzureWebAppDiagnostics();
+            });
+
+            var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
+
+            services.AddCors();
+
+            services.AddDistributedMemoryCache();
+
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = identity.Authority;
+                    options.RequireHttpsMetadata = true;
+                    options.RoleClaimType = "role";
+                    options.NameClaimType = "name";
+                    options.ApiName = "transactions_api";
+                    options.EnableCaching = true;
+                });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policy.Terminal, policy =>
+                    policy.RequireAssertion(context => context.User.IsTerminal()));
+                options.AddPolicy(Policy.TerminalOrMerchantFrontend, policy =>
+                    policy.RequireAssertion(context => context.User.IsTerminal() || context.User.IsMerchantFrontend()));
+                options.AddPolicy(Policy.MerchantFrontend, policy =>
+                   policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
             });
 
             services.AddControllers(opts =>
@@ -99,9 +127,9 @@ namespace TransactionsApi
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
             services.Configure<AzureKeyVaultSettings>(Configuration.GetSection("AzureKeyVaultTokenStorageSettings"));
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpContextAccessor();
 
-            services.AddSingleton<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
+            services.AddScoped<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
 
             services.AddDbContext<TransactionsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<ITransactionsService, TransactionsService>();

@@ -35,6 +35,16 @@ namespace Shared.Helpers.Security
             return (user?.IsInRole(Roles.Merchant) == true) || user?.IsImpersonatedAdmin() == true;
         }
 
+        public static bool IsTerminal(this ClaimsPrincipal user)
+        {
+            return user?.FindFirst("client_id")?.Value == "terminal" && user?.FindFirst(Claims.TerminalIDClaim)?.Value != null;
+        }
+
+        public static bool IsMerchantFrontend(this ClaimsPrincipal user)
+        {
+            return user?.FindFirst("client_id")?.Value == "merchant_frontend" && user?.IsMerchant() == true;
+        }
+
         public static long? GetMerchantID(this ClaimsPrincipal user)
         {
             var merchantID = user?.FindFirst(Claims.MerchantIDClaim)?.Value;
@@ -46,13 +56,22 @@ namespace Shared.Helpers.Security
             return Convert.ToInt64(merchantID);
         }
 
+        public static long? GetTerminalID(this ClaimsPrincipal user)
+        {
+            var terminalID = user?.FindFirst(Claims.TerminalIDClaim)?.Value;
+            if (string.IsNullOrWhiteSpace(terminalID))
+            {
+                return null;
+            }
+
+            return Convert.ToInt64(terminalID);
+        }
+
         public static string GetDoneBy(this ClaimsPrincipal user)
         {
-            var firstName = user?.FindFirst(Claims.FirstNameClaim)?.Value;
-            var lastName = user?.FindFirst(Claims.LastNameClaim)?.Value;
-            var fullName = (firstName + " " + lastName).Trim();
+            var name = user?.FindFirst(Claims.NameClaim)?.Value;
 
-            var doneBy = !string.IsNullOrWhiteSpace(fullName) ? fullName : "Service";
+            var doneBy = !string.IsNullOrWhiteSpace(name) ? name : "Service";
 
             return doneBy;
         }
