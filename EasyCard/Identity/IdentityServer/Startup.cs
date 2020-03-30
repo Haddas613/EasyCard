@@ -106,7 +106,7 @@ namespace IdentityServer
             .AddInMemoryApiResources(Config.Apis)
             .AddInMemoryClients(Config.Clients)
             .AddAspNetIdentity<ApplicationUser>()
-
+            .AddProfileService<ProfileService>()
             .AddExtensionGrantValidator<DelegationGrantValidator>();
 
             services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();

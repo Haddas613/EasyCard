@@ -11,6 +11,7 @@ using IdentityServer.Helpers;
 using IdentityServer.Models;
 using IdentityServer.Models.TerminalApiKey;
 using IdentityServer.Services;
+using IdentityServer4.Models;
 using IdentityServerClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -67,9 +68,11 @@ namespace IdentityServer.Controllers
             var user = new ApplicationUser { UserName = $"terminal_{model.TerminalID:0000000000}" };
             var result = await userManager.CreateAsync(user);
 
+            var str = user.Id.Sha256();
+
             var newApiKey = new TerminalApiAuthKey
             {
-                AuthKey = cryptoService.Encrypt(user.Id), //TODO: encrypt actual data
+                AuthKey = cryptoService.EncryptCompact(user.Id), //TODO: encrypt actual data
                 TerminalID = model.TerminalID,
                 Created = DateTime.UtcNow
             };
@@ -89,7 +92,7 @@ namespace IdentityServer.Controllers
             var key = EnsureExists(await terminalApiKeyService.GetAuthKeys().Where(k => k.TerminalID == terminalID).FirstOrDefaultAsync(), "Key");
 
             //TODO: encrypt actual data
-            key.AuthKey = cryptoService.Encrypt(Guid.NewGuid().ToString());
+            key.AuthKey = cryptoService.EncryptCompact(Guid.NewGuid().ToString());
 
             await terminalApiKeyService.UpdateEntity(key);
 

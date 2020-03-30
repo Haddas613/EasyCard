@@ -14,5 +14,9 @@ namespace Shared.Helpers.Security
         string EncryptWithExpiration(string textToEncrypt, TimeSpan expiredIn);
 
         string DecryptWithExpiration(string encryptedText);
+
+        string EncryptCompact(string textToEncrypt);
+
+        string DecryptCompact(string encryptedText);
     }
 }
