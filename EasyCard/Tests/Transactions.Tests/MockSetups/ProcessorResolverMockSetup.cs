@@ -33,7 +33,7 @@ namespace Transactions.Tests.MockSetups
                 .ReturnsAsync(new ProcessorCreateTransactionResponse { Success = true })
                 .Verifiable();
 
-            ResolverMock.Setup(m => m.GetProcessor(It.IsAny<Terminal>()))
+            ResolverMock.Setup(m => m.GetProcessor(It.IsAny<TerminalExternalSystem>()))
                 .Returns(ProcessorMock.Object)
                 .Verifiable();
         }

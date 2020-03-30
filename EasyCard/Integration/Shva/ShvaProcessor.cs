@@ -46,7 +46,7 @@ namespace Shva
         public async Task<ProcessorCreateTransactionResponse> CreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest, string messageId, string
              correlationId)
         {
-            ShvaTerminalSettings shvaParameters = paymentTransactionRequest.ProcessorSettings as ShvaTerminalSettings;
+            ShvaTerminalSettings shvaParameters = paymentTransactionRequest.ProcessorSettings.ToObject<ShvaTerminalSettings>();
 
             var ashStartReq = shvaParameters.GetAshStartRequestBody();
 

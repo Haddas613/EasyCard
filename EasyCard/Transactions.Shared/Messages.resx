@@ -117,11 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AggregatorNotDefined" xml:space="preserve">
+    <value>Aggregator is not defined</value>
+  </data>
   <data name="FailedToProcessTransaction" xml:space="preserve">
     <value>Failed To Process Transaction</value>
   </data>
   <data name="PleaseCheckValues" xml:space="preserve">
     <value>Please check specified values</value>
+  </data>
+  <data name="ProcessorNotDefined" xml:space="preserve">
+    <value>Processor is not defined</value>
   </data>
   <data name="TransactionCreated" xml:space="preserve">
     <value>Transaction Created</value>

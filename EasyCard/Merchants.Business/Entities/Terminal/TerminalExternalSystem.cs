@@ -1,4 +1,5 @@
 ﻿using Merchants.Business.Entities.Integration;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,7 +23,7 @@ namespace Merchants.Business.Entities.Terminal
         /// </summary>
         public string ExternalProcessorReference { get; set; }
 
-        public string Settings { get; set; }
+        public JObject Settings { get; set; }
 
         public byte[] UpdateTimestamp { get; set; }
 

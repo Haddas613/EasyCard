@@ -43,7 +43,7 @@ namespace ClearingHouse.Converters
 
             details.TerminalReference = createTransactionRequest.ProcessorTerminalID;
 
-            var clearingHouseSettings = createTransactionRequest.AggregatorSettings as ClearingHouseTerminalSettings;
+            var clearingHouseSettings = createTransactionRequest.AggregatorSettings.ToObject<ClearingHouseTerminalSettings>();
 
             details.MerchantReference = clearingHouseSettings.MerchantReference;
 

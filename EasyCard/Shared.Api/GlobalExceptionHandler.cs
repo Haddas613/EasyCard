@@ -48,6 +48,12 @@ namespace Shared.Api
                     result = JsonConvert.SerializeObject(new OperationResponse { Message = securityEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId });
                     responseStatusCode = 403;
                 }
+                else if (ex is BusinessException businessEx)
+                {
+                    //TODO: log details
+                    result = JsonConvert.SerializeObject(new OperationResponse { Message = businessEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId });
+                    responseStatusCode = 400;
+                }
                 else
                 {
                     result = JsonConvert.SerializeObject(new OperationResponse { Message = "System error occurred. Please contact support", Status = StatusEnum.Error, CorrelationId = correlationId });

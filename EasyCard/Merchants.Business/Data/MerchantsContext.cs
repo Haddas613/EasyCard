@@ -5,6 +5,9 @@ using Merchants.Business.Entities.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shared.Business.Security;
 using System;
 using System.Collections.Generic;
@@ -30,6 +33,10 @@ namespace Merchants.Business.Data
         public DbSet<MerchantHistory> MerchantHistories { get; set; }
 
         private readonly ClaimsPrincipal user;
+
+        private static readonly ValueConverter SettingsJObjectConverter = new ValueConverter<JObject, string>(
+           v => v.ToString(Formatting.None),
+           v => JObject.Parse(v));
 
         public MerchantsContext(DbContextOptions<MerchantsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
             : base(options)
@@ -133,6 +140,7 @@ namespace Merchants.Business.Data
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
                 builder.Property(b => b.Name).IsRequired(true).HasMaxLength(50).IsUnicode(true);
+                builder.Property(b => b.InstanceTypeFullName).IsRequired(true).HasMaxLength(512).IsUnicode(false);
                 builder.Property(b => b.Settings).IsRequired(true).IsUnicode(true);
             }
         }
@@ -149,7 +157,7 @@ namespace Merchants.Business.Data
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
                 builder.Property(b => b.ExternalProcessorReference).IsRequired(false).HasMaxLength(50).IsUnicode(false);
-                builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true);
+                builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
             }
         }
 

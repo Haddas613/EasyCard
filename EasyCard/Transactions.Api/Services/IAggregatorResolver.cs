@@ -9,6 +9,6 @@ namespace Transactions.Api.Services
 {
     public interface IAggregatorResolver
     {
-        IAggregator GetAggregator(Terminal terminal);
+        IAggregator GetAggregator(TerminalExternalSystem terminalExternalSystem);
     }
 }

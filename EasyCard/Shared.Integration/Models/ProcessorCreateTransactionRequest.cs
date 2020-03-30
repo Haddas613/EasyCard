@@ -1,4 +1,5 @@
-﻿using Shared.Api.Models.Enums;
+﻿using Newtonsoft.Json.Linq;
+using Shared.Api.Models.Enums;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Shared.Integration.Models
         /// <summary>
         /// Shva terminal settings
         /// </summary>
-        public object ProcessorSettings { get; set; }
+        public JObject ProcessorSettings { get; set; }
 
         /// <summary>
         /// Unique transaction ID

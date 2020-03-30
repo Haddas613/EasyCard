@@ -27,6 +27,10 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.CardLastFourDigits, s => s.MapFrom(src => CreditCardHelpers.GetCardLastFourDigits(src.CardNumber)))
                 .ForMember(m => m.CardBin, s => s.MapFrom(src => CreditCardHelpers.GetCardBin(src.CardNumber)));
 
+            CreateMap<Business.Entities.CreditCardDetails, Models.Transactions.CreditCardDetails>()
+                .ForMember(m => m.CardNumber, s => s.MapFrom(src => CreditCardHelpers.GetCardLastFourDigits(src.CardNumber)))
+                .ForMember(m => m.CardBin, s => s.MapFrom(src => CreditCardHelpers.GetCardBin(src.CardNumber)));
+
             CreateMap<PaymentTransaction, AggregatorCreateTransactionRequest>()
                 .ForMember(m => m.TransactionID, s => s.MapFrom(src => src.PaymentTransactionID.ToString()))
                 .ForMember(m => m.EasyCardTerminalID, s => s.MapFrom(src => src.TerminalID.ToString()))
@@ -56,6 +60,7 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.ConcurrencyToken, s => s.MapFrom(src => src.ClearingHouseTransactionDetails.ConcurrencyToken)) // TODO
                 .ForMember(m => m.ProcessorTransactionDetails, s => s.MapFrom(src => src.ShvaTransactionDetails)); // TODO
 
+            CreateMap<AggregatorCreateTransactionResponse, PaymentTransaction>();
             CreateMap<AggregatorCommitTransactionResponse, PaymentTransaction>();
 
             CreateMap<ProcessTransactionOptions, ProcessorCreateTransactionRequest>()
@@ -63,6 +68,8 @@ namespace Transactions.Api.Mapping
 
             CreateMap<CreditCardSecureDetails, CreditCardToken>()
                .ForMember(m => m.Cvv, s => s.MapFrom(src => src.Cvv));
+
+            CreateMap<PaymentTransaction, TransactionResponse>();
         }
     }
 }

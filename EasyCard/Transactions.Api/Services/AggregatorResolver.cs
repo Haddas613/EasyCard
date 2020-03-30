@@ -18,10 +18,10 @@ namespace Transactions.Api.Services
             this.serviceProvider = serviceProvider;
         }
 
-        public IAggregator GetAggregator(Terminal terminal)
+        public IAggregator GetAggregator(TerminalExternalSystem terminalExternalSystem)
         {
-            // TODO: should be resolved according terminal settings
-            return serviceProvider.GetService<ClearingHouseAggregator>();
+            // TODO: should be resolved according to integration settings
+            return serviceProvider.GetService(Type.GetType(terminalExternalSystem.ExternalSystem.InstanceTypeFullName)) as IAggregator;
         }
     }
 }

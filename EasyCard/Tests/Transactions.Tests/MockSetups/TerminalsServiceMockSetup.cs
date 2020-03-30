@@ -1,4 +1,5 @@
-﻿using Merchants.Business.Entities.Terminal;
+﻿using Merchants.Business.Entities.Integration;
+using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Services;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
@@ -34,7 +35,18 @@ namespace Transactions.Tests.MockSetups
 
         private void Setup()
         {
-            TerminalsList.Add(new Terminal { TerminalID = 1, MerchantID = 1, Label = "Test 1", Status = Merchants.Shared.Enums.TerminalStatusEnum.Approved });
+            TerminalsList.Add(new Terminal
+            {
+                TerminalID = 1,
+                MerchantID = 1,
+                Label = "Test 1",
+                Status = Merchants.Shared.Enums.TerminalStatusEnum.Approved,
+                Integrations = new List<TerminalExternalSystem>
+                {
+                    new TerminalExternalSystem { ExternalSystem = new ExternalSystem { Type = Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator, Name = "TestAggregator" } },
+                    new TerminalExternalSystem { ExternalSystem = new ExternalSystem { Type = Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor, Name = "TestProcessor" } },
+                }
+            });
 
             MockObj.Setup(m => m.GetTerminals())
                 .Returns(TerminalsListMock.Object)

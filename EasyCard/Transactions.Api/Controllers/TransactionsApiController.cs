@@ -17,6 +17,7 @@ using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
+using Shared.Business.Exceptions;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Helpers.Security;
 using Shared.Integration.ExternalSystems;
@@ -104,11 +105,16 @@ namespace Transactions.Api.Controllers
         {
             // TODO: business vlidators (not only model validation)
 
+            if (User.GetTerminalID().Value != model.TerminalID)
+            {
+                throw new SecurityException(Messages.PleaseCheckValues);
+            }
+
             var transactionOptions = new ProcessTransactionOptions
             {
                 CreditCardSecureDetails = model.CreditCardSecureDetails,
-                TerminalID = model.TerminalID, //TODO: check claims
-                MerchantID = 1, //TODO
+                TerminalID = model.TerminalID,
+                MerchantID = User.GetMerchantID().Value,
             };
 
             return await ProcessTransaction(model, transactionOptions, nameof(CreateTransactionWithCreditCard));
@@ -119,10 +125,18 @@ namespace Transactions.Api.Controllers
             var terminalID = User.GetTerminalID();
 
             // TODO: get terminalID from token
-            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync()); // TODO: 403
+            var terminal = EnsureExists(await terminalsService.GetTerminals().Include(t => t.Integrations).FirstOrDefaultAsync()); // TODO: 403
 
-            var aggregator = aggregatorResolver.GetAggregator(terminal);
-            var processor = processorResolver.GetProcessor(terminal);
+            var terminalAggregator = ValidateExists(
+                terminal.Integrations.FirstOrDefault(t => t.ExternalSystem.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
+                Messages.AggregatorNotDefined);
+
+            var terminalProcessor = ValidateExists(
+                terminal.Integrations.First(t => t.ExternalSystem.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
+                Messages.ProcessorNotDefined);
+
+            var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+            var processor = processorResolver.GetProcessor(terminalProcessor);
 
             var transaction = mapper.Map<PaymentTransaction>(model);
 
@@ -139,8 +153,7 @@ namespace Transactions.Api.Controllers
             {
                 var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
 
-                var chSettings = new ClearingHouse.ClearingHouseTerminalSettings() { MerchantReference = "5eb62fca-a37b-4192-b7f1-e75784561682" }; // TODO: get from terminal
-                aggregatorRequest.AggregatorSettings = chSettings;
+                aggregatorRequest.AggregatorSettings = terminalAggregator.Settings;
 
                 var aggregatorResponse = await aggregator.CreateTransaction(aggregatorRequest);
 
@@ -175,7 +188,7 @@ namespace Transactions.Api.Controllers
 
                 mapper.Map(transactionOptions, processorRequest);
 
-                processorRequest.ProcessorSettings = new Shva.Configuration.ShvaTerminalSettings { MerchantNumber = "0882021014", UserName = "ABLCH", Password = "E9900C" }; // TODO: get from terminal
+                processorRequest.ProcessorSettings = terminalProcessor.Settings; //new Shva.Configuration.ShvaTerminalSettings { MerchantNumber = "0882021014", UserName = "ABLCH", Password = "E9900C" }; // TODO: get from terminal
 
                 var processorMessageID = Guid.NewGuid().ToString();
 

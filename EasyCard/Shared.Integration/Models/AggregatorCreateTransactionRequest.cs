@@ -1,4 +1,5 @@
-﻿using Shared.Helpers;
+﻿using Newtonsoft.Json.Linq;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,7 +25,7 @@ namespace Shared.Integration.Models
         /// </summary>
         public string ProcessorTerminalID { get; set; }
 
-        public object AggregatorSettings { get; set; }
+        public JObject AggregatorSettings { get; set; }
 
         public TransactionTypeEnum TransactionType { get; set; }
 

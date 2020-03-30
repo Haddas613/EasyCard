@@ -18,10 +18,9 @@ namespace Transactions.Api.Services
             this.serviceProvider = serviceProvider;
         }
 
-        public IProcessor GetProcessor(Terminal terminal)
+        public IProcessor GetProcessor(TerminalExternalSystem terminalExternalSystem)
         {
-            // TODO: should be resolved according terminal settings
-            return serviceProvider.GetService<ShvaProcessor>();
+            return serviceProvider.GetService(Type.GetType(terminalExternalSystem.ExternalSystem.InstanceTypeFullName)) as IProcessor;
         }
     }
 }

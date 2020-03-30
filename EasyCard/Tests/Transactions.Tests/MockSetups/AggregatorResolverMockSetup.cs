@@ -36,7 +36,7 @@ namespace Transactions.Tests.MockSetups
                 .ReturnsAsync(new AggregatorCommitTransactionResponse { Success = true })
                 .Verifiable();
 
-            ResolverMock.Setup(m => m.GetAggregator(It.IsAny<Terminal>()))
+            ResolverMock.Setup(m => m.GetAggregator(It.IsAny<TerminalExternalSystem>()))
                 .Returns(AggregatorMock.Object)
                 .Verifiable();
         }

@@ -9,6 +9,6 @@ namespace Transactions.Api.Services
 {
     public interface IProcessorResolver
     {
-        IProcessor GetProcessor(Terminal terminal);
+        IProcessor GetProcessor(TerminalExternalSystem terminalExternalSystem);
     }
 }

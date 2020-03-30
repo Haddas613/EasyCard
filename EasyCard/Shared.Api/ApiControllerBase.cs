@@ -20,6 +20,17 @@ namespace Shared.Api
         }
 
         [NonAction]
+        protected T ValidateExists<T>(T src, string message)
+        {
+            if (src == null)
+            {
+                throw new Business.Exceptions.BusinessException(message);
+            }
+
+            return src;
+        }
+
+        [NonAction]
         protected string GetCorrelationID()
         {
             return HttpContext?.TraceIdentifier;

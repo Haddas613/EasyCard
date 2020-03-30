@@ -61,6 +61,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Aggregator is not defined.
+        /// </summary>
+        public static string AggregatorNotDefined {
+            get {
+                return ResourceManager.GetString("AggregatorNotDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed To Process Transaction.
         /// </summary>
         public static string FailedToProcessTransaction {
@@ -75,6 +84,15 @@ namespace Transactions.Shared {
         public static string PleaseCheckValues {
             get {
                 return ResourceManager.GetString("PleaseCheckValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Processor is not defined.
+        /// </summary>
+        public static string ProcessorNotDefined {
+            get {
+                return ResourceManager.GetString("ProcessorNotDefined", resourceCulture);
             }
         }
         

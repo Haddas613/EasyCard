@@ -26,6 +26,12 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("InstanceTypeFullName")
+                        .IsRequired()
+                        .HasColumnType("varchar(512)")
+                        .HasMaxLength(512)
+                        .IsUnicode(false);
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
