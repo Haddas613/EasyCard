@@ -49,7 +49,7 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}")]
         public async Task<ActionResult<TerminalResponse>> GetTerminal([FromRoute]long terminalID)
         {
-            var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminals()
+            var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminals().Include(t => t.Integrations)
                 .FirstOrDefaultAsync(m => m.TerminalID == terminalID)));
 
             return Ok(terminal);
@@ -79,6 +79,20 @@ namespace Merchants.Api.Controllers
             await terminalsService.UpdateEntity(terminal);
 
             return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID));
+        }
+
+        [HttpPut]
+        [Route("{terminalID}/externalsystem")]
+        public async Task<ActionResult<OperationResponse>> SaveTerminalExternalSystem([FromRoute]long terminalID, [FromBody]ExternalSystemRequest model)
+        {
+            var externalSystem = new TerminalExternalSystem();
+
+            mapper.Map(model, externalSystem);
+            externalSystem.TerminalID = terminalID;
+
+            await terminalsService.SaveTerminalExternalSystem(externalSystem);
+
+            return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID));
         }
     }
 }

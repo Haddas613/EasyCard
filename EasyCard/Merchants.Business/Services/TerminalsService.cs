@@ -1,4 +1,5 @@
 ﻿using Merchants.Business.Data;
+using Merchants.Business.Entities.Integration;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.Terminal;
 using Microsoft.EntityFrameworkCore;
@@ -33,10 +34,11 @@ namespace Merchants.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
-        public IQueryable<Terminal> GetTerminals()
-        {
-            return context.Terminals;
-        }
+        public IQueryable<Terminal> GetTerminals() => context.Terminals;
+
+        public IQueryable<TerminalExternalSystem> GetTerminalExternalSystems() => context.TerminalExternalSystems;
+
+        public IQueryable<ExternalSystem> GetExternalSystems() => context.ExternalSystems;
 
         public async Task LinkUserToTerminal(string userID, long terminalID)
         {
@@ -114,6 +116,25 @@ namespace Merchants.Business.Services
             };
             context.MerchantHistories.Add(history);
             await context.SaveChangesAsync();
+        }
+
+        public async Task SaveTerminalExternalSystem(TerminalExternalSystem entity)
+        {
+            var dbEntity = await context.TerminalExternalSystems.FirstOrDefaultAsync(es => es.ExternalSystemID == entity.ExternalSystemID && es.TerminalID == entity.TerminalID);
+
+            if (dbEntity == null)
+            {
+                entity.Created = DateTime.UtcNow;
+                context.TerminalExternalSystems.Add(entity);
+                await context.SaveChangesAsync();
+            }
+            else
+            {
+                dbEntity.UpdateTimestamp = entity.UpdateTimestamp;
+                dbEntity.Settings = entity.Settings;
+                dbEntity.ExternalProcessorReference = entity.ExternalProcessorReference;
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

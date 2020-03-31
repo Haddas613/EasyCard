@@ -39,7 +39,6 @@ namespace Merchants.Business.Migrations
                         .IsUnicode(true);
 
                     b.Property<string>("Settings")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .IsUnicode(true);
 
@@ -52,6 +51,9 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("rowversion");
 
                     b.HasKey("ExternalSystemID");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("ExternalSystem");
                 });

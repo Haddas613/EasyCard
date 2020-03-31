@@ -61,6 +61,15 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to External System Saved.
+        /// </summary>
+        public static string ExternalSystemSaved {
+            get {
+                return ResourceManager.GetString("ExternalSystemSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merchant Created.
         /// </summary>
         public static string MerchantCreated {
