@@ -3,6 +3,7 @@ using Merchants.Api.Models.Merchant;
 using Merchants.Api.Models.Terminal;
 using Merchants.Tests.Fixtures;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Business.Audit;
@@ -159,15 +160,72 @@ namespace MerchantsApi.Tests
             Assert.True(responseData.NumberOfRecords == 1); //assuming the name is unique
         }
 
-        private async Task<MerchantResponse> GetMerchant(long merchantID)
+        [Fact(DisplayName = "TerminalExternalSystem: Creates when model is correct")]
+        [Order(5)]
+        public async Task TerminalExternalSystem_CreatesWhenModelIsCorrect()
         {
-            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
+            var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper);
+            var dictionariesController = new DictionariesApiController(merchantsFixture.TerminalsService, merchantsFixture.Mapper);
 
-            var actionResult = await controller.GetMerchant(merchantID);
+            var existingTerminal = await merchantsFixture.TerminalsService.GetTerminals().FirstOrDefaultAsync();
+            var existingExternalSystem = (await merchantsFixture.TerminalsService.GetExternalSystems().FirstOrDefaultAsync()) ?? throw new Exception("No external systems available");
 
-            var responseData = actionResult.Value;
+            var terminalExternalSystemRequest = new ExternalSystemRequest
+            {
+                ExternalSystemID = existingExternalSystem.ExternalSystemID,
+                ExternalProcessorReference = "test",
+                Settings = JObject.FromObject(new { SomeSetting = "123" })
+            };
+            var actionResult = await controller.SaveTerminalExternalSystem(existingTerminal.TerminalID, terminalExternalSystemRequest);
 
-            return responseData;
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
+            var responseData = response.Value as OperationResponse;
+
+            Assert.Equal(200, response.StatusCode);
+            Assert.Equal(StatusEnum.Success, responseData.Status);
+            Assert.NotNull(responseData.Message);
+
+            //get updated terminal
+            var externalSystemResponse = (await GetTerminal(responseData.EntityID.Value)).Integrations
+                .FirstOrDefault(e => e.ExternalSystemID == existingExternalSystem.ExternalSystemID) ?? throw new Exception("No external system in GetTerminal response");
+
+            Assert.Equal(terminalExternalSystemRequest.ExternalProcessorReference, externalSystemResponse.ExternalProcessorReference);
+            Assert.Equal("123", externalSystemResponse.Settings["SomeSetting"].Value<string>());
+        }
+
+        [Fact(DisplayName = "TerminalExternalSystem: Updates when model is correct")]
+        [Order(6)]
+        public async Task TerminalExternalSystem_UpdatesWhenModelIsCorrect()
+        {
+            var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper);
+            var dictionariesController = new DictionariesApiController(merchantsFixture.TerminalsService, merchantsFixture.Mapper);
+
+            var existingTerminal = await merchantsFixture.TerminalsService.GetTerminals().FirstOrDefaultAsync();
+            var existingTerminalExternalSystem = merchantsFixture.TerminalsService.GetTerminalExternalSystems()
+                .FirstOrDefault(e => e.TerminalID == existingTerminal.TerminalID) ?? throw new Exception("No terminal external systems available");
+
+            var terminalExternalSystemRequest = new ExternalSystemRequest
+            {
+                ExternalSystemID = existingTerminalExternalSystem.ExternalSystemID,
+                ExternalProcessorReference = "new reference",
+                Settings = JObject.FromObject(new { SomeSetting = "456", SomeNewSetting = "Test" })
+            };
+            var actionResult = await controller.SaveTerminalExternalSystem(existingTerminal.TerminalID, terminalExternalSystemRequest);
+
+            var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
+            var responseData = response.Value as OperationResponse;
+
+            Assert.Equal(200, response.StatusCode);
+            Assert.Equal(StatusEnum.Success, responseData.Status);
+            Assert.NotNull(responseData.Message);
+
+            //get updated terminal
+            var externalSystemResponse = (await GetTerminal(responseData.EntityID.Value)).Integrations
+                .FirstOrDefault(e => e.ExternalSystemID == existingTerminalExternalSystem.ExternalSystemID) ?? throw new Exception("No external system in GetTerminal response");
+
+            Assert.Equal(terminalExternalSystemRequest.ExternalProcessorReference, externalSystemResponse.ExternalProcessorReference);
+            Assert.Equal("456", externalSystemResponse.Settings["SomeSetting"].Value<string>());
+            Assert.Equal("Test", externalSystemResponse.Settings["SomeNewSetting"].Value<string>());
         }
 
         private async Task<TerminalResponse> GetTerminal(long terminalID)

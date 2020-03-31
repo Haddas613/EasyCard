@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Merchants.Api.Data;
 using Merchants.Api.Mapping;
 using Merchants.Business.Data;
 using Merchants.Business.Services;
@@ -33,19 +34,23 @@ namespace Merchants.Tests.Fixtures
                  .Build();
 
             var settings = config.Get<TestSettings>();
+            string connectionString = string.Empty;
 
             if (settings.UseTemporaryDatabase)
             {
-                opts.UseSqlServer(config.GetConnectionString("TemporaryDatabase").Replace("{{uniqueid}}", Guid.NewGuid().ToString().Substring(0, 6)));
+                connectionString = config.GetConnectionString("TemporaryDatabase").Replace("{{uniqueid}}", Guid.NewGuid().ToString().Substring(0, 6));
+                opts.UseSqlServer(connectionString);
             }
             else
             {
-                opts.UseSqlServer(config.GetConnectionString("DefaultDatabase"));
+                connectionString = config.GetConnectionString("DefaultDatabase");
+                opts.UseSqlServer(connectionString);
             }
             HttpContextAccessorWrapper = new HttpContextAccessorWrapperFixture();
 
             MerchantsContext = new MerchantsContext(opts.Options, HttpContextAccessorWrapper);
             MerchantsContext.Database.EnsureCreated();
+            SeedData.EnsureSeedData(connectionString);
 
             MerchantsService = new MerchantsService(MerchantsContext, HttpContextAccessorWrapper);
             TerminalsService = new TerminalsService(MerchantsContext, HttpContextAccessorWrapper);
