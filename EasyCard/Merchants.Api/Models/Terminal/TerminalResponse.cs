@@ -33,7 +33,7 @@ namespace Merchants.Api.Models.Terminal
 
         public IEnumerable<UserSummary> Users { get; set; }
 
-        public IEnumerable<ExternalSystemDetails> Integrations { get; set; }
+        public IEnumerable<TerminalExternalSystemDetails> Integrations { get; set; }
 
         public IEnumerable<FeatureResponse> EnabledFeatures { get; set; }
 

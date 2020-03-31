@@ -4,7 +4,12 @@
         <name>Merchants.Api</name>
     </assembly>
     <members>
-        <member name="P:Merchants.Api.Models.Terminal.ExternalSystemDetails.ExternalProcessorReference">
+        <member name="P:Merchants.Api.Models.Terminal.ExternalSystemRequest.ExternalProcessorReference">
+            <summary>
+            SHVA or other system terminal ID
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Terminal.TerminalExternalSystemDetails.ExternalProcessorReference">
             <summary>
             SHVA or other system terminal ID
             </summary>

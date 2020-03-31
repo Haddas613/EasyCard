@@ -1,5 +1,6 @@
 using AutoMapper;
 using IdentityServerClient;
+using Merchants.Api.Data;
 using Merchants.Business.Data;
 using Merchants.Business.Services;
 using Merchants.Shared;
@@ -21,6 +22,7 @@ using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Security;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -132,26 +134,26 @@ namespace MerchantsApi
 
             //app.UseHttpsRedirection();
 
-            //// Enable middleware to serve generated Swagger as a JSON endpoint.
-            //app.UseSwagger();
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
 
-            //// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            //// specifying the Swagger JSON endpoint.
-            //app.UseSwaggerUI(c =>
-            //{
-            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Merchants API V1");
-            //    //c.RoutePrefix = string.Empty;
-            //});
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Merchants API V1");
+                //c.RoutePrefix = string.Empty;
+            });
 
             app.UseRouting();
 
             //// TODO: this can be removed later
             ////app.UseAuthorization();
 
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllers();
-            //});
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             app.UseEndpoints(endpoints =>
             {
@@ -159,6 +161,18 @@ namespace MerchantsApi
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            var config = serviceProvider.GetRequiredService<IConfiguration>();
+            var connectionString = config.GetConnectionString("DefaultConnection");
+
+            try
+            {
+                SeedData.EnsureSeedData(connectionString);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
     }
 }
