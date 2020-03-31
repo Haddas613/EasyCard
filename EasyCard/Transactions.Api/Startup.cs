@@ -34,6 +34,8 @@ using BasicServices;
 using Transactions.Shared;
 using Shared.Helpers.Security;
 using IdentityServer4.AccessTokenValidation;
+using Shared.Api.Swagger;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace Transactions.Api
 {
@@ -104,19 +106,41 @@ namespace Transactions.Api
                 options.SuppressModelStateInvalidFilter = true;
             });
 
+            services.AddSwaggerExamplesFromAssemblyOf<Swagger.TransactionRequestWithTokenExample>();
+
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Transactions API",
+                    Title = "EasyCard Transactions API",
                 });
 
-                // Set the comments path for the Swagger JSON and UI.
+                c.ExampleFilters();
+
+                c.DocumentFilter<PolymorphismDocumentFilter<Models.Transactions.TransactionRequest>>();
+                c.SchemaFilter<PolymorphismSchemaFilter<Models.Transactions.TransactionRequest>>();
+
                 var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+
+                c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>(); // Adds "(Auth)" to the summary so that you can see which endpoints have Authorization
+                                                                              // or use the generic method, e.g. c.OperationFilter<AppendAuthorizeToSummaryOperationFilter<MyCustomAttribute>>();
+
+                // add Security information to each operation for OAuth2
+                c.OperationFilter<SecurityRequirementsOperationFilter>();
+                // or use the generic method, e.g. c.OperationFilter<SecurityRequirementsOperationFilter<MyCustomAttribute>>();
+
+                // if you're using the SecurityRequirementsOperationFilter, you also need to tell Swashbuckle you're using OAuth2
+                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
             });
 
             // DI

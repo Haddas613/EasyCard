@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Security;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -22,10 +23,12 @@ using Shared.Helpers.KeyValueStorage;
 using Shared.Helpers.Security;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
+using Swashbuckle.AspNetCore.Filters;
 using Transactions.Api.Extensions.Filtering;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Services;
+using Transactions.Api.Swagger;
 using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Transactions.Shared;
@@ -83,6 +86,18 @@ namespace Transactions.Api.Controllers
             response.Data = await mapper.ProjectTo<TransactionSummary>(query.ApplyPagination(filter)).ToListAsync();
 
             return Ok(response);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        [Route("create")]
+        [ValidateModelState]
+        [SwaggerRequestExample(typeof(TransactionRequestWithToken), typeof(TransactionRequestWithTokenExample))]
+        [SwaggerRequestExample(typeof(TransactionRequestWithCreditCard), typeof(TransactionRequestWithCreditCardExample))]
+        public async Task<ActionResult<OperationResponse>> CreateTransaction([FromBody] TransactionRequest model)
+        {
+            // TODO: business vlidators (not only model validation)
+            throw new NotImplementedException();
         }
 
         [HttpPost]

@@ -5,15 +5,23 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Transactions.Api.Models.Converters;
 using Enums = Transactions.Shared.Enums;
 using IntegrationModels = Shared.Integration.Models;
 
 namespace Transactions.Api.Models.Transactions
 {
+    [KnownType(typeof(TransactionRequestWithToken))]
+    [KnownType(typeof(TransactionRequestWithCreditCard))]
+    [JsonConverter(typeof(TransactionRequestInheritanceConverter))]
     public class TransactionRequest
     {
         public long TerminalID { get; set; }
+
+        [Required]
+        public CreditCardSecureDetailsBase CreditCardSecureDetails2 { get; set; }
 
         /// <summary>
         /// Reference to first installment or to original transaction in case of refund

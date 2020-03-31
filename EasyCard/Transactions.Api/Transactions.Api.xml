@@ -4,6 +4,23 @@
         <name>Transactions.Api</name>
     </assembly>
     <members>
+        <member name="P:Transactions.Api.Models.Converters.TransactionRequestInheritanceConverter._discriminator">
+            <summary>
+            Default name for the discriminator property
+            </summary>
+        </member>
+        <member name="M:Transactions.Api.Models.Converters.TransactionRequestInheritanceConverter.#ctor(System.String)">
+            <summary>
+            Discriminator name to map between types
+            </summary>
+            <param name="discriminator">The discriminator property name. The defualt value is 'discriminator'</param>
+        </member>
+        <member name="M:Transactions.Api.Models.Converters.TransactionRequestInheritanceConverter.GetSubType(System.String,System.Type)">
+            <summary>
+            Get sub-type via KnownTypeAttributes
+            </summary>
+            <param name="derivedTypeName">The target type name which corosponds to the discriminator</param>
+        </member>
         <member name="T:Transactions.Api.Models.Tokens.CreditCardTokenKeyVault">
             <summary>
             Entity to store in KeyVault

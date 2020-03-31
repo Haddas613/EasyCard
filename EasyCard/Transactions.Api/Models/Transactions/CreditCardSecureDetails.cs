@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Transactions.Api.Models.Transactions
 {
-    public class CreditCardSecureDetails
+    public class CreditCardSecureDetails : CreditCardSecureDetailsBase
     {
         [Required]
         public string CardOwnerName { get; set; }
