@@ -36,6 +36,11 @@ namespace Shared.Integration.Models
         public bool Refund { get; set; }
 
         /// <summary>
+        /// Initial billing deal
+        /// </summary>
+        public bool InitialDeal { get; set; }
+
+        /// <summary>
         /// Currency
         /// </summary>
         public CurrencyEnum Currency { get; set; }

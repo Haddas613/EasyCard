@@ -4,22 +4,35 @@
         <name>Transactions.Api</name>
     </assembly>
     <members>
-        <member name="P:Transactions.Api.Models.Converters.TransactionRequestInheritanceConverter._discriminator">
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.CreateTransaction(Transactions.Api.Models.Transactions.CreateTransactionRequest)">
             <summary>
-            Default name for the discriminator property
+            Create the charge based on credit card or previously stored credit card token (J4 deal)
             </summary>
         </member>
-        <member name="M:Transactions.Api.Models.Converters.TransactionRequestInheritanceConverter.#ctor(System.String)">
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.BlockCreditCard(Transactions.Api.Models.Transactions.BlockCreditCardRequest)">
             <summary>
-            Discriminator name to map between types
+            Blocking funds on credit card (J5 deal)
             </summary>
-            <param name="discriminator">The discriminator property name. The defualt value is 'discriminator'</param>
         </member>
-        <member name="M:Transactions.Api.Models.Converters.TransactionRequestInheritanceConverter.GetSubType(System.String,System.Type)">
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.CheckCreditCard(Transactions.Api.Models.Transactions.CheckCreditCardRequest)">
             <summary>
-            Get sub-type via KnownTypeAttributes
+            Check if credit card is valid
             </summary>
-            <param name="derivedTypeName">The target type name which corosponds to the discriminator</param>
+        </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.Refund(Transactions.Api.Models.Transactions.RefundRequest)">
+            <summary>
+            Refund request
+            </summary>
+        </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.InitalBillingDeal(Transactions.Api.Models.Transactions.InitalBillingDealRequest)">
+            <summary>
+            Initial request for set of billing trnsactions
+            </summary>
+        </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.NextBillingDeal(Transactions.Api.Models.Transactions.NextBillingDealRequest)">
+            <summary>
+            Billing deal
+            </summary>
         </member>
         <member name="T:Transactions.Api.Models.Tokens.CreditCardTokenKeyVault">
             <summary>
@@ -41,6 +54,96 @@
             China UnionPay: 16 (the only domestic bank card organization in the People's Republic of China)
             </summary>
         </member>
+        <member name="T:Transactions.Api.Models.Transactions.BlockCreditCardRequest">
+            <summary>
+            Blocking funds on credit card
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.BlockCreditCardRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.BlockCreditCardRequest.CardPresence">
+            <summary>
+            Is the card physically scanned (telephone deal or magnetic)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.BlockCreditCardRequest.CreditCardSecureDetails">
+            <summary>
+            Credit card details (should be omitted in case if stored credit card token used)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.BlockCreditCardRequest.CreditCardToken">
+            <summary>
+            Stored credit card details token (should be omitted in case if full credit card details used)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.BlockCreditCardRequest.TransactionAmount">
+            <summary>
+            Transaction amount
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Transactions.CheckCreditCardRequest">
+            <summary>
+            Check if credit card is valid
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CheckCreditCardRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CheckCreditCardRequest.CardPresence">
+            <summary>
+            Is the card physically scanned (telephone deal or magnetic)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CheckCreditCardRequest.CreditCardSecureDetails">
+            <summary>
+            Credit card details
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Transactions.CreateTransactionRequest">
+            <summary>
+            Create the charge based on credit card or previously stored credit card token
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.TransactionType">
+            <summary>
+            Generic transaction type
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.CardPresence">
+            <summary>
+            Is the card physically scanned (telephone deal or magnetic)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.CreditCardSecureDetails">
+            <summary>
+            Credit card details (should be omitted in case if stored credit card token used)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.CreditCardToken">
+            <summary>
+            Stored credit card details token (should be omitted in case if full credit card details used)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.TransactionAmount">
+            <summary>
+            Transaction amount (should be omitted in case of installment deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.InstallmentDetails">
+            <summary>
+            Installment payments details (should be omitted in case of regular deal)
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">
             <summary>
             Do not store full card number. Please use 123456****1234 pattern CreditCardHelpers.GetCardDigits()
@@ -51,50 +154,114 @@
             Stored token reference
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.InitialTransactionID">
+        <member name="T:Transactions.Api.Models.Transactions.InitalBillingDealRequest">
             <summary>
-            Reference to first installment or to original transaction in case of refund
+            Initial request for set of billing trnsactions
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.Currency">
+        <member name="P:Transactions.Api.Models.Transactions.InitalBillingDealRequest.Currency">
             <summary>
             Currency
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.CardPresence">
+        <member name="P:Transactions.Api.Models.Transactions.InitalBillingDealRequest.CardPresence">
             <summary>
-            50 telephone deal
-            00 regular (megnetic)
+            Is the card physically scanned (telephone deal or magnetic)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.NumberOfPayments">
+        <member name="P:Transactions.Api.Models.Transactions.InitalBillingDealRequest.CreditCardSecureDetails">
+            <summary>
+            Credit card details (should be omitted in case if stored credit card token used)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.InitalBillingDealRequest.CreditCardToken">
+            <summary>
+            Stored credit card details token (should be omitted in case if full credit card details used)
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Transactions.InstallmentDetails">
+            <summary>
+            Installment payments details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.InstallmentDetails.NumberOfPayments">
             <summary>
             Number Of Installments
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.TransactionAmount">
-            <summary>
-            This transaction amount
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.InitialPaymentAmount">
+        <member name="P:Transactions.Api.Models.Transactions.InstallmentDetails.InitialPaymentAmount">
             <summary>
             Initial installment payment
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.TotalAmount">
+        <member name="P:Transactions.Api.Models.Transactions.InstallmentDetails.TotalAmount">
             <summary>
             TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.InstallmentPaymentAmount">
+        <member name="P:Transactions.Api.Models.Transactions.InstallmentDetails.InstallmentPaymentAmount">
             <summary>
             Amount of one instalment payment
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionRequest.DealDetails">
+        <member name="T:Transactions.Api.Models.Transactions.NextBillingDealRequest">
             <summary>
-            Deal information
+            Billing deal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.NextBillingDealRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.NextBillingDealRequest.InitialDealID">
+            <summary>
+            Initial billing deal id
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.NextBillingDealRequest.TransactionAmount">
+            <summary>
+            Refund amount
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Transactions.RefundRequest">
+            <summary>
+            Refund request
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.CardPresence">
+            <summary>
+            Is the card physically scanned (telephone deal or magnetic)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.CreditCardSecureDetails">
+            <summary>
+            Credit card details (should be omitted in case if stored credit card token used)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.CreditCardToken">
+            <summary>
+            Stored credit card details token (should be omitted in case if full credit card details used)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.TransactionAmount">
+            <summary>
+            Refund amount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionRequestBase.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionRequestBase.DealDetails">
+            <summary>
+            Deal information (optional)
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.InitialTransactionID">

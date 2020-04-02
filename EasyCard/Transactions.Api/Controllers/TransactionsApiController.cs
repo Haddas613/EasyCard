@@ -88,54 +88,97 @@ namespace Transactions.Api.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Create the charge based on credit card or previously stored credit card token (J4 deal)
+        /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         [Route("create")]
         [ValidateModelState]
-        [SwaggerRequestExample(typeof(TransactionRequestWithToken), typeof(TransactionRequestWithTokenExample))]
-        [SwaggerRequestExample(typeof(TransactionRequestWithCreditCard), typeof(TransactionRequestWithCreditCardExample))]
-        public async Task<ActionResult<OperationResponse>> CreateTransaction([FromBody] TransactionRequest model)
+        [SwaggerRequestExample(typeof(CreateTransactionRequest), typeof(CreateTransactionRequestExample))]
+        public async Task<ActionResult<OperationResponse>> CreateTransaction([FromBody] CreateTransactionRequest model)
         {
-            // TODO: business vlidators (not only model validation)
+            //if (User.GetTerminalID().Value != model.TerminalID)
+            //{
+            //    throw new SecurityException(Messages.PleaseCheckValues);
+            //}
+
+            // TODO: validate that credit card details should be absent
+            if (!string.IsNullOrWhiteSpace(model.CreditCardToken))
+            {
+                var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken), "CardToken");
+                return await ProcessTransaction(model, mapper.Map<ProcessTransactionOptions>(token), nameof(CreateTransaction));
+            }
+            else
+            {
+                var transactionOptions = new ProcessTransactionOptions
+                {
+                    CreditCardSecureDetails = model.CreditCardSecureDetails,
+                    TerminalID = 1, // model.TerminalID,
+                    MerchantID = User.GetMerchantID().Value,
+                };
+
+                return await ProcessTransaction(model, transactionOptions, nameof(CreateTransaction));
+            }
+        }
+
+        /// <summary>
+        /// Blocking funds on credit card (J5 deal)
+        /// </summary>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        [Route("blocking")]
+        [ValidateModelState]
+        public async Task<ActionResult<OperationResponse>> BlockCreditCard([FromBody] BlockCreditCardRequest model)
+        {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Check if credit card is valid
+        /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
-        [Route("create/withtoken")]
-        [ValidateModelState]
-        public async Task<ActionResult<OperationResponse>> CreateTransactionWithToken([FromBody] TransactionRequestWithToken model)
+        [Route("checking")]
+        public async Task<ActionResult<OperationResponse>> CheckCreditCard([FromBody] CheckCreditCardRequest model)
         {
-            // TODO: business vlidators (not only model validation)
-
-            var token = EnsureExists(await keyValueStorage.Get(model.CardToken), "CardToken");
-
-            return await ProcessTransaction(model, mapper.Map<ProcessTransactionOptions>(token), nameof(CreateTransactionWithToken));
+            throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Refund request
+        /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
-        [Route("create/withcc")]
-        public async Task<ActionResult<OperationResponse>> CreateTransactionWithCreditCard([FromBody] TransactionRequestWithCreditCard model)
+        [Route("refund")]
+        public async Task<ActionResult<OperationResponse>> Refund([FromBody] RefundRequest model)
         {
-            // TODO: business vlidators (not only model validation)
-
-            if (User.GetTerminalID().Value != model.TerminalID)
-            {
-                throw new SecurityException(Messages.PleaseCheckValues);
-            }
-
-            var transactionOptions = new ProcessTransactionOptions
-            {
-                CreditCardSecureDetails = model.CreditCardSecureDetails,
-                TerminalID = model.TerminalID,
-                MerchantID = User.GetMerchantID().Value,
-            };
-
-            return await ProcessTransaction(model, transactionOptions, nameof(CreateTransactionWithCreditCard));
+            throw new NotImplementedException();
         }
 
-        private async Task<ActionResult<OperationResponse>> ProcessTransaction(TransactionRequest model, ProcessTransactionOptions transactionOptions, string actionName)
+        /// <summary>
+        /// Initial request for set of billing trnsactions
+        /// </summary>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        [Route("initalBillingDeal")]
+        public async Task<ActionResult<OperationResponse>> InitalBillingDeal([FromBody] InitalBillingDealRequest model)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Billing deal
+        /// </summary>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        [Route("nextBillingDeal")]
+        public async Task<ActionResult<OperationResponse>> NextBillingDeal([FromBody] NextBillingDealRequest model)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, ProcessTransactionOptions transactionOptions, string actionName)
         {
             var terminalID = User.GetTerminalID();
 

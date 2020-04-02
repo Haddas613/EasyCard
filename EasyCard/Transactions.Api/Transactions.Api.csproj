@@ -55,5 +55,9 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Converters\" />
+  </ItemGroup>
+
 
 </Project>

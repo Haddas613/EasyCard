@@ -1,4 +1,5 @@
-﻿using Shared.Helpers;
+﻿using Newtonsoft.Json;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace Transactions.Api.Models.Transactions
 {
-    public class CreditCardSecureDetails : CreditCardSecureDetailsBase
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
+    public class CreditCardSecureDetails
     {
         [Required]
         public string CardOwnerName { get; set; }

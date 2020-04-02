@@ -23,7 +23,7 @@ namespace Transactions.Api.Mapping
 
         private void RegisterTransactionMappings()
         {
-            CreateMap<TransactionRequest, PaymentTransaction>();
+            CreateMap<CreateTransactionRequest, PaymentTransaction>();
             CreateMap<PaymentTransaction, TransactionResponse>();
             CreateMap<PaymentTransaction, TransactionSummary>();
 

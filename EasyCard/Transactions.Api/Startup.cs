@@ -100,13 +100,16 @@ namespace Transactions.Api
                 // Note: do not use options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; - use [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)] attribute in place
             });
 
+            //.AddJsonOptions(options =>
+            //    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 // Disables [ApiController] automatic bad request result for invalid models
                 options.SuppressModelStateInvalidFilter = true;
             });
 
-            services.AddSwaggerExamplesFromAssemblyOf<Swagger.TransactionRequestWithTokenExample>();
+            services.AddSwaggerExamplesFromAssemblyOf<Swagger.CreateTransactionRequestExample>();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -119,19 +122,20 @@ namespace Transactions.Api
 
                 c.ExampleFilters();
 
-                c.DocumentFilter<PolymorphismDocumentFilter<Models.Transactions.TransactionRequest>>();
-                c.SchemaFilter<PolymorphismSchemaFilter<Models.Transactions.TransactionRequest>>();
+                c.SchemaFilter<Swagger.EnumSchemaFilter>();
+
+                //c.DocumentFilter<PolymorphismDocumentFilter<Models.Transactions.CreateTransactionRequest>>();
+                //c.SchemaFilter<PolymorphismSchemaFilter<Models.Transactions.CreateTransactionRequest>>();
 
                 var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
 
-                c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>(); // Adds "(Auth)" to the summary so that you can see which endpoints have Authorization
-                                                                              // or use the generic method, e.g. c.OperationFilter<AppendAuthorizeToSummaryOperationFilter<MyCustomAttribute>>();
+                // Adds "(Auth)" to the summary so that you can see which endpoints have Authorization
+                c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
 
                 // add Security information to each operation for OAuth2
                 c.OperationFilter<SecurityRequirementsOperationFilter>();
-                // or use the generic method, e.g. c.OperationFilter<SecurityRequirementsOperationFilter<MyCustomAttribute>>();
 
                 // if you're using the SecurityRequirementsOperationFilter, you also need to tell Swashbuckle you're using OAuth2
                 c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme

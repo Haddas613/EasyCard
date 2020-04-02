@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Transactions.Shared.Enums
 {
+    /// <summary>
+    /// Is the card physically scanned
+    /// </summary>
     public enum CardPresenceEnum
     {
         /// <summary>
