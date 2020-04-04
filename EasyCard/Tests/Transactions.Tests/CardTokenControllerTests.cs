@@ -1,4 +1,5 @@
-﻿using Shared.Api.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Helpers;
 using System;
@@ -32,12 +33,17 @@ namespace Transactions.Tests
         public async Task CreateToken_CreatesWhenModelIsCorrect()
         {
             var keyValueStorageMock = new KeyValueStorageMockSetup().MockObj;
+            var terminalSrvMock = new TerminalsServiceMockSetup().MockObj;
             var controller = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService,
-                keyValueStorageMock.Object, transactionsFixture.Mapper);
+                keyValueStorageMock.Object, transactionsFixture.Mapper, terminalSrvMock.Object);
+
+            var existingTerminal = await terminalSrvMock.Object.GetTerminals().FirstOrDefaultAsync();
+
             var tokenRequest = new TokenRequest
             {
                 CardExpiration = new CardExpiration { Month = 1, Year = 25 },
-                CardNumber = "1111222233334444"
+                CardNumber = "1111222233334444",
+                TerminalID = existingTerminal.TerminalID
             };
             var actionResult = await controller.CreateToken(tokenRequest);
 
@@ -52,7 +58,7 @@ namespace Transactions.Tests
             Assert.NotNull(responseData.Message);
             keyValueStorageMock.Verify(m => m.Save(responseData.EntityReference, Moq.It.IsAny<string>()), Moq.Times.Once);
 
-            var dbToken = transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefault(t => t.PublicKey == responseData.EntityReference);
+            var dbToken = transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefault(t => t.CreditCardTokenID.ToString() == responseData.EntityReference);
             Assert.NotNull(dbToken);
         }
 
@@ -61,8 +67,9 @@ namespace Transactions.Tests
         public async Task GetTokens_ReturnsCollectionOfTokens()
         {
             var keyValueStorageMock = new KeyValueStorageMockSetup().MockObj;
+            var terminalSrvMock = new TerminalsServiceMockSetup().MockObj;
             var controller = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService,
-                keyValueStorageMock.Object, transactionsFixture.Mapper);
+                keyValueStorageMock.Object, transactionsFixture.Mapper, terminalSrvMock.Object);
             var filter = new CreditCardTokenFilter();
             var actionResult = await controller.GetTokens(filter);
 
@@ -79,10 +86,11 @@ namespace Transactions.Tests
         public async Task DeleteToken_DeletesToken()
         {
             var keyValueStorageMock = new KeyValueStorageMockSetup().MockObj;
+            var terminalSrvMock = new TerminalsServiceMockSetup().MockObj;
             var controller = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService,
-                keyValueStorageMock.Object, transactionsFixture.Mapper);
+                keyValueStorageMock.Object, transactionsFixture.Mapper, terminalSrvMock.Object);
             var existingToken = transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefault() ?? throw new Exception("No existing token found to delete");
-            var actionResult = await controller.DeleteToken(existingToken.PublicKey);
+            var actionResult = await controller.DeleteToken(existingToken.CreditCardTokenID.ToString());
 
             var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;
@@ -91,8 +99,8 @@ namespace Transactions.Tests
             Assert.Equal(200, response.StatusCode);
             Assert.NotNull(responseData.EntityReference);
             Assert.Equal(StatusEnum.Success, responseData.Status);
-            Assert.Null(transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefault(t => t.PublicKey == existingToken.PublicKey));
-            keyValueStorageMock.Verify(m => m.Delete(existingToken.PublicKey), Moq.Times.Once);
+            Assert.Null(transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefault(t => t.CreditCardTokenID == existingToken.CreditCardTokenID));
+            keyValueStorageMock.Verify(m => m.Delete(existingToken.CreditCardTokenID.ToString()), Moq.Times.Once);
         }
     }
 }

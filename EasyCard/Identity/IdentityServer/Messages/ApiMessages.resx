@@ -120,4 +120,13 @@
   <data name="EntityNotFound" xml:space="preserve">
     <value>Entity not found</value>
   </data>
+  <data name="TerminalApiKeyCreated" xml:space="preserve">
+    <value>Terminal Api Key Created</value>
+  </data>
+  <data name="TerminalApiKeyRemoved" xml:space="preserve">
+    <value>Terminal Api Key Removed</value>
+  </data>
+  <data name="TerminalApiKeyReseted" xml:space="preserve">
+    <value>Terminal Api Key Reseted</value>
+  </data>
 </root>

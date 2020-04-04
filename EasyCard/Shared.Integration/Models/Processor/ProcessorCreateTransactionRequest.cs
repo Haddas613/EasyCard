@@ -9,6 +9,11 @@ namespace Shared.Integration.Models
 {
     public class ProcessorCreateTransactionRequest
     {
+        public ProcessorCreateTransactionRequest()
+        {
+            CreditCardToken = new CreditCardSecureDetails();
+        }
+
         /// <summary>
         /// Shva terminal settings
         /// </summary>
@@ -84,7 +89,7 @@ namespace Shared.Integration.Models
         /// <summary>
         /// Real credit card number
         /// </summary>
-        public CreditCardToken CreditCardToken { get; set; }
+        public CreditCardSecureDetails CreditCardToken { get; set; }
 
         /// <summary>
         /// Will be ShvaCreatedTransactionDetails; TODO: possible needs to be used additional model or ProcessorTransactionRequest
@@ -92,7 +97,7 @@ namespace Shared.Integration.Models
         public object InitialTransaction { get; set; }
 
         /// <summary>
-        /// To be used for credit or installments 
+        /// To be used for credit or installments
         /// </summary>
         public int NumberOfPayments { get; set; }
 

@@ -11,14 +11,14 @@ namespace IdentityServerClient
 
         Task<UserProfileDataResponse> GetUserByEmail(string email);
 
-        Task<UserProfileDataResponse> GetUserByID(string id);
+        Task<UserProfileDataResponse> GetUserByID(Guid id);
 
-        Task<UserOperationResponse> DeleteUser(string userId);
+        Task<UserOperationResponse> DeleteUser(Guid userId);
 
-        Task<UserOperationResponse> ResetPassword(string userId);
+        Task<UserOperationResponse> ResetPassword(Guid userId);
 
-        Task<UserOperationResponse> LockUser(string userId);
+        Task<UserOperationResponse> LockUser(Guid userId);
 
-        Task<UserOperationResponse> UnLockUser(string userId);
+        Task<UserOperationResponse> UnLockUser(Guid userId);
     }
 }

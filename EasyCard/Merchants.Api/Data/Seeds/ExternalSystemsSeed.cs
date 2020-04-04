@@ -16,14 +16,13 @@ namespace Merchants.Api.Data.Seeds
                 new ExternalSystem
                 {
                     //TODO: replace with real data
-                    InstanceTypeFullName = "REPLACE_WITH_ACTUAL_DATA",
-                    Name = "Clearing House",
+                    InstanceTypeFullName = "ClearingHouse.ClearingHouseAggregator, ClearingHouse",
+                    Name = "PayDay Clearing House",
                     Type = Shared.Enums.ExternalSystemTypeEnum.Aggregator
                 },
                 new ExternalSystem
                 {
-                    //TODO: replace with real data
-                    InstanceTypeFullName = "REPLACE_WITH_ACTUAL_DATA",
+                    InstanceTypeFullName = "Shva.ShvaProcessor, Shva",
                     Name = "Shva",
                     Type = Shared.Enums.ExternalSystemTypeEnum.Processor
                 }

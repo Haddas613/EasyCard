@@ -7,7 +7,7 @@ namespace Transactions.Shared.Enums
     /// <summary>
     /// Is the card physically scanned
     /// </summary>
-    public enum CardPresenceEnum
+    public enum CardPresenceEnum : short
     {
         /// <summary>
         /// Magnetic

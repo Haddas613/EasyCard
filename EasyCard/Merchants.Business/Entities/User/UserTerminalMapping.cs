@@ -8,9 +8,9 @@ namespace Merchants.Business.Entities.User
     {
         public long UserTerminalMappingID { get; set; }
 
-        public string UserID { get; set; }
+        public Guid UserID { get; set; }
 
-        public long TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
 
         public Terminal.Terminal Terminal { get; set; }
 
@@ -18,6 +18,6 @@ namespace Merchants.Business.Entities.User
 
         public string OperationDoneBy { get; set; }
 
-        public string OperationDoneByID { get; set; }
+        public Guid? OperationDoneByID { get; set; }
     }
 }

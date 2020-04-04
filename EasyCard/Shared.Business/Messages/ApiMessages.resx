@@ -126,4 +126,7 @@
   <data name="ValidationErrors" xml:space="preserve">
     <value>Validation errors</value>
   </data>
+  <data name="YouHaveNoAccess" xml:space="preserve">
+    <value>You have no access to requested data</value>
+  </data>
 </root>

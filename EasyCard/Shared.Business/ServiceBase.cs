@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Shared.Business
 {
-    public class ServiceBase<T>
-        where T : class, IEntityBase
+    public class ServiceBase<T, Tk>
+        where T : class, IEntityBase<Tk>
     {
         private readonly DbContext dbContext;
         private readonly DbSet<T> entities;

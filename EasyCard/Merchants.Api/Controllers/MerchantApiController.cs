@@ -48,7 +48,7 @@ namespace Merchants.Api.Controllers
 
         [HttpGet]
         [Route("{merchantID}")]
-        public async Task<ActionResult<MerchantResponse>> GetMerchant([FromRoute]long merchantID)
+        public async Task<ActionResult<MerchantResponse>> GetMerchant([FromRoute]Guid merchantID)
         {
             var merchant = mapper.Map<MerchantResponse>(EnsureExists(await merchantsService.GetMerchants().FirstOrDefaultAsync(m => m.MerchantID == merchantID)));
 
@@ -57,7 +57,7 @@ namespace Merchants.Api.Controllers
 
         [HttpGet]
         [Route("{merchantID}/history")]
-        public async Task<ActionResult<SummariesResponse<MerchantHistoryResponse>>> GetMerchantHistory([FromRoute]long merchantID, [FromQuery] MerchantHistoryFilter filter)
+        public async Task<ActionResult<SummariesResponse<MerchantHistoryResponse>>> GetMerchantHistory([FromRoute]Guid merchantID, [FromQuery] MerchantHistoryFilter filter)
         {
             var query = merchantsService.GetMerchantHistories().Where(h => h.MerchantID == merchantID).Filter(filter);
 
@@ -75,12 +75,12 @@ namespace Merchants.Api.Controllers
             var newMerchant = mapper.Map<Merchant>(merchant);
             await merchantsService.CreateEntity(newMerchant);
 
-            return CreatedAtAction(nameof(GetMerchant), new { merchantID = newMerchant.MerchantID }, new OperationResponse(Messages.MerchantCreated, StatusEnum.Success, newMerchant.MerchantID));
+            return CreatedAtAction(nameof(GetMerchant), new { merchantID = newMerchant.MerchantID }, new OperationResponse(Messages.MerchantCreated, StatusEnum.Success, newMerchant.MerchantID.ToString()));
         }
 
         [HttpPut]
         [Route("{merchantID}")]
-        public async Task<ActionResult<OperationResponse>> UpdateMerchant([FromRoute]long merchantID, [FromBody]UpdateMerchantRequest model)
+        public async Task<ActionResult<OperationResponse>> UpdateMerchant([FromRoute]Guid merchantID, [FromBody]UpdateMerchantRequest model)
         {
             var merchant = EnsureExists(await merchantsService.GetMerchants().FirstOrDefaultAsync(d => d.MerchantID == merchantID));
 
@@ -88,7 +88,7 @@ namespace Merchants.Api.Controllers
 
             await merchantsService.UpdateEntity(merchant);
 
-            return Ok(new OperationResponse(Messages.MerchantUpdated, StatusEnum.Success, merchantID));
+            return Ok(new OperationResponse(Messages.MerchantUpdated, StatusEnum.Success, merchantID.ToString()));
         }
     }
 }

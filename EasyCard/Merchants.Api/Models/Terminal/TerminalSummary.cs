@@ -12,7 +12,7 @@ namespace Merchants.Api.Models.Terminal
 {
     public class TerminalSummary
     {
-        public long TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
 
         public string Label { get; set; }
 

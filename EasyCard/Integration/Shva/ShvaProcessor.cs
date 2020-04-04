@@ -240,7 +240,7 @@ namespace Shva
             // TODO: do we need any additional headers (?)
             //headers.Add("Authorization", new AuthenticationHeaderValue("Bearer", "TODO: AccessToken").ToString());
 
-            headers.Add("SOAPAction", $"{soapAction}");
+            //headers.Add("SOAPAction", $"{soapAction}");
 
             return headers;
         }

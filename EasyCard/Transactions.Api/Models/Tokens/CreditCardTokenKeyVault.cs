@@ -1,4 +1,5 @@
-﻿using Shared.Helpers;
+﻿using Newtonsoft.Json;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,11 @@ namespace Transactions.Api.Models.Tokens
     /// <summary>
     /// Entity to store in KeyVault
     /// </summary>
-    public class CreditCardTokenKeyVault
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
+    public class CreditCardTokenKeyVault : CreditCardDetailsBase
     {
-        public string CardNumber { get; set; }
+        public Guid? TerminalID { get; set; }
 
-        public long TerminalID { get; set; }
-
-        public long MerchantID { get; set; }
-
-        public CardExpiration CardExpiration { get; set; }
+        public Guid? MerchantID { get; set; }
     }
 }

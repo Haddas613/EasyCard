@@ -54,7 +54,7 @@ namespace MerchantsApi.Tests
             Assert.NotNull(responseData.Message);
 
             //get newly created terminal
-            var terminal = await GetTerminal(responseData.EntityID.Value);
+            var terminal = await GetTerminal(new Guid(responseData.EntityReference));
             Assert.NotNull(terminal);
             Assert.NotNull(terminal.Settings);
             Assert.NotNull(terminal.BillingSettings);
@@ -66,7 +66,7 @@ namespace MerchantsApi.Tests
 
             //check if merchant history was updated
             var history = (await merchantsFixture.MerchantsService.GetMerchantHistories().ToListAsync()).
-                LastOrDefault(h => h.MerchantID == merchant.MerchantID && h.OperationCode == OperationCodesEnum.TerminalCreated.ToString());
+                LastOrDefault(h => h.MerchantID == merchant.MerchantID && h.OperationCode == OperationCodesEnum.TerminalCreated);
             Assert.NotNull(history);
             Assert.NotNull(history.OperationDoneBy);
             Assert.NotNull(history.SourceIP);
@@ -98,7 +98,7 @@ namespace MerchantsApi.Tests
             Assert.NotNull(responseData.Message);
 
             //get updated terminal
-            var terminal = await GetTerminal(responseData.EntityID.Value);
+            var terminal = await GetTerminal(new Guid(responseData.EntityReference));
             Assert.NotNull(terminal);
             Assert.Equal(terminalModel.Label, terminal.Label);
             Assert.Equal(50, terminal.Settings.MaxInstallments);
@@ -107,7 +107,7 @@ namespace MerchantsApi.Tests
 
             //check if merchant history was updated
             var history = (await merchantsFixture.MerchantsService.GetMerchantHistories().ToListAsync()).
-                LastOrDefault(h => h.MerchantID == existingTerminal.MerchantID && h.OperationCode == OperationCodesEnum.TerminalUpdated.ToString());
+                LastOrDefault(h => h.MerchantID == existingTerminal.MerchantID && h.OperationCode == OperationCodesEnum.TerminalUpdated);
             Assert.NotNull(history);
             Assert.NotNull(history.OperationDoneBy);
             Assert.NotNull(history.SourceIP);
@@ -186,7 +186,7 @@ namespace MerchantsApi.Tests
             Assert.NotNull(responseData.Message);
 
             //get updated terminal
-            var externalSystemResponse = (await GetTerminal(responseData.EntityID.Value)).Integrations
+            var externalSystemResponse = (await GetTerminal(new Guid(responseData.EntityReference))).Integrations
                 .FirstOrDefault(e => e.ExternalSystemID == existingExternalSystem.ExternalSystemID) ?? throw new Exception("No external system in GetTerminal response");
 
             Assert.Equal(terminalExternalSystemRequest.ExternalProcessorReference, externalSystemResponse.ExternalProcessorReference);
@@ -220,7 +220,7 @@ namespace MerchantsApi.Tests
             Assert.NotNull(responseData.Message);
 
             //get updated terminal
-            var externalSystemResponse = (await GetTerminal(responseData.EntityID.Value)).Integrations
+            var externalSystemResponse = (await GetTerminal(new Guid(responseData.EntityReference))).Integrations
                 .FirstOrDefault(e => e.ExternalSystemID == existingTerminalExternalSystem.ExternalSystemID) ?? throw new Exception("No external system in GetTerminal response");
 
             Assert.Equal(terminalExternalSystemRequest.ExternalProcessorReference, externalSystemResponse.ExternalProcessorReference);
@@ -228,7 +228,7 @@ namespace MerchantsApi.Tests
             Assert.Equal("Test", externalSystemResponse.Settings["SomeNewSetting"].Value<string>());
         }
 
-        private async Task<TerminalResponse> GetTerminal(long terminalID)
+        private async Task<TerminalResponse> GetTerminal(Guid terminalID)
         {
             var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper);
 

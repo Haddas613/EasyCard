@@ -42,13 +42,13 @@ namespace MerchantsApi.Tests
             Assert.NotNull(responseData.Message);
 
             //get newly created merchant
-            var merchant = await GetMerchant(responseData.EntityID.Value);
+            var merchant = await GetMerchant(new Guid(responseData.EntityReference));
             Assert.NotNull(merchant);
             Assert.Equal(merchantModel.BusinessName, merchant.BusinessName);
 
             //check if merchant history was created
             var history = (await merchantsFixture.MerchantsService.GetMerchantHistories().ToListAsync()).
-               LastOrDefault(h => h.MerchantID == merchant.MerchantID && h.OperationCode == OperationCodesEnum.MerchantCreated.ToString());
+               LastOrDefault(h => h.MerchantID == merchant.MerchantID && h.OperationCode == OperationCodesEnum.MerchantCreated);
             Assert.NotNull(history);
             Assert.NotNull(history.OperationDoneBy);
             Assert.NotNull(history.SourceIP);
@@ -81,7 +81,7 @@ namespace MerchantsApi.Tests
 
             //check if merchant history was updated
             var history = (await merchantsFixture.MerchantsService.GetMerchantHistories().ToListAsync()).
-                LastOrDefault(h => h.MerchantID == merchant.MerchantID && h.OperationCode == OperationCodesEnum.MerchantUpdated.ToString());
+                LastOrDefault(h => h.MerchantID == merchant.MerchantID && h.OperationCode == OperationCodesEnum.MerchantUpdated);
             Assert.NotNull(history);
             Assert.NotNull(history.OperationDoneBy);
             Assert.NotNull(history.SourceIP);
@@ -154,7 +154,7 @@ namespace MerchantsApi.Tests
             Assert.True(responseData.NumberOfRecords > 0);
         }
 
-        private async Task<MerchantResponse> GetMerchant(long merchantID)
+        private async Task<MerchantResponse> GetMerchant(Guid merchantID)
         {
             var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
 

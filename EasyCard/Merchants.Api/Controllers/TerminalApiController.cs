@@ -47,7 +47,7 @@ namespace Merchants.Api.Controllers
 
         [HttpGet]
         [Route("{terminalID}")]
-        public async Task<ActionResult<TerminalResponse>> GetTerminal([FromRoute]long terminalID)
+        public async Task<ActionResult<TerminalResponse>> GetTerminal([FromRoute]Guid terminalID)
         {
             var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminals().Include(t => t.Integrations)
                 .FirstOrDefaultAsync(m => m.TerminalID == terminalID)));
@@ -65,12 +65,12 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.CreateEntity(newTerminal);
 
-            return CreatedAtAction(nameof(GetTerminal), new { terminalID = newTerminal.TerminalID }, new OperationResponse(Messages.TerminalCreated, StatusEnum.Success, newTerminal.TerminalID));
+            return CreatedAtAction(nameof(GetTerminal), new { terminalID = newTerminal.TerminalID }, new OperationResponse(Messages.TerminalCreated, StatusEnum.Success, newTerminal.TerminalID.ToString()));
         }
 
         [HttpPut]
         [Route("{terminalID}")]
-        public async Task<ActionResult<OperationResponse>> UpdateTerminal([FromRoute]long terminalID, [FromBody]UpdateTerminalRequest model)
+        public async Task<ActionResult<OperationResponse>> UpdateTerminal([FromRoute]Guid terminalID, [FromBody]UpdateTerminalRequest model)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(d => d.TerminalID == terminalID));
 
@@ -78,12 +78,12 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.UpdateEntity(terminal);
 
-            return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID));
+            return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID.ToString()));
         }
 
         [HttpPut]
         [Route("{terminalID}/externalsystem")]
-        public async Task<ActionResult<OperationResponse>> SaveTerminalExternalSystem([FromRoute]long terminalID, [FromBody]ExternalSystemRequest model)
+        public async Task<ActionResult<OperationResponse>> SaveTerminalExternalSystem([FromRoute]Guid terminalID, [FromBody]ExternalSystemRequest model)
         {
             var externalSystem = new TerminalExternalSystem();
 
@@ -92,7 +92,7 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.SaveTerminalExternalSystem(externalSystem);
 
-            return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID));
+            return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID.ToString()));
         }
     }
 }

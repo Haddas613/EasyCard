@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Merchants.Business.Services
 {
-    public interface IMerchantsService : IServiceBase<Merchant>
+    public interface IMerchantsService : IServiceBase<Merchant, Guid>
     {
         IQueryable<Merchant> GetMerchants();
 

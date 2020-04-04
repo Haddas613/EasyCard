@@ -6,6 +6,7 @@ using AutoMapper;
 using IdentityServerClient;
 using Merchants.Api.Models.User;
 using Merchants.Business.Services;
+using Merchants.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +35,7 @@ namespace Merchants.Api.Controllers
 
         [HttpGet]
         [Route("{userID}")]
-        public async Task<ActionResult<UserResponse>> GetUser([FromRoute]string userID)
+        public async Task<ActionResult<UserResponse>> GetUser([FromRoute]Guid userID)
         {
             var userData = mapper.Map<UserResponse>(EnsureExists(await userManagementClient.GetUserByID(userID)));
 
@@ -66,12 +67,12 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.LinkUserToTerminal(user.UserID, request.TerminalID);
 
-            return CreatedAtAction(nameof(GetUser), new { userID = user.UserID }, new OperationResponse("ok", StatusEnum.Success, user.UserID));
+            return CreatedAtAction(nameof(GetUser), new { userID = user.UserID }, new OperationResponse(Messages.UserInvited, StatusEnum.Success, user.UserID.ToString()));
         }
 
         [HttpPost]
         [Route("{userID}/lock")]
-        public async Task<ActionResult<OperationResponse>> LockUser([FromRoute]string userID)
+        public async Task<ActionResult<OperationResponse>> LockUser([FromRoute]Guid userID)
         {
             var opResult = await userManagementClient.LockUser(userID);
 
@@ -80,7 +81,7 @@ namespace Merchants.Api.Controllers
 
         [HttpPost]
         [Route("{userID}/unlock")]
-        public async Task<ActionResult<OperationResponse>> UnLockUser([FromRoute]string userID)
+        public async Task<ActionResult<OperationResponse>> UnLockUser([FromRoute]Guid userID)
         {
             var opResult = await userManagementClient.UnLockUser(userID);
 
@@ -89,7 +90,7 @@ namespace Merchants.Api.Controllers
 
         [HttpPost]
         [Route("{userID}/resetPassword")]
-        public async Task<ActionResult<OperationResponse>> ResetPasswordForUser([FromRoute]string userID)
+        public async Task<ActionResult<OperationResponse>> ResetPasswordForUser([FromRoute]Guid userID)
         {
             var opResult = await userManagementClient.ResetPassword(userID);
 
@@ -98,7 +99,7 @@ namespace Merchants.Api.Controllers
 
         [HttpPut]
         [Route("{userID}/linkToTerminal/{terminalID}")]
-        public async Task<ActionResult<OperationResponse>> LinkUserToTerminal([FromRoute]string userID, [FromRoute]long terminalID)
+        public async Task<ActionResult<OperationResponse>> LinkUserToTerminal([FromRoute]Guid userID, [FromRoute]Guid terminalID)
         {
             //Check if user exists
             _ = EnsureExists(await userManagementClient.GetUserByID(userID));
@@ -110,7 +111,7 @@ namespace Merchants.Api.Controllers
 
         [HttpDelete]
         [Route("{userID}/unlinkFromTerminal/{terminalID}")]
-        public async Task<ActionResult<OperationResponse>> UnlinkUserFromTerminal([FromRoute]string userID, [FromRoute]long terminalID)
+        public async Task<ActionResult<OperationResponse>> UnlinkUserFromTerminal([FromRoute]Guid userID, [FromRoute]Guid terminalID)
         {
             //Check if user exists
             _ = EnsureExists(await userManagementClient.GetUserByID(userID));

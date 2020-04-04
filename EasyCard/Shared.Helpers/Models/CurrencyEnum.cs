@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Shared.Helpers
 {
-    public enum CurrencyEnum
+    public enum CurrencyEnum : short
     {
         [EnumMember(Value = "ILS")]
         ILS = 0,

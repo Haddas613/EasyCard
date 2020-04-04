@@ -28,20 +28,16 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.CardBin, s => s.MapFrom(src => CreditCardHelpers.GetCardBin(src.CardNumber)));
 
             CreateMap<Business.Entities.CreditCardDetails, Models.Transactions.CreditCardDetails>()
-                .ForMember(m => m.CardNumber, s => s.MapFrom(src => CreditCardHelpers.GetCardLastFourDigits(src.CardNumber)))
-                .ForMember(m => m.CardBin, s => s.MapFrom(src => CreditCardHelpers.GetCardBin(src.CardNumber)));
+                .ForMember(m => m.CardNumber, s => s.MapFrom(src => CreditCardHelpers.GetCardLastFourDigits(src.CardNumber)));
 
             CreateMap<PaymentTransaction, AggregatorCreateTransactionRequest>()
                 .ForMember(m => m.TransactionID, s => s.MapFrom(src => src.PaymentTransactionID.ToString()))
                 .ForMember(m => m.EasyCardTerminalID, s => s.MapFrom(src => src.TerminalID.ToString()))
-                .ForMember(m => m.AggregatorTerminalID, s => s.MapFrom(src => src.AggregatorTerminalID))
-                .ForMember(m => m.ProcessorTerminalID, s => s.MapFrom(src => src.ProcessorTerminalID))
                 .ForMember(m => m.AggregatorSettings, s => s.Ignore())
                 .ForMember(m => m.TransactionType, s => s.MapFrom(src => src.TransactionType))
                 .ForMember(m => m.Currency, s => s.MapFrom(src => src.Currency))
                 .ForMember(m => m.CardPresence, s => s.MapFrom(src => src.CardPresence))
                 .ForMember(m => m.NumberOfInstallments, s => s.MapFrom(src => src.NumberOfPayments))
-                .ForMember(m => m.CurrentInstallment, s => s.MapFrom(src => src.CurrentInstallment))
                 .ForMember(m => m.TransactionAmount, s => s.MapFrom(src => src.TransactionAmount))
                 .ForMember(m => m.InitialPaymentAmount, s => s.MapFrom(src => src.InitialPaymentAmount))
                 .ForMember(m => m.TotalAmount, s => s.MapFrom(src => src.TotalAmount))
@@ -50,7 +46,8 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.CreditCardDetails, s => s.MapFrom(src => src.CreditCardDetails))
                 .ForMember(m => m.DealDetails, s => s.MapFrom(src => src.DealDetails));
 
-            CreateMap<PaymentTransaction, ProcessorCreateTransactionRequest>();
+            CreateMap<PaymentTransaction, ProcessorCreateTransactionRequest>()
+                .ForMember(m => m.CreditCardToken, s => s.Ignore());
 
             CreateMap<ProcessorCreateTransactionResponse, PaymentTransaction>();
 
@@ -63,13 +60,7 @@ namespace Transactions.Api.Mapping
             CreateMap<AggregatorCreateTransactionResponse, PaymentTransaction>();
             CreateMap<AggregatorCommitTransactionResponse, PaymentTransaction>();
 
-            CreateMap<ProcessTransactionOptions, ProcessorCreateTransactionRequest>()
-                .ForMember(m => m.CreditCardToken, s => s.MapFrom(src => src.CreditCardSecureDetails));
-
-            CreateMap<CreditCardSecureDetails, CreditCardToken>()
-               .ForMember(m => m.Cvv, s => s.MapFrom(src => src.Cvv));
-
-            CreateMap<PaymentTransaction, TransactionResponse>();
+            CreateMap<Transactions.Api.Models.Transactions.CreditCardSecureDetails, SharedIntegration.Models.CreditCardSecureDetails>();
         }
     }
 }

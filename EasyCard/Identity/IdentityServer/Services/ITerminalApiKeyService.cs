@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace IdentityServer.Services
 {
-    public interface ITerminalApiKeyService : IServiceBase<TerminalApiAuthKey>
+    public interface ITerminalApiKeyService : IServiceBase<TerminalApiAuthKey, Guid>
     {
         IQueryable<TerminalApiAuthKey> GetAuthKeys();
 
-        Task Delete(long terminalApiAuthKeyID);
+        Task Delete(Guid terminalApiAuthKeyID);
     }
 }

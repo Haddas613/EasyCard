@@ -62,5 +62,7 @@ namespace Transactions.Api.Models.Transactions
         /// Installment payments details (should be omitted in case of regular deal)
         /// </summary>
         public InstallmentDetails InstallmentDetails { get; set; }
+
+        public string ConsumerIP { get; set; }
     }
 }

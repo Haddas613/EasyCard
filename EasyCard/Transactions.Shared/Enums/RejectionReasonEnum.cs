@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Transactions.Shared.Enums
 {
-    public enum RejectionReasonEnum
+    public enum RejectionReasonEnum : short
     {
         Unknown = 0,
         CreditCardIsMerchantsCard = 1,

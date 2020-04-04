@@ -1,18 +1,21 @@
 ﻿using Shared.Business;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Merchants.Business.Entities.Merchant
 {
-    public class Merchant : IEntityBase
+    public class Merchant : IEntityBase<Guid>
     {
         public Merchant()
         {
             //Terminals = new HashSet<Merchants.Business.Entities.Terminal.Terminal>();
+            Created = DateTime.UtcNow;
+            MerchantID = Guid.NewGuid().GetSequentialGuid(Created.Value);
         }
 
-        public long MerchantID { get; set; }
+        public Guid MerchantID { get; set; }
 
         public byte[] UpdateTimestamp { get; set; }
 
@@ -31,7 +34,7 @@ namespace Merchants.Business.Entities.Merchant
 
         public DateTime? Created { get; set; }
 
-        public long GetID()
+        public Guid GetID()
         {
             return MerchantID;
         }

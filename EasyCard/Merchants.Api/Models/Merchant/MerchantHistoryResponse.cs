@@ -7,7 +7,7 @@ namespace Merchants.Api.Models.Merchant
 {
     public class MerchantHistoryResponse
     {
-        public long MerchantHistoryID { get; set; }
+        public Guid MerchantHistoryID { get; set; }
 
         public DateTime OperationDate { get; set; }
 

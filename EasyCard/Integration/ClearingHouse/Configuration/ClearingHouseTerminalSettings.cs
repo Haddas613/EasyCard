@@ -6,6 +6,9 @@ namespace ClearingHouse
 {
     public class ClearingHouseTerminalSettings
     {
-       public string MerchantReference { get; set; }
+        public string MerchantReference { get; set; }
+
+        // TODO: this is temporary implementation
+        public string ShvaTerminalReference { get; set; }
     }
 }

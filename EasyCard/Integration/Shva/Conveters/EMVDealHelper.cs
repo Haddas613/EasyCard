@@ -99,9 +99,9 @@ namespace Shva.Conveters
                     inputObj.clientInputPan = req.CreditCardToken.CardNumber;
                     inputObj.expirationDate = shvaExpDate;
 
-                    if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalId))
+                    if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
                     {
-                        inputObj.id = req.CreditCardToken.CardOwnerNationalId;
+                        inputObj.id = req.CreditCardToken.CardOwnerNationalID;
                     }
 
                     // static values for initial deal
@@ -145,9 +145,9 @@ namespace Shva.Conveters
                 inputObj.clientInputPan = req.CreditCardToken.CardNumber;
                 inputObj.expirationDate = shvaExpDate;
 
-                if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalId))
+                if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
                 {
-                    inputObj.id = req.CreditCardToken.CardOwnerNationalId;
+                    inputObj.id = req.CreditCardToken.CardOwnerNationalID;
                 }
 
                 if (!string.IsNullOrWhiteSpace(req.AuthNum))

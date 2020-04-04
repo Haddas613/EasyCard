@@ -23,26 +23,25 @@ namespace Transactions.Api.Mapping
 
         private void RegisterTransactionMappings()
         {
-            CreateMap<CreateTransactionRequest, PaymentTransaction>();
+            CreateMap<CreateTransactionRequest, PaymentTransaction>()
+                .ForMember(d => d.CreditCardDetails, o => o.Ignore());
+
+            CreateMap<Transactions.Api.Models.Transactions.CreditCardSecureDetails, Business.Entities.CreditCardDetails>()
+                .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))
+                .ForMember(d => d.CardBin, o => o.MapFrom(d => CreditCardHelpers.GetCardBin(d.CardNumber)));
+
+            CreateMap<Merchants.Business.Entities.Terminal.Terminal, PaymentTransaction>()
+                .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
+                .ForMember(d => d.MerchantID, o => o.MapFrom(d => d.MerchantID));
+
             CreateMap<PaymentTransaction, TransactionResponse>();
             CreateMap<PaymentTransaction, TransactionSummary>();
 
             CreateMap<SharedIntegration.Models.DealDetails, Business.Entities.DealDetails>();
             CreateMap<Business.Entities.DealDetails, SharedIntegration.Models.DealDetails>();
 
-            CreateMap<SharedIntegration.Models.CreditCardDetails, Business.Entities.CreditCardDetails>();
+            CreateMap<CreditCardTokenKeyVault, Business.Entities.CreditCardDetails>();
             CreateMap<SharedIntegration.Models.DealDetails, Business.Entities.DealDetails>();
-
-            CreateMap<ProcessTransactionOptions, PaymentTransaction>()
-                .ForMember(m => m.CreditCardDetails, s => s.MapFrom(src => src.CreditCardSecureDetails));
-            CreateMap<CreditCardSecureDetails, Business.Entities.CreditCardDetails>()
-                .ForMember(m => m.CardNumber, s => s.MapFrom(src => CreditCardHelpers.GetCardDigits(src.CardNumber)))
-                .ForMember(m => m.CardBin, s => s.MapFrom(src => CreditCardHelpers.GetCardBin(src.CardNumber)));
-
-            CreateMap<CreditCardTokenKeyVault, ProcessTransactionOptions>()
-                .ForMember(m => m.TerminalID, s => s.MapFrom(src => src.TerminalID))
-                .ForMember(m => m.MerchantID, s => s.MapFrom(src => src.MerchantID))
-                .ForMember(m => m.CreditCardSecureDetails, s => s.MapFrom(src => new CreditCardSecureDetails { CardExpiration = src.CardExpiration, CardNumber = src.CardNumber }));
         }
     }
 }

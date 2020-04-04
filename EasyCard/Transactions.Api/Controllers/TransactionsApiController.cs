@@ -33,6 +33,7 @@ using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
+using SharedBusiness = Shared.Business;
 
 namespace Transactions.Api.Controllers
 {
@@ -68,7 +69,7 @@ namespace Transactions.Api.Controllers
 
         [HttpGet]
         [Route("{transactionID}")]
-        public async Task<ActionResult<TransactionResponse>> GetTransaction([FromRoute] long transactionID)
+        public async Task<ActionResult<TransactionResponse>> GetTransaction([FromRoute] Guid transactionID)
         {
             var transaction = mapper.Map<TransactionResponse>(EnsureExists(await transactionsService.GetTransactions()
                 .FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
@@ -98,27 +99,15 @@ namespace Transactions.Api.Controllers
         [SwaggerRequestExample(typeof(CreateTransactionRequest), typeof(CreateTransactionRequestExample))]
         public async Task<ActionResult<OperationResponse>> CreateTransaction([FromBody] CreateTransactionRequest model)
         {
-            //if (User.GetTerminalID().Value != model.TerminalID)
-            //{
-            //    throw new SecurityException(Messages.PleaseCheckValues);
-            //}
-
             // TODO: validate that credit card details should be absent
             if (!string.IsNullOrWhiteSpace(model.CreditCardToken))
             {
-                var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken), "CardToken");
-                return await ProcessTransaction(model, mapper.Map<ProcessTransactionOptions>(token), nameof(CreateTransaction));
+                var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken), "CreditCardToken");
+                return await ProcessTransaction(model, token, nameof(CreateTransaction));
             }
             else
             {
-                var transactionOptions = new ProcessTransactionOptions
-                {
-                    CreditCardSecureDetails = model.CreditCardSecureDetails,
-                    TerminalID = 1, // model.TerminalID,
-                    MerchantID = User.GetMerchantID().Value,
-                };
-
-                return await ProcessTransaction(model, transactionOptions, nameof(CreateTransaction));
+                return await ProcessTransaction(model, null, nameof(CreateTransaction));
             }
         }
 
@@ -178,31 +167,45 @@ namespace Transactions.Api.Controllers
             throw new NotImplementedException();
         }
 
-        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, ProcessTransactionOptions transactionOptions, string actionName)
+        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, string actionName)
         {
-            var terminalID = User.GetTerminalID();
+            //var terminalID = User.GetTerminalID();
 
-            // TODO: get terminalID from token
-            var terminal = EnsureExists(await terminalsService.GetTerminals().Include(t => t.Integrations).FirstOrDefaultAsync()); // TODO: 403
+            // TODO: caching
+            // TODO: redo ".Include(t => t.Integrations)"
+            var terminal = SecureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == model.TerminalID).Include(t => t.Integrations).ThenInclude(d => d.ExternalSystem).FirstOrDefaultAsync());
+
+            var transaction = mapper.Map<PaymentTransaction>(model);
+            mapper.Map(terminal, transaction);
+
+            if (token != null)
+            {
+                if (token.TerminalID != terminal.TerminalID)
+                {
+                    throw new SecurityException(SharedBusiness.Messages.ApiMessages.YouHaveNoAccess);
+                }
+
+                mapper.Map(token, transaction.CreditCardDetails);
+            }
+            else
+            {
+                mapper.Map(model.CreditCardSecureDetails, transaction.CreditCardDetails);
+            }
 
             var terminalAggregator = ValidateExists(
                 terminal.Integrations.FirstOrDefault(t => t.ExternalSystem.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
                 Messages.AggregatorNotDefined);
 
             var terminalProcessor = ValidateExists(
-                terminal.Integrations.First(t => t.ExternalSystem.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
+                terminal.Integrations.FirstOrDefault(t => t.ExternalSystem.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
                 Messages.ProcessorNotDefined);
 
             var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
             var processor = processorResolver.GetProcessor(terminalProcessor);
 
-            var transaction = mapper.Map<PaymentTransaction>(model);
-
-            mapper.Map(transactionOptions, transaction);
-
             transaction.Calculate();
 
-            transaction.ProcessorTerminalID = "123456"; // TODO: map from terminal settings
+            //transaction.ProcessorTerminalID = "123456"; // TODO: map from terminal settings
 
             await transactionsService.CreateEntity(transaction);
 
@@ -219,7 +222,7 @@ namespace Transactions.Api.Controllers
                 {
                     // TODO: can be 403
                     // TODO: update transaction
-                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.TransactionNumber, HttpContext.TraceIdentifier, aggregatorResponse.Errors));
+                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, aggregatorResponse.Errors));
                 }
 
                 // TODO: use converter instead of mapper (?)
@@ -232,9 +235,9 @@ namespace Transactions.Api.Controllers
             {
                 // TODO: can be 403
                 // TODO: update transaction
-                logger.LogError("Aggregator Create Transaction request failed", ex);
+                logger.LogError(ex, "Aggregator Create Transaction request failed");
 
-                return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.TransactionNumber)); // TODO: convert message
+                return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
             }
 
             // TODO: cc vendorm isTourist
@@ -244,7 +247,14 @@ namespace Transactions.Api.Controllers
             {
                 var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
 
-                mapper.Map(transactionOptions, processorRequest);
+                if (token != null)
+                {
+                    mapper.Map(token, processorRequest.CreditCardToken);
+                }
+                else
+                {
+                    mapper.Map(model.CreditCardSecureDetails, processorRequest.CreditCardToken);
+                }
 
                 processorRequest.ProcessorSettings = terminalProcessor.Settings; //new Shva.Configuration.ShvaTerminalSettings { MerchantNumber = "0882021014", UserName = "ABLCH", Password = "E9900C" }; // TODO: get from terminal
 
@@ -256,7 +266,7 @@ namespace Transactions.Api.Controllers
                 {
                     // TODO: can be 403
                     // TODO: update transaction
-                    return BadRequest(new OperationResponse(processorResponse.ErrorMessage, StatusEnum.Error, transaction.TransactionNumber)); // TODO: convert message
+                    return BadRequest(new OperationResponse(processorResponse.ErrorMessage, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
                 }
 
                 // TODO: use converter instead of mapper (?)
@@ -268,9 +278,10 @@ namespace Transactions.Api.Controllers
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, "Processor Create Transaction request failed");
                 // TODO: can be 403
                 // TODO: update transaction
-                return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.TransactionNumber)); // TODO: convert message
+                return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
             }
 
             // commit transaction in aggregator (Clearing House)
@@ -289,7 +300,7 @@ namespace Transactions.Api.Controllers
 
                     // TODO: can be 403
                     // TODO: update transaction
-                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.TransactionNumber, HttpContext.TraceIdentifier, commitAggregatorResponse.Errors));
+                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, commitAggregatorResponse.Errors));
                 }
 
                 // TODO: use converter instead of mapper (?)
@@ -301,12 +312,13 @@ namespace Transactions.Api.Controllers
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, "Aggregator Commit Transaction request failed");
                 // TODO: can be 403
                 // TODO: update transaction
-                return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.TransactionNumber)); // TODO: convert message
+                return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
             }
 
-            return CreatedAtAction(actionName, new OperationResponse("ok", StatusEnum.Success, transaction.TransactionNumber));
+            return CreatedAtAction(actionName, new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID.ToString()));
         }
     }
 }

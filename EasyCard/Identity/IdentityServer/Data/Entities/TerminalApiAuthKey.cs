@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace IdentityServer.Data.Entities
 {
-    public class TerminalApiAuthKey : IEntityBase
+    public class TerminalApiAuthKey : IEntityBase<Guid>
     {
-        public long TerminalApiAuthKeyID { get; set; }
+        public Guid TerminalApiAuthKeyID { get; set; }
 
-        public long TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
 
         public string AuthKey { get; set; }
 
         public DateTime Created { get; set; }
 
-        public long GetID() => TerminalApiAuthKeyID;
+        public Guid GetID() => TerminalApiAuthKeyID;
     }
 }

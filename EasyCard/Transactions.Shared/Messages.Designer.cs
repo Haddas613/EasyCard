@@ -97,6 +97,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Credit Card Token Created.
+        /// </summary>
+        public static string TokenCreated {
+            get {
+                return ResourceManager.GetString("TokenCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Credit Card Token Deleted.
+        /// </summary>
+        public static string TokenDeleted {
+            get {
+                return ResourceManager.GetString("TokenDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transaction Created.
         /// </summary>
         public static string TransactionCreated {

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace IdentityServer.Services
 {
-    public class TerminalApiKeyService : ServiceBase<TerminalApiAuthKey>, ITerminalApiKeyService
+    public class TerminalApiKeyService : ServiceBase<TerminalApiAuthKey, Guid>, ITerminalApiKeyService
     {
         private readonly ApplicationDbContext context;
 
@@ -21,7 +21,7 @@ namespace IdentityServer.Services
             this.context = context;
         }
 
-        public async Task Delete(long terminalApiAuthKeyID)
+        public async Task Delete(Guid terminalApiAuthKeyID)
         {
             var entity = context.TerminalApiAuthKeys.FirstOrDefaultAsync(t => t.TerminalApiAuthKeyID == terminalApiAuthKeyID);
 

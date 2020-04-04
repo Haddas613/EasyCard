@@ -12,13 +12,11 @@ namespace Transactions.Api.Models.Transactions
 {
     public class TransactionSummary
     {
-        public long PaymentTransactionID { get; set; }
+        public Guid PaymentTransactionID { get; set; }
 
-        public long TransactionNumber { get; set; }
+        public Guid TerminalID { get; set; }
 
-        public long TerminalID { get; set; }
-
-        public long MerchantID { get; set; }
+        public Guid MerchantID { get; set; }
 
         public decimal TransactionAmount { get; set; }
 

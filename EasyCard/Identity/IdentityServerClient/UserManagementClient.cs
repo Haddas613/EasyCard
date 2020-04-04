@@ -39,7 +39,7 @@ namespace IdentityServerClient
             }
         }
 
-        public Task<UserOperationResponse> DeleteUser(string userId)
+        public Task<UserOperationResponse> DeleteUser(Guid userId)
         {
             throw new NotImplementedException();
         }
@@ -56,7 +56,7 @@ namespace IdentityServerClient
             }
         }
 
-        public async Task<UserProfileDataResponse> GetUserByID(string userId)
+        public async Task<UserProfileDataResponse> GetUserByID(Guid userId)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace IdentityServerClient
             }
         }
 
-        public async Task<UserOperationResponse> LockUser(string userId)
+        public async Task<UserOperationResponse> LockUser(Guid userId)
         {
             try
             {
@@ -86,12 +86,12 @@ namespace IdentityServerClient
             }
         }
 
-        public Task<UserOperationResponse> ResetPassword(string userId)
+        public Task<UserOperationResponse> ResetPassword(Guid userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<UserOperationResponse> UnLockUser(string userId)
+        public Task<UserOperationResponse> UnLockUser(Guid userId)
         {
             throw new NotImplementedException();
         }

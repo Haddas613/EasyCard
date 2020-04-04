@@ -4,6 +4,7 @@ using Merchants.Business.Services;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +38,7 @@ namespace Transactions.Tests.MockSetups
         {
             TerminalsList.Add(new Terminal
             {
-                TerminalID = 1,
-                MerchantID = 1,
+                MerchantID = Guid.NewGuid().GetSequentialGuid(DateTime.UtcNow),
                 Label = "Test 1",
                 Status = Merchants.Shared.Enums.TerminalStatusEnum.Approved,
                 Integrations = new List<TerminalExternalSystem>

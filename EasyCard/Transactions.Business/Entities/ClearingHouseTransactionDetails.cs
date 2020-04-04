@@ -8,6 +8,8 @@ namespace Transactions.Business.Entities
     {
         public long? ClearingHouseTransactionID { get; set; }
 
+        public Guid? MerchantReference { get; set; }
+
         //Do not store this field to db
         public string ConcurrencyToken { get; set; }
     }

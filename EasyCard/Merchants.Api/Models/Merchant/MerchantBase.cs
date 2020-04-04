@@ -7,7 +7,7 @@ namespace Merchants.Api.Models.Merchant
 {
     public class MerchantBase
     {
-        public long MerchantID { get; set; }
+        public Guid MerchantID { get; set; }
 
         public string BusinessName { get; set; }
 

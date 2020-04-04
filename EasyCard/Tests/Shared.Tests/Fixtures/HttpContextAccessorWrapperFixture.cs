@@ -27,24 +27,24 @@ namespace Shared.Tests.Fixtures
         /// <summary>
         /// Get or set current user Id claim Value
         /// </summary>
-        public string UserIdClaim { get; set; }
+        public Guid UserIdClaim { get; set; }
 
-        public long TerminalIdClaimValue { get; private set; }
+        public Guid TerminalIdClaimValue { get; private set; }
 
-        public long MerchantIdClaimValue { get; private set; }
+        public Guid MerchantIdClaimValue { get; private set; }
 
         /// <summary>
         /// Get or set current user IP
         /// </summary>
         public string UserIp { get; set; }
 
-        public HttpContextAccessorWrapperFixture(long terminalClaimIdValue = 1, long merchantClaimIdValue = 1)
+        public HttpContextAccessorWrapperFixture(Guid terminalClaimIdValue, Guid merchantClaimIdValue)
         {
             UserClaims = new ClaimsPrincipal();
 
             UserFirstNameClaim = Guid.NewGuid().ToString().Substring(0, 8);
             UserLastNameClaim = Guid.NewGuid().ToString().Substring(0, 8);
-            UserIdClaim = Guid.NewGuid().ToString();
+            UserIdClaim = Guid.NewGuid();
             UserIp = Guid.NewGuid().ToString();
 
             TerminalIdClaimValue = terminalClaimIdValue;
@@ -54,7 +54,7 @@ namespace Shared.Tests.Fixtures
             {
                 new Claim(Claims.FirstNameClaim, UserFirstNameClaim),
                 new Claim(Claims.LastNameClaim, UserLastNameClaim),
-                new Claim(Claims.UserIdClaim, UserIdClaim),
+                new Claim(Claims.UserIdClaim, UserIdClaim.ToString()),
                 new Claim(Claims.TerminalIDClaim, TerminalIdClaimValue.ToString()),
                 new Claim(Claims.MerchantIDClaim, MerchantIdClaimValue.ToString()),
             }));

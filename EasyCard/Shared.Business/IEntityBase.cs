@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Shared.Business
 {
-    public interface IEntityBase
+    public interface IEntityBase<T>
     {
-        long GetID();
+        T GetID();
     }
 }

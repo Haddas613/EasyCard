@@ -16,7 +16,7 @@ namespace Transactions.Api.Swagger
         {
             return new CreateTransactionRequest()
             {
-                TerminalID = "tm_Bqzmv4Wj8UuMTKuPAQ8O4g",
+                TerminalID = Guid.NewGuid(),
                 TransactionType = Shared.Enums.TransactionTypeEnum.RegularDeal,
                 Currency = CurrencyEnum.USD,
                 CardPresence = Enums.CardPresenceEnum.CardNotPresent,

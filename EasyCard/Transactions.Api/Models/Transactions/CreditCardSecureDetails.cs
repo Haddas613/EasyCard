@@ -9,21 +9,9 @@ using System.Threading.Tasks;
 namespace Transactions.Api.Models.Transactions
 {
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
-    public class CreditCardSecureDetails
+    public class CreditCardSecureDetails : CreditCardDetailsBase
     {
-        [Required]
-        public string CardOwnerName { get; set; }
-
-        [Required]
         [StringLength(4, MinimumLength = 3)]
         public string Cvv { get; set; }
-
-        [Required]
-        public string CardNumber { get; set; }
-
-        [Required]
-        public CardExpiration CardExpiration { get; set; }
-
-        public string CardOwnerNationalID { get; set; }
     }
 }

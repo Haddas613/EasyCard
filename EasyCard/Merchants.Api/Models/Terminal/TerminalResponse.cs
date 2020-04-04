@@ -17,9 +17,9 @@ namespace Merchants.Api.Models.Terminal
             BillingSettings = new TerminalBillingSettings();
         }
 
-        public long TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
 
-        public long MerchantID { get; set; }
+        public Guid MerchantID { get; set; }
 
         public string Label { get; set; }
 
@@ -29,7 +29,7 @@ namespace Merchants.Api.Models.Terminal
 
         public DateTime? Created { get; set; }
 
-        public MerchantResponse Merchant { get; set; }
+        public MerchantSummary Merchant { get; set; }
 
         public IEnumerable<UserSummary> Users { get; set; }
 

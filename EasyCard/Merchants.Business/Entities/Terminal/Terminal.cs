@@ -2,13 +2,14 @@
 using Merchants.Business.Entities.User;
 using Merchants.Shared.Enums;
 using Shared.Business;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Merchants.Business.Entities.Terminal
 {
-    public class Terminal : IEntityBase
+    public class Terminal : IEntityBase<Guid>
     {
         public Terminal()
         {
@@ -16,11 +17,13 @@ namespace Merchants.Business.Entities.Terminal
             BillingSettings = new TerminalBillingSettings();
             Integrations = new HashSet<TerminalExternalSystem>();
             EnabledFeatures = new HashSet<Feature>();
+            Created = DateTime.UtcNow;
+            TerminalID = Guid.NewGuid().GetSequentialGuid(Created.Value);
         }
 
-        public long TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
 
-        public long MerchantID { get; set; }
+        public Guid? MerchantID { get; set; }
 
         public Merchant.Merchant Merchant { get; set; }
 
@@ -42,7 +45,7 @@ namespace Merchants.Business.Entities.Terminal
 
         public virtual IEnumerable<Feature> EnabledFeatures { get; set; }
 
-        public long GetID()
+        public Guid GetID()
         {
             return TerminalID;
         }

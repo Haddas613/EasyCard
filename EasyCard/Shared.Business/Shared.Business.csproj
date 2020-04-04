@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Messages\ApiMessages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

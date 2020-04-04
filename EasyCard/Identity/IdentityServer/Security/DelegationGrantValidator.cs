@@ -1,6 +1,8 @@
-﻿using IdentityServer.Services;
+﻿using IdentityServer.Models;
+using IdentityServer.Services;
 using IdentityServer4.Models;
 using IdentityServer4.Validation;
+using Microsoft.AspNetCore.Identity;
 using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
@@ -15,12 +17,14 @@ namespace IdentityServer.Security
         private readonly ITokenValidator validator;
         private readonly ITerminalApiKeyService terminalApiKeyService;
         private readonly ICryptoService cryptoService;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public DelegationGrantValidator(ITokenValidator validator, ITerminalApiKeyService terminalApiKeyService, ICryptoService cryptoService)
+        public DelegationGrantValidator(ITokenValidator validator, ITerminalApiKeyService terminalApiKeyService, ICryptoService cryptoService, UserManager<ApplicationUser> userManager)
         {
             this.validator = validator;
             this.terminalApiKeyService = terminalApiKeyService;
             this.cryptoService = cryptoService;
+            this.userManager = userManager;
         }
 
         public string GrantType => "terminal_rest_api";
@@ -45,24 +49,24 @@ namespace IdentityServer.Security
             ////// get user's identity
             //var sub = result.Claims.FirstOrDefault(c => c.Type == "sub").Value;
 
-            var apiKey = terminalApiKeyService.GetAuthKeys().FirstOrDefault(d => d.AuthKey == userToken);
+            //var apiKey = terminalApiKeyService.GetAuthKeys().FirstOrDefault(d => d.AuthKey == userToken);
 
-            if (apiKey == null)
-            {
-                context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant);
-                return;
-            }
+            //if (apiKey == null)
+            //{
+            //    context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant);
+            //    return;
+            //}
 
             try
             {
-                var userId = cryptoService.Decrypt(apiKey.AuthKey);
+                var userId = cryptoService.DecryptCompact(userToken);
 
                 //var claims = new List<Claim>() { new Claim("extension_TerminalID", apiKey.TerminalID.ToString()) };
 
                 context.Result = new GrantValidationResult(userId, GrantType);
                 return;
             }
-            catch (Exception ex)
+            catch (Exception ex) // TODO: log exception
             {
                 context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant);
                 return;

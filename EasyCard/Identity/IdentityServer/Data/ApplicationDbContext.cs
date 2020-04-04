@@ -12,6 +12,7 @@ namespace IdentityServer.Data
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<UserAudit> UserAudits { get; set; }
+
         public DbSet<TerminalApiAuthKey> TerminalApiAuthKeys { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

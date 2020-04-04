@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Azure.Security.KeyVault.Secrets;
+using Merchants.Business.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,10 +22,14 @@ using Transactions.Api.Models.Transactions;
 using Transactions.Api.Services;
 using Transactions.Business.Entities;
 using Transactions.Business.Services;
+using Transactions.Shared;
 
 namespace Transactions.Api.Controllers
 {
     [Route("api/cardtokens")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontend)]
     [ApiController]
     public class CardTokenController : ApiControllerBase
     {
@@ -32,13 +38,18 @@ namespace Transactions.Api.Controllers
         private readonly IMapper mapper;
         private readonly IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage;
 
+        // TODO: service client
+        private readonly ITerminalsService terminalsService;
+
         public CardTokenController(ITransactionsService transactionsService, ICreditCardTokenService creditCardTokenService,
-            IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper)
+            IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper, ITerminalsService terminalsService)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
             this.keyValueStorage = keyValueStorage;
             this.mapper = mapper;
+
+            this.terminalsService = terminalsService;
         }
 
         [HttpPost]
@@ -46,23 +57,19 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateToken([FromBody] TokenRequest model)
         {
-            // todo: encrypt auth data
-            var key = Guid.NewGuid().ToString();
+            var terminal = SecureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == model.TerminalID).FirstOrDefaultAsync());
+
             var storageData = mapper.Map<CreditCardTokenKeyVault>(model);
+            var dbData = mapper.Map<CreditCardTokenDetails>(model);
 
-            // todo: implement
-            storageData.TerminalID = 1;
-            storageData.MerchantID = 1;
+            storageData.TerminalID = dbData.TerminalID = terminal.TerminalID;
+            storageData.MerchantID = dbData.MerchantID = terminal.MerchantID;
 
-            await keyValueStorage.Save(key, JsonConvert.SerializeObject(storageData));
+            await keyValueStorage.Save(dbData.CreditCardTokenID.ToString(), JsonConvert.SerializeObject(storageData));
 
-            var dbData = mapper.Map<CreditCardTokenDetails>(storageData);
-            dbData.CardOwnerNationalID = "test";
-            dbData.CardVendor = "test";
-            dbData.PublicKey = key;
             await creditCardTokenService.CreateEntity(dbData);
 
-            return CreatedAtAction(nameof(CreateToken), new OperationResponse("ok", StatusEnum.Success, key));
+            return CreatedAtAction(nameof(CreateToken), new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID.ToString()));
         }
 
         [HttpGet]
@@ -81,14 +88,17 @@ namespace Transactions.Api.Controllers
         [Route("{key}")]
         public async Task<ActionResult<OperationResponse>> DeleteToken(string key)
         {
-            var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(t => t.PublicKey == key));
+            var guid = new Guid(key);
+            var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(t => t.CreditCardTokenID == guid));
+
+            var terminal = SecureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == token.TerminalID).FirstOrDefaultAsync());
 
             await keyValueStorage.Delete(key);
 
             token.Active = false;
             await creditCardTokenService.UpdateEntity(token);
 
-            return Ok(new OperationResponse("ok", StatusEnum.Success, key));
+            return Ok(new OperationResponse(Messages.TokenDeleted, StatusEnum.Success, key));
         }
     }
 }

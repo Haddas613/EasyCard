@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Transactions.Shared.Enums
 {
-    public enum TransactionOperationCodesEnum : Int16
+    public enum TransactionOperationCodesEnum : short
     {
         TransactionCreated,
         TransactionUpdated,

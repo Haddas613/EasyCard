@@ -11,7 +11,7 @@ namespace Transactions.Shared.Enums
     /// Generic transaction type
     /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum TransactionTypeEnum
+    public enum TransactionTypeEnum : short
     {
         /// <summary>
         /// Simple deal type

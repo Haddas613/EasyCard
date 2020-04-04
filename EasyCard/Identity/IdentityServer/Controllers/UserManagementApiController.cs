@@ -130,7 +130,7 @@ namespace IdentityServer.Controllers
 
             var operationResult = new UserOperationResponse
             {
-                UserID = user.Id,
+                UserID = new Guid(user.Id),
                 ResponseCode = UserOperationResponseCodeEnum.UserCreated
             };
 
@@ -160,7 +160,7 @@ namespace IdentityServer.Controllers
 
                 var operationResult = new UserOperationResponse
                 {
-                    UserID = user.Id,
+                    UserID = new Guid(user.Id),
                     ResponseCode = UserOperationResponseCodeEnum.UserUpdated
                 };
 
@@ -194,7 +194,7 @@ namespace IdentityServer.Controllers
 
             var operationResult = new UserOperationResponse
             {
-                UserID = user.Id,
+                UserID = new Guid(user.Id),
                 ResponseCode = UserOperationResponseCodeEnum.UserDeleted
             };
 
@@ -243,7 +243,7 @@ namespace IdentityServer.Controllers
 
             var operationResult = new UserOperationResponse
             {
-                UserID = user.Id,
+                UserID = new Guid(user.Id),
                 ResponseCode = UserOperationResponseCodeEnum.PasswordReseted
             };
 
@@ -323,7 +323,7 @@ namespace IdentityServer.Controllers
             {
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                UserID = user.Id,
+                UserID = new Guid(user.Id),
                 Roles = await userManager.GetRolesAsync(user)
             };
 

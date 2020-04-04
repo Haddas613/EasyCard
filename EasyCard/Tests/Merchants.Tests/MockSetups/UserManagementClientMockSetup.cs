@@ -15,7 +15,7 @@ namespace Merchants.Tests.MockSetups
         /// <summary>
         /// This user is always present in the list (unless deleted) and can be used as reference for tests
         /// </summary>
-        public string UserEntityId { get; } = Guid.NewGuid().ToString();
+        public Guid UserEntityId { get; } = Guid.NewGuid();
 
         /// <summary>
         /// This user is always present in the list (unless deleted) and can be used as reference for tests
@@ -30,7 +30,7 @@ namespace Merchants.Tests.MockSetups
 
         private void Setup()
         {
-            MockObj.Setup(m => m.GetUserByID(It.IsAny<string>()))
+            MockObj.Setup(m => m.GetUserByID(It.IsAny<Guid>()))
                 .Returns(Task.FromResult(new UserProfileDataResponse { UserID = UserEntityId, Email = UserEmail }))
                 .Verifiable();
 

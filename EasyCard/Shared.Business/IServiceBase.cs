@@ -2,8 +2,8 @@
 
 namespace Shared.Business
 {
-    public interface IServiceBase<T>
-        where T : class, IEntityBase
+    public interface IServiceBase<T, Tk>
+        where T : class, IEntityBase<Tk>
     {
         Task UpdateEntity(T entity, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction dbTransaction = null);
 

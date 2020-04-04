@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Merchants.Business.Migrations
 {
     [DbContext(typeof(MerchantsContext))]
-    [Migration("20200308065850_ReflectPendingChanges")]
-    partial class ReflectPendingChanges
+    [Migration("20200402193054_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,6 +28,12 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("InstanceTypeFullName")
+                        .IsRequired()
+                        .HasColumnType("varchar(512)")
+                        .HasMaxLength(512)
+                        .IsUnicode(false);
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
@@ -35,7 +41,6 @@ namespace Merchants.Business.Migrations
                         .IsUnicode(true);
 
                     b.Property<string>("Settings")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .IsUnicode(true);
 
@@ -48,6 +53,9 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("rowversion");
 
                     b.HasKey("ExternalSystemID");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("ExternalSystem");
                 });
@@ -80,8 +88,8 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("decimal(19,4)")
                         .HasDefaultValue(0m);
 
-                    b.Property<long?>("TerminalID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("TerminalID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()
@@ -97,10 +105,8 @@ namespace Merchants.Business.Migrations
 
             modelBuilder.Entity("Merchants.Business.Entities.Merchant.Merchant", b =>
                 {
-                    b.Property<long>("MerchantID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("MerchantID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("BusinessID")
                         .HasColumnType("nvarchar(max)");
@@ -140,10 +146,8 @@ namespace Merchants.Business.Migrations
 
             modelBuilder.Entity("Merchants.Business.Entities.Merchant.MerchantHistory", b =>
                 {
-                    b.Property<long>("MerchantHistoryID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("MerchantHistoryID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AdditionalDetails")
                         .HasColumnType("nvarchar(max)")
@@ -154,13 +158,12 @@ namespace Merchants.Business.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(false);
 
-                    b.Property<long?>("MerchantID")
+                    b.Property<Guid?>("MerchantID")
                         .IsRequired()
-                        .HasColumnType("bigint");
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("OperationCode")
-                        .IsRequired()
-                        .HasColumnType("varchar(30)")
+                    b.Property<short>("OperationCode")
+                        .HasColumnType("smallint")
                         .HasMaxLength(30)
                         .IsUnicode(false);
 
@@ -178,8 +181,8 @@ namespace Merchants.Business.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(true);
 
-                    b.Property<string>("OperationDoneByID")
-                        .HasColumnType("varchar(50)")
+                    b.Property<Guid?>("OperationDoneByID")
+                        .HasColumnType("uniqueidentifier")
                         .HasMaxLength(50)
                         .IsUnicode(false);
 
@@ -193,8 +196,8 @@ namespace Merchants.Business.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(false);
 
-                    b.Property<long?>("TerminalID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("TerminalID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("MerchantHistoryID");
 
@@ -207,10 +210,8 @@ namespace Merchants.Business.Migrations
 
             modelBuilder.Entity("Merchants.Business.Entities.Terminal.Terminal", b =>
                 {
-                    b.Property<long>("TerminalID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<Guid>("TerminalID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("ActivityStartDate")
                         .HasColumnType("datetime2");
@@ -224,8 +225,8 @@ namespace Merchants.Business.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(true);
 
-                    b.Property<long>("MerchantID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("MerchantID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -264,8 +265,8 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("nvarchar(max)")
                         .IsUnicode(true);
 
-                    b.Property<long>("TerminalID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("TerminalID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()
@@ -296,26 +297,23 @@ namespace Merchants.Business.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(true);
 
-                    b.Property<string>("OperationDoneByID")
-                        .HasColumnType("varchar(50)")
+                    b.Property<Guid?>("OperationDoneByID")
+                        .HasColumnType("uniqueidentifier")
                         .HasMaxLength(50)
                         .IsUnicode(false);
 
-                    b.Property<long>("TerminalID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("TerminalID")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("UserID")
-                        .HasColumnType("varchar(50)")
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("UserTerminalMappingID");
 
                     b.HasIndex("TerminalID");
 
                     b.HasIndex("UserID", "TerminalID")
-                        .IsUnique()
-                        .HasFilter("[UserID] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("UserTerminalMapping");
                 });
@@ -344,16 +342,12 @@ namespace Merchants.Business.Migrations
                 {
                     b.HasOne("Merchants.Business.Entities.Merchant.Merchant", "Merchant")
                         .WithMany()
-                        .HasForeignKey("MerchantID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MerchantID");
 
                     b.OwnsOne("Merchants.Business.Entities.Terminal.TerminalBillingSettings", "BillingSettings", b1 =>
                         {
-                            b1.Property<long>("TerminalID")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("bigint")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                            b1.Property<Guid>("TerminalID")
+                                .HasColumnType("uniqueidentifier");
 
                             b1.Property<string>("BillingNotificationsEmails")
                                 .HasColumnType("nvarchar(max)");
@@ -368,10 +362,8 @@ namespace Merchants.Business.Migrations
 
                     b.OwnsOne("Merchants.Business.Entities.Terminal.TerminalSettings", "Settings", b1 =>
                         {
-                            b1.Property<long>("TerminalID")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("bigint")
-                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                            b1.Property<Guid>("TerminalID")
+                                .HasColumnType("uniqueidentifier");
 
                             b1.Property<bool>("CvvRequired")
                                 .ValueGeneratedOnAdd()

@@ -32,7 +32,7 @@ namespace ClearingHouse.Converters
             chRequest.PaymentGatewayID = configuration.PaymentGatewayID;
 
             details.CardOwnerName = createTransactionRequest.CreditCardDetails.CardOwnerName;
-            details.CardOwnerNationalId = createTransactionRequest.CreditCardDetails.CardOwnerNationalId;
+            details.CardOwnerNationalId = createTransactionRequest.CreditCardDetails.CardOwnerNationalID;
             details.CreditCardVendor = createTransactionRequest.CreditCardDetails.CardVendor;
 
             details.ConsumerEmail = createTransactionRequest.DealDetails.ConsumerEmail;
@@ -41,9 +41,9 @@ namespace ClearingHouse.Converters
 
             details.DealReference = createTransactionRequest.TransactionID;
 
-            details.TerminalReference = createTransactionRequest.ProcessorTerminalID;
-
             var clearingHouseSettings = createTransactionRequest.AggregatorSettings.ToObject<ClearingHouseTerminalSettings>();
+
+            details.TerminalReference = clearingHouseSettings.ShvaTerminalReference; // TODO: this is temporary implementation //createTransactionRequest.ProcessorTerminalID;
 
             details.MerchantReference = clearingHouseSettings.MerchantReference;
 

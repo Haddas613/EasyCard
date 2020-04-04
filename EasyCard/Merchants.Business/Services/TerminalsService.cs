@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace Merchants.Business.Services
 {
-    public class TerminalsService : ServiceBase<Terminal>, ITerminalsService
+    public class TerminalsService : ServiceBase<Terminal, Guid>, ITerminalsService
     {
         private readonly MerchantsContext context;
         private readonly ClaimsPrincipal user;
@@ -40,7 +40,7 @@ namespace Merchants.Business.Services
 
         public IQueryable<ExternalSystem> GetExternalSystems() => context.ExternalSystems;
 
-        public async Task LinkUserToTerminal(string userID, long terminalID)
+        public async Task LinkUserToTerminal(Guid userID, Guid terminalID)
         {
             // if user is already linked to terminal, throw error
             if ((await context.UserTerminalMappings.CountAsync(m => m.UserID == userID && m.TerminalID == terminalID)) > 0)
@@ -61,7 +61,7 @@ namespace Merchants.Business.Services
             await context.SaveChangesAsync();
         }
 
-        public async Task UnLinkUserFromTerminal(string userID, long terminalID)
+        public async Task UnLinkUserFromTerminal(Guid userID, Guid terminalID)
         {
             var terminal = await context.Terminals.FirstAsync(t => t.TerminalID == terminalID);
 
@@ -89,7 +89,7 @@ namespace Merchants.Business.Services
 
             var history = new MerchantHistory
             {
-                OperationCode = OperationCodesEnum.TerminalUpdated.ToString(),
+                OperationCode = OperationCodesEnum.TerminalUpdated,
                 OperationDate = DateTime.UtcNow,
                 OperationDoneBy = user?.GetDoneBy(),
                 OperationDoneByID = user?.GetDoneByID(),
@@ -107,7 +107,7 @@ namespace Merchants.Business.Services
 
             var history = new MerchantHistory
             {
-                OperationCode = OperationCodesEnum.TerminalCreated.ToString(),
+                OperationCode = OperationCodesEnum.TerminalCreated,
                 OperationDate = DateTime.UtcNow,
                 OperationDoneBy = user?.GetDoneBy(),
                 OperationDoneByID = user?.GetDoneByID(),

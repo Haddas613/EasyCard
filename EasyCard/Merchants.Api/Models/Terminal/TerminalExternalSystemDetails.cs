@@ -11,7 +11,7 @@ namespace Merchants.Api.Models.Terminal
     {
         public long ExternalSystemID { get; set; }
 
-        public long TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
 
         public ExternalSystemSummary ExternalSystem { get; set; }
 

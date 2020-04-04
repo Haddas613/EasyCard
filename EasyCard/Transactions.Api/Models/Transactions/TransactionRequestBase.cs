@@ -14,7 +14,7 @@ namespace Transactions.Api.Models.Transactions
         /// EasyCard terminal reference
         /// </summary>
         [Required(AllowEmptyStrings = false)]
-        public string TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
 
         /// <summary>
         /// Deal information (optional)

@@ -129,6 +129,12 @@
   <data name="ProcessorNotDefined" xml:space="preserve">
     <value>Processor is not defined</value>
   </data>
+  <data name="TokenCreated" xml:space="preserve">
+    <value>Credit Card Token Created</value>
+  </data>
+  <data name="TokenDeleted" xml:space="preserve">
+    <value>Credit Card Token Deleted</value>
+  </data>
   <data name="TransactionCreated" xml:space="preserve">
     <value>Transaction Created</value>
   </data>

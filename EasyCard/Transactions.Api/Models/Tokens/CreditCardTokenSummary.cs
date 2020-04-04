@@ -1,4 +1,5 @@
-﻿using Shared.Helpers;
+﻿using Newtonsoft.Json;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,15 +7,14 @@ using System.Threading.Tasks;
 
 namespace Transactions.Api.Models.Tokens
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class CreditCardTokenSummary
     {
-        public long CreditCardTokenID { get; set; }
+        public string CreditCardTokenID { get; set; }
 
-        public string PublicKey { get; set; }
+        public string TerminalID { get; set; }
 
-        public long TerminalID { get; set; }
-
-        public long MerchantID { get; set; }
+        public string MerchantID { get; set; }
 
         public string CardNumber { get; set; }
 
@@ -22,8 +22,6 @@ namespace Transactions.Api.Models.Tokens
 
         public string CardVendor { get; set; }
 
-        public string CardOwnerNationalID { get; set; }
-
-        public DateTime Created { get; set; }
+        public DateTime? Created { get; set; }
     }
 }

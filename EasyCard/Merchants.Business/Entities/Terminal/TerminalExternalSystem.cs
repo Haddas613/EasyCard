@@ -14,7 +14,7 @@ namespace Merchants.Business.Entities.Terminal
 
         public ExternalSystem ExternalSystem { get; set; }
 
-        public long TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
 
         public Terminal Terminal { get; set; }
 

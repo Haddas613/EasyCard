@@ -45,7 +45,7 @@ namespace Shared.Helpers.Security
             return user?.FindFirst("client_id")?.Value == "merchant_frontend" && user?.IsMerchant() == true;
         }
 
-        public static long? GetMerchantID(this ClaimsPrincipal user)
+        public static Guid? GetMerchantID(this ClaimsPrincipal user)
         {
             var merchantID = user?.FindFirst(Claims.MerchantIDClaim)?.Value;
             if (string.IsNullOrWhiteSpace(merchantID))
@@ -53,10 +53,15 @@ namespace Shared.Helpers.Security
                 return null;
             }
 
-            return Convert.ToInt64(merchantID);
+            if (Guid.TryParse(merchantID, out var guid))
+            {
+                return guid;
+            }
+
+            return null;
         }
 
-        public static long? GetTerminalID(this ClaimsPrincipal user)
+        public static Guid? GetTerminalID(this ClaimsPrincipal user)
         {
             var terminalID = user?.FindFirst(Claims.TerminalIDClaim)?.Value;
             if (string.IsNullOrWhiteSpace(terminalID))
@@ -64,7 +69,12 @@ namespace Shared.Helpers.Security
                 return null;
             }
 
-            return Convert.ToInt64(terminalID);
+            if (Guid.TryParse(terminalID, out var guid))
+            {
+                return guid;
+            }
+
+            return null;
         }
 
         public static string GetDoneBy(this ClaimsPrincipal user)
@@ -76,7 +86,7 @@ namespace Shared.Helpers.Security
             return doneBy;
         }
 
-        public static string GetDoneByID(this ClaimsPrincipal user)
+        public static Guid? GetDoneByID(this ClaimsPrincipal user)
         {
             var userId = user?.FindFirst(Claims.UserIdClaim)?.Value;
 
@@ -85,7 +95,12 @@ namespace Shared.Helpers.Security
                 userId = user?.FindFirst(Claims.SubjClaim)?.Value;
             }
 
-            return userId;
+            if (Guid.TryParse(userId, out var guid))
+            {
+                return guid;
+            }
+
+            return null;
         }
     }
 }

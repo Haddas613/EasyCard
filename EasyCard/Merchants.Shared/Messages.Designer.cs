@@ -104,5 +104,23 @@ namespace Merchants.Shared {
                 return ResourceManager.GetString("TerminalUpdated", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Created.
+        /// </summary>
+        public static string UserCreated {
+            get {
+                return ResourceManager.GetString("UserCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Invited.
+        /// </summary>
+        public static string UserInvited {
+            get {
+                return ResourceManager.GetString("UserInvited", resourceCulture);
+            }
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace Transactions.Api.Models.Transactions
 {
     public class TransactionResponse
     {
-        public long PaymentTransactionID { get; set; }
+        public Guid PaymentTransactionID { get; set; }
 
         /// <summary>
         /// Reference to first installment or to original transaction in case of refund

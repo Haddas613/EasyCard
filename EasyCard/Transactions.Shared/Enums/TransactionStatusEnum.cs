@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Transactions.Shared.Enums
 {
-    public enum TransactionStatusEnum : Int16
+    public enum TransactionStatusEnum : short
     {
         Initial = 0,
 
@@ -42,7 +42,6 @@ namespace Transactions.Shared.Enums
         /// Failed to commit by Clearing House
         /// </summary>
         FailedToCommitByAggregator = -30,
-
 
         /// <summary>
         /// Transaction is rejected by Shva

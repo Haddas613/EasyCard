@@ -7,33 +7,36 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Entities
 {
-    public class PaymentTransaction : IEntityBase
+    public class PaymentTransaction : IEntityBase<Guid>
     {
         public PaymentTransaction()
         {
-            TransactionDate = DateTime.UtcNow; // TODO: timezone
             TransactionTimestamp = DateTime.UtcNow;
+            TransactionDate = TimeZoneInfo.ConvertTimeFromUtc(TransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
+            PaymentTransactionID = Guid.NewGuid().GetSequentialGuid(TransactionTimestamp.Value);
+            CreditCardDetails = new CreditCardDetails();
         }
 
-        public long PaymentTransactionID { get; set; }
+        public Guid PaymentTransactionID { get; set; }
+
+        /// <summary>
+        /// Legal transaction day
+        /// </summary>
+        public DateTime? TransactionDate { get; set; }
+
+        /// <summary>
+        /// Date-time when transaction created initially in UTC
+        /// </summary>
+        public DateTime? TransactionTimestamp { get; set; }
 
         /// <summary>
         /// Reference to first installment or to original transaction in case of refund
         /// </summary>
-        public long? InitialTransactionID { get; set; }
+        public Guid? InitialTransactionID { get; set; }
 
-        public string AggregatorTerminalID { get; set; }
+        public Guid? TerminalID { get; set; }
 
-        public string ProcessorTerminalID { get; set; }
-
-        /// <summary>
-        /// Individual counter per terminal
-        /// </summary>
-        public long TransactionNumber { get; set; }
-
-        public long TerminalID { get; set; }
-
-        public long MerchantID { get; set; }
+        public Guid? MerchantID { get; set; }
 
         /// <summary>
         /// Shva or other processor
@@ -81,11 +84,6 @@ namespace Transactions.Business.Entities
         public int NumberOfPayments { get; set; }
 
         /// <summary>
-        /// Current installment
-        /// </summary>
-        public int CurrentInstallment { get; set; }
-
-        /// <summary>
         /// This transaction amount
         /// </summary>
         public decimal TransactionAmount { get; set; }
@@ -105,32 +103,12 @@ namespace Transactions.Business.Entities
         /// </summary>
         public decimal InstallmentPaymentAmount { get; set; }
 
-        /// <summary>
-        /// Legal transaction day
-        /// </summary>
-        public DateTime? TransactionDate { get; set; }
-
-        /// <summary>
-        /// Date-time when transaction created initially in UTC
-        /// </summary>
-        public DateTime? TransactionTimestamp { get; set; }
-
-        /// <summary>
-        /// Date-time when transaction status updated
-        /// </summary>
-        public DateTime? UpdatedDate { get; set; }
-
-        /// <summary>
-        /// Reference to billing system
-        /// </summary>
-        public long? BillingOrderID { get; set; }
-
-        /// <summary>
-        /// Concurrency key
-        /// </summary>
-        public byte[] UpdateTimestamp { get; set; }
-
         public CreditCardDetails CreditCardDetails { get; set; }
+
+        /// <summary>
+        /// Stored credit card details token (should be omitted in case if full credit card details used)
+        /// </summary>
+        public string CreditCardToken { get; set; }
 
         /// <summary>
         /// Deal information
@@ -144,6 +122,11 @@ namespace Transactions.Business.Entities
         [Obsolete]
         public void Calculate()
         {
+            if (NumberOfPayments == 0)
+            {
+                NumberOfPayments = 1;
+            }
+
             if (InitialPaymentAmount == 0)
             {
                 InitialPaymentAmount = TransactionAmount;
@@ -152,9 +135,29 @@ namespace Transactions.Business.Entities
             TotalAmount = InitialPaymentAmount + InstallmentPaymentAmount * (NumberOfPayments - 1);
         }
 
-        public long GetID()
+        public Guid GetID()
         {
             return PaymentTransactionID;
         }
+
+        /// <summary>
+        /// Date-time when transaction status updated
+        /// </summary>
+        public DateTime? UpdatedDate { get; set; }
+
+        /// <summary>
+        /// Concurrency key
+        /// </summary>
+        public byte[] UpdateTimestamp { get; set; }
+
+        /// <summary>
+        /// We can know it from checkout page activity
+        /// </summary>
+        public string ConsumerIP { get; set; }
+
+        /// <summary>
+        /// Merchant's IP
+        /// </summary>
+        public string MerchantIP { get; set; }
     }
 }

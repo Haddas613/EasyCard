@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Shared.Business.Audit
 {
-    public enum OperationCodesEnum
+    public enum OperationCodesEnum : short
     {
         MerchantUpdated,
         MerchantCreated,

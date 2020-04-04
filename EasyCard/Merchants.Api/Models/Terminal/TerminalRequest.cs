@@ -8,7 +8,7 @@ namespace Merchants.Api.Models.Terminal
 {
     public class TerminalRequest
     {
-        public long MerchantID { get; set; }
+        public Guid MerchantID { get; set; }
 
         [StringLength(50, MinimumLength = 6)]
         public string Label { get; set; }

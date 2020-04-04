@@ -49,13 +49,13 @@ namespace Transactions.Tests.Fixtures
                 opts.UseSqlServer(config.GetConnectionString("DefaultDatabase"));
             }
 
-            HttpContextAccessorWrapper = new HttpContextAccessorWrapperFixture();
+            HttpContextAccessorWrapper = new HttpContextAccessorWrapperFixture(Guid.NewGuid(), Guid.NewGuid());
 
             TransactionsContext = new TransactionsContext(opts.Options, HttpContextAccessorWrapper);
             TransactionsContext.Database.EnsureCreated();
 
             TransactionsService = new TransactionsService(TransactionsContext, HttpContextAccessorWrapper);
-            CreditCardTokenService = new CreditCardTokenService(TransactionsContext);
+            CreditCardTokenService = new CreditCardTokenService(TransactionsContext, HttpContextAccessorWrapper);
 
             var configuration = new MapperConfiguration(cfg => cfg.AddMaps(Assembly.GetAssembly(typeof(Api.Controllers.TransactionsApiController))));
             Mapper = new Mapper(configuration);

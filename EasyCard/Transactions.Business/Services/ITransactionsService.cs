@@ -10,7 +10,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Services
 {
-    public interface ITransactionsService : IServiceBase<PaymentTransaction>
+    public interface ITransactionsService : IServiceBase<PaymentTransaction, Guid>
     {
         IQueryable<PaymentTransaction> GetTransactions();
 

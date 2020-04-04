@@ -24,8 +24,7 @@ namespace Transactions.Api.Mapping
         {
             CreateMap<TokenRequest, CreditCardTokenKeyVault>();
 
-            CreateMap<CreditCardTokenKeyVault, CreditCardTokenDetails>()
-                .ForMember(m => m.Hash, src => src.MapFrom(f => CreditCardHelpers.GetCardHash(f.CardNumber, f.TerminalID, f.MerchantID, f.CardExpiration.ToString())));
+            CreateMap<TokenRequest, CreditCardTokenDetails>();
 
             CreateMap<CreditCardTokenDetails, CreditCardTokenSummary>();
         }

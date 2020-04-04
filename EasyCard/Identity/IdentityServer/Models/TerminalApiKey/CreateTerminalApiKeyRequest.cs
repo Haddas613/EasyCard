@@ -7,6 +7,6 @@ namespace IdentityServer.Models.TerminalApiKey
 {
     public class CreateTerminalApiKeyRequest
     {
-        public long TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
     }
 }

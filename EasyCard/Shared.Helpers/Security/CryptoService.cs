@@ -71,7 +71,7 @@ namespace Shared.Helpers.Security
         // This constant determines the number of iterations for the password bytes generation function.
         private const int DerivationIterations = 1000;
 
-        private const string passPhrase = "1234567890";
+        private const string passPhrase = "1234567890"; // TODO: from key-vault or cert
 
         public string EncryptCompact(string textToEncrypt)
         {

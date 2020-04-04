@@ -68,7 +68,7 @@ namespace Merchants.Business.Data
                 builder.ToTable("Merchant");
 
                 builder.HasKey(b => b.MerchantID);
-                builder.Property(b => b.MerchantID).ValueGeneratedOnAdd();
+                builder.Property(b => b.MerchantID).ValueGeneratedNever();
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
@@ -86,7 +86,7 @@ namespace Merchants.Business.Data
                 builder.ToTable("Terminal");
 
                 builder.HasKey(b => b.TerminalID);
-                builder.Property(b => b.TerminalID).ValueGeneratedOnAdd();
+                builder.Property(b => b.TerminalID).ValueGeneratedNever();
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
@@ -173,7 +173,7 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.OperationDoneBy).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
-                builder.Property(b => b.UserID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                builder.Property(b => b.UserID);
 
                 builder.HasIndex(idx => new { idx.UserID, idx.TerminalID }).IsUnique(true);
             }
@@ -186,7 +186,7 @@ namespace Merchants.Business.Data
                 builder.ToTable("MerchantHistory");
 
                 builder.HasKey(b => b.MerchantHistoryID);
-                builder.Property(b => b.MerchantHistoryID).ValueGeneratedOnAdd();
+                builder.Property(b => b.MerchantHistoryID).ValueGeneratedNever();
 
                 builder.Property(b => b.MerchantID).IsRequired();
 

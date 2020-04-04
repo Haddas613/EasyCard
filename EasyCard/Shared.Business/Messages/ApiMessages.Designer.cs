@@ -86,5 +86,14 @@ namespace Shared.Business.Messages {
                 return ResourceManager.GetString("ValidationErrors", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have no access to requested data.
+        /// </summary>
+        public static string YouHaveNoAccess {
+            get {
+                return ResourceManager.GetString("YouHaveNoAccess", resourceCulture);
+            }
+        }
     }
 }

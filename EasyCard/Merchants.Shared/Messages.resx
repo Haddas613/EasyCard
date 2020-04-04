@@ -132,4 +132,10 @@
   <data name="TerminalUpdated" xml:space="preserve">
     <value>Terminal Updated</value>
   </data>
+  <data name="UserCreated" xml:space="preserve">
+    <value>User Created</value>
+  </data>
+  <data name="UserInvited" xml:space="preserve">
+    <value>User Invited</value>
+  </data>
 </root>

@@ -29,10 +29,10 @@ namespace Transactions.Tests.MockSetups
                 {
                     CardExpiration = new CardExpiration() { Month = 10, Year = 25 },
                     CardNumber = "1111222233334444",
-                    TerminalID = 1,
-                    MerchantID = 1
+                    TerminalID = Guid.NewGuid(),
+                    MerchantID = Guid.NewGuid()
                 })
-                .Verifiable();
+            .Verifiable();
         }
     }
 }

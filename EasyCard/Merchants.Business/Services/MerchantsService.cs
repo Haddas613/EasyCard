@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Merchants.Business.Services
 {
-    public class MerchantsService : ServiceBase<Merchant>, IMerchantsService
+    public class MerchantsService : ServiceBase<Merchant, Guid>, IMerchantsService
     {
         private readonly MerchantsContext context;
         private readonly ClaimsPrincipal user;
@@ -58,14 +58,13 @@ namespace Merchants.Business.Services
 
             var history = new MerchantHistory
             {
-                OperationCode = OperationCodesEnum.MerchantUpdated.ToString(),
-                OperationDate = DateTime.UtcNow,
-                OperationDoneBy = user?.GetDoneBy(),
-                OperationDoneByID = user?.GetDoneByID(),
+                OperationCode = OperationCodesEnum.MerchantUpdated,
                 MerchantID = entity.MerchantID,
                 OperationDescription = changesStr,
-                SourceIP = httpContextAccessor.GetIP()
             };
+
+            history.ApplyAuditInfo(httpContextAccessor);
+
             context.MerchantHistories.Add(history);
             await context.SaveChangesAsync();
         }
@@ -76,13 +75,12 @@ namespace Merchants.Business.Services
 
             var history = new MerchantHistory
             {
-                OperationCode = OperationCodesEnum.MerchantCreated.ToString(),
-                OperationDate = DateTime.UtcNow,
-                OperationDoneBy = user?.GetDoneBy(),
-                OperationDoneByID = user?.GetDoneByID(),
+                OperationCode = OperationCodesEnum.MerchantCreated,
                 MerchantID = entity.MerchantID,
-                SourceIP = httpContextAccessor.GetIP()
             };
+
+            history.ApplyAuditInfo(httpContextAccessor);
+
             context.MerchantHistories.Add(history);
             await context.SaveChangesAsync();
         }
