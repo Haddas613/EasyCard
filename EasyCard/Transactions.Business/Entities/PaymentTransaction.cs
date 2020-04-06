@@ -159,5 +159,13 @@ namespace Transactions.Business.Entities
         /// Merchant's IP
         /// </summary>
         public string MerchantIP { get; set; }
+
+        public Guid? AggregatorCreateTransactionMessageID { get; set; }
+
+        public Guid? AggregatorCommitTransactionMessageID { get; set; }
+
+        public Guid? ProcessorCreateTransactionMessageID { get; set; }
+
+        public Guid? ProcessorTransmitMessageID { get; set; }
     }
 }

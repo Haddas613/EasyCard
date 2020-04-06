@@ -80,7 +80,7 @@ namespace Shva.Conveters
 
         public static string GetShvaTransactionTypeStr(this ShvaTransactionTypeEnum transactionType)
         {
-            return ((int)transactionType).ToString("{0:00}");
+            return ((int)transactionType).ToString("00");
         }
 
         public static ShvaCreditTermsEnum GetShvaCreditTerms(this TransactionTypeEnum transactionType)
@@ -123,7 +123,7 @@ namespace Shva.Conveters
 
         public static string GetShvaCardPresenceStr(this ShvaCardPresenceEnum cardPresence)
         {
-            return ((int)cardPresence).ToString("{0:00}");
+            return ((int)cardPresence).ToString("00");
         }
     }
 }

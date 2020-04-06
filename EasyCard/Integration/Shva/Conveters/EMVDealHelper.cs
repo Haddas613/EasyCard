@@ -83,15 +83,15 @@ namespace Shva.Conveters
             var creditTerms = req.TransactionType.GetShvaCreditTerms();
             var currency = req.Currency.GetShvaCurrency();
 
+            inputObj.panEntryMode = cardPresence.GetShvaCardPresenceStr();
+
+            inputObj.parameterJ = parameterJValue.ToString();
+            inputObj.creditTerms = creditTerms.GetShvaCreditTermsStr();
+            inputObj.tranType = transactionType.GetShvaTransactionTypeStr();
+            inputObj.currency = currency.GetShvaCurrencyStr();
+
             if (transactionType == ShvaTransactionTypeEnum.InitialDeal)
             {
-                inputObj.panEntryMode = cardPresence.GetShvaCardPresenceStr();
-
-                inputObj.parameterJ = parameterJValue.ToString();
-                inputObj.creditTerms = creditTerms.GetShvaCreditTermsStr();
-                inputObj.tranType = transactionType.GetShvaTransactionTypeStr();
-                inputObj.currency = currency.GetShvaCurrencyStr();
-
                 if (initialDealData == null)
                 {
                     //CVV

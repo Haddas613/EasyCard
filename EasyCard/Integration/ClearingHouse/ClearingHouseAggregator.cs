@@ -35,7 +35,8 @@ namespace ClearingHouse
             this.integrationRequestLogStorageService = integrationRequestLogStorageService;
         }
 
-        public async Task<AggregatorCreateTransactionResponse> CreateTransaction(AggregatorCreateTransactionRequest transactionRequest)
+        public async Task<AggregatorCreateTransactionResponse> CreateTransaction(AggregatorCreateTransactionRequest transactionRequest, string messageId, string
+             correlationId)
         {
             try
             {
@@ -53,7 +54,8 @@ namespace ClearingHouse
             }
         }
 
-        public async Task<AggregatorCommitTransactionResponse> CommitTransaction(AggregatorCommitTransactionRequest transactionRequest)
+        public async Task<AggregatorCommitTransactionResponse> CommitTransaction(AggregatorCommitTransactionRequest transactionRequest, string messageId, string
+             correlationId)
         {
             try
             {

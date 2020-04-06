@@ -77,8 +77,8 @@ namespace Transactions.Tests
             Assert.NotNull(responseData.Message);
 
             aggrResolverMock.ResolverMock.Verify(m => m.GetAggregator(It.IsAny<TerminalExternalSystem>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>()), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>(), null, null), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), null, null), Times.Once);
 
             procResolverMock.ResolverMock.Verify(m => m.GetProcessor(It.IsAny<TerminalExternalSystem>()), Times.Once);
             procResolverMock.ProcessorMock.Verify(
@@ -132,8 +132,8 @@ namespace Transactions.Tests
             Assert.NotNull(responseData.Message);
 
             aggrResolverMock.ResolverMock.Verify(m => m.GetAggregator(It.IsAny<TerminalExternalSystem>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>()), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>(), null, null), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), null, null), Times.Once);
 
             procResolverMock.ResolverMock.Verify(m => m.GetProcessor(It.IsAny<TerminalExternalSystem>()), Times.Once);
             procResolverMock.ProcessorMock.Verify(
@@ -193,7 +193,7 @@ namespace Transactions.Tests
             }
 
             //Ensure that aggregator will not successfully commit transaction
-            aggrResolverMock.AggregatorMock.Setup(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>()))
+            aggrResolverMock.AggregatorMock.Setup(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), null, null))
                 .ReturnsAsync(new AggregatorCommitTransactionResponse { Success = false, ErrorMessage = "something is wrong" })
                 .Verifiable();
 
@@ -221,8 +221,8 @@ namespace Transactions.Tests
             Assert.NotNull(responseData.Message);
 
             aggrResolverMock.ResolverMock.Verify(m => m.GetAggregator(It.IsAny<TerminalExternalSystem>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>()), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>(), null, null), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), null, null), Times.Once);
 
             var transactionEntry = await transactionsFixture.TransactionsContext.PaymentTransactions
                 .FirstOrDefaultAsync(t => t.TerminalID == transactionRequest.TerminalID && t.PaymentTransactionID.ToString() == responseData.EntityReference);

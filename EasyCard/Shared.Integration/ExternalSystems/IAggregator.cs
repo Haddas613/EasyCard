@@ -8,8 +8,10 @@ namespace Shared.Integration.ExternalSystems
 {
     public interface IAggregator
     {
-        Task<AggregatorCreateTransactionResponse> CreateTransaction(AggregatorCreateTransactionRequest transactionRequest);
+        Task<AggregatorCreateTransactionResponse> CreateTransaction(AggregatorCreateTransactionRequest transactionRequest, string messageId, string
+             correlationId);
 
-        Task<AggregatorCommitTransactionResponse> CommitTransaction(AggregatorCommitTransactionRequest transactionRequest);
+        Task<AggregatorCommitTransactionResponse> CommitTransaction(AggregatorCommitTransactionRequest transactionRequest, string messageId, string
+             correlationId);
     }
 }

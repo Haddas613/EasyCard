@@ -54,7 +54,7 @@ namespace Shva
 
             ashStartReq.inputObj = cls;
             ashStartReq.pinpad = new clsPinPad();
-            ashStartReq.globalObj = new ShvaEMV.clsGlobal();
+            ashStartReq.globalObj = new ShvaEMV.clsGlobal() { shareD = new clsShareDetails { dealType = DealType.MAGNET } };
 
             var ashStartReqResult = await this.DoRequest(ashStartReq, AshStartUrl, messageId, correlationId, HandleIntegrationMessage);
 
@@ -219,8 +219,8 @@ namespace Shva
 
                     integrationMessage.MessageId = messageId;
                     integrationMessage.MessageDate = DateTime.UtcNow;
-                    integrationMessage.Request = requestStr?.Left(30000);
-                    integrationMessage.Response = responseStr?.Left(30000);
+                    integrationMessage.Request = requestStr;
+                    integrationMessage.Response = responseStr;
                     integrationMessage.ResponseStatus = responseStatusStr;
                     integrationMessage.Address = requestUrl;
                     integrationMessage.Action = soapAction;

@@ -19,6 +19,7 @@ using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
 using Shared.Business.Exceptions;
+using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Helpers.Security;
 using Shared.Integration.ExternalSystems;
@@ -167,10 +168,8 @@ namespace Transactions.Api.Controllers
             throw new NotImplementedException();
         }
 
-        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, string actionName)
+        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, string actionName, JDealTypeEnum jDealType = JDealTypeEnum.J4, bool initialDeal = false)
         {
-            //var terminalID = User.GetTerminalID();
-
             // TODO: caching
             // TODO: redo ".Include(t => t.Integrations)"
             var terminal = SecureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == model.TerminalID).Include(t => t.Integrations).ThenInclude(d => d.ExternalSystem).FirstOrDefaultAsync());
@@ -192,6 +191,8 @@ namespace Transactions.Api.Controllers
                 mapper.Map(model.CreditCardSecureDetails, transaction.CreditCardDetails);
             }
 
+            transaction.MerchantIP = GetIP();
+
             var terminalAggregator = ValidateExists(
                 terminal.Integrations.FirstOrDefault(t => t.ExternalSystem.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
                 Messages.AggregatorNotDefined);
@@ -205,39 +206,43 @@ namespace Transactions.Api.Controllers
 
             transaction.Calculate();
 
-            //transaction.ProcessorTerminalID = "123456"; // TODO: map from terminal settings
-
             await transactionsService.CreateEntity(transaction);
 
             // create transaction in aggregator (Clearing House)
-            try
+            if (jDealType == JDealTypeEnum.J4 && !initialDeal)
             {
-                var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
+                var aggregatorMessageID = Guid.NewGuid();
 
-                aggregatorRequest.AggregatorSettings = terminalAggregator.Settings;
-
-                var aggregatorResponse = await aggregator.CreateTransaction(aggregatorRequest);
-
-                if (!aggregatorResponse.Success)
+                try
                 {
+                    var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
+
+                    aggregatorRequest.AggregatorSettings = terminalAggregator.Settings;
+
+                    var aggregatorResponse = await aggregator.CreateTransaction(aggregatorRequest, aggregatorMessageID.ToString(), GetCorrelationID());
+
+                    if (!aggregatorResponse.Success)
+                    {
+                        transaction.Status = TransactionStatusEnum.RejectedByAggregator;
+                        await transactionsService.UpdateEntity(transaction);
+
+                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, aggregatorResponse.Errors));
+                    }
+
+                    transaction.Status = TransactionStatusEnum.ConfirmedByAggregator;
+                    mapper.Map(aggregatorResponse, transaction);
+                    await transactionsService.UpdateEntity(transaction);
+                }
+                catch (Exception ex)
+                {
+                    transaction.Status = TransactionStatusEnum.RejectedByAggregator;
+
                     // TODO: can be 403
                     // TODO: update transaction
-                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, aggregatorResponse.Errors));
+                    logger.LogError(ex, "Aggregator Create Transaction request failed");
+
+                    return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
                 }
-
-                // TODO: use converter instead of mapper (?)
-                mapper.Map(aggregatorResponse, transaction);
-
-                // TODO: change transaction status
-                await transactionsService.UpdateEntity(transaction);
-            }
-            catch (Exception ex)
-            {
-                // TODO: can be 403
-                // TODO: update transaction
-                logger.LogError(ex, "Aggregator Create Transaction request failed");
-
-                return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
             }
 
             // TODO: cc vendorm isTourist
@@ -256,11 +261,11 @@ namespace Transactions.Api.Controllers
                     mapper.Map(model.CreditCardSecureDetails, processorRequest.CreditCardToken);
                 }
 
-                processorRequest.ProcessorSettings = terminalProcessor.Settings; //new Shva.Configuration.ShvaTerminalSettings { MerchantNumber = "0882021014", UserName = "ABLCH", Password = "E9900C" }; // TODO: get from terminal
+                processorRequest.ProcessorSettings = terminalProcessor.Settings; //new Shva.Configuration.ShvaTerminalSettings { MerchantNumber = "0882021014", UserName = "ABLCH", Password = "E9900C" };
 
-                var processorMessageID = Guid.NewGuid().ToString();
+                var processorMessageID = Guid.NewGuid();
 
-                var processorResponse = await processor.CreateTransaction(processorRequest, processorMessageID, GetCorrelationID() /*TODO: update integration message*/);
+                var processorResponse = await processor.CreateTransaction(processorRequest, processorMessageID.ToString(), GetCorrelationID());
 
                 if (!processorResponse.Success)
                 {
@@ -285,37 +290,43 @@ namespace Transactions.Api.Controllers
             }
 
             // commit transaction in aggregator (Clearing House)
-            try
+            if (jDealType == JDealTypeEnum.J4 && !initialDeal)
             {
-                var commitAggregatorRequest = mapper.Map<AggregatorCommitTransactionRequest>(transaction);
-
-                var chSettings = new ClearingHouse.ClearingHouseTerminalSettings() { MerchantReference = "5eb62fca-a37b-4192-b7f1-e75784561682" }; // TODO: get from terminal
-                commitAggregatorRequest.AggregatorSettings = chSettings;
-
-                var commitAggregatorResponse = await aggregator.CommitTransaction(commitAggregatorRequest);
-
-                if (!commitAggregatorResponse.Success)
+                try
                 {
-                    // In case of failed commit, transaction should not be transmitted to Shva
+                    var aggregatorMessageID = Guid.NewGuid();
 
+                    var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
+
+                    var commitAggregatorRequest = mapper.Map<AggregatorCommitTransactionRequest>(transaction);
+
+                    commitAggregatorRequest.AggregatorSettings = terminalAggregator.Settings;
+
+                    var commitAggregatorResponse = await aggregator.CommitTransaction(commitAggregatorRequest, aggregatorMessageID.ToString(), GetCorrelationID());
+
+                    if (!commitAggregatorResponse.Success)
+                    {
+                        // In case of failed commit, transaction should not be transmitted to Shva
+
+                        // TODO: can be 403
+                        // TODO: update transaction
+                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, commitAggregatorResponse.Errors));
+                    }
+
+                    // TODO: use converter instead of mapper (?)
+                    mapper.Map(commitAggregatorResponse, transaction);
+
+                    // TODO: change transaction status
+
+                    await transactionsService.UpdateEntity(transaction);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Aggregator Commit Transaction request failed");
                     // TODO: can be 403
                     // TODO: update transaction
-                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, commitAggregatorResponse.Errors));
+                    return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
                 }
-
-                // TODO: use converter instead of mapper (?)
-                mapper.Map(commitAggregatorResponse, transaction);
-
-                // TODO: change transaction status
-
-                await transactionsService.UpdateEntity(transaction);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Aggregator Commit Transaction request failed");
-                // TODO: can be 403
-                // TODO: update transaction
-                return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
             }
 
             return CreatedAtAction(actionName, new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID.ToString()));

@@ -139,6 +139,11 @@
             Installment payments details (should be omitted in case of regular deal)
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.ConsumerIP">
+            <summary>
+            Original consumer IP
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">
             <summary>
             Do not store full card number. Please use 123456****1234 pattern CreditCardHelpers.GetCardDigits()

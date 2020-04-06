@@ -63,6 +63,9 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         public InstallmentDetails InstallmentDetails { get; set; }
 
+        /// <summary>
+        /// Original consumer IP
+        /// </summary>
         public string ConsumerIP { get; set; }
     }
 }

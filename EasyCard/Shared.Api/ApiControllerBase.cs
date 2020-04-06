@@ -47,5 +47,11 @@ namespace Shared.Api
         {
             return HttpContext?.TraceIdentifier;
         }
+
+        [NonAction]
+        protected string GetIP()
+        {
+            return HttpContext?.Connection?.RemoteIpAddress?.ToString();
+        }
     }
 }
