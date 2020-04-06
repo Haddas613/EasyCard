@@ -38,7 +38,7 @@ namespace Shared.Tests.Fixtures
         /// </summary>
         public string UserIp { get; set; }
 
-        public HttpContextAccessorWrapperFixture(Guid terminalClaimIdValue, Guid merchantClaimIdValue)
+        public HttpContextAccessorWrapperFixture()
         {
             UserClaims = new ClaimsPrincipal();
 
@@ -47,8 +47,8 @@ namespace Shared.Tests.Fixtures
             UserIdClaim = Guid.NewGuid();
             UserIp = Guid.NewGuid().ToString();
 
-            TerminalIdClaimValue = terminalClaimIdValue;
-            MerchantIdClaimValue = merchantClaimIdValue;
+            TerminalIdClaimValue = Guid.NewGuid();
+            MerchantIdClaimValue = Guid.NewGuid();
 
             UserClaims.AddIdentity(new ClaimsIdentity(new List<Claim>
             {
@@ -73,6 +73,30 @@ namespace Shared.Tests.Fixtures
         public string GetCorrelationId()
         {
             return Guid.NewGuid().ToString();
+        }
+
+        public HttpContextAccessorWrapperFixture SetTerminalIDClaim(Guid value)
+        {
+            var claim = UserClaims.FindFirst(Claims.TerminalIDClaim);
+
+            (UserClaims.Identity as ClaimsIdentity).RemoveClaim(claim);
+
+            TerminalIdClaimValue = value;
+            (UserClaims.Identity as ClaimsIdentity).AddClaim(new Claim(Claims.TerminalIDClaim, value.ToString()));
+
+            return this;
+        }
+
+        public HttpContextAccessorWrapperFixture SetMerchantIDClaim(Guid value)
+        {
+            var claim = UserClaims.FindFirst(Claims.TerminalIDClaim);
+
+            (UserClaims.Identity as ClaimsIdentity).RemoveClaim(claim);
+
+            TerminalIdClaimValue = value;
+            (UserClaims.Identity as ClaimsIdentity).AddClaim(new Claim(Claims.TerminalIDClaim, value.ToString()));
+
+            return this;
         }
     }
 }

@@ -7,18 +7,22 @@ using Shared.Tests.Configuration;
 using Shared.Tests.Fixtures;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using Transactions.Api.Mapping;
 using Transactions.Api.Services;
 using Transactions.Business.Data;
 using Transactions.Business.Services;
+using Transactions.Tests.MockSetups;
 
 namespace Transactions.Tests.Fixtures
 {
     public class TransactionsFixture : IDisposable
     {
         public TransactionsContext TransactionsContext { get; private set; }
+
+        public TerminalsServiceMockSetup TerminalsServiceMockSetup { get; private set; }
 
         public HttpContextAccessorWrapperFixture HttpContextAccessorWrapper { get; private set; }
 
@@ -49,13 +53,17 @@ namespace Transactions.Tests.Fixtures
                 opts.UseSqlServer(config.GetConnectionString("DefaultDatabase"));
             }
 
-            HttpContextAccessorWrapper = new HttpContextAccessorWrapperFixture(Guid.NewGuid(), Guid.NewGuid());
+            HttpContextAccessorWrapper = new HttpContextAccessorWrapperFixture();
 
             TransactionsContext = new TransactionsContext(opts.Options, HttpContextAccessorWrapper);
             TransactionsContext.Database.EnsureCreated();
 
             TransactionsService = new TransactionsService(TransactionsContext, HttpContextAccessorWrapper);
             CreditCardTokenService = new CreditCardTokenService(TransactionsContext, HttpContextAccessorWrapper);
+            TerminalsServiceMockSetup = new TerminalsServiceMockSetup();
+
+            HttpContextAccessorWrapper
+                .SetTerminalIDClaim(TerminalsServiceMockSetup.TerminalsList.First().TerminalID);
 
             var configuration = new MapperConfiguration(cfg => cfg.AddMaps(Assembly.GetAssembly(typeof(Api.Controllers.TransactionsApiController))));
             Mapper = new Mapper(configuration);
