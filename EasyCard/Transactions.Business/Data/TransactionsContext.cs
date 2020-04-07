@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
 using Transactions.Business.Entities;
+using Shared.Helpers.Security;
 
 namespace Transactions.Business.Data
 {
@@ -38,7 +39,8 @@ namespace Transactions.Business.Data
             modelBuilder.ApplyConfiguration(new CreditCardTokenDetailsConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionHistoryConfiguration());
 
-            modelBuilder.Entity<CreditCardTokenDetails>().HasQueryFilter(t => t.Active);
+            modelBuilder.Entity<CreditCardTokenDetails>().HasQueryFilter(t => t.Active && (user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID()));
+            modelBuilder.Entity<PaymentTransaction>().HasQueryFilter(t => (user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID()));
 
             base.OnModelCreating(modelBuilder);
         }
