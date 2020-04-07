@@ -38,10 +38,10 @@ namespace Transactions.Business.Services
 
         public async override Task CreateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
         {
-            //if (user.GetMerchantID() != entity.MerchantID)
-            //{
-            //    throw new SecurityException(Messages.PleaseCheckValues);
-            //}
+            if (user.IsTerminal() && entity.TerminalID != user.GetTerminalID() || user.IsMerchant() && entity.MerchantID != user.GetMerchantID())
+            {
+                throw new SecurityException(Messages.PleaseCheckValues);
+            }
 
             await base.CreateEntity(entity, dbTransaction);
 

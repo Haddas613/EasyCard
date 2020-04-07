@@ -39,6 +39,8 @@ namespace Transactions.Business.Data
             modelBuilder.ApplyConfiguration(new CreditCardTokenDetailsConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionHistoryConfiguration());
 
+            // security filters
+
             modelBuilder.Entity<CreditCardTokenDetails>().HasQueryFilter(t => t.Active && (user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID()));
             modelBuilder.Entity<PaymentTransaction>().HasQueryFilter(t => (user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID()));
 

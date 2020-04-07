@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared.Business.Security;
+using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -56,7 +57,9 @@ namespace Merchants.Business.Data
 
             // security filters
 
-            //modelBuilder.Entity<Merchant>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
+            modelBuilder.Entity<Merchant>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
+
+            modelBuilder.Entity<Terminal>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.MerchantID == user.GetMerchantID()));
 
             base.OnModelCreating(modelBuilder);
         }
