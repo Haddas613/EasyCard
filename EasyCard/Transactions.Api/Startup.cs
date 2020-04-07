@@ -36,6 +36,7 @@ using Shared.Helpers.Security;
 using IdentityServer4.AccessTokenValidation;
 using Shared.Api.Swagger;
 using Swashbuckle.AspNetCore.Filters;
+using SharedApi = Shared.Api;
 
 namespace Transactions.Api
 {
@@ -122,7 +123,7 @@ namespace Transactions.Api
 
                 c.ExampleFilters();
 
-                c.SchemaFilter<Swagger.EnumSchemaFilter>();
+                c.SchemaFilter<SharedApi.Swagger.EnumSchemaFilter>();
 
                 //c.DocumentFilter<PolymorphismDocumentFilter<Models.Transactions.CreateTransactionRequest>>();
                 //c.SchemaFilter<PolymorphismSchemaFilter<Models.Transactions.CreateTransactionRequest>>();

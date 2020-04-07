@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Transactions.Shared.Enums
@@ -12,11 +13,13 @@ namespace Transactions.Shared.Enums
         /// <summary>
         /// Magnetic
         /// </summary>
+        [EnumMember(Value = "regular")]
         Regular = 0,
 
         /// <summary>
         /// Telephone deal
         /// </summary>
+        [EnumMember(Value= "cardNotPresent")]
         CardNotPresent = 1
     }
 }

@@ -21,6 +21,7 @@ using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Security;
+using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -78,6 +79,10 @@ namespace MerchantsApi
                     Version = "v1",
                     Title = "Merchants API",
                 });
+
+                c.ExampleFilters();
+
+                c.SchemaFilter<Shared.Api.Swagger.EnumSchemaFilter>();
 
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

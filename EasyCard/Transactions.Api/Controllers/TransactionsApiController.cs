@@ -201,6 +201,9 @@ namespace Transactions.Api.Controllers
                 terminal.Integrations.FirstOrDefault(t => t.ExternalSystem.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
                 Messages.ProcessorNotDefined);
 
+            transaction.AggregatorID = terminalAggregator.ExternalSystemID;
+            transaction.ProcessorID = terminalProcessor.ExternalSystemID;
+
             var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
             var processor = processorResolver.GetProcessor(terminalProcessor);
 

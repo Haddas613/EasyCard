@@ -11,8 +11,15 @@ namespace Shared.Helpers
         {
             var memInfo = enumType.GetMember(enumMember);
             var attributes = memInfo[0].GetCustomAttributes(typeof(EnumMemberAttribute), false);
-            var description = ((EnumMemberAttribute)attributes[0]).Value;
-            return description;
+            if (attributes.Length > 0)
+            {
+                var description = ((EnumMemberAttribute)attributes[0]).Value;
+                return description;
+            }
+            else
+            {
+                return enumMember;
+            }
         }
     }
 }
