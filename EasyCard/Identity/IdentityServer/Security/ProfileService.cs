@@ -13,7 +13,7 @@ namespace IdentityServer.Security
 {
     public class ProfileService : IProfileService
     {
-        protected UserManager<ApplicationUser> userManager;
+        private UserManager<ApplicationUser> userManager;
 
         public ProfileService(UserManager<ApplicationUser> userManager)
         {
@@ -38,7 +38,7 @@ namespace IdentityServer.Security
             //>Processing
             var user = await userManager.GetUserAsync(context.Subject);
 
-            context.IsActive = (user != null); //&& user.IsActive;
+            context.IsActive = user != null; //&& user.IsActive;
         }
     }
 }

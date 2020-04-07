@@ -65,6 +65,7 @@ namespace IdentityServer
                 {
                     ClientId = "merchant_frontend",
                     ClientName = "Merchant's Frontend",
+
                     //ClientUri = "http://identityserver.io",
 
                     AllowedGrantTypes = GrantTypes.Implicit,

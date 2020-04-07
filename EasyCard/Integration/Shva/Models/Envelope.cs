@@ -16,6 +16,8 @@ namespace Shva.Models
         public Body Body { get; set; }
     }
 
+#pragma warning disable SA1402
+
     [XmlRoot(ElementName = "Header", Namespace = "http://www.w3.org/2003/05/soap-envelope")]
     public class Header
     {
@@ -33,4 +35,6 @@ namespace Shva.Models
         [XmlElement("AshAuth", Type = typeof(AshAuthRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         public object Content { get; set; }
     }
+
+#pragma warning restore SA1402
 }

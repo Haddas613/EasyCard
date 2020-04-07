@@ -10,7 +10,7 @@ namespace Shared.Business.AutoHistory
 {
     public static class AutoHistoryExtension
     {
-        private static JsonSerializer _jsonerializer = JsonSerializer.Create(new JsonSerializerSettings
+        private static JsonSerializer jsonerializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             ContractResolver = new CamelCasePropertyNamesContractResolver(),
@@ -41,7 +41,7 @@ namespace Shared.Business.AutoHistory
                         }
 
                         json[prop.Metadata.Name] = prop.CurrentValue != null
-                            ? JToken.FromObject(prop.CurrentValue, _jsonerializer)
+                            ? JToken.FromObject(prop.CurrentValue, jsonerializer)
                             : JValue.CreateNull();
                     }
 
@@ -59,11 +59,11 @@ namespace Shared.Business.AutoHistory
                         if (prop.IsModified)
                         {
                             bef[prop.Metadata.Name] = prop.OriginalValue != null
-                            ? JToken.FromObject(prop.OriginalValue, _jsonerializer)
+                            ? JToken.FromObject(prop.OriginalValue, jsonerializer)
                             : JValue.CreateNull();
 
                             aft[prop.Metadata.Name] = prop.CurrentValue != null
-                            ? JToken.FromObject(prop.CurrentValue, _jsonerializer)
+                            ? JToken.FromObject(prop.CurrentValue, jsonerializer)
                             : JValue.CreateNull();
                         }
                     }
@@ -79,7 +79,7 @@ namespace Shared.Business.AutoHistory
                     foreach (var prop in properties)
                     {
                         json[prop.Metadata.Name] = prop.OriginalValue != null
-                            ? JToken.FromObject(prop.OriginalValue, _jsonerializer)
+                            ? JToken.FromObject(prop.OriginalValue, jsonerializer)
                             : JValue.CreateNull();
                     }
 

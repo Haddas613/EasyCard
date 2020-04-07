@@ -25,6 +25,7 @@ namespace Merchants.Api.Data
                 using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     var context = scope.ServiceProvider.GetService<MerchantsContext>();
+
                     //context.Database.Migrate(); //TODO: breaks tests
 
                     ExternalSystemsSeed.Seed(context);

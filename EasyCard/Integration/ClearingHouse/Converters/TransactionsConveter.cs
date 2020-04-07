@@ -49,7 +49,7 @@ namespace ClearingHouse.Converters
 
             details.TransactionDate = createTransactionRequest.TransactionDate;
 
-            details.TransactionType = GetTransactionType(createTransactionRequest.TransactionType);
+            details.TransactionType = GetTransactionType(createTransactionRequest.TransactionType, false); // TODO
 
             chRequest.PaymentGatewayTransactionDetails = details;
 
@@ -125,16 +125,19 @@ namespace ClearingHouse.Converters
             return response;
         }
 
-        private static Models.TransactionTypeEnum GetTransactionType(Shared.Integration.Models.TransactionTypeEnum transactionType)
+        private static Models.TransactionTypeEnum GetTransactionType(Shared.Integration.Models.TransactionTypeEnum transactionType, bool isRefund)
         {
+            if (isRefund)
+            {
+                return Models.TransactionTypeEnum.Refund;
+            }
+
             switch (transactionType)
             {
                 case Shared.Integration.Models.TransactionTypeEnum.Credit:
                     return Models.TransactionTypeEnum.Credit;
                 case Shared.Integration.Models.TransactionTypeEnum.Installments:
                     return Models.TransactionTypeEnum.Installments;
-                //case Shared.Integration.Models.TransactionTypeEnum.Refund: // TODO
-                //    return Models.TransactionTypeEnum.Refund;
                 case Shared.Integration.Models.TransactionTypeEnum.RegularDeal:
                     return Models.TransactionTypeEnum.Regular;
                 default:

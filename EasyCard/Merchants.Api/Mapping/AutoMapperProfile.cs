@@ -36,7 +36,9 @@ namespace Merchants.Api.Mapping
             CreateMap<Terminal, TerminalResponse>();
             CreateMap<Terminal, TerminalSummary>();
             CreateMap<ExternalSystem, ExternalSystemSummary>();
+
                 //.ForMember(src => src.ExternalSystemType, o => o.MapFrom(src => src.Type));
+
             CreateMap<TerminalExternalSystem, TerminalExternalSystemDetails>();
             CreateMap<ExternalSystemRequest, TerminalExternalSystem>();
         }

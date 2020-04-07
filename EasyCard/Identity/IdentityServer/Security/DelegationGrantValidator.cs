@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -66,8 +67,9 @@ namespace IdentityServer.Security
                 context.Result = new GrantValidationResult(userId, GrantType);
                 return;
             }
-            catch (Exception ex) // TODO: log exception
+            catch (Exception ex)
             {
+                Debug.WriteLine(ex.Message); // TODO: log exception
                 context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant);
                 return;
             }

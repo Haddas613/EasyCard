@@ -19,6 +19,10 @@ namespace Merchants.Business.Data
 {
     public class MerchantsContext : DbContext
     {
+        private static readonly ValueConverter SettingsJObjectConverter = new ValueConverter<JObject, string>(
+           v => v.ToString(Formatting.None),
+           v => JObject.Parse(v));
+
         public DbSet<Merchant> Merchants { get; set; }
 
         public DbSet<Feature> Features { get; set; }
@@ -34,10 +38,6 @@ namespace Merchants.Business.Data
         public DbSet<MerchantHistory> MerchantHistories { get; set; }
 
         private readonly ClaimsPrincipal user;
-
-        private static readonly ValueConverter SettingsJObjectConverter = new ValueConverter<JObject, string>(
-           v => v.ToString(Formatting.None),
-           v => JObject.Parse(v));
 
         public MerchantsContext(DbContextOptions<MerchantsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
             : base(options)

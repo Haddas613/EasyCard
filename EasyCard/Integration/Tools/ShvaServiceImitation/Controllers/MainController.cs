@@ -33,7 +33,6 @@ namespace ShvaServiceImitation.Controllers
                  _ => StatusCode(400, "unknown envelope")
              };
 
-
         private async Task<AshStartResponseBody> AshStart(AshStartRequestBody body) 
         {
             var response = new AshStartResponseBody();
@@ -42,7 +41,7 @@ namespace ShvaServiceImitation.Controllers
             response.globalObj = new clsGlobal();
             response.AshStartResult = 777;
 
-            return response;
+            return  await Task.FromResult(response);
         }
 
         private async Task<AshAuthResponseBody> AshAuth(AshAuthRequestBody body)
@@ -53,7 +52,7 @@ namespace ShvaServiceImitation.Controllers
             response.pinpad = new clsPinPad();
             response.AshAuthResult = 777;
 
-            return response;
+            return await Task.FromResult(response);
         }
 
         private async Task<AshEndResponseBody> AshEnd(AshEndRequestBody body)
@@ -64,7 +63,7 @@ namespace ShvaServiceImitation.Controllers
             response.globalObj = new clsGlobal();
             response.AshEndResult = 777;
 
-            return response;
+            return await Task.FromResult(response);
         }
     }
 }

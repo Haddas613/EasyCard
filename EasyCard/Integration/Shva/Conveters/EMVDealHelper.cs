@@ -53,7 +53,8 @@ namespace Shva.Conveters
             var shvaDetails = new ShvaCreatedTransactionDetails
             {
                 ShvaShovarNumber = resultAshEndBody.globalObj?.receiptObj?.voucherNumber?.valueTag,
-                //ShvaDealID = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag,
+
+                //ShvaDealID = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag, TODO
                 ShvaDealID = resultAshEndBody.globalObj?.outputObj?.uid?.valueTag,
                 AuthSolekNum = resultAshEndBody.globalObj?.outputObj?.authSolekNo?.valueTag,
                 AuthNum = resultAshEndBody.globalObj?.outputObj?.authManpikNo?.valueTag,

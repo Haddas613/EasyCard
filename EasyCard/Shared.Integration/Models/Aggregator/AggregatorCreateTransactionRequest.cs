@@ -15,16 +15,6 @@ namespace Shared.Integration.Models
 
         public string EasyCardTerminalID { get; set; }
 
-        /// <summary>
-        /// (?)
-        /// </summary>
-        public string AggregatorTerminalID { get; set; }
-
-        /// <summary>
-        /// (?)
-        /// </summary>
-        public string ProcessorTerminalID { get; set; }
-
         public JObject AggregatorSettings { get; set; }
 
         public TransactionTypeEnum TransactionType { get; set; }

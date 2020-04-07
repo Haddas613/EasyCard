@@ -11,8 +11,6 @@ namespace Transactions.Api.Models.Transactions
     /// </summary>
     public class CreditCardDetails : CreditCardDetailsBase
     {
-        public string CardOwnerName { get; set; }
-
         /// <summary>
         /// Stored token reference
         /// </summary>

@@ -6,6 +6,7 @@ using Shared.Helpers;
 using Shared.Integration;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,6 +24,7 @@ namespace BasicServices
 
         private CloudBlobContainer _container;
 
+        // TODO: logger
         public IntegrationRequestLogStorageService(string storageConnectionString, string tableName, string containerName)
         {
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConnectionString);
@@ -66,6 +68,7 @@ namespace BasicServices
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex.Message);
                 throw;
             }
         }

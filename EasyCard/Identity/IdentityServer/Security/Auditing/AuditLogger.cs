@@ -51,7 +51,6 @@ namespace IdentityServer.Security.Auditing
             await SaveAudit(audit);
         }
 
-
         public async Task ValidateUser(string email, string bankAccount)
         {
             var audit = await GetAudit(email, AuditingTypeEnum.UserValidated);

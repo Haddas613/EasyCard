@@ -159,7 +159,6 @@ namespace Shva
         /// <param name="transRequest"></param>
         /// <param name="messageId"></param>
         /// <param name="correlationId"></param>
-        /// <param name="handleIntegrationMessage"></param>
         /// <returns></returns>
         public async Task<ShvaTransmissionResponse> TransmissionTransaction(ShvaTransmissionRequest transRequest, string messageId, string
             correlationId)
@@ -256,7 +255,7 @@ namespace Shva
 
             //headers.Add("SOAPAction", $"{soapAction}");
 
-            return headers;
+            return await Task.FromResult(headers);
         }
 
         private async Task HandleIntegrationMessage(IntegrationMessage msg)

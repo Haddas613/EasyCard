@@ -33,6 +33,9 @@ namespace Shared.Api
         public string IpAddress { get; set; }
 
         [IgnoreProperty]
-        public string CorrelationId { get { return this.RowKey; } set { this.RowKey = value; } }
+        public string CorrelationId
+        {
+            get { return this.RowKey; } set { this.RowKey = value; }
+        }
     }
 }
