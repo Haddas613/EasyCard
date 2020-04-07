@@ -147,10 +147,6 @@ namespace Merchants.Business.Migrations
                     b.Property<Guid>("MerchantHistoryID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AdditionalDetails")
-                        .HasColumnType("nvarchar(max)")
-                        .IsUnicode(true);
-
                     b.Property<string>("CorrelationId")
                         .HasColumnType("varchar(50)")
                         .HasMaxLength(50)
@@ -348,6 +344,7 @@ namespace Merchants.Business.Migrations
                                 .HasColumnType("uniqueidentifier");
 
                             b1.Property<string>("BillingNotificationsEmails")
+                                .HasColumnName("BillingNotificationsEmails")
                                 .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("TerminalID");
@@ -365,11 +362,13 @@ namespace Merchants.Business.Migrations
 
                             b1.Property<bool>("CvvRequired")
                                 .ValueGeneratedOnAdd()
+                                .HasColumnName("CvvRequired")
                                 .HasColumnType("bit")
                                 .HasDefaultValue(false);
 
                             b1.Property<bool>("EnableDeletionOfUntransmittedTransactions")
                                 .ValueGeneratedOnAdd()
+                                .HasColumnName("EnableDeletionOfUntransmittedTransactions")
                                 .HasColumnType("bit")
                                 .HasDefaultValue(false);
 
@@ -387,14 +386,17 @@ namespace Merchants.Business.Migrations
 
                             b1.Property<bool>("NationalIDRequired")
                                 .ValueGeneratedOnAdd()
+                                .HasColumnName("NationalIDRequired")
                                 .HasColumnType("bit")
                                 .HasDefaultValue(false);
 
                             b1.Property<string>("PaymentButtonSettings")
+                                .HasColumnName("PaymentButtonSettings")
                                 .HasColumnType("nvarchar(max)")
                                 .IsUnicode(true);
 
                             b1.Property<string>("RedirectPageSettings")
+                                .HasColumnName("RedirectPageSettings")
                                 .HasColumnType("nvarchar(max)")
                                 .IsUnicode(true);
 

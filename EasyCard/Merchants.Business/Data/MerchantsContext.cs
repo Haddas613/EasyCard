@@ -98,16 +98,16 @@ namespace Merchants.Business.Data
 
                 builder.OwnsOne(b => b.Settings, s =>
                 {
-                    s.Property(p => p.CvvRequired).HasDefaultValue(false);
-                    s.Property(p => p.EnableDeletionOfUntransmittedTransactions).HasDefaultValue(false);
-                    s.Property(p => p.NationalIDRequired).HasDefaultValue(false);
-                    s.Property(p => p.PaymentButtonSettings).IsRequired(false).IsUnicode(true);
-                    s.Property(p => p.RedirectPageSettings).IsRequired(false).IsUnicode(true);
+                    s.Property(p => p.CvvRequired).HasColumnName("CvvRequired").HasDefaultValue(false);
+                    s.Property(p => p.EnableDeletionOfUntransmittedTransactions).HasColumnName("EnableDeletionOfUntransmittedTransactions").HasDefaultValue(false);
+                    s.Property(p => p.NationalIDRequired).HasColumnName("NationalIDRequired").HasDefaultValue(false);
+                    s.Property(p => p.PaymentButtonSettings).HasColumnName("PaymentButtonSettings").IsRequired(false).IsUnicode(true);
+                    s.Property(p => p.RedirectPageSettings).HasColumnName("RedirectPageSettings").IsRequired(false).IsUnicode(true);
                 });
 
                 builder.OwnsOne(b => b.BillingSettings, s =>
                 {
-                    s.Property(p => p.BillingNotificationsEmails).IsRequired(false);
+                    s.Property(p => p.BillingNotificationsEmails).HasColumnName("BillingNotificationsEmails").IsRequired(false);
                 });
             }
         }
@@ -176,7 +176,7 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.OperationDoneBy).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
-                builder.Property(b => b.UserID);
+                builder.Property(b => b.UserID).IsRequired(true);
 
                 builder.HasIndex(idx => new { idx.UserID, idx.TerminalID }).IsUnique(true);
             }
@@ -202,8 +202,6 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.OperationDescription).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
-
-                builder.Property(b => b.AdditionalDetails).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
 
                 builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
