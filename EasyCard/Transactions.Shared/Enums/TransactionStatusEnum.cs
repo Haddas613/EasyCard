@@ -34,16 +34,6 @@ namespace Transactions.Shared.Enums
         RejectedByAggregator = -10,
 
         /// <summary>
-        /// Not possible to confirm by Clearing House
-        /// </summary>
-        FailedToConfirmByAggregator  = -20,
-
-        /// <summary>
-        /// Failed to commit by Clearing House
-        /// </summary>
-        FailedToCommitByAggregator = -30,
-
-        /// <summary>
         /// Transaction is rejected by Shva
         /// </summary>
         RejectedByProcessor = -20,
@@ -56,12 +46,26 @@ namespace Transactions.Shared.Enums
         /// <summary>
         /// Transaction cancellation is sent to Clearing House
         /// </summary>
-        RejectedToAggregator = -30,
-        
+        RejectedToAggregator = -40,
+
+        /// <summary>
+        /// Not possible to confirm by Clearing House
+        /// </summary>
+        FailedToConfirmByAggregator  = -50,
+
+        /// <summary>
+        /// Not possible to confirm by Clearing House
+        /// </summary>
+        FailedToConfirmByProcesor = -60,
+
+        /// <summary>
+        /// Failed to commit by Clearing House
+        /// </summary>
+        FailedToCommitByAggregator = -70,
+
         /// <summary>
         /// Shva transmission failed
         /// </summary>
-        TransmissionToProcessorFailed = -40
-
+        TransmissionToProcessorFailed = -80
     }
 }

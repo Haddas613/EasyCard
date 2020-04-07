@@ -224,7 +224,7 @@ namespace Transactions.Api.Controllers
                     if (!aggregatorResponse.Success)
                     {
                         transaction.Status = TransactionStatusEnum.RejectedByAggregator;
-                        await transactionsService.UpdateEntity(transaction);
+                        await transactionsService.UpdateEntity(transaction);  // TODO: rejection reason
 
                         return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, aggregatorResponse.Errors));
                     }
@@ -235,17 +235,14 @@ namespace Transactions.Api.Controllers
                 }
                 catch (Exception ex)
                 {
-                    transaction.Status = TransactionStatusEnum.RejectedByAggregator;
+                    transaction.Status = TransactionStatusEnum.FailedToCommitByAggregator;
+                    await transactionsService.UpdateEntity(transaction);
 
-                    // TODO: can be 403
-                    // TODO: update transaction
                     logger.LogError(ex, "Aggregator Create Transaction request failed");
 
                     return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
                 }
             }
-
-            // TODO: cc vendorm isTourist
 
             // create transaction in processor (Shva)
             try
@@ -261,7 +258,7 @@ namespace Transactions.Api.Controllers
                     mapper.Map(model.CreditCardSecureDetails, processorRequest.CreditCardToken);
                 }
 
-                processorRequest.ProcessorSettings = terminalProcessor.Settings; //new Shva.Configuration.ShvaTerminalSettings { MerchantNumber = "0882021014", UserName = "ABLCH", Password = "E9900C" };
+                processorRequest.ProcessorSettings = terminalProcessor.Settings;
 
                 var processorMessageID = Guid.NewGuid();
 
@@ -269,23 +266,24 @@ namespace Transactions.Api.Controllers
 
                 if (!processorResponse.Success)
                 {
-                    // TODO: can be 403
-                    // TODO: update transaction
+                    transaction.Status = TransactionStatusEnum.RejectedByProcessor;
+                    await transactionsService.UpdateEntity(transaction); // TODO: rejection reason
+
                     return BadRequest(new OperationResponse(processorResponse.ErrorMessage, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
                 }
 
-                // TODO: use converter instead of mapper (?)
                 mapper.Map(processorResponse, transaction);
 
-                // TODO: change transaction status
-
+                transaction.Status = TransactionStatusEnum.ConfirmedByProcessor;
                 await transactionsService.UpdateEntity(transaction);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Processor Create Transaction request failed");
-                // TODO: can be 403
-                // TODO: update transaction
+
+                transaction.Status = TransactionStatusEnum.FailedToConfirmByProcesor;
+                await transactionsService.UpdateEntity(transaction);
+
                 return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
             }
 
@@ -306,25 +304,26 @@ namespace Transactions.Api.Controllers
 
                     if (!commitAggregatorResponse.Success)
                     {
-                        // In case of failed commit, transaction should not be transmitted to Shva
+                        // TODO: In case of failed commit, transaction should not be transmitted to Shva
 
-                        // TODO: can be 403
-                        // TODO: update transaction
+                        transaction.Status = TransactionStatusEnum.FailedToCommitByAggregator;
+                        await transactionsService.UpdateEntity(transaction);
+
                         return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, commitAggregatorResponse.Errors));
                     }
 
-                    // TODO: use converter instead of mapper (?)
                     mapper.Map(commitAggregatorResponse, transaction);
 
-                    // TODO: change transaction status
-
+                    transaction.Status = TransactionStatusEnum.CommitedToAggregator;
                     await transactionsService.UpdateEntity(transaction);
                 }
                 catch (Exception ex)
                 {
                     logger.LogError(ex, "Aggregator Commit Transaction request failed");
-                    // TODO: can be 403
-                    // TODO: update transaction
+
+                    transaction.Status = TransactionStatusEnum.FailedToCommitByAggregator;
+                    await transactionsService.UpdateEntity(transaction);
+
                     return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
                 }
             }
