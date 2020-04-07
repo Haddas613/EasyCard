@@ -46,7 +46,8 @@ namespace Merchants.Tests.Fixtures
                 connectionString = config.GetConnectionString("DefaultDatabase");
                 opts.UseSqlServer(connectionString);
             }
-            HttpContextAccessorWrapper = new HttpContextAccessorWrapperFixture(Guid.NewGuid(), Guid.NewGuid());
+
+            HttpContextAccessorWrapper = new HttpContextAccessorWrapperFixture();
 
             MerchantsContext = new MerchantsContext(opts.Options, HttpContextAccessorWrapper);
             MerchantsContext.Database.EnsureCreated();

@@ -40,19 +40,22 @@ namespace Transactions.Tests
         [Order(1)]
         public async Task CreateTransactionWithToken_CreatesWhenModelIsCorrect()
         {
-            var (procResolverMock, aggrResolverMock, keyValueStorageMock, terminalSrvMock)
-                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup().MockObj, new TerminalsServiceMockSetup());
+            var (procResolverMock, aggrResolverMock, keyValueStorageMock)
+                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup());
+
+            keyValueStorageMock.DefaultToken.TerminalID = transactionsFixture.TerminalsServiceMockSetup.TerminalsList.First().TerminalID;
 
             var cardTokenController = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService,
-                keyValueStorageMock.Object, transactionsFixture.Mapper, terminalSrvMock.MockObj.Object);
+                keyValueStorageMock.MockObj.Object, transactionsFixture.Mapper, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object);
             var tokenRequest = new TokenRequest
             {
                 CardExpiration = new CardExpiration { Month = 1, Year = 25 },
-                CardNumber = "1111222233334444"
+                CardNumber = "1111222233334444",
+                TerminalID = transactionsFixture.HttpContextAccessorWrapper.TerminalIdClaimValue
             };
             await cardTokenController.CreateToken(tokenRequest); //To ensure that there is available token
 
-            var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, terminalSrvMock, procResolverMock);
+            var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, transactionsFixture, procResolverMock);
 
             var existingToken = (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefaultAsync())
                 ?? throw new Exception("No existing token was found");
@@ -72,13 +75,13 @@ namespace Transactions.Tests
             var responseData = response.Value as OperationResponse;
 
             Assert.Equal(201, response.StatusCode);
-            Assert.NotNull(responseData.EntityID);
+            Assert.NotNull(responseData.EntityReference);
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
 
             aggrResolverMock.ResolverMock.Verify(m => m.GetAggregator(It.IsAny<TerminalExternalSystem>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>(), null, null), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), null, null), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
 
             procResolverMock.ResolverMock.Verify(m => m.GetProcessor(It.IsAny<TerminalExternalSystem>()), Times.Once);
             procResolverMock.ProcessorMock.Verify(
@@ -90,7 +93,7 @@ namespace Transactions.Tests
 
             Assert.NotNull(transactionEntry);
 
-            var historyEntries = await transactionsFixture.TransactionsContext.TransactionHistories.Where(h => h.TransactionHistoryID == transactionEntry.PaymentTransactionID)
+            var historyEntries = await transactionsFixture.TransactionsContext.TransactionHistories.Where(h => h.PaymentTransactionID == transactionEntry.PaymentTransactionID)
                 .ToListAsync();
 
             Assert.True(historyEntries.Count > 0);
@@ -100,14 +103,14 @@ namespace Transactions.Tests
         [Order(2)]
         public async Task CreateTransactionWithCreditCard_CreatesWhenModelIsCorrect()
         {
-            var (procResolverMock, aggrResolverMock, keyValueStorageMock, terminalSrvMock)
-                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup().MockObj, new TerminalsServiceMockSetup());
+            var (procResolverMock, aggrResolverMock, keyValueStorageMock)
+                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup());
 
-            var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, terminalSrvMock, procResolverMock);
+            var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, transactionsFixture, procResolverMock);
 
             var transactionRequest = new CreateTransactionRequest
             {
-                CreditCardSecureDetails = new Transactions.Api.Models.Transactions.CreditCardSecureDetails
+                CreditCardSecureDetails = new Api.Models.Transactions.CreditCardSecureDetails
                 {
                     CardExpiration = new CardExpiration { Month = 1, Year = 25 },
                     CardNumber = "1111222233334444",
@@ -127,13 +130,13 @@ namespace Transactions.Tests
             var responseData = response.Value as OperationResponse;
 
             Assert.Equal(201, response.StatusCode);
-            Assert.NotNull(responseData.EntityID);
+            Assert.NotNull(responseData.EntityReference);
             Assert.Equal(StatusEnum.Success, responseData.Status);
             Assert.NotNull(responseData.Message);
 
             aggrResolverMock.ResolverMock.Verify(m => m.GetAggregator(It.IsAny<TerminalExternalSystem>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>(), null, null), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), null, null), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
 
             procResolverMock.ResolverMock.Verify(m => m.GetProcessor(It.IsAny<TerminalExternalSystem>()), Times.Once);
             procResolverMock.ProcessorMock.Verify(
@@ -145,7 +148,7 @@ namespace Transactions.Tests
 
             Assert.NotNull(transactionEntry);
 
-            var historyEntries = await transactionsFixture.TransactionsContext.TransactionHistories.Where(h => h.TransactionHistoryID == transactionEntry.PaymentTransactionID)
+            var historyEntries = await transactionsFixture.TransactionsContext.TransactionHistories.Where(h => h.PaymentTransactionID == transactionEntry.PaymentTransactionID)
                 .ToListAsync();
 
             Assert.True(historyEntries.Count > 0);
@@ -155,13 +158,13 @@ namespace Transactions.Tests
         [Order(3)]
         public async Task CreateTransactionWithToken_ReturnsErrorWhenTokenDoesNotExist()
         {
-            var (procResolverMock, aggrResolverMock, keyValueStorageMock, terminalSrvMock)
-                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup().MockObj, new TerminalsServiceMockSetup());
+            var (procResolverMock, aggrResolverMock, keyValueStorageMock)
+                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup());
 
             var nonExistingKey = Guid.NewGuid().ToString();
-            keyValueStorageMock.Setup(m => m.Get(nonExistingKey)).Returns(Task.FromResult<CreditCardTokenKeyVault>(null));
+            keyValueStorageMock.MockObj.Setup(m => m.Get(nonExistingKey)).Returns(Task.FromResult<CreditCardTokenKeyVault>(null));
 
-            var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, terminalSrvMock, procResolverMock);
+            var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, transactionsFixture, procResolverMock);
 
             var transactionRequest = new CreateTransactionRequest
             {
@@ -170,20 +173,22 @@ namespace Transactions.Tests
             };
 
             await Assert.ThrowsAsync<EntityNotFoundException>(() => controller.CreateTransaction(transactionRequest));
-            keyValueStorageMock.Verify(m => m.Get(nonExistingKey), Times.Once);
+            keyValueStorageMock.MockObj.Verify(m => m.Get(nonExistingKey), Times.Once);
         }
 
         [Fact(DisplayName = "CreateTransactionWithToken: Returns error when aggregator fails")]
         [Order(4)]
         public async Task CreateTransactionWithToken_ReturnsErrorWhenAggregatorFails()
         {
-            var (procResolverMock, aggrResolverMock, keyValueStorageMock, terminalSrvMock)
-                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup().MockObj, new TerminalsServiceMockSetup());
+            var (procResolverMock, aggrResolverMock, keyValueStorageMock)
+                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup());
+
+            keyValueStorageMock.DefaultToken.TerminalID = transactionsFixture.TerminalsServiceMockSetup.TerminalsList.First().TerminalID;
 
             if (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.CountAsync() == 0)
             {
                 var cardTokenController = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService,
-                    keyValueStorageMock.Object, transactionsFixture.Mapper, terminalSrvMock.MockObj.Object);
+                    keyValueStorageMock.MockObj.Object, transactionsFixture.Mapper, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object);
                 var tokenRequest = new TokenRequest
                 {
                     CardExpiration = new CardExpiration { Month = 1, Year = 25 },
@@ -193,11 +198,11 @@ namespace Transactions.Tests
             }
 
             //Ensure that aggregator will not successfully commit transaction
-            aggrResolverMock.AggregatorMock.Setup(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), null, null))
+            aggrResolverMock.AggregatorMock.Setup(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new AggregatorCommitTransactionResponse { Success = false, ErrorMessage = "something is wrong" })
                 .Verifiable();
 
-            var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, terminalSrvMock, procResolverMock);
+            var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, transactionsFixture, procResolverMock);
 
             var existingToken = (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefaultAsync())
                 ?? throw new Exception("No existing token was found");
@@ -221,15 +226,15 @@ namespace Transactions.Tests
             Assert.NotNull(responseData.Message);
 
             aggrResolverMock.ResolverMock.Verify(m => m.GetAggregator(It.IsAny<TerminalExternalSystem>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>(), null, null), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), null, null), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
 
             var transactionEntry = await transactionsFixture.TransactionsContext.PaymentTransactions
                 .FirstOrDefaultAsync(t => t.TerminalID == transactionRequest.TerminalID && t.PaymentTransactionID.ToString() == responseData.EntityReference);
 
             Assert.NotNull(transactionEntry);
 
-            var historyEntries = await transactionsFixture.TransactionsContext.TransactionHistories.Where(h => h.TransactionHistoryID == transactionEntry.PaymentTransactionID)
+            var historyEntries = await transactionsFixture.TransactionsContext.TransactionHistories.Where(h => h.PaymentTransactionID == transactionEntry.PaymentTransactionID)
                 .ToListAsync();
 
             // TODO: also check if there is entries with unsuccessful status
@@ -240,13 +245,15 @@ namespace Transactions.Tests
         [Order(5)]
         public async Task CreateTransactionWithToken_ReturnsErrorWhenProcessorFails()
         {
-            var (procResolverMock, aggrResolverMock, keyValueStorageMock, terminalSrvMock)
-                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup().MockObj, new TerminalsServiceMockSetup());
+            var (procResolverMock, aggrResolverMock, keyValueStorageMock)
+                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup());
+
+            keyValueStorageMock.DefaultToken.TerminalID = transactionsFixture.TerminalsServiceMockSetup.TerminalsList.First().TerminalID;
 
             if (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.CountAsync() == 0)
             {
                 var cardTokenController = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService,
-                    keyValueStorageMock.Object, transactionsFixture.Mapper, terminalSrvMock.MockObj.Object);
+                    keyValueStorageMock.MockObj.Object, transactionsFixture.Mapper, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object);
                 var tokenRequest = new TokenRequest
                 {
                     CardExpiration = new CardExpiration { Month = 1, Year = 25 },
@@ -260,7 +267,7 @@ namespace Transactions.Tests
                 .ReturnsAsync(new ProcessorCreateTransactionResponse { Success = false, ErrorMessage = "something is wrong" })
                 .Verifiable();
 
-            var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, terminalSrvMock, procResolverMock);
+            var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, transactionsFixture, procResolverMock);
 
             var existingToken = (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefaultAsync())
                 ?? throw new Exception("No existing token was found");
@@ -295,7 +302,7 @@ namespace Transactions.Tests
 
             Assert.NotNull(transactionEntry);
 
-            var historyEntries = await transactionsFixture.TransactionsContext.TransactionHistories.Where(h => h.TransactionHistoryID == transactionEntry.PaymentTransactionID)
+            var historyEntries = await transactionsFixture.TransactionsContext.TransactionHistories.Where(h => h.PaymentTransactionID == transactionEntry.PaymentTransactionID)
                 .ToListAsync();
 
             // TODO: also check if there is entries with unsuccessful status
@@ -306,13 +313,13 @@ namespace Transactions.Tests
         [Order(6)]
         public async Task GetOneTransaction_ReturnsExistingTransaction()
         {
-            var (procResolverMock, aggrResolverMock, keyValueStorageMock, terminalSrvMock)
-                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup().MockObj, new TerminalsServiceMockSetup());
+            var (procResolverMock, aggrResolverMock, keyValueStorageMock)
+                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup());
 
             var existingTransaction = await transactionsFixture.TransactionsContext.PaymentTransactions.FirstOrDefaultAsync()
                 ?? throw new Exception("No existing transactions found");
 
-            var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, terminalSrvMock, procResolverMock);
+            var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, transactionsFixture, procResolverMock);
 
             var actionResult = await controller.GetTransaction(existingTransaction.PaymentTransactionID);
 
@@ -327,13 +334,13 @@ namespace Transactions.Tests
         [Order(7)]
         public async Task GetManyTransactions_ReturnsFilteredCollection()
         {
-            var (procResolverMock, aggrResolverMock, keyValueStorageMock, terminalSrvMock)
-                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup().MockObj, new TerminalsServiceMockSetup());
+            var (procResolverMock, aggrResolverMock, keyValueStorageMock)
+                = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup());
 
             var existingTransaction = await transactionsFixture.TransactionsContext.PaymentTransactions.FirstOrDefaultAsync()
                 ?? throw new Exception("No existing transactions found");
 
-            var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, terminalSrvMock, procResolverMock);
+            var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, transactionsFixture, procResolverMock);
 
             var filter = new TransactionsFilter { TerminalID = existingTransaction.TerminalID };
 
@@ -348,11 +355,11 @@ namespace Transactions.Tests
         }
 
         private TransactionsApiController GetAuthorizedController(
-            Mock<IKeyValueStorage<CreditCardTokenKeyVault>> keyValueStorageMock, AggregatorResolverMockSetup aggrResolverMock,
-            TerminalsServiceMockSetup terminalSrvMock, ProcessorResolverMockSetup procResolverMock)
+            KeyValueStorageMockSetup keyValueStorageMock, AggregatorResolverMockSetup aggrResolverMock,
+            TransactionsFixture transactionsFixture, ProcessorResolverMockSetup procResolverMock)
         {
-            var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.Object, transactionsFixture.Mapper,
-                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, terminalSrvMock.MockObj.Object, transactionsFixture.Logger);
+            var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.MockObj.Object, transactionsFixture.Mapper,
+                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object, transactionsFixture.Logger);
 
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
             {

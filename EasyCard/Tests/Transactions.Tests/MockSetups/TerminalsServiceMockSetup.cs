@@ -22,22 +22,19 @@ namespace Transactions.Tests.MockSetups
 
         public Mock<ITerminalsService> MockObj { get; set; }
 
-        public TerminalsServiceMockSetup(bool useDefaultSetup = true)
+        public TerminalsServiceMockSetup()
         {
             MockObj = new Mock<ITerminalsService>();
             TerminalsList = new List<Terminal>();
             TerminalsListMock = TerminalsList.AsQueryable().BuildMock();
-
-            if (useDefaultSetup)
-            {
-                Setup();
-            }
+            Setup();
         }
 
         private void Setup()
         {
             TerminalsList.Add(new Terminal
             {
+                TerminalID = Guid.NewGuid().GetSequentialGuid(DateTime.UtcNow),
                 MerchantID = Guid.NewGuid().GetSequentialGuid(DateTime.UtcNow),
                 Label = "Test 1",
                 Status = Merchants.Shared.Enums.TerminalStatusEnum.Approved,

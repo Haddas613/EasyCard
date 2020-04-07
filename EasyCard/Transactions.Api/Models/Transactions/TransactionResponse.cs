@@ -36,9 +36,9 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         public long TransactionNumber { get; set; }
 
-        public long TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
 
-        public long MerchantID { get; set; }
+        public Guid MerchantID { get; set; }
 
         /// <summary>
         /// Shva or other processor

@@ -13,25 +13,29 @@ namespace Transactions.Tests.MockSetups
     {
         public Mock<IKeyValueStorage<CreditCardTokenKeyVault>> MockObj { get; set; }
 
+        public CreditCardTokenKeyVault DefaultToken { get; private set; }
+
         public KeyValueStorageMockSetup(bool useDefaultSetup = true)
         {
             MockObj = new Mock<IKeyValueStorage<CreditCardTokenKeyVault>>();
 
             if (useDefaultSetup)
             {
+                DefaultToken = new CreditCardTokenKeyVault
+                {
+                    CardExpiration = new CardExpiration() { Month = 10, Year = 25 },
+                    CardNumber = "1111222233334444",
+                    TerminalID = Guid.NewGuid(),
+                    MerchantID = Guid.NewGuid()
+                };
+
                 Setup();
             }
         }
 
         private void Setup()
         {
-            MockObj.Setup(m => m.Get(It.IsAny<string>())).ReturnsAsync(new CreditCardTokenKeyVault
-                {
-                    CardExpiration = new CardExpiration() { Month = 10, Year = 25 },
-                    CardNumber = "1111222233334444",
-                    TerminalID = Guid.NewGuid(),
-                    MerchantID = Guid.NewGuid()
-                })
+            MockObj.Setup(m => m.Get(It.IsAny<string>())).ReturnsAsync(DefaultToken)
             .Verifiable();
         }
     }

@@ -33,17 +33,14 @@ namespace Transactions.Tests
         public async Task CreateToken_CreatesWhenModelIsCorrect()
         {
             var keyValueStorageMock = new KeyValueStorageMockSetup().MockObj;
-            var terminalSrvMock = new TerminalsServiceMockSetup().MockObj;
             var controller = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService,
-                keyValueStorageMock.Object, transactionsFixture.Mapper, terminalSrvMock.Object);
-
-            var existingTerminal = await terminalSrvMock.Object.GetTerminals().FirstOrDefaultAsync();
+                keyValueStorageMock.Object, transactionsFixture.Mapper, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object);
 
             var tokenRequest = new TokenRequest
             {
                 CardExpiration = new CardExpiration { Month = 1, Year = 25 },
                 CardNumber = "1111222233334444",
-                TerminalID = existingTerminal.TerminalID
+                TerminalID = transactionsFixture.HttpContextAccessorWrapper.TerminalIdClaimValue
             };
             var actionResult = await controller.CreateToken(tokenRequest);
 
@@ -67,9 +64,8 @@ namespace Transactions.Tests
         public async Task GetTokens_ReturnsCollectionOfTokens()
         {
             var keyValueStorageMock = new KeyValueStorageMockSetup().MockObj;
-            var terminalSrvMock = new TerminalsServiceMockSetup().MockObj;
             var controller = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService,
-                keyValueStorageMock.Object, transactionsFixture.Mapper, terminalSrvMock.Object);
+                keyValueStorageMock.Object, transactionsFixture.Mapper, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object);
             var filter = new CreditCardTokenFilter();
             var actionResult = await controller.GetTokens(filter);
 
@@ -86,9 +82,8 @@ namespace Transactions.Tests
         public async Task DeleteToken_DeletesToken()
         {
             var keyValueStorageMock = new KeyValueStorageMockSetup().MockObj;
-            var terminalSrvMock = new TerminalsServiceMockSetup().MockObj;
             var controller = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService,
-                keyValueStorageMock.Object, transactionsFixture.Mapper, terminalSrvMock.Object);
+                keyValueStorageMock.Object, transactionsFixture.Mapper, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object);
             var existingToken = transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefault() ?? throw new Exception("No existing token found to delete");
             var actionResult = await controller.DeleteToken(existingToken.CreditCardTokenID.ToString());
 
