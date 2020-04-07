@@ -98,5 +98,42 @@ namespace Shared.Tests.Fixtures
 
             return this;
         }
+
+        /// <summary>
+        /// Clears up current role and sets to BillingAdministrator
+        /// </summary>
+        /// <returns>this</returns>
+        public HttpContextAccessorWrapperFixture SetRoleToBillingAdministrator()
+        {
+            var claim = UserClaims.FindFirst(ClaimTypes.Role);
+
+            if (claim != null)
+            {
+                (UserClaims.Identity as ClaimsIdentity).RemoveClaim(claim);
+            }
+
+            (UserClaims.Identity as ClaimsIdentity).AddClaim(new Claim("scope", "admin_api"));
+            (UserClaims.Identity as ClaimsIdentity).AddClaim(new Claim(ClaimTypes.Role, Roles.BillingAdministrator));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Clears up current role and sets to Terminal
+        /// </summary>
+        /// <returns>this</returns>
+        public HttpContextAccessorWrapperFixture SetRoleToTerminal(Guid terminalID)
+        {
+            var claim = UserClaims.FindFirst(ClaimTypes.Role);
+
+            if (claim != null)
+            {
+                (UserClaims.Identity as ClaimsIdentity).RemoveClaim(claim);
+            }
+
+            (UserClaims.Identity as ClaimsIdentity).AddClaim(new Claim("client_id", "terminal"));
+
+            return SetTerminalIDClaim(terminalID);
+        }
     }
 }
