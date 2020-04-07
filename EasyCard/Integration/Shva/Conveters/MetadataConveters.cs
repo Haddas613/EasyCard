@@ -21,14 +21,12 @@ namespace Shva.Conveters
 
         public static string GetShvaExpDate(this CardExpiration cardExpiration)
         {
-            string cardExpMYY = cardExpiration.ToString();//MM/yy
-            string[] arrCardExpValues = cardExpMYY.Split('/');
-            return string.Format("{0}{1}", arrCardExpValues[1], arrCardExpValues[0]);
+            return $"{cardExpiration.Year:00}{cardExpiration.Month:00}";
         }
 
         public static string ToShvaDecimalStr(this decimal amount)
         {
-            return (amount * 100).ToString(); // sum in Agurut
+            return Convert.ToInt32(Math.Round(amount * 100m, 0)).ToString(); // sum in Agurut
         }
 
         public static ShvaParamJEnum GetParamJ5(this JDealTypeEnum transactionType)
@@ -52,6 +50,16 @@ namespace Shva.Conveters
         public static bool IsSuccessful(this AshEndResultEnum ashEndResult)
         {
             return ashEndResult == AshEndResultEnum.Success || ashEndResult == AshEndResultEnum.SuccessJ5;
+        }
+
+        public static bool IsSuccessful(this AshStartResultEnum ashStartResult)
+        {
+            return ashStartResult == AshStartResultEnum.Success;
+        }
+
+        public static bool IsSuccessful(this AshAuthResultEnum ashAuthResult)
+        {
+            return ashAuthResult == AshAuthResultEnum.Success;
         }
 
         public static RejectionReasonEnum GetErrorCode(this AshEndResultEnum ashEndResult)

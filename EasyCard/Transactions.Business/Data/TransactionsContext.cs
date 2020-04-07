@@ -80,7 +80,7 @@ namespace Transactions.Business.Data
 
                 builder.OwnsOne(b => b.ShvaTransactionDetails, s =>
                 {
-                    s.Property(p => p.ShvaDealID).HasColumnName("ShvaDealID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.ShvaDealID).HasColumnName("ShvaDealID").IsRequired(false).HasMaxLength(30).IsUnicode(false);
                     s.Property(p => p.ShvaShovarNumber).HasColumnName("ShvaShovarNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.ManuallyTransmitted).HasColumnName("ManuallyTransmitted");
                     s.Property(p => p.ShvaTerminalID).HasColumnName("ShvaTerminalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);

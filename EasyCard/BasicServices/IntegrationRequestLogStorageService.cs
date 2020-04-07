@@ -43,11 +43,17 @@ namespace BasicServices
             try
             {
                 // TODO: optional blob saving
-                CloudBlockBlob blockBlob = (await GetContainer()).GetBlockBlobReference($"{entity.MessageId}.xml");
+                CloudBlockBlob blockBlob = (await GetContainer()).GetBlockBlobReference($"{entity.MessageId}-response.xml");
 
-                blockBlob.Properties.ContentType = "text/xml"; // TODO
+                blockBlob.Properties.ContentType = "text/xml";
 
                 await blockBlob.UploadTextAsync(entity.Response);
+
+                CloudBlockBlob blockBlob2 = (await GetContainer()).GetBlockBlobReference($"{entity.MessageId}-request.xml");
+
+                blockBlob2.Properties.ContentType = "text/xml";
+
+                await blockBlob2.UploadTextAsync(entity.Request);
 
                 // header
 

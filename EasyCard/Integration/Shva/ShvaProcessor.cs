@@ -54,11 +54,11 @@ namespace Shva
 
             ashStartReq.inputObj = cls;
             ashStartReq.pinpad = new clsPinPad();
-            ashStartReq.globalObj = new ShvaEMV.clsGlobal() { shareD = new clsShareDetails { dealType = DealType.MAGNET } };
+            ashStartReq.globalObj = new ShvaEMV.clsGlobal(); // { shareD = new clsShareDetails { dealType = DealType.MAGNET } };
 
             var ashStartReqResult = await this.DoRequest(ashStartReq, AshStartUrl, messageId, correlationId, HandleIntegrationMessage);
 
-            var ashStartResultBody = (AshStartResponseBody)ashStartReqResult?.Body?.Content;
+            var ashStartResultBody = ashStartReqResult?.Body?.Content as AshStartResponseBody;
 
             if (ashStartResultBody == null)
             {
@@ -67,42 +67,59 @@ namespace Shva
             }
 
             // Success situation
-            if (ashStartResultBody.AshStartResult == (int)AshStartResultEnum.Success)
+            if (((AshStartResultEnum)ashStartResultBody.AshStartResult).IsSuccessful())
             {
-                var ashAuthReq = ashStartResultBody.GetAshAuthRequestBody(shvaParameters);
-                var ashEndReq = shvaParameters.GetAshEndRequestBody();
-
-                ashStartReq.inputObj = ashEndReq.inputObj = cls;
-
-                //call to the next function for make shva tansaction
-                var resultAuth = await this.DoRequest(ashAuthReq, AshAuthUrl, messageId, correlationId, HandleIntegrationMessage);
-                var authResultBody = (AshAuthResponseBody)resultAuth?.Body?.Content;
-
-                ashEndReq.globalObj = authResultBody.globalObj;
-                ashEndReq.pinpad = authResultBody.pinpad;
-
-                var resultAshEnd = await this.DoRequest(ashEndReq, AshEndUrl, messageId, correlationId, HandleIntegrationMessage);
-                var resultAshEndBody = (AshEndResponseBody)resultAshEnd?.Body?.Content;
-
-                //   TODO: what should be done in this place ?
-                //if (resultAshEndBody.AshEndResult == 777)
-                //{
-                //    if (resultStatus == 777 && transactionType == "11" && !billingModel.IsNewInitDeal && initDealResultModel != null)
-                //    {
-                //        מימוש עסקת אתחול שהצליחה, 0 כדי שתישמר בtblcard כרגיל לשידור
-                //        resultStatus = 0;
-                //    }
-                //}
-
-                return resultAshEndBody.GetProcessorTransactionResponse();
             }
             else if (ashStartResultBody.globalObj?.outputObj?.ashStatus != null && ashStartResultBody.globalObj?.outputObj?.ashStatusDes != null)
             {
-                return new ProcessorCreateTransactionResponse(ashStartResultBody.globalObj.outputObj.ashStatus.valueTag, ashStartResultBody.globalObj.outputObj.ashStatusDes.valueTag);
+                return new ProcessorCreateTransactionResponse(ashStartResultBody.globalObj.outputObj.ashStatusDes.valueTag, ashStartResultBody.globalObj.outputObj.ashStatus.valueTag);
             }
             else
             {
                 return new ProcessorCreateTransactionResponse(Messages.ResponseCannotBeParsed, RejectionReasonEnum.Unknown, ashStartResultBody.AshStartResult.ToString());
+            }
+
+            // auth request
+            var ashAuthReq = ashStartResultBody.GetAshAuthRequestBody(shvaParameters);
+            ashAuthReq.inputObj = cls;
+
+            var resultAuth = await this.DoRequest(ashAuthReq, AshAuthUrl, messageId, correlationId, HandleIntegrationMessage);
+            var authResultBody = resultAuth?.Body?.Content as AshAuthResponseBody;
+
+            if (((AshAuthResultEnum)authResultBody.AshAuthResult).IsSuccessful())
+            {
+            }
+            else if (authResultBody.globalObj?.outputObj?.ashStatus != null && authResultBody.globalObj?.outputObj?.ashStatusDes != null)
+            {
+                return new ProcessorCreateTransactionResponse(authResultBody.globalObj.outputObj.ashStatusDes.valueTag, authResultBody.globalObj.outputObj.ashStatus.valueTag);
+            }
+            else
+            {
+                return new ProcessorCreateTransactionResponse(Messages.ResponseCannotBeParsed, RejectionReasonEnum.Unknown, authResultBody.AshAuthResult.ToString());
+            }
+
+            // end request
+            var ashEndReq = shvaParameters.GetAshEndRequestBody();
+
+            ashEndReq.inputObj = cls;
+
+            ashEndReq.globalObj = authResultBody.globalObj;
+            ashEndReq.pinpad = authResultBody.pinpad;
+
+            var resultAshEnd = await this.DoRequest(ashEndReq, AshEndUrl, messageId, correlationId, HandleIntegrationMessage);
+            var resultAshEndBody = resultAshEnd?.Body?.Content as AshEndResponseBody;
+
+            if (((AshEndResultEnum)resultAshEndBody.AshEndResult).IsSuccessful())
+            {
+                return resultAshEndBody.GetProcessorTransactionResponse();
+            }
+            else if (resultAshEndBody.globalObj?.outputObj?.ashStatus != null && resultAshEndBody.globalObj?.outputObj?.ashStatusDes != null)
+            {
+                return new ProcessorCreateTransactionResponse(resultAshEndBody.globalObj.outputObj.ashStatusDes.valueTag, resultAshEndBody.globalObj.outputObj.ashStatus.valueTag);
+            }
+            else
+            {
+                return new ProcessorCreateTransactionResponse(Messages.ResponseCannotBeParsed, RejectionReasonEnum.Unknown, resultAshEndBody.AshEndResult.ToString());
             }
         }
 
@@ -215,16 +232,13 @@ namespace Shva
             {
                 if (handleIntegrationMessage != null)
                 {
-                    IntegrationMessage integrationMessage = new IntegrationMessage();
+                    IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, Guid.NewGuid().GetSortableStr(DateTime.UtcNow), correlationId);
 
-                    integrationMessage.MessageId = messageId;
-                    integrationMessage.MessageDate = DateTime.UtcNow;
                     integrationMessage.Request = requestStr;
                     integrationMessage.Response = responseStr;
                     integrationMessage.ResponseStatus = responseStatusStr;
                     integrationMessage.Address = requestUrl;
                     integrationMessage.Action = soapAction;
-                    integrationMessage.CorrelationId = correlationId;
 
                     await handleIntegrationMessage?.Invoke(integrationMessage);
                 }

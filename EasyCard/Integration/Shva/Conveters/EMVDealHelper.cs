@@ -50,26 +50,16 @@ namespace Shva.Conveters
 
         public static ShvaCreateTransactionResponse GetProcessorTransactionResponse(this AshEndResponseBody resultAshEndBody)
         {
-            var resCode = (AshEndResultEnum)resultAshEndBody.AshEndResult;
-
-            if (resCode.IsSuccessful())
+            var shvaDetails = new ShvaCreatedTransactionDetails
             {
-                var shvaDetails = new ShvaCreatedTransactionDetails
-                {
-                    ShvaShovarNumber = resultAshEndBody.globalObj?.receiptObj?.voucherNumber?.valueTag,
-                    ShvaDealID = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag,
-                    AuthSolekNum = resultAshEndBody.globalObj?.outputObj?.authSolekNo?.valueTag,
-                    AuthNum = resultAshEndBody.globalObj?.outputObj?.authManpikNo?.valueTag,
-                };
+                ShvaShovarNumber = resultAshEndBody.globalObj?.receiptObj?.voucherNumber?.valueTag,
+                //ShvaDealID = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag,
+                ShvaDealID = resultAshEndBody.globalObj?.outputObj?.uid?.valueTag,
+                AuthSolekNum = resultAshEndBody.globalObj?.outputObj?.authSolekNo?.valueTag,
+                AuthNum = resultAshEndBody.globalObj?.outputObj?.authManpikNo?.valueTag,
+            };
 
-                return new ShvaCreateTransactionResponse() { ProcessorTransactionDetails = shvaDetails };
-            }
-            else
-            {
-                var errorCode = resCode.GetErrorCode();
-                string errorCodeStr = resultAshEndBody.AshEndResult.ToString();
-                return new ShvaCreateTransactionResponse(Messages.Failed, errorCode, errorCodeStr);
-            }
+            return new ShvaCreateTransactionResponse() { ProcessorTransactionDetails = shvaDetails };
         }
 
         public static clsInput GetInitInitObjRequest(this ProcessorCreateTransactionRequest req)
@@ -99,10 +89,10 @@ namespace Shva.Conveters
                     inputObj.clientInputPan = req.CreditCardToken.CardNumber;
                     inputObj.expirationDate = shvaExpDate;
 
-                    if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
-                    {
-                        inputObj.id = req.CreditCardToken.CardOwnerNationalID;
-                    }
+                    //if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
+                    //{
+                    //    inputObj.id = req.CreditCardToken.CardOwnerNationalID;
+                    //}
 
                     // static values for initial deal
                     inputObj.amount = "1";
@@ -145,10 +135,10 @@ namespace Shva.Conveters
                 inputObj.clientInputPan = req.CreditCardToken.CardNumber;
                 inputObj.expirationDate = shvaExpDate;
 
-                if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
-                {
-                    inputObj.id = req.CreditCardToken.CardOwnerNationalID;
-                }
+                //if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
+                //{
+                //    inputObj.id = req.CreditCardToken.CardOwnerNationalID;
+                //}
 
                 if (!string.IsNullOrWhiteSpace(req.AuthNum))
                 {

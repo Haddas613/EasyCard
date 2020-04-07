@@ -59,5 +59,10 @@ namespace Shared.Helpers
 
             return new Guid(guidArray);
         }
+
+        public static string GetSortableStr(this Guid guid, DateTime dateTime)
+        {
+            return $"{dateTime.ToString("yyyyMMdd-HHmmss-fff")}-{guid.ToString().Replace("-", string.Empty).Substring(0, 16)}";
+        }
     }
 }
