@@ -62,8 +62,10 @@ namespace Transactions.Tests.Fixtures
             CreditCardTokenService = new CreditCardTokenService(TransactionsContext, HttpContextAccessorWrapper);
             TerminalsServiceMockSetup = new TerminalsServiceMockSetup();
 
+            //All tests in transactions are by default performed from Terminal perspective
+            //This can later be overrided in any particular test that does require other role
             HttpContextAccessorWrapper
-                .SetTerminalIDClaim(TerminalsServiceMockSetup.TerminalsList.First().TerminalID);
+                .SetRoleToTerminal(TerminalsServiceMockSetup.TerminalsList.First().TerminalID);
 
             var configuration = new MapperConfiguration(cfg => cfg.AddMaps(Assembly.GetAssembly(typeof(Api.Controllers.TransactionsApiController))));
             Mapper = new Mapper(configuration);

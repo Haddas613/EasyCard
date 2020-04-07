@@ -192,9 +192,6 @@ namespace Transactions.Business.Migrations
                     b.Property<Guid>("TransactionHistoryID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AdditionalDetails")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CorrelationId")
                         .IsRequired()
                         .HasColumnType("varchar(50)")
@@ -264,8 +261,7 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid?>("MerchantReference")
                                 .HasColumnName("ClearingHouseMerchantReference")
                                 .HasColumnType("uniqueidentifier")
-                                .HasMaxLength(50)
-                                .IsUnicode(false);
+                                .HasMaxLength(50);
 
                             b1.HasKey("PaymentTransactionID");
 
@@ -300,9 +296,9 @@ namespace Transactions.Business.Migrations
 
                             b1.Property<string>("CardOwnerName")
                                 .HasColumnName("CardOwnerName")
-                                .HasColumnType("varchar(100)")
+                                .HasColumnType("nvarchar(100)")
                                 .HasMaxLength(100)
-                                .IsUnicode(false);
+                                .IsUnicode(true);
 
                             b1.Property<string>("CardOwnerNationalID")
                                 .HasColumnName("CardOwnerNationalID")

@@ -33,11 +33,6 @@ namespace Transactions.Business.Entities
 
         public string OperationMessage { get; set; }
 
-        /// <summary>
-        /// additional details
-        /// </summary>
-        public string AdditionalDetails { get; set; }
-
         public string CorrelationId { get; set; }
 
         public string IntegrationMessageId { get; set; }

@@ -36,8 +36,6 @@ namespace Merchants.Business.Entities.Merchant
 
         public string OperationDescription { get; set; }
 
-        public string AdditionalDetails { get; set; }
-
         public string CorrelationId { get; set; }
 
         public string SourceIP { get; set; }

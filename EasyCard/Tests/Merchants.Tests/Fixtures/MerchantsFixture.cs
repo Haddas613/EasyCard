@@ -49,6 +49,10 @@ namespace Merchants.Tests.Fixtures
 
             HttpContextAccessorWrapper = new HttpContextAccessorWrapperFixture();
 
+            //All tests in merchant are by default performed from BillingAdmin perspective
+            //This can later be overrided in any particular test that does require other role
+            HttpContextAccessorWrapper.SetRoleToBillingAdministrator();
+
             MerchantsContext = new MerchantsContext(opts.Options, HttpContextAccessorWrapper);
             MerchantsContext.Database.EnsureCreated();
             SeedData.EnsureSeedData(connectionString);
