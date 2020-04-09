@@ -24,9 +24,6 @@ namespace Transactions.Business.Entities
 
         public Guid? OperationDoneByID { get; set; }
 
-        /// <summary>
-        /// TODO: change to enum
-        /// </summary>
         public TransactionOperationCodesEnum OperationCode { get; set; }
 
         public string OperationDescription { get; set; }

@@ -15,6 +15,10 @@ namespace Merchants.Api.Models.Terminal
         [Range(0, int.MaxValue)]
         public int? MinInstallments { get; set; }
 
+        public JObject RedirectPageSettings { get; set; }
+
+        public JObject PaymentButtonSettings { get; set; }
+
         /// <summary>
         /// If we set it to zero means installments blocked
         /// </summary>

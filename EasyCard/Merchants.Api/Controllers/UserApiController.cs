@@ -42,14 +42,6 @@ namespace Merchants.Api.Controllers
             return Ok(userData);
         }
 
-        [HttpPut]
-        [Route("{userEmail}")]
-        [Obsolete("Candidate for removal")]
-        public async Task<ActionResult<OperationResponse>> UpdateUser([FromRoute]string userEmail, [FromBody]UpdateUserRequest user)
-        {
-            throw new NotImplementedException();
-        }
-
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         [Route("invite")]

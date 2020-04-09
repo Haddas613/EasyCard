@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,9 +7,9 @@ namespace Merchants.Business.Entities.Terminal
 {
     public class TerminalSettings
     {
-        public string RedirectPageSettings { get; set; }
+        public JObject RedirectPageSettings { get; set; }
 
-        public string PaymentButtonSettings { get; set; }
+        public JObject PaymentButtonSettings { get; set; }
 
         public int? MinInstallments { get; set; }
 

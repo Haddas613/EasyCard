@@ -203,7 +203,13 @@ namespace IdentityServer
         {
             app.UseRequestResponseLogging();
 
-            app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
+            app.UseExceptionHandler(handler =>
+            {
+                var logger = serviceProvider.GetRequiredService<ILogger<GlobalExceptionHandler>>();
+                GlobalExceptionHandler.HandleException(app, logger);
+            });
+
+            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -244,7 +250,7 @@ namespace IdentityServer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                logger.LogError(ex.Message);
             }
 
             var config = serviceProvider.GetRequiredService<IConfiguration>();
@@ -256,7 +262,7 @@ namespace IdentityServer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                logger.LogError(ex.Message);
             }
         }
     }

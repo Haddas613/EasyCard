@@ -37,12 +37,6 @@ namespace Merchants.Api.Models.Terminal
 
         public IEnumerable<FeatureResponse> EnabledFeatures { get; set; }
 
-        // TODO: move settings to TerminalSettings class
-
-        public JObject RedirectPageSettings { get; set; }
-
-        public JObject PaymentButtonSettings { get; set; }
-
         public TerminalSettings Settings { get; set; }
 
         public TerminalBillingSettings BillingSettings { get; set; }
