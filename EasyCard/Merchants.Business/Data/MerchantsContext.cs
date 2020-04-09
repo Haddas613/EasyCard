@@ -101,8 +101,8 @@ namespace Merchants.Business.Data
                     s.Property(p => p.CvvRequired).HasColumnName("CvvRequired").HasDefaultValue(false);
                     s.Property(p => p.EnableDeletionOfUntransmittedTransactions).HasColumnName("EnableDeletionOfUntransmittedTransactions").HasDefaultValue(false);
                     s.Property(p => p.NationalIDRequired).HasColumnName("NationalIDRequired").HasDefaultValue(false);
-                    s.Property(p => p.PaymentButtonSettings).HasColumnName("PaymentButtonSettings").IsRequired(false).IsUnicode(true);
-                    s.Property(p => p.RedirectPageSettings).HasColumnName("RedirectPageSettings").IsRequired(false).IsUnicode(true);
+                    s.Property(p => p.PaymentButtonSettings).HasColumnName("PaymentButtonSettings").IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
+                    s.Property(p => p.RedirectPageSettings).HasColumnName("RedirectPageSettings").IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
                 });
 
                 builder.OwnsOne(b => b.BillingSettings, s =>

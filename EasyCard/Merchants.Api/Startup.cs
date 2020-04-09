@@ -72,6 +72,7 @@ namespace MerchantsApi
             });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerExamplesFromAssemblies();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -133,8 +134,13 @@ namespace MerchantsApi
         {
             app.UseRequestResponseLogging();
 
-            app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
+            app.UseExceptionHandler(handler =>
+            {
+                var logger = serviceProvider.GetRequiredService<ILogger<GlobalExceptionHandler>>();
+                GlobalExceptionHandler.HandleException(app, logger);
+            });
 
+            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
             app.UseStaticFiles();
 
             //app.UseHttpsRedirection();
@@ -177,7 +183,7 @@ namespace MerchantsApi
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                logger.LogError(ex.Message);
             }
         }
     }

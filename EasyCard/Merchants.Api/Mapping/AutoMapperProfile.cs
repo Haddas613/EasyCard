@@ -30,6 +30,7 @@ namespace Merchants.Api.Mapping
             CreateMap<UpdateTerminalRequest, Terminal>();
 
             CreateMap<Business.Entities.Terminal.TerminalSettings, Models.Terminal.TerminalSettings>().ReverseMap();
+
             CreateMap<Business.Entities.Terminal.TerminalBillingSettings, Models.Terminal.TerminalBillingSettings>()
                 .ForMember(m => m.BillingNotificationsEmails, o => o.MapFrom(
                     (src) => src.BillingNotificationsEmails.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))).ReverseMap();

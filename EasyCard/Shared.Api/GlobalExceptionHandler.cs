@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Shared.Api.Logging;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Business.Exceptions;
@@ -12,9 +14,9 @@ using System.Text;
 
 namespace Shared.Api
 {
-    public static class GlobalExceptionHandler
+    public class GlobalExceptionHandler
     {
-        public static void HandleException(IApplicationBuilder applicationBuilder)
+        public static void HandleException(IApplicationBuilder applicationBuilder, ILogger<GlobalExceptionHandler> logger)
         {
             applicationBuilder.Run(async context =>
             {
@@ -27,30 +29,28 @@ namespace Shared.Api
                 int responseStatusCode = 500;
                 string result = string.Empty;
 
-                // TODO: log errors
-                //_logger.LogError(ex, $"Exception {correlationId}: {ex.Message}");
+                if (ex != null)
+                {
+                    logger.LogError(ApiErrorLogFormatter.ExceptionFormatWithDetails(ex, correlationId));
+                }
 
                 if (ex is EntityNotFoundException enfeEx)
                 {
-                    //TODO: log details
                     result = JsonConvert.SerializeObject(new OperationResponse { Message = enfeEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId, EntityType = enfeEx.EntityType });
                     responseStatusCode = 404;
                 }
                 else if (ex is EntityConflictException econEx)
                 {
-                    //TODO: log details
                     result = JsonConvert.SerializeObject(new OperationResponse { Message = econEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId, EntityType = econEx.EntityType });
                     responseStatusCode = 409;
                 }
                 else if (ex is SecurityException securityEx)
                 {
-                    //TODO: log details
                     result = JsonConvert.SerializeObject(new OperationResponse { Message = securityEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId });
                     responseStatusCode = 403;
                 }
                 else if (ex is BusinessException businessEx)
                 {
-                    //TODO: log details
                     result = JsonConvert.SerializeObject(new OperationResponse { Message = businessEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId });
                     responseStatusCode = 400;
                 }
