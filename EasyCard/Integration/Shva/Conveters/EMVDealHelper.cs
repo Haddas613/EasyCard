@@ -1,7 +1,6 @@
 ﻿using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Integration.Models;
-using Shva.Configuration;
 using Shva.Models;
 using ShvaEMV;
 using System;
@@ -50,7 +49,7 @@ namespace Shva.Conveters
 
         public static ShvaCreateTransactionResponse GetProcessorTransactionResponse(this AshEndResponseBody resultAshEndBody)
         {
-            var shvaDetails = new ShvaCreatedTransactionDetails
+            return new ShvaCreateTransactionResponse()
             {
                 ShvaShovarNumber = resultAshEndBody.globalObj?.receiptObj?.voucherNumber?.valueTag,
 
@@ -59,8 +58,6 @@ namespace Shva.Conveters
                 AuthSolekNum = resultAshEndBody.globalObj?.outputObj?.authSolekNo?.valueTag,
                 AuthNum = resultAshEndBody.globalObj?.outputObj?.authManpikNo?.valueTag,
             };
-
-            return new ShvaCreateTransactionResponse() { ProcessorTransactionDetails = shvaDetails };
         }
 
         public static clsInput GetInitInitObjRequest(this ProcessorCreateTransactionRequest req)

@@ -16,6 +16,11 @@ namespace Merchants.Business.Entities.Integration
         /// </summary>
         public string InstanceTypeFullName { get; set; }
 
+        /// <summary>
+        /// Fully qualified Type name of settings class (used to deserialize settings)
+        /// </summary>
+        public string SettingsTypeFullName { get; set; }
+
         public string Name { get; set; }
 
         public string Settings { get; set; }

@@ -98,6 +98,7 @@ namespace IdentityServer
                     },
                     AllowedScopes = { "management_api" },
                     AccessTokenType = AccessTokenType.Jwt,
+                    AccessTokenLifetime = 3600 * 24 // TODO: config
                 },
                 new Client
                 {
@@ -115,7 +116,9 @@ namespace IdentityServer
                     AllowedScopes = new List<string>
                     {
                         "transactions_api"
-                    }
+                    },
+
+                    AccessTokenLifetime = 3600 * 24 // TODO: config
                 }
             };
     }

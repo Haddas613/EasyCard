@@ -19,9 +19,17 @@ namespace Transactions.Api.Mapping
         private void RegisterTransactionMappings()
         {
             CreateMap<Shva.ShvaCreateTransactionResponse, PaymentTransaction>()
-                .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src.ProcessorTransactionDetails));
+                .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))
+                .ForAllOtherMembers(d => d.Ignore());
 
-            CreateMap<Shva.Models.ShvaCreatedTransactionDetails, ShvaTransactionDetails>();
+            CreateMap<Shva.ShvaCreateTransactionResponse, ShvaTransactionDetails>();
+
+            CreateMap<Shva.ShvaTerminalSettings, PaymentTransaction>()
+                .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))
+                .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<Shva.ShvaTerminalSettings, ShvaTransactionDetails>()
+                 .ForMember(m => m.ShvaTerminalID, s => s.MapFrom(src => src.MerchantNumber));
         }
     }
 }

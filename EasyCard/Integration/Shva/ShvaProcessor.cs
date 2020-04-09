@@ -6,7 +6,6 @@ using Shared.Integration;
 using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
-using Shva.Configuration;
 using Shva.Conveters;
 using Shva.Models;
 using ShvaEMV;
@@ -46,7 +45,7 @@ namespace Shva
         public async Task<ProcessorCreateTransactionResponse> CreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest, string messageId, string
              correlationId)
         {
-            ShvaTerminalSettings shvaParameters = paymentTransactionRequest.ProcessorSettings.ToObject<ShvaTerminalSettings>();
+            ShvaTerminalSettings shvaParameters = paymentTransactionRequest.ProcessorSettings as ShvaTerminalSettings;
 
             var ashStartReq = shvaParameters.GetAshStartRequestBody();
 

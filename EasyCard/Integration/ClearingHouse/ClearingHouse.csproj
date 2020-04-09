@@ -21,4 +21,8 @@
     <ProjectReference Include="..\..\Shared.Integration\Shared.Integration.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mapping\" />
+  </ItemGroup>
+
 </Project>

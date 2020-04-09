@@ -15,6 +15,9 @@ namespace Transactions.Business.Entities
             TransactionDate = TimeZoneInfo.ConvertTimeFromUtc(TransactionTimestamp.Value, UserCultureInfo.TimeZone).Date;
             PaymentTransactionID = Guid.NewGuid().GetSequentialGuid(TransactionTimestamp.Value);
             CreditCardDetails = new CreditCardDetails();
+            ClearingHouseTransactionDetails = new ClearingHouseTransactionDetails();
+            ShvaTransactionDetails = new ShvaTransactionDetails();
+            DealDetails = new DealDetails();
         }
 
         public Guid PaymentTransactionID { get; set; }
@@ -160,12 +163,9 @@ namespace Transactions.Business.Entities
         /// </summary>
         public string MerchantIP { get; set; }
 
-        //public Guid? AggregatorCreateTransactionMessageID { get; set; }
-
-        //public Guid? AggregatorCommitTransactionMessageID { get; set; }
-
-        //public Guid? ProcessorCreateTransactionMessageID { get; set; }
-
-        //public Guid? ProcessorTransmitMessageID { get; set; }
+        /// <summary>
+        /// Request ID
+        /// </summary>
+        public string CorrelationId { get; set; }
     }
 }

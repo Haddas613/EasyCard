@@ -23,13 +23,17 @@ namespace Transactions.Api.Mapping
         private void RegisterTransactionMappings()
         {
             CreateMap<ClearingHouse.ClearingHouseCreateTransactionResponse, PaymentTransaction>()
-                .ForMember(m => m.ClearingHouseTransactionDetails, s => s.MapFrom(src => new
-                ClearingHouseTransactionDetails
-                {
-                    ClearingHouseTransactionID = src.AggregatorTransactionID,
-                    ConcurrencyToken = src.ConcurrencyToken
-                }
-                ));
+                .ForMember(m => m.ClearingHouseTransactionDetails, s => s.MapFrom(src => src))
+                .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<ClearingHouse.ClearingHouseCreateTransactionResponse, ClearingHouseTransactionDetails>();
+
+            CreateMap<ClearingHouse.ClearingHouseTerminalSettings, PaymentTransaction>()
+                .ForMember(m => m.ClearingHouseTransactionDetails, s => s.MapFrom(src => src))
+                .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<ClearingHouse.ClearingHouseTerminalSettings, ClearingHouseTransactionDetails>()
+               .ForMember(m => m.MerchantReference, s => s.MapFrom(src => src.MerchantReference));
 
             CreateMap<ShvaTransactionDetails, ClearingHouse.Models.PaymentGatewayAdditionalDetails>()
                  .ForMember(m => m.ShvaShovarData, src => src.MapFrom(f => f.ShvaDealID))

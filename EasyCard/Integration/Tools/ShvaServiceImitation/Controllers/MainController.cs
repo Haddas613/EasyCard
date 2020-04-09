@@ -24,16 +24,16 @@ namespace ShvaServiceImitation.Controllers
         public ActionResult Default() => Ok("Ready");
 
         [HttpPost]
-        public async Task<IActionResult> EntryPoint(Envelope request) => 
+        public async Task<IActionResult> EntryPoint(Envelope request) =>
             request?.Body?.Content switch
-             {
-                 AshStartRequestBody ashStartRequest => new ObjectResult(await AshStart(ashStartRequest)),
-                 AshAuthRequestBody ashAuthRequest => new ObjectResult(await AshAuth(ashAuthRequest)),
-                 AshEndRequestBody ashEndRequest => new ObjectResult(await AshEnd(ashEndRequest)),
-                 _ => StatusCode(400, "unknown envelope")
-             };
+            {
+                AshStartRequestBody ashStartRequest => new ObjectResult(await AshStart(ashStartRequest)),
+                AshAuthRequestBody ashAuthRequest => new ObjectResult(await AshAuth(ashAuthRequest)),
+                AshEndRequestBody ashEndRequest => new ObjectResult(await AshEnd(ashEndRequest)),
+                _ => StatusCode(400, "unknown envelope")
+            };
 
-        private async Task<AshStartResponseBody> AshStart(AshStartRequestBody body) 
+        private async Task<Envelope> AshStart(AshStartRequestBody body)
         {
             var response = new AshStartResponseBody();
 
@@ -41,10 +41,16 @@ namespace ShvaServiceImitation.Controllers
             response.globalObj = new clsGlobal();
             response.AshStartResult = 777;
 
-            return  await Task.FromResult(response);
+            return await Task.FromResult(new Envelope
+            {
+                Body = new Body
+                {
+                    Content = response
+                }
+            });
         }
 
-        private async Task<AshAuthResponseBody> AshAuth(AshAuthRequestBody body)
+        private async Task<Envelope> AshAuth(AshAuthRequestBody body)
         {
             var response = new AshAuthResponseBody();
 
@@ -52,18 +58,48 @@ namespace ShvaServiceImitation.Controllers
             response.pinpad = new clsPinPad();
             response.AshAuthResult = 777;
 
-            return await Task.FromResult(response);
+            return await Task.FromResult(new Envelope
+            {
+                Body = new Body
+                {
+                    Content = response
+                }
+            });
         }
 
-        private async Task<AshEndResponseBody> AshEnd(AshEndRequestBody body)
+        private async Task<Envelope> AshEnd(AshEndRequestBody body)
         {
             var response = new AshEndResponseBody();
 
+            var random = new Random();
+
             response.pinpad = new clsPinPad();
-            response.globalObj = new clsGlobal();
+            response.globalObj = new clsGlobal()
+            {
+                outputObj = new clsOutput()
+                {
+                    uid = new OField
+                    {
+                        valueTag = random.Next(10000000, 90000000).ToString()
+                    }
+                },
+                receiptObj = new clsReceipt()
+                {
+                    voucherNumber = new RField
+                    {
+                        valueTag = random.Next(1000000, 9000000).ToString()
+                    }
+                }
+            };
             response.AshEndResult = 777;
 
-            return await Task.FromResult(response);
+            return await Task.FromResult(new Envelope
+            {
+                Body = new Body
+                {
+                    Content = response
+                }
+            });
         }
     }
 }

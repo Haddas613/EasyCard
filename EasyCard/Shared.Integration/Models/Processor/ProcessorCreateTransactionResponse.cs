@@ -26,7 +26,7 @@ namespace Shared.Integration.Models
             Success = false;
             ErrorMessage = errorMessage;
             RejectReasonCode = errorCode;
-            ErrorCode = errorCodeStr;
+            Errors = new List<Api.Models.Error> { new Api.Models.Error { Code = errorCodeStr, Description = errorMessage } };
         }
 
         /// <summary>
@@ -35,24 +35,24 @@ namespace Shared.Integration.Models
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <param name="errorCode"></param>
-        public ProcessorCreateTransactionResponse(string errorMessage, string errorCode)
+        public ProcessorCreateTransactionResponse(string errorMessage, string errorCodeStr)
         {
             Success = false;
             ErrorMessage = errorMessage;
-            ErrorCode = errorCode;
+            Errors = new List<Api.Models.Error> { new Api.Models.Error { Code = errorCodeStr, Description = errorMessage } };
         }
 
-        /// <summary>
-        /// Will be used ShvaCreateTransactionDetails
-        /// </summary>
-        public object ProcessorTransactionDetails { get; set; }
+        public bool Success { get; set; }
 
+        /// <summary>
+        /// General error mesage which can be displayed to merchant
+        /// </summary>
         public string ErrorMessage { get; set; }
 
-        public string ErrorCode { get; set; }
+        public IEnumerable<Api.Models.Error> Errors { get; set; }
+
+        public int? OriginalHttpResponseCode { get; set; }
 
         public RejectionReasonEnum RejectReasonCode { get; set; }
-
-        public bool Success { get; set; }
     }
 }

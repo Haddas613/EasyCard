@@ -15,7 +15,7 @@ namespace Shared.Integration.Models
 
         public string EasyCardTerminalID { get; set; }
 
-        public JObject AggregatorSettings { get; set; }
+        public object AggregatorSettings { get; set; }
 
         public TransactionTypeEnum TransactionType { get; set; }
 

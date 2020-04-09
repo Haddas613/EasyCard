@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 
 namespace Transactions.Api.Services
 {
@@ -21,6 +22,11 @@ namespace Transactions.Api.Services
         public IProcessor GetProcessor(TerminalExternalSystem terminalExternalSystem)
         {
             return serviceProvider.GetService(Type.GetType(terminalExternalSystem.ExternalSystem.InstanceTypeFullName)) as IProcessor;
+        }
+
+        public object GetProcessorTerminalSettings(TerminalExternalSystem terminalExternalSystem, JObject processorTerminalSettings)
+        {
+            return processorTerminalSettings.ToObject(Type.GetType(terminalExternalSystem.ExternalSystem.SettingsTypeFullName));
         }
     }
 }

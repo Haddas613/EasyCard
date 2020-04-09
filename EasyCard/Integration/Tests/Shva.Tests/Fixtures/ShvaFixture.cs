@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Tests.Fixtures;
-using Shva.Configuration;
 using Shva.Tests.MockSetups;
 using System;
 using System.Collections.Generic;

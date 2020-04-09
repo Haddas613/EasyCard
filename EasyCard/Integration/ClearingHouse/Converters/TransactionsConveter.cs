@@ -41,7 +41,7 @@ namespace ClearingHouse.Converters
 
             details.DealReference = createTransactionRequest.TransactionID;
 
-            var clearingHouseSettings = createTransactionRequest.AggregatorSettings.ToObject<ClearingHouseTerminalSettings>();
+            var clearingHouseSettings = createTransactionRequest.AggregatorSettings as ClearingHouseTerminalSettings;
 
             details.TerminalReference = clearingHouseSettings.ShvaTerminalReference; // TODO: this is temporary implementation //createTransactionRequest.ProcessorTerminalID;
 
@@ -85,7 +85,7 @@ namespace ClearingHouse.Converters
 
             response.CorrelationID = operationResponse.CorrelationId;
 
-            response.AggregatorTransactionID = operationResponse.EntityID;
+            response.ClearingHouseTransactionID = operationResponse.EntityID;
 
             response.Success = operationResponse.Status == Models.StatusEnum.Success;
 

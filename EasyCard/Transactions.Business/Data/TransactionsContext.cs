@@ -108,6 +108,8 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.InstallmentPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.InitialPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").IsRequired();
+
+                builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
             }
         }
 
@@ -132,7 +134,7 @@ namespace Transactions.Business.Data
 
                 builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
-                builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
+                builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
             }

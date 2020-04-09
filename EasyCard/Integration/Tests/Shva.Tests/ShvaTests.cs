@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Options;
 using Shared.Tests.Fixtures;
-using Shva.Configuration;
 using Shva.Tests.Fixtures;
 using Shva.Tests.MockSetups;
 using System;

@@ -17,7 +17,7 @@ namespace Shared.Integration.Models
         /// <summary>
         /// Shva terminal settings
         /// </summary>
-        public JObject ProcessorSettings { get; set; }
+        public object ProcessorSettings { get; set; }
 
         /// <summary>
         /// Unique transaction ID

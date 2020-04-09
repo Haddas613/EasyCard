@@ -168,7 +168,7 @@ namespace Transactions.Api
             services.AddSingleton<IKeyValueStorage<CreditCardTokenKeyVault>, AzureKeyValueStorage<CreditCardTokenKeyVault>>();
 
             // integration
-            services.Configure<Shva.Configuration.ShvaGlobalSettings>(Configuration.GetSection("ShvaGlobalSettings"));
+            services.Configure<Shva.ShvaGlobalSettings>(Configuration.GetSection("ShvaGlobalSettings"));
             services.Configure<ClearingHouse.ClearingHouseGlobalSettings>(Configuration.GetSection("ClearingHouseGlobalSettings"));
 
             services.AddSingleton<IAggregatorResolver, AggregatorResolver>();
@@ -176,7 +176,7 @@ namespace Transactions.Api
 
             services.AddSingleton<Shva.ShvaProcessor, Shva.ShvaProcessor>(serviceProvider =>
             {
-                var shvaCfg = serviceProvider.GetRequiredService<IOptions<Shva.Configuration.ShvaGlobalSettings>>();
+                var shvaCfg = serviceProvider.GetRequiredService<IOptions<Shva.ShvaGlobalSettings>>();
                 var webApiClient = new WebApiClient();
                 var logger = serviceProvider.GetRequiredService<ILogger<Shva.ShvaProcessor>>();
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;

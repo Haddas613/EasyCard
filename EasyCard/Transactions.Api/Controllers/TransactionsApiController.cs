@@ -219,8 +219,9 @@ namespace Transactions.Api.Controllers
                 try
                 {
                     var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
-
-                    aggregatorRequest.AggregatorSettings = terminalAggregator.Settings;
+                    var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
+                    aggregatorRequest.AggregatorSettings = aggregatorSettings;
+                    mapper.Map(aggregatorSettings, transaction);
 
                     var aggregatorResponse = await aggregator.CreateTransaction(aggregatorRequest, aggregatorMessageID.ToString(), GetCorrelationID());
 
@@ -261,7 +262,9 @@ namespace Transactions.Api.Controllers
                     mapper.Map(model.CreditCardSecureDetails, processorRequest.CreditCardToken);
                 }
 
-                processorRequest.ProcessorSettings = terminalProcessor.Settings;
+                var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
+                processorRequest.ProcessorSettings = processorSettings;
+                mapper.Map(processorSettings, transaction);
 
                 var processorMessageID = Guid.NewGuid();
 

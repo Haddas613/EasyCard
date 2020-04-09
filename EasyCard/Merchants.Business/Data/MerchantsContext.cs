@@ -144,7 +144,8 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.Name).IsRequired(true).HasMaxLength(50).IsUnicode(true);
                 builder.HasIndex(b => b.Name).IsUnique(true);
-                builder.Property(b => b.InstanceTypeFullName).IsRequired(true).HasMaxLength(512).IsUnicode(false);
+                builder.Property(b => b.InstanceTypeFullName).IsRequired(false).HasMaxLength(512).IsUnicode(false);
+                builder.Property(b => b.SettingsTypeFullName).IsRequired(false).HasMaxLength(512).IsUnicode(false);
                 builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true);
             }
         }
