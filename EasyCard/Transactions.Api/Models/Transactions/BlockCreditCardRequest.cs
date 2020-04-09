@@ -41,6 +41,7 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Stored credit card details token (should be omitted in case if full credit card details used)
         /// </summary>
+        [StringLength(50)]
         public string CreditCardToken { get; set; }
 
         /// <summary>

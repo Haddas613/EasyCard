@@ -56,7 +56,7 @@ namespace Transactions.Api.Models.Transactions
         public long? InvoicingID { get; set; }
 
         /// <summary>
-        /// TODO: change ExternalSystemSummary to (?)
+        /// Marketer ID
         /// </summary>
         public long? MarketerID { get; set; }
 

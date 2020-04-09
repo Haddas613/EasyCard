@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Shared.Integration.Models
@@ -14,6 +15,7 @@ namespace Shared.Integration.Models
         /// <summary>
         /// Deal reference on merchant side
         /// </summary>
+        [StringLength(50)]
         public string DealReference { get; set; }
 
         /// <summary>
@@ -24,11 +26,13 @@ namespace Shared.Integration.Models
         /// <summary>
         /// End-customer Email
         /// </summary>
+        [StringLength(50)]
         public string ConsumerEmail { get; set; }
 
         /// <summary>
         /// End-customer Phone
         /// </summary>
+        [StringLength(50)]
         public string ConsumerPhone { get; set; }
     }
 }

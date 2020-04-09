@@ -11,6 +11,7 @@ namespace Transactions.Api.Models.Transactions
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class CreditCardSecureDetails : CreditCardDetailsBase
     {
+        [Required]
         [StringLength(4, MinimumLength = 3)]
         public string Cvv { get; set; }
     }

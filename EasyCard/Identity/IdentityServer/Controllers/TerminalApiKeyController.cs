@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Security;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityServer.Data;
@@ -56,7 +57,6 @@ namespace IdentityServer.Controllers
         public async Task<ActionResult<OperationResponse>> Get([FromRoute] Guid terminalID)
         {
             //TODO: check user access
-
             var key = EnsureExists(await terminalApiKeyService.GetAuthKeys().Where(k => k.TerminalID == terminalID).Select(k => k.AuthKey).FirstOrDefaultAsync(), "Key");
 
             return Ok(new OperationResponse("ok", Shared.Api.Models.Enums.StatusEnum.Success, key));

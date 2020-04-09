@@ -52,7 +52,6 @@ namespace Transactions.Api.Controllers
         private readonly IProcessorResolver processorResolver;
         private readonly ILogger logger;
 
-        // TODO: service client
         private readonly ITerminalsService terminalsService;
 
         public TransactionsApiController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper,
