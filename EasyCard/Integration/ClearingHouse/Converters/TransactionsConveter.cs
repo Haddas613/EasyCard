@@ -79,7 +79,7 @@ namespace ClearingHouse.Converters
             return chRequest;
         }
 
-        public static ClearingHouseCreateTransactionResponse GetAggregatorCreateTransactionResponse(this Models.OperationResponse operationResponse)
+        public static Shared.Integration.Models.AggregatorCreateTransactionResponse GetAggregatorCreateTransactionResponse(this Models.OperationResponse operationResponse)
         {
             var response = new ClearingHouseCreateTransactionResponse();
 
@@ -106,7 +106,7 @@ namespace ClearingHouse.Converters
 
         public static Shared.Integration.Models.AggregatorCommitTransactionResponse GetAggregatorCommitTransactionResponse(this Models.OperationResponse operationResponse)
         {
-            var response = new Shared.Integration.Models.AggregatorCommitTransactionResponse();
+            var response = new ClearingHouseCommitTransactionResponse();
 
             response.CorrelationID = operationResponse.CorrelationId;
 

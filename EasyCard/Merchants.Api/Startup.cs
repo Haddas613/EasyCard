@@ -134,11 +134,7 @@ namespace MerchantsApi
         {
             app.UseRequestResponseLogging();
 
-            app.UseExceptionHandler(handler =>
-            {
-                var logger = serviceProvider.GetRequiredService<ILogger<GlobalExceptionHandler>>();
-                GlobalExceptionHandler.HandleException(app, logger);
-            });
+            app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
 
             var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
             app.UseStaticFiles();

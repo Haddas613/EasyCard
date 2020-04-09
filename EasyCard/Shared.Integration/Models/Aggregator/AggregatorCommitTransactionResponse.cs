@@ -15,8 +15,6 @@ namespace Shared.Integration.Models
 
         public IEnumerable<Api.Models.Error> Errors { get; set; }
 
-        public string CorrelationID { get; set; }
-
         public int? OriginalHttpResponseCode { get; set; }
     }
 }

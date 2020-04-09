@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Shared.Api.Logging;
@@ -16,8 +17,10 @@ namespace Shared.Api
 {
     public class GlobalExceptionHandler
     {
-        public static void HandleException(IApplicationBuilder applicationBuilder, ILogger<GlobalExceptionHandler> logger)
+        public static void HandleException(IApplicationBuilder applicationBuilder)
         {
+            var logger = applicationBuilder.ApplicationServices.GetRequiredService<ILogger<GlobalExceptionHandler>>();
+
             applicationBuilder.Run(async context =>
             {
                 var exceptionHandlerPathFeature =
