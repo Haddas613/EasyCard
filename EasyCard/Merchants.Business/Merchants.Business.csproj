@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200330095113_ExternalSystem_SettingsAsJObject.cs" />
     <Compile Remove="Migrations\20200330095113_ExternalSystem_SettingsAsJObject.Designer.cs" />
+    <Compile Remove="Migrations\20200409100555_TerminalSettingsUpdateJObj.cs" />
+    <Compile Remove="Migrations\20200409100555_TerminalSettingsUpdateJObj.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

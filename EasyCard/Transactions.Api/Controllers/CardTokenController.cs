@@ -38,7 +38,6 @@ namespace Transactions.Api.Controllers
         private readonly IMapper mapper;
         private readonly IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage;
 
-        // TODO: service client
         private readonly ITerminalsService terminalsService;
 
         public CardTokenController(ITransactionsService transactionsService, ICreditCardTokenService creditCardTokenService,
