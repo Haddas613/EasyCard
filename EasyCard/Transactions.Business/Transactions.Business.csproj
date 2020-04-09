@@ -15,6 +15,8 @@
     <Compile Remove="Migrations\20200402184630_Initial.Designer.cs" />
     <Compile Remove="Migrations\20200402191821_Initial.cs" />
     <Compile Remove="Migrations\20200402191821_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20200409190331_transactions-correction4.cs" />
+    <Compile Remove="Migrations\20200409190331_transactions-correction4.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Shared.Business\Shared.Business.csproj" />
     <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
+    <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
     <ProjectReference Include="..\Transactions.Shared\Transactions.Shared.csproj" />
   </ItemGroup>
 

@@ -8,32 +8,20 @@ namespace Transactions.Shared.Enums
     {
         TransactionCreated,
         TransactionUpdated,
-        TransactionRejected,
-        TransactionCommitted,
+        
+        
+        
+        
 
-        ChargebackCreated,
-        ChargebackDone,
-        ChargebackFailed,
+        ConfirmedByAggregator,
+        RejectedByAggregator,
+        FailedToConfirmByAggregator,
 
-        TranAddedToBillingReprt,
-        TransactionTransferred,
-        TransactionTransferFailed,
+        ConfirmedByProcessor,
+        RejectedByProcessor,
+        FailedToConfirmByProcesor,
 
-        ChrgbckAddedToBillingReprt,
-        ChrgbckAddedToChrgbckReprt,
-
-        ConfirmedByVisa,
-        InstallmentConfirmedByVisa,
-
-        RateRecalculation,
-        UndoReject,
-
-        Holded,
-        Unholded,
-        DepositedByVisa,
-
-        ConfirmedByYazil,
-        DepositedByYazil,
-        ConvertToNikion
+        CommitedByAggregator,
+        FailedToCommitByAggregator
     }
 }

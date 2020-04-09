@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Shared.Integration.Models
 {
-    public enum RejectionReasonEnum
+    public enum RejectionReasonEnum : short
     {
         // TODO: add required codes
         Unknown = 0,

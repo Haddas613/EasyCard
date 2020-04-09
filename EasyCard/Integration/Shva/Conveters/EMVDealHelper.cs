@@ -63,9 +63,9 @@ namespace Shva.Conveters
         public static clsInput GetInitInitObjRequest(this ProcessorCreateTransactionRequest req)
         {
             clsInput inputObj = new clsInput();
-            InitDealResultModel initialDealData = req.InitDealResultData as InitDealResultModel;
+            InitDealResultModel initialDealData = req.InitialDeal as InitDealResultModel;
             int parameterJValue = (int)req.JDealType.GetParamJ5();
-            var transactionType = req.TransactionType.GetShvaTransactionType();
+            var transactionType = req.SpecialTransactionType.GetShvaTransactionType();
             var cardPresence = req.CardPresence.GetShvaCardPresence();
             var shvaExpDate = req.CreditCardToken.CardExpiration.GetShvaExpDate();
             var creditTerms = req.TransactionType.GetShvaCreditTerms();
@@ -87,6 +87,7 @@ namespace Shva.Conveters
                     inputObj.clientInputPan = req.CreditCardToken.CardNumber;
                     inputObj.expirationDate = shvaExpDate;
 
+                    // TODO: national ID
                     //if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
                     //{
                     //    inputObj.id = req.CreditCardToken.CardOwnerNationalID;
@@ -111,7 +112,7 @@ namespace Shva.Conveters
                     inputObj.stndOrdrTotalNo = "999";
 
                     inputObj.originalAmount = initialDealData.Amount.ToString(); //return from initialzation deal
-                    inputObj.stndOrdrNo = req.CurrentInstallment.ToString(); // counter of billing deal with the same details
+                    inputObj.stndOrdrNo = req.CurrentDeal.ToString(); // counter of billing deal with the same details
 
                     if (!string.IsNullOrEmpty(initialDealData.OriginalAuthSolekNum))
                     {
@@ -133,14 +134,15 @@ namespace Shva.Conveters
                 inputObj.clientInputPan = req.CreditCardToken.CardNumber;
                 inputObj.expirationDate = shvaExpDate;
 
+                // TODO: national ID
                 //if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
                 //{
                 //    inputObj.id = req.CreditCardToken.CardOwnerNationalID;
                 //}
 
-                if (!string.IsNullOrWhiteSpace(req.AuthNum))
+                if (!string.IsNullOrWhiteSpace(req.CreditCardToken.AuthNum))
                 {
-                    inputObj.authorizationNo = req.AuthNum;
+                    inputObj.authorizationNo = req.CreditCardToken.AuthNum;
                     inputObj.authorizationCodeManpik = "5";
                 }
 

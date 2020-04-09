@@ -120,6 +120,9 @@
   <data name="AggregatorNotDefined" xml:space="preserve">
     <value>Aggregator is not defined</value>
   </data>
+  <data name="CreateRequestSentToAggregator" xml:space="preserve">
+    <value>Create transaction request sent to {0}</value>
+  </data>
   <data name="FailedToProcessTransaction" xml:space="preserve">
     <value>Failed To Process Transaction</value>
   </data>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Integration.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -21,6 +22,9 @@ namespace Transactions.Business.Entities
         /// </summary>
         public string ShvaTransmissionNumber { get; set; }
 
+        /// <summary>
+        /// Terminal reference
+        /// </summary>
         public string ShvaTerminalID { get; set; }
 
         /// <summary>
@@ -32,5 +36,10 @@ namespace Transactions.Business.Entities
         /// in case if DoNotTransmit flag is set, transaction should be transmitted manually (or can be transmitted manually before sheduled period)
         /// </summary>
         public bool ManuallyTransmitted { get; set; }
+
+        /// <summary>
+        /// Solek
+        /// </summary>
+        public SolekEnum? Solek { get; set; }
     }
 }

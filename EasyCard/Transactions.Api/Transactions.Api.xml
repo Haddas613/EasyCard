@@ -301,7 +301,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.MarketerID">
             <summary>
-            TODO: change ExternalSystemSummary to (?)
+            Marketer ID
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.RejectionReason">

@@ -70,6 +70,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create transaction request sent to {0}.
+        /// </summary>
+        public static string CreateRequestSentToAggregator {
+            get {
+                return ResourceManager.GetString("CreateRequestSentToAggregator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed To Process Transaction.
         /// </summary>
         public static string FailedToProcessTransaction {

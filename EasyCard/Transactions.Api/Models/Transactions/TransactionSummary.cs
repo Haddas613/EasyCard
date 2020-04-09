@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Converters;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

@@ -26,7 +26,7 @@ namespace Transactions.Api.Mapping
             CreateMap<CreateTransactionRequest, PaymentTransaction>()
                 .ForMember(d => d.CreditCardDetails, o => o.Ignore());
 
-            CreateMap<Transactions.Api.Models.Transactions.CreditCardSecureDetails, Business.Entities.CreditCardDetails>()
+            CreateMap<CreditCardSecureDetails, Business.Entities.CreditCardDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))
                 .ForMember(d => d.CardBin, o => o.MapFrom(d => CreditCardHelpers.GetCardBin(d.CardNumber)));
 

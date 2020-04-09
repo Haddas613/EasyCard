@@ -42,5 +42,7 @@ namespace Shva
         /// Deal Date
         /// </summary>
         public DateTime? ShvaTransactionDate { get; set; }
+
+        public SolekEnum Solek { get; set; }
     }
 }

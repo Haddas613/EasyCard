@@ -13,10 +13,24 @@ namespace Shared.Integration.Models
         /// </summary>
         public string TransactionID { get; set; }
 
+        /// <summary>
+        /// Request ID
+        /// </summary>
+        public string CorrelationId { get; set; }
+
+        /// <summary>
+        /// Original terminal
+        /// </summary>
         public string EasyCardTerminalID { get; set; }
 
+        /// <summary>
+        /// Specific aggregator settings
+        /// </summary>
         public object AggregatorSettings { get; set; }
 
+        /// <summary>
+        /// Transaction type
+        /// </summary>
         public TransactionTypeEnum TransactionType { get; set; }
 
         /// <summary>

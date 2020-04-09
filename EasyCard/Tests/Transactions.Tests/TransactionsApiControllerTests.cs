@@ -64,7 +64,7 @@ namespace Transactions.Tests
             {
                 CreditCardToken = existingToken.CreditCardTokenID.ToString(),
                 TerminalID = existingToken.TerminalID.Value,
-                TransactionType = Shared.Enums.TransactionTypeEnum.RegularDeal,
+                TransactionType = TransactionTypeEnum.RegularDeal,
                 Currency = CurrencyEnum.ILS,
                 TransactionAmount = 100,
             };
@@ -80,13 +80,12 @@ namespace Transactions.Tests
             Assert.NotNull(responseData.Message);
 
             aggrResolverMock.ResolverMock.Verify(m => m.GetAggregator(It.IsAny<TerminalExternalSystem>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>()), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>()), Times.Once);
 
             procResolverMock.ResolverMock.Verify(m => m.GetProcessor(It.IsAny<TerminalExternalSystem>()), Times.Once);
             procResolverMock.ProcessorMock.Verify(
-                m => m.CreateTransaction(It.IsAny<ProcessorCreateTransactionRequest>(), It.IsAny<string>(),
-                It.IsAny<string>()), Times.Once);
+                m => m.CreateTransaction(It.IsAny<ProcessorCreateTransactionRequest>()), Times.Once);
 
             var transactionEntry = await transactionsFixture.TransactionsContext.PaymentTransactions
                .FirstOrDefaultAsync(t => t.TerminalID == transactionRequest.TerminalID && t.PaymentTransactionID.ToString() == responseData.EntityReference);
@@ -110,7 +109,7 @@ namespace Transactions.Tests
 
             var transactionRequest = new CreateTransactionRequest
             {
-                CreditCardSecureDetails = new Api.Models.Transactions.CreditCardSecureDetails
+                CreditCardSecureDetails = new CreditCardSecureDetails
                 {
                     CardExpiration = new CardExpiration { Month = 1, Year = 25 },
                     CardNumber = "1111222233334444",
@@ -119,7 +118,7 @@ namespace Transactions.Tests
                     CardOwnerNationalID = "12345678"
                 },
                 TerminalID = transactionsFixture.HttpContextAccessorWrapper.TerminalIdClaimValue,
-                TransactionType = Shared.Enums.TransactionTypeEnum.RegularDeal,
+                TransactionType = TransactionTypeEnum.RegularDeal,
                 Currency = CurrencyEnum.ILS,
                 TransactionAmount = 100,
             };
@@ -135,13 +134,12 @@ namespace Transactions.Tests
             Assert.NotNull(responseData.Message);
 
             aggrResolverMock.ResolverMock.Verify(m => m.GetAggregator(It.IsAny<TerminalExternalSystem>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>()), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>()), Times.Once);
 
             procResolverMock.ResolverMock.Verify(m => m.GetProcessor(It.IsAny<TerminalExternalSystem>()), Times.Once);
             procResolverMock.ProcessorMock.Verify(
-                m => m.CreateTransaction(It.IsAny<ProcessorCreateTransactionRequest>(), It.IsAny<string>(),
-                It.IsAny<string>()), Times.Once);
+                m => m.CreateTransaction(It.IsAny<ProcessorCreateTransactionRequest>()), Times.Once);
 
             var transactionEntry = await transactionsFixture.TransactionsContext.PaymentTransactions
                .FirstOrDefaultAsync(t => t.TerminalID == transactionRequest.TerminalID && t.PaymentTransactionID.ToString() == responseData.EntityReference);
@@ -198,7 +196,7 @@ namespace Transactions.Tests
             }
 
             //Ensure that aggregator will not successfully commit transaction
-            aggrResolverMock.AggregatorMock.Setup(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+            aggrResolverMock.AggregatorMock.Setup(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>()))
                 .ReturnsAsync(new AggregatorCommitTransactionResponse { Success = false, ErrorMessage = "something is wrong" })
                 .Verifiable();
 
@@ -211,7 +209,7 @@ namespace Transactions.Tests
             {
                 CreditCardToken = existingToken.CreditCardTokenID.ToString(),
                 TerminalID = existingToken.TerminalID.Value,
-                TransactionType = Shared.Enums.TransactionTypeEnum.RegularDeal,
+                TransactionType = TransactionTypeEnum.RegularDeal,
                 Currency = CurrencyEnum.ILS,
                 TransactionAmount = 100,
             };
@@ -226,8 +224,8 @@ namespace Transactions.Tests
             Assert.NotNull(responseData.Message);
 
             aggrResolverMock.ResolverMock.Verify(m => m.GetAggregator(It.IsAny<TerminalExternalSystem>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>()), Times.Once);
+            aggrResolverMock.AggregatorMock.Verify(m => m.CommitTransaction(It.IsAny<AggregatorCommitTransactionRequest>()), Times.Once);
 
             var transactionEntry = await transactionsFixture.TransactionsContext.PaymentTransactions
                 .FirstOrDefaultAsync(t => t.TerminalID == transactionRequest.TerminalID && t.PaymentTransactionID.ToString() == responseData.EntityReference);
@@ -263,7 +261,7 @@ namespace Transactions.Tests
             }
 
             //Ensure that processor will not successfully create transaction
-            procResolverMock.ProcessorMock.Setup(m => m.CreateTransaction(It.IsAny<ProcessorCreateTransactionRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+            procResolverMock.ProcessorMock.Setup(m => m.CreateTransaction(It.IsAny<ProcessorCreateTransactionRequest>()))
                 .ReturnsAsync(new ProcessorCreateTransactionResponse { Success = false, ErrorMessage = "something is wrong" })
                 .Verifiable();
 
@@ -276,7 +274,7 @@ namespace Transactions.Tests
             {
                 CreditCardToken = existingToken.CreditCardTokenID.ToString(),
                 TerminalID = existingToken.TerminalID.Value,
-                TransactionType = Shared.Enums.TransactionTypeEnum.RegularDeal,
+                TransactionType = TransactionTypeEnum.RegularDeal,
                 Currency = CurrencyEnum.ILS,
                 TransactionAmount = 100,
             };
@@ -294,8 +292,7 @@ namespace Transactions.Tests
 
             procResolverMock.ResolverMock.Verify(m => m.GetProcessor(It.IsAny<TerminalExternalSystem>()), Times.Once);
             procResolverMock.ProcessorMock.Verify(
-                m => m.CreateTransaction(It.IsAny<ProcessorCreateTransactionRequest>(), It.IsAny<string>(),
-                It.IsAny<string>()), Times.Once);
+                m => m.CreateTransaction(It.IsAny<ProcessorCreateTransactionRequest>()), Times.Once);
 
             var transactionEntry = await transactionsFixture.TransactionsContext.PaymentTransactions
                .FirstOrDefaultAsync(t => t.TerminalID == transactionRequest.TerminalID && t.PaymentTransactionID.ToString() == responseData.EntityReference);

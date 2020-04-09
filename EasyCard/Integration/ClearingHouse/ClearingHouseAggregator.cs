@@ -35,8 +35,7 @@ namespace ClearingHouse
             this.integrationRequestLogStorageService = integrationRequestLogStorageService;
         }
 
-        public async Task<AggregatorCreateTransactionResponse> CreateTransaction(AggregatorCreateTransactionRequest transactionRequest, string messageId, string
-             correlationId)
+        public async Task<AggregatorCreateTransactionResponse> CreateTransaction(AggregatorCreateTransactionRequest transactionRequest)
         {
             try
             {
@@ -54,8 +53,7 @@ namespace ClearingHouse
             }
         }
 
-        public async Task<AggregatorCommitTransactionResponse> CommitTransaction(AggregatorCommitTransactionRequest transactionRequest, string messageId, string
-             correlationId)
+        public async Task<AggregatorCommitTransactionResponse> CommitTransaction(AggregatorCommitTransactionRequest transactionRequest)
         {
             try
             {
@@ -71,6 +69,11 @@ namespace ClearingHouse
                 var result = clientError.TryConvert(new Models.OperationResponse { Message = clientError.Message });
                 return result.GetAggregatorCommitTransactionResponse();
             }
+        }
+
+        public bool ShouldBeProcessedByAggregator(TransactionTypeEnum transactionType, SpecialTransactionTypeEnum specialTransactionType, JDealTypeEnum jDealType)
+        {
+            return jDealType == JDealTypeEnum.J4 && specialTransactionType == SpecialTransactionTypeEnum.RegularDeal;
         }
 
         private async Task<NameValueCollection> BuildHeaders()

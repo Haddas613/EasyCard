@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -23,9 +24,9 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Generic transaction type
         /// </summary>
-        [EnumDataType(typeof(Enums.TransactionTypeEnum))]
+        [EnumDataType(typeof(TransactionTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
-        public Enums.TransactionTypeEnum TransactionType { get; set; }
+        public TransactionTypeEnum TransactionType { get; set; }
 
         /// <summary>
         /// Currency
@@ -37,9 +38,9 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Is the card physically scanned (telephone deal or magnetic)
         /// </summary>
-        [EnumDataType(typeof(Enums.CardPresenceEnum))]
+        [EnumDataType(typeof(CardPresenceEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
-        public Enums.CardPresenceEnum CardPresence { get; set; }
+        public CardPresenceEnum CardPresence { get; set; }
 
         /// <summary>
         /// Credit card details (should be omitted in case if stored credit card token used)

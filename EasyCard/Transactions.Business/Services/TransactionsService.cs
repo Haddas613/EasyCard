@@ -43,17 +43,17 @@ namespace Transactions.Business.Services
                 throw new SecurityException(Messages.PleaseCheckValues);
             }
 
+            entity.UpdatedDate = DateTime.UtcNow;
+
             await base.CreateEntity(entity, dbTransaction);
 
-            await AddHistory(entity.PaymentTransactionID, string.Empty, Messages.TransactionCreated, TransactionOperationCodesEnum.TransactionCreated, null);
+            await AddHistory(entity.PaymentTransactionID, string.Empty, Messages.TransactionCreated, TransactionOperationCodesEnum.TransactionCreated);
         }
 
-
         public async override Task UpdateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null) 
-            => await UpdateEntityWithStatus(entity, Messages.TransactionUpdated, TransactionOperationCodesEnum.TransactionUpdated, dbTransaction);
+            => await UpdateEntity(entity, Messages.TransactionUpdated, TransactionOperationCodesEnum.TransactionUpdated, dbTransaction: dbTransaction);
 
-        public async Task UpdateEntityWithStatus(PaymentTransaction entity, string historyMessage, TransactionOperationCodesEnum operationCode, 
-            IDbContextTransaction dbTransaction = null, string integrationMessageId = null)
+        public async Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum transactionStatus, IDbContextTransaction dbTransaction = null)
         {
             List<string> changes = new List<string>();
 
@@ -66,11 +66,39 @@ namespace Transactions.Business.Services
 
             var changesStr = string.Concat("[", string.Join(",", changes), "]");
 
+            entity.UpdatedDate = DateTime.UtcNow;
+
+            TransactionOperationCodesEnum operationCode = TransactionOperationCodesEnum.TransactionUpdated;
+            var historyMessage = Messages.TransactionUpdated;
+
+            entity.Status = transactionStatus;
+            Enum.TryParse<TransactionOperationCodesEnum>(transactionStatus.ToString(), true, out operationCode);
+            historyMessage = Messages.ResourceManager.GetString(operationCode.ToString()) ?? historyMessage;
+
             await base.UpdateEntity(entity, dbTransaction);
-            await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode, integrationMessageId);
+            await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
         }
 
-        private async Task AddHistory(Guid transactionID, string opDescription, string message, TransactionOperationCodesEnum operationCode, string integrationMessageId = null)
+        private async Task UpdateEntity(PaymentTransaction entity, string historyMessage, TransactionOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null)
+        {
+            List<string> changes = new List<string>();
+
+            // Must ToArray() here for excluding the AutoHistory model.
+            var entries = context.ChangeTracker.Entries().Where(e => e.State == EntityState.Modified || e.State == EntityState.Deleted || e.State == EntityState.Added).ToArray();
+            foreach (var entry in entries)
+            {
+                changes.Add(entry.AutoHistory().Changed);
+            }
+
+            var changesStr = string.Concat("[", string.Join(",", changes), "]");
+
+            entity.UpdatedDate = DateTime.UtcNow;
+
+            await base.UpdateEntity(entity, dbTransaction);
+            await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
+        }
+
+        private async Task AddHistory(Guid transactionID, string opDescription, string message, TransactionOperationCodesEnum operationCode)
         {
             var historyRecord = new TransactionHistory
             {
@@ -78,7 +106,6 @@ namespace Transactions.Business.Services
                 OperationCode = operationCode,
                 OperationDescription = opDescription,
                 OperationMessage = message,
-                IntegrationMessageId = integrationMessageId
             };
 
             historyRecord.ApplyAuditInfo(httpContextAccessor);

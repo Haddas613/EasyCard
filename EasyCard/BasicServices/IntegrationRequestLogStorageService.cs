@@ -44,18 +44,20 @@ namespace BasicServices
         {
             try
             {
-                // TODO: optional blob saving
-                CloudBlockBlob blockBlob = (await GetContainer()).GetBlockBlobReference($"{entity.MessageId}-response.xml");
+                if (_containerName != null)
+                {
+                    CloudBlockBlob blockBlobResponse = (await GetContainer()).GetBlockBlobReference($"{entity.MessageId}-{entity.Action}-response.xml");
 
-                blockBlob.Properties.ContentType = "text/xml";
+                    blockBlobResponse.Properties.ContentType = "text/xml";
 
-                await blockBlob.UploadTextAsync(entity.Response);
+                    await blockBlobResponse.UploadTextAsync(entity.Response);
 
-                CloudBlockBlob blockBlob2 = (await GetContainer()).GetBlockBlobReference($"{entity.MessageId}-request.xml");
+                    CloudBlockBlob blockBlobRequest = (await GetContainer()).GetBlockBlobReference($"{entity.MessageId}-{entity.Action}-request.xml");
 
-                blockBlob2.Properties.ContentType = "text/xml";
+                    blockBlobRequest.Properties.ContentType = "text/xml";
 
-                await blockBlob2.UploadTextAsync(entity.Request);
+                    await blockBlobRequest.UploadTextAsync(entity.Request);
+                }
 
                 // header
 
@@ -73,6 +75,7 @@ namespace BasicServices
             }
         }
 
+        // TODO
         public async Task<IntegrationMessage> Get(DateTime requestDate, string correlationId)
         {
             TableOperation getOperation = TableOperation.Retrieve<IntegrationMessage>(requestDate.ToString("yy-MM-dd"), correlationId);

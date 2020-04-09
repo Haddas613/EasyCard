@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Transactions;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using Enums = Transactions.Shared.Enums;
 using SharedIntegration = Shared.Integration;
 
@@ -17,9 +18,9 @@ namespace Transactions.Api.Swagger
             return new CreateTransactionRequest()
             {
                 TerminalID = Guid.NewGuid(),
-                TransactionType = Shared.Enums.TransactionTypeEnum.RegularDeal,
+                TransactionType = TransactionTypeEnum.RegularDeal,
                 Currency = CurrencyEnum.USD,
-                CardPresence = Enums.CardPresenceEnum.CardNotPresent,
+                CardPresence = CardPresenceEnum.CardNotPresent,
                 CreditCardSecureDetails = new CreditCardSecureDetails
                 {
                     CardExpiration = new CardExpiration { Year = 2021, Month = 8 },

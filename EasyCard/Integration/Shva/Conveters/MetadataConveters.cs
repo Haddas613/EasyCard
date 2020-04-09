@@ -67,19 +67,18 @@ namespace Shva.Conveters
             return RejectionReasonEnum.Unknown;
         }
 
-        // TODO ?
-        public static ShvaTransactionTypeEnum GetShvaTransactionType(this TransactionTypeEnum transactionType)
+        public static ShvaTransactionTypeEnum GetShvaTransactionType(this SpecialTransactionTypeEnum transactionType)
         {
             switch (transactionType)
             {
-                case TransactionTypeEnum.RegularDeal:
+                case SpecialTransactionTypeEnum.RegularDeal:
                     return ShvaTransactionTypeEnum.RegularDeal;
 
-                case TransactionTypeEnum.Credit:
-                    return ShvaTransactionTypeEnum.RegularDeal;
+                case SpecialTransactionTypeEnum.InitialDeal:
+                    return ShvaTransactionTypeEnum.InitialDeal;
 
-                case TransactionTypeEnum.Installments:
-                    return ShvaTransactionTypeEnum.RegularDeal;
+                case SpecialTransactionTypeEnum.Refund:
+                    return ShvaTransactionTypeEnum.Refund;
 
                 default:
                     throw new NotSupportedException($"Given transaction type {transactionType} is not supported by Shva");

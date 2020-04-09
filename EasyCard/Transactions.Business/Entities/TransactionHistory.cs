@@ -32,8 +32,6 @@ namespace Transactions.Business.Entities
 
         public string CorrelationId { get; set; }
 
-        public string IntegrationMessageId { get; set; }
-
         public string SourceIP { get; set; }
     }
 }

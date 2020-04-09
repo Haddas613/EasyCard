@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -62,14 +63,14 @@ namespace Transactions.Api.Models.Transactions
 
         public Enums.TransactionStatusEnum Status { get; set; }
 
-        [EnumDataType(typeof(Enums.TransactionTypeEnum))]
+        [EnumDataType(typeof(TransactionTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
-        public Enums.TransactionTypeEnum TransactionType { get; set; }
+        public TransactionTypeEnum TransactionType { get; set; }
 
         /// <summary>
         /// Rejection Reason
         /// </summary>
-        public Enums.RejectionReasonEnum? RejectionReason { get; set; }
+        public RejectionReasonEnum? RejectionReason { get; set; }
 
         /// <summary>
         /// Currency
@@ -80,7 +81,7 @@ namespace Transactions.Api.Models.Transactions
         /// 50 telephone deal
         /// 00 regular (megnetic)
         /// </summary>
-        public Enums.CardPresenceEnum CardPresence { get; set; }
+        public CardPresenceEnum CardPresence { get; set; }
 
         /// <summary>
         /// Number Of Installments

@@ -9,12 +9,11 @@ namespace Shared.Integration
     {
         public IntegrationMessage(DateTime messageDate, string messageId, string correlationId)
         {
-            this.MessageId = messageId;
-            this.MessageDate = messageDate;
-            this.CorrelationId = correlationId;
+            this.messageDate = messageDate;
+            this.correlationId = correlationId;
+            SetPartitionKey();
 
-            this.RowKey = this.MessageId;
-            this.PartitionKey = $"{this.MessageDate.ToString("yy-MM-dd")}-{this.CorrelationId}";
+            this.RowKey = messageId;
         }
 
         private DateTime messageDate;
@@ -26,7 +25,7 @@ namespace Shared.Integration
             set
             {
                 messageDate = value;
-                this.PartitionKey = $"{this.MessageDate.ToString("yy-MM-dd")}-{this.CorrelationId}";
+                SetPartitionKey();
             }
         }
 
@@ -38,12 +37,29 @@ namespace Shared.Integration
 
         public string ResponseStatus { get; set; }
 
-        public string CorrelationId { get; set; }
+        private string correlationId;
 
-        public long? MerchantID { get; set; }
+        public string CorrelationId
+        {
+            get => correlationId;
 
-        public string MessageId { get; set; }
+            set
+            {
+                correlationId = value;
+                SetPartitionKey();
+            }
+        }
+
+        public string MessageId
+        {
+            get { return RowKey; } set { RowKey = value; }
+        }
 
         public string Action { get; set; }
+
+        private void SetPartitionKey()
+        {
+            this.PartitionKey = $"{this.messageDate.ToString("yy-MM-dd")}-{this.correlationId}";
+        }
     }
 }

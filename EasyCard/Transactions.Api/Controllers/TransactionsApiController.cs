@@ -167,7 +167,7 @@ namespace Transactions.Api.Controllers
             throw new NotImplementedException();
         }
 
-        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, string actionName, JDealTypeEnum jDealType = JDealTypeEnum.J4, bool initialDeal = false)
+        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, string actionName, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialDealID = null)
         {
             // TODO: caching
             // TODO: redo ".Include(t => t.Integrations)"
@@ -175,6 +175,9 @@ namespace Transactions.Api.Controllers
 
             var transaction = mapper.Map<PaymentTransaction>(model);
             mapper.Map(terminal, transaction);
+
+            transaction.SpecialTransactionType = specialTransactionType;
+            transaction.JDealType = jDealType;
 
             if (token != null)
             {
@@ -191,6 +194,7 @@ namespace Transactions.Api.Controllers
             }
 
             transaction.MerchantIP = GetIP();
+            transaction.CorrelationId = GetCorrelationID();
 
             var terminalAggregator = ValidateExists(
                 terminal.Integrations.FirstOrDefault(t => t.ExternalSystem.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
@@ -206,40 +210,39 @@ namespace Transactions.Api.Controllers
             var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
             var processor = processorResolver.GetProcessor(terminalProcessor);
 
+            var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
+            mapper.Map(aggregatorSettings, transaction);
+
+            var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
+            mapper.Map(processorSettings, transaction);
+
             transaction.Calculate();
 
             await transactionsService.CreateEntity(transaction);
 
             // create transaction in aggregator (Clearing House)
-            if (jDealType == JDealTypeEnum.J4 && !initialDeal)
+            if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
             {
-                var aggregatorMessageID = Guid.NewGuid();
-
                 try
                 {
                     var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
-                    var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
                     aggregatorRequest.AggregatorSettings = aggregatorSettings;
-                    mapper.Map(aggregatorSettings, transaction);
 
-                    var aggregatorResponse = await aggregator.CreateTransaction(aggregatorRequest, aggregatorMessageID.ToString(), GetCorrelationID());
+                    var aggregatorResponse = await aggregator.CreateTransaction(aggregatorRequest);
+                    mapper.Map(aggregatorResponse, transaction);
 
                     if (!aggregatorResponse.Success)
                     {
-                        transaction.Status = TransactionStatusEnum.RejectedByAggregator;
-                        await transactionsService.UpdateEntity(transaction);  // TODO: rejection reason
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByAggregator);  // TODO: rejection reason
 
                         return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, aggregatorResponse.Errors));
                     }
 
-                    transaction.Status = TransactionStatusEnum.ConfirmedByAggregator;
-                    mapper.Map(aggregatorResponse, transaction);
-                    await transactionsService.UpdateEntity(transaction);
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByAggregator);
                 }
                 catch (Exception ex)
                 {
-                    transaction.Status = TransactionStatusEnum.FailedToCommitByAggregator;
-                    await transactionsService.UpdateEntity(transaction);
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByAggregator);
 
                     logger.LogError(ex, "Aggregator Create Transaction request failed");
 
@@ -261,73 +264,65 @@ namespace Transactions.Api.Controllers
                     mapper.Map(model.CreditCardSecureDetails, processorRequest.CreditCardToken);
                 }
 
-                var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
                 processorRequest.ProcessorSettings = processorSettings;
-                mapper.Map(processorSettings, transaction);
 
-                var processorMessageID = Guid.NewGuid();
-
-                var processorResponse = await processor.CreateTransaction(processorRequest, processorMessageID.ToString(), GetCorrelationID());
+                var processorResponse = await processor.CreateTransaction(processorRequest);
+                mapper.Map(processorResponse, transaction);
 
                 if (!processorResponse.Success)
                 {
-                    transaction.Status = TransactionStatusEnum.RejectedByProcessor;
-                    await transactionsService.UpdateEntity(transaction); // TODO: rejection reason
+                    // TODO: reject to clearing house
+
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor); // TODO: rejection reason
 
                     return BadRequest(new OperationResponse(processorResponse.ErrorMessage, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
                 }
 
-                mapper.Map(processorResponse, transaction);
-
                 transaction.Status = TransactionStatusEnum.ConfirmedByProcessor;
-                await transactionsService.UpdateEntity(transaction);
+                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
             }
             catch (Exception ex)
             {
+                // TODO: reject to clearing house
+
                 logger.LogError(ex, "Processor Create Transaction request failed");
 
                 transaction.Status = TransactionStatusEnum.FailedToConfirmByProcesor;
-                await transactionsService.UpdateEntity(transaction);
+                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor);
 
                 return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
             }
 
             // commit transaction in aggregator (Clearing House)
-            if (jDealType == JDealTypeEnum.J4 && !initialDeal)
+            if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
             {
                 try
                 {
-                    var aggregatorMessageID = Guid.NewGuid();
-
                     var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
 
                     var commitAggregatorRequest = mapper.Map<AggregatorCommitTransactionRequest>(transaction);
 
                     commitAggregatorRequest.AggregatorSettings = terminalAggregator.Settings;
 
-                    var commitAggregatorResponse = await aggregator.CommitTransaction(commitAggregatorRequest, aggregatorMessageID.ToString(), GetCorrelationID());
+                    var commitAggregatorResponse = await aggregator.CommitTransaction(commitAggregatorRequest);
+                    mapper.Map(commitAggregatorResponse, transaction);
 
                     if (!commitAggregatorResponse.Success)
                     {
                         // TODO: In case of failed commit, transaction should not be transmitted to Shva
 
-                        transaction.Status = TransactionStatusEnum.FailedToCommitByAggregator;
-                        await transactionsService.UpdateEntity(transaction);
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator);
 
                         return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, commitAggregatorResponse.Errors));
                     }
 
-                    mapper.Map(commitAggregatorResponse, transaction);
-
-                    transaction.Status = TransactionStatusEnum.CommitedToAggregator;
-                    await transactionsService.UpdateEntity(transaction);
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.CommitedToAggregator);
                 }
                 catch (Exception ex)
                 {
                     logger.LogError(ex, "Aggregator Commit Transaction request failed");
 
-                    transaction.Status = TransactionStatusEnum.FailedToCommitByAggregator;
-                    await transactionsService.UpdateEntity(transaction);
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator);
 
                     return BadRequest(new OperationResponse(ex.Message, StatusEnum.Error, transaction.PaymentTransactionID.ToString())); // TODO: convert message
                 }

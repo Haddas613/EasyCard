@@ -90,6 +90,7 @@ namespace Transactions.Business.Data
                     s.Property(p => p.ShvaTerminalID).HasColumnName("ShvaTerminalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.ShvaTransmissionNumber).HasColumnName("ShvaTransmissionNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.TransmissionDate).HasColumnName("ShvaTransmissionDate").IsRequired(false);
+                    s.Property(p => p.Solek).HasColumnName("Solek").IsRequired(false);
                 });
 
                 builder.OwnsOne(b => b.DealDetails, s =>
@@ -164,8 +165,6 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.OperationMessage).IsRequired(false).HasMaxLength(250).IsUnicode(true);
 
                 builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
-
-                builder.Property(r => r.IntegrationMessageId).IsRequired(false).HasMaxLength(50).HasColumnName("IntegrationMessageId").IsUnicode(false);
 
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
             }

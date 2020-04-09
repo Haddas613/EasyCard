@@ -14,7 +14,6 @@ namespace Transactions.Business.Services
     {
         IQueryable<PaymentTransaction> GetTransactions();
 
-        Task UpdateEntityWithStatus(PaymentTransaction entity, string historyMessage, TransactionOperationCodesEnum operation, 
-            IDbContextTransaction dbTransaction = null, string integrationMessageId = null);
+        Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum transactionStatus, IDbContextTransaction dbTransaction = null);
     }
 }

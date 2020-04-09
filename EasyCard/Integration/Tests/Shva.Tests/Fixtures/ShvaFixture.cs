@@ -31,7 +31,7 @@ namespace Shva.Tests.Fixtures
 
             ShvaProcessor shvaperoc = new ShvaProcessor(webApiClient.MockObj.Object, Options.Create<ShvaGlobalSettings>(ShvaSettings), Logger, integrationStorage.MockObj.Object);
 
-            var task = Task.Run(async () => await shvaperoc.CreateTransaction(shvaReq, "", ""));
+            var task = Task.Run(async () => await shvaperoc.CreateTransaction(shvaReq));
         }
 
         public void Dispose()

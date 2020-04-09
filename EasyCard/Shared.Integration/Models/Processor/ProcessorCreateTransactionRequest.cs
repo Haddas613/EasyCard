@@ -24,26 +24,35 @@ namespace Shared.Integration.Models
         /// </summary>
         public string TransactionID { get; set; }
 
+        /// <summary>
+        /// Request ID
+        /// </summary>
+        public string CorrelationId { get; set; }
+
+        /// <summary>
+        /// Original terminal
+        /// </summary>
         public string EasyCardTerminalID { get; set; }
 
         /// <summary>
-        /// Shva terminal ID
+        /// Legal transaction day
         /// </summary>
-        public string ProcessorTerminalID { get; set; }
+        public DateTime? TransactionDate { get; set; }
 
+        /// <summary>
+        /// Transaction Type
+        /// </summary>
         public TransactionTypeEnum TransactionType { get; set; }
 
+        /// <summary>
+        /// Special transaction type
+        /// </summary>
+        public SpecialTransactionTypeEnum SpecialTransactionType { get; set; }
+
+        /// <summary>
+        /// J3, J4, J5
+        /// </summary>
         public JDealTypeEnum JDealType { get; set; }
-
-        /// <summary>
-        /// Indicates ths this is refund deal
-        /// </summary>
-        public bool Refund { get; set; }
-
-        /// <summary>
-        /// Initial billing deal
-        /// </summary>
-        public bool InitialDeal { get; set; }
 
         /// <summary>
         /// Currency
@@ -57,9 +66,9 @@ namespace Shared.Integration.Models
         public CardPresenceEnum CardPresence { get; set; }
 
         /// <summary>
-        /// Current installment
+        /// Current deal (billing)
         /// </summary>
-        public int CurrentInstallment { get; set; }
+        public int? CurrentDeal { get; set; }
 
         /// <summary>
         /// This transaction amount
@@ -82,9 +91,9 @@ namespace Shared.Integration.Models
         public decimal InstallmentPaymentAmount { get; set; }
 
         /// <summary>
-        /// Legal transaction day
+        /// To be used for credit or installments
         /// </summary>
-        public DateTime? TransactionDate { get; set; }
+        public int NumberOfPayments { get; set; }
 
         /// <summary>
         /// Real credit card number
@@ -92,23 +101,8 @@ namespace Shared.Integration.Models
         public CreditCardSecureDetails CreditCardToken { get; set; }
 
         /// <summary>
-        /// Will be ShvaCreatedTransactionDetails; TODO: possible needs to be used additional model or ProcessorTransactionRequest
+        /// For billing deal
         /// </summary>
-        public object InitialTransaction { get; set; }
-
-        /// <summary>
-        /// To be used for credit or installments
-        /// </summary>
-        public int NumberOfPayments { get; set; }
-
-        /// <summary>
-        /// for billing deal
-        /// </summary>
-        public object InitDealResultData { get; set; }
-
-        /// <summary>
-        /// after code 3 or 4 user can insert this value from credit company
-        /// </summary>
-        public string AuthNum { get; set; }
+        public object InitialDeal { get; set; }
     }
 }

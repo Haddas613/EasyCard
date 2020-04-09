@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,9 +30,9 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Is the card physically scanned (telephone deal or magnetic)
         /// </summary>
-        [EnumDataType(typeof(Enums.CardPresenceEnum))]
+        [EnumDataType(typeof(CardPresenceEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
-        public Enums.CardPresenceEnum CardPresence { get; set; }
+        public CardPresenceEnum CardPresence { get; set; }
 
         /// <summary>
         /// Credit card details

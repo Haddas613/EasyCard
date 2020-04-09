@@ -11,6 +11,11 @@ namespace Shared.Integration.Models
         /// </summary>
         public string TransactionID { get; set; }
 
+        /// <summary>
+        /// Request ID
+        /// </summary>
+        public string CorrelationId { get; set; }
+
         public string AggregatorTransactionID { get; set; }
 
         public string ConcurrencyToken { get; set; }
