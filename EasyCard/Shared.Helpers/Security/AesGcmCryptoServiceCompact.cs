@@ -36,10 +36,8 @@ namespace Shared.Helpers.Security
             var nonce = encryptedTextSpan.Slice(0, nonceLength);
             var tag = encryptedTextSpan.Slice(nonceLength, tagLength);
 
-            using (AesGcm aes = new AesGcm(secretKeyBytes))
-            {
-                aes.Decrypt(nonce, encryptedData, tag, decryptedData);
-            }
+            using var aes = new AesGcm(secretKeyBytes);
+            aes.Decrypt(nonce, encryptedData, tag, decryptedData);
 
             string decryptedText = Encoding.UTF8.GetString(decryptedData);
 
