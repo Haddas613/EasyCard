@@ -53,8 +53,8 @@ namespace Shared.Helpers.Security
 
             RandomNumberGenerator.Fill(nonce);
 
-            using var cipher = new AesGcm(secretKeyBytes);
-            cipher.Encrypt(nonce, plainTextBytes, cipherText, tag);
+            using var aes = new AesGcm(secretKeyBytes);
+            aes.Encrypt(nonce, plainTextBytes, cipherText, tag);
 
             var result = new byte[nonce.Length + tag.Length + cipherText.Length].AsSpan();
             nonce.CopyTo(result.Slice(0, nonce.Length));
