@@ -19,13 +19,16 @@ namespace IdentityServer.Security
         private readonly ITerminalApiKeyService terminalApiKeyService;
         private readonly ICryptoService cryptoService;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly ICryptoServiceCompact cryptoServiceCompact;
 
-        public DelegationGrantValidator(ITokenValidator validator, ITerminalApiKeyService terminalApiKeyService, ICryptoService cryptoService, UserManager<ApplicationUser> userManager)
+        public DelegationGrantValidator(ITokenValidator validator, ITerminalApiKeyService terminalApiKeyService,
+            ICryptoService cryptoService, UserManager<ApplicationUser> userManager, ICryptoServiceCompact cryptoServiceCompact)
         {
             this.validator = validator;
             this.terminalApiKeyService = terminalApiKeyService;
             this.cryptoService = cryptoService;
             this.userManager = userManager;
+            this.cryptoServiceCompact = cryptoServiceCompact;
         }
 
         public string GrantType => "terminal_rest_api";
@@ -60,7 +63,7 @@ namespace IdentityServer.Security
 
             try
             {
-                var userId = cryptoService.DecryptCompact(userToken);
+                var userId = cryptoServiceCompact.DecryptCompact(userToken);
 
                 //var claims = new List<Claim>() { new Claim("extension_TerminalID", apiKey.TerminalID.ToString()) };
 
