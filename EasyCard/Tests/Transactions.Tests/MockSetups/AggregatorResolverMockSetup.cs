@@ -28,6 +28,10 @@ namespace Transactions.Tests.MockSetups
 
         private void Setup()
         {
+            AggregatorMock.Setup(m => m.ShouldBeProcessedByAggregator(It.IsAny<TransactionTypeEnum>(), It.IsAny<SpecialTransactionTypeEnum>(), It.IsAny<JDealTypeEnum>()))
+               .Returns(true)
+               .Verifiable();
+
             AggregatorMock.Setup(m => m.CreateTransaction(It.IsAny<AggregatorCreateTransactionRequest>()))
                 .ReturnsAsync(new AggregatorCreateTransactionResponse { Success = true })
                 .Verifiable();
