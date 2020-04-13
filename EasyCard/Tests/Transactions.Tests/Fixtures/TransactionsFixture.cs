@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Merchants.Business.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -30,6 +31,8 @@ namespace Transactions.Tests.Fixtures
 
         public ICreditCardTokenService CreditCardTokenService { get; private set; }
 
+        public IExternalSystemsService ExternalSystemsService { get; private set; }
+
         public IMapper Mapper { get; private set; }
 
         public ILogger<Api.Controllers.TransactionsApiController> Logger { get; } = new NullLogger<Api.Controllers.TransactionsApiController>();
@@ -60,7 +63,9 @@ namespace Transactions.Tests.Fixtures
 
             TransactionsService = new TransactionsService(TransactionsContext, HttpContextAccessorWrapper);
             CreditCardTokenService = new CreditCardTokenService(TransactionsContext, HttpContextAccessorWrapper);
-            TerminalsServiceMockSetup = new TerminalsServiceMockSetup();
+
+            ExternalSystemsService = new ExternalSystemService();
+            TerminalsServiceMockSetup = new TerminalsServiceMockSetup(ExternalSystemsService);
 
             //All tests in transactions are by default performed from Terminal perspective
             //This can later be overrided in any particular test that does require other role

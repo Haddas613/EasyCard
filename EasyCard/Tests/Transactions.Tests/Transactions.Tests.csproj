@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="..\..\Merchants.Business\external-systems.json" Link="external-systems.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="MockQueryable.Moq" Version="3.1.1" />
     <PackageReference Include="Moq" Version="4.13.1" />

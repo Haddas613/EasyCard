@@ -1,5 +1,4 @@
-﻿using Merchants.Business.Entities.Integration;
-using Merchants.Business.Entities.Merchant;
+﻿using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Entities.User;
 using Microsoft.AspNetCore.Http;
@@ -29,8 +28,6 @@ namespace Merchants.Business.Data
 
         public DbSet<Terminal> Terminals { get; set; }
 
-        public DbSet<ExternalSystem> ExternalSystems { get; set; }
-
         public DbSet<TerminalExternalSystem> TerminalExternalSystems { get; set; }
 
         public DbSet<UserTerminalMapping> UserTerminalMappings { get; set; }
@@ -50,7 +47,6 @@ namespace Merchants.Business.Data
             modelBuilder.ApplyConfiguration(new MerchantConfiguration());
             modelBuilder.ApplyConfiguration(new TerminalConfiguration());
             modelBuilder.ApplyConfiguration(new FeatureConfiguration());
-            modelBuilder.ApplyConfiguration(new ExternalSystemConfiguration());
             modelBuilder.ApplyConfiguration(new TerminalExternalSystemConfiguration());
             modelBuilder.ApplyConfiguration(new UserTerminalMappingConfiguration());
             modelBuilder.ApplyConfiguration(new MerchantHistoryConfiguration());
@@ -128,25 +124,6 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.NameHE).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.Price).HasColumnType("decimal(19,4)").HasDefaultValue(decimal.Zero).IsRequired(false);
-            }
-        }
-
-        internal class ExternalSystemConfiguration : IEntityTypeConfiguration<ExternalSystem>
-        {
-            public void Configure(EntityTypeBuilder<ExternalSystem> builder)
-            {
-                builder.ToTable("ExternalSystem");
-
-                builder.HasKey(b => b.ExternalSystemID);
-                builder.Property(b => b.ExternalSystemID).ValueGeneratedOnAdd();
-
-                builder.Property(p => p.UpdateTimestamp).IsRowVersion();
-
-                builder.Property(b => b.Name).IsRequired(true).HasMaxLength(50).IsUnicode(true);
-                builder.HasIndex(b => b.Name).IsUnique(true);
-                builder.Property(b => b.InstanceTypeFullName).IsRequired(false).HasMaxLength(512).IsUnicode(false);
-                builder.Property(b => b.SettingsTypeFullName).IsRequired(false).HasMaxLength(512).IsUnicode(false);
-                builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true);
             }
         }
 

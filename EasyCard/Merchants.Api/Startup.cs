@@ -108,6 +108,11 @@ namespace MerchantsApi
 
             services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
 
+            services.AddSingleton<IExternalSystemsService, ExternalSystemService>(serviceProvider =>
+            {
+                return new ExternalSystemService(Path.Combine(AppContext.BaseDirectory, "external-systems.json"));
+            });
+
             services.AddSingleton<IUserManagementClient, UserManagementClient>(serviceProvider =>
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();

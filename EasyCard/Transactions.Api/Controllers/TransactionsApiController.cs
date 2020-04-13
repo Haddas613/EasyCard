@@ -196,7 +196,7 @@ namespace Transactions.Api.Controllers
         {
             // TODO: caching
             // TODO: redo ".Include(t => t.Integrations)"
-            var terminal = SecureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == model.TerminalID).Include(t => t.Integrations).ThenInclude(d => d.ExternalSystem).FirstOrDefaultAsync());
+            var terminal = SecureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == model.TerminalID).Include(t => t.Integrations).FirstOrDefaultAsync());
 
             var transaction = mapper.Map<PaymentTransaction>(model);
             mapper.Map(terminal, transaction);
@@ -222,11 +222,11 @@ namespace Transactions.Api.Controllers
             transaction.CorrelationId = GetCorrelationID();
 
             var terminalAggregator = ValidateExists(
-                terminal.Integrations.FirstOrDefault(t => t.ExternalSystem.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
+                terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
                 Messages.AggregatorNotDefined);
 
             var terminalProcessor = ValidateExists(
-                terminal.Integrations.FirstOrDefault(t => t.ExternalSystem.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
+                terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
                 Messages.ProcessorNotDefined);
 
             transaction.AggregatorID = terminalAggregator.ExternalSystemID;

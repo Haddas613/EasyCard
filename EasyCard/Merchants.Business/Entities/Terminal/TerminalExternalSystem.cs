@@ -1,4 +1,4 @@
-﻿using Merchants.Business.Entities.Integration;
+﻿using Merchants.Shared.Enums;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace Merchants.Business.Entities.Terminal
 
         public long ExternalSystemID { get; set; }
 
-        public ExternalSystem ExternalSystem { get; set; }
+        public ExternalSystemTypeEnum Type { get; set; }
 
         public Guid TerminalID { get; set; }
 

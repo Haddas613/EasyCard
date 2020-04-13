@@ -37,6 +37,7 @@ using IdentityServer4.AccessTokenValidation;
 using Shared.Api.Swagger;
 using Swashbuckle.AspNetCore.Filters;
 using SharedApi = Shared.Api;
+using System.IO;
 
 namespace Transactions.Api
 {
@@ -152,6 +153,11 @@ namespace Transactions.Api
             services.AddDbContext<Merchants.Business.Data.MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("MerchantsConnection")));
             services.AddScoped<IMerchantsService, MerchantsService>();
             services.AddScoped<ITerminalsService, TerminalsService>();
+
+            services.AddSingleton<IExternalSystemsService, ExternalSystemService>(serviceProvider =>
+            {
+                return new ExternalSystemService(Path.Combine(AppContext.BaseDirectory, "external-systems.json"));
+            });
 
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
             services.Configure<AzureKeyVaultSettings>(Configuration.GetSection("AzureKeyVaultTokenStorageSettings"));
