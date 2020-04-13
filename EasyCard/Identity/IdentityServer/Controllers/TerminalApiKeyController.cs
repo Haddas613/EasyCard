@@ -39,17 +39,20 @@ namespace IdentityServer.Controllers
         private readonly ICryptoService cryptoService;
         private readonly ITerminalApiKeyService terminalApiKeyService;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly ICryptoServiceCompact cryptoServiceCompact;
 
         public TerminalApiKeyController(
             ILogger<UserManagementApiController> logger,
             ICryptoService cryptoService,
             ITerminalApiKeyService terminalApiKeyService,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            ICryptoServiceCompact cryptoServiceCompact)
         {
             this.logger = logger;
             this.cryptoService = cryptoService;
             this.terminalApiKeyService = terminalApiKeyService;
             this.userManager = userManager;
+            this.cryptoServiceCompact = cryptoServiceCompact;
         }
 
         [HttpGet]
@@ -89,7 +92,7 @@ namespace IdentityServer.Controllers
 
             //await terminalApiKeyService.CreateEntity(newApiKey);
 
-            return Ok(new OperationResponse(ApiMessages.TerminalApiKeyCreated, Shared.Api.Models.Enums.StatusEnum.Success, cryptoService.EncryptCompact(user.Id)));
+            return Ok(new OperationResponse(ApiMessages.TerminalApiKeyCreated, Shared.Api.Models.Enums.StatusEnum.Success, cryptoServiceCompact.EncryptCompact(user.Id)));
         }
 
         [HttpPut]
@@ -124,7 +127,7 @@ namespace IdentityServer.Controllers
 
             //await terminalApiKeyService.UpdateEntity(key);
 
-            return Ok(new OperationResponse(ApiMessages.TerminalApiKeyReseted, Shared.Api.Models.Enums.StatusEnum.Success, cryptoService.EncryptCompact(user.Id)));
+            return Ok(new OperationResponse(ApiMessages.TerminalApiKeyReseted, Shared.Api.Models.Enums.StatusEnum.Success, cryptoServiceCompact.EncryptCompact(user.Id)));
         }
 
         // admin only

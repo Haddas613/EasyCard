@@ -88,6 +88,8 @@ namespace IdentityServer
 
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
 
+            services.Configure<CryptoSettings>(Configuration.GetSection("CryptoConfig"));
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -184,6 +186,11 @@ namespace IdentityServer
             });
 
             services.AddSingleton<ICryptoService>(new CryptoService(cert));
+            services.AddSingleton<ICryptoServiceCompact, AesGcmCryptoServiceCompact>(serviceProvider =>
+            {
+                var cryptoCfg = serviceProvider.GetRequiredService<IOptions<CryptoSettings>>()?.Value;
+                return new AesGcmCryptoServiceCompact(cryptoCfg.SecretKey);
+            });
 
             services.AddScoped<IAuditLogger, AuditLogger>();
             services.AddScoped<ITerminalApiKeyService, TerminalApiKeyService>();
