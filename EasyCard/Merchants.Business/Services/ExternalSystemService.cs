@@ -17,11 +17,12 @@ namespace Merchants.Business.Services
 
         public IReadOnlyList<ExternalSystem> ExternalSystems { get; }
 
-        public ExternalSystem GetAggregator(long externalSystemID) =>
-            ExternalSystems.FirstOrDefault(es => es.ExternalSystemID == externalSystemID && es.Type == ExternalSystemTypeEnum.Aggregator);
+        public ExternalSystem GetExternalSystem(long externalSystemID) =>
+            ExternalSystems.FirstOrDefault(es => es.ExternalSystemID == externalSystemID);
 
-        public ExternalSystem GetProcessor(long externalSystemID) =>
-            ExternalSystems.FirstOrDefault(es => es.ExternalSystemID == externalSystemID && es.Type == ExternalSystemTypeEnum.Processor);
-
+        public IEnumerable<ExternalSystem> GetExternalSystems()
+        {
+            return ExternalSystems;
+        }
     }
 }

@@ -7,10 +7,8 @@ namespace Merchants.Business.Services
 {
     public interface IExternalSystemsService
     {
-        IReadOnlyList<ExternalSystem> ExternalSystems { get; }
+        ExternalSystem GetExternalSystem(long externalSystemID);
 
-        ExternalSystem GetProcessor(long processorID);
-
-        ExternalSystem GetAggregator(long aggregatorID);
+        IEnumerable<ExternalSystem> GetExternalSystems();
     }
 }

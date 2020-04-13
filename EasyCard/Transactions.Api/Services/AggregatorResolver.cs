@@ -24,7 +24,7 @@ namespace Transactions.Api.Services
 
         public IAggregator GetAggregator(TerminalExternalSystem terminalExternalSystem)
         {
-            var aggregator = externalSystemsService.GetAggregator(terminalExternalSystem.ExternalSystemID);
+            var aggregator = externalSystemsService.GetExternalSystem(terminalExternalSystem.ExternalSystemID);
 
             // TODO: should be resolved according to integration settings
             return serviceProvider.GetService(Type.GetType(aggregator.InstanceTypeFullName)) as IAggregator;
@@ -32,7 +32,7 @@ namespace Transactions.Api.Services
 
         public object GetAggregatorTerminalSettings(TerminalExternalSystem terminalExternalSystem, JObject aggregatorTerminalSettings)
         {
-            var aggregator = externalSystemsService.GetAggregator(terminalExternalSystem.ExternalSystemID);
+            var aggregator = externalSystemsService.GetExternalSystem(terminalExternalSystem.ExternalSystemID);
 
             return aggregatorTerminalSettings.ToObject(Type.GetType(aggregator.SettingsTypeFullName));
         }

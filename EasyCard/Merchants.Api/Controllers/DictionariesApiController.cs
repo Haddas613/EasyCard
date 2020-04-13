@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
 using Shared.Api.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Merchants.Api.Controllers
@@ -27,9 +28,9 @@ namespace Merchants.Api.Controllers
         [Route("externalsystems")]
         public async Task<ActionResult<SummariesResponse<ExternalSystemSummary>>> GetExternalSystems()
         {
-            var exSystems = externalSystemsService.ExternalSystems;
+            var exSystems = externalSystemsService.GetExternalSystems();
 
-            var response = new SummariesResponse<ExternalSystemSummary> { NumberOfRecords = exSystems.Count, Data = mapper.Map<IEnumerable<ExternalSystemSummary>>(exSystems) };
+            var response = new SummariesResponse<ExternalSystemSummary> { NumberOfRecords = exSystems.Count(), Data = mapper.Map<IEnumerable<ExternalSystemSummary>>(exSystems) };
 
             return Ok(response);
         }

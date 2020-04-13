@@ -3,13 +3,15 @@
     "ExternalSystemID": 10,
     "Type": "aggregator",
     "InstanceTypeFullName": "ClearingHouse.ClearingHouseAggregator, ClearingHouse",
+    "SettingsTypeFullName": "ClearingHouse.ClearingHouseTerminalSettings, ClearingHouse",
     "Name": "PayDay Clearing House",
-    "Active":  true
+    "Active": true
   },
   {
     "ExternalSystemID": 20,
     "Type": "processor",
     "InstanceTypeFullName": "Shva.ShvaProcessor, Shva",
+    "SettingsTypeFullName": "Shva.ShvaTerminalSettings, Shva",
     "Name": "Shva",
     "Active": true
   }

@@ -35,8 +35,8 @@ namespace Transactions.Tests.MockSetups
 
         private void Setup()
         {
-            var aggregator = externalSystemsService.ExternalSystems.First(es => es.Type == ExternalSystemTypeEnum.Aggregator);
-            var processor = externalSystemsService.ExternalSystems.First(es => es.Type == ExternalSystemTypeEnum.Processor);
+            var aggregator = externalSystemsService.GetExternalSystems().First(es => es.Type == ExternalSystemTypeEnum.Aggregator);
+            var processor = externalSystemsService.GetExternalSystems().First(es => es.Type == ExternalSystemTypeEnum.Processor);
 
             TerminalsList.Add(new Terminal
             {

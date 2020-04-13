@@ -8,15 +8,15 @@ namespace Merchants.Shared.Enums
     public enum ExternalSystemTypeEnum
     {
         [EnumMember(Value = "processor")]
-        Processor,
+        Processor = 1,
 
         [EnumMember(Value = "aggregator")]
-        Aggregator,
+        Aggregator = 2,
 
         [EnumMember(Value = "invoicing")]
-        Invoicing,
+        Invoicing = 3,
 
         [EnumMember(Value = "marketer")]
-        Marketer,
+        Marketer = 4,
     }
 }

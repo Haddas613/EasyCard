@@ -52,7 +52,7 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpPost]
-        [Route("token")]
+        //[Route("token")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateToken([FromBody] TokenRequest model)
         {

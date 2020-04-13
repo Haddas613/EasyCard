@@ -168,7 +168,7 @@ namespace MerchantsApi.Tests
             var dictionariesController = new DictionariesApiController(merchantsFixture.Mapper, merchantsFixture.ExternalSystemsService);
 
             var existingTerminal = await merchantsFixture.TerminalsService.GetTerminals().FirstOrDefaultAsync();
-            var existingExternalSystem = merchantsFixture.ExternalSystemsService.ExternalSystems.FirstOrDefault() ?? throw new Exception("No external systems available");
+            var existingExternalSystem = merchantsFixture.ExternalSystemsService.GetExternalSystems().FirstOrDefault() ?? throw new Exception("No external systems available");
 
             var terminalExternalSystemRequest = new ExternalSystemRequest
             {

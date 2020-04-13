@@ -24,14 +24,14 @@ namespace Transactions.Api.Services
 
         public IProcessor GetProcessor(TerminalExternalSystem terminalExternalSystem)
         {
-            var processor = externalSystemsService.GetAggregator(terminalExternalSystem.ExternalSystemID);
+            var processor = externalSystemsService.GetExternalSystem(terminalExternalSystem.ExternalSystemID);
 
             return serviceProvider.GetService(Type.GetType(processor.InstanceTypeFullName)) as IProcessor;
         }
 
         public object GetProcessorTerminalSettings(TerminalExternalSystem terminalExternalSystem, JObject processorTerminalSettings)
         {
-            var processor = externalSystemsService.GetAggregator(terminalExternalSystem.ExternalSystemID);
+            var processor = externalSystemsService.GetExternalSystem(terminalExternalSystem.ExternalSystemID);
 
             return processorTerminalSettings.ToObject(Type.GetType(processor.SettingsTypeFullName));
         }

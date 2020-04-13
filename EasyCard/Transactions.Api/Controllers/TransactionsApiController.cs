@@ -353,7 +353,7 @@ namespace Transactions.Api.Controllers
                 }
             }
 
-            return CreatedAtAction(nameof(GetTransaction), new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID.ToString()));
+            return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID.ToString()));
         }
     }
 }
