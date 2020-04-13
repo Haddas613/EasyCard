@@ -42,6 +42,12 @@ namespace Transactions.Api.Mapping
 
             CreateMap<CreditCardTokenKeyVault, Business.Entities.CreditCardDetails>();
             CreateMap<SharedIntegration.Models.DealDetails, Business.Entities.DealDetails>();
+
+            CreateMap<RefundRequest, CreateTransactionRequest>();
+            CreateMap<BlockCreditCardRequest, CreateTransactionRequest>();
+            CreateMap<CheckCreditCardRequest, CreateTransactionRequest>();
+            CreateMap<InitalBillingDealRequest, CreateTransactionRequest>();
+            CreateMap<NextBillingDealRequest, CreateTransactionRequest>();
         }
     }
 }

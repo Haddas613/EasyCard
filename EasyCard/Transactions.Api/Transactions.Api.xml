@@ -380,5 +380,31 @@
             Deal information
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.Status">
+            <summary>
+            Processing status
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.SpecialTransactionType">
+            <summary>
+            Special transaction type
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.JDealType">
+            <summary>
+            J3, J4, J5
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.RejectionReason">
+            <summary>
+            Rejection Reason
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.CardPresence">
+            <summary>
+            50 telephone deal
+            00 regular (megnetic)
+            </summary>
+        </member>
     </members>
 </doc>

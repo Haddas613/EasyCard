@@ -82,11 +82,14 @@ namespace Transactions.Api.Controllers
         {
             var query = transactionsService.GetTransactions().Filter(filter);
 
-            var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
 
-            response.Data = await mapper.ProjectTo<TransactionSummary>(query.ApplyPagination(filter)).ToListAsync();
+                response.Data = await mapper.ProjectTo<TransactionSummary>(query.ApplyPagination(filter)).ToListAsync();
 
-            return Ok(response);
+                return Ok(response);
+            }
         }
 
         /// <summary>
@@ -103,11 +106,11 @@ namespace Transactions.Api.Controllers
             if (!string.IsNullOrWhiteSpace(model.CreditCardToken))
             {
                 var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken), "CreditCardToken");
-                return await ProcessTransaction(model, token, nameof(CreateTransaction));
+                return await ProcessTransaction(model, token);
             }
             else
             {
-                return await ProcessTransaction(model, null, nameof(CreateTransaction));
+                return await ProcessTransaction(model, null);
             }
         }
 
@@ -120,7 +123,17 @@ namespace Transactions.Api.Controllers
         [ValidateModelState]
         public async Task<ActionResult<OperationResponse>> BlockCreditCard([FromBody] BlockCreditCardRequest model)
         {
-            throw new NotImplementedException();
+            var transaction = mapper.Map<CreateTransactionRequest>(model);
+
+            if (!string.IsNullOrWhiteSpace(model.CreditCardToken))
+            {
+                var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken), "CreditCardToken");
+                return await ProcessTransaction(transaction, token, JDealTypeEnum.J5);
+            }
+            else
+            {
+                return await ProcessTransaction(transaction, null, JDealTypeEnum.J5);
+            }
         }
 
         /// <summary>
@@ -131,7 +144,9 @@ namespace Transactions.Api.Controllers
         [Route("checking")]
         public async Task<ActionResult<OperationResponse>> CheckCreditCard([FromBody] CheckCreditCardRequest model)
         {
-            throw new NotImplementedException();
+            var transaction = mapper.Map<CreateTransactionRequest>(model);
+
+            return await ProcessTransaction(transaction, null, JDealTypeEnum.J2);
         }
 
         /// <summary>
@@ -142,7 +157,17 @@ namespace Transactions.Api.Controllers
         [Route("refund")]
         public async Task<ActionResult<OperationResponse>> Refund([FromBody] RefundRequest model)
         {
-            throw new NotImplementedException();
+            var transaction = mapper.Map<CreateTransactionRequest>(model);
+
+            if (!string.IsNullOrWhiteSpace(model.CreditCardToken))
+            {
+                var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken), "CreditCardToken");
+                return await ProcessTransaction(transaction, token, JDealTypeEnum.J4, SpecialTransactionTypeEnum.Refund);
+            }
+            else
+            {
+                return await ProcessTransaction(transaction, null, JDealTypeEnum.J4, SpecialTransactionTypeEnum.Refund);
+            }
         }
 
         /// <summary>
@@ -167,7 +192,7 @@ namespace Transactions.Api.Controllers
             throw new NotImplementedException();
         }
 
-        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, string actionName, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialDealID = null)
+        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialDealID = null)
         {
             // TODO: caching
             // TODO: redo ".Include(t => t.Integrations)"
@@ -328,7 +353,7 @@ namespace Transactions.Api.Controllers
                 }
             }
 
-            return CreatedAtAction(actionName, new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID.ToString()));
+            return CreatedAtAction(nameof(GetTransaction), new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID.ToString()));
         }
     }
 }

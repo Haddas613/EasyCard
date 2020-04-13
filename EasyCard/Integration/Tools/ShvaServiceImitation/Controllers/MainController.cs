@@ -81,6 +81,14 @@ namespace ShvaServiceImitation.Controllers
                     uid = new OField
                     {
                         valueTag = random.Next(10000000, 90000000).ToString()
+                    },
+                    manpik = new OField
+                    {
+                        valueTag = "2" // TODO
+                    },
+                    solek = new OField
+                    {
+                        valueTag = "2"
                     }
                 },
                 receiptObj = new clsReceipt()

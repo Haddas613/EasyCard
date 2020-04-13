@@ -88,5 +88,15 @@ namespace Shared.Integration.Models
         /// Deal information
         /// </summary>
         public DealDetails DealDetails { get; set; }
+
+        /// <summary>
+        /// J3, J4, J5
+        /// </summary>
+        public JDealTypeEnum JDealType { get; set; }
+
+        /// <summary>
+        /// Special transaction type
+        /// </summary>
+        public SpecialTransactionTypeEnum SpecialTransactionType { get; set; }
     }
 }

@@ -32,6 +32,11 @@ namespace Transactions.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
+        public IDbContextTransaction BeginDbTransaction(System.Data.IsolationLevel isolationLevel = System.Data.IsolationLevel.RepeatableRead)
+        {
+            return context.Database.BeginTransaction(isolationLevel);
+        }
+
         public IQueryable<CreditCardTokenDetails> GetTokens() => context.CreditCardTokenDetails;
 
         public IQueryable<PaymentTransaction> GetTransactions() => context.PaymentTransactions;

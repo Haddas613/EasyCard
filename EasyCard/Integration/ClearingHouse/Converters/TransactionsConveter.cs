@@ -49,7 +49,7 @@ namespace ClearingHouse.Converters
 
             details.TransactionDate = createTransactionRequest.TransactionDate;
 
-            details.TransactionType = GetTransactionType(createTransactionRequest.TransactionType, false); // TODO
+            details.TransactionType = GetTransactionType(createTransactionRequest.TransactionType, createTransactionRequest.SpecialTransactionType == Shared.Integration.Models.SpecialTransactionTypeEnum.Refund);
 
             chRequest.PaymentGatewayTransactionDetails = details;
 

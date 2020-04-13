@@ -25,8 +25,46 @@ namespace Transactions.Api.Models.Transactions
         [JsonConverter(typeof(StringEnumConverter))]
         public TransactionTypeEnum TransactionType { get; set; }
 
+        [EnumDataType(typeof(CurrencyEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyEnum Currency { get; set; }
 
         public DateTime Created { get; set; }
+
+        /// <summary>
+        /// Processing status
+        /// </summary>
+        [EnumDataType(typeof(TransactionStatusEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public TransactionStatusEnum Status { get; set; }
+
+        /// <summary>
+        /// Special transaction type
+        /// </summary>
+        [EnumDataType(typeof(SpecialTransactionTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public SpecialTransactionTypeEnum SpecialTransactionType { get; set; }
+
+        /// <summary>
+        /// J3, J4, J5
+        /// </summary>
+        [EnumDataType(typeof(JDealTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public JDealTypeEnum JDealType { get; set; }
+
+        /// <summary>
+        /// Rejection Reason
+        /// </summary>
+        [EnumDataType(typeof(RejectionReasonEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public RejectionReasonEnum? RejectionReason { get; set; }
+
+        /// <summary>
+        /// 50 telephone deal
+        /// 00 regular (megnetic)
+        /// </summary>
+        [EnumDataType(typeof(CardPresenceEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public CardPresenceEnum CardPresence { get; set; }
     }
 }

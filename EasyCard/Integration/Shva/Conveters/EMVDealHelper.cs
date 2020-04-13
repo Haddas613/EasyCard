@@ -57,6 +57,9 @@ namespace Shva.Conveters
                 ShvaDealID = resultAshEndBody.globalObj?.outputObj?.uid?.valueTag,
                 AuthSolekNum = resultAshEndBody.globalObj?.outputObj?.authSolekNo?.valueTag,
                 AuthNum = resultAshEndBody.globalObj?.outputObj?.authManpikNo?.valueTag,
+
+                Solek = (SolekEnum)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.solek?.valueTag),
+                CreditCardVendor = resultAshEndBody.globalObj?.outputObj?.manpik?.valueTag, // TODO
             };
         }
 

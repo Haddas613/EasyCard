@@ -61,6 +61,8 @@ namespace Transactions.Api.Mapping
             CreateMap<AggregatorCommitTransactionResponse, PaymentTransaction>();
 
             CreateMap<CreditCardTokenKeyVault, SharedIntegration.Models.CreditCardSecureDetails>();
+
+            CreateMap<SharedIntegration.Models.CreditCardSecureDetails, SharedIntegration.Models.CreditCardSecureDetails>();
         }
     }
 }
