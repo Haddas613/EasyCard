@@ -4,9 +4,9 @@ using Merchants.Api.Models;
 using Merchants.Api.Models.Merchant;
 using Merchants.Api.Models.Terminal;
 using Merchants.Api.Models.User;
-using Merchants.Business.Entities.Integration;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.Terminal;
+using Merchants.Business.Models.Integration;
 using System;
 using System.Collections.Generic;
 

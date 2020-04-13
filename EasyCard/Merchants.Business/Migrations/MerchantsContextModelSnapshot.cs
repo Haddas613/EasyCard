@@ -19,49 +19,6 @@ namespace Merchants.Business.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Merchants.Business.Entities.Integration.ExternalSystem", b =>
-                {
-                    b.Property<long>("ExternalSystemID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("InstanceTypeFullName")
-                        .HasColumnType("varchar(512)")
-                        .HasMaxLength(512)
-                        .IsUnicode(false);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50)
-                        .IsUnicode(true);
-
-                    b.Property<string>("Settings")
-                        .HasColumnType("nvarchar(max)")
-                        .IsUnicode(true);
-
-                    b.Property<string>("SettingsTypeFullName")
-                        .HasColumnType("varchar(512)")
-                        .HasMaxLength(512)
-                        .IsUnicode(false);
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<byte[]>("UpdateTimestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.HasKey("ExternalSystemID");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("ExternalSystem");
-                });
-
             modelBuilder.Entity("Merchants.Business.Entities.Merchant.Feature", b =>
                 {
                     b.Property<long>("FeatureID")
@@ -266,14 +223,15 @@ namespace Merchants.Business.Migrations
                     b.Property<Guid>("TerminalID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
                     b.HasKey("TerminalExternalSystemID");
-
-                    b.HasIndex("ExternalSystemID");
 
                     b.HasIndex("TerminalID");
 
@@ -415,12 +373,6 @@ namespace Merchants.Business.Migrations
 
             modelBuilder.Entity("Merchants.Business.Entities.Terminal.TerminalExternalSystem", b =>
                 {
-                    b.HasOne("Merchants.Business.Entities.Integration.ExternalSystem", "ExternalSystem")
-                        .WithMany()
-                        .HasForeignKey("ExternalSystemID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Merchants.Business.Entities.Terminal.Terminal", "Terminal")
                         .WithMany("Integrations")
                         .HasForeignKey("TerminalID")

@@ -165,10 +165,10 @@ namespace MerchantsApi.Tests
         public async Task TerminalExternalSystem_CreatesWhenModelIsCorrect()
         {
             var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper);
-            var dictionariesController = new DictionariesApiController(merchantsFixture.TerminalsService, merchantsFixture.Mapper);
+            var dictionariesController = new DictionariesApiController(merchantsFixture.Mapper, merchantsFixture.ExternalSystemsService);
 
             var existingTerminal = await merchantsFixture.TerminalsService.GetTerminals().FirstOrDefaultAsync();
-            var existingExternalSystem = (await merchantsFixture.TerminalsService.GetExternalSystems().FirstOrDefaultAsync()) ?? throw new Exception("No external systems available");
+            var existingExternalSystem = merchantsFixture.ExternalSystemsService.ExternalSystems.FirstOrDefault() ?? throw new Exception("No external systems available");
 
             var terminalExternalSystemRequest = new ExternalSystemRequest
             {
@@ -198,7 +198,7 @@ namespace MerchantsApi.Tests
         public async Task TerminalExternalSystem_UpdatesWhenModelIsCorrect()
         {
             var controller = new TerminalApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper);
-            var dictionariesController = new DictionariesApiController(merchantsFixture.TerminalsService, merchantsFixture.Mapper);
+            var dictionariesController = new DictionariesApiController(merchantsFixture.Mapper, merchantsFixture.ExternalSystemsService);
 
             var existingTerminal = await merchantsFixture.TerminalsService.GetTerminals().FirstOrDefaultAsync();
             var existingTerminalExternalSystem = merchantsFixture.TerminalsService.GetTerminalExternalSystems()

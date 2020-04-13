@@ -28,4 +28,10 @@
     <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="external-systems.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

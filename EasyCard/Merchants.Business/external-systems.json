@@ -1,0 +1,16 @@
+[
+  {
+    "ExternalSystemID": 10,
+    "Type": "aggregator",
+    "InstanceTypeFullName": "ClearingHouse.ClearingHouseAggregator, ClearingHouse",
+    "Name": "PayDay Clearing House",
+    "Active":  true
+  },
+  {
+    "ExternalSystemID": 20,
+    "Type": "processor",
+    "InstanceTypeFullName": "Shva.ShvaProcessor, Shva",
+    "Name": "Shva",
+    "Active": true
+  }
+]

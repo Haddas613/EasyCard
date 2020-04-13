@@ -1,5 +1,4 @@
-﻿using Merchants.Api.Data.Seeds;
-using Merchants.Business.Data;
+﻿using Merchants.Business.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Business.Security;
@@ -25,10 +24,6 @@ namespace Merchants.Api.Data
                 using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     var context = scope.ServiceProvider.GetService<MerchantsContext>();
-
-                    //context.Database.Migrate(); //TODO: breaks tests
-
-                    ExternalSystemsSeed.Seed(context);
                 }
             }
         }

@@ -19,6 +19,8 @@ namespace Merchants.Tests.Fixtures
 
         public ITerminalsService TerminalsService { get; private set; }
 
+        public IExternalSystemsService ExternalSystemsService { get; private set; }
+
         public MerchantsContext MerchantsContext { get; private set; }
 
         public IMapper Mapper { get; private set; }
@@ -59,6 +61,7 @@ namespace Merchants.Tests.Fixtures
 
             MerchantsService = new MerchantsService(MerchantsContext, HttpContextAccessorWrapper);
             TerminalsService = new TerminalsService(MerchantsContext, HttpContextAccessorWrapper);
+            ExternalSystemsService = new ExternalSystemService();
 
             var myProfile = new AutoMapperProfile();
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));

@@ -39,9 +39,7 @@ namespace Shared.Helpers.Security
             using var aes = new AesGcm(secretKeyBytes);
             aes.Decrypt(nonce, encryptedData, tag, decryptedData);
 
-            string decryptedText = Encoding.UTF8.GetString(decryptedData);
-
-            return decryptedText;
+            return Encoding.UTF8.GetString(decryptedData);
         }
 
         public string EncryptCompact(string textToEncrypt)
