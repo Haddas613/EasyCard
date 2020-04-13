@@ -73,7 +73,7 @@ namespace ClearingHouse
 
         public bool ShouldBeProcessedByAggregator(TransactionTypeEnum transactionType, SpecialTransactionTypeEnum specialTransactionType, JDealTypeEnum jDealType)
         {
-            return jDealType == JDealTypeEnum.J4 && specialTransactionType == SpecialTransactionTypeEnum.RegularDeal;
+            return jDealType == JDealTypeEnum.J4 && (specialTransactionType == SpecialTransactionTypeEnum.RegularDeal || specialTransactionType == SpecialTransactionTypeEnum.Refund);
         }
 
         private async Task<NameValueCollection> BuildHeaders()
