@@ -22,6 +22,8 @@ namespace EmailSender
         [FunctionName("SendEmail")]
         public static async Task Run([EventHubTrigger("email", Connection = "emailqueue")] EventData[] events, ILogger log, ExecutionContext context)
         {
+            log.LogInformation($"SendEmail function started at {DateTime.UtcNow}");
+
             var exceptions = new List<Exception>();
 
             var config = new ConfigurationBuilder()
@@ -39,9 +41,10 @@ namespace EmailSender
                 try
                 {
                     string messageBody = Encoding.UTF8.GetString(eventData.Body.Array, eventData.Body.Offset, eventData.Body.Count);
-                    log.LogInformation($"emailqueue function started at {DateTime.UtcNow}. Message: {messageBody}");
-
                     var emailData = JsonConvert.DeserializeObject<Email>(messageBody);
+
+                    log.LogInformation($"Email sending for {emailData.EmailTo} began. Message: {messageBody}");
+
                     var template = (await GetEmailTemplate(table, emailData.TemplateCode))
                         ?? throw new Exception($"Template {emailData.TemplateCode} does not exist");
 
@@ -56,9 +59,8 @@ namespace EmailSender
 
                     //TODO: uncomment when credentials are ready
                     //var result = await sendGridClient.SendEmailAsync(message);
-                    //log.LogInformation($"emailqueue function finished {DateTime.UtcNow}. Status code: {result.StatusCode}");
-
-                    log.LogInformation($"emailqueue function finished {DateTime.UtcNow}");
+                    //log.LogInformation($"Email sending for {emailData.EmailTo} finished. Status code: {result.StatusCode}");
+                    log.LogInformation($"Email sending for {emailData.EmailTo} finished.");
                     await Task.Yield();
                 }
                 catch (Exception e)
@@ -80,6 +82,8 @@ namespace EmailSender
             {
                 throw exceptions.Single();
             }
+
+            log.LogInformation($"emailqueue function finished {DateTime.UtcNow}");
         }
 
         private static async Task<CloudTable> GetEmailTemplatesStorage(IConfigurationRoot cfg)
