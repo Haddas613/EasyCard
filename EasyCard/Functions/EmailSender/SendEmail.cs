@@ -83,7 +83,7 @@ namespace EmailSender
                 throw exceptions.Single();
             }
 
-            log.LogInformation($"emailqueue function finished {DateTime.UtcNow}");
+            log.LogInformation($"SendEmail function completed at {DateTime.UtcNow} without errors");
         }
 
         private static async Task<CloudTable> GetEmailTemplatesStorage(IConfigurationRoot cfg)
