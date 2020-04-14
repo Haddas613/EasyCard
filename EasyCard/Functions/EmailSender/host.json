@@ -1,3 +1,7 @@
 {
-    "version": "2.0"
+  "version": "2.0",
+  "Values": {
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=ecng;AccountKey=4NjfZ4WcFlvNBzKHgbyGDdl+iYBiUv1SPU2hVneIqDyX0TsHUXtG707cfrGxnOCHD85L8mLRamck9w014/m1Vg==;EndpointSuffix=core.windows.net",
+    "EmailTemplatesStorageTable": "emailtemplates"
+  }
 }

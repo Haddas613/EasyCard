@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Helpers.Templating;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace Shared.Helpers.Email
 
         public string EmailTo { get; set; }
 
-        public EmailSubstitution[] Substitutions { get; set; }
+        public TextSubstitution[] Substitutions { get; set; }
 
         public string Attachment { get; set; }
     }
