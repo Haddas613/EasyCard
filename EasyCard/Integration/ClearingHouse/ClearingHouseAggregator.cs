@@ -19,6 +19,7 @@ namespace ClearingHouse
     {
         private const string CreateTransactionRequest = "api/transaction";
         private const string CommitTransactionRequest = "api/transaction/{0}";
+        private const string CancelTransactionRequest = "api/transaction/{0}/reject";
 
         private readonly IWebApiClient webApiClient;
         private readonly ClearingHouseGlobalSettings configuration;
@@ -68,6 +69,24 @@ namespace ClearingHouse
                 logger.LogError(clientError.Message);
                 var result = clientError.TryConvert(new Models.OperationResponse { Message = clientError.Message });
                 return result.GetAggregatorCommitTransactionResponse();
+            }
+        }
+
+        public async Task<AggregatorCancelTransactionResponse> CancelTransaction(AggregatorCancelTransactionRequest transactionRequest)
+        {
+            try
+            {
+                var request = transactionRequest.GetCancelTransactionRequest(configuration);
+
+                var result = await webApiClient.Post<Models.OperationResponse>(configuration.ApiBaseAddress, string.Format(CancelTransactionRequest, transactionRequest.AggregatorTransactionID), request, BuildHeaders);
+
+                return result.GetAggregatorCancelTransactionResponse();
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                var result = clientError.TryConvert(new Models.OperationResponse { Message = clientError.Message });
+                return result.GetAggregatorCancelTransactionResponse();
             }
         }
 

@@ -132,6 +132,12 @@
   <data name="ProcessorNotDefined" xml:space="preserve">
     <value>Processor is not defined</value>
   </data>
+  <data name="RejectedByAggregator" xml:space="preserve">
+    <value>Transaction rejected by Aggregator</value>
+  </data>
+  <data name="RejectedByProcessor" xml:space="preserve">
+    <value>Transaction rejected by Processor</value>
+  </data>
   <data name="TokenCreated" xml:space="preserve">
     <value>Credit Card Token Created</value>
   </data>

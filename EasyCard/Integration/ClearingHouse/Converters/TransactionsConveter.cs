@@ -125,6 +125,37 @@ namespace ClearingHouse.Converters
             return response;
         }
 
+        public static Models.RejectTransactionRequest GetCancelTransactionRequest(this Shared.Integration.Models.AggregatorCancelTransactionRequest cancelTransactionRequest, ClearingHouseGlobalSettings configuration)
+        {
+            return new Models.RejectTransactionRequest
+            {
+                RejectionReason = "TODO", //cancelTransactionRequest.RejectionReason,
+                ConcurrencyToken = cancelTransactionRequest.ConcurrencyToken,
+                PaymentGatewayID = configuration.PaymentGatewayID,
+            };
+        }
+
+        public static Shared.Integration.Models.AggregatorCancelTransactionResponse GetAggregatorCancelTransactionResponse(this Models.OperationResponse operationResponse)
+        {
+            var response = new ClearingHouseCancelTransactionResponse();
+
+            response.CorrelationID = operationResponse.CorrelationId;
+
+            response.Success = operationResponse.Status == Models.StatusEnum.Success;
+
+            if (!response.Success)
+            {
+                response.ErrorMessage = operationResponse.Message;
+
+                if (operationResponse.Errors?.Count > 0)
+                {
+                    response.Errors = operationResponse.Errors.Select(d => new Shared.Api.Models.Error { Code = d.Code, Description = d.Description }).ToList();
+                }
+            }
+
+            return response;
+        }
+
         private static Models.TransactionTypeEnum GetTransactionType(Shared.Integration.Models.TransactionTypeEnum transactionType, bool isRefund)
         {
             if (isRefund)

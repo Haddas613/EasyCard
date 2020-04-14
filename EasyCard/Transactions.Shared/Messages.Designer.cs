@@ -106,6 +106,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transaction rejected by Aggregator.
+        /// </summary>
+        public static string RejectedByAggregator {
+            get {
+                return ResourceManager.GetString("RejectedByAggregator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction rejected by Processor.
+        /// </summary>
+        public static string RejectedByProcessor {
+            get {
+                return ResourceManager.GetString("RejectedByProcessor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Credit Card Token Created.
         /// </summary>
         public static string TokenCreated {

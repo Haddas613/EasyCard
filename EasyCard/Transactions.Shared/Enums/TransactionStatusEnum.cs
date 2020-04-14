@@ -66,6 +66,11 @@ namespace Transactions.Shared.Enums
         /// <summary>
         /// Shva transmission failed
         /// </summary>
-        TransmissionToProcessorFailed = -80
+        TransmissionToProcessorFailed = -80,
+
+        /// <summary>
+        /// Failed to cancel transaction by Clearing House
+        /// </summary>
+        FailedToCancelToAggregator = -90,
     }
 }

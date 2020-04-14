@@ -57,8 +57,14 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.ConcurrencyToken, s => s.MapFrom(src => src.ClearingHouseTransactionDetails.ConcurrencyToken)) // TODO
                 .ForMember(m => m.ProcessorTransactionDetails, s => s.MapFrom(src => src.ShvaTransactionDetails)); // TODO
 
+            CreateMap<PaymentTransaction, AggregatorCancelTransactionRequest>()
+                .ForMember(m => m.TransactionID, s => s.MapFrom(src => src.PaymentTransactionID.ToString()))
+                .ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.ClearingHouseTransactionDetails.ClearingHouseTransactionID)) // TODO
+                .ForMember(m => m.ConcurrencyToken, s => s.MapFrom(src => src.ClearingHouseTransactionDetails.ConcurrencyToken)); // TODO
+
             CreateMap<AggregatorCreateTransactionResponse, PaymentTransaction>();
             CreateMap<AggregatorCommitTransactionResponse, PaymentTransaction>();
+            CreateMap<AggregatorCancelTransactionResponse, PaymentTransaction>();
 
             CreateMap<CreditCardTokenKeyVault, SharedIntegration.Models.CreditCardSecureDetails>();
 

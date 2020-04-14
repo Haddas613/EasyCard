@@ -152,12 +152,12 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Shva details
         /// </summary>
-        public JObject ShvaTransactionDetails { get; set; }
+        public object ShvaTransactionDetails { get; set; }
 
         /// <summary>
         /// PayDay details
         /// </summary>
-        public JObject ClearingHouseTransactionDetails { get; set; }
+        public object ClearingHouseTransactionDetails { get; set; }
 
         /// <summary>
         /// Date-time when transaction status updated
