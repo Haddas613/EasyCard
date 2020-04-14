@@ -80,7 +80,9 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Transactions.Database", "Da
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{309D26B4-1939-4CE9-814C-BCA07AF345B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShvaServiceImitation", "Integration\Tools\ShvaServiceImitation\ShvaServiceImitation.csproj", "{CD231C07-1AF0-4D55-8993-B2EB9C327102}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShvaServiceImitation", "Integration\Tools\ShvaServiceImitation\ShvaServiceImitation.csproj", "{CD231C07-1AF0-4D55-8993-B2EB9C327102}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastucture.Tests", "Infrastucture.Tests\Infrastucture.Tests.csproj", "{18A16A5E-B72D-4441-B90E-08640BCCEDFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -196,6 +198,10 @@ Global
 		{CD231C07-1AF0-4D55-8993-B2EB9C327102}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD231C07-1AF0-4D55-8993-B2EB9C327102}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD231C07-1AF0-4D55-8993-B2EB9C327102}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18A16A5E-B72D-4441-B90E-08640BCCEDFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18A16A5E-B72D-4441-B90E-08640BCCEDFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18A16A5E-B72D-4441-B90E-08640BCCEDFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18A16A5E-B72D-4441-B90E-08640BCCEDFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -228,6 +234,7 @@ Global
 		{8C757E80-B280-444E-8560-B400DEAC3A94} = {9B8C2352-522A-4F75-A1AA-F5E4226EEB83}
 		{309D26B4-1939-4CE9-814C-BCA07AF345B8} = {68126764-B9A1-45D9-9C33-E84873A9124E}
 		{CD231C07-1AF0-4D55-8993-B2EB9C327102} = {309D26B4-1939-4CE9-814C-BCA07AF345B8}
+		{18A16A5E-B72D-4441-B90E-08640BCCEDFC} = {BD9E08F4-001A-4C24-8779-290E3656E697}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB40244C-6EBC-4B97-8F95-FB108B33F76E}

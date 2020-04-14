@@ -102,6 +102,12 @@ namespace Transactions.Api
                 // Note: do not use options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; - use [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)] attribute in place
             });
 
+            //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
             //.AddJsonOptions(options =>
             //    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
 

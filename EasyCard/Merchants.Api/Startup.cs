@@ -65,6 +65,12 @@ namespace MerchantsApi
                 // Note: do not use options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; - use [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)] attribute in place
             });
 
+            //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
             services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options =>
             {
                 // Disables [ApiController] automatic bad request result for invalid models
