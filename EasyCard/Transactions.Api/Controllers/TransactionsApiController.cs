@@ -142,6 +142,7 @@ namespace Transactions.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         [Route("checking")]
+        [ValidateModelState]
         public async Task<ActionResult<OperationResponse>> CheckCreditCard([FromBody] CheckCreditCardRequest model)
         {
             var transaction = mapper.Map<CreateTransactionRequest>(model);
@@ -155,6 +156,7 @@ namespace Transactions.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         [Route("refund")]
+        [ValidateModelState]
         public async Task<ActionResult<OperationResponse>> Refund([FromBody] RefundRequest model)
         {
             var transaction = mapper.Map<CreateTransactionRequest>(model);
@@ -176,6 +178,7 @@ namespace Transactions.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         [Route("initalBillingDeal")]
+        [ValidateModelState]
         public async Task<ActionResult<OperationResponse>> InitalBillingDeal([FromBody] InitalBillingDealRequest model)
         {
             throw new NotImplementedException();
@@ -187,6 +190,7 @@ namespace Transactions.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         [Route("nextBillingDeal")]
+        [ValidateModelState]
         public async Task<ActionResult<OperationResponse>> NextBillingDeal([FromBody] NextBillingDealRequest model)
         {
             throw new NotImplementedException();

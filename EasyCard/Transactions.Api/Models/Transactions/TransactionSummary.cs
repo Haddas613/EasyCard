@@ -60,8 +60,7 @@ namespace Transactions.Api.Models.Transactions
         public RejectionReasonEnum? RejectionReason { get; set; }
 
         /// <summary>
-        /// 50 telephone deal
-        /// 00 regular (megnetic)
+        /// Telephone deal or Regular (megnetic)
         /// </summary>
         [EnumDataType(typeof(CardPresenceEnum))]
         [JsonConverter(typeof(StringEnumConverter))]

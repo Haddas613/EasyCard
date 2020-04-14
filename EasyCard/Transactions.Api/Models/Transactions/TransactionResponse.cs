@@ -8,38 +8,51 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Transactions.Shared.Enums;
 using Enums = Transactions.Shared.Enums;
 using IntegrationModels = Shared.Integration.Models;
 
 namespace Transactions.Api.Models.Transactions
 {
+    /// <summary>
+    /// Payment transaction details
+    /// </summary>
     public class TransactionResponse
     {
+        /// <summary>
+        /// Primary transaction reference
+        /// </summary>
         public Guid PaymentTransactionID { get; set; }
 
         /// <summary>
-        /// Reference to first installment or to original transaction in case of refund
+        /// Legal transaction day
         /// </summary>
-        public long? InitialTransactionID { get; set; }
+        public DateTime? TransactionDate { get; set; }
 
         /// <summary>
-        /// Clearing house merchant reference
+        /// Date-time when transaction created initially in UTC
         /// </summary>
-        public string AggregatorTerminalID { get; set; }
+        public DateTime? TransactionTimestamp { get; set; }
 
         /// <summary>
-        /// Shva terminal ID
+        /// Reference to initial billing deal
         /// </summary>
-        public string ProcessorTerminalID { get; set; }
+        public Guid? InitialTransactionID { get; set; }
 
         /// <summary>
-        /// Individual counter per terminal
+        /// Current deal (billing)
         /// </summary>
-        public long TransactionNumber { get; set; }
+        public int? CurrentDeal { get; set; }
 
-        public Guid TerminalID { get; set; }
+        /// <summary>
+        /// Terminal
+        /// </summary>
+        public Guid? TerminalID { get; set; }
 
-        public Guid MerchantID { get; set; }
+        /// <summary>
+        /// Merchant
+        /// </summary>
+        public Guid? MerchantID { get; set; }
 
         /// <summary>
         /// Shva or other processor
@@ -61,11 +74,25 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         public long? MarketerID { get; set; }
 
-        public Enums.TransactionStatusEnum Status { get; set; }
+        /// <summary>
+        /// Processing status
+        /// </summary>
+        public TransactionStatusEnum Status { get; set; }
 
-        [EnumDataType(typeof(TransactionTypeEnum))]
-        [JsonConverter(typeof(StringEnumConverter))]
+        /// <summary>
+        /// Generic transaction type
+        /// </summary>
         public TransactionTypeEnum TransactionType { get; set; }
+
+        /// <summary>
+        /// Special transaction type
+        /// </summary>
+        public SpecialTransactionTypeEnum SpecialTransactionType { get; set; }
+
+        /// <summary>
+        /// J3, J4, J5
+        /// </summary>
+        public JDealTypeEnum JDealType { get; set; }
 
         /// <summary>
         /// Rejection Reason
@@ -78,8 +105,7 @@ namespace Transactions.Api.Models.Transactions
         public CurrencyEnum Currency { get; set; }
 
         /// <summary>
-        /// 50 telephone deal
-        /// 00 regular (megnetic)
+        /// Telephone deal or Regular (megnetic)
         /// </summary>
         public CardPresenceEnum CardPresence { get; set; }
 
@@ -87,11 +113,6 @@ namespace Transactions.Api.Models.Transactions
         /// Number Of Installments
         /// </summary>
         public int NumberOfPayments { get; set; }
-
-        /// <summary>
-        /// Current installment
-        /// </summary>
-        public int CurrentInstallment { get; set; }
 
         /// <summary>
         /// This transaction amount
@@ -114,14 +135,29 @@ namespace Transactions.Api.Models.Transactions
         public decimal InstallmentPaymentAmount { get; set; }
 
         /// <summary>
-        /// Legal transaction day
+        /// Credit card information
         /// </summary>
-        public DateTime? TransactionDate { get; set; }
+        public CreditCardDetails CreditCardDetails { get; set; }
 
         /// <summary>
-        /// Date-time when transaction created initially in UTC
+        /// Stored credit card details token
         /// </summary>
-        public DateTime? TransactionTimestamp { get; set; }
+        public string CreditCardToken { get; set; }
+
+        /// <summary>
+        /// Deal information
+        /// </summary>
+        public DealDetails DealDetails { get; set; }
+
+        /// <summary>
+        /// Shva details
+        /// </summary>
+        public JObject ShvaTransactionDetails { get; set; }
+
+        /// <summary>
+        /// PayDay details
+        /// </summary>
+        public JObject ClearingHouseTransactionDetails { get; set; }
 
         /// <summary>
         /// Date-time when transaction status updated
@@ -129,26 +165,8 @@ namespace Transactions.Api.Models.Transactions
         public DateTime? UpdatedDate { get; set; }
 
         /// <summary>
-        /// Reference to billing system
-        /// </summary>
-        public long? BillingOrderID { get; set; }
-
-        // TODO: json converter
-
-        /// <summary>
         /// Concurrency key
         /// </summary>
         public byte[] UpdateTimestamp { get; set; }
-
-        public CreditCardDetails CreditCardDetails { get; set; }
-
-        /// <summary>
-        /// Deal information
-        /// </summary>
-        public IntegrationModels.DealDetails DealDetails { get; set; }
-
-        public JObject ShvaTransactionDetails { get; set; }
-
-        public JObject ClearingHouseTransactionDetails { get; set; }
     }
 }

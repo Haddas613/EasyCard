@@ -14,6 +14,7 @@ using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Api.Validation;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
@@ -52,7 +53,7 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpPost]
-        //[Route("token")]
+        [ValidateModelState]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateToken([FromBody] TokenRequest model)
         {

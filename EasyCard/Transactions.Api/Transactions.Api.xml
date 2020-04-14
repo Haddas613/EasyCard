@@ -264,24 +264,44 @@
             Deal information (optional)
             </summary>
         </member>
+        <member name="T:Transactions.Api.Models.Transactions.TransactionResponse">
+            <summary>
+            Payment transaction details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.PaymentTransactionID">
+            <summary>
+            Primary transaction reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TransactionDate">
+            <summary>
+            Legal transaction day
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TransactionTimestamp">
+            <summary>
+            Date-time when transaction created initially in UTC
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.InitialTransactionID">
             <summary>
-            Reference to first installment or to original transaction in case of refund
+            Reference to initial billing deal
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AggregatorTerminalID">
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.CurrentDeal">
             <summary>
-            Clearing house merchant reference
+            Current deal (billing)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.ProcessorTerminalID">
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TerminalID">
             <summary>
-            Shva terminal ID
+            Terminal
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TransactionNumber">
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.MerchantID">
             <summary>
-            Individual counter per terminal
+            Merchant
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.ProcessorID">
@@ -304,6 +324,26 @@
             Marketer ID
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.Status">
+            <summary>
+            Processing status
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TransactionType">
+            <summary>
+            Generic transaction type
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.SpecialTransactionType">
+            <summary>
+            Special transaction type
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.JDealType">
+            <summary>
+            J3, J4, J5
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.RejectionReason">
             <summary>
             Rejection Reason
@@ -316,18 +356,12 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.CardPresence">
             <summary>
-            50 telephone deal
-            00 regular (megnetic)
+            Telephone deal or Regular (megnetic)
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.NumberOfPayments">
             <summary>
             Number Of Installments
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.CurrentInstallment">
-            <summary>
-            Current installment
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TransactionAmount">
@@ -350,14 +384,29 @@
             Amount of one instalment payment
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TransactionDate">
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.CreditCardDetails">
             <summary>
-            Legal transaction day
+            Credit card information
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TransactionTimestamp">
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.CreditCardToken">
             <summary>
-            Date-time when transaction created initially in UTC
+            Stored credit card details token
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.DealDetails">
+            <summary>
+            Deal information
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.ShvaTransactionDetails">
+            <summary>
+            Shva details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.ClearingHouseTransactionDetails">
+            <summary>
+            PayDay details
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.UpdatedDate">
@@ -365,19 +414,9 @@
             Date-time when transaction status updated
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.BillingOrderID">
-            <summary>
-            Reference to billing system
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.UpdateTimestamp">
             <summary>
             Concurrency key
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.DealDetails">
-            <summary>
-            Deal information
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.Status">
@@ -402,8 +441,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.CardPresence">
             <summary>
-            50 telephone deal
-            00 regular (megnetic)
+            Telephone deal or Regular (megnetic)
             </summary>
         </member>
     </members>

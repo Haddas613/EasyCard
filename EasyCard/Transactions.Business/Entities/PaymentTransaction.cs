@@ -22,7 +22,7 @@ namespace Transactions.Business.Entities
         }
 
         /// <summary>
-        /// Primary key
+        /// Primary transaction reference
         /// </summary>
         public Guid PaymentTransactionID { get; set; }
 
@@ -82,7 +82,7 @@ namespace Transactions.Business.Entities
         public TransactionStatusEnum Status { get; set; }
 
         /// <summary>
-        /// Transaction type
+        /// Generic transaction type
         /// </summary>
         public TransactionTypeEnum TransactionType { get; set; }
 
@@ -107,8 +107,7 @@ namespace Transactions.Business.Entities
         public CurrencyEnum Currency { get; set; }
 
         /// <summary>
-        /// 50 telephone deal
-        /// 00 regular (megnetic)
+        /// Telephone deal or Regular (megnetic)
         /// </summary>
         public CardPresenceEnum CardPresence { get; set; }
 
@@ -138,12 +137,12 @@ namespace Transactions.Business.Entities
         public decimal InstallmentPaymentAmount { get; set; }
 
         /// <summary>
-        /// Credit card
+        /// Credit card information
         /// </summary>
         public CreditCardDetails CreditCardDetails { get; set; }
 
         /// <summary>
-        /// Stored credit card details token (should be omitted in case if full credit card details used)
+        /// Stored credit card details token
         /// </summary>
         public string CreditCardToken { get; set; }
 
