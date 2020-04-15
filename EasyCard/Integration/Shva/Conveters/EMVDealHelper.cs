@@ -70,7 +70,7 @@ namespace Shva.Conveters
             int parameterJValue = (int)req.JDealType.GetParamJ5();
             var transactionType = req.SpecialTransactionType.GetShvaTransactionType();
             var cardPresence = req.CardPresence.GetShvaCardPresence();
-            var shvaExpDate = req.CreditCardToken.CardExpiration.GetShvaExpDate();
+            var shvaExpDate = req.CreditCardToken.CardExpiration?.GetShvaExpDate();
             var creditTerms = req.TransactionType.GetShvaCreditTerms();
             var currency = req.Currency.GetShvaCurrency();
 

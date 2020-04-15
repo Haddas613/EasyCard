@@ -46,6 +46,11 @@ namespace Shva
         {
             ShvaTerminalSettings shvaParameters = paymentTransactionRequest.ProcessorSettings as ShvaTerminalSettings;
 
+            if (shvaParameters == null)
+            {
+                throw new ArgumentNullException("ShvaTerminalSettings (at paymentTransactionRequest.ProcessorSettings) is required");
+            }
+
             var ashStartReq = shvaParameters.GetAshStartRequestBody();
 
             clsInput cls = paymentTransactionRequest.GetInitInitObjRequest();
