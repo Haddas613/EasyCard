@@ -1,6 +1,7 @@
 ﻿using Merchants.Business.Entities.Terminal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Moq;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
@@ -18,6 +19,7 @@ using System.Threading.Tasks;
 using Transactions.Api.Controllers;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
+using Transactions.Shared;
 using Transactions.Tests.Fixtures;
 using Transactions.Tests.MockSetups;
 using Xunit;
@@ -355,8 +357,11 @@ namespace Transactions.Tests
             KeyValueStorageMockSetup keyValueStorageMock, AggregatorResolverMockSetup aggrResolverMock,
             TransactionsFixture transactionsFixture, ProcessorResolverMockSetup procResolverMock)
         {
+            var appSettings = Options.Create(new ApplicationSettings { FiltersGlobalPageSizeLimit = 1000 });
+
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.MockObj.Object, transactionsFixture.Mapper,
-                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object, transactionsFixture.Logger);
+                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object, 
+                transactionsFixture.Logger, appSettings);
 
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
             {
