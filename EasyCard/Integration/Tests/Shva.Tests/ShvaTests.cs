@@ -35,7 +35,9 @@ namespace Shva.Tests
 
             var response = await processor.CreateTransaction(request);
 
-            Assert.IsType<ShvaCreateTransactionResponse>(response);
+            var shvaResponse = response as ShvaCreateTransactionResponse;
+
+            Assert.True(shvaResponse?.Success);
         }
     }
 }

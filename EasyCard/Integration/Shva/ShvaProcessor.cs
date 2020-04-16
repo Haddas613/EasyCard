@@ -79,7 +79,7 @@ namespace Shva
             }
             else
             {
-                return new ProcessorCreateTransactionResponse(Messages.ResponseCannotBeParsed, RejectionReasonEnum.Unknown, ashStartResultBody.AshStartResult.ToString());
+                return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, ashStartResultBody.AshStartResult.ToString());
             }
 
             // auth request
@@ -98,7 +98,7 @@ namespace Shva
             }
             else
             {
-                return new ProcessorCreateTransactionResponse(Messages.ResponseCannotBeParsed, RejectionReasonEnum.Unknown, authResultBody.AshAuthResult.ToString());
+                return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, authResultBody.AshAuthResult.ToString());
             }
 
             // end request
@@ -122,7 +122,7 @@ namespace Shva
             }
             else
             {
-                return new ProcessorCreateTransactionResponse(Messages.ResponseCannotBeParsed, RejectionReasonEnum.Unknown, resultAshEndBody.AshEndResult.ToString());
+                return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, resultAshEndBody.AshEndResult.ToString());
             }
         }
 

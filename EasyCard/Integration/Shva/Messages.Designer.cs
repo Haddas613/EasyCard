@@ -61,6 +61,15 @@ namespace Shva {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot get error details from response.
+        /// </summary>
+        public static string CannotGetErrorCodeFromResponse {
+            get {
+                return ResourceManager.GetString("CannotGetErrorCodeFromResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Empty Response.
         /// </summary>
         public static string EmptyResponse {
