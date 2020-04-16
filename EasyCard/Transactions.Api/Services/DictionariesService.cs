@@ -13,6 +13,7 @@ using Transactions.Api.Models.Dictionaries;
 using Transactions.Shared.Enums;
 using Transactions.Shared.Enums.Resources;
 using Shared.Helpers.Resources;
+using Transactions.Api.Models.Transactions.Enums;
 
 namespace Transactions.Api.Services
 {
@@ -46,6 +47,10 @@ namespace Transactions.Api.Services
             var currenciesTypeEnumType = typeof(CurrencyEnum);
             var cardPresenceTypeEnumType = typeof(CardPresenceEnum);
 
+            var filterQuickTimeEnumType = typeof(QuickTimeFilterTypeEnum);
+            var filterQuickStatusEnumType = typeof(QuickStatusFilterTypeEnum);
+            var filterDateEnumType = typeof(DateFilterTypeEnum);
+
             var tranStatuses = Enum.GetValues(transactionStatusEnumType).Cast<TransactionStatusEnum>()
                 .Select(m => new DictionarySummary<string> { Code = transactionStatusEnumType.GetDataContractAttrForEnum(m.ToString()), Description = TransactionStatusResource.ResourceManager.GetString(m.ToString(), culture) });
 
@@ -67,6 +72,15 @@ namespace Transactions.Api.Services
             var cardPresenceTypes = Enum.GetValues(cardPresenceTypeEnumType).Cast<CardPresenceEnum>()
                 .Select(m => new DictionarySummary<string> { Code = cardPresenceTypeEnumType.GetDataContractAttrForEnum(m.ToString()), Description = CardPresenceResource.ResourceManager.GetString(m.ToString(), culture) });
 
+            var filterQuickTimeTypes = Enum.GetValues(filterQuickTimeEnumType).Cast<QuickTimeFilterTypeEnum>()
+                .Select(m => new DictionarySummary<string> { Code = filterQuickTimeEnumType.GetDataContractAttrForEnum(m.ToString()), Description = CardPresenceResource.ResourceManager.GetString(m.ToString(), culture) });
+
+            var filterQuickStatusTypes = Enum.GetValues(filterQuickStatusEnumType).Cast<QuickStatusFilterTypeEnum>()
+                .Select(m => new DictionarySummary<string> { Code = filterQuickStatusEnumType.GetDataContractAttrForEnum(m.ToString()), Description = CardPresenceResource.ResourceManager.GetString(m.ToString(), culture) });
+
+            var filterDateTypes = Enum.GetValues(filterDateEnumType).Cast<DateFilterTypeEnum>()
+                .Select(m => new DictionarySummary<string> { Code = filterDateEnumType.GetDataContractAttrForEnum(m.ToString()), Description = CardPresenceResource.ResourceManager.GetString(m.ToString(), culture) });
+
             response.TransactionStatuses = tranStatuses;
             response.TransactionTypes = tranTypes;
             response.SpecialTransactionTypes = spTranTypes;
@@ -74,6 +88,9 @@ namespace Transactions.Api.Services
             response.RejectionReasons = rejReasonTypes;
             response.Currencies = currTypes;
             response.CardPresences = cardPresenceTypes;
+            response.FilterTransactionQuickTime = filterQuickTimeTypes;
+            response.FilterTransactionQuickStatuses = filterQuickStatusTypes;
+            response.FilterDateTypes = filterDateTypes;
 
             return response;
         }

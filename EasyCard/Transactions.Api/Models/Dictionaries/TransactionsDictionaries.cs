@@ -21,5 +21,11 @@ namespace Transactions.Api.Models.Dictionaries
         public IEnumerable<DictionarySummary<string>> Currencies { get; set; }
 
         public IEnumerable<DictionarySummary<string>> CardPresences { get; set; }
+
+        public IEnumerable<DictionarySummary<string>> FilterTransactionQuickTime { get; set; }
+
+        public IEnumerable<DictionarySummary<string>> FilterTransactionQuickStatuses { get; set; }
+
+        public IEnumerable<DictionarySummary<string>> FilterDateTypes { get; set; }
     }
 }
