@@ -13,7 +13,7 @@ namespace Shared.Integration.Models
         SingleTransactionAmountExceeded = 3,
         DailyAmountExceeded = 4,
         CreditCardDailyUsageExceeded = 5,
-        RefundNotMathRegularAmount = 6,
+        RefundNotMatchRegularAmount = 6,
         RefundExceededCollateral = 7,
         CardOwnerNationalIdRequired = 8,
     }

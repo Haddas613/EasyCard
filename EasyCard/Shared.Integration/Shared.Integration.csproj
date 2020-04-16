@@ -17,4 +17,70 @@
     <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Resources\CardPresenceResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CardPresenceResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\JDealTypeResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>JDealTypeResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\RejectionReasonResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RejectionReasonResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\SpecialTransactionTypeResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SpecialTransactionTypeResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\TransactionTypeResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TransactionTypeResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\CardPresenceResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CardPresenceResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\JDealTypeResource.he-IL.resx">
+      <LastGenOutput>JDealTypeResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\JDealTypeResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>JDealTypeResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\RejectionReasonResource.he-IL.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\RejectionReasonResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RejectionReasonResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SpecialTransactionTypeResource .he-IL.resx">
+      <LastGenOutput>SpecialTransactionTypeResource .Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SpecialTransactionTypeResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SpecialTransactionTypeResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\TransactionTypeResource.he-IL.resx">
+      <LastGenOutput>TransactionStatusResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\TransactionTypeResource.resx">
+      <LastGenOutput>TransactionTypeResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

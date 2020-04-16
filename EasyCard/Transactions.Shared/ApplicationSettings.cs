@@ -11,5 +11,7 @@ namespace Transactions.Shared
         public string ShvaRequestsLogStorageTable { get; set; }
 
         public string ClearingHouseRequestsLogStorageTable { get; set; }
+
+        public int FiltersGlobalPageSizeLimit { get; set; }
     }
 }

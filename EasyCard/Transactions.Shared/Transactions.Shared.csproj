@@ -17,6 +17,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Enums\Resources\TransactionStatusResource.he-IL.resx">
+      <LastGenOutput>TransactionStatusResource.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Enums\Resources\TransactionStatusResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TransactionStatusResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Messages.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>

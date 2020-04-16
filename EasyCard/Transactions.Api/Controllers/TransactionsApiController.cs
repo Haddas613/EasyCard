@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Shared.Api;
 using Shared.Api.Extensions;
@@ -30,6 +31,8 @@ using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Services;
 using Transactions.Api.Swagger;
+using Transactions.Api.Validation;
+using Transactions.Api.Validation.Options;
 using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Transactions.Shared;
@@ -51,11 +54,13 @@ namespace Transactions.Api.Controllers
         private readonly IAggregatorResolver aggregatorResolver;
         private readonly IProcessorResolver processorResolver;
         private readonly ILogger logger;
+        private readonly ApplicationSettings appSettings;
 
         private readonly ITerminalsService terminalsService;
 
         public TransactionsApiController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper,
-            IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver, ITerminalsService terminalsService, ILogger<TransactionsApiController> logger)
+            IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver, ITerminalsService terminalsService, ILogger<TransactionsApiController> logger,
+            IOptions<ApplicationSettings> appSettings)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -65,6 +70,7 @@ namespace Transactions.Api.Controllers
             this.processorResolver = processorResolver;
             this.terminalsService = terminalsService;
             this.logger = logger;
+            this.appSettings = appSettings.Value;
         }
 
         [HttpGet]
@@ -80,13 +86,17 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetTransactions([FromQuery] TransactionsFilter filter)
         {
+            TransactionsFilterValidator.ValidateFilter(filter, new TransactionFilterValidationOptions { MaximumPageSize = appSettings.FiltersGlobalPageSizeLimit });
+
             var query = transactionsService.GetTransactions().Filter(filter);
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
                 var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
 
-                response.Data = await mapper.ProjectTo<TransactionSummary>(query.ApplyPagination(filter)).ToListAsync();
+                query = query.OrderByDynamic(filter.OrderBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByType).ApplyPagination(filter);
+
+                response.Data = await mapper.ProjectTo<TransactionSummary>(query).ToListAsync();
 
                 return Ok(response);
             }
