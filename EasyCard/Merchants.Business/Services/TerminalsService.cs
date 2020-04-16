@@ -82,42 +82,57 @@ namespace Merchants.Business.Services
 
             var changesStr = string.Concat("[", string.Join(",", changes), "]");
 
-            using (dbTransaction ?? BeginDbTransaction())
+            var history = new MerchantHistory
+            {
+                OperationCode = OperationCodesEnum.TerminalUpdated,
+                OperationDate = DateTime.UtcNow,
+                OperationDoneBy = user?.GetDoneBy(),
+                OperationDoneByID = user?.GetDoneByID(),
+                MerchantID = entity.MerchantID,
+                OperationDescription = changesStr,
+                SourceIP = httpContextAccessor.GetIP()
+            };
+            context.MerchantHistories.Add(history);
+
+            if (dbTransaction != null)
             {
                 await base.UpdateEntity(entity, dbTransaction);
-
-                var history = new MerchantHistory
-                {
-                    OperationCode = OperationCodesEnum.TerminalUpdated,
-                    OperationDate = DateTime.UtcNow,
-                    OperationDoneBy = user?.GetDoneBy(),
-                    OperationDoneByID = user?.GetDoneByID(),
-                    MerchantID = entity.MerchantID,
-                    OperationDescription = changesStr,
-                    SourceIP = httpContextAccessor.GetIP()
-                };
-                context.MerchantHistories.Add(history);
                 await context.SaveChangesAsync();
+            }
+            else
+            {
+                using var transaction = BeginDbTransaction();
+                await base.UpdateEntity(entity, transaction);
+                await context.SaveChangesAsync();
+                await transaction.CommitAsync();
             }
         }
 
         public async override Task CreateEntity(Terminal entity, IDbContextTransaction dbTransaction = null)
         {
-            using (dbTransaction ?? BeginDbTransaction())
+            var history = new MerchantHistory
+            {
+                OperationCode = OperationCodesEnum.TerminalCreated,
+                OperationDate = DateTime.UtcNow,
+                OperationDoneBy = user?.GetDoneBy(),
+                OperationDoneByID = user?.GetDoneByID(),
+                MerchantID = entity.MerchantID,
+                SourceIP = httpContextAccessor.GetIP()
+            };
+
+            if (dbTransaction != null)
             {
                 await base.CreateEntity(entity, dbTransaction);
-
-                var history = new MerchantHistory
-                {
-                    OperationCode = OperationCodesEnum.TerminalCreated,
-                    OperationDate = DateTime.UtcNow,
-                    OperationDoneBy = user?.GetDoneBy(),
-                    OperationDoneByID = user?.GetDoneByID(),
-                    MerchantID = entity.MerchantID,
-                    SourceIP = httpContextAccessor.GetIP()
-                };
                 context.MerchantHistories.Add(history);
                 await context.SaveChangesAsync();
+            }
+            else
+            {
+                using var transaction = BeginDbTransaction();
+                await base.CreateEntity(entity, dbTransaction);
+                context.MerchantHistories.Add(history);
+                await context.SaveChangesAsync();
+                await transaction.CommitAsync();
             }
         }
 

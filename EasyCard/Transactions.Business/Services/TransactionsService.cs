@@ -45,11 +45,17 @@ namespace Transactions.Business.Services
 
             entity.UpdatedDate = DateTime.UtcNow;
 
-            using(dbTransaction ?? BeginDbTransaction())
+            if (dbTransaction != null)
             {
                 await base.CreateEntity(entity, dbTransaction);
-
                 await AddHistory(entity.PaymentTransactionID, string.Empty, Messages.TransactionCreated, TransactionOperationCodesEnum.TransactionCreated);
+            }
+            else
+            {
+                using var transaction = BeginDbTransaction();
+                await base.CreateEntity(entity, transaction);
+                await AddHistory(entity.PaymentTransactionID, string.Empty, Messages.TransactionCreated, TransactionOperationCodesEnum.TransactionCreated);
+                await transaction.CommitAsync();
             }
         }
 
@@ -78,10 +84,17 @@ namespace Transactions.Business.Services
             Enum.TryParse<TransactionOperationCodesEnum>(transactionStatus.ToString(), true, out operationCode);
             historyMessage = Messages.ResourceManager.GetString(operationCode.ToString()) ?? historyMessage;
 
-            using(dbTransaction ?? BeginDbTransaction())
+            if (dbTransaction != null)
             {
                 await base.UpdateEntity(entity, dbTransaction);
                 await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
+            }
+            else
+            {
+                using var transaction = BeginDbTransaction();
+                await base.UpdateEntity(entity, transaction);
+                await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
+                await transaction.CommitAsync();
             }
         }
 
@@ -100,10 +113,17 @@ namespace Transactions.Business.Services
 
             entity.UpdatedDate = DateTime.UtcNow;
 
-            using(dbTransaction ?? BeginDbTransaction())
+            if(dbTransaction != null)
             {
                 await base.UpdateEntity(entity, dbTransaction);
                 await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
+            }
+            else
+            {
+                using var transaction = BeginDbTransaction();
+                await base.UpdateEntity(entity, transaction);
+                await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
+                await transaction.CommitAsync();
             }
         }
 
