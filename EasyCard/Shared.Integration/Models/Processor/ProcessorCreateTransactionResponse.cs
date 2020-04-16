@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -26,7 +27,7 @@ namespace Shared.Integration.Models
             Success = false;
             ErrorMessage = errorMessage;
             RejectReasonCode = errorCode;
-            Errors = new List<Api.Models.Error> { new Api.Models.Error { Code = errorCodeStr, Description = errorMessage } };
+            Errors = new List<Error> { new Error { Code = errorCodeStr, Description = errorMessage } };
         }
 
         /// <summary>
@@ -39,7 +40,7 @@ namespace Shared.Integration.Models
         {
             Success = false;
             ErrorMessage = errorMessage;
-            Errors = new List<Api.Models.Error> { new Api.Models.Error { Code = errorCodeStr, Description = errorMessage } };
+            Errors = new List<Error> { new Error { Code = errorCodeStr, Description = errorMessage } };
         }
 
         public bool Success { get; set; }
@@ -49,7 +50,7 @@ namespace Shared.Integration.Models
         /// </summary>
         public string ErrorMessage { get; set; }
 
-        public IEnumerable<Api.Models.Error> Errors { get; set; }
+        public IEnumerable<Error> Errors { get; set; }
 
         public int? OriginalHttpResponseCode { get; set; }
 

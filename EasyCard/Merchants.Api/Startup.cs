@@ -1,4 +1,5 @@
 using AutoMapper;
+using IdentityServer4.AccessTokenValidation;
 using IdentityServerClient;
 using Merchants.Api.Data;
 using Merchants.Business.Data;
@@ -26,8 +27,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using SharedApi = Shared.Api;
 
-namespace MerchantsApi
+namespace Merchants.Api
 {
     public class Startup
     {
@@ -49,6 +51,42 @@ namespace MerchantsApi
                 logging.AddConsole();
                 logging.AddDebug();
                 logging.AddAzureWebAppDiagnostics();
+            });
+
+            var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
+
+            services.AddCors();
+
+            services.AddDistributedMemoryCache();
+
+            services.AddAuthentication() // TODO: bearer
+                .AddIdentityServerAuthentication("token", options =>
+                {
+                    options.Authority = identity.Authority;
+                    options.RequireHttpsMetadata = true;
+                    options.RoleClaimType = "role";
+                    options.NameClaimType = "name";
+                    options.ApiName = "management_api"; // TODO
+                    options.EnableCaching = true;
+                });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(
+                    Policy.ManagementApi,
+                    policy => policy.RequireClaim("scope", "management_api"));
+
+                options.AddPolicy(Policy.AnyAdmin, policy =>
+                    policy.RequireAssertion(context =>
+                        context.User.IsAdmin()));
+
+                options.AddPolicy(Policy.OnlyBillingAdmin, policy =>
+                    policy.RequireAssertion(context =>
+                        context.User.IsBillingAdmin()));
+
+                options.AddPolicy(Policy.ManagementApiOrBillingAdmin, policy =>
+                     policy.RequireAssertion(context =>
+                        context.User.IsBillingAdmin() || context.User.IsManagementService()));
             });
 
             services.AddControllers(opts =>
@@ -89,7 +127,7 @@ namespace MerchantsApi
 
                 c.ExampleFilters();
 
-                c.SchemaFilter<Shared.Api.Swagger.EnumSchemaFilter>();
+                c.SchemaFilter<SharedApi.Swagger.EnumSchemaFilter>();
 
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -166,8 +204,7 @@ namespace MerchantsApi
 
             app.UseRouting();
 
-            //// TODO: this can be removed later
-            ////app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

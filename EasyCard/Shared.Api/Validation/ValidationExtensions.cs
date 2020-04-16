@@ -2,6 +2,7 @@
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Business.Messages;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;

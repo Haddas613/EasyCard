@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,7 +14,7 @@ namespace Shared.Integration.Models
         /// </summary>
         public string ErrorMessage { get; set; }
 
-        public IEnumerable<Api.Models.Error> Errors { get; set; }
+        public IEnumerable<Error> Errors { get; set; }
 
         public int? OriginalHttpResponseCode { get; set; }
 

@@ -212,6 +212,8 @@ namespace Transactions.Api.Controllers
             // TODO: redo ".Include(t => t.Integrations)"
             var terminal = SecureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == model.TerminalID).Include(t => t.Integrations).FirstOrDefaultAsync());
 
+            TransactionTerminalSettingsValidator.Validate(terminal.Settings, model, token, jDealType, specialTransactionType, initialDealID);
+
             var transaction = mapper.Map<PaymentTransaction>(model);
             mapper.Map(terminal, transaction);
 

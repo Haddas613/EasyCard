@@ -70,6 +70,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Card owner national ID required.
+        /// </summary>
+        public static string CardOwnerNationalIDRequired {
+            get {
+                return ResourceManager.GetString("CardOwnerNationalIDRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Card owner national ID required, but it is not present in stored credit card token.
+        /// </summary>
+        public static string CardOwnerNationalIDRequiredButNotPresentInToken {
+            get {
+                return ResourceManager.GetString("CardOwnerNationalIDRequiredButNotPresentInToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create transaction request sent to {0}.
         /// </summary>
         public static string CreateRequestSentToAggregator {
@@ -79,11 +97,74 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CreditCardSecureDetails required.
+        /// </summary>
+        public static string CreditCardSecureDetailsRequired {
+            get {
+                return ResourceManager.GetString("CreditCardSecureDetailsRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CreditCardSecureDetails should be omitted in case if credit card token present.
+        /// </summary>
+        public static string CreditCardSecureDetailsShouldBeOmitted {
+            get {
+                return ResourceManager.GetString("CreditCardSecureDetailsShouldBeOmitted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CVV required.
+        /// </summary>
+        public static string CvvRequired {
+            get {
+                return ResourceManager.GetString("CvvRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CVV required, but stored credit card token cannot use cvv.
+        /// </summary>
+        public static string CvvRequiredButStoredTokenCannotUseCvv {
+            get {
+                return ResourceManager.GetString("CvvRequiredButStoredTokenCannotUseCvv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed To Process Transaction.
         /// </summary>
         public static string FailedToProcessTransaction {
             get {
                 return ResourceManager.GetString("FailedToProcessTransaction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to InstallmentDetails required.
+        /// </summary>
+        public static string InstallmentDetailsRequired {
+            get {
+                return ResourceManager.GetString("InstallmentDetailsRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NumberOfPayments should be greater than or equal {0}.
+        /// </summary>
+        public static string NumberOfPaymentsShouldBeGreaterThan {
+            get {
+                return ResourceManager.GetString("NumberOfPaymentsShouldBeGreaterThan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NumberOfPayments should be less than or equal {0}.
+        /// </summary>
+        public static string NumberOfPaymentsShouldBeLessThan {
+            get {
+                return ResourceManager.GetString("NumberOfPaymentsShouldBeLessThan", resourceCulture);
             }
         }
         
@@ -138,6 +219,15 @@ namespace Transactions.Shared {
         public static string TokenDeleted {
             get {
                 return ResourceManager.GetString("TokenDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TotalAmount of installment payments is invalid.
+        /// </summary>
+        public static string TotalAmountIsInvalid {
+            get {
+                return ResourceManager.GetString("TotalAmountIsInvalid", resourceCulture);
             }
         }
         

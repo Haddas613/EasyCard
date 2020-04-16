@@ -54,7 +54,7 @@ namespace Shared.Api
                 }
                 else if (ex is BusinessException businessEx)
                 {
-                    result = JsonConvert.SerializeObject(new OperationResponse { Message = businessEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId });
+                    result = JsonConvert.SerializeObject(new OperationResponse { Message = businessEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId, Errors = businessEx.Errors });
                     responseStatusCode = 400;
                 }
                 else

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -97,7 +98,7 @@ namespace ClearingHouse.Converters
 
                 if (operationResponse.Errors?.Count > 0)
                 {
-                    response.Errors = operationResponse.Errors.Select(d => new Shared.Api.Models.Error { Code = d.Code, Description = d.Description }).ToList();
+                    response.Errors = operationResponse.Errors.Select(d => new Error { Code = d.Code, Description = d.Description }).ToList();
                 }
             }
 
@@ -118,7 +119,7 @@ namespace ClearingHouse.Converters
 
                 if (operationResponse.Errors?.Count > 0)
                 {
-                    response.Errors = operationResponse.Errors.Select(d => new Shared.Api.Models.Error { Code = d.Code, Description = d.Description }).ToList();
+                    response.Errors = operationResponse.Errors.Select(d => new Error { Code = d.Code, Description = d.Description }).ToList();
                 }
             }
 
@@ -149,7 +150,7 @@ namespace ClearingHouse.Converters
 
                 if (operationResponse.Errors?.Count > 0)
                 {
-                    response.Errors = operationResponse.Errors.Select(d => new Shared.Api.Models.Error { Code = d.Code, Description = d.Description }).ToList();
+                    response.Errors = operationResponse.Errors.Select(d => new Error { Code = d.Code, Description = d.Description }).ToList();
                 }
             }
 

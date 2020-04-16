@@ -4,6 +4,7 @@ using Merchants.Api.Models.Terminal;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Services;
 using Merchants.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ namespace Merchants.Api.Controllers
 {
     [Produces("application/json")]
     [Route("api/terminal")]
+    [Authorize(AuthenticationSchemes = "token", Policy = Policy.ManagementApi)] // TODO: bearer
     [ApiController]
     public class TerminalApiController : ApiControllerBase
     {

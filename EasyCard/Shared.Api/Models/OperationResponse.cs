@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Shared.Api.Models.Enums;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,7 +23,7 @@ namespace Shared.Api.Models
             Status = status;
         }
 
-        public OperationResponse(string message, StatusEnum status, string entityReference = null, string correlationId = null, IEnumerable<Api.Models.Error> errors = null)
+        public OperationResponse(string message, StatusEnum status, string entityReference = null, string correlationId = null, IEnumerable<Error> errors = null)
         {
             Message = message;
             Status = status;
