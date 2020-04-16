@@ -77,7 +77,7 @@ namespace Transactions.Api.Controllers
         {
             TransactionsFilterValidator.ValidateFilter(filter, new TransactionFilterValidationOptions { MaximumPageSize = appSettings.FiltersGlobalPageSizeLimit });
 
-            var query = transactionsService.GetTransactions().Filter(filter);
+            var query = transactionsService.GetTransactions().AsNoTracking().Filter(filter);
 
             var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
 

@@ -439,5 +439,113 @@
             Telephone deal or Regular (megnetic)
             </summary>
         </member>
+        <member name="T:Transactions.Api.Resources.DateFilterTypeResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.DateFilterTypeResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.DateFilterTypeResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.DateFilterTypeResource.Created">
+            <summary>
+              Looks up a localized string similar to Created.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.DateFilterTypeResource.Updated">
+            <summary>
+              Looks up a localized string similar to Updated.
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Resources.QuickStatusFilterTypeResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.QuickStatusFilterTypeResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.QuickStatusFilterTypeResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.QuickStatusFilterTypeResource.Completed">
+            <summary>
+              Looks up a localized string similar to Completed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.QuickStatusFilterTypeResource.Failed">
+            <summary>
+              Looks up a localized string similar to Failed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.QuickStatusFilterTypeResource.None">
+            <summary>
+              Looks up a localized string similar to None.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.QuickStatusFilterTypeResource.Pending">
+            <summary>
+              Looks up a localized string similar to Pending.
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Resources.QuickTimeFilterTypeResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.QuickTimeFilterTypeResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.QuickTimeFilterTypeResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.QuickTimeFilterTypeResource.Last15Minutes">
+            <summary>
+              Looks up a localized string similar to Last 15 minutes.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.QuickTimeFilterTypeResource.Last24Hours">
+            <summary>
+              Looks up a localized string similar to Last 24 hours.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.QuickTimeFilterTypeResource.Last30Minutes">
+            <summary>
+              Looks up a localized string similar to Last 30 minutes.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.QuickTimeFilterTypeResource.Last5Minutes">
+            <summary>
+              Looks up a localized string similar to Last 5 minutes.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.QuickTimeFilterTypeResource.LastHour">
+            <summary>
+              Looks up a localized string similar to Last hour.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.QuickTimeFilterTypeResource.None">
+            <summary>
+              Looks up a localized string similar to None.
+            </summary>
+        </member>
     </members>
 </doc>

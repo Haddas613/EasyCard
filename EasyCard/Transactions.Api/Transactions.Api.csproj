@@ -63,5 +63,38 @@
     <Folder Include="Models\Converters\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Resources\DateFilterTypeResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DateFilterTypeResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\QuickStatusFilterTypeResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>QuickStatusFilterTypeResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\QuickTimeFilterTypeResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>QuickTimeFilterTypeResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\DateFilterTypeResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>DateFilterTypeResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\QuickStatusFilterTypeResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>QuickStatusFilterTypeResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\QuickTimeFilterTypeResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>QuickTimeFilterTypeResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 
 </Project>
