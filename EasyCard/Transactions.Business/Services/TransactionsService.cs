@@ -32,11 +32,6 @@ namespace Transactions.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
-        public IDbContextTransaction BeginDbTransaction(System.Data.IsolationLevel isolationLevel = System.Data.IsolationLevel.RepeatableRead)
-        {
-            return context.Database.BeginTransaction(isolationLevel);
-        }
-
         public IQueryable<CreditCardTokenDetails> GetTokens() => context.CreditCardTokenDetails;
 
         public IQueryable<PaymentTransaction> GetTransactions() => context.PaymentTransactions;
@@ -50,9 +45,12 @@ namespace Transactions.Business.Services
 
             entity.UpdatedDate = DateTime.UtcNow;
 
-            await base.CreateEntity(entity, dbTransaction);
+            using(dbTransaction ?? BeginDbTransaction())
+            {
+                await base.CreateEntity(entity, dbTransaction);
 
-            await AddHistory(entity.PaymentTransactionID, string.Empty, Messages.TransactionCreated, TransactionOperationCodesEnum.TransactionCreated);
+                await AddHistory(entity.PaymentTransactionID, string.Empty, Messages.TransactionCreated, TransactionOperationCodesEnum.TransactionCreated);
+            }
         }
 
         public async override Task UpdateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null) 
@@ -80,8 +78,11 @@ namespace Transactions.Business.Services
             Enum.TryParse<TransactionOperationCodesEnum>(transactionStatus.ToString(), true, out operationCode);
             historyMessage = Messages.ResourceManager.GetString(operationCode.ToString()) ?? historyMessage;
 
-            await base.UpdateEntity(entity, dbTransaction);
-            await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
+            using(dbTransaction ?? BeginDbTransaction())
+            {
+                await base.UpdateEntity(entity, dbTransaction);
+                await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
+            }
         }
 
         private async Task UpdateEntity(PaymentTransaction entity, string historyMessage, TransactionOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null)
@@ -99,8 +100,11 @@ namespace Transactions.Business.Services
 
             entity.UpdatedDate = DateTime.UtcNow;
 
-            await base.UpdateEntity(entity, dbTransaction);
-            await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
+            using(dbTransaction ?? BeginDbTransaction())
+            {
+                await base.UpdateEntity(entity, dbTransaction);
+                await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
+            }
         }
 
         private async Task AddHistory(Guid transactionID, string opDescription, string message, TransactionOperationCodesEnum operationCode)

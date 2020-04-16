@@ -54,19 +54,22 @@ namespace Merchants.Business.Services
 
             var changesStr = string.Concat("[", string.Join(",", changes), "]");
 
-            await base.UpdateEntity(entity, dbTransaction);
-
-            var history = new MerchantHistory
+            using (dbTransaction ?? BeginDbTransaction())
             {
-                OperationCode = OperationCodesEnum.MerchantUpdated,
-                MerchantID = entity.MerchantID,
-                OperationDescription = changesStr,
-            };
+                await base.UpdateEntity(entity, dbTransaction);
 
-            history.ApplyAuditInfo(httpContextAccessor);
+                var history = new MerchantHistory
+                {
+                    OperationCode = OperationCodesEnum.MerchantUpdated,
+                    MerchantID = entity.MerchantID,
+                    OperationDescription = changesStr,
+                };
 
-            context.MerchantHistories.Add(history);
-            await context.SaveChangesAsync();
+                history.ApplyAuditInfo(httpContextAccessor);
+
+                context.MerchantHistories.Add(history);
+                await context.SaveChangesAsync();
+            }
         }
 
         public async override Task CreateEntity(Merchant entity, IDbContextTransaction dbTransaction = null)
@@ -81,8 +84,11 @@ namespace Merchants.Business.Services
 
             history.ApplyAuditInfo(httpContextAccessor);
 
-            context.MerchantHistories.Add(history);
-            await context.SaveChangesAsync();
+            using (dbTransaction ?? BeginDbTransaction())
+            {
+                context.MerchantHistories.Add(history);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
