@@ -360,7 +360,7 @@ namespace Transactions.Tests
             var appSettings = Options.Create(new ApplicationSettings { FiltersGlobalPageSizeLimit = 1000 });
 
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.MockObj.Object, transactionsFixture.Mapper,
-                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object, 
+                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
                 transactionsFixture.Logger, appSettings);
 
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext

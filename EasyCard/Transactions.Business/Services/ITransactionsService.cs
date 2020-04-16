@@ -15,7 +15,5 @@ namespace Transactions.Business.Services
         IQueryable<PaymentTransaction> GetTransactions();
 
         Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum transactionStatus, IDbContextTransaction dbTransaction = null);
-
-        IDbContextTransaction BeginDbTransaction(System.Data.IsolationLevel isolationLevel = System.Data.IsolationLevel.RepeatableRead);
     }
 }

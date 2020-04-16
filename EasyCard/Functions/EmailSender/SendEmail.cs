@@ -94,7 +94,7 @@ namespace EmailSender
 
             CloudTable table = tableClient.GetTableReference(cfg["EmailTemplatesStorageTable"]);
 
-            return table;
+            return await Task.FromResult(table);
         }
 
         private static async Task<EmailTemplateEntity> GetEmailTemplate(CloudTable table, string templateCode)

@@ -36,8 +36,8 @@ using Shared.Helpers.Security;
 using IdentityServer4.AccessTokenValidation;
 using Shared.Api.Swagger;
 using Swashbuckle.AspNetCore.Filters;
-using SharedApi = Shared.Api;
 using System.IO;
+using SharedApi = Shared.Api;
 
 namespace Transactions.Api
 {

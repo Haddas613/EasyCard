@@ -123,6 +123,7 @@ namespace Shared.Helpers.Security
 
             return parsed[1];
         }
+
         private static byte[] Generate256BitsOfRandomEntropy()
         {
             var randomBytes = new byte[16]; // 32 Bytes will give us 256 bits.
@@ -131,6 +132,7 @@ namespace Shared.Helpers.Security
                 // Fill the array with cryptographically secure random bytes.
                 rngCsp.GetBytes(randomBytes);
             }
+
             return randomBytes;
         }
     }

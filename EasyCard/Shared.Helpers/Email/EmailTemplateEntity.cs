@@ -10,11 +10,13 @@ namespace Shared.Helpers.Email
     /// </summary>
     public class EmailTemplateEntity : TableEntity
     {
-        public static string DefaultPartitionKey { get { return "1"; } }
+        public static string DefaultPartitionKey
+        {
+            get { return "1"; } // TODO: partition key
+        }
 
         public EmailTemplateEntity()
         {
-
         }
 
         public EmailTemplateEntity(string templateCode)
