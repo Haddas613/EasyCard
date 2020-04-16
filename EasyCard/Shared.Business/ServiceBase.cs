@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,7 +19,7 @@ namespace Shared.Business
             this.entities = context.Set<T>();
         }
 
-        public virtual async Task UpdateEntity(T entity, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction dbTransaction = null)
+        public virtual async Task UpdateEntity(T entity, IDbContextTransaction dbTransaction = null)
         {
             T exist = this.entities.Find(entity.GetID());
 
@@ -27,11 +28,16 @@ namespace Shared.Business
             await this.dbContext.SaveChangesAsync();
         }
 
-        public virtual async Task CreateEntity(T entity, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction dbTransaction = null)
+        public virtual async Task CreateEntity(T entity, IDbContextTransaction dbTransaction = null)
         {
             entities.Add(entity);
 
             await dbContext.SaveChangesAsync();
+        }
+
+        public virtual IDbContextTransaction BeginDbTransaction(System.Data.IsolationLevel isolationLevel = System.Data.IsolationLevel.RepeatableRead)
+        {
+            return dbContext.Database.BeginTransaction(isolationLevel);
         }
     }
 }

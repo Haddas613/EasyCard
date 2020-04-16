@@ -1,12 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using System.Threading.Tasks;
 
 namespace Shared.Business
 {
     public interface IServiceBase<T, Tk>
         where T : class, IEntityBase<Tk>
     {
-        Task UpdateEntity(T entity, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction dbTransaction = null);
+        Task UpdateEntity(T entity, IDbContextTransaction dbTransaction = null);
 
-        Task CreateEntity(T entity, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction dbTransaction = null);
+        Task CreateEntity(T entity, IDbContextTransaction dbTransaction = null);
+
+        public IDbContextTransaction BeginDbTransaction(System.Data.IsolationLevel isolationLevel = System.Data.IsolationLevel.RepeatableRead);
     }
 }
