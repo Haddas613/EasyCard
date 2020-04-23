@@ -76,13 +76,21 @@ namespace IdentityServer
                     {
                         "http://localhost:8080/",
                         "http://localhost:8080/auth/signinpop/main",
+                        "http://localhost:8080/auth/signinwin/main",
+                        "http://localhost:8080/auth/signinsilent/main",
+
+                        "https://localhost:44339/",
+                        "https://localhost:44339/auth/signinpop/main",
+                        "https://localhost:44339/auth/signinwin/main",
+                        "https://localhost:44339/auth/signinsilent/main",
+
                         "http://localhost:8080/callback.html",
                         "http://localhost:8080/silent.html",
                         "http://localhost:8080/popup.html",
                     },
 
                     PostLogoutRedirectUris = { "https://localhost:44331/index.html" },
-                    AllowedCorsOrigins = { " http://localhost:8080" },
+                    AllowedCorsOrigins = { " http://localhost:8080", "https://localhost:44339" },
                     AllowAccessTokensViaBrowser = true,
                     AllowedScopes = { "openid", "profile", "transactions_api" }
                 },

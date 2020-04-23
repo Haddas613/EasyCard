@@ -20,7 +20,7 @@ namespace EmailSender
     public static class SendEmail
     {
         [FunctionName("SendEmail")]
-        public static async Task Run([EventHubTrigger("email", Connection = "emailqueue")] EventData[] events, ILogger log, ExecutionContext context)
+        public static async Task Run([EventHubTrigger("email", Connection = "emailqueue")] string messageBody, ILogger log, ExecutionContext context)
         {
             log.LogInformation($"SendEmail function started at {DateTime.UtcNow}");
 
@@ -34,54 +34,29 @@ namespace EmailSender
 
             var table = await GetEmailTemplatesStorage(config);
 
-            var sendGridClient = new SendGridClient(config["SendgridApiKey"]);
+            //var sendGridClient = new SendGridClient(config["SendgridApiKey"]);
 
-            foreach (EventData eventData in events)
-            {
-                try
-                {
-                    string messageBody = Encoding.UTF8.GetString(eventData.Body.Array, eventData.Body.Offset, eventData.Body.Count);
-                    var emailData = JsonConvert.DeserializeObject<Email>(messageBody);
+            log.LogInformation(messageBody);
+            var emailData = JsonConvert.DeserializeObject<Email>(messageBody);
 
-                    log.LogInformation($"Email sending for {emailData.EmailTo} began. Message: {messageBody}");
+            log.LogInformation($"Email sending for {emailData.EmailTo} began. Message: {messageBody}");
 
-                    var template = (await GetEmailTemplate(table, emailData.TemplateCode))
-                        ?? throw new Exception($"Template {emailData.TemplateCode} does not exist");
+            var template = (await GetEmailTemplate(table, emailData.TemplateCode))
+            ?? throw new Exception($"Template {emailData.TemplateCode} does not exist");
 
-                    var emailSubject = TemplateProcessor.Substitute(template.SubjectTemplate, emailData.Substitutions);
-                    var emailBody = TemplateProcessor.Substitute(template.BodyTemplate, emailData.Substitutions);
+            var emailSubject = TemplateProcessor.Substitute(template.SubjectTemplate, emailData.Substitutions);
+            var emailBody = TemplateProcessor.Substitute(template.BodyTemplate, emailData.Substitutions);
 
-                    var message = new SendGridMessage();
-                    message.Subject = emailSubject;
-                    message.HtmlContent = emailBody;
-                    message.AddTo(emailData.EmailTo);
-                    message.SetFrom(config["EmailFrom"]);
+            var message = new SendGridMessage();
+            message.Subject = emailSubject;
+            message.HtmlContent = emailBody;
+            message.AddTo(emailData.EmailTo);
+            message.SetFrom(config["EmailFrom"]);
 
-                    //TODO: uncomment when credentials are ready
-                    //var result = await sendGridClient.SendEmailAsync(message);
-                    //log.LogInformation($"Email sending for {emailData.EmailTo} finished. Status code: {result.StatusCode}");
-                    log.LogInformation($"Email sending for {emailData.EmailTo} finished.");
-                    await Task.Yield();
-                }
-                catch (Exception e)
-                {
-                    // We need to keep processing the rest of the batch - capture this exception and continue.
-                    // Also, consider capturing details of the message that failed processing so it can be processed again later.
-                    exceptions.Add(e);
-                }
-            }
-
-            // Once processing of the batch is complete, if any messages in the batch failed processing throw an exception so that there is a record of the failure.
-
-            if (exceptions.Count > 1)
-            {
-                throw new AggregateException(exceptions);
-            }
-
-            if (exceptions.Count == 1)
-            {
-                throw exceptions.Single();
-            }
+            //TODO: uncomment when credentials are ready
+            //var result = await sendGridClient.SendEmailAsync(message);
+            //log.LogInformation($"Email sending for {emailData.EmailTo} finished. Status code: {result.StatusCode}");
+            log.LogInformation($"Email sending for {emailData.EmailTo} finished.");
 
             log.LogInformation($"SendEmail function completed at {DateTime.UtcNow} without errors");
         }
