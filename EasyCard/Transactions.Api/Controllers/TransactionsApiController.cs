@@ -94,7 +94,7 @@ namespace Transactions.Api.Controllers
             {
                 var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
 
-                query = query.OrderByDynamic(filter.OrderBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByType).ApplyPagination(filter);
+                query = query.OrderByDynamic(filter.OrderBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByDirection).ApplyPagination(filter);
 
                 response.Data = await mapper.ProjectTo<TransactionSummary>(query).ToListAsync();
 

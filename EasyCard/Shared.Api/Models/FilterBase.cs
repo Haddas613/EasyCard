@@ -14,6 +14,6 @@ namespace Shared.Api.Models
 
         public string OrderBy { get; set; }
 
-        public OrderByTypeEnum OrderByType { get; set; }
+        public OrderByDirectionEnum OrderByDirection { get; set; }
     }
 }

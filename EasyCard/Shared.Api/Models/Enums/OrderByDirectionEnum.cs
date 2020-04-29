@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Shared.Api.Models.Enums
 {
-    public enum OrderByTypeEnum
+    public enum OrderByDirectionEnum
     {
         ASC,
-        DSC
+        DESC
     }
 }
