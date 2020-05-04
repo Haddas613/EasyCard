@@ -1,31 +1,28 @@
-import Vue from 'vue'
-import Vuetify from 'vuetify/lib'
-import i18n from '@/i18n'
-import '@/sass/overrides.sass'
+import Vue from 'vue';
+import Vuetify from 'vuetify';
+import 'vuetify/dist/vuetify.min.css';
+import '@mdi/font/css/materialdesignicons.css'
 
-Vue.use(Vuetify)
-
-const theme = {
-  primary: '#4CAF50',
-  secondary: '#9C27b0',
-  accent: '#9C27b0',
-  info: '#00CAE3',
-}
-const themeEC = {
-  primary: '#2196F3',
-  secondary: '#9C27b0',
-  accent: '#9C27b0',
-  info: '#00CAE3',
-}
+Vue.use(Vuetify);
 
 export default new Vuetify({
-  lang: {
-    t: (key, ...params) => i18n.t(key, params),
-  },
   theme: {
+      options: {
+        customProperties: true,
+      },
     themes: {
-      dark: themeEC,
-      light: themeEC,
+      light: {
+        primary: '#2196F3',
+        secondary: '#424242',
+        accent: '#82B1FF',
+        error: '#FF5252',
+        info: '#2196F3',
+        success: '#4CAF50',
+        warning: '#FFC107'
+      },
     },
   },
-})
+  icons: {
+    iconfont: 'mdi',
+  },
+});
