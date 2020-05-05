@@ -1,6 +1,6 @@
 <template>
-  <v-content>
-    <v-container class="fill-height" fluid>
+  <v-content class="ecbg lighten-3">
+    <v-container fluid>
       <router-view />
     </v-container>
   </v-content>

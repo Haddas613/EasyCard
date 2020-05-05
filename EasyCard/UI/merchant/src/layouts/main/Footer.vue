@@ -1,3 +1,3 @@
 <template>
-  <v-footer id="dashboard-core-footer">footer</v-footer>
+  <v-footer class="ecbg lighten-4">footer</v-footer>
 </template>

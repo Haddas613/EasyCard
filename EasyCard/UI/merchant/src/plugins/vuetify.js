@@ -13,12 +13,15 @@ export default new Vuetify({
     themes: {
       light: {
         primary: '#059ada', //light blue
-        secondary: '#ffc700', //yellow
-        accent: '#0f66ad', //dark blue
+        secondary: '#0f66ad', //dark blue
+        accent: '#ffc700', //yellow
         error: '#FF5252',
         info: '#00b5f1',
         success: '#4CAF50',
-        warning: '#FFC107'
+        warning: '#FFC107',
+        
+        //easy card custom colors
+        ecbg: '#888888'
       },
     },
   },

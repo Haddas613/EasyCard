@@ -4,9 +4,10 @@
     :clipped="$vuetify.breakpoint.lgAndUp"
     app
     :right="isRtl"
+    :color="'ecbg lighten-4'"
   >
     <v-list class="py-0" >
-      <v-list-item two-line class="px-0">
+      <v-list-item two-line class="py-4">
         <v-list-item-avatar>
           <img src="https://randomuser.me/api/portraits/men/81.jpg" />
         </v-list-item-avatar>
@@ -25,8 +26,7 @@
           :key="item.text"
           v-model="item.expanded"
           :prepend-icon="item.expanded ? item.icon : item['icon-alt']"
-          :color="'grey darken-3'"
-          active-class="grey lighten-4"
+          :color="'ecbg darken-4'"
           append-icon>
           <template v-slot:activator>
             <v-list-item-content>
