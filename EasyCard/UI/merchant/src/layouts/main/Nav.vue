@@ -1,5 +1,10 @@
 <template>
-  <v-navigation-drawer v-model="drawerObj" :clipped="$vuetify.breakpoint.lgAndUp" app>
+  <v-navigation-drawer
+    v-model="drawerObj"
+    :clipped="$vuetify.breakpoint.lgAndUp"
+    app
+    :right="isRtl"
+  >
     <v-list dense>
       <template v-for="item in items">
         <v-row v-if="item.heading" :key="item.heading" align="center">
@@ -46,16 +51,22 @@
 <script>
 export default {
   name: "MainNav",
-  props: ['items', 'drawer'],
+  props: ["items", "drawer"],
   computed: {
-      drawerObj:{
-          get: function(){
-              return this.drawer;
-          },
-          set: function(nv){
-              this.$emit('update:drawer', nv)
-          }
+    drawerObj: {
+      get: function() {
+        return this.drawer;
+      },
+      set: function(nv) {
+        this.$emit("update:drawer", nv);
       }
+    },
+    isRtl: {
+      cache: false,
+      get: function() {
+        return this.$vuetify.rtl === true;
+      }
+    }
   }
 };
 </script>

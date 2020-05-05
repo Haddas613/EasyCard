@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app id="inspire" v-bind:dir="$vuetify.rtl ? 'rtl' : 'ltr'">
     {{drawer}}
     <main-app-bar :drawer.sync="drawer"/>
 
@@ -20,6 +20,12 @@
       MainNav: () => import('./Nav'),
       MainContent: () => import('./Content'),
       MainFooter: () => import('./Footer'),
+    },
+
+    methods: {
+      changeRTL (to) {
+        this.$vuetify.rtl = to;
+      },
     },
 
     data: () => ({
