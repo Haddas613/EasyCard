@@ -14,6 +14,16 @@ Vue.use(VueRouter)
         name: 'Dashboard',
         path: '',
         component: () => import('../pages/Dashboard.vue'),
+      },
+      {
+        name: 'Transactions/Create',
+        path: 'transactions/create',
+        component: () => import('../pages/transactions/CreateTransaction.vue'),
+      },
+      {
+        name: 'Transactions/List',
+        path: 'transactions/list',
+        component: () => import('../pages/transactions/TransactionsList.vue'),
       }
     ]
   },

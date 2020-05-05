@@ -37,9 +37,10 @@
           icon: 'mdi-cash-minus',
           'icon-alt': 'mdi-cash-plus',
           text: 'Transactions',
+          expanded: false,
           children: [
             { icon: 'mdi-cash-register', text: 'Create Transaction', to: '/transactions/create' },
-            { icon: 'mdi-cash-multiple', text: 'Transactions List', to: '/transactions' },
+            { icon: 'mdi-cash-multiple', text: 'Transactions List', to: '/transactions/list' },
           ],
         }
       ],
