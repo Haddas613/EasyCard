@@ -16,10 +16,10 @@
     name: 'MainIndex',
 
     components: {
-      MainAppBar: () => import('./AppBar'),
-      MainNav: () => import('./Nav'),
-      MainContent: () => import('./Content'),
-      MainFooter: () => import('./Footer'),
+      MainAppBar: () => import('./AppBar.vue'),
+      MainNav: () => import('./Nav.vue'),
+      MainContent: () => import('./Content.vue'),
+      MainFooter: () => import('./Footer.vue'),
     },
 
     methods: {
@@ -32,36 +32,16 @@
       dialog: false,
       drawer: false,
       items: [
-        { icon: 'mdi-contacts', text: 'Contacts' },
-        { icon: 'mdi-history', text: 'Frequently contacted' },
-        { icon: 'mdi-content-copy', text: 'Duplicates' },
+        { icon: 'mdi-view-dashboard', text: 'Dashboard', to: '/' },
         {
-          icon: 'mdi-chevron-up',
-          'icon-alt': 'mdi-chevron-down',
-          text: 'Labels',
-          model: true,
+          icon: 'mdi-cash-minus',
+          'icon-alt': 'mdi-cash-plus',
+          text: 'Transactions',
           children: [
-            { icon: 'mdi-plus', text: 'Create label' },
+            { icon: 'mdi-cash-register', text: 'Create Transaction', to: '/transactions/create' },
+            { icon: 'mdi-cash-multiple', text: 'Transactions List', to: '/transactions' },
           ],
-        },
-        {
-          icon: 'mdi-chevron-up',
-          'icon-alt': 'mdi-chevron-down',
-          text: 'More',
-          model: false,
-          children: [
-            { text: 'Import' },
-            { text: 'Export' },
-            { text: 'Print' },
-            { text: 'Undo changes' },
-            { text: 'Other contacts' },
-          ],
-        },
-        { icon: 'mdi-settings', text: 'Settings' },
-        { icon: 'mdi-message', text: 'Send feedback' },
-        { icon: 'mdi-help-circle', text: 'Help' },
-        { icon: 'mdi-cellphone-link', text: 'App downloads' },
-        { icon: 'mdi-keyboard', text: 'Go to the old version' },
+        }
       ],
     }),
   }

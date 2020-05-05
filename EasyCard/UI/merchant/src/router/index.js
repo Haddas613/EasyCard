@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 import MainLayout from '../layouts/main/Index.vue'
 
 Vue.use(VueRouter)
@@ -14,7 +13,7 @@ Vue.use(VueRouter)
       {
         name: 'Dashboard',
         path: '',
-        component: () => import('../pages/Dashboard'),
+        component: () => import('../pages/Dashboard.vue'),
       }
     ]
   },
