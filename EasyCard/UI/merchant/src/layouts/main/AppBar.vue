@@ -5,27 +5,25 @@
     app
     color="primary"
     dark
-    flat="true"
+    :flat="true"
   >
     <v-row :align="'center'">
       <v-col cols="2">
         <v-app-bar-nav-icon @click.stop="drawerObj = !drawerObj" />
       </v-col>
       <v-col class="d-flex justify-space-around">
-        <v-toolbar-title class="ml-0 pl-4">
-          easy card
-        </v-toolbar-title>
+        <v-toolbar-title class="ml-0 pl-4">easy card</v-toolbar-title>
       </v-col>
-      <v-col cols="2" class="d-flex justify-end">
-        <v-toolbar-items>
-          <v-switch
-            class="pt-5"
-            :flat="true"
-            :color="'accent'"
-            label="RTL"
-            v-model="$vuetify.rtl"
-          ></v-switch>
-        </v-toolbar-items>
+      <v-col cols="1">
+        <v-select
+          class="pt-5"
+          :items="['en-US', 'he-IL']"
+          v-model="$i18n.locale"
+          @change="switchDir()"
+        ></v-select>
+      </v-col>
+      <v-col cols="1" class="d-flex justify-end">
+        <v-switch class="pt-5" :flat="true" :color="'accent'" label="RTL" v-model="$vuetify.rtl"></v-switch>
       </v-col>
     </v-row>
   </v-app-bar>
@@ -41,6 +39,15 @@ export default {
       },
       set: function(nv) {
         this.$emit("update:drawer", nv);
+      }
+    }
+  },
+  methods: {
+    switchDir() {
+      if (this.$i18n.locale == 'he-IL') {
+        this.$vuetify.rtl = true;
+      } else {
+        this.$vuetify.rtl = false;
       }
     }
   }

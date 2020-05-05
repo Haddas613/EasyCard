@@ -26,7 +26,7 @@
           :key="item.text"
           v-model="item.expanded"
           :prepend-icon="item.expanded ? item.icon : item['icon-alt']"
-          :color="'ecbg darken-4'"
+          :color="'ecnavLink'"
           append-icon>
           <template v-slot:activator>
             <v-list-item-content>

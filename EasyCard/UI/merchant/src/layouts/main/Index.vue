@@ -22,10 +22,7 @@
       MainFooter: () => import('./Footer.vue'),
     },
 
-    methods: {
-      changeRTL (to) {
-        this.$vuetify.rtl = to;
-      },
+    mounted () {
     },
 
     data: () => ({
