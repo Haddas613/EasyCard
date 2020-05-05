@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire" v-bind:dir="$vuetify.rtl ? 'rtl' : 'ltr'">
-    {{drawer}}
+
     <main-app-bar :drawer.sync="drawer"/>
 
     <main-nav :items="items" :drawer.sync="drawer"/>
