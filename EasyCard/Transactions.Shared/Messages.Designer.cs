@@ -241,6 +241,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transactions Transmission Failed.
+        /// </summary>
+        public static string TransactionsTransmissionFailed {
+            get {
+                return ResourceManager.GetString("TransactionsTransmissionFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transactions Transmitted.
+        /// </summary>
+        public static string TransactionsTransmitted {
+            get {
+                return ResourceManager.GetString("TransactionsTransmitted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transaction Updated.
         /// </summary>
         public static string TransactionUpdated {

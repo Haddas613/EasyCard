@@ -177,6 +177,12 @@
   <data name="TransactionCreated" xml:space="preserve">
     <value>Transaction Created</value>
   </data>
+  <data name="TransactionsTransmissionFailed" xml:space="preserve">
+    <value>Transactions Transmission Failed</value>
+  </data>
+  <data name="TransactionsTransmitted" xml:space="preserve">
+    <value>Transactions Transmitted</value>
+  </data>
   <data name="TransactionUpdated" xml:space="preserve">
     <value>Transaction Updated</value>
   </data>

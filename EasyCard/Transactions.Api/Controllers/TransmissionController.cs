@@ -44,7 +44,7 @@ namespace Transactions.Api.Controllers
     [Route("api/transmission")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontend)]
     [ApiController]
-    public class TransmissionController : ControllerBase
+    public class TransmissionController : ApiControllerBase
     {
         private readonly ITransactionsService transactionsService;
         private readonly IMapper mapper;
@@ -72,8 +72,13 @@ namespace Transactions.Api.Controllers
             this.appSettings = appSettings.Value;
         }
 
+        /// <summary>
+        /// Get transactions which are not transmitted yet
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetNotSyncedTransactions([FromQuery] TransactionsFilter filter)
+        public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetNotTransmittedTransactions([FromQuery] TransactionsFilter filter)
         {
             TransactionsFilterValidator.ValidateFilter(filter, new TransactionFilterValidationOptions { MaximumPageSize = appSettings.FiltersGlobalPageSizeLimit });
 
@@ -86,6 +91,36 @@ namespace Transactions.Api.Controllers
             response.Data = await mapper.ProjectTo<TransactionSummary>(query.ApplyPagination(filter)).ToListAsync();
 
             return Ok(response);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<OperationResponse>> TransmitTransactions(TransmitTransactionsRequest transmitTransactionsRequest)
+        {
+            var terminal = SecureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == transmitTransactionsRequest.TerminalID).Include(t => t.Integrations).FirstOrDefaultAsync());
+
+            var terminalProcessor = ValidateExists(
+                terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
+                Messages.ProcessorNotDefined);
+
+            var processor = processorResolver.GetProcessor(terminalProcessor);
+
+            var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
+
+            var quesry = transactionsService.GetTransactions().Where(t => t.TerminalID == transmitTransactionsRequest.TerminalID && t.Status == TransactionStatusEnum.CommitedToAggregator);
+
+            if (transmitTransactionsRequest.PaymentTransactionIDs?.Count() > 0)
+            {
+                quesry = quesry.Where(t => transmitTransactionsRequest.PaymentTransactionIDs.Contains(t.PaymentTransactionID));
+            }
+
+            // TODO: common deal id
+            var processorIds = await quesry.Select(d => d.ShvaTransactionDetails.ShvaDealID).ToListAsync();
+
+            var processorRequest = new ProcessorTransmitTransactionsRequest { TransactionIDs = processorIds, ProcessorSettings = processorSettings, CorrelationId = GetCorrelationID() };
+
+            var processorRespnse = await processor.TransmitTransactions(processorRequest);
+
+            return new OperationResponse(Messages.TransactionCreated, StatusEnum.Success);
         }
     }
 }

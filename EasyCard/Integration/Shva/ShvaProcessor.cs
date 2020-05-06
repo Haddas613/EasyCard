@@ -154,25 +154,24 @@ namespace Shva
             // TODO: validate response and return error is required response
         }
 
-        /// <summary>
-        /// TODO: Transmission method, It will be executed per merchant?
-        /// </summary>
-        /// <param name="transRequest"></param>
-        /// <param name="messageId"></param>
-        /// <param name="correlationId"></param>
-        /// <returns></returns>
-        public async Task<ShvaTransmissionResponse> TransmissionTransaction(ShvaTransmissionRequest transRequest, string
-            correlationId)
+        public async Task<ProcessorTransmitTransactionsResponse> TransmitTransactions(ProcessorTransmitTransactionsRequest transmitTransactionsRequest)
         {
+            ShvaTerminalSettings shvaParameters = transmitTransactionsRequest.ProcessorSettings as ShvaTerminalSettings;
+
+            if (shvaParameters == null)
+            {
+                throw new ArgumentNullException("ShvaTerminalSettings (at transmitTransactionsRequest.ProcessorSettings) is required");
+            }
+
             var res = new ShvaTransmissionResponse();
-            ShvaTerminalSettings shvaParameters = transRequest.ProcessorSettings;
+
             var tranEMV = new TransEMVRequestBody();
             tranEMV.UserName = shvaParameters.UserName;
             tranEMV.Password = shvaParameters.Password;
             tranEMV.MerchantNumber = shvaParameters.MerchantNumber;
-            tranEMV.DATA = transRequest.DATAToTrans;
+            tranEMV.DATA = string.Join(";", transmitTransactionsRequest.TransactionIDs);
 
-            var result = await this.DoRequest(tranEMV, TransEMVUrl, correlationId, HandleIntegrationMessage);
+            var result = await this.DoRequest(tranEMV, TransEMVUrl, transmitTransactionsRequest.CorrelationId, HandleIntegrationMessage);
 
             var transResultBody = (TransEMVResponseBody)result?.Body?.Content;
 
@@ -188,6 +187,9 @@ namespace Shva
             res.TotalCreditTransSum = transResultBody.TotalCreditTransSum;
             res.TotalDebitTransSum = transResultBody.TotalDebitTransSum;
             res.TotalXML = transResultBody.TotalXML;
+
+            // TODO: failed case
+
             return res;
         }
 

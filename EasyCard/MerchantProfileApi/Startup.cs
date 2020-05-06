@@ -31,7 +31,7 @@ namespace ProfileApi
                     builder =>
                     {
                         builder.WithOrigins("http://localhost:4200",
-                                            "http://www.contoso.com");
+                                            "http://localhost:8080");
                     });
             });
 

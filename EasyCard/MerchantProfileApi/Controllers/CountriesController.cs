@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Api.Models.Metadata;
 
 namespace MerchantProfileApi.Controllers
 {
@@ -66,6 +67,16 @@ namespace MerchantProfileApi.Controllers
         public string Get(int id)
         {
             return "value";
+        }
+
+        [HttpGet]
+        [Route("$meta")]
+        public TableMeta GetMetadata()
+        {
+            return new TableMeta
+            {
+                Columns = typeof(Country).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).Select(d => new ColMeta { Key = d.Name, Name = d.Name, DataType = d.PropertyType.Name }).ToDictionary(d => d.Key)
+            };
         }
 
         // POST: api/Countries

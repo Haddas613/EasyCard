@@ -7,5 +7,7 @@ namespace Shared.Integration.ExternalSystems
     public interface IProcessor
     {
         Task<ProcessorCreateTransactionResponse> CreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest);
+
+        Task<ProcessorTransmitTransactionsResponse> TransmitTransactions(ProcessorTransmitTransactionsRequest transmitTransactionsRequest);
     }
 }

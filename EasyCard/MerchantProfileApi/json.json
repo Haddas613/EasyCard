@@ -1,0 +1,34 @@
+{
+  "columns": {
+    "key": {
+      "key": "key",
+      "name": "key",
+      "dataType": "String"
+    },
+    "id": {
+      "key": "id",
+      "name": "id",
+      "dataType": "Int32"
+    },
+    "name": {
+      "key": "name",
+      "name": "name",
+      "dataType": "String"
+    },
+    "flag": {
+      "key": "flag",
+      "name": "flag",
+      "dataType": "String"
+    },
+    "area": {
+      "key": "area",
+      "name": "area",
+      "dataType": "Int32"
+    },
+    "population": {
+      "key": "population",
+      "name": "population",
+      "dataType": "Int32"
+    }
+  }
+}

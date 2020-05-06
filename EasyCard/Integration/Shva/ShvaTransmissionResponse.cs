@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Shared.Integration.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shva.Models
+namespace Shva
 {
-    public class ShvaTransmissionResponse
+    public class ShvaTransmissionResponse : ProcessorTransmitTransactionsResponse
     {
         // TODO: array with transaction ids ?
         public string BadTrans { get; set; }
@@ -15,12 +16,8 @@ namespace Shva.Models
         // TODO: please add description
         public string Report { get; set; }
 
-        public string ErrorMessage { get; set; }
-
         // TODO: codes enum
         public int ProcessorCode { get; set; }
-
-        public bool Success { get; set; }
 
         public decimal TotalCreditTransSum { get; set; }
 
