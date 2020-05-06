@@ -1,15 +1,16 @@
 <template>
+  <v-card class="mx-auto" outlined>
+    <v-card-title>{{$t('Create Transaction')}}</v-card-title>
+    <v-divider></v-divider>
     <div>
-        Create transaction form
+      
     </div>
+  </v-card>
 </template>
 
 <script>
-    export default {
-        
-    }
+export default {};
 </script>
 
 <style lang="scss" scoped>
-
 </style>

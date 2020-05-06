@@ -46,8 +46,10 @@ export default {
     switchDir() {
       if (this.$i18n.locale == 'he-IL') {
         this.$vuetify.rtl = true;
+        this.$vuetify.lang.current = 'he';
       } else {
         this.$vuetify.rtl = false;
+        this.$vuetify.lang.current = 'en';
       }
     }
   }
