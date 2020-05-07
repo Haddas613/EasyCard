@@ -170,7 +170,7 @@ export default {
     save() {
       if (!this.$refs.form.validate()) 
         return;
-        
+
       this.$emit('save', this.model)
     }
   },
@@ -186,7 +186,7 @@ export default {
         creditCardSecureDetails: {
           cardExpiration: {
             year: new Date().getFullYear(),
-            month: new Date().getMonth()
+            month: new Date().getMonth() + 1
           },
           cardNumber: null,
           cvv: null,
