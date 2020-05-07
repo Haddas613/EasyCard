@@ -1,6 +1,16 @@
 {
-    "Dashboard": "לוח מחוונים",
-    "Transactions": "תנועות",
-    "Create Transaction": "עסקה חדש",
-    "Transactions List": "דוח תנועות"
+  "Dashboard": "לוח מחוונים",
+  "Transactions": "תנועות",
+  "CreateTransaction": "עסקה חדש",
+  "TransactionsList": "דוח תנועות",
+  "_Validation": {
+    "Required": "Required",
+    "Invalid": "Invalid",
+    "IsraeliNationalId": "Must be valid Israeli National ID",
+    "Expired": "Expired",
+    "Email": "Email must be valid",
+    "@InRange": "Must be in range between @min and @max",
+    "@MaxLength": "Must be less than @max characters",
+    "@StringLength": "Must be more than @min and less than @max characters"
   }
+}
