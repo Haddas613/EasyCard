@@ -15,12 +15,7 @@
         <v-toolbar-title class="ml-0 pl-4">easy card</v-toolbar-title>
       </v-col>
       <v-col cols="1">
-        <v-select
-          class="pt-5"
-          :items="['en-US', 'he-IL']"
-          v-model="$i18n.locale"
-          @change="switchLanguage()"
-        ></v-select>
+        <lang-switcher class="pt-5"></lang-switcher>
       </v-col>
       <v-col cols="1" class="d-flex justify-end">
         <v-switch class="pt-5" :flat="true" :color="'accent'" label="RTL" v-model="$vuetify.rtl"></v-switch>
@@ -29,11 +24,12 @@
   </v-app-bar>
 </template>
 <script>
-import localization from "../../helpers/localization"
+import LangSwitcher from "../../components/LanguageSwitcher"
 
 export default {
   name: "MainAppBar",
   props: ["drawer"],
+  components: {LangSwitcher},
   computed: {
     drawerObj: {
       get: function() {
@@ -42,11 +38,6 @@ export default {
       set: function(nv) {
         this.$emit("update:drawer", nv);
       }
-    }
-  },
-  methods: {
-    switchLanguage: function(){
-        localization.switchLanguage(this.$i18n, this.$vuetify);
     }
   }
 };

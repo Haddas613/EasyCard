@@ -16,11 +16,7 @@
                 <v-row no-gutters>
                   <v-spacer></v-spacer>
                   <v-col cols="3" sm="3">
-                    <v-select
-                      :items="['en-US', 'he-IL']"
-                      v-model="$i18n.locale"
-                      @change="switchLanguage()"
-                    ></v-select>
+                    <lang-switcher></lang-switcher>
                   </v-col>
                 </v-row>
               </v-card-actions>
@@ -34,9 +30,10 @@
 
 <script>
 import mainAuth from "../auth";
-import localization from "../helpers/localization"
+import LangSwitcher from "../components/LanguageSwitcher"
 
 export default {
+  components: {LangSwitcher},
   mounted() {
     if (mainAuth.isAuthenticated) {
       this.$router.push(this.buttonLink);
@@ -46,11 +43,6 @@ export default {
     return {
       buttonLink: "/admin"
     };
-  },
-  methods: {
-    switchLanguage: function(){
-        localization.switchLanguage(this.$i18n, this.$vuetify);
-    }
-  },
+  }
 };
 </script>
