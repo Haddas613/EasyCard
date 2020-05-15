@@ -12,6 +12,8 @@
 </template>
 
 <script>
+  import mainAuth from '../../auth';
+
   export default {
     name: 'MainIndex',
 
@@ -23,23 +25,27 @@
     },
 
     mounted () {
+      console.log(this.$i18n.locale)
     },
 
     data: () => ({
       dialog: false,
       drawer: false,
       items: [
-        { icon: 'mdi-view-dashboard', text: 'Dashboard', to: '/' },
+        { icon: 'mdi-view-dashboard', text: 'Dashboard', to: '/admin/dashboard' },
         {
           icon: 'mdi-cash-minus',
           'icon-alt': 'mdi-cash-plus',
           text: 'Transactions',
           expanded: false,
           children: [
-            { icon: 'mdi-cash-register', text: 'Create Transaction', to: '/transactions/create' },
-            { icon: 'mdi-cash-multiple', text: 'Transactions List', to: '/transactions/list' },
+            { icon: 'mdi-cash-register', text: 'Create Transaction', to: '/admin/transactions/create' },
+            { icon: 'mdi-cash-multiple', text: 'Transactions List', to: '/admin/transactions/list' },
           ],
-        }
+        },
+        { divider: true, dividerArea: 'userAuth' },
+        { icon: 'mdi-account-cog', text: 'Profile', to: '/admin/profile' },
+        { icon: 'mdi-logout', text: 'Logout', fn: () => {mainAuth.signOut();} },
       ],
     }),
   }

@@ -19,7 +19,7 @@
           class="pt-5"
           :items="['en-US', 'he-IL']"
           v-model="$i18n.locale"
-          @change="switchDir()"
+          @change="switchLanguage()"
         ></v-select>
       </v-col>
       <v-col cols="1" class="d-flex justify-end">
@@ -29,6 +29,8 @@
   </v-app-bar>
 </template>
 <script>
+import localization from "../../helpers/localization"
+
 export default {
   name: "MainAppBar",
   props: ["drawer"],
@@ -43,14 +45,8 @@ export default {
     }
   },
   methods: {
-    switchDir() {
-      if (this.$i18n.locale == 'he-IL') {
-        this.$vuetify.rtl = true;
-        this.$vuetify.lang.current = 'he';
-      } else {
-        this.$vuetify.rtl = false;
-        this.$vuetify.lang.current = 'en';
-      }
+    switchLanguage: function(){
+        localization.switchLanguage(this.$i18n, this.$vuetify);
     }
   }
 };

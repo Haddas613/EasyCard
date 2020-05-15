@@ -42,7 +42,15 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
-
+        <v-divider v-else-if="item.divider" :key="item.dividerArea"></v-divider>
+        <v-list-item v-else-if="item.fn" :key="item.text" @click="item.fn()">
+          <v-list-item-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t(item.text) }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item v-else :key="item.text" link :to="item.to">
           <v-list-item-action>
             <v-icon>{{ item.icon }}</v-icon>

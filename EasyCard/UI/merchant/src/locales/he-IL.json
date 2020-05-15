@@ -12,5 +12,10 @@
     "@InRange": "Must be in range between @min and @max",
     "@MaxLength": "Must be less than @max characters",
     "@StringLength": "Must be more than @min and less than @max characters"
+  },
+  "Login": "Login BUT IN HE",
+  "_Auth": {
+    "LoginWelcomeText": "Welcome to easycard",
+    "LoginTitle": "Please proceed with login"
   }
 }

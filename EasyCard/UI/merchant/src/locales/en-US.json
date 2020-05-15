@@ -30,5 +30,10 @@
     "DealDescription": "Deal Description",
     "Amount": "Amount",
     "UseCreditCard": "Use credit card"
+  },
+  "Login": "Login",
+  "_Auth": {
+    "LoginWelcomeText": "Welcome to easycard",
+    "LoginTitle": "Please proceed with login"
   }
 }
