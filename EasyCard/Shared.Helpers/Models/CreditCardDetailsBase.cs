@@ -14,10 +14,13 @@ namespace Shared.Helpers
         [Required]
         public CardExpiration CardExpiration { get; set; }
 
+        [StringLength(20)]
         public string CardVendor { get; set; }
 
+        [StringLength(50, MinimumLength = 2)]
         public string CardOwnerName { get; set; }
 
+        [StringLength(20)]
         public string CardOwnerNationalID { get; set; }
     }
 }

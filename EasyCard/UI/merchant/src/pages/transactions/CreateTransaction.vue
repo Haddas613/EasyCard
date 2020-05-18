@@ -3,13 +3,25 @@
     <v-card-title>{{$t('Create Transaction')}}</v-card-title>
     <v-divider></v-divider>
     <div>
-      
+      <transaction-form v-on:save="onFormSave($event)"></transaction-form>
     </div>
   </v-card>
 </template>
 
 <script>
-export default {};
+
+import TransactionForm from '../../components/transactions/CreateTransactionForm';
+
+export default {
+  components: {
+    TransactionForm,
+  },
+  methods: {
+    onFormSave(form) {
+      console.log(form);
+    }
+  },
+};
 </script>
 
 <style lang="scss" scoped>
