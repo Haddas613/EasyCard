@@ -38,7 +38,7 @@
                     v-model="model.creditCardSecureDetails.cardNumber"
                     :label="$t('_Forms.CardNumber')"
                     required
-                    :rules="[vr.primitives.required, v => vr.primitives.stringLength(v, 10, 19)]"
+                    :rules="[vr.primitives.required, vr.primitives.stringLength(10, 19)]"
                     type="'text'"
                   ></v-text-field>
                 </v-col>
@@ -46,7 +46,7 @@
                   <v-text-field
                     v-model="model.creditCardSecureDetails.cardOwnerName"
                     :label="$t('_Forms.OwnerName')"
-                    :rules="[v => vr.primitives.stringLength(v, 2, 50)]"
+                    :rules="[vr.primitives.stringLength(2, 50)]"
                     required
                     type="'text'"
                   ></v-text-field>
@@ -68,7 +68,7 @@
                     :label="$t('_Forms.ExpirationYear')"
                     type="number"
                     v-bind:min="todayDate.getFullYear()"
-                    :rules="[vr.primitives.required, v => vr.primitives.inRangeFlat(v, todayDate.getFullYear(), creditCardExpToDate.getFullYear())]"
+                    :rules="[vr.primitives.required, vr.primitives.inRangeFlat(todayDate.getFullYear(), creditCardExpToDate.getFullYear())]"
                     required
                   ></v-text-field>
                 </v-col>
@@ -79,7 +79,7 @@
                     type="number"
                     min="1"
                     max="12"
-                    :rules="[...vr.complex.month, v => vr.primitives.expired(v, todayDate.getMonth() + 1)]"
+                    :rules="[...vr.complex.month, vr.primitives.expired(todayDate.getMonth() + 1)]"
                     required
                   ></v-text-field>
                 </v-col>
@@ -104,7 +104,7 @@
           <v-text-field
             v-model="model.dealDetails.dealReference"
             :counter="50"
-            :rules="[vr.primitives.maxLength(model.dealDetails.dealReference, 50)]"
+            :rules="[vr.primitives.maxLength(50)]"
             :label="$t('_Forms.DealReference')"
             required
           ></v-text-field>
@@ -120,7 +120,7 @@
           <v-text-field
             v-model="model.dealDetails.consumerPhone"
             :label="$t('_Forms.ConsumerPhone')"
-            :rules="[vr.primitives.maxLength(model.dealDetails.consumerPhone, 50)]"
+            :rules="[vr.primitives.maxLength(50)]"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -129,7 +129,7 @@
           <v-textarea
             v-model="model.dealDetails.dealDescription"
             :counter="1024"
-            :rules="[vr.primitives.maxLength(model.dealDetails.dealDescription, 1024)]"
+            :rules="[vr.primitives.maxLength(1024)]"
           >
             <template v-slot:label>
               <div>

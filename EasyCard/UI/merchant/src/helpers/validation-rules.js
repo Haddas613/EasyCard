@@ -4,13 +4,13 @@ const primitives = {
     /**Common */
     required: (v) => !!v || i18n.t('_Validation.Required'),
 
-    maxLength: (v, max) => (!v || v.length <= max) || i18n.t('_Validation.@MaxLength').replace("@max", max),
-    stringLength: (v, min, max) => (!v || (v.length >= min && v.length <= max)) || i18n.t('_Validation.@StringLength').replace("@min", min).replace("@max", max),
+    maxLength: (max) => (v) => (!v || v.length <= max) || i18n.t('_Validation.@MaxLength').replace("@max", max),
+    stringLength: (min, max) => (v) => (!v || (v.length >= min && v.length <= max)) || i18n.t('_Validation.@StringLength').replace("@min", min).replace("@max", max),
 
-    inRange: (v, min, max) => (v >= min && v <= max) || i18n.t('_Validation.@InRange').replace("@min", min).replace("@max", max),
-    inRangeFlat: (v, min, max) => (v >= min && v <= max) || `${min}-${max}`,
+    inRange: (min, max) => (v) => (v >= min && v <= max) || i18n.t('_Validation.@InRange').replace("@min", min).replace("@max", max),
+    inRangeFlat: (min, max) => (v) => (v >= min && v <= max) || `${min}-${max}`,
 
-    expired: (v, allowedTo) => (v >= allowedTo) || i18n.t('_Validation.Expired'),
+    expired: (allowedTo) => (v) => (v >= allowedTo) || i18n.t('_Validation.Expired'),
 
     email: (v) => {
         let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -20,7 +20,7 @@ const primitives = {
 
 const complex = {
     cvv: [primitives.required, v => /^[0-9]{3}$/.test(v) || i18n.t('_Validation.Invalid')],
-    month: [primitives.required, v => primitives.inRangeFlat(v, 1, 12)],
+    month: [primitives.required, primitives.inRangeFlat(1, 12)],
 }
 
 const special = {
