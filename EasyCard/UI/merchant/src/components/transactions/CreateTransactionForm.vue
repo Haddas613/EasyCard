@@ -5,17 +5,17 @@
         <v-col cols="4">
           <v-text-field
             v-model="model.terminalID"
-            :label="$t('_Forms.Terminal')"
+            :label="$t('Terminal')"
             required
             type="'number'"
             :disabled="true"
           ></v-text-field>
         </v-col>
         <v-col cols="4">
-          <v-select :items="[]" v-model="model.transactionType" :label="$t('_Forms.TransactionType')"></v-select>
+          <v-select :items="[]" v-model="model.transactionType" :label="$t('TransactionType')"></v-select>
         </v-col>
         <v-col cols="4">
-          <v-select :items="[]" v-model="model.currency" :label="$t('_Forms.Currency')"></v-select>
+          <v-select :items="[]" v-model="model.currency" :label="$t('Currency')"></v-select>
         </v-col>
       </v-row>
 
@@ -26,76 +26,11 @@
             :item-text="'label'"
             :item-value="'value'"
             v-model="model.creditCardToken"
-            :label="$t('_Forms.CreditCardToken')"
+            :label="$t('CreditCardToken')"
           ></v-select>
         </v-col>
         <v-col cols="8" v-if="model.creditCardToken === null">
-          <v-card outlined>
-            <v-container fluid class="px-2">
-              <v-row>
-                <v-col cols="4">
-                  <v-text-field
-                    v-model="model.creditCardSecureDetails.cardNumber"
-                    :label="$t('_Forms.CardNumber')"
-                    required
-                    :rules="[vr.primitives.required, vr.primitives.stringLength(10, 19)]"
-                    type="'text'"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="4">
-                  <v-text-field
-                    v-model="model.creditCardSecureDetails.cardOwnerName"
-                    :label="$t('_Forms.OwnerName')"
-                    :rules="[vr.primitives.stringLength(2, 50)]"
-                    required
-                    type="'text'"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="4">
-                  <v-text-field
-                    v-model="model.creditCardSecureDetails.cardOwnerNationalID"
-                    :label="$t('_Forms.NationalID')"
-                    :rules="[vr.special.israeliNationalId]"
-                    required
-                    type="'text'"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col cols="4">
-                  <v-text-field
-                    v-model="model.creditCardSecureDetails.cardExpiration.year"
-                    :label="$t('_Forms.ExpirationYear')"
-                    type="number"
-                    v-bind:min="todayDate.getFullYear()"
-                    :rules="[vr.primitives.required, vr.primitives.inRangeFlat(todayDate.getFullYear(), creditCardExpToDate.getFullYear())]"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="4">
-                  <v-text-field
-                    v-model="model.creditCardSecureDetails.cardExpiration.month"
-                    :label="$t('_Forms.ExpirationMonth')"
-                    type="number"
-                    min="1"
-                    max="12"
-                    :rules="[...vr.complex.month, vr.primitives.expired(todayDate.getMonth() + 1)]"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="2">
-                  <v-text-field
-                    v-model="model.creditCardSecureDetails.cvv"
-                    :label="$t('_Forms.CVV')"
-                    type="text"
-                    :counter="3"
-                    :rules="vr.complex.cvv"
-                    required
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
+          <credit-card-secure-details ref="ccSecureDetails" :data="model.creditCardSecureDetails"></credit-card-secure-details>
         </v-col>
       </v-row>
 
@@ -105,21 +40,21 @@
             v-model="model.dealDetails.dealReference"
             :counter="50"
             :rules="[vr.primitives.maxLength(50)]"
-            :label="$t('_Forms.DealReference')"
+            :label="$t('DealReference')"
             required
           ></v-text-field>
         </v-col>
         <v-col cols="4">
           <v-text-field
             v-model="model.dealDetails.consumerEmail"
-            :label="$t('_Forms.ConsumerEmail')"
+            :label="$t('ConsumerEmail')"
             :rules="[vr.primitives.email]"
           ></v-text-field>
         </v-col>
         <v-col cols="4">
           <v-text-field
             v-model="model.dealDetails.consumerPhone"
-            :label="$t('_Forms.ConsumerPhone')"
+            :label="$t('ConsumerPhone')"
             :rules="[vr.primitives.maxLength(50)]"
           ></v-text-field>
         </v-col>
@@ -133,7 +68,7 @@
           >
             <template v-slot:label>
               <div>
-                {{$t('_Forms.DealDescription')}}
+                {{$t('DealDescription')}}
                 <small>(optional)</small>
               </div>
             </template>
@@ -143,7 +78,7 @@
         <v-col cols="3">
           <v-text-field
             v-model="model.transactionAmount"
-            :label="$t('_Forms.Amount')"
+            :label="$t('Amount')"
             type="number"
             min="0"
             step="0.01"
@@ -163,14 +98,20 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import CreditCardSecureDetails from './CreditCardSecureDetailsForm';
 
 export default {
+  components: {
+    CreditCardSecureDetails,
+  },
   name: "CreateTransactionForm",
   methods: {
     save() {
       if (!this.$refs.form.validate()) 
         return;
-
+        
+      //retrieve data from child component
+      this.model.creditCardSecureDetails = this.$refs.ccSecureDetails.model;
       this.$emit('save', this.model)
     }
   },
@@ -206,15 +147,10 @@ export default {
       //TODO: extend tokens
       creditCardTokens: [
         {
-          label: this.$t("_Forms.UseCreditCard"),
+          label: this.$t("UseCreditCard"),
           value: null
         }
       ],
-      todayDate: new Date(),
-      creditCardExpToDate: (() => {
-        let d = new Date();
-        return new Date(d.getFullYear() + 10, d.getMonth(), d.getDay());
-      })(),
       vr: ValidationRules
     };
   }

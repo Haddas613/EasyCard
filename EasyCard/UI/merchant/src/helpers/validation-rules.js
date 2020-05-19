@@ -2,24 +2,24 @@ import i18n from '../i18n'
 
 const primitives = {
     /**Common */
-    required: (v) => !!v || i18n.t('_Validation.Required'),
+    required: (v) => !!v || i18n.t('Required'),
 
-    maxLength: (max) => (v) => (!v || v.length <= max) || i18n.t('_Validation.@MaxLength').replace("@max", max),
-    stringLength: (min, max) => (v) => (!v || (v.length >= min && v.length <= max)) || i18n.t('_Validation.@StringLength').replace("@min", min).replace("@max", max),
+    maxLength: (max) => (v) => (!v || v.length <= max) || i18n.t('@MaxLength').replace("@max", max),
+    stringLength: (min, max) => (v) => (!v || (v.length >= min && v.length <= max)) || i18n.t('@StringLength').replace("@min", min).replace("@max", max),
 
-    inRange: (min, max) => (v) => (v >= min && v <= max) || i18n.t('_Validation.@InRange').replace("@min", min).replace("@max", max),
+    inRange: (min, max) => (v) => (v >= min && v <= max) || i18n.t('@InRange').replace("@min", min).replace("@max", max),
     inRangeFlat: (min, max) => (v) => (v >= min && v <= max) || `${min}-${max}`,
 
-    expired: (allowedTo) => (v) => (v >= allowedTo) || i18n.t('_Validation.Expired'),
+    expired: (allowedTo) => (v) => (v >= allowedTo) || i18n.t('Expired'),
 
     email: (v) => {
         let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return regex.test(v) || i18n.t('_Validation.Email');
+        return regex.test(v) || i18n.t('EmailMustBeValid');
     },
 };
 
 const complex = {
-    cvv: [primitives.required, v => /^[0-9]{3}$/.test(v) || i18n.t('_Validation.Invalid')],
+    cvv: [primitives.required, v => /^[0-9]{3,5}$/.test(v) || i18n.t('Invalid')],
     month: [primitives.required, primitives.inRangeFlat(1, 12)],
 }
 
@@ -27,7 +27,7 @@ const special = {
     israeliNationalId: (v) => {
         var id = String(v).trim();
         if (id.length > 9 || id.length < 5 || isNaN(id)) 
-            return i18n.t('_Validation.IsraeliNationalId');
+            return i18n.t('IsraeliNationalIdMustBeValid');
 
         // Pad string with zeros up to 9 digits
         id = id.length < 9 ? ("00000000" + id).slice(-9) : id;
@@ -37,7 +37,7 @@ const special = {
             .reduce((counter, digit, i) => {
                 const step = digit * ((i % 2) + 1);
                 return counter + (step > 9 ? step - 9 : step);
-            }) % 10 === 0) || i18n.t('_Validation.IsraeliNationalId');
+            }) % 10 === 0) || i18n.t('IsraeliNationalIdMustBeValid');
     }
 }
 

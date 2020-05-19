@@ -4,11 +4,11 @@
       <v-container class="ecbg--lighten-4 fill-height text-center" fluid>
         <v-row align="center" justify="center">
           <v-col cols="12">
-            <p class="display-1">{{$t('_Auth.LoginWelcomeText')}}</p>
+            <p class="display-1">{{$t('LoginWelcomeText')}}</p>
           </v-col>
           <v-col cols="12" sm="8" md="4">
             <v-card class="elevation-12">
-              <v-card-title class="overline justify-center">{{$t('_Auth.LoginTitle')}}</v-card-title>
+              <v-card-title class="overline justify-center">{{$t('LoginTitle')}}</v-card-title>
               <v-card-text class="pb-0">
                 <v-btn :color="'primary'" :to="buttonLink">{{$t('Login')}}</v-btn>
               </v-card-text>
