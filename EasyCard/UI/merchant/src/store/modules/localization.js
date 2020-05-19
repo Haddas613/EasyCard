@@ -5,7 +5,11 @@ const state = () => ({
 });
 
 const getters = {};
-const actions = {};
+const actions = {
+    refreshLocale({commit, state}, vm){
+        commit('changeLanguage', {vm, newLocale: state.currentLocale});
+    }
+};
 
 const mutations = {
     changeLanguage(state, {vm, newLocale}){
