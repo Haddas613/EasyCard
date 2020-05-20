@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Shared.Helpers.Security;
 
 namespace ProfileApi
 {
@@ -31,8 +33,35 @@ namespace ProfileApi
                     builder =>
                     {
                         builder.WithOrigins("http://localhost:4200",
-                                            "http://localhost:8080");
+                                            "http://localhost:8080")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                     });
+            });
+
+            var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
+
+            services.AddDistributedMemoryCache();
+
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = identity.Authority;
+                    options.RequireHttpsMetadata = true;
+                    options.RoleClaimType = "role";
+                    options.NameClaimType = "name";
+                    options.ApiName = "transactions_api";
+                    options.EnableCaching = true;
+                });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policy.Terminal, policy =>
+                    policy.RequireAssertion(context => context.User.IsTerminal()));
+                options.AddPolicy(Policy.TerminalOrMerchantFrontend, policy =>
+                    policy.RequireAssertion(context => context.User.IsTerminal() || context.User.IsMerchantFrontend()));
+                options.AddPolicy(Policy.MerchantFrontend, policy =>
+                   policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
             });
 
             services.AddControllers();
