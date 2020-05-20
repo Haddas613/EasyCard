@@ -63,7 +63,17 @@ namespace Transactions.Api
 
             var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
 
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:4200",
+                                            "http://localhost:8080")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    });
+            });
 
             services.AddDistributedMemoryCache();
 
@@ -230,6 +240,8 @@ namespace Transactions.Api
             });
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 

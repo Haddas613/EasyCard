@@ -34,6 +34,13 @@
             Billing deal
             </summary>
         </member>
+        <member name="M:Transactions.Api.Controllers.TransmissionController.GetNotTransmittedTransactions(Transactions.Api.Models.Transactions.TransactionsFilter)">
+            <summary>
+            Get transactions which are not transmitted yet
+            </summary>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
         <member name="T:Transactions.Api.Models.Tokens.CreditCardTokenKeyVault">
             <summary>
             Entity to store in KeyVault
@@ -438,6 +445,24 @@
             <summary>
             Telephone deal or Regular (megnetic)
             </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Transactions.TransmitTransactionsRequest">
+            <summary>
+            Transmission request
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmitTransactionsRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmitTransactionsRequest.PaymentTransactionIDs">
+            <summary>
+            IDs of transactions which needs to be transmitted
+            </summary>
+            <remarks>
+            If omitted, all non-transmitted transactions will be transmitted
+            </remarks>
         </member>
         <member name="T:Transactions.Api.Resources.DateFilterTypeResource">
             <summary>
