@@ -18,6 +18,7 @@ using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Api.Models.Metadata;
 using Shared.Api.Validation;
 using Shared.Business.Exceptions;
 using Shared.Helpers;
@@ -71,6 +72,19 @@ namespace Transactions.Api.Controllers
             this.terminalsService = terminalsService;
             this.logger = logger;
             this.appSettings = appSettings.Value;
+        }
+
+        [HttpGet]
+        [Route("$meta")]
+        public TableMeta GetMetadata()
+        {
+            return new TableMeta
+            {
+                Columns = typeof(TransactionSummary)
+                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+                    .Select(d => new ColMeta { Key = d.Name, Name = d.Name, DataType = d.PropertyType.Name })
+                    .ToDictionary(d => d.Key)
+            };
         }
 
         [HttpGet]

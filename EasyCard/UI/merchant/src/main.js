@@ -6,12 +6,15 @@ import vuetify from './plugins/vuetify';
 import i18n from './i18n'
 import 'vue-oidc-client/src/polyfill';
 import mainAuth from './auth';
+import Api from './api/ApiBase';
 
 Vue.config.productionTip = false
 
 mainAuth.useRouter(router);
 
 mainAuth.startup().then(ok => {
+  Vue.use(Api);
+  
   if (ok) {
     new Vue({
       router,

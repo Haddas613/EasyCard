@@ -9,7 +9,7 @@ var mainOidc = createOidcAuth(
   SignInType.Window,
   appRootUrl,
   {
-    authority: 'https://localhost:44331/',
+    authority: process.env.VUE_APP_AUTHORITY,
     client_id: 'merchant_frontend', // 'implicit.shortlived',
     response_type: 'id_token token',
     scope: 'openid profile transactions_api',
