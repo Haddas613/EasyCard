@@ -1,19 +1,24 @@
 <template>
-  <v-select :items="['en-US', 'he-IL']" v-model="$i18n.locale" @change="switchLanguage()"></v-select>
+  <v-select :items="['en-US', 'he-IL']" v-model="currentLocale"></v-select>
 </template>
 
 <script>
-import localization from "../helpers/localization";
+import { mapState } from 'vuex'
 
 export default {
   name: "LangSwitcher",
   methods: {
-    switchLanguage: function() {
-      localization.switchLanguage(this.$i18n, this.$vuetify);
+  },
+  computed: {
+    ...mapState({
+      currentLocaleStore: state => state.localization.currentLocale
+    }),
+    currentLocale: {
+      get: function() { return this.currentLocaleStore },
+      set: function(newValue){
+        this.$store.commit('localization/changeLanguage', {vm: this, newLocale: newValue})
+      }
     }
-  }
+  },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

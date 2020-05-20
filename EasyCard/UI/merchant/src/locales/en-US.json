@@ -3,37 +3,34 @@
   "Transactions": "Transactions",
   "CreateTransaction": "Create Transaction",
   "TransactionsList": "Transactions List",
-  "_Validation": {
-    "Required": "Required",
-    "Invalid": "Invalid",
-    "IsraeliNationalId": "Must be valid Israeli National ID",
-    "Expired": "Expired",
-    "Email": "Email must be valid",
-    "@InRange": "Must be in range between @min and @max",
-    "@MaxLength": "Must be less than @max characters",
-    "@StringLength": "Must be more than @min and less than @max characters"
-  },
-  "_Forms":{
-    "Terminal": "Terminal",
-    "TransactionType": "Transaction Type",
-    "Currency": "Currency",
-    "CreditCardToken": "Credit Card Token",
-    "CardNumber": "Card Number",
-    "OwnerName": "Owner Name",
-    "NationalID": "National ID",
-    "ExpirationYear": "Expiration Year",
-    "ExpirationMonth": "Expiration Month",
-    "CVV": "CVV",
-    "DealReference": "Deal Reference",
-    "ConsumerEmail": "Consumer Email",
-    "ConsumerPhone": "Consumer Phone",
-    "DealDescription": "Deal Description",
-    "Amount": "Amount",
-    "UseCreditCard": "Use credit card"
-  },
+
+  "Required": "Required",
+  "Invalid": "Invalid",
+  "IsraeliNationalIdMustBeValid": "Must be valid Israeli National ID",
+  "Expired": "Expired",
+  "EmailMustBeValid": "Email must be valid",
+  "@InRange": "Must be in range between @min and @max",
+  "@MaxLength": "Must be less than @max characters",
+  "@StringLength": "Must be more than @min and less than @max characters",
+  
+  "Terminal": "Terminal",
+  "TransactionType": "Transaction Type",
+  "Currency": "Currency",
+  "CreditCardToken": "Credit Card Token",
+  "CardNumber": "Card Number",
+  "OwnerName": "Owner Name",
+  "NationalID": "National ID",
+  "ExpirationYear": "Expiration Year",
+  "ExpirationMonth": "Expiration Month",
+  "CVV": "CVV",
+  "DealReference": "Deal Reference",
+  "ConsumerEmail": "Consumer Email",
+  "ConsumerPhone": "Consumer Phone",
+  "DealDescription": "Deal Description",
+  "Amount": "Amount",
+  "UseCreditCard": "Use credit card",
+  
   "Login": "Login",
-  "_Auth": {
-    "LoginWelcomeText": "Welcome to easycard",
-    "LoginTitle": "Please proceed with login"
-  }
+  "LoginWelcomeText": "Welcome to easycard",
+  "LoginTitle": "Please proceed with login"
 }

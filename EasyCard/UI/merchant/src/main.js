@@ -18,7 +18,10 @@ mainAuth.startup().then(ok => {
       store,
       vuetify,
       i18n,
-      render: function (h) { return h(App) }
+      render: function (h) { 
+        this.$store.dispatch('localization/refreshLocale',{ $vuetify: vuetify.framework, $i18n: i18n });
+        return h(App) 
+      }
     }).$mount('#app')
   }
 });
