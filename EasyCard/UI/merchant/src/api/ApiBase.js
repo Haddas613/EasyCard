@@ -28,6 +28,10 @@ class ApiBase {
         });
         return await request.json();
     }
+
+    _formatHeaders(headers){
+        return Object.keys(headers.columns).map(key => {return { value: key, text: headers.columns[key].name } });
+    }
 }
 
 export default {

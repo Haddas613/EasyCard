@@ -36,7 +36,7 @@ export default {
           this.loading = false;
 
           if(!this.headers || this.headers.length === 0){
-            this.headers = Object.keys(data.headers.columns).map(key => {return { value: key, text: data.headers.columns[key].name } });
+            this.headers = data.headers;
           }
         });
       },

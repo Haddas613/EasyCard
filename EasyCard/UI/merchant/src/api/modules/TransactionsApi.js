@@ -18,7 +18,8 @@ export default class TransactionsApi{
         if (this.headers) 
             return this.headers;
 
-        this.headers = await this.base.get(this.transactionsUrl + '/$meta');
+        let data = await this.base.get(this.transactionsUrl + '/$meta');
+        this.headers = this.base._formatHeaders(data);
         return this.headers;
     }
 }
