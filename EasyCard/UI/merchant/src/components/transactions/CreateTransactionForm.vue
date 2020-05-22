@@ -2,7 +2,7 @@
   <v-form ref="form" v-model="valid" lazy-validation>
     <v-container class="px-10" fluid>
       <v-row>
-        <v-col cols="4">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model="model.terminalID"
             :label="$t('Terminal')"
@@ -11,16 +11,16 @@
             :disabled="true"
           ></v-text-field>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="12" md="4">
           <v-select :items="dictionaries.transactionTypes" item-text="description" item-value="code" v-model="model.transactionType" :label="$t('TransactionType')"></v-select>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="12" md="4">
           <v-select :items="dictionaries.currencies" item-text="description" item-value="code" v-model="model.currency" :label="$t('Currency')"></v-select>
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col cols="4">
+        <v-col cols="12" md="4">
           <v-select
             :items="creditCardTokens"
             :item-text="'label'"
@@ -29,13 +29,13 @@
             :label="$t('CreditCardToken')"
           ></v-select>
         </v-col>
-        <v-col cols="8" v-if="model.creditCardToken === null">
+        <v-col cols="12" md="8" v-if="model.creditCardToken === null">
           <credit-card-secure-details ref="ccSecureDetails" :data="model.creditCardSecureDetails"></credit-card-secure-details>
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col cols="4">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model="model.dealDetails.dealReference"
             :counter="50"
@@ -44,14 +44,14 @@
             required
           ></v-text-field>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model="model.dealDetails.consumerEmail"
             :label="$t('ConsumerEmail')"
             :rules="[vr.primitives.email]"
           ></v-text-field>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model="model.dealDetails.consumerPhone"
             :label="$t('ConsumerPhone')"
@@ -60,7 +60,7 @@
         </v-col>
       </v-row>
       <v-row class="d-flex align-end">
-        <v-col cols="6">
+        <v-col cols="12" md="3">
           <v-textarea
             v-model="model.dealDetails.dealDescription"
             :counter="1024"
@@ -75,7 +75,7 @@
           </v-textarea>
         </v-col>
         <v-spacer></v-spacer>
-        <v-col cols="3">
+        <v-col cols="12" md="3">
           <v-text-field
             v-model="model.transactionAmount"
             :label="$t('Amount')"
@@ -116,9 +116,9 @@ export default {
     }
   },
   async mounted () {
-    this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
-    this.model.transactionType =  this.dictionaries.transactionTypes[0].code;
-    this.model.currency =  this.dictionaries.currencies[0].code;
+    // this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+    // this.model.transactionType =  this.dictionaries.transactionTypes[0].code;
+    // this.model.currency =  this.dictionaries.currencies[0].code;
   },
   data() {
     return {
