@@ -77,6 +77,7 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("$meta")]
         public TableMeta GetMetadata()
         {

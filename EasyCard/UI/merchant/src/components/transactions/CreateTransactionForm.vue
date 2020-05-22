@@ -116,9 +116,9 @@ export default {
     }
   },
   async mounted () {
-    // this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
-    // this.model.transactionType =  this.dictionaries.transactionTypes[0].code;
-    // this.model.currency =  this.dictionaries.currencies[0].code;
+    this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+    this.model.transactionType =  this.dictionaries.transactionTypes[0].code;
+    this.model.currency =  this.dictionaries.currencies[0].code;
   },
   data() {
     return {
