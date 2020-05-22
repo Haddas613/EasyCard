@@ -12,7 +12,7 @@ namespace Shared.Api.Models
 
         public int? Skip { get; set; }
 
-        public string OrderBy { get; set; }
+        public string SortBy { get; set; }
 
         public OrderByDirectionEnum OrderByDirection { get; set; }
     }

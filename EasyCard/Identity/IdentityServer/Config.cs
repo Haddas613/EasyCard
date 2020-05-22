@@ -16,8 +16,8 @@ namespace IdentityServer
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
-                new ApiResource("merchants_api", "Merchants Api"),
-                new ApiResource("transactions_api", "Transactions Api", new[] { JwtClaimTypes.Subject, JwtClaimTypes.Name, JwtClaimTypes.Role, Shared.Helpers.Security.Claims.TerminalIDClaim }),
+                new ApiResource("merchants_api", "Merchants Api", new[] { JwtClaimTypes.Subject, JwtClaimTypes.Name, JwtClaimTypes.Role, Shared.Helpers.Security.Claims.MerchantIDClaim }),
+                new ApiResource("transactions_api", "Transactions Api", new[] { JwtClaimTypes.Subject, JwtClaimTypes.Name, JwtClaimTypes.Role, Shared.Helpers.Security.Claims.TerminalIDClaim, Shared.Helpers.Security.Claims.MerchantIDClaim }),
                 new ApiResource("management_api", "User Management")
                 {
                     ApiSecrets =

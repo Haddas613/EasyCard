@@ -10,12 +10,9 @@ var mainOidc = createOidcAuth(
   appRootUrl,
   {
     authority: process.env.VUE_APP_AUTHORITY,
-    client_id: 'merchant_frontend', // 'implicit.shortlived',
-    response_type: 'id_token token',
+    client_id: 'merchant_frontend',
+    response_type: 'token',
     scope: 'openid profile transactions_api',
-    // test use
-    prompt: 'login',
-    login_hint: 'bob'
   },
   console,
   LogLevel.Error

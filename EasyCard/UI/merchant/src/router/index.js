@@ -9,9 +9,10 @@ const routes = [
   {
     path: '/',
     name: 'Entry',
-    redirect: to => {
-      return mainAuth.isAuthenticated ? '/admin' : '/guest'
-    }
+    meta: {
+      authName: mainAuth.authName
+    },
+    redirect: '/admin'
   },
   {
     path: '/guest',

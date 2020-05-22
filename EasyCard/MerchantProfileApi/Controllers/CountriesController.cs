@@ -29,9 +29,9 @@ namespace MerchantProfileApi.Controllers
                 countries = countries.Where(d => d.name.Contains(filter.Name, StringComparison.InvariantCultureIgnoreCase));
             }
 
-            if (!string.IsNullOrWhiteSpace(filter.OrderBy))
+            if (!string.IsNullOrWhiteSpace(filter.SortBy))
             {
-                switch (filter.OrderBy.ToLower())
+                switch (filter.SortBy.ToLower())
                 {
                     case "name":
                         countries = filter.OrderByDirection == OrderByDirectionEnum.ASC ? countries.OrderBy(d => d.name) : countries.OrderByDescending(d => d.name);
