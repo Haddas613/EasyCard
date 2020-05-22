@@ -10,6 +10,12 @@ namespace Transactions.Api.Extensions.Filtering
     {
         public static IQueryable<PaymentTransaction> Filter(this IQueryable<PaymentTransaction> src, TransactionsFilter filter)
         {
+            if (filter.PaymentTransactionID != null)
+            {
+                src = src.Where(t => t.PaymentTransactionID == filter.PaymentTransactionID);
+                return src;
+            }
+
             if (filter.TerminalID != null)
             {
                 src = src.Where(t => t.TerminalID == filter.TerminalID);

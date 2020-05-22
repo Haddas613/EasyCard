@@ -1,6 +1,18 @@
 <template>
   <v-card class="mx-auto" outlined>
     <v-card-title>{{$t('Transactions List')}}</v-card-title>
+    <v-expansion-panels :flat="true">
+      <v-expansion-panel>
+        <v-expansion-panel-header class="primary white--text">
+          {{$t('Filters')}}
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <div class="pt-4 pb-2">
+            <transactions-filter :filter-data="options" v-on:apply="applyFilter($event)"></transactions-filter>
+          </div>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
     <v-divider></v-divider>
     <div>
       <v-data-table 
@@ -15,8 +27,11 @@
 </template>
 
 <script>
+import TransactionsFilter from '../../components/transactions/TransactionsFilter';
+
 export default {
   name: "TransactionsList",
+  components: { TransactionsFilter },
   data() {
     return {
       totalAmount: 0,
@@ -24,33 +39,32 @@ export default {
       loading: true,
       options: {},
       pagination: {},
-      headers: []
+      headers: [],
+      transactionsFilter: {}
     }
   },
   watch: {
     options: {
-      handler() {
-        this.getDataFromApi().then(data => {
-          this.transactions = data.data;
-          this.totalAmount = data.numberOfRecords;
-          this.loading = false;
-
-          if(!this.headers || this.headers.length === 0){
-            this.headers = data.headers;
-          }
-        });
-      },
+      handler: async function(){ await this.getDataFromApi() },
       deep: true
     }
   },
   methods: {
     async getDataFromApi() {
       this.loading = true;
-      return await this.$api.transactions.get({ ...this.options });
+      let data = await this.$api.transactions.get({ ...this.transactionsFilter, ...this.options });
+      this.transactions = data.data;
+      this.totalAmount = data.numberOfRecords;
+      this.loading = false;
+
+      if(!this.headers || this.headers.length === 0){
+        this.headers = data.headers;
+      }
+    },
+    async applyFilter(filter){
+      this.transactionsFilter = filter;
+      await this.getDataFromApi();
     }
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
