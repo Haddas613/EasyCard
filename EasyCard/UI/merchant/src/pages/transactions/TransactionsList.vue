@@ -32,7 +32,7 @@ export default {
       handler() {
         this.getDataFromApi().then(data => {
           this.transactions = data.data;
-          this.totalDesserts = data.numberOfRecords;
+          this.totalAmount = data.numberOfRecords;
           this.loading = false;
 
           if(!this.headers || this.headers.length === 0){
