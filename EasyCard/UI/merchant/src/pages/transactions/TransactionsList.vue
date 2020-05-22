@@ -31,7 +31,7 @@ export default {
     options: {
       handler() {
         this.getDataFromApi().then(data => {
-          this.desserts = data.data;
+          this.transactions = data.data;
           this.totalDesserts = data.numberOfRecords;
           this.loading = false;
 
