@@ -87,10 +87,15 @@ namespace IdentityServer
                         "http://localhost:8080/callback.html",
                         "http://localhost:8080/silent.html",
                         "http://localhost:8080/popup.html",
+
+                        "https://ecng-profile.azurewebsites.net",
+                        "https://ecng-profile.azurewebsites.net/auth/signinpop/main",
+                        "https://ecng-profile.azurewebsites.net/auth/signinwin/main",
+                        "https://ecng-profile.azurewebsites.net/auth/signinsilent/main",
                     },
 
-                    PostLogoutRedirectUris = { "https://localhost:44331/index.html" },
-                    AllowedCorsOrigins = { " http://localhost:8080", "https://localhost:44339" },
+                    PostLogoutRedirectUris = { "https://localhost:44331/index.html", "https://ecng-identity.azurewebsites.net" },
+                    AllowedCorsOrigins = { " http://localhost:8080", "https://localhost:44339", "https://ecng-profile.azurewebsites.net" },
                     AllowAccessTokensViaBrowser = true,
                     AllowedScopes = { "openid", "profile", "transactions_api" }
                 },

@@ -20,6 +20,7 @@ using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
+using Shared.Api.UI;
 using Shared.Api.Validation;
 using Shared.Business.Exceptions;
 using Shared.Business.Extensions;
@@ -85,7 +86,7 @@ namespace Transactions.Api.Controllers
             {
                 Columns = typeof(TransactionSummary)
                     .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
-                    .Select(d => new ColMeta { Key = d.Name, Name = d.Name, DataType = d.PropertyType.Name })
+                    .Select(d => d.GetColMeta(TransactionSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
                     .ToDictionary(d => d.Key)
             };
         }

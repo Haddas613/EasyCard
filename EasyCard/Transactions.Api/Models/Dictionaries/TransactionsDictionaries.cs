@@ -8,24 +8,24 @@ namespace Transactions.Api.Models.Dictionaries
 {
     public class TransactionsDictionaries
     {
-        public IEnumerable<DictionarySummary<string>> TransactionStatuses { get; set; }
+        public Dictionary<string, string> TransactionStatusEnum { get; set; }
 
-        public IEnumerable<DictionarySummary<string>> TransactionTypes { get; set; }
+        public Dictionary<string, string> TransactionTypeEnum { get; set; }
 
-        public IEnumerable<DictionarySummary<string>> SpecialTransactionTypes { get; set; }
+        public Dictionary<string, string> SpecialTransactionTypeEnum { get; set; }
 
-        public IEnumerable<DictionarySummary<short>> JDealTypes { get; set; }
+        public Dictionary<string, string> JDealTypeEnum { get; set; }
 
-        public IEnumerable<DictionarySummary<short>> RejectionReasons { get; set; }
+        public Dictionary<string, string> RejectionReasonEnum { get; set; }
 
-        public IEnumerable<DictionarySummary<string>> Currencies { get; set; }
+        public Dictionary<string, string> CurrencyEnum { get; set; }
 
-        public IEnumerable<DictionarySummary<string>> CardPresences { get; set; }
+        public Dictionary<string, string> CardPresenceEnum { get; set; }
 
-        public IEnumerable<DictionarySummary<string>> FilterTransactionQuickTime { get; set; }
+        public Dictionary<string, string> QuickTimeFilterTypeEnum { get; set; }
 
-        public IEnumerable<DictionarySummary<string>> FilterTransactionQuickStatuses { get; set; }
+        public Dictionary<string, string> QuickStatusFilterTypeEnum { get; set; }
 
-        public IEnumerable<DictionarySummary<string>> FilterDateTypes { get; set; }
+        public Dictionary<string, string> DateFilterTypeEnum { get; set; }
     }
 }

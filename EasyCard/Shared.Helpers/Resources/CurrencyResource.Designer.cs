@@ -61,7 +61,7 @@ namespace Shared.Helpers.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Euro.
+        ///   Looks up a localized string similar to €.
         /// </summary>
         public static string EUR {
             get {
@@ -70,7 +70,7 @@ namespace Shared.Helpers.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Israel Shekel.
+        ///   Looks up a localized string similar to ₪.
         /// </summary>
         public static string ILS {
             get {
@@ -79,7 +79,7 @@ namespace Shared.Helpers.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to United States Dollar.
+        ///   Looks up a localized string similar to $.
         /// </summary>
         public static string USD {
             get {

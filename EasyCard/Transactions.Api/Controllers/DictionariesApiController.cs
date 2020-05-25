@@ -22,10 +22,11 @@ namespace Transactions.Api.Controllers
 
         [HttpGet]
         [Route("transaction")]
-        [ResponseCache(VaryByHeader = "User-Agent", Duration = 3600)]
+        //[ResponseCache(VaryByHeader = "User-Agent", Duration = 3600)]
         public async Task<ActionResult<TransactionsDictionaries>> GetTransactionDictionaries([FromQuery]string language)
         {
-            return Ok(DictionariesService.GetDictionaries(language));
+            var dictionaries = DictionariesService.GetDictionaries(language);
+            return Ok(dictionaries);
         }
     }
 }
