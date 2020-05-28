@@ -36,6 +36,7 @@
           expanded: false,
           children: [
             { icon: 'mdi-cash-register', text: 'Create Transaction', to: '/admin/transactions/create' },
+            { icon: 'mdi-cash-refund', text: 'Create Refund', to: '/admin/transactions/refund' },
             { icon: 'mdi-cash-multiple', text: 'Transactions List', to: '/admin/transactions/list' },
           ],
         },

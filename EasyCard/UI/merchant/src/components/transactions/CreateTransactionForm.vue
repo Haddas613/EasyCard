@@ -2,7 +2,7 @@
   <v-form ref="form" v-model="valid" lazy-validation>
     <v-container class="px-10" fluid>
       <v-row>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="3">
           <v-text-field
             v-model="model.terminalID"
             :label="$t('Terminal')"
@@ -11,7 +11,7 @@
             :disabled="true"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="3" v-if="!isRefund">
           <v-select
             :items="dictionaries.transactionTypeEnum"
             item-text="description"
@@ -20,7 +20,14 @@
             :label="$t('TransactionType')"
           ></v-select>
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="3" v-if="isRefund">
+          <v-text-field
+            v-bind:value="$t('Refund')"
+            :label="$t('TransactionType')"
+            :disabled="true"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="3">
           <v-select
             :items="dictionaries.currencyEnum"
             item-text="description"
@@ -29,14 +36,7 @@
             :label="$t('Currency')"
           ></v-select>
         </v-col>
-      </v-row>
-
-      <v-row v-if="isInstallmentTransaction">
-        <installment-details ref="instDetails" :data="model.installmentDetails"></installment-details>
-      </v-row>
-
-      <v-row>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="3">
           <v-select
             :items="creditCardTokens"
             :item-text="'label'"
@@ -45,9 +45,16 @@
             :label="$t('CreditCardToken')"
           ></v-select>
         </v-col>
-        <v-col cols="12" md="8" v-if="model.creditCardToken === null">
+      </v-row>
+
+      <v-row>
+        <v-col cols="12" md="12" v-if="model.creditCardToken === null">
           <credit-card-secure-details ref="ccSecureDetails" :data="model.creditCardSecureDetails"></credit-card-secure-details>
         </v-col>
+      </v-row>
+
+      <v-row v-if="isInstallmentTransaction">
+        <installment-details ref="instDetails" :data="model.installmentDetails"></installment-details>
       </v-row>
 
       <v-row>
@@ -76,7 +83,7 @@
         </v-col>
       </v-row>
       <v-row class="d-flex align-end">
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="6">
           <v-textarea
             v-model="model.dealDetails.dealDescription"
             :counter="1024"
@@ -120,6 +127,12 @@ import InstallmentDetails from "./InstallmentDetailsForm";
 export default {
   components: { CreditCardSecureDetails, InstallmentDetails },
   name: "CreateTransactionForm",
+  props: {
+    isRefund: {
+      type: Boolean,
+      default: false
+    },
+  },
   methods: {
     save() {
       if (!this.$refs.form.validate()) return;
