@@ -1,18 +1,16 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="2" sm="6">
         <v-text-field v-model="model.paymentTransactionID" :label="$t('PaymentTransactionID')"></v-text-field>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="2" sm="6">
         <v-text-field v-model="model.terminalID" :label="$t('Terminal')"></v-text-field>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="2" sm="6">
         <v-text-field v-model="model.merchantID" :label="$t('Merchant')"></v-text-field>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="2" sm="6">
         <v-select
           :items="dictionaries.transactionTypes"
           item-text="description"
@@ -21,7 +19,7 @@
           :label="$t('TransactionType')"
         ></v-select>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="2" sm="6">
         <v-select
           :multiple="true"
           :items="dictionaries.transactionStatuses"
@@ -32,7 +30,7 @@
           disabled
         ></v-select>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="2" sm="6">
         <v-select
           :items="dictionaries.cardPresences"
           item-text="description"
@@ -43,7 +41,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="2" sm="6">
         <v-text-field
           v-model="model.amountFrom"
           :label="$t('AmountFrom')"
@@ -52,7 +50,7 @@
           step="0.01"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="2" sm="6">
         <v-text-field
           v-model="model.amountTo"
           :label="$t('AmountTo')"
@@ -61,7 +59,7 @@
           step="0.01"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="2" sm="6">
         <v-select
           :items="dictionaries.currencies"
           item-text="description"
@@ -70,9 +68,7 @@
           :label="$t('Currency')"
         ></v-select>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="2" sm="6">
         <v-select
           :items="dictionaries.specialTransactionTypes"
           item-text="description"
@@ -81,7 +77,7 @@
           :label="$t('SpecialTransactionType')"
         ></v-select>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="2" sm="6">
         <v-select
           :items="dictionaries.jDealTypes"
           item-text="description"
@@ -90,7 +86,7 @@
           :label="$t('JDealType')"
         ></v-select>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="2" sm="6">
         <v-select
           :items="dictionaries.rejectionReasons"
           item-text="description"
