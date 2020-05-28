@@ -1,6 +1,6 @@
 <template>
   <v-card class="mx-auto" outlined>
-    <v-card-title>{{$t('Create Refund')}}</v-card-title>
+    <v-card-title>{{$t('CreateRefund')}}</v-card-title>
     <v-divider></v-divider>
     <div>
       <transaction-form v-on:save="onFormSave($event)" :is-refund="true"></transaction-form>

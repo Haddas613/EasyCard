@@ -1,0 +1,10 @@
+
+$primary : var(--v-primary-base);
+$secondary : var(--v-secondary-base);
+
+.border-secondary{
+  border-color: $secondary !important;
+}
+.border-primary{
+  border-color: $primary !important;
+}

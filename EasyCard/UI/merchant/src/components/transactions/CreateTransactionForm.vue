@@ -2,7 +2,7 @@
   <v-form ref="form" v-model="valid" lazy-validation>
     <v-container class="px-10" fluid>
       <v-row>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="2" sm="6">
           <v-text-field
             v-model="model.terminalID"
             :label="$t('Terminal')"
@@ -11,32 +11,8 @@
             :disabled="true"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="3" v-if="!isRefund">
-          <v-select
-            :items="dictionaries.transactionTypeEnum"
-            item-text="description"
-            item-value="code"
-            v-model="model.transactionType"
-            :label="$t('TransactionType')"
-          ></v-select>
-        </v-col>
-        <v-col cols="12" md="3" v-if="isRefund">
-          <v-text-field
-            v-bind:value="$t('Refund')"
-            :label="$t('TransactionType')"
-            :disabled="true"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="3">
-          <v-select
-            :items="dictionaries.currencyEnum"
-            item-text="description"
-            item-value="code"
-            v-model="model.currency"
-            :label="$t('Currency')"
-          ></v-select>
-        </v-col>
-        <v-col cols="12" md="3">
+
+        <v-col cols="12" md="2" sm="6">
           <v-select
             :items="creditCardTokens"
             :item-text="'label'"
@@ -45,20 +21,65 @@
             :label="$t('CreditCardToken')"
           ></v-select>
         </v-col>
+
+        <v-col cols="12" md="2" sm="6">
+          <v-select
+            :items="dictionaries.cardPresenceEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.cardPresence"
+            :label="$t('CardPresence')"
+          ></v-select>
+        </v-col>
+
+        <v-col cols="12" md="2" v-if="!isRefund" sm="6">
+          <v-select
+            :items="dictionaries.transactionTypeEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.transactionType"
+            :label="$t('TransactionType')"
+          ></v-select>
+        </v-col>
+        <v-col cols="12" md="2" v-if="isRefund" sm="6">
+          <v-text-field v-bind:value="$t('Refund')" :label="$t('TransactionType')" :disabled="true"></v-text-field>
+        </v-col>
+        
+        <v-col cols="12" md="2" sm="6">
+          <v-select
+            :items="dictionaries.jDealTypeEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.jDealType"
+            :label="$t('JDealType')"
+          ></v-select>
+        </v-col>
+        
+        <v-col cols="12" md="2" sm="6">
+          <v-select
+            :items="dictionaries.currencyEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.currency"
+            :label="$t('Currency')"
+          ></v-select>
+        </v-col>
       </v-row>
 
-      <v-row>
-        <v-col cols="12" md="12" v-if="model.creditCardToken === null">
+      <v-row v-if="model.creditCardToken === null" class="py-2" no-gutters>
+        <v-col cols="12">
           <credit-card-secure-details ref="ccSecureDetails" :data="model.creditCardSecureDetails"></credit-card-secure-details>
         </v-col>
       </v-row>
 
-      <v-row v-if="isInstallmentTransaction">
-        <installment-details ref="instDetails" :data="model.installmentDetails"></installment-details>
+      <v-row v-if="isInstallmentTransaction" class="py-2" no-gutters>
+        <v-col cols="12">
+          <installment-details ref="instDetails" :data="model.installmentDetails"></installment-details>
+        </v-col>
       </v-row>
 
       <v-row>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="4" sm="4">
           <v-text-field
             v-model="model.dealDetails.dealReference"
             :counter="50"
@@ -67,14 +88,14 @@
             required
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="4" sm="4">
           <v-text-field
             v-model="model.dealDetails.consumerEmail"
             :label="$t('ConsumerEmail')"
             :rules="[vr.primitives.email]"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="4" sm="4">
           <v-text-field
             v-model="model.dealDetails.consumerPhone"
             :label="$t('ConsumerPhone')"
@@ -131,7 +152,7 @@ export default {
     isRefund: {
       type: Boolean,
       default: false
-    },
+    }
   },
   methods: {
     save() {
@@ -158,6 +179,8 @@ export default {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
     this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
     this.model.currency = this.dictionaries.currencyEnum[0].code;
+    this.model.jDealType = this.dictionaries.jDealTypeEnum[0].code;
+    this.model.cardPresence = this.dictionaries.cardPresenceEnum[0].code;
   },
   data() {
     return {
@@ -165,8 +188,9 @@ export default {
       model: {
         terminalID: 0,
         transactionType: null,
-        currency: 0,
-        cardPresence: 0,
+        jDealType: null,
+        currency: null,
+        cardPresence: null,
         creditCardToken: null,
         creditCardSecureDetails: {
           cardExpiration: {

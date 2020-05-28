@@ -7,6 +7,7 @@ import i18n from './i18n'
 import 'vue-oidc-client/src/polyfill';
 import mainAuth from './auth';
 import Api from './api/ApiBase';
+import './assets/css/main.scss';
 
 Vue.config.productionTip = false
 

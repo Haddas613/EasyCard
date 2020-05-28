@@ -3,6 +3,7 @@
   "Transactions": "Transactions",
   "CreateTransaction": "Create Transaction",
   "TransactionsList": "Transactions List",
+  "CreateRefund": "Create Refund",
 
   "Required": "Required",
   "Invalid": "Invalid",
@@ -29,6 +30,14 @@
   "DealDescription": "Deal Description",
   "Amount": "Amount",
   "UseCreditCard": "Use credit card",
+  "CreditCardDetails": "Credit Card Details",
+  "InstallmentDetails": "Installment Details",
+  "NumberOfPayments": "Number of Payments",
+  "InitialPaymentAmount": "Initial Payment Amount",
+  "InstallmentPaymentAmount": "Installment Payment Amount",
+  "TotalAmount": "Total Amount",
+  "CardPresence": "Card Presence",
+  "JDealType": "JDeal Type",
   
   "Login": "Login",
   "LoginWelcomeText": "Welcome to easycard",

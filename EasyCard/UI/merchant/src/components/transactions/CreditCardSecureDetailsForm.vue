@@ -1,8 +1,9 @@
 <template>
-  <v-card outlined>
+  <v-card outlined class="border-primary">
+    <v-subheader class="primary--text font-weight-light">{{$t('CreditCardDetails')}}</v-subheader>
     <v-container fluid class="px-2">
       <v-row>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="2" sm="6">
           <v-text-field
             v-model="model.cardNumber"
             :label="$t('CardNumber')"
@@ -11,7 +12,7 @@
             type="'text'"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="2" sm="6">
           <v-text-field
             v-model="model.cardOwnerName"
             :label="$t('OwnerName')"
@@ -20,7 +21,7 @@
             type="'text'"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="2" sm="6">
           <v-text-field
             v-model="model.cardOwnerNationalID"
             :label="$t('NationalID')"
@@ -28,9 +29,7 @@
             type="'text'"
           ></v-text-field>
         </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="2" sm="6">
           <v-text-field
             v-model="model.cardExpiration.year"
             :label="$t('ExpirationYear')"
@@ -40,7 +39,7 @@
             required
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="2" sm="6">
           <v-text-field
             v-model="model.cardExpiration.month"
             :label="$t('ExpirationMonth')"
@@ -51,7 +50,7 @@
             required
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="2" sm="6">
           <v-text-field
             v-model="model.cvv"
             :label="$t('CVV')"
