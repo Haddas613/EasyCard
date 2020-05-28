@@ -25,6 +25,9 @@ const complex = {
 
 const special = {
     israeliNationalId: (v) => {
+        if(!v)
+            return true;
+        
         var id = String(v).trim();
         if (id.length > 9 || id.length < 5 || isNaN(id)) 
             return i18n.t('IsraeliNationalIdMustBeValid');

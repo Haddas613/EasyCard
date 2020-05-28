@@ -12,11 +12,27 @@
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="4">
-          <v-select :items="dictionaries.transactionTypes" item-text="description" item-value="code" v-model="model.transactionType" :label="$t('TransactionType')"></v-select>
+          <v-select
+            :items="dictionaries.transactionTypes"
+            item-text="description"
+            item-value="code"
+            v-model="model.transactionType"
+            :label="$t('TransactionType')"
+          ></v-select>
         </v-col>
         <v-col cols="12" md="4">
-          <v-select :items="dictionaries.currencies" item-text="description" item-value="code" v-model="model.currency" :label="$t('Currency')"></v-select>
+          <v-select
+            :items="dictionaries.currencies"
+            item-text="description"
+            item-value="code"
+            v-model="model.currency"
+            :label="$t('Currency')"
+          ></v-select>
         </v-col>
+      </v-row>
+
+      <v-row v-if="isInstallmentTransaction">
+        <installment-details ref="instDetails" :data="model.installmentDetails"></installment-details>
       </v-row>
 
       <v-row>
@@ -98,34 +114,44 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
-import CreditCardSecureDetails from './CreditCardSecureDetailsForm';
+import CreditCardSecureDetails from "./CreditCardSecureDetailsForm";
+import InstallmentDetails from "./InstallmentDetailsForm";
 
 export default {
-  components: {
-    CreditCardSecureDetails,
-  },
+  components: { CreditCardSecureDetails, InstallmentDetails },
   name: "CreateTransactionForm",
   methods: {
     save() {
-      if (!this.$refs.form.validate()) 
-        return;
-        
+      if (!this.$refs.form.validate()) return;
+
       //retrieve data from child component
       this.model.creditCardSecureDetails = this.$refs.ccSecureDetails.model;
-      this.$emit('save', this.model)
+
+      if (this.isInstallmentTransaction)
+        this.model.installmentDetails = this.$refs.instDetails.model;
+
+      this.$emit("save", this.model);
     }
   },
-  async mounted () {
+  computed: {
+    isInstallmentTransaction() {
+      return (
+        this.model.transactionType === "installments" ||
+        this.model.transactionType === "credit"
+      );
+    }
+  },
+  async mounted() {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
-    this.model.transactionType =  this.dictionaries.transactionTypes[0].code;
-    this.model.currency =  this.dictionaries.currencies[0].code;
+    this.model.transactionType = this.dictionaries.transactionTypes[0].code;
+    this.model.currency = this.dictionaries.currencies[0].code;
   },
   data() {
     return {
       //TODO: credit token, terminal id
       model: {
         terminalID: 0,
-        transactionType: 0,
+        transactionType: null,
         currency: 0,
         cardPresence: 0,
         creditCardToken: null,
@@ -145,6 +171,12 @@ export default {
           consumerEmail: null,
           consumerPhone: null,
           dealDescription: null
+        },
+        installmentDetails: {
+          numberOfPayments: 0,
+          initialPaymentAmount: 0,
+          numberOfInstallments: 0,
+          installmentPaymentAmount: 0
         }
       },
       dictionaries: {},
@@ -161,6 +193,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
