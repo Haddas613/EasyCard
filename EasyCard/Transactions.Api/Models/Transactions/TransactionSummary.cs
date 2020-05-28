@@ -29,7 +29,7 @@ namespace Transactions.Api.Models.Transactions
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyEnum Currency { get; set; }
 
-        public DateTime Created { get; set; }
+        public DateTime? TransactionTimestamp { get; set; }
 
         /// <summary>
         /// Processing status

@@ -64,6 +64,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Models\Transactions\TransactionSummaryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TransactionSummaryResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\DateFilterTypeResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -82,6 +87,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Models\Transactions\TransactionSummaryResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TransactionSummaryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\DateFilterTypeResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>DateFilterTypeResource.Designer.cs</LastGenOutput>

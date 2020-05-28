@@ -117,13 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EUR" xml:space="preserve">
-    <value>€</value>
+  <data name="CardPresence" xml:space="preserve">
+    <value>Card Present</value>
   </data>
-  <data name="ILS" xml:space="preserve">
-    <value>₪</value>
+  <data name="Created" xml:space="preserve">
+    <value>Created</value>
   </data>
-  <data name="USD" xml:space="preserve">
-    <value>$</value>
+  <data name="Currency" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="JDealType" xml:space="preserve">
+    <value>J Deal Type</value>
+  </data>
+  <data name="MerchantID" xml:space="preserve">
+    <value>Merchant ID</value>
+  </data>
+  <data name="PaymentTransactionID" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="RejectionReason" xml:space="preserve">
+    <value>Rejection Reason</value>
+  </data>
+  <data name="SpecialTransactionType" xml:space="preserve">
+    <value>Special Transaction Type</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="TerminalID" xml:space="preserve">
+    <value>Terminal ID</value>
+  </data>
+  <data name="TransactionAmount" xml:space="preserve">
+    <value>Transaction Amount</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Transaction Type</value>
   </data>
 </root>

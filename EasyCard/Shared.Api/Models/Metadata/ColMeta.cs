@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.Json.Serialization;
 
 namespace Shared.Api.Models.Metadata
 {
@@ -13,5 +13,8 @@ namespace Shared.Api.Models.Metadata
         public string Name { get; set; }
 
         public string DataType { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string Dictionary { get; set; }
     }
 }

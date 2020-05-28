@@ -10,6 +10,7 @@
   "dependencies": {
     "-": "0.0.1",
     "@mdi/font": "^5.1.45",
+    "moment": "^2.26.0",
     "vue": "^2.6.11",
     "vue-i18n": "^8.17.3",
     "vue-oidc-client": "^0.3.1",

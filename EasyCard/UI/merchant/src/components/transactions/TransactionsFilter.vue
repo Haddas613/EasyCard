@@ -120,12 +120,12 @@ export default {
   async mounted() {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
     const all = { code: null, description: this.$t("All") };
-    this.dictionaries.transactionTypes = [all, ...this.dictionaries.transactionTypes];
-    this.dictionaries.currencies = [all, ...this.dictionaries.currencies];
-    this.dictionaries.cardPresences = [all, ...this.dictionaries.cardPresences];
-    this.dictionaries.specialTransactionTypes = [all, ...this.dictionaries.specialTransactionTypes];
-    this.dictionaries.jDealTypes = [all, ...this.dictionaries.jDealTypes];
-    this.dictionaries.rejectionReasons = [all, ...this.dictionaries.rejectionReasons];
+    this.dictionaries.transactionTypes = [all, ...this.dictionaries.transactionTypeEnum];
+    this.dictionaries.currencies = [all, ...this.dictionaries.currencyEnum];
+    this.dictionaries.cardPresences = [all, ...this.dictionaries.cardPresenceEnum];
+    this.dictionaries.specialTransactionTypes = [all, ...this.dictionaries.specialTransactionTypeEnum];
+    this.dictionaries.jDealTypes = [all, ...this.dictionaries.jDealTypeEnum];
+    this.dictionaries.rejectionReasons = [all, ...this.dictionaries.rejectionReasonEnum];
   },
   props: {
     filterData: {

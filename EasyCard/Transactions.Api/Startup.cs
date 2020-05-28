@@ -69,7 +69,8 @@ namespace Transactions.Api
                     builder =>
                     {
                         builder.WithOrigins("http://localhost:4200",
-                                            "http://localhost:8080")
+                                            "http://localhost:8080",
+                                            "https://ecng-profile.azurewebsites.net")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                     });
@@ -98,6 +99,14 @@ namespace Transactions.Api
                    policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
             });
 
+            DefaultContractResolver contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy
+                {
+                    ProcessDictionaryKeys = false
+                }
+            };
+
             services.AddControllers(opts =>
             {
                 // Adding global custom validation filter
@@ -106,7 +115,7 @@ namespace Transactions.Api
             .AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.Converters.Add(new StringEnumConverter());
-                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.ContractResolver = contractResolver;
                 options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
 
                 // Note: do not use options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; - use [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)] attribute in place
@@ -115,7 +124,7 @@ namespace Transactions.Api
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                ContractResolver = contractResolver
             };
 
             //.AddJsonOptions(options =>

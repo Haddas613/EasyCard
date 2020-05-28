@@ -13,7 +13,7 @@
         </v-col>
         <v-col cols="12" md="4">
           <v-select
-            :items="dictionaries.transactionTypes"
+            :items="dictionaries.transactionTypeEnum"
             item-text="description"
             item-value="code"
             v-model="model.transactionType"
@@ -22,7 +22,7 @@
         </v-col>
         <v-col cols="12" md="4">
           <v-select
-            :items="dictionaries.currencies"
+            :items="dictionaries.currencyEnum"
             item-text="description"
             item-value="code"
             v-model="model.currency"
@@ -143,8 +143,8 @@ export default {
   },
   async mounted() {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
-    this.model.transactionType = this.dictionaries.transactionTypes[0].code;
-    this.model.currency = this.dictionaries.currencies[0].code;
+    this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
+    this.model.currency = this.dictionaries.currencyEnum[0].code;
   },
   data() {
     return {
@@ -175,7 +175,6 @@ export default {
         installmentDetails: {
           numberOfPayments: 0,
           initialPaymentAmount: 0,
-          numberOfInstallments: 0,
           installmentPaymentAmount: 0
         }
       },
