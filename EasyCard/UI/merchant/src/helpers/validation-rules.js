@@ -12,7 +12,11 @@ const primitives = {
 
     expired: (allowedTo) => (v) => (v >= allowedTo) || i18n.t('Expired'),
 
+    biggerThan: (min) => (v) => (v > min) || i18n.t('@BiggerThan').replace('@min', min),
+
     email: (v) => {
+        if(!v)
+            return true;
         let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return regex.test(v) || i18n.t('EmailMustBeValid');
     },

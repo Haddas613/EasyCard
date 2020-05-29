@@ -31,6 +31,28 @@ class ApiBase {
         return await request.json();
     }
 
+    async post(url, payload) {
+        let requestUrl = new URL(url);
+        let request = await fetch(requestUrl, {
+            method: 'POST',
+            withCredentials: true,
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.oidc.user.access_token}`,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+        let result = await request.json();
+
+        //TODO: handle operation response
+        if (result.error === true || result.status === "error") {
+            result.isError = true;
+        }
+        return result;
+    }
+
     _formatHeaders(headers){
         return Object.keys(headers.columns).map(key => {return { value: key, text: headers.columns[key].name } });
     }

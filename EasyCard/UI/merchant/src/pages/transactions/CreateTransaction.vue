@@ -1,28 +1,27 @@
 <template>
-  <v-card class="mx-auto" outlined>
-    <v-card-title>{{$t('Create Transaction')}}</v-card-title>
+  <v-card class="mx-auto" outlined :loading="loading">
+    <v-card-title>{{$t('CreateTransaction')}}</v-card-title>
     <v-divider></v-divider>
     <div>
-      <transaction-form v-on:save="onFormSave($event)"></transaction-form>
+      <transaction-form></transaction-form>
     </div>
   </v-card>
 </template>
 
 <script>
-
-import TransactionForm from '../../components/transactions/CreateTransactionForm';
+import TransactionForm from "../../components/transactions/CreateTransactionForm";
 
 export default {
   components: {
-    TransactionForm,
+    TransactionForm
   },
-  methods: {
-    onFormSave(form) {
-      console.log(form);
-    }
-  },
+  data() {
+    return {
+      savedSnackbar: false,
+      errorSnackbar: false,
+      snackbarErrorsArray: [],
+      loading: false
+    };
+  }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

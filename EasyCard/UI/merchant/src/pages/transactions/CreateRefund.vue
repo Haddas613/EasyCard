@@ -3,26 +3,17 @@
     <v-card-title>{{$t('CreateRefund')}}</v-card-title>
     <v-divider></v-divider>
     <div>
-      <transaction-form v-on:save="onFormSave($event)" :is-refund="true"></transaction-form>
+      <transaction-form :is-refund="true"></transaction-form>
     </div>
   </v-card>
 </template>
 
 <script>
-
-import TransactionForm from '../../components/transactions/CreateTransactionForm';
+import TransactionForm from "../../components/transactions/CreateTransactionForm";
 
 export default {
   components: {
-    TransactionForm,
-  },
-  methods: {
-    onFormSave(form) {
-      console.log(form);
-    }
-  },
+    TransactionForm
+  }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

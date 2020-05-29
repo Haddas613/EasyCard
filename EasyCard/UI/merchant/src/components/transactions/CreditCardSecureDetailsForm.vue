@@ -3,61 +3,66 @@
     <v-subheader class="primary--text font-weight-light">{{$t('CreditCardDetails')}}</v-subheader>
     <v-container fluid class="px-2">
       <v-row>
-        <v-col cols="12" md="2" sm="6">
+        <v-col cols="12" md="3" sm="6">
           <v-text-field
             v-model="model.cardNumber"
             :label="$t('CardNumber')"
             required
             :rules="[vr.primitives.required, vr.primitives.stringLength(10, 19)]"
-            type="'text'"
+            type="text"
+            @keydown.native.space.prevent
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="2" sm="6">
-          <v-text-field
-            v-model="model.cardOwnerName"
-            :label="$t('OwnerName')"
-            :rules="[vr.primitives.stringLength(2, 50)]"
-            required
-            type="'text'"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="2" sm="6">
-          <v-text-field
-            v-model="model.cardOwnerNationalID"
-            :label="$t('NationalID')"
-            :rules="[vr.special.israeliNationalId]"
-            type="'text'"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="2" sm="6">
+        <v-col cols="12" md="1" sm="6">
           <v-text-field
             v-model="model.cardExpiration.year"
-            :label="$t('ExpirationYear')"
+            :label="$t('Year')"
             type="number"
-            v-bind:min="todayDate.getFullYear()"
-            :rules="[vr.primitives.required, vr.primitives.inRangeFlat(todayDate.getFullYear(), creditCardExpToDate.getFullYear())]"
+            v-bind:min="creditCardExpFrom"
+            v-bind:max="creditCardExpTo"
+            :rules="[vr.primitives.required, vr.primitives.inRangeFlat(creditCardExpFrom, creditCardExpTo)]"
             required
+            @keydown.native.space.prevent
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="2" sm="6">
+        <v-col cols="12" md="1" sm="6">
           <v-text-field
             v-model="model.cardExpiration.month"
-            :label="$t('ExpirationMonth')"
+            :label="$t('Month')"
             type="number"
             min="1"
             max="12"
             :rules="[...vr.complex.month, vr.primitives.expired(todayDate.getMonth() + 1)]"
             required
+            @keydown.native.space.prevent
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="2" sm="6">
+        <v-col cols="12" md="1" sm="6">
           <v-text-field
             v-model="model.cvv"
             :label="$t('CVV')"
             type="text"
-            :counter="5"
             :rules="vr.complex.cvv"
             required
+            @keydown.native.space.prevent
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="3" sm="6">
+          <v-text-field
+            v-model="model.cardOwnerName"
+            :label="$t('OwnerName')"
+            :rules="[vr.primitives.stringLength(2, 50)]"
+            required
+            type="text"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="3" sm="6">
+          <v-text-field
+            v-model="model.cardOwnerNationalID"
+            :label="$t('NationalID')"
+            :rules="[vr.primitives.required, vr.special.israeliNationalId]"
+            type="text"
+            @keydown.native.space.prevent
           ></v-text-field>
         </v-col>
       </v-row>
@@ -78,8 +83,20 @@ export default {
         return new Date(d.getFullYear() + 10, d.getMonth(), d.getDay());
       })(),
       vr: ValidationRules,
-      model: {...this.data}
+      model: { ...this.data }
     };
+  },
+  computed: {
+    creditCardExpFrom: () => {
+      return new Date().getFullYear() - 2000;
+    },
+    creditCardExpTo: () => {
+      let d = new Date();
+      return (
+        new Date(d.getFullYear() + 10, d.getMonth(), d.getDay()).getFullYear() -
+        2000
+      );
+    }
   },
   props: { data: Object }
 };

@@ -14,32 +14,32 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Number Of Installments
         /// </summary>
-        [Range(1, 100)]
-        [Required(AllowEmptyStrings = false)]
+        //[Range(1, 100)]
+        //[Required(AllowEmptyStrings = false)]
         public int NumberOfPayments { get; set; }
 
         /// <summary>
         /// Initial installment payment
         /// </summary>
-        [Range(0.01, double.MaxValue)]
-        [DataType(DataType.Currency)]
-        [Required(AllowEmptyStrings = false)]
+        //[Range(0.01, double.MaxValue)]
+        //[DataType(DataType.Currency)]
+        //[Required(AllowEmptyStrings = false)]
         public decimal InitialPaymentAmount { get; set; }
 
         /// <summary>
         /// TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
         /// </summary>
-        [Range(0.01, double.MaxValue)]
-        [DataType(DataType.Currency)]
-        [Required(AllowEmptyStrings = false)]
+        //[Range(0.01, double.MaxValue)]
+        //[DataType(DataType.Currency)]
+        //[Required(AllowEmptyStrings = false)]
         public decimal TotalAmount { get; set; }
 
         /// <summary>
         /// Amount of one instalment payment
         /// </summary>
-        [Range(0.01, double.MaxValue)]
-        [DataType(DataType.Currency)]
-        [Required(AllowEmptyStrings = false)]
+        //[Range(0.01, double.MaxValue)]
+        //[DataType(DataType.Currency)]
+        //[Required(AllowEmptyStrings = false)]
         public decimal InstallmentPaymentAmount { get; set; }
     }
 }

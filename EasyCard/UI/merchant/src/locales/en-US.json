@@ -13,6 +13,7 @@
   "@InRange": "Must be in range between @min and @max",
   "@MaxLength": "Must be less than @max characters",
   "@StringLength": "Must be more than @min and less than @max characters",
+  "@BiggerThan": "Must be bigger than @min",
   
   "Terminal": "Terminal",
   "TransactionType": "Transaction Type",
@@ -41,5 +42,8 @@
   
   "Login": "Login",
   "LoginWelcomeText": "Welcome to easycard",
-  "LoginTitle": "Please proceed with login"
+  "LoginTitle": "Please proceed with login",
+
+  "CreatedSuccessfully": "Created Successfully",
+  "AnErrorOccured": "An error occured"
 }

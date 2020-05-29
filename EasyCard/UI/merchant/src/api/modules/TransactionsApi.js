@@ -26,14 +26,25 @@ export default class TransactionsApi {
         return data;
     }
 
-    // async getHeaders() {
-    //     if (this.headers)
-    //         return this.headers;
+    async createTransaction(data){
+        //j4
+        return await this.base.post(this.transactionsUrl + '/create', data);
+    }
 
-    //     let data = await this.base.get(this.transactionsUrl + '/$meta');
-    //     this.headers = this.base._formatHeaders(data);
-    //     return this.headers;
-    // }
+    async checkCreditCard(data){
+        //j2
+        return await this.base.post(this.transactionsUrl + '/checking', data);
+    }
+
+    async blockCreditCard(data){
+        //j5
+        return await this.base.post(this.transactionsUrl + '/blocking', data);
+    }
+
+    async refund(data){
+        //refund no jdeal type
+        return await this.base.post(this.transactionsUrl + '/refund', data);
+    }
 
     format(d, headers, dictionaries) {
         for (const property in d) {
