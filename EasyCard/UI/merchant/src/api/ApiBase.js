@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import TransactionsApi from './modules/TransactionsApi';
 import DictionariesApi from './modules/DictionariesApi';
+import TerminalsApi from './modules/profile/TerminalsApi';
 
 class ApiBase {
     constructor() {
         this.oidc = Vue.prototype.$oidc;
         this.transactions = new TransactionsApi(this);
         this.dictionaries = new DictionariesApi(this);
+        this.terminals = new TerminalsApi(this);
     }
 
     async get(url, params) {

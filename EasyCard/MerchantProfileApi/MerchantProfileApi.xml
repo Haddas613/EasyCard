@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MerchantProfileApi</name>
+    </assembly>
+    <members>
+        <member name="P:MerchantProfileApi.Models.Terminal.ExternalSystemRequest.ExternalProcessorReference">
+            <summary>
+            SHVA or other system terminal ID
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalExternalSystemDetails.ExternalProcessorReference">
+            <summary>
+            SHVA or other system terminal ID
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalSettings.MaxInstallments">
+            <summary>
+            If we set it to zero means installments blocked
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalSummary.ExternalProcessorReference">
+            <summary>
+            SHVA or other system terminal ID
+            </summary>
+        </member>
+    </members>
+</doc>

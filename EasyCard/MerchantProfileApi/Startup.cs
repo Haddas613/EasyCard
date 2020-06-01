@@ -1,17 +1,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using IdentityServer4.AccessTokenValidation;
+using Merchants.Business.Data;
+using Merchants.Business.Services;
+using Merchants.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
+using Shared.Api;
+using Shared.Api.Validation;
+using Shared.Business.Security;
 using Shared.Helpers.Security;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace ProfileApi
 {
@@ -27,13 +41,16 @@ namespace ProfileApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var appConfig = Configuration.GetSection("AppConfig").Get<ApplicationSettings>();
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4200",
-                                            "http://localhost:8080")
+                        builder.WithOrigins(
+                            "http://localhost:4200",
+                            "http://localhost:8080")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                     });
@@ -43,6 +60,7 @@ namespace ProfileApi
 
             services.AddDistributedMemoryCache();
 
+            //TODO
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
@@ -64,19 +82,96 @@ namespace ProfileApi
                    policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
             });
 
-            services.AddControllers();
+            //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
+            services.AddControllers(opts =>
+            {
+                // Adding global custom validation filter
+                opts.Filters.Add(new ValidateModelStateFilter());
+            })
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
+
+                // Note: do not use options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; - use [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)] attribute in place
+            });
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                // Disables [ApiController] automatic bad request result for invalid models
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerExamplesFromAssemblies();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "MerchantProfile API",
+                });
+
+                c.ExampleFilters();
+
+                c.SchemaFilter<Shared.Api.Swagger.EnumSchemaFilter>();
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
+
+            // DI: basics
+            services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
+
+            services.AddHttpContextAccessor();
+
+            services.AddScoped<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
+
+            services.AddDbContext<MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<IMerchantsService, MerchantsService>();
+            services.AddScoped<ITerminalsService, TerminalsService>();
+            services.AddAutoMapper(typeof(Startup));
+
+            // DI: request logging
+
+            services.Configure<RequestResponseLoggingSettings>((options) =>
+            {
+                options.RequestsLogStorageTable = appConfig.RequestsLogStorageTable;
+                options.StorageConnectionString = appConfig.DefaultStorageConnectionString;
+            });
+
+            services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseRequestResponseLogging();
+
+            app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
+
+            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
 
             app.UseStaticFiles();
 
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MerchantProfile API V1");
+
+                //c.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 
@@ -97,8 +192,6 @@ namespace ProfileApi
                 // see https://go.microsoft.com/fwlink/?linkid=864501
 
                 spa.Options.SourcePath = "wwwroot";
-
-
             });
         }
     }

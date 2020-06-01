@@ -37,13 +37,13 @@
       <v-container class="px-10" fluid>
         <v-row>
           <v-col cols="12" md="2" sm="6">
-            <v-text-field
+            <v-select
+              :items="terminals"
+              item-text="label"
+              item-value="terminalID"
               v-model="model.terminalID"
               :label="$t('Terminal')"
-              :rules="[vr.primitives.required]"
-              type="text"
-              @keydown.native.space.prevent
-            ></v-text-field>
+            ></v-select>
           </v-col>
 
           <v-col cols="12" md="2" sm="6">
@@ -256,6 +256,7 @@ export default {
     this.model.currency = this.dictionaries.currencyEnum[0].code;
     this.model.jDealType = this.dictionaries.jDealTypeEnum[0].code;
     this.model.cardPresence = this.dictionaries.cardPresenceEnum[0].code;
+    this.terminals = (await this.$api.terminals.getTerminals()).data;
   },
   data() {
     return {
@@ -292,6 +293,7 @@ export default {
       },
       dictionaries: {},
       valid: true,
+      terminals: [],
       //TODO: extend tokens
       creditCardTokens: [
         {

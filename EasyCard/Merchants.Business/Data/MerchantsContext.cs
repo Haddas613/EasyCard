@@ -53,9 +53,9 @@ namespace Merchants.Business.Data
 
             // security filters
 
-            modelBuilder.Entity<Merchant>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
+            //modelBuilder.Entity<Merchant>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
 
-            modelBuilder.Entity<Terminal>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.MerchantID == user.GetMerchantID()));
+            //modelBuilder.Entity<Terminal>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.MerchantID == user.GetMerchantID()));
 
             base.OnModelCreating(modelBuilder);
         }

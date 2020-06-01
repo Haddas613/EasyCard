@@ -142,6 +142,7 @@ namespace Merchants.Api
 
             services.AddScoped<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
 
+            var egaeg = Configuration.GetConnectionString("DefaultConnection");
             // DI: services
             services.AddDbContext<MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IMerchantsService, MerchantsService>();
