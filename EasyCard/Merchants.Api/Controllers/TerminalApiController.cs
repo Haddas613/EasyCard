@@ -20,7 +20,7 @@ namespace Merchants.Api.Controllers
 {
     [Produces("application/json")]
     [Route("api/terminal")]
-    [Authorize(AuthenticationSchemes = "token", Policy = Policy.ManagementApi)] // TODO: bearer
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)] // TODO: bearer
     [ApiController]
     public class TerminalApiController : ApiControllerBase
     {

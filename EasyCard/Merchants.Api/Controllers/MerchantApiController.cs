@@ -8,6 +8,7 @@ using Merchants.Api.Models.Merchant;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Services;
 using Merchants.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace Merchants.Api.Controllers
     [Consumes("application/json")]
     [Route("api/merchant")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
     public class MerchantApiController : ApiControllerBase
     {
         private readonly IMerchantsService merchantsService;

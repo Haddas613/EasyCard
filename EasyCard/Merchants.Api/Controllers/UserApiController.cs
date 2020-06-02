@@ -7,6 +7,7 @@ using IdentityServerClient;
 using Merchants.Api.Models.User;
 using Merchants.Business.Services;
 using Merchants.Shared;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ namespace Merchants.Api.Controllers
     [Produces("application/json")]
     [Route("api/user")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
     public class UserApiController : ApiControllerBase
     {
         private readonly IUserManagementClient userManagementClient;

@@ -30,36 +30,6 @@ namespace IdentityServer
         public static IEnumerable<Client> Clients =>
             new Client[]
             {
-                // client credentials flow client
-                //new Client
-                //{
-                //    ClientId = "client",
-                //    ClientName = "Client Credentials Client",
-
-                //    AllowedGrantTypes = GrantTypes.ClientCredentials,
-                //    ClientSecrets = { new Secret("2tAT3USPEcqWhtcH".Sha256()) },
-
-                //    AllowedScopes = { "api1" }
-                //},
-
-                // MVC client using code flow + pkce
-                new Client
-                {
-                    ClientId = "mvc",
-                    ClientName = "MVC Client",
-
-                    AllowedGrantTypes = GrantTypes.ImplicitAndClientCredentials,
-                    RequirePkce = true,
-                    ClientSecrets = { new Secret("49C1A7E1-0C79-4A89-A3D6-A37998FB86B0".Sha256()) },
-
-                    RedirectUris = { "http://localhost:5003/signin-oidc" },
-                    FrontChannelLogoutUri = "http://localhost:5003/signout-oidc",
-                    PostLogoutRedirectUris = { "http://localhost:5003/signout-callback-oidc" },
-
-                    AllowOfflineAccess = true,
-                    AllowedScopes = { "openid", "profile", "api1" }
-                },
-
                 // SPA client using code flow + pkce
                 new Client
                 {
@@ -98,6 +68,35 @@ namespace IdentityServer
                     AllowedCorsOrigins = { " http://localhost:8080", "https://localhost:44339", "https://ecng-profile.azurewebsites.net" },
                     AllowAccessTokensViaBrowser = true,
                     AllowedScopes = { "openid", "profile", "transactions_api" }
+                },
+
+                // SPA client using code flow + pkce
+                new Client
+                {
+                    ClientId = "admin_frontend",
+                    ClientName = "Admin's Frontend",
+
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    RequirePkce = true,
+                    RequireClientSecret = false,
+                    RequireConsent = false,
+                    RedirectUris =
+                    {
+                        "http://localhost:8080/",
+                        "http://localhost:8080/auth/signinpop/main",
+                        "http://localhost:8080/auth/signinwin/main",
+                        "http://localhost:8080/auth/signinsilent/main",
+
+                        "https://ecng-merchant.azurewebsites.net",
+                        "https://ecng-merchant.azurewebsites.net/auth/signinpop/main",
+                        "https://ecng-merchant.azurewebsites.net/auth/signinwin/main",
+                        "https://ecng-merchant.azurewebsites.net/auth/signinsilent/main",
+                    },
+
+                    PostLogoutRedirectUris = { "https://localhost:44331/index.html", "https://ecng-identity.azurewebsites.net" },
+                    AllowedCorsOrigins = { " http://localhost:8080", "https://localhost:44390", "https://ecng-merchant.azurewebsites.net" },
+                    AllowAccessTokensViaBrowser = true,
+                    AllowedScopes = { "openid", "profile", "transactions_api", "merchants_api" }
                 },
                 new Client
                 {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Merchants.Api.Models.Terminal;
 using Merchants.Business.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
 using Shared.Api.Models;
@@ -13,6 +14,7 @@ namespace Merchants.Api.Controllers
     [Produces("application/json")]
     [Route("api/dictionaries")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
     public class DictionariesApiController : ApiControllerBase
     {
         private readonly IMapper mapper;
