@@ -149,7 +149,7 @@ namespace Transactions.Api
 
                 c.ExampleFilters();
 
-                c.SchemaFilter<SharedApi.Swagger.EnumSchemaFilter>();
+                c.SchemaFilter<EnumSchemaFilter>();
 
                 //c.DocumentFilter<PolymorphismDocumentFilter<Models.Transactions.CreateTransactionRequest>>();
                 //c.SchemaFilter<PolymorphismSchemaFilter<Models.Transactions.CreateTransactionRequest>>();

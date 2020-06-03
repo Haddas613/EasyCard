@@ -1,6 +1,6 @@
 <template>
   <v-card class="mx-auto" outlined>
-    <v-card-title>{{$t('Transactions List')}}</v-card-title>
+    <v-card-title>{{$t('TransactionsList')}}</v-card-title>
     <v-expansion-panels :flat="true">
       <v-expansion-panel>
         <v-expansion-panel-header class="primary white--text">
@@ -58,7 +58,8 @@ export default {
       this.loading = false;
 
       if(!this.headers || this.headers.length === 0){
-        this.headers = data.headers;
+        // this.headers = data.headers;
+        this.headers = data[0] ? Object.keys(data[0]).map(k => {return { value: k, text: k } }) : [];
       }
     },
     async applyFilter(filter){

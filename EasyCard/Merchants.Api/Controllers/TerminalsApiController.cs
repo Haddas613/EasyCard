@@ -19,16 +19,16 @@ using System.Threading.Tasks;
 namespace Merchants.Api.Controllers
 {
     [Produces("application/json")]
-    [Route("api/terminal")]
+    [Route("api/terminals")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)] // TODO: bearer
     [ApiController]
-    public class TerminalApiController : ApiControllerBase
+    public class TerminalsApiController : ApiControllerBase
     {
         private readonly IMerchantsService merchantsService;
         private readonly ITerminalsService terminalsService;
         private readonly IMapper mapper;
 
-        public TerminalApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper)
+        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;

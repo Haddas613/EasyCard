@@ -45,6 +45,19 @@ namespace Merchants.Api
         {
             var appConfig = Configuration.GetSection("AppConfig").Get<ApplicationSettings>();
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins(
+                            "http://localhost:4200",
+                            "http://localhost:8080")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    });
+            });
+
             services.AddLogging(logging =>
             {
                 logging.AddConfiguration(Configuration.GetSection("Logging"));
@@ -55,18 +68,28 @@ namespace Merchants.Api
 
             var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
 
-            services.AddCors();
-
             services.AddDistributedMemoryCache();
 
-            services.AddAuthentication() // TODO: bearer
-                .AddIdentityServerAuthentication("token", options =>
+            //services.AddAuthentication() // TODO: bearer
+            //    .AddIdentityServerAuthentication("token", options =>
+            //    {
+            //        options.Authority = identity.Authority;
+            //        options.RequireHttpsMetadata = true;
+            //        options.RoleClaimType = "role";
+            //        options.NameClaimType = "name";
+            //        options.ApiName = "management_api"; // TODO
+            //        options.EnableCaching = true;
+            //    });
+
+            //TODO
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
                 {
                     options.Authority = identity.Authority;
                     options.RequireHttpsMetadata = true;
                     options.RoleClaimType = "role";
                     options.NameClaimType = "name";
-                    options.ApiName = "management_api"; // TODO
+                    options.ApiName = "merchants_api";
                     options.EnableCaching = true;
                 });
 
@@ -204,6 +227,8 @@ namespace Merchants.Api
             });
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
