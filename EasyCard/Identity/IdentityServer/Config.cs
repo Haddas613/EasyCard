@@ -87,14 +87,14 @@ namespace IdentityServer
                         "http://localhost:8080/auth/signinwin/main",
                         "http://localhost:8080/auth/signinsilent/main",
 
-                        "https://ecng-merchant.azurewebsites.net",
-                        "https://ecng-merchant.azurewebsites.net/auth/signinpop/main",
-                        "https://ecng-merchant.azurewebsites.net/auth/signinwin/main",
-                        "https://ecng-merchant.azurewebsites.net/auth/signinsilent/main",
+                        "https://ecng-merchants.azurewebsites.net",
+                        "https://ecng-merchants.azurewebsites.net/auth/signinpop/main",
+                        "https://ecng-merchants.azurewebsites.net/auth/signinwin/main",
+                        "https://ecng-merchants.azurewebsites.net/auth/signinsilent/main",
                     },
 
                     PostLogoutRedirectUris = { "https://localhost:44331/index.html", "https://ecng-identity.azurewebsites.net" },
-                    AllowedCorsOrigins = { " http://localhost:8080", "https://localhost:44390", "https://ecng-merchant.azurewebsites.net" },
+                    AllowedCorsOrigins = { " http://localhost:8080", "https://localhost:44390", "https://ecng-merchants.azurewebsites.net" },
                     AllowAccessTokensViaBrowser = true,
                     AllowedScopes = { "openid", "profile", "transactions_api", "merchants_api" }
                 },

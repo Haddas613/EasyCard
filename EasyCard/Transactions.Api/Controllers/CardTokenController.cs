@@ -30,7 +30,7 @@ namespace Transactions.Api.Controllers
     [Route("api/cardtokens")]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontend)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
     [ApiController]
     public class CardTokenController : ApiControllerBase
     {

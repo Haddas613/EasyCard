@@ -48,7 +48,7 @@ namespace Transactions.Api.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Route("api/transactions")]
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontend)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
     [ApiController]
     public class TransactionsApiController : ApiControllerBase
     {

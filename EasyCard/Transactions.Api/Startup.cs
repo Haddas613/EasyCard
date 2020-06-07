@@ -70,7 +70,8 @@ namespace Transactions.Api
                     {
                         builder.WithOrigins("http://localhost:4200",
                                             "http://localhost:8080",
-                                            "https://ecng-profile.azurewebsites.net")
+                                            "https://ecng-profile.azurewebsites.net",
+                                            "https://ecng-merchants.azurewebsites.net")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                     });
@@ -93,8 +94,8 @@ namespace Transactions.Api
             {
                 options.AddPolicy(Policy.Terminal, policy =>
                     policy.RequireAssertion(context => context.User.IsTerminal()));
-                options.AddPolicy(Policy.TerminalOrMerchantFrontend, policy =>
-                    policy.RequireAssertion(context => context.User.IsTerminal() || context.User.IsMerchantFrontend()));
+                options.AddPolicy(Policy.TerminalOrMerchantFrontendOrAdmin, policy =>
+                    policy.RequireAssertion(context => context.User.IsTerminal() || context.User.IsMerchantFrontend() || context.User.IsAdmin()));
                 options.AddPolicy(Policy.MerchantFrontend, policy =>
                    policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
             });

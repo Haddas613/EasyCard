@@ -42,7 +42,7 @@ namespace Transactions.Api.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Route("api/transmission")]
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontend)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
     [ApiController]
     public class TransmissionController : ApiControllerBase
     {

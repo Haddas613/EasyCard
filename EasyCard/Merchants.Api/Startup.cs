@@ -52,7 +52,8 @@ namespace Merchants.Api
                     {
                         builder.WithOrigins(
                             "http://localhost:4200",
-                            "http://localhost:8080")
+                            "http://localhost:8080",
+                            "http://ecng-merchants.azurewebsites.net")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                     });
@@ -238,11 +239,19 @@ namespace Merchants.Api
                 endpoints.MapControllers();
             });
 
-            app.UseEndpoints(endpoints =>
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllerRoute(
+            //        name: "default",
+            //        pattern: "{controller=Home}/{action=Index}/{id?}");
+            //});
+
+            app.UseSpa(spa =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                // To learn more about options for serving an Angular SPA from ASP.NET Core,
+                // see https://go.microsoft.com/fwlink/?linkid=864501
+
+                spa.Options.SourcePath = "wwwroot";
             });
 
             var config = serviceProvider.GetRequiredService<IConfiguration>();
