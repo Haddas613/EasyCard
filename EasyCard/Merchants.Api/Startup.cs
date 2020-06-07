@@ -96,12 +96,13 @@ namespace Merchants.Api
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(
-                    Policy.ManagementApi,
-                    policy => policy.RequireClaim("scope", "management_api"));
+                    Policy.ManagementApi, policy =>
+                     policy.RequireAssertion(context =>
+                        context.User.IsManagementService()));
 
                 options.AddPolicy(Policy.AnyAdmin, policy =>
                     policy.RequireAssertion(context =>
-                        context.User.IsAdmin()));
+                        context.User.IsAdmin() || context.User.IsManagementService()));
 
                 options.AddPolicy(Policy.OnlyBillingAdmin, policy =>
                     policy.RequireAssertion(context =>

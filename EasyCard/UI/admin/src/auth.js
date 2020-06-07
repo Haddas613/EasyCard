@@ -12,7 +12,7 @@ var mainOidc = createOidcAuth(
     authority: process.env.VUE_APP_AUTHORITY,
     client_id: 'admin_frontend', // 'implicit.shortlived',
     response_type: 'id_token token',
-    scope: 'openid profile transactions_api merchants_api',
+    scope: 'openid profile merchants_api',
     // test use
     prompt: 'login',
     login_hint: 'bob'

@@ -108,7 +108,7 @@ namespace IdentityServer
                     {
                         new Secret("yuwsCT8cbJVgw2W6".Sha256())
                     },
-                    AllowedScopes = { "management_api" },
+                    AllowedScopes = { "management_api", "merchants_api" },
                     AccessTokenType = AccessTokenType.Jwt,
                     AccessTokenLifetime = 3600 * 24 // TODO: config
                 },

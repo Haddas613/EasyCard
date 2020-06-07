@@ -9,8 +9,8 @@ namespace Shared.Helpers.Security
     {
         public static bool IsAdmin(this ClaimsPrincipal user)
         {
-            return (user.HasClaim("scope", "admin_api")
-                   && (user?.IsInRole(Roles.BillingAdministrator) == true || user?.IsInRole(Roles.BusinessAdministrator) == true))
+            return (//user.HasClaim("scope", "admin_api") &&
+                user?.IsInRole(Roles.BillingAdministrator) == true || user?.IsInRole(Roles.BusinessAdministrator) == true)
                    || user.IsManagementService();
         }
 
