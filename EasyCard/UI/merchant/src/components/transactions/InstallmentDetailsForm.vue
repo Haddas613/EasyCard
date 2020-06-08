@@ -5,7 +5,7 @@
       <v-row>
         <v-col cols="12" md="3" sm="6">
           <v-text-field
-            v-model="model.numberOfPayments"
+            v-model.number="model.numberOfPayments"
             :label="$t('NumberOfPayments')"
             required
             :rules="[vr.primitives.required, vr.primitives.inRange(1, 100)]"
@@ -16,7 +16,7 @@
         </v-col>
         <v-col cols="12" md="3" sm="6">
           <v-text-field
-            v-model="model.initialPaymentAmount"
+            v-model.number="model.initialPaymentAmount"
             :label="$t('InitialPaymentAmount')"
             type="number"
             min="0.01"
@@ -27,7 +27,7 @@
         </v-col>
         <v-col cols="12" md="3" sm="6">
           <v-text-field
-            v-model="model.installmentPaymentAmount"
+            v-model.number="model.installmentPaymentAmount"
             :label="$t('InstallmentPaymentAmount')"
             type="number"
             min="0.01"
@@ -38,7 +38,7 @@
         </v-col>
         <v-col cols="12" md="3" sm="6">
           <v-text-field
-            v-model="totalAmount"
+            v-model.number="totalAmount"
             :label="$t('TotalAmount')"
             type="number"
             disabled

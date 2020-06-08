@@ -42,6 +42,8 @@
               item-value="terminalID"
               v-model="model.terminalID"
               :label="$t('Terminal')"
+              required
+              :rules="[vr.primitives.required]"
             ></v-select>
           </v-col>
 
@@ -158,7 +160,7 @@
           <v-spacer></v-spacer>
           <v-col cols="12" md="3">
             <v-text-field
-              v-model="model.transactionAmount"
+              v-model.number="model.transactionAmount"
               :label="$t('Amount')"
               type="number"
               min="0.01"

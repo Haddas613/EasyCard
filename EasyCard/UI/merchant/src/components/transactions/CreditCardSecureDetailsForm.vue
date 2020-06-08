@@ -15,24 +15,24 @@
         </v-col>
         <v-col cols="12" md="1" sm="6">
           <v-text-field
-            v-model="model.cardExpiration.year"
+            v-model.number="model.cardExpiration.year"
             :label="$t('Year')"
             type="number"
-            v-bind:min="creditCardExpFrom"
-            v-bind:max="creditCardExpTo"
-            :rules="[vr.primitives.required, vr.primitives.inRangeFlat(creditCardExpFrom, creditCardExpTo)]"
+            v-bind:min="creditCardExpYearFrom"
+            v-bind:max="creditCardExpYearTo"
+            :rules="[vr.primitives.required, vr.primitives.inRangeFlat(creditCardExpYearFrom, creditCardExpYearTo)]"
             required
             @keydown.native.space.prevent
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="1" sm="6">
           <v-text-field
-            v-model="model.cardExpiration.month"
+            v-model.number="model.cardExpiration.month"
             :label="$t('Month')"
             type="number"
             min="1"
             max="12"
-            :rules="[...vr.complex.month, vr.primitives.expired(todayDate.getMonth() + 1)]"
+            :rules="[...vr.complex.month, monthExpired]"
             required
             @keydown.native.space.prevent
           ></v-text-field>
@@ -78,24 +78,30 @@ export default {
   data() {
     return {
       todayDate: new Date(),
-      creditCardExpToDate: (() => {
+      creditCardExpYearFrom: (() => {
+        return new Date().getFullYear() - 2000;
+      })(),
+      creditCardExpYearTo: (() => {
         let d = new Date();
-        return new Date(d.getFullYear() + 10, d.getMonth(), d.getDay());
+        return (
+          new Date(
+            d.getFullYear() + 10,
+            d.getMonth(),
+            d.getDay()
+          ).getFullYear() - 2000
+        );
       })(),
       vr: ValidationRules,
       model: { ...this.data }
     };
   },
-  computed: {
-    creditCardExpFrom: () => {
-      return new Date().getFullYear() - 2000;
-    },
-    creditCardExpTo: () => {
-      let d = new Date();
-      return (
-        new Date(d.getFullYear() + 10, d.getMonth(), d.getDay()).getFullYear() -
-        2000
-      );
+  methods: {
+    //specific for this component, no need to extract to validation-rules.js
+    monthExpired(v) {
+      let current = this.model.cardExpiration.year + 2000 + v / 100;
+      let min =
+        this.todayDate.getFullYear() + (this.todayDate.getMonth() + 1) / 100;
+      return current >= min || this.$t("Expired");
     }
   },
   props: { data: Object }

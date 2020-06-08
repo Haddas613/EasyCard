@@ -1,9 +1,9 @@
 <template>
-  <v-container fluid>
-    <v-content class="ecbg">
+  <v-content class="ecbg">
+    <v-container fluid>
       <router-view />
-    </v-content>
-  </v-container>
+    </v-container>
+  </v-content>
 </template>
 <script>
 export default {
