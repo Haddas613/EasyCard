@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Merchants.Api.Models.Dictionaries;
 using Merchants.Api.Models.Terminal;
+using Merchants.Api.Services;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +37,14 @@ namespace Merchants.Api.Controllers
             var response = new SummariesResponse<ExternalSystemSummary> { NumberOfRecords = exSystems.Count(), Data = mapper.Map<IEnumerable<ExternalSystemSummary>>(exSystems) };
 
             return Ok(response);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<MerchantsDictionaries>> GetTerminals([FromQuery]string language)
+        {
+            var dictionaries = DictionariesService.GetDictionaries(language);
+
+            return Ok(dictionaries);
         }
     }
 }

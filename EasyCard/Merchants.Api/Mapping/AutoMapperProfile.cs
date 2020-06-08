@@ -35,10 +35,10 @@ namespace Merchants.Api.Mapping
                 .ForMember(m => m.BillingNotificationsEmails, o => o.MapFrom(
                     (src) => src.BillingNotificationsEmails.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))).ReverseMap();
             CreateMap<Terminal, TerminalResponse>();
-            CreateMap<Terminal, TerminalSummary>();
+            CreateMap<Terminal, TerminalSummary>()
+                .ForMember(m => m.MerchantBusinessName, o => o.MapFrom(src => src.Merchant.BusinessName))
+                .ForMember(m => m.MerchantID, o => o.MapFrom(src => src.MerchantID));
             CreateMap<ExternalSystem, ExternalSystemSummary>();
-
-                //.ForMember(src => src.ExternalSystemType, o => o.MapFrom(src => src.Type));
 
             CreateMap<TerminalExternalSystem, TerminalExternalSystemDetails>();
             CreateMap<ExternalSystemRequest, TerminalExternalSystem>();

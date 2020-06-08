@@ -12,8 +12,11 @@ using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Api.Models.Metadata;
+using Shared.Api.UI;
 using Shared.Business.Extensions;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Merchants.Api.Controllers
@@ -33,6 +36,20 @@ namespace Merchants.Api.Controllers
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
+        }
+
+        [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("$meta")]
+        public TableMeta GetMetadata()
+        {
+            return new TableMeta
+            {
+                Columns = typeof(TerminalSummary)
+                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+                    .Select(d => d.GetColMeta(TerminalSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
+                    .ToDictionary(d => d.Key)
+            };
         }
 
         [HttpGet]

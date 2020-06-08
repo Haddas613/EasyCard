@@ -21,7 +21,6 @@
     <v-snackbar
       color="ecError"
       v-model="errorSnack.showSnackbar"
-      :timeout="5000"
       :top="true"
       :right="true"
       :multi-line="true"

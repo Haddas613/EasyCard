@@ -6,6 +6,20 @@ export default class TerminalsApi {
     }
 
     async get(params) {
-        return await this.base.get(this.terminalsUrl, params);
+        if (!this.headers) {
+            let data = await this.base.get(this.terminalsUrl + '/$meta')
+            this.headers = this.base.formatHeaders(data)
+            this.$headers = data.columns
+        }
+
+        let data = await await this.base.get(this.terminalsUrl, params);
+
+        let dictionaries = await this.base.dictionaries.$getMerchantDictionaries()
+
+        data.data = data.data.map(d => this.base.formatColumns(d, this.$headers, dictionaries))
+
+        data.headers = this.headers
+
+        return data;
     }
 }

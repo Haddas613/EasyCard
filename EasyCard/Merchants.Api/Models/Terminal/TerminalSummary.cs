@@ -16,7 +16,11 @@ namespace Merchants.Api.Models.Terminal
 
         public string Label { get; set; }
 
-        public MerchantSummary Merchant { get; set; }
+        //public MerchantSummary Merchant { get; set; }
+
+        public string MerchantBusinessName { get; set; }
+
+        public Guid? MerchantID { get; set; }
 
         //TODO: implement
         ///// <summary>

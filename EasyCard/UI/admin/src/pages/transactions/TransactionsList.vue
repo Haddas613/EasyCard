@@ -58,8 +58,7 @@ export default {
       this.loading = false;
 
       if(!this.headers || this.headers.length === 0){
-        // this.headers = data.headers;
-        this.headers = data[0] ? Object.keys(data[0]).map(k => {return { value: k, text: k } }) : [];
+        this.headers = data.headers;
       }
     },
     async applyFilter(filter){

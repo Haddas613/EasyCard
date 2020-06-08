@@ -53,5 +53,29 @@
     <Folder Include="Data\Seeds\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Models\Terminal\TerminalSummaryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TerminalSummaryResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Models\Terminal\TerminalStatusEnumResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TerminalStatusEnumResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Models\Terminal\TerminalSummaryResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TerminalSummaryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Terminal\TerminalStatusEnumResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TerminalStatusEnumResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 
 </Project>

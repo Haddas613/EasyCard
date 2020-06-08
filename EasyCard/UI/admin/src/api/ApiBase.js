@@ -2,6 +2,7 @@ import Vue from 'vue'
 import TransactionsApi from './modules/TransactionsApi';
 import DictionariesApi from './modules/DictionariesApi';
 import TerminalsApi from './modules/TerminalsApi';
+import moment from 'moment'
 
 class ApiBase {
     constructor() {
@@ -55,8 +56,36 @@ class ApiBase {
         return result;
     }
 
-    _formatHeaders(headers){
+    formatHeaders(headers){
         return Object.keys(headers.columns).map(key => {return { value: key, text: headers.columns[key].name } });
+    }
+
+    formatColumns(d, headers, dictionaries) {
+        for (const property in d) {
+            let v = d[property]
+            let h = headers[property]
+            if (h.dataType == 'string' && v && v.length > 8) {
+                d[`$${property}`] = v
+                d[property] = v.substring(0, 8)
+            }
+            else if (h.dataType == 'dictionary') {
+                if(dictionaries){
+                    d[`$${property}`] = v
+                    d[property] = dictionaries[h.dictionary][v]
+                }
+            }
+            else if (h.dataType == 'money') {
+                d[`$${property}`] = v
+                d[property] = new Intl.NumberFormat().format(v) // TODO: locale, currency symbol
+            }
+            else if (h.dataType == 'date') {
+                if(moment.isDate(v)){
+                    d[`$${property}`] = v
+                    d[property] = moment(String(v)).format('MM/DD/YYYY') // TODO: locale
+                }
+            }
+        }
+        return d
     }
 }
 

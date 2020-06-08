@@ -1,5 +1,5 @@
 <template>
-  <v-content class="ecbg lighten-3">
+  <v-content class="ecbg">
     <v-container fluid>
       <router-view />
     </v-container>
