@@ -64,6 +64,7 @@
               item-value="code"
               v-model="model.cardPresence"
               :label="$t('CardPresence')"
+              disabled
             ></v-select>
           </v-col>
 
@@ -107,7 +108,7 @@
 
         <v-row v-if="model.creditCardToken === null" class="py-2" no-gutters>
           <v-col cols="12">
-            <credit-card-secure-details ref="ccSecureDetails" :data="model.creditCardSecureDetails"></credit-card-secure-details>
+            <credit-card-secure-details ref="ccSecureDetails" :data="model.creditCardSecureDetails"  v-on:card-reader-update="cardReaderUpdated($event)"></credit-card-secure-details>
           </v-col>
         </v-row>
 
@@ -241,6 +242,13 @@ export default {
           this.$router.push("/admin/transactions/list");
         }, 3000);
       }
+    },
+    cardReaderUpdated(isPresent){
+      if(isPresent){
+        this.model.cardPresence = this.dictionaries.cardPresenceEnum[0].code;
+      }else{
+        this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
+      }
     }
   },
   computed: {
@@ -256,7 +264,7 @@ export default {
     this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
     this.model.currency = this.dictionaries.currencyEnum[0].code;
     this.model.jDealType = this.dictionaries.jDealTypeEnum[0].code;
-    this.model.cardPresence = this.dictionaries.cardPresenceEnum[0].code;
+    this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
     this.terminals = (await this.$api.terminals.getTerminals()).data;
   },
   data() {

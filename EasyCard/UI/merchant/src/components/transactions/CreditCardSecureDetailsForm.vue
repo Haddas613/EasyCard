@@ -5,12 +5,14 @@
       <v-row>
         <v-col cols="12" md="3" sm="6">
           <v-text-field
-            v-model="model.cardNumber"
+            v-model.lazy="model.cardNumber"
             :label="$t('CardNumber')"
             required
             :rules="[vr.primitives.required, vr.primitives.stringLength(10, 19)]"
             type="text"
             @keydown.native.space.prevent
+            @keydown.native.enter="parseCardReader()"
+            @input="checkIfCardReader($event)"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="1" sm="6">
@@ -23,6 +25,7 @@
             :rules="[vr.primitives.required, vr.primitives.inRangeFlat(creditCardExpYearFrom, creditCardExpYearTo)]"
             required
             @keydown.native.space.prevent
+            @input="resetCardReader($event)"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="1" sm="6">
@@ -35,6 +38,7 @@
             :rules="[...vr.complex.month, monthExpired]"
             required
             @keydown.native.space.prevent
+            @input="resetCardReader($event)"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="1" sm="6">
@@ -92,7 +96,8 @@ export default {
         );
       })(),
       vr: ValidationRules,
-      model: { ...this.data }
+      model: { ...this.data },
+      cardReaderMode: false
     };
   },
   methods: {
@@ -102,6 +107,34 @@ export default {
       let min =
         this.todayDate.getFullYear() + (this.todayDate.getMonth() + 1) / 100;
       return current >= min || this.$t("Expired");
+    },
+    resetCardReader(){
+      delete this.model.cardReaderInput;
+      if(this.cardReaderMode){
+        this.cardReaderMode = false;
+        this.$emit('card-reader-update', false);
+      }
+    },
+    checkIfCardReader($event){
+      if(!(/^;\d{16}=\d{20}$/.test(this.model.cardNumber))){
+        this.resetCardReader();
+        return false;
+      }
+      return true;
+    },
+    parseCardReader(){
+      if(!this.checkIfCardReader())
+        return;
+      let sep = this.model.cardNumber.split('=');
+      this.model.cardReaderInput = this.model.cardNumber;
+
+      //get rid of ';' at the beginning
+      this.model.cardNumber = sep[0].substr(1, this.model.cardNumber.length);
+      this.model.cardExpiration.year = parseInt(sep[1].substr(0, 2));
+      this.model.cardExpiration.month = parseInt(sep[1].substr(2, 2));
+
+      this.cardReaderMode = true;
+      this.$emit('card-reader-update', true);
     }
   },
   props: { data: Object }
