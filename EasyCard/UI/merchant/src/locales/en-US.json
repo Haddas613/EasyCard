@@ -4,6 +4,7 @@
   "CreateTransaction": "Create Transaction",
   "TransactionsList": "Transactions List",
   "CreateRefund": "Create Refund",
+  "@GoodMorning": "Good Morning, @name",
 
   "Required": "Required",
   "Invalid": "Invalid",

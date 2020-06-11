@@ -7,7 +7,6 @@
 
     <main-content />
 
-    <main-footer />
   </v-app>
 </template>
 
@@ -35,9 +34,9 @@
           text: 'Transactions',
           expanded: false,
           children: [
-            { icon: 'mdi-cash-register', text: 'Create Transaction', to: '/admin/transactions/create' },
-            { icon: 'mdi-cash-refund', text: 'Create Refund', to: '/admin/transactions/refund' },
-            { icon: 'mdi-cash-multiple', text: 'Transactions List', to: '/admin/transactions/list' },
+            { icon: 'mdi-cash-register', text: 'CreateTransaction', to: '/admin/transactions/create' },
+            { icon: 'mdi-cash-refund', text: 'CreateRefund', to: '/admin/transactions/refund' },
+            { icon: 'mdi-cash-multiple', text: 'TransactionsList', to: '/admin/transactions/list' },
           ],
         },
         { divider: true, dividerArea: 'userAuth' },
