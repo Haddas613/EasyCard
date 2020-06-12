@@ -20,7 +20,7 @@ export default {
       items: [
         {
           icon: "mdi-chevron-down-box-outline",
-          to: "/admin/transactions/create",
+          to: "/wizard/transactions/charge",
           css: "deep-purple--text",
           text: "Charge"
         },

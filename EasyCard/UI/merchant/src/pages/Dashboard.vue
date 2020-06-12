@@ -1,16 +1,7 @@
 <template>
   <div>
-    //TODO: separate mobile & desktop views
-    <v-card
-      flat
-      tile
-      width="100%"
-      height="200px"
-      class="text-center mobile-top-area-dashboard"
-      color="primary"
-      dark
-      v-if="$vuetify.breakpoint.xs"
-    >
+    <v-card flat tile width="100%" height="200px" class="text-center mobile-top-area-dashboard"
+      color="primary" dark v-if="$vuetify.breakpoint.xs">
       <v-card-text class="py-0">
         <v-list class="py-0" color="primary">
           <v-list-item class="justify-center">

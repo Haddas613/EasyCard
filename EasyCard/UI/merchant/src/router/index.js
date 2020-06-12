@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import MainLayout from '../layouts/main/Index.vue'
+import WizardLayout from '../layouts/wizard/Index.vue'
 import mainAuth from '../auth';
 
 Vue.use(VueRouter)
@@ -46,6 +47,25 @@ const routes = [
         name: 'Transactions/List',
         path: 'transactions/list',
         component: () => import('../pages/transactions/TransactionsList.vue'),
+      },
+      {
+        name: '404',
+        path: '*',
+        component: () => import('../views/NotFound.vue'),
+      }
+    ]
+  },
+  {
+    path: '/wizard',
+    component: WizardLayout,
+    meta: {
+      authName: mainAuth.authName
+    },
+    children: [
+      {
+        name: 'Wizard/Transactions/Charge',
+        path: 'transactions/charge',
+        component: () => import('../wizards/transactions/CreateCharge.vue'),
       },
       {
         name: '404',

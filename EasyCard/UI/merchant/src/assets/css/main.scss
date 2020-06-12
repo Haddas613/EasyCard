@@ -8,3 +8,16 @@ $secondary : var(--v-secondary-base);
 .border-primary{
   border-color: $primary !important;
 }
+.theme--light.v-stepper{
+  background: inherit;
+  border: none;
+  box-shadow: none;
+}
+.ec-toolbar .v-toolbar__content{
+  padding-left: 0;
+  padding-right: 5px;
+}
+.v-stepper{
+  background: inherit;
+  border: none;
+}
