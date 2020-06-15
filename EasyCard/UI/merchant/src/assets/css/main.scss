@@ -21,3 +21,10 @@ $secondary : var(--v-secondary-base);
   background: inherit;
   border: none;
 }
+.no-borders{
+  border: none !important;
+}
+.input-simple.v-text-field.v-text-field--solo:not(.v-text-field--solo-flat)>.v-input__control>.v-input__slot{
+    border: none !important;
+    box-shadow: none;
+}
