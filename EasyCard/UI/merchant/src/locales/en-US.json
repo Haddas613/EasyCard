@@ -40,6 +40,9 @@
   "TotalAmount": "Total Amount",
   "CardPresence": "Card Presence",
   "JDealType": "JDeal Type",
+  "EnterNameEmailOrPhone": "Enter name, email or phone",
+  "ChooseCustomer": "Choose Customer",
+  "PreviouslyCharged": "Previously Charged",
   
   "Login": "Login",
   "LoginWelcomeText": "Welcome to easycard",

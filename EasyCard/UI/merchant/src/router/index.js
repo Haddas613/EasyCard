@@ -66,11 +66,6 @@ const routes = [
         name: 'Wizard/Transactions/Charge',
         path: 'transactions/charge',
         component: () => import('../wizards/transactions/CreateCharge.vue'),
-      },
-      {
-        name: '404',
-        path: '*',
-        component: () => import('../views/NotFound.vue'),
       }
     ]
   },

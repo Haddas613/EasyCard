@@ -11,11 +11,11 @@
     <v-stepper v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad :btntext="$t('Charge')" v-on:ok="amount = $event; step = 2"></numpad>
+          <numpad :btntext="$t('Charge')" v-on:ok="amount=$event; step=2"></numpad>
         </v-stepper-content>
 
-        <v-stepper-content step="2">
-          <customers-list></customers-list>
+        <v-stepper-content step="2" class="py-0 px-0">
+          <customers-list :show-previously-charged="true" v-on:ok="model.customer=$event; step=3"></customers-list>
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">
@@ -41,7 +41,10 @@ export default {
   },
   data() {
     return {
-      amount: 0.0,
+      model:{
+        amount: 0.0,
+        customer: null
+      },
       step: 1,
       steps: {
         1: {
