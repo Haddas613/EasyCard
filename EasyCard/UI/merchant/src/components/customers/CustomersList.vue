@@ -78,7 +78,7 @@ export default {
       search: null,
       customers: [],
       previouslyCharged: [],
-      groupedCustomers: []
+      groupedCustomers: {}
     };
   },
   async mounted() {
@@ -141,7 +141,7 @@ export default {
         lastActivity: new Date("2020-06-11")
       }
     ];
-    this.groupedCustomers = this.groupAlphabetically(data.concat(), "fullName");
+    this.groupCustomersAlphabetically(data.concat(), "fullName");
     this.previouslyCharged = this.sort(data.concat(), "lastActivity").slice(
       0,
       5
@@ -158,20 +158,17 @@ export default {
         return 0;
       });
     },
-    //TODO: helpers?
-    groupAlphabetically(arr) {
+    //TODO: helpers?, infinite scroll
+    groupCustomersAlphabetically(arr) {
       arr = this.sort(arr, "fullName");
-      var newarr = {};
-
       for (var i = 0; i < arr.length; i++) {
         var c = arr[i].fullName[0].toUpperCase();
-        if (newarr[c] && newarr[c].length >= 0) newarr[c].push(arr[i]);
+        if (this.customers[c] && this.customers[c].length >= 0) this.customers[c].push(arr[i]);
         else {
-          newarr[c] = [];
-          newarr[c].push(arr[i]);
+          this.customers[c] = [];
+          this.customers[c].push(arr[i]);
         }
       }
-      return newarr;
     }
   }
 };
