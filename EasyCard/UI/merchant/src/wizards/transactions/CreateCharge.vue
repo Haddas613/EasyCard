@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-flex fluid fill-height>
     <navbar
       v-on:back="goBack()"
       v-on:close="$router.push('/admin/dashboard')"
@@ -23,7 +23,7 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
-  </div>
+  </v-flex>
 </template>
 
 <script>
