@@ -13,13 +13,13 @@ namespace BasicServices
     /// <remarks>
     /// Note: use as singleton
     /// </remarks>
-    public class EventHubEmailSender : IEmailSender, IDisposable
+    public class AzureQueueEmailSender : IEmailSender, IDisposable
     {
         private readonly EventHubClient eventHubClient;
 
-        public EventHubEmailSender(string eventHubConnectionString, string eventHubName)
+        public AzureQueueEmailSender(string connectionString, string eventHubName)
         {
-            var connectionStringBuilder = new EventHubsConnectionStringBuilder(eventHubConnectionString)
+            var connectionStringBuilder = new EventHubsConnectionStringBuilder(connectionString)
             {
                 EntityPath = eventHubName
             };

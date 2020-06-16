@@ -16,6 +16,6 @@ namespace Shared.Helpers.Email
 
         public TextSubstitution[] Substitutions { get; set; }
 
-        public string Attachment { get; set; }
+        public string[] Attachments { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace Infrastucture.Tests
             var EmailEventHubConnectionString = "Endpoint=sb://ecnghub.servicebus.windows.net/;SharedAccessKeyName=sender;SharedAccessKey=pEUgdyZt/jCDnQMtuPlU1npBDCC6D9g+g74KGPwRo58=;EntityPath=email";
             var EmailEventHubName = "email";
 
-            EventHubEmailSender emailSender = new EventHubEmailSender(EmailEventHubConnectionString, EmailEventHubName);
+            AzureQueueEmailSender emailSender = new AzureQueueEmailSender(EmailEventHubConnectionString, EmailEventHubName);
 
             var emailMessage = new Email
             {

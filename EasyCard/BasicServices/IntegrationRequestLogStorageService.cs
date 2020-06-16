@@ -46,17 +46,23 @@ namespace BasicServices
             {
                 if (_containerName != null)
                 {
-                    CloudBlockBlob blockBlobResponse = (await GetContainer()).GetBlockBlobReference($"{entity.MessageId}-{entity.Action}-response.xml");
+                    if (string.IsNullOrWhiteSpace(entity.Response))
+                    {
+                        CloudBlockBlob blockBlobResponse = (await GetContainer()).GetBlockBlobReference($"{entity.MessageId}-{entity.Action}-response.xml");
 
-                    blockBlobResponse.Properties.ContentType = "text/xml";
+                        blockBlobResponse.Properties.ContentType = "text/xml";
 
-                    await blockBlobResponse.UploadTextAsync(entity.Response);
+                        await blockBlobResponse.UploadTextAsync(entity.Response);
+                    }
 
-                    CloudBlockBlob blockBlobRequest = (await GetContainer()).GetBlockBlobReference($"{entity.MessageId}-{entity.Action}-request.xml");
+                    if (string.IsNullOrWhiteSpace(entity.Request))
+                    {
+                        CloudBlockBlob blockBlobRequest = (await GetContainer()).GetBlockBlobReference($"{entity.MessageId}-{entity.Action}-request.xml");
 
-                    blockBlobRequest.Properties.ContentType = "text/xml";
+                        blockBlobRequest.Properties.ContentType = "text/xml";
 
-                    await blockBlobRequest.UploadTextAsync(entity.Request);
+                        await blockBlobRequest.UploadTextAsync(entity.Request);
+                    }
                 }
 
                 // header

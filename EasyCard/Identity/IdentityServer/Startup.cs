@@ -185,10 +185,10 @@ namespace IdentityServer
                 Debug.WriteLine($"Cannot load certificate {config.InternalCertificate}: {ex.Message}");
             }
 
-            services.AddSingleton<IEmailSender, EventHubEmailSender>(serviceProvider =>
+            services.AddSingleton<IEmailSender, AzureQueueEmailSender>(serviceProvider =>
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
-                return new EventHubEmailSender(cfg.EmailEventHubConnectionString, cfg.EmailEventHubName);
+                return new AzureQueueEmailSender(cfg.EmailEventHubConnectionString, cfg.EmailEventHubName);
             });
 
             services.AddSingleton<ICryptoService>(new CryptoService(cert));
