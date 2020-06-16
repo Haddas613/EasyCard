@@ -28,7 +28,7 @@ namespace MerchantsApi.Tests
         [Order(1)]
         public async Task CreateMerchant_CreatesWhenModelIsCorrect()
         {
-            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
+            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper, merchantsFixture.TerminalsService);
             var merchantModel = new MerchantRequest { BusinessName = Guid.NewGuid().ToString() };
             var actionResult = await controller.CreateMerchant(merchantModel);
 
@@ -59,7 +59,7 @@ namespace MerchantsApi.Tests
         [Order(2)]
         public async Task UpdateMerchant_UpdatesWhenModelIsCorrect()
         {
-            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
+            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper, merchantsFixture.TerminalsService);
             var newName = Guid.NewGuid().ToString();
             var existingMerchant = await merchantsFixture.MerchantsService.GetMerchants().FirstOrDefaultAsync();
             var merchantModel = new UpdateMerchantRequest { BusinessName = newName };
@@ -93,7 +93,7 @@ namespace MerchantsApi.Tests
         [Order(3)]
         public async Task GetMerchants_ReturnsCollectionOfMerchants()
         {
-            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
+            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper, merchantsFixture.TerminalsService);
             var filter = new MerchantsFilter();
             var actionResult = await controller.GetMerchants(filter);
 
@@ -109,7 +109,7 @@ namespace MerchantsApi.Tests
         [Order(4)]
         public async Task GetMerchants_FiltersAndReturnsCollectionOfMerchants()
         {
-            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
+            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper, merchantsFixture.TerminalsService);
             var filter = new MerchantsFilter { BusinessName = Guid.NewGuid().ToString() }; //assumed unique non-taken name
             var actionResult = await controller.GetMerchants(filter);
 
@@ -138,7 +138,7 @@ namespace MerchantsApi.Tests
         [Order(5)]
         public async Task GetMerchants_GetHistoryReturnsResult()
         {
-            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
+            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper, merchantsFixture.TerminalsService);
             var filter = new MerchantHistoryFilter();
             var referenceHistory = merchantsFixture.MerchantsService.GetMerchantHistories().FirstOrDefault(h => h.MerchantID != null)
                 ?? throw new Exception("Couldn't get reference merchant id");
@@ -156,7 +156,7 @@ namespace MerchantsApi.Tests
 
         private async Task<MerchantResponse> GetMerchant(Guid merchantID)
         {
-            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper);
+            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper, merchantsFixture.TerminalsService);
 
             var actionResult = await controller.GetMerchant(merchantID);
 

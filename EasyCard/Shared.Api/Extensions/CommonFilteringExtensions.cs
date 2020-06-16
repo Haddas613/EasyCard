@@ -12,22 +12,23 @@ namespace Shared.Api.Extensions
 {
     public static class CommonFilteringExtensions
     {
-        public static IQueryable<T> ApplyPagination<T>(this IQueryable<T> src, FilterBase filter)
+        public static IQueryable<T> ApplyPagination<T>(this IQueryable<T> src, FilterBase filter, int? pageSizeLimit = null)
         {
             if (filter is null)
             {
                 return src;
             }
 
-            if (filter.Skip != null)
+            if (filter.Skip >= 0)
             {
                 src = src.Skip(filter.Skip.Value);
             }
 
-            if (filter.Take != null)
-            {
-                src = src.Take(filter.Take.Value);
-            }
+            int maximumPageSize = pageSizeLimit ?? 1000;
+
+            int take = filter.Take == null || filter.Take > maximumPageSize || filter.Take <= 0 ? maximumPageSize : filter.Take.Value;
+
+            src = src.Take(take);
 
             return src;
         }
