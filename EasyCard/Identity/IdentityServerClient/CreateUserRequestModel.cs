@@ -6,9 +6,9 @@ namespace IdentityServerClient
 {
     public class CreateUserRequestModel
     {
-        public long TerminalID { get; set; }
+        public string TerminalID { get; set; }
 
-        public long MerchantID { get; set; }
+        public string MerchantID { get; set; }
 
         public string Email { get; set; }
 

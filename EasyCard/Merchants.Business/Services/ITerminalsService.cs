@@ -17,5 +17,7 @@ namespace Merchants.Business.Services
         public Task UnLinkUserFromTerminal(Guid userID, Guid terminalID);
 
         public Task SaveTerminalExternalSystem(TerminalExternalSystem entity);
+
+        public Task RemoveTerminalExternalSystem(Guid terminalID, long externalSystemID);
     }
 }

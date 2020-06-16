@@ -73,6 +73,7 @@ namespace Transactions.Business.Data
                     s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
                     s.Property(p => p.CardBin).HasColumnName("CardBin").IsRequired(false).HasMaxLength(10).IsUnicode(false);
                     s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Ignore(b => b.CardReaderInput);
                 });
 
                 builder.OwnsOne(b => b.ClearingHouseTransactionDetails, s =>
@@ -138,6 +139,8 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Ignore(b => b.CardReaderInput);
             }
         }
 

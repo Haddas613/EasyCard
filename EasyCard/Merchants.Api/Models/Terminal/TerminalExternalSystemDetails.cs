@@ -1,4 +1,5 @@
 ﻿using Merchants.Shared.Enums;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,10 @@ namespace Merchants.Api.Models.Terminal
 {
     public class TerminalExternalSystemDetails
     {
+        [JsonIgnore]
         public long ExternalSystemID { get; set; }
 
-        public Guid TerminalID { get; set; }
+        //public Guid TerminalID { get; set; }
 
         public ExternalSystemSummary ExternalSystem { get; set; }
 

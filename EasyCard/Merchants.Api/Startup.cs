@@ -246,12 +246,12 @@ namespace Merchants.Api
             //        pattern: "{controller=Home}/{action=Index}/{id?}");
             //});
 
-            app.UseSpa(spa =>
+            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
             {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
-                spa.Options.SourcePath = "wwwroot";
+                builder.UseSpa(spa =>
+                {
+                    spa.Options.SourcePath = "wwwroot";
+                });
             });
 
             var config = serviceProvider.GetRequiredService<IConfiguration>();

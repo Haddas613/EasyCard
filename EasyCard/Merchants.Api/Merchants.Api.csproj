@@ -54,6 +54,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Models\Merchant\MerchantSummaryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MerchantSummaryResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Models\Terminal\TerminalSummaryResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -67,6 +72,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Models\Merchant\MerchantSummaryResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MerchantSummaryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Models\Terminal\TerminalSummaryResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>TerminalSummaryResource.Designer.cs</LastGenOutput>

@@ -121,8 +121,8 @@ namespace IdentityServer.Controllers
 
             var allClaims = await userManager.GetClaimsAsync(user);
 
-            //await _userManager.AddClaim(allClaims, user, "extension_PaymentGatewayID", model.PaymentGatewayID.ToString());
-            //await _userManager.AddClaim(allClaims, user, "extension_MerchantID", model.MerchantID.ToString());
+            await userManager.AddClaim(allClaims, user, "extension_MerchantID", model.MerchantID);
+
             //await _userManager.AddClaim(allClaims, user, "extension_FirstName", model.FirstName);
             //await _userManager.AddClaim(allClaims, user, "extension_LastName", model.LastName);
 
@@ -135,7 +135,7 @@ namespace IdentityServer.Controllers
             };
 
             // TODO: config
-            await userManager.SetTwoFactorEnabledAsync(user, true);
+            // await userManager.SetTwoFactorEnabledAsync(user, true);
 
             return new ObjectResult(operationResult);
         }

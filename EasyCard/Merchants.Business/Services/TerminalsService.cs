@@ -151,8 +151,21 @@ namespace Merchants.Business.Services
                 dbEntity.UpdateTimestamp = entity.UpdateTimestamp;
                 dbEntity.Settings = entity.Settings;
                 dbEntity.ExternalProcessorReference = entity.ExternalProcessorReference;
+                dbEntity.Type = entity.Type;
                 await context.SaveChangesAsync();
             }
+        }
+
+        public async Task RemoveTerminalExternalSystem(Guid terminalID, long externalSystemID)
+        {
+            var dbEntity = await context.TerminalExternalSystems.FirstOrDefaultAsync(es => es.ExternalSystemID == externalSystemID && es.TerminalID == terminalID);
+
+            if (dbEntity != null)
+            {
+                context.TerminalExternalSystems.Remove(dbEntity);
+            }
+
+            await context.SaveChangesAsync();
         }
     }
 }

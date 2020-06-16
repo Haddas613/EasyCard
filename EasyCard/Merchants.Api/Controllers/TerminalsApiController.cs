@@ -2,6 +2,7 @@
 using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.Terminal;
 using Merchants.Business.Entities.Terminal;
+using Merchants.Business.Models.Integration;
 using Merchants.Business.Services;
 using Merchants.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -30,12 +31,14 @@ namespace Merchants.Api.Controllers
         private readonly IMerchantsService merchantsService;
         private readonly ITerminalsService terminalsService;
         private readonly IMapper mapper;
+        private readonly IExternalSystemsService externalSystemsService;
 
-        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper)
+        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper, IExternalSystemsService externalSystemsService)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
+            this.externalSystemsService = externalSystemsService;
         }
 
         [HttpGet]
@@ -55,25 +58,52 @@ namespace Merchants.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<TerminalSummary>>> GetTerminals([FromQuery] TerminalsFilter filter)
         {
-            var query = terminalsService.GetTerminals().Filter(filter);
+            // TODO: validate filters (see transactions list)
 
-            var response = new SummariesResponse<TerminalSummary> { NumberOfRecords = await query.CountAsync() };
+            var query = terminalsService.GetTerminals().AsNoTracking().Filter(filter);
 
-            response.Data = await mapper.ProjectTo<TerminalSummary>(query.ApplyPagination(filter)).ToListAsync();
+            using (var dbTransaction = terminalsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var response = new SummariesResponse<TerminalSummary> { NumberOfRecords = await query.CountAsync() };
 
-            return Ok(response);
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(Terminal.TerminalID), filter.OrderByDirection).ApplyPagination(filter);
+
+                // TODO: validate generated sql
+                var sql = query.ToSql();
+
+                response.Data = await mapper.ProjectTo<TerminalSummary>(query).ToListAsync();
+
+                return Ok(response);
+            }
         }
 
         [HttpGet]
         [Route("{terminalID}")]
         public async Task<ActionResult<TerminalResponse>> GetTerminal([FromRoute]Guid terminalID)
         {
-            var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminals().Include(t => t.Integrations)
+            var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminals()
+                .Include(t => t.Integrations)
+                .Include(t => t.Merchant)
                 .FirstOrDefaultAsync(m => m.TerminalID == terminalID)));
+
+            var externalSystems = externalSystemsService.GetExternalSystems().ToDictionary(d => d.ExternalSystemID);
+
+            foreach (var integration in terminal.Integrations)
+            {
+                if (externalSystems.ContainsKey(integration.ExternalSystemID))
+                {
+                    integration.ExternalSystem = mapper.Map<ExternalSystemSummary>(externalSystems[integration.ExternalSystemID]);
+                }
+            }
 
             return Ok(terminal);
         }
 
+        /// <summary>
+        /// Add terminal basic information
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateTerminal([FromBody]TerminalRequest model)
@@ -87,6 +117,12 @@ namespace Merchants.Api.Controllers
             return CreatedAtAction(nameof(GetTerminal), new { terminalID = newTerminal.TerminalID }, new OperationResponse(Messages.TerminalCreated, StatusEnum.Success, newTerminal.TerminalID.ToString()));
         }
 
+        /// <summary>
+        /// Ypdates basic terminal information and settings
+        /// </summary>
+        /// <param name="terminalID"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("{terminalID}")]
         public async Task<ActionResult<OperationResponse>> UpdateTerminal([FromRoute]Guid terminalID, [FromBody]UpdateTerminalRequest model)
@@ -104,14 +140,27 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}/externalsystem")]
         public async Task<ActionResult<OperationResponse>> SaveTerminalExternalSystem([FromRoute]Guid terminalID, [FromBody]ExternalSystemRequest model)
         {
-            var externalSystem = new TerminalExternalSystem();
+            var externalSystem = EnsureExists(externalSystemsService.GetExternalSystem(model.ExternalSystemID), nameof(ExternalSystem));
 
-            mapper.Map(model, externalSystem);
-            externalSystem.TerminalID = terminalID;
+            var texternalSystem = new TerminalExternalSystem();
 
-            await terminalsService.SaveTerminalExternalSystem(externalSystem);
+            mapper.Map(model, texternalSystem);
+            texternalSystem.TerminalID = terminalID;
+            texternalSystem.Type = externalSystem.Type;
+
+            await terminalsService.SaveTerminalExternalSystem(texternalSystem);
 
             return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID.ToString()));
+        }
+
+        [HttpDelete]
+        [Route("{terminalID}/externalsystem/{externalSystemID}")]
+        public async Task<ActionResult<OperationResponse>> DeleteTerminalExternalSystem([FromRoute]Guid terminalID, long externalSystemID)
+        {
+            // TODO: validation if it exists
+            await terminalsService.RemoveTerminalExternalSystem(terminalID, externalSystemID);
+
+            return Ok(new OperationResponse(Messages.ExternalSystemRemoved, StatusEnum.Success, terminalID.ToString()));
         }
     }
 }

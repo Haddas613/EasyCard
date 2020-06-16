@@ -16,6 +16,8 @@ using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Api.Models.Metadata;
+using Shared.Api.UI;
 using Shared.Business.Extensions;
 
 namespace Merchants.Api.Controllers
@@ -29,45 +31,82 @@ namespace Merchants.Api.Controllers
     {
         private readonly IMerchantsService merchantsService;
         private readonly IMapper mapper;
+        private readonly ITerminalsService terminalsService;
 
-        public MerchantApiController(IMerchantsService merchantsService, IMapper mapper)
+        public MerchantApiController(IMerchantsService merchantsService, IMapper mapper, ITerminalsService terminalsService)
         {
             this.merchantsService = merchantsService;
             this.mapper = mapper;
+            this.terminalsService = terminalsService;
+        }
+
+        [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("$meta")]
+        public TableMeta GetMetadata()
+        {
+            return new TableMeta
+            {
+                Columns = typeof(MerchantSummary)
+                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+                    .Select(d => d.GetColMeta(MerchantSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
+                    .ToDictionary(d => d.Key)
+            };
         }
 
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<MerchantSummary>>> GetMerchants([FromQuery]MerchantsFilter filter)
         {
-            var query = merchantsService.GetMerchants().Filter(filter);
+            // TODO: validate filters (see transactions list)
 
-            var response = new SummariesResponse<MerchantSummary> { NumberOfRecords = await query.CountAsync() };
+            var query = merchantsService.GetMerchants().AsNoTracking().Filter(filter);
 
-            response.Data = await mapper.ProjectTo<MerchantSummary>(query.ApplyPagination(filter)).ToListAsync();
+            using (var dbTransaction = merchantsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var response = new SummariesResponse<MerchantSummary> { NumberOfRecords = await query.CountAsync() };
 
-            return Ok(response);
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(Merchant.MerchantID), filter.OrderByDirection).ApplyPagination(filter);
+
+                response.Data = await mapper.ProjectTo<MerchantSummary>(query).ToListAsync();
+
+                return Ok(response);
+            }
         }
 
         [HttpGet]
         [Route("{merchantID}")]
         public async Task<ActionResult<MerchantResponse>> GetMerchant([FromRoute]Guid merchantID)
         {
-            var merchant = mapper.Map<MerchantResponse>(EnsureExists(await merchantsService.GetMerchants().FirstOrDefaultAsync(m => m.MerchantID == merchantID)));
+            using (var dbTransaction = merchantsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var dbMerchant = EnsureExists(await merchantsService.GetMerchants().FirstOrDefaultAsync(m => m.MerchantID == merchantID));
 
-            return Ok(merchant);
+                var merchant = mapper.Map<MerchantResponse>(dbMerchant);
+
+                merchant.Terminals = await mapper.ProjectTo<Models.Terminal.TerminalSummary>(terminalsService.GetTerminals().AsNoTracking().Where(d => d.MerchantID == dbMerchant.MerchantID)).ToListAsync();
+
+                return Ok(merchant);
+            }
         }
 
         [HttpGet]
         [Route("{merchantID}/history")]
         public async Task<ActionResult<SummariesResponse<MerchantHistoryResponse>>> GetMerchantHistory([FromRoute]Guid merchantID, [FromQuery] MerchantHistoryFilter filter)
         {
-            var query = merchantsService.GetMerchantHistories().Where(h => h.MerchantID == merchantID).Filter(filter);
+            // TODO: validate filters (see transactions list)
 
-            var response = new SummariesResponse<MerchantHistoryResponse> { NumberOfRecords = await query.CountAsync() };
+            var query = merchantsService.GetMerchantHistories().Where(h => h.MerchantID == merchantID).AsNoTracking().Filter(filter);
 
-            response.Data = await mapper.ProjectTo<MerchantHistoryResponse>(query.ApplyPagination(filter)).ToListAsync();
+            using (var dbTransaction = merchantsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var response = new SummariesResponse<MerchantHistoryResponse> { NumberOfRecords = await query.CountAsync() };
 
-            return Ok(response);
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(Merchant.MerchantID), filter.OrderByDirection).ApplyPagination(filter);
+
+                response.Data = await mapper.ProjectTo<MerchantHistoryResponse>(query).ToListAsync();
+
+                return Ok(response);
+            }
         }
 
         [HttpPost]

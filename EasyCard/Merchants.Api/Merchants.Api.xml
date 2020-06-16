@@ -4,6 +4,21 @@
         <name>Merchants.Api</name>
     </assembly>
     <members>
+        <member name="M:Merchants.Api.Controllers.TerminalsApiController.CreateTerminal(Merchants.Api.Models.Terminal.TerminalRequest)">
+            <summary>
+            Add terminal basic information
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Merchants.Api.Controllers.TerminalsApiController.UpdateTerminal(System.Guid,Merchants.Api.Models.Terminal.UpdateTerminalRequest)">
+            <summary>
+            Ypdates basic terminal information and settings
+            </summary>
+            <param name="terminalID"></param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="P:Merchants.Api.Models.Terminal.ExternalSystemRequest.ExternalProcessorReference">
             <summary>
             SHVA or other system terminal ID

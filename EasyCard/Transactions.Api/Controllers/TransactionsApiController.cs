@@ -120,8 +120,10 @@ namespace Transactions.Api.Controllers
 
                 query = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByDirection).ApplyPagination(filter);
 
+                // TODO: validate generated sql
                 var sql = query.ToSql();
 
+                // TODO: try to remove ProjectTo
                 response.Data = await mapper.ProjectTo<TransactionSummary>(query).ToListAsync();
 
                 return Ok(response);
@@ -313,7 +315,7 @@ namespace Transactions.Api.Controllers
 
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByAggregator);
 
-                    return BadRequest(new OperationResponse(Messages.FailedToProcessTransaction, StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
+                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {TransactionStatusEnum.FailedToConfirmByAggregator}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
                 }
             }
 
@@ -353,7 +355,7 @@ namespace Transactions.Api.Controllers
 
                 await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor);
 
-                processorFailedRsponse = BadRequest(new OperationResponse(Messages.FailedToProcessTransaction, StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
+                processorFailedRsponse = BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {TransactionStatusEnum.FailedToConfirmByProcesor}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
             }
 
             // reject to clearing house in case of shva error
@@ -373,7 +375,7 @@ namespace Transactions.Api.Controllers
 
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCancelToAggregator);  // TODO: rejection reason, store error message
 
-                        return BadRequest(new OperationResponse(Messages.FailedToProcessTransaction, StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
+                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
                     }
 
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByAggregator);
@@ -386,7 +388,7 @@ namespace Transactions.Api.Controllers
 
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCancelToAggregator);
 
-                    return BadRequest(new OperationResponse(Messages.FailedToProcessTransaction, StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
+                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {TransactionStatusEnum.FailedToCancelToAggregator}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
                 }
             }
 
@@ -423,7 +425,7 @@ namespace Transactions.Api.Controllers
 
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator);
 
-                    return BadRequest(new OperationResponse(Messages.FailedToProcessTransaction, StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
+                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {TransactionStatusEnum.FailedToCommitByAggregator}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
                 }
             }
 

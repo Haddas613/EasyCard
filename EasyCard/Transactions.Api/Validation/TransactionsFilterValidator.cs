@@ -11,7 +11,7 @@ namespace Transactions.Api.Validation
     {
         public static TransactionsFilter ValidateFilter(TransactionsFilter filter, TransactionFilterValidationOptions opts)
         {
-            if (filter.Take > opts.MaximumPageSize)
+            if (filter.Take > opts.MaximumPageSize || filter.Take == -1)
             {
                 filter.Take = opts.MaximumPageSize;
             }

@@ -9,7 +9,7 @@ namespace Merchants.Api.Models.User
     public class InviteUserRequest
     {
         [Required]
-        public long MerchantID { get; set; }
+        public Guid MerchantID { get; set; }
 
         [Required]
         public Guid TerminalID { get; set; }
