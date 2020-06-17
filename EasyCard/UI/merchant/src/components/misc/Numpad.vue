@@ -7,7 +7,7 @@
       @click="ok()"
       block
     >{{btntext}} {{model.amount}}$</v-btn>
-    <v-flex class="white text-center align-stretch px-3" fill-height>
+    <v-flex class="white text-center align-stretch px-3">
       <v-row>
         <v-col cols="4" class="py-1">
           <span class="subtitle-1 ecLgray--text" style="line-height:2.5rem;">{{$t('AddNote')}}</span>
@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     ok() {
-      this.$emit("ok", this.amount);
+      this.$emit("ok", this.model);
     },
     append(n) {
       const floatingPoint = ((this.model.amount % 1) * 100).toFixed(2);

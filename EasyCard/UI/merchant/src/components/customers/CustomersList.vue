@@ -163,10 +163,10 @@ export default {
       arr = this.sort(arr, "fullName");
       for (var i = 0; i < arr.length; i++) {
         var c = arr[i].fullName[0].toUpperCase();
-        if (this.customers[c] && this.customers[c].length >= 0) this.customers[c].push(arr[i]);
+        if (this.groupedCustomers[c] && this.groupedCustomers[c].length >= 0) this.groupedCustomers[c].push(arr[i]);
         else {
-          this.customers[c] = [];
-          this.customers[c].push(arr[i]);
+          this.groupedCustomers[c] = [];
+          this.groupedCustomers[c].push(arr[i]);
         }
       }
     }

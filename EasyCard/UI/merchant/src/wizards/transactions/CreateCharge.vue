@@ -6,20 +6,33 @@
       v-on:skip="step = step + 1"
       :skippable="steps[step].skippable"
       :closeable="steps[step].closeable"
+      :completed="steps[step].completed"
       :title="navTitle"
     ></navbar>
-    <v-stepper v-model="step">
+    <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad :btntext="$t('Charge')" v-on:ok="amount=$event; step=2"></numpad>
+          <terminal-select v-on:ok="model.terminalID = $event; step++"></terminal-select>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
-          <customers-list :show-previously-charged="true" v-on:ok="model.customer=$event; step=3"></customers-list>
+          <numpad :btntext="$t('Charge')" v-on:ok="processAmount($event)"></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">
-          <create-charge-form></create-charge-form>
+          <customers-list :show-previously-charged="true" v-on:ok="model.customer=$event; step=4"></customers-list>
+        </v-stepper-content>
+
+        <v-stepper-content step="4" class="py-0 px-0">
+          <credit-card-secure-details v-on:ok="step=5"></credit-card-secure-details>
+        </v-stepper-content>
+
+        <v-stepper-content step="5" class="py-0 px-0">
+           <additional-settings-form></additional-settings-form>
+        </v-stepper-content>
+
+        <v-stepper-content step="6" class="py-0 px-0">
+           <transaction-success :amount="model.amount"></transaction-success>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -31,13 +44,21 @@ import Navbar from "../../components/wizard/NavBar";
 import Numpad from "../../components/misc/Numpad";
 import CustomersList from "../../components/customers/CustomersList";
 import CreateChargeForm from "../../components/transactions/CreateChargeForm";
+import CreditCardSecureDetails from "../../components/transactions/CreditCardSecureDetails";
+import TransactionSuccess from "../../components/transactions/TransactionSuccess";
+import TerminalSelect from "../../components/terminals/TerminalSelect";
+import AdditionalSettingsForm from "../../components/transactions/AdditionalSettingsForm";
 
 export default {
   components: {
     Navbar,
     Numpad,
     CustomersList,
-    CreateChargeForm
+    CreateChargeForm,
+    CreditCardSecureDetails,
+    TransactionSuccess,
+    TerminalSelect,
+    AdditionalSettingsForm
   },
   data() {
     return {
@@ -48,15 +69,26 @@ export default {
       step: 1,
       steps: {
         1: {
-          title: "Charge"
+          title: "Terminal",
         },
         2: {
+          title: "Charge"
+        },
+        3: {
           title: "ChooseCustomer",
           skippable: true
         },
-        3: {
+        4: {
           title: "Charge",
-          closeable: true
+          skippable: true
+        },
+        5: {
+          title: "AdditionalSettings",
+          skippable: true
+        },
+        6: {
+          title: "Success",
+          completed: true
         }
       }
     };
@@ -70,6 +102,12 @@ export default {
     goBack() {
       if (this.step === 1) this.$router.push("/admin/dashboard");
       else this.step--;
+    },
+    processAmount(data){
+      this.model.amount = data.amount;
+      this.model.note = data.note;
+      this.model.items = data.items;
+      this.step++;
     }
   }
 };
