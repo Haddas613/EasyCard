@@ -11,18 +11,21 @@ namespace Infrastucture.Tests
 {
     public class SendEmailTests
     {
-        [Fact(DisplayName = "Send Email To Event Hub")]
-        public void SendEmailToEventHub()
+        [Fact(DisplayName = "Send Email To Azure Queue")]
+        public void SendEmailToQueue()
         {
-            var EmailEventHubConnectionString = "Endpoint=sb://ecnghub.servicebus.windows.net/;SharedAccessKeyName=sender;SharedAccessKey=pEUgdyZt/jCDnQMtuPlU1npBDCC6D9g+g74KGPwRo58=;EntityPath=email";
-            var EmailEventHubName = "email";
+            var DefaultStorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=ecng;AccountKey=4NjfZ4WcFlvNBzKHgbyGDdl+iYBiUv1SPU2hVneIqDyX0TsHUXtG707cfrGxnOCHD85L8mLRamck9w014/m1Vg==;EndpointSuffix=core.windows.net";
+            var EmailQueueName = "email";
+            var EmailTableName = "email";
 
-            AzureQueueEmailSender emailSender = new AzureQueueEmailSender(EmailEventHubConnectionString, EmailEventHubName);
+            var queue = new AzureQueue(DefaultStorageConnectionString, EmailQueueName);
+            var emailSender = new AzureQueueEmailSender(queue, DefaultStorageConnectionString, EmailTableName);
+            
 
             var emailMessage = new Email
             {
                 TemplateCode = "TestEmail",
-                EmailTo = "vit.muromsky@gmail.com",
+                EmailTo = "volkovv@mydigicode.com",
                 Subject = "Test message",
                 Substitutions = new TextSubstitution[] { new TextSubstitution { Substitution = "{test}", Value = "Test Message" } }
             };

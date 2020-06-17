@@ -7,8 +7,6 @@ namespace Shared.Helpers.Queue
 {
     public interface IQueue
     {
-        Task PushToQueue<T>(string queueName, T model);
-
-        Task PushToQueue<T>(string queueName, IEnumerable<T> items);
+        Task PushToQueue<T>(T model);
     }
 }

@@ -188,7 +188,8 @@ namespace IdentityServer
             services.AddSingleton<IEmailSender, AzureQueueEmailSender>(serviceProvider =>
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
-                return new AzureQueueEmailSender(cfg.EmailEventHubConnectionString, cfg.EmailEventHubName);
+                var queue = new AzureQueue(cfg.DefaultStorageConnectionString, cfg.EmailQueueName);
+                return new AzureQueueEmailSender(queue, cfg.DefaultStorageConnectionString, cfg.EmailTableName);
             });
 
             services.AddSingleton<ICryptoService>(new CryptoService(cert));

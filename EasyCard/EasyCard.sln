@@ -82,7 +82,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{309D26B4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShvaServiceImitation", "Integration\Tools\ShvaServiceImitation\ShvaServiceImitation.csproj", "{CD231C07-1AF0-4D55-8993-B2EB9C327102}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastucture.Tests", "Infrastucture.Tests\Infrastucture.Tests.csproj", "{18A16A5E-B72D-4441-B90E-08640BCCEDFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastucture.Tests", "Infrastucture.Tests\Infrastucture.Tests.csproj", "{18A16A5E-B72D-4441-B90E-08640BCCEDFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

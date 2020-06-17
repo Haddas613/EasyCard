@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.Options;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Table;
+﻿using Microsoft.Azure.Cosmos.Table;
+using Microsoft.Extensions.Options;
 using Shared.Helpers;
 using Shared.Integration;
 using System;
@@ -9,6 +7,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using System.IO;
 
 namespace BasicServices
 {
@@ -18,11 +19,9 @@ namespace BasicServices
 
         public string StorageTableName => _table?.Name;
 
-        private CloudBlobClient _blobClient;
-
         private string _containerName;
 
-        private CloudBlobContainer _container;
+        private BlobContainerClient _client;
 
         // TODO: logger
         public IntegrationRequestLogStorageService(string storageConnectionString, string tableName, string containerName)
@@ -33,11 +32,14 @@ namespace BasicServices
 
             _table = tableClient.GetTableReference(tableName);
 
-            _table.CreateIfNotExistsAsync().Wait();
-
-            _blobClient = storageAccount.CreateCloudBlobClient();
+            _table.CreateIfNotExists();
 
             _containerName = containerName;
+
+            _client = new BlobContainerClient(storageConnectionString, _containerName);
+
+            _client.CreateIfNotExists();
+
         }
 
         public async Task Save(IntegrationMessage entity)
@@ -48,20 +50,12 @@ namespace BasicServices
                 {
                     if (string.IsNullOrWhiteSpace(entity.Response))
                     {
-                        CloudBlockBlob blockBlobResponse = (await GetContainer()).GetBlockBlobReference($"{entity.MessageId}-{entity.Action}-response.xml");
-
-                        blockBlobResponse.Properties.ContentType = "text/xml";
-
-                        await blockBlobResponse.UploadTextAsync(entity.Response);
+                        await UploadString($"{entity.MessageId}-{entity.Action}-response.xml", entity.Response);
                     }
 
                     if (string.IsNullOrWhiteSpace(entity.Request))
                     {
-                        CloudBlockBlob blockBlobRequest = (await GetContainer()).GetBlockBlobReference($"{entity.MessageId}-{entity.Action}-request.xml");
-
-                        blockBlobRequest.Properties.ContentType = "text/xml";
-
-                        await blockBlobRequest.UploadTextAsync(entity.Request);
+                        await UploadString($"{entity.MessageId}-{entity.Action}-request.xml", entity.Request);
                     }
                 }
 
@@ -98,18 +92,26 @@ namespace BasicServices
             }
         }
 
-        private async Task<CloudBlobContainer> GetContainer()
+        private async Task UploadString(string fileName, string content)
         {
-            if (_container != null && _container.Name == _containerName)
+            var blob = _client.GetBlobClient(fileName);
+
+            var headers = new BlobHttpHeaders
             {
-                return _container;
+                ContentType = "text/xml"
+            };
+
+            blob.SetHttpHeaders(headers);
+
+            using (var stream = new MemoryStream())
+            using (var writer = new StreamWriter(stream))
+            {
+                writer.Write(content);
+                writer.Flush();
+                stream.Position = 0;
+
+                await blob.UploadAsync(stream);
             }
-
-            _container = _blobClient.GetContainerReference(_containerName);
-
-            await _container.CreateIfNotExistsAsync();
-
-            return _container;
         }
     }
 }

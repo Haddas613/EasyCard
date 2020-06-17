@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Azure.EventHubs;
+using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -20,63 +18,72 @@ namespace EmailSender
     public static class SendEmail
     {
         [FunctionName("SendEmail")]
-        public static async Task Run([EventHubTrigger("email", Connection = "emailqueue")] string messageBody, ILogger log, ExecutionContext context)
+        public static async Task Run([QueueTrigger("email")] string messageBody, ILogger log, ExecutionContext context)
         {
-            log.LogInformation($"SendEmail function started at {DateTime.UtcNow}");
-
-            var exceptions = new List<Exception>();
-
             var config = new ConfigurationBuilder()
                 .SetBasePath(context.FunctionAppDirectory)
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables()
                 .Build();
 
-            var table = await GetEmailTemplatesStorage(config);
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(config["AzureWebJobsStorage"]);
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
-            //var sendGridClient = new SendGridClient(config["SendgridApiKey"]);
+            CloudTable emailTable = tableClient.GetTableReference(config["EmailTableName"] ?? "email");
+            CloudTable emailTemplatesStorageTable = tableClient.GetTableReference(config["EmailTemplatesStorageTable"] ?? "emailtemplates");
 
             log.LogInformation(messageBody);
-            var emailData = JsonConvert.DeserializeObject<Email>(messageBody);
 
-            log.LogInformation($"Email sending for {emailData.EmailTo} began. Message: {messageBody}");
+            var emailMessage = JsonConvert.DeserializeObject<EmailQueueMessage>(messageBody);
 
-            var template = (await GetEmailTemplate(table, emailData.TemplateCode))
+            var emailData = await GetEmailMessage(emailTable, emailMessage)
+            ?? throw new Exception($"Message {messageBody} does not exist");
+
+            var template = (await GetEmailTemplate(emailTemplatesStorageTable, emailData.TemplateCode))
             ?? throw new Exception($"Template {emailData.TemplateCode} does not exist");
 
-            var emailSubject = TemplateProcessor.Substitute(template.SubjectTemplate, emailData.Substitutions);
-            var emailBody = TemplateProcessor.Substitute(template.BodyTemplate, emailData.Substitutions);
+            var substitutions = JsonConvert.DeserializeObject<IEnumerable<TextSubstitution>>(emailData.Substitutions);
 
+            var emailSubject = TemplateProcessor.Substitute(template.SubjectTemplate, substitutions);
+            var emailBody = TemplateProcessor.Substitute(template.BodyTemplate, substitutions);
+
+            // sendgrid implementation
             var message = new SendGridMessage();
+
             message.Subject = emailSubject;
             message.HtmlContent = emailBody;
             message.AddTo(emailData.EmailTo);
             message.SetFrom(config["EmailFrom"]);
 
-            //TODO: uncomment when credentials are ready
-            //var result = await sendGridClient.SendEmailAsync(message);
-            //log.LogInformation($"Email sending for {emailData.EmailTo} finished. Status code: {result.StatusCode}");
-            log.LogInformation($"Email sending for {emailData.EmailTo} finished.");
+            var sendGridClient = new SendGridClient(config["SendgridApiKey"]);
+            var result = await sendGridClient.SendEmailAsync(message);
 
-            log.LogInformation($"SendEmail function completed at {DateTime.UtcNow} without errors");
+            // TODO: update sent date
+
+            log.LogInformation($"Email sending for {emailData.EmailTo} finished. Status code: {result.StatusCode}");
         }
 
-        private static async Task<CloudTable> GetEmailTemplatesStorage(IConfigurationRoot cfg)
+        private static async Task<EmailEntity> GetEmailMessage(CloudTable emailTable, EmailQueueMessage message)
         {
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(cfg["AzureWebJobsStorage"]);
+            TableOperation getOperation = TableOperation.Retrieve<EmailTemplateEntity>(message.MessageDate.ToString("yy-MM-dd"), message.MessageID.ToString());
 
-            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+            var result = await emailTable.ExecuteAsync(getOperation);
 
-            CloudTable table = tableClient.GetTableReference(cfg["EmailTemplatesStorageTable"]);
-
-            return await Task.FromResult(table);
+            if (result.Result != null)
+            {
+                return (EmailEntity)result.Result;
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        private static async Task<EmailTemplateEntity> GetEmailTemplate(CloudTable table, string templateCode)
+        private static async Task<EmailTemplateEntity> GetEmailTemplate(CloudTable emailTemplatesStorageTable, string templateCode)
         {
             TableOperation getOperation = TableOperation.Retrieve<EmailTemplateEntity>(EmailTemplateEntity.DefaultPartitionKey, templateCode);
 
-            var result = await table.ExecuteAsync(getOperation);
+            var result = await emailTemplatesStorageTable.ExecuteAsync(getOperation);
 
             if (result.Result != null)
             {

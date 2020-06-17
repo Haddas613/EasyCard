@@ -15,9 +15,9 @@ namespace IdentityServer.Models
 
         public object CompanyName { get; set; }
 
-        public string EmailEventHubConnectionString { get; set; }
+        public string EmailTableName { get; set; }
 
-        public string EmailEventHubName { get; set; }
+        public string EmailQueueName { get; set; }
 
         public string InternalCertificate { get; set; }
 
