@@ -28,11 +28,11 @@
         </v-stepper-content>
 
         <v-stepper-content step="5" class="py-0 px-0">
-           <additional-settings-form></additional-settings-form>
+           <additional-settings-form :data="model"></additional-settings-form>
         </v-stepper-content>
 
         <v-stepper-content step="6" class="py-0 px-0">
-           <transaction-success :amount="model.amount"></transaction-success>
+           <transaction-success :amount="model.transactionAmount"></transaction-success>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -62,9 +62,35 @@ export default {
   },
   data() {
     return {
-      model:{
-        amount: 0.0,
-        customer: null
+      model: {
+        terminalID: null,
+        transactionType: null,
+        jDealType: null,
+        currency: null,
+        cardPresence: null,
+        creditCardToken: null,
+        creditCardSecureDetails: {
+          cardExpiration: {
+            year: new Date().getFullYear() - 2000,
+            month: new Date().getMonth() + 1
+          },
+          cardNumber: null,
+          cvv: null,
+          cardOwnerNationalID: null,
+          cardOwnerName: null
+        },
+        transactionAmount: 0.0,
+        dealDetails: {
+          dealReference: null,
+          consumerEmail: null,
+          consumerPhone: null,
+          dealDescription: null
+        },
+        installmentDetails: {
+          numberOfPayments: 0,
+          initialPaymentAmount: 0,
+          installmentPaymentAmount: 0
+        }
       },
       step: 1,
       steps: {
@@ -83,8 +109,7 @@ export default {
           skippable: true
         },
         5: {
-          title: "AdditionalSettings",
-          skippable: true
+          title: "AdditionalSettings"
         },
         6: {
           title: "Success",
@@ -104,7 +129,7 @@ export default {
       else this.step--;
     },
     processAmount(data){
-      this.model.amount = data.amount;
+      this.model.transactionAmount = data.amount;
       this.model.note = data.note;
       this.model.items = data.items;
       this.step++;
