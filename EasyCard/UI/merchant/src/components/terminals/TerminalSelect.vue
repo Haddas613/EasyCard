@@ -1,0 +1,61 @@
+<template>
+  <div>
+    <v-overlay :value="loading">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
+    <v-form ref="form" lazy-validation>
+      <v-container fluid>
+        <v-row>
+          <v-col cols="12" md="2" sm="6">
+            <v-select
+              :items="terminals"
+              item-text="label"
+              item-value="terminalID"
+              v-model="terminalID"
+              solo
+              :label="$t('Terminal')"
+              required
+            ></v-select>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-form>
+    <v-btn
+      color="primary"
+      bottom
+      :x-large="true"
+      fixed
+      block
+      @click="ok()"
+    >{{$t('Ok')}}</v-btn>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      loading: false,
+      terminalID: null,
+      terminals: []
+    };
+  },
+  async mounted() {
+    // this.loading = true;
+    this.terminals = (await this.$api.terminals.getTerminals()).data;
+    if (this.terminals.length === 1) {
+      this.$emit("ok", this.terminals[0].terminalID);
+    }
+    this.terminalID = this.terminals[0].terminalID;
+    // this.loading = false;
+  },
+  methods: {
+    ok() {
+      this.$emit("ok", this.terminalID);
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+</style>

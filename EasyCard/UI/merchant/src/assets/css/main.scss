@@ -28,3 +28,16 @@ $secondary : var(--v-secondary-base);
     border: none !important;
     box-shadow: none;
 }
+.ec-stepper{
+  .v-stepper__wrapper{
+    height: 100%;
+  }
+  .v-stepper__content{
+    min-height: calc(100vh - 57px);
+  }
+}
+.theme--light.v-card.ec-card {
+  background-color: inherit;
+  border: none !important;
+  box-shadow: none;
+}
