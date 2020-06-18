@@ -8,6 +8,8 @@ import 'vue-oidc-client/src/polyfill';
 import mainAuth from './auth';
 import Api from './api/ApiBase';
 import './assets/css/main.scss';
+import VueLodash from 'vue-lodash'
+import lodash from 'lodash'
 
 Vue.config.productionTip = false
 
@@ -15,6 +17,7 @@ mainAuth.useRouter(router);
 
 mainAuth.startup().then(ok => {
   Vue.use(Api);
+  Vue.use(VueLodash, { lodash: lodash })
   
   if (ok) {
     new Vue({
