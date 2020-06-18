@@ -255,12 +255,18 @@ namespace IdentityServer.Controllers
             var user = await userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                logger.LogError($"Confirmation code is invalid");
+                logger.LogError($"Confirmation code is invalid. User {userId} does not exist");
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
             //var result = await _userManager.ConfirmEmailAsync(user, code);
             //return View(result.Succeeded ? "ConfirmEmail" : "Error");
+
+            if (!string.IsNullOrWhiteSpace(user.PasswordHash))
+            {
+                logger.LogError($"User {user.Email} already has password");
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
 
             var model = new ConfirmEmailViewModel { Code = code };
             return View(model);
@@ -311,7 +317,7 @@ namespace IdentityServer.Controllers
             var user = await userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                logger.LogError($"Confirmation code is invalid");
+                logger.LogError($"Confirmation code is invalid. User {userId} does not exist");
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
@@ -319,12 +325,13 @@ namespace IdentityServer.Controllers
             if (addPasswordResult.Succeeded)
             {
                 await auditLogger.RegisterConfirmEmail(user);
+                return RedirectToAction(nameof(HomeController.Index), "Home");
 
-                // TODO: return RedirectToAction(nameof(ManageController.EnableAuthenticator), "Manage");
+                //return RedirectToAction(nameof(ManageController.EnableAuthenticator), "Manage");
             }
 
             var pwderrors = string.Join(", ", addPasswordResult.Errors.Select(err => err.Code + ":" + err.Description));
-            logger.LogError($"Set password failed: {pwderrors}");
+            logger.LogError($"User {user.Email} set password failed: {pwderrors}");
 
             AddErrors(addPasswordResult);
             return View();
