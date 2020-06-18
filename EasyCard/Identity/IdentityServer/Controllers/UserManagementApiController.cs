@@ -140,6 +140,36 @@ namespace IdentityServer.Controllers
             return new ObjectResult(operationResult);
         }
 
+        [HttpPost]
+        [Route("resendInvitation")]
+        public async Task<ActionResult<UserOperationResponse>> ResendInvitation(ResendInvitationRequestModel model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return NotFound(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserNotFound });
+            }
+
+            if (user.PasswordHash != null)
+            {
+                return Conflict(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserAlreadyExists, Message = "User has already set password" });
+            }
+
+            var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ConfirmationEmailExpirationInHours));
+
+            var callbackUrl = Url.EmailConfirmationLink(code, Request.Scheme);
+            await emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+
+            var operationResult = new UserOperationResponse
+            {
+                UserID = new Guid(user.Id),
+                ResponseCode = UserOperationResponseCodeEnum.UserCreated
+            };
+
+            return new ObjectResult(operationResult);
+        }
+
         // TODO: validate model
         [HttpPost]
         [Route("terminal")]

@@ -58,6 +58,10 @@ namespace Merchants.Api.Controllers
                 _ = await userManagementClient.CreateUser(mapper.Map<CreateUserRequestModel>(request));
                 user = await userManagementClient.GetUserByEmail(request.Email);
             }
+            else
+            {
+                _ = await userManagementClient.ResendInvitation(new ResendInvitationRequestModel { Email = user.Email });
+            }
 
             await terminalsService.LinkUserToTerminal(user.UserID, request.TerminalID);
 
