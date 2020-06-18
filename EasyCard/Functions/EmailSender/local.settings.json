@@ -6,6 +6,6 @@
     "emailqueue": "email",
     "EmailTemplatesStorageTable": "emailtemplates",
     "SendgridApiKey": "TestKey",
-    "EmailFrom":  "noreply@ecng.co.il"
+    "EmailFrom": "noreply@ecng.co.il"
   }
 }

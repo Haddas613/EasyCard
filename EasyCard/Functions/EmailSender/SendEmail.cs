@@ -65,7 +65,7 @@ namespace EmailSender
 
         private static async Task<EmailEntity> GetEmailMessage(CloudTable emailTable, EmailQueueMessage message)
         {
-            TableOperation getOperation = TableOperation.Retrieve<EmailTemplateEntity>(message.MessageDate.ToString("yy-MM-dd"), message.MessageID.ToString());
+            TableOperation getOperation = TableOperation.Retrieve<EmailEntity>(message.MessageDate.ToString("yy-MM-dd"), message.MessageID.ToString());
 
             var result = await emailTable.ExecuteAsync(getOperation);
 
