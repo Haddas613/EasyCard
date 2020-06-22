@@ -67,6 +67,11 @@ export default {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
     this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
     this.model.jDealType = this.dictionaries.jDealTypeEnum[0].code;
+  },
+  methods: {
+    ok() {
+      this.$emit("ok", this.model);
+    }
   }
 };
 </script>
