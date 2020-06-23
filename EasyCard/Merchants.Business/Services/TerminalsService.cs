@@ -37,13 +37,16 @@ namespace Merchants.Business.Services
 
         public IQueryable<TerminalExternalSystem> GetTerminalExternalSystems() => context.TerminalExternalSystems;
 
+        // TODO: security
         public async Task LinkUserToTerminal(Guid userID, Guid terminalID)
         {
             // if user is already linked to terminal, throw error
             if ((await context.UserTerminalMappings.CountAsync(m => m.UserID == userID && m.TerminalID == terminalID)) > 0)
             {
-                throw new EntityConflictException(ApiMessages.Conflict, nameof(Entities.User.UserTerminalMapping),
-                    $"{nameof(userID)}:{userID};{nameof(terminalID)}:{terminalID}");
+                return;
+
+               // throw new EntityConflictException(ApiMessages.Conflict, nameof(Entities.User.UserTerminalMapping),
+               //     $"{nameof(userID)}:{userID};{nameof(terminalID)}:{terminalID}");
             }
 
             context.UserTerminalMappings.Add(new Entities.User.UserTerminalMapping
@@ -58,15 +61,19 @@ namespace Merchants.Business.Services
             await context.SaveChangesAsync();
         }
 
+        // TODO: security
         public async Task UnLinkUserFromTerminal(Guid userID, Guid terminalID)
         {
-            var terminal = await context.Terminals.FirstAsync(t => t.TerminalID == terminalID);
+            var terminal = await context.Terminals.FirstOrDefaultAsync(t => t.TerminalID == terminalID);
 
-            var entity = await context.UserTerminalMappings.FirstAsync(m => m.TerminalID == terminalID && m.UserID == userID);
+            var entity = await context.UserTerminalMappings.FirstOrDefaultAsync(m => m.TerminalID == terminalID && m.UserID == userID);
 
-            context.UserTerminalMappings.Remove(entity);
+            if (entity != null)
+            {
+                context.UserTerminalMappings.Remove(entity);
 
-            await context.SaveChangesAsync();
+                await context.SaveChangesAsync();
+            }
         }
 
         public async override Task UpdateEntity(Terminal entity, IDbContextTransaction dbTransaction = null)

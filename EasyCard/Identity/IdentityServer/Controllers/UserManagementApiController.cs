@@ -142,7 +142,7 @@ namespace IdentityServer.Controllers
 
         [HttpPost]
         [Route("resendInvitation")]
-        public async Task<ActionResult<UserOperationResponse>> ResendInvitation(ResendInvitationRequestModel model)
+        public async Task<ActionResult<UserOperationResponse>> ResendInvitation([FromBody]ResendInvitationRequestModel model)
         {
             var user = await userManager.FindByEmailAsync(model.Email);
 

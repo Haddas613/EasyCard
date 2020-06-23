@@ -73,7 +73,7 @@ namespace IdentityServerClient
         {
             try
             {
-                return await webApiClient.Get<UserProfileDataResponse>(configuration.Authority, "api/userManagement/user", new { userID = userId }, BuildHeaders);
+                return await webApiClient.Get<UserProfileDataResponse>(configuration.Authority, $"api/userManagement/user/{userId}", null, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
