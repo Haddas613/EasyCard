@@ -43,6 +43,9 @@
   "EnterNameEmailOrPhone": "Enter name, email or phone",
   "ChooseCustomer": "Choose Customer",
   "PreviouslyCharged": "Previously Charged",
+  "CardNo": "Card No.",
+  "Expiry": "Expiry",
+  "NatID": "Nat. ID",
   
   "Login": "Login",
   "LoginWelcomeText": "Welcome to easycard",
