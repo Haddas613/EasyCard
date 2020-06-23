@@ -6,24 +6,39 @@
       </v-col>
       <v-col cols="2" class="d-flex justify-start" v-if="!completed">
         <v-btn icon color="primary" @click="onClickBack()">
-          <v-icon size="2rem" left>mdi-chevron-left</v-icon>
+          <v-icon size="2rem" left>{{this.$vuetify.rtl ? 'mdi-chevron-right' : 'mdi-chevron-left'}}</v-icon>
         </v-btn>
       </v-col>
       <v-col class="d-flex justify-space-around">
         <v-toolbar-title class="subtitle-2 font-weight-bold">{{title}}</v-toolbar-title>
       </v-col>
-      <v-col cols="2" class="d-flex px-0 justify-end" v-if="skippable && !completed" @click="onClickSkip()">
+      <v-col
+        cols="2"
+        class="d-flex justify-end"
+        v-bind:class="{'px-2': this.$vuetify.rtl, 'px-0': !this.$vuetify.rtl}"
+        v-if="skippable && !completed"
+        @click="onClickSkip()"
+      >
         <!-- <v-btn color="primary" icon>
           <v-icon size="2rem">mdi-debug-step-over</v-icon>
-        </v-btn> -->
+        </v-btn>-->
         <v-btn color="primary" class="text-none">{{$t('Skip')}}</v-btn>
       </v-col>
-      <v-col cols="2" class="d-flex px-0 justify-end" v-if="closeable || completed" @click="onClickClose()">
+      <v-col
+        cols="2"
+        class="d-flex px-0 justify-end"
+        v-if="closeable || completed"
+        @click="onClickClose()"
+      >
         <v-btn color="primary" icon>
           <v-icon icon size="2rem" color="primary">mdi-close</v-icon>
         </v-btn>
       </v-col>
-      <v-col cols="2" class="d-flex px-0 justify-end" v-if="!skippable && (!closeable && !completed)">
+      <v-col
+        cols="2"
+        class="d-flex px-0 justify-end"
+        v-if="!skippable && (!closeable && !completed)"
+      >
         <v-spacer></v-spacer>
       </v-col>
     </v-app-bar>
@@ -70,7 +85,7 @@ export default {
 .v-toolbar__content {
   padding-left: 0 !important;
 }
-.navbar-space{
+.navbar-space {
   border-bottom: 1px solid var(--v-ecbg-darken1);
 }
 </style>

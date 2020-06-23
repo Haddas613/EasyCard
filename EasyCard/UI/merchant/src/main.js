@@ -10,6 +10,7 @@ import Api from './api/ApiBase';
 import './assets/css/main.scss';
 import VueLodash from 'vue-lodash'
 import lodash from 'lodash'
+import VueCardFormat from './plugins/card-validator';
 
 Vue.config.productionTip = false
 
@@ -18,6 +19,7 @@ mainAuth.useRouter(router);
 mainAuth.startup().then(ok => {
   Vue.use(Api);
   Vue.use(VueLodash, { lodash: lodash })
+  Vue.use(VueCardFormat);
   
   if (ok) {
     new Vue({
