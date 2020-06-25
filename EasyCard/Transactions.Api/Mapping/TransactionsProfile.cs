@@ -23,10 +23,6 @@ namespace Transactions.Api.Mapping
 
         private void RegisterTransactionMappings()
         {
-           /*CreateMap<PaymentTransaction, CreateTransactionRequest>()
-                .ForMember(m => m.InstallmentDetails, s => s.MapFrom(src => src))
-                .ForAllOtherMembers(d => d.Ignore());
-            */
             CreateMap<CreateTransactionRequest, PaymentTransaction>()
                    .ForMember(d => d.InitialPaymentAmount, s => s.MapFrom(src => src.InstallmentDetails.InitialPaymentAmount))
                    .ForMember(d => d.NumberOfPayments, s => s.MapFrom(src => src.InstallmentDetails.NumberOfPayments))
