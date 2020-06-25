@@ -23,8 +23,16 @@ namespace Transactions.Api.Mapping
 
         private void RegisterTransactionMappings()
         {
+            CreateMap<PaymentTransaction, CreateTransactionRequest>()
+                .ForMember(m => m.InstallmentDetails, s => s.MapFrom(src => src))
+                .ForAllOtherMembers(d => d.Ignore());
+
             CreateMap<CreateTransactionRequest, PaymentTransaction>()
-                .ForMember(d => d.CreditCardDetails, o => o.Ignore());
+                   .ForMember(d => d.InitialPaymentAmount, s => s.MapFrom(src => src.InstallmentDetails.InitialPaymentAmount))
+                   .ForMember(d => d.NumberOfPayments, s => s.MapFrom(src => src.InstallmentDetails.NumberOfPayments))
+                   .ForMember(d => d.InstallmentPaymentAmount, s => s.MapFrom(src => src.InstallmentDetails.InstallmentPaymentAmount))
+                .ForMember(d => d.CreditCardDetails, o => o.Ignore()
+                );
 
             CreateMap<CreditCardSecureDetails, Business.Entities.CreditCardDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))

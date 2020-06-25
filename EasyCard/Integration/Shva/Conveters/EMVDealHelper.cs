@@ -149,9 +149,9 @@ namespace Shva.Conveters
                     inputObj.authorizationCodeManpik = "5";
                 }
 
-                if (creditTerms == ShvaCreditTermsEnum.Installment && req.NumberOfPayments > 1)
+                if (creditTerms == ShvaCreditTermsEnum.Installment && req.NumberOfPayments > 0)
                 {
-                    inputObj.noPayments = req.NumberOfPayments.ToString();
+                    inputObj.noPayments = ( req.NumberOfPayments - 1 ).ToString();
                     inputObj.firstPayment = req.InitialPaymentAmount.ToShvaDecimalStr();
                     inputObj.notFirstPayment = req.InstallmentPaymentAmount.ToShvaDecimalStr(); // amount in other installments
                 }
