@@ -24,6 +24,15 @@ namespace Transactions.Api.Validation
 
             List<SharedHelpers.Error> errors = new List<SharedHelpers.Error>();
 
+            if (jDealType == JDealTypeEnum.J2 && !terminalSettings.J2Allowed)
+            {
+                errors.Add(new SharedHelpers.Error($"{nameof(terminalSettings.J2Allowed)}", Messages.J2NotAllowed));
+            }
+            else if (jDealType == JDealTypeEnum.J5 && !terminalSettings.J5Allowed)
+            {
+                errors.Add(new SharedHelpers.Error($"{nameof(terminalSettings.J5Allowed)}", Messages.J5NotAllowed));
+            }
+
             if (token != null)
             {
                 if (model.CreditCardSecureDetails != null)
