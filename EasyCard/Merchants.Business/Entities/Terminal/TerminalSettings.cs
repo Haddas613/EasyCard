@@ -26,6 +26,10 @@ namespace Merchants.Business.Entities.Terminal
 
         public bool NationalIDRequired { get; set; }
 
+        public bool J2Allowed { get; set; }
+
+        public bool J5Allowed { get; set; }
+
         public bool CvvRequired { get; set; }
     }
 }

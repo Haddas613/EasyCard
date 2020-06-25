@@ -95,6 +95,9 @@ namespace Merchants.Business.Data
                 builder.OwnsOne(b => b.Settings, s =>
                 {
                     s.Property(p => p.CvvRequired).HasColumnName("CvvRequired").HasDefaultValue(false);
+                    s.Property(p => p.J5Allowed).HasColumnName("J5Allowed").HasDefaultValue(false);
+                    s.Property(p => p.J2Allowed).HasColumnName("J2Allowed").HasDefaultValue(false);
+                    s.Property(p => p.CvvRequired).HasColumnName("CvvRequired").HasDefaultValue(false);
                     s.Property(p => p.EnableDeletionOfUntransmittedTransactions).HasColumnName("EnableDeletionOfUntransmittedTransactions").HasDefaultValue(false);
                     s.Property(p => p.NationalIDRequired).HasColumnName("NationalIDRequired").HasDefaultValue(false);
                     s.Property(p => p.PaymentButtonSettings).HasColumnName("PaymentButtonSettings").IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);

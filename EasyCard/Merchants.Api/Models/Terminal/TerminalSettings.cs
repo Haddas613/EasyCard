@@ -36,5 +36,9 @@ namespace Merchants.Api.Models.Terminal
         public bool NationalIDRequired { get; set; }
 
         public bool CvvRequired { get; set; }
+
+        public bool J2Allowed { get; set; }
+
+        public bool J5Allowed { get; set; }
     }
 }

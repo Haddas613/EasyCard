@@ -151,6 +151,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to J2 deal is not allowed.
+        /// </summary>
+        public static string J2NotAllowed {
+            get {
+                return ResourceManager.GetString("J2NotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to J5 deal is not allowed.
+        /// </summary>
+        public static string J5NotAllowed {
+            get {
+                return ResourceManager.GetString("J5NotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NumberOfPayments should be greater than or equal {0}.
         /// </summary>
         public static string NumberOfPaymentsShouldBeGreaterThan {
