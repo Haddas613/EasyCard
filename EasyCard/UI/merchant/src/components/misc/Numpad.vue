@@ -6,6 +6,7 @@
       height="48px"
       @click="ok()"
       block
+      :disabled="model.amount == 0"
     >{{btntext}} {{model.amount}}$</v-btn>
     <v-flex class="white text-center align-stretch px-3">
       <v-row>
