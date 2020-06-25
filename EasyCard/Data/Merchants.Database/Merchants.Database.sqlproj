@@ -61,12 +61,12 @@
     <Folder Include="Security\" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\UserTerminalMappings.sql" />
     <Build Include="dbo\Tables\TerminalExternalSystem.sql" />
     <Build Include="dbo\Tables\Terminal.sql" />
     <Build Include="dbo\Tables\Merchant.sql" />
     <Build Include="dbo\Tables\Feature.sql" />
-    <Build Include="dbo\Tables\ExternalSystem.sql" />
     <Build Include="dbo\Tables\__EFMigrationsHistory.sql" />
+    <Build Include="dbo\Tables\UserTerminalMapping.sql" />
+    <Build Include="dbo\Tables\MerchantHistory.sql" />
   </ItemGroup>
 </Project>
