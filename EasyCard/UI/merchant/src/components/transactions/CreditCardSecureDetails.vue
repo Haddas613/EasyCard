@@ -163,10 +163,11 @@ export default {
         
       this.$emit("ok", {
         save: this.model.save,
-        name: this.model.name,
+        cardOwnerName: this.model.name,
         cardNumber: this.$refs.cardNumberInp.value.replace(/\s/g, ""),
         expiration: this.$refs.expiryInp.value.replace(/\s/g, ""),
-        nationalID: this.model.nationalID
+        cardOwnerNationalID: this.model.nationalID,
+        cvv: this.$refs.cvvInp.value
       });
     },
     validate(key) {
