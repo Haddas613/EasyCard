@@ -8,28 +8,28 @@
     :flat="true"
   >
     <v-row :align="'center'">
-      <v-col cols="2">
+      <v-col cols="4" md="4" lg="4" xl="3">
         <v-app-bar-nav-icon @click.stop="drawerObj = !drawerObj" />
       </v-col>
       <v-col class="d-flex justify-space-around">
-        <v-toolbar-title class="display-1 hidden-sm-and-down">easycard</v-toolbar-title>
+        <v-toolbar-title class="display-1 hidden-xs-only">easycard</v-toolbar-title>
       </v-col>
-      <v-col cols="1">
-        <lang-switcher class="pt-5 hidden-sm-and-down"></lang-switcher>
-      </v-col>
-      <v-col cols="1" class="d-flex justify-end">
-        <v-switch class="pt-5 hidden-sm-and-down" :flat="true" :color="'accent'" label="RTL" v-model="$vuetify.rtl"></v-switch>
+      <v-col cols="5" md="4" lg="4" xl="3" class="d-flex justify-end">
+        <template v-if="$vuetify.breakpoint.smAndUp">
+          <actions-bar :footer="false"></actions-bar>
+        </template>
       </v-col>
     </v-row>
   </v-app-bar>
 </template>
 <script>
 import LangSwitcher from "../../components/LanguageSwitcher"
+import ActionsBar from "../../components/misc/ActionsBar";
 
 export default {
   name: "MainAppBar",
   props: ["drawer"],
-  components: {LangSwitcher},
+  components: {LangSwitcher, ActionsBar},
   computed: {
     drawerObj: {
       get: function() {

@@ -61,13 +61,25 @@
         </v-list-item>
 
       </template>
+      <v-list-item>
+        <v-list-item-action>
+          <v-switch class="px-2" :color="'accent'" label="RTL" v-model="$vuetify.rtl"></v-switch>
+        </v-list-item-action>
+        <v-list-item-content>
+          <lang-switcher class=""></lang-switcher>
+        </v-list-item-content>
+        
+      </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
 <script>
+import LangSwitcher from "../../components/LanguageSwitcher"
+
 export default {
   name: "MainNav",
   props: ["items", "drawer"],
+  components: {LangSwitcher},
   computed: {
     drawerObj: {
       get: function() {

@@ -173,7 +173,7 @@
         </v-row>
         <v-row>
           <v-col cols="12" class="d-flex justify-end">
-            <v-btn color="ecGray" class="mr-4" :to="'/transactions/list'">Go back</v-btn>
+            <v-btn class="mr-4" :to="'/transactions/list'">Go back</v-btn>
             <v-btn color="success" class="mr-4" @click="save()">Save</v-btn>
           </v-col>
         </v-row>
