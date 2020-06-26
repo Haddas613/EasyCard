@@ -176,8 +176,11 @@ export default {
       this.loading = false;
       if(!result || result.isError){
         this.success = false;
+        alert("Error!")
+      }else{
+        this.step++;
       }
-      this.step++;
+      
     }
   }
 };

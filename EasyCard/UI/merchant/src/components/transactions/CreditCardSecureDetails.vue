@@ -1,5 +1,5 @@
 <template>
-  <v-card class="ec-card d-flex flex-column">
+  <v-card class="ec-card d-flex flex-column" fill-height>
     <v-card-text class="py-2">
       <v-form class="ec-form" ref="form">
         <v-text-field
@@ -16,7 +16,7 @@
         </v-text-field>
         <v-flex class="input-special-group">
           <v-row class="input-special">
-            <v-col md="1" cols="3" class="label pr-1">{{$t('CardNo')}}</v-col>
+            <v-col md="2" cols="3" class="label pr-1">{{$t('CardNo')}}</v-col>
             <v-col cols="7" class="centered">
               <v-row class="input-container">
                 <v-col cols="12" class="dense">
@@ -33,12 +33,13 @@
                 </v-col>
               </v-row>
             </v-col>
+            <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
             <v-col cols="1" class="centered">
               <v-icon class="error--text" v-if="errors['cardNumber']">mdi-close</v-icon>
             </v-col>
           </v-row>
           <v-row class="input-special">
-            <v-col md="1" cols="3" class="label">{{$t('Expiry')}}</v-col>
+            <v-col md="2" cols="3" class="label">{{$t('Expiry')}}</v-col>
             <v-col cols="7" class="centered">
               <v-row class="input-container">
                 <v-col cols="12" class="dense">
@@ -54,12 +55,13 @@
                 </v-col>
               </v-row>
             </v-col>
+            <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
             <v-col cols="1" class="centered">
               <v-icon class="error--text" v-if="errors['expiry']">mdi-close</v-icon>
             </v-col>
           </v-row>
           <v-row class="input-special">
-            <v-col md="1" cols="3" class="label">{{$t('CVV')}}</v-col>
+            <v-col md="2" cols="3" class="label">{{$t('CVV')}}</v-col>
             <v-col cols="7" class="centered">
               <v-row class="input-container">
                 <v-col cols="12" class="dense">
@@ -76,12 +78,13 @@
                 </v-col>
               </v-row>
             </v-col>
+            <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
             <v-col cols="1" class="centered">
               <v-icon class="error--text" v-if="errors['cvv']">mdi-close</v-icon>
             </v-col>
           </v-row>
           <v-row class="input-special">
-            <v-col md="1" cols="3" class="label">{{$t('NatID')}}</v-col>
+            <v-col md="2" cols="3" class="label">{{$t('NatID')}}</v-col>
             <v-col cols="7" class="centered">
               <v-row class="input-container">
                 <v-col cols="12" class="dense">
@@ -97,6 +100,7 @@
                 </v-col>
               </v-row>
             </v-col>
+            <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
             <v-col cols="1" class="centered">
               <v-icon class="error--text" v-if="errors['nationalID']">mdi-close</v-icon>
             </v-col>
@@ -106,7 +110,7 @@
       </v-form>
     </v-card-text>
     <v-card-actions class="px-0">
-      <v-btn color="primary" bottom :x-large="true" fixed block @click="ok()">{{$t('Charge')}}</v-btn>
+      <v-btn color="primary" bottom :x-large="true"  block @click="ok()">{{$t('Charge')}}</v-btn>
       <!-- TODO -->
     </v-card-actions>
   </v-card>

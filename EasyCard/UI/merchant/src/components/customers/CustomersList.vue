@@ -18,7 +18,7 @@
         class="pt-4 pb-0 px-4 body-2 font-weight-medium text-uppercase"
         v-if="previouslyCharged"
       >{{$t('PreviouslyCharged')}}</p>
-      <v-list two-line subheader class="pt-0 fill-height">
+      <v-list two-line subheader class="py-0 fill-height">
         <v-list-item
           v-for="customer in previouslyCharged"
           :key="customer.customerId"
@@ -39,7 +39,7 @@
     </template>
     <div v-for="(value, key) in groupedCustomers" :key="key">
       <p class="pt-4 pb-0 px-4 body-2 font-weight-medium text-uppercase">{{key}}</p>
-      <v-list two-line subheader class="pt-0 fill-height">
+      <v-list two-line subheader class="py-0 fill-height">
         <v-list-item
           v-for="customer in value"
           :key="customer.customerId"

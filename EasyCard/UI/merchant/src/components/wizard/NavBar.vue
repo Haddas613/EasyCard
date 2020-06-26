@@ -84,8 +84,6 @@ export default {
 <style lang="scss" scoped>
 .v-toolbar__content {
   padding-left: 0 !important;
-}
-.navbar-space {
   border-bottom: 1px solid var(--v-ecbg-darken1);
 }
 </style>

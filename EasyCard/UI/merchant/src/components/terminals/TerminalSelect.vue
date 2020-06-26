@@ -6,7 +6,7 @@
     <v-form ref="form" lazy-validation>
       <v-container fluid>
         <v-row>
-          <v-col cols="12" md="2" sm="6">
+          <v-col>
             <v-select
               :items="terminals"
               item-text="label"
@@ -24,7 +24,7 @@
       color="primary"
       bottom
       :x-large="true"
-      fixed
+      :fixed="$vuetify.breakpoint.mdAndDown"
       block
       @click="ok()"
     >{{$t('Ok')}}</v-btn>
