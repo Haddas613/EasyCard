@@ -8,7 +8,7 @@ namespace Shared.Helpers
     public class CreditCardDetailsBase
     {
         [Required]
-        [StringLength(19, MinimumLength = 10)]
+        [StringLength(19, MinimumLength = 9)]
         public string CardNumber { get; set; }
 
         [Required]

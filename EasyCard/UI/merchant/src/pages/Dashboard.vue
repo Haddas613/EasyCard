@@ -16,14 +16,14 @@
         </v-list>
       </v-card-text>
     </v-card>
-    <actions-footer v-if="$vuetify.breakpoint.xs"></actions-footer>
+    <actions-bar v-if="$vuetify.breakpoint.xs"></actions-bar>
   </div>
 </template>
 
 <script>
-import ActionsFooter from "../components/misc/ActionsFooter";
+import ActionsBar from "../components/misc/ActionsBar";
 export default {
-  components: { ActionsFooter }
+  components: { ActionsBar }
 };
 </script>
 

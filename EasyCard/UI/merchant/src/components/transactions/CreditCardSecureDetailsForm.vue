@@ -8,7 +8,7 @@
             v-model.lazy="model.cardNumber"
             :label="$t('CardNumber')"
             required
-            :rules="[vr.primitives.required, vr.primitives.stringLength(10, 19)]"
+            :rules="[vr.primitives.required, vr.primitives.stringLength(9, 19)]"
             type="text"
             @keydown.native.space.prevent
             @keydown.native.enter="parseCardReader()"
