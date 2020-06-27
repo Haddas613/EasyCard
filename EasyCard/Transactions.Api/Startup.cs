@@ -56,7 +56,6 @@ namespace Transactions.Api
             services.AddLogging(logging =>
             {
                 logging.AddConfiguration(Configuration.GetSection("Logging"));
-                logging.AddConsole();
                 logging.AddDebug();
                 logging.AddAzureWebAppDiagnostics();
             });
@@ -127,9 +126,6 @@ namespace Transactions.Api
             {
                 ContractResolver = contractResolver
             };
-
-            //.AddJsonOptions(options =>
-            //    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -233,6 +229,8 @@ namespace Transactions.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
+            loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("DefaultConnection")));
+
             app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
 
             app.UseStaticFiles();
@@ -259,6 +257,8 @@ namespace Transactions.Api
             {
                 endpoints.MapControllers();
             });
+
+            loggerFactory.CreateLogger("Startup").LogInformation("Started");
         }
     }
 }
