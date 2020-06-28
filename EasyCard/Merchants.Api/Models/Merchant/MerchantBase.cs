@@ -11,7 +11,7 @@ namespace Merchants.Api.Models.Merchant
 
         public string BusinessName { get; set; }
 
-        public string MerketingName { get; set; }
+        public string MarketingName { get; set; }
 
         public string BusinessID { get; set; }
 

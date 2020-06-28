@@ -10,9 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\Converters\**" />
     <Compile Remove="Models\Settings\**" />
+    <Content Remove="Models\Converters\**" />
     <Content Remove="Models\Settings\**" />
+    <EmbeddedResource Remove="Models\Converters\**" />
     <EmbeddedResource Remove="Models\Settings\**" />
+    <None Remove="Models\Converters\**" />
     <None Remove="Models\Settings\**" />
   </ItemGroup>
 
@@ -57,10 +61,6 @@
     <None Update="Transactions.Api.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\Converters\" />
   </ItemGroup>
 
   <ItemGroup>

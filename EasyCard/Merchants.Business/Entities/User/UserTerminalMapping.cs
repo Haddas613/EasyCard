@@ -19,5 +19,11 @@ namespace Merchants.Business.Entities.User
         public string OperationDoneBy { get; set; }
 
         public Guid? OperationDoneByID { get; set; }
+
+        public string DisplayName { get; set; }
+
+        public string Email { get; set; }
+
+        public IEnumerable<string> Roles { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Shared.Api;
 using Shared.Api.Extensions;
@@ -18,9 +19,11 @@ using Shared.Api.Validation;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
+using Transactions.Api.Extensions.Filtering;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Services;
+using Transactions.Api.Validation;
 using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Transactions.Shared;
@@ -38,11 +41,17 @@ namespace Transactions.Api.Controllers
         private readonly ICreditCardTokenService creditCardTokenService;
         private readonly IMapper mapper;
         private readonly IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage;
+        private readonly ApplicationSettings appSettings;
 
         private readonly ITerminalsService terminalsService;
 
-        public CardTokenController(ITransactionsService transactionsService, ICreditCardTokenService creditCardTokenService,
-            IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper, ITerminalsService terminalsService)
+        public CardTokenController(
+            ITransactionsService transactionsService,
+            ICreditCardTokenService creditCardTokenService,
+            IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage,
+            IMapper mapper,
+            ITerminalsService terminalsService,
+            IOptions<ApplicationSettings> appSettings)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -50,6 +59,7 @@ namespace Transactions.Api.Controllers
             this.mapper = mapper;
 
             this.terminalsService = terminalsService;
+            this.appSettings = appSettings.Value;
         }
 
         [HttpPost]
@@ -58,6 +68,8 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<OperationResponse>> CreateToken([FromBody] TokenRequest model)
         {
             var terminal = SecureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == model.TerminalID).FirstOrDefaultAsync());
+
+            TokenTerminalSettingsValidator.Validate(terminal.Settings, model);
 
             var storageData = mapper.Map<CreditCardTokenKeyVault>(model);
             var dbData = mapper.Map<CreditCardTokenDetails>(model);
@@ -75,13 +87,18 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<CreditCardTokenSummary>>> GetTokens([FromQuery] CreditCardTokenFilter filter)
         {
-            var query = creditCardTokenService.GetTokens();
+            var query = creditCardTokenService.GetTokens().AsNoTracking().Filter(filter);
 
-            var response = new SummariesResponse<CreditCardTokenSummary> { NumberOfRecords = await query.CountAsync() };
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var response = new SummariesResponse<CreditCardTokenSummary> { NumberOfRecords = await query.CountAsync() };
 
-            response.Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).ToListAsync();
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(CreditCardTokenDetails.CreditCardTokenID), filter.OrderByDirection).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
 
-            return Ok(response);
+                response.Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).ToListAsync();
+
+                return Ok(response);
+            }
         }
 
         [HttpDelete]

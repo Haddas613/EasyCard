@@ -10,5 +10,14 @@ namespace Transactions.Api.Models.Tokens
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class CreditCardTokenFilter : FilterBase
     {
+        public Guid? CreditCardTokenID { get; set; }
+
+        public string CardNumber { get; set; }
+
+        public string CardOwnerNationalID { get; set; }
+
+        public Guid? TerminalID { get; set; }
+
+        public Guid? MerchantID { get; set; }
     }
 }

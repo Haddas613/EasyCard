@@ -87,14 +87,14 @@ namespace Shva.Conveters
                 {
                     //CVV
                     inputObj.cvv2 = req.CreditCardToken.Cvv;
-                    inputObj.clientInputPan = req.CreditCardToken.CardNumber;
+                    inputObj.clientInputPan = cardPresence == ShvaCardPresenceEnum.Magnetic ? req.CreditCardToken.CardReaderInput : req.CreditCardToken.CardNumber;
                     inputObj.expirationDate = shvaExpDate;
 
                     // TODO: national ID
-                    //if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
-                    //{
-                    //    inputObj.id = req.CreditCardToken.CardOwnerNationalID;
-                    //}
+                    if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
+                    {
+                        inputObj.id = req.CreditCardToken.CardOwnerNationalID;
+                    }
 
                     // static values for initial deal
                     inputObj.amount = "1";
@@ -134,14 +134,14 @@ namespace Shva.Conveters
             {
                 inputObj.amount = req.TransactionAmount.ToShvaDecimalStr();
                 inputObj.cvv2 = req.CreditCardToken.Cvv;
-                inputObj.clientInputPan = req.CreditCardToken.CardNumber;
+                inputObj.clientInputPan = cardPresence == ShvaCardPresenceEnum.Magnetic ? req.CreditCardToken.CardReaderInput : req.CreditCardToken.CardNumber;
                 inputObj.expirationDate = shvaExpDate;
 
                 // TODO: national ID
-                //if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
-                //{
-                //    inputObj.id = req.CreditCardToken.CardOwnerNationalID;
-                //}
+                if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
+                {
+                    inputObj.id = req.CreditCardToken.CardOwnerNationalID;
+                }
 
                 if (!string.IsNullOrWhiteSpace(req.CreditCardToken.AuthNum))
                 {

@@ -126,6 +126,9 @@
   <data name="CardOwnerNationalIDRequiredButNotPresentInToken" xml:space="preserve">
     <value>Card owner national ID required, but it is not present in stored credit card token</value>
   </data>
+  <data name="CardReaderInputRequired" xml:space="preserve">
+    <value>Card Reader Input Required</value>
+  </data>
   <data name="CreateRequestSentToAggregator" xml:space="preserve">
     <value>Create transaction request sent to {0}</value>
   </data>

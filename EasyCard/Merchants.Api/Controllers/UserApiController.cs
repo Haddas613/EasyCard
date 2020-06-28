@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using IdentityServerClient;
 using Merchants.Api.Models.User;
+using Merchants.Business.Entities.User;
 using Merchants.Business.Services;
 using Merchants.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -36,10 +37,21 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult<UserResponse>> GetUsers([FromQuery] GetUsersFilter filter)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
         [Route("{userID}")]
         public async Task<ActionResult<UserResponse>> GetUser([FromRoute]Guid userID)
         {
-            var userData = mapper.Map<UserResponse>(EnsureExists(await userManagementClient.GetUserByID(userID)));
+            var userEntity = EnsureExists(await userManagementClient.GetUserByID(userID));
+
+            var userData = mapper.Map<UserResponse>(userEntity);
+
+            userData.Terminals = (await terminalsService.GetUserTerminals(userID).ToListAsync())
+                .Select(d => mapper.Map<Models.Terminal.TerminalSummary>(d));
 
             return Ok(userData);
         }
@@ -50,20 +62,30 @@ namespace Merchants.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> InviteUser([FromBody]InviteUserRequest request)
         {
-            _ = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(t => t.TerminalID == request.TerminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(t => t.TerminalID == request.TerminalID));
 
             var user = await userManagementClient.GetUserByEmail(request.Email);
             if (user == null)
             {
+                // TODO: convert non-success response
                 _ = await userManagementClient.CreateUser(mapper.Map<CreateUserRequestModel>(request));
                 user = await userManagementClient.GetUserByEmail(request.Email);
             }
             else
             {
+                // TODO: convert non-success response
                 _ = await userManagementClient.ResendInvitation(new ResendInvitationRequestModel { Email = user.Email });
             }
 
-            await terminalsService.LinkUserToTerminal(user.UserID, request.TerminalID);
+            var userInfo = new UserInfo
+            {
+                DisplayName = user.DisplayName,
+                Email = user.Email,
+                Roles = request.Roles,
+                UserID = user.UserID
+            };
+
+            await terminalsService.LinkUserToTerminal(userInfo, terminal);
 
             return CreatedAtAction(nameof(GetUser), new { userID = user.UserID }, new OperationResponse(Messages.UserInvited, StatusEnum.Success, user.UserID.ToString()));
         }
@@ -74,6 +96,7 @@ namespace Merchants.Api.Controllers
         {
             var opResult = await userManagementClient.LockUser(userID);
 
+            // TODO: convert non-success response
             return Ok(new OperationResponse { Message = "ok", Status = StatusEnum.Success });
         }
 
@@ -83,6 +106,7 @@ namespace Merchants.Api.Controllers
         {
             var opResult = await userManagementClient.UnLockUser(userID);
 
+            // TODO: convert non-success response
             return Ok(new OperationResponse { Message = "ok", Status = StatusEnum.Success });
         }
 
@@ -92,17 +116,28 @@ namespace Merchants.Api.Controllers
         {
             var opResult = await userManagementClient.ResetPassword(userID);
 
+            // TODO: convert non-success response
             return Ok(new OperationResponse { Message = "ok", Status = StatusEnum.Success });
         }
 
         [HttpPut]
         [Route("{userID}/linkToTerminal/{terminalID}")]
-        public async Task<ActionResult<OperationResponse>> LinkUserToTerminal([FromRoute]Guid userID, [FromRoute]Guid terminalID)
+        public async Task<ActionResult<OperationResponse>> LinkUserToTerminal([FromBody] LinkUserToTerminalRequest request)
         {
-            //Check if user exists
-            _ = EnsureExists(await userManagementClient.GetUserByID(userID));
+            var user = EnsureExists(await userManagementClient.GetUserByID(request.UserID));
 
-            await terminalsService.LinkUserToTerminal(userID, terminalID);
+            var terminal = EnsureExists(await terminalsService.GetTerminals()
+                .FirstOrDefaultAsync(m => m.TerminalID == request.TerminalID));
+
+            var userInfo = new UserInfo
+            {
+                 DisplayName = user.DisplayName,
+                 Email = user.Email,
+                 Roles = request.Roles,
+                 UserID = user.UserID
+            };
+
+            await terminalsService.LinkUserToTerminal(userInfo, terminal);
 
             return Ok(new OperationResponse { Message = "ok", Status = StatusEnum.Success });
         }

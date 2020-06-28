@@ -1,6 +1,7 @@
 ﻿using Merchants.Business.Data;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.Terminal;
+using Merchants.Business.Entities.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
@@ -35,35 +36,105 @@ namespace Merchants.Business.Services
 
         public IQueryable<Terminal> GetTerminals() => context.Terminals;
 
+        public async Task<Terminal> GetTerminal(Guid terminalID)
+        {
+            var terminal = await context.Terminals
+                    .Include(t => t.Merchant) // TODO: caching
+                    .FirstOrDefaultAsync(m => m.TerminalID == terminalID);
+
+            if (terminal != null)
+            {
+                // TODO: caching
+                context.Entry(terminal)
+                    .Collection(b => b.Integrations)
+                    .Load();
+            }
+
+            return terminal;
+        }
+
+        public IQueryable<Terminal> GetUserTerminals(Guid userID)
+        {
+            return context.UserTerminalMappings.Where(d => d.UserID == userID).Include(d => d.Terminal).Select(d => d.Terminal);
+        }
+
+        public IQueryable<UserInfo> GetTerminalUsers(Guid terminalID)
+        {
+            return context.UserTerminalMappings.Where(d => d.TerminalID == terminalID).Select(d => new UserInfo { DisplayName = d.DisplayName, Email = d.Email, UserID = d.UserID, Roles = d.Roles });
+        }
+
         public IQueryable<TerminalExternalSystem> GetTerminalExternalSystems() => context.TerminalExternalSystems;
 
         // TODO: security
-        public async Task LinkUserToTerminal(Guid userID, Guid terminalID)
+        public async Task LinkUserToTerminal(UserInfo userInfo, Terminal terminal, IDbContextTransaction dbTransaction = null)
         {
-            // if user is already linked to terminal, throw error
-            if ((await context.UserTerminalMappings.CountAsync(m => m.UserID == userID && m.TerminalID == terminalID)) > 0)
-            {
-                return;
+            string changesStr = null;
 
-               // throw new EntityConflictException(ApiMessages.Conflict, nameof(Entities.User.UserTerminalMapping),
-               //     $"{nameof(userID)}:{userID};{nameof(terminalID)}:{terminalID}");
+            var existingMapping = await context.UserTerminalMappings.FirstOrDefaultAsync(m => m.UserID == userInfo.UserID && m.TerminalID == terminal.TerminalID);
+            if (existingMapping != null)
+            {
+                existingMapping.OperationDate = DateTime.UtcNow;
+                existingMapping.OperationDoneBy = user.GetDoneBy();
+                existingMapping.OperationDoneByID = user.GetDoneByID();
+                existingMapping.Roles = userInfo.Roles;
+                existingMapping.Email = userInfo.Email;
+                existingMapping.DisplayName = userInfo.DisplayName;
+
+                List<string> changes = new List<string>();
+
+                // Must ToArray() here for excluding the AutoHistory model.
+                var entries = this.context.ChangeTracker.Entries().Where(e => e.State == EntityState.Modified || e.State == EntityState.Deleted || e.State == EntityState.Added).ToArray();
+                foreach (var entry in entries)
+                {
+                    changes.Add(entry.AutoHistory().Changed);
+                }
+
+                changesStr = string.Concat("[", string.Join(",", changes), "]");
+            }
+            else
+            {
+                context.UserTerminalMappings.Add(new Entities.User.UserTerminalMapping
+                {
+                    OperationDate = DateTime.UtcNow,
+                    OperationDoneBy = user.GetDoneBy(),
+                    OperationDoneByID = user.GetDoneByID(),
+                    TerminalID = terminal.TerminalID,
+                    UserID = userInfo.UserID,
+                    Roles = userInfo.Roles,
+                    Email = userInfo.Email,
+                    DisplayName = userInfo.DisplayName
+                });
             }
 
-            context.UserTerminalMappings.Add(new Entities.User.UserTerminalMapping
+            var history = new MerchantHistory
             {
+                OperationCode = OperationCodesEnum.UserTerminalLinkAdded,
                 OperationDate = DateTime.UtcNow,
-                OperationDoneBy = user.GetDoneBy(),
-                OperationDoneByID = user.GetDoneByID(),
-                TerminalID = terminalID,
-                UserID = userID,
-            });
+                OperationDoneBy = user?.GetDoneBy(),
+                OperationDoneByID = user?.GetDoneByID(),
+                MerchantID = terminal.MerchantID,
+                OperationDescription = changesStr,
+                SourceIP = httpContextAccessor.GetIP()
+            };
+            context.MerchantHistories.Add(history);
 
-            await context.SaveChangesAsync();
+            if (dbTransaction != null)
+            {
+                await context.SaveChangesAsync();
+            }
+            else
+            {
+                using var transaction = BeginDbTransaction();
+                await context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
         }
 
         // TODO: security
-        public async Task UnLinkUserFromTerminal(Guid userID, Guid terminalID)
+        public async Task UnLinkUserFromTerminal(Guid userID, Guid terminalID, IDbContextTransaction dbTransaction = null)
         {
+            // TODO: history
+
             var terminal = await context.Terminals.FirstOrDefaultAsync(t => t.TerminalID == terminalID);
 
             var entity = await context.UserTerminalMappings.FirstOrDefaultAsync(m => m.TerminalID == terminalID && m.UserID == userID);
@@ -72,7 +143,27 @@ namespace Merchants.Business.Services
             {
                 context.UserTerminalMappings.Remove(entity);
 
-                await context.SaveChangesAsync();
+                var history = new MerchantHistory
+                {
+                    OperationCode = OperationCodesEnum.UserTerminalLinkRemoved,
+                    OperationDate = DateTime.UtcNow,
+                    OperationDoneBy = user?.GetDoneBy(),
+                    OperationDoneByID = user?.GetDoneByID(),
+                    MerchantID = terminal.MerchantID,
+                    SourceIP = httpContextAccessor.GetIP()
+                };
+                context.MerchantHistories.Add(history);
+
+                if (dbTransaction != null)
+                {
+                    await context.SaveChangesAsync();
+                }
+                else
+                {
+                    using var transaction = BeginDbTransaction();
+                    await context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
             }
         }
 

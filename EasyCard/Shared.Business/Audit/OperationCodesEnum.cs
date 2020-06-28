@@ -24,6 +24,9 @@ namespace Shared.Business.Audit
         AccountUnlocked,
 
         TerminalCreated,
-        TerminalUpdated
+        TerminalUpdated,
+
+        UserTerminalLinkAdded,
+        UserTerminalLinkRemoved
     }
 }

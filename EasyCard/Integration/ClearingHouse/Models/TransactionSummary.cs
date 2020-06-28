@@ -9,6 +9,7 @@ namespace ClearingHouse.Models
     /// Transaction details
     /// </summary>
     [DataContract]
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public partial class TransactionSummary
     {
         /// <summary>

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using Shared.Tests.Configuration;
 using Shared.Tests.Fixtures;
 using System;
@@ -15,6 +16,7 @@ using Transactions.Api.Mapping;
 using Transactions.Api.Services;
 using Transactions.Business.Data;
 using Transactions.Business.Services;
+using Transactions.Shared;
 using Transactions.Tests.MockSetups;
 
 namespace Transactions.Tests.Fixtures
@@ -36,6 +38,8 @@ namespace Transactions.Tests.Fixtures
         public IMapper Mapper { get; private set; }
 
         public ILogger<Api.Controllers.TransactionsApiController> Logger { get; } = new NullLogger<Api.Controllers.TransactionsApiController>();
+
+        public IOptions<ApplicationSettings> AppSettings { get; } = Options.Create(new ApplicationSettings { FiltersGlobalPageSizeLimit = 1000 });
 
         public TransactionsFixture()
         {

@@ -7,13 +7,17 @@ using System.Threading.Tasks;
 namespace Merchants.Api.Models.User
 {
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
-    public class UserSummary
+    public class UserTerminalLinkSummary
     {
-        public string UserID { get; set; }
+        public Guid TerminalID { get; set; }
 
-        public string DisplayName { get; set; }
+        public string Label { get; set; }
 
-        public string Email { get; set; }
+        public string MerchantBusinessName { get; set; }
+
+        public Guid? MerchantID { get; set; }
+
+        public DateTime? Linked { get; set; }
 
         public IEnumerable<string> Roles { get; set; }
     }

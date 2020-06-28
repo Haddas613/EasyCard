@@ -10,14 +10,15 @@ namespace Transactions.Api.Models.Tokens
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class CreditCardTokenSummary
     {
-        public string CreditCardTokenID { get; set; }
+        public Guid? CreditCardTokenID { get; set; }
 
-        public string TerminalID { get; set; }
+        public Guid? TerminalID { get; set; }
 
-        public string MerchantID { get; set; }
+        public Guid? MerchantID { get; set; }
 
         public string CardNumber { get; set; }
 
+        [JsonConverter(typeof(CardExpirationConverter))]
         public CardExpiration CardExpiration { get; set; }
 
         public string CardVendor { get; set; }

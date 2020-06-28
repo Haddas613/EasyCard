@@ -1,16 +1,17 @@
-﻿using Newtonsoft.Json.Converters;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Models.Transactions
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class TransactionSummary
     {
         public Guid PaymentTransactionID { get; set; }

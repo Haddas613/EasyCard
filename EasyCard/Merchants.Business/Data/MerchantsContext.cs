@@ -22,6 +22,10 @@ namespace Merchants.Business.Data
            v => v.ToString(Formatting.None),
            v => JObject.Parse(v));
 
+        private static readonly ValueConverter StringArrayConverter = new ValueConverter<IEnumerable<string>, string>(
+            v => string.Join(",", v),
+            v => v != null ? v.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries) : null);
+
         public DbSet<Merchant> Merchants { get; set; }
 
         public DbSet<Feature> Features { get; set; }
@@ -160,6 +164,11 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.UserID).IsRequired(true);
 
                 builder.HasIndex(idx => new { idx.UserID, idx.TerminalID }).IsUnique(true);
+
+                builder.Property(b => b.Roles).IsRequired(false).IsUnicode(false).HasConversion(StringArrayConverter);
+
+                builder.Property(b => b.DisplayName).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                builder.Property(b => b.Email).IsRequired(false).HasMaxLength(50).IsUnicode(true);
             }
         }
 

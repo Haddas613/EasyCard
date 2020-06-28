@@ -1,15 +1,16 @@
 ﻿using Merchants.Api.Models.Merchant;
 using Merchants.Shared.Enums;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Merchants.Api.Models.Terminal
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class TerminalSummary
     {
         public Guid TerminalID { get; set; }

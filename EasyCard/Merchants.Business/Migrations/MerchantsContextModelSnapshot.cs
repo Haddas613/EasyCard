@@ -245,6 +245,16 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
+
                     b.Property<DateTime>("OperationDate")
                         .HasColumnType("datetime2");
 
@@ -256,6 +266,10 @@ namespace Merchants.Business.Migrations
                     b.Property<Guid?>("OperationDoneByID")
                         .HasColumnType("uniqueidentifier")
                         .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<string>("Roles")
+                        .HasColumnType("varchar(max)")
                         .IsUnicode(false);
 
                     b.Property<Guid>("TerminalID")

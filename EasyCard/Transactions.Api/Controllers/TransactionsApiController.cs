@@ -140,6 +140,10 @@ namespace Transactions.Api.Controllers
         [SwaggerRequestExample(typeof(CreateTransactionRequest), typeof(CreateTransactionRequestExample))]
         public async Task<ActionResult<OperationResponse>> CreateTransaction([FromBody] CreateTransactionRequest model)
         {
+            Debug.WriteLine(User);
+            var merchantID = User.GetMerchantID();
+            var userIsTerminal = User.IsTerminal();
+
             // TODO: validate that credit card details should be absent
             if (!string.IsNullOrWhiteSpace(model.CreditCardToken))
             {
@@ -237,8 +241,7 @@ namespace Transactions.Api.Controllers
         private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialDealID = null)
         {
             // TODO: caching
-            // TODO: redo ".Include(t => t.Integrations)"
-            var terminal = SecureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == model.TerminalID).Include(t => t.Integrations).FirstOrDefaultAsync());
+            var terminal = SecureExists(await terminalsService.GetTerminal(model.TerminalID));
 
             TransactionTerminalSettingsValidator.Validate(terminal.Settings, model, token, jDealType, specialTransactionType, initialDealID);
 

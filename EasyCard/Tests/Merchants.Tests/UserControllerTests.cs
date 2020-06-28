@@ -1,6 +1,7 @@
 ﻿using IdentityServerClient;
 using Merchants.Api.Controllers;
 using Merchants.Api.Models.User;
+using Merchants.Business.Entities.User;
 using Merchants.Tests.Fixtures;
 using Merchants.Tests.MockSetups;
 using Microsoft.EntityFrameworkCore;
@@ -119,14 +120,18 @@ namespace MerchantsApi.Tests
             var controller = new UserApiController(merchantsFixture.TerminalsService, clientMockSetup.MockObj.Object, merchantsFixture.Mapper);
 
             //Get terminal ID which is guaranteed to be not linked to current user
-            var terminalID = (await merchantsFixture.MerchantsContext.UserTerminalMappings.Where(u => u.UserID != clientMockSetup.UserEntityId).FirstOrDefaultAsync())?.TerminalID
-                ?? await merchantsFixture.MerchantsContext.Terminals.Select(s => s.TerminalID).FirstAsync();
+            var terminal = (await merchantsFixture.MerchantsContext.UserTerminalMappings.Where(u => u.UserID != clientMockSetup.UserEntityId).Select(d => d.Terminal).FirstOrDefaultAsync())
+                ?? await merchantsFixture.MerchantsContext.Terminals.FirstAsync();
 
-            var actionResult = await controller.LinkUserToTerminal(clientMockSetup.UserEntityId, terminalID);
+            var userInfo = new UserInfo { UserID = clientMockSetup.UserEntityId, Email = clientMockSetup.UserEmail };
+
+            var request = new LinkUserToTerminalRequest { UserID = clientMockSetup.UserEntityId, TerminalID = terminal.TerminalID };
+
+            var actionResult = await controller.LinkUserToTerminal(request);
 
             var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;
-            var linkedTerminal = await merchantsFixture.MerchantsContext.UserTerminalMappings.FirstOrDefaultAsync(t => t.TerminalID == terminalID && t.UserID == clientMockSetup.UserEntityId);
+            var linkedTerminal = await merchantsFixture.MerchantsContext.UserTerminalMappings.FirstOrDefaultAsync(t => t.TerminalID == terminal.TerminalID && t.UserID == clientMockSetup.UserEntityId);
 
             Assert.NotNull(response);
             Assert.Equal(200, response.StatusCode);

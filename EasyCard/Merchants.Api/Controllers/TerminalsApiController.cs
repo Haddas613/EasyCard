@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.Terminal;
+using Merchants.Api.Models.User;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Models.Integration;
 using Merchants.Business.Services;
@@ -81,10 +82,9 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}")]
         public async Task<ActionResult<TerminalResponse>> GetTerminal([FromRoute]Guid terminalID)
         {
-            var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminals()
-                .Include(t => t.Integrations)
-                .Include(t => t.Merchant)
-                .FirstOrDefaultAsync(m => m.TerminalID == terminalID)));
+            var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminal(terminalID)));
+
+            terminal.Users = await mapper.ProjectTo<UserSummary>(terminalsService.GetTerminalUsers(terminal.TerminalID)).ToListAsync();
 
             var externalSystems = externalSystemsService.GetExternalSystems().ToDictionary(d => d.ExternalSystemID);
 

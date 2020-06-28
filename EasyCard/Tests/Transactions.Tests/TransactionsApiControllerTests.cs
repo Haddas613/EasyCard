@@ -47,8 +47,13 @@ namespace Transactions.Tests
 
             keyValueStorageMock.DefaultToken.TerminalID = transactionsFixture.TerminalsServiceMockSetup.TerminalsList.First().TerminalID;
 
-            var cardTokenController = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService,
-                keyValueStorageMock.MockObj.Object, transactionsFixture.Mapper, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object);
+            var cardTokenController = new CardTokenController(
+                transactionsFixture.TransactionsService,
+                transactionsFixture.CreditCardTokenService,
+                keyValueStorageMock.MockObj.Object,
+                transactionsFixture.Mapper,
+                transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
+                transactionsFixture.AppSettings);
             var tokenRequest = new TokenRequest
             {
                 CardExpiration = new CardExpiration { Month = 1, Year = 25 },
@@ -187,8 +192,13 @@ namespace Transactions.Tests
 
             if (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.CountAsync() == 0)
             {
-                var cardTokenController = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService,
-                    keyValueStorageMock.MockObj.Object, transactionsFixture.Mapper, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object);
+                var cardTokenController = new CardTokenController(
+                    transactionsFixture.TransactionsService,
+                    transactionsFixture.CreditCardTokenService,
+                    keyValueStorageMock.MockObj.Object,
+                    transactionsFixture.Mapper,
+                    transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
+                    transactionsFixture.AppSettings);
                 var tokenRequest = new TokenRequest
                 {
                     CardExpiration = new CardExpiration { Month = 1, Year = 25 },
@@ -252,8 +262,13 @@ namespace Transactions.Tests
 
             if (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.CountAsync() == 0)
             {
-                var cardTokenController = new CardTokenController(transactionsFixture.TransactionsService, transactionsFixture.CreditCardTokenService,
-                    keyValueStorageMock.MockObj.Object, transactionsFixture.Mapper, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object);
+                var cardTokenController = new CardTokenController(
+                    transactionsFixture.TransactionsService, 
+                    transactionsFixture.CreditCardTokenService,
+                    keyValueStorageMock.MockObj.Object, 
+                    transactionsFixture.Mapper,
+                    transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
+                    transactionsFixture.AppSettings);
                 var tokenRequest = new TokenRequest
                 {
                     CardExpiration = new CardExpiration { Month = 1, Year = 25 },

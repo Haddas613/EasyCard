@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -12,6 +13,7 @@ namespace Shared.Helpers
         public string CardNumber { get; set; }
 
         [Required]
+        [JsonConverter(typeof(CardExpirationConverter))]
         public CardExpiration CardExpiration { get; set; }
 
         [StringLength(20)]

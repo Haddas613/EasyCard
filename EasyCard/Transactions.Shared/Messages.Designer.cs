@@ -88,6 +88,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Card Reader Input Required.
+        /// </summary>
+        public static string CardReaderInputRequired {
+            get {
+                return ResourceManager.GetString("CardReaderInputRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create transaction request sent to {0}.
         /// </summary>
         public static string CreateRequestSentToAggregator {

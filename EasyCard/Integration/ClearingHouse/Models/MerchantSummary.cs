@@ -9,6 +9,7 @@ namespace ClearingHouse.Models
     /// Merchant list view
     /// </summary>
     [DataContract]
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public partial class MerchantSummary
     {
         /// <summary>

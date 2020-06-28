@@ -6,19 +6,20 @@ using System.Threading.Tasks;
 
 namespace Merchants.Api.Models.Merchant
 {
+    // TODO: use base class (see MerchantRequest)
     public class UpdateMerchantRequest
     {
         [Required(AllowEmptyStrings = false)]
-        [StringLength(50, MinimumLength = 6)]
+        [StringLength(50, MinimumLength = 3)]
         public string BusinessName { get; set; }
 
-        [StringLength(50, MinimumLength = 6)]
+        [StringLength(50, MinimumLength = 3)]
         public string MarketingName { get; set; }
 
-        [StringLength(50)]
+        [StringLength(9, MinimumLength = 9)]
         public string BusinessID { get; set; }
 
-        [StringLength(50, MinimumLength = 6)]
+        [StringLength(50, MinimumLength = 3)]
         public string ContactPerson { get; set; }
     }
 }

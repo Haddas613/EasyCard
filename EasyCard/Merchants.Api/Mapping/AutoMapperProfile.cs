@@ -58,6 +58,7 @@ namespace Merchants.Api.Mapping
         {
             CreateMap<UserProfileDataResponse, UserResponse>();
             CreateMap<InviteUserRequest, CreateUserRequestModel>();
+            CreateMap<Business.Entities.User.UserInfo, UserSummary>();
         }
     }
 }

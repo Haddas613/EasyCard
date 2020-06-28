@@ -6,7 +6,7 @@ namespace Shared.Api.Models.Enums
 {
     public enum OrderByDirectionEnum
     {
-        ASC,
-        DESC
+        DESC = 0,
+        ASC = 1,
     }
 }

@@ -12,6 +12,7 @@ namespace Shared.Integration.Models
     {
         [Required]
         [StringLength(4, MinimumLength = 3)]
+        [RegularExpression("^[0-9]*$")]
         public string Cvv { get; set; }
 
         /// <summary>
