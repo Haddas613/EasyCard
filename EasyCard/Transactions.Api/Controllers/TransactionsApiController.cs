@@ -241,7 +241,7 @@ namespace Transactions.Api.Controllers
         private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialDealID = null)
         {
             // TODO: caching
-            var terminal = SecureExists(await terminalsService.GetTerminal(model.TerminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
             TransactionTerminalSettingsValidator.Validate(terminal.Settings, model, token, jDealType, specialTransactionType, initialDealID);
 

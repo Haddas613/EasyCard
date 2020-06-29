@@ -12,6 +12,6 @@ namespace Transactions.Shared
 
         public string ClearingHouseRequestsLogStorageTable { get; set; }
 
-        public int FiltersGlobalPageSizeLimit { get; set; }
+        public int FiltersGlobalPageSizeLimit { get; set; } = 1000;
     }
 }

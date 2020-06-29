@@ -108,10 +108,10 @@ namespace IdentityServer.Controllers
                     // if the user cancels, send a result back into IdentityServer as if they
                     // denied the consent (even if this client does not require consent).
                     // this will send back an access denied OIDC error response to the client.
-                    await interaction.GrantConsentAsync(context, ConsentResponse.Denied);
+                    await interaction.GrantConsentAsync(context, new ConsentResponse() { Error = AuthorizationError.AccessDenied });
 
                     // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                    if (await clientStore.IsPkceClientAsync(context.ClientId))
+                    if (await clientStore.IsPkceClientAsync(context.Client.ClientId))
                     {
                         // if the client is PKCE then we assume it's native, so this change in how to
                         // return the response is for better UX for the end user.
@@ -133,12 +133,12 @@ namespace IdentityServer.Controllers
                 if (result.Succeeded)
                 {
                     var user = await userManager.FindByNameAsync(model.Username);
-                    await events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.ClientId));
+                    await events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client?.ClientId));
                     await auditLogger.RegisterLogin(user);
 
                     if (context != null)
                     {
-                        if (await clientStore.IsPkceClientAsync(context.ClientId))
+                        if (await clientStore.IsPkceClientAsync(context.Client?.ClientId))
                         {
                             // if the client is PKCE then we assume it's native, so this change in how to
                             // return the response is for better UX for the end user.
@@ -165,7 +165,7 @@ namespace IdentityServer.Controllers
                     }
                 }
 
-                await events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.ClientId));
+                await events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.Client?.ClientId));
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
 
@@ -561,9 +561,9 @@ namespace IdentityServer.Controllers
                 }).ToList();
 
             var allowLocal = true;
-            if (context?.ClientId != null)
+            if (context?.Client?.ClientId != null)
             {
-                var client = await clientStore.FindEnabledClientByIdAsync(context.ClientId);
+                var client = await clientStore.FindEnabledClientByIdAsync(context.Client?.ClientId);
                 if (client != null)
                 {
                     allowLocal = client.EnableLocalLogin;

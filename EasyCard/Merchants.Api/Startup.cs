@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Shared.Api;
+using Shared.Api.Models.Binding;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
@@ -131,7 +132,11 @@ namespace Merchants.Api
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+
+                //MissingMemberHandling = MissingMemberHandling.Error NOTE: do not enable it
+
+                //Converters = new[] { new TrimmingJsonConverter() } NOTE: do not enable it
             };
 
             services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options =>
@@ -168,6 +173,7 @@ namespace Merchants.Api
             services.AddScoped<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
 
             var egaeg = Configuration.GetConnectionString("DefaultConnection");
+
             // DI: services
             services.AddDbContext<MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IMerchantsService, MerchantsService>();

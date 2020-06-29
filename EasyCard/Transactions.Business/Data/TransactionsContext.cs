@@ -10,11 +10,19 @@ using System.Security.Claims;
 using System.Text;
 using Transactions.Business.Entities;
 using Shared.Helpers.Security;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
+using Microsoft.Extensions.Logging.Debug;
 
 namespace Transactions.Business.Data
 {
     public class TransactionsContext : DbContext
     {
+        public static readonly LoggerFactory DbCommandConsoleLoggerFactory
+          = new LoggerFactory(new[] {
+              new DebugLoggerProvider ()
+            });
+
         public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
 
         public DbSet<CreditCardTokenDetails> CreditCardTokenDetails { get; set; }
@@ -32,6 +40,10 @@ namespace Transactions.Business.Data
         {
             this.user = httpContextAccessor.GetUser();
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder
+                .UseLoggerFactory(DbCommandConsoleLoggerFactory);
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

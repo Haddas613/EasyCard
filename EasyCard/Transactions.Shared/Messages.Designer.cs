@@ -268,6 +268,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transaction Status is not valid for this operation.
+        /// </summary>
+        public static string TransactionStatusIsNotValid {
+            get {
+                return ResourceManager.GetString("TransactionStatusIsNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transactions Transmission Failed.
         /// </summary>
         public static string TransactionsTransmissionFailed {

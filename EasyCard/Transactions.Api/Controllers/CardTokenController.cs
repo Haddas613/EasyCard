@@ -67,7 +67,7 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateToken([FromBody] TokenRequest model)
         {
-            var terminal = SecureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == model.TerminalID).FirstOrDefaultAsync());
+            var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == model.TerminalID).FirstOrDefaultAsync());
 
             TokenTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -108,7 +108,7 @@ namespace Transactions.Api.Controllers
             var guid = new Guid(key);
             var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(t => t.CreditCardTokenID == guid));
 
-            var terminal = SecureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == token.TerminalID).FirstOrDefaultAsync());
+            var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == token.TerminalID).FirstOrDefaultAsync());
 
             await keyValueStorage.Delete(key);
 

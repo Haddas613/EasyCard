@@ -20,16 +20,16 @@ namespace Shared.Api
             return src;
         }
 
-        [NonAction]
-        protected T SecureExists<T>(T src)
-        {
-            if (src == null)
-            {
-                throw new SecurityException(ApiMessages.YouHaveNoAccess);
-            }
+        //[NonAction]
+        //protected T SecureExists<T>(T src)
+        //{
+        //    if (src == null)
+        //    {
+        //        throw new SecurityException(ApiMessages.YouHaveNoAccess);
+        //    }
 
-            return src;
-        }
+        //    return src;
+        //}
 
         [NonAction]
         protected T ValidateExists<T>(T src, string message)

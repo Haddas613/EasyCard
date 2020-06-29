@@ -29,6 +29,12 @@ namespace Transactions.Shared.Enums
         CommitedToAggregator = 30,
 
         /// <summary>
+        /// Shva transmision in progress
+        /// </summary>
+        [EnumMember(Value = "transmittedToProcessor")]
+        TransmissionInProgress = 35,
+
+        /// <summary>
         /// Shva transmision is done
         /// </summary>
         [EnumMember(Value = "transmittedToProcessor")]

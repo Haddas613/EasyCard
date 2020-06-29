@@ -86,17 +86,18 @@ namespace Transactions.Api.Controllers
 
             var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
 
-            query = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByDirection).ApplyPagination(filter);
+            query = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByDirection);
 
-            response.Data = await mapper.ProjectTo<TransactionSummary>(query.ApplyPagination(filter)).ToListAsync();
+            response.Data = await mapper.ProjectTo<TransactionSummary>(query.ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit)).ToListAsync();
 
             return Ok(response);
         }
 
         [HttpPost]
+        [Route("transmit")]
         public async Task<ActionResult<OperationResponse>> TransmitTransactions(TransmitTransactionsRequest transmitTransactionsRequest)
         {
-            var terminal = SecureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == transmitTransactionsRequest.TerminalID).Include(t => t.Integrations).FirstOrDefaultAsync());
+            var terminal = EnsureExists(await terminalsService.GetTerminal(transmitTransactionsRequest.TerminalID));
 
             var terminalProcessor = ValidateExists(
                 terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
@@ -106,19 +107,61 @@ namespace Transactions.Api.Controllers
 
             var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
 
-            var quesry = transactionsService.GetTransactions().Where(t => t.TerminalID == transmitTransactionsRequest.TerminalID && t.Status == TransactionStatusEnum.CommitedToAggregator);
+            var query = transactionsService.GetTransactions().Where(t => /*t.TerminalID == transmitTransactionsRequest.TerminalID &&*/ t.Status == TransactionStatusEnum.CommitedToAggregator);
 
+            // TODO: check if not all transactions can be transmitted
             if (transmitTransactionsRequest.PaymentTransactionIDs?.Count() > 0)
             {
-                quesry = quesry.Where(t => transmitTransactionsRequest.PaymentTransactionIDs.Contains(t.PaymentTransactionID));
+                query = query.Where(t => transmitTransactionsRequest.PaymentTransactionIDs.Contains(t.PaymentTransactionID));
             }
 
+            query = query.Take(appSettings.FiltersGlobalPageSizeLimit);
+
+            var updated = query.UpdateFromQuery(x => new PaymentTransaction { Status = TransactionStatusEnum.TransmissionInProgress });
+
+            // TODO: update status to TransmissionInProgress
+
             // TODO: common deal id
-            var processorIds = await quesry.Select(d => d.ShvaTransactionDetails.ShvaDealID).ToListAsync();
+            var processorIds = await query.Select(d => d.ShvaTransactionDetails.ShvaDealID).ToListAsync();
 
             var processorRequest = new ProcessorTransmitTransactionsRequest { TransactionIDs = processorIds, ProcessorSettings = processorSettings, CorrelationId = GetCorrelationID() };
 
             var processorRespnse = await processor.TransmitTransactions(processorRequest);
+
+            // TODO: list of transmitted transactions
+            return new OperationResponse(Messages.TransactionCreated, StatusEnum.Success);
+        }
+
+        [HttpDelete]
+        [Route("cancel")]
+        public async Task<ActionResult<OperationResponse>> CancelNotTransmittedTransaction(TransmitTransactionsRequest cancelTransmissionRequest)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(cancelTransmissionRequest.TerminalID));
+
+            var terminalAggregator = ValidateExists(
+               terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
+               Messages.AggregatorNotDefined);
+
+            var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+
+            var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
+
+            //using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+            //{
+            //    var transaction = EnsureExists(await transactionsService.GetTransactions()
+            //     .FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID));
+
+            //    if (transaction.Status != TransactionStatusEnum.CommitedToAggregator)
+            //    {
+            //        return BadRequest(new OperationResponse(Messages.TransactionStatusIsNotValid, StatusEnum.Error));
+            //    }
+
+            //    // TODO: clearing house cancellation
+
+            //    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.CancelledByMerchant);
+
+                
+            //}
 
             return new OperationResponse(Messages.TransactionCreated, StatusEnum.Success);
         }

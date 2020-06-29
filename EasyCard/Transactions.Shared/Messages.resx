@@ -186,6 +186,9 @@
   <data name="TransactionCreated" xml:space="preserve">
     <value>Transaction Created</value>
   </data>
+  <data name="TransactionStatusIsNotValid" xml:space="preserve">
+    <value>Transaction Status is not valid for this operation</value>
+  </data>
   <data name="TransactionsTransmissionFailed" xml:space="preserve">
     <value>Transactions Transmission Failed</value>
   </data>
