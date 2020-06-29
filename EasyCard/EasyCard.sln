@@ -84,6 +84,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShvaServiceImitation", "Int
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastucture.Tests", "Infrastucture.Tests\Infrastucture.Tests.csproj", "{18A16A5E-B72D-4441-B90E-08640BCCEDFC}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "System.Database", "Data\System.Database\System.Database.sqlproj", "{6C29B5A9-DA3B-42DC-B15E-58B29CD23D1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -202,6 +204,12 @@ Global
 		{18A16A5E-B72D-4441-B90E-08640BCCEDFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18A16A5E-B72D-4441-B90E-08640BCCEDFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18A16A5E-B72D-4441-B90E-08640BCCEDFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C29B5A9-DA3B-42DC-B15E-58B29CD23D1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C29B5A9-DA3B-42DC-B15E-58B29CD23D1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C29B5A9-DA3B-42DC-B15E-58B29CD23D1D}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{6C29B5A9-DA3B-42DC-B15E-58B29CD23D1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C29B5A9-DA3B-42DC-B15E-58B29CD23D1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C29B5A9-DA3B-42DC-B15E-58B29CD23D1D}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -235,6 +243,7 @@ Global
 		{309D26B4-1939-4CE9-814C-BCA07AF345B8} = {68126764-B9A1-45D9-9C33-E84873A9124E}
 		{CD231C07-1AF0-4D55-8993-B2EB9C327102} = {309D26B4-1939-4CE9-814C-BCA07AF345B8}
 		{18A16A5E-B72D-4441-B90E-08640BCCEDFC} = {BD9E08F4-001A-4C24-8779-290E3656E697}
+		{6C29B5A9-DA3B-42DC-B15E-58B29CD23D1D} = {9B8C2352-522A-4F75-A1AA-F5E4226EEB83}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB40244C-6EBC-4B97-8F95-FB108B33F76E}

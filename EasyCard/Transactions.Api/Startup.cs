@@ -67,7 +67,8 @@ namespace Transactions.Api
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4200",
+                        builder.WithOrigins(
+                                            "http://localhost:4200",
                                             "http://localhost:8080",
                                             "https://ecng-profile.azurewebsites.net",
                                             "https://ecng-merchants.azurewebsites.net")
@@ -229,7 +230,7 @@ namespace Transactions.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
-            loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("DefaultConnection")));
+            loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("SystemConnection")));
 
             app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
 
