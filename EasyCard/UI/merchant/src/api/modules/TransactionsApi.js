@@ -15,10 +15,13 @@ export default class TransactionsApi {
             this.$headers = data.columns
         }
 
-        let data = await this.base.get(this.transactionsUrl, params)
+        let data = await this.base.get(this.transactionsUrl, params);
+        
+        if(!data || data.status === "error")
+            return null;
 
         let dictionaries = await this.base.dictionaries.$getTransactionDictionaries()
-
+        
         data.data = data.data.map(d => this.format(d, this.$headers, dictionaries))
 
         data.headers = this.headers

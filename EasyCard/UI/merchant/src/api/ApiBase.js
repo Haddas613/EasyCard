@@ -74,16 +74,23 @@ class ApiBase {
                 }else if(showSuccessToastr && result.status === "success"){
                     Vue.toasted.show(result.message, { type: 'success', duration: 5000, ...this.toastedOpts });
                 }
+
+                return result;
             }
             else{
                 Vue.toasted.show(result.message, { type: 'error', ...this.toastedOpts });
+                
+                //Server Validation errors are returned to component
+                if(request.status === 400){
+                    return result;
+                }
             } 
-            return result;
+            return null;
 
         } catch (err) {
             Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error', ...this.toastedOpts });
         }
-        return { status: "error", message: i18n.t('ServerErrorTryAgainLater') };
+        return null;
     }
 
     _formatHeaders(headers) {

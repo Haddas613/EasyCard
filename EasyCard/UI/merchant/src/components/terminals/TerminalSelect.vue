@@ -41,13 +41,17 @@ export default {
     };
   },
   async mounted() {
-    // this.loading = true;
-    this.terminals = (await this.$api.terminals.getTerminals()).data;
-    if (this.terminals.length === 1) {
-      this.$emit("ok", this.terminals[0].terminalID);
+    let timeout = setTimeout((() => {this.loading = true}).bind(this), 1000);
+    
+    this.terminals = (await this.$api.terminals.getTerminals()) || [];
+    if (this.terminals.length > 0) {
+      if (this.terminals.length === 1) {
+        this.$emit("ok", this.terminals[0].terminalID);
+      }
+      this.terminalID = this.terminals[0].terminalID;
     }
-    this.terminalID = this.terminals[0].terminalID;
-    // this.loading = false;
+    clearTimeout(timeout);
+    this.loading = false;
   },
   methods: {
     ok() {

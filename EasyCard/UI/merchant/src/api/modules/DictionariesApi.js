@@ -9,6 +9,9 @@ export default class DictionariesApi {
         if (!this.transactionDictionaries) {
 
             let data = await this.base.get(this.dictionariesUrl + '/transaction');
+            if(!data)
+                return null;
+
             this.$transactionDictionaries = data;
             this.transactionDictionaries = {};
 
