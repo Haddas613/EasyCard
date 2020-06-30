@@ -41,9 +41,9 @@ namespace Transactions.Business.Data
             this.user = httpContextAccessor.GetUser();
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder
-                .UseLoggerFactory(DbCommandConsoleLoggerFactory);
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //    => optionsBuilder
+        //        .UseLoggerFactory(DbCommandConsoleLoggerFactory);
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

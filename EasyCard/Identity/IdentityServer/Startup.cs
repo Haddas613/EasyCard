@@ -112,6 +112,7 @@ namespace IdentityServer
             })
             .AddInMemoryIdentityResources(Config.Ids)
             .AddInMemoryApiResources(Config.Apis)
+            .AddInMemoryApiScopes(Config.ApiScopes)
             .AddInMemoryClients(Config.Clients)
             .AddAspNetIdentity<ApplicationUser>()
 
@@ -128,7 +129,6 @@ namespace IdentityServer
                 {
                     options.Authority = identity.Authority;
                     options.RequireHttpsMetadata = true;
-                    options.ApiName = "management_api";
                     options.EnableCaching = true;
                 });
 

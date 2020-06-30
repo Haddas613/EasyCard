@@ -13,10 +13,18 @@ namespace IdentityServer
                 new IdentityResources.Profile(),
             };
 
+        public static IEnumerable<ApiScope> ApiScopes =>
+            new List<ApiScope>
+            {
+                new ApiScope("merchants_api", "Merchants Api", new[] { JwtClaimTypes.Subject, JwtClaimTypes.Name, JwtClaimTypes.Role, JwtClaimTypes.Audience, Shared.Helpers.Security.Claims.MerchantIDClaim }),
+                new ApiScope("transactions_api", "Transactions Api", new[] { JwtClaimTypes.Subject, JwtClaimTypes.Name, JwtClaimTypes.Role, Shared.Helpers.Security.Claims.TerminalIDClaim, Shared.Helpers.Security.Claims.MerchantIDClaim }),
+                new ApiScope("management_api", "User Management")
+            };
+
         public static IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
-                new ApiResource("merchants_api", "Merchants Api", new[] { JwtClaimTypes.Subject, JwtClaimTypes.Name, JwtClaimTypes.Role, Shared.Helpers.Security.Claims.MerchantIDClaim }),
+                new ApiResource("merchants_api", "Merchants Api", new[] { JwtClaimTypes.Subject, JwtClaimTypes.Name, JwtClaimTypes.Role, JwtClaimTypes.Audience, Shared.Helpers.Security.Claims.MerchantIDClaim }),
                 new ApiResource("transactions_api", "Transactions Api", new[] { JwtClaimTypes.Subject, JwtClaimTypes.Name, JwtClaimTypes.Role, Shared.Helpers.Security.Claims.TerminalIDClaim, Shared.Helpers.Security.Claims.MerchantIDClaim }),
                 new ApiResource("management_api", "User Management")
                 {

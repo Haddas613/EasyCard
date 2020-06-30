@@ -107,7 +107,7 @@ namespace Transactions.Api.Controllers
 
             var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
 
-            var query = transactionsService.GetTransactions().Where(t => /*t.TerminalID == transmitTransactionsRequest.TerminalID &&*/ t.Status == TransactionStatusEnum.CommitedToAggregator);
+            var query = transactionsService.GetTransactions(); //.Where(t => /*t.TerminalID == transmitTransactionsRequest.TerminalID &&*/ t.Status == TransactionStatusEnum.CommitedToAggregator);
 
             // TODO: check if not all transactions can be transmitted
             if (transmitTransactionsRequest.PaymentTransactionIDs?.Count() > 0)
@@ -115,7 +115,9 @@ namespace Transactions.Api.Controllers
                 query = query.Where(t => transmitTransactionsRequest.PaymentTransactionIDs.Contains(t.PaymentTransactionID));
             }
 
-            query = query.Take(appSettings.FiltersGlobalPageSizeLimit);
+            //query = query.Take(appSettings.FiltersGlobalPageSizeLimit);
+
+            var res = query.ToList();
 
             var updated = query.UpdateFromQuery(x => new PaymentTransaction { Status = TransactionStatusEnum.TransmissionInProgress });
 

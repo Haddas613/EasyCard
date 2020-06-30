@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -91,9 +92,10 @@ namespace Merchants.Api
                     options.RequireHttpsMetadata = true;
                     options.RoleClaimType = "role";
                     options.NameClaimType = "name";
-                    options.ApiName = "merchants_api";
                     options.EnableCaching = true;
                 });
+
+            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
 
             services.AddAuthorization(options =>
             {

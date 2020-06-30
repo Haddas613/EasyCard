@@ -86,9 +86,10 @@ namespace Transactions.Api
                     options.RequireHttpsMetadata = true;
                     options.RoleClaimType = "role";
                     options.NameClaimType = "name";
-                    options.ApiName = "transactions_api";
                     options.EnableCaching = true;
                 });
+
+            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
 
             services.AddAuthorization(options =>
             {

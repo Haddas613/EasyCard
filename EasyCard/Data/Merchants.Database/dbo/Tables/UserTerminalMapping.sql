@@ -5,9 +5,14 @@
     [OperationDate]         DATETIME2 (7)    NOT NULL,
     [OperationDoneBy]       NVARCHAR (50)    NULL,
     [OperationDoneByID]     UNIQUEIDENTIFIER NULL,
+    [DisplayName]           NVARCHAR (50)    NULL,
+    [Email]                 NVARCHAR (50)    NULL,
+    [Roles]                 VARCHAR (MAX)    NULL,
     CONSTRAINT [PK_UserTerminalMapping] PRIMARY KEY CLUSTERED ([UserTerminalMappingID] ASC),
     CONSTRAINT [FK_UserTerminalMapping_Terminal_TerminalID] FOREIGN KEY ([TerminalID]) REFERENCES [dbo].[Terminal] ([TerminalID]) ON DELETE CASCADE
 );
+
+
 
 
 GO

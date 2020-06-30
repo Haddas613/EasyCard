@@ -96,13 +96,6 @@ namespace BasicServices
         {
             var blob = _client.GetBlobClient(fileName);
 
-            var headers = new BlobHttpHeaders
-            {
-                ContentType = "text/xml"
-            };
-
-            blob.SetHttpHeaders(headers);
-
             using (var stream = new MemoryStream())
             using (var writer = new StreamWriter(stream))
             {
@@ -112,6 +105,13 @@ namespace BasicServices
 
                 await blob.UploadAsync(stream);
             }
+
+            var headers = new BlobHttpHeaders
+            {
+                ContentType = "text/xml"
+            };
+
+            blob.SetHttpHeaders(headers);
         }
     }
 }

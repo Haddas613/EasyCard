@@ -14,6 +14,7 @@ namespace Shared.Helpers
 
         [Required]
         [JsonConverter(typeof(CardExpirationConverter))]
+        [Models.CardExpirationValidator]
         public CardExpiration CardExpiration { get; set; }
 
         [StringLength(20)]
@@ -25,8 +26,7 @@ namespace Shared.Helpers
         [StringLength(20)]
         public string CardOwnerNationalID { get; set; }
 
-        [StringLength(39)]
-        [RegularExpression(@"^;\d{16}=\d{20}\?$")]
+        [RegularExpression(@"^;\d{15,17}=\d{19,21}\?$")]
         public string CardReaderInput { get; set; }
     }
 }
