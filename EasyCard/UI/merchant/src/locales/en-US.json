@@ -53,5 +53,6 @@
   "LoginTitle": "Please proceed with login",
 
   "CreatedSuccessfully": "Created Successfully",
-  "AnErrorOccured": "An error occured"
+  "AnErrorOccured": "An error occured",
+  "ServerErrorTryAgainLater": "Server Error. Try again later"
 }

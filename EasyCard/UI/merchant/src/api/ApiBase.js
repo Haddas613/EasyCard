@@ -2,6 +2,8 @@ import Vue from 'vue'
 import TransactionsApi from './modules/TransactionsApi';
 import DictionariesApi from './modules/DictionariesApi';
 import TerminalsApi from './modules/profile/TerminalsApi';
+import i18n from '../i18n'
+
 
 class ApiBase {
     constructor() {
@@ -9,6 +11,18 @@ class ApiBase {
         this.transactions = new TransactionsApi(this);
         this.dictionaries = new DictionariesApi(this);
         this.terminals = new TerminalsApi(this);
+        this.toastedOpts = {
+            iconPack: 'mdi',
+            //duration: 5000,
+            keepOnHover: true,
+            containerClass: 'ecng-toast',
+            action : {
+                icon : 'close-circle',
+                onClick : (e, toastObject) => {
+                    toastObject.goAway(0);
+                }
+            },
+        }
     }
 
     async get(url, params) {
@@ -20,7 +34,7 @@ class ApiBase {
         }
         let requestUrl = new URL(url)
         requestUrl.search = new URLSearchParams(params).toString();
-        let request = await fetch(requestUrl, {
+        let request = fetch(requestUrl, {
             method: 'GET',
             withCredentials: true,
             mode: 'cors',
@@ -30,12 +44,12 @@ class ApiBase {
                 'Accept': 'application/json'
             }
         });
-        return await request.json();
+        return this._handleRequest(request);
     }
 
     async post(url, payload) {
         let requestUrl = new URL(url);
-        let request = await fetch(requestUrl, {
+        let request = fetch(requestUrl, {
             method: 'POST',
             withCredentials: true,
             mode: 'cors',
@@ -46,17 +60,41 @@ class ApiBase {
             },
             body: JSON.stringify(payload)
         });
-        let result = await request.json();
 
-        //TODO: handle operation response
-        if (result.error === true || result.status === "error") {
-            result.isError = true;
-        }
-        return result;
+        return this._handleRequest(request, true);
     }
 
-    _formatHeaders(headers){
-        return Object.keys(headers.columns).map(key => {return { value: key, text: headers.columns[key].name } });
+    async _handleRequest(request, showSuccessToastr = false) {
+        try {
+            request = await request;
+            let result = await request.json();
+            if (request.ok) {
+                if (result.status === "warning") {
+                    Vue.toasted.show(result.message, { type: 'info', ...this.toastedOpts });
+                }else if(showSuccessToastr && result.status === "success"){
+                    Vue.toasted.show(result.message, { type: 'success', duration: 5000, ...this.toastedOpts });
+                }
+
+                return result;
+            }
+            else{
+                Vue.toasted.show(result.message, { type: 'error', ...this.toastedOpts });
+                
+                //Server Validation errors are returned to component
+                if(request.status === 400){
+                    return result;
+                }
+            } 
+            return null;
+
+        } catch (err) {
+            Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error', ...this.toastedOpts });
+        }
+        return null;
+    }
+
+    _formatHeaders(headers) {
+        return Object.keys(headers.columns).map(key => { return { value: key, text: headers.columns[key].name } });
     }
 }
 

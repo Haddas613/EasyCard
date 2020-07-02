@@ -41,3 +41,10 @@ $secondary : var(--v-secondary-base);
   border: none !important;
   box-shadow: none;
 }
+.ecng-toast{
+  font-family: Roboto, sans-serif;
+  .action{
+    font-size: 1.75rem !important;
+    color: inherit !important;
+  }
+}

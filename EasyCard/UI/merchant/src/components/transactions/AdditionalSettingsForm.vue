@@ -66,14 +66,7 @@
         </v-textarea>
       </v-form>
     </v-card-text>
-    <v-btn
-      color="primary"
-      class="px-2"
-      bottom
-      :x-large="true"
-      block
-      @click="ok()"
-    >{{$t('Confirm')}}</v-btn>
+    <v-btn color="primary" class="px-2" bottom :x-large="true" block @click="ok()">{{$t('Confirm')}}</v-btn>
   </v-card>
 </template>
 
@@ -96,7 +89,7 @@ export default {
     return {
       dictionaries: {},
       model: { ...this.data },
-       vr: ValidationRules,
+      vr: ValidationRules
     };
   },
   computed: {
@@ -108,11 +101,14 @@ export default {
     }
   },
   async mounted() {
-    this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
-    this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
-    this.model.currency = this.dictionaries.currencyEnum[0].code;
-    this.model.jDealType = this.dictionaries.jDealTypeEnum[0].code;
-    this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
+    let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+    if (dictionaries) {
+      this.dictionaries = dictionaries;
+      this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
+      this.model.currency = this.dictionaries.currencyEnum[0].code;
+      this.model.jDealType = this.dictionaries.jDealTypeEnum[0].code;
+      this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
+    }
   },
   methods: {
     ok() {

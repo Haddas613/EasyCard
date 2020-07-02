@@ -11,6 +11,7 @@ import './assets/css/main.scss';
 import VueLodash from 'vue-lodash'
 import lodash from 'lodash'
 import VueCardFormat from './plugins/card-validator';
+import Toasted from 'vue-toasted';
 
 Vue.config.productionTip = false
 
@@ -20,6 +21,7 @@ mainAuth.startup().then(ok => {
   Vue.use(Api);
   Vue.use(VueLodash, { lodash: lodash })
   Vue.use(VueCardFormat);
+  Vue.use(Toasted);
   
   if (ok) {
     new Vue({
