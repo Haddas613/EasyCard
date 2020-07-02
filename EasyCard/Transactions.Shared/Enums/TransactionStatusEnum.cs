@@ -25,20 +25,26 @@ namespace Transactions.Shared.Enums
         /// <summary>
         /// Transaction commited to Clearing House
         /// </summary>
-        [EnumMember(Value = "commitedToAggregator")]
-        CommitedToAggregator = 30,
+        [EnumMember(Value = "commitedByAggregator")]
+        CommitedByAggregator = 30,
 
         /// <summary>
         /// Shva transmision in progress
         /// </summary>
-        [EnumMember(Value = "transmittedToProcessor")]
+        [EnumMember(Value = "transmissionInProgress")]
         TransmissionInProgress = 35,
+
+        /// <summary>
+        /// Canceling transmision in progress
+        /// </summary>
+        [EnumMember(Value = "transmissionCancelingInProgress")]
+        TransmissionCancelingInProgress = 36,
 
         /// <summary>
         /// Shva transmision is done
         /// </summary>
-        [EnumMember(Value = "transmittedToProcessor")]
-        TransmittedToProcessor = 40,
+        [EnumMember(Value = "transmittedByProcessor")]
+        TransmittedByProcessor = 40,
 
         /// <summary>
         /// Transaction is rejeced by Clearing House
@@ -59,19 +65,13 @@ namespace Transactions.Shared.Enums
         CancelledByMerchant = -30,
 
         /// <summary>
-        /// Transaction cancellation is sent to Clearing House
-        /// </summary>
-        [EnumMember(Value = "rejectedToAggregator")]
-        RejectedToAggregator = -40,
-
-        /// <summary>
         /// Not possible to confirm by Clearing House
         /// </summary>
         [EnumMember(Value = "failedToConfirmByAggregator")]
         FailedToConfirmByAggregator  = -50,
 
         /// <summary>
-        /// Not possible to confirm by Clearing House
+        /// Not possible to confirm by Shva
         /// </summary>
         [EnumMember(Value = "failedToConfirmByProcesor")]
         FailedToConfirmByProcesor = -60,
@@ -87,11 +87,5 @@ namespace Transactions.Shared.Enums
         /// </summary>
         [EnumMember(Value = "transmissionToProcessorFailed")]
         TransmissionToProcessorFailed = -80,
-
-        /// <summary>
-        /// Failed to cancel transaction by Clearing House
-        /// </summary>
-        [EnumMember(Value = "failedToCancelToAggregator")]
-        FailedToCancelToAggregator = -90,
     }
 }

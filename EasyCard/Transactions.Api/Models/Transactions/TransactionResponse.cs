@@ -80,6 +80,11 @@ namespace Transactions.Api.Models.Transactions
         public TransactionStatusEnum Status { get; set; }
 
         /// <summary>
+        /// Status of finalization operations in case of failed transaction, rejection or cancelation
+        /// </summary>
+        public TransactionFinalizationStatusEnum? FinalizationStatusEnum { get; set; }
+
+        /// <summary>
         /// Generic transaction type
         /// </summary>
         public TransactionTypeEnum TransactionType { get; set; }

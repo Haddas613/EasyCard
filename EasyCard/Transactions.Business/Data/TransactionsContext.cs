@@ -13,6 +13,11 @@ using Shared.Helpers.Security;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging.Debug;
+using System.Threading.Tasks;
+using System.Security;
+using System.Data;
+using Dapper;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Data
 {
@@ -41,6 +46,7 @@ namespace Transactions.Business.Data
             this.user = httpContextAccessor.GetUser();
         }
 
+        // NOTE: use this for debugging purposes to analyse sql query performance
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //    => optionsBuilder
         //        .UseLoggerFactory(DbCommandConsoleLoggerFactory);
@@ -58,6 +64,58 @@ namespace Transactions.Business.Data
             modelBuilder.Entity<PaymentTransaction>().HasQueryFilter(t => (user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID()));
 
             base.OnModelCreating(modelBuilder);
+        }
+
+        public async Task<IEnumerable<Guid?>> StartTransmission(Guid terminalID, Guid[] transactionIDs)
+        {
+            user.CheckTerminalPermission(terminalID);
+
+            string query = @"
+DECLARE @TransactionIDs table(
+    [PaymentTransactionID] [uniqueidentifier] NOT NULL);
+
+UPDATE [dbo].[PaymentTransaction] SET [Status]=@NewStatus, [UpdatedDate]=@UpdatedDate WHERE [PaymentTransactionID] in @TransactionIDs AND [TerminalID] = @TerminalID AND [Status]=@OldStatus";
+
+            // security check
+
+            if (user.IsAdmin())
+            {
+            }
+            else if (user.IsTerminal())
+            {
+                if (terminalID != user.GetTerminalID())
+                {
+                    throw new SecurityException("User has no access to requested data");
+                }
+            }
+            else if (user.IsMerchant())
+            {
+                query += " AND [MerchantID] = @MerchantID";
+            }
+            else
+            {
+                throw new SecurityException("User has no access to requested data");
+            }
+
+            query += @"
+OUTPUT inserted.PaymentTransactionID INTO @TransactionIDs;
+
+SELECR PaymentTransactionID from TransactionIDs";
+
+            var connection = this.Database.GetDbConnection();
+            try
+            {
+                await connection.OpenAsync();
+
+                var report = await connection.QueryAsync<Guid?>(query, new { NewStatus = TransactionStatusEnum.TransmissionInProgress, OldStatus = TransactionStatusEnum.CommitedByAggregator, TerminalID = terminalID, MerchantID = user.GetMerchantID(), TransactionIDs = transactionIDs });
+
+                return report;
+            }
+            finally
+            {
+                connection.Close();
+            }
+
         }
 
         internal class PaymentTransactionConfiguration : IEntityTypeConfiguration<PaymentTransaction>

@@ -62,7 +62,7 @@ namespace Transactions.Business.Services
         public async override Task UpdateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null) 
             => await UpdateEntity(entity, Messages.TransactionUpdated, TransactionOperationCodesEnum.TransactionUpdated, dbTransaction: dbTransaction);
 
-        public async Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum transactionStatus, IDbContextTransaction dbTransaction = null)
+        public async Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum transactionStatus, TransactionFinalizationStatusEnum? finalizationStatus = null, IDbContextTransaction dbTransaction = null)
         {
             List<string> changes = new List<string>();
 

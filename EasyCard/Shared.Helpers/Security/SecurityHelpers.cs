@@ -1,6 +1,7 @@
 using IdentityModel;
 using System;
 using System.Linq;
+using System.Security;
 using System.Security.Claims;
 
 namespace Shared.Helpers.Security
@@ -39,6 +40,19 @@ namespace Shared.Helpers.Security
         public static bool IsTerminal(this ClaimsPrincipal user)
         {
             return user?.FindFirst("client_id")?.Value == "terminal" && user?.FindFirst(Claims.TerminalIDClaim)?.Value != null;
+        }
+
+        public static void CheckTerminalPermission(this ClaimsPrincipal user, Guid terminalID)
+        {
+            if (user.IsAdmin())
+            {
+                return;
+            }
+
+            if (user.IsTerminal() && terminalID != user.GetTerminalID())
+            {
+                throw new SecurityException("User has no access to requiested data");
+            }
         }
 
         public static bool IsMerchantFrontend(this ClaimsPrincipal user)

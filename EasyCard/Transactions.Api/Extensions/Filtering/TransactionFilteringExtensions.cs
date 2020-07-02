@@ -139,7 +139,7 @@ namespace Transactions.Api.Extensions.Filtering
             => typeEnum switch
             {
                 QuickStatusFilterTypeEnum.Pending => src.Where(t => (int)t.Status > 0 && (int)t.Status < 40),
-                QuickStatusFilterTypeEnum.Completed => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.TransmittedToProcessor),
+                QuickStatusFilterTypeEnum.Completed => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.TransmittedByProcessor),
                 QuickStatusFilterTypeEnum.Failed => src.Where(t => (int)t.Status < 0),
                 _ => src,
             };
