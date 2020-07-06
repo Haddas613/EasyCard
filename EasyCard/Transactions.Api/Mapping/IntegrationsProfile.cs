@@ -28,7 +28,7 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.CardBin, s => s.MapFrom(src => CreditCardHelpers.GetCardBin(src.CardNumber)));
 
             CreateMap<Business.Entities.CreditCardDetails, Models.Transactions.CreditCardDetails>()
-                .ForMember(m => m.CardNumber, s => s.MapFrom(src => CreditCardHelpers.GetCardLastFourDigits(src.CardNumber)));
+                .ForMember(m => m.CardNumber, s => s.MapFrom(src => src.CardNumber));
 
             CreateMap<PaymentTransaction, AggregatorCreateTransactionRequest>()
                 .ForMember(m => m.TransactionID, s => s.MapFrom(src => src.PaymentTransactionID.ToString()))

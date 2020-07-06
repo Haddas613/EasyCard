@@ -10,6 +10,7 @@ namespace Shared.Helpers
     {
         [Required]
         [StringLength(19, MinimumLength = 9)]
+        [RegularExpression("^[0-9]*$")]
         public string CardNumber { get; set; }
 
         [Required]

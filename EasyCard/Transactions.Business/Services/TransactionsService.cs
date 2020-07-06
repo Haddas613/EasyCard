@@ -5,6 +5,7 @@ using Shared.Business.AutoHistory;
 using Shared.Business.Exceptions;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,7 +63,7 @@ namespace Transactions.Business.Services
         public async override Task UpdateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null) 
             => await UpdateEntity(entity, Messages.TransactionUpdated, TransactionOperationCodesEnum.TransactionUpdated, dbTransaction: dbTransaction);
 
-        public async Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum transactionStatus, TransactionFinalizationStatusEnum? finalizationStatus = null, IDbContextTransaction dbTransaction = null)
+        public async Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum transactionStatus, TransactionFinalizationStatusEnum? finalizationStatus = null, RejectionReasonEnum? rejectionReason = null, string rejectionMessage = null, IDbContextTransaction dbTransaction = null)
         {
             List<string> changes = new List<string>();
 
@@ -81,6 +82,10 @@ namespace Transactions.Business.Services
             var historyMessage = Messages.TransactionUpdated;
 
             entity.Status = transactionStatus;
+            entity.FinalizationStatus = finalizationStatus ?? entity.FinalizationStatus;
+            entity.RejectionReason = rejectionReason ?? entity.RejectionReason;
+            entity.RejectionMessage = rejectionMessage ?? entity.RejectionMessage;
+
             Enum.TryParse<TransactionOperationCodesEnum>(transactionStatus.ToString(), true, out operationCode);
             historyMessage = Messages.ResourceManager.GetString(operationCode.ToString()) ?? historyMessage;
 
@@ -141,6 +146,11 @@ namespace Transactions.Business.Services
 
             context.TransactionHistories.Add(historyRecord);
             await context.SaveChangesAsync();
+        }
+
+        public IQueryable<TransactionHistory> GetTransactionHistory(Guid transactionID)
+        {
+            return context.TransactionHistories.Where(d => d.PaymentTransactionID == transactionID);
         }
     }
 }

@@ -17,5 +17,7 @@ namespace Shared.Integration.Models
         public IEnumerable<Error> Errors { get; set; }
 
         public int? OriginalHttpResponseCode { get; set; }
+
+        public RejectionReasonEnum RejectReasonCode { get; set; }
     }
 }

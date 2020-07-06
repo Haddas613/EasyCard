@@ -59,9 +59,11 @@ namespace Transactions.Business.Data
 
             // security filters
 
-            modelBuilder.Entity<CreditCardTokenDetails>().HasQueryFilter(t => t.Active && (user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID()));
+            modelBuilder.Entity<CreditCardTokenDetails>().HasQueryFilter(t => user.IsAdmin() || (t.Active && (user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID())));
 
-            modelBuilder.Entity<PaymentTransaction>().HasQueryFilter(t => (user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID()));
+            modelBuilder.Entity<PaymentTransaction>().HasQueryFilter(t => user.IsAdmin() || ((user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID())));
+
+            modelBuilder.Entity<TransactionHistory>().HasQueryFilter(t => user.IsAdmin() || ((user.IsTerminal() && t.PaymentTransaction.TerminalID == user.GetTerminalID() || t.PaymentTransaction.MerchantID == user.GetMerchantID())));
 
             base.OnModelCreating(modelBuilder);
         }

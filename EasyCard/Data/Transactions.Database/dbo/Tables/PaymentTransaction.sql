@@ -47,8 +47,12 @@
     [JDealType]                      SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     [SpecialTransactionType]         SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     [Solek]                          SMALLINT         NULL,
+    [FinalizationStatus]             SMALLINT         NULL,
+    [RejectionMessage]               NVARCHAR (MAX)   NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

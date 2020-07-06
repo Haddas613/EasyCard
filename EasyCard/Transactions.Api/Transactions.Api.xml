@@ -331,6 +331,11 @@
             Processing status
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.FinalizationStatus">
+            <summary>
+            Status of finalization operations in case of failed transaction, rejection or cancelation
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TransactionType">
             <summary>
             Generic transaction type

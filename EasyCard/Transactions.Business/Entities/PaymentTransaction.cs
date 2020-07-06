@@ -84,7 +84,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Status of finalization operations in case of failed transaction, rejection or cancelation
         /// </summary>
-        public TransactionFinalizationStatusEnum? FinalizationStatusEnum { get; set; }
+        public TransactionFinalizationStatusEnum? FinalizationStatus { get; set; }
 
         /// <summary>
         /// Generic transaction type
@@ -105,6 +105,11 @@ namespace Transactions.Business.Entities
         /// Rejection Reason
         /// </summary>
         public RejectionReasonEnum? RejectionReason { get; set; }
+
+        /// <summary>
+        /// Rejection Reason Message
+        /// </summary>
+        public string RejectionMessage { get; set; }
 
         /// <summary>
         /// Currency

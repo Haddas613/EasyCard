@@ -16,6 +16,8 @@ namespace Transactions.Business.Entities
 
         public Guid TransactionHistoryID { get; set; }
 
+        public PaymentTransaction PaymentTransaction { get; set; }
+
         public Guid? PaymentTransactionID { get; set; }
 
         public DateTime? OperationDate { get; set; }

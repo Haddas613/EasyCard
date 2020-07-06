@@ -15,7 +15,7 @@ namespace Transactions.Business.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.2")
+                .HasAnnotation("ProductVersion", "5.0.0-preview.6.20312.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -124,6 +124,9 @@ namespace Transactions.Business.Migrations
                     b.Property<int?>("CurrentDeal")
                         .HasColumnType("int");
 
+                    b.Property<short?>("FinalizationStatus")
+                        .HasColumnType("smallint");
+
                     b.Property<decimal>("InitialPaymentAmount")
                         .HasColumnType("decimal(19,4)");
 
@@ -157,6 +160,9 @@ namespace Transactions.Business.Migrations
 
                     b.Property<long?>("ProcessorID")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("RejectionMessage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<short?>("RejectionReason")
                         .HasColumnType("smallint");
@@ -250,6 +256,8 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(false);
 
                     b.HasKey("TransactionHistoryID");
+
+                    b.HasIndex("PaymentTransactionID");
 
                     b.ToTable("TransactionHistory");
                 });
@@ -411,6 +419,15 @@ namespace Transactions.Business.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("PaymentTransactionID");
                         });
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.TransactionHistory", b =>
+                {
+                    b.HasOne("Transactions.Business.Entities.PaymentTransaction", "PaymentTransaction")
+                        .WithMany()
+                        .HasForeignKey("PaymentTransactionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

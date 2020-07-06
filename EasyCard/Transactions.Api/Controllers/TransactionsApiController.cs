@@ -104,6 +104,26 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("{transactionID}/history")]
+        public async Task<ActionResult<TransactionResponse>> GetTransactionHistory([FromRoute] Guid transactionID)
+        {
+            var transaction = EnsureExists(await transactionsService.GetTransactions()
+                .Where(m => m.PaymentTransactionID == transactionID).Select(d => d.PaymentTransactionID).FirstOrDefaultAsync());
+
+            var query = transactionsService.GetTransactionHistory(transactionID);
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var response = new SummariesResponse<Models.Transactions.TransactionHistory> { NumberOfRecords = await query.CountAsync() };
+
+                response.Data = await mapper.ProjectTo<Models.Transactions.TransactionHistory>(query).ToListAsync();
+
+                return Ok(response);
+            }
+        }
+
+        [HttpGet]
         public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetTransactions([FromQuery] TransactionsFilter filter)
         {
             Debug.WriteLine(User);
@@ -305,7 +325,7 @@ namespace Transactions.Api.Controllers
 
                     if (!aggregatorResponse.Success)
                     {
-                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByAggregator);  // TODO: rejection reason, store error message
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByAggregator, rejectionMessage: aggregatorResponse.ErrorMessage, rejectionReason: aggregatorResponse.RejectReasonCode);
 
                         return BadRequest(new OperationResponse($"{Messages.RejectedByAggregator}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, aggregatorResponse.Errors));
                     }
@@ -316,7 +336,7 @@ namespace Transactions.Api.Controllers
                 {
                     logger.LogError(ex, $"Aggregator Create Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
 
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByAggregator);
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByAggregator, rejectionReason: RejectionReasonEnum.Unknown);
 
                     return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {TransactionStatusEnum.FailedToConfirmByAggregator}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
                 }
@@ -345,7 +365,7 @@ namespace Transactions.Api.Controllers
 
                 if (!processorResponse.Success)
                 {
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor); // TODO: rejection reason, store error message
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial,  rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);
 
                     processorFailedRsponse = BadRequest(new OperationResponse($"{Messages.RejectedByProcessor}: {processorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier)); // NOTE: error message should be appropriate for user
                 }
@@ -356,7 +376,7 @@ namespace Transactions.Api.Controllers
             {
                 logger.LogError(ex, $"Processor Create Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
 
-                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor);
+                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, TransactionFinalizationStatusEnum.Initial, rejectionReason: RejectionReasonEnum.Unknown);
 
                 processorFailedRsponse = BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {TransactionStatusEnum.FailedToConfirmByProcesor}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
             }
@@ -376,18 +396,18 @@ namespace Transactions.Api.Controllers
                     {
                         logger.LogError($"Aggregator Cancel Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
 
-                        await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.FailedToCancelByAggregator);  // TODO: rejection reason, store error message
+                        await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
 
                         return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
                     }
 
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByAggregator);
+                    await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.CanceledByAggregator);
 
                     return processorFailedRsponse;
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex, $"Aggregator Cancel Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
+                    logger.LogError(ex, $"{HttpContext.TraceIdentifier}: Aggregator Cancel Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
 
                     await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
 
@@ -411,22 +431,22 @@ namespace Transactions.Api.Controllers
 
                     if (!commitAggregatorResponse.Success)
                     {
-                        // TODO: In case of failed commit, transaction should not be transmitted to Shva
+                        // NOTE: In case of failed commit, transaction should not be transmitted to Shva
 
                         logger.LogError($"Aggregator Commit Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
 
-                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator);
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionMessage: commitAggregatorResponse.ErrorMessage, rejectionReason: commitAggregatorResponse.RejectReasonCode);
 
                         return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, commitAggregatorResponse.Errors));
                     }
 
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.CommitedByAggregator); // TODO
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.CommitedByAggregator);
                 }
                 catch (Exception ex)
                 {
                     logger.LogError(ex, $"Aggregator Commit Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
 
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator);
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionReason: RejectionReasonEnum.Unknown);
 
                     return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {TransactionStatusEnum.FailedToCommitByAggregator}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
                 }
