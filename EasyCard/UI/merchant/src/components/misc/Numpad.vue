@@ -42,8 +42,7 @@
       <v-row>
         <v-col cols="4" class="numpad-btn numpad-num" @click="model.amount = 0">C</v-col>
         <v-col cols="4" class="numpad-btn numpad-num" @click="append(0)">0</v-col>
-        <v-col cols="2" class="numpad-btn numpad-num accent--text">+</v-col>
-        <v-col cols="2" class="numpad-btn numpad-num">.</v-col>
+        <v-col cols="4" class="numpad-btn numpad-num accent--text">+</v-col>
       </v-row>
       <v-row>
         <v-col cols="6" class="numpad-btn primary--text py-5">{{$t('Calculator')}}</v-col>

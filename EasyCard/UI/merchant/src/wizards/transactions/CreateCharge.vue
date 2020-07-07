@@ -36,7 +36,7 @@
 
         <v-stepper-content step="6" class="py-0 px-0">
            <transaction-success :amount="model.transactionAmount" v-if="success"></transaction-success>
-           <p v-if="!success">Error</p>
+           <transaction-error :errors="errors" v-if="!success"></transaction-error>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -50,6 +50,7 @@ import CustomersList from "../../components/customers/CustomersList";
 import CreateChargeForm from "../../components/transactions/CreateChargeForm";
 import CreditCardSecureDetails from "../../components/transactions/CreditCardSecureDetails";
 import TransactionSuccess from "../../components/transactions/TransactionSuccess";
+import TransactionError from "../../components/transactions/TransactionError";
 import TerminalSelect from "../../components/terminals/TerminalSelect";
 import AdditionalSettingsForm from "../../components/transactions/AdditionalSettingsForm";
 
@@ -61,6 +62,7 @@ export default {
     CreateChargeForm,
     CreditCardSecureDetails,
     TransactionSuccess,
+    TransactionError,
     TerminalSelect,
     AdditionalSettingsForm
   },
@@ -110,17 +112,18 @@ export default {
         },
         4: {
           title: "Charge",
-          // skippable: true
         },
         5: {
           title: "AdditionalSettings"
         },
+        //Last step may be dynamically altered to represent error if transaction creation is failed.
         6: {
           title: "Success",
           completed: true
         }
       },
       success: true,
+      errors: [],
       loading: false
     };
   },
@@ -174,13 +177,27 @@ export default {
       }
 
       this.loading = false;
-      if(!result || result.isError){
+      //assuming current step is one before the last
+      let lastStep = this.steps[this.step + 1];
+
+      if(!result || result.status === "error"){
         this.success = false;
-        alert("Error!")
+        lastStep.title = "Error";
+        lastStep.completed = false;
+        lastStep.closeable = true;
+        if(result.errors && result.errors.length > 0){
+          this.errors = result.errors;
+        }else{
+          this.errors = [{description: result.message}]
+        }
       }else{
-        this.step++;
+        this.success = true;
+        lastStep.title = "Success";
+        lastStep.completed = true;
+        lastStep.closeable = false;
+        this.errors = [];
       }
-      
+      this.step++;
     }
   }
 };

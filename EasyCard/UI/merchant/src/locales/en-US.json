@@ -54,5 +54,7 @@
 
   "CreatedSuccessfully": "Created Successfully",
   "AnErrorOccured": "An error occured",
-  "ServerErrorTryAgainLater": "Server Error. Try again later"
+  "ServerErrorTryAgainLater": "Server Error. Try again later",
+  "TransactionCreationError": "Could not create transaction",
+  "SomethingWentWrong": "Something went wrong"
 }
