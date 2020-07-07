@@ -64,7 +64,6 @@ namespace Merchants.Api
             services.AddLogging(logging =>
             {
                 logging.AddConfiguration(Configuration.GetSection("Logging"));
-                logging.AddConsole();
                 logging.AddDebug();
                 logging.AddAzureWebAppDiagnostics();
             });
@@ -215,6 +214,8 @@ namespace Merchants.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
+            loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("SystemConnection"), serviceProvider.GetService<IHttpContextAccessor>()));
+
             app.UseRequestResponseLogging();
 
             app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
@@ -273,6 +274,8 @@ namespace Merchants.Api
             {
                 logger.LogError(ex.Message);
             }
+
+            loggerFactory.CreateLogger("AdminApi.Startup").LogInformation("Started");
         }
     }
 }

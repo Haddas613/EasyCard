@@ -259,11 +259,29 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transaction Canceled.
+        /// </summary>
+        public static string TransactionCanceled {
+            get {
+                return ResourceManager.GetString("TransactionCanceled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transaction Created.
         /// </summary>
         public static string TransactionCreated {
             get {
                 return ResourceManager.GetString("TransactionCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transactions list for transmission is required.
+        /// </summary>
+        public static string TransactionsForTransmissionRequired {
+            get {
+                return ResourceManager.GetString("TransactionsForTransmissionRequired", resourceCulture);
             }
         }
         
@@ -300,6 +318,15 @@ namespace Transactions.Shared {
         public static string TransactionUpdated {
             get {
                 return ResourceManager.GetString("TransactionUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of transactions for transmission batch is limited to {0}.
+        /// </summary>
+        public static string TransmissionLimit {
+            get {
+                return ResourceManager.GetString("TransmissionLimit", resourceCulture);
             }
         }
     }

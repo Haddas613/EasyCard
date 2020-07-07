@@ -10,6 +10,7 @@ using Merchants.Business.Services;
 using Merchants.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,7 @@ using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
 using Swashbuckle.AspNetCore.Filters;
+using SharedApi = Shared.Api;
 
 namespace ProfileApi
 {
@@ -41,6 +43,13 @@ namespace ProfileApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(logging =>
+            {
+                logging.AddConfiguration(Configuration.GetSection("Logging"));
+                logging.AddDebug();
+                logging.AddAzureWebAppDiagnostics();
+            });
+
             var appConfig = Configuration.GetSection("AppConfig").Get<ApplicationSettings>();
 
             services.AddCors(options =>
@@ -151,8 +160,10 @@ namespace ProfileApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("SystemConnection"), serviceProvider.GetService<IHttpContextAccessor>()));
+
             app.UseRequestResponseLogging();
 
             app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
@@ -192,6 +203,8 @@ namespace ProfileApi
 
                 spa.Options.SourcePath = "wwwroot";
             });
+
+            loggerFactory.CreateLogger("MerchantProfile.Startup").LogInformation("Started");
         }
     }
 }

@@ -68,13 +68,15 @@ namespace Transactions.Business.Data
             base.OnModelCreating(modelBuilder);
         }
 
-        public async Task<IEnumerable<Guid?>> StartTransmission(Guid terminalID, Guid[] transactionIDs)
+        public async Task<IEnumerable<TransmissionInfo>> StartTransmission(Guid terminalID, IEnumerable<Guid> transactionIDs)
         {
             user.CheckTerminalPermission(terminalID);
 
             string query = @"
 DECLARE @TransactionIDs table(
-    [PaymentTransactionID] [uniqueidentifier] NOT NULL);
+    [PaymentTransactionID] [uniqueidentifier] NULL,
+    [ShvaDealID] [varchar(50)] NULL
+);
 
 UPDATE [dbo].[PaymentTransaction] SET [Status]=@NewStatus, [UpdatedDate]=@UpdatedDate WHERE [PaymentTransactionID] in @TransactionIDs AND [TerminalID] = @TerminalID AND [Status]=@OldStatus";
 
@@ -100,16 +102,16 @@ UPDATE [dbo].[PaymentTransaction] SET [Status]=@NewStatus, [UpdatedDate]=@Update
             }
 
             query += @"
-OUTPUT inserted.PaymentTransactionID INTO @TransactionIDs;
+OUTPUT inserted.PaymentTransactionID, inserted.ShvaDealID INTO @TransactionIDs;
 
-SELECR PaymentTransactionID from TransactionIDs";
+SELECT PaymentTransactionID, ShvaDealID from TransactionIDs";
 
             var connection = this.Database.GetDbConnection();
             try
             {
                 await connection.OpenAsync();
 
-                var report = await connection.QueryAsync<Guid?>(query, new { NewStatus = TransactionStatusEnum.TransmissionInProgress, OldStatus = TransactionStatusEnum.CommitedByAggregator, TerminalID = terminalID, MerchantID = user.GetMerchantID(), TransactionIDs = transactionIDs });
+                var report = await connection.QueryAsync<TransmissionInfo>(query, new { NewStatus = TransactionStatusEnum.TransmissionInProgress, OldStatus = TransactionStatusEnum.CommitedByAggregator, TerminalID = terminalID, MerchantID = user.GetMerchantID(), TransactionIDs = transactionIDs });
 
                 return report;
             }

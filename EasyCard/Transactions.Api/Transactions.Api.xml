@@ -34,7 +34,7 @@
             Billing deal
             </summary>
         </member>
-        <member name="M:Transactions.Api.Controllers.TransmissionController.GetNotTransmittedTransactions(Transactions.Api.Models.Transactions.TransactionsFilter)">
+        <member name="M:Transactions.Api.Controllers.TransmissionController.GetNotTransmittedTransactions(Transactions.Api.Models.Transactions.TransmissionFilter)">
             <summary>
             Get transactions which are not transmitted yet
             </summary>
@@ -84,6 +84,21 @@
         <member name="P:Transactions.Api.Models.Transactions.BlockCreditCardRequest.TransactionAmount">
             <summary>
             Transaction amount
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Transactions.CancelTransmissionRequest">
+            <summary>
+            Transmission cancelation request
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CancelTransmissionRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CancelTransmissionRequest.PaymentTransactionID">
+            <summary>
+            ID of transactions which needs to be canceled
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.CheckCreditCardRequest">
@@ -541,9 +556,6 @@
             <summary>
             IDs of transactions which needs to be transmitted
             </summary>
-            <remarks>
-            If omitted, all non-transmitted transactions will be transmitted
-            </remarks>
         </member>
         <member name="T:Transactions.Api.Resources.DateFilterTypeResource">
             <summary>

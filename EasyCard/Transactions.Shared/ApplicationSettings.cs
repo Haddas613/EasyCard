@@ -13,5 +13,7 @@ namespace Transactions.Shared
         public string ClearingHouseRequestsLogStorageTable { get; set; }
 
         public int FiltersGlobalPageSizeLimit { get; set; } = 1000;
+
+        public int TransmissionMaxBatchSize { get; set; } = 10;
     }
 }

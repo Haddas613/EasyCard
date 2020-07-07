@@ -87,7 +87,7 @@ namespace Transactions.Business.Services
             entity.RejectionMessage = rejectionMessage ?? entity.RejectionMessage;
 
             Enum.TryParse<TransactionOperationCodesEnum>(transactionStatus.ToString(), true, out operationCode);
-            historyMessage = Messages.ResourceManager.GetString(operationCode.ToString()) ?? historyMessage;
+            historyMessage = rejectionMessage ?? Messages.ResourceManager.GetString(operationCode.ToString()) ?? historyMessage;
 
             if (dbTransaction != null)
             {
@@ -151,6 +151,11 @@ namespace Transactions.Business.Services
         public IQueryable<TransactionHistory> GetTransactionHistory(Guid transactionID)
         {
             return context.TransactionHistories.Where(d => d.PaymentTransactionID == transactionID);
+        }
+
+        public async Task<IEnumerable<TransmissionInfo>> StartTransmission(Guid terminalID, IEnumerable<Guid> transactionIDs)
+        {
+            return await context.StartTransmission(terminalID, transactionIDs);
         }
     }
 }

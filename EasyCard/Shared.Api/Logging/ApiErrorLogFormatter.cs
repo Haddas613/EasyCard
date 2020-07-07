@@ -11,7 +11,7 @@ namespace Shared.Api.Logging
         {
             var details = GetDetailsForException(ex);
 
-            return $"{ex.GetType().Name}: CorrelationId: {correlationId}; Message: {ex.Message};{(details != null ? $" Details: {details}" : string.Empty)}";
+            return $"{ex.GetType().Name}; Message: {ex.Message};{(details != null ? $" Details: {details}" : string.Empty)}";
         }
 
         private static string GetDetailsForException(Exception ex)

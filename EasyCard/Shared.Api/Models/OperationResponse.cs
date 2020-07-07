@@ -32,6 +32,15 @@ namespace Shared.Api.Models
             Errors = errors?.Select(d => d).ToList();
         }
 
+        public OperationResponse(string message, string entityReference, string correlationId, string errorCode, string errorDescription)
+        {
+            Message = message;
+            Status = StatusEnum.Error;
+            EntityReference = entityReference;
+            CorrelationId = correlationId;
+            Errors = new List<Error> { new Error(errorCode, errorDescription) };
+        }
+
         public OperationResponse(string message, StatusEnum status, string entityReference = null)
         {
             Message = message;

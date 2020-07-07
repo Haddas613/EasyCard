@@ -78,25 +78,36 @@ namespace Transactions.Api.Controllers
         /// <param name="filter"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetNotTransmittedTransactions([FromQuery] TransactionsFilter filter)
+        public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetNotTransmittedTransactions([FromQuery] TransmissionFilter filter)
         {
-            TransactionsFilterValidator.ValidateFilter(filter, new TransactionFilterValidationOptions { MaximumPageSize = appSettings.FiltersGlobalPageSizeLimit });
+            var query = transactionsService.GetTransactions().AsNoTracking().Filter(filter).Where(d => d.Status == TransactionStatusEnum.CommitedByAggregator);
 
-            var query = transactionsService.GetTransactions().AsNoTracking().Filter(filter);
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
 
-            var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByDirection);
 
-            query = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByDirection);
+                response.Data = await mapper.ProjectTo<TransactionSummary>(query.ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit)).ToListAsync();
 
-            response.Data = await mapper.ProjectTo<TransactionSummary>(query.ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit)).ToListAsync();
-
-            return Ok(response);
+                return Ok(response);
+            }
         }
 
         [HttpPost]
         [Route("transmit")]
         public async Task<ActionResult<OperationResponse>> TransmitTransactions(TransmitTransactionsRequest transmitTransactionsRequest)
         {
+            if (transmitTransactionsRequest.PaymentTransactionIDs == null || transmitTransactionsRequest.PaymentTransactionIDs.Count() == 0)
+            {
+                return BadRequest(new OperationResponse(Messages.TransactionsForTransmissionRequired, null, HttpContext.TraceIdentifier, nameof(transmitTransactionsRequest.PaymentTransactionIDs), Messages.TransactionsForTransmissionRequired));
+            }
+
+            if (transmitTransactionsRequest.PaymentTransactionIDs.Count() > appSettings.TransmissionMaxBatchSize)
+            {
+                return BadRequest(new OperationResponse(string.Format(Messages.TransmissionLimit, appSettings.TransmissionMaxBatchSize), null, HttpContext.TraceIdentifier, nameof(transmitTransactionsRequest.PaymentTransactionIDs), string.Format(Messages.TransmissionLimit, appSettings.TransmissionMaxBatchSize)));
+            }
+
             var terminal = EnsureExists(await terminalsService.GetTerminal(transmitTransactionsRequest.TerminalID));
 
             var terminalProcessor = ValidateExists(
@@ -107,24 +118,14 @@ namespace Transactions.Api.Controllers
 
             var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
 
-            var query = transactionsService.GetTransactions(); //.Where(t => /*t.TerminalID == transmitTransactionsRequest.TerminalID &&*/ t.Status == TransactionStatusEnum.CommitedToAggregator);
+            IEnumerable<TransmissionInfo> transactionsToTransmit = null;
 
-            // TODO: check if not all transactions can be transmitted
-            if (transmitTransactionsRequest.PaymentTransactionIDs?.Count() > 0)
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
             {
-                query = query.Where(t => transmitTransactionsRequest.PaymentTransactionIDs.Contains(t.PaymentTransactionID));
+                transactionsToTransmit = await transactionsService.StartTransmission(terminal.TerminalID, transmitTransactionsRequest.PaymentTransactionIDs);
             }
 
-            //query = query.Take(appSettings.FiltersGlobalPageSizeLimit);
-
-            var res = query.ToList();
-
-            var updated = query.UpdateFromQuery(x => new PaymentTransaction { Status = TransactionStatusEnum.TransmissionInProgress });
-
-            // TODO: update status to TransmissionInProgress
-
-            // TODO: common deal id
-            var processorIds = await query.Select(d => d.ShvaTransactionDetails.ShvaDealID).ToListAsync();
+            var processorIds = transactionsToTransmit.Select(d => d.ShvaDealID).ToList();
 
             var processorRequest = new ProcessorTransmitTransactionsRequest { TransactionIDs = processorIds, ProcessorSettings = processorSettings, CorrelationId = GetCorrelationID() };
 
@@ -134,9 +135,9 @@ namespace Transactions.Api.Controllers
             return new OperationResponse(Messages.TransactionCreated, StatusEnum.Success);
         }
 
-        [HttpDelete]
+        [HttpPost]
         [Route("cancel")]
-        public async Task<ActionResult<OperationResponse>> CancelNotTransmittedTransaction(TransmitTransactionsRequest cancelTransmissionRequest)
+        public async Task<ActionResult<OperationResponse>> CancelNotTransmittedTransaction(CancelTransmissionRequest cancelTransmissionRequest)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(cancelTransmissionRequest.TerminalID));
 
@@ -148,24 +149,54 @@ namespace Transactions.Api.Controllers
 
             var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
 
-            //using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
-            //{
-            //    var transaction = EnsureExists(await transactionsService.GetTransactions()
-            //     .FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID));
+            PaymentTransaction transaction = null;
 
-            //    if (transaction.Status != TransactionStatusEnum.CommitedToAggregator)
-            //    {
-            //        return BadRequest(new OperationResponse(Messages.TransactionStatusIsNotValid, StatusEnum.Error));
-            //    }
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+            {
+                transaction = EnsureExists(await transactionsService.GetTransactions()
+                 .FirstOrDefaultAsync(m => m.PaymentTransactionID == cancelTransmissionRequest.PaymentTransactionID && m.TerminalID == cancelTransmissionRequest.TerminalID));
 
-            //    // TODO: clearing house cancellation
+                if (transaction.Status != TransactionStatusEnum.CommitedByAggregator)
+                {
+                    return BadRequest(new OperationResponse(Messages.TransactionStatusIsNotValid, StatusEnum.Error));
+                }
 
-            //    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.CancelledByMerchant);
+                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.CancelledByMerchant, dbTransaction: dbTransaction);
+            }
 
-                
-            //}
+            transaction = await transactionsService.GetTransactions()
+                 .FirstOrDefaultAsync(m => m.PaymentTransactionID == transaction.PaymentTransactionID);
 
-            return new OperationResponse(Messages.TransactionCreated, StatusEnum.Success);
+            // cancel in clearing house
+            try
+            {
+                var aggregatorRequest = mapper.Map<AggregatorCancelTransactionRequest>(transaction);
+                aggregatorRequest.AggregatorSettings = aggregatorSettings;
+
+                var aggregatorResponse = await aggregator.CancelTransaction(aggregatorRequest);
+                mapper.Map(aggregatorResponse, transaction);
+
+                if (!aggregatorResponse.Success)
+                {
+                    logger.LogError($"Aggregator Cancel Transaction request error. TransactionID: {transaction.PaymentTransactionID}");
+
+                    await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
+
+                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}",  transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), aggregatorResponse.ErrorMessage));
+                }
+
+                await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.CanceledByAggregator);
+
+                return new OperationResponse(Messages.TransactionCanceled, StatusEnum.Success);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Aggregator Cancel Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
+
+                await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
+
+                return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), null));
+            }
         }
     }
 }

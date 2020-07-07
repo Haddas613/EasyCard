@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Transactions.Api.Models.Transactions
 {
     /// <summary>
-    /// Transmission request
+    /// Transmission cancelation request
     /// </summary>
-    public class TransmitTransactionsRequest
+    public class CancelTransmissionRequest
     {
         /// <summary>
         /// EasyCard terminal reference
@@ -18,9 +18,8 @@ namespace Transactions.Api.Models.Transactions
         public Guid TerminalID { get; set; }
 
         /// <summary>
-        /// IDs of transactions which needs to be transmitted
+        /// ID of transactions which needs to be canceled
         /// </summary>
-        [Required]
-        public IEnumerable<Guid> PaymentTransactionIDs { get; set; }
+        public Guid PaymentTransactionID { get; set; }
     }
 }

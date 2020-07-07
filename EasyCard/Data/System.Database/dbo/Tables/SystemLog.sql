@@ -1,11 +1,16 @@
 ﻿CREATE TABLE [dbo].[SystemLog] (
-    [RowN]         BIGINT           IDENTITY (1, 1) NOT NULL,
-    [ID]           UNIQUEIDENTIFIER NOT NULL,
-    [LogLevel]     VARCHAR (20)     NULL,
-    [CategoryName] VARCHAR (50)     NULL,
-    [Message]      NVARCHAR (MAX)   NULL,
-    [User]         NVARCHAR (50)    NULL,
-    [Timestamp]    DATETIME2 (7)    NULL,
-    CONSTRAINT [PK_SystemLog_1] PRIMARY KEY CLUSTERED ([RowN] ASC)
+    [ID]            UNIQUEIDENTIFIER NOT NULL,
+    [LogLevel]      VARCHAR (20)     NULL,
+    [CategoryName]  VARCHAR (250)    NULL,
+    [Message]       NVARCHAR (MAX)   NULL,
+    [UserName]      NVARCHAR (50)    NULL,
+    [Timestamp]     DATETIME2 (7)    NULL,
+    [CorrelationID] VARCHAR (250)    NULL,
+    [Exception]     NVARCHAR (MAX)   NULL,
+    [UserID]        VARCHAR (50)     NULL,
+    [IP]            VARCHAR (50)     NULL,
+    CONSTRAINT [PK_SystemLog] PRIMARY KEY CLUSTERED ([ID] ASC)
 );
+
+
 

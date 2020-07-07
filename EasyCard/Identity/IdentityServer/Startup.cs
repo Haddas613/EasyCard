@@ -16,6 +16,7 @@ using IdentityServer4;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,7 @@ using Newtonsoft.Json.Serialization;
 using Shared.Api;
 using Shared.Helpers.Email;
 using Shared.Helpers.Security;
+using SharedApi = Shared.Api;
 
 namespace IdentityServer
 {
@@ -216,6 +218,8 @@ namespace IdentityServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
+            loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("SystemConnection"), serviceProvider.GetService<IHttpContextAccessor>()));
+
             app.UseRequestResponseLogging();
 
             app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
@@ -275,6 +279,8 @@ namespace IdentityServer
             {
                 logger.LogError(ex.Message);
             }
+
+            loggerFactory.CreateLogger("MerchantProfile.Startup").LogInformation("Started");
         }
     }
 }

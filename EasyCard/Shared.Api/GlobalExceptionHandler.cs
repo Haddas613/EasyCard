@@ -34,7 +34,7 @@ namespace Shared.Api
 
                 if (ex != null)
                 {
-                    logger.LogError(ApiErrorLogFormatter.ExceptionFormatWithDetails(ex, correlationId));
+                    logger.LogError(ex, ApiErrorLogFormatter.ExceptionFormatWithDetails(ex, correlationId));
                 }
 
                 if (ex is EntityNotFoundException enfeEx)

@@ -226,12 +226,16 @@ namespace Transactions.Api
 
                 return new ClearingHouse.ClearingHouseAggregator(webApiClient, logger, chCfg, tokenSvc, storageService);
             });
+
+            services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
-            loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("SystemConnection")));
+            loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("SystemConnection"), serviceProvider.GetService<IHttpContextAccessor>()));
+
+            app.UseRequestResponseLogging();
 
             app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
 
@@ -260,7 +264,7 @@ namespace Transactions.Api
                 endpoints.MapControllers();
             });
 
-            loggerFactory.CreateLogger("Startup").LogInformation("Started");
+            loggerFactory.CreateLogger("TransactionsApi.Startup").LogInformation("Started");
         }
     }
 }

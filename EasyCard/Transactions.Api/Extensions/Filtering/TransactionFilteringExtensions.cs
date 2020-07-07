@@ -85,6 +85,16 @@ namespace Transactions.Api.Extensions.Filtering
             return src;
         }
 
+        public static IQueryable<PaymentTransaction> Filter(this IQueryable<PaymentTransaction> src, TransmissionFilter filter)
+        {
+            if (filter.TerminalID != null)
+            {
+                src = src.Where(t => t.TerminalID == filter.TerminalID);
+            }
+
+            return src;
+        }
+
         private static IQueryable<PaymentTransaction> HandleDateFiltering(IQueryable<PaymentTransaction> src, TransactionsFilter filter)
         {
             //TODO: Quick time filters using SequentialGuid https://stackoverflow.com/questions/54920200/entity-framework-core-guid-greater-than-for-paging
