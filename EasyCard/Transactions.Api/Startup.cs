@@ -53,6 +53,8 @@ namespace Transactions.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var appConfig = Configuration.GetSection("AppConfig").Get<ApplicationSettings>();
+
             services.AddLogging(logging =>
             {
                 logging.AddConfiguration(Configuration.GetSection("Logging"));
@@ -225,6 +227,12 @@ namespace Transactions.Api
                 var tokenSvc = new WebApiClientTokenService(webApiClient.HttpClient, chCfg);
 
                 return new ClearingHouse.ClearingHouseAggregator(webApiClient, logger, chCfg, tokenSvc, storageService);
+            });
+
+            services.Configure<RequestResponseLoggingSettings>((options) =>
+            {
+                options.RequestsLogStorageTable = appConfig.RequestsLogStorageTable;
+                options.StorageConnectionString = appConfig.DefaultStorageConnectionString;
             });
 
             services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();

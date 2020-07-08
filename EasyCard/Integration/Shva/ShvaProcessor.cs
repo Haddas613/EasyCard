@@ -177,18 +177,18 @@ namespace Shva
 
             if (transResultBody == null)
             {
-                return null;
+                throw new IntegrationException("Empty transmission response", null); // TODO: integration message ID
             }
 
             res.ProcessorCode = transResultBody.TransEMVResult;
-            res.BadTrans = transResultBody.BadTrans;
-            res.RefNumber = transResultBody.RefNumber;
+            res.FailedTransactions = transResultBody.BadTrans?.Split(new string[] {";", " "}, StringSplitOptions.RemoveEmptyEntries);
+            res.TransmissionReference = transResultBody.RefNumber;
             res.Report = transResultBody.Report;
             res.TotalCreditTransSum = transResultBody.TotalCreditTransSum;
             res.TotalDebitTransSum = transResultBody.TotalDebitTransSum;
             res.TotalXML = transResultBody.TotalXML;
 
-            // TODO: failed case
+            // TODO: failed case (?)
 
             return res;
         }
@@ -228,7 +228,7 @@ namespace Shva
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"Shva integration request failed ({correlationId}:{integrationMessageId}). Original exception : {ex.Message}");
+                this.logger.LogError(ex, $"Shva integration request failed ({integrationMessageId}): {ex.Message}");
 
                 throw new IntegrationException("Shva integration request failed", integrationMessageId);
             }

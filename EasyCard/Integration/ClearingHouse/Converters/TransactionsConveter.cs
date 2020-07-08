@@ -105,6 +105,17 @@ namespace ClearingHouse.Converters
             return response;
         }
 
+        public static Shared.Integration.Models.AggregatorTransactionResponse GetAggregatorTransactionResponse(this Models.TransactionResponse operationResponse)
+        {
+            var response = new ClearingHouseTransactionResponse();
+
+            response.ClearingHouseTransactionID = operationResponse.TransactionID;
+
+            response.ConcurrencyToken = operationResponse.ConcurrencyToken;
+
+            return response;
+        }
+
         public static Shared.Integration.Models.AggregatorCommitTransactionResponse GetAggregatorCommitTransactionResponse(this Models.OperationResponse operationResponse)
         {
             var response = new ClearingHouseCommitTransactionResponse();
@@ -130,7 +141,7 @@ namespace ClearingHouse.Converters
         {
             return new Models.RejectTransactionRequest
             {
-                RejectionReason = "TODO", //cancelTransactionRequest.RejectionReason,
+                RejectionReason = cancelTransactionRequest.RejectionReason,
                 ConcurrencyToken = cancelTransactionRequest.ConcurrencyToken,
                 PaymentGatewayID = configuration.PaymentGatewayID,
             };

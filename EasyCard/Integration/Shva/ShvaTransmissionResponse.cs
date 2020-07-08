@@ -7,21 +7,15 @@ namespace Shva
 {
     public class ShvaTransmissionResponse : ProcessorTransmitTransactionsResponse
     {
-        // TODO: array with transaction ids ?
-        public string BadTrans { get; set; }
-
-        // TODO: please add description
-        public string RefNumber { get; set; }
-
         // TODO: please add description
         public string Report { get; set; }
 
         // TODO: codes enum
-        public int ProcessorCode { get; set; }
+        public int? ProcessorCode { get; set; }
 
-        public decimal TotalCreditTransSum { get; set; }
+        public decimal? TotalCreditTransSum { get; set; }
 
-        public decimal TotalDebitTransSum { get; set; }
+        public decimal? TotalDebitTransSum { get; set; }
 
         // TODO: what s this fiels, how we can use this information?
         public string TotalXML { get; set; }

@@ -70,6 +70,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Canceled By Aggregator.
+        /// </summary>
+        public static string CanceledByAggregator {
+            get {
+                return ResourceManager.GetString("CanceledByAggregator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancelled By Merchant.
+        /// </summary>
+        public static string CancelledByMerchant {
+            get {
+                return ResourceManager.GetString("CancelledByMerchant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Card owner national ID required.
         /// </summary>
         public static string CardOwnerNationalIDRequired {
@@ -93,6 +111,33 @@ namespace Transactions.Shared {
         public static string CardReaderInputRequired {
             get {
                 return ResourceManager.GetString("CardReaderInputRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commited By Aggregator.
+        /// </summary>
+        public static string CommitedByAggregator {
+            get {
+                return ResourceManager.GetString("CommitedByAggregator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirmed By Aggregator.
+        /// </summary>
+        public static string ConfirmedByAggregator {
+            get {
+                return ResourceManager.GetString("ConfirmedByAggregator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirmed By Processor.
+        /// </summary>
+        public static string ConfirmedByProcessor {
+            get {
+                return ResourceManager.GetString("ConfirmedByProcessor", resourceCulture);
             }
         }
         
@@ -138,6 +183,42 @@ namespace Transactions.Shared {
         public static string CvvRequiredButStoredTokenCannotUseCvv {
             get {
                 return ResourceManager.GetString("CvvRequiredButStoredTokenCannotUseCvv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed To Cancel By Aggregator.
+        /// </summary>
+        public static string FailedToCancelByAggregator {
+            get {
+                return ResourceManager.GetString("FailedToCancelByAggregator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed To Commit By Aggregator.
+        /// </summary>
+        public static string FailedToCommitByAggregator {
+            get {
+                return ResourceManager.GetString("FailedToCommitByAggregator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed To Confirm By Aggregator.
+        /// </summary>
+        public static string FailedToConfirmByAggregator {
+            get {
+                return ResourceManager.GetString("FailedToConfirmByAggregator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed To Confirm By Procesor.
+        /// </summary>
+        public static string FailedToConfirmByProcesor {
+            get {
+                return ResourceManager.GetString("FailedToConfirmByProcesor", resourceCulture);
             }
         }
         
@@ -232,6 +313,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There are no transactions to transmit.
+        /// </summary>
+        public static string ThereAreNoTransactionsToTransmit {
+            get {
+                return ResourceManager.GetString("ThereAreNoTransactionsToTransmit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Credit Card Token Created.
         /// </summary>
         public static string TokenCreated {
@@ -322,11 +412,47 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transmission Canceling In Progress.
+        /// </summary>
+        public static string TransmissionCancelingInProgress {
+            get {
+                return ResourceManager.GetString("TransmissionCancelingInProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transmission In Progress.
+        /// </summary>
+        public static string TransmissionInProgress {
+            get {
+                return ResourceManager.GetString("TransmissionInProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The number of transactions for transmission batch is limited to {0}.
         /// </summary>
         public static string TransmissionLimit {
             get {
                 return ResourceManager.GetString("TransmissionLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transmission To Processor Failed.
+        /// </summary>
+        public static string TransmissionToProcessorFailed {
+            get {
+                return ResourceManager.GetString("TransmissionToProcessorFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transmitted By Processor.
+        /// </summary>
+        public static string TransmittedByProcessor {
+            get {
+                return ResourceManager.GetString("TransmittedByProcessor", resourceCulture);
             }
         }
     }

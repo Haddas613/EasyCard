@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Shared.Helpers;
 using Shared.Helpers.Security;
 using Shared.Integration;
+using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using System;
@@ -19,6 +20,7 @@ namespace ClearingHouse
     {
         private const string CreateTransactionRequest = "api/transaction";
         private const string CommitTransactionRequest = "api/transaction/{0}";
+        private const string GetTransactionRequest = "api/transaction/{0}";
         private const string CancelTransactionRequest = "api/transaction/{0}/reject";
 
         private readonly IWebApiClient webApiClient;
@@ -34,6 +36,21 @@ namespace ClearingHouse
             this.configuration = configuration.Value;
             this.tokenService = tokenService;
             this.integrationRequestLogStorageService = integrationRequestLogStorageService;
+        }
+
+        public async Task<AggregatorTransactionResponse> GetTransaction(string aggregatorTransactionID)
+        {
+            try
+            {
+                var result = await webApiClient.Get<Models.TransactionResponse>(configuration.ApiBaseAddress, string.Format(GetTransactionRequest, aggregatorTransactionID), null, BuildHeaders);
+
+                return result.GetAggregatorTransactionResponse();
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                throw new IntegrationException(clientError.Message, null);
+            }
         }
 
         public async Task<AggregatorCreateTransactionResponse> CreateTransaction(AggregatorCreateTransactionRequest transactionRequest)
@@ -74,11 +91,28 @@ namespace ClearingHouse
 
         public async Task<AggregatorCancelTransactionResponse> CancelTransaction(AggregatorCancelTransactionRequest transactionRequest)
         {
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
+
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
             try
             {
                 var request = transactionRequest.GetCancelTransactionRequest(configuration);
 
-                var result = await webApiClient.Post<Models.OperationResponse>(configuration.ApiBaseAddress, string.Format(CancelTransactionRequest, transactionRequest.AggregatorTransactionID), request, BuildHeaders);
+                var result = await webApiClient.Post<Models.OperationResponse>(configuration.ApiBaseAddress, string.Format(CancelTransactionRequest, transactionRequest.AggregatorTransactionID), request, BuildHeaders,
+                    (url, request) =>
+                    {
+                        requestStr = request;
+                        requestUrl = url;
+                    },
+                    (response, responseStatus, responseHeaders) =>
+                    {
+                        responseStr = response;
+                        responseStatusStr = responseStatus.ToString();
+                    });
 
                 return result.GetAggregatorCancelTransactionResponse();
             }
@@ -87,6 +121,17 @@ namespace ClearingHouse
                 logger.LogError(clientError.Message);
                 var result = clientError.TryConvert(new Models.OperationResponse { Message = clientError.Message });
                 return result.GetAggregatorCancelTransactionResponse();
+            }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, transactionRequest.CorrelationId);
+
+                integrationMessage.Request = requestStr;
+                integrationMessage.Response = responseStr;
+                integrationMessage.ResponseStatus = responseStatusStr;
+                integrationMessage.Address = requestUrl;
+
+                await HandleIntegrationMessage(integrationMessage);
             }
         }
 
@@ -107,6 +152,11 @@ namespace ClearingHouse
             }
 
             return headers;
+        }
+
+        private async Task HandleIntegrationMessage(IntegrationMessage msg)
+        {
+            await integrationRequestLogStorageService.Save(msg);
         }
     }
 }

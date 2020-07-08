@@ -15,5 +15,7 @@ namespace Shared.Integration.ExternalSystems
         Task<AggregatorCancelTransactionResponse> CancelTransaction(AggregatorCancelTransactionRequest transactionRequest);
 
         bool ShouldBeProcessedByAggregator(TransactionTypeEnum transactionType, SpecialTransactionTypeEnum specialTransactionType, JDealTypeEnum jDealType);
+
+        Task<AggregatorTransactionResponse> GetTransaction(string aggregatorTransactionID);
     }
 }

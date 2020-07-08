@@ -28,6 +28,12 @@ namespace Transactions.Api.Mapping
 
             CreateMap<ClearingHouse.ClearingHouseCreateTransactionResponse, ClearingHouseTransactionDetails>();
 
+            CreateMap<ClearingHouse.ClearingHouseTransactionResponse, PaymentTransaction>()
+                .ForMember(m => m.ClearingHouseTransactionDetails, s => s.MapFrom(src => src))
+                .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<ClearingHouse.ClearingHouseTransactionResponse, ClearingHouseTransactionDetails>();
+
             CreateMap<ClearingHouse.ClearingHouseTerminalSettings, PaymentTransaction>()
                 .ForMember(m => m.ClearingHouseTransactionDetails, s => s.MapFrom(src => src))
                 .ForAllOtherMembers(d => d.Ignore());

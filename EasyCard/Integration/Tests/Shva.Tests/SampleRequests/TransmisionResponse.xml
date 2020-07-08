@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <TransEMVResponse xmlns="http://shva.co.il/xmlwebservices/">
+      <TransEMVResult>262</TransEMVResult>
+      <RefNumber>10376448</RefNumber>
+      <Report>
+        שם מסוף:               ב.ע.עדן טסט
+        0882021               :מספר מסוף
+        07/07/2020                   :תאריך
+        16:31                     :שעה
+        0071506        מספר עסק בישראכרט
+        7007245            מספר עסק בכאל
+        0300012            MAXמספר עסק ב
+        VE3VE28501                  :PPCODE
+        ...................................................
+        גירסה - 001620
+        ארעה שגיאה בשידור עסקאות
+        ---------------------------------------------------
+      </Report>
+      <TotalDebitTransSum>0</TotalDebitTransSum>
+      <TotalCreditTransSum>0</TotalCreditTransSum>
+      <TotalXML>&lt;staticObj&gt;&lt;Date&gt;2020-07-07T16:31:30.6941403+03:00&lt;/Date&gt;&lt;Session-Number&gt;10376448&lt;/Session-Number&gt;&lt;File-Number&gt;67&lt;/File-Number&gt;&lt;File-Open-Date&gt;2020-07-07T00:00:00&lt;/File-Open-Date&gt;&lt;Backup-File-Name /&gt;&lt;All-Debit-Num-Recs&gt;0&lt;/All-Debit-Num-Recs&gt;&lt;All-Debit-Sums&gt;0&lt;/All-Debit-Sums&gt;&lt;All-Credit-Num-Recs&gt;0&lt;/All-Credit-Num-Recs&gt;&lt;All-Credit-Sums&gt;0&lt;/All-Credit-Sums&gt;&lt;Solek-List /&gt;&lt;/staticObj&gt;</TotalXML>
+      <BadTrans>20070716310108820217927</BadTrans>
+    </TransEMVResponse>
+  </soap:Body>
+</soap:Envelope>

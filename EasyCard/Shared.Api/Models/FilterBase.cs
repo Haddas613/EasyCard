@@ -17,6 +17,7 @@ namespace Shared.Api.Models
 
         public string SortBy { get; set; }
 
+        // TODO: check with UI
         public OrderByDirectionEnum OrderByDirection { get; set; }
     }
 }

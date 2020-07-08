@@ -18,6 +18,7 @@ using System.Security;
 using System.Data;
 using Dapper;
 using Transactions.Shared.Enums;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Transactions.Business.Data
 {
@@ -68,17 +69,19 @@ namespace Transactions.Business.Data
             base.OnModelCreating(modelBuilder);
         }
 
-        public async Task<IEnumerable<TransmissionInfo>> StartTransmission(Guid terminalID, IEnumerable<Guid> transactionIDs)
+        public async Task<IEnumerable<TransmissionInfo>> StartTransmission(Guid terminalID, IEnumerable<Guid> transactionIDs, IDbContextTransaction dbTransaction = null)
         {
             user.CheckTerminalPermission(terminalID);
 
             string query = @"
-DECLARE @TransactionIDs table(
+DECLARE @OutputTransactionIDs table(
     [PaymentTransactionID] [uniqueidentifier] NULL,
-    [ShvaDealID] [varchar(50)] NULL
+    [ShvaDealID] [varchar](50) NULL
 );
 
-UPDATE [dbo].[PaymentTransaction] SET [Status]=@NewStatus, [UpdatedDate]=@UpdatedDate WHERE [PaymentTransactionID] in @TransactionIDs AND [TerminalID] = @TerminalID AND [Status]=@OldStatus";
+UPDATE [dbo].[PaymentTransaction] SET [Status]=@NewStatus, [UpdatedDate]=@UpdatedDate 
+OUTPUT inserted.PaymentTransactionID, inserted.ShvaDealID INTO @OutputTransactionIDs
+WHERE [PaymentTransactionID] in @TransactionIDs AND [TerminalID] = @TerminalID AND [Status]=@OldStatus";
 
             // security check
 
@@ -102,22 +105,29 @@ UPDATE [dbo].[PaymentTransaction] SET [Status]=@NewStatus, [UpdatedDate]=@Update
             }
 
             query += @"
-OUTPUT inserted.PaymentTransactionID, inserted.ShvaDealID INTO @TransactionIDs;
-
-SELECT PaymentTransactionID, ShvaDealID from TransactionIDs";
+SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
 
             var connection = this.Database.GetDbConnection();
+            bool existingConnection = true;
             try
             {
-                await connection.OpenAsync();
 
-                var report = await connection.QueryAsync<TransmissionInfo>(query, new { NewStatus = TransactionStatusEnum.TransmissionInProgress, OldStatus = TransactionStatusEnum.CommitedByAggregator, TerminalID = terminalID, MerchantID = user.GetMerchantID(), TransactionIDs = transactionIDs });
+                if (connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync();
+                    existingConnection = false;
+                }
+
+                var report = await connection.QueryAsync<TransmissionInfo>(query, new { NewStatus = TransactionStatusEnum.TransmissionInProgress, OldStatus = TransactionStatusEnum.CommitedByAggregator, TerminalID = terminalID, MerchantID = user.GetMerchantID(), TransactionIDs = transactionIDs, UpdatedDate = DateTime.UtcNow }, transaction: dbTransaction?.GetDbTransaction());
 
                 return report;
             }
             finally
             {
-                connection.Close();
+                if (!existingConnection)
+                {
+                    connection.Close();
+                }
             }
 
         }

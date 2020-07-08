@@ -33,6 +33,8 @@ namespace Shva.Models
         [XmlElement("AshEnd", Type = typeof(AshEndRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         [XmlElement("AshAuthResponse", Type = typeof(AshAuthResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         [XmlElement("AshAuth", Type = typeof(AshAuthRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        [XmlElement("TransEMV", Type = typeof(TransEMVRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        [XmlElement("TransEMVResponse", Type = typeof(TransEMVResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         public object Content { get; set; }
     }
 

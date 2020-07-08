@@ -96,7 +96,7 @@ namespace Transactions.Api.Controllers
 
         [HttpPost]
         [Route("transmit")]
-        public async Task<ActionResult<OperationResponse>> TransmitTransactions(TransmitTransactionsRequest transmitTransactionsRequest)
+        public async Task<ActionResult<SummariesResponse<TransmitTransactionResponse>>> TransmitTransactions(TransmitTransactionsRequest transmitTransactionsRequest)
         {
             if (transmitTransactionsRequest.PaymentTransactionIDs == null || transmitTransactionsRequest.PaymentTransactionIDs.Count() == 0)
             {
@@ -122,17 +122,75 @@ namespace Transactions.Api.Controllers
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
             {
-                transactionsToTransmit = await transactionsService.StartTransmission(terminal.TerminalID, transmitTransactionsRequest.PaymentTransactionIDs);
+                transactionsToTransmit = await transactionsService.StartTransmission(terminal.TerminalID, transmitTransactionsRequest.PaymentTransactionIDs, dbTransaction);
+                await dbTransaction.CommitAsync();
             }
 
             var processorIds = transactionsToTransmit.Select(d => d.ShvaDealID).ToList();
 
+            if (processorIds.Count == 0)
+            {
+                return BadRequest(new OperationResponse(Messages.ThereAreNoTransactionsToTransmit, StatusEnum.Error));
+            }
+
             var processorRequest = new ProcessorTransmitTransactionsRequest { TransactionIDs = processorIds, ProcessorSettings = processorSettings, CorrelationId = GetCorrelationID() };
 
-            var processorRespnse = await processor.TransmitTransactions(processorRequest);
+            var processorResponse = await processor.TransmitTransactions(processorRequest);
 
-            // TODO: list of transmitted transactions
-            return new OperationResponse(Messages.TransactionCreated, StatusEnum.Success);
+            var response = new SummariesResponse<TransmitTransactionResponse>();
+            var transactionsResponse = new List<TransmitTransactionResponse>();
+
+            foreach (var transactionID in transmitTransactionsRequest.PaymentTransactionIDs)
+            {
+                var preparedTransaction = transactionsToTransmit.FirstOrDefault(d => d.PaymentTransactionID == transactionID);
+
+                if (preparedTransaction != null)
+                {
+                    var failedTransaction = processorResponse.FailedTransactions?.FirstOrDefault(d => d == preparedTransaction.ShvaDealID);
+
+                    if (failedTransaction != null)
+                    {
+                        transactionsResponse.Add(new TransmitTransactionResponse { TransmissionStatus = TransmissionStatusEnum.TransmissionFailed, PaymentTransactionID = transactionID });
+                    }
+                    else
+                    {
+                        transactionsResponse.Add(new TransmitTransactionResponse { TransmissionStatus = TransmissionStatusEnum.Transmitted, PaymentTransactionID = transactionID });
+                    }
+                }
+                else
+                {
+                    transactionsResponse.Add(new TransmitTransactionResponse { TransmissionStatus = TransmissionStatusEnum.NotFoundOrInvalidStatus, PaymentTransactionID = transactionID });
+                }
+            }
+
+            response.NumberOfRecords = transactionsResponse.Count;
+            response.Data = transactionsResponse;
+
+            // TODO: use with batch or with queue
+            var transactionIDs = transactionsResponse.Where(d => d.TransmissionStatus == TransmissionStatusEnum.TransmissionFailed || d.TransmissionStatus == TransmissionStatusEnum.Transmitted).Select(d => d.PaymentTransactionID).ToList();
+            var transactions = await transactionsService.GetTransactions().Where(d => transactionIDs.Contains(d.PaymentTransactionID)).ToListAsync();
+
+            foreach (var transaction in transactions)
+            {
+                var preparedTransaction = transactionsToTransmit.FirstOrDefault(d => d.PaymentTransactionID == transaction.PaymentTransactionID);
+                if (preparedTransaction != null)
+                {
+                    var failedTransaction = processorResponse.FailedTransactions?.FirstOrDefault(d => d == preparedTransaction.ShvaDealID);
+
+                    if (failedTransaction != null)
+                    {
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.TransmissionToProcessorFailed);
+
+                        // TODO: cancel in clearing house
+                    }
+                    else
+                    {
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.TransmittedByProcessor);
+                    }
+                }
+            }
+
+            return Ok(response);
         }
 
         [HttpPost]
@@ -162,41 +220,49 @@ namespace Transactions.Api.Controllers
                 }
 
                 await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.CancelledByMerchant, dbTransaction: dbTransaction);
+
+                await dbTransaction.CommitAsync();
             }
 
-            transaction = await transactionsService.GetTransactions()
-                 .FirstOrDefaultAsync(m => m.PaymentTransactionID == transaction.PaymentTransactionID);
-
-            // cancel in clearing house
-            try
+            if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
             {
-                var aggregatorRequest = mapper.Map<AggregatorCancelTransactionRequest>(transaction);
-                aggregatorRequest.AggregatorSettings = aggregatorSettings;
+                await transactionsService.ReloadEntity(transaction);
 
-                var aggregatorResponse = await aggregator.CancelTransaction(aggregatorRequest);
-                mapper.Map(aggregatorResponse, transaction);
-
-                if (!aggregatorResponse.Success)
+                // cancel in clearing house
+                try
                 {
-                    logger.LogError($"Aggregator Cancel Transaction request error. TransactionID: {transaction.PaymentTransactionID}");
+                    var aggregatorTransaction = await aggregator.GetTransaction(transaction.ClearingHouseTransactionDetails?.ClearingHouseTransactionID?.ToString()); // TODO: abstract aggregator
+                    mapper.Map(aggregatorTransaction, transaction);
+
+                    var aggregatorRequest = mapper.Map<AggregatorCancelTransactionRequest>(transaction);
+                    aggregatorRequest.AggregatorSettings = aggregatorSettings;
+                    aggregatorRequest.RejectionReason = TransactionStatusEnum.CancelledByMerchant.ToString();
+
+                    var aggregatorResponse = await aggregator.CancelTransaction(aggregatorRequest);
+                    mapper.Map(aggregatorResponse, transaction);
+
+                    if (!aggregatorResponse.Success)
+                    {
+                        logger.LogError($"Aggregator Cancel Transaction request error. TransactionID: {transaction.PaymentTransactionID}");
+
+                        await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
+
+                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), aggregatorResponse.ErrorMessage));
+                    }
+
+                    await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.CanceledByAggregator);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Aggregator Cancel Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
 
                     await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
 
-                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}",  transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), aggregatorResponse.ErrorMessage));
+                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), null));
                 }
-
-                await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.CanceledByAggregator);
-
-                return new OperationResponse(Messages.TransactionCanceled, StatusEnum.Success);
             }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Aggregator Cancel Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
 
-                await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
-
-                return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), null));
-            }
+            return new OperationResponse(Messages.TransactionCanceled, StatusEnum.Success);
         }
     }
 }

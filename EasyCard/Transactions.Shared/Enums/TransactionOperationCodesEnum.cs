@@ -7,21 +7,37 @@ namespace Transactions.Shared.Enums
     public enum TransactionOperationCodesEnum : short
     {
         TransactionCreated,
+
         TransactionUpdated,
-        
-        
-        
-        
 
         ConfirmedByAggregator,
-        RejectedByAggregator,
-        FailedToConfirmByAggregator,
 
         ConfirmedByProcessor,
-        RejectedByProcessor,
-        FailedToConfirmByProcesor,
 
         CommitedByAggregator,
-        FailedToCommitByAggregator
+
+        TransmissionInProgress,
+
+        TransmissionCancelingInProgress,
+
+        TransmittedByProcessor,
+
+        RejectedByAggregator,
+
+        RejectedByProcessor,
+
+        CancelledByMerchant,
+
+        FailedToConfirmByAggregator,
+
+        FailedToConfirmByProcesor,
+
+        FailedToCommitByAggregator,
+
+        TransmissionToProcessorFailed,
+
+        FailedToCancelByAggregator,
+
+        CanceledByAggregator
     }
 }

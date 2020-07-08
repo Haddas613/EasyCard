@@ -10,6 +10,8 @@ namespace Shared.Business
 
         Task CreateEntity(T entity, IDbContextTransaction dbTransaction = null);
 
-        public IDbContextTransaction BeginDbTransaction(System.Data.IsolationLevel isolationLevel = System.Data.IsolationLevel.RepeatableRead);
+        IDbContextTransaction BeginDbTransaction(System.Data.IsolationLevel isolationLevel = System.Data.IsolationLevel.RepeatableRead);
+
+        Task ReloadEntity(T entity);
     }
 }

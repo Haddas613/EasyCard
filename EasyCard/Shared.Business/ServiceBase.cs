@@ -39,5 +39,10 @@ namespace Shared.Business
         {
             return dbContext.Database.BeginTransaction(isolationLevel);
         }
+
+        public virtual async Task ReloadEntity(T entity)
+        {
+            await dbContext.Entry(entity).ReloadAsync();
+        }
     }
 }

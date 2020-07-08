@@ -63,7 +63,7 @@ namespace Transactions.Business.Services
         public async override Task UpdateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null) 
             => await UpdateEntity(entity, Messages.TransactionUpdated, TransactionOperationCodesEnum.TransactionUpdated, dbTransaction: dbTransaction);
 
-        public async Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum transactionStatus, TransactionFinalizationStatusEnum? finalizationStatus = null, RejectionReasonEnum? rejectionReason = null, string rejectionMessage = null, IDbContextTransaction dbTransaction = null)
+        public async Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum? transactionStatus = null, TransactionFinalizationStatusEnum? finalizationStatus = null, RejectionReasonEnum? rejectionReason = null, string rejectionMessage = null, IDbContextTransaction dbTransaction = null)
         {
             List<string> changes = new List<string>();
 
@@ -81,13 +81,21 @@ namespace Transactions.Business.Services
             TransactionOperationCodesEnum operationCode = TransactionOperationCodesEnum.TransactionUpdated;
             var historyMessage = Messages.TransactionUpdated;
 
-            entity.Status = transactionStatus;
+            entity.Status = transactionStatus ?? entity.Status;
             entity.FinalizationStatus = finalizationStatus ?? entity.FinalizationStatus;
             entity.RejectionReason = rejectionReason ?? entity.RejectionReason;
             entity.RejectionMessage = rejectionMessage ?? entity.RejectionMessage;
 
-            Enum.TryParse<TransactionOperationCodesEnum>(transactionStatus.ToString(), true, out operationCode);
-            historyMessage = rejectionMessage ?? Messages.ResourceManager.GetString(operationCode.ToString()) ?? historyMessage;
+            if (finalizationStatus != null)
+            {
+                Enum.TryParse(finalizationStatus.ToString(), true, out operationCode);
+            }
+            else if (transactionStatus != null)
+            {
+                Enum.TryParse(transactionStatus?.ToString(), true, out operationCode);
+            }
+
+            historyMessage = rejectionMessage ?? (Messages.ResourceManager.GetString(operationCode.ToString()) ?? historyMessage);
 
             if (dbTransaction != null)
             {
@@ -153,9 +161,9 @@ namespace Transactions.Business.Services
             return context.TransactionHistories.Where(d => d.PaymentTransactionID == transactionID);
         }
 
-        public async Task<IEnumerable<TransmissionInfo>> StartTransmission(Guid terminalID, IEnumerable<Guid> transactionIDs)
+        public async Task<IEnumerable<TransmissionInfo>> StartTransmission(Guid terminalID, IEnumerable<Guid> transactionIDs, IDbContextTransaction dbTransaction = null)
         {
-            return await context.StartTransmission(terminalID, transactionIDs);
+            return await context.StartTransmission(terminalID, transactionIDs, dbTransaction);
         }
     }
 }

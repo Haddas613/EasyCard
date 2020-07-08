@@ -120,6 +120,12 @@
   <data name="AggregatorNotDefined" xml:space="preserve">
     <value>Aggregator is not defined</value>
   </data>
+  <data name="CanceledByAggregator" xml:space="preserve">
+    <value>Canceled By Aggregator</value>
+  </data>
+  <data name="CancelledByMerchant" xml:space="preserve">
+    <value>Cancelled By Merchant</value>
+  </data>
   <data name="CardOwnerNationalIDRequired" xml:space="preserve">
     <value>Card owner national ID required</value>
   </data>
@@ -128,6 +134,15 @@
   </data>
   <data name="CardReaderInputRequired" xml:space="preserve">
     <value>Card Reader Input Required</value>
+  </data>
+  <data name="CommitedByAggregator" xml:space="preserve">
+    <value>Commited By Aggregator</value>
+  </data>
+  <data name="ConfirmedByAggregator" xml:space="preserve">
+    <value>Confirmed By Aggregator</value>
+  </data>
+  <data name="ConfirmedByProcessor" xml:space="preserve">
+    <value>Confirmed By Processor</value>
   </data>
   <data name="CreateRequestSentToAggregator" xml:space="preserve">
     <value>Create transaction request sent to {0}</value>
@@ -143,6 +158,18 @@
   </data>
   <data name="CvvRequiredButStoredTokenCannotUseCvv" xml:space="preserve">
     <value>CVV required, but stored credit card token cannot use cvv</value>
+  </data>
+  <data name="FailedToCancelByAggregator" xml:space="preserve">
+    <value>Failed To Cancel By Aggregator</value>
+  </data>
+  <data name="FailedToCommitByAggregator" xml:space="preserve">
+    <value>Failed To Commit By Aggregator</value>
+  </data>
+  <data name="FailedToConfirmByAggregator" xml:space="preserve">
+    <value>Failed To Confirm By Aggregator</value>
+  </data>
+  <data name="FailedToConfirmByProcesor" xml:space="preserve">
+    <value>Failed To Confirm By Procesor</value>
   </data>
   <data name="FailedToProcessTransaction" xml:space="preserve">
     <value>Failed To Process Transaction</value>
@@ -174,6 +201,9 @@
   <data name="RejectedByProcessor" xml:space="preserve">
     <value>Transaction rejected by Processor</value>
   </data>
+  <data name="ThereAreNoTransactionsToTransmit" xml:space="preserve">
+    <value>There are no transactions to transmit</value>
+  </data>
   <data name="TokenCreated" xml:space="preserve">
     <value>Credit Card Token Created</value>
   </data>
@@ -204,7 +234,19 @@
   <data name="TransactionUpdated" xml:space="preserve">
     <value>Transaction Updated</value>
   </data>
+  <data name="TransmissionCancelingInProgress" xml:space="preserve">
+    <value>Transmission Canceling In Progress</value>
+  </data>
+  <data name="TransmissionInProgress" xml:space="preserve">
+    <value>Transmission In Progress</value>
+  </data>
   <data name="TransmissionLimit" xml:space="preserve">
     <value>The number of transactions for transmission batch is limited to {0}</value>
+  </data>
+  <data name="TransmissionToProcessorFailed" xml:space="preserve">
+    <value>Transmission To Processor Failed</value>
+  </data>
+  <data name="TransmittedByProcessor" xml:space="preserve">
+    <value>Transmitted By Processor</value>
   </data>
 </root>

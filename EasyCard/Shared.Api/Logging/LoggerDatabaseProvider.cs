@@ -75,7 +75,7 @@ namespace Shared.Api.Logging
                     IP = httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString()
                 };
 
-                string sql = "INSERT INTO SystemLog (ID, LogLevel, CategoryName, Message, [UserName], [UserID], [IP], [Timestamp], [CorrelationID], [Exception]) Values (@ID, @LogLevel, @CategoryName, @Message, @UserName, @UserID, @IP, @Timestamp, @CorrelationID, @Exception);";
+                string sql = "INSERT INTO [dbo].[SystemLog] ([ID], [LogLevel], [CategoryName], [Message], [UserName], [UserID], [IP], [Timestamp], [CorrelationID], [Exception]) Values (@ID, @LogLevel, @CategoryName, @Message, @UserName, @UserID, @IP, @Timestamp, @CorrelationID, @Exception);";
 
                 try
                 {
@@ -105,8 +105,8 @@ namespace Shared.Api.Logging
                 if (ex.InnerException != null)
                 {
                     sb.AppendLine();
-                    sb.AppendLine($"Inner exception: {ex.GetType().ToString()}");
-                    sb.AppendLine(ex.StackTrace);
+                    sb.AppendLine($"Inner exception: {ex.InnerException.Message} ({ex.InnerException.GetType().ToString()})");
+                    sb.AppendLine(ex.InnerException.StackTrace);
                 }
 
                 return sb.ToString();
