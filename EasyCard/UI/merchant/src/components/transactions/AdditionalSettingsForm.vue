@@ -26,11 +26,13 @@
           :label="$t('TransactionType')"
           solo
         ></v-select>
+
         <installment-details
           ref="instDetails"
           :data="model.installmentDetails"
           v-if="isInstallmentTransaction"
         ></installment-details>
+
         <v-text-field
           v-model="model.dealDetails.dealReference"
           :counter="50"
@@ -113,6 +115,8 @@ export default {
   methods: {
     ok() {
       if (!this.$refs.form.validate()) return;
+
+      this.model.installmentDetails = this.$refs.instDetails.model;
       this.$emit("ok", this.model);
     }
   }

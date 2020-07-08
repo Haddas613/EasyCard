@@ -12,7 +12,6 @@
     <v-overlay :value="loading">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-    {{model.cardPresence}}
     <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
@@ -94,9 +93,9 @@ export default {
           dealDescription: null
         },
         installmentDetails: {
-          numberOfPayments: 0,
-          initialPaymentAmount: 0,
-          installmentPaymentAmount: 0
+          numberOfPayments: null,
+          initialPaymentAmount: null,
+          installmentPaymentAmount: null
         }
       },
       step: 1,
@@ -113,6 +112,7 @@ export default {
         },
         4: {
           title: "Charge",
+          skippable: true
         },
         5: {
           title: "AdditionalSettings"
@@ -162,6 +162,7 @@ export default {
       this.model.transactionType = data.transactionType;
       this.model.currency = data.currency;
       this.model.jDealType = data.jDealType;
+      this.model.installmentDetails = data.installmentDetails;
       // this.model.cardPresence = data.cardPresence;
 
       let result = { isError: false };
@@ -191,7 +192,7 @@ export default {
         lastStep.title = "Error";
         lastStep.completed = false;
         lastStep.closeable = true;
-        if(result.errors && result.errors.length > 0){
+        if(result && result.errors && result.errors.length > 0){
           this.errors = result.errors;
         }else{
           this.errors = [{description: result.message}]

@@ -1,9 +1,9 @@
 <template>
-  <v-card outlined class="border-primary">
-    <v-subheader class="primary--text font-weight-light">{{$t('InstallmentDetails')}}</v-subheader>
-    <v-container fluid class="px-2">
-      <v-row>
-        <v-col cols="12" md="3" sm="6">
+  <v-card outlined class="ecbg border-primary">
+    <v-card-subtitle class="subtitle-1">{{$t('InstallmentDetails')}}</v-card-subtitle>
+    <v-container fluid class="px-0">
+      <v-row no-gutters>
+        <v-col cols="12">
           <v-text-field
             v-model.number="model.numberOfPayments"
             :label="$t('NumberOfPayments')"
@@ -12,9 +12,10 @@
             type="number"
             min="1"
             step="1"
+            solo
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="3" sm="6">
+        <v-col cols="12">
           <v-text-field
             v-model.number="model.initialPaymentAmount"
             :label="$t('InitialPaymentAmount')"
@@ -23,9 +24,10 @@
             step="0.01"
             :rules="[vr.primitives.required]"
             required
+            solo
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="3" sm="6">
+        <v-col cols="12">
           <v-text-field
             v-model.number="model.installmentPaymentAmount"
             :label="$t('InstallmentPaymentAmount')"
@@ -34,15 +36,17 @@
             step="0.01"
             :rules="[vr.primitives.required]"
             required
+            solo
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="3" sm="6">
+        <v-col cols="12">
           <v-text-field
             v-model.number="totalAmount"
             :label="$t('TotalAmount')"
             type="number"
             disabled
             required
+            solo
           ></v-text-field>
         </v-col>
       </v-row>
@@ -64,10 +68,15 @@ export default {
   },
   computed: {
     totalAmount() {
-      return (
-        this.model.initialPaymentAmount +
-        (this.model.numberOfPayments - 1) * this.model.installmentPaymentAmount
-      );
+      if (
+        !this.model.initialPaymentAmount ||
+        !this.model.numberOfPayments ||
+        !this.model.installmentPaymentAmount
+      )
+        return null;
+      this.model.totalAmount = (this.model.initialPaymentAmount + (this.model.numberOfPayments - 1) * this.model.installmentPaymentAmount);
+      
+      return this.model.totalAmount;
     }
   }
 };

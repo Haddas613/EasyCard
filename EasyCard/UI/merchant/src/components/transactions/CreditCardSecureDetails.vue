@@ -208,7 +208,6 @@ export default {
       let sep = this.$refs.cardNumberInp.value.split('=');
       this.model.cardReaderInput = this.$refs.cardNumberInp.value;
 
-      console.log(this.$refs.cardNumberInp.value, this.model)
       //get rid of ';' at the beginning
       this.$refs.cardNumberInp.value = sep[0].substr(1, this.$refs.cardNumberInp.value.length);
       this.$refs.expiryInp.value = `${sep[1].substr(2, 2)}/${sep[1].substr(0, 2)}`;
