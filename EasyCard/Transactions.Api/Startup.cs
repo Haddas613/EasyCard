@@ -61,6 +61,7 @@ namespace Transactions.Api
             });
 
             var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
+            var appConfig = Configuration.GetSection("AppConfig").Get<ApplicationSettings>();
 
             services.AddCors(options =>
             {
@@ -225,6 +226,13 @@ namespace Transactions.Api
                 var tokenSvc = new WebApiClientTokenService(webApiClient.HttpClient, chCfg);
 
                 return new ClearingHouse.ClearingHouseAggregator(webApiClient, logger, chCfg, tokenSvc, storageService);
+            });
+
+
+            services.Configure<RequestResponseLoggingSettings>((options) =>
+            {
+                options.RequestsLogStorageTable = appConfig.RequestsLogStorageTable;
+                options.StorageConnectionString = appConfig.DefaultStorageConnectionString;
             });
 
             services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();

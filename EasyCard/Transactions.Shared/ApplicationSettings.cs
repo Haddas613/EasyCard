@@ -15,5 +15,7 @@ namespace Transactions.Shared
         public int FiltersGlobalPageSizeLimit { get; set; } = 1000;
 
         public int TransmissionMaxBatchSize { get; set; } = 10;
+
+        public string RequestsLogStorageTable { get; set; }
     }
 }
