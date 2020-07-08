@@ -3,6 +3,7 @@ using Merchants.Api.Models.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
+using Shared.Api.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -15,14 +16,16 @@ namespace Merchants.Api.Controllers
     public class SystemLogApiController : ApiControllerBase
     {
         private readonly IMapper mapper;
+        private readonly IDatabaseLogService databaseLogService;
 
-        public SystemLogApiController(IMapper mapper)
+        public SystemLogApiController(IMapper mapper, IDatabaseLogService databaseLogService)
         {
             this.mapper = mapper;
+            this.databaseLogService = databaseLogService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<UserResponse>> GetUsers([FromQuery] GetUsersFilter filter)
+        public async Task<ActionResult<DatabaseLogEntry>> GetLogEntries([FromQuery] GetUsersFilter filter)
         {
             throw new NotImplementedException();
         }
