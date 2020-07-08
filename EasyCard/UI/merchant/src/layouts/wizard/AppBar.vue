@@ -3,18 +3,18 @@
     :clipped-left="$vuetify.breakpoint.lgAndUp"
     :clipped-right="$vuetify.breakpoint.lgAndUp"
     app
-    color="primary"
-    dark
+    color="white"
+    light
     :flat="true"
   >
     <v-row :align="'center'">
-      <v-col cols="4" md="4" lg="4" xl="3">
-        <v-app-bar-nav-icon @click.stop="drawerObj = !drawerObj" />
+      <v-col class="d-flex justify-start px-1" cols="2">
+        <v-app-bar-nav-icon color="primary" @click.stop="drawerObj = !drawerObj" />
       </v-col>
       <v-col class="d-flex justify-space-around">
-        <v-toolbar-title class="display-1 hidden-xs-only">easycard</v-toolbar-title>
+        <v-toolbar-title class="subtitle-2">{{terminalName}}</v-toolbar-title>
       </v-col>
-      <v-col cols="5" md="4" lg="4" xl="3" class="d-flex justify-end">
+      <v-col cols="2" class="d-flex justify-end">
         <template v-if="$vuetify.breakpoint.smAndUp">
           <actions-bar :footer="false"></actions-bar>
         </template>
@@ -25,6 +25,7 @@
 <script>
 import LangSwitcher from "../../components/LanguageSwitcher"
 import ActionsBar from "../../components/misc/ActionsBar";
+import { mapState } from 'vuex'
 
 export default {
   name: "AppBar",
@@ -43,6 +44,12 @@ export default {
       set: function(nv) {
         this.$emit("update:drawer", nv);
       }
+    },
+    ...mapState({
+      terminal: state => state.settings.terminal
+    }),
+    terminalName(){
+      return this.terminal ? this.terminal.name : this.$t('TerminalNotSelected')
     }
   }
 };

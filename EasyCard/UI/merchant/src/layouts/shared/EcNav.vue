@@ -77,9 +77,28 @@
 import LangSwitcher from "../../components/LanguageSwitcher"
 
 export default {
-  name: "MainNav",
-  props: ["items", "drawer"],
+  name: "EcNav",
+  props: ["drawer"],
   components: {LangSwitcher},
+  data() {
+    return {
+      items: [
+        { icon: 'mdi-view-dashboard', text: 'Dashboard', to: '/admin/dashboard' },
+        {
+          icon: 'mdi-cash-minus',
+          'icon-alt': 'mdi-cash-plus',
+          text: 'Transactions',
+          expanded: false,
+          children: [
+            { icon: 'mdi-cash-multiple', text: 'TransactionsList', to: '/admin/transactions/list' },
+          ],
+        },
+        { divider: true, dividerArea: 'userAuth' },
+        { icon: 'mdi-account-cog', text: 'Profile', to: '/admin/profile' },
+        { icon: 'mdi-logout', text: 'Logout', fn: () => {mainAuth.signOut();} },
+      ],
+    }
+  },
   computed: {
     drawerObj: {
       get: function() {
