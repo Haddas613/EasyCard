@@ -161,7 +161,6 @@ export default {
       if (!this.$cardFormat.validateCardExpiry(this.$refs.expiryInp.value)) {
         this.errors.expiry = this.$t("Invalid");
       }
-
       if (!(form && this.lodash.every(this.errors, e => e === false))) 
         return;
         
@@ -169,7 +168,7 @@ export default {
         save: this.model.save,
         cardOwnerName: this.model.name,
         cardNumber: this.$refs.cardNumberInp.value.replace(/\s/g, ""),
-        expiration: this.$refs.expiryInp.value.replace(/\s/g, ""),
+        cardExpiration: this.$refs.expiryInp.value.replace(/\s/g, ""),
         cardOwnerNationalID: this.model.nationalID,
         cvv: this.$refs.cvvInp.value
       });

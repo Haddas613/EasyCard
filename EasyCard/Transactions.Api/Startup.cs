@@ -63,6 +63,7 @@ namespace Transactions.Api
             });
 
             var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
+            var appConfig = Configuration.GetSection("AppConfig").Get<ApplicationSettings>();
 
             services.AddCors(options =>
             {

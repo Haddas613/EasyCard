@@ -43,7 +43,7 @@ export default {
   async mounted() {
     let timeout = setTimeout((() => {this.loading = true}).bind(this), 1000);
     
-    this.terminals = (await this.$api.terminals.getTerminals()) || [];
+    this.terminals = (await this.$api.terminals.getTerminals()).data || [];
     if (this.terminals.length > 0) {
       if (this.terminals.length === 1) {
         this.$emit("ok", this.terminals[0].terminalID);
