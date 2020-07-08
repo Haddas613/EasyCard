@@ -12,6 +12,7 @@
     <v-overlay :value="loading">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
+    {{model.cardPresence}}
     <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
@@ -73,7 +74,7 @@ export default {
         transactionType: null,
         jDealType: null,
         currency: null,
-        cardPresence: null,
+        cardPresence: 'cardNotPresent',
         creditCardToken: null,
         creditCardSecureDetails: {
           cardExpiration: {
@@ -149,6 +150,11 @@ export default {
     },
     processCreditCard(data){
       this.model.creditCardSecureDetails = data;
+      if(data.cardReaderInput){
+        this.model.cardPresence = 'regular';
+      }else{
+        this.model.cardPresence = 'cardNotPresent';
+      }
       this.step++;
     },
     async processAdditionalSettings(data){
@@ -156,7 +162,7 @@ export default {
       this.model.transactionType = data.transactionType;
       this.model.currency = data.currency;
       this.model.jDealType = data.jDealType;
-      this.model.cardPresence = data.cardPresence;
+      // this.model.cardPresence = data.cardPresence;
 
       let result = { isError: false };
       this.loading = true;

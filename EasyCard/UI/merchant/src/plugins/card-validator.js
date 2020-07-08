@@ -382,6 +382,20 @@ var cardFormatUtils = {
         });
     },
 
+    reFormatCardNumberOrSkipIfCardReader: function (e) {
+        if (!e.currentTarget.value || (/^;\d{15,17}=\d{19,21}\?$/.test(e.currentTarget.value)))
+            return;
+        else {
+            var target = e.currentTarget;
+            return setTimeout(function () {
+                var value = target.value;
+                value = cardFormatUtils.replaceFullWidthChars(value);
+                value = validation.formatCardNumber(value);
+                return cardFormatUtils.safeVal(value, target);
+            });
+        }
+    },
+
     formatCardNumber: function (e) {
         // Only format if input is a number
         var re;
@@ -681,6 +695,19 @@ var format = {
         el.addEventListener('paste', cardFormatUtils.reFormatCardNumber);
         el.addEventListener('change', cardFormatUtils.reFormatCardNumber);
         el.addEventListener('input', cardFormatUtils.reFormatCardNumber);
+        el.addEventListener('input', cardFormatUtils.setCardType);
+        return this;
+    },
+
+    formatCardNumberOrCardReader: function (el) {
+        el.addEventListener('keypress', cardFormatUtils.restrictNumeric);
+        el.addEventListener('keypress', cardFormatUtils.restrictCardNumber);
+        el.addEventListener('keypress', cardFormatUtils.formatCardNumber);
+        el.addEventListener('keydown', cardFormatUtils.formatBackCardNumber);
+        el.addEventListener('keyup', cardFormatUtils.setCardType);
+        el.addEventListener('paste', cardFormatUtils.reFormatCardNumberOrSkipIfCardReader);
+        el.addEventListener('change', cardFormatUtils.reFormatCardNumberOrSkipIfCardReader);
+        el.addEventListener('input', cardFormatUtils.reFormatCardNumberOrSkipIfCardReader);
         el.addEventListener('input', cardFormatUtils.setCardType);
         return this;
     },

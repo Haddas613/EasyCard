@@ -27,8 +27,10 @@
                     type="tel"
                     class="dense-input"
                     ref="cardNumberInp"
-                    v-cardformat:formatCardNumber
+                    v-cardformat:formatCardNumberOrCardReader
                     placeholder="XXXX XXXX XXXX XXXX"
+                    @keydown.enter="parseCardReader()"
+                    @input="checkIfCardReader($event)"
                   />
                 </v-col>
               </v-row>
@@ -123,7 +125,8 @@ export default {
   data() {
     return {
       model: {
-        save: false
+        save: false,
+        cardReaderInput: null
       },
       vr: ValidationRules,
       errors: {
@@ -170,7 +173,8 @@ export default {
         cardNumber: this.$refs.cardNumberInp.value.replace(/\s/g, ""),
         cardExpiration: this.$refs.expiryInp.value.replace(/\s/g, ""),
         cardOwnerNationalID: this.model.nationalID,
-        cvv: this.$refs.cvvInp.value
+        cvv: this.$refs.cvvInp.value,
+        cardReaderInput: this.model.cardReaderInput
       });
     },
     validate(key) {
@@ -184,8 +188,33 @@ export default {
         }
       }
       this.errors[key] = false;
+    },
+    resetCardReader(){
+      this.model.cardReaderInput = null;
+      if(this.cardReaderMode){
+        this.cardReaderMode = false;
+      }
+    },
+    checkIfCardReader($event){
+      if(!(/^;\d{15,17}=\d{19,21}\?$/.test(this.$refs.cardNumberInp.value))){
+        this.resetCardReader();
+        return false;
+      }
+      return true;
+    },
+    parseCardReader(){
+      if(!this.checkIfCardReader())
+        return;
+      let sep = this.$refs.cardNumberInp.value.split('=');
+      this.model.cardReaderInput = this.$refs.cardNumberInp.value;
+
+      console.log(this.$refs.cardNumberInp.value, this.model)
+      //get rid of ';' at the beginning
+      this.$refs.cardNumberInp.value = sep[0].substr(1, this.$refs.cardNumberInp.value.length);
+      this.$refs.expiryInp.value = `${sep[1].substr(2, 2)}/${sep[1].substr(0, 2)}`;
+      this.cardReaderMode = true;
     }
-  }
+  },
 };
 </script>
 
