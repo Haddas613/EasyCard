@@ -19,9 +19,6 @@
         v-if="skippable && !completed"
         @click="onClickSkip()"
       >
-        <!-- <v-btn color="primary" icon>
-          <v-icon size="2rem">mdi-debug-step-over</v-icon>
-        </v-btn>-->
         <v-btn color="primary" class="text-none">{{$t('Skip')}}</v-btn>
       </v-col>
       <v-col

@@ -1,6 +1,6 @@
 
 const state = () => ({
-  terminal:  null,
+  terminal: null,
   currency: null
 });
 
@@ -9,15 +9,18 @@ const actions = {
 };
 
 const mutations = {
-    changeTerminal(state, {vm, newTerminal}){
-        state.terminal = newTerminal;
-    }
+  changeTerminal(state, { vm, newTerminal }) {
+    state.terminal = newTerminal;
+  },
+  changeCurrency(state, { vm, newCurrency }) {
+    state.currency = newCurrency;
+  }
 }
 
 export default {
-    namespaced: true,
-    state,
-    getters,
-    actions,
-    mutations
-  }
+  namespaced: true,
+  state,
+  getters,
+  actions,
+  mutations
+}

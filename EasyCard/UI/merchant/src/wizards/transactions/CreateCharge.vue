@@ -15,26 +15,22 @@
     <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <terminal-select v-on:ok="processTerminal($event)"></terminal-select>
-        </v-stepper-content>
-
-        <v-stepper-content step="2" class="py-0 px-0">
           <numpad :btntext="$t('Charge')" v-on:ok="processAmount($event)"></numpad>
         </v-stepper-content>
 
-        <v-stepper-content step="3" class="py-0 px-0">
+        <v-stepper-content step="2" class="py-0 px-0">
           <customers-list :show-previously-charged="true" v-on:ok="model.customer=$event; step=4"></customers-list>
         </v-stepper-content>
 
-        <v-stepper-content step="4" class="py-0 px-0">
+        <v-stepper-content step="3" class="py-0 px-0">
           <credit-card-secure-details v-on:ok="processCreditCard($event)"></credit-card-secure-details>
         </v-stepper-content>
 
-        <v-stepper-content step="5" class="py-0 px-0">
+        <v-stepper-content step="4" class="py-0 px-0">
            <additional-settings-form :data="model" v-on:ok="processAdditionalSettings($event)"></additional-settings-form>
         </v-stepper-content>
 
-        <v-stepper-content step="6" class="py-0 px-0">
+        <v-stepper-content step="5" class="py-0 px-0">
            <transaction-success :amount="model.transactionAmount" v-if="success"></transaction-success>
            <transaction-error :errors="errors" v-if="!success"></transaction-error>
         </v-stepper-content>
@@ -101,24 +97,21 @@ export default {
       step: 1,
       steps: {
         1: {
-          title: "Terminal",
-        },
-        2: {
           title: "Charge"
         },
-        3: {
+        2: {
           title: "ChooseCustomer",
           skippable: true
         },
-        4: {
+        3: {
           title: "Charge",
-          skippable: true
+          // skippable: true
         },
-        5: {
+        4: {
           title: "AdditionalSettings"
         },
         //Last step may be dynamically altered to represent error if transaction creation is failed.
-        6: {
+        5: {
           title: "Success",
           completed: true
         }
@@ -142,10 +135,6 @@ export default {
       this.model.transactionAmount = data.amount;
       this.model.note = data.note;
       this.model.items = data.items;
-      this.step++;
-    },
-    processTerminal(data){
-      this.model.terminalID = data;
       this.step++;
     },
     processCreditCard(data){

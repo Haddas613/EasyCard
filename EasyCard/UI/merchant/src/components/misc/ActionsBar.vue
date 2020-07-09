@@ -18,7 +18,7 @@
           class="px-2 text-none body-2 font-weight-medium"
           depressed
           :small="$vuetify.breakpoint.sm"
-          color="white ecnavLink--text"
+          :color="btncoloring"
           :width="getBtnWidth"
           link
           :to="item.to"
@@ -37,6 +37,11 @@ export default {
     footer: {
       type: Boolean,
       default: true
+    },
+    btncoloring: {
+      type: String,
+      default: "white ecnavLink--text",
+      required: false
     }
   },
   computed: {
