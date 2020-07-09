@@ -19,7 +19,7 @@ namespace Shared.Api.Logging
 
         public string UserName { get; set; }
 
-        public string UserID { get; set; }
+        public Guid? UserID { get; set; }
 
         public DateTime? Timestamp { get; set; }
 
@@ -28,5 +28,13 @@ namespace Shared.Api.Logging
         public string Exception { get; set; }
 
         public string IP { get; set; }
+
+        public string ApiName { get; set; }
+
+        public string Host { get; set; }
+
+        public string Url { get; set; }
+
+        public string MachineName { get; set; }
     }
 }

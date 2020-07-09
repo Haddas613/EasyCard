@@ -25,7 +25,7 @@ namespace Shared.Api.Logging
 
             var builder = new SqlBuilder();
 
-            var selector = builder.AddTemplate("SELECT [ID], [LogLevel], [CategoryName], [Message], [UserName], [UserID], [IP], [Timestamp], [CorrelationID], [Exception] FROM [dbo].[SystemLog] WITH(NOLOCK) /**where**/ /**orderby**/ OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY", new { take, skip });
+            var selector = builder.AddTemplate("SELECT [ID], [LogLevel], [CategoryName], [Message], [UserName], [UserID], [IP], [Timestamp], [CorrelationID], [Exception], [ApiName], [Host], [Url], [MachineName] FROM [dbo].[SystemLog] WITH(NOLOCK) /**where**/ /**orderby**/ OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY", new { take, skip });
 
             var count = builder.AddTemplate("SELECT COUNT (*) FROM [dbo].[SystemLog] WITH(NOLOCK) /**where**/");
 
@@ -47,7 +47,7 @@ namespace Shared.Api.Logging
                 builder.Where($"{nameof(DatabaseLogEntry.CategoryName)} = @{nameof(query.CorrelationID)}", new { query.CategoryName });
             }
 
-            if (!string.IsNullOrWhiteSpace(query.UserID))
+            if (query.UserID != null)
             {
                 builder.Where($"{nameof(DatabaseLogEntry.UserID)} = @{nameof(query.UserID)}", new { query.UserID });
             }

@@ -7,23 +7,26 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace Shared.Api.Logging
 {
     public class LoggerDatabaseProvider : ILoggerProvider
     {
         private readonly string connectionString;
+        private readonly string apiName;
         private readonly IHttpContextAccessor httpContextAccessor;
 
-        public LoggerDatabaseProvider(string connectionString, IHttpContextAccessor httpContextAccessor)
+        public LoggerDatabaseProvider(string connectionString, IHttpContextAccessor httpContextAccessor, string apiName)
         {
             this.connectionString = connectionString;
             this.httpContextAccessor = httpContextAccessor;
+            this.apiName = apiName;
         }
 
         public ILogger CreateLogger(string categoryName)
         {
-            return new Logger(categoryName, connectionString, httpContextAccessor);
+            return new Logger(categoryName, connectionString, httpContextAccessor, apiName);
         }
 
         public void Dispose()
@@ -35,12 +38,14 @@ namespace Shared.Api.Logging
             private readonly string categoryName;
             private readonly string connectionString;
             private readonly IHttpContextAccessor httpContextAccessor;
+            private readonly string apiName;
 
-            public Logger(string categoryName, string connectionString, IHttpContextAccessor httpContextAccessor)
+            public Logger(string categoryName, string connectionString, IHttpContextAccessor httpContextAccessor, string apiName)
             {
                 this.connectionString = connectionString;
                 this.categoryName = categoryName;
                 this.httpContextAccessor = httpContextAccessor;
+                this.apiName = apiName;
             }
 
             public bool IsEnabled(LogLevel logLevel)
@@ -61,7 +66,7 @@ namespace Shared.Api.Logging
 
             private void RecordMsg<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
             {
-                var log = new
+                var log = new DatabaseLogEntry
                 {
                     ID = Guid.NewGuid().GetSequentialGuid(DateTime.UtcNow),
                     LogLevel = logLevel.ToString(),
@@ -72,10 +77,14 @@ namespace Shared.Api.Logging
                     Timestamp = DateTime.UtcNow,
                     CorrelationID = httpContextAccessor.HttpContext?.TraceIdentifier,
                     Exception = FormatException(exception),
-                    IP = httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString()
+                    IP = httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                    ApiName = apiName,
+                    Host = httpContextAccessor.HttpContext?.Request?.Host.ToString(),
+                    Url = httpContextAccessor.HttpContext?.Request?.GetDisplayUrl(),
+                    MachineName = Environment.MachineName
                 };
 
-                string sql = "INSERT INTO [dbo].[SystemLog] ([ID], [LogLevel], [CategoryName], [Message], [UserName], [UserID], [IP], [Timestamp], [CorrelationID], [Exception]) Values (@ID, @LogLevel, @CategoryName, @Message, @UserName, @UserID, @IP, @Timestamp, @CorrelationID, @Exception);";
+                string sql = "INSERT INTO [dbo].[SystemLog] ([ID], [LogLevel], [CategoryName], [Message], [UserName], [UserID], [IP], [Timestamp], [CorrelationID], [Exception], [ApiName], [Host], [Url], [MachineName]) Values (@ID, @LogLevel, @CategoryName, @Message, @UserName, @UserID, @IP, @Timestamp, @CorrelationID, @Exception, @ApiName, @Host, @Url, @MachineName);";
 
                 try
                 {

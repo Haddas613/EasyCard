@@ -7,10 +7,36 @@
     [Timestamp]     DATETIME2 (7)    NULL,
     [CorrelationID] VARCHAR (250)    NULL,
     [Exception]     NVARCHAR (MAX)   NULL,
-    [UserID]        VARCHAR (50)     NULL,
+    [UserID]        UNIQUEIDENTIFIER NULL,
     [IP]            VARCHAR (50)     NULL,
-    CONSTRAINT [PK_SystemLog] PRIMARY KEY CLUSTERED ([ID] ASC)
+    [ApiName]       VARCHAR (50)     NULL,
+    [Host]          NVARCHAR (MAX)   NULL,
+    [Url]           NVARCHAR (MAX)   NULL,
+    [MachineName]   VARCHAR (50)     NULL,
+    CONSTRAINT [PK_SystemLog] PRIMARY KEY CLUSTERED ([ID] DESC)
 );
 
 
+
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SystemLog_Timestamp]
+    ON [dbo].[SystemLog]([Timestamp] DESC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SystemLog_LogLevel]
+    ON [dbo].[SystemLog]([LogLevel] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SystemLog_CorrelationID]
+    ON [dbo].[SystemLog]([CorrelationID] DESC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_SystemLog_ApiName]
+    ON [dbo].[SystemLog]([ApiName] ASC);
 

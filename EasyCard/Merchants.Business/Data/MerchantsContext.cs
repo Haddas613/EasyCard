@@ -3,6 +3,7 @@ using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Entities.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newtonsoft.Json;
@@ -11,6 +12,7 @@ using Shared.Business.Security;
 using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
@@ -25,6 +27,11 @@ namespace Merchants.Business.Data
         private static readonly ValueConverter StringArrayConverter = new ValueConverter<IEnumerable<string>, string>(
             v => string.Join(",", v),
             v => v != null ? v.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries) : null);
+
+        private static readonly ValueComparer StringArrayComparer = new ValueComparer<IEnumerable<string>>(
+            (c1, c2) => c1.SequenceEqual(c2),
+            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+            c => (IEnumerable<string>)c.ToHashSet());
 
         public DbSet<Merchant> Merchants { get; set; }
 
@@ -59,7 +66,13 @@ namespace Merchants.Business.Data
 
             modelBuilder.Entity<Merchant>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
 
+            modelBuilder.Entity<MerchantHistory>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
+
             modelBuilder.Entity<Terminal>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.MerchantID == user.GetMerchantID()));
+
+            modelBuilder.Entity<TerminalExternalSystem>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.Terminal.MerchantID == user.GetMerchantID()));
+
+            modelBuilder.Entity<UserTerminalMapping>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.Terminal.MerchantID == user.GetMerchantID()));
 
             base.OnModelCreating(modelBuilder);
         }
@@ -165,7 +178,8 @@ namespace Merchants.Business.Data
 
                 builder.HasIndex(idx => new { idx.UserID, idx.TerminalID }).IsUnique(true);
 
-                builder.Property(b => b.Roles).IsRequired(false).IsUnicode(false).HasConversion(StringArrayConverter);
+                builder.Property(b => b.Roles).IsRequired(false).IsUnicode(false).HasConversion(StringArrayConverter)
+                    .Metadata.SetValueComparer(StringArrayComparer);
 
                 builder.Property(b => b.DisplayName).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.Email).IsRequired(false).HasMaxLength(50).IsUnicode(true);
