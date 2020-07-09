@@ -85,7 +85,7 @@ class ApiBase {
                     Vue.toasted.show(result.message, { type: 'error', ...this.toastedOpts });
                 }
             } 
-            return null;
+            return result;
 
         } catch (err) {
             Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error', ...this.toastedOpts });

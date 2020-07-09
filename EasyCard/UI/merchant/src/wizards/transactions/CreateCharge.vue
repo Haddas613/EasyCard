@@ -73,7 +73,7 @@ export default {
         transactionType: null,
         jDealType: null,
         currency: null,
-        cardPresence: null,
+        cardPresence: 'cardNotPresent',
         creditCardToken: null,
         creditCardSecureDetails: {
           cardExpiration: {
@@ -93,9 +93,9 @@ export default {
           dealDescription: null
         },
         installmentDetails: {
-          numberOfPayments: 0,
-          initialPaymentAmount: 0,
-          installmentPaymentAmount: 0
+          numberOfPayments: null,
+          initialPaymentAmount: null,
+          installmentPaymentAmount: null
         }
       },
       step: 1,
@@ -112,6 +112,7 @@ export default {
         },
         4: {
           title: "Charge",
+          skippable: true
         },
         5: {
           title: "AdditionalSettings"
@@ -149,6 +150,11 @@ export default {
     },
     processCreditCard(data){
       this.model.creditCardSecureDetails = data;
+      if(data.cardReaderInput){
+        this.model.cardPresence = 'regular';
+      }else{
+        this.model.cardPresence = 'cardNotPresent';
+      }
       this.step++;
     },
     async processAdditionalSettings(data){
@@ -156,7 +162,8 @@ export default {
       this.model.transactionType = data.transactionType;
       this.model.currency = data.currency;
       this.model.jDealType = data.jDealType;
-      this.model.cardPresence = data.cardPresence;
+      this.model.installmentDetails = data.installmentDetails;
+      // this.model.cardPresence = data.cardPresence;
 
       let result = { isError: false };
       this.loading = true;
@@ -185,7 +192,7 @@ export default {
         lastStep.title = "Error";
         lastStep.completed = false;
         lastStep.closeable = true;
-        if(result.errors && result.errors.length > 0){
+        if(result && result.errors && result.errors.length > 0){
           this.errors = result.errors;
         }else{
           this.errors = [{description: result.message}]

@@ -77,7 +77,7 @@ namespace Transactions.Api.Validation
             {
                 if (model.InstallmentDetails == null)
                 {
-                    throw new BusinessException(Messages.CreditCardSecureDetailsRequired);
+                    throw new BusinessException(Messages.InstallmentDetailsRequired);
                 }
 
                 var totalAmount = model.InstallmentDetails.InitialPaymentAmount + (model.InstallmentDetails.InstallmentPaymentAmount * (model.InstallmentDetails.NumberOfPayments - 1));
