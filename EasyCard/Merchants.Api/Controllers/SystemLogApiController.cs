@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
 using Shared.Api.Logging;
+using Shared.Api.Models;
 using System;
 using System.Threading.Tasks;
+using SharedApi = Shared.Api;
 
 namespace Merchants.Api.Controllers
 {
@@ -25,9 +27,16 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<DatabaseLogEntry>> GetLogEntries([FromQuery] GetUsersFilter filter)
+        public async Task<ActionResult<SummariesResponse<DatabaseLogEntry>>> GetLogEntries([FromQuery] DatabaseLogQuery filter)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return Ok(await databaseLogService.GetLogEntries(filter));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Error, Message = ex.Message });
+            }
         }
     }
 }

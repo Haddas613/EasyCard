@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Shared.Api;
+using Shared.Api.Logging;
 using Shared.Api.Models.Binding;
 using Shared.Api.Validation;
 using Shared.Business.Security;
@@ -209,6 +210,13 @@ namespace Merchants.Api
             });
 
             services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();
+
+            // system log
+
+            services.AddSingleton<IDatabaseLogService, DatabaseLogService>(serviceProvider =>
+            {
+                return new DatabaseLogService(Configuration.GetConnectionString("SystemConnection"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

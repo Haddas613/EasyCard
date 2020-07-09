@@ -19,28 +19,31 @@ namespace Shared.Api.Validation
 
             foreach (var state in modelState)
             {
-                var error = new Error
+                if (state.Value.ValidationState == ModelValidationState.Invalid)
                 {
-                    Code = state.Key
-                };
-
-                List<string> errors = new List<string>();
-
-                foreach (var stateError in state.Value.Errors)
-                {
-                    if (stateError.Exception != null)
+                    var error = new Error
                     {
-                        errors.Add(stateError.Exception.Message);
-                    }
-                    else
+                        Code = state.Key
+                    };
+
+                    List<string> errors = new List<string>();
+
+                    foreach (var stateError in state.Value.Errors)
                     {
-                        errors.Add(stateError.ErrorMessage);
+                        if (stateError.Exception != null)
+                        {
+                            errors.Add(stateError.Exception.Message);
+                        }
+                        else
+                        {
+                            errors.Add(stateError.ErrorMessage);
+                        }
                     }
+
+                    error.Description = string.Join("; ", errors);
+
+                    allErrors.Add(error);
                 }
-
-                error.Description = string.Join("; ", errors);
-
-                allErrors.Add(error);
             }
 
             result.Errors = allErrors;

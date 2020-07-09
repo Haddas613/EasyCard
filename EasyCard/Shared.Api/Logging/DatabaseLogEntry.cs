@@ -12,6 +12,9 @@ namespace Shared.Api.Logging
 
         public string CategoryName { get; set; }
 
+        /// <summary>
+        /// Use wildcard
+        /// </summary>
         public string Message { get; set; }
 
         public string UserName { get; set; }
