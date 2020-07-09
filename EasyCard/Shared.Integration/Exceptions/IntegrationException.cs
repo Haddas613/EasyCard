@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Shared.Integration.Exceptions
 {
+    /// <summary>
+    /// This exception type should contain message appropriate to user
+    /// </summary>
     public class IntegrationException : Exception
     {
         public string MessageId { get; }

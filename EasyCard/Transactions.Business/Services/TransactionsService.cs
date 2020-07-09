@@ -65,6 +65,11 @@ namespace Transactions.Business.Services
 
         public async Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum? transactionStatus = null, TransactionFinalizationStatusEnum? finalizationStatus = null, RejectionReasonEnum? rejectionReason = null, string rejectionMessage = null, IDbContextTransaction dbTransaction = null)
         {
+            entity.Status = transactionStatus ?? entity.Status;
+            entity.FinalizationStatus = finalizationStatus ?? entity.FinalizationStatus;
+            entity.RejectionReason = rejectionReason ?? entity.RejectionReason;
+            entity.RejectionMessage = rejectionMessage ?? entity.RejectionMessage;
+
             List<string> changes = new List<string>();
 
             // Must ToArray() here for excluding the AutoHistory model.
@@ -81,18 +86,14 @@ namespace Transactions.Business.Services
             TransactionOperationCodesEnum operationCode = TransactionOperationCodesEnum.TransactionUpdated;
             var historyMessage = Messages.TransactionUpdated;
 
-            entity.Status = transactionStatus ?? entity.Status;
-            entity.FinalizationStatus = finalizationStatus ?? entity.FinalizationStatus;
-            entity.RejectionReason = rejectionReason ?? entity.RejectionReason;
-            entity.RejectionMessage = rejectionMessage ?? entity.RejectionMessage;
-
             if (finalizationStatus != null)
             {
                 Enum.TryParse(finalizationStatus.ToString(), true, out operationCode);
             }
-            else if (transactionStatus != null)
+
+            if (transactionStatus != null) // Transaction status is more important for log than finalization status
             {
-                Enum.TryParse(transactionStatus?.ToString(), true, out operationCode);
+                var parsedRes = Enum.TryParse(transactionStatus?.ToString(), true, out operationCode);
             }
 
             historyMessage = rejectionMessage ?? (Messages.ResourceManager.GetString(operationCode.ToString()) ?? historyMessage);
