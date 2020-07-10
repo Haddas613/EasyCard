@@ -51,3 +51,8 @@ $secondary : var(--v-secondary-base);
 .text-initial{
   text-align: initial;
 }
+.appbar-white{
+  .v-toolbar__content{
+    border-bottom: 1px solid var(--v-ecbg-base);
+  }
+}

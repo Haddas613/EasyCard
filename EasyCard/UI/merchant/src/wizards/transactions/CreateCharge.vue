@@ -7,36 +7,34 @@
       :skippable="steps[step].skippable"
       :closeable="steps[step].closeable"
       :completed="steps[step].completed"
+      :canchangeterminal="steps[step].canChangeTerminal"
+      :tdmenuitems="threeDotMenuItems"
       :title="navTitle"
     ></navbar>
     <v-overlay :value="loading">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-    <v-stepper class="ec-stepper" v-model="step">
+    <v-stepper class="ec-stepper pt-1" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <terminal-select v-on:ok="processTerminal($event)"></terminal-select>
-        </v-stepper-content>
-
-        <v-stepper-content step="2" class="py-0 px-0">
           <numpad :btntext="$t('Charge')" v-on:ok="processAmount($event)"></numpad>
         </v-stepper-content>
 
-        <v-stepper-content step="3" class="py-0 px-0">
+        <v-stepper-content step="2" class="py-0 px-0">
           <customers-list :show-previously-charged="true" v-on:ok="model.customer=$event; step=4"></customers-list>
         </v-stepper-content>
 
-        <v-stepper-content step="4" class="py-0 px-0">
+        <v-stepper-content step="3" class="py-0 px-0">
           <credit-card-secure-details v-on:ok="processCreditCard($event)"></credit-card-secure-details>
         </v-stepper-content>
 
-        <v-stepper-content step="5" class="py-0 px-0">
-           <additional-settings-form :data="model" v-on:ok="processAdditionalSettings($event)"></additional-settings-form>
+        <v-stepper-content step="4" class="py-0 px-0">
+          <additional-settings-form :data="model" v-on:ok="processAdditionalSettings($event)"></additional-settings-form>
         </v-stepper-content>
 
-        <v-stepper-content step="6" class="py-0 px-0">
-           <transaction-success :amount="model.transactionAmount" v-if="success"></transaction-success>
-           <transaction-error :errors="errors" v-if="!success"></transaction-error>
+        <v-stepper-content step="5" class="py-0 px-0">
+          <transaction-success :amount="model.transactionAmount" v-if="success"></transaction-success>
+          <transaction-error :errors="errors" v-if="!success"></transaction-error>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -73,13 +71,10 @@ export default {
         transactionType: null,
         jDealType: null,
         currency: null,
-        cardPresence: 'cardNotPresent',
+        cardPresence: "cardNotPresent",
         creditCardToken: null,
         creditCardSecureDetails: {
-          cardExpiration: {
-            year: new Date().getFullYear() - 2000,
-            month: new Date().getMonth() + 1
-          },
+          cardExpiration: null,
           cardNumber: null,
           cvv: null,
           cardOwnerNationalID: null,
@@ -101,28 +96,32 @@ export default {
       step: 1,
       steps: {
         1: {
-          title: "Terminal",
+          title: "Charge",
+          canChangeTerminal: true
         },
         2: {
-          title: "Charge"
-        },
-        3: {
           title: "ChooseCustomer",
           skippable: true
         },
-        4: {
-          title: "Charge",
-          skippable: true
+        3: {
+          title: "Charge"
+          // skippable: true
         },
-        5: {
+        4: {
           title: "AdditionalSettings"
         },
-        //Last step may be dynamically altered to represent error if transaction creation is failed.
-        6: {
+        //Last step may be dynamically altered to represent error if transaction creation has failed.
+        5: {
           title: "Success",
           completed: true
         }
       },
+      threeDotMenuItems: [
+        {
+          type: 'AdditionalSettings',
+          text: 'AdditionalSettings'
+        }
+      ],
       success: true,
       errors: [],
       loading: false
@@ -138,66 +137,46 @@ export default {
       if (this.step === 1) this.$router.push("/admin/dashboard");
       else this.step--;
     },
-    processAmount(data){
+    processAmount(data) {
       this.model.transactionAmount = data.amount;
       this.model.note = data.note;
       this.model.items = data.items;
       this.step++;
     },
-    processTerminal(data){
-      this.model.terminalID = data;
-      this.step++;
-    },
-    processCreditCard(data){
+    processCreditCard(data) {
       this.model.creditCardSecureDetails = data;
-      if(data.cardReaderInput){
-        this.model.cardPresence = 'regular';
-      }else{
-        this.model.cardPresence = 'cardNotPresent';
+      if (data.cardReaderInput) {
+        this.model.cardPresence = "regular";
+      } else {
+        this.model.cardPresence = "cardNotPresent";
       }
       this.step++;
     },
-    async processAdditionalSettings(data){
+    async processAdditionalSettings(data) {
       this.model.dealDetails = data.dealDetails;
       this.model.transactionType = data.transactionType;
       this.model.currency = data.currency;
       this.model.jDealType = data.jDealType;
       this.model.installmentDetails = data.installmentDetails;
-      // this.model.cardPresence = data.cardPresence;
 
-      let result = { isError: false };
       this.loading = true;
-
-      switch (this.model.jDealType) {
-        case "J4":
-          result = await this.$api.transactions.createTransaction(this.model);
-          break;
-        case "J2":
-          result = await this.$api.transactions.checkCreditCard(this.model);
-          break;
-        case "J5":
-          result = await this.$api.transactions.blockCreditCard(this.model);
-          break;
-        default:
-          result = false;
-          console.error(`unknown JDeal type: ${this.model.jDealType}`);
-      }
-
+      let result = await this.$api.transactions.processTransaction(this.model);
       this.loading = false;
+
       //assuming current step is one before the last
       let lastStep = this.steps[this.step + 1];
 
-      if(!result || result.status === "error"){
+      if (!result || result.status === "error") {
         this.success = false;
         lastStep.title = "Error";
         lastStep.completed = false;
         lastStep.closeable = true;
-        if(result && result.errors && result.errors.length > 0){
+        if (result && result.errors && result.errors.length > 0) {
           this.errors = result.errors;
-        }else{
-          this.errors = [{description: result.message}]
+        } else {
+          this.errors = [{ description: result.message }];
         }
-      }else{
+      } else {
         this.success = true;
         lastStep.title = "Success";
         lastStep.completed = true;
@@ -211,5 +190,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>

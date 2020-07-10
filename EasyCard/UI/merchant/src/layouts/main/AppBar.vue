@@ -27,8 +27,13 @@ import LangSwitcher from "../../components/LanguageSwitcher"
 import ActionsBar from "../../components/misc/ActionsBar";
 
 export default {
-  name: "MainAppBar",
-  props: ["drawer"],
+  name: "AppBar",
+  props: {
+    drawer: {
+      type: Boolean,
+      required: true
+    }
+  },
   components: {LangSwitcher, ActionsBar},
   computed: {
     drawerObj: {

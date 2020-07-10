@@ -15,6 +15,7 @@
   "@MaxLength": "Must be less than @max characters",
   "@StringLength": "Must be more than @min and less than @max characters",
   "@BiggerThan": "Must be bigger than @min",
+  "TerminalNotSelected": "Terminal not selected",
   
   "Terminal": "Terminal",
   "TransactionType": "Transaction Type",
@@ -47,6 +48,7 @@
   "Expiry": "Expiry",
   "NatID": "Nat. ID",
   "SaveCard": "Save Card",
+  "AdditionalSettings": "Additional Settings",
   
   "Login": "Login",
   "LoginWelcomeText": "Welcome to easycard",

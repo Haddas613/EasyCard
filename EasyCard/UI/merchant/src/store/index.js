@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from "vuex-persistedstate";
 import localization from './modules/localization';
+import settings from './modules/settings';
 
 Vue.use(Vuex)
 
@@ -13,11 +14,12 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    localization
+    localization,
+    settings
   },
   plugins: [
     createPersistedState({
-      paths: ['localization'],
+      paths: ['localization', 'settings'],
     })
   ]
 })
