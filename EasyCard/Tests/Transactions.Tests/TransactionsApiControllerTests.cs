@@ -53,7 +53,9 @@ namespace Transactions.Tests
                 keyValueStorageMock.MockObj.Object,
                 transactionsFixture.Mapper,
                 transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
-                transactionsFixture.AppSettings);
+                transactionsFixture.AppSettings,
+                null,
+                null); // TODO: add fixture
             var tokenRequest = new TokenRequest
             {
                 CardExpiration = new CardExpiration { Month = 1, Year = 25 },
@@ -69,7 +71,7 @@ namespace Transactions.Tests
 
             var transactionRequest = new CreateTransactionRequest
             {
-                CreditCardToken = existingToken.CreditCardTokenID.ToString(),
+                CreditCardToken = existingToken.CreditCardTokenID,
                 TerminalID = existingToken.TerminalID.Value,
                 TransactionType = TransactionTypeEnum.RegularDeal,
                 Currency = CurrencyEnum.ILS,
@@ -166,8 +168,8 @@ namespace Transactions.Tests
             var (procResolverMock, aggrResolverMock, keyValueStorageMock)
                 = (new ProcessorResolverMockSetup(), new AggregatorResolverMockSetup(), new KeyValueStorageMockSetup());
 
-            var nonExistingKey = Guid.NewGuid().ToString();
-            keyValueStorageMock.MockObj.Setup(m => m.Get(nonExistingKey)).Returns(Task.FromResult<CreditCardTokenKeyVault>(null));
+            var nonExistingKey = Guid.NewGuid();
+            keyValueStorageMock.MockObj.Setup(m => m.Get(nonExistingKey.ToString())).Returns(Task.FromResult<CreditCardTokenKeyVault>(null));
 
             var controller = GetAuthorizedController(keyValueStorageMock, aggrResolverMock, transactionsFixture, procResolverMock);
 
@@ -178,7 +180,7 @@ namespace Transactions.Tests
             };
 
             await Assert.ThrowsAsync<EntityNotFoundException>(() => controller.CreateTransaction(transactionRequest));
-            keyValueStorageMock.MockObj.Verify(m => m.Get(nonExistingKey), Times.Once);
+            keyValueStorageMock.MockObj.Verify(m => m.Get(nonExistingKey.ToString()), Times.Once);
         }
 
         [Fact(DisplayName = "CreateTransactionWithToken: Returns error when aggregator fails")]
@@ -198,7 +200,9 @@ namespace Transactions.Tests
                     keyValueStorageMock.MockObj.Object,
                     transactionsFixture.Mapper,
                     transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
-                    transactionsFixture.AppSettings);
+                    transactionsFixture.AppSettings,
+                    null,
+                    null); // TODO: add fixture
                 var tokenRequest = new TokenRequest
                 {
                     CardExpiration = new CardExpiration { Month = 1, Year = 25 },
@@ -219,7 +223,7 @@ namespace Transactions.Tests
 
             var transactionRequest = new CreateTransactionRequest
             {
-                CreditCardToken = existingToken.CreditCardTokenID.ToString(),
+                CreditCardToken = existingToken.CreditCardTokenID,
                 TerminalID = existingToken.TerminalID.Value,
                 TransactionType = TransactionTypeEnum.RegularDeal,
                 Currency = CurrencyEnum.ILS,
@@ -268,7 +272,9 @@ namespace Transactions.Tests
                     keyValueStorageMock.MockObj.Object, 
                     transactionsFixture.Mapper,
                     transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
-                    transactionsFixture.AppSettings);
+                    transactionsFixture.AppSettings,
+                    null,
+                    null); // TODO: add fixture
                 var tokenRequest = new TokenRequest
                 {
                     CardExpiration = new CardExpiration { Month = 1, Year = 25 },
@@ -289,7 +295,7 @@ namespace Transactions.Tests
 
             var transactionRequest = new CreateTransactionRequest
             {
-                CreditCardToken = existingToken.CreditCardTokenID.ToString(),
+                CreditCardToken = existingToken.CreditCardTokenID,
                 TerminalID = existingToken.TerminalID.Value,
                 TransactionType = TransactionTypeEnum.RegularDeal,
                 Currency = CurrencyEnum.ILS,
@@ -376,7 +382,7 @@ namespace Transactions.Tests
 
             var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.MockObj.Object, transactionsFixture.Mapper,
                 aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
-                transactionsFixture.Logger, appSettings);
+                transactionsFixture.Logger, appSettings, null); // TODO: fixture
 
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
             {

@@ -38,5 +38,7 @@ namespace Transactions.Business.Entities
         public string CorrelationId { get; set; }
 
         public string SourceIP { get; set; }
+
+        public ShvaInitialTransactionDetails ShvaInitialTransactionDetails { get; set; }
     }
 }

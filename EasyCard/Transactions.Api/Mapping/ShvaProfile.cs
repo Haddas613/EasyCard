@@ -30,6 +30,21 @@ namespace Transactions.Api.Mapping
 
             CreateMap<Shva.ShvaTerminalSettings, ShvaTransactionDetails>()
                  .ForMember(m => m.ShvaTerminalID, s => s.MapFrom(src => src.MerchantNumber));
+
+            // Token (initial deal)
+
+            CreateMap<Shva.ShvaCreateTransactionResponse, CreditCardTokenDetails>()
+                .ForMember(m => m.ShvaInitialTransactionDetails, s => s.MapFrom(src => src))
+                .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<Shva.ShvaCreateTransactionResponse, ShvaInitialTransactionDetails>();
+
+            CreateMap<ShvaInitialTransactionDetails, Shva.Models.InitDealResultModel>()
+                 .ForMember(m => m.OriginalAuthNum, s => s.MapFrom(src => src.AuthNum))
+                 .ForMember(m => m.OriginalAuthSolekNum, s => s.MapFrom(src => src.AuthSolekNum))
+                 .ForMember(m => m.OriginalUid, s => s.MapFrom(src => src.ShvaDealID))
+                 .ForMember(m => m.OriginalTranDateTime, s => s.MapFrom(src => src.ShvaTransactionDate));
+
         }
     }
 }

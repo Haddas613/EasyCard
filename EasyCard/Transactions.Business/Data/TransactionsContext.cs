@@ -226,6 +226,14 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Ignore(b => b.CardReaderInput);
+
+                builder.OwnsOne(b => b.ShvaInitialTransactionDetails, s =>
+                {
+                    s.Property(p => p.ShvaDealID).HasColumnName("ShvaDealID").IsRequired(false).HasMaxLength(30).IsUnicode(false);
+                    s.Property(p => p.AuthNum).HasColumnName("AuthNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.AuthSolekNum).HasColumnName("AuthSolekNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.ShvaTransactionDate).HasColumnName("ShvaTransactionDate").IsRequired(false);
+                });
             }
         }
 

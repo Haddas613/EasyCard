@@ -60,6 +60,7 @@ namespace Shva.Conveters
 
                 Solek = (SolekEnum)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.solek?.valueTag),
                 CreditCardVendor = resultAshEndBody.globalObj?.outputObj?.manpik?.valueTag, // TODO
+                ShvaTransactionDate = resultAshEndBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime()
             };
         }
 
@@ -108,14 +109,14 @@ namespace Shva.Conveters
                     inputObj.amount = req.TransactionAmount.ToShvaDecimalStr();
 
                     inputObj.originalUid = initialDealData.OriginalUid;
-                    inputObj.originalTranDate = initialDealData.OriginalTranTime;
-                    inputObj.originalTranTime = initialDealData.OriginalTranTime;
+                    inputObj.originalTranDate = initialDealData.OriginalTranDateTime.GetShvaDateStr();
+                    inputObj.originalTranTime = initialDealData.OriginalTranDateTime.GetShvaTimeStr();
 
                     //maximum of billing deals with the same details
                     inputObj.stndOrdrTotalNo = "999";
 
-                    inputObj.originalAmount = initialDealData.Amount.ToString(); //return from initialzation deal
-                    inputObj.stndOrdrNo = req.CurrentDeal.ToString(); // counter of billing deal with the same details
+                    inputObj.originalAmount = "1"; // initialDealData.Amount.ToString(); //return from initialzation deal
+                    inputObj.stndOrdrNo = 1.ToString(); // req.CurrentDeal.ToString(); // counter of billing deal with the same details
 
                     if (!string.IsNullOrEmpty(initialDealData.OriginalAuthSolekNum))
                     {
@@ -132,6 +133,34 @@ namespace Shva.Conveters
             }
             else
             {
+                if (initialDealData != null)
+                {
+                    //implement billing deal after initialization
+                    inputObj.amount = req.TransactionAmount.ToShvaDecimalStr();
+
+                    inputObj.originalUid = initialDealData.OriginalUid;
+                    inputObj.originalTranDate = initialDealData.OriginalTranDateTime.GetShvaDateStr();
+                    inputObj.originalTranTime = initialDealData.OriginalTranDateTime.GetShvaTimeStr();
+
+                    //maximum of billing deals with the same details
+                    inputObj.stndOrdrTotalNo = "999";
+
+                    inputObj.originalAmount = "1"; // initialDealData.Amount.ToString(); //return from initialzation deal
+                    inputObj.stndOrdrNo = 1.ToString(); // req.CurrentDeal.ToString(); // counter of billing deal with the same details
+
+                    if (!string.IsNullOrEmpty(initialDealData.OriginalAuthSolekNum))
+                    {
+                        inputObj.originalAuthSolekNum = initialDealData.OriginalAuthSolekNum;
+                        inputObj.originalAuthorizationCodeSolek = "7"; // TODO: constant ot enum
+                    }
+
+                    if (!string.IsNullOrEmpty(initialDealData.OriginalAuthNum))
+                    {
+                        inputObj.originalAuthNum = initialDealData.OriginalAuthNum;
+                        inputObj.originalAuthorizationCodeManpik = "7"; // TODO: constant ot enum
+                    }
+                }
+
                 inputObj.amount = req.TransactionAmount.ToShvaDecimalStr();
                 inputObj.cvv2 = req.CreditCardToken.Cvv;
                 inputObj.clientInputPan = cardPresence == ShvaCardPresenceEnum.Magnetic ? req.CreditCardToken.CardReaderInput : req.CreditCardToken.CardNumber;

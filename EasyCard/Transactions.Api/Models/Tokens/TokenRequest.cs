@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +13,7 @@ namespace Transactions.Api.Models.Tokens
     /// Store credit card details to make deals with this card in further deals
     /// </summary>
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
-    public class TokenRequest : CreditCardDetailsBase
+    public class TokenRequest : CreditCardSecureDetails
     {
         /// <summary>
         /// EasyCard terminal reference

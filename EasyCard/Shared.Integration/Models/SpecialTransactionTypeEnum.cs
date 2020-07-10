@@ -13,6 +13,7 @@ namespace Shared.Integration.Models
         [EnumMember(Value = "regularDeal")]
         RegularDeal = 0,
 
+        // TODO: rename it - it is any deal with stored cc
         [EnumMember(Value = "initialDeal")]
         InitialDeal = 1,
 

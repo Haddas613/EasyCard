@@ -39,7 +39,9 @@ namespace Transactions.Tests
                 keyValueStorageMock.Object,
                 transactionsFixture.Mapper,
                 transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
-                transactionsFixture.AppSettings);
+                transactionsFixture.AppSettings,
+                null,
+                null); // TODO: add fixture
 
             var tokenRequest = new TokenRequest
             {
@@ -75,7 +77,9 @@ namespace Transactions.Tests
                 keyValueStorageMock.Object,
                 transactionsFixture.Mapper,
                 transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
-                transactionsFixture.AppSettings);
+                transactionsFixture.AppSettings,
+                null,
+                null); // TODO: add fixture
             var filter = new CreditCardTokenFilter();
             var actionResult = await controller.GetTokens(filter);
 
@@ -98,7 +102,9 @@ namespace Transactions.Tests
                 keyValueStorageMock.Object, 
                 transactionsFixture.Mapper,
                 transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
-                transactionsFixture.AppSettings);
+                transactionsFixture.AppSettings,
+                null,
+                null); // TODO: add fixture
             var existingToken = transactionsFixture.TransactionsContext.CreditCardTokenDetails.FirstOrDefault() ?? throw new Exception("No existing token found to delete");
             var actionResult = await controller.DeleteToken(existingToken.CreditCardTokenID.ToString());
 

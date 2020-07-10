@@ -1,0 +1,1011 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <AshEndResponse xmlns="http://shva.co.il/xmlwebservices/">
+      <AshEndResult>777</AshEndResult>
+      <pinpad>
+        <tag9A>0</tag9A>
+        <tag9F21>0</tag9F21>
+        <tag9F02>0</tag9F02>
+        <tag5F2A>0</tag5F2A>
+        <tag9F03>0</tag9F03>
+        <authTxnAuthType>Purchase</authTxnAuthType>
+        <statusCode>PromptForCardEntry</statusCode>
+        <endTransaction>0</endTransaction>
+        <txnStatus>OK</txnStatus>
+        <result>0</result>
+        <sResult />
+        <errDescription />
+        <pinpadHashConfig />
+        <pinpadSoftwareVersion />
+        <fallback>None</fallback>
+        <mobile>false</mobile>
+        <authForceManualEntry>false</authForceManualEntry>
+        <cardEntryMode>NotEntered</cardEntryMode>
+        <track2 />
+        <bForceOnline>false</bForceOnline>
+        <bBlackList>false</bBlackList>
+        <bFloorLimit>false</bFloorLimit>
+        <bRandomSelection>true</bRandomSelection>
+        <originalAuthTxnAuthType>Purchase</originalAuthTxnAuthType>
+        <hostResult>None</hostResult>
+        <txnOutcome>NotCompleted</txnOutcome>
+        <bStopExamine>false</bStopExamine>
+        <status>DEFAULT</status>
+        <serverOffDemand>DEFAULT</serverOffDemand>
+        <resourceTransferCard>DEFAULT_VALUE</resourceTransferCard>
+        <field55 />
+        <f39Response>00</f39Response>
+        <bAshReason22>false</bAshReason22>
+        <bIgnorePP>false</bIgnorePP>
+        <sException />
+        <workingDirectory>\\AshFileServer\ashraitEMV\Beta\0882021</workingDirectory>
+        <type>None</type>
+        <connectionType>SerialPort</connectionType>
+        <ipAddress />
+        <ipPort>0</ipPort>
+        <cvmRequiredLimit />
+        <serialCommPort />
+        <tag9C>0</tag9C>
+        <pinpadSerialNumber>00000000</pinpadSerialNumber>
+        <ashStatus>DEFAULT</ashStatus>
+        <ashReason>DEFAULT</ashReason>
+        <ashreas>AABCAAAAAA==</ashreas>
+        <notCorrectTags />
+        <emptyTags />
+      </pinpad>
+      <globalObj>
+        <shareD>
+          <dealType>CARD_TYPING</dealType>
+          <moadonCheck>-1</moadonCheck>
+          <noTranLog>1</noTranLog>
+          <bAddCvv2>
+            <bExist>false</bExist>
+            <value>0</value>
+          </bAddCvv2>
+          <bAddTz>
+            <bExist>false</bExist>
+            <value>0</value>
+          </bAddTz>
+          <bAddAvs1>
+            <bExist>false</bExist>
+            <value>1</value>
+          </bAddAvs1>
+          <bAddAvs2>
+            <bExist>false</bExist>
+            <value>1</value>
+          </bAddAvs2>
+          <bTelAuthAbility>true</bTelAuthAbility>
+          <receipt>0</receipt>
+          <minReceiptSum>0</minReceiptSum>
+          <ctlMinReceiptSum>0</ctlMinReceiptSum>
+          <ppStatus>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;clsExistR xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;&lt;F03 /&gt;&lt;F04 /&gt;&lt;F06 /&gt;&lt;F09 /&gt;&lt;F18&gt;4500&lt;/F18&gt;&lt;F25&gt;00&lt;/F25&gt;&lt;F37 /&gt;&lt;F38 /&gt;&lt;F43S /&gt;&lt;F43M /&gt;&lt;F48B8 /&gt;&lt;F48D1 /&gt;&lt;F48D2 /&gt;&lt;F49 /&gt;&lt;F51 /&gt;&lt;F53C0 /&gt;&lt;F53E1 /&gt;&lt;F54A0 /&gt;&lt;F54A1 /&gt;&lt;F54A2 /&gt;&lt;F57A0 /&gt;&lt;F57B0 /&gt;&lt;F57B1 /&gt;&lt;F57B2 /&gt;&lt;F57C0 /&gt;&lt;F57D1 /&gt;&lt;F57E0 /&gt;&lt;F57E1 /&gt;&lt;F57E2 /&gt;&lt;F57E3 /&gt;&lt;F57E5 /&gt;&lt;F58A0 /&gt;&lt;F58A2 /&gt;&lt;F58A3 /&gt;&lt;F58A5 /&gt;&lt;F58A6 /&gt;&lt;F58A7 /&gt;&lt;F58B2 /&gt;&lt;F59U /&gt;&lt;F90A1 /&gt;&lt;F90A2 /&gt;&lt;F90A3 /&gt;&lt;F90A4 /&gt;&lt;F90A5 /&gt;&lt;F90A7 /&gt;&lt;F90A9 /&gt;&lt;F127A8 /&gt;&lt;ppS&gt;1111000000&lt;/ppS&gt;&lt;fnd /&gt;&lt;/clsExistR&gt;</ppStatus>
+          <catLevelParam>0</catLevelParam>
+          <ashTermType>0</ashTermType>
+          <ravSapakMutav>0</ravSapakMutav>
+          <needTrace>0</needTrace>
+          <ufl>0</ufl>
+          <ashreas>AABCAAAAAA==</ashreas>
+          <serveroffdemand>CAAA</serveroffdemand>
+          <sException />
+          <bStopExamine>false</bStopExamine>
+          <ashraitDecision>RANDOM_SELECTION</ashraitDecision>
+          <fileNumber>73</fileNumber>
+          <resultSendAuth>true</resultSendAuth>
+          <sendReversal>false</sendReversal>
+          <bNeutralAuthNumber>false</bNeutralAuthNumber>
+          <dcc>false</dcc>
+          <integrated>0</integrated>
+          <upperOfflineDebitFloor>0</upperOfflineDebitFloor>
+          <status>DEFAULT</status>
+          <ashStatus>DEFAULT</ashStatus>
+          <ashtsiCode>ASHTSI_39</ashtsiCode>
+          <infoRequest>0</infoRequest>
+        </shareD>
+        <outputObj>
+          <status>
+            <nameTag>status</nameTag>
+            <valueTag>777</valueTag>
+          </status>
+          <ashStatus>
+            <nameTag>ashStatus</nameTag>
+            <valueTag>777</valueTag>
+          </ashStatus>
+          <ashStatusDes>
+            <nameTag>ashStatusDes</nameTag>
+            <valueTag>בקשתך הושלמה</valueTag>
+          </ashStatusDes>
+          <pan>
+            <nameTag>pan</nameTag>
+            <valueTag>4580080111962595</valueTag>
+          </pan>
+          <cardName>
+            <nameTag>cardName</nameTag>
+            <valueTag>ויזה רגיל</valueTag>
+          </cardName>
+          <expirationDate>
+            <nameTag>expirationDate</nameTag>
+            <valueTag>2110</valueTag>
+          </expirationDate>
+          <manpik>
+            <nameTag>manpik</nameTag>
+            <valueTag>2</valueTag>
+          </manpik>
+          <brand>
+            <nameTag>brand</nameTag>
+            <valueTag>2</valueTag>
+          </brand>
+          <solek>
+            <nameTag>solek</nameTag>
+            <valueTag>6</valueTag>
+          </solek>
+          <amount>
+            <nameTag>amount</nameTag>
+            <valueTag>1</valueTag>
+          </amount>
+          <tranType>
+            <nameTag>tranType</nameTag>
+            <valueTag>11</valueTag>
+          </tranType>
+          <mti>
+            <nameTag>mti</nameTag>
+            <valueTag>0110</valueTag>
+          </mti>
+          <creditTerms>
+            <nameTag>creditTerms</nameTag>
+            <valueTag>1</valueTag>
+          </creditTerms>
+          <currency>
+            <nameTag>currency</nameTag>
+            <valueTag>376</valueTag>
+          </currency>
+          <currencyName>
+            <nameTag>currencyName</nameTag>
+            <valueTag />
+          </currencyName>
+          <fileNo>
+            <nameTag>fileNo</nameTag>
+            <valueTag>73</valueTag>
+          </fileNo>
+          <termNo>
+            <nameTag>termNo</nameTag>
+            <valueTag>001</valueTag>
+          </termNo>
+          <termSeq>
+            <nameTag>termSeq</nameTag>
+            <valueTag>007</valueTag>
+          </termSeq>
+          <responseId>
+            <nameTag>responseId</nameTag>
+            <valueTag />
+          </responseId>
+          <responseCvv2>
+            <nameTag>responseCvv2</nameTag>
+            <valueTag>0</valueTag>
+          </responseCvv2>
+          <cavvUcafResult>
+            <nameTag>cavvUcafResult</nameTag>
+            <valueTag />
+          </cavvUcafResult>
+          <authManpikNo>
+            <nameTag>authManpikNo</nameTag>
+            <valueTag>0725945</valueTag>
+          </authManpikNo>
+          <authCodeManpik>
+            <nameTag>authCodeManpik</nameTag>
+            <valueTag>1</valueTag>
+          </authCodeManpik>
+          <authSolekNo>
+            <nameTag>authSolekNo</nameTag>
+            <valueTag />
+          </authSolekNo>
+          <authCodeSolek>
+            <nameTag>authCodeSolek</nameTag>
+            <valueTag>0</valueTag>
+          </authCodeSolek>
+          <firstPayment>
+            <nameTag>firstPayment</nameTag>
+            <valueTag />
+          </firstPayment>
+          <notFirstPayment>
+            <nameTag>notFirstPayment</nameTag>
+            <valueTag />
+          </notFirstPayment>
+          <noPayments>
+            <nameTag>noPayments</nameTag>
+            <valueTag />
+          </noPayments>
+          <uid>
+            <nameTag>uid</nameTag>
+            <valueTag>20070921041608820212493</valueTag>
+          </uid>
+          <rrn>
+            <nameTag>rrn</nameTag>
+            <valueTag>   708350635</valueTag>
+          </rrn>
+          <addDspBalance>
+            <nameTag>addDspBalance</nameTag>
+            <valueTag />
+          </addDspBalance>
+          <addDspF111>
+            <nameTag>addDspF111</nameTag>
+            <valueTag />
+          </addDspF111>
+          <authorizedAmount>
+            <nameTag>authorizedAmount</nameTag>
+            <valueTag>0</valueTag>
+          </authorizedAmount>
+          <addendum1>
+            <nameTag>addendum1</nameTag>
+            <valueTag />
+          </addendum1>
+          <addendum2>
+            <nameTag>addendum2</nameTag>
+            <valueTag />
+          </addendum2>
+          <addendum1Settl>
+            <nameTag>addendum1Settl</nameTag>
+            <valueTag />
+          </addendum1Settl>
+          <addendum2Settl>
+            <nameTag>addendum2Settl</nameTag>
+            <valueTag />
+          </addendum2Settl>
+          <addendum3Settl>
+            <nameTag>addendum3Settl</nameTag>
+            <valueTag />
+          </addendum3Settl>
+          <addendum4Settl>
+            <nameTag>addendum4Settl</nameTag>
+            <valueTag />
+          </addendum4Settl>
+          <addendum5Settl>
+            <nameTag>addendum5Settl</nameTag>
+            <valueTag />
+          </addendum5Settl>
+          <addendumP2PE>
+            <nameTag>addendumP2PE</nameTag>
+            <valueTag />
+          </addendumP2PE>
+          <aid>
+            <nameTag>aid</nameTag>
+            <valueTag />
+          </aid>
+          <atc>
+            <nameTag>atc</nameTag>
+            <valueTag />
+          </atc>
+          <appVersion>
+            <nameTag>appVersion</nameTag>
+            <valueTag>WEB001620i</valueTag>
+          </appVersion>
+          <cashback>
+            <nameTag>cashback</nameTag>
+            <valueTag />
+          </cashback>
+          <cardType>
+            <nameTag>cardType</nameTag>
+            <valueTag>0</valueTag>
+          </cardType>
+          <cardSeqNumber>
+            <nameTag>cardSeqNumber</nameTag>
+            <valueTag>0</valueTag>
+          </cardSeqNumber>
+          <compRetailerNum>
+            <nameTag>compRetailerNum</nameTag>
+            <valueTag>0300012</valueTag>
+          </compRetailerNum>
+          <deferred>
+            <nameTag>deferred</nameTag>
+            <valueTag />
+          </deferred>
+          <dueDate>
+            <nameTag>dueDate</nameTag>
+            <valueTag />
+          </dueDate>
+          <dspBalance>
+            <nameTag>dspBalance</nameTag>
+            <valueTag />
+          </dspBalance>
+          <dateTime>
+            <nameTag>dateTime</nameTag>
+            <valueTag>0709210418</valueTag>
+          </dateTime>
+          <f39Response>
+            <nameTag>f39Response</nameTag>
+            <valueTag>00</valueTag>
+          </f39Response>
+          <indxPayment>
+            <nameTag>indxPayment</nameTag>
+            <valueTag>0</valueTag>
+          </indxPayment>
+          <ipayAmount>
+            <nameTag>ipayAmount</nameTag>
+            <valueTag />
+          </ipayAmount>
+          <ipayNumber>
+            <nameTag>ipayNumber</nameTag>
+            <valueTag />
+          </ipayNumber>
+          <ipayPercent>
+            <nameTag>ipayPercent</nameTag>
+            <valueTag />
+          </ipayPercent>
+          <mustTz>
+            <nameTag>mustTz</nameTag>
+            <valueTag>0</valueTag>
+          </mustTz>
+          <mustCvv>
+            <nameTag>mustCvv</nameTag>
+            <valueTag>0</valueTag>
+          </mustCvv>
+          <mustZip>
+            <nameTag>mustZip</nameTag>
+            <valueTag>0</valueTag>
+          </mustZip>
+          <mustAvs>
+            <nameTag>mustAvs</nameTag>
+            <valueTag>0</valueTag>
+          </mustAvs>
+          <phaseRequest2>
+            <nameTag>phaseRequest2</nameTag>
+            <valueTag>0</valueTag>
+          </phaseRequest2>
+          <panEntryMode>
+            <nameTag>panEntryMode</nameTag>
+            <valueTag>50</valueTag>
+          </panEntryMode>
+          <parameterJ>
+            <nameTag>parameterJ</nameTag>
+            <valueTag>5</valueTag>
+          </parameterJ>
+          <responseAvs>
+            <nameTag>responseAvs</nameTag>
+            <valueTag>3</valueTag>
+          </responseAvs>
+          <retailer>
+            <nameTag>retailer</nameTag>
+            <valueTag>0882021014</valueTag>
+          </retailer>
+          <spType>
+            <nameTag>spType</nameTag>
+            <valueTag>0</valueTag>
+          </spType>
+          <track2>
+            <nameTag>track2</nameTag>
+            <valueTag />
+          </track2>
+          <tranRecord>
+            <nameTag>tranRecord</nameTag>
+            <valueTag />
+          </tranRecord>
+          <terminalName>
+            <nameTag>terminalName</nameTag>
+            <valueTag>ב.ע.עדן טסט</valueTag>
+          </terminalName>
+          <telAuthAbility>
+            <nameTag>telAuthAbility</nameTag>
+            <valueTag>1</valueTag>
+          </telAuthAbility>
+          <telNoCom>
+            <nameTag>telNoCom</nameTag>
+            <valueTag>03-6177800</valueTag>
+          </telNoCom>
+          <tip>
+            <nameTag>tip</nameTag>
+            <valueTag />
+          </tip>
+          <tvr>
+            <nameTag>tvr</nameTag>
+            <valueTag />
+          </tvr>
+          <tsi>
+            <nameTag>tsi</nameTag>
+            <valueTag />
+          </tsi>
+          <arc>
+            <nameTag>arc</nameTag>
+            <valueTag>00</valueTag>
+          </arc>
+          <verifiedByPin>
+            <nameTag>verifiedByPin</nameTag>
+            <valueTag />
+          </verifiedByPin>
+          <xmlStr>
+            <nameTag>xmlStr</nameTag>
+            <valueTag>&lt;output&gt;&lt;status&gt;777&lt;/status&gt;&lt;ashStatus&gt;777&lt;/ashStatus&gt;&lt;ashStatusDes&gt;בקשתך הושלמה&lt;/ashStatusDes&gt;&lt;pan&gt;4580080111962595&lt;/pan&gt;&lt;cardName&gt;ויזה רגיל&lt;/cardName&gt;&lt;expirationDate&gt;2110&lt;/expirationDate&gt;&lt;manpik&gt;2&lt;/manpik&gt;&lt;brand&gt;2&lt;/brand&gt;&lt;solek&gt;6&lt;/solek&gt;&lt;amount&gt;1&lt;/amount&gt;&lt;tranType&gt;11&lt;/tranType&gt;&lt;mti&gt;0110&lt;/mti&gt;&lt;creditTerms&gt;1&lt;/creditTerms&gt;&lt;currency&gt;376&lt;/currency&gt;&lt;currencyName&gt;&lt;/currencyName&gt;&lt;fileNo&gt;73&lt;/fileNo&gt;&lt;termNo&gt;001&lt;/termNo&gt;&lt;termSeq&gt;007&lt;/termSeq&gt;&lt;responseId&gt;&lt;/responseId&gt;&lt;responseCvv2&gt;0&lt;/responseCvv2&gt;&lt;cavvUcafResult&gt;&lt;/cavvUcafResult&gt;&lt;authManpikNo&gt;0725945&lt;/authManpikNo&gt;&lt;authCodeManpik&gt;1&lt;/authCodeManpik&gt;&lt;authSolekNo&gt;&lt;/authSolekNo&gt;&lt;authCodeSolek&gt;0&lt;/authCodeSolek&gt;&lt;firstPayment&gt;&lt;/firstPayment&gt;&lt;notFirstPayment&gt;&lt;/notFirstPayment&gt;&lt;noPayments&gt;&lt;/noPayments&gt;&lt;uid&gt;20070921041608820212493&lt;/uid&gt;&lt;rrn&gt;   708350635&lt;/rrn&gt;&lt;addDspBalance&gt;&lt;/addDspBalance&gt;&lt;addDspF111&gt;&lt;/addDspF111&gt;&lt;authorizedAmount&gt;0&lt;/authorizedAmount&gt;&lt;addendum1&gt;&lt;/addendum1&gt;&lt;addendum2&gt;&lt;/addendum2&gt;&lt;addendum1Settl&gt;&lt;/addendum1Settl&gt;&lt;addendum2Settl&gt;&lt;/addendum2Settl&gt;&lt;addendum3Settl&gt;&lt;/addendum3Settl&gt;&lt;addendum4Settl&gt;&lt;/addendum4Settl&gt;&lt;addendum5Settl&gt;&lt;/addendum5Settl&gt;&lt;addendumP2PE&gt;&lt;/addendumP2PE&gt;&lt;aid&gt;&lt;/aid&gt;&lt;atc&gt;&lt;/atc&gt;&lt;appVersion&gt;WEB001620i&lt;/appVersion&gt;&lt;cashback&gt;&lt;/cashback&gt;&lt;cardType&gt;0&lt;/cardType&gt;&lt;cardSeqNumber&gt;0&lt;/cardSeqNumber&gt;&lt;compRetailerNum&gt;0300012&lt;/compRetailerNum&gt;&lt;deferred&gt;&lt;/deferred&gt;&lt;dueDate&gt;&lt;/dueDate&gt;&lt;dspBalance&gt;&lt;/dspBalance&gt;&lt;dateTime&gt;0709210418&lt;/dateTime&gt;&lt;f39Response&gt;00&lt;/f39Response&gt;&lt;indxPayment&gt;0&lt;/indxPayment&gt;&lt;ipayAmount&gt;&lt;/ipayAmount&gt;&lt;ipayNumber&gt;&lt;/ipayNumber&gt;&lt;ipayPercent&gt;&lt;/ipayPercent&gt;&lt;mustTz&gt;0&lt;/mustTz&gt;&lt;mustCvv&gt;0&lt;/mustCvv&gt;&lt;mustZip&gt;0&lt;/mustZip&gt;&lt;mustAvs&gt;0&lt;/mustAvs&gt;&lt;phaseRequest2&gt;0&lt;/phaseRequest2&gt;&lt;panEntryMode&gt;50&lt;/panEntryMode&gt;&lt;parameterJ&gt;5&lt;/parameterJ&gt;&lt;responseAvs&gt;3&lt;/responseAvs&gt;&lt;retailer&gt;0882021014&lt;/retailer&gt;&lt;spType&gt;0&lt;/spType&gt;&lt;track2&gt;&lt;/track2&gt;&lt;tranRecord&gt;&lt;/tranRecord&gt;&lt;terminalName&gt;ב.ע.עדן טסט&lt;/terminalName&gt;&lt;telAuthAbility&gt;1&lt;/telAuthAbility&gt;&lt;telNoCom&gt;03-6177800&lt;/telNoCom&gt;&lt;tip&gt;&lt;/tip&gt;&lt;tvr&gt;&lt;/tvr&gt;&lt;tsi&gt;&lt;/tsi&gt;&lt;arc&gt;00&lt;/arc&gt;&lt;verifiedByPin&gt;&lt;/verifiedByPin&gt;&lt;xmlStr&gt;&lt;/xmlStr&gt;&lt;zData&gt;&lt;/zData&gt;&lt;field55&gt;&lt;/field55&gt;&lt;dccEnabled&gt;0&lt;/dccEnabled&gt;&lt;addOnParamDemand&gt;1&lt;/addOnParamDemand&gt;&lt;conversionProvider&gt;&lt;/conversionProvider&gt;&lt;integrated&gt;0&lt;/integrated&gt;&lt;/output&gt;</valueTag>
+          </xmlStr>
+          <zData>
+            <nameTag>zData</nameTag>
+            <valueTag />
+          </zData>
+          <field55>
+            <nameTag>field55</nameTag>
+            <valueTag />
+          </field55>
+          <dccEnabled>
+            <nameTag>dccEnabled</nameTag>
+            <valueTag>0</valueTag>
+          </dccEnabled>
+          <addOnParamDemand>
+            <nameTag>addOnParamDemand</nameTag>
+            <valueTag>1</valueTag>
+          </addOnParamDemand>
+          <conversionProvider>
+            <nameTag>conversionProvider</nameTag>
+            <valueTag />
+          </conversionProvider>
+          <integrated>
+            <nameTag>integrated</nameTag>
+            <valueTag>0</valueTag>
+          </integrated>
+        </outputObj>
+        <receiptObj>
+          <terminalName>
+            <nameTag>terminalName</nameTag>
+            <category>BOTH</category>
+            <index>1</index>
+            <lenValue>0</lenValue>
+            <lenDes>7</lenDes>
+            <lenDesEng>8</lenDesEng>
+            <desTag>שם מסוף</desTag>
+            <desTagEng>POS Name</desTagEng>
+            <valueTag />
+          </terminalName>
+          <terminalNumber>
+            <nameTag>terminalNumber</nameTag>
+            <category>BOTH</category>
+            <index>2</index>
+            <lenValue>0</lenValue>
+            <lenDes>9</lenDes>
+            <lenDesEng>10</lenDesEng>
+            <desTag>מספר מסוף</desTag>
+            <desTagEng>POS Number</desTagEng>
+            <valueTag />
+          </terminalNumber>
+          <appVersion>
+            <nameTag>appVersion</nameTag>
+            <category>BOTH</category>
+            <index>3</index>
+            <lenValue>0</lenValue>
+            <lenDes>10</lenDes>
+            <lenDesEng>15</lenDesEng>
+            <desTag>גרסת תוכנה</desTag>
+            <desTagEng>Sofware Version</desTagEng>
+            <valueTag />
+          </appVersion>
+          <compRetailerNum>
+            <nameTag>compRetailerNum</nameTag>
+            <category>BOTH</category>
+            <index>4</index>
+            <lenValue>0</lenValue>
+            <lenDes>21</lenDes>
+            <lenDesEng>11</lenDesEng>
+            <desTag>מספר עסק בחברת האשראי</desTag>
+            <desTagEng>Merchant ID</desTagEng>
+            <valueTag />
+          </compRetailerNum>
+          <transDateTime>
+            <nameTag>transDateTime</nameTag>
+            <category>BOTH</category>
+            <index>5</index>
+            <lenValue>0</lenValue>
+            <lenDes>16</lenDes>
+            <lenDesEng>18</lenDesEng>
+            <desTag>תאריך ושעת העסקה</desTag>
+            <desTagEng>Tran Date and Time</desTagEng>
+            <valueTag />
+          </transDateTime>
+          <cardName>
+            <nameTag>cardName</nameTag>
+            <category>BOTH</category>
+            <index>6</index>
+            <lenValue>0</lenValue>
+            <lenDes>8</lenDes>
+            <lenDesEng>9</lenDesEng>
+            <desTag>שם כרטיס</desTag>
+            <desTagEng>Card Name</desTagEng>
+            <valueTag />
+          </cardName>
+          <cardNumber>
+            <nameTag>cardNumber</nameTag>
+            <category>SELLER</category>
+            <index>8</index>
+            <lenValue>0</lenValue>
+            <lenDes>10</lenDes>
+            <lenDesEng>11</lenDesEng>
+            <desTag>מספר כרטיס</desTag>
+            <desTagEng>Card Number</desTagEng>
+            <valueTag />
+          </cardNumber>
+          <clientCardNumber>
+            <nameTag>clientCardNumber</nameTag>
+            <category>CLIENT</category>
+            <index>7</index>
+            <lenValue>0</lenValue>
+            <lenDes>10</lenDes>
+            <lenDesEng>11</lenDesEng>
+            <desTag>מספר כרטיס</desTag>
+            <desTagEng>Card Number</desTagEng>
+            <valueTag />
+          </clientCardNumber>
+          <voucherNumber>
+            <nameTag>voucherNumber</nameTag>
+            <category>BOTH</category>
+            <index>9</index>
+            <lenValue>0</lenValue>
+            <lenDes>9</lenDes>
+            <lenDesEng>11</lenDesEng>
+            <desTag>מספר שובר</desTag>
+            <desTagEng>POS Tran ID</desTagEng>
+            <valueTag />
+          </voucherNumber>
+          <uid>
+            <nameTag>uid</nameTag>
+            <category>BOTH</category>
+            <index>10</index>
+            <lenValue>0</lenValue>
+            <lenDes>3</lenDes>
+            <lenDesEng>3</lenDesEng>
+            <desTag>UID</desTag>
+            <desTagEng>UID</desTagEng>
+            <valueTag />
+          </uid>
+          <rrn>
+            <nameTag>rrn</nameTag>
+            <category>BOTH</category>
+            <index>11</index>
+            <lenValue>0</lenValue>
+            <lenDes>3</lenDes>
+            <lenDesEng>3</lenDesEng>
+            <desTag>RRN</desTag>
+            <desTagEng>RRN</desTagEng>
+            <valueTag />
+          </rrn>
+          <atc>
+            <nameTag>atc</nameTag>
+            <category>BOTH</category>
+            <index>44</index>
+            <lenValue>0</lenValue>
+            <lenDes>8</lenDes>
+            <lenDesEng>3</lenDesEng>
+            <desTag>סידורי ש</desTag>
+            <desTagEng>ATC</desTagEng>
+            <valueTag />
+          </atc>
+          <cardSeqNumber>
+            <nameTag>cardSeqNumber</nameTag>
+            <category>BOTH</category>
+            <index>45</index>
+            <lenValue>0</lenValue>
+            <lenDes>8</lenDes>
+            <lenDesEng>3</lenDesEng>
+            <desTag>סידורי כ</desTag>
+            <desTagEng>PSN</desTagEng>
+            <valueTag />
+          </cardSeqNumber>
+          <tsi>
+            <nameTag>tsi</nameTag>
+            <category>SELLER</category>
+            <index>46</index>
+            <lenValue>0</lenValue>
+            <lenDes>3</lenDes>
+            <lenDesEng>3</lenDesEng>
+            <desTag>TSI</desTag>
+            <desTagEng>TSI</desTagEng>
+            <valueTag />
+          </tsi>
+          <arc>
+            <nameTag>arc</nameTag>
+            <category>SELLER</category>
+            <index>47</index>
+            <lenValue>0</lenValue>
+            <lenDes>3</lenDes>
+            <lenDesEng>3</lenDesEng>
+            <desTag>ARC</desTag>
+            <desTagEng>ARC</desTagEng>
+            <valueTag />
+          </arc>
+          <tvr>
+            <nameTag>tvr</nameTag>
+            <category>SELLER</category>
+            <index>48</index>
+            <lenValue>0</lenValue>
+            <lenDes>3</lenDes>
+            <lenDesEng>3</lenDesEng>
+            <desTag>TVR</desTag>
+            <desTagEng>TVR</desTagEng>
+            <valueTag />
+          </tvr>
+          <tranType>
+            <nameTag>tranType</nameTag>
+            <category>BOTH</category>
+            <index>12</index>
+            <lenValue>0</lenValue>
+            <lenDes>8</lenDes>
+            <lenDesEng>9</lenDesEng>
+            <desTag>סוג עסקה</desTag>
+            <desTagEng>Tran Type</desTagEng>
+            <valueTag />
+          </tranType>
+          <tranTypeE>
+            <nameTag>tranTypeE</nameTag>
+            <category>CLIENT</category>
+            <index>13</index>
+            <lenValue>0</lenValue>
+            <lenDes>8</lenDes>
+            <lenDesEng>9</lenDesEng>
+            <desTag>סוג עסקה</desTag>
+            <desTagEng>Tran Type</desTagEng>
+            <valueTag />
+          </tranTypeE>
+          <authNo>
+            <nameTag>authNo</nameTag>
+            <category>BOTH</category>
+            <index>14</index>
+            <lenValue>0</lenValue>
+            <lenDes>16</lenDes>
+            <lenDesEng>18</lenDesEng>
+            <desTag>מספר אישור מנפיק</desTag>
+            <desTagEng>Issuer Auth Number</desTagEng>
+            <valueTag />
+          </authNo>
+          <authCodeManpik>
+            <nameTag>authCodeManpik</nameTag>
+            <category>BOTH</category>
+            <index>15</index>
+            <lenValue>0</lenValue>
+            <lenDes>9</lenDes>
+            <lenDesEng>13</lenDesEng>
+            <desTag>גורם מאשר</desTag>
+            <desTagEng>Authorized by</desTagEng>
+            <valueTag />
+          </authCodeManpik>
+          <authCodeManpikE>
+            <nameTag>authCodeManpikE</nameTag>
+            <category>CLIENT</category>
+            <index>16</index>
+            <lenValue>0</lenValue>
+            <lenDes>9</lenDes>
+            <lenDesEng>13</lenDesEng>
+            <desTag>גורם מאשר</desTag>
+            <desTagEng>Authorized by</desTagEng>
+            <valueTag />
+          </authCodeManpikE>
+          <panEntryMode>
+            <nameTag>panEntryMode</nameTag>
+            <category>BOTH</category>
+            <index>17</index>
+            <lenValue>0</lenValue>
+            <lenDes>16</lenDes>
+            <lenDesEng>10</lenDesEng>
+            <desTag>אופן ביצוע העסקה</desTag>
+            <desTagEng>Entry Mode</desTagEng>
+            <valueTag />
+          </panEntryMode>
+          <panEntryModeE>
+            <nameTag>panEntryModeE</nameTag>
+            <category>CLIENT</category>
+            <index>18</index>
+            <lenValue>0</lenValue>
+            <lenDes>16</lenDes>
+            <lenDesEng>10</lenDesEng>
+            <desTag>אופן ביצוע העסקה</desTag>
+            <desTagEng>Entry Mode</desTagEng>
+            <valueTag />
+          </panEntryModeE>
+          <aid>
+            <nameTag>aid</nameTag>
+            <category>BOTH</category>
+            <index>43</index>
+            <lenValue>0</lenValue>
+            <lenDes>16</lenDes>
+            <lenDesEng>3</lenDesEng>
+            <desTag>זיהוי יישום בשבב</desTag>
+            <desTagEng>AID</desTagEng>
+            <valueTag />
+          </aid>
+          <creditTerms>
+            <nameTag>creditTerms</nameTag>
+            <category>BOTH</category>
+            <index>19</index>
+            <lenValue>0</lenValue>
+            <lenDes>9</lenDes>
+            <lenDesEng>12</lenDesEng>
+            <desTag>סוג אשראי</desTag>
+            <desTagEng>Credit Terms</desTagEng>
+            <valueTag />
+          </creditTerms>
+          <creditTermsE>
+            <nameTag>creditTermsE</nameTag>
+            <category>CLIENT</category>
+            <index>20</index>
+            <lenValue>0</lenValue>
+            <lenDes>9</lenDes>
+            <lenDesEng>12</lenDesEng>
+            <desTag>סוג אשראי</desTag>
+            <desTagEng>Credit Terms</desTagEng>
+            <valueTag />
+          </creditTermsE>
+          <transAmount>
+            <nameTag>transAmount</nameTag>
+            <category>BOTH</category>
+            <index>21</index>
+            <lenValue>0</lenValue>
+            <lenDes>10</lenDes>
+            <lenDesEng>6</lenDesEng>
+            <desTag>סכום העסקה</desTag>
+            <desTagEng>Amount</desTagEng>
+            <valueTag />
+          </transAmount>
+          <currency>
+            <nameTag>currency</nameTag>
+            <category>BOTH</category>
+            <index>22</index>
+            <lenValue>0</lenValue>
+            <lenDes>4</lenDes>
+            <lenDesEng>8</lenDesEng>
+            <desTag>מטבע</desTag>
+            <desTagEng>Currency</desTagEng>
+            <valueTag />
+          </currency>
+          <conversionAmount>
+            <nameTag>conversionAmount</nameTag>
+            <category>BOTH</category>
+            <index>38</index>
+            <lenValue>0</lenValue>
+            <lenDes>20</lenDes>
+            <lenDesEng>16</lenDesEng>
+            <desTag>סכום העסקה לאחר המרה</desTag>
+            <desTagEng>Converted Amount</desTagEng>
+            <valueTag />
+          </conversionAmount>
+          <conversionCurrency>
+            <nameTag>conversionCurrency</nameTag>
+            <category>BOTH</category>
+            <index>39</index>
+            <lenValue>0</lenValue>
+            <lenDes>10</lenDes>
+            <lenDesEng>19</lenDesEng>
+            <desTag>מטבע ההמרה</desTag>
+            <desTagEng>Conversion Currency</desTagEng>
+            <valueTag />
+          </conversionCurrency>
+          <conversionRate>
+            <nameTag>conversionRate</nameTag>
+            <category>BOTH</category>
+            <index>34</index>
+            <lenValue>0</lenValue>
+            <lenDes>8</lenDes>
+            <lenDesEng>13</lenDesEng>
+            <desTag>שער המרה</desTag>
+            <desTagEng>Exchange Rate</desTagEng>
+            <valueTag />
+          </conversionRate>
+          <commision>
+            <nameTag>commision</nameTag>
+            <category>BOTH</category>
+            <index>35</index>
+            <lenValue>0</lenValue>
+            <lenDes>12</lenDes>
+            <lenDesEng>9</lenDesEng>
+            <desTag>עמלת בית עסק</desTag>
+            <desTagEng>Commision</desTagEng>
+            <valueTag />
+          </commision>
+          <markup>
+            <nameTag>markup</nameTag>
+            <category>BOTH</category>
+            <index>36</index>
+            <lenValue>0</lenValue>
+            <lenDes>10</lenDes>
+            <lenDesEng>6</lenDesEng>
+            <desTag>מרווח המרה</desTag>
+            <desTagEng>Markup</desTagEng>
+            <valueTag />
+          </markup>
+          <conversionProvider>
+            <nameTag>conversionProvider</nameTag>
+            <category>BOTH</category>
+            <index>37</index>
+            <lenValue>0</lenValue>
+            <lenDes>9</lenDes>
+            <lenDesEng>17</lenDesEng>
+            <desTag>גורם המרה</desTag>
+            <desTagEng>Exchange Provider</desTagEng>
+            <valueTag />
+          </conversionProvider>
+          <noPayments>
+            <nameTag>noPayments</nameTag>
+            <category>BOTH</category>
+            <index>23</index>
+            <lenValue>0</lenValue>
+            <lenDes>12</lenDes>
+            <lenDesEng>0</lenDesEng>
+            <desTag>מספר תשלומים</desTag>
+            <desTagEng />
+            <valueTag />
+          </noPayments>
+          <firstPayment>
+            <nameTag>firstPayment</nameTag>
+            <category>BOTH</category>
+            <index>24</index>
+            <lenValue>0</lenValue>
+            <lenDes>11</lenDes>
+            <lenDesEng>17</lenDesEng>
+            <desTag>תשלום ראשון</desTag>
+            <desTagEng>First Installment</desTagEng>
+            <valueTag />
+          </firstPayment>
+          <notFirstPayment>
+            <nameTag>notFirstPayment</nameTag>
+            <category>BOTH</category>
+            <index>25</index>
+            <lenValue>0</lenValue>
+            <lenDes>10</lenDes>
+            <lenDesEng>18</lenDesEng>
+            <desTag>תשלום נוסף</desTag>
+            <desTagEng>Installment Amount</desTagEng>
+            <valueTag />
+          </notFirstPayment>
+          <deferMonths>
+            <nameTag>deferMonths</nameTag>
+            <category>BOTH</category>
+            <index>26</index>
+            <lenValue>0</lenValue>
+            <lenDes>4</lenDes>
+            <lenDesEng>0</lenDesEng>
+            <desTag>דחוי</desTag>
+            <desTagEng />
+            <valueTag />
+          </deferMonths>
+          <dueDate>
+            <nameTag>dueDate</nameTag>
+            <category>BOTH</category>
+            <index>27</index>
+            <lenValue>0</lenValue>
+            <lenDes>10</lenDes>
+            <lenDesEng>0</lenDesEng>
+            <desTag>חיוב במועד</desTag>
+            <desTagEng />
+            <valueTag />
+          </dueDate>
+          <tip>
+            <nameTag>tip</nameTag>
+            <category>BOTH</category>
+            <index>28</index>
+            <lenValue>0</lenValue>
+            <lenDes>3</lenDes>
+            <lenDesEng>3</lenDesEng>
+            <desTag>תשר</desTag>
+            <desTagEng>TIP</desTagEng>
+            <valueTag />
+          </tip>
+          <ipayAmount>
+            <nameTag>ipayAmount</nameTag>
+            <category>BOTH</category>
+            <index>30</index>
+            <lenValue>0</lenValue>
+            <lenDes>15</lenDes>
+            <lenDesEng>0</lenDesEng>
+            <desTag>סכום הנחה בקניה</desTag>
+            <desTagEng />
+            <valueTag />
+          </ipayAmount>
+          <ipayNumber>
+            <nameTag>ipayNumber</nameTag>
+            <category>BOTH</category>
+            <index>31</index>
+            <lenValue>0</lenValue>
+            <lenDes>16</lenDes>
+            <lenDesEng>0</lenDesEng>
+            <desTag>מספר יחידות הטבה</desTag>
+            <desTagEng />
+            <valueTag />
+          </ipayNumber>
+          <netAmount>
+            <nameTag>netAmount</nameTag>
+            <category>BOTH</category>
+            <index>29</index>
+            <lenValue>0</lenValue>
+            <lenDes>8</lenDes>
+            <lenDesEng>0</lenDesEng>
+            <desTag>סכום נטו</desTag>
+            <desTagEng />
+            <valueTag />
+          </netAmount>
+          <cashbackAmount>
+            <nameTag>cashbackAmount</nameTag>
+            <category>BOTH</category>
+            <index>32</index>
+            <lenValue>0</lenValue>
+            <lenDes>11</lenDes>
+            <lenDesEng>15</lenDesEng>
+            <desTag>סכום במזומן</desTag>
+            <desTagEng>Cashback Amount</desTagEng>
+            <valueTag />
+          </cashbackAmount>
+          <dspBalance>
+            <nameTag>dspBalance</nameTag>
+            <category>CLIENT</category>
+            <index>49</index>
+            <lenValue>0</lenValue>
+            <lenDes>0</lenDes>
+            <lenDesEng>0</lenDesEng>
+            <desTag />
+            <desTagEng />
+            <valueTag />
+          </dspBalance>
+          <dspF111>
+            <nameTag>dspF111</nameTag>
+            <category>BOTH</category>
+            <index>50</index>
+            <lenValue>0</lenValue>
+            <lenDes>0</lenDes>
+            <lenDesEng>0</lenDesEng>
+            <desTag />
+            <desTagEng />
+            <valueTag />
+          </dspF111>
+          <lumpSum>
+            <nameTag>lumpSum</nameTag>
+            <category>BOTH</category>
+            <index>33</index>
+            <lenValue>0</lenValue>
+            <lenDes>21</lenDes>
+            <lenDesEng>32</lenDesEng>
+            <desTag>סה''כ כולל תשר ומזומן</desTag>
+            <desTagEng>Total Amount (incl TIP/Cashback)</desTagEng>
+            <valueTag />
+          </lumpSum>
+          <clientSignature>
+            <nameTag>clientSignature</nameTag>
+            <category>SELLER</category>
+            <index>40</index>
+            <lenValue>0</lenValue>
+            <lenDes>10</lenDes>
+            <lenDesEng>9</lenDesEng>
+            <desTag>חתימת לקוח</desTag>
+            <desTagEng>Signature</desTagEng>
+            <valueTag />
+          </clientSignature>
+          <clientPhone>
+            <nameTag>clientPhone</nameTag>
+            <category>SELLER</category>
+            <index>41</index>
+            <lenValue>0</lenValue>
+            <lenDes>18</lenDes>
+            <lenDesEng>12</lenDesEng>
+            <desTag>מספר טלפון של לקוח</desTag>
+            <desTagEng>Phone Number</desTagEng>
+            <valueTag />
+          </clientPhone>
+          <constMsg>
+            <nameTag>constMsg</nameTag>
+            <category>BOTH</category>
+            <index>42</index>
+            <lenValue>0</lenValue>
+            <lenDes>0</lenDes>
+            <lenDesEng>0</lenDesEng>
+            <desTag />
+            <desTagEng />
+            <valueTag />
+          </constMsg>
+        </receiptObj>
+        <dccObj>
+          <cAmount />
+          <cRate />
+          <cCurrency />
+          <commission />
+          <cProvider />
+          <alphaCurrency />
+          <timestamp />
+          <validity />
+          <ratePercentage />
+          <statusDcc />
+          <statusDccDes />
+        </dccObj>
+      </globalObj>
+    </AshEndResponse>
+  </soap:Body>
+</soap:Envelope>

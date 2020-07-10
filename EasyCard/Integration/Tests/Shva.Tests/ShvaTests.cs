@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using Shared.Integration.Models;
 using Shared.Tests.Fixtures;
+using Shva.Conveters;
 using Shva.Tests.Fixtures;
 using Shva.Tests.MockSetups;
 using System;
@@ -38,6 +39,15 @@ namespace Shva.Tests
             var shvaResponse = response as ShvaCreateTransactionResponse;
 
             Assert.True(shvaResponse?.Success);
+        }
+
+        [Fact]
+        public void ParseShvaDateTime()
+        {
+            var testStr = "0709210418";
+            var res = MetadataConveters.GetDateFromShvaDateTime(testStr);
+
+            Assert.Equal(new DateTime(DateTime.UtcNow.Year, 7, 9, 21, 4, 18), res);
         }
     }
 }

@@ -50,8 +50,7 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Stored credit card details token (should be omitted in case if full credit card details used)
         /// </summary>
-        [StringLength(50)]
-        public string CreditCardToken { get; set; }
+        public Guid? CreditCardToken { get; set; }
 
         /// <summary>
         /// Transaction amount (should be omitted in case of installment deal)

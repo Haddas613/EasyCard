@@ -132,5 +132,41 @@ namespace Shva.Conveters
         {
             return ((int)cardPresence).ToString("00");
         }
+
+        public static DateTime? GetDateFromShvaDateTime(this string shvaDateTimeStr)
+        {
+            if (string.IsNullOrWhiteSpace(shvaDateTimeStr))
+            {
+                return null;
+            }
+
+            // TODO: timezone
+            if (DateTime.TryParseExact(shvaDateTimeStr, "MMddHHmmss", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out DateTime res))
+            {
+                return res;
+            }
+
+            return null;
+        }
+
+        public static string GetShvaDateStr(this DateTime? date)
+        {
+            if (date == null)
+            {
+                return null;
+            }
+
+            return date.Value.ToString("MMdd");
+        }
+
+        public static string GetShvaTimeStr(this DateTime? date)
+        {
+            if (date == null)
+            {
+                return null;
+            }
+
+            return date.Value.ToString("HHmmss");
+        }
     }
 }

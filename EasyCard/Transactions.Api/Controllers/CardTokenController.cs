@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Shared.Api;
@@ -17,6 +18,7 @@ using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
 using Shared.Helpers.KeyValueStorage;
+using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using Transactions.Api.Extensions.Filtering;
@@ -27,6 +29,7 @@ using Transactions.Api.Validation;
 using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Transactions.Shared;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Controllers
 {
@@ -42,6 +45,8 @@ namespace Transactions.Api.Controllers
         private readonly IMapper mapper;
         private readonly IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage;
         private readonly ApplicationSettings appSettings;
+        private readonly ILogger logger;
+        private readonly IProcessorResolver processorResolver;
 
         private readonly ITerminalsService terminalsService;
 
@@ -51,7 +56,9 @@ namespace Transactions.Api.Controllers
             IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage,
             IMapper mapper,
             ITerminalsService terminalsService,
-            IOptions<ApplicationSettings> appSettings)
+            IOptions<ApplicationSettings> appSettings,
+            ILogger<CardTokenController> logger,
+            IProcessorResolver processorResolver)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -60,6 +67,8 @@ namespace Transactions.Api.Controllers
 
             this.terminalsService = terminalsService;
             this.appSettings = appSettings.Value;
+            this.logger = logger;
+            this.processorResolver = processorResolver;
         }
 
         [HttpPost]
@@ -67,7 +76,8 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateToken([FromBody] TokenRequest model)
         {
-            var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == model.TerminalID).FirstOrDefaultAsync());
+            // TODO: caching
+            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
             TokenTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -76,6 +86,56 @@ namespace Transactions.Api.Controllers
 
             storageData.TerminalID = dbData.TerminalID = terminal.TerminalID;
             storageData.MerchantID = dbData.MerchantID = terminal.MerchantID;
+
+            // initial transaction
+            var transaction = new PaymentTransaction();
+            mapper.Map(terminal, transaction);
+
+            transaction.MerchantIP = GetIP();
+            transaction.CorrelationId = GetCorrelationID();
+
+            transaction.CardPresence = CardPresenceEnum.CardNotPresent; // TODO
+            transaction.JDealType = JDealTypeEnum.J5;
+
+            transaction.SpecialTransactionType = SpecialTransactionTypeEnum.InitialDeal;
+
+            // terminal settings
+
+            var terminalProcessor = ValidateExists(
+                terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
+                Messages.ProcessorNotDefined);
+
+            var processor = processorResolver.GetProcessor(terminalProcessor);
+
+            var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
+            mapper.Map(processorSettings, transaction);
+
+            // create transaction in processor (Shva)
+            try
+            {
+                var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
+
+                mapper.Map(model, processorRequest.CreditCardToken);
+
+                processorRequest.ProcessorSettings = processorSettings;
+
+                var processorResponse = await processor.CreateTransaction(processorRequest);
+                mapper.Map(processorResponse, transaction);
+                mapper.Map(processorResponse, dbData);
+
+                if (!processorResponse.Success)
+                {
+                    return BadRequest(new OperationResponse($"{Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, processorResponse.Errors));
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Processor Create Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
+
+                return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByProcesor.ToString(), (ex as IntegrationException)?.Message));
+            }
+
+            // save token itself
 
             await keyValueStorage.Save(dbData.CreditCardTokenID.ToString(), JsonConvert.SerializeObject(storageData));
 

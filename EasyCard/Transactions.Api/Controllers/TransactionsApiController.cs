@@ -60,12 +60,13 @@ namespace Transactions.Api.Controllers
         private readonly IProcessorResolver processorResolver;
         private readonly ILogger logger;
         private readonly ApplicationSettings appSettings;
+        private readonly ICreditCardTokenService creditCardTokenService;
 
         private readonly ITerminalsService terminalsService;
 
         public TransactionsApiController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper,
             IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver, ITerminalsService terminalsService, ILogger<TransactionsApiController> logger,
-            IOptions<ApplicationSettings> appSettings)
+            IOptions<ApplicationSettings> appSettings, ICreditCardTokenService creditCardTokenService)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -76,6 +77,7 @@ namespace Transactions.Api.Controllers
             this.terminalsService = terminalsService;
             this.logger = logger;
             this.appSettings = appSettings.Value;
+            this.creditCardTokenService = creditCardTokenService;
         }
 
         [HttpGet]
@@ -166,10 +168,10 @@ namespace Transactions.Api.Controllers
             var userIsTerminal = User.IsTerminal();
 
             // TODO: validate that credit card details should be absent
-            if (!string.IsNullOrWhiteSpace(model.CreditCardToken))
+            if (model.CreditCardToken != null)
             {
-                var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken), "CreditCardToken");
-                return await ProcessTransaction(model, token);
+                var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
+                return await ProcessTransaction(model, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
             }
             else
             {
@@ -188,6 +190,7 @@ namespace Transactions.Api.Controllers
         {
             var transaction = mapper.Map<CreateTransactionRequest>(model);
 
+            // Does it have sense to use J5 together with Token?
             if (!string.IsNullOrWhiteSpace(model.CreditCardToken))
             {
                 var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken), "CreditCardToken");
@@ -235,29 +238,29 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        /// <summary>
-        /// Initial request for set of billing trnsactions
-        /// </summary>
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
-        [Route("initalBillingDeal")]
-        [ValidateModelState]
-        public async Task<ActionResult<OperationResponse>> InitalBillingDeal([FromBody] InitalBillingDealRequest model)
-        {
-            throw new NotImplementedException();
-        }
+        ///// <summary>
+        ///// Initial request for set of billing trnsactions
+        ///// </summary>
+        //[HttpPost]
+        //[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        //[Route("initalBillingDeal")]
+        //[ValidateModelState]
+        //public async Task<ActionResult<OperationResponse>> InitalBillingDeal([FromBody] InitalBillingDealRequest model)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        /// <summary>
-        /// Billing deal
-        /// </summary>
-        [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
-        [Route("nextBillingDeal")]
-        [ValidateModelState]
-        public async Task<ActionResult<OperationResponse>> NextBillingDeal([FromBody] NextBillingDealRequest model)
-        {
-            throw new NotImplementedException();
-        }
+        ///// <summary>
+        ///// Billing deal
+        ///// </summary>
+        //[HttpPost]
+        //[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        //[Route("nextBillingDeal")]
+        //[ValidateModelState]
+        //public async Task<ActionResult<OperationResponse>> NextBillingDeal([FromBody] NextBillingDealRequest model)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialDealID = null)
         {
@@ -272,6 +275,7 @@ namespace Transactions.Api.Controllers
             transaction.SpecialTransactionType = specialTransactionType;
             transaction.JDealType = jDealType;
 
+            CreditCardTokenDetails dbToken = null;
             if (token != null)
             {
                 if (token.TerminalID != terminal.TerminalID)
@@ -280,6 +284,8 @@ namespace Transactions.Api.Controllers
                 }
 
                 mapper.Map(token, transaction.CreditCardDetails);
+
+                dbToken = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
             }
             else
             {
@@ -353,6 +359,7 @@ namespace Transactions.Api.Controllers
                 if (token != null)
                 {
                     mapper.Map(token, processorRequest.CreditCardToken);
+                    mapper.Map(dbToken.ShvaInitialTransactionDetails, processorRequest.InitialDeal, typeof(ShvaInitialTransactionDetails), typeof(Shva.Models.InitDealResultModel)); // TODO: remove direct Shva reference
                 }
                 else
                 {
@@ -382,76 +389,83 @@ namespace Transactions.Api.Controllers
                 processorFailedRsponse = BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByProcesor.ToString(), (ex as IntegrationException)?.Message));
             }
 
-            // reject to clearing house in case of shva error
-            if (processorFailedRsponse != null && aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
+            if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
             {
-                try
+                // reject to clearing house in case of shva error
+                if (processorFailedRsponse != null)
                 {
-                    var aggregatorRequest = mapper.Map<AggregatorCancelTransactionRequest>(transaction);
-                    aggregatorRequest.AggregatorSettings = aggregatorSettings;
-                    aggregatorRequest.RejectionReason = TransactionStatusEnum.FailedToConfirmByProcesor.ToString();
-
-                    var aggregatorResponse = await aggregator.CancelTransaction(aggregatorRequest);
-                    mapper.Map(aggregatorResponse, transaction);
-
-                    if (!aggregatorResponse.Success)
+                    try
                     {
-                        logger.LogError($"Aggregator Cancel Transaction request error. TransactionID: {transaction.PaymentTransactionID}");
+                        var aggregatorRequest = mapper.Map<AggregatorCancelTransactionRequest>(transaction);
+                        aggregatorRequest.AggregatorSettings = aggregatorSettings;
+                        aggregatorRequest.RejectionReason = TransactionStatusEnum.FailedToConfirmByProcesor.ToString();
+
+                        var aggregatorResponse = await aggregator.CancelTransaction(aggregatorRequest);
+                        mapper.Map(aggregatorResponse, transaction);
+
+                        if (!aggregatorResponse.Success)
+                        {
+                            logger.LogError($"Aggregator Cancel Transaction request error. TransactionID: {transaction.PaymentTransactionID}");
+
+                            await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
+
+                            return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
+                        }
+
+                        await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.CanceledByAggregator);
+
+                        return processorFailedRsponse;
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, $"Aggregator Cancel Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
 
                         await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
 
-                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier));
+                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), (ex as IntegrationException)?.Message));
                     }
-
-                    await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.CanceledByAggregator);
-
-                    return processorFailedRsponse;
                 }
-                catch (Exception ex)
+
+                // commit transaction in aggregator (Clearing House)
+                else
                 {
-                    logger.LogError(ex, $"Aggregator Cancel Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
+                    try
+                    {
+                        var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
 
-                    await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
+                        var commitAggregatorRequest = mapper.Map<AggregatorCommitTransactionRequest>(transaction);
 
-                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), (ex as IntegrationException)?.Message));
+                        commitAggregatorRequest.AggregatorSettings = terminalAggregator.Settings;
+
+                        var commitAggregatorResponse = await aggregator.CommitTransaction(commitAggregatorRequest);
+                        mapper.Map(commitAggregatorResponse, transaction);
+
+                        if (!commitAggregatorResponse.Success)
+                        {
+                            // NOTE: In case of failed commit, transaction should not be transmitted to Shva
+
+                            logger.LogError($"Aggregator Commit Transaction request error. TransactionID: {transaction.PaymentTransactionID}");
+
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionMessage: commitAggregatorResponse.ErrorMessage, rejectionReason: commitAggregatorResponse.RejectReasonCode);
+
+                            return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, commitAggregatorResponse.Errors));
+                        }
+
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.CommitedByAggregator);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, $"Aggregator Commit Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
+
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
+
+                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionStatusEnum.FailedToCommitByAggregator.ToString(), (ex as IntegrationException)?.Message));
+                    }
                 }
             }
-
-            // commit transaction in aggregator (Clearing House)
-            if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
+            else if (processorFailedRsponse != null)
             {
-                try
-                {
-                    var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
-
-                    var commitAggregatorRequest = mapper.Map<AggregatorCommitTransactionRequest>(transaction);
-
-                    commitAggregatorRequest.AggregatorSettings = terminalAggregator.Settings;
-
-                    var commitAggregatorResponse = await aggregator.CommitTransaction(commitAggregatorRequest);
-                    mapper.Map(commitAggregatorResponse, transaction);
-
-                    if (!commitAggregatorResponse.Success)
-                    {
-                        // NOTE: In case of failed commit, transaction should not be transmitted to Shva
-
-                        logger.LogError($"Aggregator Commit Transaction request error. TransactionID: {transaction.PaymentTransactionID}");
-
-                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionMessage: commitAggregatorResponse.ErrorMessage, rejectionReason: commitAggregatorResponse.RejectReasonCode);
-
-                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, commitAggregatorResponse.Errors));
-                    }
-
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.CommitedByAggregator);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, $"Aggregator Commit Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
-
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
-
-                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionStatusEnum.FailedToCommitByAggregator.ToString(), (ex as IntegrationException)?.Message));
-                }
+                return processorFailedRsponse;
             }
 
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID.ToString()));
