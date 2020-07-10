@@ -35,13 +35,13 @@ export default class TransactionsApi {
 
       switch (data.jDealType) {
         case "J4":
-          result = await this.$api.transactions.createTransaction(data);
+          result = await this.createTransaction(data);
           break;
         case "J2":
-          result = await this.$api.transactions.checkCreditCard(data);
+          result = await this.checkCreditCard(data);
           break;
         case "J5":
-          result = await this.$api.transactions.blockCreditCard(data);
+          result = await this.blockCreditCard(data);
           break;
         default:
           result.message = `Could not process JDeal type: ${data.jDealType}`;

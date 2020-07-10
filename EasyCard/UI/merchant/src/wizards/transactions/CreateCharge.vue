@@ -21,7 +21,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
-          <customers-list :show-previously-charged="true" v-on:ok="model.customer=$event; step=4"></customers-list>
+          <customers-list :show-previously-charged="true" v-on:ok="model.customer=$event; step++"></customers-list>
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">
@@ -51,6 +51,7 @@ import TransactionSuccess from "../../components/transactions/TransactionSuccess
 import TransactionError from "../../components/transactions/TransactionError";
 import TerminalSelect from "../../components/terminals/TerminalSelect";
 import AdditionalSettingsForm from "../../components/transactions/AdditionalSettingsForm";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -130,7 +131,10 @@ export default {
   computed: {
     navTitle() {
       return this.$t(this.steps[this.step].title);
-    }
+    },
+    ...mapState({
+      terminal: state => state.settings.terminal
+    }),
   },
   methods: {
     goBack() {
@@ -158,9 +162,11 @@ export default {
       this.model.currency = data.currency;
       this.model.jDealType = data.jDealType;
       this.model.installmentDetails = data.installmentDetails;
+      this.model.terminalID = this.terminal.terminalID;
 
       this.loading = true;
       let result = await this.$api.transactions.processTransaction(this.model);
+      console.log(result)
       this.loading = false;
 
       //assuming current step is one before the last

@@ -12,7 +12,7 @@
         <v-col class="d-flex justify-space-around">
           <v-toolbar-title
             v-if="canchangeterminal"
-            class="subtitle-1 primary--text"
+            class="subtitle-1" v-bind:class="{'primary--text': terminal, 'error--text': !terminal}"
             @click="terminalDialog = true"
           >{{terminalName}}</v-toolbar-title>
           <v-toolbar-title
@@ -152,6 +152,9 @@ export default {
         t => t.terminalID === this.terminal.terminalID
       );
       if (!exists) this.terminal = null;
+    }
+    else if(this.terminals.length > 0 && !this.terminal){
+      this.terminal = this.terminals[0];
     } else {
       this.terminal = null;
     }
