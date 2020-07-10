@@ -25,5 +25,10 @@ namespace Transactions.Business.Entities
         /// End-customer Phone
         /// </summary>
         public string ConsumerPhone { get; set; }
+
+        /// <summary>
+        /// Consumer ID
+        /// </summary>
+        public Guid? ConsumerID { get; set; }
     }
 }

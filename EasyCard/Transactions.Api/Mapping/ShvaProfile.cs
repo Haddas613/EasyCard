@@ -43,7 +43,8 @@ namespace Transactions.Api.Mapping
                  .ForMember(m => m.OriginalAuthNum, s => s.MapFrom(src => src.AuthNum))
                  .ForMember(m => m.OriginalAuthSolekNum, s => s.MapFrom(src => src.AuthSolekNum))
                  .ForMember(m => m.OriginalUid, s => s.MapFrom(src => src.ShvaDealID))
-                 .ForMember(m => m.OriginalTranDateTime, s => s.MapFrom(src => src.ShvaTransactionDate));
+                 .ForMember(m => m.OriginalTranDateTime, s => s.MapFrom(src => src.ShvaTransactionDate))
+                 .ForAllOtherMembers(d => d.Ignore());
 
         }
     }

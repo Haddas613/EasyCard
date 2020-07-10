@@ -59,7 +59,7 @@ namespace Transactions.Api
             {
                 logging.AddConfiguration(Configuration.GetSection("Logging"));
                 logging.AddDebug();
-                logging.AddAzureWebAppDiagnostics();
+                logging.AddAzureWebAppDiagnostics(); // TODO: remove for production
             });
 
             var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();

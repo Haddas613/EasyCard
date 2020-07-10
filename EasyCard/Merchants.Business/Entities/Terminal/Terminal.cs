@@ -23,7 +23,7 @@ namespace Merchants.Business.Entities.Terminal
 
         public Guid TerminalID { get; set; }
 
-        public Guid? MerchantID { get; set; }
+        public Guid MerchantID { get; set; }
 
         public Merchant.Merchant Merchant { get; set; }
 

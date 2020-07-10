@@ -99,6 +99,8 @@ namespace Transactions.Api.Controllers
 
             transaction.SpecialTransactionType = SpecialTransactionTypeEnum.InitialDeal;
 
+            // TODO: store original transaction
+
             // terminal settings
 
             var terminalProcessor = ValidateExists(
