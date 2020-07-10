@@ -25,9 +25,9 @@
             <template v-slot:activator="{ on, attrs }">
               <v-icon v-bind="attrs" v-on="on">mdi-dots-vertical</v-icon>
             </template>
-            <v-list>
-              <v-list-item v-for="item in tdmenuitems" v-bind:key="item.type">
-                <v-list-item-title @click="$emit('td-menu-clicked', item.type)">{{$t(item.text)}}</v-list-item-title>
+            <v-list class="py-0">
+              <v-list-item v-for="item in tdmenuitems" v-bind:key="item.type" @click="$emit('td-menu-clicked', item.type)">
+                <v-list-item-title>{{$t(item.text)}}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
