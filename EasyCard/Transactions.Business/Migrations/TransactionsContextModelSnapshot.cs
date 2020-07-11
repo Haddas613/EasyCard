@@ -53,6 +53,14 @@ namespace Transactions.Business.Migrations
                         .HasMaxLength(20)
                         .IsUnicode(false);
 
+                    b.Property<string>("ConsumerEmail")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<Guid?>("ConsumerID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CorrelationId")
                         .HasColumnType("varchar(50)")
                         .HasMaxLength(50)
@@ -384,6 +392,10 @@ namespace Transactions.Business.Migrations
                                 .HasMaxLength(50)
                                 .IsUnicode(false);
 
+                            b1.Property<Guid?>("ConsumerID")
+                                .HasColumnName("ConsumerID")
+                                .HasColumnType("uniqueidentifier");
+
                             b1.Property<string>("ConsumerPhone")
                                 .HasColumnName("ConsumerPhone")
                                 .HasColumnType("varchar(20)")
@@ -400,6 +412,11 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(50)")
                                 .HasMaxLength(50)
                                 .IsUnicode(false);
+
+                            b1.Property<string>("Items")
+                                .HasColumnName("Items")
+                                .HasColumnType("nvarchar(max)")
+                                .IsUnicode(true);
 
                             b1.HasKey("PaymentTransactionID");
 

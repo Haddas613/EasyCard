@@ -15,9 +15,139 @@ namespace Merchants.Business.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.2")
+                .HasAnnotation("ProductVersion", "5.0.0-preview.6.20312.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Merchants.Business.Entities.Billing.Consumer", b =>
+                {
+                    b.Property<Guid>("ConsumerID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ConsumerAddress")
+                        .HasColumnType("nvarchar(max)")
+                        .IsUnicode(true);
+
+                    b.Property<string>("ConsumerEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
+
+                    b.Property<string>("ConsumerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
+
+                    b.Property<string>("ConsumerPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
+
+                    b.Property<string>("CorrelationId")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<DateTime?>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MerchantID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("OperationDoneBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
+
+                    b.Property<Guid?>("OperationDoneByID")
+                        .HasColumnType("uniqueidentifier")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<string>("SourceIP")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<byte[]>("UpdateTimestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("ConsumerID");
+
+                    b.HasIndex("MerchantID");
+
+                    b.ToTable("Consumer");
+                });
+
+            modelBuilder.Entity("Merchants.Business.Entities.Billing.Item", b =>
+                {
+                    b.Property<Guid>("ItemID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("CorrelationId")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<DateTime?>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<short>("Currency")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("ItemName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
+
+                    b.Property<Guid>("MerchantID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("OperationDoneBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
+
+                    b.Property<Guid?>("OperationDoneByID")
+                        .HasColumnType("uniqueidentifier")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<string>("SourceIP")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<byte[]>("UpdateTimestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("ItemID");
+
+                    b.HasIndex("MerchantID");
+
+                    b.ToTable("Item");
+                });
 
             modelBuilder.Entity("Merchants.Business.Entities.Merchant.Feature", b =>
                 {
@@ -93,10 +223,6 @@ namespace Merchants.Business.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
-
-                    b.Property<string>("Users")
-                        .HasColumnType("varchar(max)")
-                        .IsUnicode(false);
 
                     b.HasKey("MerchantID");
 
@@ -180,7 +306,7 @@ namespace Merchants.Business.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(true);
 
-                    b.Property<Guid?>("MerchantID")
+                    b.Property<Guid>("MerchantID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Status")
@@ -288,6 +414,24 @@ namespace Merchants.Business.Migrations
                     b.ToTable("UserTerminalMapping");
                 });
 
+            modelBuilder.Entity("Merchants.Business.Entities.Billing.Consumer", b =>
+                {
+                    b.HasOne("Merchants.Business.Entities.Merchant.Merchant", "Merchant")
+                        .WithMany()
+                        .HasForeignKey("MerchantID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Merchants.Business.Entities.Billing.Item", b =>
+                {
+                    b.HasOne("Merchants.Business.Entities.Merchant.Merchant", "Merchant")
+                        .WithMany()
+                        .HasForeignKey("MerchantID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Merchants.Business.Entities.Merchant.Feature", b =>
                 {
                     b.HasOne("Merchants.Business.Entities.Terminal.Terminal", null)
@@ -300,7 +444,7 @@ namespace Merchants.Business.Migrations
                     b.HasOne("Merchants.Business.Entities.Merchant.Merchant", "Merchant")
                         .WithMany()
                         .HasForeignKey("MerchantID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Merchants.Business.Entities.Terminal.Terminal", "Terminal")
@@ -312,7 +456,9 @@ namespace Merchants.Business.Migrations
                 {
                     b.HasOne("Merchants.Business.Entities.Merchant.Merchant", "Merchant")
                         .WithMany()
-                        .HasForeignKey("MerchantID");
+                        .HasForeignKey("MerchantID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.OwnsOne("Merchants.Business.Entities.Terminal.TerminalBillingSettings", "BillingSettings", b1 =>
                         {
@@ -402,7 +548,7 @@ namespace Merchants.Business.Migrations
                     b.HasOne("Merchants.Business.Entities.Terminal.Terminal", "Terminal")
                         .WithMany("Integrations")
                         .HasForeignKey("TerminalID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -411,7 +557,7 @@ namespace Merchants.Business.Migrations
                     b.HasOne("Merchants.Business.Entities.Terminal.Terminal", "Terminal")
                         .WithMany()
                         .HasForeignKey("TerminalID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

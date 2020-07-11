@@ -19,6 +19,8 @@ using System.Data;
 using Dapper;
 using Transactions.Shared.Enums;
 using Microsoft.EntityFrameworkCore.Storage;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Transactions.Business.Data
 {
@@ -40,6 +42,10 @@ namespace Transactions.Business.Data
         private static readonly ValueConverter CardExpirationConverter = new ValueConverter<CardExpiration, string>(
             v => v.ToString(),
             v => CreditCardHelpers.ParseCardExpiration(v));
+
+        private static readonly ValueConverter SettingsJObjectConverter = new ValueConverter<JObject, string>(
+           v => v.ToString(Formatting.None),
+           v => JObject.Parse(v));
 
         public TransactionsContext(DbContextOptions<TransactionsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
             : base(options)
@@ -181,11 +187,14 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
 
                 builder.OwnsOne(b => b.DealDetails, s =>
                 {
+                    s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
                     s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
-                    
+                    s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(SettingsJObjectConverter);
+
+
                 });
 
                 builder.Property(p => p.ConsumerIP).HasColumnName("ConsumerIP").IsRequired(false).HasMaxLength(32).IsUnicode(false);
@@ -234,6 +243,8 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                     s.Property(p => p.AuthSolekNum).HasColumnName("AuthSolekNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.ShvaTransactionDate).HasColumnName("ShvaTransactionDate").IsRequired(false);
                 });
+
+                builder.Property(p => p.ConsumerEmail).IsRequired(false).HasMaxLength(50).IsUnicode(false);
             }
         }
 

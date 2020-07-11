@@ -13,8 +13,16 @@
     [OperationDoneByID]   UNIQUEIDENTIFIER NULL,
     [CorrelationId]       VARCHAR (50)     NULL,
     [SourceIP]            VARCHAR (50)     NULL,
+    [AuthNum]             VARCHAR (20)     NULL,
+    [AuthSolekNum]        VARCHAR (20)     NULL,
+    [ShvaDealID]          VARCHAR (30)     NULL,
+    [ShvaTransactionDate] DATETIME2 (7)    NULL,
+    [ConsumerEmail]       VARCHAR (50)     NULL,
+    [ConsumerID]          UNIQUEIDENTIFIER NULL,
     CONSTRAINT [PK_CreditCardTokenDetails] PRIMARY KEY CLUSTERED ([CreditCardTokenID] ASC)
 );
+
+
 
 
 

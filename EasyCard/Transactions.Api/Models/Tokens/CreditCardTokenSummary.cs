@@ -24,5 +24,7 @@ namespace Transactions.Api.Models.Tokens
         public string CardVendor { get; set; }
 
         public DateTime? Created { get; set; }
+
+        public string CardOwnerName { get; set; }
     }
 }

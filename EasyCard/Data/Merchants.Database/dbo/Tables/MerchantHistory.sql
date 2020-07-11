@@ -11,9 +11,11 @@
     [SourceIP]             VARCHAR (50)     NULL,
     [ReasonForChange]      NVARCHAR (50)    NULL,
     CONSTRAINT [PK_MerchantHistory] PRIMARY KEY CLUSTERED ([MerchantHistoryID] ASC),
-    CONSTRAINT [FK_MerchantHistory_Merchant_MerchantID] FOREIGN KEY ([MerchantID]) REFERENCES [dbo].[Merchant] ([MerchantID]) ON DELETE CASCADE,
+    CONSTRAINT [FK_MerchantHistory_Merchant_MerchantID] FOREIGN KEY ([MerchantID]) REFERENCES [dbo].[Merchant] ([MerchantID]),
     CONSTRAINT [FK_MerchantHistory_Terminal_TerminalID] FOREIGN KEY ([TerminalID]) REFERENCES [dbo].[Terminal] ([TerminalID])
 );
+
+
 
 
 GO

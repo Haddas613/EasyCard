@@ -27,11 +27,6 @@ namespace Merchants.Business.Entities.Merchant
 
         public string ContactPerson { get; set; }
 
-        // lets try to live without collections
-        //public ICollection<Merchants.Business.Entities.Terminal.Terminal> Terminals { get; set; }
-
-        public string Users { get; set; }
-
         public DateTime? Created { get; set; }
 
         public Guid GetID()

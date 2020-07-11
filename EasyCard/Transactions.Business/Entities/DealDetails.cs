@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -30,5 +31,10 @@ namespace Transactions.Business.Entities
         /// Consumer ID
         /// </summary>
         public Guid? ConsumerID { get; set; }
+
+        /// <summary>
+        /// Deal Items
+        /// </summary>
+        public JObject Items { get; set; }
     }
 }

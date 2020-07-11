@@ -16,8 +16,17 @@ namespace Transactions.Api.Models.Tokens
 
         public string CardOwnerNationalID { get; set; }
 
+        public string CardOwnerName { get; set; }
+
         public Guid? TerminalID { get; set; }
 
         public Guid? MerchantID { get; set; }
+
+        public Guid? ConsumerID { get; set; }
+
+        /// <summary>
+        /// End-customer Email
+        /// </summary>
+        public string ConsumerEmail { get; set; }
     }
 }

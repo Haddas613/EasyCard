@@ -68,5 +68,7 @@
     <Build Include="dbo\Tables\__EFMigrationsHistory.sql" />
     <Build Include="dbo\Tables\UserTerminalMapping.sql" />
     <Build Include="dbo\Tables\MerchantHistory.sql" />
+    <Build Include="dbo\Tables\Item.sql" />
+    <Build Include="dbo\Tables\Consumer.sql" />
   </ItemGroup>
 </Project>
