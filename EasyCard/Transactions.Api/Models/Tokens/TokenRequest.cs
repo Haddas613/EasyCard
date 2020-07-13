@@ -20,5 +20,16 @@ namespace Transactions.Api.Models.Tokens
         /// </summary>
         [Required(AllowEmptyStrings = false)]
         public Guid TerminalID { get; set; }
+
+        /// <summary>
+        /// Consumer ID
+        /// </summary>
+        public Guid? ConsumerID { get; set; }
+
+        /// <summary>
+        /// End-customer Email
+        /// </summary>
+        [MaxLength(50)]
+        public string ConsumerEmail { get; set; }
     }
 }

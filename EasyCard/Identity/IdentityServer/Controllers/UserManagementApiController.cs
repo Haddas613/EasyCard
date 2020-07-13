@@ -170,42 +170,6 @@ namespace IdentityServer.Controllers
             return new ObjectResult(operationResult);
         }
 
-        // TODO: validate model
-        [HttpPost]
-        [Route("terminal")]
-        public async Task<IActionResult> AddTerminal([FromBody]CreateUserRequestModel model)
-        {
-            try
-            {
-                var user = await userManager.FindByEmailAsync(model.Email);
-
-                if (user == null)
-                {
-                    return new ObjectResult("User does not exist") { StatusCode = 404 };
-                }
-
-                var allClaims = await userManager.GetClaimsAsync(user);
-
-                //await _userManager.AddClaim(allClaims, user, "extension_MerchantID", model.MerchantID.ToString(), true);
-
-                var operationResult = new UserOperationResponse
-                {
-                    UserID = new Guid(user.Id),
-                    ResponseCode = UserOperationResponseCodeEnum.UserUpdated
-                };
-
-                // TODO: config
-                await userManager.SetTwoFactorEnabledAsync(user, true);
-
-                return new ObjectResult(operationResult);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Cannot process user {model.Email}");
-                return StatusCode(500);
-            }
-        }
-
         [HttpDelete]
         [Route("user/{userId}")]
         public async Task<IActionResult> DeleteUser([FromRoute]string userId)

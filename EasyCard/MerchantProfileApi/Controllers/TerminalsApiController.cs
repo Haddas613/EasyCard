@@ -21,13 +21,13 @@ namespace MerchantProfileApi.Controllers
     [Route("api/terminals")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontend)]
     [ApiController]
-    public class TerminalApiController : ApiControllerBase
+    public class TerminalsApiController : ApiControllerBase
     {
         private readonly ITerminalsService terminalsService;
         private readonly IMerchantsService merchantsService;
         private readonly IMapper mapper;
 
-        public TerminalApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper)
+        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
@@ -54,6 +54,12 @@ namespace MerchantProfileApi.Controllers
                 .FirstOrDefaultAsync(m => m.TerminalID == terminalID)));
 
             return Ok(terminal);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<OperationResponse>> CreateTerminalApiKey([FromRoute] Guid terminalID)
+        {
+            throw new NotImplementedException();
         }
     }
 }

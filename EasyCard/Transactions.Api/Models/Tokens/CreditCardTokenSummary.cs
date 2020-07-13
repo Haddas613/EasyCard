@@ -26,5 +26,15 @@ namespace Transactions.Api.Models.Tokens
         public DateTime? Created { get; set; }
 
         public string CardOwnerName { get; set; }
+
+        /// <summary>
+        /// Consumer ID
+        /// </summary>
+        public Guid? ConsumerID { get; set; }
+
+        /// <summary>
+        /// End-customer Email
+        /// </summary>
+        public string ConsumerEmail { get; set; }
     }
 }

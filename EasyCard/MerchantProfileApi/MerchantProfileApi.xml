@@ -4,6 +4,52 @@
         <name>MerchantProfileApi</name>
     </assembly>
     <members>
+        <member name="T:MerchantProfileApi.Messages">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.ConsumerCreated">
+            <summary>
+              Looks up a localized string similar to Consumer Created.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.ConsumerDeleted">
+            <summary>
+              Looks up a localized string similar to Consumer Deleted.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.ConsumerUpdated">
+            <summary>
+              Looks up a localized string similar to Consumer Updated.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.ItemCreated">
+            <summary>
+              Looks up a localized string similar to Item Created.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.ItemDeleted">
+            <summary>
+              Looks up a localized string similar to Item Deleted.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.ItemUpdated">
+            <summary>
+              Looks up a localized string similar to Item Updated.
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Models.Terminal.ExternalSystemRequest.ExternalProcessorReference">
             <summary>
             SHVA or other system terminal ID

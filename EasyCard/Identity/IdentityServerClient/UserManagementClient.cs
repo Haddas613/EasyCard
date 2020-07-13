@@ -99,14 +99,71 @@ namespace IdentityServerClient
             }
         }
 
-        public Task<UserOperationResponse> ResetPassword(Guid userId)
+        public async Task<UserOperationResponse> CreateTerminalApiKey(CreateTerminalApiKeyRequest model)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await webApiClient.Post<UserOperationResponse>(configuration.Authority, $"api/terminalapikeys", model, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                return clientError.TryConvert(new UserOperationResponse { Message = clientError.Message });
+            }
         }
 
-        public Task<UserOperationResponse> UnLockUser(Guid userId)
+        public async Task<UserOperationResponse> DeleteTerminalApiKey(Guid terminalID)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await webApiClient.Delete<UserOperationResponse>(configuration.Authority, $"api/terminalapikeys/{terminalID}", BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                logger.LogError($"Cannot delete terminal api key. Terminal api key for {terminalID} does not exist");
+                throw new ApplicationException($"Terminal api key for {terminalID} does not exist");
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                return clientError.TryConvert(new UserOperationResponse { Message = clientError.Message });
+            }
+        }
+
+        public async Task<UserOperationResponse> ResetPassword(Guid userId)
+        {
+            try
+            {
+                return await webApiClient.Post<UserOperationResponse>(configuration.Authority, $"api/userManagement/user/{userId}/resetPassword", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                logger.LogError($"Cannot lock user. User {userId} does not exist");
+                throw new ApplicationException($"User {userId} does not exist");
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                return clientError.TryConvert(new UserOperationResponse { Message = clientError.Message });
+            }
+        }
+
+        public async Task<UserOperationResponse> UnLockUser(Guid userId)
+        {
+            try
+            {
+                return await webApiClient.Post<UserOperationResponse>(configuration.Authority, $"api/userManagement/user/{userId}/unlock", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                logger.LogError($"Cannot lock user. User {userId} does not exist");
+                throw new ApplicationException($"User {userId} does not exist");
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                return clientError.TryConvert(new UserOperationResponse { Message = clientError.Message });
+            }
         }
 
         private async Task<NameValueCollection> BuildHeaders()
