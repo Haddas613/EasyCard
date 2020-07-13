@@ -116,7 +116,10 @@ export default {
     ok() {
       if (!this.$refs.form.validate()) return;
 
-      this.model.installmentDetails = this.$refs.instDetails.model;
+      if(this.$refs.instDetails){
+        this.model.installmentDetails = this.$refs.instDetails.model;
+      }
+      
       this.$emit("ok", this.model);
     }
   }

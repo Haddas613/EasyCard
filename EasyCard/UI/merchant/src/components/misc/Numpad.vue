@@ -11,7 +11,7 @@
     <v-flex class="white text-center align-stretch px-3">
       <v-row>
         <v-col cols="4" class="py-1">
-          <span class="subtitle-1 ecLgray--text" style="line-height:2.5rem;">{{$t('AddNote')}}</span>
+          <span class="subtitle-1 ecgray--text" style="line-height:2.5rem;">{{$t('AddNote')}}</span>
         </v-col>
         <v-col cols="8" class="pt-3">
           <input inputmode="decimal" min="0.01" v-model.number="model.amount" style="text-align:right;">
@@ -85,7 +85,7 @@ export default {
 
 <style lang="scss" scoped>
 .numpad-btn {
-  border: 1px solid var(--v-ecLgray-lighten2);
+  border: 1px solid var(--v-ecgray-lighten2);
 }
 .numpad-num {
   font-size: 2rem;
