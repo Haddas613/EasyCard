@@ -17,6 +17,8 @@ using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Business.Security;
+using Shared.Helpers.Security;
 
 namespace MerchantProfileApi.Controllers
 {
@@ -29,11 +31,15 @@ namespace MerchantProfileApi.Controllers
     {
         private readonly IItemsService itemsService;
         private readonly IMapper mapper;
+        private readonly IHttpContextAccessorWrapper httpContextAccessor;
+        private readonly IMerchantsService merchantsService;
 
-        public ItemsApiController(IItemsService itemsService, IMapper mapper)
+        public ItemsApiController(IItemsService itemsService, IMapper mapper, IHttpContextAccessorWrapper httpContextAccessor, IMerchantsService merchantsService)
         {
             this.itemsService = itemsService;
             this.mapper = mapper;
+            this.httpContextAccessor = httpContextAccessor;
+            this.merchantsService = merchantsService;
         }
 
         [HttpGet]
@@ -70,6 +76,11 @@ namespace MerchantProfileApi.Controllers
         public async Task<ActionResult<OperationResponse>> CreateItem([FromBody] ItemRequest model)
         {
             var newItem = mapper.Map<Item>(model);
+
+            newItem.MerchantID = User.GetMerchantID().GetValueOrDefault();
+
+            newItem.ApplyAuditInfo(httpContextAccessor);
+
             await itemsService.CreateEntity(newItem);
 
             return CreatedAtAction(nameof(GetItem), new { itemID = newItem.ItemID }, new OperationResponse(Messages.ItemCreated, StatusEnum.Success, newItem.ItemID.ToString()));
@@ -83,6 +94,8 @@ namespace MerchantProfileApi.Controllers
 
             mapper.Map(model, item);
 
+            item.ApplyAuditInfo(httpContextAccessor);
+
             await itemsService.UpdateEntity(item);
 
             return Ok(new OperationResponse(Messages.ItemUpdated, StatusEnum.Success, itemID.ToString()));
@@ -95,6 +108,8 @@ namespace MerchantProfileApi.Controllers
             var item = EnsureExists(await itemsService.GetItems().FirstOrDefaultAsync(m => m.ItemID == itemID));
 
             item.Active = false;
+
+            item.ApplyAuditInfo(httpContextAccessor);
 
             await itemsService.UpdateEntity(item);
 
