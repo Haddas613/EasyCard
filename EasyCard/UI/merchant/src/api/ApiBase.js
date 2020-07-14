@@ -2,6 +2,7 @@ import Vue from 'vue'
 import TransactionsApi from './modules/TransactionsApi';
 import DictionariesApi from './modules/DictionariesApi';
 import TerminalsApi from './modules/profile/TerminalsApi';
+import ConsumersApi from './modules/profile/ConsumersApi';
 import i18n from '../i18n'
 
 
@@ -11,6 +12,8 @@ class ApiBase {
         this.transactions = new TransactionsApi(this);
         this.dictionaries = new DictionariesApi(this);
         this.terminals = new TerminalsApi(this);
+        this.consumers = new ConsumersApi(this);
+        
         this.toastedOpts = {
             iconPack: 'mdi',
             //duration: 5000,

@@ -10,7 +10,6 @@
         prepend-icon="mdi-magnify"
         v-model="search"
         clearable
-        @keydown.native.space.prevent
       ></v-text-field>
     </div>
     <template v-if="showPreviouslyCharged && (!search || search.length < 2)">
@@ -25,13 +24,13 @@
           @click="selectCustomer(customer)"
         >
           <v-list-item-avatar>
-            <avatar :username="customer.fullName" :rounded="true"></avatar>
+            <avatar :username="customer.consumerName" :rounded="true"></avatar>
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title v-text="customer.fullName"></v-list-item-title>
+            <v-list-item-title v-text="customer.consumerName"></v-list-item-title>
             <v-list-item-subtitle
               class="caption"
-              v-text="customer.email + ' ● ' + customer.phoneNumber"
+              v-text="customer.consumerEmail + (customer.consumerPhoneNumber ? ' ● ' + customer.consumerPhoneNumber : '')"
             ></v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -46,13 +45,13 @@
           @click="selectCustomer(customer)"
         >
           <v-list-item-avatar>
-            <avatar :username="customer.fullName" :rounded="true"></avatar>
+            <avatar :username="customer.consumerName" :rounded="true"></avatar>
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title v-text="customer.fullName"></v-list-item-title>
+            <v-list-item-title v-text="customer.consumerName"></v-list-item-title>
             <v-list-item-subtitle
               class="caption"
-              v-text="customer.email + ' ● ' + customer.phoneNumber"
+              v-text="customer.consumerEmail + (customer.consumerPhoneNumber ? ' ● ' + customer.consumerPhoneNumber : '')"
             ></v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -78,74 +77,13 @@ export default {
       search: null,
       customers: [],
       previouslyCharged: [],
-      groupedCustomers: {}
+      groupedCustomers: {},
+      showGrouped: false,
+      searchTimeout: null
     };
   },
   async mounted() {
-    //TODO: real data
-    let data = [
-      {
-        fullName: "John Doe",
-        customerId: "test1",
-        email: "john@mail.com",
-        phoneNumber: "0547876543",
-        lastActivity: new Date("2020-06-15")
-      },
-      {
-        fullName: "Mitch Bar",
-        customerId: "test2",
-        email: "mike@mail.com",
-        phoneNumber: "0547876544",
-        lastActivity: new Date("2020-06-12")
-      },
-      {
-        fullName: "Mirth Monst",
-        customerId: "test22",
-        email: "mirte@mail.com",
-        phoneNumber: "0547876514",
-        lastActivity: new Date("2020-06-12")
-      },
-      {
-        fullName: "Brendan Fry",
-        customerId: "test31",
-        email: "bred@mail.com",
-        phoneNumber: "0547876545",
-        lastActivity: new Date("2020-06-14")
-      },
-      {
-        fullName: "Bartholomew Beggins",
-        customerId: "test54",
-        email: "bart@mail.com",
-        phoneNumber: "0547876345",
-        lastActivity: new Date("2020-04-11")
-      },
-      {
-        fullName: "Amy Doe",
-        customerId: "test4",
-        email: "amy@mail.com",
-        phoneNumber: "0547876546",
-        lastActivity: new Date("2020-06-11")
-      },
-      {
-        fullName: "Liana Erzt",
-        customerId: "test5",
-        email: "lerzt@mail.com",
-        phoneNumber: "0547876547",
-        lastActivity: new Date("2020-04-15")
-      },
-      {
-        fullName: "Antony Dire",
-        customerId: "test434",
-        email: "andi@mail.com",
-        phoneNumber: "0547846546",
-        lastActivity: new Date("2020-06-11")
-      }
-    ];
-    this.groupCustomersAlphabetically(data.concat(), "fullName");
-    this.previouslyCharged = this.sort(data.concat(), "lastActivity").slice(
-      0,
-      5
-    );
+    await this.getCustomers(false);
   },
   methods: {
     selectCustomer(customer) {
@@ -158,19 +96,45 @@ export default {
         return 0;
       });
     },
-    //TODO: helpers?, infinite scroll
+    //TODO: helpers?
     groupCustomersAlphabetically(arr) {
-      arr = this.sort(arr, "fullName");
+      this.groupedCustomers = {};
+      arr = this.sort(arr, "consumerName");
       for (var i = 0; i < arr.length; i++) {
-        var c = arr[i].fullName[0].toUpperCase();
+        var c = arr[i].consumerName[0].toUpperCase();
         if (this.groupedCustomers[c] && this.groupedCustomers[c].length >= 0) this.groupedCustomers[c].push(arr[i]);
         else {
           this.groupedCustomers[c] = [];
           this.groupedCustomers[c].push(arr[i]);
         }
       }
+    },
+    async getCustomers(search){
+      let customers = await this.$api.consumers.getConsumers();
+      this.customers = customers.data;
+
+      /**Only show alphabetically grouped customers if total count is <= 100 */
+      if(!search && customers.numberOfRecords <= 100){
+        this.showGrouped = true;
+        this.groupCustomersAlphabetically(customers.data);
+      }else{
+        this.showGrouped = false;
+      }
     }
-  }
+  },
+  watch: {
+    async search(newValue, oldValue) {
+      if(this.searchTimeout)
+          clearTimeout(this.searchTimeout);
+
+      if(!newValue || newValue.trim().length < 3){
+        return;
+      }
+      this.searchTimeout = setTimeout((async () => {
+        await this.getCustomers(true);
+      }).bind(this), 1000);
+    }
+  },
 };
 </script>
 
