@@ -89,9 +89,9 @@ export default {
           dealDescription: null
         },
         installmentDetails: {
-          numberOfPayments: null,
-          initialPaymentAmount: null,
-          installmentPaymentAmount: null
+          numberOfPayments: 0,
+          initialPaymentAmount: 0,
+          installmentPaymentAmount: 0
         }
       },
       step: 1,

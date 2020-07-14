@@ -74,6 +74,7 @@ export default {
         !this.model.installmentPaymentAmount
       )
         return null;
+        
       this.model.totalAmount = (this.model.initialPaymentAmount + (this.model.numberOfPayments - 1) * this.model.installmentPaymentAmount);
       
       return this.model.totalAmount;
