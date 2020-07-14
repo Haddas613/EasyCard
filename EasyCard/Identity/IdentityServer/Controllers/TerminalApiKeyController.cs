@@ -11,7 +11,6 @@ using IdentityServer.Data.Entities;
 using IdentityServer.Helpers;
 using IdentityServer.Messages;
 using IdentityServer.Models;
-using IdentityServer.Models.TerminalApiKey;
 using IdentityServer.Services;
 using IdentityServer4.Models;
 using IdentityServerClient;
@@ -55,21 +54,18 @@ namespace IdentityServer.Controllers
             this.cryptoServiceCompact = cryptoServiceCompact;
         }
 
-        [HttpGet]
-        [Route("{terminalID}")]
-        public async Task<ActionResult<OperationResponse>> Get([FromRoute] Guid terminalID)
-        {
-            //TODO: check user access
-            var key = EnsureExists(await terminalApiKeyService.GetAuthKeys().Where(k => k.TerminalID == terminalID).Select(k => k.AuthKey).FirstOrDefaultAsync(), "Key");
-
-            return Ok(new OperationResponse("ok", Shared.Api.Models.Enums.StatusEnum.Success, key));
-        }
-
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> Create([FromBody]CreateTerminalApiKeyRequest model)
         {
-            var user = new ApplicationUser { UserName = $"terminal_{model.TerminalID}" };
+            var user = await userManager.FindByNameAsync($"terminal_{model.TerminalID}");
+
+            if (user != null)
+            {
+                await userManager.DeleteAsync(user); // TODO: check success
+            }
+
+            user = new ApplicationUser { UserName = $"terminal_{model.TerminalID}" };
             var result = await userManager.CreateAsync(user);
 
             if (!result.Succeeded)
@@ -80,54 +76,9 @@ namespace IdentityServer.Controllers
             var allClaims = await userManager.GetClaimsAsync(user);
 
             await userManager.AddClaim(allClaims, user, Claims.TerminalIDClaim, model.TerminalID.ToString());
-
-            //var str = user.Id.Sha256();
-
-            //var newApiKey = new TerminalApiAuthKey
-            //{
-            //    AuthKey = cryptoService.EncryptCompact(user.Id), //TODO: encrypt actual data
-            //    TerminalID = model.TerminalID,
-            //    Created = DateTime.UtcNow
-            //};
-
-            //await terminalApiKeyService.CreateEntity(newApiKey);
+            await userManager.AddClaim(allClaims, user, Claims.MerchantIDClaim, model.MerchantID.ToString());
 
             return Ok(new OperationResponse(ApiMessages.TerminalApiKeyCreated, Shared.Api.Models.Enums.StatusEnum.Success, cryptoServiceCompact.EncryptCompact(user.Id)));
-        }
-
-        [HttpPut]
-        [Route("{terminalID}/reset")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<OperationResponse>> Reset([FromRoute] Guid terminalID)
-        {
-            var user = await userManager.FindByNameAsync($"terminal_{terminalID}");
-
-            if (user == null)
-            {
-                return NotFound("Terminal Api Key does not exist"); // TODO: log details
-            }
-
-            await userManager.DeleteAsync(user); // TODO: check success
-
-            var result = await userManager.CreateAsync(user);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest("Failed to create terminal Api Key"); // TODO: log details
-            }
-
-            var allClaims = await userManager.GetClaimsAsync(user);
-
-            await userManager.AddClaim(allClaims, user, Claims.TerminalIDClaim, terminalID.ToString());
-
-            //var key = EnsureExists(await terminalApiKeyService.GetAuthKeys().Where(k => k.TerminalID == terminalID).FirstOrDefaultAsync(), "Key");
-
-            ////TODO: encrypt actual data
-            //key.AuthKey = cryptoService.EncryptCompact(Guid.NewGuid().ToString());
-
-            //await terminalApiKeyService.UpdateEntity(key);
-
-            return Ok(new OperationResponse(ApiMessages.TerminalApiKeyReseted, Shared.Api.Models.Enums.StatusEnum.Success, cryptoServiceCompact.EncryptCompact(user.Id)));
         }
 
         // admin only
@@ -135,10 +86,6 @@ namespace IdentityServer.Controllers
         [Route("{terminalID}")]
         public async Task<ActionResult<OperationResponse>> Delete([FromRoute] Guid terminalID)
         {
-            //var key = EnsureExists(await terminalApiKeyService.GetAuthKeys().Where(k => k.TerminalID == terminalID).FirstOrDefaultAsync(), "Key");
-
-            //await terminalApiKeyService.Delete(key.TerminalApiAuthKeyID);
-
             var user = await userManager.FindByNameAsync($"terminal_{terminalID}");
 
             if (user == null)

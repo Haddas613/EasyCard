@@ -9,8 +9,10 @@
     [Email]                 NVARCHAR (50)    NULL,
     [Roles]                 VARCHAR (MAX)    NULL,
     CONSTRAINT [PK_UserTerminalMapping] PRIMARY KEY CLUSTERED ([UserTerminalMappingID] ASC),
-    CONSTRAINT [FK_UserTerminalMapping_Terminal_TerminalID] FOREIGN KEY ([TerminalID]) REFERENCES [dbo].[Terminal] ([TerminalID]) ON DELETE CASCADE
+    CONSTRAINT [FK_UserTerminalMapping_Terminal_TerminalID] FOREIGN KEY ([TerminalID]) REFERENCES [dbo].[Terminal] ([TerminalID])
 );
+
+
 
 
 

@@ -31,9 +31,24 @@
             <param name="filter"></param>
             <returns></returns>
         </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenFilter.ConsumerEmail">
+            <summary>
+            End-customer Email
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Tokens.CreditCardTokenKeyVault">
             <summary>
             Entity to store in KeyVault
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenSummary.ConsumerID">
+            <summary>
+            Consumer ID
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenSummary.ConsumerEmail">
+            <summary>
+            End-customer Email
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Tokens.TokenRequest">
@@ -44,6 +59,16 @@
         <member name="P:Transactions.Api.Models.Tokens.TokenRequest.TerminalID">
             <summary>
             EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.TokenRequest.ConsumerID">
+            <summary>
+            Consumer ID
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.TokenRequest.ConsumerEmail">
+            <summary>
+            End-customer Email
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.BlockCreditCardRequest">

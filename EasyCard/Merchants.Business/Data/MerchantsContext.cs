@@ -1,4 +1,5 @@
-﻿using Merchants.Business.Entities.Merchant;
+﻿using Merchants.Business.Entities.Billing;
+using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Entities.User;
 using Microsoft.AspNetCore.Http;
@@ -45,6 +46,10 @@ namespace Merchants.Business.Data
 
         public DbSet<MerchantHistory> MerchantHistories { get; set; }
 
+        public DbSet<Item> Items { get; set; }
+
+        public DbSet<Consumer> Consumers { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         public MerchantsContext(DbContextOptions<MerchantsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
@@ -62,6 +67,9 @@ namespace Merchants.Business.Data
             modelBuilder.ApplyConfiguration(new UserTerminalMappingConfiguration());
             modelBuilder.ApplyConfiguration(new MerchantHistoryConfiguration());
 
+            modelBuilder.ApplyConfiguration(new ItemConfiguration());
+            modelBuilder.ApplyConfiguration(new ConsumerConfiguration());
+
             // security filters
 
             modelBuilder.Entity<Merchant>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
@@ -73,6 +81,19 @@ namespace Merchants.Business.Data
             modelBuilder.Entity<TerminalExternalSystem>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.Terminal.MerchantID == user.GetMerchantID()));
 
             modelBuilder.Entity<UserTerminalMapping>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.Terminal.MerchantID == user.GetMerchantID()));
+
+            modelBuilder.Entity<Item>().HasQueryFilter(p => this.user.IsAdmin() || p.Merchant.MerchantID == this.user.GetMerchantID());
+
+            modelBuilder.Entity<Consumer>().HasQueryFilter(p => this.user.IsAdmin() || p.Merchant.MerchantID == this.user.GetMerchantID());
+
+            var cascadeFKs = modelBuilder.Model.GetEntityTypes()
+                .SelectMany(t => t.GetForeignKeys())
+                .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);
+
+            foreach (var fk in cascadeFKs)
+            {
+                fk.DeleteBehavior = DeleteBehavior.Restrict;
+            }
 
             base.OnModelCreating(modelBuilder);
         }
@@ -91,7 +112,7 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.BusinessName).IsRequired(true).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.MarketingName).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.ContactPerson).IsRequired(false).HasMaxLength(50).IsUnicode(true);
-                builder.Property(b => b.Users).IsRequired(false).IsUnicode(false);
+                //builder.Property(b => b.Users).IsRequired(false).IsUnicode(false);
             }
         }
 
@@ -212,6 +233,59 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.ReasonForChange).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+            }
+        }
+
+        internal class ItemConfiguration : IEntityTypeConfiguration<Item>
+        {
+            public void Configure(EntityTypeBuilder<Item> builder)
+            {
+                builder.ToTable("Item");
+
+                builder.HasKey(b => b.ItemID);
+                builder.Property(b => b.ItemID).ValueGeneratedNever();
+
+                builder.Property(p => p.UpdateTimestamp).IsRowVersion();
+
+                builder.Property(b => b.ItemName).IsRequired(true).HasMaxLength(50).IsUnicode(true);
+                builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.Price).HasColumnType("decimal(19,4)").IsRequired();
+            }
+        }
+
+        internal class ConsumerConfiguration : IEntityTypeConfiguration<Consumer>
+        {
+            public void Configure(EntityTypeBuilder<Consumer> builder)
+            {
+                builder.ToTable("Consumer");
+
+                builder.HasKey(b => b.ConsumerID);
+                builder.Property(b => b.ConsumerID).ValueGeneratedNever();
+
+                builder.Property(p => p.UpdateTimestamp).IsRowVersion();
+
+                builder.Property(b => b.ConsumerName).IsRequired(true).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.ConsumerEmail).IsRequired(true).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.ConsumerPhone).IsRequired(true).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.ConsumerAddress).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
             }
         }
     }

@@ -71,6 +71,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\TerminalApiKey\" />
+  </ItemGroup>
+
 
 
 </Project>

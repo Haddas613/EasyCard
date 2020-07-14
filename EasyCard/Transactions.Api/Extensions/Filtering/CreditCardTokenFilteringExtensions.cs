@@ -18,6 +18,21 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => EF.Functions.Like(t.CardNumber, filter.CardNumber.UseWildCard(true)));
             }
 
+            if (!string.IsNullOrWhiteSpace(filter.ConsumerEmail))
+            {
+                src = src.Where(t => EF.Functions.Like(t.ConsumerEmail, filter.ConsumerEmail.UseWildCard(true)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.CardOwnerName))
+            {
+                src = src.Where(t => EF.Functions.Like(t.CardOwnerName, filter.CardOwnerName.UseWildCard(true)));
+            }
+
+            if (filter.ConsumerID != null)
+            {
+                src = src.Where(t => t.ConsumerID == filter.ConsumerID);
+            }
+
             if (!string.IsNullOrWhiteSpace(filter.CardOwnerNationalID))
             {
                 src = src.Where(t => EF.Functions.Like(t.CardOwnerNationalID, filter.CardOwnerNationalID.UseWildCard(true)));

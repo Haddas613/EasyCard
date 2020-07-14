@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Terminal] (
     [TerminalID]                                UNIQUEIDENTIFIER NOT NULL,
-    [MerchantID]                                UNIQUEIDENTIFIER NULL,
+    [MerchantID]                                UNIQUEIDENTIFIER NOT NULL,
     [Label]                                     NVARCHAR (50)    NOT NULL,
     [UpdateTimestamp]                           ROWVERSION       NULL,
     [Status]                                    INT              NOT NULL,
@@ -21,6 +21,8 @@
     CONSTRAINT [PK_Terminal] PRIMARY KEY CLUSTERED ([TerminalID] ASC),
     CONSTRAINT [FK_Terminal_Merchant_MerchantID] FOREIGN KEY ([MerchantID]) REFERENCES [dbo].[Merchant] ([MerchantID])
 );
+
+
 
 
 

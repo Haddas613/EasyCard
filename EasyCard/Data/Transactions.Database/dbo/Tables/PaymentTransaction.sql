@@ -49,8 +49,12 @@
     [Solek]                          SMALLINT         NULL,
     [FinalizationStatus]             SMALLINT         NULL,
     [RejectionMessage]               NVARCHAR (MAX)   NULL,
+    [ConsumerID]                     UNIQUEIDENTIFIER NULL,
+    [Items]                          NVARCHAR (MAX)   NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

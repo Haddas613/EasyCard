@@ -11,6 +11,7 @@ namespace Transactions.Business.Entities
         /// </summary>
         public string ShvaDealID { get; set; }
 
+        // TODO: encrypt
         public string AuthNum { get; set; }
 
         public string AuthSolekNum { get; set; }
