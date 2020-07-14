@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using IdentityServerClient;
 using MerchantProfileApi.Extensions;
 using MerchantProfileApi.Models.Terminal;
 using Merchants.Business.Services;
@@ -26,12 +27,14 @@ namespace MerchantProfileApi.Controllers
         private readonly ITerminalsService terminalsService;
         private readonly IMerchantsService merchantsService;
         private readonly IMapper mapper;
+        private readonly IUserManagementClient userManagementClient;
 
-        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper)
+        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper, IUserManagementClient userManagementClient)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
+            this.userManagementClient = userManagementClient;
         }
 
         [HttpGet]
@@ -57,9 +60,15 @@ namespace MerchantProfileApi.Controllers
         }
 
         [HttpPost]
+        [Route("{terminalID}/resetApiKey")]
         public async Task<ActionResult<OperationResponse>> CreateTerminalApiKey([FromRoute] Guid terminalID)
         {
-            throw new NotImplementedException();
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+
+            var opResult = await userManagementClient.CreateTerminalApiKey(new CreateTerminalApiKeyRequest { TerminalID = terminal.TerminalID, MerchantID = terminal.MerchantID });
+
+            // TODO: failed case
+            return Ok(new OperationResponse { EntityReference = opResult.ApiKey });
         }
     }
 }

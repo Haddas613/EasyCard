@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using IdentityServerClient;
 using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.Terminal;
 using Merchants.Api.Models.User;
@@ -33,13 +34,15 @@ namespace Merchants.Api.Controllers
         private readonly ITerminalsService terminalsService;
         private readonly IMapper mapper;
         private readonly IExternalSystemsService externalSystemsService;
+        private readonly IUserManagementClient userManagementClient;
 
-        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper, IExternalSystemsService externalSystemsService)
+        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper, IExternalSystemsService externalSystemsService, IUserManagementClient userManagementClient)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
             this.externalSystemsService = externalSystemsService;
+            this.userManagementClient = userManagementClient;
         }
 
         [HttpGet]
@@ -161,6 +164,18 @@ namespace Merchants.Api.Controllers
             await terminalsService.RemoveTerminalExternalSystem(terminalID, externalSystemID);
 
             return Ok(new OperationResponse(Messages.ExternalSystemRemoved, StatusEnum.Success, terminalID.ToString()));
+        }
+
+        [HttpPost]
+        [Route("{terminalID}/resetApiKey")]
+        public async Task<ActionResult<OperationResponse>> CreateTerminalApiKey([FromRoute] Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+
+            var opResult = await userManagementClient.CreateTerminalApiKey(new CreateTerminalApiKeyRequest { TerminalID = terminal.TerminalID, MerchantID = terminal.MerchantID });
+
+            // TODO: failed case
+            return Ok(new OperationResponse { EntityReference = opResult.ApiKey });
         }
     }
 }

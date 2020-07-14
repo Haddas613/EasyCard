@@ -270,6 +270,8 @@ namespace Transactions.Api.Controllers
             TransactionTerminalSettingsValidator.Validate(terminal.Settings, model, token, jDealType, specialTransactionType, initialDealID);
 
             var transaction = mapper.Map<PaymentTransaction>(model);
+
+            // NOTE: this is security assignment
             mapper.Map(terminal, transaction);
 
             transaction.SpecialTransactionType = specialTransactionType;

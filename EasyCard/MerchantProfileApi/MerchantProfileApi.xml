@@ -4,6 +4,47 @@
         <name>MerchantProfileApi</name>
     </assembly>
     <members>
+        <member name="T:MerchantProfileApi.Controllers.ConsumersApiController">
+            <summary>
+            End-customers reference
+            </summary>
+        </member>
+        <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.GetConsumers(MerchantProfileApi.Models.Billing.ConsumersFilter)">
+            <summary>
+            End-customers list
+            </summary>
+            <param name="filter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.GetConsumer(System.Guid)">
+            <summary>
+            End-customer details
+            </summary>
+            <param name="consumerID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.CreateConsumer(MerchantProfileApi.Models.Billing.ConsumerRequest)">
+            <summary>
+            Create end-customer record
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.UpdateConsumer(System.Guid,MerchantProfileApi.Models.Billing.UpdateConsumerRequest)">
+            <summary>
+            Update end-customer details
+            </summary>
+            <param name="consumerID"></param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.DeleteConsumer(System.Guid)">
+            <summary>
+            Delete end-customer record
+            </summary>
+            <param name="consumerID"></param>
+            <returns></returns>
+        </member>
         <member name="T:MerchantProfileApi.Messages">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -48,6 +89,86 @@
         <member name="P:MerchantProfileApi.Messages.ItemUpdated">
             <summary>
               Looks up a localized string similar to Item Updated.
+            </summary>
+        </member>
+        <member name="T:MerchantProfileApi.Models.Billing.ConsumerRequest">
+            <summary>
+            Create consumer
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.TerminalID">
+            <summary>
+            Target terminal
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ConsumerEmail">
+            <summary>
+            End-customer Email
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ConsumerName">
+            <summary>
+            End-customer name
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ConsumerPhone">
+            <summary>
+            End-customer Phone
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ConsumerAddress">
+            <summary>
+            End-customer address
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerResponse.ConsumerEmail">
+            <summary>
+            End-customer Email
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerResponse.ConsumerPhone">
+            <summary>
+            End-customer Phone
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerSummary.ConsumerEmail">
+            <summary>
+            End-customer Email
+            </summary>
+        </member>
+        <member name="T:MerchantProfileApi.Models.Billing.UpdateConsumerRequest">
+            <summary>
+            Update end-customer info
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ConsumerID">
+            <summary>
+             Target record ID
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ConsumerEmail">
+            <summary>
+            End-customer Email
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ConsumerName">
+            <summary>
+            End-customer name
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ConsumerPhone">
+            <summary>
+            End-customer Phone
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ConsumerAddress">
+            <summary>
+            End-customer address
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.UpdateTimestamp">
+            <summary>
+            Concurrency check
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Models.Terminal.ExternalSystemRequest.ExternalProcessorReference">

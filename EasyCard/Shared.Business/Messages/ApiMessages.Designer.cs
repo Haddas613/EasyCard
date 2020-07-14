@@ -79,6 +79,15 @@ namespace Shared.Business.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Record changed since last read.
+        /// </summary>
+        public static string RecordChangedSinceLastRead {
+            get {
+                return ResourceManager.GetString("RecordChangedSinceLastRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Validation errors.
         /// </summary>
         public static string ValidationErrors {

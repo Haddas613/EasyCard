@@ -23,8 +23,8 @@ namespace IdentityServerClient
 
         Task<UserOperationResponse> UnLockUser(Guid userId);
 
-        Task<UserOperationResponse> CreateTerminalApiKey(CreateTerminalApiKeyRequest model);
+        Task<ApiKeyOperationResponse> CreateTerminalApiKey(CreateTerminalApiKeyRequest model);
 
-        Task<UserOperationResponse> DeleteTerminalApiKey(Guid terminalID);
+        Task<ApiKeyOperationResponse> DeleteTerminalApiKey(Guid terminalID);
     }
 }

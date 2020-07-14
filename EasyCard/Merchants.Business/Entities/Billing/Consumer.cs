@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Merchants.Business.Entities.Billing
 {
-    public class Consumer : IAuditEntity, IEntityBase<Guid>
+    public class Consumer : IAuditEntity, IEntityBase<Guid>, IConcurrencyCheck
     {
         public Consumer()
         {
@@ -19,7 +19,7 @@ namespace Merchants.Business.Entities.Billing
 
         public Guid MerchantID { get; set; }
 
-        public Merchant.Merchant Merchant { get; set; }
+        public Guid TerminalID { get; set; }
 
         public bool Active { get; set; }
 

@@ -56,7 +56,7 @@ namespace IdentityServer.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<OperationResponse>> Create([FromBody]CreateTerminalApiKeyRequest model)
+        public async Task<ActionResult<ApiKeyOperationResponse>> Create([FromBody]CreateTerminalApiKeyRequest model)
         {
             var user = await userManager.FindByNameAsync($"terminal_{model.TerminalID}");
 
@@ -78,13 +78,13 @@ namespace IdentityServer.Controllers
             await userManager.AddClaim(allClaims, user, Claims.TerminalIDClaim, model.TerminalID.ToString());
             await userManager.AddClaim(allClaims, user, Claims.MerchantIDClaim, model.MerchantID.ToString());
 
-            return Ok(new OperationResponse(ApiMessages.TerminalApiKeyCreated, Shared.Api.Models.Enums.StatusEnum.Success, cryptoServiceCompact.EncryptCompact(user.Id)));
+            return Ok(new ApiKeyOperationResponse { ApiKey = cryptoServiceCompact.EncryptCompact(user.Id) });
         }
 
         // admin only
         [HttpDelete]
         [Route("{terminalID}")]
-        public async Task<ActionResult<OperationResponse>> Delete([FromRoute] Guid terminalID)
+        public async Task<ActionResult<ApiKeyOperationResponse>> Delete([FromRoute] Guid terminalID)
         {
             var user = await userManager.FindByNameAsync($"terminal_{terminalID}");
 
@@ -95,7 +95,7 @@ namespace IdentityServer.Controllers
 
             await userManager.DeleteAsync(user); // TODO: check success
 
-            return Ok(new OperationResponse(ApiMessages.TerminalApiKeyRemoved, Shared.Api.Models.Enums.StatusEnum.Success));
+            return Ok(new ApiKeyOperationResponse());
         }
     }
 }

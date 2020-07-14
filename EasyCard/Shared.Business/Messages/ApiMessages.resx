@@ -123,6 +123,9 @@
   <data name="EntityNotFound" xml:space="preserve">
     <value>Entity not found</value>
   </data>
+  <data name="RecordChangedSinceLastRead" xml:space="preserve">
+    <value>Record changed since last read</value>
+  </data>
   <data name="ValidationErrors" xml:space="preserve">
     <value>Validation errors</value>
   </data>

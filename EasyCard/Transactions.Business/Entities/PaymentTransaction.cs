@@ -49,12 +49,12 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Terminal
         /// </summary>
-        public Guid? TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
 
         /// <summary>
         /// Merchant
         /// </summary>
-        public Guid? MerchantID { get; set; }
+        public Guid MerchantID { get; set; }
 
         /// <summary>
         /// Shva or other processor

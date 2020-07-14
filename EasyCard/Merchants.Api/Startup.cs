@@ -95,7 +95,7 @@ namespace Merchants.Api
                     options.EnableCaching = true;
                 });
 
-            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
+            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true; // TODO: remove for production
 
             services.AddAuthorization(options =>
             {

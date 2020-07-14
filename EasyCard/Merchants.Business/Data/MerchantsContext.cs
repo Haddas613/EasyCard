@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Debug;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Shared.Business.Security;
@@ -21,6 +23,11 @@ namespace Merchants.Business.Data
 {
     public class MerchantsContext : DbContext
     {
+        public static readonly LoggerFactory DbCommandConsoleLoggerFactory
+          = new LoggerFactory(new[] {
+                      new DebugLoggerProvider ()
+            });
+
         private static readonly ValueConverter SettingsJObjectConverter = new ValueConverter<JObject, string>(
            v => v.ToString(Formatting.None),
            v => JObject.Parse(v));
@@ -58,6 +65,11 @@ namespace Merchants.Business.Data
             this.user = httpContextAccessor.GetUser();
         }
 
+        // NOTE: use this for debugging purposes to analyse sql query performance
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder
+                .UseLoggerFactory(DbCommandConsoleLoggerFactory);
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new MerchantConfiguration());
@@ -84,7 +96,7 @@ namespace Merchants.Business.Data
 
             modelBuilder.Entity<Item>().HasQueryFilter(p => this.user.IsAdmin() || p.Merchant.MerchantID == this.user.GetMerchantID());
 
-            modelBuilder.Entity<Consumer>().HasQueryFilter(p => this.user.IsAdmin() || p.Merchant.MerchantID == this.user.GetMerchantID());
+            modelBuilder.Entity<Consumer>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
 
             var cascadeFKs = modelBuilder.Model.GetEntityTypes()
                 .SelectMany(t => t.GetForeignKeys())

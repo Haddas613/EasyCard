@@ -34,6 +34,7 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))
                 .ForMember(d => d.CardBin, o => o.MapFrom(d => CreditCardHelpers.GetCardBin(d.CardNumber)));
 
+            // NOTE: this is security assignment
             CreateMap<Merchants.Business.Entities.Terminal.Terminal, PaymentTransaction>()
                 .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
                 .ForMember(d => d.MerchantID, o => o.MapFrom(d => d.MerchantID));

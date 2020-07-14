@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using Shared.Business.Messages;
 using System.Security;
+using Shared.Business;
+using Shared.Business.Exceptions;
 
 namespace Shared.Api
 {
@@ -14,29 +16,41 @@ namespace Shared.Api
         {
             if (src == null)
             {
-                throw new Business.Exceptions.EntityNotFoundException(ApiMessages.EntityNotFound, entityName ?? typeof(T).Name, null);
+                throw new EntityNotFoundException(ApiMessages.EntityNotFound, entityName ?? typeof(T).Name, null);
             }
 
             return src;
         }
 
-        //[NonAction]
-        //protected T SecureExists<T>(T src)
-        //{
-        //    if (src == null)
-        //    {
-        //        throw new SecurityException(ApiMessages.YouHaveNoAccess);
-        //    }
+        protected T EnsureConcurrency<T, TModel>(T src, TModel model)
+            where T : IConcurrencyCheck
+            where TModel : IConcurrencyCheck
+        {
+            if (Convert.ToBase64String(src.UpdateTimestamp) != Convert.ToBase64String(model.UpdateTimestamp))
+            {
+                throw new EntityConflictException(ApiMessages.RecordChangedSinceLastRead, typeof(T).Name);
+            }
 
-        //    return src;
-        //}
+            return src;
+        }
+
+        protected T EnsureConcurrency<T>(T src, byte[] modelTimestamp)
+            where T : IConcurrencyCheck
+        {
+            if (Convert.ToBase64String(src.UpdateTimestamp) != Convert.ToBase64String(modelTimestamp))
+            {
+                throw new EntityConflictException(ApiMessages.RecordChangedSinceLastRead, typeof(T).Name);
+            }
+
+            return src;
+        }
 
         [NonAction]
         protected T ValidateExists<T>(T src, string message)
         {
             if (src == null)
             {
-                throw new Business.Exceptions.BusinessException(message);
+                throw new BusinessException(message);
             }
 
             return src;

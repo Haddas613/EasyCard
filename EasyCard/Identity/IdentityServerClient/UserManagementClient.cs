@@ -99,24 +99,24 @@ namespace IdentityServerClient
             }
         }
 
-        public async Task<UserOperationResponse> CreateTerminalApiKey(CreateTerminalApiKeyRequest model)
+        public async Task<ApiKeyOperationResponse> CreateTerminalApiKey(CreateTerminalApiKeyRequest model)
         {
             try
             {
-                return await webApiClient.Post<UserOperationResponse>(configuration.Authority, $"api/terminalapikeys", model, BuildHeaders);
+                return await webApiClient.Post<ApiKeyOperationResponse>(configuration.Authority, $"api/terminalapikeys", model, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
                 logger.LogError(clientError.Message);
-                return clientError.TryConvert(new UserOperationResponse { Message = clientError.Message });
+                return clientError.TryConvert(new ApiKeyOperationResponse { Message = clientError.Message });
             }
         }
 
-        public async Task<UserOperationResponse> DeleteTerminalApiKey(Guid terminalID)
+        public async Task<ApiKeyOperationResponse> DeleteTerminalApiKey(Guid terminalID)
         {
             try
             {
-                return await webApiClient.Delete<UserOperationResponse>(configuration.Authority, $"api/terminalapikeys/{terminalID}", BuildHeaders);
+                return await webApiClient.Delete<ApiKeyOperationResponse>(configuration.Authority, $"api/terminalapikeys/{terminalID}", BuildHeaders);
             }
             catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -126,7 +126,7 @@ namespace IdentityServerClient
             catch (WebApiClientErrorException clientError)
             {
                 logger.LogError(clientError.Message);
-                return clientError.TryConvert(new UserOperationResponse { Message = clientError.Message });
+                return clientError.TryConvert(new ApiKeyOperationResponse { Message = clientError.Message });
             }
         }
 
