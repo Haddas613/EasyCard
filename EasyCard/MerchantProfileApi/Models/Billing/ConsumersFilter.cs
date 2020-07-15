@@ -8,5 +8,6 @@ namespace MerchantProfileApi.Models.Billing
 {
     public class ConsumersFilter : FilterBase
     {
+        public string Search { get; set; }
     }
 }

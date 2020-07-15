@@ -10,54 +10,74 @@
         prepend-icon="mdi-magnify"
         v-model="search"
         clearable
-        @keydown.native.space.prevent
       ></v-text-field>
     </div>
     <template v-if="showPreviouslyCharged && (!search || search.length < 2)">
-      <p
-        class="pt-4 pb-0 px-4 body-2 font-weight-medium text-uppercase"
-        v-if="previouslyCharged"
-      >{{$t('PreviouslyCharged')}}</p>
+      <p class="pt-4 pb-0 px-4 body-2 font-weight-medium text-uppercase">{{$t('PreviouslyCharged')}}</p>
       <v-list two-line subheader class="py-0 fill-height">
         <v-list-item
           v-for="customer in previouslyCharged"
-          :key="customer.customerId"
+          :key="customer.consumerID"
           @click="selectCustomer(customer)"
         >
           <v-list-item-avatar>
-            <avatar :username="customer.fullName" :rounded="true"></avatar>
+            <avatar :username="customer.consumerName" :rounded="true"></avatar>
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title v-text="customer.fullName"></v-list-item-title>
+            <v-list-item-title v-text="customer.consumerName"></v-list-item-title>
             <v-list-item-subtitle
               class="caption"
-              v-text="customer.email + ' ● ' + customer.phoneNumber"
+              v-text="customer.consumerEmail + (customer.consumerPhoneNumber ? ' ● ' + customer.consumerPhoneNumber : '')"
             ></v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list>
     </template>
-    <div v-for="(value, key) in groupedCustomers" :key="key">
-      <p class="pt-4 pb-0 px-4 body-2 font-weight-medium text-uppercase">{{key}}</p>
+    <template v-if="customers.length > 0 && showGrouped">
+      <div v-for="(value, key) in groupedCustomers" :key="key">
+        <p class="pt-4 pb-0 px-4 body-2 font-weight-medium text-uppercase">{{key}}</p>
+        <v-list two-line subheader class="py-0 fill-height">
+          <v-list-item
+            v-for="customer in value"
+            :key="customer.consumerID"
+            @click="selectCustomer(customer)"
+          >
+            <v-list-item-avatar>
+              <avatar :username="customer.consumerName" :rounded="true"></avatar>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title v-text="customer.consumerName"></v-list-item-title>
+              <v-list-item-subtitle
+                class="caption"
+                v-text="customer.consumerEmail + (customer.consumerPhoneNumber ? ' ● ' + customer.consumerPhoneNumber : '')"
+              ></v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </div>
+    </template>
+    <template v-if="customers.length > 0 &&  !showGrouped">
+      <p class="pt-4 pb-0 px-4 body-2 font-weight-medium text-uppercase">{{$t('AllCustomers')}}</p>
       <v-list two-line subheader class="py-0 fill-height">
         <v-list-item
-          v-for="customer in value"
-          :key="customer.customerId"
+          v-for="customer in customers"
+          :key="customer.consumerID"
           @click="selectCustomer(customer)"
         >
           <v-list-item-avatar>
-            <avatar :username="customer.fullName" :rounded="true"></avatar>
+            <avatar :username="customer.consumerName" :rounded="true"></avatar>
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title v-text="customer.fullName"></v-list-item-title>
+            <v-list-item-title v-text="customer.consumerName"></v-list-item-title>
             <v-list-item-subtitle
               class="caption"
-              v-text="customer.email + ' ● ' + customer.phoneNumber"
+              v-text="customer.consumerEmail + (customer.consumerPhoneNumber ? ' ● ' + customer.consumerPhoneNumber : '')"
             ></v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list>
-    </div>
+    </template>
+    <p v-if="customers.length === 0" class="pt-4 pb-0 px-4 body-2">{{$t('NothingToShow')}}</p>
   </div>
 </template>
 
@@ -78,74 +98,14 @@ export default {
       search: null,
       customers: [],
       previouslyCharged: [],
-      groupedCustomers: {}
+      groupedCustomers: {},
+      showGrouped: false,
+      searchTimeout: null
     };
   },
   async mounted() {
-    //TODO: real data
-    let data = [
-      {
-        fullName: "John Doe",
-        customerId: "test1",
-        email: "john@mail.com",
-        phoneNumber: "0547876543",
-        lastActivity: new Date("2020-06-15")
-      },
-      {
-        fullName: "Mitch Bar",
-        customerId: "test2",
-        email: "mike@mail.com",
-        phoneNumber: "0547876544",
-        lastActivity: new Date("2020-06-12")
-      },
-      {
-        fullName: "Mirth Monst",
-        customerId: "test22",
-        email: "mirte@mail.com",
-        phoneNumber: "0547876514",
-        lastActivity: new Date("2020-06-12")
-      },
-      {
-        fullName: "Brendan Fry",
-        customerId: "test31",
-        email: "bred@mail.com",
-        phoneNumber: "0547876545",
-        lastActivity: new Date("2020-06-14")
-      },
-      {
-        fullName: "Bartholomew Beggins",
-        customerId: "test54",
-        email: "bart@mail.com",
-        phoneNumber: "0547876345",
-        lastActivity: new Date("2020-04-11")
-      },
-      {
-        fullName: "Amy Doe",
-        customerId: "test4",
-        email: "amy@mail.com",
-        phoneNumber: "0547876546",
-        lastActivity: new Date("2020-06-11")
-      },
-      {
-        fullName: "Liana Erzt",
-        customerId: "test5",
-        email: "lerzt@mail.com",
-        phoneNumber: "0547876547",
-        lastActivity: new Date("2020-04-15")
-      },
-      {
-        fullName: "Antony Dire",
-        customerId: "test434",
-        email: "andi@mail.com",
-        phoneNumber: "0547846546",
-        lastActivity: new Date("2020-06-11")
-      }
-    ];
-    this.groupCustomersAlphabetically(data.concat(), "fullName");
-    this.previouslyCharged = this.sort(data.concat(), "lastActivity").slice(
-      0,
-      5
-    );
+    //TODO: previously charged
+    await this.getCustomers(false);
   },
   methods: {
     selectCustomer(customer) {
@@ -158,17 +118,47 @@ export default {
         return 0;
       });
     },
-    //TODO: helpers?, infinite scroll
+    //TODO: helpers?
     groupCustomersAlphabetically(arr) {
-      arr = this.sort(arr, "fullName");
+      this.groupedCustomers = {};
+      arr = this.sort(arr, "consumerName");
       for (var i = 0; i < arr.length; i++) {
-        var c = arr[i].fullName[0].toUpperCase();
-        if (this.groupedCustomers[c] && this.groupedCustomers[c].length >= 0) this.groupedCustomers[c].push(arr[i]);
+        var c = arr[i].consumerName[0].toUpperCase();
+        if (this.groupedCustomers[c] && this.groupedCustomers[c].length >= 0)
+          this.groupedCustomers[c].push(arr[i]);
         else {
           this.groupedCustomers[c] = [];
           this.groupedCustomers[c].push(arr[i]);
         }
       }
+    },
+    async getCustomers(search) {
+      let searchApply = this.search && this.search.trim().length >= 3;
+      let customers = await this.$api.consumers.getConsumers({
+        search: searchApply ? this.search : ''
+      });
+      this.customers = customers.data;
+
+      /**Only show alphabetically grouped customers if total count is <= 100 and it is not search mode */
+      if (!search && customers.numberOfRecords <= 100) {
+        this.showGrouped = true;
+        this.groupCustomersAlphabetically(customers.data);
+      } else {
+        this.showGrouped = false;
+        this.groupedCustomers = {};
+      }
+    }
+  },
+  watch: {
+    async search(newValue, oldValue) {
+      if (this.searchTimeout) clearTimeout(this.searchTimeout);
+
+      this.searchTimeout = setTimeout(
+        (async () => {
+          await this.getCustomers(true);
+        }).bind(this),
+        1000
+      );
     }
   }
 };

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import TransactionsApi from './modules/TransactionsApi';
 import DictionariesApi from './modules/DictionariesApi';
 import TerminalsApi from './modules/profile/TerminalsApi';
+import ConsumersApi from './modules/profile/ConsumersApi';
 import i18n from '../i18n'
 
 
@@ -11,6 +12,8 @@ class ApiBase {
         this.transactions = new TransactionsApi(this);
         this.dictionaries = new DictionariesApi(this);
         this.terminals = new TerminalsApi(this);
+        this.consumers = new ConsumersApi(this);
+        
         this.toastedOpts = {
             iconPack: 'mdi',
             //duration: 5000,
@@ -31,9 +34,17 @@ class ApiBase {
                 params.take = params.itemsPerPage;
                 params.skip = params.itemsPerPage * (params.page - 1);
             }
+            /**Clear up empty params */
+            for(var prop of Object.keys(params)){
+                if(!params[prop]){
+                    delete params[prop];
+                }
+            }
         }
         let requestUrl = new URL(url)
-        requestUrl.search = new URLSearchParams(params).toString();
+        if(params){
+            requestUrl.search = new URLSearchParams(params).toString();
+        }
         let request = fetch(requestUrl, {
             method: 'GET',
             withCredentials: true,
