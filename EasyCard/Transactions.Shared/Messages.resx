@@ -120,6 +120,15 @@
   <data name="AggregatorNotDefined" xml:space="preserve">
     <value>Aggregator is not defined</value>
   </data>
+  <data name="BillingDealCreated" xml:space="preserve">
+    <value>Billing Deal Created</value>
+  </data>
+  <data name="BillingDealDeleted" xml:space="preserve">
+    <value>Billing Deal Deleted</value>
+  </data>
+  <data name="BillingDealUpdated" xml:space="preserve">
+    <value>Billing Deal Updated</value>
+  </data>
   <data name="CanceledByAggregator" xml:space="preserve">
     <value>Canceled By Aggregator</value>
   </data>

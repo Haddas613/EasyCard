@@ -70,6 +70,33 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Billing Deal Created.
+        /// </summary>
+        public static string BillingDealCreated {
+            get {
+                return ResourceManager.GetString("BillingDealCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Billing Deal Deleted.
+        /// </summary>
+        public static string BillingDealDeleted {
+            get {
+                return ResourceManager.GetString("BillingDealDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Billing Deal Updated.
+        /// </summary>
+        public static string BillingDealUpdated {
+            get {
+                return ResourceManager.GetString("BillingDealUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Canceled By Aggregator.
         /// </summary>
         public static string CanceledByAggregator {

@@ -1,4 +1,5 @@
 ﻿using Shared.Business;
+using Shared.Business.Security;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Entities
 {
-    public class BillingDeal : IEntityBase<Guid>
+    public class BillingDeal : IEntityBase<Guid>, IAuditEntity
     {
         /// <summary>
         /// Primary transaction reference
@@ -100,6 +101,11 @@ namespace Transactions.Business.Entities
         public DealDetails DealDetails { get; set; }
 
         /// <summary>
+        /// Billing Schedule
+        /// </summary>
+        public BillingSchedule BillingSchedule { get; set; }
+
+        /// <summary>
         /// Date-time when transaction status updated
         /// </summary>
         public DateTime? UpdatedDate { get; set; }
@@ -113,5 +119,15 @@ namespace Transactions.Business.Entities
         {
             return BillingDealID;
         }
+
+        public string OperationDoneBy { get; set; }
+
+        public Guid? OperationDoneByID { get; set; }
+
+        public string CorrelationId { get; set; }
+
+        public string SourceIP { get; set; }
+
+        public bool Active { get; set; }
     }
 }

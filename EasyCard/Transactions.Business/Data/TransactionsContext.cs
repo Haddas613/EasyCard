@@ -37,6 +37,8 @@ namespace Transactions.Business.Data
 
         public DbSet<TransactionHistory> TransactionHistories { get; set; }
 
+        public DbSet<BillingDeal> BillingDeals { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         private static readonly ValueConverter CardExpirationConverter = new ValueConverter<CardExpiration, string>(
@@ -46,6 +48,12 @@ namespace Transactions.Business.Data
         private static readonly ValueConverter SettingsJObjectConverter = new ValueConverter<JObject, string>(
            v => v.ToString(Formatting.None),
            v => JObject.Parse(v));
+
+        private static readonly ValueConverter BillingScheduleConverter = new ValueConverter<BillingSchedule, string>(
+           v => JsonConvert.SerializeObject(v),
+           v => JsonConvert.DeserializeObject<BillingSchedule>(v));
+
+        //BillingSchedule
 
         public TransactionsContext(DbContextOptions<TransactionsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
             : base(options)
@@ -63,6 +71,7 @@ namespace Transactions.Business.Data
             modelBuilder.ApplyConfiguration(new PaymentTransactionConfiguration());
             modelBuilder.ApplyConfiguration(new CreditCardTokenDetailsConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionHistoryConfiguration());
+            modelBuilder.ApplyConfiguration(new BillingDealConfiguration());
 
             // security filters
 
@@ -154,7 +163,7 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                 builder.Property(p => p.TerminalID).IsRequired(true);
                 builder.Property(p => p.MerchantID).IsRequired(true);
 
-                builder.Property(p => p.CreditCardToken).HasColumnName("CreditCardToken").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                builder.Property(p => p.CreditCardToken).HasColumnName("CreditCardToken");
 
                 builder.OwnsOne(b => b.CreditCardDetails, s =>
                 {
@@ -272,6 +281,60 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                 builder.Property(b => b.OperationMessage).IsRequired(false).HasMaxLength(250).IsUnicode(true);
 
                 builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+            }
+        }
+
+        internal class BillingDealConfiguration : IEntityTypeConfiguration<BillingDeal>
+        {
+            public void Configure(EntityTypeBuilder<BillingDeal> builder)
+            {
+                builder.ToTable("BillingDeal");
+
+                builder.HasKey(b => b.BillingDealID);
+                builder.Property(b => b.BillingDealID).ValueGeneratedNever();
+
+                builder.Property(p => p.UpdateTimestamp).IsRowVersion();
+
+                builder.Property(p => p.TerminalID).IsRequired(true);
+                builder.Property(p => p.MerchantID).IsRequired(true);
+
+                builder.Property(p => p.CreditCardToken).HasColumnName("CreditCardToken");
+
+                builder.OwnsOne(b => b.CreditCardDetails, s =>
+                {
+                    s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
+                    s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
+                    s.Property(p => p.CardBin).HasColumnName("CardBin").IsRequired(false).HasMaxLength(10).IsUnicode(false);
+                    s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Ignore(b => b.CardReaderInput);
+                });
+
+                builder.OwnsOne(b => b.DealDetails, s =>
+                {
+                    s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
+                    s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+                    s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(SettingsJObjectConverter);
+
+
+                });
+
+                builder.Property(b => b.TransactionAmount).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").IsRequired();
+
+                builder.Property(p => p.BillingSchedule).HasColumnName("BillingSchedule").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(BillingScheduleConverter);
+
+                builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
             }
