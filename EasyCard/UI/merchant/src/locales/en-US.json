@@ -58,5 +58,8 @@
   "AnErrorOccured": "An error occured",
   "ServerErrorTryAgainLater": "Server Error. Try again later",
   "TransactionCreationError": "Could not create transaction",
-  "SomethingWentWrong": "Something went wrong"
+  "SomethingWentWrong": "Something went wrong",
+
+  "AllCustomers": "All Customers",
+  "NothingToShow": "Nothing to Show"
 }

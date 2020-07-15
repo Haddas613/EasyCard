@@ -13,14 +13,11 @@
       ></v-text-field>
     </div>
     <template v-if="showPreviouslyCharged && (!search || search.length < 2)">
-      <p
-        class="pt-4 pb-0 px-4 body-2 font-weight-medium text-uppercase"
-        v-if="previouslyCharged"
-      >{{$t('PreviouslyCharged')}}</p>
+      <p class="pt-4 pb-0 px-4 body-2 font-weight-medium text-uppercase">{{$t('PreviouslyCharged')}}</p>
       <v-list two-line subheader class="py-0 fill-height">
         <v-list-item
           v-for="customer in previouslyCharged"
-          :key="customer.customerId"
+          :key="customer.consumerID"
           @click="selectCustomer(customer)"
         >
           <v-list-item-avatar>
@@ -36,12 +33,35 @@
         </v-list-item>
       </v-list>
     </template>
-    <div v-for="(value, key) in groupedCustomers" :key="key">
-      <p class="pt-4 pb-0 px-4 body-2 font-weight-medium text-uppercase">{{key}}</p>
+    <template v-if="customers.length > 0 && showGrouped">
+      <div v-for="(value, key) in groupedCustomers" :key="key">
+        <p class="pt-4 pb-0 px-4 body-2 font-weight-medium text-uppercase">{{key}}</p>
+        <v-list two-line subheader class="py-0 fill-height">
+          <v-list-item
+            v-for="customer in value"
+            :key="customer.consumerID"
+            @click="selectCustomer(customer)"
+          >
+            <v-list-item-avatar>
+              <avatar :username="customer.consumerName" :rounded="true"></avatar>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title v-text="customer.consumerName"></v-list-item-title>
+              <v-list-item-subtitle
+                class="caption"
+                v-text="customer.consumerEmail + (customer.consumerPhoneNumber ? ' ● ' + customer.consumerPhoneNumber : '')"
+              ></v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </div>
+    </template>
+    <template v-if="customers.length > 0 &&  !showGrouped">
+      <p class="pt-4 pb-0 px-4 body-2 font-weight-medium text-uppercase">{{$t('AllCustomers')}}</p>
       <v-list two-line subheader class="py-0 fill-height">
         <v-list-item
-          v-for="customer in value"
-          :key="customer.customerId"
+          v-for="customer in customers"
+          :key="customer.consumerID"
           @click="selectCustomer(customer)"
         >
           <v-list-item-avatar>
@@ -56,7 +76,8 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-    </div>
+    </template>
+    <p v-if="customers.length === 0" class="pt-4 pb-0 px-4 body-2">{{$t('NothingToShow')}}</p>
   </div>
 </template>
 
@@ -83,6 +104,7 @@ export default {
     };
   },
   async mounted() {
+    //TODO: previously charged
     await this.getCustomers(false);
   },
   methods: {
@@ -102,39 +124,43 @@ export default {
       arr = this.sort(arr, "consumerName");
       for (var i = 0; i < arr.length; i++) {
         var c = arr[i].consumerName[0].toUpperCase();
-        if (this.groupedCustomers[c] && this.groupedCustomers[c].length >= 0) this.groupedCustomers[c].push(arr[i]);
+        if (this.groupedCustomers[c] && this.groupedCustomers[c].length >= 0)
+          this.groupedCustomers[c].push(arr[i]);
         else {
           this.groupedCustomers[c] = [];
           this.groupedCustomers[c].push(arr[i]);
         }
       }
     },
-    async getCustomers(search){
-      let customers = await this.$api.consumers.getConsumers();
+    async getCustomers(search) {
+      let searchApply = this.search && this.search.trim().length >= 3;
+      let customers = await this.$api.consumers.getConsumers({
+        search: searchApply ? this.search : ''
+      });
       this.customers = customers.data;
 
-      /**Only show alphabetically grouped customers if total count is <= 100 */
-      if(!search && customers.numberOfRecords <= 100){
+      /**Only show alphabetically grouped customers if total count is <= 100 and it is not search mode */
+      if (!search && customers.numberOfRecords <= 100) {
         this.showGrouped = true;
         this.groupCustomersAlphabetically(customers.data);
-      }else{
+      } else {
         this.showGrouped = false;
+        this.groupedCustomers = {};
       }
     }
   },
   watch: {
     async search(newValue, oldValue) {
-      if(this.searchTimeout)
-          clearTimeout(this.searchTimeout);
+      if (this.searchTimeout) clearTimeout(this.searchTimeout);
 
-      if(!newValue || newValue.trim().length < 3){
-        return;
-      }
-      this.searchTimeout = setTimeout((async () => {
-        await this.getCustomers(true);
-      }).bind(this), 1000);
+      this.searchTimeout = setTimeout(
+        (async () => {
+          await this.getCustomers(true);
+        }).bind(this),
+        1000
+      );
     }
-  },
+  }
 };
 </script>
 

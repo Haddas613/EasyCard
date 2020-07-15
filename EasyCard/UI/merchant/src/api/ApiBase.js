@@ -34,9 +34,17 @@ class ApiBase {
                 params.take = params.itemsPerPage;
                 params.skip = params.itemsPerPage * (params.page - 1);
             }
+            /**Clear up empty params */
+            for(var prop of Object.keys(params)){
+                if(!params[prop]){
+                    delete params[prop];
+                }
+            }
         }
         let requestUrl = new URL(url)
-        requestUrl.search = new URLSearchParams(params).toString();
+        if(params){
+            requestUrl.search = new URLSearchParams(params).toString();
+        }
         let request = fetch(requestUrl, {
             method: 'GET',
             withCredentials: true,
