@@ -84,7 +84,7 @@ import { mapState } from "vuex";
 
 export default {
   components: {
-    EcDialog: () => import("../../components/misc/EcDialog"),
+    EcDialog: () => import("../../components/ec/EcDialog"),
     EcRadioGroup: () => import("../../components/inputs/EcRadioGroup")
   },
   props: {

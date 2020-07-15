@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Transactions.Api.Extensions;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Business.Entities;
@@ -40,7 +41,9 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.MerchantID, o => o.MapFrom(d => d.MerchantID));
 
             CreateMap<PaymentTransaction, TransactionResponse>();
-            CreateMap<PaymentTransaction, TransactionSummary>();
+            CreateMap<PaymentTransaction, TransactionSummary>()
+                .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.CreditCardDetails.CardOwnerName))
+                .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus()));
 
             CreateMap<SharedIntegration.Models.DealDetails, Business.Entities.DealDetails>();
             CreateMap<Business.Entities.DealDetails, SharedIntegration.Models.DealDetails>();
