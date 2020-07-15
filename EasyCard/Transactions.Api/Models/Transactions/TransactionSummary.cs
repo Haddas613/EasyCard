@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Models.Transactions
@@ -39,6 +40,10 @@ namespace Transactions.Api.Models.Transactions
         [JsonConverter(typeof(StringEnumConverter))]
         public TransactionStatusEnum Status { get; set; }
 
+        [EnumDataType(typeof(QuickStatusFilterTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public QuickStatusFilterTypeEnum QuickStatus { get; set; }
+
         /// <summary>
         /// Special transaction type
         /// </summary>
@@ -66,5 +71,7 @@ namespace Transactions.Api.Models.Transactions
         [EnumDataType(typeof(CardPresenceEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public CardPresenceEnum CardPresence { get; set; }
+
+        public string CardOwnerName { get; set; }
     }
 }
