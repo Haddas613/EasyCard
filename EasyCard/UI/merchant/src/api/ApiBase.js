@@ -4,6 +4,7 @@ import DictionariesApi from './modules/DictionariesApi';
 import TerminalsApi from './modules/profile/TerminalsApi';
 import ConsumersApi from './modules/profile/ConsumersApi';
 import ItemsApi from './modules/profile/ItemsApi';
+import moment from 'moment'
 
 import i18n from '../i18n'
 
