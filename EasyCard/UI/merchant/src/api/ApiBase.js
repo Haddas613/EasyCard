@@ -3,8 +3,9 @@ import TransactionsApi from './modules/TransactionsApi';
 import DictionariesApi from './modules/DictionariesApi';
 import TerminalsApi from './modules/profile/TerminalsApi';
 import ConsumersApi from './modules/profile/ConsumersApi';
-import i18n from '../i18n'
+import ItemsApi from './modules/profile/ItemsApi';
 
+import i18n from '../i18n'
 
 class ApiBase {
     constructor() {
@@ -13,6 +14,7 @@ class ApiBase {
         this.dictionaries = new DictionariesApi(this);
         this.terminals = new TerminalsApi(this);
         this.consumers = new ConsumersApi(this);
+        this.items = new ItemsApi(this);
         
         this.toastedOpts = {
             iconPack: 'mdi',
@@ -106,6 +108,30 @@ class ApiBase {
 
     _formatHeaders(headers) {
         return Object.keys(headers.columns).map(key => { return { value: key, text: headers.columns[key].name } });
+    }
+    
+    format(d, headers, dictionaries) {
+        for (const property in d) {
+            let v = d[property]
+            let h = headers[property]
+            if (h.dataType == 'string' && v && v.length > 8) {
+                d[`$${property}`] = v
+                d[property] = v.substring(0, 8)
+            }
+            else if (h.dataType == 'dictionary') {
+                d[`$${property}`] = v
+                d[property] = dictionaries[h.dictionary][v]
+            }
+            else if (h.dataType == 'money') {
+                d[`$${property}`] = v
+                d[property] = new Intl.NumberFormat().format(v) // TODO: locale, currency symbol
+            }
+            else if (h.dataType == 'date') {
+                d[`$${property}`] = v
+                d[property] = moment(String(v)).format('MM/DD/YYYY') // TODO: locale
+            }
+        }
+        return d
     }
 }
 

@@ -25,7 +25,8 @@
       ></v-data-table>
     </div>
 
-    <ec-list :items="transactions">
+   <v-card-text>
+      <ec-list :items="transactions">
       <template v-slot:prepend>
         <v-icon>mdi-credit-card-outline</v-icon>
       </template>
@@ -44,6 +45,7 @@
         <v-icon>mdi-chevron-right</v-icon>
       </template>
     </ec-list>
+   </v-card-text>
   </v-card>
 </template>
 

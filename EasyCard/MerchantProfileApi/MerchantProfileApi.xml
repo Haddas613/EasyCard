@@ -136,6 +136,42 @@
             End-customer Email
             </summary>
         </member>
+        <member name="T:MerchantProfileApi.Models.Billing.ItemResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ItemResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ItemResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ItemResource.Currency">
+            <summary>
+              Looks up a localized string similar to Currency.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ItemResource.ItemID">
+            <summary>
+              Looks up a localized string similar to ID.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ItemResource.ItemName">
+            <summary>
+              Looks up a localized string similar to Name.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ItemResource.Price">
+            <summary>
+              Looks up a localized string similar to Price.
+            </summary>
+        </member>
         <member name="T:MerchantProfileApi.Models.Billing.UpdateConsumerRequest">
             <summary>
             Update end-customer info

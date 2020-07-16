@@ -17,6 +17,8 @@ using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Api.Models.Metadata;
+using Shared.Api.UI;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
 
@@ -40,6 +42,20 @@ namespace MerchantProfileApi.Controllers
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
             this.merchantsService = merchantsService;
+        }
+
+        [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("$meta")]
+        public TableMeta GetMetadata()
+        {
+            return new TableMeta
+            {
+                Columns = typeof(ItemSummary)
+                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+                    .Select(d => d.GetColMeta(ItemResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
+                    .ToDictionary(d => d.Key)
+            };
         }
 
         [HttpGet]

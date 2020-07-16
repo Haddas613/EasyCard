@@ -34,9 +34,14 @@ const routes = [
         component: () => import('../pages/Dashboard.vue'),
       },
       {
-        name: 'Transactions/List',
+        name: 'Transactions',
         path: 'transactions/list',
         component: () => import('../pages/transactions/TransactionsList.vue'),
+      },
+      {
+        name: 'Items',
+        path: 'items/list',
+        component: () => import('../pages/items/ItemsList.vue'),
       },
       {
         name: '404',
