@@ -73,13 +73,13 @@ namespace Transactions.Api.Services
                 .ToDictionary(m => cardPresenceTypeEnumType.GetDataContractAttrForEnum(m.ToString()), m => CardPresenceResource.ResourceManager.GetString(m.ToString(), culture) );
 
             var filterQuickTimeTypes = Enum.GetValues(filterQuickTimeEnumType).Cast<QuickTimeFilterTypeEnum>()
-                .ToDictionary(m => filterQuickTimeEnumType.GetDataContractAttrForEnum(m.ToString()), m => CardPresenceResource.ResourceManager.GetString(m.ToString(), culture) );
+                .ToDictionary(m => filterQuickTimeEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture) );
 
             var filterQuickStatusTypes = Enum.GetValues(filterQuickStatusEnumType).Cast<QuickStatusFilterTypeEnum>()
-                .ToDictionary(m => filterQuickStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => CardPresenceResource.ResourceManager.GetString(m.ToString(), culture) );
+                .ToDictionary(m => filterQuickStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture) );
 
             var filterDateTypes = Enum.GetValues(filterDateEnumType).Cast<DateFilterTypeEnum>()
-                .ToDictionary(m => filterDateEnumType.GetDataContractAttrForEnum(m.ToString()), m => CardPresenceResource.ResourceManager.GetString(m.ToString(), culture) );
+                .ToDictionary(m => filterDateEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture) );
 
             response.TransactionStatusEnum = tranStatuses;
             response.TransactionTypeEnum = tranTypes;

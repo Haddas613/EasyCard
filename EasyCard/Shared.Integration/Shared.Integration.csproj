@@ -24,6 +24,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>CardPresenceResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\FilterEnumsResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FilterEnumsResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\JDealTypeResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -50,6 +55,10 @@
     <EmbeddedResource Update="Resources\CardPresenceResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CardPresenceResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\FilterEnumsResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>FilterEnumsResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\JDealTypeResource.he-IL.resx">
       <LastGenOutput>JDealTypeResource.Designer.cs</LastGenOutput>
