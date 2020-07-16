@@ -133,16 +133,16 @@ export default {
           ]
         },
         {
-          icon: "mdi-cash-minus",
-          "icon-alt": "mdi-cash-plus",
+          icon: "mdi-basket",
+          "icon-alt": "mdi-basket-outline",
           text: "Items",
           expanded: false,
           children: [
             {
-              icon: "mdi-cash-multiple",
+              icon: "mdi-basket-outline",
               text: "ItemsList",
               to: "/admin/items/list"
-            }
+            },
           ]
         },
         { divider: true, dividerArea: "userAuth" },

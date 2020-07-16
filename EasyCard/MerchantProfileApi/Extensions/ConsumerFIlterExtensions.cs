@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MerchantProfileApi.Extensions
 {
-    public static class ConsumerFIlterExtensions
+    public static class ConsumerFilterExtensions
     {
         public static IQueryable<Consumer> Filter(this IQueryable<Consumer> src, ConsumersFilter filter)
         {
