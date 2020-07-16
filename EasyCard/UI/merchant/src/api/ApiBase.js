@@ -10,6 +10,9 @@ import i18n from '../i18n'
 class ApiBase {
     constructor() {
         this.oidc = Vue.prototype.$oidc;
+        this._ongoingRequests = {};
+
+        /**Apis */
         this.transactions = new TransactionsApi(this);
         this.dictionaries = new DictionariesApi(this);
         this.terminals = new TerminalsApi(this);
@@ -30,6 +33,7 @@ class ApiBase {
         }
     }
 
+    /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */
     async get(url, params) {
         if (params) {
             if (params.page && params.itemsPerPage) {
@@ -43,10 +47,18 @@ class ApiBase {
                 }
             }
         }
+        let _urlKey = url;
+
         let requestUrl = new URL(url)
         if(params){
             requestUrl.search = new URLSearchParams(params).toString();
+            _urlKey += requestUrl.search;
         }
+
+        if(this._ongoingRequests[_urlKey]){
+            return this._ongoingRequests[_urlKey];
+        }
+
         let request = fetch(requestUrl, {
             method: 'GET',
             withCredentials: true,
@@ -57,7 +69,9 @@ class ApiBase {
                 'Accept': 'application/json'
             }
         });
-        return this._handleRequest(request);
+        this._ongoingRequests[_urlKey] = this._handleRequest(request);
+
+        return new Promise((s, e) => s(this._ongoingRequests[_urlKey])).finally(() => delete this._ongoingRequests[_urlKey])
     }
 
     async post(url, payload) {
@@ -109,7 +123,7 @@ class ApiBase {
     _formatHeaders(headers) {
         return Object.keys(headers.columns).map(key => { return { value: key, text: headers.columns[key].name } });
     }
-    
+
     format(d, headers, dictionaries) {
         for (const property in d) {
             let v = d[property]
