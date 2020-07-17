@@ -19,4 +19,16 @@ export default class ItemsApi {
 
         return data;
     }
+
+    async getItem(id){
+        return await this.base.get(this.itemsUrl + `/${id}`);
+    }
+
+    async updateItem(id, data){
+        return await this.base.put(this.itemsUrl + `/${id}`, data);
+    }
+
+    async createItem(data){
+        return await this.base.post(this.itemsUrl, data);
+    }
 }

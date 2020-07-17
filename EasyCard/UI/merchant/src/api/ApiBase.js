@@ -19,19 +19,6 @@ class ApiBase {
         this.terminals = new TerminalsApi(this);
         this.consumers = new ConsumersApi(this);
         this.items = new ItemsApi(this);
-        
-        this.toastedOpts = {
-            iconPack: 'mdi',
-            //duration: 5000,
-            keepOnHover: true,
-            containerClass: 'ecng-toast',
-            action : {
-                icon : 'close-circle',
-                onClick : (e, toastObject) => {
-                    toastObject.goAway(0);
-                }
-            },
-        }
     }
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */
@@ -92,15 +79,32 @@ class ApiBase {
         return this._handleRequest(request, true);
     }
 
+    async put(url, payload) {
+        let requestUrl = new URL(url);
+        let request = fetch(requestUrl, {
+            method: 'PUT',
+            withCredentials: true,
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.oidc.user.access_token}`,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        return this._handleRequest(request, true);
+    }
+
     async _handleRequest(request, showSuccessToastr = false) {
         try {
             request = await request;
             let result = await request.json();
             if (request.ok) {
                 if (result.status === "warning") {
-                    Vue.toasted.show(result.message, { type: 'info', ...this.toastedOpts });
+                    Vue.toasted.show(result.message, { type: 'info'});
                 }else if(showSuccessToastr && result.status === "success"){
-                    Vue.toasted.show(result.message, { type: 'success', duration: 5000, ...this.toastedOpts });
+                    Vue.toasted.show(result.message, { type: 'success', duration: 5000});
                 }
 
                 return result;
@@ -110,13 +114,13 @@ class ApiBase {
                 if(request.status === 400){
                     return result;
                 }else{
-                    Vue.toasted.show(result.message, { type: 'error', ...this.toastedOpts });
+                    Vue.toasted.show(result.message, { type: 'error'});
                 }
             } 
             return result;
 
         } catch (err) {
-            Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error', ...this.toastedOpts });
+            Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error'});
         }
         return null;
     }

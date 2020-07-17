@@ -44,6 +44,16 @@ const routes = [
         component: () => import('../pages/items/ItemsList.vue'),
       },
       {
+        name: 'Create Item',
+        path: 'items/create',
+        component: () => import('../pages/items/CreateItem.vue'),
+      },
+      {
+        name: 'Edit Item',
+        path: 'items/edit/:id',
+        component: () => import('../pages/items/EditItem.vue'),
+      },
+      {
         name: '404',
         path: '*',
         component: () => import('../views/NotFound.vue'),

@@ -143,6 +143,11 @@ export default {
               text: "ItemsList",
               to: "/admin/items/list"
             },
+            {
+              icon: "mdi-plus",
+              text: "CreateItem",
+              to: "/admin/items/create"
+            }
           ]
         },
         { divider: true, dividerArea: "userAuth" },

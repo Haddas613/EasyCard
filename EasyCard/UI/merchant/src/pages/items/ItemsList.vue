@@ -13,8 +13,10 @@
           <v-col cols="12" class="text-end font-weight-bold button">{{item.currency}}{{item.price}}</v-col>
         </template>
 
-        <template v-slot:append>
-          <v-icon>mdi-chevron-right</v-icon>
+        <template v-slot:append="{ item }">
+          <v-btn icon :to="{ name: 'Edit Item', params: { id: item.$itemID } }">
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
         </template>
       </ec-list>
     </v-card-text>

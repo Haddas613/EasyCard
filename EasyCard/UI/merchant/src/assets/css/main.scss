@@ -47,6 +47,9 @@ $secondary : var(--v-secondary-base);
     font-size: 1.75rem !important;
     color: inherit !important;
   }
+  .toasted{
+    min-height: 3.5rem !important;
+  }
 }
 .text-initial{
   text-align: initial;
