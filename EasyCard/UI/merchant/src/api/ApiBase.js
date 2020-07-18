@@ -3,31 +3,25 @@ import TransactionsApi from './modules/TransactionsApi';
 import DictionariesApi from './modules/DictionariesApi';
 import TerminalsApi from './modules/profile/TerminalsApi';
 import ConsumersApi from './modules/profile/ConsumersApi';
-import i18n from '../i18n'
+import ItemsApi from './modules/profile/ItemsApi';
+import moment from 'moment'
 
+import i18n from '../i18n'
 
 class ApiBase {
     constructor() {
         this.oidc = Vue.prototype.$oidc;
+        this._ongoingRequests = {};
+
+        /**Apis */
         this.transactions = new TransactionsApi(this);
         this.dictionaries = new DictionariesApi(this);
         this.terminals = new TerminalsApi(this);
         this.consumers = new ConsumersApi(this);
-        
-        this.toastedOpts = {
-            iconPack: 'mdi',
-            //duration: 5000,
-            keepOnHover: true,
-            containerClass: 'ecng-toast',
-            action : {
-                icon : 'close-circle',
-                onClick : (e, toastObject) => {
-                    toastObject.goAway(0);
-                }
-            },
-        }
+        this.items = new ItemsApi(this);
     }
 
+    /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */
     async get(url, params) {
         if (params) {
             if (params.page && params.itemsPerPage) {
@@ -41,10 +35,18 @@ class ApiBase {
                 }
             }
         }
+        let _urlKey = url;
+
         let requestUrl = new URL(url)
         if(params){
             requestUrl.search = new URLSearchParams(params).toString();
+            _urlKey += requestUrl.search;
         }
+
+        if(this._ongoingRequests[_urlKey]){
+            return this._ongoingRequests[_urlKey];
+        }
+
         let request = fetch(requestUrl, {
             method: 'GET',
             withCredentials: true,
@@ -55,7 +57,9 @@ class ApiBase {
                 'Accept': 'application/json'
             }
         });
-        return this._handleRequest(request);
+        this._ongoingRequests[_urlKey] = this._handleRequest(request);
+
+        return new Promise((s, e) => s(this._ongoingRequests[_urlKey])).finally(() => delete this._ongoingRequests[_urlKey])
     }
 
     async post(url, payload) {
@@ -75,15 +79,32 @@ class ApiBase {
         return this._handleRequest(request, true);
     }
 
+    async put(url, payload) {
+        let requestUrl = new URL(url);
+        let request = fetch(requestUrl, {
+            method: 'PUT',
+            withCredentials: true,
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.oidc.user.access_token}`,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        return this._handleRequest(request, true);
+    }
+
     async _handleRequest(request, showSuccessToastr = false) {
         try {
             request = await request;
             let result = await request.json();
             if (request.ok) {
                 if (result.status === "warning") {
-                    Vue.toasted.show(result.message, { type: 'info', ...this.toastedOpts });
+                    Vue.toasted.show(result.message, { type: 'info'});
                 }else if(showSuccessToastr && result.status === "success"){
-                    Vue.toasted.show(result.message, { type: 'success', duration: 5000, ...this.toastedOpts });
+                    Vue.toasted.show(result.message, { type: 'success', duration: 5000});
                 }
 
                 return result;
@@ -93,19 +114,43 @@ class ApiBase {
                 if(request.status === 400){
                     return result;
                 }else{
-                    Vue.toasted.show(result.message, { type: 'error', ...this.toastedOpts });
+                    Vue.toasted.show(result.message, { type: 'error'});
                 }
             } 
             return result;
 
         } catch (err) {
-            Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error', ...this.toastedOpts });
+            Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error'});
         }
         return null;
     }
 
     _formatHeaders(headers) {
         return Object.keys(headers.columns).map(key => { return { value: key, text: headers.columns[key].name } });
+    }
+
+    format(d, headers, dictionaries) {
+        for (const property in d) {
+            let v = d[property]
+            let h = headers[property]
+            if (h.dataType == 'string' && v && v.length > 8) {
+                d[`$${property}`] = v
+                d[property] = v.substring(0, 8)
+            }
+            else if (h.dataType == 'dictionary') {
+                d[`$${property}`] = v
+                d[property] = dictionaries[h.dictionary][v]
+            }
+            else if (h.dataType == 'money') {
+                d[`$${property}`] = v
+                d[property] = new Intl.NumberFormat().format(v) // TODO: locale, currency symbol
+            }
+            else if (h.dataType == 'date') {
+                d[`$${property}`] = v
+                d[property] = moment(String(v)).format('MM/DD/YYYY') // TODO: locale
+            }
+        }
+        return d
     }
 }
 

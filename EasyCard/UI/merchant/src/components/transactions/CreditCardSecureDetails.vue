@@ -263,6 +263,7 @@ export default {
     }
     .dense-input {
       padding: 4px 0;
+      width: 100%;
       &:focus {
         outline: none;
       }

@@ -21,7 +21,17 @@ mainAuth.startup().then(ok => {
   Vue.use(Api);
   Vue.use(VueLodash, { lodash: lodash })
   Vue.use(VueCardFormat);
-  Vue.use(Toasted);
+  Vue.use(Toasted,{
+    iconPack: 'mdi',
+    keepOnHover: true,
+    containerClass: 'ecng-toast',
+    action : {
+        icon : 'close-circle',
+        onClick : (e, toastObject) => {
+            toastObject.goAway(0);
+        }
+    },
+});
   
   if (ok) {
     new Vue({

@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" outlined>
+  <v-card width="100%" outlined>
     <v-card-title>{{$t('Transactions')}}</v-card-title>
 
     <!-- TODO: REMOVE -->
@@ -25,9 +25,10 @@
       ></v-data-table>
     </div>
 
-    <ec-list :items="transactions">
-      <template v-slot:prepend="{ item }">
-        <v-icon>mdi-cash</v-icon>
+   <v-card-text>
+      <ec-list :items="transactions">
+      <template v-slot:prepend>
+        <v-icon>mdi-credit-card-outline</v-icon>
       </template>
 
       <template v-slot:left="{ item }">
@@ -36,14 +37,15 @@
       </template>
 
       <template v-slot:right="{ item }">
-        <v-col cols="12" md="6" lg="6" class="text-end"></v-col>
-        <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold button">{{item.transactionAmount}}</v-col>
+        <v-col cols="12" md="6" lg="6" class="text-end body-2" v-bind:class="quickStatusesColors[item.quickStatus]">{{$t(item.quickStatus)}}</v-col>
+        <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold button">{{item.currency}}{{item.transactionAmount}}</v-col>
       </template>
 
-      <template v-slot:append="{ item }">
+      <template v-slot:append>
         <v-icon>mdi-chevron-right</v-icon>
       </template>
     </ec-list>
+   </v-card-text>
   </v-card>
 </template>
 
@@ -62,7 +64,14 @@ export default {
       options: {},
       pagination: {},
       headers: [],
-      transactionsFilter: {}
+      transactionsFilter: {},
+      dictionaries: {},
+      quickStatusesColors: {
+        "Pending": "ecgray--text",
+        "None": "",
+        "Completed": "success--text",
+        "Failed": "error--text"
+      }
     };
   },
   watch: {

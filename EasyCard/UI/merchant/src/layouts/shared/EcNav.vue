@@ -132,6 +132,24 @@ export default {
             }
           ]
         },
+        {
+          icon: "mdi-basket",
+          "icon-alt": "mdi-basket-outline",
+          text: "Items",
+          expanded: false,
+          children: [
+            {
+              icon: "mdi-basket-outline",
+              text: "ItemsList",
+              to: "/admin/items/list"
+            },
+            {
+              icon: "mdi-plus",
+              text: "CreateItem",
+              to: "/admin/items/create"
+            }
+          ]
+        },
         { divider: true, dividerArea: "userAuth" },
         { icon: "mdi-account-cog", text: "Profile", to: "/admin/profile" },
         {

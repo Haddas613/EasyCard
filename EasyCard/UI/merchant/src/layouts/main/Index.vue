@@ -5,7 +5,7 @@
 
     <ec-nav :drawer.sync="drawer"/>
 
-    <main-content />
+    <main-content :drawer.sync="drawer" />
 
   </v-app>
 </template>
