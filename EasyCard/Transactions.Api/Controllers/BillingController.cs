@@ -36,7 +36,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Controllers
 {
-    [Route("api/cardtokens")]
+    [Route("api/billing")]
     [Produces("application/json")]
     [Consumes("application/json")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
@@ -126,9 +126,9 @@ namespace Transactions.Api.Controllers
 
         [HttpPut]
         [Route("{BillingDealID}")]
-        public async Task<ActionResult<OperationResponse>> UpdateBillingDeal([FromRoute] Guid BillingDealID, [FromBody] BillingDealUpdateRequest model)
+        public async Task<ActionResult<OperationResponse>> UpdateBillingDeal([FromRoute] Guid billingDealID, [FromBody] BillingDealUpdateRequest model)
         {
-            var billingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(m => m.BillingDealID == BillingDealID));
+            var billingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
 
             mapper.Map(model, billingDeal);
 
@@ -136,7 +136,7 @@ namespace Transactions.Api.Controllers
 
             await billingDealService.UpdateEntity(billingDeal);
 
-            return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, BillingDealID.ToString()));
+            return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID.ToString()));
         }
 
         [HttpDelete]

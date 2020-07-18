@@ -31,6 +31,56 @@
             <param name="filter"></param>
             <returns></returns>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.CreditCardToken">
+            <summary>
+            Stored credit card details token (should be omitted in case if full credit card details used)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.TransactionAmount">
+            <summary>
+            Transaction amount (should be omitted in case of installment deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.NumberOfPayments">
+            <summary>
+            Number Of payments (cannot be more than 999)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.TotalAmount">
+            <summary>
+            TotalAmount = TransactionAmount * NumberOfPayments
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.BillingSchedule">
+            <summary>
+            Billing Schedule
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.NumberOfPayments">
+            <summary>
+            Number Of payments (cannot be more than 999)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.TotalAmount">
+            <summary>
+            TotalAmount = TransactionAmount * NumberOfPayments
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.Status">
+            <summary>
+            Processing status
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.BillingSchedule">
+            <summary>
+            Billing Schedule
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenFilter.ConsumerEmail">
             <summary>
             End-customer Email

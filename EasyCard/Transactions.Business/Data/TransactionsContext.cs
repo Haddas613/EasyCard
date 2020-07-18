@@ -21,6 +21,7 @@ using Transactions.Shared.Enums;
 using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Transactions.Shared.Models;
 
 namespace Transactions.Business.Data
 {

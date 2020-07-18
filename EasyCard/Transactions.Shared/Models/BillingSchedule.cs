@@ -4,20 +4,27 @@ using System.Collections.Generic;
 using System.Text;
 using Transactions.Shared.Enums;
 
-namespace Transactions.Business.Entities
+namespace Transactions.Shared.Models
 {
     public class BillingSchedule
     {
         public RepeatPeriodTypeEnum RepeatPeriodType { get; set; }
 
-        public JObject RepeatPeriod { get; set; }
+        public int? RepeatPeriod { get; set; }
 
         public StartAtTypeEnum StartAtType { get; set; }
 
-        public JObject StartAt { get; set; }
+        public DateTime? StartAt { get; set; }
 
         public EndAtTypeEnum EndAtType { get; set; }
 
-        public JObject EndAt { get; set; }
+        public DateTime? EndAt { get; set; }
+
+        public int? EndAtNumberOfPayments { get; set; }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }

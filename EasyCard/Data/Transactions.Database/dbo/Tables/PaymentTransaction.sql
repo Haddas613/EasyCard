@@ -25,7 +25,7 @@
     [CardOwnerName]                  NVARCHAR (100)   NULL,
     [CardOwnerNationalID]            VARCHAR (20)     NULL,
     [CardBin]                        VARCHAR (10)     NULL,
-    [CreditCardToken]                VARCHAR (50)     NULL,
+    [CreditCardToken]                UNIQUEIDENTIFIER NULL,
     [DealReference]                  VARCHAR (50)     NULL,
     [DealDescription]                NVARCHAR (MAX)   NULL,
     [ConsumerEmail]                  VARCHAR (50)     NULL,
@@ -53,6 +53,8 @@
     [Items]                          NVARCHAR (MAX)   NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

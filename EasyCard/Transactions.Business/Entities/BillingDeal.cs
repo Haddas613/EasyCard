@@ -5,11 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Transactions.Shared.Enums;
+using Transactions.Shared.Models;
 
 namespace Transactions.Business.Entities
 {
     public class BillingDeal : IEntityBase<Guid>, IAuditEntity
     {
+        public BillingDeal()
+        {
+            BillingDealTimestamp = DateTime.UtcNow;
+            BillingDealID = Guid.NewGuid().GetSequentialGuid(BillingDealTimestamp.Value);
+            CreditCardDetails = new CreditCardDetails();
+            DealDetails = new DealDetails();
+        }
+
         /// <summary>
         /// Primary transaction reference
         /// </summary>
@@ -21,7 +30,7 @@ namespace Transactions.Business.Entities
         public DateTime? BillingDealTimestamp { get; set; }
 
         /// <summary>
-        /// Reference to initial billing deal
+        /// Reference to initial transaction
         /// </summary>
         public Guid? InitialTransactionID { get; set; }
 
@@ -84,6 +93,16 @@ namespace Transactions.Business.Entities
         /// Current deal (billing)
         /// </summary>
         public int? CurrentDeal { get; set; }
+
+        /// <summary>
+        /// Date-time when last created initially in UTC
+        /// </summary>
+        public DateTime? CurrentTransactionTimestamp { get; set; }
+
+        /// <summary>
+        /// Reference to last deal
+        /// </summary>
+        public Guid? CurrentTransactionID { get; set; }
 
         /// <summary>
         /// Credit card information (just to display)

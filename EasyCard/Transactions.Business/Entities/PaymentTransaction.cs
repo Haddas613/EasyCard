@@ -37,9 +37,14 @@ namespace Transactions.Business.Entities
         public DateTime? TransactionTimestamp { get; set; }
 
         /// <summary>
-        /// Reference to initial billing deal
+        /// Reference to initial token transaction
         /// </summary>
         public Guid? InitialTransactionID { get; set; }
+
+        /// <summary>
+        /// Reference to initial billing deal
+        /// </summary>
+        public Guid BillingDealID { get; set; }
 
         /// <summary>
         /// Current deal (billing)

@@ -6,7 +6,7 @@ namespace Transactions.Shared.Enums
 {
     public enum RepeatPeriodTypeEnum
     {
-        Daily = 0,
+        Day = 0,
         Week = 1,
         Month = 2,
         Year = 3

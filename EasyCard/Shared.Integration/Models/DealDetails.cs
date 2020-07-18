@@ -34,5 +34,10 @@ namespace Shared.Integration.Models
         /// </summary>
         [StringLength(50)]
         public string ConsumerPhone { get; set; }
+
+        /// <summary>
+        /// End-customer reference
+        /// </summary>
+        public Guid? ConsumerID { get; set; }
     }
 }
