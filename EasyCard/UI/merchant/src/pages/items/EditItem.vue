@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card width="100%" outlined>
     <v-card-title>{{$t("EditItem")}}</v-card-title>
     <v-card-text>
       <item-form :data="model" v-on:ok="updateItem($event)" class="px-4" v-if="model"></item-form>

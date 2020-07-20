@@ -27,6 +27,7 @@ export default new Vuetify({
         //easy card custom colors
         ecbg: '#f4f6f7',
         ecgray: colors.grey.lighten1,
+        ecdgray: colors.grey.darken2,
         ecnavLink: colors.grey.darken4,
         ecError: colors.red.darken2
       },

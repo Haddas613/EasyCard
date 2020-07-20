@@ -44,14 +44,34 @@ const routes = [
         component: () => import('../pages/items/ItemsList.vue'),
       },
       {
-        name: 'Create Item',
+        name: 'CreateItem',
         path: 'items/create',
         component: () => import('../pages/items/CreateItem.vue'),
       },
       {
-        name: 'Edit Item',
+        name: 'EditItem',
         path: 'items/edit/:id',
         component: () => import('../pages/items/EditItem.vue'),
+      },
+      {
+        name: 'Customers',
+        path: 'customers/list',
+        component: () => import('../pages/customers/CustomersList.vue'),
+      },
+      {
+        name: 'CreateCustomer',
+        path: 'customers/create',
+        component: () => import('../pages/customers/CreateCustomer.vue'),
+      },
+      {
+        name: 'EditCustomer',
+        path: 'customers/edit/:id',
+        component: () => import('../pages/customers/EditCustomer.vue'),
+      },
+      {
+        name: 'Customer',
+        path: 'customers/view/:id',
+        component: () => import('../pages/customers/CustomerInfo.vue'),
       },
       {
         name: '404',

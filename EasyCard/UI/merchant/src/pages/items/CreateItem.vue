@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card outlined>
     <v-card-title>{{$t("CreateItem")}}</v-card-title>
     <v-card-text>
       <item-form :data="model" v-on:ok="createItem($event)" class="px-4"></item-form>

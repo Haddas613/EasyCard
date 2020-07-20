@@ -133,6 +133,24 @@ export default {
           ]
         },
         {
+          icon: "mdi-account",
+          "icon-alt": "mdi-account-outline",
+          text: "Customers",
+          expanded: false,
+          children: [
+            {
+              icon: "mdi-account-group",
+              text: "CustomersList",
+              to: "/admin/customers/list"
+            },
+            {
+              icon: "mdi-plus",
+              text: "CreateCustomer",
+              to: "/admin/customers/create"
+            }
+          ]
+        },
+        {
           icon: "mdi-basket",
           "icon-alt": "mdi-basket-outline",
           text: "Items",

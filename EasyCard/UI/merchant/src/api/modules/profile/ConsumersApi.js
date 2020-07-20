@@ -12,4 +12,16 @@ export default class ConsumersApi {
     async getConsumers(params) {
         return await this.base.get(this.consumersUrl, params);
     }
+
+    async getConsumer(id) {
+        return await this.base.get(this.consumersUrl + `/${id}`);
+    }
+
+    async updateConsumer(id, data){
+        return await this.base.put(this.consumersUrl + `/${id}`, data);
+    }
+
+    async createConsumer(data){
+        return await this.base.post(this.consumersUrl, data);
+    }
 }
