@@ -32,6 +32,10 @@ namespace Shared.Api.UI
                 {
                     dataType = "date"; // TODO: datetime or date attribute
                 }
+                else if (property.PropertyType.IsAssignableFrom(typeof(Guid?)) || property.PropertyType.IsAssignableFrom(typeof(Guid)))
+                {
+                    dataType = "guid";
+                }
             }
 
             return new ColMeta
