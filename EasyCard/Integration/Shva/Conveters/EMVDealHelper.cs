@@ -64,6 +64,23 @@ namespace Shva.Conveters
             };
         }
 
+        public static ShvaCreateTransactionResponse GetProcessorTransactionResponse(this AshStartResponseBody resultAshStartBody)
+        {
+            return new ShvaCreateTransactionResponse()
+            {
+                ShvaShovarNumber = resultAshStartBody.globalObj?.receiptObj?.voucherNumber?.valueTag,
+
+                ShvaTranRecord = resultAshStartBody.globalObj?.outputObj?.tranRecord?.valueTag,
+                ShvaDealID = resultAshStartBody.globalObj?.outputObj?.uid?.valueTag,
+                AuthSolekNum = resultAshStartBody.globalObj?.outputObj?.authSolekNo?.valueTag,
+                AuthNum = resultAshStartBody.globalObj?.outputObj?.authManpikNo?.valueTag,
+
+                Solek = (SolekEnum)Convert.ToInt32(resultAshStartBody.globalObj?.outputObj?.solek?.valueTag),
+                CreditCardVendor = resultAshStartBody.globalObj?.outputObj?.manpik?.valueTag, // TODO
+                ShvaTransactionDate = resultAshStartBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime()
+            };
+        }
+
         public static clsInput GetInitInitObjRequest(this ProcessorCreateTransactionRequest req)
         {
             clsInput inputObj = new clsInput();

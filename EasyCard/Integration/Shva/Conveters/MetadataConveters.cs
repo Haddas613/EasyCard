@@ -54,6 +54,11 @@ namespace Shva.Conveters
 
         public static bool IsSuccessful(this AshStartResultEnum ashStartResult)
         {
+            return ashStartResult == AshStartResultEnum.Success || ashStartResult == AshStartResultEnum.Success2 || ashStartResult == AshStartResultEnum.Success3 || ashStartResult == AshStartResultEnum.Success4 || ashStartResult == AshStartResultEnum.Success4 || ashStartResult == AshStartResultEnum.Success6 || ashStartResult == AshStartResultEnum.Success7 || ashStartResult == AshStartResultEnum.Success8 || ashStartResult == AshStartResultEnum.Success9;
+        }
+
+        public static bool IsSuccessForContinue(this AshStartResultEnum ashStartResult)
+        {
             return ashStartResult == AshStartResultEnum.Success;
         }
 

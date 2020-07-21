@@ -82,48 +82,56 @@ namespace Shva
                 return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, ashStartResultBody.AshStartResult.ToString());
             }
 
-            // auth request
-            var ashAuthReq = ashStartResultBody.GetAshAuthRequestBody(shvaParameters);
-            ashAuthReq.inputObj = cls;
-
-            var resultAuth = await this.DoRequest(ashAuthReq, AshAuthUrl, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
-            var authResultBody = resultAuth?.Body?.Content as AshAuthResponseBody;
-
-            if (((AshAuthResultEnum)authResultBody.AshAuthResult).IsSuccessful())
+            if (((AshStartResultEnum)ashStartResultBody.AshStartResult).IsSuccessForContinue())
             {
+                // auth request
+                var ashAuthReq = ashStartResultBody.GetAshAuthRequestBody(shvaParameters);
+                ashAuthReq.inputObj = cls;
+
+                var resultAuth = await this.DoRequest(ashAuthReq, AshAuthUrl, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
+                var authResultBody = resultAuth?.Body?.Content as AshAuthResponseBody;
+
+                if (((AshAuthResultEnum)authResultBody.AshAuthResult).IsSuccessful())
+                {
+                }
+                else if (authResultBody.globalObj?.outputObj?.ashStatus != null && authResultBody.globalObj?.outputObj?.ashStatusDes != null)
+                {
+                    return new ProcessorCreateTransactionResponse(authResultBody.globalObj.outputObj.ashStatusDes.valueTag, authResultBody.globalObj.outputObj.ashStatus.valueTag);
+                }
+                else
+                {
+                    return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, authResultBody.AshAuthResult.ToString());
+                }
+
+                // end request
+                var ashEndReq = shvaParameters.GetAshEndRequestBody();
+
+                ashEndReq.inputObj = cls;
+
+                ashEndReq.globalObj = authResultBody.globalObj;
+                ashEndReq.pinpad = authResultBody.pinpad;
+
+                var resultAshEnd = await this.DoRequest(ashEndReq, AshEndUrl, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
+                var resultAshEndBody = resultAshEnd?.Body?.Content as AshEndResponseBody;
+
+                if (((AshEndResultEnum)resultAshEndBody.AshEndResult).IsSuccessful())
+                {
+                    return resultAshEndBody.GetProcessorTransactionResponse();
+                }
+                else if (resultAshEndBody.globalObj?.outputObj?.ashStatus != null && resultAshEndBody.globalObj?.outputObj?.ashStatusDes != null)
+                {
+                    return new ProcessorCreateTransactionResponse(resultAshEndBody.globalObj.outputObj.ashStatusDes.valueTag, resultAshEndBody.globalObj.outputObj.ashStatus.valueTag);
+                }
+                else
+                {
+                    return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, resultAshEndBody.AshEndResult.ToString());
+                }
             }
-            else if (authResultBody.globalObj?.outputObj?.ashStatus != null && authResultBody.globalObj?.outputObj?.ashStatusDes != null)
+            else /* (((AshStartResultEnum)ashStartResultBody.AshStartResult).IsSuccessful())*/
             {
-                return new ProcessorCreateTransactionResponse(authResultBody.globalObj.outputObj.ashStatusDes.valueTag, authResultBody.globalObj.outputObj.ashStatus.valueTag);
-            }
-            else
-            {
-                return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, authResultBody.AshAuthResult.ToString());
+                return ashStartResultBody.GetProcessorTransactionResponse();
             }
 
-            // end request
-            var ashEndReq = shvaParameters.GetAshEndRequestBody();
-
-            ashEndReq.inputObj = cls;
-
-            ashEndReq.globalObj = authResultBody.globalObj;
-            ashEndReq.pinpad = authResultBody.pinpad;
-
-            var resultAshEnd = await this.DoRequest(ashEndReq, AshEndUrl, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
-            var resultAshEndBody = resultAshEnd?.Body?.Content as AshEndResponseBody;
-
-            if (((AshEndResultEnum)resultAshEndBody.AshEndResult).IsSuccessful())
-            {
-                return resultAshEndBody.GetProcessorTransactionResponse();
-            }
-            else if (resultAshEndBody.globalObj?.outputObj?.ashStatus != null && resultAshEndBody.globalObj?.outputObj?.ashStatusDes != null)
-            {
-                return new ProcessorCreateTransactionResponse(resultAshEndBody.globalObj.outputObj.ashStatusDes.valueTag, resultAshEndBody.globalObj.outputObj.ashStatus.valueTag);
-            }
-            else
-            {
-                return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, resultAshEndBody.AshEndResult.ToString());
-            }
         }
 
         /// <summary>
