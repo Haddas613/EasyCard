@@ -59,3 +59,10 @@ $secondary : var(--v-secondary-base);
     border-bottom: 1px solid var(--v-ecbg-base);
   }
 }
+.v-text-field--outlined {
+  .v-input__control {
+    .v-input__slot {
+      background-color: white;
+    } 
+  }
+}

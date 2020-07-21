@@ -12,7 +12,7 @@
             type="number"
             min="1"
             step="1"
-            solo
+            outlined
           ></v-text-field>
         </v-col>
         <v-col cols="12">
@@ -24,7 +24,7 @@
             step="0.01"
             :rules="[vr.primitives.required]"
             required
-            solo
+            outlined
           ></v-text-field>
         </v-col>
         <v-col cols="12">
@@ -36,7 +36,7 @@
             step="0.01"
             :rules="[vr.primitives.required]"
             required
-            solo
+            outlined
           ></v-text-field>
         </v-col>
         <v-col cols="12">
@@ -46,7 +46,7 @@
             type="number"
             disabled
             required
-            solo
+            outlined
           ></v-text-field>
         </v-col>
       </v-row>

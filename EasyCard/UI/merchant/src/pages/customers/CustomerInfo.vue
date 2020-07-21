@@ -58,6 +58,8 @@ export default {
     }
 
     this.model = await this.$api.consumers.getConsumer(this.$route.params.id);
+
+    this.$store.commit("ui/changeHeaderText", { newHeaderText: { translate: false, text: this.model.consumerName}})
   }
 };
 </script>
