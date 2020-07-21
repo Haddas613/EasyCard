@@ -46,6 +46,7 @@ import Navbar from "../../components/wizard/NavBar";
 import Numpad from "../../components/misc/Numpad";
 import CustomersList from "../../components/customers/CustomersList";
 import CreateChargeForm from "../../components/transactions/CreateChargeForm";
+import CreateTransactionForm from "../../components/transactions/CreateTransactionForm";
 import CreditCardSecureDetails from "../../components/transactions/CreditCardSecureDetails";
 import TransactionSuccess from "../../components/transactions/TransactionSuccess";
 import TransactionError from "../../components/transactions/TransactionError";

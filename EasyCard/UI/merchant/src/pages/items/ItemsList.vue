@@ -14,7 +14,7 @@
         </template>
 
         <template v-slot:append="{ item }">
-          <v-btn icon :to="{ name: 'Edit Item', params: { id: item.$itemID } }">
+          <v-btn icon :to="{ name: 'EditItem', params: { id: item.$itemID } }">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
         </template>

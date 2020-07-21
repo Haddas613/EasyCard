@@ -13,7 +13,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <v-divider></v-divider>
+    
     <div v-if="false">
       <v-data-table
         :headers="headers"
