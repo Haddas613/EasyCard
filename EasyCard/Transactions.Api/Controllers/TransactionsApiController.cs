@@ -212,6 +212,7 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<OperationResponse>> CheckCreditCard([FromBody] CheckCreditCardRequest model)
         {
             var transaction = mapper.Map<CreateTransactionRequest>(model);
+            transaction.TransactionAmount = 1;
 
             return await ProcessTransaction(transaction, null, JDealTypeEnum.J2);
         }

@@ -165,6 +165,15 @@ namespace IdentityServer.Controllers
                     }
                 }
 
+                if (result.IsLockedOut)
+                {
+                    //_logger.LogWarning("User account locked out.");
+
+                    //await _managementApiClient.RegisterLocked(model.Email);
+
+                    return RedirectToAction(nameof(Lockout));
+                }
+
                 await events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.Client?.ClientId));
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
@@ -172,6 +181,13 @@ namespace IdentityServer.Controllers
             // something went wrong, show form with error
             var vm = await BuildLoginViewModelAsync(model);
             return View(vm);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Lockout()
+        {
+            return View();
         }
 
         /// <summary>
@@ -391,7 +407,7 @@ namespace IdentityServer.Controllers
 
                 var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ResetPasswordEmailExpirationInHours));
 
-                var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, Request.Scheme);
+                var callbackUrl = Url.ResetPasswordCallbackLink(code, Request.Scheme);
 
                 var disable2faResult = await userManager.SetTwoFactorEnabledAsync(user, false);
                 if (!disable2faResult.Succeeded)

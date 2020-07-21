@@ -85,7 +85,9 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}")]
         public async Task<ActionResult<TerminalResponse>> GetTerminal([FromRoute]Guid terminalID)
         {
-            var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminal(terminalID)));
+            var dbTerminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+
+            var terminal = mapper.Map<TerminalResponse>(dbTerminal);
 
             terminal.Users = await mapper.ProjectTo<UserSummary>(terminalsService.GetTerminalUsers(terminal.TerminalID)).ToListAsync();
 

@@ -219,13 +219,13 @@ namespace IdentityServer.Controllers
 
             var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ResetPasswordEmailExpirationInHours));
 
-            var callbackUrl = Url.ResetPasswordCallbackLink(user.Id, code, Request.Scheme);
+            var callbackUrl = Url.ResetPasswordCallbackLink(code, Request.Scheme);
 
             user.PasswordHash = userManager.PasswordHasher.HashPassword(user, Guid.NewGuid().ToString());
 
             var result = await userManager.UpdateAsync(user);
 
-            //if (!result.Succeeded)
+            // TODO: if (!result.Succeeded)
 
             var disable2faResult = await userManager.SetTwoFactorEnabledAsync(user, false);
             if (!disable2faResult.Succeeded)
