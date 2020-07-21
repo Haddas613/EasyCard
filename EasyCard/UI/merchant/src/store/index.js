@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import createPersistedState from "vuex-persistedstate";
 import localization from './modules/localization';
 import settings from './modules/settings';
+import ui from './modules/ui';
 
 Vue.use(Vuex)
 
@@ -15,7 +16,8 @@ export default new Vuex.Store({
   },
   modules: {
     localization,
-    settings
+    settings,
+    ui
   },
   plugins: [
     createPersistedState({

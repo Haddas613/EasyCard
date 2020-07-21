@@ -8,7 +8,7 @@
           item-value="code"
           v-model="model.jDealType"
           :label="$t('JDealType')"
-          solo
+          outlined
         ></v-select> -->
         <v-select
           :items="dictionaries.currencyEnum"
@@ -16,7 +16,7 @@
           item-value="code"
           v-model="model.currency"
           :label="$t('Currency')"
-          solo
+          outlined
         ></v-select>
         <v-select
           :items="dictionaries.transactionTypeEnum"
@@ -24,7 +24,7 @@
           item-value="code"
           v-model="model.transactionType"
           :label="$t('TransactionType')"
-          solo
+          outlined
         ></v-select>
 
         <installment-details
@@ -39,27 +39,27 @@
           :rules="[vr.primitives.maxLength(50)]"
           :label="$t('DealReference')"
           @keydown.native.space.prevent
-          solo
+          outlined
           required
         ></v-text-field>
         <v-text-field
           v-model="model.dealDetails.consumerEmail"
           :label="$t('ConsumerEmail')"
           :rules="[vr.primitives.email]"
-          solo
+          outlined
           @keydown.native.space.prevent
         ></v-text-field>
         <v-text-field
           v-model="model.dealDetails.consumerPhone"
           :label="$t('ConsumerPhone')"
           :rules="[vr.primitives.maxLength(50)]"
-          solo
+          outlined
           @keydown.native.space.prevent
         ></v-text-field>
         <v-textarea
           v-model="model.dealDetails.dealDescription"
           :counter="1024"
-          solo
+          outlined
           :rules="[vr.primitives.required,  vr.primitives.maxLength(1024)]"
         >
           <template v-slot:label>

@@ -8,7 +8,7 @@
           :rules="[vr.primitives.required, vr.primitives.maxLength(50)]"
           :label="$t('Name')"
           class="px-1"
-          solo
+          outlined
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="6">
@@ -20,7 +20,7 @@
           required
           :label="$t('Currency')"
            class="px-1"
-          solo
+          outlined
         ></v-select>
       </v-col>
       <v-col cols="12" md="6">
@@ -33,7 +33,7 @@
           :rules="[vr.primitives.biggerThan(0)]"
           required
           class="px-1"
-          solo
+          outlined
         ></v-text-field>
       </v-col>
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">

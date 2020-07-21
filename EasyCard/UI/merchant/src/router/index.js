@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import MainLayout from '../layouts/main/Index.vue'
 import WizardLayout from '../layouts/wizard/Index.vue'
 import mainAuth from '../auth';
+import store from '../store/index';
 
 Vue.use(VueRouter)
 
@@ -105,5 +106,15 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  store.commit("ui/changeHeaderText", {
+    newHeaderText: {
+      translate: true,
+      text: to.name
+    }
+  });
+  next();
+});
 
 export default router

@@ -1,6 +1,6 @@
 <template>
-  <v-card width="100%" outlined>
-    <v-card-title>{{$t('Items')}}</v-card-title>
+  <v-card width="100%" flat>
+    <v-card-title class="hidden-sm-and-down">{{$t('Items')}}</v-card-title>
 
     <v-card-text>
       <ec-list :items="items">

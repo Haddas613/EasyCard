@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" v-model="valid" lazy-validation>
+  <v-form class="pt-2" ref="form" v-model="valid" lazy-validation>
     <v-row>
       <v-col cols="12">
         <v-select
@@ -8,11 +8,12 @@
           item-value="terminalID"
           v-model="model.terminalID"
           outlined
+          class="px-1"
           :label="$t('Terminal')"
           required
         ></v-select>
       </v-col>
-      <v-col cols="12">
+      <v-col cols="12" class="py-0">
         <v-text-field
           v-model="model.consumerName"
           :counter="50"
@@ -22,7 +23,7 @@
           outlined
         ></v-text-field>
       </v-col>
-     <v-col cols="12">
+     <v-col cols="12" class="py-0">
         <v-text-field
           v-model="model.consumerPhone"
           :counter="50"
@@ -32,7 +33,7 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12">
+      <v-col cols="12" class="py-0">
         <v-text-field
           v-model="model.consumerEmail"
           :counter="50"
@@ -42,7 +43,7 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12">
+      <v-col cols="12" class="py-0">
         <v-text-field
           v-model="model.consumerAddress"
           :counter="50"
