@@ -32,6 +32,11 @@ namespace Shva
         /// </summary>
         public string ShvaDealID { get; set; }
 
+        /// <summary>
+        /// Shva Tran recordID
+        /// </summary>
+        public string ShvaTranRecord { get; set; }
+
         // TODO: how to get this ?
         public string AuthNum { get; set; }
 

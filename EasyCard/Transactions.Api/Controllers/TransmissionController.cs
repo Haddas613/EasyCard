@@ -126,7 +126,7 @@ namespace Transactions.Api.Controllers
                 await dbTransaction.CommitAsync();
             }
 
-            var processorIds = transactionsToTransmit.Select(d => d.ShvaDealID).ToList();
+            var processorIds = transactionsToTransmit.Select(d => d.ShvaTranRecord).ToList();
 
             if (processorIds.Count == 0)
             {
@@ -146,7 +146,7 @@ namespace Transactions.Api.Controllers
 
                 if (preparedTransaction != null)
                 {
-                    var failedTransaction = processorResponse.FailedTransactions?.FirstOrDefault(d => d == preparedTransaction.ShvaDealID);
+                    var failedTransaction = processorResponse.FailedTransactions?.FirstOrDefault(d => d == preparedTransaction.ShvaTranRecord);
 
                     if (failedTransaction != null)
                     {
@@ -175,7 +175,7 @@ namespace Transactions.Api.Controllers
                 var preparedTransaction = transactionsToTransmit.FirstOrDefault(d => d.PaymentTransactionID == transaction.PaymentTransactionID);
                 if (preparedTransaction != null)
                 {
-                    var failedTransaction = processorResponse.FailedTransactions?.FirstOrDefault(d => d == preparedTransaction.ShvaDealID);
+                    var failedTransaction = processorResponse.FailedTransactions?.FirstOrDefault(d => d == preparedTransaction.ShvaTranRecord);
 
                     if (failedTransaction != null)
                     {

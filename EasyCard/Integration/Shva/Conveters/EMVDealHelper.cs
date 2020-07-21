@@ -53,7 +53,7 @@ namespace Shva.Conveters
             {
                 ShvaShovarNumber = resultAshEndBody.globalObj?.receiptObj?.voucherNumber?.valueTag,
 
-                //ShvaDealID = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag, TODO
+                ShvaTranRecord = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag,
                 ShvaDealID = resultAshEndBody.globalObj?.outputObj?.uid?.valueTag,
                 AuthSolekNum = resultAshEndBody.globalObj?.outputObj?.authSolekNo?.valueTag,
                 AuthNum = resultAshEndBody.globalObj?.outputObj?.authManpikNo?.valueTag,
