@@ -1,6 +1,6 @@
 ﻿using Merchants.Business.Entities.Terminal;
-using Shared.Business.Exceptions;
 using Shared.Business.Messages;
+using Shared.Helpers;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;

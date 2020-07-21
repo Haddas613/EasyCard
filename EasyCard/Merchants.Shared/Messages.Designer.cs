@@ -131,5 +131,41 @@ namespace Merchants.Shared {
                 return ResourceManager.GetString("UserInvited", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Linked To Terminal.
+        /// </summary>
+        public static string UserLinkedToTerminal {
+            get {
+                return ResourceManager.GetString("UserLinkedToTerminal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Operation Failed.
+        /// </summary>
+        public static string UserOperationFailed {
+            get {
+                return ResourceManager.GetString("UserOperationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Operation Success.
+        /// </summary>
+        public static string UserOperationSuccess {
+            get {
+                return ResourceManager.GetString("UserOperationSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User unlinked from terminal.
+        /// </summary>
+        public static string UserUnlinkedFromTerminal {
+            get {
+                return ResourceManager.GetString("UserUnlinkedFromTerminal", resourceCulture);
+            }
+        }
     }
 }

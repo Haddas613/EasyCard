@@ -141,4 +141,16 @@
   <data name="UserInvited" xml:space="preserve">
     <value>User Invited</value>
   </data>
+  <data name="UserLinkedToTerminal" xml:space="preserve">
+    <value>User Linked To Terminal</value>
+  </data>
+  <data name="UserOperationFailed" xml:space="preserve">
+    <value>User Operation Failed</value>
+  </data>
+  <data name="UserOperationSuccess" xml:space="preserve">
+    <value>User Operation Success</value>
+  </data>
+  <data name="UserUnlinkedFromTerminal" xml:space="preserve">
+    <value>User unlinked from terminal</value>
+  </data>
 </root>

@@ -5,7 +5,7 @@ using System.Text;
 using Shared.Business.Messages;
 using System.Security;
 using Shared.Business;
-using Shared.Business.Exceptions;
+using Shared.Helpers;
 
 namespace Shared.Api
 {

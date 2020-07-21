@@ -1,5 +1,5 @@
 ﻿using Merchants.Business.Entities.Terminal;
-using Shared.Business.Exceptions;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

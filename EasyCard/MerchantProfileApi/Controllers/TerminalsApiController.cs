@@ -14,6 +14,7 @@ using ProfileApi;
 using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
+using Shared.Helpers.Security;
 
 namespace MerchantProfileApi.Controllers
 {
@@ -40,6 +41,8 @@ namespace MerchantProfileApi.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<TerminalSummary>>> GetTerminals([FromQuery] TerminalsFilter filter)
         {
+            var merchantId = User.GetMerchantID();
+
             var query = terminalsService.GetTerminals().Filter(filter);
 
             var response = new SummariesResponse<TerminalSummary> { NumberOfRecords = await query.CountAsync() };

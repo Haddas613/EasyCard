@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shared.Business.Exceptions
+namespace Shared.Helpers
 {
     public class BusinessException : Exception
     {

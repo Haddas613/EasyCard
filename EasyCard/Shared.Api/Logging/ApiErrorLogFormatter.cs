@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Shared.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using Shared.Business.Exceptions;
 
 namespace Shared.Api.Logging
 {

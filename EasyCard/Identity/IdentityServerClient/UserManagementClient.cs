@@ -45,6 +45,11 @@ namespace IdentityServerClient
             {
                 return await webApiClient.Post<UserOperationResponse>(configuration.Authority, "api/userManagement/resendInvitation", model, BuildHeaders);
             }
+            catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                logger.LogError($"Cannot resend invitation for user. User {model.Email} does not exist");
+                throw new EntityNotFoundException($"User does not exist", "User", model.Email);
+            }
             catch (WebApiClientErrorException clientError)
             {
                 logger.LogError(clientError.Message);
@@ -77,7 +82,7 @@ namespace IdentityServerClient
             }
             catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                throw new ApplicationException($"User {userId} does not exist");
+                throw new EntityNotFoundException($"User does not exist", "User", userId.ToString());
             }
         }
 
@@ -90,7 +95,7 @@ namespace IdentityServerClient
             catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 logger.LogError($"Cannot lock user. User {userId} does not exist");
-                throw new ApplicationException($"User {userId} does not exist");
+                throw new EntityNotFoundException($"User does not exist", "User", userId.ToString());
             }
             catch (WebApiClientErrorException clientError)
             {
@@ -121,7 +126,7 @@ namespace IdentityServerClient
             catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 logger.LogError($"Cannot delete terminal api key. Terminal api key for {terminalID} does not exist");
-                throw new ApplicationException($"Terminal api key for {terminalID} does not exist");
+                throw new EntityNotFoundException($"Terminal api key for {terminalID} does not exist", "TerminalApiKey", terminalID.ToString());
             }
             catch (WebApiClientErrorException clientError)
             {
@@ -139,7 +144,7 @@ namespace IdentityServerClient
             catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 logger.LogError($"Cannot lock user. User {userId} does not exist");
-                throw new ApplicationException($"User {userId} does not exist");
+                throw new EntityNotFoundException($"User does not exist", "User", userId.ToString());
             }
             catch (WebApiClientErrorException clientError)
             {
@@ -157,7 +162,7 @@ namespace IdentityServerClient
             catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 logger.LogError($"Cannot lock user. User {userId} does not exist");
-                throw new ApplicationException($"User {userId} does not exist");
+                throw new EntityNotFoundException($"User does not exist", "User", userId.ToString());
             }
             catch (WebApiClientErrorException clientError)
             {

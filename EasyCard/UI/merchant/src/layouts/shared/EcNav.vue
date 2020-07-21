@@ -106,6 +106,7 @@
 <script>
 import LangSwitcher from "../../components/LanguageSwitcher";
 import { mapState } from "vuex";
+import mainAuth from '../../auth';
 
 export default {
   name: "EcNav",

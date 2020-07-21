@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
 using Shared.Business.Audit;
 using Shared.Business.AutoHistory;
-using Shared.Business.Exceptions;
 using Shared.Business.Messages;
 using Shared.Business.Security;
 using Shared.Helpers.Security;

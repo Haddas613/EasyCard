@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using IdentityServerClient;
+using Merchants.Api.Extensions;
 using Merchants.Api.Models.User;
 using Merchants.Business.Entities.User;
 using Merchants.Business.Services;
@@ -67,14 +68,22 @@ namespace Merchants.Api.Controllers
             var user = await userManagementClient.GetUserByEmail(request.Email);
             if (user == null)
             {
-                // TODO: convert non-success response
-                _ = await userManagementClient.CreateUser(mapper.Map<CreateUserRequestModel>(request));
+                var createUserResponse = await userManagementClient.CreateUser(mapper.Map<CreateUserRequestModel>(request));
+                if (createUserResponse.ResponseCode != UserOperationResponseCodeEnum.UserCreated)
+                {
+                    return BadRequest(createUserResponse.Convert(correlationID: GetCorrelationID()));
+                }
+
                 user = await userManagementClient.GetUserByEmail(request.Email);
             }
             else
             {
-                // TODO: convert non-success response
-                _ = await userManagementClient.ResendInvitation(new ResendInvitationRequestModel { Email = user.Email });
+                var resendInvitationResponse = await userManagementClient.ResendInvitation(new ResendInvitationRequestModel { Email = user.Email });
+
+                if (resendInvitationResponse.ResponseCode != UserOperationResponseCodeEnum.InvitationResent)
+                {
+                    return BadRequest(resendInvitationResponse.Convert(correlationID: GetCorrelationID()));
+                }
             }
 
             var userInfo = new UserInfo
@@ -87,7 +96,7 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.LinkUserToTerminal(userInfo, terminal);
 
-            return CreatedAtAction(nameof(GetUser), new { userID = user.UserID }, new OperationResponse(Messages.UserInvited, StatusEnum.Success, user.UserID.ToString()));
+            return CreatedAtAction(nameof(GetUser), new { userID = user.UserID }, new OperationResponse(Messages.UserInvited, StatusEnum.Success, user.UserID.ToString(), correlationId: GetCorrelationID()));
         }
 
         [HttpPost]
@@ -96,8 +105,12 @@ namespace Merchants.Api.Controllers
         {
             var opResult = await userManagementClient.LockUser(userID);
 
-            // TODO: convert non-success response
-            return Ok(new OperationResponse { Message = "ok", Status = StatusEnum.Success });
+            if (opResult.ResponseCode != UserOperationResponseCodeEnum.UserLocked)
+            {
+                return BadRequest(opResult.Convert(correlationID: GetCorrelationID()));
+            }
+
+            return Ok(opResult.Convert(correlationID: GetCorrelationID()));
         }
 
         [HttpPost]
@@ -106,8 +119,12 @@ namespace Merchants.Api.Controllers
         {
             var opResult = await userManagementClient.UnLockUser(userID);
 
-            // TODO: convert non-success response
-            return Ok(new OperationResponse { Message = "ok", Status = StatusEnum.Success });
+            if (opResult.ResponseCode != UserOperationResponseCodeEnum.UserUnlocked)
+            {
+                return BadRequest(opResult.Convert(correlationID: GetCorrelationID()));
+            }
+
+            return Ok(opResult.Convert(correlationID: GetCorrelationID()));
         }
 
         [HttpPost]
@@ -116,15 +133,19 @@ namespace Merchants.Api.Controllers
         {
             var opResult = await userManagementClient.ResetPassword(userID);
 
-            // TODO: convert non-success response
-            return Ok(new OperationResponse { Message = "ok", Status = StatusEnum.Success });
+            if (opResult.ResponseCode != UserOperationResponseCodeEnum.PasswordReseted)
+            {
+                return BadRequest(opResult.Convert(correlationID: GetCorrelationID()));
+            }
+
+            return Ok(opResult.Convert(correlationID: GetCorrelationID()));
         }
 
         [HttpPut]
-        [Route("{userID}/linkToTerminal/{terminalID}")]
-        public async Task<ActionResult<OperationResponse>> LinkUserToTerminal([FromBody] LinkUserToTerminalRequest request)
+        [Route("{userID}/linkToTerminal")]
+        public async Task<ActionResult<OperationResponse>> LinkUserToTerminal([FromRoute]Guid userID, [FromBody] LinkUserToTerminalRequest request)
         {
-            var user = EnsureExists(await userManagementClient.GetUserByID(request.UserID));
+            var user = EnsureExists(await userManagementClient.GetUserByID(userID));
 
             var terminal = EnsureExists(await terminalsService.GetTerminals()
                 .FirstOrDefaultAsync(m => m.TerminalID == request.TerminalID));
@@ -139,19 +160,18 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.LinkUserToTerminal(userInfo, terminal);
 
-            return Ok(new OperationResponse { Message = "ok", Status = StatusEnum.Success });
+            return Ok(new OperationResponse { Message = Messages.UserLinkedToTerminal, Status = StatusEnum.Success });
         }
 
         [HttpDelete]
         [Route("{userID}/unlinkFromTerminal/{terminalID}")]
         public async Task<ActionResult<OperationResponse>> UnlinkUserFromTerminal([FromRoute]Guid userID, [FromRoute]Guid terminalID)
         {
-            //Check if user exists
             _ = EnsureExists(await userManagementClient.GetUserByID(userID));
 
             await terminalsService.UnLinkUserFromTerminal(userID, terminalID);
 
-            return Ok(new OperationResponse { Message = "ok", Status = StatusEnum.Success });
+            return Ok(new OperationResponse { Message = Messages.UserUnlinkedFromTerminal, Status = StatusEnum.Success });
         }
     }
 }

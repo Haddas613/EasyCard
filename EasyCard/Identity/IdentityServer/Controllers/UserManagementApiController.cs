@@ -100,7 +100,7 @@ namespace IdentityServer.Controllers
 
             if (user == null)
             {
-                user = new ApplicationUser { UserName = model.Email, Email = model.Email, /*PhoneNumber = model.CellPhone*/ };
+                user = new ApplicationUser { UserName = model.Email, Email = model.Email, /*PhoneNumber = model.CellPhone*/ LockoutEnabled = true };
                 var result = await userManager.CreateAsync(user);
                 if (!result.Succeeded)
                 {
@@ -164,7 +164,7 @@ namespace IdentityServer.Controllers
             var operationResult = new UserOperationResponse
             {
                 UserID = new Guid(user.Id),
-                ResponseCode = UserOperationResponseCodeEnum.UserCreated
+                ResponseCode = UserOperationResponseCodeEnum.InvitationResent
             };
 
             return new ObjectResult(operationResult);
@@ -223,9 +223,17 @@ namespace IdentityServer.Controllers
 
             user.PasswordHash = userManager.PasswordHasher.HashPassword(user, Guid.NewGuid().ToString());
 
-            var result = await userManager.UpdateAsync(user);
+            var res = await userManager.UpdateAsync(user);
 
-            // TODO: if (!result.Succeeded)
+            if (!res.Succeeded)
+            {
+                return BadRequest(new UserOperationResponse
+                {
+                    UserID = new Guid(user.Id),
+                    ResponseCode = UserOperationResponseCodeEnum.UnknwnError,
+                    Message = res.Errors.FirstOrDefault()?.Description
+                });
+            }
 
             var disable2faResult = await userManager.SetTwoFactorEnabledAsync(user, false);
             if (!disable2faResult.Succeeded)
@@ -233,15 +241,18 @@ namespace IdentityServer.Controllers
                 logger.LogError($"Unexpected error occurred disabling 2FA for user with ID '{user.Id}'.");
             }
 
+            // Unlock user
+            res = await userManager.SetLockoutEnabledAsync(user, false);
+            res = await userManager.SetLockoutEndDateAsync(user, null);
+
             await emailSender.SendEmailResetPasswordAsync(user.Email, callbackUrl);
 
-            var operationResult = new UserOperationResponse
+            return Ok(new UserOperationResponse
             {
                 UserID = new Guid(user.Id),
-                ResponseCode = UserOperationResponseCodeEnum.PasswordReseted
-            };
-
-            return new ObjectResult(operationResult);
+                ResponseCode = UserOperationResponseCodeEnum.PasswordReseted,
+                Message = "Password reseted"
+            });
         }
 
         [HttpPost]
@@ -259,20 +270,32 @@ namespace IdentityServer.Controllers
 
             if (!res.Succeeded)
             {
-                // TODO
-                return new JsonResult(new { Status = "error", Errors = res.Errors }) { StatusCode = 500 };
+                return BadRequest(new UserOperationResponse
+                {
+                    UserID = new Guid(user.Id),
+                    ResponseCode = UserOperationResponseCodeEnum.UnknwnError,
+                    Message = res.Errors.FirstOrDefault()?.Description
+                });
             }
 
             res = await userManager.SetLockoutEndDateAsync(user, DateTime.UtcNow.AddYears(100));
 
             if (!res.Succeeded)
             {
-                // TODO
-                return new JsonResult(new { Status = "error", Errors = res.Errors }) { StatusCode = 500 };
+                return BadRequest(new UserOperationResponse
+                {
+                    UserID = new Guid(user.Id),
+                    ResponseCode = UserOperationResponseCodeEnum.UnknwnError,
+                    Message = res.Errors.FirstOrDefault()?.Description
+                });
             }
 
-            // TODO
-            return new JsonResult(new { Status = "success" });
+            return Ok(new UserOperationResponse
+            {
+                UserID = new Guid(user.Id),
+                ResponseCode = UserOperationResponseCodeEnum.UserLocked,
+                Message = "User account locked"
+            });
         }
 
         [HttpPost]
@@ -286,24 +309,24 @@ namespace IdentityServer.Controllers
                 return NotFound($"User {userId} does not exist");
             }
 
-            var res = await userManager.SetLockoutEnabledAsync(user, false);
+            var res = await userManager.SetLockoutEndDateAsync(user, null);
 
             if (!res.Succeeded)
             {
-                // TODO
-                return new JsonResult(new { Status = "error", Errors = res.Errors }) { StatusCode = 500 };
+                return BadRequest(new UserOperationResponse
+                {
+                    UserID = new Guid(user.Id),
+                    ResponseCode = UserOperationResponseCodeEnum.UnknwnError,
+                    Message = res.Errors.FirstOrDefault()?.Description
+                });
             }
 
-            res = await userManager.SetLockoutEndDateAsync(user, null);
-
-            if (!res.Succeeded)
+            return Ok(new UserOperationResponse
             {
-                // TODO
-                return new JsonResult(new { Status = "error", Errors = res.Errors }) { StatusCode = 500 };
-            }
-
-            // TODO
-            return new JsonResult(new { Status = "success" });
+                UserID = new Guid(user.Id),
+                ResponseCode = UserOperationResponseCodeEnum.UserUnlocked,
+                Message = "User account unlocked"
+            });
         }
 
         private async Task<ActionResult<UserProfileDataResponse>> GetUser(ApplicationUser user)

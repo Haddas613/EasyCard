@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Shared.Api.Logging;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
-using Shared.Business.Exceptions;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Security;
@@ -39,7 +39,7 @@ namespace Shared.Api
 
                 if (ex is EntityNotFoundException enfeEx)
                 {
-                    result = JsonConvert.SerializeObject(new OperationResponse { Message = enfeEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId, EntityType = enfeEx.EntityType });
+                    result = JsonConvert.SerializeObject(new OperationResponse { Message = enfeEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId, EntityType = enfeEx.EntityType, EntityReference = enfeEx.EntityReference });
                     responseStatusCode = 404;
                 }
                 else if (ex is EntityConflictException econEx)
@@ -56,6 +56,14 @@ namespace Shared.Api
                 {
                     result = JsonConvert.SerializeObject(new OperationResponse { Message = businessEx.Message, Status = StatusEnum.Error, CorrelationId = correlationId, Errors = businessEx.Errors });
                     responseStatusCode = 400;
+                }
+                else if (ex is NotImplementedException)
+                {
+                    result = JsonConvert.SerializeObject(new OperationResponse { Message = "Not Implemented", Status = StatusEnum.Error, CorrelationId = correlationId });
+                }
+                else if (ex is WebApiServerErrorException)
+                {
+                    result = JsonConvert.SerializeObject(new OperationResponse { Message = "Error when calling underlying service", Status = StatusEnum.Error, CorrelationId = correlationId });
                 }
                 else
                 {

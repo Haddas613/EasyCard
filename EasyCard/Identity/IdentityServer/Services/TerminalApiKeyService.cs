@@ -2,8 +2,8 @@
 using IdentityServer.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Shared.Business;
-using Shared.Business.Exceptions;
 using Shared.Business.Messages;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
