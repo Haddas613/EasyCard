@@ -125,9 +125,9 @@ namespace MerchantsApi.Tests
 
             var userInfo = new UserInfo { UserID = clientMockSetup.UserEntityId, Email = clientMockSetup.UserEmail };
 
-            var request = new LinkUserToTerminalRequest { UserID = clientMockSetup.UserEntityId, TerminalID = terminal.TerminalID };
+            var request = new LinkUserToTerminalRequest { TerminalID = terminal.TerminalID };
 
-            var actionResult = await controller.LinkUserToTerminal(request);
+            var actionResult = await controller.LinkUserToTerminal(clientMockSetup.UserEntityId, request);
 
             var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;

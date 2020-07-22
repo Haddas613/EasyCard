@@ -24,8 +24,9 @@ namespace Merchants.Business.Data
     public class MerchantsContext : DbContext
     {
         public static readonly LoggerFactory DbCommandConsoleLoggerFactory
-          = new LoggerFactory(new[] {
-                      new DebugLoggerProvider ()
+            = new LoggerFactory(new[]
+            {
+                new DebugLoggerProvider()
             });
 
         private static readonly ValueConverter SettingsJObjectConverter = new ValueConverter<JObject, string>(
@@ -124,7 +125,6 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.BusinessName).IsRequired(true).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.MarketingName).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.ContactPerson).IsRequired(false).HasMaxLength(50).IsUnicode(true);
-                //builder.Property(b => b.Users).IsRequired(false).IsUnicode(false);
             }
         }
 

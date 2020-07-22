@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
-using Shared.Business.Exceptions;
 using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Integration;
@@ -267,9 +266,9 @@ namespace Transactions.Tests
             if (await transactionsFixture.TransactionsContext.CreditCardTokenDetails.CountAsync() == 0)
             {
                 var cardTokenController = new CardTokenController(
-                    transactionsFixture.TransactionsService, 
+                    transactionsFixture.TransactionsService,
                     transactionsFixture.CreditCardTokenService,
-                    keyValueStorageMock.MockObj.Object, 
+                    keyValueStorageMock.MockObj.Object,
                     transactionsFixture.Mapper,
                     transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
                     transactionsFixture.AppSettings,

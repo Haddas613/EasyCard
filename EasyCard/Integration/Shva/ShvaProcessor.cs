@@ -131,7 +131,6 @@ namespace Shva
             {
                 return ashStartResultBody.GetProcessorTransactionResponse();
             }
-
         }
 
         /// <summary>
@@ -189,7 +188,7 @@ namespace Shva
             }
 
             res.ProcessorCode = transResultBody.TransEMVResult;
-            res.FailedTransactions = transResultBody.BadTrans?.Split(new string[] {";", " "}, StringSplitOptions.RemoveEmptyEntries);
+            res.FailedTransactions = transResultBody.BadTrans?.Split(new string[] { ";", " " }, StringSplitOptions.RemoveEmptyEntries);
             res.TransmissionReference = transResultBody.RefNumber;
             res.Report = transResultBody.Report;
             res.TotalCreditTransSum = transResultBody.TotalCreditTransSum;

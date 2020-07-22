@@ -2,7 +2,9 @@
 
 namespace Merchants.Business.Migrations
 {
+#pragma warning disable SA1300 // Element should begin with upper-case letter
     public partial class corrections1 : Migration
+#pragma warning restore SA1300 // Element should begin with upper-case letter
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

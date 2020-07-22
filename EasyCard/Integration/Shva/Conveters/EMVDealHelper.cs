@@ -197,7 +197,7 @@ namespace Shva.Conveters
 
                 if (creditTerms == ShvaCreditTermsEnum.Installment && req.NumberOfPayments > 1)
                 {
-                    inputObj.noPayments = ( req.NumberOfPayments - 1 ).ToString();
+                    inputObj.noPayments = (req.NumberOfPayments - 1 ).ToString();
                     inputObj.firstPayment = req.InitialPaymentAmount.ToShvaDecimalStr();
                     inputObj.notFirstPayment = req.InstallmentPaymentAmount.ToShvaDecimalStr(); // amount in other installments
                 }

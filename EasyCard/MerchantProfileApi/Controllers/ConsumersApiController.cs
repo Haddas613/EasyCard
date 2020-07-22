@@ -47,7 +47,6 @@ namespace MerchantProfileApi.Controllers
             this.httpContextAccessor = httpContextAccessor;
         }
 
-
         [HttpGet]
         [ApiExplorerSettings(IgnoreApi = true)]
         [Route("$meta")]

@@ -99,7 +99,7 @@ namespace Transactions.Tests
             var controller = new CardTokenController(
                 transactionsFixture.TransactionsService,
                 transactionsFixture.CreditCardTokenService,
-                keyValueStorageMock.Object, 
+                keyValueStorageMock.Object,
                 transactionsFixture.Mapper,
                 transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
                 transactionsFixture.AppSettings,
