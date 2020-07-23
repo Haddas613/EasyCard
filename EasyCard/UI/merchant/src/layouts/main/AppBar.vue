@@ -28,7 +28,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-icon v-bind="attrs" v-on="on">mdi-dots-vertical</v-icon>
               </template>
-              <v-list class="py-0">
+              <v-list class="py-0" color="grey darken-3">
                 <v-list-item
                   v-for="item in tdMenuItems"
                   v-bind:key="item.type"
