@@ -61,6 +61,121 @@
             Billing Schedule
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.BillingDealID">
+            <summary>
+            Primary transaction reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.BillingDealTimestamp">
+            <summary>
+            Date-time when deal created initially in UTC
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.InitialTransactionID">
+            <summary>
+            Reference to initial transaction
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.TerminalID">
+            <summary>
+            Terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.MerchantID">
+            <summary>
+            Merchant
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.ProcessorID">
+            <summary>
+            Shva or other processor
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.AggregatorID">
+            <summary>
+            Clearing House or Upay
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.InvoicingID">
+            <summary>
+            EasyInvoice or RapidOne
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.MarketerID">
+            <summary>
+            Marketer ID
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.Status">
+            <summary>
+            Processing status
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.NumberOfPayments">
+            <summary>
+            Number Of payments (cannot be more than 999)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.TransactionAmount">
+            <summary>
+            This transaction amount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.TotalAmount">
+            <summary>
+            TotalAmount = TransactionAmount * NumberOfPayments
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.CurrentDeal">
+            <summary>
+            Current deal (billing)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.CurrentTransactionTimestamp">
+            <summary>
+            Date-time when last created initially in UTC
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.CurrentTransactionID">
+            <summary>
+            Reference to last deal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.CreditCardDetails">
+            <summary>
+            Credit card information (just to display)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.CreditCardToken">
+            <summary>
+            Stored credit card details token
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.DealDetails">
+            <summary>
+            Deal information
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.BillingSchedule">
+            <summary>
+            Billing Schedule
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.UpdatedDate">
+            <summary>
+            Date-time when transaction status updated
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.UpdateTimestamp">
+            <summary>
+            Concurrency key
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.NumberOfPayments">
             <summary>
             Number Of payments (cannot be more than 999)
