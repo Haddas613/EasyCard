@@ -96,7 +96,7 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         [Route("$grouped")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<ActionResult<IEnumerable<GroupedSummariesResponse<TransactionSummaryDb>>>> GetTransactionsGrouped()
+        public async Task<ActionResult<IEnumerable<GroupedSummariesResponse<TransactionSummary>>>> GetTransactionsGrouped()
         {
             Debug.WriteLine(User);
             var merchantID = User.GetMerchantID();
@@ -118,10 +118,10 @@ namespace Transactions.Api.Controllers
 
                 var results = from p in query
                               group p by new { p.TransactionDate, p.NumberOfRecords } into g
-                              select new GroupedSummariesResponse<TransactionSummaryDb>
+                              select new GroupedSummariesResponse<TransactionSummary>
                               {
                                   GroupValue = g.Key,
-                                  Data = g.ToList()
+                                  Data = mapper.Map<IEnumerable<TransactionSummary>>(g.ToList())
                               };
 
                 return Ok(results);

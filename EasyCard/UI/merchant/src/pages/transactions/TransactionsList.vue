@@ -1,57 +1,56 @@
 <template>
-  <v-card width="100%" outlined>
-    <v-card-title>{{$t('Transactions')}}</v-card-title>
+  <v-flex>
+    <v-card width="100%" flat class="hidden-sm-and-down">
+      <v-card-title>{{$t('Transactions')}}</v-card-title>
+    </v-card>
 
-    <!-- TODO: REMOVE -->
-    <v-expansion-panels :flat="true" v-if="false">
-      <v-expansion-panel>
-        <v-expansion-panel-header class="primary white--text">{{$t('Filters')}}</v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <div class="pt-4 pb-2">
-            <transactions-filter :filter-data="options" v-on:apply="applyFilter($event)"></transactions-filter>
-          </div>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
-    
-    <div v-if="false">
-      <v-data-table
-        :headers="headers"
-        :items="transactions"
-        :options.sync="options"
-        :server-items-length="totalAmount"
-        :loading="loading"
-        class="elevation-1"
-      ></v-data-table>
-    </div>
+    <v-card class="mt-4" width="100%" flat v-for="groupedTransaction in groupedTransactions" v-bind:key="groupedTransaction.groupValue.transactionDate">
+      <v-card-title class="subtitle-2">{{groupedTransaction.groupValue.transactionDate | ecdate}}</v-card-title>
+      <v-card-text class="px-0">
+        <ec-list :items="groupedTransaction.data">
+          <template v-slot:prepend>
+            <v-icon>mdi-credit-card-outline</v-icon>
+          </template>
 
-   <v-card-text>
-      <ec-list :items="transactions">
-      <template v-slot:prepend>
-        <v-icon>mdi-credit-card-outline</v-icon>
-      </template>
+          <template v-slot:left="{ item }">
+            <v-col
+              cols="12"
+              md="6"
+              lg="6"
+              class="pt-1 caption ecgray--text"
+            >{{item.paymentTransactionID}}</v-col>
+            <v-col cols="12" md="6" lg="6">{{item.cardOwnerName}}</v-col>
+          </template>
 
-      <template v-slot:left="{ item }">
-        <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text">{{item.paymentTransactionID}}</v-col>
-        <v-col cols="12" md="6" lg="6">{{item.cardOwnerName}}</v-col>
-      </template>
+          <template v-slot:right="{ item }">
+            <v-col
+              cols="12"
+              md="6"
+              lg="6"
+              class="text-end body-2"
+              v-bind:class="quickStatusesColors[item.quickStatus]"
+            >{{$t(item.quickStatus)}}</v-col>
+            <v-col
+              cols="12"
+              md="6"
+              lg="6"
+              class="text-end font-weight-bold button"
+            >{{item.currency}}{{item.transactionAmount}}</v-col>
+          </template>
 
-      <template v-slot:right="{ item }">
-        <v-col cols="12" md="6" lg="6" class="text-end body-2" v-bind:class="quickStatusesColors[item.quickStatus]">{{$t(item.quickStatus)}}</v-col>
-        <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold button">{{item.currency}}{{item.transactionAmount}}</v-col>
-      </template>
-
-      <template v-slot:append>
-        <v-icon>mdi-chevron-right</v-icon>
-      </template>
-    </ec-list>
-   </v-card-text>
-  </v-card>
+          <template v-slot:append>
+            <v-icon>mdi-chevron-right</v-icon>
+          </template>
+        </ec-list>
+      </v-card-text>
+    </v-card>
+  </v-flex>
 </template>
 
 <script>
 import TransactionsFilter from "../../components/transactions/TransactionsFilter";
 import EcList from "../../components/ec/EcList";
+import moment from "moment";
 
 export default {
   name: "TransactionsList",
@@ -60,6 +59,7 @@ export default {
     return {
       totalAmount: 0,
       transactions: [],
+      groupedTransactions: {},
       loading: true,
       options: {},
       pagination: {},
@@ -67,11 +67,12 @@ export default {
       transactionsFilter: {},
       dictionaries: {},
       quickStatusesColors: {
-        "Pending": "ecgray--text",
-        "None": "",
-        "Completed": "success--text",
-        "Failed": "error--text"
-      }
+        Pending: "ecgray--text",
+        None: "",
+        Completed: "success--text",
+        Failed: "error--text"
+      },
+      moment: moment
     };
   },
   watch: {
@@ -83,6 +84,7 @@ export default {
     }
   },
   methods: {
+    /**todo: obsolete, remove */
     async getDataFromApi() {
       let timeout = setTimeout(
         (() => {
@@ -109,10 +111,31 @@ export default {
     async applyFilter(filter) {
       this.transactionsFilter = filter;
       await this.getDataFromApi();
+    },
+    async getGroupedDataFromApi(){
+      let timeout = setTimeout(
+        (() => {
+          this.loading = true;
+        }).bind(this),
+        1000
+      );
+      let data = await this.$api.transactions.getGrouped({
+        ...this.transactionsFilter,
+        ...this.options
+      });
+      if (data) {
+        this.groupedTransactions = data;
+
+        if (!this.headers || this.headers.length === 0) {
+          this.headers = data.headers;
+        }
+      }
+      clearTimeout(timeout);
+      this.loading = false;
     }
   },
   async mounted() {
-    await this.getDataFromApi();
+    await this.getGroupedDataFromApi();
   }
 };
 </script>

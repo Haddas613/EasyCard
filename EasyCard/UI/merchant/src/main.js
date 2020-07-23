@@ -12,6 +12,7 @@ import VueLodash from 'vue-lodash'
 import lodash from 'lodash'
 import VueCardFormat from './plugins/card-validator';
 import Toasted from 'vue-toasted';
+import ecdate from './extensions/filters/ecdate'
 
 Vue.config.productionTip = false
 
@@ -31,7 +32,8 @@ mainAuth.startup().then(ok => {
             toastObject.goAway(0);
         }
     },
-});
+  });
+  Vue.filter('ecdate', ecdate);
   
   if (ok) {
     new Vue({

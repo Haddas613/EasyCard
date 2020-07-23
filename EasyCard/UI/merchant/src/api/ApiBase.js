@@ -133,6 +133,7 @@ class ApiBase {
         for (const property in d) {
             let v = d[property]
             let h = headers[property]
+            if(!h) continue;
             if (h.dataType == 'guid' && v && v.length > 8) {
                 d[`$${property}`] = v
                 d[property] = v.substring(0, 8)

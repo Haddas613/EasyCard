@@ -27,6 +27,30 @@ export default class TransactionsApi {
         return data;
     }
 
+    async getGrouped(params) {
+
+      if (!this.headers) {
+          let data = await this.base.get(this.transactionsUrl + '/$meta')
+          this.headers = this.base._formatHeaders(data)
+          this.$headers = data.columns
+      }
+
+      let data = await this.base.get(this.transactionsUrl + '/$grouped', params);
+      
+      if(!data || data.status === "error")
+          return null;
+
+      let dictionaries = await this.base.dictionaries.$getTransactionDictionaries();
+      
+      for(var d of data){
+        d.data = d.data.map(x => this.base.format(x, this.$headers, dictionaries))
+      }
+
+      data.headers = this.headers;
+
+      return data;
+  }
+
     /**Based on the given data's JDealType will create corresponding operation */
     async processTransaction(data){
       let result = { status: "error" };

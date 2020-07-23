@@ -5,6 +5,7 @@
   "TransactionsList": "Transactions List",
   "CustomersList": "Customers List",
   "CreateCustomer": "Create Customer",
+  "DeleteCustomer": "Delete Customer",
   "CreateRefund": "Create Refund",
   "@GoodMorning": "Good Morning, @name",
   "ItemsList": "Items List",

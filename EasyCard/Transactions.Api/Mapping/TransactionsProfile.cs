@@ -45,6 +45,10 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.CreditCardDetails.CardOwnerName))
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus()));
 
+            CreateMap<TransactionSummaryDb, TransactionSummary>()
+                .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.CardOwnerName))
+                .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus()));
+
             CreateMap<SharedIntegration.Models.DealDetails, Business.Entities.DealDetails>();
             CreateMap<Business.Entities.DealDetails, SharedIntegration.Models.DealDetails>();
 
