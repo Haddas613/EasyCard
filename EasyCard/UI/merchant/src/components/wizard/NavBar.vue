@@ -21,7 +21,7 @@
           >{{terminalName}}</v-toolbar-title>
         </v-col>
         <v-col cols="2" md="3" lg="4" class="d-flex justify-end">
-          <v-menu offset-y v-if="tdmenuitems && tdmenuitems.length > 0">
+          <v-menu offset-y dark v-if="tdmenuitems && tdmenuitems.length > 0">
             <template v-slot:activator="{ on, attrs }">
               <v-icon v-bind="attrs" v-on="on">mdi-dots-vertical</v-icon>
             </template>

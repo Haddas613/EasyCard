@@ -1,9 +1,13 @@
 
 const state = () => ({
-    headerText: {
-        translate: false,
-        text: "easycard"
-    },
+    header: {
+        text: {
+            translate: false,
+            value: "easycard"
+        },
+        threeDotMenu: []
+    }
+
 });
 
 const getters = {};
@@ -11,8 +15,8 @@ const actions = {
 };
 
 const mutations = {
-    changeHeaderText(state, { vm, newHeaderText }) {
-        state.headerText = newHeaderText;
+    changeHeader(state, {value}){
+        Object.assign(state.header, value);
     }
 }
 

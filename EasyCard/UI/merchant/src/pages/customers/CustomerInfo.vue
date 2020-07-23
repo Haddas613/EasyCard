@@ -7,7 +7,12 @@
             <span class="pt-2 ecdgray--text subtitle-2 text-uppercase">{{$t('PersonalInformation')}}</span>
           </v-col>
           <v-col cols="3" class="d-flex justify-end">
-            <v-btn text class="primary--text px-0" link :to="{name: 'EditCustomer', params: { id: this.$route.params.id}}">
+            <v-btn
+              text
+              class="primary--text px-0"
+              link
+              :to="{name: 'EditCustomer', params: { id: this.$route.params.id}}"
+            >
               <v-icon left class="body-1">mdi-pencil-outline</v-icon>
               {{$t('Edit')}}
             </v-btn>
@@ -51,6 +56,14 @@ export default {
       model: {}
     };
   },
+  methods: {
+    createCustomer(){
+      console.log("TODO: Create customer")
+    },
+    deleteCustomer(){
+      console.log("TODO: delete customer")
+    }
+  },
   async mounted() {
     if (this.data) {
       this.model = this.data;
@@ -59,7 +72,21 @@ export default {
 
     this.model = await this.$api.consumers.getConsumer(this.$route.params.id);
 
-    this.$store.commit("ui/changeHeaderText", { newHeaderText: { translate: false, text: this.model.consumerName}})
+    this.$store.commit("ui/changeHeader", {
+      value: {
+        threeDotMenu: [
+          {
+            text: this.$t("CreateCustomer"),
+            fn: this.createCustomer.bind(this)
+          },
+          {
+            text: this.$t("DeleteCustomer"),
+            fn: this.deleteCustomer.bind(this)
+          }
+        ],
+        text: { translate: false, value: this.model.consumerName }
+      }
+    });
   }
 };
 </script>

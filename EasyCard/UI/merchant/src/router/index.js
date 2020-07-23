@@ -108,11 +108,12 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  store.commit("ui/changeHeaderText", {
-    newHeaderText: {
+  store.commit("ui/changeHeader", {
+    text: {
       translate: true,
-      text: to.name
-    }
+      value: to.name
+    },
+    threeDotMenu: null
   });
   next();
 });
