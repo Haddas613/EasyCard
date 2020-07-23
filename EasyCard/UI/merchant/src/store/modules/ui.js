@@ -5,7 +5,9 @@ const state = () => ({
             translate: false,
             value: "easycard"
         },
-        threeDotMenu: []
+        threeDotMenu: [],
+         /** do not display title and switch color to desktop version */
+        altDisplay: false
     }
 
 });

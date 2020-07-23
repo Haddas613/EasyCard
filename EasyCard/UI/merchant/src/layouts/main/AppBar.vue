@@ -4,20 +4,20 @@
       :clipped-left="$vuetify.breakpoint.lgAndUp"
       :clipped-right="$vuetify.breakpoint.lgAndUp"
       app
-      :color="$vuetify.breakpoint.mdAndUp ? 'primary' : 'white'"
-      :dark="$vuetify.breakpoint.mdAndUp"
+      :color="($vuetify.breakpoint.mdAndUp || headerStore.altDisplay) ? 'primary' : 'white'"
+      :dark="($vuetify.breakpoint.mdAndUp || headerStore.altDisplay)"
       :flat="true"
     >
       <v-row :align="'center'">
         <v-col cols="2" md="4" lg="4" xl="3">
           <v-app-bar-nav-icon
             @click.stop="drawerObj = !drawerObj"
-            :color="$vuetify.breakpoint.mdAndUp ? '' : 'primary'"
+            :color="($vuetify.breakpoint.mdAndUp || headerStore.altDisplay) ? '' : 'primary'"
           />
         </v-col>
         <v-col cols="8" md="4" lg="4" xl="3" class="d-flex justify-space-around">
           <v-toolbar-title class="display-1 hidden-sm-and-down">easycard</v-toolbar-title>
-          <v-toolbar-title class="subtitle-1 hidden-md-and-up">{{headerText}}</v-toolbar-title>
+          <v-toolbar-title class="subtitle-1 hidden-md-and-up" v-if="!headerStore.altDisplay">{{headerText}}</v-toolbar-title>
         </v-col>
         <v-col cols="2" md="4" lg="4" xl="3" class="d-flex justify-end">
           <template v-if="$vuetify.breakpoint.mdAndUp">
@@ -42,7 +42,7 @@
         </v-col>
       </v-row>
     </v-app-bar>
-    <v-divider></v-divider>
+    <v-divider v-if="!headerStore.altDisplay"></v-divider>
   </div>
 </template>
 <script>

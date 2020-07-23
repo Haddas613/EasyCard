@@ -31,6 +31,10 @@ const routes = [
       {
         name: 'Dashboard',
         path: 'dashboard',
+        meta:{
+          /** do not display title and switch color to desktop version */
+          altDisplay: true, 
+        },
         alias: '',
         component: () => import('../pages/Dashboard.vue'),
       },
@@ -109,11 +113,14 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   store.commit("ui/changeHeader", {
-    text: {
-      translate: true,
-      value: to.name
-    },
-    threeDotMenu: null
+    value: {
+      text: {
+        translate: true,
+        value: to.name,
+      },
+      threeDotMenu: null,
+      altDisplay: to.meta.altDisplay
+    }
   });
   next();
 });
