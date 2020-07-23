@@ -20,5 +20,7 @@ namespace Transactions.Business.Services
         Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum? transactionStatus = null, TransactionFinalizationStatusEnum? finalizationStatus = null, RejectionReasonEnum? rejectionReason = null, string rejectionMessage = null, IDbContextTransaction dbTransaction = null);
 
         Task<IEnumerable<TransmissionInfo>> StartTransmission(Guid terminalID, IEnumerable<Guid> transactionIDs, IDbContextTransaction dbTransaction = null);
+
+        Task<IEnumerable<TransactionSummaryDb>> GetGroupedTransactionSummaries(IDbContextTransaction dbTransaction);
     }
 }

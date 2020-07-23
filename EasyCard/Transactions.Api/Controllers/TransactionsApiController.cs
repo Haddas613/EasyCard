@@ -94,6 +94,41 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpGet]
+        [Route("$grouped")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<IEnumerable<GroupedSummariesResponse<TransactionSummaryDb>>>> GetTransactionsGrouped()
+        {
+            Debug.WriteLine(User);
+            var merchantID = User.GetMerchantID();
+            var userIsTerminal = User.IsTerminal();
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var query = await transactionsService.GetGroupedTransactionSummaries(dbTransaction);
+
+                //var response = new SummariesResponse<TransactionSummaryDb> { NumberOfRecords = 0 };
+
+                //query = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByDirection).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
+
+                // TODO: validate generated sql
+                //var sql = query.ToSql();
+
+                // TODO: try to remove ProjectTo
+                //response.Data = query;
+
+                var results = from p in query
+                              group p by new { p.TransactionDate, p.NumberOfRecords } into g
+                              select new GroupedSummariesResponse<TransactionSummaryDb>
+                              {
+                                  GroupValue = g.Key,
+                                  Data = g.ToList()
+                              };
+
+                return Ok(results);
+            }
+        }
+
+        [HttpGet]
         [Route("{transactionID}")]
         public async Task<ActionResult<TransactionResponse>> GetTransaction([FromRoute] Guid transactionID)
         {

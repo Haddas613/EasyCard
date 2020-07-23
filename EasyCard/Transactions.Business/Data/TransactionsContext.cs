@@ -22,6 +22,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Transactions.Shared.Models;
+using System.Linq;
 
 namespace Transactions.Business.Data
 {
@@ -66,6 +67,40 @@ namespace Transactions.Business.Data
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //    => optionsBuilder
         //        .UseLoggerFactory(DbCommandConsoleLoggerFactory);
+
+        public async Task<IEnumerable<TransactionSummaryDb>> GetGroupedTransactionSummaries(IDbContextTransaction dbTransaction = null)
+        {
+            var query = @"select PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, NumberOfRecords
+from(
+    select PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, r = row_number() over(partition by TransactionDate order by PaymentTransactionID desc), NumberOfRecords = count(*) over(partition by TransactionDate)
+    from PaymentTransaction 
+    ) a
+where r <= 10
+ order by PaymentTransactionID desc";
+
+            var connection = this.Database.GetDbConnection();
+            bool existingConnection = true;
+            try
+            {
+
+                if (connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync();
+                    existingConnection = false;
+                }
+
+                var report = await connection.QueryAsync<TransactionSummaryDb>(query, transaction: dbTransaction?.GetDbTransaction());
+
+                return report;
+            }
+            finally
+            {
+                if (!existingConnection)
+                {
+                    connection.Close();
+                }
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -36,6 +36,8 @@ namespace Transactions.Business.Services
 
         public IQueryable<PaymentTransaction> GetTransactions() => context.PaymentTransactions;
 
+        public async Task<IEnumerable<TransactionSummaryDb>> GetGroupedTransactionSummaries(IDbContextTransaction dbTransaction) => await context.GetGroupedTransactionSummaries(dbTransaction);
+
         public async override Task CreateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
         {
             if (user.IsTerminal() && entity.TerminalID != user.GetTerminalID() || user.IsMerchant() && entity.MerchantID != user.GetMerchantID())

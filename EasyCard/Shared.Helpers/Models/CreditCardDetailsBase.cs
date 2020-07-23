@@ -27,7 +27,7 @@ namespace Shared.Helpers
         [StringLength(20)]
         public string CardOwnerNationalID { get; set; }
 
-        [RegularExpression(@"^;\d{15,17}=\d{19,21}\?$")]
+        //[RegularExpression(@"^;\d{15,17}=\d{19,21}\?$")]
         public string CardReaderInput { get; set; }
     }
 }
