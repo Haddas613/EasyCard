@@ -72,6 +72,10 @@ export default {
 
     this.model = await this.$api.consumers.getConsumer(this.$route.params.id);
 
+    if(!this.model){
+      this.$router.push('/admin/customers/list')
+    }
+
     this.$store.commit("ui/changeHeader", {
       value: {
         threeDotMenu: [

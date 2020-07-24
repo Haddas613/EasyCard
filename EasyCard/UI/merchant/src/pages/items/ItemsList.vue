@@ -15,7 +15,7 @@
 
         <template v-slot:append="{ item }">
           <v-btn icon :to="{ name: 'EditItem', params: { id: item.$itemID } }">
-            <v-icon>mdi-chevron-right</v-icon>
+            <re-icon>mdi-chevron-right</re-icon>
           </v-btn>
         </template>
       </ec-list>
@@ -25,15 +25,15 @@
 
 <script>
 import EcList from "../../components/ec/EcList";
+import ReIcon from "../../components/misc/ResponsiveIcon";
 
 export default {
   name: "ItemsList",
-  components: { EcList },
+  components: { EcList, ReIcon },
   data() {
     return {
       totalAmount: 0,
       items: [],
-      loading: true,
       dictionaries: {}
     };
   },

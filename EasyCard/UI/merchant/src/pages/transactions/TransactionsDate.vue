@@ -1,19 +1,18 @@
 <template>
   <v-flex>
-    <v-card width="100%" flat class="hidden-sm-and-down">
-      <v-card-title>{{$t('Transactions')}}</v-card-title>
-    </v-card>
+    <v-overlay :value="loading">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
 
-    <v-card
-      class="mt-4"
-      width="100%"
-      flat
-      v-for="groupedTransaction in groupedTransactions"
-      v-bind:key="groupedTransaction.groupValue.transactionDate"
-    >
-      <v-card-title class="subtitle-2">{{groupedTransaction.groupValue.transactionDate | ecdate}}</v-card-title>
+    <v-card class="mt-4" width="100%" flat>
+      <v-card-title class="subtitle-2 px-4">
+        <router-link class="text-decoration-none" :to="{name: 'Transactions'}">
+          <re-icon class="primary--text">mdi-chevron-left</re-icon>
+        </router-link>
+        {{date | ecdate}}
+      </v-card-title>
       <v-card-text class="px-0">
-        <ec-list :items="groupedTransaction.data">
+        <ec-list :items="transactions">
           <template v-slot:prepend>
             <v-icon>mdi-credit-card-outline</v-icon>
           </template>
@@ -48,10 +47,6 @@
             <re-icon>mdi-chevron-right</re-icon>
           </template>
         </ec-list>
-        <!-- TODO: config -->
-        <v-card-actions class="justify-center" v-if="groupedTransaction.groupValue.numberOfRecords > 10">
-          <router-link class="primary--text" link :to="{name: 'TransactionsDate', params: {date: groupedTransaction.groupValue.transactionDate}}">{{$t("SeeMore")}}...</router-link>
-        </v-card-actions>
       </v-card-text>
     </v-card>
   </v-flex>
@@ -60,49 +55,66 @@
 <script>
 import EcList from "../../components/ec/EcList";
 import ReIcon from "../../components/misc/ResponsiveIcon";
+import moment from "moment";
 
 export default {
-  name: "TransactionsList",
-  components: { EcList, ReIcon },
+  components: {
+    EcList,
+    ReIcon
+  },
   data() {
     return {
-      totalAmount: 0,
+      loading: false,
+      date: null,
       transactions: [],
-      groupedTransactions: {},
-      options: {},
-      pagination: {},
-      headers: [],
-      transactionsFilter: {},
-      dictionaries: {},
       quickStatusesColors: {
         Pending: "ecgray--text",
         None: "",
         Completed: "success--text",
         Failed: "error--text"
       },
+      moment: moment
     };
   },
   methods: {
-    async applyFilter(filter) {
-      this.transactionsFilter = filter;
-      await this.getGroupedDataFromApi();
-    },
-    async getGroupedDataFromApi() {
-      let data = await this.$api.transactions.getGrouped({
-        ...this.transactionsFilter,
-        ...this.options
+    async getDataFromApi() {
+      let timeout = setTimeout(
+        (() => {
+          this.loading = true;
+        }).bind(this),
+        1000
+      );
+      let data = await this.$api.transactions.get({
+        dateFrom: moment(this.date)
+          .startOf("day")
+          .format(),
+        dateTo: moment(this.date)
+          .endOf("day")
+          .format()
       });
       if (data) {
-        this.groupedTransactions = data;
-
-        if (!this.headers || this.headers.length === 0) {
-          this.headers = data.headers;
-        }
+        this.transactions = data.data || [];
+        this.totalAmount = data.numberOfRecords || 0;
       }
+      clearTimeout(timeout);
+      this.loading = false;
     }
   },
   async mounted() {
-    await this.getGroupedDataFromApi();
+    if (!this.$route.params.date) {
+      this.$router.push("/admin/transactions/list");
+    }
+    this.$store.commit("ui/changeHeader", {
+      value: {
+        text: { translate: true, value: "Transactions" }
+      }
+    });
+
+    this.date = this.$route.params.date;
+    await this.getDataFromApi();
   }
 };
 </script>
+
+<style lang="scss" scoped>
+</style>

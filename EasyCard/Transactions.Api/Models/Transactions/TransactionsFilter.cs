@@ -48,6 +48,6 @@ namespace Transactions.Api.Models.Transactions
 
         public DateTime? DateTo { get; set; }
 
-        public DateFilterTypeEnum? DateType { get; set; }
+        public DateFilterTypeEnum DateType { get; set; }
     }
 }

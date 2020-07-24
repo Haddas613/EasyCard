@@ -44,6 +44,11 @@ const routes = [
         component: () => import('../pages/transactions/TransactionsList.vue'),
       },
       {
+        name: 'TransactionsDate',
+        path: 'transactions/date/:date',
+        component: () => import('../pages/transactions/TransactionsDate.vue'),
+      },
+      {
         name: 'Items',
         path: 'items/list',
         component: () => import('../pages/items/ItemsList.vue'),

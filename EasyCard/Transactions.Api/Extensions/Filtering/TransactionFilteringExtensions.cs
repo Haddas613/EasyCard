@@ -113,7 +113,7 @@ namespace Transactions.Api.Extensions.Filtering
 
                     if (filter.DateTo != null)
                     {
-                        src = src.Where(t => t.TransactionTimestamp <= filter.DateFrom.Value);
+                        src = src.Where(t => t.TransactionTimestamp <= filter.DateTo.Value);
                     }
                 }
 
