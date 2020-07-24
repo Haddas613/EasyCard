@@ -1,8 +1,5 @@
 <template>
   <div>
-    <v-overlay :value="loading">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>
     <v-form ref="form" lazy-validation>
       <v-container fluid>
         <v-row>
@@ -35,14 +32,11 @@
 export default {
   data() {
     return {
-      loading: false,
       terminalID: null,
       terminals: []
     };
   },
   async mounted() {
-    let timeout = setTimeout((() => {this.loading = true}).bind(this), 1000);
-    
     this.terminals = (await this.$api.terminals.getTerminals()).data || [];
     if (this.terminals.length > 0) {
       if (this.terminals.length === 1) {
@@ -50,8 +44,6 @@ export default {
       }
       this.terminalID = this.terminals[0].terminalID;
     }
-    clearTimeout(timeout);
-    this.loading = false;
   },
   methods: {
     ok() {

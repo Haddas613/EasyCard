@@ -1,9 +1,5 @@
 <template>
   <div>
-    <v-overlay :value="loading">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>
-
     <v-snackbar
       color="success"
       v-model="successSnack.showSnackbar"
@@ -206,7 +202,6 @@ export default {
       if (this.isInstallmentTransaction)
         this.model.installmentDetails = this.$refs.instDetails.model;
 
-      this.loading = true;
       this.snackbarErrorsArray = [];
 
       let result = { isError: false };
@@ -231,7 +226,6 @@ export default {
       }
 
       if (result.isError) {
-        this.loading = false;
         this.errorSnack.showSnackbar = true;
         this.errorSnack.snackbarMsg = result.message || null;
         this.errorSnack.snackbarErrorsArray = result.errors || [];
@@ -319,8 +313,7 @@ export default {
       successSnack: {
         showSnackbar: false,
         snackbarMsg: null
-      },
-      loading: false
+      }
     };
   }
 };

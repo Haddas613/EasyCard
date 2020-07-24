@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" outlined :loading="loading">
+  <v-card class="mx-auto" outlined>
     <v-card-title>{{$t('CreateTransaction')}}</v-card-title>
     <v-divider></v-divider>
     <div>
@@ -20,7 +20,6 @@ export default {
       savedSnackbar: false,
       errorSnackbar: false,
       snackbarErrorsArray: [],
-      loading: false
     };
   }
 };

@@ -11,9 +11,6 @@
       :tdmenuitems="threeDotMenuItems"
       :title="navTitle"
     ></navbar>
-    <v-overlay :value="loading">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>
     <v-stepper class="ec-stepper pt-1" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
@@ -126,7 +123,6 @@ export default {
       ],
       success: true,
       errors: [],
-      loading: false
     };
   },
   computed: {
@@ -165,10 +161,7 @@ export default {
       this.model.installmentDetails = data.installmentDetails;
       this.model.terminalID = this.terminal.terminalID;
 
-      this.loading = true;
       let result = await this.$api.transactions.processTransaction(this.model);
-      console.log(result)
-      this.loading = false;
 
       //assuming current step is one before the last
       let lastStep = this.steps[this.step + 1];

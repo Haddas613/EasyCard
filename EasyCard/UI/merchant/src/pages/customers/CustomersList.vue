@@ -16,7 +16,6 @@ export default {
     return {
       totalAmount: 0,
       customers: [],
-      loading: true,
       dictionaries: {}
     };
   },

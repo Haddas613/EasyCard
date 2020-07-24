@@ -1,9 +1,5 @@
 <template>
   <v-flex>
-    <v-overlay :value="loading">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>
-
     <v-card class="mt-4" width="100%" flat>
       <v-card-title class="subtitle-2 px-4">
         <router-link class="text-decoration-none" :to="{name: 'Transactions'}">
@@ -64,7 +60,6 @@ export default {
   },
   data() {
     return {
-      loading: false,
       date: null,
       transactions: [],
       quickStatusesColors: {
@@ -78,12 +73,7 @@ export default {
   },
   methods: {
     async getDataFromApi() {
-      let timeout = setTimeout(
-        (() => {
-          this.loading = true;
-        }).bind(this),
-        1000
-      );
+
       let data = await this.$api.transactions.get({
         dateFrom: moment(this.date)
           .startOf("day")
@@ -96,8 +86,6 @@ export default {
         this.transactions = data.data || [];
         this.totalAmount = data.numberOfRecords || 0;
       }
-      clearTimeout(timeout);
-      this.loading = false;
     }
   },
   async mounted() {
