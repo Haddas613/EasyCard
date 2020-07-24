@@ -5,7 +5,7 @@ import TerminalsApi from './modules/profile/TerminalsApi';
 import ConsumersApi from './modules/profile/ConsumersApi';
 import ItemsApi from './modules/profile/ItemsApi';
 import moment from 'moment'
-
+import store from '../store/index';
 import i18n from '../i18n'
 
 class ApiBase {
@@ -98,6 +98,7 @@ class ApiBase {
 
     async _handleRequest(request, showSuccessToastr = false) {
         try {
+            store.commit("ui/requestsCountIncrement");
             request = await request;
             let result = await request.json();
             if (request.ok) {
@@ -121,6 +122,8 @@ class ApiBase {
 
         } catch (err) {
             Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error'});
+        } finally{
+            store.commit("ui/requestsCountDecrement");
         }
         return null;
     }
