@@ -6,6 +6,10 @@ export default class TerminalsApi {
     }
 
     async getTerminals(params) {
-        return await this.base.get(this.terminalsUrl, params);
+        if(this.$terminals){
+            return this.$terminals;
+        }
+        this.$terminals = await this.base.get(this.terminalsUrl, params);
+        return this.$terminals;
     }
 }
