@@ -9,17 +9,17 @@
       :flat="true"
     >
       <v-row :align="'center'">
-        <v-col cols="2" md="4" lg="4" xl="3">
+        <v-col cols="2" md="4" lg="4" xl="4">
           <v-app-bar-nav-icon
             @click.stop="drawerObj = !drawerObj"
             :color="($vuetify.breakpoint.mdAndUp || headerStore.altDisplay) ? '' : 'primary'"
           />
         </v-col>
-        <v-col cols="8" md="4" lg="4" xl="3" class="d-flex justify-space-around">
+        <v-col cols="8" md="4" lg="4" xl="4" class="d-flex justify-space-around">
           <v-toolbar-title class="display-1 hidden-sm-and-down">easycard</v-toolbar-title>
           <v-toolbar-title class="subtitle-1 hidden-md-and-up" v-if="!headerStore.altDisplay">{{headerText}}</v-toolbar-title>
         </v-col>
-        <v-col cols="2" md="4" lg="4" xl="3" class="d-flex justify-end">
+        <v-col cols="2" md="4" lg="4" xl="4" class="d-flex justify-end">
           <template v-if="$vuetify.breakpoint.mdAndUp">
             <actions-bar :footer="false"></actions-bar>
           </template>
