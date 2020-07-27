@@ -84,6 +84,7 @@ export default {
           dealReference: null,
           consumerEmail: null,
           consumerPhone: null,
+          consumerID: null,
           dealDescription: null
         },
         installmentDetails: {
@@ -137,6 +138,9 @@ export default {
     goBack() {
       if (this.step === 1) this.$router.push("/admin/dashboard");
       else this.step--;
+    },
+    processCustomer(data){
+      this.model.dealDetails 
     },
     processAmount(data) {
       this.model.transactionAmount = data.amount;
