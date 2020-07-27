@@ -1,9 +1,9 @@
 <template>
   <v-card class="ec-card d-flex flex-column" fill-height>
     <v-card-text class="py-2">
-      <v-form class="ec-form" ref="form">
+      <v-form class="ec-form" ref="form" lazy-validation>
         <v-text-field
-          v-model="model.name"
+          v-model="model.creditCardSecureDetails.cardOwnerName"
           :label="$t('Name on card')"
           :rules="[vr.primitives.required, vr.primitives.stringLength(3, 50)]"
           background-color="white"
@@ -122,12 +122,16 @@
 import ValidationRules from "../../helpers/validation-rules";
 
 export default {
+  props: {
+    data: {
+      type: Object,
+      default: null,
+      required: false
+    },
+  },
   data() {
     return {
-      model: {
-        save: false,
-        cardReaderInput: null
-      },
+      model: { ...this.data },
       vr: ValidationRules,
       errors: {
         cardNumber: false,
@@ -169,7 +173,7 @@ export default {
         
       this.$emit("ok", {
         save: this.model.save,
-        cardOwnerName: this.model.name,
+        cardOwnerName: this.model.cardOwnerName,
         cardNumber: this.$refs.cardNumberInp.value.replace(/\s/g, ""),
         cardExpiration: this.$refs.expiryInp.value.replace(/\s/g, ""),
         cardOwnerNationalID: this.model.nationalID,
