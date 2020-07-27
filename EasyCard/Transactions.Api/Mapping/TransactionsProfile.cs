@@ -24,6 +24,8 @@ namespace Transactions.Api.Mapping
 
         private void RegisterTransactionMappings()
         {
+          
+
             CreateMap<CreateTransactionRequest, PaymentTransaction>()
                    .ForMember(d => d.InitialPaymentAmount, s => s.MapFrom(src => src.InstallmentDetails.InitialPaymentAmount))
                    .ForMember(d => d.NumberOfPayments, s => s.MapFrom(src => src.InstallmentDetails.NumberOfPayments))
