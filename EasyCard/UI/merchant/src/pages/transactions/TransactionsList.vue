@@ -41,7 +41,7 @@
               md="6"
               lg="6"
               class="text-end font-weight-bold button"
-            >{{item.currency}}{{item.transactionAmount}}</v-col>
+            ><span dir="ltr">{{item.transactionAmount | currency(item.$currency)}}</span></v-col>
           </template>
 
           <template v-slot:append>
@@ -50,7 +50,9 @@
         </ec-list>
         <!-- TODO: config -->
         <v-card-actions class="justify-center" v-if="groupedTransaction.groupValue.numberOfRecords > 10">
-          <router-link class="primary--text" link :to="{name: 'TransactionsDate', params: {date: groupedTransaction.groupValue.transactionDate}}">{{$t("SeeMore")}}...</router-link>
+          <router-link class="primary--text" link :to="{name: 'TransactionsDate', params: {date: groupedTransaction.groupValue.transactionDate}}">
+            {{$t("SeeMore")}} {{groupedTransaction.groupValue.numberOfRecords}}
+            </router-link>
         </v-card-actions>
       </v-card-text>
     </v-card>

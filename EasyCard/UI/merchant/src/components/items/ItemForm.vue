@@ -25,11 +25,9 @@
       </v-col>
       <v-col cols="12" md="6">
         <v-text-field
-          v-model.number="model.price"
+          v-model.lazy="model.price"
           :label="$t('Price')"
-          type="number"
-          min="0.01"
-          step="0.01"
+          v-money="{precision: 2}"
           :rules="[vr.primitives.biggerThan(0)]"
           required
           class="px-1"
