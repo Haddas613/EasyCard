@@ -38,9 +38,16 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<UserResponse>> GetUsers([FromQuery] GetUsersFilter filter)
+        public async Task<ActionResult<IEnumerable<UserResponse>>> GetUsers([FromQuery] GetUsersFilter filter)
         {
-            throw new NotImplementedException();
+            var userEntity = EnsureExists(await userManagementClient.GetUserByEmail(filter.Email));
+
+            var userData = mapper.Map<UserResponse>(userEntity);
+
+            userData.Terminals = (await terminalsService.GetUserTerminals(userEntity.UserID).ToListAsync())
+                .Select(d => mapper.Map<Models.Terminal.TerminalSummary>(d));
+
+            return Ok(new List<UserResponse> { userData });
         }
 
         [HttpGet]
