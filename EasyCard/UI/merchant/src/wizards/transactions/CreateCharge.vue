@@ -18,11 +18,11 @@
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
-          <customers-list :show-previously-charged="false" v-on:ok="model.customer=$event; step++"></customers-list>
+          <customers-list :show-previously-charged="false" v-on:ok="processCustomer($event)"></customers-list>
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">
-          <credit-card-secure-details v-on:ok="processCreditCard($event)"></credit-card-secure-details>
+          <credit-card-secure-details :data="model" v-on:ok="processCreditCard($event)"></credit-card-secure-details>
         </v-stepper-content>
 
         <v-stepper-content step="4" class="py-0 px-0">
@@ -84,6 +84,7 @@ export default {
           dealReference: null,
           consumerEmail: null,
           consumerPhone: null,
+          consumerID: null,
           dealDescription: null
         },
         installmentDetails: {
@@ -103,7 +104,7 @@ export default {
           skippable: true
         },
         3: {
-          title: "Charge"
+          title: "Charge",
           // skippable: true
         },
         4: {
@@ -137,6 +138,14 @@ export default {
     goBack() {
       if (this.step === 1) this.$router.push("/admin/dashboard");
       else this.step--;
+    },
+    processCustomer(data){
+      this.model.dealDetails.consumerEmail = data.consumerEmail;
+      this.model.dealDetails.consumerPhone = data.consumerPhone;
+      this.model.dealDetails.consumerID = data.consumerID;
+      this.model.creditCardSecureDetails.cardOwnerName = data.consumerName;
+      this.model.creditCardSecureDetails.cardOwnerNationalID = data.consumerNationalID;
+      this.step++;
     },
     processAmount(data) {
       this.model.transactionAmount = data.amount;

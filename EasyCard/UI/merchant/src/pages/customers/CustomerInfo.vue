@@ -88,7 +88,8 @@ export default {
             fn: this.deleteCustomer.bind(this)
           }
         ],
-        text: { translate: false, value: this.model.consumerName }
+        text: { translate: false, value: this.model.consumerName },
+        navBtn: { icon: 'mdi-chevron-left', fn: (() => this.$router.go(-1)).bind(this) }
       }
     });
   }

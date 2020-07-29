@@ -2,9 +2,6 @@
   <v-flex>
     <v-card class="mt-4" width="100%" flat>
       <v-card-title class="subtitle-2 px-4">
-        <router-link class="text-decoration-none" :to="{name: 'Transactions'}">
-          <re-icon class="primary--text">mdi-chevron-left</re-icon>
-        </router-link>
         {{date | ecdate}}
       </v-card-title>
       <v-card-text class="px-0">

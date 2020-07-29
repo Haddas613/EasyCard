@@ -7,6 +7,16 @@ import store from '../store/index';
 
 Vue.use(VueRouter)
 
+/**
+ * MainLayout components may contain next meta:
+ * 1. altDesign  - do not display title and switch color to desktop version
+ * 
+ * 2. backBtn:  string:(route-name) | boolean, - when present with positive value, the back button will appear on mobile 
+ * layout instead of burger menu. Either route or goBack(-1) will be used if route name is supplied or not respectively.
+ * 
+ * 3. closeBtn: string:(route-name) | boolean - when present with positive value, the close button will appear on mobile 
+ * layout instead of burger menu. Either route or goBack(-1) will be used if route name is supplied or not respectively.
+ */
 const routes = [
   {
     path: '/',
@@ -32,7 +42,6 @@ const routes = [
         name: 'Dashboard',
         path: 'dashboard',
         meta:{
-          /** do not display title and switch color to desktop version */
           altDisplay: true, 
         },
         alias: '',
@@ -46,6 +55,9 @@ const routes = [
       {
         name: 'TransactionsDate',
         path: 'transactions/date/:date',
+        meta:{
+          backBtn: true
+        },
         component: () => import('../pages/transactions/TransactionsDate.vue'),
       },
       {
@@ -56,11 +68,17 @@ const routes = [
       {
         name: 'CreateItem',
         path: 'items/create',
+        meta:{
+          closeBtn: 'Items'
+        },
         component: () => import('../pages/items/CreateItem.vue'),
       },
       {
         name: 'EditItem',
         path: 'items/edit/:id',
+        meta:{
+          closeBtn: 'Items'
+        },
         component: () => import('../pages/items/EditItem.vue'),
       },
       {
@@ -71,16 +89,25 @@ const routes = [
       {
         name: 'CreateCustomer',
         path: 'customers/create',
+        meta:{
+          closeBtn: 'Customers'
+        },
         component: () => import('../pages/customers/CreateCustomer.vue'),
       },
       {
         name: 'EditCustomer',
         path: 'customers/edit/:id',
+        meta:{
+          backBtn: true
+        },
         component: () => import('../pages/customers/EditCustomer.vue'),
       },
       {
         name: 'Customer',
         path: 'customers/view/:id',
+        meta:{
+          backBtn: true
+        },
         component: () => import('../pages/customers/CustomerInfo.vue'),
       },
       {
@@ -124,7 +151,8 @@ router.beforeEach((to, from, next) => {
         value: to.name,
       },
       threeDotMenu: null,
-      altDisplay: to.meta.altDisplay
+      altDisplay: to.meta.altDisplay,
+      navBtn: null
     }
   });
   next();
