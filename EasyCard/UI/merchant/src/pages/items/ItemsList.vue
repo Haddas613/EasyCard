@@ -10,7 +10,9 @@
         </template>
 
         <template v-slot:right="{ item }">
-          <v-col cols="12" class="text-end font-weight-bold button">{{item.currency}}{{item.price}}</v-col>
+          <v-col cols="12" class="text-end font-weight-bold button">
+            <span dir="ltr">{{item.price | currency(item.$currency)}}</span>
+          </v-col>
         </template>
 
         <template v-slot:append="{ item }">

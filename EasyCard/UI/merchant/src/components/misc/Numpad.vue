@@ -14,20 +14,12 @@
           <span class="subtitle-1 ecgray--text" style="line-height:2.5rem;">{{$t('AddNote')}}</span>
         </v-col>
         <v-col cols="8" class="pt-3">
-          <input inputmode="decimal" min="0.01" v-model.number="model.amount" style="text-align:right;">
-          <!-- <v-text-field
-            class="py-0 px-0 input-simple"
-            dense
-            right
-            single-line
-            :hide-details="true"
-            reverse
-            solo
-            type="number"
-            v-model.number="model.amount"
-            rtl="true"
-            @keydown.native.space.prevent
-          ></v-text-field> -->
+          <input inputmode="decimal" 
+            min="0.01" 
+            v-model.lazy="model.amount" 
+            style="text-align:right;"
+            v-money="{precision: 2}"
+          >
         </v-col>
       </v-row>
       <v-row>
@@ -36,12 +28,12 @@
           v-bind:key="n"
           cols="4"
           class="numpad-btn numpad-num"
-          @click="append(n)"
+          @click="model.amount += n"
         >{{n}}</v-col>
       </v-row>
       <v-row>
         <v-col cols="4" class="numpad-btn numpad-num" @click="model.amount = 0">C</v-col>
-        <v-col cols="4" class="numpad-btn numpad-num" @click="append(0)">0</v-col>
+        <v-col cols="4" class="numpad-btn numpad-num" @click="model.amount += 0">0</v-col>
         <v-col cols="4" class="numpad-btn numpad-num accent--text">+</v-col>
       </v-row>
       <v-row>
@@ -71,13 +63,8 @@ export default {
   },
   methods: {
     ok() {
+      this.model.amount = parseFloat(this.model.amount)
       this.$emit("ok", this.model);
-    },
-    append(n) {
-      const floatingPoint = ((this.model.amount % 1) * 100).toFixed(2);
-      this.model.amount = parseFloat(
-        `${Math.floor(this.model.amount)}${n}.${floatingPoint}`
-      );
     }
   }
 };

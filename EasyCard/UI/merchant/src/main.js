@@ -13,6 +13,8 @@ import lodash from 'lodash'
 import VueCardFormat from './plugins/card-validator';
 import Toasted from 'vue-toasted';
 import ecdate from './extensions/filters/ecdate'
+import currency from './extensions/filters/currency'
+import vmoney from 'v-money';
 
 Vue.config.productionTip = false
 
@@ -22,6 +24,7 @@ mainAuth.startup().then(ok => {
   Vue.use(Api);
   Vue.use(VueLodash, { lodash: lodash })
   Vue.use(VueCardFormat);
+  Vue.use(vmoney, {precision: 2})
   Vue.use(Toasted,{
     iconPack: 'mdi',
     keepOnHover: true,
@@ -34,6 +37,7 @@ mainAuth.startup().then(ok => {
     },
   });
   Vue.filter('ecdate', ecdate);
+  Vue.filter('currency', currency);
   
   if (ok) {
     new Vue({
