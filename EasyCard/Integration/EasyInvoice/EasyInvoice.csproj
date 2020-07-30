@@ -11,4 +11,12 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Converters\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared.Integration\Shared.Integration.csproj" />
+  </ItemGroup>
+
 </Project>
