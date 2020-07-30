@@ -41,7 +41,7 @@
               md="6"
               lg="6"
               class="text-end font-weight-bold button"
-            ><span dir="ltr">{{item.transactionAmount | currency(item.$currency)}}</span></v-col>
+            ><ec-money :amount="item.transactionAmount" :currency="item.$currency"></ec-money></v-col>
           </template>
 
           <template v-slot:append>
@@ -62,10 +62,11 @@
 <script>
 import EcList from "../../components/ec/EcList";
 import ReIcon from "../../components/misc/ResponsiveIcon";
+import EcMoney from "../../components/misc/EcMoney";
 
 export default {
   name: "TransactionsList",
-  components: { EcList, ReIcon },
+  components: { EcList, ReIcon, EcMoney },
   data() {
     return {
       totalAmount: 0,

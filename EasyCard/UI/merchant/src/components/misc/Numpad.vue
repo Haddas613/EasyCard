@@ -7,7 +7,8 @@
       @click="ok()"
       block
       :disabled="model.amount == 0"
-    >{{btntext}} {{model.amount}}$</v-btn>
+    >{{btntext}} <ec-money :amount="model.amount" class="px-1"></ec-money>
+    </v-btn>
     <v-flex class="white text-center align-stretch px-3">
       <v-row>
         <v-col cols="4" class="py-1">
@@ -45,7 +46,12 @@
 </template>
 
 <script>
+import EcMoney from "../misc/EcMoney";
+
 export default {
+  components: {
+    EcMoney,
+  },
   data() {
     return {
       model: {

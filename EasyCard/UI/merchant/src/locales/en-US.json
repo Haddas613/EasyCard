@@ -73,5 +73,7 @@
   "AllCustomers": "All Customers",
   "NothingToShow": "Nothing to Show",
   "PersonalInformation": "Personal Information",
-  "SeeMore": "See more"
+  "SeeMore": "See more",
+  "Charged": "Charged",
+  "ChargedTo": "Charged to"
 }

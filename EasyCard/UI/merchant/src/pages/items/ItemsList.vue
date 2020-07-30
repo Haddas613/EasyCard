@@ -10,8 +10,10 @@
         </template>
 
         <template v-slot:right="{ item }">
-          <v-col cols="12" class="text-end font-weight-bold button">
-            <span dir="ltr">{{item.price | currency(item.$currency)}}</span>
+          <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold button">
+          </v-col>
+          <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold button">
+            <ec-money :amount="item.price" :currency="item.$currency"></ec-money>
           </v-col>
         </template>
 
@@ -28,10 +30,11 @@
 <script>
 import EcList from "../../components/ec/EcList";
 import ReIcon from "../../components/misc/ResponsiveIcon";
+import EcMoney from "../../components/misc/EcMoney";
 
 export default {
   name: "ItemsList",
-  components: { EcList, ReIcon },
+  components: { EcList, ReIcon, EcMoney },
   data() {
     return {
       totalAmount: 0,

@@ -30,7 +30,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="5" class="py-0 px-0">
-          <transaction-success :amount="model.transactionAmount" v-if="success"></transaction-success>
+          <transaction-success :amount="model.transactionAmount" v-if="success" :customer="customer"></transaction-success>
           <transaction-error :errors="errors" v-if="!success"></transaction-error>
         </v-stepper-content>
       </v-stepper-items>
@@ -65,6 +65,7 @@ export default {
   },
   data() {
     return {
+      customer: null,
       model: {
         terminalID: null,
         transactionType: null,
@@ -140,6 +141,7 @@ export default {
       else this.step--;
     },
     processCustomer(data){
+      this.customer = data;
       this.model.dealDetails.consumerEmail = data.consumerEmail;
       this.model.dealDetails.consumerPhone = data.consumerPhone;
       this.model.dealDetails.consumerID = data.consumerID;
