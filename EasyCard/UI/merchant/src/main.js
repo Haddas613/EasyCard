@@ -24,7 +24,7 @@ mainAuth.startup().then(ok => {
   Vue.use(Api);
   Vue.use(VueLodash, { lodash: lodash })
   Vue.use(VueCardFormat);
-  Vue.use(vmoney, {precision: 2})
+  Vue.use(vmoney, {precision: 2, thousands: ''})
   Vue.use(Toasted,{
     iconPack: 'mdi',
     keepOnHover: true,

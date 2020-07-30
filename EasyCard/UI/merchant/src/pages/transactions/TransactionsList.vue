@@ -62,7 +62,7 @@
 <script>
 import EcList from "../../components/ec/EcList";
 import ReIcon from "../../components/misc/ResponsiveIcon";
-import EcMoney from "../../components/misc/EcMoney";
+import EcMoney from "../../components/ec/EcMoney";
 
 export default {
   name: "TransactionsList",

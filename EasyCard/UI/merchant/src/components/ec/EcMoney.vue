@@ -1,5 +1,5 @@
 <template>
-  <span dir="ltr">{{amount | currency(currencyCode)}}</span>
+  <span>{{amount | currency(currencyCode)}}</span>
 </template>
 
 <script>

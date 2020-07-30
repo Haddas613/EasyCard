@@ -30,7 +30,7 @@
 <script>
 import EcList from "../../components/ec/EcList";
 import ReIcon from "../../components/misc/ResponsiveIcon";
-import EcMoney from "../../components/misc/EcMoney";
+import EcMoney from "../../components/ec/EcMoney";
 
 export default {
   name: "ItemsList",
@@ -44,20 +44,11 @@ export default {
   },
   methods: {
     async getDataFromApi() {
-      let timeout = setTimeout(
-        (() => {
-          this.loading = true;
-        }).bind(this),
-        1000
-      );
       let data = await this.$api.items.getItems();
       if (data) {
         this.items = data.data || [];
         this.totalAmount = data.numberOfRecords || 0;
-        this.loading = false;
       }
-      clearTimeout(timeout);
-      this.loading = false;
     }
   },
   async mounted() {

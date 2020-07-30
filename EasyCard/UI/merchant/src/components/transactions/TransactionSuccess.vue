@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import EcMoney from "../misc/EcMoney";
+import EcMoney from "../ec/EcMoney";
 
 export default {
   components: {
