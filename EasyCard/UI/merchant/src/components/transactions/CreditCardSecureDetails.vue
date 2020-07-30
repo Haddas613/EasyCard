@@ -172,13 +172,13 @@ export default {
         return;
         
       this.$emit("ok", {
-        save: this.model.save,
-        cardOwnerName: this.model.cardOwnerName,
+        save: this.model.creditCardSecureDetails.save,
+        cardOwnerName: this.model.creditCardSecureDetails.cardOwnerName,
         cardNumber: this.$refs.cardNumberInp.value.replace(/\s/g, ""),
         cardExpiration: this.$refs.expiryInp.value.replace(/\s/g, ""),
-        cardOwnerNationalID: this.model.nationalID,
+        cardOwnerNationalID: this.model.creditCardSecureDetails.nationalID,
         cvv: this.$refs.cvvInp.value,
-        cardReaderInput: this.model.cardReaderInput
+        cardReaderInput: this.model.creditCardSecureDetails.cardReaderInput
       });
     },
     validate(key) {
