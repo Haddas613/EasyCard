@@ -1,5 +1,5 @@
 <template>
-  <v-list two-line subheader class="py-0 fill-height">
+  <v-list :two-line="!dense" :dense="dense" subheader class="py-0 fill-height">
     <v-list-item v-for="(item, index) in items" :key="index" @click="$emit('click', item)">
       <v-list-item-action v-if="hasSlot('prepend')">
         <slot v-bind:item="item" name="prepend"></slot>
@@ -24,7 +24,12 @@ export default {
   props: {
     items: {
       type: Array,
-      default: []
+      default: [],
+    },
+    dense: {
+      type: Boolean,
+      default: false,
+      required: false
     }
   },
   methods: {

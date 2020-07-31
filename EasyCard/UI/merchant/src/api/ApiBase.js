@@ -145,10 +145,10 @@ class ApiBase {
                 d[`$${property}`] = v
                 d[property] = dictionaries[h.dictionary][v]
             }
-            else if (h.dataType == 'money') {
-                d[`$${property}`] = v
-                d[property] = new Intl.NumberFormat().format(v) // TODO: locale, currency symbol
-            }
+            // else if (h.dataType == 'money') {
+            //     d[`$${property}`] = v
+            //     d[property] = new Intl.NumberFormat().format(v) // TODO: locale, currency symbol
+            // }
             else if (h.dataType == 'date') {
                 d[`$${property}`] = v
                 d[property] = moment(String(v)).format('MM/DD/YYYY') // TODO: locale

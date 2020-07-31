@@ -12,7 +12,7 @@
       {{btntext}}
       <ec-money :amount="totalAmount" class="px-1"></ec-money>
     </v-btn>
-    <v-spacer style="height: 48px"></v-spacer>
+    <v-spacer style="height: 48px" v-if="$vuetify.breakpoint.smAndDown"></v-spacer>
     <v-flex class="white text-center align-stretch px-3">
       <template v-if="activeArea === 'calc'">
         <v-row dir="ltr">
@@ -50,36 +50,55 @@
           <v-col
             cols="6"
             class="numpad-btn py-5"
-            @click="setActiveArea('calc')"
+            @click="activeArea = 'calc'"
             v-bind:class="{'primary--text': (activeArea == 'calc')}"
           >{{$t('Calculator')}}</v-col>
           <v-col
             cols="6"
             class="numpad-btn py-5"
-            @click="setActiveArea('items')"
+            @click="activeArea = 'items'"
             v-bind:class="{'primary--text': (activeArea == 'items')}"
-          >{{$t('ItemsList')}}</v-col>
+          >
+            <span v-if="model.items.length === 0">{{$t('ItemsList')}}</span>
+            <span
+              v-if="model.items.length > 0"
+            >{{$t('@ItemsSelected').replace('@amount', totalItemsAmount)}}</span>
+          </v-col>
         </v-row>
       </v-footer>
-      <ec-list :items="items" v-if="activeArea === 'items'">
-        <template v-slot:left="{ item }">
-          <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text">{{item.itemID}}</v-col>
-          <v-col cols="12" md="6" lg="6">{{item.itemName}}</v-col>
-        </template>
+      <div v-if="activeArea === 'items'">
+        <v-text-field
+          class="py-0 px-5 input-simple"
+          single-line
+          :hide-details="true"
+          solo
+          :label="$t('Search')"
+          prepend-icon="mdi-magnify"
+          v-model="search"
+          clearable
+        ></v-text-field>
+        <v-divider></v-divider>
+        <ec-list class="pb-1" :items="items" v-on:click="itemSelected($event)" dense>
+          <template v-slot:left="{ item }">
+            <span class="d-inline text-none text-oneline body-2">{{item.itemName}}</span>
+          </template>
 
-        <template v-slot:right="{ item }">
-          <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold button"></v-col>
-          <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold button">
-            <ec-money :amount="item.price" :currency="item.$currency"></ec-money>
-          </v-col>
-        </template>
+          <template v-slot:right="{ item }">
+            <v-col cols="12" md="6" lg="6" class="text-end caption">
+              <span>{{selectedItemsCnt[item.$itemID]}}</span>
+            </v-col>
+            <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold subtitle-2">
+              <ec-money :amount="item.price" :currency="item.$currency"></ec-money>
+            </v-col>
+          </template>
 
-        <template v-slot:append="{ item }">
-          <v-btn icon :to="{ name: 'EditItem', params: { id: item.$itemID } }">
-            <v-icon>mdi-plus</v-icon>
-          </v-btn>
-        </template>
-      </ec-list>
+          <template v-slot:append>
+            <v-btn icon>
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </template>
+        </ec-list>
+      </div>
     </v-flex>
   </v-flex>
 </template>
@@ -104,7 +123,10 @@ export default {
         note: null,
         items: []
       },
-      activeArea: "calc"
+      activeArea: "calc",
+      selectedItemsCnt: {},
+      search: null,
+      searchTimeout: null
     };
   },
   props: {
@@ -113,19 +135,46 @@ export default {
       default: null
     }
   },
+  watch: {
+    async search(newValue, oldValue) {
+      if (this.searchTimeout) clearTimeout(this.searchTimeout);
+
+      let searchWasAppliable = oldValue && oldValue.trim().length >= 3;
+      let searchApply = newValue && newValue.trim().length >= 3;
+      if(!searchWasAppliable && !searchApply){
+        return;
+      }
+
+      this.searchTimeout = setTimeout(
+        (async () => {
+          await this.getItems();
+        }).bind(this),
+        1000
+      );
+    }
+  },
   computed: {
     totalAmount() {
       return this.total + parseFloat(this.model.amount);
+    },
+    totalItemsAmount() {
+      return this.lodash.sumBy(this.model.items, i => i.amount);
     }
   },
   async mounted() {
-    let data = await this.$api.items.getItems();
-    if (data) {
-      this.items = data.data || [];
-      // this.totalAmount = data.numberOfRecords || 0;
-    }
+    await this.getItems();
   },
   methods: {
+    async getItems(){
+      let searchApply = this.search && this.search.trim().length >= 3;
+      
+      let data = await this.$api.items.getItems({
+        search: searchApply ? this.search : ''
+      });
+      if (data) {
+        this.items = data.data || [];
+      }
+    },
     ok() {
       this.model.amount = this.totalAmount;
       this.$emit("ok", this.model);
@@ -139,10 +188,41 @@ export default {
         this.model.amount = 0;
       } else {
         this.total = 0;
+        //todo: should also clear items?
+        this.resetItems();
       }
     },
-    setActiveArea(areaType) {
-      this.activeArea = areaType;
+    resetItems() {
+      this.model.items = [];
+      this.$set(this, "selectedItemsCnt", {});
+    },
+    itemSelected(item) {
+      let entry = this.lodash.find(
+        this.model.items,
+        i => i.itemID === item.$itemID
+      );
+      if (entry) {
+        entry.amount++;
+      } else {
+        this.model.items.push({
+          itemID: item.$itemID,
+          itemName: item.itemName,
+          price: item.price,
+          currency: item.currency,
+          amount: 1
+        });
+      }
+      this.total += item.price;
+      this.$set(this.selectedItemsCnt, item.$itemID, entry ? entry.amount : 1);
+    },
+    decreaseAmount(item){
+      let entry = this.lodash.find(
+        this.model.items,
+        i => i.itemID === item.$itemID
+      );
+      if(entry){
+        entry.amount--;
+      }
     }
   }
 };

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -39,5 +40,11 @@ namespace Shared.Integration.Models
         /// End-customer reference
         /// </summary>
         public Guid? ConsumerID { get; set; }
+
+        /// <summary>
+        /// Deal Items
+        /// ID, Count, Name
+        /// </summary>
+        public JObject Items { get; set; }
     }
 }
