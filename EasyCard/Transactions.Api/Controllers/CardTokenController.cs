@@ -98,6 +98,7 @@ namespace Transactions.Api.Controllers
             transaction.JDealType = JDealTypeEnum.J5;
 
             transaction.SpecialTransactionType = SpecialTransactionTypeEnum.InitialDeal;
+            storageData.InitialTransactionID = transaction.PaymentTransactionID;
 
             // TODO: store original transaction
 
@@ -111,6 +112,10 @@ namespace Transactions.Api.Controllers
 
             var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
             mapper.Map(processorSettings, transaction);
+
+            transaction.Calculate();
+
+            await transactionsService.CreateEntity(transaction);
 
             // create transaction in processor (Shva)
             try
@@ -127,12 +132,16 @@ namespace Transactions.Api.Controllers
 
                 if (!processorResponse.Success)
                 {
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);
+
                     return BadRequest(new OperationResponse($"{Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, processorResponse.Errors));
                 }
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Processor Create Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
+
+                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, TransactionFinalizationStatusEnum.Initial, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
 
                 return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByProcesor.ToString(), (ex as IntegrationException)?.Message));
             }

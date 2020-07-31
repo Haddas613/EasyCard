@@ -60,12 +60,22 @@ namespace Transactions.Api.Controllers
         private readonly ILogger logger;
         private readonly ApplicationSettings appSettings;
         private readonly ICreditCardTokenService creditCardTokenService;
-
+        private readonly IBillingDealService billingDealService;
         private readonly ITerminalsService terminalsService;
+        private readonly IConsumersService consumersService;
 
-        public TransactionsApiController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper,
-            IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver, ITerminalsService terminalsService, ILogger<TransactionsApiController> logger,
-            IOptions<ApplicationSettings> appSettings, ICreditCardTokenService creditCardTokenService)
+        public TransactionsApiController(
+            ITransactionsService transactionsService,
+            IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage,
+            IMapper mapper,
+            IAggregatorResolver aggregatorResolver,
+            IProcessorResolver processorResolver,
+            ITerminalsService terminalsService,
+            ILogger<TransactionsApiController> logger,
+            IOptions<ApplicationSettings> appSettings,
+            ICreditCardTokenService creditCardTokenService,
+            IBillingDealService billingDealService,
+            IConsumersService consumersService)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -77,6 +87,8 @@ namespace Transactions.Api.Controllers
             this.logger = logger;
             this.appSettings = appSettings.Value;
             this.creditCardTokenService = creditCardTokenService;
+            this.billingDealService = billingDealService;
+            this.consumersService = consumersService;
         }
 
         [HttpGet]
@@ -285,24 +297,34 @@ namespace Transactions.Api.Controllers
         //    throw new NotImplementedException();
         //}
 
-        ///// <summary>
-        ///// Billing deal
-        ///// </summary>
-        //[HttpPost]
-        //[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
-        //[Route("nextBillingDeal")]
-        //[ValidateModelState]
-        //public async Task<ActionResult<OperationResponse>> NextBillingDeal([FromBody] NextBillingDealRequest model)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        /// <summary>
+        /// Billing deal
+        /// </summary>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        [Route("nextBillingDeal")]
+        [ValidateModelState]
+        public async Task<ActionResult<OperationResponse>> NextBillingDeal([FromBody] NextBillingDealRequest model)
+        {
+            var billingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(d => d.BillingDealID == model.BillingDealID));
 
-        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialDealID = null)
+            var token = EnsureExists(await keyValueStorage.Get(billingDeal.CreditCardToken.ToString()), "CreditCardToken");
+
+            var transaction = mapper.Map<CreateTransactionRequest>(model);
+
+            transaction.CardPresence = CardPresenceEnum.CardNotPresent;
+            transaction.Currency = billingDeal.Currency;
+            transaction.TransactionType = TransactionTypeEnum.RegularDeal;
+
+            return await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDealID: billingDeal.BillingDealID);
+        }
+
+        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialTransactionID = null, Guid? billingDealID = null)
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
-            TransactionTerminalSettingsValidator.Validate(terminal.Settings, model, token, jDealType, specialTransactionType, initialDealID);
+            TransactionTerminalSettingsValidator.Validate(terminal.Settings, model, token, jDealType, specialTransactionType, initialTransactionID);
 
             var transaction = mapper.Map<PaymentTransaction>(model);
 
@@ -311,22 +333,52 @@ namespace Transactions.Api.Controllers
 
             transaction.SpecialTransactionType = specialTransactionType;
             transaction.JDealType = jDealType;
+            transaction.BillingDealID = billingDealID;
+            transaction.InitialTransactionID = initialTransactionID;
 
             CreditCardTokenDetails dbToken = null;
             if (token != null)
             {
                 if (token.TerminalID != terminal.TerminalID)
                 {
-                    throw new SecurityException(SharedBusiness.Messages.ApiMessages.YouHaveNoAccess);
+                    throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
                 }
 
                 mapper.Map(token, transaction.CreditCardDetails);
 
                 dbToken = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
+
+                if (transaction.DealDetails.ConsumerID == null)
+                {
+                    transaction.DealDetails.ConsumerID = dbToken.ConsumerID;
+                }
             }
             else
             {
                 mapper.Map(model.CreditCardSecureDetails, transaction.CreditCardDetails);
+            }
+
+            if (transaction.DealDetails.ConsumerID != null)
+            {
+                var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer");
+
+                if (dbToken != null)
+                {
+                    if (consumer.ConsumerID != dbToken.ConsumerID)
+                    {
+                        throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail))
+                {
+                    transaction.DealDetails.ConsumerEmail = consumer.ConsumerEmail;
+                }
+
+                if (string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerPhone))
+                {
+                    transaction.DealDetails.ConsumerPhone = consumer.ConsumerPhone;
+                }
             }
 
             transaction.MerchantIP = GetIP();

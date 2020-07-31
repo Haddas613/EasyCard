@@ -21,6 +21,7 @@ namespace Shared.Integration.Models
         /// <summary>
         /// Deal description
         /// </summary>
+        [StringLength(250)]
         public string DealDescription { get; set; }
 
         /// <summary>

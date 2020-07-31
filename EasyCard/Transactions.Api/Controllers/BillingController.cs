@@ -51,7 +51,7 @@ namespace Transactions.Api.Controllers
         private readonly ILogger logger;
         private readonly IProcessorResolver processorResolver;
         private readonly IBillingDealService billingDealService;
-
+        private readonly IConsumersService consumersService;
         private readonly ITerminalsService terminalsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
 
@@ -65,7 +65,8 @@ namespace Transactions.Api.Controllers
             ILogger<CardTokenController> logger,
             IProcessorResolver processorResolver,
             IBillingDealService billingDealService,
-            IHttpContextAccessorWrapper httpContextAccessor)
+            IHttpContextAccessorWrapper httpContextAccessor,
+            IConsumersService consumersService)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -78,6 +79,7 @@ namespace Transactions.Api.Controllers
             this.processorResolver = processorResolver;
             this.billingDealService = billingDealService;
             this.httpContextAccessor = httpContextAccessor;
+            this.consumersService = consumersService;
         }
 
         [HttpGet]
@@ -113,9 +115,15 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreateBillingDeal([FromBody] BillingDealRequest model)
         {
-            var newBillingDeal = mapper.Map<BillingDeal>(model);
+            // TODO: caching
+            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+            var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
 
-            newBillingDeal.MerchantID = User.GetMerchantID().GetValueOrDefault();
+            var newBillingDeal = mapper.Map<BillingDeal>(model);
+            mapper.Map(token, newBillingDeal.CreditCardDetails);
+
+            newBillingDeal.MerchantID = terminal.MerchantID;
 
             newBillingDeal.ApplyAuditInfo(httpContextAccessor);
 
