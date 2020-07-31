@@ -208,7 +208,7 @@ export default {
           itemID: item.$itemID,
           itemName: item.itemName,
           price: item.price,
-          currency: item.currency,
+          currency: item.$currency,
           amount: 1
         });
       }

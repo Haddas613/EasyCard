@@ -43,6 +43,11 @@ namespace Merchants.Business.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(true);
 
+                    b.Property<string>("ConsumerNationalID")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
+
                     b.Property<string>("ConsumerPhone")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
