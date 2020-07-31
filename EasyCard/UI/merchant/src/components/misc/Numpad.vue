@@ -80,7 +80,9 @@
         <v-divider></v-divider>
         <ec-list class="pb-1" :items="items" v-on:click="itemSelected($event)" dense>
           <template v-slot:left="{ item }">
-            <span class="d-inline text-none text-oneline body-2">{{item.itemName}}</span>
+            <v-col cols="12" class="text-align-initial">
+              <span class="body-2">{{item.itemName}}</span>
+            </v-col>
           </template>
 
           <template v-slot:right="{ item }">
