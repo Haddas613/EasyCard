@@ -43,6 +43,13 @@ namespace MerchantProfileApi.Models.Billing
         public string ConsumerPhone { get; set; }
 
         /// <summary>
+        /// End-customer National ID
+        /// </summary>
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [StringLength(50)]
+        public string ConsumerNationalID { get; set; }
+
+        /// <summary>
         /// End-customer address
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
