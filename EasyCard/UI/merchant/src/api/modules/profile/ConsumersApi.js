@@ -21,6 +21,10 @@ export default class ConsumersApi {
         return await this.base.put(this.consumersUrl + `/${id}`, data);
     }
 
+    async deleteConsumer(id){
+        return await this.base.delete(this.consumersUrl + `/${id}`);
+    }
+
     async createConsumer(data){
         return await this.base.post(this.consumersUrl, data);
     }

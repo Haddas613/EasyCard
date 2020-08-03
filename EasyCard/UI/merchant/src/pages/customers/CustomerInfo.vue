@@ -61,11 +61,9 @@ export default {
     };
   },
   methods: {
-    createCustomer(){
-      console.log("TODO: Create customer")
-    },
-    deleteCustomer(){
-      console.log("TODO: delete customer")
+    async deleteCustomer(){
+      let result = await this.$api.consumers.deleteConsumer(this.$route.params.id);
+      this.$router.push({name: 'Customers'});
     }
   },
   async mounted() {
@@ -85,7 +83,11 @@ export default {
         threeDotMenu: [
           {
             text: this.$t("CreateCustomer"),
-            fn: this.createCustomer.bind(this)
+            fn: () => {this.$router.push({name: 'CreateCustomer'});}
+          },
+          {
+            text: this.$t("EditCustomer"),
+            fn: () => {this.$router.push({name: 'EditCustomer', id: this.$route.params.id});}
           },
           {
             text: this.$t("DeleteCustomer"),
