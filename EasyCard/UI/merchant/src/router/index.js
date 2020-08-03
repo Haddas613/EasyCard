@@ -77,9 +77,17 @@ const routes = [
         name: 'EditItem',
         path: 'items/edit/:id',
         meta:{
-          closeBtn: 'Items'
+          closeBtn: true
         },
         component: () => import('../pages/items/EditItem.vue'),
+      },
+      {
+        name: 'Item',
+        path: 'items/view/:id',
+        meta:{
+          backBtn: true
+        },
+        component: () => import('../pages/items/ItemInfo.vue'),
       },
       {
         name: 'Customers',

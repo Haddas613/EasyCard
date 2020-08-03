@@ -4,14 +4,14 @@
       <v-card-title class="py-2">
         <v-row no-gutters class="py-0">
           <v-col cols="9" class="d-flex">
-            <span class="pt-2 ecdgray--text subtitle-2 text-uppercase">{{$t('PersonalInformation')}}</span>
+            <span class="pt-2 ecdgray--text subtitle-2 text-uppercase">{{$t('ItemInformation')}}</span>
           </v-col>
           <v-col cols="3" class="d-flex justify-end">
             <v-btn
               text
               class="primary--text px-0"
               link
-              :to="{name: 'EditCustomer', params: { id: this.$route.params.id}}"
+              :to="{name: 'EditItem', params: { id: this.$route.params.id}}"
             >
               <v-icon left class="body-1">mdi-pencil-outline</v-icon>
               {{$t('Edit')}}
@@ -22,24 +22,18 @@
       <v-divider></v-divider>
       <v-card-text class="body-1 black--text">
         <div class="info-block">
+          <p class="caption ecgray--text text--darken-2">{{$t('ID')}}</p>
+          <p class="caption">{{model.itemID}}</p>
+        </div>
+        <div class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('Name')}}</p>
-          <p>{{model.consumerName}}</p>
+          <p>{{model.itemName}}</p>
         </div>
         <div class="info-block">
-          <p class="caption ecgray--text text--darken-2">{{$t('Phone')}}</p>
-          <p class="primary--text">{{model.consumerPhone}}</p>
-        </div>
-        <div class="info-block">
-          <p class="caption ecgray--text text--darken-2">{{$t('Email')}}</p>
-          <p class="primary--text">{{model.consumerEmail}}</p>
-        </div>
-        <div class="info-block">
-          <p class="caption ecgray--text text--darken-2">{{$t('NationalID')}}</p>
-          <p>{{model.consumerNationalID}}</p>
-        </div>
-        <div class="info-block">
-          <p class="caption ecgray--text text--darken-2">{{$t('Address')}}</p>
-          <p>{{model.consumerAddress}}</p>
+          <p class="caption ecgray--text text--darken-2">{{$t('Price')}}</p>
+          <p>
+            <ec-money :amount="model.price" :currency="model.$currency"></ec-money>
+          </p>
         </div>
       </v-card-text>
     </v-card>
@@ -47,7 +41,11 @@
 </template> 
 
 <script>
+import EcMoney from "../../components/ec/EcMoney";
+
+
 export default {
+  components: {EcMoney},
   props: {
     data: {
       type: Object,
@@ -61,11 +59,12 @@ export default {
     };
   },
   methods: {
-    createCustomer(){
-      console.log("TODO: Create customer")
+    createItem(){
+      this.$router.push({name: 'CreateItem'});
     },
-    deleteCustomer(){
-      console.log("TODO: delete customer")
+    async deleteItem(){
+      let result = await this.$api.items.deleteItem(this.$route.params.id);
+      this.$router.push({name: 'Items'});
     }
   },
   async mounted() {
@@ -74,22 +73,22 @@ export default {
       return;
     }
 
-    this.model = await this.$api.consumers.getConsumer(this.$route.params.id);
+    this.model = await this.$api.items.getItem(this.$route.params.id);
 
     if(!this.model){
-      this.$router.push('/admin/customers/list')
+      this.$router.push({name: 'Items'});
     }
 
     this.$store.commit("ui/changeHeader", {
       value: {
         threeDotMenu: [
           {
-            text: this.$t("CreateCustomer"),
-            fn: this.createCustomer.bind(this)
+            text: this.$t("CreateItem"),
+            fn: this.createItem.bind(this)
           },
           {
-            text: this.$t("DeleteCustomer"),
-            fn: this.deleteCustomer.bind(this)
+            text: this.$t("DeleteItem"),
+            fn: this.deleteItem.bind(this)
           }
         ],
         text: { translate: false, value: this.model.consumerName },

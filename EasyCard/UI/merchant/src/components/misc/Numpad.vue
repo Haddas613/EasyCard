@@ -143,7 +143,7 @@ export default {
 
       let searchWasAppliable = oldValue && oldValue.trim().length >= 3;
       let searchApply = newValue && newValue.trim().length >= 3;
-      if(!searchWasAppliable && !searchApply){
+      if (!searchWasAppliable && !searchApply) {
         return;
       }
 
@@ -167,11 +167,11 @@ export default {
     await this.getItems();
   },
   methods: {
-    async getItems(){
+    async getItems() {
       let searchApply = this.search && this.search.trim().length >= 3;
-      
+
       let data = await this.$api.items.getItems({
-        search: searchApply ? this.search : ''
+        search: searchApply ? this.search : ""
       });
       if (data) {
         this.items = data.data || [];
@@ -217,12 +217,12 @@ export default {
       this.total += item.price;
       this.$set(this.selectedItemsCnt, item.$itemID, entry ? entry.amount : 1);
     },
-    decreaseAmount(item){
+    decreaseAmount(item) {
       let entry = this.lodash.find(
         this.model.items,
         i => i.itemID === item.$itemID
       );
-      if(entry){
+      if (entry) {
         entry.amount--;
       }
     }

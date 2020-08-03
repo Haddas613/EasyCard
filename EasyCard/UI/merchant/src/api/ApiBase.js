@@ -96,6 +96,22 @@ class ApiBase {
         return this._handleRequest(request, true);
     }
 
+    async delete(url) {
+        let requestUrl = new URL(url);
+        let request = fetch(requestUrl, {
+            method: 'DELETE',
+            withCredentials: true,
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.oidc.user.access_token}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        return this._handleRequest(request, true);
+    }
+
     async _handleRequest(request, showSuccessToastr = false) {
         try {
             store.commit("ui/requestsCountIncrement");

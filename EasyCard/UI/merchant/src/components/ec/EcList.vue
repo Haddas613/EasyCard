@@ -1,6 +1,6 @@
 <template>
   <v-list :two-line="!dense" :dense="dense" subheader class="py-0 fill-height">
-    <v-list-item v-for="(item, index) in items" :key="index" @click="$emit('click', item)">
+    <v-list-item v-for="(item, index) in items" :key="index" v-on="clickable ? {click: () => onclick(item)} : {}">
       <v-list-item-action v-if="hasSlot('prepend')">
         <slot v-bind:item="item" name="prepend"></slot>
       </v-list-item-action>
@@ -30,11 +30,19 @@ export default {
       type: Boolean,
       default: false,
       required: false
+    },
+    clickable: {
+      type: Boolean,
+      default: false,
+      required: false
     }
   },
   methods: {
     hasSlot(name) {
       return !!this.$slots[name] || !!this.$scopedSlots[name];
+    },
+    onclick(item){
+      this.$emit('click', item);
     }
   }
 };
