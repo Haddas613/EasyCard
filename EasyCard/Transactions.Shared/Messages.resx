@@ -153,6 +153,9 @@
   <data name="ConfirmedByProcessor" xml:space="preserve">
     <value>Confirmed By Processor</value>
   </data>
+  <data name="ConsumerNatIdIsNotEqTranNatId" xml:space="preserve">
+    <value>Consumer National Id is not equal to credit card National Id</value>
+  </data>
   <data name="CreateRequestSentToAggregator" xml:space="preserve">
     <value>Create transaction request sent to {0}</value>
   </data>
@@ -179,6 +182,9 @@
   </data>
   <data name="FailedToConfirmByProcesor" xml:space="preserve">
     <value>Failed To Confirm By Procesor</value>
+  </data>
+  <data name="FailedToCreateCCToken" xml:space="preserve">
+    <value>Failed To Create Credit Card Token</value>
   </data>
   <data name="FailedToProcessTransaction" xml:space="preserve">
     <value>Failed To Process Transaction</value>
@@ -257,5 +263,11 @@
   </data>
   <data name="TransmittedByProcessor" xml:space="preserve">
     <value>Transmitted By Processor</value>
+  </data>
+  <data name="WhenSpecifiedTokenCCDetailsShouldBeOmitted" xml:space="preserve">
+    <value>When saved credit card token specified, credit card details should be omitted</value>
+  </data>
+  <data name="WhenSpecifiedTokenCCDIsNotValid" xml:space="preserve">
+    <value>When saved credit card token specified, "Save Credit Card" flag is not valid</value>
   </data>
 </root>

@@ -63,6 +63,7 @@ namespace Transactions.Api.Controllers
         private readonly IBillingDealService billingDealService;
         private readonly ITerminalsService terminalsService;
         private readonly IConsumersService consumersService;
+        private readonly CardTokenController cardTokenController;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -75,7 +76,8 @@ namespace Transactions.Api.Controllers
             IOptions<ApplicationSettings> appSettings,
             ICreditCardTokenService creditCardTokenService,
             IBillingDealService billingDealService,
-            IConsumersService consumersService)
+            IConsumersService consumersService,
+            CardTokenController cardTokenController)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -89,6 +91,7 @@ namespace Transactions.Api.Controllers
             this.creditCardTokenService = creditCardTokenService;
             this.billingDealService = billingDealService;
             this.consumersService = consumersService;
+            this.cardTokenController = cardTokenController;
         }
 
         [HttpGet]
@@ -213,9 +216,27 @@ namespace Transactions.Api.Controllers
             var merchantID = User.GetMerchantID();
             var userIsTerminal = User.IsTerminal();
 
-            // TODO: validate that credit card details should be absent
+            if (model.SaveCreditCard == true)
+            {
+                if (model.CreditCardToken != null)
+                {
+                    throw new BusinessException(Messages.WhenSpecifiedTokenCCDIsNotValid);
+                }
+
+                var tokenRequest = mapper.Map<TokenRequest>(model);
+
+                var token = await cardTokenController.CreateTokenInternal(tokenRequest);
+                model.CreditCardToken = token.CreditCardTokenID;
+                model.CreditCardSecureDetails = null;
+            }
+
             if (model.CreditCardToken != null)
             {
+                if (model.CreditCardSecureDetails != null)
+                {
+                    throw new BusinessException(Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
+                }
+
                 var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
                 return await ProcessTransaction(model, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
             }
@@ -367,6 +388,18 @@ namespace Transactions.Api.Controllers
                     if (consumer.ConsumerID != dbToken.ConsumerID)
                     {
                         throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(dbToken.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(dbToken.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        throw new EntityConflictException(Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(model.CreditCardSecureDetails.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        throw new EntityConflictException(Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
                     }
                 }
 

@@ -17,6 +17,7 @@ using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
+using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
@@ -47,7 +48,7 @@ namespace Transactions.Api.Controllers
         private readonly ApplicationSettings appSettings;
         private readonly ILogger logger;
         private readonly IProcessorResolver processorResolver;
-
+        private readonly IConsumersService consumersService;
         private readonly ITerminalsService terminalsService;
 
         public CardTokenController(
@@ -58,13 +59,14 @@ namespace Transactions.Api.Controllers
             ITerminalsService terminalsService,
             IOptions<ApplicationSettings> appSettings,
             ILogger<CardTokenController> logger,
-            IProcessorResolver processorResolver)
+            IProcessorResolver processorResolver,
+            IConsumersService consumersService)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
             this.keyValueStorage = keyValueStorage;
             this.mapper = mapper;
-
+            this.consumersService = consumersService;
             this.terminalsService = terminalsService;
             this.appSettings = appSettings.Value;
             this.logger = logger;
@@ -76,10 +78,43 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateToken([FromBody] TokenRequest model)
         {
+            try
+            {
+                var dbData = await CreateTokenInternal(model);
+
+                return CreatedAtAction(nameof(CreateToken), new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID.ToString()));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new OperationResponse($"{Messages.FailedToCreateCCToken} {(ex as IntegrationException)?.Message}", StatusEnum.Error, correlationId: HttpContext.TraceIdentifier));
+            }
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        protected internal async Task<CreditCardTokenDetails> CreateTokenInternal(TokenRequest model)
+        {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
             TokenTerminalSettingsValidator.Validate(terminal.Settings, model);
+
+            if (model.ConsumerID != null)
+            {
+                var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer");
+
+                if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(model.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(model.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    throw new EntityConflictException(Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
+                }
+            }
+            else
+            {
+                var consumer = await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerNationalID == model.CardOwnerNationalID && d.TerminalID == terminal.TerminalID);
+                if (consumer != null)
+                {
+                    model.ConsumerID = consumer.ConsumerID;
+                }
+            }
 
             var storageData = mapper.Map<CreditCardTokenKeyVault>(model);
             var dbData = mapper.Map<CreditCardTokenDetails>(model);
@@ -99,8 +134,6 @@ namespace Transactions.Api.Controllers
 
             transaction.SpecialTransactionType = SpecialTransactionTypeEnum.InitialDeal;
             storageData.InitialTransactionID = transaction.PaymentTransactionID;
-
-            // TODO: store original transaction
 
             // terminal settings
 
@@ -134,7 +167,7 @@ namespace Transactions.Api.Controllers
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);
 
-                    return BadRequest(new OperationResponse($"{Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, processorResponse.Errors));
+                    throw new IntegrationException(processorResponse.ErrorMessage, null);
                 }
             }
             catch (Exception ex)
@@ -143,7 +176,7 @@ namespace Transactions.Api.Controllers
 
                 await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, TransactionFinalizationStatusEnum.Initial, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
 
-                return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByProcesor.ToString(), (ex as IntegrationException)?.Message));
+                throw;
             }
 
             // save token itself
@@ -152,7 +185,7 @@ namespace Transactions.Api.Controllers
 
             await creditCardTokenService.CreateEntity(dbData);
 
-            return CreatedAtAction(nameof(CreateToken), new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID.ToString()));
+            return dbData;
         }
 
         [HttpGet]

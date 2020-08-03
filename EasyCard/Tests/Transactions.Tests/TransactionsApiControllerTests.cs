@@ -54,6 +54,7 @@ namespace Transactions.Tests
                 transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
                 transactionsFixture.AppSettings,
                 null,
+                null,
                 null); // TODO: add fixture
             var tokenRequest = new TokenRequest
             {
@@ -201,6 +202,7 @@ namespace Transactions.Tests
                     transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
                     transactionsFixture.AppSettings,
                     null,
+                    null,
                     null); // TODO: add fixture
                 var tokenRequest = new TokenRequest
                 {
@@ -272,6 +274,7 @@ namespace Transactions.Tests
                     transactionsFixture.Mapper,
                     transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
                     transactionsFixture.AppSettings,
+                    null,
                     null,
                     null); // TODO: add fixture
                 var tokenRequest = new TokenRequest
@@ -379,9 +382,19 @@ namespace Transactions.Tests
         {
             var appSettings = Options.Create(new ApplicationSettings { FiltersGlobalPageSizeLimit = 1000 });
 
-            var controller = new TransactionsApiController(transactionsFixture.TransactionsService, keyValueStorageMock.MockObj.Object, transactionsFixture.Mapper,
-                aggrResolverMock.ResolverMock.Object, procResolverMock.ResolverMock.Object, transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
-                transactionsFixture.Logger, appSettings, null); // TODO: fixture
+            var controller = new TransactionsApiController(
+                transactionsFixture.TransactionsService,
+                keyValueStorageMock.MockObj.Object,
+                transactionsFixture.Mapper,
+                aggrResolverMock.ResolverMock.Object,
+                procResolverMock.ResolverMock.Object,
+                transactionsFixture.TerminalsServiceMockSetup.MockObj.Object,
+                transactionsFixture.Logger,
+                appSettings,
+                null,
+                null,
+                null,
+                null); // TODO: fixture
 
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext
             {
