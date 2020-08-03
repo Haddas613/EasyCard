@@ -91,22 +91,16 @@ namespace MerchantProfileApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreateItem([FromBody] ItemRequest model)
         {
-            try
-            {
-                var newItem = mapper.Map<Item>(model);
+            var newItem = mapper.Map<Item>(model);
 
-                newItem.MerchantID = User.GetMerchantID().GetValueOrDefault();
-                newItem.Active = true;
+            newItem.MerchantID = User.GetMerchantID().GetValueOrDefault();
+            newItem.Active = true;
 
-                newItem.ApplyAuditInfo(httpContextAccessor);
+            newItem.ApplyAuditInfo(httpContextAccessor);
 
-                await itemsService.CreateEntity(newItem);
+            await itemsService.CreateEntity(newItem);
 
-                return CreatedAtAction(nameof(GetItem), new { itemID = newItem.ItemID }, new OperationResponse(Messages.ItemCreated, StatusEnum.Success, newItem.ItemID.ToString()));
-            }catch(Exception e)
-            {
-                throw e;
-            }
+            return CreatedAtAction(nameof(GetItem), new { itemID = newItem.ItemID }, new OperationResponse(Messages.ItemCreated, StatusEnum.Success, newItem.ItemID.ToString()));
         }
 
         [HttpPut]
@@ -159,6 +153,8 @@ namespace MerchantProfileApi.Controllers
                 item.ApplyAuditInfo(httpContextAccessor);
 
                 await itemsService.UpdateEntity(item);
+
+                deletedCount++;
             }
 
             return Ok(new OperationResponse(Messages.ItemsDeletedCnt?.Replace("{count}", deletedCount.ToString()), StatusEnum.Success));

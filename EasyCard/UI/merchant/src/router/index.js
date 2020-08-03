@@ -133,9 +133,10 @@ const routes = [
     },
     children: [
       {
-        name: 'Wizard/Transactions/Charge',
+        name: 'Charge',
         path: 'transactions/charge',
         component: () => import('../wizards/transactions/CreateCharge.vue'),
+        props: true
       }
     ]
   },

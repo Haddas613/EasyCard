@@ -63,9 +63,11 @@ export default {
     TerminalSelect,
     AdditionalSettingsForm
   },
+  props: ['customerid'],
   data() {
     return {
       customer: null,
+      skipCustomerStep: false,
       model: {
         terminalID: null,
         transactionType: null,
@@ -135,12 +137,27 @@ export default {
       terminal: state => state.settings.terminal
     }),
   },
+  async mounted(){
+    if(this.customerid){
+      let data = await this.$api.consumers.getConsumer(this.customerid);
+      if(data){
+        this.skipCustomerStep = true;
+        this.customer = data;
+        this.model.dealDetails.consumerEmail = data.consumerEmail;
+        this.model.dealDetails.consumerPhone = data.consumerPhone;
+        this.model.dealDetails.consumerID = data.consumerID;
+        this.model.creditCardSecureDetails.cardOwnerName = data.consumerName;
+        this.model.creditCardSecureDetails.cardOwnerNationalID = data.consumerNationalID;
+      }
+    }
+  },
   methods: {
     goBack() {
       if (this.step === 1) this.$router.push("/admin/dashboard");
       else this.step--;
     },
     processCustomer(data){
+      this.skipCustomerStep = false;
       this.customer = data;
       this.model.dealDetails.consumerEmail = data.consumerEmail;
       this.model.dealDetails.consumerPhone = data.consumerPhone;
@@ -153,7 +170,8 @@ export default {
       this.model.transactionAmount = data.amount;
       this.model.note = data.note;
       this.model.items = data.items;
-      this.step++;
+      if(this.skipCustomerStep) this.step += 2;
+      else this.step++;
     },
     processCreditCard(data) {
       this.model.creditCardSecureDetails = data;

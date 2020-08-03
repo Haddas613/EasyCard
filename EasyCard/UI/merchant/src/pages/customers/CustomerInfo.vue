@@ -90,6 +90,10 @@ export default {
             fn: () => {this.$router.push({name: 'EditCustomer', id: this.$route.params.id});}
           },
           {
+            text: this.$t("Charge"),
+            fn: () => {this.$router.push({name: 'Charge', params: {customerid: this.$route.params.id}});}
+          },
+          {
             text: this.$t("DeleteCustomer"),
             fn: this.deleteCustomer.bind(this)
           }

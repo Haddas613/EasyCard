@@ -192,6 +192,8 @@ namespace MerchantProfileApi.Controllers
                 consumer.ApplyAuditInfo(httpContextAccessor);
 
                 await consumersService.UpdateEntity(consumer);
+
+                deletedCount++;
             }
 
             return Ok(new OperationResponse(Messages.ConsumersDeletedCnt?.Replace("{count}", deletedCount.ToString()), StatusEnum.Success));
