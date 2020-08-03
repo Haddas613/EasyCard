@@ -79,6 +79,15 @@ namespace MerchantProfileApi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {count} Consumers Deleted.
+        /// </summary>
+        public static string ConsumersDeletedCnt {
+            get {
+                return ResourceManager.GetString("ConsumersDeletedCnt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Consumer Updated.
         /// </summary>
         public static string ConsumerUpdated {
@@ -102,6 +111,15 @@ namespace MerchantProfileApi {
         public static string ItemDeleted {
             get {
                 return ResourceManager.GetString("ItemDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {count} Items Deleted.
+        /// </summary>
+        public static string ItemsDeletedCnt {
+            get {
+                return ResourceManager.GetString("ItemsDeletedCnt", resourceCulture);
             }
         }
         

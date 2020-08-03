@@ -45,6 +45,20 @@
             <param name="consumerID"></param>
             <returns></returns>
         </member>
+        <member name="M:MerchantProfileApi.Controllers.ConsumersApiController.BulkDeleteConsumers(System.Collections.Generic.List{System.Guid})">
+            <summary>
+            Delete customers
+            </summary>
+            <param name="ids"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MerchantProfileApi.Controllers.ItemsApiController.BulkDeleteItems(System.Collections.Generic.List{System.Guid})">
+            <summary>
+            Delete items
+            </summary>
+            <param name="ids"></param>
+            <returns></returns>
+        </member>
         <member name="T:MerchantProfileApi.Messages">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -71,6 +85,11 @@
               Looks up a localized string similar to Consumer Deleted.
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Messages.ConsumersDeletedCnt">
+            <summary>
+              Looks up a localized string similar to {count} Consumers Deleted.
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Messages.ConsumerUpdated">
             <summary>
               Looks up a localized string similar to Consumer Updated.
@@ -84,6 +103,11 @@
         <member name="P:MerchantProfileApi.Messages.ItemDeleted">
             <summary>
               Looks up a localized string similar to Item Deleted.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.ItemsDeletedCnt">
+            <summary>
+              Looks up a localized string similar to {count} Items Deleted.
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Messages.ItemUpdated">

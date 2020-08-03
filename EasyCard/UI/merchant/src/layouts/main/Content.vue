@@ -1,5 +1,5 @@
 <template>
-  <v-content class="ecbg">
+  <v-main class="ecbg">
     <v-container fluid ma-0 pa-0 center>
       <v-row no-gutters>
         <v-col cols="2" class="hidden-sm-and-down" v-bind:class="{'d-none' : drawer}">
@@ -13,7 +13,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-content>
+  </v-main>
 </template>
 <script>
 export default {

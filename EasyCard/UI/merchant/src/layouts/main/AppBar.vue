@@ -10,11 +10,12 @@
     >
       <v-row :align="'center'">
         <v-col cols="2" md="4" lg="4" xl="4">
-          <v-app-bar-nav-icon
-            @click.stop="drawerObj = !drawerObj"
-            :color="($vuetify.breakpoint.mdAndUp || headerStore.altDisplay) ? '' : 'primary'"
-            v-if="!showBackBtn && !showCloseBtn"
-          />
+          <template v-if="$vuetify.breakpoint.smAndDown">
+            <v-app-bar-nav-icon
+              @click.stop="drawerObj = !drawerObj"
+              :color="(headerStore.altDisplay) ? '' : 'primary'"
+              v-if="!showBackBtn && !showCloseBtn"
+            />
           <a role="button" v-if="showBackBtn" @click="handleNavigation('backBtn')">
             <re-icon class="primary--text">
               mdi-chevron-left
@@ -25,6 +26,12 @@
               mdi-close
             </v-icon>
           </a>
+          </template>
+          <template v-if="$vuetify.breakpoint.mdAndUp">
+            <v-app-bar-nav-icon
+              @click.stop="drawerObj = !drawerObj"
+            />
+          </template>
         </v-col>
         <v-col cols="8" md="4" lg="4" xl="4" class="d-flex justify-space-around">
           <v-toolbar-title class="display-1 hidden-sm-and-down">easycard</v-toolbar-title>

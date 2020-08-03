@@ -118,6 +118,7 @@ namespace MerchantProfileApi.Controllers
             // NOTE: this is security assignment
             mapper.Map(terminal, newConsumer);
 
+            newConsumer.Active = true;
             newConsumer.ApplyAuditInfo(httpContextAccessor);
 
             await consumersService.CreateEntity(newConsumer);
@@ -168,6 +169,32 @@ namespace MerchantProfileApi.Controllers
             await consumersService.UpdateEntity(consumer);
 
             return Ok(new OperationResponse(Messages.ConsumerDeleted, StatusEnum.Success, consumerID.ToString()));
+        }
+
+        /// <summary>
+        /// Delete customers
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("bulkdelete")]
+        public async Task<ActionResult<OperationResponse>> BulkDeleteConsumers([FromBody] List<Guid> ids)
+        {
+            int deletedCount = 0;
+
+            foreach (var consumerID in ids)
+            {
+                var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(m => m.ConsumerID == consumerID));
+                var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == consumer.TerminalID));
+
+                consumer.Active = false;
+
+                consumer.ApplyAuditInfo(httpContextAccessor);
+
+                await consumersService.UpdateEntity(consumer);
+            }
+
+            return Ok(new OperationResponse(Messages.ConsumersDeletedCnt?.Replace("{count}", deletedCount.ToString()), StatusEnum.Success));
         }
     }
 }
