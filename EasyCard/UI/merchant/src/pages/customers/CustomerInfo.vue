@@ -34,6 +34,10 @@
           <p class="primary--text">{{model.consumerEmail}}</p>
         </div>
         <div class="info-block">
+          <p class="caption ecgray--text text--darken-2">{{$t('NationalID')}}</p>
+          <p>{{model.consumerNationalID}}</p>
+        </div>
+        <div class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('Address')}}</p>
           <p>{{model.consumerAddress}}</p>
         </div>

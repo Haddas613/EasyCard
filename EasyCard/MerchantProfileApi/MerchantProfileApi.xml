@@ -116,6 +116,11 @@
             End-customer Phone
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ConsumerNationalID">
+            <summary>
+            End-customer National ID
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ConsumerAddress">
             <summary>
             End-customer address
@@ -195,6 +200,11 @@
         <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ConsumerPhone">
             <summary>
             End-customer Phone
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ConsumerNationalID">
+            <summary>
+            End-customer National ID
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ConsumerAddress">
