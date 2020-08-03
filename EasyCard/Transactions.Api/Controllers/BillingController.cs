@@ -121,6 +121,8 @@ namespace Transactions.Api.Controllers
             var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
 
             var newBillingDeal = mapper.Map<BillingDeal>(model);
+            newBillingDeal.Active = true;
+
             mapper.Map(token, newBillingDeal.CreditCardDetails);
 
             newBillingDeal.MerchantID = terminal.MerchantID;

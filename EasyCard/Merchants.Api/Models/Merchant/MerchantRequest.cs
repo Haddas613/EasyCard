@@ -17,12 +17,15 @@ namespace Merchants.Api.Models.Merchant
         public string BusinessName { get; set; }
 
         [StringLength(50, MinimumLength = 3)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string MarketingName { get; set; }
 
         [StringLength(9, MinimumLength = 9)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string BusinessID { get; set; }
 
         [StringLength(50, MinimumLength = 3)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ContactPerson { get; set; }
     }
 }

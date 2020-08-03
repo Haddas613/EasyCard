@@ -133,6 +133,7 @@ namespace ProfileApi
                 c.ExampleFilters();
 
                 c.SchemaFilter<Shared.Api.Swagger.EnumSchemaFilter>();
+                c.SchemaFilter<SharedApi.Swagger.SwaggerExcludeFilter>();
 
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

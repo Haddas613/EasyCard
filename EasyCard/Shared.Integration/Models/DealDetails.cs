@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Shared.Api.Models.Binding;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,24 +18,28 @@ namespace Shared.Integration.Models
         /// Deal reference on merchant side
         /// </summary>
         [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string DealReference { get; set; }
 
         /// <summary>
         /// Deal description
         /// </summary>
         [StringLength(250)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string DealDescription { get; set; }
 
         /// <summary>
         /// End-customer Email
         /// </summary>
         [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ConsumerEmail { get; set; }
 
         /// <summary>
         /// End-customer Phone
         /// </summary>
         [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ConsumerPhone { get; set; }
 
         /// <summary>

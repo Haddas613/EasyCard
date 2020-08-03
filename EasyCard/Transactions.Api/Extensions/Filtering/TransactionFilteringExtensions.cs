@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Shared.Helpers;
+using System;
 using System.Linq;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Models.Transactions.Enums;
@@ -80,6 +82,61 @@ namespace Transactions.Api.Extensions.Filtering
             if (filter.ClearingHouseTransactionID != null)
             {
                 src = src.Where(t => t.ClearingHouseTransactionDetails.ClearingHouseTransactionID == filter.ClearingHouseTransactionID);
+            }
+
+            if (filter.ConsumerID != null)
+            {
+                src = src.Where(t => t.DealDetails.ConsumerID == filter.ConsumerID);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.CardNumber))
+            {
+                src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardNumber, filter.CardNumber.UseWildCard(true)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.ConsumerEmail))
+            {
+                src = src.Where(t => EF.Functions.Like(t.DealDetails.ConsumerEmail, filter.ConsumerEmail.UseWildCard(true)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.CardOwnerName))
+            {
+                src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardOwnerName, filter.CardOwnerName.UseWildCard(true)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.CardOwnerNationalID))
+            {
+                src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardOwnerNationalID, filter.CardOwnerNationalID.UseWildCard(true)));
+            }
+
+            if (filter.CreditCardTokenID != null)
+            {
+                src = src.Where(t => t.CreditCardToken == filter.CreditCardTokenID);
+            }
+
+            if (filter.BillingDealID != null)
+            {
+                src = src.Where(t => t.BillingDealID == filter.BillingDealID);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.DealDescription))
+            {
+                src = src.Where(t => EF.Functions.Like(t.DealDetails.DealDescription, filter.DealDescription.UseWildCard(true)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.DealReference))
+            {
+                src = src.Where(t => t.DealDetails.DealReference == filter.DealReference);
+            }
+
+            if (filter.Solek != null)
+            {
+                src = src.Where(t => t.ShvaTransactionDetails.Solek == filter.Solek);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.CreditCardVendor))
+            {
+                src = src.Where(t => t.CreditCardDetails.CardVendor == filter.CreditCardVendor);
             }
 
             return src;

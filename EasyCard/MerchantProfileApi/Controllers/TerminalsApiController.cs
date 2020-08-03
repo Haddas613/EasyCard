@@ -23,6 +23,7 @@ namespace MerchantProfileApi.Controllers
     [Route("api/terminals")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontend)]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class TerminalsApiController : ApiControllerBase
     {
         private readonly ITerminalsService terminalsService;

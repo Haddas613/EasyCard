@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Shared.Api.Models;
+using Shared.Api.Swagger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace Transactions.Api.Models.Tokens
 
         public Guid? TerminalID { get; set; }
 
+        [SwaggerExclude]
         public Guid? MerchantID { get; set; }
 
         public Guid? ConsumerID { get; set; }

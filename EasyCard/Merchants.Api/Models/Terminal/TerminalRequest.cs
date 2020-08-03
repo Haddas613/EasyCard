@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Shared.Api.Models.Binding;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -13,6 +15,7 @@ namespace Merchants.Api.Models.Terminal
 
         [Required(AllowEmptyStrings = false)]
         [StringLength(50, MinimumLength = 6)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string Label { get; set; }
 
         [Required]

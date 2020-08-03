@@ -151,6 +151,7 @@ namespace Transactions.Api
                 c.ExampleFilters();
 
                 c.SchemaFilter<EnumSchemaFilter>();
+                c.SchemaFilter<SwaggerExcludeFilter>();
 
                 //c.DocumentFilter<PolymorphismDocumentFilter<Models.Transactions.CreateTransactionRequest>>();
                 //c.SchemaFilter<PolymorphismSchemaFilter<Models.Transactions.CreateTransactionRequest>>();
