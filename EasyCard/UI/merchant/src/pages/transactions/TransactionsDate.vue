@@ -59,7 +59,7 @@ export default {
   data() {
     return {
       date: null,
-      transactions: [],
+      transactions: null,
       quickStatusesColors: {
         Pending: "ecgray--text",
         None: "",

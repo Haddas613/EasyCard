@@ -24,6 +24,7 @@
   "@BiggerThan": "Must be bigger than @min",
   "@ItemsSelected": "@amount Items selected",
   "@TransactionsOf": "Transactions of @customer",
+  "@Displayed": "@amount displayed",
   "TerminalNotSelected": "Terminal not selected",
   "ToList": "To list",
   
@@ -82,5 +83,8 @@
   "AddNote": "Add note",
   "ItemInformation": "Item Information",
   "DeleteItem": "Delete Item",
-  "TransactionsCustomer": "Transactions of Customer"
+  "TransactionsCustomer": "Transactions of Customer",
+  "Period": "Period",
+  "OperationsCount": "Operations Count",
+  "DeleteSelected": "Delete Selected"
 }

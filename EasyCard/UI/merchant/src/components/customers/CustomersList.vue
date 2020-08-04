@@ -105,7 +105,7 @@ export default {
   },
   async mounted() {
     //TODO: previously charged
-    await this.getCustomers(false);
+    await this.getCustomers();
   },
   methods: {
     selectCustomer(customer) {
@@ -118,7 +118,6 @@ export default {
         return 0;
       });
     },
-    //TODO: helpers?
     groupCustomersAlphabetically(arr) {
       this.groupedCustomers = {};
       arr = this.sort(arr, "consumerName");
@@ -132,7 +131,7 @@ export default {
         }
       }
     },
-    async getCustomers(search) {
+    async getCustomers() {
       let searchApply = this.search && this.search.trim().length >= 3;
       let customers = await this.$api.consumers.getConsumers({
         search: searchApply ? this.search : ''
@@ -140,7 +139,7 @@ export default {
       this.customers = customers.data;
 
       /**Only show alphabetically grouped customers if total count is <= 100 and it is not search mode */
-      if (!search && customers.numberOfRecords <= 100) {
+      if (!searchApply && customers.numberOfRecords <= 100) {
         this.showGrouped = true;
         this.groupCustomersAlphabetically(customers.data);
       } else {
@@ -162,7 +161,7 @@ export default {
 
       this.searchTimeout = setTimeout(
         (async () => {
-          await this.getCustomers(true);
+          await this.getCustomers();
         }).bind(this),
         1000
       );
