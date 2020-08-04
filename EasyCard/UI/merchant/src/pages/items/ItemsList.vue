@@ -1,6 +1,17 @@
 <template>
   <v-card width="100%" flat>
-    <v-card-title class="hidden-sm-and-down">{{$t('Items')}}</v-card-title>
+    <v-card-title>
+      <v-row no-gutters>
+        <v-col class="hidden-sm-and-down" cols="12" md="6" lg="6" xl="6">
+          {{$t('Items')}}
+        </v-col>
+        <v-col cols="12" md="6" lg="6" xl="6" class="text-end">
+          <v-btn icon @click="refresh()" :loading="refreshing">
+            <v-icon color="primary">mdi-refresh</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-card-title>
 
     <v-card-text>
       <ec-list :items="items">
@@ -45,10 +56,16 @@ export default {
     return {
       totalAmount: 0,
       items: [],
-      dictionaries: {}
+      dictionaries: {},
+      refreshing: false
     };
   },
   methods: {
+    async refresh(){
+      this.refreshing = true;
+      await this.getDataFromApi();
+      this.refreshing = false;
+    },
     async getDataFromApi() {
       let data = await this.$api.items.getItems();
       if (data) {
