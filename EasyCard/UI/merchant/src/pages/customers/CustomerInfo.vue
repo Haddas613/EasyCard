@@ -94,6 +94,10 @@ export default {
             fn: () => {this.$router.push({name: 'Charge', params: {customerid: this.$route.params.id}});}
           },
           {
+            text: this.$t("Transactions"),
+            fn: () => {this.$router.push({name: 'TransactionsCustomer', params: {id: this.$route.params.id}});}
+          },
+          {
             text: this.$t("DeleteCustomer"),
             fn: this.deleteCustomer.bind(this)
           }
