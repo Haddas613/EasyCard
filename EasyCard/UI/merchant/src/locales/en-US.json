@@ -81,5 +81,6 @@
   "ChargedTo": "Charged to",
   "AddNote": "Add note",
   "ItemInformation": "Item Information",
-  "DeleteItem": "Delete Item"
+  "DeleteItem": "Delete Item",
+  "TransactionsCustomer": "Transactions of Customer"
 }

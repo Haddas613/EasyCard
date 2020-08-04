@@ -1,6 +1,6 @@
 <template>
   <v-flex>
-    <v-card class="mt-4" width="100%" flat>
+    <v-card width="100%" flat>
       <!-- <v-card-title class="subtitle-2 px-4">
         {{customerInfo.consumerName}}
       </v-card-title> -->
@@ -17,7 +17,7 @@
               lg="6"
               class="pt-1 caption ecgray--text"
             >{{item.paymentTransactionID}}</v-col>
-            <v-col cols="12" md="6" lg="6">{{item.transactionTimestamp | ecdate('L')}}</v-col>
+            <v-col cols="12" md="6" lg="6">{{item.transactionTimestamp}}</v-col>
           </template>
 
           <template v-slot:right="{ item }">
@@ -40,6 +40,7 @@
             <re-icon>mdi-chevron-right</re-icon>
           </template>
         </ec-list>
+        <p class="ecgray--text text-center" v-if="transactions && transactions.length === 0">{{$t("NothingToShow")}}</p>
       </v-card-text>
     </v-card>
   </v-flex>
@@ -62,7 +63,7 @@ export default {
   },
   data() {
     return {
-      transactions: [],
+      transactions: null,
       quickStatusesColors: {
         Pending: "ecgray--text",
         None: "",
@@ -88,10 +89,14 @@ export default {
   },
   async mounted() {
     if (!this.$route.params.id) {
-      this.$router.push("/admin/transactions/list");
+      return this.$router.push({name: "Transactions"});
     }
 
     this.customerInfo = this.customer || await this.$api.consumers.getConsumer(this.$route.params.id);
+
+    if(!this.customerInfo){
+      return this.$router.push({name: "Transactions"});
+    }
 
     this.$store.commit("ui/changeHeader", {
       value: {

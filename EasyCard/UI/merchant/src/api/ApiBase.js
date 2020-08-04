@@ -130,6 +130,10 @@ class ApiBase {
                 //Server Validation errors are returned to component
                 if(request.status === 400){
                     return result;
+                }
+                else if(request.status === 404){
+                    Vue.toasted.show(result.message, { type: 'error'});
+                    return null;
                 }else{
                     Vue.toasted.show(result.message, { type: 'error'});
                 }
