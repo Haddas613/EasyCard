@@ -69,3 +69,11 @@ $secondary : var(--v-secondary-base);
 .text-decoration-none{
   text-decoration: none;
 }
+.text-oneline{
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.text-align-initial{
+  text-align: initial;
+}

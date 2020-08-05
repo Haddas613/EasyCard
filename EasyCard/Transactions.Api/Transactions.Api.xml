@@ -24,6 +24,11 @@
             Refund request
             </summary>
         </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.NextBillingDeal(Transactions.Api.Models.Transactions.NextBillingDealRequest)">
+            <summary>
+            Billing deal
+            </summary>
+        </member>
         <member name="M:Transactions.Api.Controllers.TransmissionController.GetNotTransmittedTransactions(Transactions.Api.Models.Transactions.TransmissionFilter)">
             <summary>
             Get transactions which are not transmitted yet
@@ -176,6 +181,11 @@
             Concurrency key
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealsFilter.ConsumerEmail">
+            <summary>
+            End-customer Email
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.NumberOfPayments">
             <summary>
             Number Of payments (cannot be more than 999)
@@ -204,6 +214,11 @@
         <member name="T:Transactions.Api.Models.Tokens.CreditCardTokenKeyVault">
             <summary>
             Entity to store in KeyVault
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenKeyVault.InitialTransactionID">
+            <summary>
+            Reference to initial transaction
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenSummary.ConsumerID">
@@ -346,6 +361,11 @@
             Original consumer IP
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.SaveCreditCard">
+            <summary>
+            Save credit card from request
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">
             <summary>
             Do not store full card number. Please use 123456****1234 pattern CreditCardHelpers.GetCardDigits()
@@ -406,12 +426,7 @@
             Billing deal
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.NextBillingDealRequest.Currency">
-            <summary>
-            Currency
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.NextBillingDealRequest.InitialDealID">
+        <member name="P:Transactions.Api.Models.Transactions.NextBillingDealRequest.BillingDealID">
             <summary>
             Initial billing deal id
             </summary>
@@ -619,6 +634,16 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.UpdateTimestamp">
             <summary>
             Concurrency key
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionsFilter.ConsumerEmail">
+            <summary>
+            End-customer Email
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionsFilter.DealReference">
+            <summary>
+            Merchant deal reference
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.Status">

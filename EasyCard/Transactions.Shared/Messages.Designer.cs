@@ -169,6 +169,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Consumer National Id is not equal to credit card National Id.
+        /// </summary>
+        public static string ConsumerNatIdIsNotEqTranNatId {
+            get {
+                return ResourceManager.GetString("ConsumerNatIdIsNotEqTranNatId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create transaction request sent to {0}.
         /// </summary>
         public static string CreateRequestSentToAggregator {
@@ -246,6 +255,15 @@ namespace Transactions.Shared {
         public static string FailedToConfirmByProcesor {
             get {
                 return ResourceManager.GetString("FailedToConfirmByProcesor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed To Create Credit Card Token.
+        /// </summary>
+        public static string FailedToCreateCCToken {
+            get {
+                return ResourceManager.GetString("FailedToCreateCCToken", resourceCulture);
             }
         }
         
@@ -480,6 +498,24 @@ namespace Transactions.Shared {
         public static string TransmittedByProcessor {
             get {
                 return ResourceManager.GetString("TransmittedByProcessor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When saved credit card token specified, credit card details should be omitted.
+        /// </summary>
+        public static string WhenSpecifiedTokenCCDetailsShouldBeOmitted {
+            get {
+                return ResourceManager.GetString("WhenSpecifiedTokenCCDetailsShouldBeOmitted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When saved credit card token specified, &quot;Save Credit Card&quot; flag is not valid.
+        /// </summary>
+        public static string WhenSpecifiedTokenCCDIsNotValid {
+            get {
+                return ResourceManager.GetString("WhenSpecifiedTokenCCDIsNotValid", resourceCulture);
             }
         }
     }

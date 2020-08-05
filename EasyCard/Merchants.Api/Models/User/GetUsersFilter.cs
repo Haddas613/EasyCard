@@ -7,6 +7,6 @@ namespace Merchants.Api.Models.User
 {
     public class GetUsersFilter
     {
-        public string DisplayName { get; set; }
+        public string Email { get; set; }
     }
 }

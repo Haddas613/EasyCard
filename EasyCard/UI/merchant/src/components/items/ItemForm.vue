@@ -25,11 +25,9 @@
       </v-col>
       <v-col cols="12" md="6">
         <v-text-field
-          v-model.number="model.price"
+          v-model.lazy="model.price"
           :label="$t('Price')"
-          type="number"
-          min="0.01"
-          step="0.01"
+          v-money="{precision: 2}"
           :rules="[vr.primitives.biggerThan(0)]"
           required
           class="px-1"
@@ -37,11 +35,11 @@
         ></v-text-field>
       </v-col>
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
-        <v-btn class="mx-1" color="white" :to="'/admin/items/list'">{{$t('ToList')}}</v-btn>
+        <v-btn class="mx-1" color="white" :to="'/admin/items/list'">{{$t('Cancel')}}</v-btn>
         <v-btn color="primary" @click="ok()">{{$t('Save')}}</v-btn>
       </v-col>
       <v-col cols="12" v-if="$vuetify.breakpoint.smAndDown">
-        <v-btn block color="white" :to="'/admin/items/list'">{{$t('ToList')}}</v-btn>
+        <v-btn block color="white" :to="'/admin/items/list'">{{$t('Cancel')}}</v-btn>
         <v-spacer class="py-2"></v-spacer>
         <v-btn block color="primary" @click="ok()">{{$t('Save')}}</v-btn>
       </v-col>

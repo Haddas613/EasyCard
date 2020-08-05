@@ -1,9 +1,9 @@
 <template>
   <v-card class="ec-card d-flex flex-column" fill-height>
     <v-card-text class="py-2">
-      <v-form class="ec-form" ref="form">
+      <v-form class="ec-form" ref="form" lazy-validation>
         <v-text-field
-          v-model="model.name"
+          v-model="model.creditCardSecureDetails.cardOwnerName"
           :label="$t('Name on card')"
           :rules="[vr.primitives.required, vr.primitives.stringLength(3, 50)]"
           background-color="white"
@@ -90,14 +90,13 @@
             <v-col cols="7" class="centered">
               <v-row class="input-container">
                 <v-col cols="12" class="dense">
-                  <span class="error--text" v-if="errors['nationalID']">{{errors['nationalID']}}</span>
+                  <span class="error--text" v-if="errors['nationalId']">{{errors['nationalId']}}</span>
                 </v-col>
                 <v-col cols="12" class="dense">
                   <input
                     class="dense-input"
-                    v-model="model.nationalID"
+                    v-model="model.creditCardSecureDetails.cardOwnerNationalID"
                     placeholder="XXXXXXXXX"
-                    @input="validate('nationalID')"
                   />
                 </v-col>
               </v-row>
@@ -108,7 +107,7 @@
             </v-col>
           </v-row>
         </v-flex>
-        <v-checkbox v-model="model.save" :label="$t('SaveCard')"></v-checkbox>
+        <v-checkbox v-model="model.creditCardSecureDetails.save" :label="$t('SaveCard')"></v-checkbox>
       </v-form>
     </v-card-text>
     <v-card-actions class="px-0">
@@ -122,24 +121,28 @@
 import ValidationRules from "../../helpers/validation-rules";
 
 export default {
+  props: {
+    data: {
+      type: Object,
+      default: null,
+      required: false
+    },
+  },
   data() {
     return {
-      model: {
-        save: false,
-        cardReaderInput: null
-      },
+      model: { ...this.data },
       vr: ValidationRules,
       errors: {
         cardNumber: false,
         expiry: false,
         cvv: false,
-        nationalID: false
+        'nationalId': false
       },
       validation: {
         // "cardNumber": [ValidationRules.primitives.required],
         // "expiry": [ValidationRules.primitives.required],
         // "cvv": ValidationRules.complex.cvv,
-        nationalID: [
+        'cardOwnerNationalID': [
           ValidationRules.primitives.required,
           ValidationRules.special.israeliNationalId
         ]
@@ -150,7 +153,7 @@ export default {
     ok() {
       let form = this.$refs.form.validate();
       for (var err of Object.keys(this.errors)) {
-        this.validate(err);
+        this.errors[err] = false;
       }
 
       if (!this.$cardFormat.validateCardNumber(this.$refs.cardNumberInp.value)) {
@@ -164,31 +167,41 @@ export default {
       if (!this.$cardFormat.validateCardExpiry(this.$refs.expiryInp.value)) {
         this.errors.expiry = this.$t("Invalid");
       }
+
+      let nationalIdValidation = ValidationRules.primitives.required(this.model.creditCardSecureDetails.cardOwnerNationalID);
+      if(nationalIdValidation !== true){
+        this.errors.nationalId = this.$t(nationalIdValidation);
+      }
+      nationalIdValidation = ValidationRules.special.israeliNationalId(this.model.creditCardSecureDetails.cardOwnerNationalID);
+      if(nationalIdValidation !== true){
+        this.errors.nationalId = this.$t(nationalIdValidation);
+      }
+
       if (!(form && this.lodash.every(this.errors, e => e === false))) 
         return;
         
       this.$emit("ok", {
-        save: this.model.save,
-        cardOwnerName: this.model.name,
+        save: this.model.creditCardSecureDetails.save,
+        cardOwnerName: this.model.creditCardSecureDetails.cardOwnerName,
         cardNumber: this.$refs.cardNumberInp.value.replace(/\s/g, ""),
         cardExpiration: this.$refs.expiryInp.value.replace(/\s/g, ""),
-        cardOwnerNationalID: this.model.nationalID,
+        cardOwnerNationalID: this.model.creditCardSecureDetails.cardOwnerNationalID,
         cvv: this.$refs.cvvInp.value,
-        cardReaderInput: this.model.cardReaderInput
+        cardReaderInput: this.model.creditCardSecureDetails.cardReaderInput
       });
     },
-    validate(key) {
-      if (this.validation[key]) {
-        for (var vfn of this.validation[key]) {
-          let validationResult = vfn(this.model[key]);
-          if (typeof validationResult === "string") {
-            this.errors[key] = validationResult;
-            return;
-          }
-        }
-      }
-      this.errors[key] = false;
-    },
+    // validate(key) {
+    //   if (this.validation[key]) {
+    //     for (var vfn of this.validation[key]) {
+    //       let validationResult = vfn(this.model[key]);
+    //       if (typeof validationResult === "string") {
+    //         this.errors[key] = validationResult;
+    //         return;
+    //       }
+    //     }
+    //   }
+    //   this.errors[key] = false;
+    // },
     resetCardReader(){
       this.model.cardReaderInput = null;
       if(this.cardReaderMode){

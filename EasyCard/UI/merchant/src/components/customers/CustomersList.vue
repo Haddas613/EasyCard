@@ -12,7 +12,7 @@
         clearable
       ></v-text-field>
     </div>
-    <template v-if="showPreviouslyCharged && (!search || search.length < 2)">
+    <template v-if="(showPreviouslyCharged && previouslyCharged.length > 0) && (!search || search.length < 2)">
       <p class="pt-4 pb-0 px-4 body-2 font-weight-medium text-uppercase">{{$t('PreviouslyCharged')}}</p>
       <v-list two-line subheader class="py-0 fill-height">
         <v-list-item
@@ -83,6 +83,8 @@
 
 <script>
 import Avatar from "vue-avatar";
+import { mapState } from "vuex";
+
 export default {
   components: {
     Avatar
@@ -104,8 +106,11 @@ export default {
     };
   },
   async mounted() {
-    //TODO: previously charged
-    await this.getCustomers(false);
+    if(this.showPreviouslyCharged && (this.lastChargedCustomersStore.length > 0)){
+      this.previouslyCharged = await this.$api.consumers.getLastChargedConsumers(this.lastChargedCustomersStore);
+    }
+
+    await this.getCustomers();
   },
   methods: {
     selectCustomer(customer) {
@@ -118,7 +123,6 @@ export default {
         return 0;
       });
     },
-    //TODO: helpers?
     groupCustomersAlphabetically(arr) {
       this.groupedCustomers = {};
       arr = this.sort(arr, "consumerName");
@@ -132,7 +136,7 @@ export default {
         }
       }
     },
-    async getCustomers(search) {
+    async getCustomers() {
       let searchApply = this.search && this.search.trim().length >= 3;
       let customers = await this.$api.consumers.getConsumers({
         search: searchApply ? this.search : ''
@@ -140,7 +144,7 @@ export default {
       this.customers = customers.data;
 
       /**Only show alphabetically grouped customers if total count is <= 100 and it is not search mode */
-      if (!search && customers.numberOfRecords <= 100) {
+      if (!searchApply && customers.numberOfRecords <= 100) {
         this.showGrouped = true;
         this.groupCustomersAlphabetically(customers.data);
       } else {
@@ -153,14 +157,26 @@ export default {
     async search(newValue, oldValue) {
       if (this.searchTimeout) clearTimeout(this.searchTimeout);
 
+      let searchWasAppliable = oldValue && oldValue.trim().length >= 3;
+      let searchApply = newValue && newValue.trim().length >= 3;
+
+      if(!searchWasAppliable && !searchApply){
+        return;
+      }
+
       this.searchTimeout = setTimeout(
         (async () => {
-          await this.getCustomers(true);
+          await this.getCustomers();
         }).bind(this),
         1000
       );
     }
-  }
+  },
+  computed: {
+    ...mapState({
+      lastChargedCustomersStore: state => state.payment.lastChargedCustomers
+    }),
+  },
 };
 </script>
 

@@ -19,5 +19,7 @@ namespace MerchantProfileApi.Models.Billing
         public string ConsumerName { get; set; }
 
         public string ConsumerPhone { get; set; }
+
+        public string ConsumerNationalID { get; set; }
     }
 }

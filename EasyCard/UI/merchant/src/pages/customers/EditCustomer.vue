@@ -42,6 +42,11 @@ export default {
     }
 
     this.model = result;
+    this.$store.commit("ui/changeHeader", {
+      value: {
+        text: { translate: false, value: this.model.consumerName },
+      }
+    });
   }
 };
 </script>

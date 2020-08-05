@@ -1,4 +1,5 @@
 ﻿using Shared.Api.Models;
+using Shared.Api.Swagger;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using System;
@@ -14,6 +15,7 @@ namespace Transactions.Api.Models.Transactions
     {
         public Guid? TerminalID { get; set; }
 
+        [SwaggerExclude]
         public Guid? MerchantID { get; set; }
 
         public Guid? PaymentTransactionID { get; set; }
@@ -38,10 +40,13 @@ namespace Transactions.Api.Models.Transactions
 
         public CardPresenceEnum? CardPresence { get; set; }
 
+        [SwaggerExclude]
         public string ShvaShovarNumber { get; set; }
 
+        [SwaggerExclude]
         public string ShvaTransactionID { get; set; }
 
+        [SwaggerExclude]
         public long? ClearingHouseTransactionID { get; set; }
 
         public DateTime? DateFrom { get; set; }
@@ -49,5 +54,35 @@ namespace Transactions.Api.Models.Transactions
         public DateTime? DateTo { get; set; }
 
         public DateFilterTypeEnum DateType { get; set; }
+
+        public Guid? ConsumerID { get; set; }
+
+        public Guid? CreditCardTokenID { get; set; }
+
+        public string CardNumber { get; set; }
+
+        public string CardOwnerNationalID { get; set; }
+
+        public string CardOwnerName { get; set; }
+
+        /// <summary>
+        /// End-customer Email
+        /// </summary>
+        public string ConsumerEmail { get; set; }
+
+        /// <summary>
+        /// Merchant deal reference
+        /// </summary>
+        public string DealReference { get; set; }
+
+        public string DealDescription { get; set; }
+
+        [SwaggerExclude]
+        public SolekEnum? Solek { get; set; }
+
+        [SwaggerExclude]
+        public string CreditCardVendor { get; set; }
+
+        public Guid? BillingDealID { get; set; }
     }
 }

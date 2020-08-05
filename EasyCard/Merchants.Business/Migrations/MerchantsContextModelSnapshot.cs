@@ -25,7 +25,9 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Active")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("ConsumerAddress")
                         .HasColumnType("nvarchar(max)")
@@ -39,6 +41,11 @@ namespace Merchants.Business.Migrations
 
                     b.Property<string>("ConsumerName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
+
+                    b.Property<string>("ConsumerNationalID")
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50)
                         .IsUnicode(true);
@@ -96,7 +103,9 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Active")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("CorrelationId")
                         .IsRequired()

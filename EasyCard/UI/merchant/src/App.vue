@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-overlay :value="requestsCount > 0">
+    <v-overlay :value="requestsCount > 0" z-index="10">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
     <router-view />

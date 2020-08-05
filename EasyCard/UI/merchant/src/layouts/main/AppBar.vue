@@ -10,10 +10,28 @@
     >
       <v-row :align="'center'">
         <v-col cols="2" md="4" lg="4" xl="4">
-          <v-app-bar-nav-icon
-            @click.stop="drawerObj = !drawerObj"
-            :color="($vuetify.breakpoint.mdAndUp || headerStore.altDisplay) ? '' : 'primary'"
-          />
+          <template v-if="$vuetify.breakpoint.smAndDown">
+            <v-app-bar-nav-icon
+              @click.stop="drawerObj = !drawerObj"
+              :color="(headerStore.altDisplay) ? '' : 'primary'"
+              v-if="!showBackBtn && !showCloseBtn"
+            />
+          <a role="button" v-if="showBackBtn" @click="handleNavigation('backBtn')">
+            <re-icon class="primary--text">
+              mdi-chevron-left
+            </re-icon>
+          </a>
+          <a role="button" v-if="showCloseBtn" @click="handleNavigation('closeBtn')">
+            <v-icon class="primary--text">
+              mdi-close
+            </v-icon>
+          </a>
+          </template>
+          <template v-if="$vuetify.breakpoint.mdAndUp">
+            <v-app-bar-nav-icon
+              @click.stop="drawerObj = !drawerObj"
+            />
+          </template>
         </v-col>
         <v-col cols="8" md="4" lg="4" xl="4" class="d-flex justify-space-around">
           <v-toolbar-title class="display-1 hidden-sm-and-down">easycard</v-toolbar-title>
@@ -49,6 +67,7 @@
 import LangSwitcher from "../../components/LanguageSwitcher";
 import ActionsBar from "../../components/misc/ActionsBar";
 import { mapState } from "vuex";
+import ReIcon from "../../components/misc/ResponsiveIcon";
 
 export default {
   name: "AppBar",
@@ -58,7 +77,7 @@ export default {
       required: true
     }
   },
-  components: { LangSwitcher, ActionsBar },
+  components: { LangSwitcher, ActionsBar, ReIcon },
   computed: {
     drawerObj: {
       get: function() {
@@ -86,7 +105,26 @@ export default {
         return null;
 
       return this.headerStore.threeDotMenu;
+    },
+    showBackBtn(){
+      return this.$route.meta ? this.$route.meta.backBtn : false;
+    },
+    showCloseBtn(){
+      return this.$route.meta ? this.$route.meta.closeBtn : false;
     }
-  }
+  },
+  methods: {
+    handleNavigation(metaType) {
+      let metaVal = this.$route.meta[metaType];
+      if(!metaVal){
+        console.error(`Unknown meta type: ${metaType}`)
+        return;
+      }else if(typeof(metaVal) == "string"){
+        this.$router.push({name: metaVal});
+      }else{
+        this.$router.go(-1)
+      }
+    }
+  },
 };
 </script>

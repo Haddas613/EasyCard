@@ -15,7 +15,7 @@
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text class="px-0">
-        <v-content class="py-2">
+        <v-main class="py-2">
           <v-container fluid ma-0 pa-0 center>
             <v-row no-gutters v-bind:class="{'pt-2': $vuetify.breakpoint.lgAndUp}">
               <v-col cols="3" class="hidden-sm-and-down">
@@ -29,7 +29,7 @@
               </v-col>
             </v-row>
           </v-container>
-        </v-content>
+        </v-main>
       </v-card-text>
     </v-card>
   </v-dialog>

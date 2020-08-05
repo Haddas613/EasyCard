@@ -93,4 +93,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Invoicing\" />
+  </ItemGroup>
+
 </Project>

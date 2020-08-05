@@ -96,6 +96,22 @@ class ApiBase {
         return this._handleRequest(request, true);
     }
 
+    async delete(url) {
+        let requestUrl = new URL(url);
+        let request = fetch(requestUrl, {
+            method: 'DELETE',
+            withCredentials: true,
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.oidc.user.access_token}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        return this._handleRequest(request, true);
+    }
+
     async _handleRequest(request, showSuccessToastr = false) {
         try {
             store.commit("ui/requestsCountIncrement");
@@ -114,6 +130,10 @@ class ApiBase {
                 //Server Validation errors are returned to component
                 if(request.status === 400){
                     return result;
+                }
+                else if(request.status === 404){
+                    Vue.toasted.show(result.message, { type: 'error'});
+                    return null;
                 }else{
                     Vue.toasted.show(result.message, { type: 'error'});
                 }
@@ -145,10 +165,10 @@ class ApiBase {
                 d[`$${property}`] = v
                 d[property] = dictionaries[h.dictionary][v]
             }
-            else if (h.dataType == 'money') {
-                d[`$${property}`] = v
-                d[property] = new Intl.NumberFormat().format(v) // TODO: locale, currency symbol
-            }
+            // else if (h.dataType == 'money') {
+            //     d[`$${property}`] = v
+            //     d[property] = new Intl.NumberFormat().format(v) // TODO: locale, currency symbol
+            // }
             else if (h.dataType == 'date') {
                 d[`$${property}`] = v
                 d[property] = moment(String(v)).format('MM/DD/YYYY') // TODO: locale

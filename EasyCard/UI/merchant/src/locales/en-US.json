@@ -5,6 +5,7 @@
   "TransactionsList": "Transactions List",
   "CustomersList": "Customers List",
   "CreateCustomer": "Create Customer",
+  "EditCustomer": "Edit Customer",
   "DeleteCustomer": "Delete Customer",
   "CreateRefund": "Create Refund",
   "@GoodMorning": "Good Morning, @name",
@@ -21,6 +22,9 @@
   "@MaxLength": "Must be less than @max characters",
   "@StringLength": "Must be more than @min and less than @max characters",
   "@BiggerThan": "Must be bigger than @min",
+  "@ItemsSelected": "@amount Items selected",
+  "@TransactionsOf": "Transactions of @customer",
+  "@Displayed": "@amount displayed",
   "TerminalNotSelected": "Terminal not selected",
   "ToList": "To list",
   
@@ -73,5 +77,14 @@
   "AllCustomers": "All Customers",
   "NothingToShow": "Nothing to Show",
   "PersonalInformation": "Personal Information",
-  "SeeMore": "See more"
+  "SeeMore": "See more",
+  "Charged": "Charged",
+  "ChargedTo": "Charged to",
+  "AddNote": "Add note",
+  "ItemInformation": "Item Information",
+  "DeleteItem": "Delete Item",
+  "TransactionsCustomer": "Transactions of Customer",
+  "Period": "Period",
+  "OperationsCount": "Operations Count",
+  "DeleteSelected": "Delete Selected"
 }

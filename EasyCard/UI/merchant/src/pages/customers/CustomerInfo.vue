@@ -34,6 +34,10 @@
           <p class="primary--text">{{model.consumerEmail}}</p>
         </div>
         <div class="info-block">
+          <p class="caption ecgray--text text--darken-2">{{$t('NationalID')}}</p>
+          <p>{{model.consumerNationalID}}</p>
+        </div>
+        <div class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('Address')}}</p>
           <p>{{model.consumerAddress}}</p>
         </div>
@@ -57,11 +61,9 @@ export default {
     };
   },
   methods: {
-    createCustomer(){
-      console.log("TODO: Create customer")
-    },
-    deleteCustomer(){
-      console.log("TODO: delete customer")
+    async deleteCustomer(){
+      let result = await this.$api.consumers.deleteConsumer(this.$route.params.id);
+      this.$router.push({name: 'Customers'});
     }
   },
   async mounted() {
@@ -81,14 +83,29 @@ export default {
         threeDotMenu: [
           {
             text: this.$t("CreateCustomer"),
-            fn: this.createCustomer.bind(this)
+            fn: () => {this.$router.push({name: 'CreateCustomer'});}
+          },
+          {
+            text: this.$t("EditCustomer"),
+            fn: () => {this.$router.push({name: 'EditCustomer', id: this.$route.params.id});}
+          },
+          {
+            text: this.$t("Charge"),
+            fn: () => {
+              this.$store.commit('payment/addLastChargedCustomer', {customerId: this.$route.params.id});
+              this.$router.push({name: 'Charge', params: {customerid: this.$route.params.id}});
+            }
+          },
+          {
+            text: this.$t("Transactions"),
+            fn: () => {this.$router.push({name: 'TransactionsCustomer', params: {id: this.$route.params.id}});}
           },
           {
             text: this.$t("DeleteCustomer"),
             fn: this.deleteCustomer.bind(this)
           }
         ],
-        text: { translate: false, value: this.model.consumerName }
+        text: { translate: false, value: this.model.consumerName },
       }
     });
   }

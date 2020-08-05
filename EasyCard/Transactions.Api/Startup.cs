@@ -38,6 +38,7 @@ using Shared.Api.Swagger;
 using Swashbuckle.AspNetCore.Filters;
 using System.IO;
 using SharedApi = Shared.Api;
+using Transactions.Api.Controllers;
 
 namespace Transactions.Api
 {
@@ -151,6 +152,7 @@ namespace Transactions.Api
                 c.ExampleFilters();
 
                 c.SchemaFilter<EnumSchemaFilter>();
+                c.SchemaFilter<SwaggerExcludeFilter>();
 
                 //c.DocumentFilter<PolymorphismDocumentFilter<Models.Transactions.CreateTransactionRequest>>();
                 //c.SchemaFilter<PolymorphismSchemaFilter<Models.Transactions.CreateTransactionRequest>>();
@@ -179,6 +181,9 @@ namespace Transactions.Api
             services.AddDbContext<Merchants.Business.Data.MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("MerchantsConnection")));
             services.AddScoped<IMerchantsService, MerchantsService>();
             services.AddScoped<ITerminalsService, TerminalsService>();
+            services.AddScoped<IConsumersService, ConsumersService>();
+            services.AddScoped<IItemsService, ItemsService>();
+            services.AddTransient<CardTokenController, CardTokenController>();
 
             services.AddSingleton<IExternalSystemsService, ExternalSystemService>(serviceProvider =>
             {

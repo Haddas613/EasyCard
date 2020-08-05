@@ -207,7 +207,7 @@ namespace Transactions.Business.Migrations
                     b.Property<long?>("AggregatorID")
                         .HasColumnType("bigint");
 
-                    b.Property<Guid>("BillingDealID")
+                    b.Property<Guid?>("BillingDealID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<short>("CardPresence")

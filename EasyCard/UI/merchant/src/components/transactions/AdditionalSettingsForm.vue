@@ -17,6 +17,7 @@
           v-model="model.currency"
           :label="$t('Currency')"
           outlined
+          disabled
         ></v-select>
         <v-select
           :items="dictionaries.transactionTypeEnum"
@@ -75,6 +76,7 @@
 <script>
 import InstallmentDetails from "./InstallmentDetailsForm";
 import ValidationRules from "../../helpers/validation-rules";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -100,14 +102,21 @@ export default {
         this.model.transactionType === "installments" ||
         this.model.transactionType === "credit"
       );
-    }
+    },
+    ...mapState({
+      currencyStore: state => state.settings.currency
+    })
   },
   async mounted() {
     let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
     if (dictionaries) {
       this.dictionaries = dictionaries;
       this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
-      this.model.currency = this.dictionaries.currencyEnum[0].code;
+
+      if(!this.model.currency){
+        this.model.currency = this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
+      }
+
       this.model.jDealType = this.dictionaries.jDealTypeEnum[0].code;
       this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
     }

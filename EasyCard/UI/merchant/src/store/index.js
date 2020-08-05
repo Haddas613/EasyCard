@@ -4,6 +4,7 @@ import createPersistedState from "vuex-persistedstate";
 import localization from './modules/localization';
 import settings from './modules/settings';
 import ui from './modules/ui';
+import payment from './modules/payment';
 
 Vue.use(Vuex)
 
@@ -17,11 +18,12 @@ export default new Vuex.Store({
   modules: {
     localization,
     settings,
-    ui
+    ui,
+    payment
   },
   plugins: [
     createPersistedState({
-      paths: ['localization', 'settings'],
+      paths: ['localization', 'settings', 'payment'],
     })
   ]
 })

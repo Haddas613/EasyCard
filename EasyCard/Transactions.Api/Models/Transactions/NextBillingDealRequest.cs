@@ -17,17 +17,10 @@ namespace Transactions.Api.Models.Transactions
     public class NextBillingDealRequest : TransactionRequestBase
     {
         /// <summary>
-        /// Currency
-        /// </summary>
-        [EnumDataType(typeof(CurrencyEnum))]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public CurrencyEnum Currency { get; set; }
-
-        /// <summary>
         /// Initial billing deal id
         /// </summary>
         [Required]
-        public string InitialDealID { get; set; }
+        public Guid BillingDealID { get; set; }
 
         /// <summary>
         /// Refund amount

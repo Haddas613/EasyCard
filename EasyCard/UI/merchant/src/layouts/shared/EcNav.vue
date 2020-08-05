@@ -81,6 +81,7 @@
           <v-select
               :items="terminals"
               item-text="label"
+              item-value="terminalID"
               return-object
               v-model="terminal"
               :label="$t('Terminal')"

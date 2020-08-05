@@ -22,6 +22,7 @@ namespace Shared.Api
             return src;
         }
 
+        [NonAction]
         protected T EnsureConcurrency<T, TModel>(T src, TModel model)
             where T : IConcurrencyCheck
             where TModel : IConcurrencyCheck
@@ -34,6 +35,7 @@ namespace Shared.Api
             return src;
         }
 
+        [NonAction]
         protected T EnsureConcurrency<T>(T src, byte[] modelTimestamp)
             where T : IConcurrencyCheck
         {

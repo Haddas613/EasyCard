@@ -31,6 +31,8 @@ namespace MerchantProfileApi.Models.Billing
 
         public string ConsumerAddress { get; set; }
 
+        public string ConsumerNationalID { get; set; }
+
         public DateTime? Created { get; set; }
 
         public string OperationDoneBy { get; set; }

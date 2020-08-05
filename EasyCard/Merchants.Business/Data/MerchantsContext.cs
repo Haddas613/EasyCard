@@ -95,9 +95,11 @@ namespace Merchants.Business.Data
 
             modelBuilder.Entity<UserTerminalMapping>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.Terminal.MerchantID == user.GetMerchantID()));
 
-            modelBuilder.Entity<Item>().HasQueryFilter(p => this.user.IsAdmin() || p.Merchant.MerchantID == this.user.GetMerchantID());
+            modelBuilder.Entity<Item>()
+                .HasQueryFilter(p => p.Active && (this.user.IsAdmin() || p.Merchant.MerchantID == this.user.GetMerchantID()));
 
-            modelBuilder.Entity<Consumer>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
+            modelBuilder.Entity<Consumer>()
+                .HasQueryFilter(p => p.Active && (this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID()));
 
             var cascadeFKs = modelBuilder.Model.GetEntityTypes()
                 .SelectMany(t => t.GetForeignKeys())
@@ -259,6 +261,8 @@ namespace Merchants.Business.Data
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
+                builder.Property(b => b.Active).HasDefaultValue(true);
+
                 builder.Property(b => b.ItemName).IsRequired(true).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
 
@@ -283,11 +287,15 @@ namespace Merchants.Business.Data
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
+                builder.Property(b => b.Active).HasDefaultValue(true);
+
                 builder.Property(b => b.ConsumerName).IsRequired(true).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.ConsumerEmail).IsRequired(true).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.ConsumerPhone).IsRequired(true).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.ConsumerNationalID).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
 

@@ -44,7 +44,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Reference to initial billing deal
         /// </summary>
-        public Guid BillingDealID { get; set; }
+        public Guid? BillingDealID { get; set; }
 
         /// <summary>
         /// Current deal (billing)

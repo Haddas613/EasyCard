@@ -94,6 +94,7 @@ namespace MerchantProfileApi.Controllers
             var newItem = mapper.Map<Item>(model);
 
             newItem.MerchantID = User.GetMerchantID().GetValueOrDefault();
+            newItem.Active = true;
 
             newItem.ApplyAuditInfo(httpContextAccessor);
 
@@ -130,6 +131,33 @@ namespace MerchantProfileApi.Controllers
             await itemsService.UpdateEntity(item);
 
             return Ok(new OperationResponse(Messages.ItemDeleted, StatusEnum.Success, itemID.ToString()));
+        }
+
+        /// <summary>
+        /// Delete items
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("bulkdelete")]
+        public async Task<ActionResult<OperationResponse>> BulkDeleteItems([FromBody] List<Guid> ids)
+        {
+            int deletedCount = 0;
+
+            foreach (var itemID in ids)
+            {
+                var item = EnsureExists(await itemsService.GetItems().FirstOrDefaultAsync(m => m.ItemID == itemID));
+
+                item.Active = false;
+
+                item.ApplyAuditInfo(httpContextAccessor);
+
+                await itemsService.UpdateEntity(item);
+
+                deletedCount++;
+            }
+
+            return Ok(new OperationResponse(Messages.ItemsDeletedCnt?.Replace("{count}", deletedCount.ToString()), StatusEnum.Success));
         }
     }
 }

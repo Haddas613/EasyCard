@@ -1,10 +1,7 @@
 <template>
   <v-flex>
-    <v-card class="mt-4" width="100%" flat>
+    <v-card width="100%" flat>
       <v-card-title class="subtitle-2 px-4">
-        <router-link class="text-decoration-none" :to="{name: 'Transactions'}">
-          <re-icon class="primary--text">mdi-chevron-left</re-icon>
-        </router-link>
         {{date | ecdate}}
       </v-card-title>
       <v-card-text class="px-0">
@@ -43,6 +40,7 @@
             <re-icon>mdi-chevron-right</re-icon>
           </template>
         </ec-list>
+        <p class="ecgray--text text-center" v-if="transactions && transactions.length === 0">{{$t("NothingToShow")}}</p>
       </v-card-text>
     </v-card>
   </v-flex>
@@ -61,7 +59,7 @@ export default {
   data() {
     return {
       date: null,
-      transactions: [],
+      transactions: null,
       quickStatusesColors: {
         Pending: "ecgray--text",
         None: "",
@@ -90,7 +88,7 @@ export default {
   },
   async mounted() {
     if (!this.$route.params.date) {
-      this.$router.push("/admin/transactions/list");
+      return this.$router.push("/admin/transactions/list");
     }
     this.$store.commit("ui/changeHeader", {
       value: {

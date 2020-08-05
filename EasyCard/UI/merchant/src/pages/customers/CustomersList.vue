@@ -27,7 +27,18 @@ export default {
       });
     }
   },
-  async mounted() {}
+  async mounted() {
+    this.$store.commit("ui/changeHeader", {
+      value: {
+        threeDotMenu: [
+          {
+            text: this.$t("CreateCustomer"),
+            fn: () => {this.$router.push({name: 'CreateCustomer'});}
+          }
+        ]
+      }
+    });
+  }
 };
 </script>
 

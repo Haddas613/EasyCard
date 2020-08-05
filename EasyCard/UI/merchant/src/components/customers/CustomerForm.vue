@@ -11,6 +11,7 @@
           class="px-1"
           :label="$t('Terminal')"
           required
+          :disabled="model.consumerID != null"
         ></v-select>
       </v-col>
       <v-col cols="12" class="py-0">
@@ -45,6 +46,16 @@
       </v-col>
       <v-col cols="12" class="py-0">
         <v-text-field
+          v-model="model.consumerNationalID"
+          :counter="50"
+          :rules="[vr.special.israeliNationalId]"
+          :label="$t('NationalID')"
+          class="px-1"
+          outlined
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" class="py-0">
+        <v-text-field
           v-model="model.consumerAddress"
           :counter="50"
           :rules="[vr.primitives.maxLength(50)]"
@@ -54,11 +65,11 @@
         ></v-text-field>
       </v-col>
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
-        <v-btn class="mx-1" color="white" :to="{ name: 'Customers' }">{{$t('ToList')}}</v-btn>
+        <v-btn class="mx-1" color="white" :to="{ name: 'Customers' }">{{$t('Cancel')}}</v-btn>
         <v-btn color="primary" @click="ok()">{{$t('Save')}}</v-btn>
       </v-col>
       <v-col cols="12" v-if="$vuetify.breakpoint.smAndDown">
-        <v-btn block color="white" :to="{ name: 'Customers' }">{{$t('ToList')}}</v-btn>
+        <v-btn block color="white" :to="{ name: 'Customers' }">{{$t('Cancel')}}</v-btn>
         <v-spacer class="py-2"></v-spacer>
         <v-btn block color="primary" @click="ok()">{{$t('Save')}}</v-btn>
       </v-col>

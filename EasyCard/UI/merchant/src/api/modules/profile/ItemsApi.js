@@ -31,4 +31,11 @@ export default class ItemsApi {
     async createItem(data){
         return await this.base.post(this.itemsUrl, data);
     }
+
+    async deleteItem(id){
+        return await this.base.delete(this.itemsUrl + `/${id}`);
+    }
+    async bulkDeleteItems(ids){
+        return await this.base.post(this.itemsUrl + '/bulkdelete', ids);
+    }
 }

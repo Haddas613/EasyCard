@@ -69,5 +69,10 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [StringLength(32)]
         public string ConsumerIP { get; set; }
+
+        /// <summary>
+        /// Save credit card from request
+        /// </summary>
+        public bool? SaveCreditCard { get; set; }
     }
 }

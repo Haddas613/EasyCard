@@ -16,5 +16,10 @@ namespace Transactions.Api.Models.Tokens
         public Guid? TerminalID { get; set; }
 
         public Guid? MerchantID { get; set; }
+
+        /// <summary>
+        /// Reference to initial transaction
+        /// </summary>
+        public Guid? InitialTransactionID { get; set; }
     }
 }
