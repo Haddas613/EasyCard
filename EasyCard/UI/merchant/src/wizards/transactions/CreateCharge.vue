@@ -18,7 +18,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
-          <customers-list :show-previously-charged="false" v-on:ok="processCustomer($event)"></customers-list>
+          <customers-list :show-previously-charged="true" v-on:ok="processCustomer($event)"></customers-list>
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">
@@ -212,6 +212,10 @@ export default {
         lastStep.closeable = false;
         this.errors = [];
       }
+      if(this.customer){
+        this.$store.commit('payment/addLastChargedCustomer', {customerId: this.customer.consumerID});
+      }
+      
       this.step++;
     }
   }

@@ -12,7 +12,7 @@
         clearable
       ></v-text-field>
     </div>
-    <template v-if="showPreviouslyCharged && (!search || search.length < 2)">
+    <template v-if="(showPreviouslyCharged && previouslyCharged.length > 0) && (!search || search.length < 2)">
       <p class="pt-4 pb-0 px-4 body-2 font-weight-medium text-uppercase">{{$t('PreviouslyCharged')}}</p>
       <v-list two-line subheader class="py-0 fill-height">
         <v-list-item
@@ -83,6 +83,8 @@
 
 <script>
 import Avatar from "vue-avatar";
+import { mapState } from "vuex";
+
 export default {
   components: {
     Avatar
@@ -104,7 +106,10 @@ export default {
     };
   },
   async mounted() {
-    //TODO: previously charged
+    if(this.showPreviouslyCharged && (this.lastChargedCustomersStore.length > 0)){
+      this.previouslyCharged = await this.$api.consumers.getLastChargedConsumers(this.lastChargedCustomersStore);
+    }
+
     await this.getCustomers();
   },
   methods: {
@@ -166,7 +171,12 @@ export default {
         1000
       );
     }
-  }
+  },
+  computed: {
+    ...mapState({
+      lastChargedCustomersStore: state => state.payment.lastChargedCustomers
+    }),
+  },
 };
 </script>
 

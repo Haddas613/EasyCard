@@ -28,4 +28,27 @@ export default class ConsumersApi {
     async createConsumer(data){
         return await this.base.post(this.consumersUrl, data);
     }
+
+    async getLastChargedConsumers(store){
+        if(store.length === 0){
+            return [];
+        }
+        let data = (await this.base.get(this.consumersUrl, {
+            consumersID: store.map(s => s.id).join(","),
+            take: 5
+        })).data || [];
+
+        if(data.length === 0){
+            return data;
+        }
+        let result = [];
+        for(var s of store){
+            let idx = data.findIndex(c => c.consumerID === s.id);
+            if(idx > -1){
+                result.push(data[idx]);
+            }
+        }
+
+        return result;
+    }
 }

@@ -91,7 +91,10 @@ export default {
           },
           {
             text: this.$t("Charge"),
-            fn: () => {this.$router.push({name: 'Charge', params: {customerid: this.$route.params.id}});}
+            fn: () => {
+              this.$store.commit('payment/addLastChargedCustomer', {customerId: this.$route.params.id});
+              this.$router.push({name: 'Charge', params: {customerid: this.$route.params.id}});
+            }
           },
           {
             text: this.$t("Transactions"),

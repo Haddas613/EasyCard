@@ -78,7 +78,7 @@
           clearable
         ></v-text-field>
         <v-divider></v-divider>
-        <ec-list class="pb-1" :items="items" v-on:click="itemSelected($event)" dense>
+        <ec-list class="pb-1" :items="items" v-on:click="itemSelected($event)" dense clickable>
           <template v-slot:left="{ item }">
             <v-col cols="12" class="text-align-initial">
               <span class="body-2">{{item.itemName}}</span>
@@ -88,15 +88,19 @@
           <template v-slot:right="{ item }">
             <v-col cols="12" md="6" lg="6" class="text-end caption">
               <span>{{selectedItemsCnt[item.$itemID]}}</span>
+              
             </v-col>
             <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold subtitle-2">
               <ec-money :amount="item.price" :currency="item.$currency"></ec-money>
             </v-col>
           </template>
 
-          <template v-slot:append>
-            <v-btn icon>
+          <template v-slot:append="{ item }">
+            <v-btn icon v-if="!selectedItemsCnt[item.$itemID]">
               <v-icon>mdi-plus</v-icon>
+            </v-btn>
+            <v-btn icon v-if="selectedItemsCnt[item.$itemID]">
+              <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
         </ec-list>
