@@ -206,6 +206,21 @@
             Billing Schedule
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.DealDetails">
+            <summary>
+            Deal information (optional)
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenFilter.ConsumerEmail">
             <summary>
             End-customer Email

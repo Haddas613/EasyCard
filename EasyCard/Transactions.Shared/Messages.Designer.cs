@@ -286,6 +286,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invoice Created.
+        /// </summary>
+        public static string InvoiceCreated {
+            get {
+                return ResourceManager.GetString("InvoiceCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to J2 deal is not allowed.
         /// </summary>
         public static string J2NotAllowed {

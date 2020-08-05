@@ -9,12 +9,12 @@ using Transactions.Shared.Models;
 
 namespace Transactions.Business.Entities
 {
-    public class BillingDeal : IEntityBase<Guid>, IAuditEntity
+    public class Invoice : IEntityBase<Guid>, IAuditEntity
     {
-        public BillingDeal()
+        public Invoice()
         {
             BillingDealTimestamp = DateTime.UtcNow;
-            BillingDealID = Guid.NewGuid().GetSequentialGuid(BillingDealTimestamp.Value);
+            InvoiceID = Guid.NewGuid().GetSequentialGuid(BillingDealTimestamp.Value);
             CreditCardDetails = new CreditCardDetails();
             DealDetails = new DealDetails();
         }
@@ -22,7 +22,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Primary reference
         /// </summary>
-        public Guid BillingDealID { get; set; }
+        public Guid InvoiceID { get; set; }
 
         /// <summary>
         /// Date-time when deal created initially in UTC
@@ -136,7 +136,7 @@ namespace Transactions.Business.Entities
 
         public Guid GetID()
         {
-            return BillingDealID;
+            return InvoiceID;
         }
 
         public string OperationDoneBy { get; set; }

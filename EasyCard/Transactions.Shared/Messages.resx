@@ -192,6 +192,9 @@
   <data name="InstallmentDetailsRequired" xml:space="preserve">
     <value>InstallmentDetails required</value>
   </data>
+  <data name="InvoiceCreated" xml:space="preserve">
+    <value>Invoice Created</value>
+  </data>
   <data name="J2NotAllowed" xml:space="preserve">
     <value>J2 deal is not allowed</value>
   </data>

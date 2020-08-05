@@ -41,6 +41,8 @@ namespace Transactions.Business.Data
 
         public DbSet<BillingDeal> BillingDeals { get; set; }
 
+        public DbSet<Invoice> Invoices { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         private static readonly ValueConverter CardExpirationConverter = new ValueConverter<CardExpiration, string>(
