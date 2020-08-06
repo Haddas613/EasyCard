@@ -79,6 +79,7 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import { mapState } from "vuex";
 
 export default {
   props: {
@@ -102,10 +103,15 @@ export default {
       this.$emit('ok', this.model);
     }
   },
+  computed: {
+    ...mapState({
+      terminalStore: state => state.settings.terminal
+    })
+  },
   async mounted(){
     this.terminals = (await this.$api.terminals.getTerminals()).data || [];
     if(!this.model.terminalID){
-      this.model.terminalID = this.terminals[0].terminalID;
+      this.model.terminalID = this.terminalStore || this.terminals[0].terminalID;
     }
   }
 };

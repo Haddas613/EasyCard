@@ -22,7 +22,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">
-          <credit-card-secure-details :data="model" v-on:ok="processCreditCard($event)"></credit-card-secure-details>
+          <credit-card-secure-details :key="model.creditCardSecureDetails.cardOwnerName" :data="model" v-on:ok="processCreditCard($event)"></credit-card-secure-details>
         </v-stepper-content>
 
         <v-stepper-content step="4" class="py-0 px-0">
@@ -47,7 +47,6 @@ import CreateTransactionForm from "../../components/transactions/CreateTransacti
 import CreditCardSecureDetails from "../../components/transactions/CreditCardSecureDetails";
 import TransactionSuccess from "../../components/transactions/TransactionSuccess";
 import TransactionError from "../../components/transactions/TransactionError";
-import TerminalSelect from "../../components/terminals/TerminalSelect";
 import AdditionalSettingsForm from "../../components/transactions/AdditionalSettingsForm";
 import { mapState } from "vuex";
 
@@ -60,7 +59,6 @@ export default {
     CreditCardSecureDetails,
     TransactionSuccess,
     TransactionError,
-    TerminalSelect,
     AdditionalSettingsForm
   },
   props: ['customerid'],

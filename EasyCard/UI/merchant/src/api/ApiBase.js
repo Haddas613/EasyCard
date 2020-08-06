@@ -1,12 +1,13 @@
 import Vue from 'vue'
-import TransactionsApi from './modules/TransactionsApi';
-import DictionariesApi from './modules/DictionariesApi';
+import TransactionsApi from './modules/transactions/TransactionsApi';
+import DictionariesApi from './modules/transactions/DictionariesApi';
 import TerminalsApi from './modules/profile/TerminalsApi';
 import ConsumersApi from './modules/profile/ConsumersApi';
 import ItemsApi from './modules/profile/ItemsApi';
 import moment from 'moment'
 import store from '../store/index';
 import i18n from '../i18n'
+import CardTokensApi from './modules/transactions/CardTokensApi';
 
 class ApiBase {
     constructor() {
@@ -19,6 +20,7 @@ class ApiBase {
         this.terminals = new TerminalsApi(this);
         this.consumers = new ConsumersApi(this);
         this.items = new ItemsApi(this);
+        this.cardTokens = new CardTokensApi(this);
     }
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */

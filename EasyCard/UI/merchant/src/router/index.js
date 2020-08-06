@@ -127,6 +127,22 @@ const routes = [
         component: () => import('../pages/customers/CustomerInfo.vue'),
       },
       {
+        name: 'CreateCardToken',
+        path: 'ctokens/:customerid/create',
+        meta:{
+          closeBtn: true
+        },
+        component: () => import('../pages/ctokens/CreateCardToken.vue'),
+      },
+      {
+        name: 'EditCardToken',
+        path: 'ctokens/:id/edit',
+        meta:{
+          backBtn: true
+        },
+        component: () => import('../pages/ctokens/EditCardToken.vue'),
+      },
+      {
         name: '404',
         path: '*',
         component: () => import('../views/NotFound.vue'),

@@ -77,3 +77,56 @@ $secondary : var(--v-secondary-base);
 .text-align-initial{
   text-align: initial;
 }
+
+.ec-form {
+  .v-input {
+    padding-top: 0.5em;
+  }
+  .dense {
+    padding: 0;
+    margin: 0;
+  }
+
+  .input-special-group {
+    .input-special:first-child {
+      border-radius: 8px 8px 0 0;
+    }
+    .input-special:last-child {
+      border-radius: 0 0 8px 8px;
+      border-bottom: 1px solid #9e9e9e;
+    }
+  }
+
+  .input-special {
+    background-color: white;
+    margin: 0 2px;
+    border: 1px solid #9e9e9e;
+    border-bottom: none;
+
+    .input-container {
+      padding-top: 4px;
+    }
+
+    .col {
+      padding: 0 8px;
+      margin: 0;
+    }
+    .centered {
+      display: flex;
+      align-self: center;
+    }
+    .label {
+      display: flex;
+      align-self: center;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+    .dense-input {
+      padding: 4px 0;
+      width: 100%;
+      &:focus {
+        outline: none;
+      }
+    }
+  }
+}
