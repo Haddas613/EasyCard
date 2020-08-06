@@ -110,7 +110,8 @@ where r <= 10
             modelBuilder.ApplyConfiguration(new CreditCardTokenDetailsConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new BillingDealConfiguration());
-
+            modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
+            
             // security filters
 
             modelBuilder.Entity<CreditCardTokenDetails>().HasQueryFilter(t => user.IsAdmin() || (t.Active && (user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID())));
@@ -375,6 +376,45 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                 builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+            }
+        }
+
+        internal class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
+        {
+            public void Configure(EntityTypeBuilder<Invoice> builder)
+            {
+                builder.ToTable("Invoice");
+
+                builder.HasKey(b => b.InvoiceID);
+                builder.Property(b => b.InvoiceID).ValueGeneratedNever();
+
+                builder.Property(p => p.UpdateTimestamp).IsRowVersion();
+
+                builder.Property(p => p.TerminalID).IsRequired(true);
+                builder.Property(p => p.MerchantID).IsRequired(true);
+
+                builder.OwnsOne(b => b.DealDetails, s =>
+                {
+                    s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
+                    s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+                    s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(SettingsJObjectConverter);
+                });
+
+                builder.Property(b => b.InvoiceAmount).HasColumnType("decimal(19,4)").IsRequired();
+
+                builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                builder.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
             }
         }
     }

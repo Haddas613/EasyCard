@@ -1,6 +1,7 @@
 ﻿using Shared.Business;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,9 +14,8 @@ namespace Transactions.Business.Entities
     {
         public Invoice()
         {
-            BillingDealTimestamp = DateTime.UtcNow;
-            InvoiceID = Guid.NewGuid().GetSequentialGuid(BillingDealTimestamp.Value);
-            CreditCardDetails = new CreditCardDetails();
+            InvoiceTimestamp = DateTime.UtcNow;
+            InvoiceID = Guid.NewGuid().GetSequentialGuid(InvoiceTimestamp.Value);
             DealDetails = new DealDetails();
         }
 
@@ -27,12 +27,12 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Date-time when deal created initially in UTC
         /// </summary>
-        public DateTime? BillingDealTimestamp { get; set; }
+        public DateTime? InvoiceTimestamp { get; set; }
 
         /// <summary>
-        /// Reference to initial transaction
+        /// Legal invoice day
         /// </summary>
-        public Guid? InitialTransactionID { get; set; }
+        public DateTime? InvoiceDate { get; set; }
 
         /// <summary>
         /// Terminal
@@ -45,29 +45,16 @@ namespace Transactions.Business.Entities
         public Guid? MerchantID { get; set; }
 
         /// <summary>
-        /// Shva or other processor
-        /// </summary>
-        public long? ProcessorID { get; set; }
-
-        /// <summary>
-        /// Clearing House or Upay
-        /// </summary>
-        public long? AggregatorID { get; set; }
-
-        /// <summary>
         /// EasyInvoice or RapidOne
         /// </summary>
         public long? InvoicingID { get; set; }
 
-        /// <summary>
-        /// Marketer ID
-        /// </summary>
-        public long? MarketerID { get; set; }
+        public InvoiceTypeEnum InvoiceType { get; set; }
 
         /// <summary>
         /// Processing status
         /// </summary>
-        public BillingDealStatusEnum Status { get; set; }
+        public InvoiceStatusEnum Status { get; set; }
 
         /// <summary>
         /// Currency
@@ -80,49 +67,18 @@ namespace Transactions.Business.Entities
         public int NumberOfPayments { get; set; }
 
         /// <summary>
-        /// This transaction amount
+        /// This invoice amount
         /// </summary>
-        public decimal TransactionAmount { get; set; }
+        public decimal InvoiceAmount { get; set; }
 
-        /// <summary>
-        /// TotalAmount = TransactionAmount * NumberOfPayments
-        /// </summary>
-        public decimal TotalAmount { get; set; }
+        public string CardOwnerName { get; set; }
 
-        /// <summary>
-        /// Current deal (billing)
-        /// </summary>
-        public int? CurrentDeal { get; set; }
-
-        /// <summary>
-        /// Date-time when last created initially in UTC
-        /// </summary>
-        public DateTime? CurrentTransactionTimestamp { get; set; }
-
-        /// <summary>
-        /// Reference to last deal
-        /// </summary>
-        public Guid? CurrentTransactionID { get; set; }
-
-        /// <summary>
-        /// Credit card information (just to display)
-        /// </summary>
-        public CreditCardDetails CreditCardDetails { get; set; }
-
-        /// <summary>
-        /// Stored credit card details token
-        /// </summary>
-        public Guid CreditCardToken { get; set; }
+        public string CardOwnerNationalID { get; set; }
 
         /// <summary>
         /// Deal information
         /// </summary>
         public DealDetails DealDetails { get; set; }
-
-        /// <summary>
-        /// Billing Schedule
-        /// </summary>
-        public BillingSchedule BillingSchedule { get; set; }
 
         /// <summary>
         /// Date-time when transaction status updated

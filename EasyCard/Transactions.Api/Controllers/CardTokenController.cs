@@ -86,6 +86,8 @@ namespace Transactions.Api.Controllers
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, $"Failed to create credit card token: {ex.Message}");
+
                 return BadRequest(new OperationResponse($"{Messages.FailedToCreateCCToken} {(ex as IntegrationException)?.Message}", StatusEnum.Error, correlationId: HttpContext.TraceIdentifier));
             }
         }
