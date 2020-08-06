@@ -160,19 +160,18 @@ const router = new VueRouter({
   routes
 })
 
-// router.beforeEach((to, from, next) => {
-//   store.commit("ui/changeHeader", {
-//     value: {
-//       text: {
-//         translate: true,
-//         value: to.name,
-//       },
-//       threeDotMenu: null,
-//       altDisplay: to.meta.altDisplay,
-//       navBtn: null
-//     }
-//   });
-//   next();
-// });
+router.afterEach((to, from) => {
+  store.commit("ui/changeHeader", {
+    value: {
+      text: {
+        translate: true,
+        value: to.name,
+      },
+      threeDotMenu: null,
+      altDisplay: to.meta.altDisplay,
+      navBtn: null
+    }
+  });
+});
 
 export default router
