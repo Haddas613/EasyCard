@@ -21,10 +21,10 @@ namespace Transactions.Api.Validation
 
             List<SharedHelpers.Error> errors = new List<SharedHelpers.Error>();
 
-            if (terminalSettings.CvvRequired)
-            {
-                throw new BusinessException(Messages.CvvRequiredButStoredTokenCannotUseCvv);
-            }
+            //if (terminalSettings.CvvRequired)
+            //{
+            //    throw new BusinessException(Messages.CvvRequiredButStoredTokenCannotUseCvv);
+            //}
 
             if (terminalSettings.NationalIDRequired && string.IsNullOrWhiteSpace(model.CardOwnerNationalID))
             {

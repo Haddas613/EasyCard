@@ -54,7 +54,10 @@ namespace Transactions.Api.Mapping
             CreateMap<SharedIntegration.Models.DealDetails, Business.Entities.DealDetails>();
             CreateMap<Business.Entities.DealDetails, SharedIntegration.Models.DealDetails>();
 
-            CreateMap<CreditCardTokenKeyVault, Business.Entities.CreditCardDetails>();
+            CreateMap<CreditCardTokenKeyVault, Business.Entities.CreditCardDetails>()
+                .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))
+                .ForMember(d => d.CardBin, o => o.MapFrom(d => CreditCardHelpers.GetCardBin(d.CardNumber)));
+
             CreateMap<SharedIntegration.Models.DealDetails, Business.Entities.DealDetails>();
 
             CreateMap<RefundRequest, CreateTransactionRequest>();
@@ -64,6 +67,8 @@ namespace Transactions.Api.Mapping
             CreateMap<NextBillingDealRequest, CreateTransactionRequest>();
 
             CreateMap<Business.Entities.TransactionHistory, Models.Transactions.TransactionHistory>();
+
+            CreateMap<Business.Entities.CreditCardTokenDetails, Business.Entities.CreditCardDetails>();
         }
     }
 }

@@ -123,6 +123,8 @@ namespace Transactions.Api.Controllers
             var newBillingDeal = mapper.Map<BillingDeal>(model);
             newBillingDeal.Active = true;
 
+            newBillingDeal.InitialTransactionID = token.InitialTransactionID;
+
             mapper.Map(token, newBillingDeal.CreditCardDetails);
 
             newBillingDeal.MerchantID = terminal.MerchantID;

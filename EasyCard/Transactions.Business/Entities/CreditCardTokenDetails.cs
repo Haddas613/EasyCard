@@ -50,5 +50,10 @@ namespace Transactions.Business.Entities
         /// End-customer Email
         /// </summary>
         public string ConsumerEmail { get; set; }
+
+        /// <summary>
+        /// Reference to initial transaction
+        /// </summary>
+        public Guid? InitialTransactionID { get; set; }
     }
 }

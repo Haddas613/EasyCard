@@ -51,8 +51,11 @@
     [RejectionMessage]               NVARCHAR (MAX)   NULL,
     [ConsumerID]                     UNIQUEIDENTIFIER NULL,
     [Items]                          NVARCHAR (MAX)   NULL,
+    [BillingDealID]                  UNIQUEIDENTIFIER NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

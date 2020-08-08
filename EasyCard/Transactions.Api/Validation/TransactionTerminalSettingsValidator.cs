@@ -40,10 +40,10 @@ namespace Transactions.Api.Validation
                     throw new BusinessException(Messages.CreditCardSecureDetailsShouldBeOmitted);
                 }
 
-                if (terminalSettings.CvvRequired)
-                {
-                    throw new BusinessException(Messages.CvvRequiredButStoredTokenCannotUseCvv);
-                }
+                //if (terminalSettings.CvvRequired)
+                //{
+                //    throw new BusinessException(Messages.CvvRequiredButStoredTokenCannotUseCvv);
+                //}
 
                 if (terminalSettings.NationalIDRequired && string.IsNullOrWhiteSpace(token.CardOwnerNationalID))
                 {

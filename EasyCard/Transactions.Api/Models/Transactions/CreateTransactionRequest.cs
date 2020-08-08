@@ -74,5 +74,10 @@ namespace Transactions.Api.Models.Transactions
         /// Save credit card from request
         /// </summary>
         public bool? SaveCreditCard { get; set; }
+
+        /// <summary>
+        /// Reference to initial transaction
+        /// </summary>
+        public Guid? InitialJ5TransactionID { get; set; }
     }
 }

@@ -336,6 +336,7 @@ namespace Transactions.Api.Controllers
             transaction.CardPresence = CardPresenceEnum.CardNotPresent;
             transaction.Currency = billingDeal.Currency;
             transaction.TransactionType = TransactionTypeEnum.RegularDeal;
+            transaction.CreditCardToken = billingDeal.CreditCardToken;
 
             return await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDealID: billingDeal.BillingDealID);
         }
@@ -357,6 +358,16 @@ namespace Transactions.Api.Controllers
             transaction.BillingDealID = billingDealID;
             transaction.InitialTransactionID = initialTransactionID;
 
+            if (transaction.DealDetails == null)
+            {
+                transaction.DealDetails = new Business.Entities.DealDetails();
+            }
+
+            if (string.IsNullOrWhiteSpace(transaction.DealDetails?.DealDescription))
+            {
+                transaction.DealDetails.DealDescription = "TODO";
+            }
+
             CreditCardTokenDetails dbToken = null;
             if (token != null)
             {
@@ -369,7 +380,12 @@ namespace Transactions.Api.Controllers
 
                 dbToken = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
 
-                if (transaction.DealDetails.ConsumerID == null)
+                if (transaction.InitialTransactionID == null)
+                {
+                    transaction.InitialTransactionID = dbToken.InitialTransactionID;
+                }
+
+                if (transaction.DealDetails?.ConsumerID == null)
                 {
                     transaction.DealDetails.ConsumerID = dbToken.ConsumerID;
                 }

@@ -170,6 +170,9 @@ namespace Transactions.Business.Migrations
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("InitialTransactionID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("MerchantID")
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
@@ -197,6 +200,92 @@ namespace Transactions.Business.Migrations
                     b.HasKey("CreditCardTokenID");
 
                     b.ToTable("CreditCardTokenDetails");
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.Invoice", b =>
+                {
+                    b.Property<Guid>("InvoiceID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("CardOwnerName")
+                        .HasColumnName("CardOwnerName")
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100)
+                        .IsUnicode(true);
+
+                    b.Property<string>("CardOwnerNationalID")
+                        .HasColumnName("CardOwnerNationalID")
+                        .HasColumnType("varchar(20)")
+                        .HasMaxLength(20)
+                        .IsUnicode(false);
+
+                    b.Property<string>("CorrelationId")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<short>("Currency")
+                        .HasColumnType("smallint");
+
+                    b.Property<decimal>("InvoiceAmount")
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<DateTime?>("InvoiceDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("InvoiceTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<short>("InvoiceType")
+                        .HasColumnType("smallint");
+
+                    b.Property<long?>("InvoicingID")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid?>("MerchantID")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("NumberOfPayments")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OperationDoneBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
+
+                    b.Property<Guid?>("OperationDoneByID")
+                        .HasColumnType("uniqueidentifier")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<string>("SourceIP")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<short>("Status")
+                        .HasColumnType("smallint");
+
+                    b.Property<Guid?>("TerminalID")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("UpdateTimestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("InvoiceID");
+
+                    b.ToTable("Invoice");
                 });
 
             modelBuilder.Entity("Transactions.Business.Entities.PaymentTransaction", b =>
@@ -502,6 +591,54 @@ namespace Transactions.Business.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("CreditCardTokenDetailsCreditCardTokenID");
+                        });
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.Invoice", b =>
+                {
+                    b.OwnsOne("Transactions.Business.Entities.DealDetails", "DealDetails", b1 =>
+                        {
+                            b1.Property<Guid>("InvoiceID")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("ConsumerEmail")
+                                .HasColumnName("ConsumerEmail")
+                                .HasColumnType("varchar(50)")
+                                .HasMaxLength(50)
+                                .IsUnicode(false);
+
+                            b1.Property<Guid?>("ConsumerID")
+                                .HasColumnName("ConsumerID")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("ConsumerPhone")
+                                .HasColumnName("ConsumerPhone")
+                                .HasColumnType("varchar(20)")
+                                .HasMaxLength(20)
+                                .IsUnicode(false);
+
+                            b1.Property<string>("DealDescription")
+                                .HasColumnName("DealDescription")
+                                .HasColumnType("nvarchar(max)")
+                                .IsUnicode(true);
+
+                            b1.Property<string>("DealReference")
+                                .HasColumnName("DealReference")
+                                .HasColumnType("varchar(50)")
+                                .HasMaxLength(50)
+                                .IsUnicode(false);
+
+                            b1.Property<string>("Items")
+                                .HasColumnName("Items")
+                                .HasColumnType("nvarchar(max)")
+                                .IsUnicode(true);
+
+                            b1.HasKey("InvoiceID");
+
+                            b1.ToTable("Invoice");
+
+                            b1.WithOwner()
+                                .HasForeignKey("InvoiceID");
                         });
                 });
 
