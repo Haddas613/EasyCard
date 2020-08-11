@@ -1,6 +1,6 @@
 <template>
   <v-list width="100%">
-    <v-radio-group :mandatory="mandatory" @change="onSelect($event)" v-model="selected">
+    <v-radio-group :mandatory="mandatory" @change="onSelect($event)" v-model.lazy="selected">
       <template v-for="(i, index) in items">
         <v-list-item v-bind:key="i[valuekey]">
           <v-list-item-content>{{i[labelkey]}}</v-list-item-content>
@@ -47,6 +47,11 @@ export default {
       items: [...this.data],
       selected: null
     };
+  },
+  watch: {
+    model(newValue, oldValue) {
+      this.selected = newValue;
+    }
   },
   mounted() {
     if (!this.model) return;

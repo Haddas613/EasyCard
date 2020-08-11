@@ -21,7 +21,7 @@
               <v-col cols="3" class="hidden-sm-and-down">
                 <v-spacer></v-spacer>
               </v-col>
-              <v-col class="d-flex justify-space-around">
+              <v-col>
                 <slot></slot>
               </v-col>
               <v-col cols="3" class="hidden-sm-and-down">

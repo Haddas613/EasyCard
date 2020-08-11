@@ -1,12 +1,63 @@
 <template>
   <v-card class="ec-card d-flex flex-column" fill-height>
+    <ec-dialog :dialog.sync="tokensDialog">
+      <template v-slot:title>{{$t('SavedTokens')}}</template>
+      <template>
+        <div class="d-flex px-2 justify-end">
+          <v-btn
+            color="red"
+            class="white--text"
+            :disabled="selectedToken == null"
+            :block="$vuetify.breakpoint.smAndDown"
+            @click="resetToken()"
+          >
+          <v-icon left>mdi-delete</v-icon>
+          {{$t("CancelSelection")}}
+          </v-btn>
+        </div>
+        <ec-radio-group
+          :data="customerTokens"
+          labelkey="cardNumber"
+          valuekey="creditCardTokenID"
+          return-object
+          :model.sync="token"
+        ></ec-radio-group>
+      </template>
+    </ec-dialog>
     <v-card-text class="py-2">
-      <v-form class="ec-form" ref="form" lazy-validation>
-        <credit-card-secure-details-form :data="model.creditCardSecureDetails" ref="ccsecuredetailsform"></credit-card-secure-details-form>
+      <ec-dialog-invoker
+        v-on:click="handleClick()"
+        v-if="customerTokens"
+        :clickable="(customerTokens.length > 0)"
+        class="py-2"
+      >
+        <template v-slot:prepend>
+          <v-icon>mdi-credit-card-outline</v-icon>
+        </template>
+        <template v-slot:left >
+          <div v-if="!selectedToken">
+            <span v-if="customerTokens.length > 0" >{{$t("@ChooseFromSavedCount").replace("@count", customerTokens.length)}}</span>
+            <span v-if="customerTokens.length === 0">{{$t("NoSavedCards")}}</span>
+          </div>
+          <div v-if="selectedToken">
+            <span class="primary--text">
+              {{selectedTokenObj.cardNumber}}
+            </span>
+          </div>
+        </template>
+        <template v-slot:append>
+          <re-icon>mdi-chevron-right</re-icon>
+        </template>
+      </ec-dialog-invoker>
+      <v-form class="ec-form" ref="form" lazy-validation v-if="!selectedToken">
+        <credit-card-secure-details-form
+          :data="model.creditCardSecureDetails"
+          ref="ccsecuredetailsform"
+        ></credit-card-secure-details-form>
         <v-checkbox v-model="model.creditCardSecureDetails.save" :label="$t('SaveCard')"></v-checkbox>
       </v-form>
     </v-card-text>
-    <v-card-actions class="px-0">
+    <v-card-actions class="px-4">
       <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t('Charge')}}</v-btn>
     </v-card-actions>
   </v-card>
@@ -14,11 +65,14 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
-import CreditCardSecureDetailsForm from "./CreditCardSecureDetailsForm";
 
 export default {
   components: {
-    CreditCardSecureDetailsForm,
+    CreditCardSecureDetailsForm: () => import("./CreditCardSecureDetailsForm"),
+    EcDialog: () => import("../../components/ec/EcDialog"),
+    EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
+    EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
+    ReIcon: () => import("../../components/misc/ResponsiveIcon")
   },
   props: {
     data: {
@@ -29,25 +83,77 @@ export default {
   },
   data() {
     return {
-      model: { ...this.data }
+      model: { ...this.data },
+      tokensDialog: false,
+      customerTokens: null,
+      selectedToken: null,
+      selectedTokenObj: null,
     };
+  },
+  async mounted() {
+    if (this.model.dealDetails.consumerID) {
+      this.customerTokens =
+        (
+          await this.$api.cardTokens.getCustomerCardTokens(
+            this.model.dealDetails.consumerID
+          )
+        ).data || [];
+      this.selectedToken = this.model.creditCardToken;
+    }else{
+      this.selectedToken = this.selectedTokenObj = null;
+    }
+  },
+  computed: {
+    token: {
+      get: function() {
+        return this.selectedTokenObj;
+      },
+      set: function(nv) {
+        this.selectedToken = nv ? nv.creditCardTokenID : null;
+        this.selectedTokenObj = nv;
+      }
+    }
   },
   methods: {
     ok() {
+      if (this.selectedToken) {
+        this.okCardToken();
+      } else {
+        this.okCreditCard();
+      }
+    },
+    resetToken() {
+      this.selectedToken = null;
+    },
+    okCardToken() {
+      if (!this.selectedToken) return;
+
+      this.$emit("ok", {
+        type: "token",
+        data: this.selectedToken
+      });
+    },
+    okCreditCard() {
       let form = this.$refs.form.validate();
 
       if (!form) return;
-      
-      let data = this.$refs.ccsecuredetailsform.getData()
 
-      if(!data){
+      let data = this.$refs.ccsecuredetailsform.getData();
+
+      if (!data) {
         return;
       }
-      
+
       this.$emit("ok", {
-        ...this.model.reditCardSecureDetails,
-        ...data
+        type: "creditcard",
+        data: {
+          ...this.model.creditCardSecureDetails,
+          ...data
+        }
       });
+    },
+    handleClick() {
+      this.tokensDialog = this.customerTokens && this.customerTokens.length > 0;
     }
   }
 };

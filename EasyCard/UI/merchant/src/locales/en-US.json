@@ -14,6 +14,7 @@
   "CreateItem": "Create Item",
   "EditItem": "Edit Item",
   "CreateCardToken": "Create card token",
+  "SavedTokens": "Saved tokens",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -28,6 +29,8 @@
   "@ItemsSelected": "@amount Items selected",
   "@TransactionsOf": "Transactions of @customer",
   "@Displayed": "@amount displayed",
+  "@ChooseFromSavedCount": "Choose from saved (@count)",
+  "NoSavedCards": "No saved cards",
   "TerminalNotSelected": "Terminal not selected",
   "ToList": "To list",
   
@@ -68,6 +71,12 @@
   "SaveCard": "Save Card",
   "AdditionalSettings": "Additional Settings",
   
+  "--BUTTONS--": null,
+  "Cancel": "Cancel",
+  "Ok": "Ok",
+  "Save": "Save",
+  "CancelSelection": "Cancel Selection",
+
   "--AUTH--": null,
   "Login": "Login",
   "LoginWelcomeText": "Welcome to easycard",
