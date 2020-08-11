@@ -18,7 +18,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
-          <customers-list :show-previously-charged="true" v-on:ok="processCustomer($event)"></customers-list>
+          <customers-list :key="terminal.terminalID" :show-previously-charged="true" v-on:ok="processCustomer($event)"></customers-list>
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">

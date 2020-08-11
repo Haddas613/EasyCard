@@ -381,6 +381,11 @@
             Save credit card from request
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.InitialJ5TransactionID">
+            <summary>
+            Reference to initial transaction
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">
             <summary>
             Do not store full card number. Please use 123456****1234 pattern CreditCardHelpers.GetCardDigits()

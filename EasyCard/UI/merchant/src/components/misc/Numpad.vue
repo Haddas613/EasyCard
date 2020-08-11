@@ -113,6 +113,7 @@
 import EcMoney from "../ec/EcMoney";
 import EcList from "../ec/EcList";
 import ReIcon from "../misc/ResponsiveIcon";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -165,7 +166,10 @@ export default {
     },
     totalItemsAmount() {
       return this.lodash.sumBy(this.model.items, i => i.amount);
-    }
+    },
+    ...mapState({
+      currencyStore: state => state.settings.currency
+    }),
   },
   async mounted() {
     await this.getItems();
@@ -175,7 +179,8 @@ export default {
       let searchApply = this.search && this.search.trim().length >= 3;
 
       let data = await this.$api.items.getItems({
-        search: searchApply ? this.search : ""
+        search: searchApply ? this.search : "",
+        currency: this.currencyStore.code
       });
       if (data) {
         this.items = data.data || [];

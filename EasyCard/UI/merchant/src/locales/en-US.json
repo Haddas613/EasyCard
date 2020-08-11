@@ -1,4 +1,5 @@
 {
+  "--NAVIGATION LINKS & ROUTING--": null,
   "Dashboard": "Dashboard",
   "Transactions": "Transactions",
   "CreateTransaction": "Create Transaction",
@@ -12,7 +13,9 @@
   "ItemsList": "Items List",
   "CreateItem": "Create Item",
   "EditItem": "Edit Item",
+  "CreateCardToken": "Create card token",
 
+  "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
   "Invalid": "Invalid",
   "IsraeliNationalIdMustBeValid": "Must be valid Israeli National ID",
@@ -28,6 +31,7 @@
   "TerminalNotSelected": "Terminal not selected",
   "ToList": "To list",
   
+  "--FORM FIELDS--": null,
   "Terminal": "Terminal",
   "Item": "Item",
   "Items": "Items",
@@ -64,16 +68,19 @@
   "SaveCard": "Save Card",
   "AdditionalSettings": "Additional Settings",
   
+  "--AUTH--": null,
   "Login": "Login",
   "LoginWelcomeText": "Welcome to easycard",
   "LoginTitle": "Please proceed with login",
 
+  "--OPERATION RESULT MESSAGES--": null,
   "CreatedSuccessfully": "Created Successfully",
   "AnErrorOccured": "An error occured",
   "ServerErrorTryAgainLater": "Server Error. Try again later",
   "TransactionCreationError": "Could not create transaction",
   "SomethingWentWrong": "Something went wrong",
 
+  "--MISC--": null,
   "AllCustomers": "All Customers",
   "NothingToShow": "Nothing to Show",
   "PersonalInformation": "Personal Information",
