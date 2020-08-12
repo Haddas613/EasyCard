@@ -77,8 +77,10 @@
             </v-col>
           </template>
 
-          <template v-slot:append>
-            <re-icon>mdi-chevron-right</re-icon>
+          <template v-slot:append="{ item }">
+            <v-btn icon :to="{ name: 'Transaction', params: { id: item.$paymentTransactionID } }">
+              <re-icon>mdi-chevron-right</re-icon>
+            </v-btn>
           </template>
         </ec-list>
         <!-- TODO: config -->

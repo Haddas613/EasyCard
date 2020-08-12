@@ -53,6 +53,14 @@ const routes = [
         component: () => import('../pages/transactions/TransactionsList.vue'),
       },
       {
+        name: 'Transaction',
+        path: 'transactions/view/:id',
+        meta:{
+          backBtn: true
+        },
+        component: () => import('../pages/transactions/TransactionInfo.vue'),
+      },
+      {
         name: 'TransactionsDate',
         path: 'transactions/date/:date',
         meta:{

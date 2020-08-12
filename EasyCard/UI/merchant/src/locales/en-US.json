@@ -1,5 +1,5 @@
 {
-  "--NAVIGATION LINKS & ROUTING--": null,
+  "--NAVIGATION LINKS, ROUTING & TITLES--": null,
   "Dashboard": "Dashboard",
   "Transactions": "Transactions",
   "CreateTransaction": "Create Transaction",
@@ -15,6 +15,7 @@
   "EditItem": "Edit Item",
   "CreateCardToken": "Create card token",
   "SavedTokens": "Saved tokens",
+  "Advanced": "Advanced",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -34,7 +35,8 @@
   "TerminalNotSelected": "Terminal not selected",
   "ToList": "To list",
   
-  "--FORM FIELDS--": null,
+  "--FORM & DATA FIELDS--": null,
+  "ID": "ID",
   "Terminal": "Terminal",
   "Item": "Item",
   "Items": "Items",
@@ -70,12 +72,20 @@
   "NatID": "Nat. ID",
   "SaveCard": "Save Card",
   "AdditionalSettings": "Additional Settings",
+  "SpecialTransactionType": "Special Transaction Type",
+  "CardOwnerNationalID": "Card Owner National ID",
+  "CardExpiration": "Card Expiration",
+  "TransactionTime": "TransactionTime",
+  "TransmissionTime": "Transmission Time",
+  "CardOwnerName": "Card Owner Name",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
   "Ok": "Ok",
   "Save": "Save",
   "CancelSelection": "Cancel Selection",
+  "Transmission": "Transmission",
+  "CancelTransmission": "Cancel Transmission",
 
   "--AUTH--": null,
   "Login": "Login",
@@ -103,5 +113,6 @@
   "Period": "Period",
   "OperationsCount": "Operations Count",
   "DeleteSelected": "Delete Selected",
-  "SavedCards": "Saved Cards"
+  "SavedCards": "Saved Cards",
+  "NotAccessible": "Not accessible"
 }

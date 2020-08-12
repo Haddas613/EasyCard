@@ -187,7 +187,7 @@ export default {
       }
     },
     ok() {
-      this.model.amount = this.totalAmount;
+      this.model.amount = parseFloat(this.model.amount);//this.totalAmount;
       this.$emit("ok", this.model);
     },
     stash() {

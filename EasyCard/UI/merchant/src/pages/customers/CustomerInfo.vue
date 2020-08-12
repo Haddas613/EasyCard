@@ -205,10 +205,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-p {
-  margin-bottom: 0;
-}
-.info-block {
-  padding-bottom: 1rem;
-}
+
 </style>

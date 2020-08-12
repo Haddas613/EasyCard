@@ -50,7 +50,11 @@ export default {
   },
   watch: {
     model(newValue, oldValue) {
-      this.selected = newValue;
+      if (this.returnObject) {
+        this.selected = newValue ? newValue[this.valuekey] : null;
+      } else {
+        this.selected = newValue;
+      }
     }
   },
   mounted() {

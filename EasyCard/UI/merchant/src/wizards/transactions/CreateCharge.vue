@@ -130,12 +130,7 @@ export default {
           completed: true
         }
       },
-      threeDotMenuItems: [
-        {
-          type: "AdditionalSettings",
-          text: "AdditionalSettings"
-        }
-      ],
+      threeDotMenuItems: null,
       success: true,
       errors: []
     };
