@@ -123,7 +123,7 @@ export default {
       }
     },
     resetToken() {
-      this.selectedToken = null;
+      this.token = null;
     },
     okCardToken() {
       if (!this.selectedToken) return;

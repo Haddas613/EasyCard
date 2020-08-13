@@ -24,14 +24,11 @@ namespace Transactions.Api.Mapping
 
         private void RegisterTransactionMappings()
         {
-          
-
             CreateMap<CreateTransactionRequest, PaymentTransaction>()
                    .ForMember(d => d.InitialPaymentAmount, s => s.MapFrom(src => src.InstallmentDetails.InitialPaymentAmount))
                    .ForMember(d => d.NumberOfPayments, s => s.MapFrom(src => src.InstallmentDetails.NumberOfPayments))
                    .ForMember(d => d.InstallmentPaymentAmount, s => s.MapFrom(src => src.InstallmentDetails.InstallmentPaymentAmount))
-                .ForMember(d => d.CreditCardDetails, o => o.Ignore()
-                );
+                .ForMember(d => d.CreditCardDetails, o => o.Ignore());
 
             CreateMap<CreditCardSecureDetails, Business.Entities.CreditCardDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))
@@ -42,7 +39,10 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
                 .ForMember(d => d.MerchantID, o => o.MapFrom(d => d.MerchantID));
 
-            CreateMap<PaymentTransaction, TransactionResponse>();
+            CreateMap<PaymentTransaction, TransactionResponse>()
+                .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator))
+                .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus()));
+
             CreateMap<PaymentTransaction, TransactionSummary>()
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.CreditCardDetails.CardOwnerName))
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus()));
