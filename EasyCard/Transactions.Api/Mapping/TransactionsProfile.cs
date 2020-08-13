@@ -40,7 +40,9 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.MerchantID, o => o.MapFrom(d => d.MerchantID));
 
             CreateMap<PaymentTransaction, TransactionResponse>()
+                .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator))
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus()));
+
             CreateMap<PaymentTransaction, TransactionSummary>()
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.CreditCardDetails.CardOwnerName))
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus()));

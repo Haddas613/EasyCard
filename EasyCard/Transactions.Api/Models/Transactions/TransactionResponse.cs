@@ -178,5 +178,7 @@ namespace Transactions.Api.Models.Transactions
         /// Concurrency key
         /// </summary>
         public byte[] UpdateTimestamp { get; set; }
+
+        public bool AllowTransmission { get; set; }
     }
 }

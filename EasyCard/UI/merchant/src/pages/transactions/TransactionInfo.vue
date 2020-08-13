@@ -5,9 +5,11 @@
         <v-row no-gutters>
           <v-col cols="12" md="6" lg="6" xl="6" class="px-1">
             <!-- <v-spacer v-if="$vuetify.breakpoint.smAndDown" class="ecbg py-2"></v-spacer> -->
-            <div class="py-2 ecdgray--text subtitle-2 text-uppercase info-block-title">{{$t('GeneralInfo')}}</div>
+            <div
+              class="py-2 ecdgray--text subtitle-2 text-uppercase info-block-title"
+            >{{$t('GeneralInfo')}}</div>
             <v-divider></v-divider>
-            <div class="info-container  body-1 black--text" v-if="model">
+            <div class="info-container body-1 black--text" v-if="model">
               <div class="info-block">
                 <p class="caption ecgray--text text--darken-2">{{$t('ID')}}</p>
                 <p>{{model.$paymentTransactionID}}</p>
@@ -38,9 +40,11 @@
             </div>
           </v-col>
           <v-col cols="12" md="6" lg="6" xl="6" class="px-1">
-            <div class="py-2 ecdgray--text subtitle-2 text-uppercase info-block-title">{{$t('CreditCardDetails')}}</div>
+            <div
+              class="py-2 ecdgray--text subtitle-2 text-uppercase info-block-title"
+            >{{$t('CreditCardDetails')}}</div>
             <v-divider></v-divider>
-            <div class="info-container  body-1 black--text" v-if="model">
+            <div class="info-container body-1 black--text" v-if="model">
               <div class="info-block">
                 <p class="caption ecgray--text text--darken-2">{{$t('CreditCardToken')}}</p>
                 <p>{{(model.creditCardToken || '-') | guid}}</p>
@@ -65,7 +69,9 @@
           </v-col>
 
           <v-col cols="12" md="6" lg="6" xl="6" class="px-1 pt-1">
-            <div class="py-2 ecdgray--text subtitle-2 text-uppercase info-block-title">{{$t('InstallmentDetails')}}</div>
+            <div
+              class="py-2 ecdgray--text subtitle-2 text-uppercase info-block-title"
+            >{{$t('InstallmentDetails')}}</div>
             <v-divider></v-divider>
             <div class="info-container body-1 black--text" v-if="model">
               <div class="info-block">
@@ -87,39 +93,52 @@
             </div>
           </v-col>
           <v-col cols="12" md="6" lg="6" xl="6" class="px-1 pt-1">
-              <div class="py-2 ecdgray--text subtitle-2 text-uppercase info-block-title">{{$t('Advanced')}}</div>
-              <v-divider></v-divider>
-              <div class="info-container body-1 black--text" v-if="model">
-                <div class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('TransactionType')}}</p>
-                  <p>{{model.transactionType}}</p>
-                </div>
-                <div class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('SpecialTransactionType')}}</p>
-                  <p>{{model.specialTransactionType}}</p>
-                </div>
-                <div class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('JDealType')}}</p>
-                  <p>{{model.jDealType}}</p>
-                </div>
-                <div class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('CardPresence')}}</p>
-                  <p>{{model.cardPresence}}</p>
-                </div>
+            <div
+              class="py-2 ecdgray--text subtitle-2 text-uppercase info-block-title"
+            >{{$t('Advanced')}}</div>
+            <v-divider></v-divider>
+            <div class="info-container body-1 black--text" v-if="model">
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('TransactionType')}}</p>
+                <p>{{model.transactionType}}</p>
               </div>
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('SpecialTransactionType')}}</p>
+                <p>{{model.specialTransactionType}}</p>
+              </div>
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('JDealType')}}</p>
+                <p>{{model.jDealType}}</p>
+              </div>
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('CardPresence')}}</p>
+                <p>{{model.cardPresence}}</p>
+              </div>
+            </div>
           </v-col>
         </v-row>
       </v-card-text>
     </v-card>
-    <v-row no-gutters>
+    <v-row no-gutters v-if="model && model.allowTransmission">
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
-        <v-btn class="mx-1" color="primary">{{$t('Transmission')}}</v-btn>
-        <v-btn color="red" class="white--text" outlined>{{$t('CancelTransmission')}}</v-btn>
+        <v-btn class="mx-1" color="primary" @click="transmit()">{{$t('Transmission')}}</v-btn>
+        <v-btn
+          color="red"
+          class="white--text"
+          outlined
+          @click="cancelTransmission()"
+        >{{$t('CancelTransmission')}}</v-btn>
       </v-col>
       <v-col cols="12" v-if="$vuetify.breakpoint.smAndDown" class="px-2 pb-2">
-        <v-btn block color="primary">{{$t('Transmission')}}</v-btn>
+        <v-btn block color="primary" @click="transmit()">{{$t('Transmission')}}</v-btn>
         <v-spacer class="py-2"></v-spacer>
-        <v-btn block color="red" class="white--text" outlined>{{$t('CancelTransmission')}}</v-btn>
+        <v-btn
+          block
+          color="red"
+          class="white--text"
+          outlined
+          @click="cancelTransmission()"
+        >{{$t('CancelTransmission')}}</v-btn>
       </v-col>
     </v-row>
   </v-flex>
@@ -158,6 +177,32 @@ export default {
     if (!this.model) {
       return this.$router.push("/admin/transactions/list");
     }
+  },
+  methods: {
+    transmit() {
+      let operation = this.$api.transmissions.transmit({
+        terminalID: this.model.$terminalID,
+        paymentTransactionIDs: [this.model.$paymentTransactionID]
+      });
+
+      if (!operation) return;
+
+      if (operation.status === "success") {
+        this.model.allowTransmission = false;
+      }
+    },
+    cancelTransmission() {
+      let operation = this.$api.transmissions.cancelTransmission({
+        terminalID: this.model.$terminalID,
+        paymentTransactionID: this.model.$paymentTransactionID
+      });
+
+      if (!operation) return;
+
+      if (operation.status === "success") {
+        this.model.allowTransmission = false;
+      }
+    }
   }
 };
 </script>
@@ -171,7 +216,7 @@ export default {
 .info-container {
   padding-top: 1rem;
 }
-.info-block-title{
+.info-block-title {
   // border: 1px solid var(-ecbg--base);
 }
 </style>
