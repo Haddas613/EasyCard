@@ -1,69 +1,67 @@
-﻿using System;
+﻿using Shared.Helpers;
+using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Text;
 
 namespace Shared.Integration.Models.Invoicing
 {
-    [DataContract]
     public class InvoicingCreateDocumentRequest
     {
+        public InvoicingCreateDocumentRequest()
+        {
+            this.DealDetails = new DealDetails();
+            this.CreditCardDetails = new CreditCardDetails();
+            this.InstallmentDetails = new InstallmentDetails();
+        }
 
-        [DataMember(Name = "transactionDateTime")]
-        public string TransactionDateTime { get; set; }
+        /// <summary>
+        /// Invoice date
+        /// </summary>
+        public DateTime? InvoiceDate { get; set; }
 
-        [DataMember(Name = "documentType")]
-        public string DocumentType { get; set; }
+        /// <summary>
+        /// Invoice details
+        /// </summary>
+        public InvoiceDetails InvoiceDetails { get; set; }
 
-        [DataMember(Name = "customerName")]
-        public string CustomerName { get; set; }
+        /// <summary>
+        /// EasyCard terminal reference
+        /// </summary>
+        public Guid TerminalID { get; set; }
 
-        [DataMember(Name = "customerTaxId")]
-        public string CustomerTaxId { get; set; }
+        /// <summary>
+        /// Currency
+        /// </summary>
+        public CurrencyEnum Currency { get; set; }
 
-        [DataMember(Name = "customerAddress")]
-        public CustomerAddress CustomerAddress { get; set; }
+        /// <summary>
+        /// Deal information (optional)
+        /// </summary>
+        public DealDetails DealDetails { get; set; }
 
-        [DataMember(Name = "customerPhoneNumber")]
-        public string CustomerPhoneNumber { get; set; }
+        /// <summary>
+        /// Credit card details
+        /// </summary>
+        public CreditCardDetailsBase CreditCardDetails { get; set; }
 
-        [DataMember(Name = "customerEmail")]
-        public string CustomerEmail { get; set; }
+        /// <summary>
+        /// Invoice amount (should be omitted in case of installment deal)
+        /// </summary>
+        public decimal? InvoiceAmount { get; set; }
 
-        [DataMember(Name = "description")]
-        public string Description { get; set; }
+        /// <summary>
+        /// Tax rate (VAT)
+        /// </summary>
+        public decimal? TaxRate { get; set; }
 
-        [DataMember(Name = "totalAmount")]
-        public decimal? TotalAmount { get; set; }
-
-        [DataMember(Name = "totalNetAmount")]
-        public decimal? TotalNetAmount { get; set; }
-
-        [DataMember(Name = "taxAmount")]
+        /// <summary>
+        /// Tax amount
+        /// </summary>
         public decimal? TaxAmount { get; set; }
 
-        [DataMember(Name = "taxPercentage")]
-        public decimal? TaxPercentage { get; set; }
-
-        [DataMember(Name = "discountAmount")]
-        public decimal? DiscountAmount { get; set; }
-
-        [DataMember(Name = "totalAmountBeforeDiscount")]
-        public decimal? TotalAmountBeforeDiscount { get; set; }
-
-        [DataMember(Name = "totalPaidAmount")]
-        public decimal? TotalPaidAmount { get; set; }
-
-        [DataMember(Name = "sendEmail")]
-        public bool SendEmail { get; set; }
-
-        [DataMember(Name = "rows")]
-        public IList<Row> Rows { get; set; }
-
-        [DataMember(Name = "payments")]
-        public IList<Payment> Payments { get; set; }
-
-        [DataMember(Name = "keyStorePassword")]
-        public string KeyStorePassword { get; set; }
+        /// <summary>
+        /// Installment payments details (should be omitted in case of regular deal)
+        /// </summary>
+        public InstallmentDetails InstallmentDetails { get; set; }
     }
 }

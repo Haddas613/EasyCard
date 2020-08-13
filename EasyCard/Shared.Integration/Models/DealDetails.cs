@@ -51,6 +51,6 @@ namespace Shared.Integration.Models
         /// Deal Items
         /// ID, Count, Name
         /// </summary>
-        public JObject Items { get; set; }
+        public IEnumerable<Item> Items { get; set; }
     }
 }

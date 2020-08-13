@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Transactions.Api.Models.Invoicing;
 using Enums = Transactions.Shared.Enums;
 using IntegrationModels = Shared.Integration.Models;
 
@@ -79,5 +80,29 @@ namespace Transactions.Api.Models.Transactions
         /// Reference to initial transaction
         /// </summary>
         public Guid? InitialJ5TransactionID { get; set; }
+
+        /// <summary>
+        /// Create document
+        /// </summary>
+        public bool? IssueInvoice { get; set; }
+
+        /// <summary>
+        /// Invoice details
+        /// </summary>
+        public InvoiceDetails InvoiceDetails { get; set; }
+
+        /// <summary>
+        /// Tax rate (VAT)
+        /// </summary>
+        [Range(0.01, 1)]
+        [DataType(DataType.Currency)]
+        public decimal? TaxRate { get; set; }
+
+        /// <summary>
+        /// Tax amount
+        /// </summary>
+        [Range(0.01, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal? TaxAmount { get; set; }
     }
 }

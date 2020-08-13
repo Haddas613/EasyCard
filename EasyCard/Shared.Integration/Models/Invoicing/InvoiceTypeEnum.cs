@@ -6,5 +6,9 @@ namespace Shared.Integration.Models.Invoicing
 {
     public enum InvoiceTypeEnum : short
     {
+        Invoice,
+        InvoiceWithPaymentInfo,
+        CreditNote,
+        PaymentInfo
     }
 }

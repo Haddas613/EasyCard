@@ -23,6 +23,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Transactions.Shared.Models;
 using System.Linq;
+using Shared.Integration.Models;
 
 namespace Transactions.Business.Data
 {
@@ -56,6 +57,16 @@ namespace Transactions.Business.Data
         private static readonly ValueConverter BillingScheduleConverter = new ValueConverter<BillingSchedule, string>(
            v => JsonConvert.SerializeObject(v),
            v => JsonConvert.DeserializeObject<BillingSchedule>(v));
+
+        private static readonly ValueConverter ItemsConverter = new ValueConverter<IEnumerable<Item>, string>(
+           v => JsonConvert.SerializeObject(v),
+           v => JsonConvert.DeserializeObject<IEnumerable<Item>>(v));
+
+        private static readonly ValueConverter CustomerAddressConverter = new ValueConverter<Address, string>(
+           v => JsonConvert.SerializeObject(v),
+           v => JsonConvert.DeserializeObject<Address>(v));
+
+        
 
         //BillingSchedule
 
@@ -240,7 +251,8 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
-                    s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(SettingsJObjectConverter);
+                    s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter);
+                    s.Property(p => p.CustomerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
 
 
                 });

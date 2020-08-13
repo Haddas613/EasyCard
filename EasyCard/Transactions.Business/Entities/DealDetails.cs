@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -35,6 +36,11 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Deal Items
         /// </summary>
-        public JObject Items { get; set; }
+        public IEnumerable<Item> Items { get; set; }
+
+        /// <summary>
+        /// End-customer Address
+        /// </summary>
+        public Address CustomerAddress { get; set; }
     }
 }
