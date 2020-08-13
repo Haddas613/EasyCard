@@ -66,8 +66,6 @@ namespace Transactions.Business.Data
            v => JsonConvert.SerializeObject(v),
            v => JsonConvert.DeserializeObject<Address>(v));
 
-        
-
         //BillingSchedule
 
         public TransactionsContext(DbContextOptions<TransactionsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
@@ -117,12 +115,14 @@ where r <= 10
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Ignore<Address>();
+
             modelBuilder.ApplyConfiguration(new PaymentTransactionConfiguration());
             modelBuilder.ApplyConfiguration(new CreditCardTokenDetailsConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new BillingDealConfiguration());
             modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
-            
+
             // security filters
 
             modelBuilder.Entity<CreditCardTokenDetails>().HasQueryFilter(t => user.IsAdmin() || (t.Active && (user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID())));
@@ -253,8 +253,6 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter);
                     s.Property(p => p.CustomerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
-
-
                 });
 
                 builder.Property(p => p.ConsumerIP).HasColumnName("ConsumerIP").IsRequired(false).HasMaxLength(32).IsUnicode(false);
@@ -372,8 +370,6 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter);
-
-
                 });
 
                 builder.Property(b => b.TransactionAmount).HasColumnType("decimal(19,4)").IsRequired();
