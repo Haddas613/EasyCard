@@ -68,7 +68,7 @@
         <ec-list :items="tokens" v-if="tokens && tokens.length > 0">
 
           <template v-slot:left="{ item }">
-            <v-col cols="12" md="6" lg="6" class="caption ecgray--text">{{item.creditCardTokenID}}</v-col>
+            <v-col cols="12" md="6" lg="6" class="caption ecgray--text">{{item.creditCardTokenID | guid}}</v-col>
             <v-col cols="12" md="6" lg="6">{{item.cardNumber}}</v-col>
           </template>
 
@@ -205,10 +205,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-p {
-  margin-bottom: 0;
-}
-.info-block {
-  padding-bottom: 1rem;
-}
+
 </style>

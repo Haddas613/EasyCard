@@ -2,15 +2,6 @@
   <v-card class="ec-card d-flex flex-column" fill-height>
     <v-card-text class="py-2 px-0">
       <v-form class="ec-form" ref="form" lazy-validation>
-        <v-select
-          :items="terminals"
-          item-text="label"
-          item-value="terminalID"
-          v-model="model.terminalID"
-          outlined
-          :label="$t('Terminal')"
-          required
-        ></v-select>
         <v-text-field
           v-model="model.consumerEmail"
           :counter="50"
@@ -65,21 +56,19 @@ export default {
   data() {
     return {
       model: { ...this.data },
-      terminals: [],
       customer: null,
       vr: ValidationRules
     };
   },
   async mounted() {
-    this.terminals = (await this.$api.terminals.getTerminals()).data || [];
-    if (!this.model.terminalID) {
-      this.model.terminalID =
-        this.terminalStore || this.terminals[0].terminalID;
-    }
     if (this.model.consumerID) {
       this.customer = await this.$api.consumers.getConsumer(
         this.model.consumerID
       );
+
+      if (!this.model.terminalID) {
+        this.model.terminalID = this.customer.terminalID;
+      }
     }
     else if (!this.customer) {
       return this.$router.push({ name: "404" });

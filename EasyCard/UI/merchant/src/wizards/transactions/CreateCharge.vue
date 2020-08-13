@@ -18,11 +18,19 @@
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
-          <customers-list :show-previously-charged="true" v-on:ok="processCustomer($event)"></customers-list>
+          <customers-list
+            :key="terminal.terminalID"
+            :show-previously-charged="true"
+            v-on:ok="processCustomer($event)"
+          ></customers-list>
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">
-          <credit-card-secure-details :key="model.creditCardSecureDetails.cardOwnerName" :data="model" v-on:ok="processCreditCard($event)"></credit-card-secure-details>
+          <credit-card-secure-details
+            :key="creditCardRefreshState"
+            :data="model"
+            v-on:ok="processCreditCard($event)"
+          ></credit-card-secure-details>
         </v-stepper-content>
 
         <v-stepper-content step="4" class="py-0 px-0">
@@ -30,7 +38,11 @@
         </v-stepper-content>
 
         <v-stepper-content step="5" class="py-0 px-0">
-          <transaction-success :amount="model.transactionAmount" v-if="success" :customer="customer"></transaction-success>
+          <transaction-success
+            :amount="model.transactionAmount"
+            v-if="success"
+            :customer="customer"
+          ></transaction-success>
           <transaction-error :errors="errors" v-if="!success"></transaction-error>
         </v-stepper-content>
       </v-stepper-items>
@@ -61,11 +73,12 @@ export default {
     TransactionError,
     AdditionalSettingsForm
   },
-  props: ['customerid'],
+  props: ["customerid"],
   data() {
     return {
       customer: null,
       skipCustomerStep: false,
+      creditCardRefreshState: null,
       model: {
         terminalID: null,
         transactionType: null,
@@ -105,7 +118,7 @@ export default {
           skippable: true
         },
         3: {
-          title: "Charge",
+          title: "Charge"
           // skippable: true
         },
         4: {
@@ -117,35 +130,32 @@ export default {
           completed: true
         }
       },
-      threeDotMenuItems: [
-        {
-          type: 'AdditionalSettings',
-          text: 'AdditionalSettings'
-        }
-      ],
+      threeDotMenuItems: null,
       success: true,
-      errors: [],
+      errors: []
     };
   },
   computed: {
     navTitle() {
       return this.$t(this.steps[this.step].title);
     },
+    terminal: {},
     ...mapState({
       terminal: state => state.settings.terminal
-    }),
+    })
   },
-  async mounted(){
-    if(this.customerid){
+  async mounted() {
+    if (this.customerid) {
       let data = await this.$api.consumers.getConsumer(this.customerid);
-      if(data){
+      if (data) {
         this.skipCustomerStep = true;
         this.customer = data;
         this.model.dealDetails.consumerEmail = data.consumerEmail;
         this.model.dealDetails.consumerPhone = data.consumerPhone;
         this.model.dealDetails.consumerID = data.consumerID;
-        this.model.creditCardSecureDetails.cardOwnerName = data.consumerName;
-        this.model.creditCardSecureDetails.cardOwnerNationalID = data.consumerNationalID;
+        this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState = data.consumerName;
+        this.model.creditCardSecureDetails.cardOwnerNationalID =
+          data.consumerNationalID;
       }
     }
   },
@@ -154,29 +164,36 @@ export default {
       if (this.step === 1) this.$router.push("/admin/dashboard");
       else this.step--;
     },
-    processCustomer(data){
+    processCustomer(data) {
       this.skipCustomerStep = false;
       this.customer = data;
       this.model.dealDetails.consumerEmail = data.consumerEmail;
       this.model.dealDetails.consumerPhone = data.consumerPhone;
       this.model.dealDetails.consumerID = data.consumerID;
-      this.model.creditCardSecureDetails.cardOwnerName = data.consumerName;
-      this.model.creditCardSecureDetails.cardOwnerNationalID = data.consumerNationalID;
+      this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState = data.consumerName;
+      this.model.creditCardSecureDetails.cardOwnerNationalID =
+        data.consumerNationalID;
       this.step++;
     },
     processAmount(data) {
       this.model.transactionAmount = data.amount;
       this.model.note = data.note;
       this.model.items = data.items;
-      if(this.skipCustomerStep) this.step += 2;
+      if (this.skipCustomerStep) this.step += 2;
       else this.step++;
     },
     processCreditCard(data) {
-      this.model.creditCardSecureDetails = data;
-      if (data.cardReaderInput) {
-        this.model.cardPresence = "regular";
-      } else {
-        this.model.cardPresence = "cardNotPresent";
+      if (data.type === "creditcard") {
+        data = data.data;
+        this.model.creditCardSecureDetails = data;
+        if (data.cardReaderInput) {
+          this.model.cardPresence = "regular";
+        } else {
+          this.model.cardPresence = "cardNotPresent";
+        }
+      } else if (data.type === "token") {
+        this.model.creditCardSecureDetails = null;
+        this.model.creditCardToken = data.data;
       }
       this.step++;
     },
@@ -210,10 +227,12 @@ export default {
         lastStep.closeable = false;
         this.errors = [];
       }
-      if(this.customer){
-        this.$store.commit('payment/addLastChargedCustomer', {customerId: this.customer.consumerID});
+      if (this.customer) {
+        this.$store.commit("payment/addLastChargedCustomer", {
+          customerId: this.customer.consumerID
+        });
       }
-      
+
       this.step++;
     }
   }

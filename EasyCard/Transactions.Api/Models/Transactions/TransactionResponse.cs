@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Transactions.Api.Models.Transactions.Enums;
 using Transactions.Shared.Enums;
 using Enums = Transactions.Shared.Enums;
 using IntegrationModels = Shared.Integration.Models;
@@ -78,6 +79,10 @@ namespace Transactions.Api.Models.Transactions
         /// Processing status
         /// </summary>
         public TransactionStatusEnum Status { get; set; }
+
+        [EnumDataType(typeof(QuickStatusFilterTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public QuickStatusFilterTypeEnum QuickStatus { get; set; }
 
         /// <summary>
         /// Status of finalization operations in case of failed transaction, rejection or cancelation
@@ -173,5 +178,7 @@ namespace Transactions.Api.Models.Transactions
         /// Concurrency key
         /// </summary>
         public byte[] UpdateTimestamp { get; set; }
+
+        public bool AllowTransmission { get; set; }
     }
 }

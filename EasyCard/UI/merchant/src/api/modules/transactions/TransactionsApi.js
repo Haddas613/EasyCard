@@ -27,6 +27,19 @@ export default class TransactionsApi {
         return data;
     }
 
+    async getTransaction(id){
+      if (!this.headers) {
+        let data = await this.base.get(this.transactionsUrl + '/$meta')
+        this.headers = this.base._formatHeaders(data)
+        this.$headers = data.columns
+      }
+      let transaction = await this.base.get(this.transactionsUrl + `/${id}`);
+      let dictionaries = await this.base.dictionaries.$getTransactionDictionaries();
+
+      transaction = this.base.format(transaction, this.$headers, dictionaries)
+      return transaction;
+    }
+
     async getGrouped(params) {
 
       if (!this.headers) {

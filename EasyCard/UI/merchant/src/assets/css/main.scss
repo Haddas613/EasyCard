@@ -130,3 +130,9 @@ $secondary : var(--v-secondary-base);
     }
   }
 }
+.info-block {
+  padding-bottom: 1rem;
+  p {
+    margin-bottom: 0;
+  }
+}

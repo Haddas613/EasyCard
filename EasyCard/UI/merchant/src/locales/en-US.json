@@ -1,4 +1,5 @@
 {
+  "--NAVIGATION LINKS, ROUTING & TITLES--": null,
   "Dashboard": "Dashboard",
   "Transactions": "Transactions",
   "CreateTransaction": "Create Transaction",
@@ -12,7 +13,12 @@
   "ItemsList": "Items List",
   "CreateItem": "Create Item",
   "EditItem": "Edit Item",
+  "CreateCardToken": "Create card token",
+  "SavedTokens": "Saved tokens",
+  "Advanced": "Advanced",
+  "GeneralInfo": "General Info",
 
+  "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
   "Invalid": "Invalid",
   "IsraeliNationalIdMustBeValid": "Must be valid Israeli National ID",
@@ -25,9 +31,13 @@
   "@ItemsSelected": "@amount Items selected",
   "@TransactionsOf": "Transactions of @customer",
   "@Displayed": "@amount displayed",
+  "@ChooseFromSavedCount": "Choose from saved (@count)",
+  "NoSavedCards": "No saved cards",
   "TerminalNotSelected": "Terminal not selected",
   "ToList": "To list",
   
+  "--FORM & DATA FIELDS--": null,
+  "ID": "ID",
   "Terminal": "Terminal",
   "Item": "Item",
   "Items": "Items",
@@ -63,17 +73,34 @@
   "NatID": "Nat. ID",
   "SaveCard": "Save Card",
   "AdditionalSettings": "Additional Settings",
+  "SpecialTransactionType": "Special Transaction Type",
+  "CardOwnerNationalID": "Card Owner National ID",
+  "CardExpiration": "Card Expiration",
+  "TransactionTime": "TransactionTime",
+  "TransmissionTime": "Transmission Time",
+  "CardOwnerName": "Card Owner Name",
   
+  "--BUTTONS--": null,
+  "Cancel": "Cancel",
+  "Ok": "Ok",
+  "Save": "Save",
+  "CancelSelection": "Cancel Selection",
+  "Transmission": "Transmission",
+  "CancelTransmission": "Cancel Transmission",
+
+  "--AUTH--": null,
   "Login": "Login",
   "LoginWelcomeText": "Welcome to easycard",
   "LoginTitle": "Please proceed with login",
 
+  "--OPERATION RESULT MESSAGES--": null,
   "CreatedSuccessfully": "Created Successfully",
   "AnErrorOccured": "An error occured",
   "ServerErrorTryAgainLater": "Server Error. Try again later",
   "TransactionCreationError": "Could not create transaction",
   "SomethingWentWrong": "Something went wrong",
 
+  "--MISC--": null,
   "AllCustomers": "All Customers",
   "NothingToShow": "Nothing to Show",
   "PersonalInformation": "Personal Information",
@@ -87,5 +114,6 @@
   "Period": "Period",
   "OperationsCount": "Operations Count",
   "DeleteSelected": "Delete Selected",
-  "SavedCards": "Saved Cards"
+  "SavedCards": "Saved Cards",
+  "NotAccessible": "Not accessible"
 }
