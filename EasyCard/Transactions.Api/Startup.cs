@@ -102,6 +102,8 @@ namespace Transactions.Api
                     policy.RequireAssertion(context => context.User.IsTerminal() || context.User.IsMerchantFrontend() || context.User.IsAdmin()));
                 options.AddPolicy(Policy.MerchantFrontend, policy =>
                    policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
+                options.AddPolicy(Policy.AnyAdmin, policy =>
+                   policy.RequireAssertion(context => context.User.IsAdmin()));
             });
 
             DefaultContractResolver contractResolver = new DefaultContractResolver

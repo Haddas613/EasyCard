@@ -158,6 +158,7 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         [ApiExplorerSettings(IgnoreApi = true)]
         [Route("{transactionID}/history")]
+        [Authorize(Policy = Policy.AnyAdmin)]
         public async Task<ActionResult<TransactionResponse>> GetTransactionHistory([FromRoute] Guid transactionID)
         {
             var transaction = EnsureExists(await transactionsService.GetTransactions()
