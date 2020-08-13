@@ -101,6 +101,7 @@ export default {
           consumerID: null,
           dealDescription: null
         },
+        invoiceDetails: null,
         installmentDetails: {
           numberOfPayments: 0,
           initialPaymentAmount: 0,
@@ -204,6 +205,7 @@ export default {
       this.model.jDealType = data.jDealType;
       this.model.installmentDetails = data.installmentDetails;
       this.model.terminalID = this.terminal.terminalID;
+      this.model.invoiceDetails = data.invoiceDetails;
 
       let result = await this.$api.transactions.processTransaction(this.model);
 

@@ -79,6 +79,11 @@
   "TransactionTime": "TransactionTime",
   "TransmissionTime": "Transmission Time",
   "CardOwnerName": "Card Owner Name",
+  "InvoiceNumber": "Invoice Number",
+  "InvoiceSubject": "Invoice Subject",
+  "AdditionalEmailToCC": "Additional Email to CC",
+  "IssueDocument": "Issue Document",
+ 
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -115,5 +120,6 @@
   "OperationsCount": "Operations Count",
   "DeleteSelected": "Delete Selected",
   "SavedCards": "Saved Cards",
-  "NotAccessible": "Not accessible"
+  "NotAccessible": "Not accessible",
+  "SeparateEmailsWithCommas": "Separate Emails with Commas"
 }
