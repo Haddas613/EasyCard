@@ -2,22 +2,13 @@
   <v-card class="ec-card d-flex flex-column">
     <v-card-text class="py-2">
       <v-form class="ec-form" ref="form" lazy-validation>
-        <!-- <v-select
+        <v-select
           :items="dictionaries.jDealTypeEnum"
           item-text="description"
           item-value="code"
           v-model="model.jDealType"
           :label="$t('JDealType')"
           outlined
-        ></v-select> -->
-        <v-select
-          :items="dictionaries.currencyEnum"
-          item-text="description"
-          item-value="code"
-          v-model="model.currency"
-          :label="$t('Currency')"
-          outlined
-          disabled
         ></v-select>
         <v-select
           :items="dictionaries.transactionTypeEnum"

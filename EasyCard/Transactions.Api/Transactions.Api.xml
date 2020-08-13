@@ -206,6 +206,11 @@
             Billing Schedule
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.TerminalID">
             <summary>
             EasyCard terminal reference
@@ -219,6 +224,31 @@
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.DealDetails">
             <summary>
             Deal information (optional)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.CreditCardDetails">
+            <summary>
+            Credit card details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.InvoiceAmount">
+            <summary>
+            Invoice amount (should be omitted in case of installment deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.TaxRate">
+            <summary>
+            Tax rate (VAT)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.TaxAmount">
+            <summary>
+            Tax amount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.InstallmentDetails">
+            <summary>
+            Installment payments details (should be omitted in case of regular deal)
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenFilter.ConsumerEmail">
@@ -386,6 +416,26 @@
             Reference to initial transaction
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.IssueInvoice">
+            <summary>
+            Create document
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.TaxRate">
+            <summary>
+            Tax rate (VAT)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.TaxAmount">
+            <summary>
+            Tax amount
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">
             <summary>
             Do not store full card number. Please use 123456****1234 pattern CreditCardHelpers.GetCardDigits()
@@ -414,31 +464,6 @@
         <member name="P:Transactions.Api.Models.Transactions.InitalBillingDealRequest.CreditCardToken">
             <summary>
             Stored credit card details token (should be omitted in case if full credit card details used)
-            </summary>
-        </member>
-        <member name="T:Transactions.Api.Models.Transactions.InstallmentDetails">
-            <summary>
-            Installment payments details
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.InstallmentDetails.NumberOfPayments">
-            <summary>
-            Number Of Installments
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.InstallmentDetails.InitialPaymentAmount">
-            <summary>
-            Initial installment payment
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.InstallmentDetails.TotalAmount">
-            <summary>
-            TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.InstallmentDetails.InstallmentPaymentAmount">
-            <summary>
-            Amount of one instalment payment
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.NextBillingDealRequest">

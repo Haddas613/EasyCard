@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Converters;
 using Shared.Helpers;
 using Shared.Integration.Models;
+using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
