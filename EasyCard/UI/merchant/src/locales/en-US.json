@@ -16,6 +16,7 @@
   "CreateCardToken": "Create card token",
   "SavedTokens": "Saved tokens",
   "Advanced": "Advanced",
+  "GeneralInfo": "General Info",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
