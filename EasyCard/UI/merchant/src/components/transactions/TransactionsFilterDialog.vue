@@ -1,0 +1,157 @@
+<template>
+  <ec-dialog :dialog.sync="visible">
+    <template v-slot:title>{{$t('FilterTransactions')}}</template>
+    <template v-slot:right>
+      <v-btn color="success">{{$t('Apply')}}</v-btn>
+    </template>
+    <template>
+      <div class="d-flex px-2 justify-end">
+        <v-btn
+          color="primary"
+          :block="$vuetify.breakpoint.smAndDown"
+          outlined
+        >{{$t("Reset")}}</v-btn>
+      </div>
+      <div class="px-4">
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="model.paymentTransactionID" :label="$t('PaymentTransactionID')"></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="model.terminalID" :label="$t('Terminal')"></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="model.merchantID" :label="$t('Merchant')"></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-select
+              :items="dictionaries.transactionTypeEnum"
+              item-text="description"
+              item-value="code"
+              v-model="model.transactionType"
+              :label="$t('TransactionType')"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-select
+              :items="dictionaries.quickStatusFilterTypeEnum"
+              item-text="description"
+              item-value="code"
+              v-model="model.quickStatus"
+              :label="$t('Status')"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-select
+              :items="dictionaries.cardPresenceEnum"
+              item-text="description"
+              item-value="code"
+              v-model="model.cardPresence"
+              :label="$t('CardPresence')"
+            ></v-select>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="model.amountFrom"
+              :label="$t('AmountFrom')"
+              type="number"
+              min="0"
+              step="0.01"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="model.amountTo"
+              :label="$t('AmountTo')"
+              type="number"
+              min="0"
+              step="0.01"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-select
+              :items="dictionaries.currencies"
+              item-text="description"
+              item-value="code"
+              v-model="model.currency"
+              :label="$t('Currency')"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-select
+              :items="dictionaries.specialTransactionTypeEnum"
+              item-text="description"
+              item-value="code"
+              v-model="model.specialTransactionType"
+              :label="$t('SpecialTransactionType')"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-select
+              :items="dictionaries.jDealTypes"
+              item-text="description"
+              item-value="code"
+              v-model="model.jDealType"
+              :label="$t('JDealType')"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-select
+              :items="dictionaries.rejectionReasonEnum"
+              item-text="description"
+              item-value="code"
+              v-model="model.rejectionReason"
+              :label="$t('CardPresence')"
+            ></v-select>
+          </v-col>
+        </v-row>
+      </div>
+    </template>
+  </ec-dialog>
+</template>
+
+<script>
+export default {
+  components: {
+    EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
+    EcDialog: () => import("../../components/ec/EcDialog")
+  },
+  props: {
+    show: {
+      type: Boolean,
+      default: false,
+      required: true
+    },
+    filter: {
+      type: Object,
+      default: null,
+      required: true
+    }
+  },
+  data() {
+    return {
+      model: { ...this.filter },
+      dictionaries: {},
+      terminals: []
+    };
+  },
+  async mounted() {
+    this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+  },
+  computed: {
+    visible: {
+      get: function() {
+        return this.show;
+      },
+      set: function(val) {
+        this.$emit("update:show", val);
+      }
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+</style>

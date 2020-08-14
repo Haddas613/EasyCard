@@ -10,7 +10,10 @@
           <v-col cols="10">
             {{$t("Overview")}}
           </v-col>
-          <v-col cols="2 text-end">
+          <v-col cols="1" class="text-end hidden-sm-and-down">
+            <v-btn class="button" color="primary" :to="{name: 'TransactionsFiltered'}" outlined>{{$t("Filter")}}</v-btn>
+          </v-col>
+          <v-col cols="2" lg="1"  class="text-end">
              <v-btn icon @click="refresh()" :loading="loading">
               <v-icon color="primary">mdi-refresh</v-icon>
             </v-btn>
@@ -38,6 +41,9 @@
           </v-col>
         </v-row>
       </v-card-text>
+      <v-card-actions class="hidden-md-and-up">
+        <v-btn class="button" color="primary" :to="{name: 'TransactionsFiltered', params:{ showFiltersDialog: true }}" block outlined>{{$t("Filter")}}</v-btn>
+      </v-card-actions>
     </v-card>
 
     <v-card

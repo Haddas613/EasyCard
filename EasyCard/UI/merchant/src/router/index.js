@@ -76,6 +76,16 @@ const routes = [
         },
         component: () => import('../pages/transactions/TransactionsCustomer.vue'),
       },
+      ,
+      {
+        name: 'TransactionsFiltered',
+        path: 'transactions/filter/',
+        meta:{
+          backBtn: 'Transactions'
+        },
+        props: true,
+        component: () => import('../pages/transactions/TransactionsFiltered.vue'),
+      },
       {
         name: 'Items',
         path: 'items/list',

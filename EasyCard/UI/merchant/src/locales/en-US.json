@@ -17,6 +17,8 @@
   "SavedTokens": "Saved tokens",
   "Advanced": "Advanced",
   "GeneralInfo": "General Info",
+  "FilterTransactions": "Filter Transactions",
+  "TransactionsFiltered": "Filtered Transactions",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -92,6 +94,7 @@
   "CancelSelection": "Cancel Selection",
   "Transmission": "Transmission",
   "CancelTransmission": "Cancel Transmission",
+  "Apply": "Apply",
 
   "--AUTH--": null,
   "Login": "Login",
