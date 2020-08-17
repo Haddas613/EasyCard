@@ -58,6 +58,8 @@ namespace Merchants.Business.Data
 
         public DbSet<Consumer> Consumers { get; set; }
 
+        public DbSet<CurrencyRate> CurrencyRates { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         public MerchantsContext(DbContextOptions<MerchantsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
@@ -306,6 +308,21 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.ConsumerAddress).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+            }
+        }
+
+        internal class CurrencyRateConfiguration : IEntityTypeConfiguration<CurrencyRate>
+        {
+            public void Configure(EntityTypeBuilder<CurrencyRate> builder)
+            {
+                builder.ToTable("CurrencyRate");
+
+                builder.HasKey(b => b.CurrencyRateID);
+                builder.Property(b => b.CurrencyRateID).ValueGeneratedOnAdd();
+
+                builder.Property(b => b.Date).IsRequired(false).HasColumnType("date");
+
+                builder.Property(b => b.Rate).HasColumnType("decimal(19,4)").IsRequired(false);
             }
         }
     }

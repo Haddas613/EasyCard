@@ -79,28 +79,54 @@ namespace Transactions.Business.Data
         //    => optionsBuilder
         //        .UseLoggerFactory(DbCommandConsoleLoggerFactory);
 
-        public async Task<IEnumerable<TransactionSummaryDb>> GetGroupedTransactionSummaries(IDbContextTransaction dbTransaction = null)
+        public async Task<IEnumerable<TransactionSummaryDb>> GetGroupedTransactionSummaries(Guid? terminalID, IDbContextTransaction dbTransaction = null)
         {
-            var query = @"select PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, NumberOfRecords
+            var builder = new SqlBuilder();
+
+            var query = @"select TOP (@maxRecords) PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, NumberOfRecords
 from(
     select PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, r = row_number() over(partition by TransactionDate order by PaymentTransactionID desc), NumberOfRecords = count(*) over(partition by TransactionDate)
-    from PaymentTransaction 
+    from dbo.PaymentTransaction WITH(NOLOCK) /**where**/
     ) a
-where r <= 10
+where r <= @pageSize
  order by PaymentTransactionID desc";
+
+            var selector = builder.AddTemplate(query, new { maxRecords = 100, pageSize = 10 }); // TODO: use config
+
+            if (terminalID.HasValue)
+            {
+                user.CheckTerminalPermission(terminalID.Value);
+                builder.Where($"{nameof(PaymentTransaction.TerminalID)} = @{nameof(terminalID)}", new { terminalID });
+            }
+
+            if (user.IsAdmin())
+            {
+            }
+            else if (user.IsTerminal() && !terminalID.HasValue)
+            {
+                builder.Where($"{nameof(PaymentTransaction.TerminalID)} = @{nameof(terminalID)}", new { terminalID = user.GetTerminalID() });
+            }
+            else if (user.IsMerchant())
+            {
+                var merchantID = user.GetMerchantID();
+                builder.Where($"{nameof(PaymentTransaction.MerchantID)} = @{nameof(merchantID)}", new { merchantID });
+            }
+            else
+            {
+                throw new SecurityException("User has no access to requested data");
+            }
 
             var connection = this.Database.GetDbConnection();
             bool existingConnection = true;
             try
             {
-
                 if (connection.State != ConnectionState.Open)
                 {
                     await connection.OpenAsync();
                     existingConnection = false;
                 }
 
-                var report = await connection.QueryAsync<TransactionSummaryDb>(query, transaction: dbTransaction?.GetDbTransaction());
+                var report = await connection.QueryAsync<TransactionSummaryDb>(selector.RawSql, selector.Parameters, transaction: dbTransaction?.GetDbTransaction());
 
                 return report;
             }
@@ -111,27 +137,6 @@ where r <= 10
                     connection.Close();
                 }
             }
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Ignore<Address>();
-
-            modelBuilder.ApplyConfiguration(new PaymentTransactionConfiguration());
-            modelBuilder.ApplyConfiguration(new CreditCardTokenDetailsConfiguration());
-            modelBuilder.ApplyConfiguration(new TransactionHistoryConfiguration());
-            modelBuilder.ApplyConfiguration(new BillingDealConfiguration());
-            modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
-
-            // security filters
-
-            modelBuilder.Entity<CreditCardTokenDetails>().HasQueryFilter(t => user.IsAdmin() || (t.Active && (user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID())));
-
-            modelBuilder.Entity<PaymentTransaction>().HasQueryFilter(t => user.IsAdmin() || ((user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID())));
-
-            modelBuilder.Entity<TransactionHistory>().HasQueryFilter(t => user.IsAdmin() || ((user.IsTerminal() && t.PaymentTransaction.TerminalID == user.GetTerminalID() || t.PaymentTransaction.MerchantID == user.GetMerchantID())));
-
-            base.OnModelCreating(modelBuilder);
         }
 
         public async Task<IEnumerable<TransmissionInfo>> StartTransmission(Guid terminalID, IEnumerable<Guid> transactionIDs, IDbContextTransaction dbTransaction = null)
@@ -149,6 +154,7 @@ OUTPUT inserted.PaymentTransactionID, inserted.ShvaDealID INTO @OutputTransactio
 WHERE [PaymentTransactionID] in @TransactionIDs AND [TerminalID] = @TerminalID AND [Status]=@OldStatus";
 
             // security check
+            // TODO: replace to query builder
 
             if (user.IsAdmin())
             {
@@ -194,7 +200,27 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                     connection.Close();
                 }
             }
+        }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Ignore<Address>();
+
+            modelBuilder.ApplyConfiguration(new PaymentTransactionConfiguration());
+            modelBuilder.ApplyConfiguration(new CreditCardTokenDetailsConfiguration());
+            modelBuilder.ApplyConfiguration(new TransactionHistoryConfiguration());
+            modelBuilder.ApplyConfiguration(new BillingDealConfiguration());
+            modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
+
+            // security filters
+
+            modelBuilder.Entity<CreditCardTokenDetails>().HasQueryFilter(t => user.IsAdmin() || (t.Active && (user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID())));
+
+            modelBuilder.Entity<PaymentTransaction>().HasQueryFilter(t => user.IsAdmin() || ((user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID())));
+
+            modelBuilder.Entity<TransactionHistory>().HasQueryFilter(t => user.IsAdmin() || ((user.IsTerminal() && t.PaymentTransaction.TerminalID == user.GetTerminalID() || t.PaymentTransaction.MerchantID == user.GetMerchantID())));
+
+            base.OnModelCreating(modelBuilder);
         }
 
         internal class PaymentTransactionConfiguration : IEntityTypeConfiguration<PaymentTransaction>

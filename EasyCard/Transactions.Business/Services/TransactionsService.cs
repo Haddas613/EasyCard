@@ -25,7 +25,8 @@ namespace Transactions.Business.Services
         private readonly ClaimsPrincipal user;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
 
-        public TransactionsService(TransactionsContext context, IHttpContextAccessorWrapper httpContextAccessor) : base(context)
+        public TransactionsService(TransactionsContext context, IHttpContextAccessorWrapper httpContextAccessor)
+            : base(context)
         {
             this.context = context;
             this.httpContextAccessor = httpContextAccessor;
@@ -36,7 +37,7 @@ namespace Transactions.Business.Services
 
         public IQueryable<PaymentTransaction> GetTransactions() => context.PaymentTransactions;
 
-        public async Task<IEnumerable<TransactionSummaryDb>> GetGroupedTransactionSummaries(IDbContextTransaction dbTransaction) => await context.GetGroupedTransactionSummaries(dbTransaction);
+        public async Task<IEnumerable<TransactionSummaryDb>> GetGroupedTransactionSummaries(Guid? terminalID, IDbContextTransaction dbTransaction) => await context.GetGroupedTransactionSummaries(terminalID, dbTransaction);
 
         public async override Task CreateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
         {

@@ -20,6 +20,7 @@ using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Business.Security;
+using Shared.Helpers;
 using Shared.Helpers.Security;
 
 namespace MerchantProfileApi.Controllers
@@ -35,13 +36,15 @@ namespace MerchantProfileApi.Controllers
         private readonly IMapper mapper;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly IMerchantsService merchantsService;
+        private readonly ICurrencyRateService currencyRateService;
 
-        public ItemsApiController(IItemsService itemsService, IMapper mapper, IHttpContextAccessorWrapper httpContextAccessor, IMerchantsService merchantsService)
+        public ItemsApiController(IItemsService itemsService, IMapper mapper, IHttpContextAccessorWrapper httpContextAccessor, IMerchantsService merchantsService, ICurrencyRateService currencyRateService)
         {
             this.itemsService = itemsService;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
             this.merchantsService = merchantsService;
+            this.currencyRateService = currencyRateService;
         }
 
         [HttpGet]
@@ -61,13 +64,24 @@ namespace MerchantProfileApi.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<ItemSummary>>> GetItems([FromQuery] ItemsFilter filter)
         {
+            var rates = await currencyRateService.GetLatestRates(); // TODO: caching
+            var currency = filter.Currency.GetValueOrDefault(CurrencyEnum.ILS);
+
             var query = itemsService.GetItems().Filter(filter);
 
             using (var dbTransaction = itemsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
                 var response = new SummariesResponse<ItemSummary> { NumberOfRecords = await query.CountAsync() };
 
-                response.Data = await mapper.ProjectTo<ItemSummary>(query.ApplyPagination(filter)).ToListAsync();
+                var data = await query.ApplyPagination(filter).ToListAsync();
+
+                response.Data = data.Select(d => new ItemSummary
+                {
+                    Currency = currency,
+                    ItemID = d.ItemID,
+                    ItemName = d.ItemName,
+                    Price = rates.Convert(d.Currency, d.Price, currency)
+                });
 
                 return Ok(response);
             }

@@ -153,6 +153,8 @@ namespace ProfileApi
             services.AddScoped<ITerminalsService, TerminalsService>();
             services.AddScoped<IConsumersService, ConsumersService>();
             services.AddScoped<IItemsService, ItemsService>();
+            services.AddScoped<ICurrencyRateService, CurrencyRateService>();
+
             services.AddAutoMapper(typeof(Startup));
 
             // DI: request logging
