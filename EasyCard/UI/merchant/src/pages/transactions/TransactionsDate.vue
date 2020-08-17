@@ -36,8 +36,10 @@
             >{{item.currency}}{{item.transactionAmount}}</v-col>
           </template>
 
-          <template v-slot:append>
-            <re-icon>mdi-chevron-right</re-icon>
+          <template v-slot:append="{ item }">
+            <v-btn icon :to="{ name: 'Transaction', params: { id: item.$paymentTransactionID } }">
+              <re-icon>mdi-chevron-right</re-icon>
+            </v-btn>
           </template>
         </ec-list>
         <p class="ecgray--text text-center" v-if="transactions && transactions.length === 0">{{$t("NothingToShow")}}</p>
