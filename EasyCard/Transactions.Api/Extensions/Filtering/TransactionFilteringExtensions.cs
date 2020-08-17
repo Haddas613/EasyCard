@@ -59,9 +59,9 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.JDealType == filter.JDealType);
             }
 
-            if (filter.Type != null)
+            if (filter.TransactionType != null)
             {
-                src = src.Where(t => t.TransactionType == filter.Type);
+                src = src.Where(t => t.TransactionType == filter.TransactionType);
             }
 
             if (filter.CardPresence != null)

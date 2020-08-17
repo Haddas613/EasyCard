@@ -11,7 +11,7 @@
             {{$t("Overview")}}
           </v-col>
           <v-col cols="1" class="text-end hidden-sm-and-down">
-            <v-btn class="button" color="primary" :to="{name: 'TransactionsFiltered'}" outlined>{{$t("Filter")}}</v-btn>
+            <v-btn class="button" color="primary" :to="{name: 'TransactionsFiltered', params:{ showFiltersDialog: true }}" outlined>{{$t("Filter")}}</v-btn>
           </v-col>
           <v-col cols="2" lg="1"  class="text-end">
              <v-btn icon @click="refresh()" :loading="loading">

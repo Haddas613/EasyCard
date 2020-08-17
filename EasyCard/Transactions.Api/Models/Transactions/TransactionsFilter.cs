@@ -34,7 +34,7 @@ namespace Transactions.Api.Models.Transactions
 
         public List<TransactionStatusEnum> Statuses { get; set; }
 
-        public TransactionTypeEnum? Type { get; set; }
+        public TransactionTypeEnum? TransactionType { get; set; }
 
         public JDealTypeEnum? JDealType { get; set; }
 

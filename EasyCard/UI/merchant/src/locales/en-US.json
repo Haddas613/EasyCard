@@ -85,7 +85,11 @@
   "InvoiceSubject": "Invoice Subject",
   "AdditionalEmailToCC": "Additional Email to CC",
   "IssueDocument": "Issue Document",
- 
+  "PaymentTransactionID": "Transaction ID",
+  "QuickTime": "Quick Time",
+  "AmountFrom": "Amount from",
+  "AmountTo": "Amount to",
+  "RejectionReason": "Rejection Reason",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -95,6 +99,7 @@
   "Transmission": "Transmission",
   "CancelTransmission": "Cancel Transmission",
   "Apply": "Apply",
+  "LoadMore": "Load more",
 
   "--AUTH--": null,
   "Login": "Login",

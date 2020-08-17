@@ -6,7 +6,7 @@
           {{$t('Items')}}
         </v-col>
         <v-col cols="12" md="6" lg="6" xl="6" class="text-end">
-          <v-btn icon @click="refresh()" :loading="refreshing">
+          <v-btn icon @click="refresh()" :loading="loading">
             <v-icon color="primary">mdi-refresh</v-icon>
           </v-btn>
         </v-col>
@@ -41,6 +41,9 @@
         </template>
       </ec-list>
     </v-card-text>
+    <v-card-actions class="text-center" v-if="canLoadMore">
+        <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -57,19 +60,28 @@ export default {
       totalAmount: 0,
       items: [],
       dictionaries: {},
-      refreshing: false
+      loading: false,
+      itemsFilter: {
+        take: 100,
+        skip: 0
+      }
     };
   },
   methods: {
     async refresh(){
-      this.refreshing = true;
+      this.loading = true;
       await this.getDataFromApi();
-      this.refreshing = false;
+      this.loading = false;
     },
-    async getDataFromApi() {
-      let data = await this.$api.items.getItems();
+    async getDataFromApi(extendData) {
+      let data = await this.$api.items.getItems(this.itemsFilter);
       if (data) {
-        this.items = data.data || [];
+        this.totalAmount = data.numberOfRecords;
+        if(extendData){
+          this.items = [...this.items, ...data.data || []];
+        }else{
+          this.items = data.data || [];
+        }
         this.totalAmount = data.numberOfRecords || 0;
       }
     },
@@ -77,6 +89,15 @@ export default {
       let selected = this.lodash.map(this.lodash.filter(this.items, i => i.selected), e => e.$itemID);
       await this.$api.items.bulkDeleteItems(selected);
       await this.getDataFromApi();
+    },
+    async loadMore() {
+      this.itemsFilter.skip += this.itemsFilter.take;
+      await this.getDataFromApi(true);
+    }
+  },
+  computed: {
+    canLoadMore() {
+      return this.totalAmount > 0 && this.itemsFilter.skip < this.totalAmount;
     }
   },
   async mounted() {

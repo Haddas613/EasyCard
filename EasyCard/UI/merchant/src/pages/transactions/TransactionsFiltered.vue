@@ -1,12 +1,19 @@
 <template>
   <v-flex>
-    <transactions-filter-dialog :show.sync="showDialog" :filter="transactionsFilter"></transactions-filter-dialog>
+    <transactions-filter-dialog
+      :show.sync="showDialog"
+      :filter="transactionsFilter"
+      v-on:ok="applyFilters($event)"
+    ></transactions-filter-dialog>
     <v-card class="my-2" width="100%" flat>
       <v-card-title class="pb-0">
         <v-row class="py-0" no-gutters>
           <v-col cols="9">{{$t("Overview")}}</v-col>
           <v-col cols="2" class="text-end">
-            <span class="body-1 primary--text cursor-pointer" @click="showDialog = true;">{{$t('Filter')}}</span>
+            <span
+              class="body-1 primary--text cursor-pointer"
+              @click="showDialog = true;"
+            >{{$t('Filter')}}</span>
           </v-col>
           <v-col cols="1" class="text-end">
             <v-btn icon @click="refresh()" :loading="loading">
@@ -69,14 +76,20 @@
             >{{item.currency}}{{item.transactionAmount}}</v-col>
           </template>
 
-          <template v-slot:append>
-            <re-icon>mdi-chevron-right</re-icon>
+          <template v-slot:append="{ item }">
+            <v-btn icon :to="{ name: 'Transaction', params: { id: item.$paymentTransactionID } }">
+              <re-icon>mdi-chevron-right</re-icon>
+            </v-btn>
           </template>
         </ec-list>
         <p
           class="ecgray--text text-center"
           v-if="transactions && transactions.length === 0"
         >{{$t("NothingToShow")}}</p>
+
+        <v-flex class="text-center" v-if="canLoadMore">
+          <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
+        </v-flex>
       </v-card-text>
     </v-card>
   </v-flex>
@@ -89,17 +102,18 @@ export default {
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
-    TransactionsFilterDialog: () => import("../../components/transactions/TransactionsFilterDialog"),
-    EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
+    TransactionsFilterDialog: () =>
+      import("../../components/transactions/TransactionsFilterDialog"),
+    EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker")
   },
   props: {
     filters: {
       default: null
     },
     showFiltersDialog: {
-        type: Boolean,
-        default: false,
-        required: false
+      type: Boolean,
+      default: false,
+      required: false
     }
   },
   data() {
@@ -115,24 +129,43 @@ export default {
       moment: moment,
       loading: false,
       transactionsFilter: {
-        take: 50,
+        take: 100,
         skip: 0,
         ...this.filters
       },
-      showDialog: this.showFiltersDialog
+      showDialog: this.showFiltersDialog,
+      totalAmount: 0
     };
   },
   methods: {
-    async getDataFromApi() {
+    async getDataFromApi(extendData) {
       this.loading = true;
       let data = await this.$api.transactions.get({
         ...this.transactionsFilter
       });
       if (data) {
-        this.transactions = data.data || [];
+        let transactions = data.data || [];
+        this.transactions = extendData ? [...this.transactions, ...transactions] : transactions;
         this.totalAmount = data.numberOfRecords || 0;
       }
       this.loading = false;
+    },
+    async applyFilters(data) {
+      this.transactionsFilter = {
+        ...data,
+        skip: this.transactionsFilter.skip,
+        take: this.transactionsFilter.take
+      };
+      await this.getDataFromApi();
+    },
+    async loadMore() {
+      this.transactionsFilter.skip += this.transactionsFilter.take;
+      await this.getDataFromApi(true);
+    }
+  },
+  computed: {
+    canLoadMore() {
+      return this.totalAmount > 0 && this.transactionsFilter.skip < this.totalAmount;
     }
   },
   async mounted() {

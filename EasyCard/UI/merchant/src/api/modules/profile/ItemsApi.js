@@ -11,7 +11,7 @@ export default class ItemsApi {
             this.headers = this.base._formatHeaders(data)
             this.$headers = data.columns
         }
-
+        
         let data = await this.base.get(this.itemsUrl, params);
         let dictionaries = await this.base.dictionaries.$getTransactionDictionaries();
 
