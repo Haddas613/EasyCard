@@ -64,24 +64,31 @@ namespace MerchantProfileApi.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<ItemSummary>>> GetItems([FromQuery] ItemsFilter filter)
         {
-            var rates = await currencyRateService.GetLatestRates(); // TODO: caching
-            var currency = filter.Currency.GetValueOrDefault(CurrencyEnum.ILS);
-
             var query = itemsService.GetItems().Filter(filter);
 
             using (var dbTransaction = itemsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
                 var response = new SummariesResponse<ItemSummary> { NumberOfRecords = await query.CountAsync() };
 
-                var data = await query.ApplyPagination(filter).ToListAsync();
-
-                response.Data = data.Select(d => new ItemSummary
+                if (filter.Currency == null)
                 {
-                    Currency = currency,
-                    ItemID = d.ItemID,
-                    ItemName = d.ItemName,
-                    Price = rates.Convert(d.Currency, d.Price, currency)
-                });
+                    response.Data = await mapper.ProjectTo<ItemSummary>(query.ApplyPagination(filter)).ToListAsync();
+                }
+                else
+                {
+                    var rates = await currencyRateService.GetLatestRates(); // TODO: caching
+                    var currency = filter.Currency.GetValueOrDefault(CurrencyEnum.ILS);
+
+                    var data = await query.ApplyPagination(filter).ToListAsync();
+
+                    response.Data = data.Select(d => new ItemSummary
+                    {
+                        Currency = currency,
+                        ItemID = d.ItemID,
+                        ItemName = d.ItemName,
+                        Price = rates.Convert(d.Currency, d.Price, currency)
+                    });
+                }
 
                 return Ok(response);
             }

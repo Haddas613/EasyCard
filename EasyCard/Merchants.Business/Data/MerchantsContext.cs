@@ -84,6 +84,7 @@ namespace Merchants.Business.Data
 
             modelBuilder.ApplyConfiguration(new ItemConfiguration());
             modelBuilder.ApplyConfiguration(new ConsumerConfiguration());
+            modelBuilder.ApplyConfiguration(new CurrencyRateConfiguration());
 
             // security filters
 
