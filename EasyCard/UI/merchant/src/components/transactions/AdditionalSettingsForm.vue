@@ -187,6 +187,8 @@ export default {
       let result = { ...this.model };
       if (this.$refs.instDetails) {
         result.installmentDetails = this.$refs.instDetails.model;
+      }else{
+        result.installmentDetails = null;
       }
 
       if (this.issueDocument) {
