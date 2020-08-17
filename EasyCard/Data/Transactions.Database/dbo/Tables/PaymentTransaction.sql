@@ -52,8 +52,11 @@
     [ConsumerID]                     UNIQUEIDENTIFIER NULL,
     [Items]                          NVARCHAR (MAX)   NULL,
     [BillingDealID]                  UNIQUEIDENTIFIER NULL,
+    [CustomerAddress]                NVARCHAR (MAX)   NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 
