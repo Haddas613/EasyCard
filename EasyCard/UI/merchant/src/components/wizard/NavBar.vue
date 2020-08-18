@@ -130,6 +130,7 @@ export default {
           vm: this,
           newTerminal: nv
         });
+        this.$emit('terminal-changed', nv);
       }
     },
     ...mapState({

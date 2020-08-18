@@ -13,5 +13,7 @@ namespace MerchantProfileApi.Models.Billing
         public Guid? ConsumerID { get; set; }
 
         public string ConsumersID { get; set; }
+
+        public Guid? TerminalID { get; set; }
     }
 }

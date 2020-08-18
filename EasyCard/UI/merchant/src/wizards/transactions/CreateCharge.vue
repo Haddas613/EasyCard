@@ -4,6 +4,7 @@
       v-on:back="goBack()"
       v-on:close="$router.push('/admin/dashboard')"
       v-on:skip="step = step + 1"
+      v-on:terminal-changed="terminalChanged()"
       :skippable="steps[step].skippable"
       :closeable="steps[step].closeable"
       :completed="steps[step].completed"
@@ -21,6 +22,7 @@
           <customers-list
             :key="terminal.terminalID"
             :show-previously-charged="true"
+            :filter-by-terminal="true"
             v-on:ok="processCustomer($event)"
           ></customers-list>
         </v-stepper-content>
@@ -30,6 +32,7 @@
             :key="creditCardRefreshState"
             :data="model"
             v-on:ok="processCreditCard($event)"
+            ref="ccSecureDetails"
           ></credit-card-secure-details>
         </v-stepper-content>
 
@@ -51,27 +54,18 @@
 </template>
 
 <script>
-import Navbar from "../../components/wizard/NavBar";
-import Numpad from "../../components/misc/Numpad";
-import CustomersList from "../../components/customers/CustomersList";
-import CreateChargeForm from "../../components/transactions/CreateChargeForm";
-import CreateTransactionForm from "../../components/transactions/CreateTransactionForm";
-import CreditCardSecureDetails from "../../components/transactions/CreditCardSecureDetails";
-import TransactionSuccess from "../../components/transactions/TransactionSuccess";
-import TransactionError from "../../components/transactions/TransactionError";
-import AdditionalSettingsForm from "../../components/transactions/AdditionalSettingsForm";
 import { mapState } from "vuex";
 
 export default {
   components: {
-    Navbar,
-    Numpad,
-    CustomersList,
-    CreateChargeForm,
-    CreditCardSecureDetails,
-    TransactionSuccess,
-    TransactionError,
-    AdditionalSettingsForm
+    Navbar: () => import("../../components/wizard/NavBar"),
+    Numpad: () => import("../../components/misc/Numpad"),
+    CustomersList: () => import("../../components/customers/CustomersList"),
+    CreateChargeForm: () => import("../../components/transactions/CreateChargeForm"),
+    CreditCardSecureDetails: () => import("../../components/transactions/CreditCardSecureDetails"),
+    TransactionSuccess: () => import("../../components/transactions/TransactionError"),
+    TransactionError: () => import("../../components/transactions/TransactionError"),
+    AdditionalSettingsForm: () => import("../../components/transactions/AdditionalSettingsForm")
   },
   props: ["customerid"],
   data() {
@@ -164,6 +158,20 @@ export default {
     goBack() {
       if (this.step === 1) this.$router.push("/admin/dashboard");
       else this.step--;
+    },
+    terminalChanged(){
+      this.skipCustomerStep = false;
+      this.customer = null;
+      this.model.dealDetails.consumerEmail = null;
+      this.model.dealDetails.consumerPhone = null;
+      this.model.dealDetails.consumerID = null;
+      this.creditCardRefreshState = null;
+      if(this.model.creditCardSecureDetails){
+        this.model.creditCardSecureDetails.cardOwnerName = null;
+        this.model.creditCardSecureDetails.cardOwnerNationalID = null;
+      }else if(this.model.creditCardToken){
+        this.$refs.ccSecureDetails.resetToken();
+      }
     },
     processCustomer(data) {
       this.skipCustomerStep = false;

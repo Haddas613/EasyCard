@@ -98,6 +98,10 @@ export default {
     showPreviouslyCharged: {
       type: Boolean,
       default: false
+    },
+    filterByTerminal: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -155,7 +159,8 @@ export default {
       let searchApply = this.search && this.search.trim().length >= 3;
       let customers = await this.$api.consumers.getConsumers({
         search: searchApply ? this.search : "",
-        ...this.paging
+        ...this.paging,
+        terminalID: this.filterByTerminal ? this.terminalStore.terminalID : null
       });
       this.customers = customers.data;
       this.totalAmount = customers.numberOfRecords;
@@ -200,7 +205,8 @@ export default {
   },
   computed: {
     ...mapState({
-      lastChargedCustomersStore: state => state.payment.lastChargedCustomers
+      lastChargedCustomersStore: state => state.payment.lastChargedCustomers,
+      terminalStore: state => state.settings.terminal
     }),
     canLoadMore() {
       return this.totalAmount > 0 && this.paging.skip < this.totalAmount;

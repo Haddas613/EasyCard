@@ -46,6 +46,11 @@ namespace MerchantProfileApi.Extensions
                 }
             }
 
+            if (filter.TerminalID.HasValue)
+            {
+                src = src.Where(c => c.TerminalID == filter.TerminalID.Value);
+            }
+
             return src;
         }
     }
