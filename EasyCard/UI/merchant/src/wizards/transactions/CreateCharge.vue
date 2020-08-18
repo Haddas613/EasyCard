@@ -12,7 +12,7 @@
       :tdmenuitems="threeDotMenuItems"
       :title="navTitle"
     ></navbar>
-    <v-stepper class="ec-stepper pt-1" v-model="step">
+    <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
           <numpad :btntext="$t('Charge')" v-on:ok="processAmount($event)"></numpad>

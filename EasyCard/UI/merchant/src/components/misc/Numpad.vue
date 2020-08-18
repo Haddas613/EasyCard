@@ -2,7 +2,7 @@
   <v-flex fill-height>
     <v-btn
       color="primary"
-      class="mb-1 text-none charge-btn v-btn--flat"
+      class="text-none charge-btn v-btn--flat"
       height="48px"
       @click="ok()"
       block
@@ -104,6 +104,7 @@
             </v-btn>
           </template>
         </ec-list>
+        <v-spacer class="py-8" v-if="$vuetify.breakpoint.smAndDown"></v-spacer>
       </div>
     </v-flex>
   </v-flex>
