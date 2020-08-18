@@ -35,13 +35,13 @@
           <v-icon>mdi-credit-card-outline</v-icon>
         </template>
         <template v-slot:left >
-          <div v-if="!selectedToken">
+          <div v-if="!token">
             <span v-if="customerTokens.length > 0" >{{$t("@ChooseFromSavedCount").replace("@count", customerTokens.length)}}</span>
             <span v-if="customerTokens.length === 0">{{$t("NoSavedCards")}}</span>
           </div>
-          <div v-if="selectedToken">
+          <div v-if="token">
             <span class="primary--text">
-              {{selectedTokenObj.cardNumber}}
+              {{token.cardNumber}}
             </span>
           </div>
         </template>
@@ -49,7 +49,7 @@
           <re-icon>mdi-chevron-right</re-icon>
         </template>
       </ec-dialog-invoker>
-      <v-form class="ec-form" ref="form" lazy-validation v-if="!selectedToken">
+      <v-form class="ec-form" ref="form" lazy-validation v-if="!token">
         <credit-card-secure-details-form
           :data="model.creditCardSecureDetails"
           ref="ccsecuredetailsform"

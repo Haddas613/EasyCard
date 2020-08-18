@@ -63,7 +63,7 @@ export default {
     CustomersList: () => import("../../components/customers/CustomersList"),
     CreateChargeForm: () => import("../../components/transactions/CreateChargeForm"),
     CreditCardSecureDetails: () => import("../../components/transactions/CreditCardSecureDetails"),
-    TransactionSuccess: () => import("../../components/transactions/TransactionError"),
+    TransactionSuccess: () => import("../../components/transactions/TransactionSuccess"),
     TransactionError: () => import("../../components/transactions/TransactionError"),
     AdditionalSettingsForm: () => import("../../components/transactions/AdditionalSettingsForm")
   },
@@ -148,7 +148,8 @@ export default {
         this.model.dealDetails.consumerEmail = data.consumerEmail;
         this.model.dealDetails.consumerPhone = data.consumerPhone;
         this.model.dealDetails.consumerID = data.consumerID;
-        this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState = data.consumerName;
+        this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState =
+          data.consumerName;
         this.model.creditCardSecureDetails.cardOwnerNationalID =
           data.consumerNationalID;
       }
@@ -159,29 +160,42 @@ export default {
       if (this.step === 1) this.$router.push("/admin/dashboard");
       else this.step--;
     },
-    terminalChanged(){
+    terminalChanged() {
       this.skipCustomerStep = false;
       this.customer = null;
       this.model.dealDetails.consumerEmail = null;
       this.model.dealDetails.consumerPhone = null;
       this.model.dealDetails.consumerID = null;
       this.creditCardRefreshState = null;
-      if(this.model.creditCardSecureDetails){
+      if (this.model.creditCardSecureDetails) {
         this.model.creditCardSecureDetails.cardOwnerName = null;
         this.model.creditCardSecureDetails.cardOwnerNationalID = null;
-      }else if(this.model.creditCardToken){
+      } else if (this.model.creditCardToken) {
         this.$refs.ccSecureDetails.resetToken();
       }
     },
     processCustomer(data) {
       this.skipCustomerStep = false;
+      if(this.customer && data.consumerID === this.customer.consumerID){
+        return this.step++;;
+      }
       this.customer = data;
       this.model.dealDetails.consumerEmail = data.consumerEmail;
       this.model.dealDetails.consumerPhone = data.consumerPhone;
       this.model.dealDetails.consumerID = data.consumerID;
-      this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState = data.consumerName;
-      this.model.creditCardSecureDetails.cardOwnerNationalID =
-        data.consumerNationalID;
+      if (!this.model.creditCardSecureDetails) {
+        this.$set(this.model, "creditCardSecureDetails", {
+          cardOwnerName: data.consumerName,
+          cardOwnerNationalID: data.consumerNationalID
+        });
+      } else {
+        this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState =
+          data.consumerName;
+        this.model.creditCardSecureDetails.cardOwnerNationalID =
+          data.consumerNationalID;
+      }
+      this.$refs.ccSecureDetails.resetToken();
+      this.creditCardRefreshState = data.consumerName;
       this.step++;
     },
     processAmount(data) {
