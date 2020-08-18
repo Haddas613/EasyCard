@@ -49,7 +49,7 @@ export default {
       //server errors will be displayed automatically
       if (!result) return;
       if (result.status === "success") {
-        this.$router.push({ name: 'Customer', params: {id: model.consumerID} });
+        this.$router.push({ name: 'Customer', params: {id: this.model.consumerID} });
       } else {
         this.$toasted.show(result.message, { type: "error" });
       }
