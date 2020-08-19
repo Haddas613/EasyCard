@@ -46,7 +46,7 @@
               :items="dictionaries.quickTimeFilterTypeEnum"
               item-text="description"
               item-value="code"
-              v-model="model.quickStatusFilter"
+              v-model="model.quickTimeFilter"
               :label="$t('QuickTime')"
               outlined
             ></v-select>

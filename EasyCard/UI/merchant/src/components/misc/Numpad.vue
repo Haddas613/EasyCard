@@ -17,7 +17,7 @@
       <template v-if="activeArea === 'calc'">
         <v-row dir="ltr">
           <v-col cols="4" class="py-1">
-            <span class="subtitle-1 ecgray--text" style="line-height:2.5rem;">{{$t('AddNote')}}</span>
+            <span class="subtitle-1 ecgray--text" style="line-height:2.5rem;" v-if="false">{{$t('AddNote')}}</span>
           </v-col>
           <v-col cols="8" class="pt-3 text-right">
             <input
@@ -188,8 +188,11 @@ export default {
       }
     },
     ok() {
-      this.model.amount = parseFloat(this.model.amount);//this.totalAmount;
-      this.$emit("ok", this.model);
+      this.$emit("ok", 
+      {
+        ...this.model,
+        amount: parseFloat(this.totalAmount)
+      });
     },
     stash() {
       this.total += parseFloat(this.model.amount);

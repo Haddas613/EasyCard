@@ -28,7 +28,7 @@
             <v-row no-gutters>
               <v-col cols="12">{{$t("Period")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
-                <!-- {{datePeriod || '-'}} -->
+                {{datePeriod || '-'}}
               </v-col>
             </v-row>
           </v-col>
@@ -36,7 +36,7 @@
             <v-row no-gutters>
               <v-col cols="12">{{$t("OperationsCount")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
-                <!-- {{totalOperationsCount || '-'}} -->
+                {{numberOfRecords || '-'}}
               </v-col>
             </v-row>
           </v-col>
@@ -57,7 +57,7 @@
               lg="6"
               class="pt-1 caption ecgray--text"
             >{{item.paymentTransactionID}}</v-col>
-            <v-col cols="12" md="6" lg="6">{{item.transactionTimestamp}}</v-col>
+            <v-col cols="12" md="6" lg="6">{{item.$transactionTimestamp | ecdate('MM/DD/YYYY HH:mm')}}</v-col>
           </template>
 
           <template v-slot:right="{ item }">
@@ -134,7 +134,8 @@ export default {
         ...this.filters
       },
       showDialog: this.showFiltersDialog,
-      totalAmount: 0
+      datePeriod: null,
+      numberOfRecords: 0
     };
   },
   methods: {
@@ -146,16 +147,29 @@ export default {
       if (data) {
         let transactions = data.data || [];
         this.transactions = extendData ? [...this.transactions, ...transactions] : transactions;
-        this.totalAmount = data.numberOfRecords || 0;
+        this.numberOfRecords = data.numberOfRecords || 0;
+
+        if(transactions.length > 0){
+          let newest = this.transactions[0].$transactionTimestamp;
+          let oldest = this.transactions[this.transactions.length - 1].$transactionTimestamp;
+          this.datePeriod = this.$options.filters.ecdate(newest, "L") +
+            (oldest ? ` - ${this.$options.filters.ecdate(oldest, "L")}` : "");
+        }else{
+          this.datePeriod = null;
+        }
       }
       this.loading = false;
     },
     async applyFilters(data) {
       this.transactionsFilter = {
         ...data,
-        skip: this.transactionsFilter.skip,
-        take: this.transactionsFilter.take
+        skip: 0,
+        take: 100
       };
+      await this.getDataFromApi();
+    },
+    async refresh(){
+      this.transactionsFilter.skip = 0;
       await this.getDataFromApi();
     },
     async loadMore() {
@@ -165,7 +179,8 @@ export default {
   },
   computed: {
     canLoadMore() {
-      return this.totalAmount > 0 && this.transactionsFilter.skip < this.totalAmount;
+      return this.numberOfRecords > 0 
+        && (this.transactionsFilter.take + this.transactionsFilter.skip) < this.numberOfRecords;
     }
   },
   async mounted() {

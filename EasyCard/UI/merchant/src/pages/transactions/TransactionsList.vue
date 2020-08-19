@@ -67,7 +67,16 @@
               lg="6"
               class="pt-1 caption ecgray--text"
             >{{item.paymentTransactionID}}</v-col>
-            <v-col cols="12" md="6" lg="6">{{item.cardOwnerName}}</v-col>
+            <v-col cols="12" md="6" lg="6">
+              <v-row no-gutters>
+                <v-col cols="12" md="6">
+                  <small>{{item.$transactionTimestamp | ecdate('HH:mm')}}</small>
+                </v-col>
+                <v-col cols="12" md="6">
+                   <b>{{item.cardOwnerName}}</b>
+                </v-col>
+              </v-row>
+            </v-col>
           </template>
 
           <template v-slot:right="{ item }">
