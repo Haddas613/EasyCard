@@ -171,6 +171,7 @@ export default {
         this.model.creditCardSecureDetails.cardOwnerName = null;
         this.model.creditCardSecureDetails.cardOwnerNationalID = null;
       } else if (this.model.creditCardToken) {
+        this.model.creditCardToken = null;
         this.$refs.ccSecureDetails.resetToken();
       }
     },
@@ -194,6 +195,7 @@ export default {
         this.model.creditCardSecureDetails.cardOwnerNationalID =
           data.consumerNationalID;
       }
+      this.model.creditCardToken = null;
       this.$refs.ccSecureDetails.resetToken();
       this.creditCardRefreshState = data.consumerName;
       this.step++;
