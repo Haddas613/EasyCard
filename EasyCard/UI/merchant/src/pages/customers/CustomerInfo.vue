@@ -187,8 +187,10 @@ export default {
             text: this.$t("Transactions"),
             fn: () => {
               this.$router.push({
-                name: "TransactionsCustomer",
-                params: { id: this.$route.params.id }
+                name: "TransactionsFiltered",
+                params: { filters: {
+                  consumerID: this.$route.params.id
+                } }
               });
             }
           },

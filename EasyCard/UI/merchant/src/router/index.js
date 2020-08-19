@@ -61,23 +61,6 @@ const routes = [
         component: () => import('../pages/transactions/TransactionInfo.vue'),
       },
       {
-        name: 'TransactionsDate',
-        path: 'transactions/date/:date',
-        meta:{
-          backBtn: true
-        },
-        component: () => import('../pages/transactions/TransactionsDate.vue'),
-      },
-      {
-        name: 'TransactionsCustomer',
-        path: 'transactions/customer/:id',
-        meta:{
-          backBtn: true
-        },
-        component: () => import('../pages/transactions/TransactionsCustomer.vue'),
-      },
-      ,
-      {
         name: 'TransactionsFiltered',
         path: 'transactions/filter/',
         meta:{

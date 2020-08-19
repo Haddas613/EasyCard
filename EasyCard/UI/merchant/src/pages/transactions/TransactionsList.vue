@@ -106,7 +106,7 @@
           <router-link
             class="primary--text"
             link
-            :to="{name: 'TransactionsDate', params: {date: groupedTransaction.groupValue.transactionDate}}"
+            :to="{name: 'TransactionsFiltered', params: {filters: getTransactionDayFilters(groupedTransaction.groupValue)}}"
           >{{$t("SeeMore")}} {{groupedTransaction.groupValue.numberOfRecords}}</router-link>
         </v-card-actions>
       </v-card-text>
@@ -118,6 +118,7 @@
 import EcList from "../../components/ec/EcList";
 import ReIcon from "../../components/misc/ResponsiveIcon";
 import EcMoney from "../../components/ec/EcMoney";
+import moment from "moment";
 
 export default {
   name: "TransactionsList",
@@ -140,7 +141,8 @@ export default {
       datePeriod: null,
       totalOperationsCount: null,
       totalOperationsCountShown: null,
-      loading: false
+      loading: false,
+      moment
     };
   },
   methods: {
@@ -182,6 +184,17 @@ export default {
           (oldest ? ` - ${this.$options.filters.ecdate(oldest, "L")}` : "");
       }
       this.loading = false;
+    },
+    getTransactionDayFilters(transaction){
+      let dateFrom = this.moment(transaction.transactionDate)
+          .startOf("day")
+          .format();
+
+      let dateTo = this.moment(transaction.transactionDate)
+          .endOf("day")
+          .format();
+
+      return { dateFrom, dateTo }
     }
   },
   async mounted() {
