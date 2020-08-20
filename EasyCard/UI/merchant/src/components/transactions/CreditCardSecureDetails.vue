@@ -54,7 +54,7 @@
           :data="model.creditCardSecureDetails"
           ref="ccsecuredetailsform"
         ></credit-card-secure-details-form>
-        <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')"></v-checkbox>
+        <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')" :disabled="!model.dealDetails.consumerID"></v-checkbox>
       </v-form>
     </v-card-text>
     <v-card-actions class="px-4">
@@ -100,6 +100,7 @@ export default {
         ).data || [];
       this.selectedToken = this.model.creditCardToken;
     }else{
+      this.model.saveCreditCard = false;
       this.selectedToken = this.selectedTokenObj = null;
     }
   },
