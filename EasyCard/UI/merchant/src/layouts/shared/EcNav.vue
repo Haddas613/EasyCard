@@ -79,28 +79,27 @@
       <v-list-item>
         <v-list-item-action class="my-1 mx-0">
           <v-select
-              :items="terminals"
-              item-text="label"
-              item-value="terminalID"
-              return-object
-              v-model="terminal"
-              :label="$t('Terminal')"
-              required
-              outlined
-            ></v-select>
+            :items="terminals"
+            item-text="label"
+            item-value="terminalID"
+            return-object
+            v-model="terminal"
+            :label="$t('Terminal')"
+            outlined
+          ></v-select>
         </v-list-item-action>
       </v-list-item>
 
       <v-list-item>
         <v-list-item-action class="my-1 mx-0">
           <v-select
-          :items="currencies"
-          item-text="description"
-          return-object
-          v-model="currency"
-          :label="$t('Currency')"
-          outlined
-        ></v-select>
+            :items="currencies"
+            item-text="description"
+            return-object
+            v-model="currency"
+            :label="$t('Currency')"
+            outlined
+          ></v-select>
         </v-list-item-action>
       </v-list-item>
     </v-list>
@@ -109,7 +108,7 @@
 <script>
 import LangSwitcher from "../../components/LanguageSwitcher";
 import { mapState } from "vuex";
-import mainAuth from '../../auth';
+import mainAuth from "../../auth";
 
 export default {
   name: "EcNav",
@@ -185,6 +184,12 @@ export default {
       terminals: [],
       currencies: []
     };
+  },
+  async mounted() {
+    let terminals = await this.$api.terminals.getTerminals();
+    this.terminals = terminals ? terminals.data : [];
+    let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+    this.currencies = dictionaries ? dictionaries.currencyEnum : [];
   },
   computed: {
     drawerObj: {
