@@ -24,13 +24,13 @@
         <v-row no-gutters class="py-1">
           <v-col cols="12" md="3" lg="3" xl="3">
             <v-row no-gutters>
-              <v-col cols="12">{{$t("Period")}}:</v-col>
+              <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">{{datePeriod || '-'}}</v-col>
             </v-row>
           </v-col>
           <v-col cols="12" md="3" lg="3" xl="3">
             <v-row no-gutters>
-              <v-col cols="12">{{$t("OperationsCount")}}:</v-col>
+              <v-col cols="12">{{$t("OperationsCountTotal")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
                 {{totalOperationsCount || '-'}} 
                 <span v-if="totalOperationsCountShown">
