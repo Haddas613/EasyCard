@@ -148,7 +148,8 @@ export default {
         type: "creditcard",
         data: {
           ...this.model.creditCardSecureDetails,
-          ...data
+          ...data,
+          saveCreditCard: this.model.saveCreditCard
         }
       });
     },
