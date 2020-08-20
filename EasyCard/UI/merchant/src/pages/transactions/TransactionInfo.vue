@@ -19,6 +19,10 @@
                 <p>{{terminalName}}</p>
               </div>
               <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('TransactionType')}}</p>
+                <p>{{model.transactionType}}</p>
+              </div>
+              <div class="info-block">
                 <p class="caption ecgray--text text--darken-2">{{$t('Status')}}</p>
                 <p
                   v-bind:class="quickStatusesColors[model.quickStatus]"
@@ -32,9 +36,9 @@
                 <p class="caption ecgray--text text--darken-2">{{$t('TransmissionTime')}}</p>
                 <p>
                   <span
-                    v-if="model.transmittedTimestamp"
-                  >{{model.transmittedTimestamp | ecdate('LLLL')}}</span>
-                  <span v-if="!model.transmittedTimestamp">-</span>
+                    v-if="model.shvaTransactionDetails && model.shvaTransactionDetails.transmissionDate"
+                  >{{model.shvaTransactionDetails.transmissionDate | ecdate('LLLL')}}</span>
+                  <span v-if="!model.shvaTransactionDetails.transmissionDate">-</span>
                 </p>
               </div>
             </div>
@@ -45,6 +49,22 @@
             >{{$t('CreditCardDetails')}}</div>
             <v-divider></v-divider>
             <div class="info-container body-1 black--text" v-if="model">
+              <template v-if="model.dealDetails.consumerID">
+                <div class="info-block">
+                  <p class="caption ecgray--text text--darken-2">{{$t('CustomerID')}}</p>
+                  <router-link class="primary--text" link :to="{name: 'Customer', params: {id: model.dealDetails.consumerID}}">
+                    <small>{{(model.dealDetails.consumerID || '-') | guid}}</small>
+                  </router-link>
+                </div>
+                <div class="info-block">
+                  <p class="caption ecgray--text text--darken-2">{{$t('CustomerEmail')}}</p>
+                  <p>{{(model.dealDetails.consumerEmail || '-')}}</p>
+                </div>
+                <div class="info-block">
+                  <p class="caption ecgray--text text--darken-2">{{$t('CustomerPhone')}}</p>
+                  <p>{{(model.dealDetails.consumerPhone || '-')}}</p>
+                </div>
+              </template>
               <div class="info-block">
                 <p class="caption ecgray--text text--darken-2">{{$t('CreditCardToken')}}</p>
                 <p>{{(model.creditCardToken || '-') | guid}}</p>
@@ -99,10 +119,6 @@
             <v-divider></v-divider>
             <div class="info-container body-1 black--text" v-if="model">
               <div class="info-block">
-                <p class="caption ecgray--text text--darken-2">{{$t('TransactionType')}}</p>
-                <p>{{model.transactionType}}</p>
-              </div>
-              <div class="info-block">
                 <p class="caption ecgray--text text--darken-2">{{$t('SpecialTransactionType')}}</p>
                 <p>{{model.specialTransactionType}}</p>
               </div>
@@ -113,6 +129,38 @@
               <div class="info-block">
                 <p class="caption ecgray--text text--darken-2">{{$t('CardPresence')}}</p>
                 <p>{{model.cardPresence}}</p>
+              </div>
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('RejectionReason')}}</p>
+                <p>{{model.rejectionReason}}</p>
+              </div>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6" lg="6" xl="6" class="px-1 pt-1" v-if="model && model.shvaTransactionDetails">
+            <div
+              class="py-2 ecdgray--text subtitle-2 text-uppercase info-block-title"
+            >{{$t('ShvaTransactionDetails')}}</div>
+            <v-divider></v-divider>
+            <div class="info-container body-1 black--text">
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('ShvaDealID')}}</p>
+                <p>{{model.shvaTransactionDetails.shvaDealID || '-'}}</p>
+              </div>
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('ShvaShovarNumber')}}</p>
+                <p>{{model.shvaTransactionDetails.shvaShovarNumber || '-'}}</p>
+              </div>
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('ShvaTerminalID')}}</p>
+                <p>{{model.shvaTransactionDetails.shvaTerminalID || '-'}}</p>
+              </div>
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('ShvaTransmissionNumber')}}</p>
+                <p>{{model.shvaTransactionDetails.shvaTransmissionNumber || '-'}}</p>
+              </div>
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('Solek')}}</p>
+                <p>{{model.shvaTransactionDetails.solek || '-'}}</p>
               </div>
             </div>
           </v-col>
