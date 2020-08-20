@@ -40,7 +40,7 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<MerchantsDictionaries>> GetTerminals([FromQuery]string language)
+        public async Task<ActionResult<MerchantsDictionaries>> GetMerchants([FromQuery]string language)
         {
             var dictionaries = DictionariesService.GetDictionaries(language);
 

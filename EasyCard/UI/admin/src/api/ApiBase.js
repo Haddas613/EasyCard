@@ -2,6 +2,7 @@ import Vue from 'vue'
 import TransactionsApi from './modules/TransactionsApi';
 import DictionariesApi from './modules/DictionariesApi';
 import TerminalsApi from './modules/TerminalsApi';
+import MerchantsApi from './modules/MerchantsApi';
 import moment from 'moment'
 
 class ApiBase {
@@ -10,6 +11,7 @@ class ApiBase {
         this.transactions = new TransactionsApi(this);
         this.dictionaries = new DictionariesApi(this);
         this.terminals = new TerminalsApi(this);
+        this.merchants =  new MerchantsApi(this);
     }
 
     async get(url, params) {
