@@ -8,7 +8,7 @@ using System.Text;
 namespace Shared.Integration.Models
 {
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum CreditVendorType : short
+    public enum CardVendorEnum : short
     {
         [EnumMember(Value = "UNKNOWN")]
         UNKNOWN = 0,

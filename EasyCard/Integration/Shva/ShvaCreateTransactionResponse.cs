@@ -50,6 +50,6 @@ namespace Shva
 
         public SolekEnum Solek { get; set; }
 
-        public CreditVendorType CreditCardVendor { get; set; }
+        public CardVendorEnum CreditCardVendor { get; set; }
     }
 }
