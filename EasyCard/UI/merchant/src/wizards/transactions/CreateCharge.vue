@@ -210,6 +210,7 @@ export default {
     processCreditCard(data) {
       if (data.type === "creditcard") {
         data = data.data;
+        this.model.saveCreditCard = data.saveCreditCard || false;
         this.model.creditCardSecureDetails = data;
         if (data.cardReaderInput) {
           this.model.cardPresence = "regular";
@@ -219,6 +220,7 @@ export default {
       } else if (data.type === "token") {
         this.model.creditCardSecureDetails = null;
         this.model.creditCardToken = data.data;
+        this.model.saveCreditCard = false;
       }
       this.step++;
     },

@@ -79,28 +79,27 @@
       <v-list-item>
         <v-list-item-action class="my-1 mx-0">
           <v-select
-              :items="terminals"
-              item-text="label"
-              item-value="terminalID"
-              return-object
-              v-model="terminal"
-              :label="$t('Terminal')"
-              required
-              outlined
-            ></v-select>
+            :items="terminals"
+            item-text="label"
+            item-value="terminalID"
+            return-object
+            v-model="terminal"
+            :label="$t('Terminal')"
+            outlined
+          ></v-select>
         </v-list-item-action>
       </v-list-item>
 
       <v-list-item>
         <v-list-item-action class="my-1 mx-0">
           <v-select
-          :items="currencies"
-          item-text="description"
-          return-object
-          v-model="currency"
-          :label="$t('Currency')"
-          outlined
-        ></v-select>
+            :items="currencies"
+            item-text="description"
+            return-object
+            v-model="currency"
+            :label="$t('Currency')"
+            outlined
+          ></v-select>
         </v-list-item-action>
       </v-list-item>
     </v-list>
@@ -109,7 +108,7 @@
 <script>
 import LangSwitcher from "../../components/LanguageSwitcher";
 import { mapState } from "vuex";
-import mainAuth from '../../auth';
+import mainAuth from "../../auth";
 
 export default {
   name: "EcNav",
@@ -186,6 +185,12 @@ export default {
       currencies: []
     };
   },
+  async mounted() {
+    let terminals = await this.$api.terminals.getTerminals();
+    this.terminals = terminals ? terminals.data : [];
+    let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+    this.currencies = dictionaries ? dictionaries.currencyEnum : [];
+  },
   computed: {
     drawerObj: {
       get: function() {
@@ -226,39 +231,6 @@ export default {
           newCurrency: nv
         });
       }
-    }
-  },
-  async mounted() {
-    let terminals = (await this.$api.terminals.getTerminals());
-    this.terminals = terminals ? terminals.data : [];
-
-    //validate if stored terminal is still accessible. Clear it otherwise
-    if (this.terminals.length > 0 && this.terminal) {
-      let exists = this.lodash.some(this.terminals, t => t.terminalID === this.terminal.terminalID);
-      if(!exists)
-        this.terminal = null;
-    }
-    else if(this.terminals.length > 0 && !this.terminal){
-      this.terminal = this.terminals[0];
-    }
-    else{
-      this.terminal = null;
-    }
-
-    let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
-    this.currencies = dictionaries ? dictionaries.currencyEnum : [];
-    
-    //same cache validation for currencies
-    if (this.currencies.length > 0 && this.currency) {
-      let exists = this.lodash.some(this.currencies, c => c.code === this.currency.code);
-      if(!exists)
-        this.currency = null;
-    }
-    else if(this.currencies.length > 0 && !this.currency){
-      this.currency = this.currencies[0];
-    }
-    else{
-      this.currency = null;
     }
   }
 };

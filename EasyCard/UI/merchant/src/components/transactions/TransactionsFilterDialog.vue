@@ -5,7 +5,7 @@
       <v-btn color="primary" @click="apply()">{{$t('Apply')}}</v-btn>
     </template>
     <template>
-      <div class="d-flex px-4 justify-end">
+      <div class="d-flex px-4 py-2 justify-end">
         <v-btn color="primary" 
           :block="$vuetify.breakpoint.smAndDown" 
           outlined
@@ -13,14 +13,14 @@
       </div>
       <div class="px-4 py-2">
         <v-row>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="6" class="py-0">
             <v-text-field
               v-model="model.paymentTransactionID"
               :label="$t('PaymentTransactionID')"
               outlined
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="6" class="py-0">
             <v-autocomplete
               :items="terminals"
               item-text="label"
@@ -31,7 +31,7 @@
               clearable
             ></v-autocomplete>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="6" class="py-0">
             <v-select
               :items="dictionaries.transactionTypeEnum"
               item-text="description"
@@ -41,7 +41,7 @@
               outlined
             ></v-select>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="6" class="py-0">
             <v-select
               :items="dictionaries.quickTimeFilterTypeEnum"
               item-text="description"
@@ -51,7 +51,7 @@
               outlined
             ></v-select>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="6" class="py-0">
             <v-select
               :items="dictionaries.quickStatusFilterTypeEnum"
               item-text="description"
@@ -61,7 +61,7 @@
               outlined
             ></v-select>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="6" class="py-0">
             <v-select
               :items="dictionaries.cardPresenceEnum"
               item-text="description"
@@ -73,7 +73,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="6" class="py-0">
             <v-text-field
               v-model="model.amountFrom"
               :label="$t('AmountFrom')"
@@ -83,7 +83,7 @@
               outlined
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="6" class="py-0">
             <v-text-field
               v-model="model.amountTo"
               :label="$t('AmountTo')"
@@ -93,7 +93,7 @@
               outlined
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="6" class="py-0">
             <v-select
               :items="dictionaries.currencyEnum"
               item-text="description"
@@ -103,7 +103,7 @@
               outlined
             ></v-select>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="6" class="py-0">
             <v-select
               :items="dictionaries.specialTransactionTypeEnum"
               item-text="description"
@@ -113,7 +113,7 @@
               outlined
             ></v-select>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="6" class="py-0">
             <v-select
               :items="dictionaries.jDealTypeEnum"
               item-text="description"
@@ -123,7 +123,7 @@
               outlined
             ></v-select>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="6" class="py-0">
             <v-select
               :items="dictionaries.rejectionReasonEnum"
               item-text="description"

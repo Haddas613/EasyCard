@@ -9,17 +9,23 @@
 
 <script>
 import { mapState } from "vuex";
+import auth from "./auth";
 
 export default {
   data() {
     return {
-      requestsCount: 0
+      requestsCount: 0,
+      auth: auth
     };
   },
   computed: {
     ...mapState({
       requestsCountStore: state => state.ui.requestsCount
     })
+  },
+  async beforeMount () {
+    if(!auth.isAuthenticated) return;
+    await this.$store.dispatch('settings/getDefaultSettings',{ api: this.$api });
   },
   watch: {
     /**requests are watched with delay so overlay is not shown immediately
