@@ -190,9 +190,11 @@ export default {
     },
     checkIfCardReader($event) {
       if (!/^;\d{15,17}=\d{19,21}\?$/.test(this.$refs.cardNumberInp.value)) {
+        console.log(`checkIfCardReader: ${this.$refs.cardNumberInp.value} result: false`)
         this.resetCardReader();
         return false;
       }
+      console.log(`checkIfCardReader: ${this.$refs.cardNumberInp.value} result: true`)
       return true;
     },
     parseCardReader() {
@@ -200,10 +202,12 @@ export default {
       let sep = this.$refs.cardNumberInp.value.split("=");
       this.model.cardReaderInput = this.$refs.cardNumberInp.value;
 
+      console.log(`parseCardReader, split value: ${sep.join("\t")}`);
+
       //get rid of ';' at the beginning
       this.$refs.cardNumberInp.value = sep[0].substr(
         1,
-        this.$refs.cardNumberInp.value.length
+        sep[0].length
       );
       this.$refs.expiryInp.value = `${sep[1].substr(2, 2)}/${sep[1].substr(
         0,
