@@ -20,14 +20,15 @@
             <span class="subtitle-1 ecgray--text" style="line-height:2.5rem;" v-if="false">{{$t('AddNote')}}</span>
           </v-col>
           <v-col cols="8" class="pt-3 text-right">
-            <input
+            <!-- <input
               inputmode="decimal"
               min="0.01"
               v-model.lazy="model.amount"
               v-money="{precision: 2}"
               class="text-right pr-4"
               disabled
-            />
+            /> -->
+            <span>{{model.amount}}</span>
           </v-col>
         </v-row>
         <v-row dir="ltr">
@@ -36,13 +37,14 @@
             v-bind:key="n"
             cols="4"
             class="numpad-btn numpad-num"
-            @click="model.amount += n"
+            @click="addDigit(n)"
           >{{n}}</v-col>
         </v-row>
         <v-row dir="ltr">
           <v-col cols="4" class="numpad-btn numpad-num" @click="reset()">C</v-col>
-          <v-col cols="4" class="numpad-btn numpad-num" @click="model.amount += 0">0</v-col>
-          <v-col cols="4" class="numpad-btn numpad-num accent--text" @click="stash()">+</v-col>
+          <v-col cols="4" class="numpad-btn numpad-num" @click="addDigit(0)">0</v-col>
+          <v-col cols="2" class="numpad-btn numpad-num secondary--text" @click="addDot()">.</v-col>
+          <v-col cols="2" class="numpad-btn numpad-num accent--text" @click="stash()">+</v-col>
         </v-row>
       </template>
       <v-footer :fixed="$vuetify.breakpoint.smAndDown" :padless="true" color="white">
@@ -127,7 +129,7 @@ export default {
       total: 0,
       items: [],
       model: {
-        amount: 0,
+        amount: "0",
         note: null,
         items: []
       },
@@ -176,6 +178,17 @@ export default {
     await this.getItems();
   },
   methods: {
+    addDigit(d){
+      if(this.model.amount == "0") this.model.amount = d;
+      else if(this.model.amount < 100000){ //TODO: config for max allowed transaction amount
+        this.model.amount += "" + d;
+      }
+    },
+    addDot(){
+      if(this.model.amount && this.model.amount.indexOf(".") === -1){
+        this.model.amount += ".";
+      }
+    },
     async getItems() {
       let searchApply = this.search && this.search.trim().length >= 3;
 
@@ -196,7 +209,7 @@ export default {
     },
     stash() {
       this.total += parseFloat(this.model.amount);
-      this.model.amount = 0;
+      this.model.amount = "0";
     },
     reset() {
       if (parseFloat(this.model.amount) > 0) {
