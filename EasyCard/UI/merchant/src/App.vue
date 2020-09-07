@@ -25,7 +25,11 @@ export default {
   },
   async beforeMount () {
     if(!auth.isAuthenticated) return;
-    await this.$store.dispatch('settings/getDefaultSettings',{ api: this.$api });
+    await this.$store.dispatch('settings/getDefaultSettings', { api: this.$api, lodash: this.lodash });
+  },
+  async beforeUpdate () {
+    if(!auth.isAuthenticated) return;
+    await this.$store.dispatch('settings/getDefaultSettings', { api: this.$api, lodash: this.lodash });
   },
   watch: {
     /**requests are watched with delay so overlay is not shown immediately
