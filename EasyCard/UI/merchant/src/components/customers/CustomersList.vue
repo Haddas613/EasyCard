@@ -201,6 +201,9 @@ export default {
         }).bind(this),
         1000
       );
+    },
+    async 'terminalStore.terminalID'(newValue){
+      await this.getCustomers();
     }
   },
   computed: {
