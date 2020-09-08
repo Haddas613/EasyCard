@@ -1,5 +1,30 @@
 <template>
   <v-flex fill-height>
+    <ec-dialog :dialog.sync="itemCntDialog">
+      <template v-slot:title>{{$t('EditItemCount')}}</template>
+      <template>
+        <div class="d-flex px-2 pt-4 justify-end">
+          <v-btn
+            color="red"
+            class="white--text"
+            :block="$vuetify.breakpoint.smAndDown"
+            @click="selectedItem.amount = 0; itemCntChanged()"
+          >
+          <v-icon left>mdi-delete</v-icon>
+          {{$t("Delete")}}
+          </v-btn>
+        </div>
+        <v-select
+          class="mx-2 mt-4"
+          outlined=""
+          v-if="selectedItem"
+          :items="lodash.range(101)"
+          v-model="selectedItem.amount"
+          @change="itemCntChanged()"
+          :label="$t('Count')"
+        ></v-select>
+      </template>
+    </ec-dialog>
     <v-btn
       color="primary"
       class="text-none charge-btn v-btn--flat"
@@ -80,7 +105,7 @@
           clearable
         ></v-text-field>
         <v-divider></v-divider>
-        <ec-list class="pb-1" :items="items" v-on:click="itemSelected($event)" dense clickable>
+        <ec-list class="pb-1" :items="items" dense>
           <template v-slot:left="{ item }">
             <v-col cols="12" class="text-align-initial">
               <span class="body-2">{{item.itemName}}</span>
@@ -98,10 +123,10 @@
           </template>
 
           <template v-slot:append="{ item }">
-            <v-btn icon v-if="!selectedItemsCnt[item.$itemID]">
+            <v-btn v-on:click="itemSelected(item)" icon v-if="!selectedItemsCnt[item.$itemID]">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
-            <v-btn icon v-if="selectedItemsCnt[item.$itemID]">
+            <v-btn icon v-if="selectedItemsCnt[item.$itemID]" @click="editItemCnt(item)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
@@ -113,16 +138,14 @@
 </template>
 
 <script>
-import EcMoney from "../ec/EcMoney";
-import EcList from "../ec/EcList";
-import ReIcon from "../misc/ResponsiveIcon";
 import { mapState } from "vuex";
 
 export default {
   components: {
-    EcMoney,
-    EcList,
-    ReIcon
+    EcMoney: () => import("../ec/EcMoney"),
+    EcList: () => import("../ec/EcList"),
+    ReIcon: () => import("../misc/ResponsiveIcon"),
+    EcDialog: () => import("../../components/ec/EcDialog")
   },
   data() {
     return {
@@ -135,8 +158,10 @@ export default {
       },
       activeArea: "calc",
       selectedItemsCnt: {},
+      selectedItem: null,
       search: null,
-      searchTimeout: null
+      searchTimeout: null,
+      itemCntDialog: false,
     };
   },
   props: {
@@ -243,14 +268,29 @@ export default {
       this.total += item.price;
       this.$set(this.selectedItemsCnt, item.$itemID, entry ? entry.amount : 1);
     },
-    decreaseAmount(item) {
+    editItemCnt(item){
       let entry = this.lodash.find(
         this.model.items,
         i => i.itemID === item.$itemID
       );
-      if (entry) {
-        entry.amount--;
+      if(entry){
+        this.selectedItem = entry;
+        this.itemCntDialog = true;
       }
+    },
+    itemCntChanged(){
+      let prevCount = this.selectedItemsCnt[this.selectedItem.itemID];
+      let recalc = -(this.selectedItem.price * prevCount) + this.selectedItem.amount * this.selectedItem.price;
+      
+      if(this.selectedItem.amount){
+        this.$set(this.selectedItemsCnt, this.selectedItem.itemID, this.selectedItem.amount);
+      }else {
+        this.lodash.remove(this.model.items, i => i.itemID === this.selectedItem.itemID);
+        this.$set(this.selectedItemsCnt, this.selectedItem.itemID, null);
+      }
+      
+      this.total += recalc;
+      this.itemCntDialog = false;
     }
   }
 };

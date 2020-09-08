@@ -6,12 +6,12 @@
           <v-col class="d-flex justify-start px-1" cols="2">
             <v-icon @click="$emit('update:dialog', false)" class="px-2">mdi-arrow-left</v-icon>
           </v-col>
-          <v-col cols="7" lg="8" class="d-flex justify-space-around px-0 text-subtitle-1 text-md-h6 text-lg-h6">
+          <v-col cols="8" lg="8" class="d-flex justify-space-around px-0 text-subtitle-1 text-md-h6 text-lg-h6">
             <div class="text-truncate">
               <slot name="title"></slot>
             </div>
           </v-col>
-          <v-col cols="3" lg="2" xl="2" class="d-flex justify-end">
+          <v-col cols="2" lg="2" xl="2" class="d-flex justify-end">
             <slot name="right"></slot>
           </v-col>
         </v-row>
