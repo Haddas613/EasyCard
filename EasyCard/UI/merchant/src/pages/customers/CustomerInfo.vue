@@ -143,11 +143,12 @@ export default {
       return;
     }
 
-    this.model = await this.$api.consumers.getConsumer(this.$route.params.id);
+    let customer = await this.$api.consumers.getConsumer(this.$route.params.id);
 
-    if (!this.model) {
+    if (!customer) {
       return this.$router.push("/admin/customers/list");
     }
+    this.model = customer;
 
     this.tokens =
       (await this.$api.cardTokens.getCustomerCardTokens(this.$route.params.id))

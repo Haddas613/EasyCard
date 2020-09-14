@@ -135,6 +135,11 @@ class ApiBase {
                 if(request.status === 400){
                     return result;
                 }
+                else if(request.status === 401){
+                    Vue.toasted.show(result.message, { type: 'error'});
+                    this.oidc.signOut();
+                    return null;
+                }
                 else if(request.status === 404){
                     Vue.toasted.show(result.message, { type: 'error'});
                     return null;
