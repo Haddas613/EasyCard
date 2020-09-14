@@ -1,9 +1,5 @@
 <template>
   <v-flex>
-    <v-card width="100%" flat class="hidden-sm-and-down">
-      <v-card-title>{{$t('Transactions')}}</v-card-title>
-    </v-card>
-
     <v-card class="mt-2" width="100%" flat>
       <v-card-title class="pb-0">
         <v-row class="py-0" no-gutters>

@@ -1,6 +1,5 @@
 <template>
   <v-card width="100%" flat color="ecbg">
-    <v-card-title class="hidden-sm-and-down">{{$t("CreateCardToken")}}</v-card-title>
     <v-card-text class="px-4">
       <card-token-form :data="model" v-on:ok="createToken($event)"></card-token-form>
     </v-card-text>
