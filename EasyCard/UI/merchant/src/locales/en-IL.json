@@ -21,6 +21,8 @@
   "TransactionsFiltered": "Filtered Transactions",
   "ShvaTransactionDetails": "Shva Transaction Details",
   "EditItemCount": "Edit Item Count",
+  "BillingDeals": "Billing Deals",
+  "BillingDealsList": "Billing Deals List",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

@@ -16,6 +16,8 @@ using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Api.Models.Metadata;
+using Shared.Api.UI;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers.KeyValueStorage;
@@ -80,6 +82,20 @@ namespace Transactions.Api.Controllers
             this.billingDealService = billingDealService;
             this.httpContextAccessor = httpContextAccessor;
             this.consumersService = consumersService;
+        }
+
+        [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("$meta")]
+        public TableMeta GetMetadata()
+        {
+            return new TableMeta
+            {
+                Columns = typeof(BillingDealSummary)
+                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+                    .Select(d => d.GetColMeta(BillingDealSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
+                    .ToDictionary(d => d.Key)
+            };
         }
 
         [HttpGet]

@@ -142,7 +142,7 @@ export default {
           expanded: false,
           children: [
             {
-              icon: "mdi-account-group",
+              icon: "mdi-format-list-bulleted",
               text: "CustomersList",
               to: "/admin/customers/list"
             },
@@ -160,7 +160,7 @@ export default {
           expanded: false,
           children: [
             {
-              icon: "mdi-basket-outline",
+              icon: "mdi-format-list-bulleted",
               text: "ItemsList",
               to: "/admin/items/list"
             },
@@ -169,6 +169,19 @@ export default {
               text: "CreateItem",
               to: "/admin/items/create"
             }
+          ]
+        },
+        {
+          icon: "mdi-rotate-right",
+          "icon-alt": "mdi-rotate-right",
+          text: "BillingDeals",
+          expanded: false,
+          children: [
+            {
+              icon: "mdi-format-list-bulleted",
+              text: "BillingDealsList",
+              to: "billing-deals/list"
+            },
           ]
         },
         { divider: true, dividerArea: "userAuth" },

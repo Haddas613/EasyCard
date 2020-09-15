@@ -9,6 +9,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Enums\Resources\BillingDealStatusResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BillingDealStatusResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Enums\Resources\TransactionStatusResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -22,6 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Enums\Resources\BillingDealStatusResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>BillingDealStatusResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Enums\Resources\TransactionStatusResource.he-IL.resx">
       <LastGenOutput>TransactionStatusResource.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>

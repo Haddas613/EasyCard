@@ -64,6 +64,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Models\Billing\BillingDealSummaryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BillingDealSummaryResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Models\Transactions\TransactionSummaryResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -87,6 +92,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Models\Billing\BillingDealSummaryResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>BillingDealSummaryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Models\Transactions\TransactionSummaryResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TransactionSummaryResource.Designer.cs</LastGenOutput>

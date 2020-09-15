@@ -9,6 +9,7 @@ import store from '../store/index';
 import i18n from '../i18n'
 import CardTokensApi from './modules/transactions/CardTokensApi';
 import TransmissionsApi from './modules/transactions/TransmissionsApi';
+import BillingDealsApi from './modules/transactions/BillingDealsApi';
 
 class ApiBase {
     constructor() {
@@ -23,6 +24,7 @@ class ApiBase {
         this.items = new ItemsApi(this);
         this.cardTokens = new CardTokensApi(this);
         this.transmissions = new TransmissionsApi(this);
+        this.billingDeals = new BillingDealsApi(this);
     }
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */

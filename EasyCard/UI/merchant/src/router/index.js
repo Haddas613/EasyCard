@@ -144,6 +144,11 @@ const routes = [
         component: () => import('../pages/ctokens/EditCardToken.vue'),
       },
       {
+        name: 'BillingDeals',
+        path: 'billing-deals/list',
+        component: () => import('../pages/billing-deals/BillingDealsList.vue'),
+      },
+      {
         name: '404',
         path: '*',
         component: () => import('../views/NotFound.vue'),
