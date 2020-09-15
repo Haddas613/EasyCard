@@ -90,6 +90,14 @@ var cards = [
         length: [16],
         cvcLength: [3],
         luhn: true
+    },
+    {
+        type: 'diarect',
+        patterns: [59, 54],
+        format: /(\d{1,3})/g,
+        length: [9],
+        cvcLength: [3],
+        luhn: false
     }
 ];
 
