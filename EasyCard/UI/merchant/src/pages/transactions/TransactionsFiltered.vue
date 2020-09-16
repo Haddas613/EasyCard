@@ -185,6 +185,19 @@ export default {
   },
   async mounted() {
     await this.getDataFromApi();
+
+    this.$store.commit("ui/changeHeader", {
+      value: {
+        threeDotMenu: [
+          {
+            text: this.$t("Charge"),
+            fn: () => {
+              this.$router.push({ name: "Charge" });
+            }
+          }
+        ]
+      }
+    });
   }
 };
 </script>

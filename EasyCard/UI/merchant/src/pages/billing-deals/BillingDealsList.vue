@@ -62,7 +62,7 @@
 
           <template v-slot:right="{ item }">
             <v-col cols="12" md="6" lg="6" class="text-end body-2">
-                <v-badge inline color="primary" :content="item.numberOfPayments">
+                <v-badge inline color="primary" :content="item.numberOfPayments || '...'">
                     {{item.currency}}{{item.transactionAmount}}
                 </v-badge>
             </v-col>
@@ -183,6 +183,19 @@ export default {
   },
   async mounted() {
     await this.getDataFromApi();
+
+    this.$store.commit("ui/changeHeader", {
+      value: {
+        threeDotMenu: [
+          {
+            text: this.$t("Create"),
+            fn: () => {
+              this.$router.push({ name: "CreateBillingDeal" });
+            }
+          }
+        ]
+      }
+    });
   }
 };
 </script>

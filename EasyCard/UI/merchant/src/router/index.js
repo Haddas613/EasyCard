@@ -149,6 +149,11 @@ const routes = [
         component: () => import('../pages/billing-deals/BillingDealsList.vue'),
       },
       {
+        name: 'CreateBillingDeal',
+        path: 'billing-deals/create',
+        component: () => import('../pages/billing-deals/CreateBillingDeal.vue'),
+      },
+      {
         name: '404',
         path: '*',
         component: () => import('../views/NotFound.vue'),

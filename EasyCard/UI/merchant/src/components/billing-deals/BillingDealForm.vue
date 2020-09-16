@@ -1,0 +1,312 @@
+<template>
+  <v-form class="pt-0" ref="form" v-model="valid" lazy-validation>
+    <v-row>
+      <v-col cols="12" md="6" class="py-0">
+        <v-select
+          :items="terminals"
+          item-text="label"
+          item-value="terminalID"
+          v-model="model.terminalID"
+          outlined
+          :label="$t('Terminal')"
+          required
+          disabled
+        ></v-select>
+      </v-col>
+      <v-col cols="12" md="6" class="py-0">
+        <v-select
+          :items="dictionaries.currencyEnum"
+          item-text="description"
+          item-value="code"
+          v-model="model.currency"
+          required
+          :label="$t('Currency')"
+          outlined
+        ></v-select>
+      </v-col>
+      <v-col cols="12" md="6" class="pb-2 pt-0">
+        <ec-dialog :dialog.sync="customersDialog" color="ecbg">
+          <template v-slot:title>{{$t('Customers')}}</template>
+          <template>
+            <div class="d-flex pb-2 justify-end">
+              <v-btn
+                color="red"
+                class="white--text"
+                :disabled="selectedCustomer == null"
+                :block="$vuetify.breakpoint.smAndDown"
+                @click="selectedCustomer = null; customersDialog = false;"
+              >
+                <v-icon left>mdi-delete</v-icon>
+                {{$t("CancelSelection")}}
+              </v-btn>
+            </div>
+            <customers-list
+              :key="model.terminalID"
+              :show-previously-charged="true"
+              :filter-by-terminal="true"
+              v-on:ok="processCustomer($event)"
+            ></customers-list>
+          </template>
+        </ec-dialog>
+        <ec-dialog-invoker v-on:click="customersDialog = true" class="py-2">
+          <template v-slot:prepend>
+            <v-icon>mdi-account</v-icon>
+          </template>
+          <template v-slot:left>
+            <div v-if="!selectedCustomer">{{$t("ChooseCustomer")}}</div>
+            <div v-if="selectedCustomer">
+              <span class="primary--text">{{selectedCustomer.consumerName}}</span>
+            </div>
+          </template>
+          <template v-slot:append>
+            <re-icon>mdi-chevron-right</re-icon>
+          </template>
+        </ec-dialog-invoker>
+      </v-col>
+      <v-col cols="12" md="6" class="pb-2 pt-0">
+        <ec-dialog :dialog.sync="tokensDialog">
+          <template v-slot:title>{{$t('SavedTokens')}}</template>
+          <template>
+            <div class="d-flex px-2 justify-end">
+              <v-btn
+                color="red"
+                class="white--text"
+                :disabled="selectedToken == null"
+                :block="$vuetify.breakpoint.smAndDown"
+                @click="resetToken()"
+              >
+                <v-icon left>mdi-delete</v-icon>
+                {{$t("CancelSelection")}}
+              </v-btn>
+            </div>
+            <ec-radio-group
+              :data="customerTokens"
+              labelkey="cardNumber"
+              valuekey="creditCardTokenID"
+              return-object
+              :model.sync="token"
+            ></ec-radio-group>
+          </template>
+        </ec-dialog>
+        <ec-dialog-invoker
+          v-on:click="handleClick()"
+          :clickable="model.dealDetails.consumerID"
+          class="py-2"
+        >
+          <template v-slot:prepend>
+            <v-icon>mdi-credit-card-outline</v-icon>
+          </template>
+          <template v-slot:left>
+            <div v-if="!token">
+              <span
+                v-if="customerTokens.length > 0"
+              >{{$t("@ChooseFromSavedCount").replace("@count", customerTokens.length)}}</span>
+              <span
+                class="ecgray--text"
+                v-if="!model.dealDetails.consumerID && customerTokens.length === 0"
+              >{{$t("PleaseSelectCustomerFirst")}}</span>
+              <span
+                v-if="model.dealDetails.consumerID && customerTokens.length === 0"
+              >{{$t("NoSavedCards")}}</span>
+            </div>
+            <div v-if="token">
+              <span class="primary--text">{{token.cardNumber}}</span>
+            </div>
+          </template>
+          <template v-slot:append>
+            <re-icon>mdi-chevron-right</re-icon>
+          </template>
+        </ec-dialog-invoker>
+      </v-col>
+      <v-col cols="12" class="py-0"></v-col>
+      <v-col cols="12" md="4" class="py-0">
+        <v-text-field
+          v-model.number="model.numberOfPayments"
+          :label="$t('NumberOfPayments')"
+          required
+          :rules="[vr.primitives.required, vr.primitives.inRange(1, 999)]"
+          type="number"
+          min="1"
+          step="1"
+          outlined
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4" class="py-0">
+        <v-text-field
+          v-model.lazy="model.transactionAmount"
+          :label="$t('TransactionAmount')"
+          v-money="{precision: 2}"
+          :rules="[vr.primitives.required]"
+          required
+          outlined
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4" class="py-0">
+        <v-text-field
+          v-model.number="totalAmount"
+          :label="$t('TotalAmount')"
+          :rules="[vr.primitives.required]"
+          type="number"
+          disabled
+          required
+          outlined
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4" class="py-0">
+        <v-text-field
+          v-model="model.dealDetails.consumerEmail"
+          :label="$t('ConsumerEmail')"
+          :rules="[vr.primitives.email]"
+          outlined
+          @keydown.native.space.prevent
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4" class="py-0">
+        <v-text-field
+          v-model="model.dealDetails.consumerPhone"
+          :label="$t('ConsumerPhone')"
+          :rules="[vr.primitives.maxLength(50)]"
+          outlined
+          @keydown.native.space.prevent
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4" class="py-0">
+        <v-text-field
+          v-model="model.dealDetails.dealReference"
+          :counter="50"
+          :rules="[vr.primitives.maxLength(50)]"
+          :label="$t('DealReference')"
+          @keydown.native.space.prevent
+          outlined
+          required
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12">
+        <v-textarea
+          v-model="model.dealDetails.dealDescription"
+          :counter="1024"
+          outlined
+          rows="3"
+          :rules="[vr.primitives.required,  vr.primitives.maxLength(1024)]"
+        >
+          <template v-slot:label>
+            <div>{{$t('DealDescription')}}</div>
+          </template>
+        </v-textarea>
+      </v-col>
+      <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
+        <v-btn class="mx-1" color="white" :to="{ name: 'BillingDeals' }">{{$t('Cancel')}}</v-btn>
+        <v-btn color="primary" @click="ok()">{{$t('Save')}}</v-btn>
+      </v-col>
+      <v-col cols="12" v-if="$vuetify.breakpoint.smAndDown">
+        <v-btn block color="white" :to="{ name: 'BillingDeals' }">{{$t('Cancel')}}</v-btn>
+        <v-spacer class="py-2"></v-spacer>
+        <v-btn block color="primary" @click="ok()">{{$t('Save')}}</v-btn>
+      </v-col>
+    </v-row>
+  </v-form>
+</template>
+
+<script>
+import ValidationRules from "../../helpers/validation-rules";
+import { mapState } from "vuex";
+
+export default {
+  components: {
+    InstallmentDetails: () => import("../transactions/InstallmentDetailsForm"),
+    CustomersList: () => import("../customers/CustomersList"),
+    EcDialog: () => import("../ec/EcDialog"),
+    EcDialogInvoker: () => import("../ec/EcDialogInvoker"),
+    EcRadioGroup: () => import("../inputs/EcRadioGroup"),
+    ReIcon: () => import("../misc/ResponsiveIcon")
+  },
+  props: {
+    data: {
+      type: Object,
+      default: null,
+      required: true
+    }
+  },
+  data() {
+    return {
+      model: { ...this.data },
+      dictionaries: {},
+      vr: ValidationRules,
+      terminals: [],
+      valid: true,
+      tokensDialog: false,
+      customerTokens: [],
+      selectedToken: null,
+      selectedCustomer: null,
+      customersDialog: false
+    };
+  },
+  methods: {
+    ok() {
+      if (!this.$refs.form.validate()) return;
+      this.$emit("ok", this.model);
+    }
+  },
+  computed: {
+    ...mapState({
+      terminalStore: state => state.settings.terminal,
+      currencyStore: state => state.settings.currency
+    }),
+    totalAmount() {
+      return (this.model.totalAmount = (
+        this.model.transactionAmount * this.model.numberOfPayments
+      ).toFixed(2));
+    },
+    token: {
+      get: function() {
+        return this.selectedToken;
+      },
+      set: function(nv) {
+        this.model.creditCardToken = nv ? nv.creditCardTokenID : null;
+        this.selectedToken = nv;
+      }
+    }
+  },
+  methods: {
+    async processCustomer(data) {
+      this.selectedCustomer = data;
+      this.model.dealDetails.consumerEmail = data.consumerEmail;
+      this.model.dealDetails.consumerPhone = data.consumerPhone;
+      this.model.dealDetails.consumerID = data.consumerID;
+      this.customerTokens =
+        (
+          await this.$api.cardTokens.getCustomerCardTokens(
+            this.model.dealDetails.consumerID
+          )
+        ).data || [];
+      this.customersDialog = false;
+    },
+    handleClick() {
+      this.tokensDialog = this.customerTokens && this.customerTokens.length > 0;
+    }
+  },
+  async mounted() {
+    this.terminals = (await this.$api.terminals.getTerminals()).data || [];
+    this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+    if (!this.model.terminalID) {
+      this.model.terminalID =
+        this.terminalStore.terminalID || this.terminals[0].terminalID;
+    }
+    if (!this.model.currency) {
+      this.model.currency =
+        this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
+    }
+    if(this.model.dealDetails.consumerID){
+      this.customerTokens =
+        (
+          await this.$api.cardTokens.getCustomerCardTokens(
+            this.model.dealDetails.consumerID
+          )
+        ).data || [];
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+</style>

@@ -1,7 +1,7 @@
 <template>
-  <v-dialog v-model="dialog" fullscreen >
-    <v-card flat>
-      <v-card-title class="headline py-0">
+  <v-dialog v-model="dialog" fullscreen>
+    <v-card flat :color="color">
+      <v-card-title class="headline py-0 white">
         <v-row :align="'center'">
           <v-col class="d-flex justify-start px-1" cols="2">
             <v-icon @click="$emit('update:dialog', false)" class="px-2">mdi-arrow-left</v-icon>
@@ -46,6 +46,11 @@ export default {
       type: Boolean,
       default: false,
       required: true
+    },
+    color: {
+      type: String,
+      default: "white",
+      required: false
     }
   }
 };

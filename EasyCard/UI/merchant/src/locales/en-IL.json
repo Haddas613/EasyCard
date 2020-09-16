@@ -23,6 +23,7 @@
   "EditItemCount": "Edit Item Count",
   "BillingDeals": "Billing Deals",
   "BillingDealsList": "Billing Deals List",
+  "CreateBillingDeal": "Create Billing Deal",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -41,6 +42,7 @@
   "NoSavedCards": "No saved cards",
   "TerminalNotSelected": "Terminal not selected",
   "ToList": "To list",
+  "PleaseSelectCustomerFirst": "Please select Customer first",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",

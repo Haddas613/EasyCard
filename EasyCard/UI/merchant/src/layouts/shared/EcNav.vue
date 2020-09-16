@@ -180,10 +180,16 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "BillingDealsList",
-              to: "billing-deals/list"
+              to: "/admin/billing-deals/list"
             },
+            {
+              icon: "mdi-plus",
+              text: "CreateBillingDeal",
+              to: "/admin/billing-deals/create"
+            }
           ]
         },
+        
         { divider: true, dividerArea: "userAuth" },
         { icon: "mdi-account-cog", text: "Profile", to: "/admin/profile" },
         {

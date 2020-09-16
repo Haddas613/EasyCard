@@ -181,7 +181,7 @@ export default {
     },
     async loadMore() {
       this.paging.skip += this.paging.take;
-      await this.getDataFromApi(true);
+      await this.getCustomers();
     }
   },
   watch: {
@@ -212,7 +212,7 @@ export default {
       terminalStore: state => state.settings.terminal
     }),
     canLoadMore() {
-      return this.totalAmount > 0 && this.paging.skip < this.totalAmount;
+      return this.totalAmount > 0 && this.paging.take < this.totalAmount && this.paging.skip < this.totalAmount;
     }
   }
 };
