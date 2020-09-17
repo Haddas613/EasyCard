@@ -196,12 +196,12 @@
       </v-col>
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
         <v-btn class="mx-1" color="white" :to="{ name: 'BillingDeals' }">{{$t('Cancel')}}</v-btn>
-        <v-btn color="primary" @click="ok()">{{$t('Save')}}</v-btn>
+        <v-btn color="primary" @click="ok()" :disabled="!token">{{$t('Save')}}</v-btn>
       </v-col>
       <v-col cols="12" v-if="$vuetify.breakpoint.smAndDown">
         <v-btn block color="white" :to="{ name: 'BillingDeals' }">{{$t('Cancel')}}</v-btn>
         <v-spacer class="py-2"></v-spacer>
-        <v-btn block color="primary" @click="ok()">{{$t('Save')}}</v-btn>
+        <v-btn block color="primary" @click="ok()" :disabled="!token">{{$t('Save')}}</v-btn>
       </v-col>
     </v-row>
   </v-form>
@@ -241,12 +241,6 @@ export default {
       customersDialog: false
     };
   },
-  methods: {
-    ok() {
-      if (!this.$refs.form.validate()) return;
-      this.$emit("ok", this.model);
-    }
-  },
   computed: {
     ...mapState({
       terminalStore: state => state.settings.terminal,
@@ -264,6 +258,7 @@ export default {
       set: function(nv) {
         this.model.creditCardToken = nv ? nv.creditCardTokenID : null;
         this.selectedToken = nv;
+        this.tokensDialog = false;
       }
     }
   },
@@ -283,6 +278,10 @@ export default {
     },
     handleClick() {
       this.tokensDialog = this.customerTokens && this.customerTokens.length > 0;
+    },
+    ok() {
+      if (!this.$refs.form.validate()) return;
+      this.$emit("ok", this.model);
     }
   },
   async mounted() {

@@ -107,7 +107,8 @@ namespace Transactions.Api.Controllers
             {
                 var response = new SummariesResponse<BillingDealSummary> { NumberOfRecords = await query.CountAsync() };
 
-                response.Data = await mapper.ProjectTo<BillingDealSummary>(query.ApplyPagination(filter)).ToListAsync();
+                //TODO: ordering
+                response.Data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDescending(b => b.BillingDealTimestamp).ApplyPagination(filter)).ToListAsync();
 
                 return Ok(response);
             }

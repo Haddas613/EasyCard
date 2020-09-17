@@ -1,7 +1,7 @@
 <template>
   <v-card width="100%" flat color="ecbg">
     <v-card-text class="px-0">
-      <billing-deal-form :data="model" class="px-4"></billing-deal-form>
+      <billing-deal-form :data="model" class="px-4" v-on:ok="createBillingDeal($event)"></billing-deal-form>
     </v-card-text>
   </v-card>
 </template>
@@ -31,7 +31,20 @@ export default {
         billingSchedule: {}
       }
     };
-  }
+  },
+  methods: {
+    async createBillingDeal(data) {
+      let result = await this.$api.billingDeals.createBillingDeal(data);
+      //server errors will be displayed automatically
+      if (!result) return;
+
+      if (result.status === "success") {
+        this.$router.push("/admin/billing-deals/list");
+      } else {
+        this.$toasted.show(result.message, { type: "error" });
+      }
+    }
+  },
 };
 </script>
 

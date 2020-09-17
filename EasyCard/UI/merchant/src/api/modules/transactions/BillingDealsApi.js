@@ -41,7 +41,7 @@ export default class BillingDealsApi {
     }
 
     async createBillingDeal(data){
-        return await this.base.post(this.billingUrl + '/create', data);
+        return await this.base.post(this.billingUrl, data);
     }
 
     async updateBillingDeal(id, data){
