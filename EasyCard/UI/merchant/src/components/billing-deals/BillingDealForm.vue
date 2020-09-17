@@ -118,6 +118,25 @@
           </template>
         </ec-dialog-invoker>
       </v-col>
+      <v-col cols="12" class="pt-0">
+        <ec-dialog :dialog.sync="scheduleDialog" color="ecbg">
+          <template v-slot:title>{{$t('BillingSchedule')}}</template>
+          <template>
+            <billing-schedule-form class="px-4 py-4" :data="model.billingSchedule"></billing-schedule-form>
+          </template>
+        </ec-dialog>
+        <ec-dialog-invoker v-on:click="scheduleDialog = true;" class="py-2">
+          <template v-slot:prepend>
+            <v-icon>mdi-calendar</v-icon>
+          </template>
+          <template v-slot:left>
+            Select schedule
+          </template>
+          <template v-slot:append>
+            <re-icon>mdi-chevron-right</re-icon>
+          </template>
+        </ec-dialog-invoker>
+      </v-col>
       <v-col cols="12" class="py-0"></v-col>
       <v-col cols="12" md="4" class="py-0">
         <v-text-field
@@ -215,6 +234,7 @@ export default {
   components: {
     InstallmentDetails: () => import("../transactions/InstallmentDetailsForm"),
     CustomersList: () => import("../customers/CustomersList"),
+    BillingScheduleForm: () => import("./BillingScheduleForm"),
     EcDialog: () => import("../ec/EcDialog"),
     EcDialogInvoker: () => import("../ec/EcDialogInvoker"),
     EcRadioGroup: () => import("../inputs/EcRadioGroup"),
@@ -238,7 +258,8 @@ export default {
       customerTokens: [],
       selectedToken: null,
       selectedCustomer: null,
-      customersDialog: false
+      customersDialog: false,
+      scheduleDialog: false
     };
   },
   computed: {

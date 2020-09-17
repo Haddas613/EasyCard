@@ -52,7 +52,11 @@ namespace Transactions.Api.Services
             var filterQuickStatusEnumType = typeof(QuickStatusFilterTypeEnum);
             var filterDateEnumType = typeof(DateFilterTypeEnum);
             var invoiceTypeEnum = typeof(InvoiceTypeEnum);
-            var billingDealStatusEnum = typeof(BillingDealStatusEnum);
+
+            var billingDealStatusEnumType = typeof(BillingDealStatusEnum);
+            var repeatPeriodTypeEnumType = typeof(RepeatPeriodTypeEnum);
+            var startAtTypeEnumType = typeof(StartAtTypeEnum);
+            var endAtTypeEnumType = typeof(EndAtTypeEnum);
 
             var tranStatuses = Enum.GetValues(transactionStatusEnumType).Cast<TransactionStatusEnum>()
                 .ToDictionary(m => transactionStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => TransactionStatusResource.ResourceManager.GetString(m.ToString(), culture) );
@@ -87,8 +91,17 @@ namespace Transactions.Api.Services
             var invoiceTypes = Enum.GetValues(invoiceTypeEnum).Cast<InvoiceTypeEnum>()
                 .ToDictionary(m => invoiceTypeEnum.GetDataContractAttrForEnum(m.ToString()), m => InvoiceTypeResource.ResourceManager.GetString(m.ToString(), culture));
 
-            var billingDealStatuses = Enum.GetValues(billingDealStatusEnum).Cast<BillingDealStatusEnum>()
-                .ToDictionary(m => billingDealStatusEnum.GetDataContractAttrForEnum(m.ToString()), m => BillingDealStatusResource.ResourceManager.GetString(m.ToString(), culture));
+            var billingDealStatuses = Enum.GetValues(billingDealStatusEnumType).Cast<BillingDealStatusEnum>()
+                .ToDictionary(m => billingDealStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => BillingDealEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
+            var repeatPeriodTypes = Enum.GetValues(repeatPeriodTypeEnumType).Cast<RepeatPeriodTypeEnum>()
+                .ToDictionary(m => repeatPeriodTypeEnumType.GetDataContractAttrForEnum(m.ToString()), m => BillingDealEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
+            var startAtTypes = Enum.GetValues(startAtTypeEnumType).Cast<StartAtTypeEnum>()
+                .ToDictionary(m => startAtTypeEnumType.GetDataContractAttrForEnum(m.ToString()), m => BillingDealEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
+            var endAtTypes = Enum.GetValues(endAtTypeEnumType).Cast<EndAtTypeEnum>()
+                .ToDictionary(m => endAtTypeEnumType.GetDataContractAttrForEnum(m.ToString()), m => BillingDealEnumsResource.ResourceManager.GetString(m.ToString(), culture));
 
             response.TransactionStatusEnum = tranStatuses;
             response.TransactionTypeEnum = tranTypes;
@@ -102,6 +115,9 @@ namespace Transactions.Api.Services
             response.DateFilterTypeEnum = filterDateTypes;
             response.InvoiceTypeEnum = invoiceTypes;
             response.BillingDealStatusEnum = billingDealStatuses;
+            response.RepeatPeriodTypeEnum = repeatPeriodTypes;
+            response.StartAtTypeEnum = startAtTypes;
+            response.EndAtTypeEnum = endAtTypes;
 
             return response;
         }

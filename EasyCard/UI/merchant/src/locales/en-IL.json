@@ -25,6 +25,7 @@
   "BillingDealsList": "Billing Deals List",
   "CreateBillingDeal": "Create Billing Deal",
   "FilterBillingDeals": "Filter Billing Deals",
+  "BillingSchedule": "Billing Schedule",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -106,6 +107,13 @@
   "ShvaTransmissionNumber": "Shva Transmission Number",
   "DateType": "Date Type",
   "BillingDealID": "Billing Deal ID",
+  "RepeatPeriodType": "Repeat Period Type",
+  "RepeatPeriod": "Repeat Period",
+  "StartAtType": "Start At Type",
+  "StartAt": "Start At",
+  "EndAtType": "End At Type",
+  "EndAt": "End At",
+  "EndAtNumberOfPayments": "End at Number of Payments",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

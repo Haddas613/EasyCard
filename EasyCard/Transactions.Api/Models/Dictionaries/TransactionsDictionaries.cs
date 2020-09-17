@@ -31,5 +31,11 @@ namespace Transactions.Api.Models.Dictionaries
         public Dictionary<string, string> InvoiceTypeEnum { get; set; }
 
         public Dictionary<string, string> BillingDealStatusEnum { get; set; }
+
+        public Dictionary<string, string> RepeatPeriodTypeEnum { get; set; }
+
+        public Dictionary<string, string> StartAtTypeEnum { get; set; }
+
+        public Dictionary<string, string> EndAtTypeEnum { get; set; }
     }
 }
