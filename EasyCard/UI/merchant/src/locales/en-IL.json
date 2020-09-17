@@ -24,6 +24,7 @@
   "BillingDeals": "Billing Deals",
   "BillingDealsList": "Billing Deals List",
   "CreateBillingDeal": "Create Billing Deal",
+  "FilterBillingDeals": "Filter Billing Deals",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -103,6 +104,8 @@
   "ShvaShovarNumber": "Shva Shovar Number",
   "ShvaTerminalID": "Shvar Terminal ID",
   "ShvaTransmissionNumber": "Shva Transmission Number",
+  "DateType": "Date Type",
+  "BillingDealID": "Billing Deal ID",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

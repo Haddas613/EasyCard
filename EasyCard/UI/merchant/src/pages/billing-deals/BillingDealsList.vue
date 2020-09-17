@@ -1,20 +1,20 @@
 <template>
   <v-flex>
-    <!-- <billing-deals-filter-dialog
+    <billing-deals-filter-dialog
       :show.sync="showDialog"
       :filter="billingDealsFilter"
       v-on:ok="applyFilters($event)"
-    ></billing-deals-filter-dialog> -->
+    ></billing-deals-filter-dialog>
     <v-card class="my-2" width="100%" flat>
       <v-card-title class="pb-0">
         <v-row class="py-0" no-gutters>
-          <v-col cols="11">{{$t("Overview")}}</v-col>
-          <!-- <v-col cols="2" class="text-end">
+          <v-col cols="9">{{$t("Overview")}}</v-col>
+          <v-col cols="2" class="text-end">
             <span
               class="body-1 primary--text cursor-pointer"
               @click="showDialog = true;"
             >{{$t('Filter')}}</span>
-          </v-col> -->
+          </v-col>
           <v-col cols="1" class="text-end">
             <v-btn icon @click="refresh()" :loading="loading">
               <v-icon color="primary">mdi-refresh</v-icon>
@@ -100,8 +100,8 @@ export default {
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
-    // BillingDealsFilterDialog: () =>
-    //   import("../../components/billing-deals/BillingDealsFilterDialog"),
+    BillingDealsFilterDialog: () =>
+      import("../../components/billing-deals/BillingDealsFilterDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker")
   },
   props: {
