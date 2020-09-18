@@ -45,6 +45,7 @@
   "TerminalNotSelected": "Terminal not selected",
   "ToList": "To list",
   "PleaseSelectCustomerFirst": "Please select Customer first",
+  "CheckScheduleSettings": "Check Schedule Settings",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -124,6 +125,7 @@
   "CancelTransmission": "Cancel Transmission",
   "Apply": "Apply",
   "LoadMore": "Load more",
+  "SelectSchedule": "Select Schedule",
 
   "--AUTH--": null,
   "Login": "Login",

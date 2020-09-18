@@ -15,6 +15,7 @@ import Toasted from 'vue-toasted';
 import ecdate from './extensions/filters/ecdate'
 import currency from './extensions/filters/currency'
 import guid from './extensions/filters/guid'
+import billingschedule from './extensions/filters/billingschedule'
 import vmoney from 'v-money';
 
 Vue.config.productionTip = false
@@ -40,6 +41,7 @@ mainAuth.startup().then(ok => {
   Vue.filter('ecdate', ecdate);
   Vue.filter('currency', currency);
   Vue.filter('guid', guid);
+  Vue.filter('billingschedule', billingschedule);
   
   if (ok) {
     new Vue({

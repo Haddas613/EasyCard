@@ -121,8 +121,15 @@
       <v-col cols="12" class="pt-0">
         <ec-dialog :dialog.sync="scheduleDialog" color="ecbg">
           <template v-slot:title>{{$t('BillingSchedule')}}</template>
+          <template v-slot:right>
+            <v-btn color="primary" @click="applySchedule()">{{$t('Apply')}}</v-btn>
+          </template>
           <template>
-            <billing-schedule-form class="px-4 py-4" :data="model.billingSchedule"></billing-schedule-form>
+            <billing-schedule-form
+              ref="billingScheduleRef"
+              class="px-4 py-4"
+              :data="model.billingSchedule"
+            ></billing-schedule-form>
           </template>
         </ec-dialog>
         <ec-dialog-invoker v-on:click="scheduleDialog = true;" class="py-2">
@@ -130,7 +137,10 @@
             <v-icon>mdi-calendar</v-icon>
           </template>
           <template v-slot:left>
-            Select schedule
+            <billing-schedule-string
+              :schedule="model.billingSchedule"
+              replacement-text="SelectSchedule"
+            ></billing-schedule-string>
           </template>
           <template v-slot:append>
             <re-icon>mdi-chevron-right</re-icon>
@@ -235,6 +245,7 @@ export default {
     InstallmentDetails: () => import("../transactions/InstallmentDetailsForm"),
     CustomersList: () => import("../customers/CustomersList"),
     BillingScheduleForm: () => import("./BillingScheduleForm"),
+    BillingScheduleString: () => import("./BillingScheduleString"),
     EcDialog: () => import("../ec/EcDialog"),
     EcDialogInvoker: () => import("../ec/EcDialogInvoker"),
     EcRadioGroup: () => import("../inputs/EcRadioGroup"),
@@ -302,7 +313,22 @@ export default {
     },
     ok() {
       if (!this.$refs.form.validate()) return;
+      if (
+        !this.$refs.billingScheduleRef ||
+        !this.$refs.billingScheduleRef.validate()
+      ) {
+        this.scheduleDialog = true;
+        this.$toasted.show("CheckScheduleSettings", { type: "error" });
+        return;
+      }
       this.$emit("ok", this.model);
+    },
+    applySchedule() {
+      if (!this.$refs.billingScheduleRef.validate()) {
+        return;
+      }
+      this.scheduleDialog = false;
+      this.model.billingSchedule = this.$refs.billingScheduleRef.model;
     }
   },
   async mounted() {
@@ -316,7 +342,7 @@ export default {
       this.model.currency =
         this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
     }
-    if(this.model.dealDetails.consumerID){
+    if (this.model.dealDetails.consumerID) {
       this.customerTokens =
         (
           await this.$api.cardTokens.getCustomerCardTokens(
@@ -327,6 +353,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
