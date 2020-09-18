@@ -34,7 +34,7 @@ export default class BillingDealsApi {
         this.$headers = data.columns
       }
       let billingDeal = await this.base.get(this.billingUrl + `/${id}`);
-      let dictionaries = await this.base.dictionaries.$getBillingDealDictionaries();
+      let dictionaries = await this.base.dictionaries.$getTransactionDictionaries();
 
       billingDeal = this.base.format(billingDeal, this.$headers, dictionaries)
       return billingDeal;

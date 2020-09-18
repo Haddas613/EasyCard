@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Shared.Enums;
+using Transactions.Shared.Models;
 
 namespace Transactions.Api.Models.Billing
 {
@@ -48,7 +49,7 @@ namespace Transactions.Api.Models.Billing
         /// <summary>
         /// Billing Schedule
         /// </summary>
-        public string BillingSchedule { get; set; }
+        public BillingSchedule BillingSchedule { get; set; }
 
         public string CardNumber { get; set; }
     }

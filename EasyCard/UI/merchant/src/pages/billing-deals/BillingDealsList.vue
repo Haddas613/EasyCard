@@ -27,17 +27,13 @@
           <v-col cols="12" md="3" lg="3" xl="3">
             <v-row no-gutters>
               <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
-              <v-col cols="12" class="font-weight-bold">
-                {{datePeriod || '-'}}
-              </v-col>
+              <v-col cols="12" class="font-weight-bold">{{datePeriod || '-'}}</v-col>
             </v-row>
           </v-col>
           <v-col cols="12" md="3" lg="3" xl="3">
             <v-row no-gutters>
               <v-col cols="12">{{$t("OperationsCountTotal")}}:</v-col>
-              <v-col cols="12" class="font-weight-bold">
-                {{numberOfRecords || '-'}}
-              </v-col>
+              <v-col cols="12" class="font-weight-bold">{{numberOfRecords || '-'}}</v-col>
             </v-row>
           </v-col>
         </v-row>
@@ -46,25 +42,37 @@
     <v-card width="100%" flat :loading="!billingDeals">
       <v-card-text class="px-0">
         <ec-list :items="billingDeals" v-if="billingDeals">
-          <template v-slot:prepend>
-            <v-icon>mdi-credit-card-outline</v-icon>
+          <template v-slot:prepend="{ item }">
+            <v-tooltip top v-if="item.billingSchedule">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn color="primary" dark icon v-bind="attrs" v-on="on">
+                  <v-icon>mdi-calendar</v-icon>
+                </v-btn>
+              </template>
+              <billing-schedule-string
+                :schedule="item.billingSchedule"
+                replacement-text="ScheduleIsNotDefined"
+              ></billing-schedule-string>
+            </v-tooltip>
+            <v-icon v-else>mdi-calendar</v-icon>
           </template>
 
           <template v-slot:left="{ item }">
+            <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text">{{item.billingDealID}}</v-col>
             <v-col
               cols="12"
               md="6"
               lg="6"
-              class="pt-1 caption ecgray--text"
-            >{{item.billingDealID}}</v-col>
-            <v-col cols="12" md="6" lg="6">{{item.$billingDealTimestamp | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
+            >{{item.$billingDealTimestamp | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
           </template>
 
           <template v-slot:right="{ item }">
             <v-col cols="12" md="6" lg="6" class="text-end body-2">
-                <v-badge inline color="primary" :content="item.numberOfPayments || '...'">
-                    {{item.currency}}{{item.transactionAmount}}
-                </v-badge>
+              <v-badge
+                inline
+                color="primary"
+                :content="item.numberOfPayments || '...'"
+              >{{item.currency}}{{item.transactionAmount}}</v-badge>
             </v-col>
             <v-col
               cols="12"
@@ -74,11 +82,11 @@
             >{{item.currency}}{{item.totalAmount}}</v-col>
           </template>
 
-          <!-- <template v-slot:append="{ item }">
-            <v-btn icon :to="{ name: 'BillingDeal', params: { id: item.$paymentBillingDealID } }">
+          <template v-slot:append="{ item }">
+            <v-btn icon :to="{ name: 'BillingDeal', params: { id: item.$billingDealID } }">
               <re-icon>mdi-chevron-right</re-icon>
             </v-btn>
-          </template> -->
+          </template>
         </ec-list>
         <p
           class="ecgray--text text-center"
@@ -102,6 +110,7 @@ export default {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     BillingDealsFilterDialog: () =>
       import("../../components/billing-deals/BillingDealsFilterDialog"),
+    BillingScheduleString: () => import("../../components/billing-deals/BillingScheduleString"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker")
   },
   props: {
@@ -144,15 +153,19 @@ export default {
       });
       if (data) {
         let billingDeals = data.data || [];
-        this.billingDeals = extendData ? [...this.billingDeals, ...billingDeals] : billingDeals;
+        this.billingDeals = extendData
+          ? [...this.billingDeals, ...billingDeals]
+          : billingDeals;
         this.numberOfRecords = data.numberOfRecords || 0;
 
-        if(billingDeals.length > 0){
+        if (billingDeals.length > 0) {
           let newest = this.billingDeals[0].$billingDealTimestamp;
-          let oldest = this.billingDeals[this.billingDeals.length - 1].$billingDealTimestamp;
-          this.datePeriod = this.$options.filters.ecdate(newest, "L") +
+          let oldest = this.billingDeals[this.billingDeals.length - 1]
+            .$billingDealTimestamp;
+          this.datePeriod =
+            this.$options.filters.ecdate(newest, "L") +
             (oldest ? ` - ${this.$options.filters.ecdate(oldest, "L")}` : "");
-        }else{
+        } else {
           this.datePeriod = null;
         }
       }
@@ -166,7 +179,7 @@ export default {
       };
       await this.getDataFromApi();
     },
-    async refresh(){
+    async refresh() {
       this.billingDealsFilter.skip = 0;
       await this.getDataFromApi();
     },
@@ -177,8 +190,11 @@ export default {
   },
   computed: {
     canLoadMore() {
-      return this.numberOfRecords > 0 
-        && (this.billingDealsFilter.take + this.billingDealsFilter.skip) < this.numberOfRecords;
+      return (
+        this.numberOfRecords > 0 &&
+        this.billingDealsFilter.take + this.billingDealsFilter.skip <
+          this.numberOfRecords
+      );
     }
   },
   async mounted() {
@@ -199,6 +215,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

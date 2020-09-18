@@ -258,17 +258,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.info-block {
-  p {
-    font-size: 0.85rem;
-  }
-}
-.info-container {
-  padding-top: 1rem;
-}
-.info-block-title {
-  border-bottom: 1px solid var(-ecbg--base) !important;
-}
-</style>
