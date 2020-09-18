@@ -31,6 +31,7 @@
           v-model="model.startAtType"
           outlined
           :label="$t('StartAtType')"
+          v-on:change="model.startAt = null"
         ></v-select>
       </v-col>
       <v-col cols="12" md="6" class="px-1">
@@ -67,6 +68,7 @@
           v-model="model.endAtType"
           outlined
           :label="$t('EndAtType')"
+          v-on:change="model.endAt = null"
         ></v-select>
       </v-col>
       <v-col cols="12" md="6" class="px-1">
@@ -94,10 +96,9 @@
           </v-date-picker>
         </v-menu>
         <v-text-field
-          v-else
+          v-else-if="model.endAtType != 'Never'"
           v-model.number="model.endAt"
           :label="$t('EndAt')"
-          :rules="[vr.primitives.requiredDepends((model.endAtType == 'Never' ? false : model.endAtType))]"
           :disabled="!model.endAtType"
           type="number"
           outlined

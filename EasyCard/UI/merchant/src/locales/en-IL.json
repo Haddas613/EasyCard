@@ -115,6 +115,10 @@
   "EndAtType": "End At Type",
   "EndAt": "End At",
   "EndAtNumberOfPayments": "End at Number of Payments",
+  "Start": "Start",
+  "End": "End",
+  "Never": "Never",
+  "SpecifiedDate": "Specified Date",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
