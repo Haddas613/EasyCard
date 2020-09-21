@@ -196,6 +196,17 @@ export default {
             }
           },
           {
+            text: this.$t("BillingDeals"),
+            fn: () => {
+              this.$router.push({
+                name: "BillingDeals",
+                params: { filters: {
+                  consumerID: this.$route.params.id
+                } }
+              });
+            }
+          },
+          {
             text: this.$t("DeleteCustomer"),
             fn: this.deleteCustomer.bind(this)
           }
