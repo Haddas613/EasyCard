@@ -218,6 +218,8 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
 
             modelBuilder.Entity<PaymentTransaction>().HasQueryFilter(t => user.IsAdmin() || ((user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID())));
 
+            modelBuilder.Entity<BillingDeal>().HasQueryFilter(b => user.IsAdmin() || ((user.IsTerminal() && b.TerminalID == user.GetTerminalID() || b.MerchantID == user.GetMerchantID())));
+
             modelBuilder.Entity<TransactionHistory>().HasQueryFilter(t => user.IsAdmin() || ((user.IsTerminal() && t.PaymentTransaction.TerminalID == user.GetTerminalID() || t.PaymentTransaction.MerchantID == user.GetMerchantID())));
 
             base.OnModelCreating(modelBuilder);
