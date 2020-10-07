@@ -11,7 +11,7 @@
               <v-row class="info-container">
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('ID')}}</p>
-                  <p>{{model.$billingDealID}}</p>
+                  <small>{{model.$billingDealID}}</small>
                 </v-col>
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
