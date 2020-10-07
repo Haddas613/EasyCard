@@ -68,7 +68,7 @@
           v-model="model.endAtType"
           outlined
           :label="$t('EndAtType')"
-          v-on:change="model.endAt = null"
+          v-on:change="model.endAt = null; model.endAtNumberOfPayments = null"
         ></v-select>
       </v-col>
       <v-col cols="12" md="6" class="px-1">
@@ -96,16 +96,7 @@
           </v-date-picker>
         </v-menu>
         <v-text-field
-          v-else-if="model.endAtType != 'Never'"
-          v-model.number="model.endAt"
-          :label="$t('EndAt')"
-          :disabled="!model.endAtType"
-          type="number"
-          outlined
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6" class="px-1">
-        <v-text-field
+          v-else-if="model.endAtType == 'AfterNumberOfPayments'"
           v-model.number="model.endAtNumberOfPayments"
           :label="$t('EndAtNumberOfPayments')"
           type="number"

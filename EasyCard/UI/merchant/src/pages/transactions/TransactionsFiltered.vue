@@ -45,48 +45,7 @@
     </v-card>
     <v-card width="100%" flat :loading="!transactions">
       <v-card-text class="px-0">
-        <ec-list :items="transactions" v-if="transactions">
-          <template v-slot:prepend>
-            <v-icon>mdi-credit-card-outline</v-icon>
-          </template>
-
-          <template v-slot:left="{ item }">
-            <v-col
-              cols="12"
-              md="6"
-              lg="6"
-              class="pt-1 caption ecgray--text"
-            >{{item.paymentTransactionID}}</v-col>
-            <v-col cols="12" md="6" lg="6">{{item.$transactionTimestamp | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
-          </template>
-
-          <template v-slot:right="{ item }">
-            <v-col
-              cols="12"
-              md="6"
-              lg="6"
-              class="text-end body-2"
-              v-bind:class="quickStatusesColors[item.quickStatus]"
-            >{{$t(item.quickStatus)}}</v-col>
-            <v-col
-              cols="12"
-              md="6"
-              lg="6"
-              class="text-end font-weight-bold button"
-            >{{item.currency}}{{item.transactionAmount}}</v-col>
-          </template>
-
-          <template v-slot:append="{ item }">
-            <v-btn icon :to="{ name: 'Transaction', params: { id: item.$paymentTransactionID } }">
-              <re-icon>mdi-chevron-right</re-icon>
-            </v-btn>
-          </template>
-        </ec-list>
-        <p
-          class="ecgray--text text-center"
-          v-if="transactions && transactions.length === 0"
-        >{{$t("NothingToShow")}}</p>
-
+        <transactions-list :key="loading" :transactions="transactions"></transactions-list>
         <v-flex class="text-center" v-if="canLoadMore">
           <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
         </v-flex>
@@ -102,6 +61,7 @@ export default {
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
+    TransactionsList: () => import("../../components/transactions/TransactionsList"),
     TransactionsFilterDialog: () =>
       import("../../components/transactions/TransactionsFilterDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker")
@@ -119,12 +79,6 @@ export default {
   data() {
     return {
       transactions: null,
-      quickStatusesColors: {
-        Pending: "ecgray--text",
-        None: "",
-        Completed: "success--text",
-        Failed: "error--text"
-      },
       customerInfo: null,
       moment: moment,
       loading: false,

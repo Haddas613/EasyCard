@@ -7,16 +7,19 @@
           color="primary"
           class="caption mx-1 mt-1"
         >{{$t("Repeat")}}/{{$t(obj.repeat.text)}} : {{obj.repeat.val}}</v-chip>
-        <v-chip
-          dark
-          color="secondary"
-          class="caption mx-1 mt-1"
-          v-if="obj.start"
-        >{{$t("Start")}}/{{$t(obj.start.text)}} : {{obj.start.val}}</v-chip>
+        
+        <v-chip dark color="secondary" class="caption mx-1 mt-1" v-if="obj.start">
+          {{$t("Start")}}/{{$t(obj.start.text)}}
+          <span v-if="obj.start.text != 'Today'">: {{obj.start.val | ecdate("L")}}</span>
+        </v-chip>
+
         <v-chip dark color="teal darken-3" class="caption mx-1 mt-1" v-if="obj.end">
           {{$t("End")}}/{{$t(obj.end.text)}}
-          <template v-if="obj.end.val != 'Never'">: {{obj.end.val}}</template>
+          <span
+            v-if="obj.end.text != 'Never'"
+          >: {{obj.end.val | ecdate("L")}}</span>
         </v-chip>
+
         <v-chip
           dark
           color="teal darken-4"
