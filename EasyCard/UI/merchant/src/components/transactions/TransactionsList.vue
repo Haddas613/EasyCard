@@ -62,8 +62,8 @@ export default {
     return {
       data: this.transactions,
       quickStatusesColors: {
-        Pending: "ecgray--text",
-        None: "",
+        Pending: "primary--text",
+        None: "ecgray--text",
         Completed: "success--text",
         Failed: "error--text",
         Canceled: "accent--text"
