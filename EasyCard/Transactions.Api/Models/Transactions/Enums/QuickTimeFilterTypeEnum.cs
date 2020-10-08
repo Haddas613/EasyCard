@@ -8,9 +8,6 @@ namespace Transactions.Api.Models.Transactions.Enums
 {
     public enum QuickTimeFilterTypeEnum : short
     {
-        [EnumMember(Value = "None")]
-        None = 0,
-
         [EnumMember(Value = "Last5Minutes")]
         Last5Minutes = 1,
 

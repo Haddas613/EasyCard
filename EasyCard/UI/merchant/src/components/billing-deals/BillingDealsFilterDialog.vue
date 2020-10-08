@@ -39,6 +39,7 @@
               v-model="model.quickTimeFilter"
               :label="$t('QuickTime')"
               outlined
+              clearable
             ></v-select>
           </v-col>
           <v-col cols="12" md="6" class="py-0">
@@ -49,6 +50,7 @@
               v-model="model.dateType"
               :label="$t('DateType')"
               outlined
+              clearable
             ></v-select>
           </v-col>
         </v-row>
@@ -61,6 +63,7 @@
               v-model="model.currency"
               :label="$t('Currency')"
               outlined
+              clearable
             ></v-select>
           </v-col>
           <v-col cols="12" md="6" class="py-0">

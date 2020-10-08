@@ -39,6 +39,7 @@
               v-model="model.transactionType"
               :label="$t('TransactionType')"
               outlined
+              clearable
             ></v-select>
           </v-col>
           <v-col cols="12" md="6" class="py-0">
@@ -49,6 +50,7 @@
               v-model="model.quickTimeFilter"
               :label="$t('QuickTime')"
               outlined
+              clearable
             ></v-select>
           </v-col>
           <v-col cols="12" md="6" class="py-0">
@@ -59,6 +61,7 @@
               v-model="model.quickStatusFilter"
               :label="$t('Status')"
               outlined
+              clearable
             ></v-select>
           </v-col>
           <v-col cols="12" md="6" class="py-0">
@@ -69,6 +72,7 @@
               v-model="model.cardPresence"
               :label="$t('CardPresence')"
               outlined
+              clearable
             ></v-select>
           </v-col>
         </v-row>
@@ -101,6 +105,7 @@
               v-model="model.currency"
               :label="$t('Currency')"
               outlined
+              clearable
             ></v-select>
           </v-col>
           <v-col cols="12" md="6" class="py-0">
@@ -111,6 +116,7 @@
               v-model="model.specialTransactionType"
               :label="$t('SpecialTransactionType')"
               outlined
+              clearable
             ></v-select>
           </v-col>
           <v-col cols="12" md="6" class="py-0">
@@ -121,6 +127,7 @@
               v-model="model.jDealType"
               :label="$t('JDealType')"
               outlined
+              clearable
             ></v-select>
           </v-col>
           <v-col cols="12" md="6" class="py-0">
@@ -131,6 +138,7 @@
               v-model="model.rejectionReason"
               :label="$t('RejectionReason')"
               outlined
+              clearable
             ></v-select>
           </v-col>
         </v-row>
