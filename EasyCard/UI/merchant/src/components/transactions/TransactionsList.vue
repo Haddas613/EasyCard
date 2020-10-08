@@ -65,7 +65,8 @@ export default {
         Pending: "ecgray--text",
         None: "",
         Completed: "success--text",
-        Failed: "error--text"
+        Failed: "error--text",
+        Canceled: "accent--text"
       },
       customerInfo: null,
       moment: moment,

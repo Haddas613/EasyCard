@@ -20,7 +20,7 @@
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Status')}}</p>
-              <p v-bind:class="quickStatusesColors[model.quickStatus]">{{model.quickStatus || '-'}}</p>
+              <p v-bind:class="quickStatusesColors[model.quickStatus]">{{$t(item.quickStatus)}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('TransactionTime')}}</p>
@@ -206,7 +206,8 @@ export default {
         Pending: "ecgray--text",
         None: "",
         Completed: "success--text",
-        Failed: "error--text"
+        Failed: "error--text",
+        Canceled: "accent--text"
       }
     };
   },
