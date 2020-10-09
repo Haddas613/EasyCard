@@ -34,7 +34,7 @@
       :disabled="totalAmount == 0"
       :fixed="$vuetify.breakpoint.smAndDown"
     >
-      {{btntext}}
+      {{$t(btnText)}}
       <ec-money :amount="totalAmount" class="px-1"></ec-money>
     </v-btn>
     <v-spacer style="height: 48px" v-if="$vuetify.breakpoint.smAndDown"></v-spacer>
@@ -168,9 +168,9 @@ export default {
     };
   },
   props: {
-    btntext: {
+    btnText: {
       type: String,
-      default: null
+      default: 'OK'
     }
   },
   watch: {

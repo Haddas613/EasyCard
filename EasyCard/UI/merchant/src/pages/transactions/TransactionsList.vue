@@ -169,6 +169,12 @@ export default {
             fn: () => {
               this.$router.push({ name: "Charge" });
             }
+          },
+          {
+            text: this.$t("Refund"),
+            fn: () => {
+              this.$router.push({ name: "Refund" });
+            }
           }
         ]
       }

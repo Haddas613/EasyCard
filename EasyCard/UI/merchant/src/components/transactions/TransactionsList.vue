@@ -22,7 +22,7 @@
           lg="6"
           class="text-end body-2"
           v-bind:class="quickStatusesColors[item.quickStatus]"
-        >{{$t(item.quickStatus)}}</v-col>
+        >{{$t(item.quickStatus || 'None')}}</v-col>
         <v-col
           cols="12"
           md="6"

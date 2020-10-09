@@ -27,6 +27,7 @@
   "CreateBillingDeal": "Create Billing Deal",
   "FilterBillingDeals": "Filter Billing Deals",
   "BillingSchedule": "Billing Schedule",
+  "PaymentInfo": "Payment Info",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

@@ -185,6 +185,15 @@ export default {
             }
           },
           {
+            text: this.$t("Refund"),
+            fn: () => {
+              this.$router.push({
+                name: "Refund",
+                params: { customerid: this.$route.params.id }
+              });
+            }
+          },
+          {
             text: this.$t("Transactions"),
             fn: () => {
               this.$router.push({
