@@ -2,7 +2,7 @@
   <v-flex>
     <v-text-field
       v-model="model.cardOwnerName"
-      :label="$t('Name on card')"
+      :label="$t('NameOnCard')"
       :rules="[vr.primitives.required, vr.primitives.stringLength(3, 50)]"
       background-color="white"
       type="text"

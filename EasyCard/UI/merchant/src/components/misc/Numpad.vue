@@ -26,38 +26,48 @@
       </template>
     </ec-dialog>
     <v-btn
-      color="primary"
+      :color="totalAmount > model.discount ? 'primary' : 'error darken-2'"
       class="text-none charge-btn v-btn--flat"
       height="48px"
       @click="ok()"
       block
-      :disabled="totalAmount == 0"
+      :disabled="totalAmount == 0 && model.discount == 0"
       :fixed="$vuetify.breakpoint.smAndDown"
     >
       {{$t(btnText)}}
-      <ec-money :amount="totalAmount" class="px-1"></ec-money>
+      <ec-money :amount="totalAmount - model.discount" class="px-1"></ec-money>
     </v-btn>
     <v-spacer style="height: 48px" v-if="$vuetify.breakpoint.smAndDown"></v-spacer>
     <v-flex class="white text-center align-stretch px-3">
       <template v-if="activeArea === 'calc'">
         <v-row dir="ltr">
-          <v-col cols="4" class="py-1">
-            <span
-              class="subtitle-1 ecgray--text"
-              style="line-height:2.5rem;"
-              v-if="false"
-            >{{$t('AddNote')}}</span>
+          <v-col cols="6">
+            <span @click="setActiveInput('amount')">
+              <v-text-field
+                class="py-0 px-0"
+                :value="model.amount"
+                readonly
+                outlined
+                :label="$t('Amount')"
+                hide-details="true"
+                :disabled="activeInput != 'amount'"
+              ></v-text-field>
+            </span>
+            <!-- <span>{{model.amount}}</span> -->
           </v-col>
-          <v-col cols="8" class="pt-3 text-right">
-            <!-- <input
-              inputmode="decimal"
-              min="0.01"
-              v-model.lazy="model.amount"
-              v-money="{precision: 2}"
-              class="text-right pr-4"
-              disabled
-            />-->
-            <span>{{model.amount}}</span>
+          <v-col cols="6">
+            <span @click="setActiveInput('discount')">
+              <v-text-field
+                class="py-0 px-0"
+                :value="model.discount"
+                readonly
+                outlined
+                :label="$t('Discount')"
+                hide-details="true"
+                :disabled="activeInput != 'discount'"
+                :error="totalAmount < model.discount"
+              ></v-text-field>
+            </span>
           </v-col>
         </v-row>
         <v-row dir="ltr">
@@ -156,9 +166,11 @@ export default {
       items: [],
       model: {
         amount: "0",
+        discount: "0",
         note: null,
         items: []
       },
+      activeInput: "amount",
       activeArea: "calc",
       selectedItemsCnt: {},
       selectedItem: null,
@@ -170,7 +182,7 @@ export default {
   props: {
     btnText: {
       type: String,
-      default: 'OK'
+      default: "OK"
     }
   },
   watch: {
@@ -207,26 +219,32 @@ export default {
   },
   methods: {
     addDigit(d) {
-      if (this.model.amount == "0") this.model.amount = d;
-      else if (this.model.amount < 100000) {
+      if (
+        this.activeInput == "discount" &&
+        this.model.amount < this.model.discount + "" + d
+      ) {
+        return;
+      }
+      if (this.model[this.activeInput] == "0") this.model[this.activeInput] = d;
+      else if (this.model[this.activeInput] < 100000) {
         if (
-          `${this.model.amount}`.indexOf(".") > -1 &&
-          `${this.model.amount}`.split(".")[1].length == 2
+          `${this.model[this.activeInput]}`.indexOf(".") > -1 &&
+          `${this.model[this.activeInput]}`.split(".")[1].length == 2
         ) {
           return;
         }
         //TODO: config for max allowed transaction amount
-        this.model.amount += "" + d;
+        this.model[this.activeInput] += "" + d;
       }
     },
     addDot() {
-      if (!this.model.amount) {
-        this.model.amount = "0.";
+      if (!this.model[this.activeInput]) {
+        this.model[this.activeInput] = "0.";
       } else if (
-        this.model.amount &&
-        `${this.model.amount}`.indexOf(".") === -1
+        this.model[this.activeInput] &&
+        `${this.model[this.activeInput]}`.indexOf(".") === -1
       ) {
-        this.model.amount += ".";
+        this.model[this.activeInput] += ".";
       }
     },
     async getItems() {
@@ -241,22 +259,27 @@ export default {
       }
     },
     ok() {
+      if(this.totalAmount < this.model.discount){
+        this.activeInput = 'discount';
+        return;
+      }
       this.$emit("ok", {
         ...this.model,
-        amount: parseFloat(this.totalAmount)
+        amount: parseFloat(this.totalAmount) - parseFloat(this.discount)
       });
     },
     stash() {
+      if(this.model.activeInput == "discount") return;
       this.total += parseFloat(this.model.amount);
       this.model.amount = "0";
     },
     reset() {
       if (
-        parseFloat(this.model.amount) > 0 ||
-        (typeof this.model.amount == "string" &&
-          this.model.amount.indexOf(".") > -1)
+        parseFloat(this.model[this.activeInput]) > 0 ||
+        (typeof this.model[this.activeInput] == "string" &&
+          this.model[this.activeInput].indexOf(".") > -1)
       ) {
-        this.model.amount = 0;
+        this.model[this.activeInput] = 0;
       } else {
         this.total = 0;
         //todo: should also clear items?
@@ -318,6 +341,9 @@ export default {
 
       this.total += recalc;
       this.itemCntDialog = false;
+    },
+    setActiveInput(type) {
+      this.activeInput = type;
     }
   }
 };

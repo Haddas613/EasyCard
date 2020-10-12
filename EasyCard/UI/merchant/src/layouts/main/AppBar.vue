@@ -29,10 +29,8 @@
   </div>
 </template>
 <script>
-import LangSwitcher from "../../components/LanguageSwitcher";
 import ActionsBar from "../../components/misc/ActionsBar";
 import { mapState } from "vuex";
-import ReIcon from "../../components/misc/ResponsiveIcon";
 import EcHeaderContent from "../../layouts/shared/EcHeaderContent";
 
 export default {
@@ -43,7 +41,7 @@ export default {
       required: true
     }
   },
-  components: { LangSwitcher, ActionsBar, ReIcon, EcHeaderContent },
+  components: { ActionsBar, EcHeaderContent },
   computed: {
     drawerObj: {
       get: function() {
@@ -56,41 +54,6 @@ export default {
     ...mapState({
       headerStore: state => state.ui.header
     }),
-    headerText() {
-      if (!this.headerStore || !this.headerStore.text) return null;
-
-      return this.headerStore.text.translate
-        ? this.$t(this.headerStore.text.value)
-        : this.headerStore.text.value;
-    },
-    tdMenuItems() {
-      if (
-        !this.headerStore.threeDotMenu ||
-        this.headerStore.threeDotMenu.length === 0
-      )
-        return null;
-
-      return this.headerStore.threeDotMenu;
-    },
-    showBackBtn() {
-      return this.$route.meta ? this.$route.meta.backBtn : false;
-    },
-    showCloseBtn() {
-      return this.$route.meta ? this.$route.meta.closeBtn : false;
-    }
-  },
-  methods: {
-    handleNavigation(metaType) {
-      let metaVal = this.$route.meta[metaType];
-      if (!metaVal) {
-        console.error(`Unknown meta type: ${metaType}`);
-        return;
-      } else if (typeof metaVal == "string") {
-        this.$router.push({ name: metaVal });
-      } else {
-        this.$router.go(-1);
-      }
-    }
   }
 };
 </script>

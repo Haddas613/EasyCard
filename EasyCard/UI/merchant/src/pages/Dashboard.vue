@@ -11,7 +11,7 @@
             <img src="https://randomuser.me/api/portraits/women/54.jpg" />
           </v-list-item-avatar>
           <v-list-item class="justify-center">
-            <p class="subtitle-1 pt-4">{{$t('@GoodMorning')}}</p>
+            <p class="subtitle-1 pt-4">{{$t('@GoodMorning').replace("@name", userName)}}</p>
           </v-list-item>
         </v-list>
       </v-card-text>
@@ -23,7 +23,12 @@
 <script>
 import ActionsBar from "../components/misc/ActionsBar";
 export default {
-  components: { ActionsBar }
+  components: { ActionsBar },
+  computed:{
+    userName: function(){
+      return (this.$oidc && this.$oidc.userProfile) ? this.$oidc.userProfile.name : null;
+    }
+  }
 };
 </script>
 
