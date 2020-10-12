@@ -15,7 +15,7 @@
     <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad btntext="Charge" v-on:ok="processAmount($event)"></numpad>
+          <numpad btn-text="Charge" v-on:ok="processAmount($event)"></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
