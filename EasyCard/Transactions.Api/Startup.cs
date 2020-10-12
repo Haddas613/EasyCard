@@ -203,6 +203,7 @@ namespace Transactions.Api
             services.AddScoped<ITransactionsService, TransactionsService>();
             services.AddScoped<ICreditCardTokenService, CreditCardTokenService>();
             services.AddScoped<IBillingDealService, BillingDealService>();
+            services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSingleton<IKeyValueStorage<CreditCardTokenKeyVault>, AzureKeyValueStorage<CreditCardTokenKeyVault>>();

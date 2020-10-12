@@ -18,6 +18,7 @@ using Transactions.Business.Services;
 using Transactions.Api.Extensions.Filtering;
 using Transactions.Api.Models.Invoicing;
 using Shared.Api.Extensions;
+using Shared.Helpers.Security;
 
 namespace Transactions.Api.Controllers
 {
@@ -35,9 +36,21 @@ namespace Transactions.Api.Controllers
         private readonly ITerminalsService terminalsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
 
-        public InvoicingController()
+        public InvoicingController(
+                    IInvoiceService invoiceService,
+                    IMapper mapper,
+                    ITerminalsService terminalsService,
+                    ILogger<CardTokenController> logger,
+                    IHttpContextAccessorWrapper httpContextAccessor,
+                    IConsumersService consumersService)
         {
+            this.invoiceService = invoiceService;
+            this.mapper = mapper;
 
+            this.terminalsService = terminalsService;
+            this.logger = logger;
+            this.httpContextAccessor = httpContextAccessor;
+            this.consumersService = consumersService;
         }
 
         [HttpGet]
@@ -63,9 +76,9 @@ namespace Transactions.Api.Controllers
             {
                 var dbInvoice = EnsureExists(await invoiceService.GetInvoices().FirstOrDefaultAsync(m => m.InvoiceID == invoiceID));
 
-                var billingDeal = mapper.Map<InvoiceResponse>(dbInvoice);
+                var invoice = mapper.Map<InvoiceResponse>(dbInvoice);
 
-                return Ok(billingDeal);
+                return Ok(invoice);
             }
         }
 
@@ -73,6 +86,9 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreateInvoice([FromBody] InvoiceRequest model)
         {
+            var merchantID = User.GetMerchantID();
+            var userIsTerminal = User.IsTerminal();
+
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
             var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
@@ -86,7 +102,7 @@ namespace Transactions.Api.Controllers
 
             await invoiceService.CreateEntity(newInvoice);
 
-            return CreatedAtAction(nameof(GetInvoice), new { BillingDealID = newInvoice.InvoiceID }, new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID.ToString()));
+            return CreatedAtAction(nameof(GetInvoice), new { invoiceID = newInvoice.InvoiceID }, new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID.ToString()));
         }
     }
 }

@@ -327,6 +327,91 @@
             Installment payments details (should be omitted in case of regular deal)
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceID">
+            <summary>
+            Primary reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceTimestamp">
+            <summary>
+            Date-time when deal created initially in UTC
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceDate">
+            <summary>
+            Legal invoice day
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.DealDetails">
+            <summary>
+            Deal information (optional)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.CreditCardDetails">
+            <summary>
+            Credit card details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceAmount">
+            <summary>
+            Invoice amount (should be omitted in case of installment deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.TaxRate">
+            <summary>
+            Tax rate (VAT)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.TaxAmount">
+            <summary>
+            Tax amount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InstallmentDetails">
+            <summary>
+            Installment payments details (should be omitted in case of regular deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.InvoiceID">
+            <summary>
+            Primary reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.InvoiceTimestamp">
+            <summary>
+            Date-time when deal created initially in UTC
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.InvoiceDate">
+            <summary>
+            Legal invoice day
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.TerminalID">
+            <summary>
+            Terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenFilter.ConsumerEmail">
             <summary>
             End-customer Email

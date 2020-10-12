@@ -17,7 +17,8 @@ namespace Transactions.Business.Services
         private readonly TransactionsContext context;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
 
-        public InvoiceService(TransactionsContext context, IHttpContextAccessorWrapper httpContextAccessor) : base(context)
+        public InvoiceService(TransactionsContext context, IHttpContextAccessorWrapper httpContextAccessor)
+            : base(context)
         {
             this.context = context;
             this.httpContextAccessor = httpContextAccessor;
