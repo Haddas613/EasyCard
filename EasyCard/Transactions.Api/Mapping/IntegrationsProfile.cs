@@ -50,6 +50,7 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.CreditCardToken, s => s.Ignore());
 
             CreateMap<ProcessorCreateTransactionResponse, PaymentTransaction>();
+            CreateMap<ProcessorCreateTransactionResponse, CreditCardTokenDetails>();
 
             CreateMap<PaymentTransaction, AggregatorCommitTransactionRequest>()
                 //.ForMember(m => m.CreditCardDetails.CardVendor, s => s.MapFrom(src => src.CreditCardDetails.CardVendor))
