@@ -22,10 +22,12 @@
   "ShvaTransactionDetails": "Shva Transaction Details",
   "EditItemCount": "Edit Item Count",
   "BillingDeals": "Billing Deals",
+  "BillingDeal": "Billing Deal",
   "BillingDealsList": "Billing Deals List",
   "CreateBillingDeal": "Create Billing Deal",
   "FilterBillingDeals": "Filter Billing Deals",
   "BillingSchedule": "Billing Schedule",
+  "PaymentInfo": "Payment Info",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

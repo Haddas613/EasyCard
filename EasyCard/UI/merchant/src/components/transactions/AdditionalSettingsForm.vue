@@ -177,7 +177,7 @@ export default {
       }
 
       this.model.jDealType = this.dictionaries.jDealTypeEnum[0].code;
-      this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
+      // this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
     }
   },
   methods: {

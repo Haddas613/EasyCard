@@ -20,7 +20,7 @@
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Status')}}</p>
-              <p v-bind:class="quickStatusesColors[model.quickStatus]">{{model.quickStatus || '-'}}</p>
+              <p v-bind:class="quickStatusesColors[model.quickStatus]">{{$t(item.quickStatus || 'None')}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('TransactionTime')}}</p>
@@ -171,7 +171,7 @@
         </v-card-text>
       </v-card>
     </div>
-    <v-row no-gutters v-if="model && model.allowTransmission">
+    <v-row no-gutters v-if="model && model.allowTransmission" class="py-2">
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
         <v-btn class="mx-1" color="primary" @click="transmit()">{{$t('Transmission')}}</v-btn>
         <v-btn
@@ -203,10 +203,11 @@ export default {
       model: null,
       terminalName: "-",
       quickStatusesColors: {
-        Pending: "ecgray--text",
-        None: "",
+        Pending: "primary--text",
+        None: "ecgray--text",
         Completed: "success--text",
-        Failed: "error--text"
+        Failed: "error--text",
+        Canceled: "accent--text"
       }
     };
   },
@@ -231,8 +232,8 @@ export default {
     }
   },
   methods: {
-    transmit() {
-      let operation = this.$api.transmissions.transmit({
+    async transmit() {
+      let operation = await this.$api.transmissions.transmit({
         terminalID: this.model.$terminalID,
         paymentTransactionIDs: [this.model.$paymentTransactionID]
       });
@@ -240,11 +241,15 @@ export default {
       if (!operation) return;
 
       if (operation.status === "success") {
+        let tr = await this.$api.transactions.getTransaction(
+          this.$route.params.id
+        );
+        this.model.quickStatus = tr.quickStatus;
         this.model.allowTransmission = false;
       }
     },
-    cancelTransmission() {
-      let operation = this.$api.transmissions.cancelTransmission({
+    async cancelTransmission() {
+      let operation = await this.$api.transmissions.cancelTransmission({
         terminalID: this.model.$terminalID,
         paymentTransactionID: this.model.$paymentTransactionID
       });
@@ -252,6 +257,10 @@ export default {
       if (!operation) return;
 
       if (operation.status === "success") {
+        let tr = await this.$api.transactions.getTransaction(
+          this.$route.params.id
+        );
+        this.model.quickStatus = tr.quickStatus;
         this.model.allowTransmission = false;
       }
     }

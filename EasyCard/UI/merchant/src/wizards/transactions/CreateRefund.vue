@@ -15,7 +15,7 @@
     <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad btntext="Charge" v-on:ok="processAmount($event)"></numpad>
+          <numpad btn-text="Refund" v-on:ok="processAmount($event)"></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
@@ -33,7 +33,7 @@
             :data="model"
             v-on:ok="processCreditCard($event)"
             ref="ccSecureDetails"
-            btn-text="Charge"
+            btn-text="Refund"
           ></credit-card-secure-details>
         </v-stepper-content>
 
@@ -234,7 +234,7 @@ export default {
       this.model.terminalID = this.terminal.terminalID;
       this.model.invoiceDetails = data.invoiceDetails;
 
-      let result = await this.$api.transactions.processTransaction(this.model);
+      let result = await this.$api.transactions.refund(this.model);
 
       //assuming current step is one before the last
       let lastStep = this.steps[this.step + 1];

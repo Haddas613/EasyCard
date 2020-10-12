@@ -13,8 +13,8 @@
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title>Name</v-list-item-title>
-          <v-list-item-subtitle>Subtext</v-list-item-subtitle>
+          <v-list-item-title>{{userName}}</v-list-item-title>
+          <!-- <v-list-item-subtitle>Subtext</v-list-item-subtitle> -->
         </v-list-item-content>
       </v-list-item>
 
@@ -250,6 +250,9 @@ export default {
           newCurrency: nv
         });
       }
+    },
+    userName: function(){
+      return (this.$oidc && this.$oidc.userProfile) ? this.$oidc.userProfile.name : null;
     }
   }
 };

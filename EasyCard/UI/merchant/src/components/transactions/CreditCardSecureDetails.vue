@@ -58,7 +58,7 @@
       </v-form>
     </v-card-text>
     <v-card-actions class="px-4">
-      <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t('Charge')}}</v-btn>
+      <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t(btnText)}}</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -78,6 +78,11 @@ export default {
     data: {
       type: Object,
       default: null,
+      required: false
+    },
+    btnText: {
+      type: String,
+      default: 'OK',
       required: false
     }
   },

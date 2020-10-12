@@ -19,5 +19,8 @@ namespace Transactions.Api.Models.Transactions.Enums
 
         [EnumMember(Value = "Failed")]
         Failed = 3,
+
+        [EnumMember(Value = "Canceled")]
+        Canceled = 4,
     }
 }

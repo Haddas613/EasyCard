@@ -73,7 +73,7 @@ export default {
         },
         {
           icon: "mdi-chevron-up-box-outline",
-          to: "/admin/transactions/refund",
+          to: "/wizard/transactions/refund",
           css: "primary--text",
           text: "Refund"
         }

@@ -10,13 +10,13 @@
             :block="$vuetify.breakpoint.smAndDown"
             @click="selectedItem.amount = 0; itemCntChanged()"
           >
-          <v-icon left>mdi-delete</v-icon>
-          {{$t("Delete")}}
+            <v-icon left>mdi-delete</v-icon>
+            {{$t("Delete")}}
           </v-btn>
         </div>
         <v-select
           class="mx-2 mt-4"
-          outlined=""
+          outlined
           v-if="selectedItem"
           :items="lodash.range(101)"
           v-model="selectedItem.amount"
@@ -34,7 +34,7 @@
       :disabled="totalAmount == 0"
       :fixed="$vuetify.breakpoint.smAndDown"
     >
-      {{btntext}}
+      {{$t(btnText)}}
       <ec-money :amount="totalAmount" class="px-1"></ec-money>
     </v-btn>
     <v-spacer style="height: 48px" v-if="$vuetify.breakpoint.smAndDown"></v-spacer>
@@ -42,7 +42,11 @@
       <template v-if="activeArea === 'calc'">
         <v-row dir="ltr">
           <v-col cols="4" class="py-1">
-            <span class="subtitle-1 ecgray--text" style="line-height:2.5rem;" v-if="false">{{$t('AddNote')}}</span>
+            <span
+              class="subtitle-1 ecgray--text"
+              style="line-height:2.5rem;"
+              v-if="false"
+            >{{$t('AddNote')}}</span>
           </v-col>
           <v-col cols="8" class="pt-3 text-right">
             <!-- <input
@@ -52,7 +56,7 @@
               v-money="{precision: 2}"
               class="text-right pr-4"
               disabled
-            /> -->
+            />-->
             <span>{{model.amount}}</span>
           </v-col>
         </v-row>
@@ -115,7 +119,6 @@
           <template v-slot:right="{ item }">
             <v-col cols="12" md="6" lg="6" class="text-end caption">
               <span>{{selectedItemsCnt[item.$itemID]}}</span>
-              
             </v-col>
             <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold subtitle-2">
               <ec-money :amount="item.price" :currency="item.$currency"></ec-money>
@@ -161,13 +164,13 @@ export default {
       selectedItem: null,
       search: null,
       searchTimeout: null,
-      itemCntDialog: false,
+      itemCntDialog: false
     };
   },
   props: {
-    btntext: {
+    btnText: {
       type: String,
-      default: null
+      default: 'OK'
     }
   },
   watch: {
@@ -197,20 +200,32 @@ export default {
     },
     ...mapState({
       currencyStore: state => state.settings.currency
-    }),
+    })
   },
   async mounted() {
     await this.getItems();
   },
   methods: {
-    addDigit(d){
-      if(this.model.amount == "0") this.model.amount = d;
-      else if(this.model.amount < 100000){ //TODO: config for max allowed transaction amount
+    addDigit(d) {
+      if (this.model.amount == "0") this.model.amount = d;
+      else if (this.model.amount < 100000) {
+        if (
+          `${this.model.amount}`.indexOf(".") > -1 &&
+          `${this.model.amount}`.split(".")[1].length == 2
+        ) {
+          return;
+        }
+        //TODO: config for max allowed transaction amount
         this.model.amount += "" + d;
       }
     },
-    addDot(){
-      if(this.model.amount && this.model.amount.indexOf(".") === -1){
+    addDot() {
+      if (!this.model.amount) {
+        this.model.amount = "0.";
+      } else if (
+        this.model.amount &&
+        `${this.model.amount}`.indexOf(".") === -1
+      ) {
         this.model.amount += ".";
       }
     },
@@ -226,8 +241,7 @@ export default {
       }
     },
     ok() {
-      this.$emit("ok", 
-      {
+      this.$emit("ok", {
         ...this.model,
         amount: parseFloat(this.totalAmount)
       });
@@ -237,7 +251,11 @@ export default {
       this.model.amount = "0";
     },
     reset() {
-      if (parseFloat(this.model.amount) > 0) {
+      if (
+        parseFloat(this.model.amount) > 0 ||
+        (typeof this.model.amount == "string" &&
+          this.model.amount.indexOf(".") > -1)
+      ) {
         this.model.amount = 0;
       } else {
         this.total = 0;
@@ -268,27 +286,36 @@ export default {
       this.total += item.price;
       this.$set(this.selectedItemsCnt, item.$itemID, entry ? entry.amount : 1);
     },
-    editItemCnt(item){
+    editItemCnt(item) {
       let entry = this.lodash.find(
         this.model.items,
         i => i.itemID === item.$itemID
       );
-      if(entry){
+      if (entry) {
         this.selectedItem = entry;
         this.itemCntDialog = true;
       }
     },
-    itemCntChanged(){
+    itemCntChanged() {
       let prevCount = this.selectedItemsCnt[this.selectedItem.itemID];
-      let recalc = -(this.selectedItem.price * prevCount) + this.selectedItem.amount * this.selectedItem.price;
-      
-      if(this.selectedItem.amount){
-        this.$set(this.selectedItemsCnt, this.selectedItem.itemID, this.selectedItem.amount);
-      }else {
-        this.lodash.remove(this.model.items, i => i.itemID === this.selectedItem.itemID);
+      let recalc =
+        -(this.selectedItem.price * prevCount) +
+        this.selectedItem.amount * this.selectedItem.price;
+
+      if (this.selectedItem.amount) {
+        this.$set(
+          this.selectedItemsCnt,
+          this.selectedItem.itemID,
+          this.selectedItem.amount
+        );
+      } else {
+        this.lodash.remove(
+          this.model.items,
+          i => i.itemID === this.selectedItem.itemID
+        );
         this.$set(this.selectedItemsCnt, this.selectedItem.itemID, null);
       }
-      
+
       this.total += recalc;
       this.itemCntDialog = false;
     }

@@ -27,7 +27,9 @@
           <v-col cols="12" md="3" lg="3" xl="3">
             <v-row no-gutters>
               <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
-              <v-col cols="12" class="font-weight-bold">{{datePeriod || '-'}}</v-col>
+              <v-col cols="12" class="font-weight-bold">
+                <span dir="ltr">{{datePeriod || '-'}}</span>
+              </v-col>
             </v-row>
           </v-col>
           <v-col cols="12" md="3" lg="3" xl="3">
@@ -163,8 +165,7 @@ export default {
           let oldest = this.billingDeals[this.billingDeals.length - 1]
             .$billingDealTimestamp;
           this.datePeriod =
-            this.$options.filters.ecdate(newest, "L") +
-            (oldest ? ` - ${this.$options.filters.ecdate(oldest, "L")}` : "");
+            this.$options.filters.ecdate(oldest, "L") + ` - ${this.$options.filters.ecdate(newest, "L")}`;
         } else {
           this.datePeriod = null;
         }

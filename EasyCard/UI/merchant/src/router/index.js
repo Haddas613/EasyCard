@@ -177,6 +177,12 @@ const routes = [
         path: 'transactions/charge',
         component: () => import('../wizards/transactions/CreateCharge.vue'),
         props: true
+      },
+      {
+        name: 'Refund',
+        path: 'transactions/refund',
+        component: () => import('../wizards/transactions/CreateRefund.vue'),
+        props: true
       }
     ]
   },
