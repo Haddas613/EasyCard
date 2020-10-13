@@ -391,6 +391,13 @@ var cardFormatUtils = {
     },
 
     reFormatCardNumberOrSkipIfCardReader: function (e) {
+        //card reader special symbols
+        if(e.currentTarget.value.indexOf(";") === 0 
+            || e.currentTarget.value.indexOf("=") > -1 
+            || e.currentTarget.value.indexOf("?") === e.currentTarget.value.length){
+            return;
+        }
+
         if (!e.currentTarget.value || (/^;\d{15,17}=\d{19,21}\?$/.test(e.currentTarget.value)))
             return;
         else {
@@ -449,6 +456,28 @@ var cardFormatUtils = {
 
         // Return unless backspacing
         if (e.which !== 8) { return; }
+
+        // Return if focus isn't at the end of the text
+        if ((target.selectionStart != null) &&
+            (target.selectionStart !== value.length)) { return; }
+
+        // Remove the digit + trailing space
+        if (/\d\s$/.test(value)) {
+            e.preventDefault();
+            return setTimeout(function () { return target.value = value.replace(/\d\s$/, ''); });
+            // Remove digit if ends in space + digit
+        } else if (/\s\d?$/.test(value)) {
+            e.preventDefault();
+            return setTimeout(function () { return target.value = value.replace(/\d$/, ''); });
+        }
+    },
+
+    formatBackCardNumberOrSkipIfCardReader: function (e) {
+        var target = e.currentTarget;
+        var value = target.value;
+        
+        // Return unless backspacing
+        if (e.which !== 8 || e.key === ";") { return; }
 
         // Return if focus isn't at the end of the text
         if ((target.selectionStart != null) &&
@@ -584,6 +613,30 @@ var cardFormatUtils = {
         return (!!/[\d\s]/.test(input)) ? true : e.preventDefault();
     },
 
+    restrictNumericOrSkipIfCardReader: function (e) {
+        // Key event is for a browser shortcut
+        if (e.metaKey || e.ctrlKey) { return true; }
+
+        // If keycode is a space
+        if (e.which === 32) { return false; }
+
+        // If keycode is a special char (WebKit)
+        if (e.which === 0) { return true; }
+
+        // If char is a special char (Firefox)
+        if (e.which < 33) { return true; }
+
+        var input = String.fromCharCode(e.which);
+        
+        //card reader special symbols
+        if(e.key === ";" || e.key === "=" || e.key === "?"){
+            return true;
+        }
+
+        // Char is a number or a space
+        return (!!/[\d\s]/.test(input)) ? true : e.preventDefault();
+    },
+
     restrictCardNumber: function (e) {
         var target = e.currentTarget;
         var digit = String.fromCharCode(e.which);
@@ -708,10 +761,10 @@ var format = {
     },
 
     formatCardNumberOrCardReader: function (el) {
-        el.addEventListener('keypress', cardFormatUtils.restrictNumeric);
+        el.addEventListener('keypress', cardFormatUtils.restrictNumericOrSkipIfCardReader);
         el.addEventListener('keypress', cardFormatUtils.restrictCardNumber);
-        el.addEventListener('keypress', cardFormatUtils.formatCardNumber);
-        el.addEventListener('keydown', cardFormatUtils.formatBackCardNumber);
+        el.addEventListener('keypress', cardFormatUtils.reFormatCardNumberOrSkipIfCardReader);
+        el.addEventListener('keydown', cardFormatUtils.formatBackCardNumberOrSkipIfCardReader);
         el.addEventListener('keyup', cardFormatUtils.setCardType);
         el.addEventListener('paste', cardFormatUtils.reFormatCardNumberOrSkipIfCardReader);
         el.addEventListener('change', cardFormatUtils.reFormatCardNumberOrSkipIfCardReader);
