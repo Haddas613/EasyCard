@@ -17,6 +17,7 @@ namespace Transactions.Business.Entities
             InvoiceTimestamp = DateTime.UtcNow;
             InvoiceID = Guid.NewGuid().GetSequentialGuid(InvoiceTimestamp.Value);
             DealDetails = new DealDetails();
+            InvoiceDate = TimeZoneInfo.ConvertTimeFromUtc(InvoiceTimestamp.Value, UserCultureInfo.TimeZone).Date;
         }
 
         /// <summary>
