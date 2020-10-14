@@ -14,15 +14,63 @@
             {{$t("Delete")}}
           </v-btn>
         </div>
-        <v-select
-          class="mx-2 mt-4"
-          outlined
-          v-if="selectedItem"
-          :items="lodash.range(101)"
-          v-model="selectedItem.amount"
-          @change="itemCntChanged()"
-          :label="$t('Count')"
-        ></v-select>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-select
+              class="mx-2 mt-4"
+              outlined
+              v-if="selectedItem"
+              :items="lodash.range(101)"
+              v-model="selectedItem.amount"
+              @change="itemCntChanged()"
+              :label="$t('Count')"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              class="mx-2 mt-4"
+              v-if="selectedItem"
+              :value="selectedItem.price"
+              outlined
+              readonly
+              :label="$t('InitialPrice')"
+              hide-details="true"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              class="mx-2 mt-4"
+              v-if="selectedItem"
+              v-model.number="selectedItem.discount"
+              outlined
+              :label="$t('Discount')"
+              hide-details="true"
+            >
+              <template v-slot:append >
+                <v-btn
+                  color="primary"
+                  icon
+                  style="margin-top:-0.5rem"
+                  @click="calculateItemPercentage(selectedItem)"
+                  :title="$t('ApplyAsPercentage')"
+                >
+                  <v-icon>mdi-percent</v-icon>
+                </v-btn>
+              </template>
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              class="mx-2 mt-4"
+              v-if="selectedItem"
+              :value="(selectedItem.price - selectedItem.discount).toFixed(2)"
+              outlined
+              readonly
+              :label="$t('DiscountedPrice')"
+              hide-details="true"
+            ></v-text-field>
+          </v-col>
+        </v-row>
       </template>
     </ec-dialog>
     <v-btn
@@ -83,7 +131,18 @@
           <v-col cols="4" class="numpad-btn numpad-num" @click="reset()">C</v-col>
           <v-col cols="4" class="numpad-btn numpad-num" @click="addDigit(0)">0</v-col>
           <v-col cols="2" class="numpad-btn numpad-num secondary--text" @click="addDot()">.</v-col>
-          <v-col cols="2" class="numpad-btn numpad-num accent--text" @click="stash()">+</v-col>
+          <v-col
+            cols="2"
+            class="numpad-btn numpad-num accent--text"
+            @click="stash()"
+            v-if="activeInput == 'amount'"
+          >+</v-col>
+          <v-col
+            cols="2"
+            class="numpad-btn numpad-num accent--text"
+            @click="calculatePercentage()"
+            v-if="activeInput == 'discount'"
+          >%</v-col>
         </v-row>
       </template>
       <v-footer :fixed="$vuetify.breakpoint.smAndDown" :padless="true" color="white">
@@ -172,6 +231,7 @@ export default {
       },
       activeInput: "amount",
       activeArea: "calc",
+      //TODO: Remove, fuze selected data with api data instead
       selectedItemsCnt: {},
       selectedItem: null,
       search: null,
@@ -219,12 +279,12 @@ export default {
   },
   methods: {
     addDigit(d) {
-      if (
-        this.activeInput == "discount" &&
-        this.model.amount < this.model.discount + "" + d
-      ) {
-        return;
-      }
+      // if (
+      //   this.activeInput == "discount" &&
+      //   this.model.amount < this.model.discount + "" + d
+      // ) {
+      //   return;
+      // }
       if (this.model[this.activeInput] == "0") this.model[this.activeInput] = d;
       else if (this.model[this.activeInput] < 100000) {
         if (
@@ -259,8 +319,8 @@ export default {
       }
     },
     ok() {
-      if(this.totalAmount < this.model.discount){
-        this.activeInput = 'discount';
+      if (this.totalAmount <= this.model.discount) {
+        this.activeInput = "discount";
         return;
       }
       this.$emit("ok", {
@@ -269,7 +329,7 @@ export default {
       });
     },
     stash() {
-      if(this.model.activeInput == "discount") return;
+      if (this.model.activeInput == "discount") return;
       this.total += parseFloat(this.model.amount);
       this.model.amount = "0";
     },
@@ -282,6 +342,7 @@ export default {
         this.model[this.activeInput] = 0;
       } else {
         this.total = 0;
+        this.model.discount = 0;
         //todo: should also clear items?
         this.resetItems();
       }
@@ -302,6 +363,7 @@ export default {
           itemID: item.$itemID,
           itemName: item.itemName,
           price: item.price,
+          discount: 0,
           currency: item.$currency,
           amount: 1
         });
@@ -344,6 +406,32 @@ export default {
     },
     setActiveInput(type) {
       this.activeInput = type;
+    },
+    calculatePercentage() {
+      if (this.totalAmount == 0) {
+        return (this.activeInput = "amount");
+      }
+      if (this.model.discount >= 100) {
+        return this.$toasted.show(
+          this.$t("PercentageShouldBeLessThanOneHundred"),
+          { type: "error" }
+        );
+      }
+
+      this.model.discount = (
+        (this.totalAmount / 100) *
+        this.model.discount
+      ).toFixed(2);
+    },
+    calculateItemPercentage(item) {
+      if (!item.price) return;
+      if (item.discount >= 100) {
+        return this.$toasted.show(
+          this.$t("PercentageShouldBeLessThanOneHundred"),
+          { type: "error" }
+        );
+      }
+      item.discount = ((item.price / 100) * item.discount).toFixed(2);
     }
   }
 };
