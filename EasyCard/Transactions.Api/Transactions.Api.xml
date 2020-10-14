@@ -302,11 +302,6 @@
             Deal information (optional)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.CreditCardDetails">
-            <summary>
-            Credit card details
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.InvoiceAmount">
             <summary>
             Invoice amount (should be omitted in case of installment deal)
@@ -362,11 +357,6 @@
             Deal information (optional)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.CreditCardDetails">
-            <summary>
-            Credit card details
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceAmount">
             <summary>
             Invoice amount (should be omitted in case of installment deal)
@@ -410,6 +400,16 @@
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.Currency">
             <summary>
             Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.TerminalID">
+            <summary>
+            Terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.DealDetails">
+            <summary>
+            Deal information (optional)
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenFilter.ConsumerEmail">

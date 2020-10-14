@@ -8,15 +8,18 @@ namespace Shared.Integration.Models.Invoicing
     public enum InvoiceTypeEnum : short
     {
         [EnumMember(Value = "invoice")]
-        Invoice,
+        Invoice = 1,
 
         [EnumMember(Value = "invoiceWithPaymentInfo")]
-        InvoiceWithPaymentInfo,
+        InvoiceWithPaymentInfo = 2,
 
         [EnumMember(Value = "creditNote")]
-        CreditNote,
+        CreditNote = 3,
 
         [EnumMember(Value = "paymentInfo")]
-        PaymentInfo
+        PaymentInfo = 4,
+
+        [EnumMember(Value = "refundInvoice")]
+        RefundInvoice = 5,
     }
 }

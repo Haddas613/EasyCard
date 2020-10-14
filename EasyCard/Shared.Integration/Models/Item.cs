@@ -17,6 +17,8 @@ namespace Shared.Integration.Models
 
         public CurrencyEnum Currency { get; set; }
 
+        [Range(0.01, double.MaxValue)]
+        [DataType(DataType.Currency)]
         public decimal? Quantity { get; set; }
 
         /// <summary>

@@ -64,6 +64,7 @@ namespace Transactions.Api.Controllers
         private readonly ITerminalsService terminalsService;
         private readonly IConsumersService consumersService;
         private readonly CardTokenController cardTokenController;
+        private readonly InvoicingController invoicingController;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -77,7 +78,8 @@ namespace Transactions.Api.Controllers
             ICreditCardTokenService creditCardTokenService,
             IBillingDealService billingDealService,
             IConsumersService consumersService,
-            CardTokenController cardTokenController)
+            CardTokenController cardTokenController,
+            InvoicingController invoicingController)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -92,6 +94,7 @@ namespace Transactions.Api.Controllers
             this.billingDealService = billingDealService;
             this.consumersService = consumersService;
             this.cardTokenController = cardTokenController;
+            this.invoicingController = invoicingController;
         }
 
         [HttpGet]
@@ -595,6 +598,20 @@ namespace Transactions.Api.Controllers
             else if (processorFailedRsponse != null)
             {
                 return processorFailedRsponse;
+            }
+
+            if (model.IssueInvoice == true)
+            {
+                try
+                {
+                    Models.Invoicing.InvoiceRequest invoiceRequest = new Models.Invoicing.InvoiceRequest();
+                    mapper.Map(transaction, invoiceRequest);
+                    var createInvoiceResponse = invoicingController.CreateInvoice(invoiceRequest);
+                }
+                catch(Exception ex)
+                {
+
+                }
             }
 
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID.ToString()));

@@ -47,8 +47,6 @@ namespace Transactions.Api.Models.Invoicing
 
         public decimal? InvoiceAmount { get; set; }
 
-        public string CardNumber { get; set; }
-
         public string CardOwnerName { get; set; }
 
         public Guid? ConsumerID { get; set; }

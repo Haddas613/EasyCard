@@ -6,35 +6,28 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Transactions.Shared.Enums;
-using Transactions.Shared.Models;
 
 namespace Transactions.Business.Entities
 {
-    public class Invoice : IEntityBase<Guid>, IAuditEntity
+    public class PaymentRequest : IEntityBase<Guid>, IAuditEntity
     {
-        public Invoice()
+        public PaymentRequest()
         {
-            InvoiceTimestamp = DateTime.UtcNow;
-            InvoiceID = Guid.NewGuid().GetSequentialGuid(InvoiceTimestamp.Value);
+            PaymentRequestTimestamp = DateTime.UtcNow;
+            PaymentRequestID = Guid.NewGuid().GetSequentialGuid(PaymentRequestTimestamp.Value);
             DealDetails = new DealDetails();
             InvoiceDetails = new InvoiceDetails();
-            InvoiceDate = TimeZoneInfo.ConvertTimeFromUtc(InvoiceTimestamp.Value, UserCultureInfo.TimeZone).Date;
         }
 
         /// <summary>
         /// Primary reference
         /// </summary>
-        public Guid InvoiceID { get; set; }
+        public Guid PaymentRequestID { get; set; }
 
         /// <summary>
         /// Date-time when deal created initially in UTC
         /// </summary>
-        public DateTime? InvoiceTimestamp { get; set; }
-
-        /// <summary>
-        /// Legal invoice day
-        /// </summary>
-        public DateTime? InvoiceDate { get; set; }
+        public DateTime? PaymentRequestTimestamp { get; set; }
 
         /// <summary>
         /// Terminal
@@ -46,17 +39,12 @@ namespace Transactions.Business.Entities
         /// </summary>
         public Guid? MerchantID { get; set; }
 
-        /// <summary>
-        /// EasyInvoice or RapidOne
-        /// </summary>
-        public long? InvoicingID { get; set; }
-
         public InvoiceDetails InvoiceDetails { get; set; }
 
         /// <summary>
         /// Processing status
         /// </summary>
-        public InvoiceStatusEnum Status { get; set; }
+        public PaymentRequestStatusEnum Status { get; set; }
 
         /// <summary>
         /// Currency
@@ -69,9 +57,9 @@ namespace Transactions.Business.Entities
         public int NumberOfPayments { get; set; }
 
         /// <summary>
-        /// This invoice amount
+        /// This amount
         /// </summary>
-        public decimal InvoiceAmount { get; set; }
+        public decimal PaymentRequestAmount { get; set; }
 
         public string CardOwnerName { get; set; }
 
@@ -94,7 +82,7 @@ namespace Transactions.Business.Entities
 
         public Guid GetID()
         {
-            return InvoiceID;
+            return PaymentRequestID;
         }
 
         public string OperationDoneBy { get; set; }

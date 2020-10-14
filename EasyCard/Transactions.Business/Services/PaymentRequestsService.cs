@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
 using Shared.Business.Security;
 using System;
@@ -12,28 +11,28 @@ using Transactions.Business.Entities;
 
 namespace Transactions.Business.Services
 {
-    public class InvoiceService : ServiceBase<Invoice, Guid>, IInvoiceService
+    public class PaymentRequestsService : ServiceBase<PaymentRequest, Guid>, IPaymentRequestsService
     {
         private readonly TransactionsContext context;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
 
-        public InvoiceService(TransactionsContext context, IHttpContextAccessorWrapper httpContextAccessor)
+        public PaymentRequestsService(TransactionsContext context, IHttpContextAccessorWrapper httpContextAccessor)
             : base(context)
         {
             this.context = context;
             this.httpContextAccessor = httpContextAccessor;
         }
 
-        public async override Task CreateEntity(Invoice entity, IDbContextTransaction dbTransaction = null)
+        public async override Task CreateEntity(PaymentRequest entity, IDbContextTransaction dbTransaction = null)
         {
             entity.ApplyAuditInfo(httpContextAccessor);
 
             await base.CreateEntity(entity, dbTransaction);
         }
 
-        public IQueryable<Invoice> GetInvoices() => context.Invoices;
+        public IQueryable<PaymentRequest> GetPaymentRequests() => context.PaymentRequests;
 
-        public async override Task UpdateEntity(Invoice entity, IDbContextTransaction dbTransaction = null)
+        public async override Task UpdateEntity(PaymentRequest entity, IDbContextTransaction dbTransaction = null)
         {
             //TODO: audit
             await base.UpdateEntity(entity, dbTransaction);

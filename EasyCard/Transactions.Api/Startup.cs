@@ -186,6 +186,7 @@ namespace Transactions.Api
             services.AddScoped<IConsumersService, ConsumersService>();
             services.AddScoped<IItemsService, ItemsService>();
             services.AddTransient<CardTokenController, CardTokenController>();
+            services.AddTransient<InvoicingController, InvoicingController>();
 
             services.AddSingleton<IExternalSystemsService, ExternalSystemService>(serviceProvider =>
             {
@@ -204,6 +205,7 @@ namespace Transactions.Api
             services.AddScoped<ICreditCardTokenService, CreditCardTokenService>();
             services.AddScoped<IBillingDealService, BillingDealService>();
             services.AddScoped<IInvoiceService, InvoiceService>();
+            services.AddScoped<IPaymentRequestsService, PaymentRequestsService>();
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSingleton<IKeyValueStorage<CreditCardTokenKeyVault>, AzureKeyValueStorage<CreditCardTokenKeyVault>>();

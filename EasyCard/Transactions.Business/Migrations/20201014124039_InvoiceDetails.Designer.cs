@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transactions.Business.Data;
 
 namespace Transactions.Business.Migrations
 {
     [DbContext(typeof(TransactionsContext))]
-    partial class TransactionsContextModelSnapshot : ModelSnapshot
+    [Migration("20201014124039_InvoiceDetails")]
+    partial class InvoiceDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -283,83 +285,6 @@ namespace Transactions.Business.Migrations
                     b.HasKey("InvoiceID");
 
                     b.ToTable("Invoice");
-                });
-
-            modelBuilder.Entity("Transactions.Business.Entities.PaymentRequest", b =>
-                {
-                    b.Property<Guid>("PaymentRequestID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("CardOwnerName")
-                        .HasColumnName("CardOwnerName")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100)
-                        .IsUnicode(true);
-
-                    b.Property<string>("CardOwnerNationalID")
-                        .HasColumnName("CardOwnerNationalID")
-                        .HasColumnType("varchar(20)")
-                        .HasMaxLength(20)
-                        .IsUnicode(false);
-
-                    b.Property<string>("CorrelationId")
-                        .HasColumnType("varchar(50)")
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
-
-                    b.Property<short>("Currency")
-                        .HasColumnType("smallint");
-
-                    b.Property<Guid?>("MerchantID")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("NumberOfPayments")
-                        .HasColumnType("int");
-
-                    b.Property<string>("OperationDoneBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50)
-                        .IsUnicode(true);
-
-                    b.Property<Guid?>("OperationDoneByID")
-                        .HasColumnType("uniqueidentifier")
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
-
-                    b.Property<decimal>("PaymentRequestAmount")
-                        .HasColumnType("decimal(19,4)");
-
-                    b.Property<DateTime?>("PaymentRequestTimestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("SourceIP")
-                        .HasColumnType("varchar(50)")
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
-
-                    b.Property<short>("Status")
-                        .HasColumnType("smallint");
-
-                    b.Property<Guid?>("TerminalID")
-                        .IsRequired()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte[]>("UpdateTimestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("PaymentRequestID");
-
-                    b.ToTable("PaymentRequest");
                 });
 
             modelBuilder.Entity("Transactions.Business.Entities.PaymentTransaction", b =>
@@ -752,93 +677,6 @@ namespace Transactions.Business.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("InvoiceID");
-                        });
-                });
-
-            modelBuilder.Entity("Transactions.Business.Entities.PaymentRequest", b =>
-                {
-                    b.OwnsOne("Shared.Integration.Models.Invoicing.InvoiceDetails", "InvoiceDetails", b1 =>
-                        {
-                            b1.Property<Guid>("PaymentRequestID")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("DefaultInvoiceItem")
-                                .HasColumnName("DefaultInvoiceItem")
-                                .HasColumnType("nvarchar(50)")
-                                .HasMaxLength(50)
-                                .IsUnicode(true);
-
-                            b1.Property<string>("InvoiceNumber")
-                                .HasColumnName("InvoiceNumber")
-                                .HasColumnType("nvarchar(20)")
-                                .HasMaxLength(20)
-                                .IsUnicode(true);
-
-                            b1.Property<string>("InvoiceSubject")
-                                .HasColumnName("InvoiceSubject")
-                                .HasColumnType("nvarchar(max)")
-                                .IsUnicode(true);
-
-                            b1.Property<short>("InvoiceType")
-                                .HasColumnName("InvoiceType")
-                                .HasColumnType("smallint");
-
-                            b1.Property<string>("SendCCTo")
-                                .HasColumnName("SendCCTo")
-                                .HasColumnType("nvarchar(max)")
-                                .IsUnicode(true);
-
-                            b1.HasKey("PaymentRequestID");
-
-                            b1.ToTable("PaymentRequest");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PaymentRequestID");
-                        });
-
-                    b.OwnsOne("Transactions.Business.Entities.DealDetails", "DealDetails", b1 =>
-                        {
-                            b1.Property<Guid>("PaymentRequestID")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("ConsumerEmail")
-                                .HasColumnName("ConsumerEmail")
-                                .HasColumnType("varchar(50)")
-                                .HasMaxLength(50)
-                                .IsUnicode(false);
-
-                            b1.Property<Guid?>("ConsumerID")
-                                .HasColumnName("ConsumerID")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("ConsumerPhone")
-                                .HasColumnName("ConsumerPhone")
-                                .HasColumnType("varchar(20)")
-                                .HasMaxLength(20)
-                                .IsUnicode(false);
-
-                            b1.Property<string>("DealDescription")
-                                .HasColumnName("DealDescription")
-                                .HasColumnType("nvarchar(max)")
-                                .IsUnicode(true);
-
-                            b1.Property<string>("DealReference")
-                                .HasColumnName("DealReference")
-                                .HasColumnType("varchar(50)")
-                                .HasMaxLength(50)
-                                .IsUnicode(false);
-
-                            b1.Property<string>("Items")
-                                .HasColumnName("Items")
-                                .HasColumnType("nvarchar(max)")
-                                .IsUnicode(true);
-
-                            b1.HasKey("PaymentRequestID");
-
-                            b1.ToTable("PaymentRequest");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PaymentRequestID");
                         });
                 });
 
