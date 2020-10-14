@@ -190,11 +190,9 @@ export default {
     },
     checkIfCardReader($event) {
       if (!/^;\d{15,17}=\d{19,21}\?$/.test(this.$refs.cardNumberInp.value)) {
-        console.log(`checkIfCardReader: ${this.$refs.cardNumberInp.value} result: false`)
         this.resetCardReader();
         return false;
       }
-      console.log(`checkIfCardReader: ${this.$refs.cardNumberInp.value} result: true`)
       return true;
     },
     parseCardReader() {

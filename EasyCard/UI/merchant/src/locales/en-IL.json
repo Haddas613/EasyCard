@@ -48,6 +48,7 @@
   "ToList": "To list",
   "PleaseSelectCustomerFirst": "Please select Customer first",
   "CheckScheduleSettings": "Check Schedule Settings",
+  "PercentageShouldBeLessThanOneHundred": "Percentage should be less than 100 to apply",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -122,6 +123,10 @@
   "Never": "Never",
   "AfterNumberOfPayments": "After Number of Payments",
   "SpecifiedDate": "Specified Date",
+  "NameOnCard": "Name on card",
+  "InitialPrice": "Initial price",
+  "DiscountedPrice": "Discounted price",
+  "ApplyAsPercentage": "Apply as percentage",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
