@@ -127,6 +127,8 @@
   "InitialPrice": "Initial price",
   "DiscountedPrice": "Discounted price",
   "ApplyAsPercentage": "Apply as percentage",
+  "NetAmount": "Net Amount",
+  "Discount": "Discount",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

@@ -147,3 +147,8 @@ $secondary : var(--v-secondary-base);
 .cursor-pointer {
   cursor: pointer;
 }
+
+.shadow-none{
+  box-shadow: none !important;
+  text-shadow: none !important;
+}

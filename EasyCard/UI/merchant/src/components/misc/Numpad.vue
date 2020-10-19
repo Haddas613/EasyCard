@@ -1,100 +1,11 @@
 <template>
   <v-flex fill-height>
-    <ec-dialog :dialog.sync="itemCntDialog">
-      <template v-slot:title>{{$t('EditItemCount')}}</template>
-      <template>
-        <div class="d-flex px-2 pt-4 justify-end">
-          <v-btn
-            color="red"
-            class="white--text"
-            :block="$vuetify.breakpoint.smAndDown"
-            @click="selectedItem.amount = 0; saveItem()"
-          >
-            <v-icon left>mdi-delete</v-icon>
-            {{$t("Delete")}}
-          </v-btn>
-        </div>
-        <v-row no-gutters>
-          <v-col cols="12" md="6">
-            <v-text-field
-              class="mx-2 mt-4"
-              v-if="selectedItem"
-              :value="selectedItem.price.toFixed(2)"
-              outlined
-              readonly
-              :label="$t('Price')"
-              hide-details="true"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-select
-              class="mx-2 mt-4"
-              outlined
-              v-if="selectedItem"
-              :items="lodash.range(101)"
-              v-model="selectedItem.amount"
-              @change="deleteIfZero()"
-              :label="$t('Count')"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-text-field
-              class="mx-2 mt-4"
-              v-if="selectedItem"
-              :value="(selectedItem.price * selectedItem.amount).toFixed(2)"
-              outlined
-              readonly
-              :label="$t('NetAmount')"
-              hide-details="true"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-text-field
-              class="mx-2 mt-4"
-              v-if="selectedItem"
-              v-model.number="selectedItem.discount"
-              outlined
-              :label="$t('Discount')"
-              hide-details="true"
-              clearable
-            >
-              <template v-slot:append>
-                <v-btn
-                  color="primary"
-                  icon
-                  style="margin-top:-0.40rem"
-                  @click="calculateItemPercentage(selectedItem)"
-                  :title="$t('ApplyAsPercentage')"
-                >
-                  <v-icon>mdi-percent</v-icon>
-                </v-btn>
-              </template>
-            </v-text-field>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-text-field
-              class="mx-2 mt-4"
-              v-if="selectedItem"
-              :value="((selectedItem.price * selectedItem.amount) - selectedItem.discount).toFixed(2)"
-              outlined
-              readonly
-              :label="$t('Total')"
-              hide-details="true"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <div class="d-flex px-2 pt-4 justify-end">
-          <v-btn
-            color="primary"
-            class="white--text"
-            :block="$vuetify.breakpoint.smAndDown"
-            @click="saveItem()"
-          >
-            {{$t("OK")}}
-          </v-btn>
-        </div>
-      </template>
-    </ec-dialog>
+    <item-pricing-dialog 
+      v-if="selectedItem"
+      :key="selectedItem.$itemID"
+      :item="selectedItem" 
+      :show.sync="itemPriceDialog" 
+      v-on:ok="saveItem($event)"></item-pricing-dialog>
     <v-btn
       :color="totalAmount > model.discount ? 'primary' : 'error darken-2'"
       class="text-none charge-btn v-btn--flat"
@@ -250,7 +161,7 @@ export default {
     EcMoney: () => import("../ec/EcMoney"),
     EcList: () => import("../ec/EcList"),
     ReIcon: () => import("../misc/ResponsiveIcon"),
-    EcDialog: () => import("../../components/ec/EcDialog")
+    itemPricingDialog: () => import("../../components/items/ItemPricingDialog")
   },
   data() {
     return {
@@ -267,7 +178,7 @@ export default {
       selectedItem: null,
       search: null,
       searchTimeout: null,
-      itemCntDialog: false,
+      itemPriceDialog: false,
       showOnlySelectedItems: false
     };
   },
@@ -311,12 +222,6 @@ export default {
   },
   methods: {
     addDigit(d) {
-      // if (
-      //   this.activeInput == "discount" &&
-      //   this.model.amount < this.model.discount + "" + d
-      // ) {
-      //   return;
-      // }
       if (this.model[this.activeInput] == "0") this.model[this.activeInput] = d;
       else if (this.model[this.activeInput] < 100000) {
         if (
@@ -426,43 +331,37 @@ export default {
       );
       if (entry) {
         this.selectedItem = this.lodash.cloneDeep(entry);
-        this.itemCntDialog = true;
+        this.itemPriceDialog = true;
       }
     },
-    async deleteIfZero(){
-      if(this.selectedItem && !this.selectedItem.amount){
-        await this.saveItem();
-      }
-    },
-    async saveItem() {
+    async saveItem(item) {
       let entry = this.lodash.find(
         this.model.items,
-        i => i.itemID === this.selectedItem.$itemID
+        i => i.itemID === item.$itemID
       );
 
-      let recalc = (this.selectedItem.price * this.selectedItem.amount) - this.selectedItem.discount;
+      let recalc = 0;
+      if(item.amount){
+        recalc = (item.price * item.amount) - item.discount;
+      }
       if (entry){
-        recalc -= ((entry.price * entry.amount) - entry.discount );
+        recalc -= ((entry.price * entry.amount) - entry.discount ); 
       }
 
-      if (this.selectedItem.amount) {
+      if (item.amount) {
         if (entry) {
-          entry.amount = this.selectedItem.amount;
-          entry.discount = this.selectedItem.discount;
+          entry.amount = item.amount;
+          entry.discount = item.discount;
         }
       } else {
-        this.lodash.remove(
-          this.model.items,
-          i => i.itemID === this.selectedItem.itemID
-        );
-        if (entry) {
-          entry.amount = 0;
-          entry.discount = 0;
+        let idx = this.model.items.findIndex(i => i.itemID === item.$itemID);
+        if(idx > -1){
+          this.model.items.splice(idx, 1);
         }
       }
 
       this.total += recalc;
-      this.itemCntDialog = false;
+      this.itemPriceDialog = false;
       await this.getItems();
     },
     setActiveInput(type) {
@@ -482,16 +381,6 @@ export default {
         (this.totalAmount / 100) *
         this.model.discount
       ).toFixed(2);
-    },
-    calculateItemPercentage(item) {
-      if (!item.price) return;
-      if (item.discount >= 100) {
-        return this.$toasted.show(
-          this.$t("PercentageShouldBeLessThanOneHundred"),
-          { type: "error" }
-        );
-      }
-      item.discount = ((item.price * item.amount / 100) * item.discount).toFixed(2);
     }
   }
 };
