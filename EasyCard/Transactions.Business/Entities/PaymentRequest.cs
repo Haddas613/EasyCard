@@ -30,6 +30,11 @@ namespace Transactions.Business.Entities
         public DateTime? PaymentRequestTimestamp { get; set; }
 
         /// <summary>
+        /// Due date
+        /// </summary>
+        public DateTime? DueDate { get; set; }
+
+        /// <summary>
         /// Terminal
         /// </summary>
         public Guid? TerminalID { get; set; }
@@ -93,6 +98,6 @@ namespace Transactions.Business.Entities
 
         public string SourceIP { get; set; }
 
-        public bool Active { get; set; }
+        public Guid? PaymentTransactionID { get; set; }
     }
 }

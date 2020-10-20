@@ -397,6 +397,11 @@
             Terminal
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.Status">
+            <summary>
+            Processing status
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.Currency">
             <summary>
             Currency
@@ -410,6 +415,106 @@
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.DealDetails">
             <summary>
             Deal information (optional)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.TransactionAmount">
+            <summary>
+            Transaction amount (should be omitted in case of installment deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.InstallmentDetails">
+            <summary>
+            Installment payments details (should be omitted in case of regular deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.TaxRate">
+            <summary>
+            Tax rate (VAT)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.TaxAmount">
+            <summary>
+            Tax amount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.PaymentRequestID">
+            <summary>
+            Primary reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.PaymentRequestTimestamp">
+            <summary>
+            Date-time when deal created initially in UTC
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.DueDate">
+            <summary>
+            Due date
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.TerminalID">
+            <summary>
+            Terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.DealDetails">
+            <summary>
+            Deal information (optional)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.TaxRate">
+            <summary>
+            Tax rate (VAT)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.TaxAmount">
+            <summary>
+            Tax amount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.InstallmentDetails">
+            <summary>
+            Installment payments details (should be omitted in case of regular deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummary.PaymentRequestID">
+            <summary>
+            Primary reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummary.PaymentRequestTimestamp">
+            <summary>
+            Date-time when deal created initially in UTC
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummary.DueDate">
+            <summary>
+            Due date
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummary.TerminalID">
+            <summary>
+            Terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummary.Currency">
+            <summary>
+            Currency
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenFilter.ConsumerEmail">

@@ -19,8 +19,6 @@ namespace Transactions.Api.Models.Transactions
 
         public Guid TerminalID { get; set; }
 
-        public Guid MerchantID { get; set; }
-
         public decimal TransactionAmount { get; set; }
 
         [EnumDataType(typeof(TransactionTypeEnum))]

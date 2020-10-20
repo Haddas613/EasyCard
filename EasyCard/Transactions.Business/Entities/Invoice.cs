@@ -105,6 +105,6 @@ namespace Transactions.Business.Entities
 
         public string SourceIP { get; set; }
 
-        public bool Active { get; set; }
+        public Guid? PaymentTransactionID { get; set; }
     }
 }

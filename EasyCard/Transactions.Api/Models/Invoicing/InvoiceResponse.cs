@@ -81,5 +81,7 @@ namespace Transactions.Api.Models.Invoicing
         /// Installment payments details (should be omitted in case of regular deal)
         /// </summary>
         public InstallmentDetails InstallmentDetails { get; set; }
+
+        public Guid? PaymentTransactionID { get; set; }
     }
 }

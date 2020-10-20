@@ -31,7 +31,7 @@ namespace Transactions.Api.Extensions
                 return QuickStatusFilterTypeEnum.Failed;
             }
 
-            return QuickStatusFilterTypeEnum.None;
+            return QuickStatusFilterTypeEnum.Pending;
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Models.Invoicing
 {
@@ -39,6 +40,13 @@ namespace Transactions.Api.Models.Invoicing
         public InvoiceTypeEnum InvoiceType { get; set; }
 
         /// <summary>
+        /// Processing status
+        /// </summary>
+        [EnumDataType(typeof(InvoiceStatusEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public InvoiceStatusEnum Status { get; set; }
+
+        /// <summary>
         /// Currency
         /// </summary>
         [EnumDataType(typeof(CurrencyEnum))]
@@ -50,5 +58,7 @@ namespace Transactions.Api.Models.Invoicing
         public string CardOwnerName { get; set; }
 
         public Guid? ConsumerID { get; set; }
+
+        public Guid? PaymentTransactionID { get; set; }
     }
 }

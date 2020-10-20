@@ -94,7 +94,6 @@ namespace Transactions.Api.Controllers
             var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             var newInvoice = mapper.Map<Invoice>(model);
-            newInvoice.Active = true;
 
             newInvoice.MerchantID = terminal.MerchantID;
 
