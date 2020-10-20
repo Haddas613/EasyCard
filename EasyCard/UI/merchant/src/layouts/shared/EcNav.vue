@@ -172,6 +172,24 @@ export default {
           ]
         },
         {
+          icon: "mdi-file-document",
+          "icon-alt": "mdi-file-document-outline",
+          text: "Invoicing",
+          expanded: false,
+          children: [
+            {
+              icon: "mdi-format-list-bulleted",
+              text: "InvoicesList",
+              to: "/admin/invoicing/list"
+            },
+            {
+              icon: "mdi-plus",
+              text: "CreateInvoice",
+              to: "/admin/invoicing/create"
+            }
+          ]
+        },
+        {
           icon: "mdi-rotate-right",
           "icon-alt": "mdi-rotate-right",
           text: "BillingDeals",

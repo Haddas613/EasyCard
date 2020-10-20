@@ -19,6 +19,8 @@ using Transactions.Api.Extensions.Filtering;
 using Transactions.Api.Models.Invoicing;
 using Shared.Api.Extensions;
 using Shared.Helpers.Security;
+using Shared.Api.Models.Metadata;
+using Shared.Api.UI;
 
 namespace Transactions.Api.Controllers
 {
@@ -51,6 +53,20 @@ namespace Transactions.Api.Controllers
             this.logger = logger;
             this.httpContextAccessor = httpContextAccessor;
             this.consumersService = consumersService;
+        }
+
+        [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("$meta")]
+        public TableMeta GetMetadata()
+        {
+            return new TableMeta
+            {
+                Columns = typeof(InvoiceSummary)
+                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+                    .Select(d => d.GetColMeta(InvoiceSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
+                    .ToDictionary(d => d.Key)
+            };
         }
 
         [HttpGet]

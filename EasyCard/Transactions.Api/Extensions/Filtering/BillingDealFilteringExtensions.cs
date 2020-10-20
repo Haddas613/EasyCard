@@ -79,7 +79,7 @@ namespace Transactions.Api.Extensions.Filtering
             //TODO: Quick time filters using SequentialGuid https://stackoverflow.com/questions/54920200/entity-framework-core-guid-greater-than-for-paging
             if (filter.QuickTimeFilter != null)
             {
-                var dateTime = QuickTimeToDateTime(filter.QuickTimeFilter.Value);
+                var dateTime = CommonFiltertingExtensions.QuickTimeToDateTime(filter.QuickTimeFilter.Value);
 
                 if (filter.DateType == DateFilterTypeEnum.Created)
                 {
@@ -101,7 +101,7 @@ namespace Transactions.Api.Extensions.Filtering
 
                     if (filter.DateTo != null)
                     {
-                        src = src.Where(t => t.BillingDealTimestamp <= filter.DateFrom.Value);
+                        src = src.Where(t => t.BillingDealTimestamp <= filter.DateTo.Value);
                     }
                 }
 
@@ -121,27 +121,5 @@ namespace Transactions.Api.Extensions.Filtering
 
             return src;
         }
-
-        private static DateTime QuickTimeToDateTime(QuickTimeFilterTypeEnum typeEnum)
-            => typeEnum switch
-            {
-                QuickTimeFilterTypeEnum.Last5Minutes => DateTime.UtcNow.AddMinutes(-5),
-                QuickTimeFilterTypeEnum.Last15Minutes => DateTime.UtcNow.AddMinutes(-15),
-                QuickTimeFilterTypeEnum.Last30Minutes => DateTime.UtcNow.AddMinutes(-30),
-                QuickTimeFilterTypeEnum.LastHour => DateTime.UtcNow.AddHours(-1),
-                QuickTimeFilterTypeEnum.Last24Hours => DateTime.UtcNow.AddHours(-24),
-                _ => DateTime.MinValue,
-            };
-
-        private static IQueryable<BillingDeal> FilterByQuickTime(IQueryable<BillingDeal> src, QuickTimeFilterTypeEnum typeEnum)
-            => typeEnum switch
-            {
-                QuickTimeFilterTypeEnum.Last5Minutes => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddMinutes(-5)),
-                QuickTimeFilterTypeEnum.Last15Minutes => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddMinutes(-15)),
-                QuickTimeFilterTypeEnum.Last30Minutes => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddMinutes(-30)),
-                QuickTimeFilterTypeEnum.LastHour => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddHours(-1)),
-                QuickTimeFilterTypeEnum.Last24Hours => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddHours(-24)),
-                _ => src,
-            };
     }
 }
