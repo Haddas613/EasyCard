@@ -28,6 +28,11 @@
   "FilterBillingDeals": "Filter Billing Deals",
   "BillingSchedule": "Billing Schedule",
   "PaymentInfo": "Payment Info",
+  "InvoicesList": "Invoices List",
+  "Invoices": "Invoices",
+  "Invoicing": "Invoices",
+  "CreateInvoice": "Create Invoice",
+  "FilterInvoices": "Filter Invoices",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -129,6 +134,8 @@
   "ApplyAsPercentage": "Apply as percentage",
   "NetAmount": "Net Amount",
   "Discount": "Discount",
+  "InvoiceID": "Invoice ID",
+  "InvoiceType": "Invoice Type",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

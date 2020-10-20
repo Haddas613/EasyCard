@@ -1,0 +1,54 @@
+export default class InvoicingApi {
+    constructor(base) {
+        this.base = base;
+        this.baseUrl = process.env.VUE_APP_TRANSACTIONS_API_BASE_ADDRESS;
+        this.invoicingUrl = this.baseUrl + '/api/invoicing';
+    }
+
+    async get(params) {
+
+        if (!this.headers) {
+            let data = await this.base.get(this.invoicingUrl + '/$meta')
+            this.headers = this.base._formatHeaders(data)
+            this.$headers = data.columns
+        }
+
+        let data = await this.base.get(this.invoicingUrl, params);
+        
+        if(!data || data.status === "error")
+            return null;
+
+        let dictionaries = await this.base.dictionaries.$getTransactionDictionaries();
+        
+        data.data = data.data.map(d => this.base.format(d, this.$headers, dictionaries))
+
+        data.headers = this.headers;
+
+        return data;
+    }
+
+    async getInvoicing(id){
+      if (!this.headers) {
+        let data = await this.base.get(this.invoicingUrl + '/$meta')
+        this.headers = this.base._formatHeaders(data)
+        this.$headers = data.columns
+      }
+      let invoicing = await this.base.get(this.invoicingUrl + `/${id}`);
+      let dictionaries = await this.base.dictionaries.$getTransactionDictionaries();
+
+      invoicing = this.base.format(invoicing, this.$headers, dictionaries)
+      return invoicing;
+    }
+
+    async createInvoicing(data){
+        return await this.base.post(this.invoicingUrl, data);
+    }
+
+    async updateInvoicing(id, data){
+        return await this.base.put(this.invoicingUrl + `/${id}`, data);
+    }
+
+    async deleteInvoicing(id, data){
+        return await this.base.delete(this.invoicingUrl + `/${id}`, data);
+    }
+}
