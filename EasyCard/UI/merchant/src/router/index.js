@@ -150,6 +150,9 @@ const routes = [
       },
       {
         name: 'BillingDeal',
+        meta:{
+          backBtn: true
+        },
         path: 'billing-deals/view/:id',
         component: () => import('../pages/billing-deals/BillingDealInfo.vue'),
       },
@@ -162,6 +165,14 @@ const routes = [
         name: 'Invoices',
         path: 'invoicing/list',
         component: () => import('../pages/invoicing/InvoicesList.vue'),
+      },
+      {
+        name: 'Invoice',
+        meta:{
+          backBtn: true
+        },
+        path: 'invoicing/view/:id',
+        component: () => import('../pages/invoicing/InvoiceInfo.vue'),
       },
       {
         name: '404',

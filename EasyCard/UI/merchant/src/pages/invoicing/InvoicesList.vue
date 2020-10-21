@@ -65,11 +65,11 @@
             >{{item.currency}}{{item.invoiceAmount}}</v-col>
           </template>
 
-          <!-- <template v-slot:append="{ item }">
-            <v-btn icon :to="{ name: 'invoice', params: { id: item.$invoiceID } }">
+          <template v-slot:append="{ item }">
+            <v-btn icon :to="{ name: 'Invoice', params: { id: item.$invoiceID } }">
               <re-icon>mdi-chevron-right</re-icon>
             </v-btn>
-          </template> -->
+          </template>
         </ec-list>
         <p
           class="ecgray--text text-center"

@@ -26,15 +26,16 @@
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6">
-          <v-select
+          <v-text-field
             class="mx-2 mt-4"
-            outlined
             v-if="model"
-            :items="lodash.range(101)"
-            v-model="model.amount"
+            v-model.number="model.amount"
+            outlined
+            type="number"
+            :label="$t('Quantity')"
             @change="amountChanged()"
-            :label="$t('Count')"
-          ></v-select>
+            hide-details="true"
+          ></v-text-field>
         </v-col>
         <v-col cols="12" md="4">
           <v-text-field
@@ -123,7 +124,7 @@ export default {
     show(newValue, oldValue) {
       if (newValue) {
         this.$set(this, 'model', this.item);
-        this.model.discount = this.item.discount;
+        this.discount = this.item.discount;
         this.percentageMode = false;
       }
     }

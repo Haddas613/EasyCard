@@ -134,7 +134,7 @@
               <span>{{item.amount || ''}}</span>
             </v-col>
             <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold subtitle-2">
-              <ec-money :amount="item.price - (item.discount ? item.discount / item.amount : 0)" :currency="item.$currency"></ec-money>
+              <ec-money :amount="item.price * (item.amount || 1) - (item.discount ? item.discount : 0)" :currency="item.$currency"></ec-money>
             </v-col>
           </template>
 
