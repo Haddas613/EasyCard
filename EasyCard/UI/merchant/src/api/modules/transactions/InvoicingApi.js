@@ -27,17 +27,17 @@ export default class InvoicingApi {
         return data;
     }
 
-    async getInvoicing(id){
+    async getInvoice(id){
       if (!this.headers) {
         let data = await this.base.get(this.invoicingUrl + '/$meta')
         this.headers = this.base._formatHeaders(data)
         this.$headers = data.columns
       }
-      let invoicing = await this.base.get(this.invoicingUrl + `/${id}`);
+      let invoice = await this.base.get(this.invoicingUrl + `/${id}`);
       let dictionaries = await this.base.dictionaries.$getTransactionDictionaries();
 
-      invoicing = this.base.format(invoicing, this.$headers, dictionaries)
-      return invoicing;
+      invoice = this.base.format(invoice, this.$headers, dictionaries)
+      return invoice;
     }
 
     async createInvoicing(data){

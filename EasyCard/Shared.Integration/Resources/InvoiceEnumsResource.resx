@@ -120,6 +120,9 @@
   <data name="CreditNote" xml:space="preserve">
     <value>Credit Note</value>
   </data>
+  <data name="Initial" xml:space="preserve">
+    <value>Initial</value>
+  </data>
   <data name="Invoice" xml:space="preserve">
     <value>Invoice</value>
   </data>
@@ -128,5 +131,17 @@
   </data>
   <data name="PaymentInfo" xml:space="preserve">
     <value>Payment Info</value>
+  </data>
+  <data name="RefundInvoice" xml:space="preserve">
+    <value>Refund Invoice</value>
+  </data>
+  <data name="Sending" xml:space="preserve">
+    <value>Sending</value>
+  </data>
+  <data name="SendingFailed" xml:space="preserve">
+    <value>Sending Failed</value>
+  </data>
+  <data name="Sent" xml:space="preserve">
+    <value>Sent</value>
   </data>
 </root>

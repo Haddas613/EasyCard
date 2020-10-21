@@ -29,10 +29,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>FilterEnumsResource.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\InvoiceTypeResource.Designer.cs">
+    <Compile Update="Resources\InvoiceEnumsResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>InvoiceTypeResource.resx</DependentUpon>
+      <DependentUpon>InvoiceEnumsResource.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\JDealTypeResource.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -65,9 +65,9 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>FilterEnumsResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\InvoiceTypeResource.resx">
+    <EmbeddedResource Update="Resources\InvoiceEnumsResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>InvoiceTypeResource.Designer.cs</LastGenOutput>
+      <LastGenOutput>InvoiceEnumsResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\JDealTypeResource.he-IL.resx">
       <LastGenOutput>JDealTypeResource.Designer.cs</LastGenOutput>

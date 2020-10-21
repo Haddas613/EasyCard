@@ -96,7 +96,8 @@
   "SpecialTransactionType": "Special Transaction Type",
   "CardOwnerNationalID": "Card Owner National ID",
   "CardExpiration": "Card Expiration",
-  "TransactionTime": "TransactionTime",
+  "TransactionTime": "Transaction Time",
+  "TransactionID": "Transaction ID",
   "TransmissionTime": "Transmission Time",
   "CardOwnerName": "Card Owner Name",
   "InvoiceNumber": "Invoice Number",
@@ -137,6 +138,8 @@
   "Discount": "Discount",
   "InvoiceID": "Invoice ID",
   "InvoiceType": "Invoice Type",
+  "InvoiceAmount": "Invoice Amount",
+  "InvoiceDate": "Invoice Date",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
