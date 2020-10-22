@@ -199,6 +199,12 @@ const routes = [
         path: 'transactions/refund',
         component: () => import('../wizards/transactions/CreateRefund.vue'),
         props: true
+      },
+      {
+        name: 'CreateInvoice',
+        path: 'invoicing/create',
+        component: () => import('../wizards/invoicing/CreateInvoice.vue'),
+        props: true
       }
     ]
   },

@@ -2,23 +2,8 @@
   <v-card class="ec-card d-flex flex-column">
     <v-card-text class="py-2">
       <v-form class="ec-form" ref="form" lazy-validation>
-        <v-select
-          :items="dictionaries.jDealTypeEnum"
-          item-text="description"
-          item-value="code"
-          v-model="model.jDealType"
-          :label="$t('JDealType')"
-          outlined
-        ></v-select>
-        <v-select
-          :items="dictionaries.transactionTypeEnum"
-          item-text="description"
-          item-value="code"
-          v-model="model.transactionType"
-          :label="$t('TransactionType')"
-          outlined
-        ></v-select>
-
+        <invoice-details-form ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-form>
+        
         <installment-details
           ref="instDetails"
           :data="model.installmentDetails"
@@ -59,10 +44,6 @@
             <div>{{$t('DealDescription')}}</div>
           </template>
         </v-textarea>
-        <v-switch v-model="issueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
-        <div v-if="issueDocument">
-          <invoice-details-form ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-form>
-        </div>
       </v-form>
     </v-card-text>
     <v-card-actions class="px-2">
@@ -77,9 +58,12 @@ import { mapState } from "vuex";
 
 export default {
   components: {
-    InstallmentDetails: () => import("./InstallmentDetailsForm"),
-    InvoiceDetailsForm: () => import("../invoicing/InvoiceDetailsForm"),
+    InstallmentDetails: () => import("../transactions/InstallmentDetailsForm"),
+    InvoiceDetailsForm: () => import("./InvoiceDetailsForm"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
+    EcDialog: () => import("../../components/ec/EcDialog"),
+    EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
+    EcRadioGroup: () => import("../../components/inputs/EcRadioGroup")
   },
   props: {
     data: {
@@ -96,15 +80,14 @@ export default {
         invoiceDetails: this.data.invoiceDetails || {} 
       },
       vr: ValidationRules,
-      issueDocument: false,
       messageDialog: false
     };
   },
   computed: {
     isInstallmentTransaction() {
       return (
-        this.model.transactionType === "installments" ||
-        this.model.transactionType === "credit"
+        this.model.invoiceType === "installments" ||
+        this.model.invoiceType === "credit"
       );
     },
     ...mapState({
@@ -115,7 +98,10 @@ export default {
     let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
     if (dictionaries) {
       this.dictionaries = dictionaries;
-      this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
+      
+      if(!this.model.invoiceType){
+        this.model.invoiceType = this.dictionaries.invoiceTypeEnum[0].code;
+      }
 
       if (!this.model.currency) {
         this.model.currency =
@@ -124,8 +110,6 @@ export default {
       if (!this.model.invoiceDetails.invoiceType) {
         this.$set(this.model.invoiceDetails, 'invoiceType', this.dictionaries.invoiceTypeEnum[0]);
       }
-
-      this.model.jDealType = this.dictionaries.jDealTypeEnum[0].code;
       // this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
     }
   },
