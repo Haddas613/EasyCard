@@ -182,7 +182,7 @@ class ApiBase {
             //     d[`$${property}`] = v
             //     d[property] = new Intl.NumberFormat().format(v) // TODO: locale, currency symbol
             // }
-            else if (h.dataType == 'date') {
+            else if (h.dataType == 'date' && v) {
                 d[`$${property}`] = v
                 d[property] = moment(String(v)).format('MM/DD/YYYY') // TODO: locale
             }

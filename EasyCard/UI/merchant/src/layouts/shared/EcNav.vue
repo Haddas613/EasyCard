@@ -185,7 +185,7 @@ export default {
             {
               icon: "mdi-plus",
               text: "CreateInvoice",
-              to: "/admin/invoicing/create"
+              to: "/wizard/invoicing/create"
             }
           ]
         },
