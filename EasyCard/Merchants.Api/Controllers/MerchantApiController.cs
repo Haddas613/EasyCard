@@ -116,7 +116,7 @@ namespace Merchants.Api.Controllers
             var newMerchant = mapper.Map<Merchant>(merchant);
             await merchantsService.CreateEntity(newMerchant);
 
-            return CreatedAtAction(nameof(GetMerchant), new { merchantID = newMerchant.MerchantID }, new OperationResponse(Messages.MerchantCreated, StatusEnum.Success, newMerchant.MerchantID.ToString()));
+            return CreatedAtAction(nameof(GetMerchant), new { merchantID = newMerchant.MerchantID }, new OperationResponse(Messages.MerchantCreated, StatusEnum.Success, newMerchant.MerchantID));
         }
 
         [HttpPut]
@@ -129,7 +129,7 @@ namespace Merchants.Api.Controllers
 
             await merchantsService.UpdateEntity(merchant);
 
-            return Ok(new OperationResponse(Messages.MerchantUpdated, StatusEnum.Success, merchantID.ToString()));
+            return Ok(new OperationResponse(Messages.MerchantUpdated, StatusEnum.Success, merchantID));
         }
     }
 }

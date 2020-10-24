@@ -95,14 +95,14 @@ namespace Transactions.Api.Controllers
             var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             var newPaymentRequest = mapper.Map<PaymentRequest>(model);
-  
+
             newPaymentRequest.MerchantID = terminal.MerchantID;
 
             newPaymentRequest.ApplyAuditInfo(httpContextAccessor);
 
             await paymentRequestsService.CreateEntity(newPaymentRequest);
 
-            return CreatedAtAction(nameof(GetPaymentRequest), new { paymentRequestID = newPaymentRequest.PaymentRequestID }, new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newPaymentRequest.PaymentRequestID.ToString()));
+            return CreatedAtAction(nameof(GetPaymentRequest), new { paymentRequestID = newPaymentRequest.PaymentRequestID }, new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newPaymentRequest.PaymentRequestID));
         }
     }
 }

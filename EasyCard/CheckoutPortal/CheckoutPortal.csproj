@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
+    <ProjectReference Include="..\Transactions.Api.Client\Transactions.Api.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>

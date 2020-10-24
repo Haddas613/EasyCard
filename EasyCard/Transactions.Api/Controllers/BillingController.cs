@@ -150,7 +150,7 @@ namespace Transactions.Api.Controllers
 
             await billingDealService.CreateEntity(newBillingDeal);
 
-            return CreatedAtAction(nameof(GetBillingDeal), new { BillingDealID = newBillingDeal.BillingDealID }, new OperationResponse(Messages.BillingDealCreated, StatusEnum.Success, newBillingDeal.BillingDealID.ToString()));
+            return CreatedAtAction(nameof(GetBillingDeal), new { BillingDealID = newBillingDeal.BillingDealID }, new OperationResponse(Messages.BillingDealCreated, StatusEnum.Success, newBillingDeal.BillingDealID));
         }
 
         [HttpPut]
@@ -165,7 +165,7 @@ namespace Transactions.Api.Controllers
 
             await billingDealService.UpdateEntity(billingDeal);
 
-            return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID.ToString()));
+            return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
         }
 
         [HttpDelete]
@@ -180,7 +180,7 @@ namespace Transactions.Api.Controllers
 
             await billingDealService.UpdateEntity(billingDeal);
 
-            return Ok(new OperationResponse(Messages.BillingDealDeleted, StatusEnum.Success, billingDealID.ToString()));
+            return Ok(new OperationResponse(Messages.BillingDealDeleted, StatusEnum.Success, billingDealID));
         }
     }
 }

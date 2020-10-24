@@ -80,7 +80,7 @@ namespace Transactions.Api.Controllers
         {
             var dbData = await CreateTokenInternal(model);
 
-            return CreatedAtAction(nameof(CreateToken), new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID.ToString()));
+            return CreatedAtAction(nameof(CreateToken), new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID));
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -213,7 +213,7 @@ namespace Transactions.Api.Controllers
             token.Active = false;
             await creditCardTokenService.UpdateEntity(token);
 
-            return Ok(new OperationResponse(Messages.TokenDeleted, StatusEnum.Success, key));
+            return Ok(new OperationResponse(Messages.TokenDeleted, StatusEnum.Success, guid));
         }
     }
 }

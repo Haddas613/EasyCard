@@ -5,19 +5,19 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Entities
 {
-    public class TransactionHistory : IAuditEntity
+    public class PaymentRequestHistory : IAuditEntity
     {
-        public TransactionHistory()
+        public PaymentRequestHistory()
         {
             OperationDate = DateTime.UtcNow;
-            TransactionHistoryID = Guid.NewGuid().GetSequentialGuid(OperationDate.Value);
+            PaymentRequestHistoryID = Guid.NewGuid().GetSequentialGuid(OperationDate.Value);
         }
 
-        public Guid TransactionHistoryID { get; set; }
+        public Guid PaymentRequestHistoryID { get; set; }
 
-        public PaymentTransaction PaymentTransaction { get; set; }
+        public PaymentRequest PaymentRequest { get; set; }
 
-        public Guid? PaymentTransactionID { get; set; }
+        public Guid? PaymentRequestID { get; set; }
 
         public DateTime? OperationDate { get; set; }
 
@@ -25,7 +25,7 @@ namespace Transactions.Business.Entities
 
         public Guid? OperationDoneByID { get; set; }
 
-        public TransactionOperationCodesEnum OperationCode { get; set; }
+        public PaymentRequestOperationCodesEnum OperationCode { get; set; }
 
         public string OperationDescription { get; set; }
 

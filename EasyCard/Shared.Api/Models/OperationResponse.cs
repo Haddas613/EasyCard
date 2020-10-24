@@ -23,29 +23,32 @@ namespace Shared.Api.Models
             Status = status;
         }
 
-        public OperationResponse(string message, StatusEnum status, string entityReference = null, string correlationId = null, IEnumerable<Error> errors = null)
+        public OperationResponse(string message, StatusEnum status, Guid? entityUid = null, string correlationId = null, IEnumerable<Error> errors = null)
         {
             Message = message;
             Status = status;
-            EntityReference = entityReference;
+            EntityReference = entityUid.ToString();
+            EntityUID = entityUid;
             CorrelationId = correlationId;
             Errors = errors?.Select(d => d).ToList();
         }
 
-        public OperationResponse(string message, string entityReference, string correlationId, string errorCode, string errorDescription)
+        public OperationResponse(string message, Guid? entityUid, string correlationId, string errorCode, string errorDescription)
         {
             Message = message;
             Status = StatusEnum.Error;
-            EntityReference = entityReference;
+            EntityReference = entityUid.ToString();
+            EntityUID = entityUid;
             CorrelationId = correlationId;
             Errors = new List<Error> { new Error(errorCode, errorDescription) };
         }
 
-        public OperationResponse(string message, StatusEnum status, string entityReference = null)
+        public OperationResponse(string message, StatusEnum status, Guid? entityUid = null)
         {
             Message = message;
             Status = status;
-            EntityReference = entityReference;
+            EntityReference = entityUid.ToString();
+            EntityUID = entityUid;
         }
 
         public string Message { get; set; }
@@ -55,6 +58,8 @@ namespace Shared.Api.Models
         public StatusEnum? Status { get; set; }
 
         public long? EntityID { get; set; }
+
+        public Guid? EntityUID { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string EntityReference { get; set; }

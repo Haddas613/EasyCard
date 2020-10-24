@@ -103,7 +103,7 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.LinkUserToTerminal(userInfo, terminal);
 
-            return CreatedAtAction(nameof(GetUser), new { userID = user.UserID }, new OperationResponse(Messages.UserInvited, StatusEnum.Success, user.UserID.ToString(), correlationId: GetCorrelationID()));
+            return CreatedAtAction(nameof(GetUser), new { userID = user.UserID }, new OperationResponse(Messages.UserInvited, StatusEnum.Success, user.UserID, correlationId: GetCorrelationID()));
         }
 
         [HttpPost]

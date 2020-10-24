@@ -8,6 +8,9 @@ namespace Transactions.Shared.Enums
     {
         Initial = 0,
 
+        /// <summary>
+        /// Required because of technical reason - to do not send request twice
+        /// </summary>
         Sending = 1,
 
         /// <summary>
@@ -15,16 +18,31 @@ namespace Transactions.Shared.Enums
         /// </summary>
         Sent = 2,
 
+        /// <summary>
+        /// Can be re-sent
+        /// </summary>
         SendingFailed = -1,
 
+        /// <summary>
+        /// Canceled by merchant
+        /// </summary>
+        Canceled = -2,
+
+        /// <summary>
+        /// Viewed by consumer
+        /// </summary>
         Viewed = 3,
 
-        Rejected = -2,
+        /// <summary>
+        /// Rejected by consumer
+        /// </summary>
+        Rejected = -3,
 
-        Overdue = -3,
+        // Note: we do not need this status - it will be calculated online
+        // Overdue = -3,
 
         PaymentFailed = -4,
 
-        Payd = 4
+        Payed = 4
     }
 }

@@ -88,6 +88,8 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "System.Database", "Data\Sys
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckoutPortal", "CheckoutPortal\CheckoutPortal.csproj", "{976AA212-F42F-4575-A4CF-03A5011FBEE9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transactions.Api.Client", "Transactions.Api.Client\Transactions.Api.Client.csproj", "{8B761554-EEEC-4D14-972F-D32F6243BD76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -216,6 +218,10 @@ Global
 		{976AA212-F42F-4575-A4CF-03A5011FBEE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{976AA212-F42F-4575-A4CF-03A5011FBEE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{976AA212-F42F-4575-A4CF-03A5011FBEE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B761554-EEEC-4D14-972F-D32F6243BD76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B761554-EEEC-4D14-972F-D32F6243BD76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B761554-EEEC-4D14-972F-D32F6243BD76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B761554-EEEC-4D14-972F-D32F6243BD76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -250,6 +256,7 @@ Global
 		{CD231C07-1AF0-4D55-8993-B2EB9C327102} = {309D26B4-1939-4CE9-814C-BCA07AF345B8}
 		{18A16A5E-B72D-4441-B90E-08640BCCEDFC} = {BD9E08F4-001A-4C24-8779-290E3656E697}
 		{6C29B5A9-DA3B-42DC-B15E-58B29CD23D1D} = {9B8C2352-522A-4F75-A1AA-F5E4226EEB83}
+		{8B761554-EEEC-4D14-972F-D32F6243BD76} = {A7ABD632-D9CC-4F40-9AEB-9FE369CF2FE0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB40244C-6EBC-4B97-8F95-FB108B33F76E}

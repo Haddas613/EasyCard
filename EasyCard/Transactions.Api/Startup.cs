@@ -187,6 +187,7 @@ namespace Transactions.Api
             services.AddScoped<IItemsService, ItemsService>();
             services.AddTransient<CardTokenController, CardTokenController>();
             services.AddTransient<InvoicingController, InvoicingController>();
+            services.AddTransient<PaymentRequestsController, PaymentRequestsController>();
 
             services.AddSingleton<IExternalSystemsService, ExternalSystemService>(serviceProvider =>
             {

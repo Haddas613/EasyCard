@@ -15,10 +15,10 @@ namespace Merchants.Api.Extensions
         {
             if ((int)userOperationResponse.ResponseCode <= 0)
             {
-                return new OperationResponse($"{message ?? Messages.UserOperationFailed}: {userOperationResponse.Message}", userOperationResponse.UserID.ToString(), correlationID, userOperationResponse.ResponseCode.ToString(), userOperationResponse.Message);
+                return new OperationResponse($"{message ?? Messages.UserOperationFailed}: {userOperationResponse.Message}", userOperationResponse.UserID, correlationID, userOperationResponse.ResponseCode.ToString(), userOperationResponse.Message);
             }
 
-            return new OperationResponse($"{message ?? Messages.UserOperationSuccess}: {userOperationResponse.Message}", SharedApi.Models.Enums.StatusEnum.Success, userOperationResponse.UserID.ToString(), correlationID);
+            return new OperationResponse($"{message ?? Messages.UserOperationSuccess}: {userOperationResponse.Message}", SharedApi.Models.Enums.StatusEnum.Success, userOperationResponse.UserID, correlationID);
         }
     }
 }

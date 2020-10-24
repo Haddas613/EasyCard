@@ -122,6 +122,20 @@ namespace IdentityServer
                 },
                 new Client
                 {
+                    ClientId = "checkout_portal",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    RequireConsent = false,
+                    AllowOfflineAccess = true,
+                    ClientSecrets =
+                    {
+                        new Secret("yuwsCT8cbJVgw2W6".Sha256())
+                    },
+                    AllowedScopes = { "transactions_api" },
+                    AccessTokenType = AccessTokenType.Jwt,
+                    AccessTokenLifetime = 3600 * 24 // TODO: config
+                },
+                new Client
+                {
                     ClientId = "terminal",
 
                     RequireClientSecret = false,

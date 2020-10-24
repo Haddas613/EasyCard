@@ -46,6 +46,8 @@ namespace Transactions.Business.Data
 
         public DbSet<PaymentRequest> PaymentRequests { get; set; }
 
+        public DbSet<PaymentRequestHistory> PaymentRequestHistories { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         private static readonly ValueConverter CardExpirationConverter = new ValueConverter<CardExpiration, string>(
@@ -515,6 +517,35 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
 
                 builder.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                 builder.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
+            }
+        }
+
+        internal class PaymentRequestHistoryConfiguration : IEntityTypeConfiguration<PaymentRequestHistory>
+        {
+            public void Configure(EntityTypeBuilder<PaymentRequestHistory> builder)
+            {
+                builder.ToTable("PaymentRequestHistory");
+
+                builder.HasKey(b => b.PaymentRequestHistoryID);
+                builder.Property(b => b.PaymentRequestHistoryID).ValueGeneratedNever();
+
+                builder.Property(b => b.PaymentRequestID).IsRequired();
+
+                builder.Property(b => b.OperationDate).IsRequired();
+
+                builder.Property(b => b.OperationCode).IsRequired().HasMaxLength(30).IsUnicode(false);
+
+                builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.OperationDescription).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+
+                builder.Property(b => b.OperationMessage).IsRequired(false).HasMaxLength(250).IsUnicode(true);
+
+                builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
             }
         }
     }

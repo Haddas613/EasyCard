@@ -119,7 +119,7 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.CreateEntity(newTerminal);
 
-            return CreatedAtAction(nameof(GetTerminal), new { terminalID = newTerminal.TerminalID }, new OperationResponse(Messages.TerminalCreated, StatusEnum.Success, newTerminal.TerminalID.ToString()));
+            return CreatedAtAction(nameof(GetTerminal), new { terminalID = newTerminal.TerminalID }, new OperationResponse(Messages.TerminalCreated, StatusEnum.Success, newTerminal.TerminalID));
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.UpdateEntity(terminal);
 
-            return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID.ToString()));
+            return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID));
         }
 
         [HttpPut]
@@ -155,7 +155,7 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.SaveTerminalExternalSystem(texternalSystem);
 
-            return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID.ToString()));
+            return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID));
         }
 
         [HttpDelete]
@@ -165,7 +165,7 @@ namespace Merchants.Api.Controllers
             // TODO: validation if it exists
             await terminalsService.RemoveTerminalExternalSystem(terminalID, externalSystemID);
 
-            return Ok(new OperationResponse(Messages.ExternalSystemRemoved, StatusEnum.Success, terminalID.ToString()));
+            return Ok(new OperationResponse(Messages.ExternalSystemRemoved, StatusEnum.Success, terminalID));
         }
 
         [HttpPost]

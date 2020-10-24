@@ -331,6 +331,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment Request Updated.
+        /// </summary>
+        public static string PaymentRequestUpdated {
+            get {
+                return ResourceManager.GetString("PaymentRequestUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please check specified values.
         /// </summary>
         public static string PleaseCheckValues {

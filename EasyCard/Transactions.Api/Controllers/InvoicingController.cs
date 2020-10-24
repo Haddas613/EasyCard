@@ -117,7 +117,7 @@ namespace Transactions.Api.Controllers
 
             await invoiceService.CreateEntity(newInvoice);
 
-            return CreatedAtAction(nameof(GetInvoice), new { invoiceID = newInvoice.InvoiceID }, new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID.ToString()));
+            return CreatedAtAction(nameof(GetInvoice), new { invoiceID = newInvoice.InvoiceID }, new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID));
         }
     }
 }

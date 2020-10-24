@@ -41,7 +41,7 @@ namespace Transactions.Business.Services
 
         public async override Task CreateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
         {
-            if (user.IsTerminal() && entity.TerminalID != user.GetTerminalID() || user.IsMerchant() && entity.MerchantID != user.GetMerchantID())
+            if ((user.IsTerminal() && entity.TerminalID != user.GetTerminalID()) || (user.IsMerchant() && entity.MerchantID != user.GetMerchantID()))
             {
                 throw new SecurityException(Messages.PleaseCheckValues);
             }
@@ -62,7 +62,7 @@ namespace Transactions.Business.Services
             }
         }
 
-        public async override Task UpdateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null) 
+        public async override Task UpdateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
             => await UpdateEntity(entity, Messages.TransactionUpdated, TransactionOperationCodesEnum.TransactionUpdated, dbTransaction: dbTransaction);
 
         public async Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum? transactionStatus = null, TransactionFinalizationStatusEnum? finalizationStatus = null, RejectionReasonEnum? rejectionReason = null, string rejectionMessage = null, IDbContextTransaction dbTransaction = null)
@@ -114,6 +114,16 @@ namespace Transactions.Business.Services
             }
         }
 
+        public IQueryable<TransactionHistory> GetTransactionHistory(Guid transactionID)
+        {
+            return context.TransactionHistories.Where(d => d.PaymentTransactionID == transactionID);
+        }
+
+        public async Task<IEnumerable<TransmissionInfo>> StartTransmission(Guid terminalID, IEnumerable<Guid> transactionIDs, IDbContextTransaction dbTransaction = null)
+        {
+            return await context.StartTransmission(terminalID, transactionIDs, dbTransaction);
+        }
+
         private async Task UpdateEntity(PaymentTransaction entity, string historyMessage, TransactionOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null)
         {
             List<string> changes = new List<string>();
@@ -129,7 +139,7 @@ namespace Transactions.Business.Services
 
             entity.UpdatedDate = DateTime.UtcNow;
 
-            if(dbTransaction != null)
+            if (dbTransaction != null)
             {
                 await base.UpdateEntity(entity, dbTransaction);
                 await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
@@ -157,16 +167,6 @@ namespace Transactions.Business.Services
 
             context.TransactionHistories.Add(historyRecord);
             await context.SaveChangesAsync();
-        }
-
-        public IQueryable<TransactionHistory> GetTransactionHistory(Guid transactionID)
-        {
-            return context.TransactionHistories.Where(d => d.PaymentTransactionID == transactionID);
-        }
-
-        public async Task<IEnumerable<TransmissionInfo>> StartTransmission(Guid terminalID, IEnumerable<Guid> transactionIDs, IDbContextTransaction dbTransaction = null)
-        {
-            return await context.StartTransmission(terminalID, transactionIDs, dbTransaction);
         }
     }
 }

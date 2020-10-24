@@ -123,7 +123,7 @@ namespace MerchantProfileApi.Controllers
 
             await consumersService.CreateEntity(newConsumer);
 
-            return CreatedAtAction(nameof(GetConsumer), new { consumerID = newConsumer.ConsumerID }, new OperationResponse(Messages.ConsumerCreated, StatusEnum.Success, newConsumer.ConsumerID.ToString()));
+            return CreatedAtAction(nameof(GetConsumer), new { consumerID = newConsumer.ConsumerID }, new OperationResponse(Messages.ConsumerCreated, StatusEnum.Success, newConsumer.ConsumerID));
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace MerchantProfileApi.Controllers
 
             await consumersService.UpdateEntity(consumer);
 
-            return Ok(new OperationResponse(Messages.ConsumerUpdated, StatusEnum.Success, consumerID.ToString()));
+            return Ok(new OperationResponse(Messages.ConsumerUpdated, StatusEnum.Success, consumerID));
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace MerchantProfileApi.Controllers
 
             await consumersService.UpdateEntity(consumer);
 
-            return Ok(new OperationResponse(Messages.ConsumerDeleted, StatusEnum.Success, consumerID.ToString()));
+            return Ok(new OperationResponse(Messages.ConsumerDeleted, StatusEnum.Success, consumerID));
         }
 
         /// <summary>

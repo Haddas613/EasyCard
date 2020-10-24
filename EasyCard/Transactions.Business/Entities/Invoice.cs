@@ -27,7 +27,7 @@ namespace Transactions.Business.Entities
         public Guid InvoiceID { get; set; }
 
         /// <summary>
-        /// Date-time when deal created initially in UTC
+        /// Date-time when entity created initially in UTC
         /// </summary>
         public DateTime? InvoiceTimestamp { get; set; }
 
@@ -83,7 +83,7 @@ namespace Transactions.Business.Entities
         public DealDetails DealDetails { get; set; }
 
         /// <summary>
-        /// Date-time when transaction status updated
+        /// Date-time when entity status updated
         /// </summary>
         public DateTime? UpdatedDate { get; set; }
 

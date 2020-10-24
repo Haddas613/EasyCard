@@ -8,16 +8,19 @@ namespace Transactions.Api.Models.PaymentRequests.Enums
 {
     public enum QuickStatusFilterTypeEnum : short
     {
-        [EnumMember(Value = "Pending")]
+        [EnumMember(Value = "pending")]
         Pending = 1,
 
-        [EnumMember(Value = "Completed")]
+        [EnumMember(Value = "completed")]
         Completed = 2,
 
-        [EnumMember(Value = "Failed")]
+        [EnumMember(Value = "failed")]
         Failed = 3,
 
-        [EnumMember(Value = "Canceled")]
+        [EnumMember(Value = "canceled")]
         Canceled = 4,
+
+        [EnumMember(Value = "overdue")]
+        Overdue = 5,
     }
 }

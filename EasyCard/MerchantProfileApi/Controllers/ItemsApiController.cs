@@ -121,7 +121,7 @@ namespace MerchantProfileApi.Controllers
 
             await itemsService.CreateEntity(newItem);
 
-            return CreatedAtAction(nameof(GetItem), new { itemID = newItem.ItemID }, new OperationResponse(Messages.ItemCreated, StatusEnum.Success, newItem.ItemID.ToString()));
+            return CreatedAtAction(nameof(GetItem), new { itemID = newItem.ItemID }, new OperationResponse(Messages.ItemCreated, StatusEnum.Success, newItem.ItemID));
         }
 
         [HttpPut]
@@ -136,7 +136,7 @@ namespace MerchantProfileApi.Controllers
 
             await itemsService.UpdateEntity(item);
 
-            return Ok(new OperationResponse(Messages.ItemUpdated, StatusEnum.Success, itemID.ToString()));
+            return Ok(new OperationResponse(Messages.ItemUpdated, StatusEnum.Success, itemID));
         }
 
         [HttpDelete]
@@ -151,7 +151,7 @@ namespace MerchantProfileApi.Controllers
 
             await itemsService.UpdateEntity(item);
 
-            return Ok(new OperationResponse(Messages.ItemDeleted, StatusEnum.Success, itemID.ToString()));
+            return Ok(new OperationResponse(Messages.ItemDeleted, StatusEnum.Success, itemID));
         }
 
         /// <summary>

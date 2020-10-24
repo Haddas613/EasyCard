@@ -6,16 +6,19 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CheckoutPortal.Models;
+using Transactions.Api.Client;
 
 namespace CheckoutPortal.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> logger;
+        private readonly ITransactionsApiClient transactionsApiClient;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ITransactionsApiClient transactionsApiClient)
         {
-            _logger = logger;
+            this.logger = logger;
+            this.transactionsApiClient = transactionsApiClient;
         }
 
         public IActionResult Index()
