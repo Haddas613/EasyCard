@@ -52,6 +52,7 @@
   "TerminalNotSelected": "Terminal not selected",
   "ToList": "To list",
   "PleaseSelectCustomerFirst": "Please select Customer first",
+  "PleaseSelect": "Please Select",
   "CheckScheduleSettings": "Check Schedule Settings",
   "PercentageShouldBeLessThanOneHundred": "Percentage should be less than 100 to apply",
   
@@ -163,6 +164,9 @@
   "ServerErrorTryAgainLater": "Server Error. Try again later",
   "TransactionCreationError": "Could not create transaction",
   "SomethingWentWrong": "Something went wrong",
+  "InvoiceSentTo": "Invoice Sent To",
+  "InvoiceCreationError": "Could not create Invoice",
+  "InvoiceSent": "Invoice Sent",
 
   "--MISC--": null,
   "AllCustomers": "All Customers",

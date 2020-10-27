@@ -5,7 +5,7 @@
         <div class="font-weight-medium">{{$t("Type")}}</div>
       </template>
       <template v-slot:right>
-        <div>{{model.invoiceType.description}}</div>
+        <div>{{model.invoiceType ? model.invoiceType.description : $t('PleaseSelect')}}</div>
       </template>
       <template v-slot:append>
         <re-icon>mdi-chevron-right</re-icon>
@@ -86,21 +86,16 @@ export default {
       terminalStore: state => state.settings.terminal
     })
   },
-  async mounted() {
-    let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
-    if (dictionaries) {
-      this.dictionaries = dictionaries;
-      if (!this.model.invoiceType) {
-        this.$set(
-          this.model.invoiceDetails,
-          "invoiceType",
-          this.dictionaries.invoiceTypeEnum[0]
-        );
-      }
-    }
+  async mounted() { 
+    this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
   },
   methods: {
     getData() {
+      if(!this.model.invoiceType){
+        invoiceTypeDialog = true;
+        return false;
+      }
+
       let result = { ...this.model };
       if (result.sendCCToRaw) {
         result.sendCCTo = [];
@@ -114,7 +109,7 @@ export default {
         delete result.sendCCToRaw;
       }
       result.invoiceType = result.invoiceType.code;
-
+      
       return result;
     }
   }

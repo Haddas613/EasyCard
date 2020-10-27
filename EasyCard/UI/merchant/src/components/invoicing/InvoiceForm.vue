@@ -3,7 +3,7 @@
     <v-card-text class="py-2">
       <v-form class="ec-form" ref="form" lazy-validation>
         <invoice-details-form ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-form>
-        
+
         <installment-details
           ref="instDetails"
           :data="model.installmentDetails"
@@ -85,9 +85,10 @@ export default {
   },
   computed: {
     isInstallmentTransaction() {
+      return false;//TODO
       return (
-        this.model.invoiceType === "installments" ||
-        this.model.invoiceType === "credit"
+        this.model.invoiceDetails.invoiceType === "installments" ||
+        this.model.invoiceDetails.invoiceType === "credit"
       );
     },
     ...mapState({
@@ -98,10 +99,6 @@ export default {
     let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
     if (dictionaries) {
       this.dictionaries = dictionaries;
-      
-      if(!this.model.invoiceType){
-        this.model.invoiceType = this.dictionaries.invoiceTypeEnum[0].code;
-      }
 
       if (!this.model.currency) {
         this.model.currency =
@@ -124,13 +121,8 @@ export default {
         result.installmentDetails = null;
       }
 
-      if (this.issueDocument) {
-        result.invoiceDetails = this.$refs.invoiceDetails.getData();
-      } else {
-        result.invoiceDetails = null;
-      }
-      
-      this.$emit("ok", result);
+      result.invoiceDetails = this.$refs.invoiceDetails.getData();
+      if(result.invoiceDetails) this.$emit("ok", result);
     }
   }
 };

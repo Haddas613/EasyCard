@@ -170,7 +170,6 @@ export default {
       model: {
         amount: "0",
         discount: "0",
-        note: null,
         items: []
       },
       activeInput: "amount",
@@ -277,7 +276,7 @@ export default {
       }
       this.$emit("ok", {
         ...this.model,
-        amount: parseFloat(this.totalAmount) - parseFloat(this.discount)
+        amount: parseFloat(this.totalAmount) - parseFloat(this.discount || "0")
       });
     },
     stash() {
@@ -296,7 +295,7 @@ export default {
         this.total = 0;
         this.model.discount = 0;
         //todo: should also clear items?
-        this.resetItems();
+        if(this.model.items.length > 0) this.resetItems();
       }
     },
     async resetItems() {

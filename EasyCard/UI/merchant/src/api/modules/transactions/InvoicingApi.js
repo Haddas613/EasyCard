@@ -40,15 +40,15 @@ export default class InvoicingApi {
       return invoice;
     }
 
-    async createInvoicing(data){
+    async createInvoice(data){
         return await this.base.post(this.invoicingUrl, data);
     }
 
-    async updateInvoicing(id, data){
+    async updateInvoice(id, data){
         return await this.base.put(this.invoicingUrl + `/${id}`, data);
     }
 
-    async deleteInvoicing(id, data){
+    async deleteInvoice(id, data){
         return await this.base.delete(this.invoicingUrl + `/${id}`, data);
     }
 }

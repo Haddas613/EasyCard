@@ -31,14 +31,8 @@
           <invoice-form :data="model" v-on:ok="processInvoice($event)"></invoice-form>
         </v-stepper-content>
 
-         <v-stepper-content step="4" class="py-0 px-0">
-           todo
-          <!-- <transaction-success
-            :amount="model.transactionAmount"
-            v-if="success"
-            :customer="customer"
-          ></transaction-success>
-          <transaction-error :errors="errors" v-if="!success"></transaction-error> -->
+        <v-stepper-content step="4" class="py-0 px-0">
+          <invoice-creation-result :errors="errors" :customer="customer"></invoice-creation-result>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -53,9 +47,10 @@ export default {
     Navbar: () => import("../../components/wizard/NavBar"),
     Numpad: () => import("../../components/misc/Numpad"),
     CustomersList: () => import("../../components/customers/CustomersList"),
-    CreateChargeForm: () => import("../../components/transactions/CreateChargeForm"),
-    TransactionSuccess: () => import("../../components/transactions/TransactionSuccess"),
-    TransactionError: () => import("../../components/transactions/TransactionError"),
+    CreateChargeForm: () =>
+      import("../../components/transactions/CreateChargeForm"),
+    InvoiceCreationResult: () =>
+      import("../../components/invoicing/InvoiceCreationResult"),
     InvoiceForm: () => import("../../components/invoicing/InvoiceForm")
   },
   props: ["customerid"],
@@ -65,10 +60,9 @@ export default {
       skipCustomerStep: false,
       model: {
         terminalID: null,
-        invoiceType: null,
         currency: null,
-        cardPresence: "cardNotPresent",
-        transactionAmount: 0.0,
+        invoiceType: null,
+        invoiceAmount: 0.0,
         dealDetails: {
           dealReference: null,
           consumerEmail: null,
@@ -79,7 +73,7 @@ export default {
         invoiceDetails: {
           invoiceNumber: null,
           invoiceType: null,
-          invoiceSubject: null,
+          invoiceSubject: null
         },
         installmentDetails: {
           numberOfPayments: 0,
@@ -150,8 +144,8 @@ export default {
     },
     processCustomer(data) {
       this.skipCustomerStep = false;
-      if(this.customer && data.consumerID === this.customer.consumerID){
-        return this.step++;;
+      if (this.customer && data.consumerID === this.customer.consumerID) {
+        return this.step++;
       }
       this.customer = data;
       this.model.dealDetails.consumerEmail = data.consumerEmail;
@@ -160,46 +154,40 @@ export default {
       this.step++;
     },
     processAmount(data) {
-      this.model.transactionAmount = data.amount;
+      this.model.invoiceAmount = data.amount;
       this.model.note = data.note;
       this.model.items = data.items;
       if (this.skipCustomerStep) this.step += 2;
       else this.step++;
     },
-    async processAdditionalSettings(data) {
+    async processInvoice(data) {
       this.model.dealDetails = data.dealDetails;
-      this.model.invoiceType = data.invoiceType;
       this.model.currency = data.currency;
       this.model.installmentDetails = data.installmentDetails;
       this.model.invoiceDetails = data.invoiceDetails;
+      this.model.terminalID = this.terminal.terminalID;
 
-      // let result = await this.$api.invoices.createInvoice(this.model);
+      let result = await this.$api.invoicing.createInvoice(this.model);
 
-      // //assuming current step is one before the last
-      // let lastStep = this.steps[this.step + 1];
+      //assuming current step is one before the last
+      let lastStep = this.steps[this.step + 1];
 
-      // if (!result || result.status === "error") {
-      //   this.success = false;
-      //   lastStep.title = "Error";
-      //   lastStep.completed = false;
-      //   lastStep.closeable = true;
-      //   if (result && result.errors && result.errors.length > 0) {
-      //     this.errors = result.errors;
-      //   } else {
-      //     this.errors = [{ description: result.message }];
-      //   }
-      // } else {
-      //   this.success = true;
-      //   lastStep.title = "Success";
-      //   lastStep.completed = true;
-      //   lastStep.closeable = false;
-      //   this.errors = [];
-      // }
-      // if (this.customer) {
-      //   this.$store.commit("payment/addLastChargedCustomer", {
-      //     customerId: this.customer.consumerID
-      //   });
-      // }
+      if (!result || result.status === "error") {
+        lastStep.title = "Error";
+        lastStep.completed = false;
+        lastStep.closeable = true;
+        if (result && result.errors && result.errors.length > 0) {
+          this.errors = result.errors;
+        } else {
+          this.errors = [{ description: result.message }];
+        }
+      } else {
+        return  this.$router.push({ name: 'Invoice', params: { id: result.entityReference } });
+        // lastStep.title = "Success";
+        // lastStep.completed = true;
+        // lastStep.closeable = false;
+        // this.errors = [];
+      }
 
       this.step++;
     }
