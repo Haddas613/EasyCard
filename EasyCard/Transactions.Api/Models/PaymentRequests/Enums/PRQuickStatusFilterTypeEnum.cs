@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Transactions.Api.Models.PaymentRequests.Enums
 {
-    public enum QuickStatusFilterTypeEnum : short
+    public enum PRQuickStatusFilterTypeEnum : short
     {
         [EnumMember(Value = "pending")]
         Pending = 1,

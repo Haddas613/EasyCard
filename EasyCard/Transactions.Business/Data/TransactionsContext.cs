@@ -220,6 +220,7 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
             modelBuilder.ApplyConfiguration(new BillingDealConfiguration());
             modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestConfiguration());
+            modelBuilder.ApplyConfiguration(new PaymentRequestHistoryConfiguration());
 
             // security filters
 

@@ -66,5 +66,7 @@
     <Build Include="dbo\Tables\__EFMigrationsHistory.sql" />
     <Build Include="dbo\Tables\BillingDeal.sql" />
     <Build Include="dbo\Tables\Invoice.sql" />
+    <Build Include="dbo\Tables\PaymentRequestHistory.sql" />
+    <Build Include="dbo\Tables\PaymentRequest.sql" />
   </ItemGroup>
 </Project>

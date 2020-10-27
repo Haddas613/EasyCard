@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transactions.Business.Data;
 
 namespace Transactions.Business.Migrations
 {
     [DbContext(typeof(TransactionsContext))]
-    partial class TransactionsContextModelSnapshot : ModelSnapshot
+    [Migration("20201024181638_PaymentRequestHistory")]
+    partial class PaymentRequestHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -368,57 +370,41 @@ namespace Transactions.Business.Migrations
             modelBuilder.Entity("Transactions.Business.Entities.PaymentRequestHistory", b =>
                 {
                     b.Property<Guid>("PaymentRequestHistoryID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CorrelationId")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<short>("OperationCode")
-                        .HasColumnType("smallint")
-                        .HasMaxLength(30)
-                        .IsUnicode(false);
+                        .HasColumnType("smallint");
 
                     b.Property<DateTime?>("OperationDate")
-                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OperationDescription")
-                        .HasColumnType("nvarchar(max)")
-                        .IsUnicode(true);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OperationDoneBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50)
-                        .IsUnicode(true);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("OperationDoneByID")
-                        .HasColumnType("uniqueidentifier")
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("OperationMessage")
-                        .HasColumnType("nvarchar(250)")
-                        .HasMaxLength(250)
-                        .IsUnicode(true);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("PaymentRequestID")
-                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SourceIP")
-                        .HasColumnType("varchar(50)")
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PaymentRequestHistoryID");
 
                     b.HasIndex("PaymentRequestID");
 
-                    b.ToTable("PaymentRequestHistory");
+                    b.ToTable("PaymentRequestHistories");
                 });
 
             modelBuilder.Entity("Transactions.Business.Entities.PaymentTransaction", b =>
@@ -905,9 +891,7 @@ namespace Transactions.Business.Migrations
                 {
                     b.HasOne("Transactions.Business.Entities.PaymentRequest", "PaymentRequest")
                         .WithMany()
-                        .HasForeignKey("PaymentRequestID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PaymentRequestID");
                 });
 
             modelBuilder.Entity("Transactions.Business.Entities.PaymentTransaction", b =>

@@ -37,9 +37,9 @@ namespace Transactions.Api.Models.PaymentRequests
         [JsonConverter(typeof(StringEnumConverter))]
         public PaymentRequestStatusEnum Status { get; set; }
 
-        [EnumDataType(typeof(QuickStatusFilterTypeEnum))]
+        [EnumDataType(typeof(PRQuickStatusFilterTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
-        public QuickStatusFilterTypeEnum QuickStatus { get; set; }
+        public PRQuickStatusFilterTypeEnum QuickStatus { get; set; }
 
         /// <summary>
         /// Currency
