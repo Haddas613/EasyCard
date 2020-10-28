@@ -46,17 +46,17 @@
         <ec-list :items="invoices" v-if="invoices">
           <template v-slot:left="{ item }">
             <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text">{{item.invoiceID}}</v-col>
+            <v-col cols="12" md="6" lg="6">{{item.$invoiceDate | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
+          </template>
+
+          <template v-slot:right="{ item }">
             <v-col
               cols="12"
               md="6"
               lg="6"
-            >{{item.$invoiceDate | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
-          </template>
-
-          <template v-slot:right="{ item }">
-            <v-col cols="12" md="6" lg="6" class="text-end body-2">
-              {{item.invoiceType}}
-            </v-col>
+              class="text-end body-2"
+              v-bind:class="statusColors[item.status]"
+            >{{$t(item.status || 'None')}}</v-col>
             <v-col
               cols="12"
               md="6"
@@ -108,11 +108,12 @@ export default {
   data() {
     return {
       invoices: null,
-      quickStatusesColors: {
-        Pending: "ecgray--text",
+      statusColors: {
+        Initial: "ecgray--text",
         None: "",
-        Completed: "success--text",
-        Failed: "error--text"
+        Sent: "success--text",
+        Sending: "primary--text",
+        SendingFailed: "error--text"
       },
       customerInfo: null,
       moment: moment,
@@ -135,9 +136,7 @@ export default {
       });
       if (data) {
         let invoices = data.data || [];
-        this.invoices = extendData
-          ? [...this.invoices, ...invoices]
-          : invoices;
+        this.invoices = extendData ? [...this.invoices, ...invoices] : invoices;
         this.numberOfRecords = data.numberOfRecords || 0;
 
         if (invoices.length > 0) {
@@ -145,7 +144,8 @@ export default {
           let oldest = this.invoices[this.invoices.length - 1]
             .$invoiceTimestamp;
           this.datePeriod =
-            this.$options.filters.ecdate(oldest, "L") + ` - ${this.$options.filters.ecdate(newest, "L")}`;
+            this.$options.filters.ecdate(oldest, "L") +
+            ` - ${this.$options.filters.ecdate(newest, "L")}`;
         } else {
           this.datePeriod = null;
         }
