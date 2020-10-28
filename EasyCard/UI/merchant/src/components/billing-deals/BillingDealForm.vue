@@ -147,7 +147,6 @@
           </template>
         </ec-dialog-invoker>
       </v-col>
-      <v-col cols="12" class="py-0"></v-col>
       <v-col cols="12" md="4" class="py-0">
         <v-text-field
           v-model.number="model.numberOfPayments"
@@ -162,9 +161,8 @@
       </v-col>
       <v-col cols="12" md="4" class="py-0">
         <v-text-field
-          v-model.lazy="model.transactionAmount"
+          v-model.number="model.transactionAmount"
           :label="$t('TransactionAmount')"
-          v-money="{precision: 2}"
           :rules="[vr.primitives.required]"
           required
           outlined
@@ -313,12 +311,16 @@ export default {
     },
     ok() {
       if (!this.$refs.form.validate()) return;
+      //if this is edit and billing schedule has not been clicked, no need to validate
+      if(!this.$refs.billingScheduleRef && this.model.billingDealID){
+        return this.$emit("ok", this.model);
+      }
       if (
         !this.$refs.billingScheduleRef ||
         !this.$refs.billingScheduleRef.validate()
       ) {
         this.scheduleDialog = true;
-        this.$toasted.show("CheckScheduleSettings", { type: "error" });
+        this.$toasted.show(this.$t("CheckScheduleSettings"), { type: "error" });
         return;
       }
       this.$emit("ok", this.model);
@@ -343,12 +345,17 @@ export default {
         this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
     }
     if (this.model.dealDetails.consumerID) {
+      this.selectedCustomer = await this.$api.consumers.getConsumer(this.model.dealDetails.consumerID);
       this.customerTokens =
         (
           await this.$api.cardTokens.getCustomerCardTokens(
             this.model.dealDetails.consumerID
           )
         ).data || [];
+
+        if(this.model.creditCardToken){
+          this.selectedToken = this.lodash.find(this.customerTokens, t => t.creditCardTokenID === this.model.creditCardToken);
+        }
     }
   }
 };

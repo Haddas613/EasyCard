@@ -282,6 +282,36 @@
               Looks up a localized string similar to Transaction Amount.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.CreditCardToken">
+            <summary>
+            Stored credit card details token (should be omitted in case if full credit card details used)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.TransactionAmount">
+            <summary>
+            Transaction amount (should be omitted in case of installment deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.NumberOfPayments">
+            <summary>
+            Number Of payments (cannot be more than 999)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.TotalAmount">
+            <summary>
+            TotalAmount = TransactionAmount * NumberOfPayments
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.BillingSchedule">
+            <summary>
+            Billing Schedule
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.InvoiceDetails">
             <summary>
             Invoice details

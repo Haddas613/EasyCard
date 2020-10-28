@@ -149,6 +149,19 @@ export default {
     } else {
       this.terminalName = this.$t("NotAccessible");
     }
+
+    this.$store.commit("ui/changeHeader", {
+      value: {
+        threeDotMenu: [
+          {
+            text: this.$t("Edit"),
+            fn: () => {
+              this.$router.push({ name: "EditBillingDeal", id: this.$route.params.id});
+            }
+          }
+        ]
+      }
+    });
   }
 };
 </script>

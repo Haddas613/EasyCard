@@ -22,6 +22,8 @@ namespace Transactions.Api.Mapping
         {
             CreateMap<BillingDealRequest, BillingDeal>();
 
+            CreateMap<BillingDealUpdateRequest, BillingDeal>();
+
             CreateMap<BillingDeal, BillingDealSummary>();
 
             CreateMap<BillingDeal, BillingDealResponse>();

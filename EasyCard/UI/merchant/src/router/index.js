@@ -157,6 +157,14 @@ const routes = [
         component: () => import('../pages/billing-deals/BillingDealInfo.vue'),
       },
       {
+        name: 'EditBillingDeal',
+        meta:{
+          backBtn: 'BillingDeals'
+        },
+        path: 'billing-deals/edit/:id',
+        component: () => import('../pages/billing-deals/EditBillingDeal.vue'),
+      },
+      {
         name: 'CreateBillingDeal',
         path: 'billing-deals/create',
         component: () => import('../pages/billing-deals/CreateBillingDeal.vue'),
@@ -169,7 +177,7 @@ const routes = [
       {
         name: 'Invoice',
         meta:{
-          backBtn: true
+          backBtn: 'Invoices'
         },
         path: 'invoicing/view/:id',
         component: () => import('../pages/invoicing/InvoiceInfo.vue'),

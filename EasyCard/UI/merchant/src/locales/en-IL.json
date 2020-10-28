@@ -33,6 +33,7 @@
   "Invoicing": "Invoices",
   "CreateInvoice": "Create Invoice",
   "FilterInvoices": "Filter Invoices",
+  "EditBillingDeal": "Edit Billing Deal",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -141,6 +142,7 @@
   "InvoiceType": "Invoice Type",
   "InvoiceAmount": "Invoice Amount",
   "InvoiceDate": "Invoice Date",
+  "TransactionAmount": "Transaction Amount",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -167,6 +169,7 @@
   "InvoiceSentTo": "Invoice Sent To",
   "InvoiceCreationError": "Could not create Invoice",
   "InvoiceSent": "Invoice Sent",
+  "SuccessfullySaved": "Successfully Saved",
 
   "--MISC--": null,
   "AllCustomers": "All Customers",
