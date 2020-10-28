@@ -1,6 +1,6 @@
 <template>
   <ec-dialog :dialog.sync="visible">
-    <template v-slot:title>{{$t('FilterInvoices')}}</template>
+    <template v-slot:title>{{$t('FilterPaymentRequests')}}</template>
     <template v-slot:right>
       <v-btn color="primary" @click="apply()">{{$t('Apply')}}</v-btn>
     </template>
@@ -15,8 +15,8 @@
         <v-row>
           <v-col cols="12" md="6" class="py-0">
             <v-text-field
-              v-model="model.invoiceID"
-              :label="$t('InvoiceID')"
+              v-model="model.paymentRequestID"
+              :label="$t('PaymentRequestID')"
               outlined
             ></v-text-field>
           </v-col>
@@ -33,11 +33,11 @@
           </v-col>
           <v-col cols="12" md="6" class="py-0">
             <v-select
-              :items="dictionaries.invoiceTypeEnum"
+              :items="dictionaries.paymentRequestTypeEnum"
               item-text="description"
               item-value="code"
-              v-model="model.invoiceTypeFilter"
-              :label="$t('InvoiceType')"
+              v-model="model.paymentRequestTypeFilter"
+              :label="$t('PaymentRequestType')"
               outlined
               clearable
             ></v-select>
@@ -86,7 +86,7 @@
           </v-col>
           <v-col cols="12" md="6" class="py-0">
             <v-text-field
-              v-model="model.invoiceAmount"
+              v-model="model.paymentRequestAmount"
               :label="$t('Amount')"
               type="number"
               min="0"

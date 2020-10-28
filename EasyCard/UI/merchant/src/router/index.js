@@ -183,6 +183,11 @@ const routes = [
         component: () => import('../pages/invoicing/InvoiceInfo.vue'),
       },
       {
+        name: 'PaymentRequests',
+        path: 'payment-requests/list',
+        component: () => import('../pages/payment-requests/PaymentRequestsList.vue'),
+      },
+      {
         name: '404',
         path: '*',
         component: () => import('../views/NotFound.vue'),

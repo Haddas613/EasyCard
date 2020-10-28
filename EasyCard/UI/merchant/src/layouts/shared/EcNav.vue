@@ -190,6 +190,24 @@ export default {
           ]
         },
         {
+          icon: "mdi-account-cash",
+          "icon-alt": "mdi-account-cash-outline",
+          text: "PaymentRequests",
+          expanded: false,
+          children: [
+            {
+              icon: "mdi-format-list-bulleted",
+              text: "PaymentRequestsList",
+              to: "/admin/payment-requests/list"
+            },
+            {
+              icon: "mdi-plus",
+              text: "CreatePaymentRequest",
+              to: "/wizard/payment-requests/create"
+            }
+          ]
+        },
+        {
           icon: "mdi-rotate-right",
           "icon-alt": "mdi-rotate-right",
           text: "BillingDeals",

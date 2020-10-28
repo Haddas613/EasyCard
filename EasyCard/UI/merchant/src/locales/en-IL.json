@@ -34,6 +34,9 @@
   "CreateInvoice": "Create Invoice",
   "FilterInvoices": "Filter Invoices",
   "EditBillingDeal": "Edit Billing Deal",
+  "PaymentRequests": "Payment Requests",
+  "PaymentRequestsList": "Payment Requests List",
+  "CreatePaymentRequest": "Create Payment Request",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
