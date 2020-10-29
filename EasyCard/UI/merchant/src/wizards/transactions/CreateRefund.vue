@@ -62,7 +62,6 @@ export default {
     Navbar: () => import("../../components/wizard/NavBar"),
     Numpad: () => import("../../components/misc/Numpad"),
     CustomersList: () => import("../../components/customers/CustomersList"),
-    CreateChargeForm: () => import("../../components/transactions/CreateChargeForm"),
     CreditCardSecureDetails: () => import("../../components/transactions/CreditCardSecureDetails"),
     TransactionSuccess: () => import("../../components/transactions/TransactionSuccess"),
     TransactionError: () => import("../../components/transactions/TransactionError"),
@@ -267,6 +266,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

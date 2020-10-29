@@ -218,6 +218,12 @@ const routes = [
         path: 'invoicing/create',
         component: () => import('../wizards/invoicing/CreateInvoice.vue'),
         props: true
+      },
+      {
+        name: 'CreatePaymentRequest',
+        path: 'payment-requests/create',
+        component: () => import('../wizards/payment-requests/CreatePaymentRequest.vue'),
+        props: true
       }
     ]
   },

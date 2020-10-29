@@ -28,7 +28,7 @@ namespace Transactions.Api.Models.PaymentRequests
 
         //public PaymentRequestStatusEnum? Status { get; set; }
 
-        public PRQuickStatusFilterTypeEnum? QuickStatus { get; set; }
+        public PayReqQuickStatusFilterTypeEnum? QuickStatus { get; set; }
 
         public decimal? PaymentRequestAmount { get; set; }
 

@@ -33,7 +33,7 @@
           </v-col>
           <v-col cols="12" md="12" class="py-0">
             <v-select
-              :items="dictionaries.paymentRequestQuickStatusEnum"
+              :items="dictionaries.payReqQuickStatusFilterTypeEnum"
               item-text="description"
               item-value="code"
               v-model="model.quickStatus"

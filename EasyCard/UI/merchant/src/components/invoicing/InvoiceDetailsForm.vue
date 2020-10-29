@@ -2,7 +2,7 @@
   <v-flex class="d-flex flex-column">
     <ec-dialog-invoker v-on:click="invoiceTypeDialog = true" class="py-2">
       <template v-slot:left>
-        <div class="font-weight-medium">{{$t("Type")}}</div>
+        <div class="font-weight-medium">{{$t("InvoiceType")}}</div>
       </template>
       <template v-slot:right>
         <div>{{model.invoiceType ? model.invoiceType.description : $t('PleaseSelect')}}</div>

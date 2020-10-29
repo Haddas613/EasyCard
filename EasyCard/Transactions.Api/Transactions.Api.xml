@@ -523,11 +523,6 @@
             Currency
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.TransactionAmount">
-            <summary>
-            Transaction amount (should be omitted in case of installment deal)
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.InstallmentDetails">
             <summary>
             Installment payments details (should be omitted in case of regular deal)

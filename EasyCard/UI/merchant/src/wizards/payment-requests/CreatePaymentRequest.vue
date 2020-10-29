@@ -28,26 +28,20 @@
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">
-          <credit-card-secure-details
-            :key="creditCardRefreshState"
-            :data="model"
-            v-on:ok="processCreditCard($event)"
-            ref="ccSecureDetails"
-            btn-text="Charge"
-          ></credit-card-secure-details>
+          <payment-request-form :data="model" v-on:ok="processInvoice($event)"></payment-request-form>
         </v-stepper-content>
 
         <v-stepper-content step="4" class="py-0 px-0">
-          <additional-settings-form :data="model" v-on:ok="processAdditionalSettings($event)"></additional-settings-form>
-        </v-stepper-content>
-
-        <v-stepper-content step="5" class="py-0 px-0">
-          <transaction-success
-            :amount="model.transactionAmount"
-            v-if="success"
-            :customer="customer"
-          ></transaction-success>
-          <transaction-error :errors="errors" v-if="!success"></transaction-error>
+          <wizard-result :errors="errors">
+            <template v-if="customer">
+              <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+              <p>{{customer.consumerName}}</p>
+              <div class="pt-5">
+                <p>{{$t("PaymentRequestSentTo")}}</p>
+                <p>{{customer.consumerEmail}}</p>
+              </div>
+            </template>
+          </wizard-result>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -62,32 +56,20 @@ export default {
     Navbar: () => import("../../components/wizard/NavBar"),
     Numpad: () => import("../../components/misc/Numpad"),
     CustomersList: () => import("../../components/customers/CustomersList"),
-    CreditCardSecureDetails: () => import("../../components/transactions/CreditCardSecureDetails"),
-    TransactionSuccess: () => import("../../components/transactions/TransactionSuccess"),
-    TransactionError: () => import("../../components/transactions/TransactionError"),
-    AdditionalSettingsForm: () => import("../../components/transactions/AdditionalSettingsForm")
+    WizardResult: () => import("../../components/wizard/WizardResult"),
+    PaymentRequestForm: () =>
+      import("../../components/payment-requests/PaymentRequestForm")
   },
   props: ["customerid"],
   data() {
     return {
       customer: null,
       skipCustomerStep: false,
-      creditCardRefreshState: null,
       model: {
         terminalID: null,
-        transactionType: null,
-        jDealType: null,
         currency: null,
-        cardPresence: "cardNotPresent",
-        creditCardToken: null,
-        creditCardSecureDetails: {
-          cardExpiration: null,
-          cardNumber: null,
-          cvv: null,
-          cardOwnerNationalID: null,
-          cardOwnerName: null
-        },
-        transactionAmount: 0.0,
+        invoiceType: null,
+        paymentRequestAmount: 0.0,
         dealDetails: {
           dealReference: null,
           consumerEmail: null,
@@ -95,7 +77,11 @@ export default {
           consumerID: null,
           dealDescription: null
         },
-        invoiceDetails: null,
+        invoiceDetails: {
+          invoiceNumber: null,
+          invoiceType: null,
+          invoiceSubject: null
+        },
         installmentDetails: {
           numberOfPayments: 0,
           initialPaymentAmount: 0,
@@ -113,14 +99,10 @@ export default {
           skippable: true
         },
         3: {
-          title: "PaymentInfo"
-          // skippable: true
-        },
-        4: {
-          title: "AdditionalSettings"
+          title: "PaymentRequestSettings"
         },
         //Last step may be dynamically altered to represent error if transaction creation has failed.
-        5: {
+        4: {
           title: "Success",
           completed: true
         }
@@ -148,10 +130,6 @@ export default {
         this.model.dealDetails.consumerEmail = data.consumerEmail;
         this.model.dealDetails.consumerPhone = data.consumerPhone;
         this.model.dealDetails.consumerID = data.consumerID;
-        this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState =
-          data.consumerName;
-        this.model.creditCardSecureDetails.cardOwnerNationalID =
-          data.consumerNationalID;
       }
     }
   },
@@ -166,80 +144,40 @@ export default {
       this.model.dealDetails.consumerEmail = null;
       this.model.dealDetails.consumerPhone = null;
       this.model.dealDetails.consumerID = null;
-      this.creditCardRefreshState = null;
-      if (this.model.creditCardSecureDetails) {
-        this.model.creditCardSecureDetails.cardOwnerName = null;
-        this.model.creditCardSecureDetails.cardOwnerNationalID = null;
-      } else if (this.model.creditCardToken) {
-        this.model.creditCardToken = null;
-        this.$refs.ccSecureDetails.resetToken();
-      }
     },
     processCustomer(data) {
       this.skipCustomerStep = false;
-      if(this.customer && data.consumerID === this.customer.consumerID){
-        return this.step++;;
+      if (this.customer && data.consumerID === this.customer.consumerID) {
+        return this.step++;
       }
       this.customer = data;
       this.model.dealDetails.consumerEmail = data.consumerEmail;
       this.model.dealDetails.consumerPhone = data.consumerPhone;
       this.model.dealDetails.consumerID = data.consumerID;
-      if (!this.model.creditCardSecureDetails) {
-        this.$set(this.model, "creditCardSecureDetails", {
-          cardOwnerName: data.consumerName,
-          cardOwnerNationalID: data.consumerNationalID
-        });
-      } else {
-        this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState =
-          data.consumerName;
-        this.model.creditCardSecureDetails.cardOwnerNationalID =
-          data.consumerNationalID;
-      }
-      this.model.creditCardToken = null;
-      this.$refs.ccSecureDetails.resetToken();
-      this.creditCardRefreshState = data.consumerName;
       this.step++;
     },
     processAmount(data) {
-      this.model.transactionAmount = data.amount;
+      this.model.paymentRequestAmount = data.amount;
       this.model.note = data.note;
       this.model.items = data.items;
       if (this.skipCustomerStep) this.step += 2;
       else this.step++;
     },
-    processCreditCard(data) {
-      if (data.type === "creditcard") {
-        data = data.data;
-        this.model.saveCreditCard = data.saveCreditCard || false;
-        this.model.creditCardSecureDetails = data;
-        if (data.cardReaderInput) {
-          this.model.cardPresence = "regular";
-        } else {
-          this.model.cardPresence = "cardNotPresent";
-        }
-      } else if (data.type === "token") {
-        this.model.creditCardSecureDetails = null;
-        this.model.creditCardToken = data.data;
-        this.model.saveCreditCard = false;
-      }
-      this.step++;
-    },
-    async processAdditionalSettings(data) {
+    async processInvoice(data) {
       this.model.dealDetails = data.dealDetails;
-      this.model.transactionType = data.transactionType;
       this.model.currency = data.currency;
-      this.model.jDealType = data.jDealType;
       this.model.installmentDetails = data.installmentDetails;
-      this.model.terminalID = this.terminal.terminalID;
       this.model.invoiceDetails = data.invoiceDetails;
+      this.model.terminalID = this.terminal.terminalID;
 
-      let result = await this.$api.transactions.processTransaction(this.model);
+      let result = await this.$api.paymentRequests.createPaymentRequest(
+        this.model
+      );
 
       //assuming current step is one before the last
       let lastStep = this.steps[this.step + 1];
 
       if (!result || result.status === "error") {
-        this.success = false;
         lastStep.title = "Error";
         lastStep.completed = false;
         lastStep.closeable = true;
@@ -249,13 +187,14 @@ export default {
           this.errors = [{ description: result.message }];
         }
       } else {
-        this.success = true;
+        // return this.$router.push({
+        //   name: "Invoice",
+        //   params: { id: result.entityReference }
+        // });
         lastStep.title = "Success";
         lastStep.completed = true;
         lastStep.closeable = false;
         this.errors = [];
-      }
-      if (this.customer) {
         this.$store.commit("payment/addLastChargedCustomer", {
           customerId: this.customer.consumerID
         });
@@ -266,6 +205,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

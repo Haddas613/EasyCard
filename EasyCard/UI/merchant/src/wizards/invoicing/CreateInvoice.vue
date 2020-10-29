@@ -32,7 +32,16 @@
         </v-stepper-content>
 
         <v-stepper-content step="4" class="py-0 px-0">
-          <invoice-creation-result :errors="errors" :customer="customer"></invoice-creation-result>
+          <wizard-result :errors="errors">
+            <template v-if="customer">
+              <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+              <p>{{customer.consumerName}}</p>
+              <div class="pt-5">
+                <p>{{$t("PaymentRequestSentTo")}}</p>
+                <p>{{customer.consumerEmail}}</p>
+              </div>
+            </template>
+          </wizard-result>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -47,10 +56,8 @@ export default {
     Navbar: () => import("../../components/wizard/NavBar"),
     Numpad: () => import("../../components/misc/Numpad"),
     CustomersList: () => import("../../components/customers/CustomersList"),
-    CreateChargeForm: () =>
-      import("../../components/transactions/CreateChargeForm"),
-    InvoiceCreationResult: () =>
-      import("../../components/invoicing/InvoiceCreationResult"),
+    WizardResult: () =>
+      import("../../components/wizard/WizardResult"),
     InvoiceForm: () => import("../../components/invoicing/InvoiceForm")
   },
   props: ["customerid"],
@@ -123,10 +130,6 @@ export default {
         this.model.dealDetails.consumerEmail = data.consumerEmail;
         this.model.dealDetails.consumerPhone = data.consumerPhone;
         this.model.dealDetails.consumerID = data.consumerID;
-        this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState =
-          data.consumerName;
-        this.model.creditCardSecureDetails.cardOwnerNationalID =
-          data.consumerNationalID;
       }
     }
   },
@@ -182,7 +185,10 @@ export default {
           this.errors = [{ description: result.message }];
         }
       } else {
-        return  this.$router.push({ name: 'Invoice', params: { id: result.entityReference } });
+        return this.$router.push({
+          name: "Invoice",
+          params: { id: result.entityReference }
+        });
         // lastStep.title = "Success";
         // lastStep.completed = true;
         // lastStep.closeable = false;
@@ -194,6 +200,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

@@ -31,12 +31,9 @@ namespace Transactions.Api.Models.PaymentRequests
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyEnum Currency { get; set; }
 
-        /// <summary>
-        /// Transaction amount (should be omitted in case of installment deal)
-        /// </summary>
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal? TransactionAmount { get; set; }
+        public decimal? PaymentRequestAmount { get; set; }
 
         /// <summary>
         /// Installment payments details (should be omitted in case of regular deal)

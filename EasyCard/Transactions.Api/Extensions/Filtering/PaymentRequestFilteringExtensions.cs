@@ -66,14 +66,14 @@ namespace Transactions.Api.Extensions.Filtering
             return src;
         }
 
-        private static IQueryable<PaymentRequest> FilterByQuickStatus(IQueryable<PaymentRequest> src, PRQuickStatusFilterTypeEnum typeEnum)
+        private static IQueryable<PaymentRequest> FilterByQuickStatus(IQueryable<PaymentRequest> src, PayReqQuickStatusFilterTypeEnum typeEnum)
             => typeEnum switch
             {
-                PRQuickStatusFilterTypeEnum.Pending => src.Where(t => (int)t.Status >= 1 && (int)t.Status <= 3),
-                PRQuickStatusFilterTypeEnum.Completed => src.Where(t => t.Status == Shared.Enums.PaymentRequestStatusEnum.Payed),
-                PRQuickStatusFilterTypeEnum.Canceled => src.Where(t => t.Status == Shared.Enums.PaymentRequestStatusEnum.Canceled),
-                PRQuickStatusFilterTypeEnum.Overdue => src.Where(t => t.Status == Shared.Enums.PaymentRequestStatusEnum.Rejected),
-                PRQuickStatusFilterTypeEnum.Failed => src.Where(t => (int)t.Status < 0),
+                PayReqQuickStatusFilterTypeEnum.Pending => src.Where(t => (int)t.Status >= 1 && (int)t.Status <= 3),
+                PayReqQuickStatusFilterTypeEnum.Completed => src.Where(t => t.Status == Shared.Enums.PaymentRequestStatusEnum.Payed),
+                PayReqQuickStatusFilterTypeEnum.Canceled => src.Where(t => t.Status == Shared.Enums.PaymentRequestStatusEnum.Canceled),
+                PayReqQuickStatusFilterTypeEnum.Overdue => src.Where(t => t.Status == Shared.Enums.PaymentRequestStatusEnum.Rejected),
+                PayReqQuickStatusFilterTypeEnum.Failed => src.Where(t => (int)t.Status < 0),
                 _ => src,
             };
     }
