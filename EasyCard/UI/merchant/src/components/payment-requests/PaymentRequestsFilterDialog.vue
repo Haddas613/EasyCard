@@ -31,13 +31,13 @@
               clearable
             ></v-autocomplete>
           </v-col>
-          <v-col cols="12" md="6" class="py-0">
+          <v-col cols="12" md="12" class="py-0">
             <v-select
-              :items="dictionaries.paymentRequestTypeEnum"
+              :items="dictionaries.paymentRequestQuickStatusEnum"
               item-text="description"
               item-value="code"
-              v-model="model.paymentRequestTypeFilter"
-              :label="$t('PaymentRequestType')"
+              v-model="model.quickStatus"
+              :label="$t('PaymentRequestStatus')"
               outlined
               clearable
             ></v-select>
@@ -63,13 +63,6 @@
               outlined
               clearable
             ></v-select>
-          </v-col>
-           <v-col cols="12" md="6" class="py-0">
-            <v-text-field
-              v-model="model.consumerEmail"
-              :label="$t('ConsumerEmail')"
-              outlined
-            ></v-text-field>
           </v-col>
         </v-row>
         <v-row>

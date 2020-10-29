@@ -37,6 +37,7 @@
   "PaymentRequests": "Payment Requests",
   "PaymentRequestsList": "Payment Requests List",
   "CreatePaymentRequest": "Create Payment Request",
+  "FilterPaymentRequests": "Filter Payment Requests",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -146,6 +147,9 @@
   "InvoiceAmount": "Invoice Amount",
   "InvoiceDate": "Invoice Date",
   "TransactionAmount": "Transaction Amount",
+  "PaymentRequestAmount": "Payment Request Amount",
+  "PaymentRequestStatus": "Payment Request Status",
+  "PaymentRequestID": "Payment Request ID",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

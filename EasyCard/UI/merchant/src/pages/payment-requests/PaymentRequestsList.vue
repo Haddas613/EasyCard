@@ -1,10 +1,10 @@
 <template>
   <v-flex>
-    <!-- <payment-requests-filter-dialog
+    <payment-requests-filter-dialog
       :show.sync="showDialog"
       :filter="paymentRequestsFilter"
       v-on:ok="applyFilters($event)"
-    ></payment-requests-filter-dialog> -->
+    ></payment-requests-filter-dialog>
     <v-card class="my-2" width="100%" flat>
       <v-card-title class="pb-0">
         <v-row class="py-0" no-gutters>
@@ -91,8 +91,8 @@ export default {
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
-    // PaymentRequestsFilterDialog: () =>
-    //   import("../../components/invoicing/PaymentRequestsFilterDialog"),
+    PaymentRequestsFilterDialog: () =>
+      import("../../components/payment-requests/PaymentRequestsFilterDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker")
   },
   props: {
