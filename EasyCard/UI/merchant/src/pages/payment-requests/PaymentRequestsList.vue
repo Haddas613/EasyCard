@@ -46,7 +46,7 @@
         <ec-list :items="paymentRequests" v-if="paymentRequests">
           <template v-slot:left="{ item }">
             <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text">{{item.paymentRequestID}}</v-col>
-            <v-col cols="12" md="6" lg="6">{{item.$dueDate | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
+            <v-col cols="12" md="6" lg="6">{{item.$paymentRequestTimestamp | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
           </template>
 
           <template v-slot:right="{ item }">
@@ -65,11 +65,11 @@
             >{{item.currency}}{{item.paymentRequestAmount}}</v-col>
           </template>
 
-          <!-- <template v-slot:append="{ item }">
+          <template v-slot:append="{ item }">
             <v-btn icon :to="{ name: 'PaymentRequest', params: { id: item.$paymentRequestID } }">
               <re-icon>mdi-chevron-right</re-icon>
             </v-btn>
-          </template> -->
+          </template>
         </ec-list>
         <p
           class="ecgray--text text-center"

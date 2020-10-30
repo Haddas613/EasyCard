@@ -523,6 +523,11 @@
             Currency
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.DueDate">
+            <summary>
+            Due date
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.InstallmentDetails">
             <summary>
             Installment payments details (should be omitted in case of regular deal)

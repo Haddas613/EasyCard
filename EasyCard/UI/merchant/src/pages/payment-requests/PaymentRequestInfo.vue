@@ -8,7 +8,7 @@
           <v-row class="info-container">
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('ID')}}</p>
-              <small>{{model.$invoiceID}}</small>
+              <small>{{model.$paymentRequestID}}</small>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
@@ -30,15 +30,15 @@
           <v-row class="info-container">
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Created')}}</p>
-              <p>{{model.$invoiceTimestamp | ecdate('LLLL')}}</p>
+              <p>{{model.$paymentRequestTimestamp | ecdate('LLLL')}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('InvoiceDate')}}</p>
-              <p>{{model.$invoiceDate | ecdate('LLLL')}}</p>
+              <p class="caption ecgray--text text--darken-2">{{$t('DueDate')}}</p>
+              <p>{{model.$dueDate | ecdate('LLLL')}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Amount')}}</p>
-              <p>{{model.invoiceAmount | currency(model.$currency)}}</p>
+              <p>{{model.paymentRequestAmount | currency(model.$currency)}}</p>
             </v-col>
           </v-row>
         </v-card-text>
@@ -87,10 +87,10 @@ export default {
     };
   },
   async mounted() {
-    this.model = await this.$api.invoicing.getInvoice(this.$route.params.id);
+    this.model = await this.$api.paymentRequests.getPaymentRequest(this.$route.params.id);
 
     if (!this.model) {
-      return this.$router.push("/admin/invoicing/list");
+      return this.$router.push("/admin/payment-requests/list");
     }
 
     let terminals = (await this.$api.terminals.getTerminals()).data;

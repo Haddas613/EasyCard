@@ -216,6 +216,28 @@ export default {
             }
           },
           {
+            text: this.$t("Invoices"),
+            fn: () => {
+              this.$router.push({
+                name: "Invoices",
+                params: { filters: {
+                  consumerID: this.$route.params.id
+                } }
+              });
+            }
+          },
+          {
+            text: this.$t("PaymentRequests"),
+            fn: () => {
+              this.$router.push({
+                name: "PaymentRequests",
+                params: { filters: {
+                  consumerID: this.$route.params.id
+                } }
+              });
+            }
+          },
+          {
             text: this.$t("DeleteCustomer"),
             fn: this.deleteCustomer.bind(this)
           }

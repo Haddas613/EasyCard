@@ -79,7 +79,7 @@ namespace Transactions.Api.Controllers
             {
                 var response = new SummariesResponse<PaymentRequestSummary> { NumberOfRecords = await query.CountAsync() };
 
-                response.Data = await mapper.ProjectTo<PaymentRequestSummary>(query.ApplyPagination(filter)).ToListAsync();
+                response.Data = await mapper.ProjectTo<PaymentRequestSummary>(query.OrderByDescending(p => p.PaymentRequestTimestamp).ApplyPagination(filter)).ToListAsync();
 
                 return Ok(response);
             }

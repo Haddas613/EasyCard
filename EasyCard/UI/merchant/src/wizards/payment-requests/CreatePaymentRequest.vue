@@ -28,7 +28,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">
-          <payment-request-form :data="model" v-on:ok="processInvoice($event)"></payment-request-form>
+          <payment-request-form :data="model" v-on:ok="processPaymentRequest($event)"></payment-request-form>
         </v-stepper-content>
 
         <v-stepper-content step="4" class="py-0 px-0">
@@ -70,6 +70,7 @@ export default {
         currency: null,
         invoiceType: null,
         paymentRequestAmount: 0.0,
+        dueDate: null,
         dealDetails: {
           dealReference: null,
           consumerEmail: null,
@@ -163,12 +164,13 @@ export default {
       if (this.skipCustomerStep) this.step += 2;
       else this.step++;
     },
-    async processInvoice(data) {
+    async processPaymentRequest(data) {
       this.model.dealDetails = data.dealDetails;
       this.model.currency = data.currency;
       this.model.installmentDetails = data.installmentDetails;
       this.model.invoiceDetails = data.invoiceDetails;
       this.model.terminalID = this.terminal.terminalID;
+      this.model.dueDate = data.dueDate;
 
       let result = await this.$api.paymentRequests.createPaymentRequest(
         this.model
@@ -187,17 +189,17 @@ export default {
           this.errors = [{ description: result.message }];
         }
       } else {
-        // return this.$router.push({
-        //   name: "Invoice",
-        //   params: { id: result.entityReference }
-        // });
+        this.$store.commit("payment/addLastChargedCustomer", {
+          customerId: this.customer.consumerID
+        });
+        return this.$router.push({
+          name: "PaymentRequest",
+          params: { id: result.entityReference }
+        });
         lastStep.title = "Success";
         lastStep.completed = true;
         lastStep.closeable = false;
         this.errors = [];
-        this.$store.commit("payment/addLastChargedCustomer", {
-          customerId: this.customer.consumerID
-        });
       }
 
       this.step++;

@@ -35,6 +35,7 @@
   "FilterInvoices": "Filter Invoices",
   "EditBillingDeal": "Edit Billing Deal",
   "PaymentRequests": "Payment Requests",
+  "PaymentRequest": "Payment Requests",
   "PaymentRequestsList": "Payment Requests List",
   "CreatePaymentRequest": "Create Payment Request",
   "FilterPaymentRequests": "Filter Payment Requests",
@@ -152,6 +153,7 @@
   "PaymentRequestAmount": "Payment Request Amount",
   "PaymentRequestStatus": "Payment Request Status",
   "PaymentRequestID": "Payment Request ID",
+  "DueDate": "Due Date",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

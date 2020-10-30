@@ -2,6 +2,30 @@
   <v-card class="ec-card d-flex flex-column">
     <v-card-text class="py-2">
       <v-form class="ec-form" ref="form" lazy-validation>
+
+        <v-menu
+          ref="dueDateMenu"
+          v-model="dueDateMenu"
+          :close-on-content-click="false"
+          :return-value.sync="model.dueDate"
+          offset-y
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="model.dueDate"
+              :label="$t('DueDate')"
+              readonly
+              outlined
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="model.dueDate" :min="minDate" no-title scrollable>
+            <v-spacer></v-spacer>
+            <v-btn text color="primary" @click="$refs.dueDateMenu.save(model.dueDate)">{{$t("Ok")}}</v-btn>
+          </v-date-picker>
+        </v-menu>
+
         <invoice-details-form ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-form>
 
         <installment-details
@@ -80,7 +104,9 @@ export default {
         invoiceDetails: this.data.invoiceDetails || {} 
       },
       vr: ValidationRules,
-      messageDialog: false
+      messageDialog: false,
+      dueDateMenu: false,
+      minDate: new Date().toISOString(),
     };
   },
   computed: {
@@ -113,7 +139,7 @@ export default {
   methods: {
     ok() {
       if (!this.$refs.form.validate()) return;
-
+      
       let result = { ...this.model };
       if (this.$refs.instDetails) {
         result.installmentDetails = this.$refs.instDetails.model;

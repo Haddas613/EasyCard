@@ -146,6 +146,7 @@ const routes = [
       {
         name: 'BillingDeals',
         path: 'billing-deals/list',
+        props: true,
         component: () => import('../pages/billing-deals/BillingDealsList.vue'),
       },
       {
@@ -172,6 +173,7 @@ const routes = [
       {
         name: 'Invoices',
         path: 'invoicing/list',
+        props: true,
         component: () => import('../pages/invoicing/InvoicesList.vue'),
       },
       {
@@ -185,7 +187,16 @@ const routes = [
       {
         name: 'PaymentRequests',
         path: 'payment-requests/list',
+        props: true,
         component: () => import('../pages/payment-requests/PaymentRequestsList.vue'),
+      },
+      {
+        name: 'PaymentRequest',
+        meta:{
+          backBtn: 'PaymentRequests'
+        },
+        path: 'payment-requests/view/:id',
+        component: () => import('../pages/payment-requests/PaymentRequestInfo.vue'),
       },
       {
         name: '404',

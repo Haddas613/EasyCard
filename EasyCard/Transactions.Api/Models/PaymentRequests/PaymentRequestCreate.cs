@@ -36,6 +36,11 @@ namespace Transactions.Api.Models.PaymentRequests
         public decimal? PaymentRequestAmount { get; set; }
 
         /// <summary>
+        /// Due date
+        /// </summary>
+        public DateTime? DueDate { get; set; }
+
+        /// <summary>
         /// Installment payments details (should be omitted in case of regular deal)
         /// </summary>
         public InstallmentDetails InstallmentDetails { get; set; }
