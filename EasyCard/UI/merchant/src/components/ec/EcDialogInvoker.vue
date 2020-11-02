@@ -7,7 +7,7 @@
       </v-list-item-action>
       <v-list-item-content>
         <v-row no-gutters>
-          <v-col v-if="hasSlot('left')">
+          <v-col v-if="hasSlot('left')" class="px-1">
             <slot name="left"></slot>
           </v-col>
           <v-col v-if="hasSlot('right')" class="text-end">

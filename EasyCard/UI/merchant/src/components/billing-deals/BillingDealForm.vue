@@ -179,48 +179,11 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="4" class="py-0">
-        <v-text-field
-          v-model="model.dealDetails.consumerEmail"
-          :label="$t('ConsumerEmail')"
-          :rules="[vr.primitives.email]"
-          outlined
-          @keydown.native.space.prevent
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="4" class="py-0">
-        <v-text-field
-          v-model="model.dealDetails.consumerPhone"
-          :label="$t('ConsumerPhone')"
-          :rules="[vr.primitives.maxLength(50)]"
-          outlined
-          @keydown.native.space.prevent
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="4" class="py-0">
-        <v-text-field
-          v-model="model.dealDetails.dealReference"
-          :counter="50"
-          :rules="[vr.primitives.maxLength(50)]"
-          :label="$t('DealReference')"
-          @keydown.native.space.prevent
-          outlined
-          required
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12">
-        <v-textarea
-          v-model="model.dealDetails.dealDescription"
-          :counter="1024"
-          outlined
-          rows="3"
-          :rules="[vr.primitives.required,  vr.primitives.maxLength(1024)]"
-        >
-          <template v-slot:label>
-            <div>{{$t('DealDescription')}}</div>
-          </template>
-        </v-textarea>
-      </v-col>
+      <deal-details
+        ref="dealDetails"
+        :data="model.dealDetails"
+        :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
+      ></deal-details>
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
         <v-btn class="mx-1" color="white" :to="{ name: 'BillingDeals' }">{{$t('Cancel')}}</v-btn>
         <v-btn color="primary" @click="ok()" :disabled="!token">{{$t('Save')}}</v-btn>
@@ -240,7 +203,7 @@ import { mapState } from "vuex";
 
 export default {
   components: {
-    InstallmentDetails: () => import("../transactions/InstallmentDetailsForm"),
+    DealDetails: () => import("../transactions/DealDetailsForm"),
     CustomersList: () => import("../customers/CustomersList"),
     BillingScheduleForm: () => import("./BillingScheduleForm"),
     BillingScheduleString: () => import("./BillingScheduleString"),
@@ -311,9 +274,11 @@ export default {
     },
     ok() {
       if (!this.$refs.form.validate()) return;
+      let result = { ...this.model };
+      result.dealDetails = this.$refs.dealDetails.getData();
       //if this is edit and billing schedule has not been clicked, no need to validate
-      if(!this.$refs.billingScheduleRef && this.model.billingDealID){
-        return this.$emit("ok", this.model);
+      if (!this.$refs.billingScheduleRef && this.model.billingDealID) {
+        return this.$emit("ok", result);
       }
       if (
         !this.$refs.billingScheduleRef ||
@@ -323,7 +288,8 @@ export default {
         this.$toasted.show(this.$t("CheckScheduleSettings"), { type: "error" });
         return;
       }
-      this.$emit("ok", this.model);
+
+      this.$emit("ok", result);
     },
     applySchedule() {
       if (!this.$refs.billingScheduleRef.validate()) {
@@ -345,7 +311,9 @@ export default {
         this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
     }
     if (this.model.dealDetails.consumerID) {
-      this.selectedCustomer = await this.$api.consumers.getConsumer(this.model.dealDetails.consumerID);
+      this.selectedCustomer = await this.$api.consumers.getConsumer(
+        this.model.dealDetails.consumerID
+      );
       this.customerTokens =
         (
           await this.$api.cardTokens.getCustomerCardTokens(
@@ -353,9 +321,12 @@ export default {
           )
         ).data || [];
 
-        if(this.model.creditCardToken){
-          this.selectedToken = this.lodash.find(this.customerTokens, t => t.creditCardTokenID === this.model.creditCardToken);
-        }
+      if (this.model.creditCardToken) {
+        this.selectedToken = this.lodash.find(
+          this.customerTokens,
+          t => t.creditCardTokenID === this.model.creditCardToken
+        );
+      }
     }
   }
 };

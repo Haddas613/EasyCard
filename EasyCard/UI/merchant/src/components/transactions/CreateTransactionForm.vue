@@ -104,7 +104,11 @@
 
         <v-row v-if="model.creditCardToken === null" class="py-2" no-gutters>
           <v-col cols="12">
-            <credit-card-secure-details ref="ccSecureDetails" :data="model.creditCardSecureDetails"  v-on:card-reader-update="cardReaderUpdated($event)"></credit-card-secure-details>
+            <credit-card-secure-details
+              ref="ccSecureDetails"
+              :data="model.creditCardSecureDetails"
+              v-on:card-reader-update="cardReaderUpdated($event)"
+            ></credit-card-secure-details>
           </v-col>
         </v-row>
 
@@ -115,32 +119,11 @@
         </v-row>
 
         <v-row>
-          <v-col cols="12" md="4" sm="4">
-            <v-text-field
-              v-model="model.dealDetails.dealReference"
-              :counter="50"
-              :rules="[vr.primitives.maxLength(50)]"
-              :label="$t('DealReference')"
-              @keydown.native.space.prevent
-              required
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4" sm="4">
-            <v-text-field
-              v-model="model.dealDetails.consumerEmail"
-              :label="$t('ConsumerEmail')"
-              :rules="[vr.primitives.email]"
-              @keydown.native.space.prevent
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4" sm="4">
-            <v-text-field
-              v-model="model.dealDetails.consumerPhone"
-              :label="$t('ConsumerPhone')"
-              :rules="[vr.primitives.maxLength(50)]"
-              @keydown.native.space.prevent
-            ></v-text-field>
-          </v-col>
+          <deal-details
+            ref="dealDetails"
+            :data="model.dealDetails"
+            :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
+          ></deal-details>
         </v-row>
         <v-row class="d-flex align-end">
           <v-col cols="12" md="6">
@@ -184,7 +167,11 @@ import CreditCardSecureDetails from "./CreditCardSecureDetailsForm";
 import InstallmentDetails from "./InstallmentDetailsForm";
 
 export default {
-  components: { CreditCardSecureDetails, InstallmentDetails },
+  components: {
+    CreditCardSecureDetails,
+    InstallmentDetails,
+    DealDetails: () => import("../transactions/DealDetailsForm")
+  },
   name: "CreateTransactionForm",
   props: {
     isRefund: {
@@ -237,10 +224,10 @@ export default {
         }, 3000);
       }
     },
-    cardReaderUpdated(isPresent){
-      if(isPresent){
+    cardReaderUpdated(isPresent) {
+      if (isPresent) {
         this.model.cardPresence = this.dictionaries.cardPresenceEnum[0].code;
-      }else{
+      } else {
         this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
       }
     }

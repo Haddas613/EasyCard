@@ -68,6 +68,7 @@ export default {
         },
         {
           icon: "mdi-chevron-left-box-outline",
+          to: "/wizard/payment-requests/create",
           css: "orange--text",
           text: "Request"
         },

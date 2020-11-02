@@ -25,40 +25,12 @@
           v-if="isInstallmentTransaction"
         ></installment-details>
 
-        <v-text-field
-          v-model="model.dealDetails.dealReference"
-          :counter="50"
-          :rules="[vr.primitives.maxLength(50)]"
-          :label="$t('DealReference')"
-          @keydown.native.space.prevent
-          outlined
-          required
-        ></v-text-field>
-        <v-text-field
-          v-model="model.dealDetails.consumerEmail"
-          :label="$t('ConsumerEmail')"
-          :rules="[vr.primitives.required, vr.primitives.email]"
-          outlined
-          @keydown.native.space.prevent
-        ></v-text-field>
-        <v-text-field
-          v-model="model.dealDetails.consumerPhone"
-          :label="$t('ConsumerPhone')"
-          :rules="[vr.primitives.maxLength(50)]"
-          outlined
-          @keydown.native.space.prevent
-        ></v-text-field>
-        <v-textarea
-          v-model="model.dealDetails.dealDescription"
-          :counter="1024"
-          outlined
-          rows="3"
-          :rules="[vr.primitives.required,  vr.primitives.maxLength(1024)]"
-        >
-          <template v-slot:label>
-            <div>{{$t('DealDescription')}}</div>
-          </template>
-        </v-textarea>
+        <deal-details
+          ref="dealDetails"
+          :data="model.dealDetails"
+          :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
+        ></deal-details>
+
         <v-switch v-model="issueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
         <div v-if="issueDocument">
           <invoice-details-form ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-form>
@@ -78,6 +50,7 @@ import { mapState } from "vuex";
 export default {
   components: {
     InstallmentDetails: () => import("./InstallmentDetailsForm"),
+    DealDetails: () => import("../transactions/DealDetailsForm"),
     InvoiceDetailsForm: () => import("../invoicing/InvoiceDetailsForm"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
   },
@@ -145,7 +118,7 @@ export default {
       } else {
         result.invoiceDetails = null;
       }
-      
+      result.dealDetails = this.$refs.dealDetails.getData();
       this.$emit("ok", result);
     }
   }

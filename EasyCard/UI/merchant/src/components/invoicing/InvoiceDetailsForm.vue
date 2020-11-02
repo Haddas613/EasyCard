@@ -23,14 +23,14 @@
         ></ec-radio-group>
       </template>
     </ec-dialog>
-    <v-text-field
+    <!-- <v-text-field
       v-model="model.invoiceNumber"
       :label="$t('InvoiceNumber')"
       :rules="[vr.primitives.required, vr.primitives.maxLength(50)]"
       outlined
       @keydown.native.space.prevent
       required
-    ></v-text-field>
+    ></v-text-field> -->
     <v-text-field
       v-model="model.invoiceSubject"
       :label="$t('InvoiceSubject')"
@@ -88,6 +88,10 @@ export default {
   },
   async mounted() { 
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+    if(!this.model.invoiceSubject){
+        //TODO: Generate invoice subject
+      this.model.invoiceSubject = "Test invoice subject. Generated automatically";
+    }
   },
   methods: {
     getData() {
