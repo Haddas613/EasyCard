@@ -1,4 +1,5 @@
 import i18n from '../i18n'
+import { ssrCompileToFunctions } from 'vue-template-compiler';
 
 const primitives = {
     /**Common */
@@ -16,6 +17,14 @@ const primitives = {
     expired: (allowedTo) => (v) => (v >= allowedTo) || i18n.t('Expired'),
 
     biggerThan: (min) => (v) => (v > min) || i18n.t('@BiggerThan').replace('@min', min),
+
+    precision: (precision) => (v) => {
+        if(!v || v.indexOf(".") === -1){ return true }
+        
+        let split = (parseFloat(v)).toString().split(".");
+
+        return split[split.length - 1].length <= 2 || i18n.t("@AllowedPrecision").replace("@val", precision);
+    },
 
     email: (v) => {
         if(!v)

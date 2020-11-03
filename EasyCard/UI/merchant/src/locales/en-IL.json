@@ -63,6 +63,7 @@
   "PleaseSelect": "Please Select",
   "CheckScheduleSettings": "Check Schedule Settings",
   "PercentageShouldBeLessThanOneHundred": "Percentage should be less than 100 to apply",
+  "@AllowedPrecision": "Allowed precision is @val",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
