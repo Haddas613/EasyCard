@@ -254,9 +254,10 @@ export default {
         paymentTransactionID: this.model.$paymentTransactionID
       });
 
-      if (!operation) return;
+      if (!operation || operation.numberOfRecords !== 1) return;
+      let opResult = operation.data[0];
 
-      if (operation.status === "success") {
+      if (opResult.paymentTransactionID == this.$route.params.id && opResult.transmissionStatus == "Transmitted") {
         let tr = await this.$api.transactions.getTransaction(
           this.$route.params.id
         );
