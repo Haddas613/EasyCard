@@ -187,7 +187,7 @@ export default {
           {
             text: this.$t("Create"),
             fn: () => {
-              this.$router.push({ name: "Createinvoice" });
+              this.$router.push({ name: "CreateInvoice" });
             }
           }
         ]

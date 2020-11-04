@@ -154,6 +154,8 @@
   "PaymentRequestStatus": "Payment Request Status",
   "PaymentRequestID": "Payment Request ID",
   "DueDate": "Due Date",
+  "DateFrom": "Date From",
+  "DateTo": "Date To",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

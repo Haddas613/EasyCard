@@ -96,7 +96,7 @@ export default {
   methods: {
     getData() {
       if(!this.model.invoiceType){
-        invoiceTypeDialog = true;
+        this.invoiceTypeDialog = true;
         return false;
       }
 
