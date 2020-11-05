@@ -163,7 +163,7 @@
         <v-text-field
           v-model.number="model.transactionAmount"
           :label="$t('TransactionAmount')"
-          :rules="[vr.primitives.required]"
+          :rules="[vr.primitives.required, vr.primitives.precision(2)]"
           required
           outlined
         ></v-text-field>

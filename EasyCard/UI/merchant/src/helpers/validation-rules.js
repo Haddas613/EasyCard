@@ -21,9 +21,9 @@ const primitives = {
     positiveOnly: (v) => (!v || v >= 0) || i18n.t('OnlyPositiveNumbersAreAllowed'),
 
     precision: (precision) => (v) => {
-        if(!v || v.indexOf(".") === -1){ return true }
+        if(!v || v.toString().indexOf(".") === -1){ return true }
         
-        let split = (parseFloat(v)).toString().split(".");
+        let split = v.toString().split(".");
 
         return split[split.length - 1].length <= 2 || i18n.t("@AllowedPrecision").replace("@val", precision);
     },
