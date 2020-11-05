@@ -64,6 +64,7 @@
   "CheckScheduleSettings": "Check Schedule Settings",
   "PercentageShouldBeLessThanOneHundred": "Percentage should be less than 100 to apply",
   "@AllowedPrecision": "Allowed precision is @val",
+  "OnlyPositiveNumbersAreAllowed": "Only positive numbers are allowed",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",

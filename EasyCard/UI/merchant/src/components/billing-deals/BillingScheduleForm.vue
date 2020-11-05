@@ -16,7 +16,7 @@
         <v-text-field
           v-model.number="model.repeatPeriod"
           :label="$t('RepeatPeriod')"
-          :rules="[vr.primitives.requiredDepends(model.repeatPeriodType)]"
+          :rules="[vr.primitives.requiredDepends(model.repeatPeriodType), vr.primitives.positiveOnly]"
           type="number"
           :disabled="!model.repeatPeriodType"
           outlined

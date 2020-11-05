@@ -18,6 +18,8 @@ const primitives = {
 
     biggerThan: (min) => (v) => (v > min) || i18n.t('@BiggerThan').replace('@min', min),
 
+    positiveOnly: (v) => (!v || v >= 0) || i18n.t('OnlyPositiveNumbersAreAllowed'),
+
     precision: (precision) => (v) => {
         if(!v || v.indexOf(".") === -1){ return true }
         
