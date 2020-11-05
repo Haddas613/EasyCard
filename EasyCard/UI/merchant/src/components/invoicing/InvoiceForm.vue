@@ -16,10 +16,17 @@
           outlined
         ></v-text-field>
 
+        <v-switch 
+          v-model="isInstallmentTransaction" 
+          :label="$t('InstallmentTransaction')" 
+          class="pt-0 mt-0" 
+          v-bind:class="{'pb-2': !isInstallmentTransaction}"
+          hide-details="true"></v-switch>
         <installment-details
           ref="instDetails"
           :data="model.installmentDetails"
           v-if="isInstallmentTransaction"
+          :hide-title="true"
         ></installment-details>
 
         <deal-details
@@ -67,17 +74,11 @@ export default {
         invoiceDetails: this.data.invoiceDetails || {}
       },
       vr: ValidationRules,
-      messageDialog: false
+      messageDialog: false,
+      isInstallmentTransaction: false
     };
   },
   computed: {
-    isInstallmentTransaction() {
-      return false; //TODO
-      return (
-        this.model.invoiceDetails.invoiceType === "installments" ||
-        this.model.invoiceDetails.invoiceType === "credit"
-      );
-    },
     ...mapState({
       currencyStore: state => state.settings.currency
     })

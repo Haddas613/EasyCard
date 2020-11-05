@@ -1,13 +1,12 @@
 <template>
   <v-card outlined class="ecbg border-primary">
-    <v-card-subtitle class="subtitle-1">{{$t('InstallmentDetails')}}</v-card-subtitle>
+    <v-card-subtitle v-if="!hideTitle" class="subtitle-1">{{$t('InstallmentDetails')}}</v-card-subtitle>
     <v-container fluid class="px-0">
       <v-row no-gutters>
-        <v-col cols="12">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model.number="model.numberOfPayments"
             :label="$t('NumberOfPayments')"
-            required
             :rules="[vr.primitives.required, vr.primitives.inRange(1, 100)]"
             type="number"
             min="1"
@@ -15,7 +14,7 @@
             outlined
           ></v-text-field>
         </v-col>
-        <v-col cols="12">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model.number="model.initialPaymentAmount"
             :label="$t('InitialPaymentAmount')"
@@ -23,11 +22,10 @@
             min="0.01"
             step="0.01"
             :rules="[vr.primitives.required]"
-            required
             outlined
           ></v-text-field>
         </v-col>
-        <v-col cols="12">
+        <v-col cols="12" md="4">
           <v-text-field
             v-model.number="model.installmentPaymentAmount"
             :label="$t('InstallmentPaymentAmount')"
@@ -35,7 +33,6 @@
             min="0.01"
             step="0.01"
             :rules="[vr.primitives.required]"
-            required
             outlined
           ></v-text-field>
         </v-col>
@@ -45,7 +42,6 @@
             :label="$t('TotalAmount')"
             type="number"
             disabled
-            required
             outlined
           ></v-text-field>
         </v-col>
@@ -59,7 +55,14 @@ import ValidationRules from "../../helpers/validation-rules";
 
 export default {
   name: "InstallmentDetailsForm",
-  props: { data: Object },
+  props: {
+    data: Object,
+    hideTitle: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  },
   data() {
     return {
       vr: ValidationRules,
@@ -74,9 +77,11 @@ export default {
         !this.model.installmentPaymentAmount
       )
         return null;
-        
-      this.model.totalAmount = (this.model.initialPaymentAmount + (this.model.numberOfPayments - 1) * this.model.installmentPaymentAmount);
-      
+
+      this.model.totalAmount =
+        this.model.initialPaymentAmount +
+        (this.model.numberOfPayments - 1) * this.model.installmentPaymentAmount;
+
       return this.model.totalAmount;
     }
   }
