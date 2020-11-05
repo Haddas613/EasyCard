@@ -60,7 +60,7 @@ namespace Transactions.Api.Extensions.Filtering
 
             if (filter.PaymentRequestAmount > 0)
             {
-                src = src.Where(t => t.PaymentRequestAmount >= filter.PaymentRequestAmount);
+                src = src.Where(t => t.PaymentRequestAmount == filter.PaymentRequestAmount);
             }
 
             return src;
