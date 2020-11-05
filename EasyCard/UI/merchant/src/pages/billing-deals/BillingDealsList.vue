@@ -10,10 +10,12 @@
         <v-row class="py-0" no-gutters>
           <v-col cols="9">{{$t("Overview")}}</v-col>
           <v-col cols="2" class="text-end">
-            <span
-              class="body-1 primary--text cursor-pointer"
+            <v-btn
+              class="button"
+              color="primary"
+              outlined
               @click="showDialog = true;"
-            >{{$t('Filter')}}</span>
+            >{{$t('Filter')}}</v-btn>
           </v-col>
           <v-col cols="1" class="text-end">
             <v-btn icon @click="refresh()" :loading="loading">

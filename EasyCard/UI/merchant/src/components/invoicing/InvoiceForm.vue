@@ -2,6 +2,19 @@
   <v-card class="ec-card d-flex flex-column">
     <v-card-text class="py-2">
       <v-form class="ec-form" ref="form" lazy-validation>
+        <v-text-field
+          v-model="model.cardOwnerName"
+          :counter="50"
+          :rules="[vr.primitives.required, vr.primitives.maxLength(50)]"
+          :label="$t('CustomerName')"
+          outlined
+        ></v-text-field>
+        <v-text-field
+          v-model="model.cardOwnerNationalID"
+          :rules="[vr.special.israeliNationalId]"
+          :label="$t('NationalID')"
+          outlined
+        ></v-text-field>
 
         <installment-details
           ref="instDetails"
@@ -42,15 +55,16 @@ export default {
     data: {
       type: Object,
       default: null,
-      required: true
+      required: true,
+      vr: ValidationRules
     }
   },
   data() {
     return {
       dictionaries: {},
-      model: { 
-        ...this.data, 
-        invoiceDetails: this.data.invoiceDetails || {} 
+      model: {
+        ...this.data,
+        invoiceDetails: this.data.invoiceDetails || {}
       },
       vr: ValidationRules,
       messageDialog: false
@@ -58,7 +72,7 @@ export default {
   },
   computed: {
     isInstallmentTransaction() {
-      return false;//TODO
+      return false; //TODO
       return (
         this.model.invoiceDetails.invoiceType === "installments" ||
         this.model.invoiceDetails.invoiceType === "credit"
@@ -78,7 +92,11 @@ export default {
           this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
       }
       if (!this.model.invoiceDetails.invoiceType) {
-        this.$set(this.model.invoiceDetails, 'invoiceType', this.dictionaries.invoiceTypeEnum[0]);
+        this.$set(
+          this.model.invoiceDetails,
+          "invoiceType",
+          this.dictionaries.invoiceTypeEnum[0]
+        );
       }
       // this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
     }
@@ -90,13 +108,13 @@ export default {
       let result = { ...this.model };
       if (this.$refs.instDetails) {
         result.installmentDetails = this.$refs.instDetails.model;
-      }else{
+      } else {
         result.installmentDetails = null;
       }
 
       result.invoiceDetails = this.$refs.invoiceDetails.getData();
       result.dealDetails = this.$refs.dealDetails.getData();
-      if(result.invoiceDetails) this.$emit("ok", result);
+      if (result.invoiceDetails) this.$emit("ok", result);
     }
   }
 };

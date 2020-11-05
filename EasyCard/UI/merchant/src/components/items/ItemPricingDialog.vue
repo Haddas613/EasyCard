@@ -77,10 +77,35 @@
           <v-text-field
             class="mx-2 mt-4"
             v-if="model"
-            :value="((model.price * model.amount) - model.discount).toFixed(2)"
+            :value="totalAmount"
             outlined
             readonly
             :label="$t('Total')"
+            hide-details="true"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row no-gutters>
+        <v-col cols="12" md="6">
+          <v-text-field
+            class="mx-2 mt-4"
+            v-if="model"
+            :value="(totalAmount * 0.17).toFixed(2)"
+            outlined
+            readonly
+            :label="$t('VAT')"
+            hide-details="true"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-text-field
+            class="mx-2 mt-4"
+            v-if="model"
+            value="17%"
+            readonly
+            outlined
+            :label="$t('VATPercent')"
+            @change="amountChanged()"
             hide-details="true"
           ></v-text-field>
         </v-col>
@@ -136,6 +161,11 @@ export default {
       },
       set: function(val) {
         this.$emit("update:show", val);
+      }
+    },
+    totalAmount: {
+      get: function(){
+        return ((this.model.price * this.model.amount) - this.model.discount).toFixed(2);
       }
     }
   },

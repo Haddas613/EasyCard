@@ -33,6 +33,11 @@ class ApiBase {
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */
     async get(url, params) {
+        if(!this.oidc.user || !this.oidc.user.access_token){
+            Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error'});
+            this.oidc.signOut();
+            return null;
+        }
         if (params) {
             if (params.page && params.itemsPerPage) {
                 params.take = params.itemsPerPage;

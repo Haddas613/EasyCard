@@ -28,7 +28,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">
-          <invoice-form :data="model" v-on:ok="processInvoice($event)"></invoice-form>
+          <invoice-form v-if="step === 3" :data="model" v-on:ok="processInvoice($event)"></invoice-form>
         </v-stepper-content>
 
         <v-stepper-content step="4" class="py-0 px-0">
@@ -154,6 +154,8 @@ export default {
       this.model.dealDetails.consumerEmail = data.consumerEmail;
       this.model.dealDetails.consumerPhone = data.consumerPhone;
       this.model.dealDetails.consumerID = data.consumerID;
+      this.model.cardOwnerName = data.consumerName;
+      this.model.cardOwnerNationalID = data.consumerNationalID;
       this.step++;
     },
     processAmount(data) {

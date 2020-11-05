@@ -119,6 +119,7 @@
   "RejectionReason": "Rejection Reason",
   "CustomerID": "Customer ID",
   "CustomerEmail": "Customer Email",
+  "CustomerName": "Customer Name",
   "CustomerPhone": "Customer Phone",
   "CustomerAddress": "Customer Address",
   "ShvaDealID": "Shva Deal ID",
@@ -156,6 +157,8 @@
   "DueDate": "Due Date",
   "DateFrom": "Date From",
   "DateTo": "Date To",
+  "VAT": "VAT",
+  "VATPercent": "VAT %",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -172,6 +175,7 @@
   "Login": "Login",
   "LoginWelcomeText": "Welcome to easycard",
   "LoginTitle": "Please proceed with login",
+  "SessionExpired": "Session has expired",
 
   "--OPERATION RESULT MESSAGES--": null,
   "CreatedSuccessfully": "Created Successfully",
