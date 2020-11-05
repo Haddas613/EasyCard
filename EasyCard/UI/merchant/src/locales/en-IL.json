@@ -115,6 +115,7 @@
   "IssueDocument": "Issue Document",
   "PaymentTransactionID": "Transaction ID",
   "QuickTime": "Quick Time",
+  "QuickDate": "Quick Date",
   "AmountFrom": "Amount from",
   "AmountTo": "Amount to",
   "RejectionReason": "Rejection Reason",

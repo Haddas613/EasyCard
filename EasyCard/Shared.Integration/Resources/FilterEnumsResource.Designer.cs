@@ -142,6 +142,42 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last month.
+        /// </summary>
+        public static string LastMonth {
+            get {
+                return ResourceManager.GetString("LastMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last two weeks.
+        /// </summary>
+        public static string LastTwoWeeks {
+            get {
+                return ResourceManager.GetString("LastTwoWeeks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last week.
+        /// </summary>
+        public static string LastWeek {
+            get {
+                return ResourceManager.GetString("LastWeek", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last year.
+        /// </summary>
+        public static string LastYear {
+            get {
+                return ResourceManager.GetString("LastYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
         public static string None {

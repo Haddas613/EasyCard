@@ -50,6 +50,7 @@ namespace Transactions.Api.Services
             var cardPresenceTypeEnumType = typeof(CardPresenceEnum);
 
             var filterQuickTimeEnumType = typeof(QuickTimeFilterTypeEnum);
+            var filterQuickDateEnumType = typeof(QuickDateFilterTypeEnum);
             var filterQuickStatusEnumType = typeof(QuickStatusFilterTypeEnum);
             var filterDateEnumType = typeof(DateFilterTypeEnum);
             var invoiceTypeEnum = typeof(InvoiceTypeEnum);
@@ -86,6 +87,9 @@ namespace Transactions.Api.Services
 
             var filterQuickTimeTypes = Enum.GetValues(filterQuickTimeEnumType).Cast<QuickTimeFilterTypeEnum>()
                 .ToDictionary(m => filterQuickTimeEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture) );
+
+            var filterQuickDateTypes = Enum.GetValues(filterQuickTimeEnumType).Cast<QuickDateFilterTypeEnum>()
+                .ToDictionary(m => filterQuickDateEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture));
 
             var filterQuickStatusTypes = Enum.GetValues(filterQuickStatusEnumType).Cast<QuickStatusFilterTypeEnum>()
                 .ToDictionary(m => filterQuickStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture) );
@@ -125,6 +129,7 @@ namespace Transactions.Api.Services
             response.CurrencyEnum = currTypes;
             response.CardPresenceEnum = cardPresenceTypes;
             response.QuickTimeFilterTypeEnum = filterQuickTimeTypes;
+            response.QuickDateFilterTypeEnum = filterQuickDateTypes;
             response.QuickStatusFilterTypeEnum = filterQuickStatusTypes;
             response.DateFilterTypeEnum = filterDateTypes;
             response.InvoiceTypeEnum = invoiceTypes;

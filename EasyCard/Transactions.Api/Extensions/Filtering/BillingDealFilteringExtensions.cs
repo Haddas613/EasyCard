@@ -77,9 +77,9 @@ namespace Transactions.Api.Extensions.Filtering
         private static IQueryable<BillingDeal> HandleDateFiltering(IQueryable<BillingDeal> src, BillingDealsFilter filter)
         {
             //TODO: Quick time filters using SequentialGuid https://stackoverflow.com/questions/54920200/entity-framework-core-guid-greater-than-for-paging
-            if (filter.QuickTimeFilter != null)
+            if (filter.QuickDateFilter != null)
             {
-                var dateTime = CommonFiltertingExtensions.QuickTimeToDateTime(filter.QuickTimeFilter.Value);
+                var dateTime = CommonFiltertingExtensions.QuickDateToDateTime(filter.QuickDateFilter.Value);
 
                 if (filter.DateType == DateFilterTypeEnum.Created)
                 {

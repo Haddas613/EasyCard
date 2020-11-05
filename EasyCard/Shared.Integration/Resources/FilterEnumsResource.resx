@@ -144,6 +144,18 @@
   <data name="LastHour" xml:space="preserve">
     <value>Last hour</value>
   </data>
+  <data name="LastMonth" xml:space="preserve">
+    <value>Last month</value>
+  </data>
+  <data name="LastTwoWeeks" xml:space="preserve">
+    <value>Last two weeks</value>
+  </data>
+  <data name="LastWeek" xml:space="preserve">
+    <value>Last week</value>
+  </data>
+  <data name="LastYear" xml:space="preserve">
+    <value>Last year</value>
+  </data>
   <data name="None" xml:space="preserve">
     <value>None</value>
   </data>

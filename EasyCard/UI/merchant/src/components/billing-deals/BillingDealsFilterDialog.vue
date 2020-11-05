@@ -33,11 +33,11 @@
           </v-col>
           <v-col cols="12" md="6" class="py-0">
             <v-select
-              :items="dictionaries.quickTimeFilterTypeEnum"
+              :items="dictionaries.quickDateFilterTypeEnum"
               item-text="description"
               item-value="code"
-              v-model="model.quickTimeFilter"
-              :label="$t('QuickTime')"
+              v-model="model.quickDateFilter"
+              :label="$t('QuickDate')"
               outlined
               clearable
             ></v-select>

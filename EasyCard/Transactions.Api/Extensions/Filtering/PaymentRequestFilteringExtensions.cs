@@ -30,9 +30,9 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.Currency == filter.Currency);
             }
 
-            if (filter.QuickTimeFilter != null)
+            if (filter.QuickDateFilter != null)
             {
-                var dateTime = CommonFiltertingExtensions.QuickTimeToDateTime(filter.QuickTimeFilter.Value);
+                var dateTime = CommonFiltertingExtensions.QuickDateToDateTime(filter.QuickDateFilter.Value);
 
                 if (filter.DateType == DateFilterTypeEnum.Created)
                 {

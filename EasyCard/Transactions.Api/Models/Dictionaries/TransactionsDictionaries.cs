@@ -24,6 +24,8 @@ namespace Transactions.Api.Models.Dictionaries
 
         public Dictionary<string, string> QuickTimeFilterTypeEnum { get; set; }
 
+        public Dictionary<string, string> QuickDateFilterTypeEnum { get; set; }
+
         public Dictionary<string, string> QuickStatusFilterTypeEnum { get; set; }
 
         public Dictionary<string, string> DateFilterTypeEnum { get; set; }

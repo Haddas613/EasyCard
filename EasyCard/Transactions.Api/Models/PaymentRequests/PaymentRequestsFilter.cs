@@ -18,7 +18,7 @@ namespace Transactions.Api.Models.PaymentRequests
 
         public CurrencyEnum? Currency { get; set; }
 
-        public QuickTimeFilterTypeEnum? QuickTimeFilter { get; set; }
+        public QuickDateFilterTypeEnum? QuickDateFilter { get; set; }
 
         public DateTime? DateFrom { get; set; }
 

@@ -18,5 +18,16 @@ namespace Transactions.Api.Extensions.Filtering
                 QuickTimeFilterTypeEnum.Last24Hours => DateTime.UtcNow.AddHours(-24),
                 _ => DateTime.MinValue,
             };
+
+        public static DateTime QuickDateToDateTime(QuickDateFilterTypeEnum typeEnum)
+            => typeEnum switch
+            {
+                QuickDateFilterTypeEnum.Last24Hours => DateTime.UtcNow.AddHours(-24),
+                QuickDateFilterTypeEnum.LastWeek => DateTime.UtcNow.AddDays(-7),
+                QuickDateFilterTypeEnum.LastTwoWeeks => DateTime.UtcNow.AddDays(-14),
+                QuickDateFilterTypeEnum.LastMonth => DateTime.UtcNow.AddMonths(-1),
+                QuickDateFilterTypeEnum.LastYear => DateTime.UtcNow.AddYears(-1),
+                _ => DateTime.MinValue,
+            };
     }
 }

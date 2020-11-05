@@ -155,9 +155,18 @@ namespace Transactions.Api.Extensions.Filtering
         private static IQueryable<PaymentTransaction> HandleDateFiltering(IQueryable<PaymentTransaction> src, TransactionsFilter filter)
         {
             //TODO: Quick time filters using SequentialGuid https://stackoverflow.com/questions/54920200/entity-framework-core-guid-greater-than-for-paging
-            if (filter.QuickTimeFilter != null)
+            if (filter.QuickDateFilter != null)
             {
-                src = FilterByQuickTime(src, filter.QuickTimeFilter.Value);
+                var dateTime = CommonFiltertingExtensions.QuickDateToDateTime(filter.QuickDateFilter.Value);
+
+                if (filter.DateType == DateFilterTypeEnum.Created)
+                {
+                    src = src.Where(t => t.TransactionTimestamp >= dateTime);
+                }
+                else if (filter.DateType == DateFilterTypeEnum.Updated)
+                {
+                    src = src.Where(t => t.UpdatedDate >= dateTime);
+                }
             }
             else
             {
@@ -190,17 +199,6 @@ namespace Transactions.Api.Extensions.Filtering
 
             return src;
         }
-
-        private static IQueryable<PaymentTransaction> FilterByQuickTime(IQueryable<PaymentTransaction> src, QuickTimeFilterTypeEnum typeEnum)
-            => typeEnum switch
-            {
-                QuickTimeFilterTypeEnum.Last5Minutes => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddMinutes(-5)),
-                QuickTimeFilterTypeEnum.Last15Minutes => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddMinutes(-15)),
-                QuickTimeFilterTypeEnum.Last30Minutes => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddMinutes(-30)),
-                QuickTimeFilterTypeEnum.LastHour => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddHours(-1)),
-                QuickTimeFilterTypeEnum.Last24Hours => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddHours(-24)),
-                _ => src,
-            };
 
         private static IQueryable<PaymentTransaction> FilterByQuickStatus(IQueryable<PaymentTransaction> src, QuickStatusFilterTypeEnum typeEnum)
             => typeEnum switch
