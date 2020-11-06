@@ -79,6 +79,7 @@ namespace IdentityServer
                         "https://localhost:44331/index.html",
                         "https://ecng-identity.azurewebsites.net",
                         "https://ecng-profile.azurewebsites.net",
+                        "https://ecng-profile.azurewebsites.net/",
                         "http://localhost:8080/",
                     },
                     AllowedCorsOrigins = { " http://localhost:8080", "https://localhost:44339", "https://ecng-profile.azurewebsites.net" },
