@@ -8,7 +8,7 @@
             <p class="display-1">easycard</p>
           </v-list-item>
           <v-list-item-avatar height="50" width="auto">
-            <img src="https://randomuser.me/api/portraits/women/54.jpg" />
+            <img src="https://randomuser.me/api/portraits/men/81.jpg" />
           </v-list-item-avatar>
           <v-list-item class="justify-center">
             <p class="subtitle-1 pt-4">{{$t('@GoodMorning').replace("@name", userName)}}</p>

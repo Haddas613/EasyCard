@@ -5,6 +5,7 @@
     app
     :right="isRtl"
     :color="'ecbg lighten-4'"
+    class="will-change-inherit"
   >
     <v-list class="py-0">
       <v-list-item two-line class="py-4">
@@ -13,7 +14,9 @@
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title>{{userName}}</v-list-item-title>
+          <v-list-item-title class="text-underline">
+            <router-link class="ecnavLink--text" :to="{name: 'MyProfile'}">{{userName}}</router-link>
+          </v-list-item-title>
           <!-- <v-list-item-subtitle>Subtext</v-list-item-subtitle> -->
         </v-list-item-content>
       </v-list-item>
@@ -67,41 +70,44 @@
           </v-list-item-content>
         </v-list-item>
       </template>
-      <v-list-item>
-        <v-list-item-action>
-          <v-switch class="px-2" :color="'accent'" label="RTL" v-model="$vuetify.rtl"></v-switch>
-        </v-list-item-action>
-        <v-list-item-content>
-          <lang-switcher class></lang-switcher>
-        </v-list-item-content>
-      </v-list-item>
+      <template v-if="false">
+        TODO: REMOVE
+        <v-list-item>
+          <v-list-item-action>
+            <v-switch class="px-2" :color="'accent'" label="RTL" v-model="$vuetify.rtl"></v-switch>
+          </v-list-item-action>
+          <v-list-item-content>
+            <lang-switcher class></lang-switcher>
+          </v-list-item-content>
+        </v-list-item>
 
-      <v-list-item>
-        <v-list-item-action class="my-1 mx-0">
-          <v-select
-            :items="terminals"
-            item-text="label"
-            item-value="terminalID"
-            return-object
-            v-model="terminal"
-            :label="$t('Terminal')"
-            outlined
-          ></v-select>
-        </v-list-item-action>
-      </v-list-item>
+        <v-list-item>
+          <v-list-item-action class="my-1 mx-0">
+            <v-select
+              :items="terminals"
+              item-text="label"
+              item-value="terminalID"
+              return-object
+              v-model="terminal"
+              :label="$t('Terminal')"
+              outlined
+            ></v-select>
+          </v-list-item-action>
+        </v-list-item>
 
-      <v-list-item>
-        <v-list-item-action class="my-1 mx-0">
-          <v-select
-            :items="currencies"
-            item-text="description"
-            return-object
-            v-model="currency"
-            :label="$t('Currency')"
-            outlined
-          ></v-select>
-        </v-list-item-action>
-      </v-list-item>
+        <v-list-item>
+          <v-list-item-action class="my-1 mx-0">
+            <v-select
+              :items="currencies"
+              item-text="description"
+              return-object
+              v-model="currency"
+              :label="$t('Currency')"
+              outlined
+            ></v-select>
+          </v-list-item-action>
+        </v-list-item>
+      </template>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -225,16 +231,16 @@ export default {
             }
           ]
         },
-        
-        { divider: true, dividerArea: "userAuth" },
-        { icon: "mdi-account-cog", text: "Profile", to: "/admin/profile" },
-        {
-          icon: "mdi-logout",
-          text: "Logout",
-          fn: () => {
-            mainAuth.signOut();
-          }
-        }
+        //TODO: REMOVE
+        // { divider: true, dividerArea: "userAuth" },
+        // { icon: "mdi-account-cog", text: "Profile", to: "/admin/profile" },
+        // {
+        //   icon: "mdi-logout",
+        //   text: "Logout",
+        //   fn: () => {
+        //     mainAuth.signOut();
+        //   }
+        // }
       ],
       terminals: [],
       currencies: []
@@ -287,8 +293,10 @@ export default {
         });
       }
     },
-    userName: function(){
-      return (this.$oidc && this.$oidc.userProfile) ? this.$oidc.userProfile.name : null;
+    userName: function() {
+      return this.$oidc && this.$oidc.userProfile
+        ? this.$oidc.userProfile.name
+        : null;
     }
   }
 };

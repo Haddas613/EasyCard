@@ -41,6 +41,7 @@
   "FilterPaymentRequests": "Filter Payment Requests",
   "InvoiceSettings": "Invoice Settings",
   "PaymentRequestSettings": "Payment Request Settings",
+  "MyProfile": "My profile",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -179,6 +180,8 @@
   "LoginWelcomeText": "Welcome to easycard",
   "LoginTitle": "Please proceed with login",
   "SessionExpired": "Session has expired",
+  "Logout": "Logout",
+  "SignOut": "Sign out",
 
   "--OPERATION RESULT MESSAGES--": null,
   "CreatedSuccessfully": "Created Successfully",

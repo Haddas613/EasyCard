@@ -152,3 +152,6 @@ $secondary : var(--v-secondary-base);
   box-shadow: none !important;
   text-shadow: none !important;
 }
+.will-change-inherit{
+  will-change: inherit !important;
+}

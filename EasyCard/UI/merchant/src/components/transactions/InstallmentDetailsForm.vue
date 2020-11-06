@@ -22,6 +22,7 @@
             min="0.01"
             step="0.01"
             :rules="[vr.primitives.required]"
+            v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
             outlined
           ></v-text-field>
         </v-col>

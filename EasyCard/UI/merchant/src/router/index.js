@@ -199,6 +199,15 @@ const routes = [
         component: () => import('../pages/payment-requests/PaymentRequestInfo.vue'),
       },
       {
+        name: 'MyProfile',
+        meta:{
+          backBtn: 'Dashboard'
+        },
+        path: 'profile',
+        component: () => import('../pages/profile/Profile.vue'),
+      },
+      
+      {
         name: '404',
         path: '*',
         component: () => import('../views/NotFound.vue'),
