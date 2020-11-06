@@ -114,7 +114,7 @@
 <script>
 import LangSwitcher from "../../components/LanguageSwitcher";
 import { mapState } from "vuex";
-import mainAuth from "../../auth";
+
 
 export default {
   name: "EcNav",
@@ -243,7 +243,8 @@ export default {
         // }
       ],
       terminals: [],
-      currencies: []
+      currencies: [],
+      userName: null
     };
   },
   async mounted() {
@@ -251,6 +252,8 @@ export default {
     this.terminals = terminals ? terminals.data : [];
     let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
     this.currencies = dictionaries ? dictionaries.currencyEnum : [];
+    this.userName = !!this.$oidc ? (await this.$oidc.getUserProfile()).name : null;
+    
   },
   computed: {
     drawerObj: {
@@ -292,11 +295,6 @@ export default {
           newCurrency: nv
         });
       }
-    },
-    userName: function() {
-      return this.$oidc && this.$oidc.userProfile
-        ? this.$oidc.userProfile.name
-        : null;
     }
   }
 };

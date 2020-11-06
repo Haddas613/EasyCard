@@ -33,8 +33,10 @@ class ApiBase {
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */
     async get(url, params) {
-        if(!this.oidc.user || !this.oidc.user.access_token){
-            Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error'});
+        const access_token = await this.oidc.getAccessToken()
+
+        if (!access_token) {
+            Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error' });
             this.oidc.signOut();
             return null;
         }
@@ -44,8 +46,8 @@ class ApiBase {
                 params.skip = params.itemsPerPage * (params.page - 1);
             }
             /**Clear up empty params */
-            for(var prop of Object.keys(params)){
-                if(!params[prop]){
+            for (var prop of Object.keys(params)) {
+                if (!params[prop]) {
                     delete params[prop];
                 }
             }
@@ -53,12 +55,12 @@ class ApiBase {
         let _urlKey = url;
 
         let requestUrl = new URL(url)
-        if(params){
+        if (params) {
             requestUrl.search = new URLSearchParams(params).toString();
             _urlKey += requestUrl.search;
         }
 
-        if(this._ongoingRequests[_urlKey]){
+        if (this._ongoingRequests[_urlKey]) {
             return this._ongoingRequests[_urlKey];
         }
 
@@ -68,7 +70,7 @@ class ApiBase {
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.oidc.user.access_token}`,
+                'Authorization': `Bearer ${access_token}`,
                 'Accept': 'application/json'
             }
         });
@@ -78,6 +80,14 @@ class ApiBase {
     }
 
     async post(url, payload) {
+        const access_token = await this.oidc.getAccessToken()
+
+        if (!access_token) {
+            Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error' });
+            this.oidc.signOut();
+            return null;
+        }
+
         let requestUrl = new URL(url);
         let request = fetch(requestUrl, {
             method: 'POST',
@@ -85,7 +95,7 @@ class ApiBase {
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.oidc.user.access_token}`,
+                'Authorization': `Bearer ${access_token}`,
                 'Accept': 'application/json'
             },
             body: JSON.stringify(payload)
@@ -95,6 +105,14 @@ class ApiBase {
     }
 
     async put(url, payload) {
+        const access_token = await this.oidc.getAccessToken()
+
+        if (!access_token) {
+            Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error' });
+            this.oidc.signOut();
+            return null;
+        }
+
         let requestUrl = new URL(url);
         let request = fetch(requestUrl, {
             method: 'PUT',
@@ -102,7 +120,7 @@ class ApiBase {
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.oidc.user.access_token}`,
+                'Authorization': `Bearer ${access_token}`,
                 'Accept': 'application/json'
             },
             body: JSON.stringify(payload)
@@ -112,6 +130,14 @@ class ApiBase {
     }
 
     async delete(url) {
+        const access_token = await this.oidc.getAccessToken()
+
+        if (!access_token) {
+            Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error' });
+            this.oidc.signOut();
+            return null;
+        }
+
         let requestUrl = new URL(url);
         let request = fetch(requestUrl, {
             method: 'DELETE',
@@ -119,7 +145,7 @@ class ApiBase {
             mode: 'cors',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.oidc.user.access_token}`,
+                'Authorization': `Bearer ${access_token}`,
                 'Accept': 'application/json'
             }
         });
@@ -131,38 +157,38 @@ class ApiBase {
         try {
             store.commit("ui/requestsCountIncrement");
             request = await request;
-            let result = await request.json();
+
             if (request.ok) {
+                let result = await request.json();
                 if (result.status === "warning") {
-                    Vue.toasted.show(result.message, { type: 'info'});
-                }else if(showSuccessToastr && result.status === "success"){
-                    Vue.toasted.show(result.message, { type: 'success', duration: 5000});
+                    Vue.toasted.show(result.message, { type: 'info' });
+                } else if (showSuccessToastr && result.status === "success") {
+                    Vue.toasted.show(result.message, { type: 'success', duration: 5000 });
                 }
 
                 return result;
-            }
-            else{
+            } else {
                 //Server Validation errors are returned to component
-                if(request.status === 400){
+                if (request.status === 400) {
+                    let result = await request.json();
                     return result;
-                }
-                else if(request.status === 401){
-                    Vue.toasted.show(result.message, { type: 'error'});
-                    this.oidc.signOut();
+                } else if (request.status === 401) {
+                    Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error' });
+                    await this.oidc.signOut();
                     return null;
-                }
-                else if(request.status === 404){
-                    Vue.toasted.show(result.message, { type: 'error'});
+                } else if (request.status === 404) {
+                    Vue.toasted.show(result.message, { type: 'error' });
                     return null;
-                }else{
-                    Vue.toasted.show(result.message, { type: 'error'});
+                } else {
+                    Vue.toasted.show(result.message, { type: 'error' });
                 }
-            } 
+            }
             return result;
 
         } catch (err) {
-            Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error'});
-        } finally{
+            debugger
+            Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error' });
+        } finally {
             store.commit("ui/requestsCountDecrement");
         }
         return null;
@@ -176,12 +202,11 @@ class ApiBase {
         for (const property in d) {
             let v = d[property]
             let h = headers[property]
-            if(!h) continue;
+            if (!h) continue;
             if (h.dataType == 'guid' && v && v.length > 8) {
                 d[`$${property}`] = v
                 d[property] = v.substring(0, 8)
-            }
-            else if (h.dataType == 'dictionary') {
+            } else if (h.dataType == 'dictionary') {
                 d[`$${property}`] = v
                 d[property] = dictionaries[h.dictionary][v]
             }
@@ -199,8 +224,7 @@ class ApiBase {
 }
 
 export default {
-    install: function (Vue, ) {
+    install: function(Vue, ) {
         Object.defineProperty(Vue.prototype, '$api', { value: new ApiBase() });
     }
 }
-

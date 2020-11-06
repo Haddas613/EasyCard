@@ -63,16 +63,24 @@ namespace IdentityServer
                         "https://localhost:44339/auth/signinsilent/main",
 
                         "http://localhost:8080/callback.html",
-                        "http://localhost:8080/silent.html",
-                        "http://localhost:8080/popup.html",
+                        "http://localhost:8080/silent-renew.html",
 
                         "https://ecng-profile.azurewebsites.net",
                         "https://ecng-profile.azurewebsites.net/auth/signinpop/main",
                         "https://ecng-profile.azurewebsites.net/auth/signinwin/main",
                         "https://ecng-profile.azurewebsites.net/auth/signinsilent/main",
+
+                        "https://ecng-profile.azurewebsites.net/callback.html",
+                        "https://ecng-profile.azurewebsites.net/silent-renew.html",
                     },
 
-                    PostLogoutRedirectUris = { "https://localhost:44331/index.html", "https://ecng-identity.azurewebsites.net" },
+                    PostLogoutRedirectUris =
+                    {
+                        "https://localhost:44331/index.html",
+                        "https://ecng-identity.azurewebsites.net",
+                        "https://ecng-profile.azurewebsites.net",
+                        "http://localhost:8080/",
+                    },
                     AllowedCorsOrigins = { " http://localhost:8080", "https://localhost:44339", "https://ecng-profile.azurewebsites.net" },
                     AllowAccessTokensViaBrowser = true,
                     AllowedScopes = { "openid", "profile", "transactions_api" }
