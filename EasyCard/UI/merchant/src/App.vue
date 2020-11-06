@@ -9,6 +9,7 @@
 
 <script>
 import { mapState } from "vuex";
+import i18n from "./i18n";
 
 export default {
   data() {
@@ -20,6 +21,9 @@ export default {
     ...mapState({
       requestsCountStore: state => state.ui.requestsCount
     })
+  },
+  mounted(){
+    this.$store.dispatch('localization/refreshLocale', { $vuetify: this.$vuetify, $i18n: i18n });
   },
   async beforeMount () {
     if(!!this.$oidc && await this.$oidc.isAuthenticated()) {

@@ -48,7 +48,10 @@
             ></customers-list>
           </template>
         </ec-dialog>
-        <ec-dialog-invoker v-on:click="customersDialog = true" class="py-2">
+        <ec-dialog-invoker
+          v-on:click="customersDialog = true"
+          v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-7': $vuetify.breakpoint.mdAndUp}"
+        >
           <template v-slot:prepend>
             <v-icon>mdi-account</v-icon>
           </template>
@@ -63,7 +66,31 @@
           </template>
         </ec-dialog-invoker>
       </v-col>
-      <v-col cols="12" md="6" class="pb-2 pt-0">
+      <v-col
+        cols="12"
+        md="6"
+        class="pb-2"
+        v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-0': $vuetify.breakpoint.mdAndUp}"
+      >
+        <v-flex class="d-flex justify-end">
+          <v-btn
+            color="success"
+            x-small
+            :disabled="!model.dealDetails.consumerID"
+            @click="ctokenDialog = true;"
+          >
+            <v-icon left small>mdi-plus</v-icon>
+            {{$t("AddToken")}}
+          </v-btn>
+        </v-flex>
+        <card-token-form-dialog
+          v-if="model.dealDetails.consumerID"
+          :key="model.dealDetails.consumerID"
+          :customer-id="model.dealDetails.consumerID"
+          :show.sync="ctokenDialog"
+          v-on:ok="createCardToken($event)"
+          ref="ctokenDialogRef"
+        ></card-token-form-dialog>
         <ec-dialog :dialog.sync="tokensDialog">
           <template v-slot:title>{{$t('SavedTokens')}}</template>
           <template>
@@ -91,7 +118,7 @@
         <ec-dialog-invoker
           v-on:click="handleClick()"
           :clickable="model.dealDetails.consumerID"
-          class="py-2"
+          class="pt-2"
         >
           <template v-slot:prepend>
             <v-icon>mdi-credit-card-outline</v-icon>
@@ -180,6 +207,7 @@
         ></v-text-field>
       </v-col>
       <deal-details
+        class="px-2"
         ref="dealDetails"
         :data="model.dealDetails"
         :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
@@ -210,7 +238,8 @@ export default {
     EcDialog: () => import("../ec/EcDialog"),
     EcDialogInvoker: () => import("../ec/EcDialogInvoker"),
     EcRadioGroup: () => import("../inputs/EcRadioGroup"),
-    ReIcon: () => import("../misc/ResponsiveIcon")
+    ReIcon: () => import("../misc/ResponsiveIcon"),
+    CardTokenFormDialog: () => import("../ctokens/CardTokenFormDialog")
   },
   props: {
     data: {
@@ -231,7 +260,8 @@ export default {
       selectedToken: null,
       selectedCustomer: null,
       customersDialog: false,
-      scheduleDialog: false
+      scheduleDialog: false,
+      ctokenDialog: false
     };
   },
   computed: {
@@ -261,12 +291,7 @@ export default {
       this.model.dealDetails.consumerEmail = data.consumerEmail;
       this.model.dealDetails.consumerPhone = data.consumerPhone;
       this.model.dealDetails.consumerID = data.consumerID;
-      this.customerTokens =
-        (
-          await this.$api.cardTokens.getCustomerCardTokens(
-            this.model.dealDetails.consumerID
-          )
-        ).data || [];
+      await this.getCustomerTokens();
       this.customersDialog = false;
     },
     handleClick() {
@@ -297,6 +322,27 @@ export default {
       }
       this.scheduleDialog = false;
       this.model.billingSchedule = this.$refs.billingScheduleRef.model;
+    },
+    async createCardToken(data) {
+      this.ctokenDialog = false;
+      let result = await this.$api.cardTokens.createCardToken(data);
+      //server errors will be displayed automatically
+      if (!result) return;
+      if (result.status === "success") {
+        await this.getCustomerTokens();
+        this.token = this.lodash.find(this.customerTokens, t => t.creditCardTokenID == result.entityReference);
+      } else {
+        this.$toasted.show(result.message, { type: "error" });
+      }
+      this.$refs.ctokenDialogRef.reset();
+    },
+    async getCustomerTokens(){
+      this.customerTokens =
+        (
+          await this.$api.cardTokens.getCustomerCardTokens(
+            this.model.dealDetails.consumerID
+          )
+        ).data || [];
     }
   },
   async mounted() {
@@ -331,3 +377,9 @@ export default {
   }
 };
 </script>
+
+<style lang="css" scoped>
+.pt-30px {
+  padding-top: 30px !important;
+}
+</style>

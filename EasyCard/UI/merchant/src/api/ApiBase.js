@@ -181,12 +181,11 @@ class ApiBase {
                     return null;
                 } else {
                     Vue.toasted.show(result.message, { type: 'error' });
+                    return null;
                 }
             }
-            return result;
 
         } catch (err) {
-            debugger
             Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error' });
         } finally {
             store.commit("ui/requestsCountDecrement");

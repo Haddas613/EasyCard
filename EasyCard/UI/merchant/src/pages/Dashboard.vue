@@ -5,7 +5,8 @@
       <v-card-text class="py-0">
         <v-list class="py-0" color="primary">
           <v-list-item class="justify-center">
-            <p class="display-1">easycard</p>
+            <!-- <p class="display-1">easycard</p> -->
+            <img src="https://ecng-identity.azurewebsites.net/img/logo.png">
           </v-list-item>
           <v-list-item-avatar height="50" width="auto">
             <img src="https://randomuser.me/api/portraits/men/81.jpg" />
@@ -24,10 +25,14 @@
 import ActionsBar from "../components/misc/ActionsBar";
 export default {
   components: { ActionsBar },
-  computed:{
-    userName: function(){
-      return (this.$oidc && this.$oidc.userProfile) ? this.$oidc.userProfile.name : null;
+  data() {
+    return {
+      userName: null,
+      publicPath: process.env.BASE_URL
     }
+  },
+  async mounted(){
+    this.userName = !!this.$oidc ? (await this.$oidc.getUserProfile()).name : null;
   }
 };
 </script>
@@ -39,4 +44,5 @@ export default {
   left: 0;
   top: 0;
 }
+
 </style>

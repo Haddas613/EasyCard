@@ -16,7 +16,7 @@
         ></credit-card-secure-details-form>
       </v-form>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions v-if="showActions">
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
         <v-btn
           class="mx-1"
@@ -51,6 +51,11 @@ export default {
       type: Object,
       default: null,
       required: false
+    },
+    showActions: {
+      type: Boolean,
+      default: true,
+      required: false
     }
   },
   data() {
@@ -70,29 +75,32 @@ export default {
         this.model.terminalID = this.customer.terminalID;
       }
     }
-    else if (!this.customer) {
-      return this.$router.push({ name: "404" });
-    }
+    // else if (!this.customer) {
+    //   return this.$router.push({ name: "404" });
+    // }
     this.model.cardOwnerName = this.customer.consumerName;
     this.model.cardOwnerNationalID = this.customer.consumerNationalID;
     this.model.consumerEmail = this.customer.consumerEmail;
   },
   methods: {
     ok() {
+      let data = this.getData();
+
+      if(!data){ return;}
+
+      this.$emit("ok", data);
+    },
+    getData(){
       let form = this.$refs.form.validate();
 
       if (!form) return;
 
       let data = this.$refs.ccsecuredetailsform.getData();
 
-      if (!data) {
-        return;
-      }
-
-      this.$emit("ok", {
+      return {
         ...this.model,
         ...data
-      });
+      };
     }
   }
 };
