@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import mainAuth from "../../auth";
 
 export default {
   name: "WizardIndex",

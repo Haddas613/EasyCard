@@ -9,13 +9,11 @@
 
 <script>
 import { mapState } from "vuex";
-import auth from "./auth";
 
 export default {
   data() {
     return {
       requestsCount: 0,
-      auth: auth
     };
   },
   computed: {
@@ -24,12 +22,17 @@ export default {
     })
   },
   async beforeMount () {
-    if(!auth.isAuthenticated) return;
-    await this.$store.dispatch('settings/getDefaultSettings', { api: this.$api, lodash: this.lodash });
+    if(!!this.$oidc && await this.$oidc.isAuthenticated()) {
+      await this.$store.dispatch('settings/getDefaultSettings', { api: this.$api, lodash: this.lodash });
+    }
   },
   async beforeUpdate () {
-    if(!auth.isAuthenticated) return;
-    await this.$store.dispatch('settings/getDefaultSettings', { api: this.$api, lodash: this.lodash });
+    if(false /*!this.$store.currency || !this.$store.terminal*/) {
+      if(!!this.$oidc && await this.$oidc.isAuthenticated()) {
+        debugger
+        await this.$store.dispatch('settings/getDefaultSettings', { api: this.$api, lodash: this.lodash });
+      }
+    }
   },
   watch: {
     /**requests are watched with delay so overlay is not shown immediately

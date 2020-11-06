@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import mainAuth from "../auth";
+
 import LangSwitcher from "../components/LanguageSwitcher"
 
 export default {
