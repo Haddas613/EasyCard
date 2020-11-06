@@ -6,7 +6,7 @@
           <v-switch class="px-2" :color="'accent'" label="RTL" v-model="$vuetify.rtl"></v-switch>
         </v-col>
         <v-col cols="8" md="10" class="text-end">
-          <v-btn @click="mainAuth.signOut()">
+          <v-btn @click="$oidc.signOut()">
             <v-icon left>mdi-logout</v-icon>
             {{$t("SignOut")}}
           </v-btn>
@@ -46,8 +46,6 @@
 <script>
 import LangSwitcher from "../../components/LanguageSwitcher";
 import { mapState } from "vuex";
-import mainAuth from "../../auth";
-
 export default {
   components: { LangSwitcher },
   data() {
