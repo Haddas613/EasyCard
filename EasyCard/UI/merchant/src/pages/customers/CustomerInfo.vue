@@ -69,7 +69,11 @@
 
           <template v-slot:left="{ item }">
             <v-col cols="12" md="6" lg="6" class="caption ecgray--text">{{item.creditCardTokenID | guid}}</v-col>
-            <v-col cols="12" md="6" lg="6">{{item.cardNumber}}</v-col>
+            <v-col cols="12" md="6" lg="6">
+              <span v-bind:class="{'error--text': item.expired}">
+                {{item.cardNumber}}  <small class="px-1">{{item.cardExpiration}}</small>
+              </span>
+            </v-col>
           </template>
 
           <template v-slot:right="{ item }">

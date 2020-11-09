@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -194,6 +195,16 @@ namespace Transactions.Api.Controllers
                 query = query.OrderByDynamic(filter.SortBy ?? nameof(CreditCardTokenDetails.CreditCardTokenID), filter.OrderByDirection).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
 
                 response.Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).ToListAsync();
+
+                if (response.NumberOfRecords > 0)
+                {
+                    var now = DateTime.UtcNow.Date;
+
+                    foreach (var t in response.Data)
+                    {
+                        t.Expired = DateTime.ParseExact(t.CardExpiration.ToString(), "MM/yy", CultureInfo.InvariantCulture).Date < now;
+                    }
+                }
 
                 return Ok(response);
             }

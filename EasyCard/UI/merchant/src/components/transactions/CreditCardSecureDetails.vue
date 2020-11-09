@@ -17,11 +17,15 @@
         </div>
         <ec-radio-group
           :data="customerTokens"
-          labelkey="cardNumber"
           valuekey="creditCardTokenID"
+          item-disabled-key="expired"
           return-object
           :model.sync="token"
-        ></ec-radio-group>
+        > 
+          <template v-slot="{ item }">
+            <card-token-string :token="item"></card-token-string>
+          </template>
+        </ec-radio-group>
       </template>
     </ec-dialog>
     <v-card-text class="py-2">
@@ -72,7 +76,8 @@ export default {
     EcDialog: () => import("../../components/ec/EcDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
     EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
-    ReIcon: () => import("../../components/misc/ResponsiveIcon")
+    ReIcon: () => import("../../components/misc/ResponsiveIcon"),
+    CardTokenString: () => import("../../components/ctokens/CardTokenString")
   },
   props: {
     data: {

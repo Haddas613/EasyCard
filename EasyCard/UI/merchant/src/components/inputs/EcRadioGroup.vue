@@ -3,9 +3,14 @@
     <v-radio-group :mandatory="mandatory" @change="onSelect($event)" v-model.lazy="selected">
       <template v-for="(i, index) in items">
         <v-list-item v-bind:key="i[valuekey]">
-          <v-list-item-content>{{i[labelkey]}}</v-list-item-content>
+          <v-list-item-content>
+            <template v-if="hasSlot()">
+              <slot v-bind:item="i"></slot>
+            </template>
+            <template v-else>{{i[labelkey]}}</template>
+          </v-list-item-content>
           <v-list-item-action>
-            <v-radio :value="i[valuekey]" color="black"></v-radio>
+            <v-radio :value="i[valuekey]" color="black" :disabled="itemDisabledKey ? i[itemDisabledKey] : false"></v-radio>
           </v-list-item-action>
         </v-list-item>
         <v-divider v-if="index + 1 < items.length" :key="index"></v-divider>
@@ -40,6 +45,11 @@ export default {
     returnObject: {
       type: Boolean,
       default: false
+    },
+    itemDisabledKey:{
+      type: String,
+      default: null,
+      required: false
     }
   },
   data() {
@@ -75,6 +85,9 @@ export default {
       } else {
         this.$emit("update:model", val);
       }
+    },
+    hasSlot(name = "default") {
+      return !!this.$slots[name] || !!this.$scopedSlots[name];
     }
   }
 };
