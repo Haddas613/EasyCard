@@ -8,8 +8,8 @@
     <v-card class="my-2" width="100%" flat>
       <v-card-title class="pb-0">
         <v-row class="py-0" no-gutters>
-          <v-col cols="9">{{$t("Overview")}}</v-col>
-          <v-col cols="2" class="text-end">
+          <v-col cols="8">{{$t("Overview")}}</v-col>
+          <v-col cols="3" class="text-end">
             <v-btn
               class="button"
               color="primary"

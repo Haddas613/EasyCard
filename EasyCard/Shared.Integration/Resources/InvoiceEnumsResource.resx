@@ -121,7 +121,7 @@
     <value>Credit Note</value>
   </data>
   <data name="Initial" xml:space="preserve">
-    <value>Initial</value>
+    <value>Pending</value>
   </data>
   <data name="Invoice" xml:space="preserve">
     <value>Invoice</value>

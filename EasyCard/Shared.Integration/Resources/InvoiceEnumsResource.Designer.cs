@@ -70,7 +70,7 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Initial.
+        ///   Looks up a localized string similar to Pending.
         /// </summary>
         public static string Initial {
             get {

@@ -8,8 +8,8 @@
     <v-card class="my-2" width="100%" flat>
       <v-card-title class="pb-0">
         <v-row class="py-0" no-gutters>
-          <v-col cols="9">{{$t("Overview")}}</v-col>
-          <v-col cols="2" class="text-end">
+          <v-col cols="8">{{$t("Overview")}}</v-col>
+          <v-col cols="3" class="text-end">
             <v-btn
               class="button"
               color="primary"
@@ -47,7 +47,10 @@
       <v-card-text class="px-0">
         <ec-list :items="invoices" v-if="invoices">
           <template v-slot:left="{ item }">
-            <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text">{{item.invoiceID}}</v-col>
+            <v-col cols="12" md="6" lg="6" class="pt-1 caption" v-if="item.invoiceNumber">
+              <b>{{item.invoiceNumber}}</b>
+            </v-col>
+            <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text" v-else>{{item.invoiceID}}</v-col>
             <v-col cols="12" md="6" lg="6">{{item.$invoiceDate | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
           </template>
 
@@ -111,7 +114,7 @@ export default {
     return {
       invoices: null,
       statusColors: {
-        Initial: "ecgray--text",
+        Pending: "gray--text",
         None: "",
         Sent: "success--text",
         Sending: "primary--text",
