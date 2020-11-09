@@ -122,6 +122,7 @@ export default {
       set: function(nv) {
         this.selectedToken = nv ? nv.creditCardTokenID : null;
         this.selectedTokenObj = nv;
+        this.tokensDialog = false;
       }
     }
   },
