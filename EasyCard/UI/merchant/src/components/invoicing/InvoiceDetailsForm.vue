@@ -88,9 +88,16 @@ export default {
   },
   async mounted() { 
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+    let $dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
     if(!this.model.invoiceSubject){
         //TODO: Generate invoice subject
       this.model.invoiceSubject = "Test invoice subject. Generated automatically";
+    }
+    
+    if(!this.model.invoiceType){
+      this.model.invoiceType = this.dictionaries.invoiceTypeEnum.find(i => i.code == "invoiceWithPaymentInfo");
+    }else if(typeof(this.model.invoiceType) === "string"){
+      this.model.invoiceType = this.dictionaries.invoiceTypeEnum.find(i => i.code == this.model.invoiceType);
     }
   },
   methods: {

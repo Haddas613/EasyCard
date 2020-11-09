@@ -92,13 +92,6 @@ export default {
         this.model.currency =
           this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
       }
-      if (!this.model.invoiceDetails.invoiceType) {
-        this.$set(
-          this.model.invoiceDetails,
-          "invoiceType",
-          this.dictionaries.invoiceTypeEnum[0]
-        );
-      }
       // this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
     }
   },

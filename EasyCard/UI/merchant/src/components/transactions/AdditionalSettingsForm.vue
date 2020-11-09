@@ -31,8 +31,8 @@
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
         ></deal-details>
 
-        <v-switch v-model="issueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
-        <div v-if="issueDocument">
+        <v-switch v-model="switchIssueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
+        <div v-if="switchIssueDocument">
           <invoice-details-form ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-form>
         </div>
       </v-form>
@@ -59,6 +59,10 @@ export default {
       type: Object,
       default: null,
       required: true
+    },
+    issueDocument: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -69,7 +73,7 @@ export default {
         invoiceDetails: this.data.invoiceDetails || {} 
       },
       vr: ValidationRules,
-      issueDocument: false,
+      switchIssueDocument: this.issueDocument,
       messageDialog: false
     };
   },
@@ -93,9 +97,6 @@ export default {
       if (!this.model.currency) {
         this.model.currency =
           this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
-      }
-      if (!this.model.invoiceDetails.invoiceType) {
-        this.$set(this.model.invoiceDetails, 'invoiceType', this.dictionaries.invoiceTypeEnum[0]);
       }
 
       this.model.jDealType = this.dictionaries.jDealTypeEnum[0].code;
