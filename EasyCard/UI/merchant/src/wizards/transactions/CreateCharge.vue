@@ -212,6 +212,7 @@ export default {
         data = data.data;
         this.model.saveCreditCard = data.saveCreditCard || false;
         this.model.creditCardSecureDetails = data;
+        this.model.creditCardToken = null;
         if (data.cardReaderInput) {
           this.model.cardPresence = "regular";
         } else {
