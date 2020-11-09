@@ -176,7 +176,8 @@ export default {
             text: this.$t("Charge"),
             fn: () => {
               this.$store.commit("payment/addLastChargedCustomer", {
-                customerId: this.$route.params.id
+                customerID: this.$route.params.id,
+                terminalID: this.model.terminalID
               });
               this.$router.push({
                 name: "Charge",

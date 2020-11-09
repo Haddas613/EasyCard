@@ -15,7 +15,7 @@
     <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad btn-text="Charge" v-on:ok="processAmount($event)"></numpad>
+          <numpad btn-text="Request" v-on:ok="processAmount($event)"></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
@@ -190,7 +190,8 @@ export default {
         }
       } else {
         this.$store.commit("payment/addLastChargedCustomer", {
-          customerId: this.customer.consumerID
+          customerID: this.customer.consumerID,
+          terminalID: this.model.terminalID
         });
         return this.$router.push({
           name: "PaymentRequest",

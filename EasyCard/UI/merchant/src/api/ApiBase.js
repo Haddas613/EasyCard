@@ -169,7 +169,7 @@ class ApiBase {
                 return result;
             } else {
                 //Server Validation errors are returned to component
-                if (request.status === 400) {
+                if (request.status === 400 || request.status === 409) {
                     let result = await request.json();
                     return result;
                 } else if (request.status === 401) {
@@ -177,10 +177,10 @@ class ApiBase {
                     await this.oidc.signOut();
                     return null;
                 } else if (request.status === 404) {
-                    Vue.toasted.show(result.message, { type: 'error' });
+                    Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error' });
                     return null;
                 } else {
-                    Vue.toasted.show(result.message, { type: 'error' });
+                    Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error' });
                     return null;
                 }
             }

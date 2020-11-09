@@ -29,16 +29,20 @@ export default class ConsumersApi {
         return await this.base.post(this.consumersUrl, data);
     }
 
-    async getLastChargedConsumers(store){
-        if(store.length === 0){
+    async getLastChargedConsumers(store, terminalId){
+        if (store.length === 0){
             return [];
         }
+
+        let consumersOfTerminal = store.filter(c => c.terminalID == terminalId).map(s => s.id);
+        if (consumersOfTerminal.length == 0){ return [];}
+
         let data = (await this.base.get(this.consumersUrl, {
-            consumersID: store.map(s => s.id).join(","),
+            consumersID: consumersOfTerminal.join(","),
             take: 5
         })).data || [];
 
-        if(data.length === 0){
+        if (data.length === 0){
             return data;
         }
         let result = [];

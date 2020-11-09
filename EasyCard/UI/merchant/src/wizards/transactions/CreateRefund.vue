@@ -258,7 +258,8 @@ export default {
       }
       if (this.customer) {
         this.$store.commit("payment/addLastChargedCustomer", {
-          customerId: this.customer.consumerID
+          customerID: this.customer.consumerID,
+          terminalID: this.model.terminalID
         });
       }
 

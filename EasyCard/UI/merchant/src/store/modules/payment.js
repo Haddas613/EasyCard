@@ -8,14 +8,15 @@ const state = () => ({
   };
   
   const mutations = {
-    addLastChargedCustomer(state, { vm, customerId }) {
+    addLastChargedCustomer(state, { customerID, terminalID }) {
         let newArr = [...state.lastChargedCustomers];
-        let existingIdx = newArr.findIndex(i => i.id === customerId);
-        if(existingIdx > -1){
-            newArr.splice(existingIdx, 1);
+        let existingIdx = newArr.findIndex(i => i.id === customerID);
+        if (existingIdx > -1){
+          newArr.splice(existingIdx, 1);
         }
         newArr = [{
-            id: customerId
+            id: customerID,
+            terminalID: terminalID
         }, ...newArr];
         
         if(newArr.length > 5){

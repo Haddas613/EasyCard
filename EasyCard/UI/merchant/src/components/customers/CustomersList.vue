@@ -125,7 +125,8 @@ export default {
       this.lastChargedCustomersStore.length > 0
     ) {
       this.previouslyCharged = await this.$api.consumers.getLastChargedConsumers(
-        this.lastChargedCustomersStore
+        this.lastChargedCustomersStore,
+        this.terminalStore.terminalID
       );
     }
 
