@@ -175,6 +175,7 @@
   "SelectSchedule": "Select Schedule",
   "InstallmentTransaction": "Installment Transaction",
   "AddToken": "Add Token",
+  "RemoveItem": "Remove Item",
 
   "--AUTH--": null,
   "Login": "Login",

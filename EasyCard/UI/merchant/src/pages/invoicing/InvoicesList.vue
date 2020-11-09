@@ -50,8 +50,8 @@
             <v-col cols="12" md="6" lg="6" class="pt-1 caption" v-if="item.invoiceNumber">
               <b>{{item.invoiceNumber}}</b>
             </v-col>
-            <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text" v-else>{{item.invoiceID}}</v-col>
-            <v-col cols="12" md="6" lg="6">{{item.$invoiceDate | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
+            <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text" v-else>{{item.$invoiceDate | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
+            <v-col cols="12" md="6" lg="6">{{item.cardOwnerName || '-'}}</v-col>
           </template>
 
           <template v-slot:right="{ item }">

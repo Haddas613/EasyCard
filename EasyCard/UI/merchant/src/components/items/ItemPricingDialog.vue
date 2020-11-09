@@ -6,11 +6,12 @@
         <v-btn
           color="red"
           class="white--text"
+          outlined
           :block="$vuetify.breakpoint.smAndDown"
           @click="model.amount = 0; ok()"
         >
           <v-icon left>mdi-delete</v-icon>
-          {{$t("Delete")}}
+          {{$t("RemoveItem")}}
         </v-btn>
       </div>
       <v-row no-gutters>

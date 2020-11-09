@@ -47,8 +47,8 @@
       <v-card-text class="px-0">
         <ec-list :items="paymentRequests" v-if="paymentRequests">
           <template v-slot:left="{ item }">
-            <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text">{{item.paymentRequestID}}</v-col>
-            <v-col cols="12" md="6" lg="6">{{item.$paymentRequestTimestamp | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
+            <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text">{{item.$paymentRequestTimestamp | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
+            <v-col cols="12" md="6" lg="6">{{item.cardOwnerName || '-'}}</v-col>
           </template>
 
           <template v-slot:right="{ item }">
