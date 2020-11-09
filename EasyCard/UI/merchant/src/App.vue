@@ -22,9 +22,6 @@ export default {
       requestsCountStore: state => state.ui.requestsCount
     })
   },
-  mounted(){
-    this.$store.dispatch('localization/refreshLocale', { $vuetify: this.$vuetify, $i18n: i18n });
-  },
   async beforeMount () {
     if(!!this.$oidc && await this.$oidc.isAuthenticated()) {
       await this.$store.dispatch('settings/getDefaultSettings', { api: this.$api, lodash: this.lodash });
