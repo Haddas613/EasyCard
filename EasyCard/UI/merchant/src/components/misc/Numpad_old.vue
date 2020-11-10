@@ -84,15 +84,18 @@
             cols="6"
             class="numpad-btn py-5"
             @click="activeArea = 'calc'"
-          >
-            <v-icon v-bind:class="{'primary--text': (activeArea == 'calc')}">mdi-calculator-variant</v-icon>
-          </v-col>
+            v-bind:class="{'primary--text': (activeArea == 'calc')}"
+          >{{$t('Calculator')}}</v-col>
           <v-col
             cols="6"
             class="numpad-btn py-5"
             @click="activeArea = 'items'"
+            v-bind:class="{'primary--text': (activeArea == 'items')}"
           >
-            <v-icon v-bind:class="{'primary--text': (activeArea == 'items')}">mdi-format-list-bulleted-square</v-icon>
+            <span v-if="model.items.length === 0">{{$t('ItemsList')}}</span>
+            <span
+              v-if="model.items.length > 0"
+            >{{$t('@ItemsSelected').replace('@amount', totalItemsAmount)}}</span>
           </v-col>
         </v-row>
       </v-footer>

@@ -13,7 +13,7 @@
             @click="resetToken()"
           >
           <v-icon left>mdi-delete</v-icon>
-          {{$t("CancelSelection")}}
+          {{$t("Remove")}}
           </v-btn>
         </div>
         <ec-radio-group
