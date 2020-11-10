@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="scroll-contain">
     <v-overlay :value="requestsCountStore > 0" z-index="10">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
@@ -35,31 +35,5 @@ export default {
       }
     }
   },
-  watch: {
-    /**requests are watched with delay so overlay is not shown immediately
-     * but after a 1s delay
-     */
-    // requestsCountStore(newValue, oldValue) {
-    //   //decrement
-    //   // console.log(newValue, oldValue)
-    //   if (newValue < oldValue) {
-    //     this.requestsCount--;
-    //     console.log(newValue, oldValue, this.requestsCount)
-    //   }
-    //   //increment
-    //   else{
-    //     setTimeout(
-    //       (() => {
-    //         this.requestsCount++;
-    //         console.log(newValue, oldValue, this.requestsCount)
-    //       }).bind(this),
-    //       1000
-    //     );
-    //   }
-    // }
-  }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

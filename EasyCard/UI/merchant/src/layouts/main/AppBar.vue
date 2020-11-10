@@ -7,6 +7,7 @@
       :color="($vuetify.breakpoint.mdAndUp || headerStore.altDisplay) ? 'primary' : 'white'"
       :dark="($vuetify.breakpoint.mdAndUp || headerStore.altDisplay)"
       :flat="true"
+      v-bind:class="{'header-gradient': headerStore.altDisplay && $vuetify.breakpoint.smAndDown}"
     >
     <template v-if="$vuetify.breakpoint.mdAndUp">
        <v-row :align="'center'">
@@ -14,7 +15,9 @@
           <v-app-bar-nav-icon @click.stop="drawerObj = !drawerObj" />
         </v-col>
         <v-col cols="8" md="4" lg="4" xl="4" class="d-flex justify-space-around">
-          <v-toolbar-title class="display-1 hidden-sm-and-down">easycard</v-toolbar-title>
+          <v-toolbar-title class="display-1 hidden-sm-and-down">
+            <img class="pt-2" src="https://ecng-identity.azurewebsites.net/img/logo.png">
+          </v-toolbar-title>
         </v-col>
         <v-col cols="2" md="4" lg="4" xl="4" class="d-flex justify-end">
           <actions-bar :footer="false"></actions-bar>
@@ -57,3 +60,8 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.header-gradient{
+    background: linear-gradient(120deg, #139cca 56%, #1096c6 56%);
+}
+</style>

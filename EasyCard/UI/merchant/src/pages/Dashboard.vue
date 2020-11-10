@@ -1,9 +1,8 @@
 <template>
   <div>
-    <v-card flat tile width="100%" height="200px" class="text-center mobile-top-area-dashboard"
-      color="primary" dark v-if="$vuetify.breakpoint.xs">
+    <v-card flat tile width="100%" height="200px" class="text-center mobile-top-area-dashboard dash-gradient" dark v-if="$vuetify.breakpoint.xs">
       <v-card-text class="py-0">
-        <v-list class="py-0" color="primary">
+        <v-list class="py-0" color="transparent">
           <v-list-item class="justify-center">
             <!-- <p class="display-1">easycard</p> -->
             <img src="https://ecng-identity.azurewebsites.net/img/logo.png">
@@ -43,6 +42,10 @@ export default {
   right: 0;
   left: 0;
   top: 0;
+}
+.dash-gradient{
+    background: linear-gradient(120deg, #139cca 40%, #1096c6 40%);
+    // background: linear-gradient(120deg, #0f99c7f0 40%, #1096c6 41%);
 }
 
 </style>

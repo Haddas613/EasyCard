@@ -155,3 +155,7 @@ $secondary : var(--v-secondary-base);
 .will-change-inherit{
   will-change: inherit !important;
 }
+
+.scroll-contain{
+  overscroll-behavior-y: contain;
+}
