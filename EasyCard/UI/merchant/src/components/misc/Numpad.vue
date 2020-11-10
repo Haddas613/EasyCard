@@ -1,11 +1,12 @@
 <template>
   <v-flex fill-height>
-    <item-pricing-dialog 
+    <item-pricing-dialog
       v-if="selectedItem"
-      :key="selectedItem.$itemID"
-      :item="selectedItem" 
-      :show.sync="itemPriceDialog" 
-      v-on:ok="saveItem($event)"></item-pricing-dialog>
+      :key="selectedItem.itemID"
+      :item="selectedItem"
+      :show.sync="itemPriceDialog"
+      v-on:ok="saveItem($event)"
+    ></item-pricing-dialog>
     <v-btn
       :color="totalAmount > model.discount ? 'primary' : 'error darken-2'"
       class="text-none charge-btn v-btn--flat"
@@ -21,34 +22,9 @@
     <v-spacer style="height: 48px" v-if="$vuetify.breakpoint.smAndDown"></v-spacer>
     <v-flex class="white text-center align-stretch px-3">
       <template v-if="activeArea === 'calc'">
-        <v-row dir="ltr">
-          <v-col cols="6">
-            <span @click="setActiveInput('amount')">
-              <v-text-field
-                class="py-0 px-0"
-                :value="model.amount"
-                readonly
-                outlined
-                :label="$t('Amount')"
-                hide-details="true"
-                :disabled="activeInput != 'amount'"
-              ></v-text-field>
-            </span>
-            <!-- <span>{{model.amount}}</span> -->
-          </v-col>
-          <v-col cols="6">
-            <span @click="setActiveInput('discount')">
-              <v-text-field
-                class="py-0 px-0"
-                :value="model.discount"
-                readonly
-                outlined
-                :label="$t('Discount')"
-                hide-details="true"
-                :disabled="activeInput != 'discount'"
-                :error="totalAmount < model.discount"
-              ></v-text-field>
-            </span>
+        <v-row dir="ltr" class="text-end">
+          <v-col cols="12">
+            <span>{{defaultItem.price}}</span>
           </v-col>
         </v-row>
         <v-row dir="ltr">
@@ -64,35 +40,18 @@
           <v-col cols="4" class="numpad-btn numpad-num" @click="reset()">C</v-col>
           <v-col cols="4" class="numpad-btn numpad-num" @click="addDigit(0)">0</v-col>
           <v-col cols="2" class="numpad-btn numpad-num secondary--text" @click="addDot()">.</v-col>
-          <v-col
-            cols="2"
-            class="numpad-btn numpad-num accent--text"
-            @click="stash()"
-            v-if="activeInput == 'amount'"
-          >+</v-col>
-          <v-col
-            cols="2"
-            class="numpad-btn numpad-num accent--text"
-            @click="calculatePercentage()"
-            v-if="activeInput == 'discount'"
-          >%</v-col>
+          <v-col cols="2" class="numpad-btn numpad-num accent--text" @click="stash()">+</v-col>
         </v-row>
       </template>
       <v-footer :fixed="$vuetify.breakpoint.smAndDown" :padless="true" color="white">
         <v-row dir="ltr">
-          <v-col
-            cols="6"
-            class="numpad-btn py-5"
-            @click="activeArea = 'calc'"
-          >
+          <v-col cols="6" class="numpad-btn py-5" @click="activeArea = 'calc'">
             <v-icon v-bind:class="{'primary--text': (activeArea == 'calc')}">mdi-calculator-variant</v-icon>
           </v-col>
-          <v-col
-            cols="6"
-            class="numpad-btn py-5"
-            @click="activeArea = 'items'"
-          >
-            <v-icon v-bind:class="{'primary--text': (activeArea == 'items')}">mdi-format-list-bulleted-square</v-icon>
+          <v-col cols="6" class="numpad-btn py-5" @click="activeArea = 'items'">
+            <v-icon
+              v-bind:class="{'primary--text': (activeArea == 'items')}"
+            >mdi-format-list-bulleted-square</v-icon>
           </v-col>
         </v-row>
       </v-footer>
@@ -109,11 +68,7 @@
         ></v-text-field>
         <v-divider></v-divider>
         <v-flex class="d-flex justify-end">
-          <v-switch
-            class="pb-1 mt-0 px-4"
-            v-model="showOnlySelectedItems"
-            hide-details="true"
-          >
+          <v-switch class="pb-1 mt-0 px-4" v-model="showOnlySelectedItems" hide-details="true">
             <template v-slot:label>
               <small>{{$t('Selected')}}</small>
             </template>
@@ -128,18 +83,21 @@
 
           <template v-slot:right="{ item }">
             <v-col cols="12" md="6" lg="6" class="text-end caption">
-              <span>{{item.amount || ''}}</span>
+              <span>{{item.quantity || ''}}</span>
             </v-col>
             <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold subtitle-2">
-              <ec-money :amount="item.price * (item.amount || 1) - (item.discount ? item.discount : 0)" :currency="item.$currency"></ec-money>
+              <ec-money
+                :amount="item.price * (item.quantity || 1) - (item.discount ? item.discount : 0)"
+                :currency="item.$currency"
+              ></ec-money>
             </v-col>
           </template>
 
           <template v-slot:append="{ item }">
-            <v-btn v-on:click="itemSelected(item)" icon v-if="!item.amount">
+            <v-btn v-on:click="itemSelected(item)" icon v-if="!item.quantity">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
-            <v-btn icon v-if="item.amount" @click="editItemCnt(item)">
+            <v-btn icon v-if="item.quantity" @click="editItemCnt(item)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
           </template>
@@ -169,7 +127,14 @@ export default {
         discount: "0",
         items: []
       },
-      activeInput: "amount",
+      defaultItem: {
+        price: 0,
+        discount: 0,
+        amount: 0,
+        itemName: "Custom charge",
+        currency: null,
+        quantity: 1
+      },
       activeArea: "calc",
       selectedItem: null,
       search: null,
@@ -204,40 +169,41 @@ export default {
   },
   computed: {
     totalAmount() {
-      return this.total + parseFloat(this.model.amount);
-    },
-    totalItemsAmount() {
-      return this.lodash.sumBy(this.model.items, i => i.amount);
+      return (
+        parseFloat(this.defaultItem.price) +
+        this.lodash.sumBy(this.model.items, "amount")
+      );
     },
     ...mapState({
       currencyStore: state => state.settings.currency
     })
   },
   async mounted() {
+    this.defaultItem.currency = this.currencyStore.code;
     await this.getItems();
   },
   methods: {
     addDigit(d) {
-      if (this.model[this.activeInput] == "0") this.model[this.activeInput] = d;
-      else if (this.model[this.activeInput] < 100000) {
+      if (this.defaultItem.price == "0") this.defaultItem.price = d;
+      else if (this.defaultItem.price < 100000) {
         if (
-          `${this.model[this.activeInput]}`.indexOf(".") > -1 &&
-          `${this.model[this.activeInput]}`.split(".")[1].length == 2
+          `${this.defaultItem.price}`.indexOf(".") > -1 &&
+          `${this.defaultItem.price}`.split(".")[1].length == 2
         ) {
           return;
         }
         //TODO: config for max allowed transaction amount
-        this.model[this.activeInput] += "" + d;
+        this.defaultItem.price += "" + d;
       }
     },
     addDot() {
-      if (!this.model[this.activeInput]) {
-        this.model[this.activeInput] = "0.";
+      if (!this.defaultItem.price) {
+        this.defaultItem.price = "0.";
       } else if (
-        this.model[this.activeInput] &&
-        `${this.model[this.activeInput]}`.indexOf(".") === -1
+        this.defaultItem.price &&
+        `${this.defaultItem.price}`.indexOf(".") === -1
       ) {
-        this.model[this.activeInput] += ".";
+        this.defaultItem.price += ".";
       }
     },
     async getItems() {
@@ -249,17 +215,8 @@ export default {
       });
       if (data && data.data) {
         for (let itm of data.data) {
-          if (this.model.items.length === 0) {
-            itm.amount = 0;
-            itm.discount = 0;
-          } else {
-            let entry = this.lodash.find(
-              this.model.items,
-              i => i.itemID === itm.$itemID
-            );
-            itm.amount = entry ? entry.amount : 0;
-            itm.discount = entry ? entry.discount : 0;
-          }
+          itm.amount = itm.price;
+          itm.discount = 0;
         }
         this.items = data.data;
       } else {
@@ -267,63 +224,55 @@ export default {
       }
     },
     ok() {
-      if (this.totalAmount <= this.model.discount) {
-        this.activeInput = "discount";
-        return;
-      }
       this.$emit("ok", {
         ...this.model,
         amount: parseFloat(this.totalAmount) - parseFloat(this.discount || "0")
       });
     },
     stash() {
-      if (this.model.activeInput == "discount") return;
-      this.total += parseFloat(this.model.amount);
-      this.model.amount = "0";
+      if (!this.defaultItem.price || this.defaultItem.price == "0") {
+        return;
+      }
+
+      this.model.items.push(this.prepareItem());
+      this.defaultItem.price = "0";
+      this.defaultItem.amount = this.defaultItem.discount = "0";
+    },
+    prepareItem() {
+      let item = {
+        ...this.defaultItem,
+        price: parseFloat(this.defaultItem.price),
+        discount: parseFloat(this.defaultItem.discount)
+      };
+      item.amount = this.calculateAmount(item);
+      return item;
+    },
+    calculateAmount(item) {
+      return item.price - item.discount;
     },
     reset() {
-      if (
-        parseFloat(this.model[this.activeInput]) > 0 ||
-        (typeof this.model[this.activeInput] == "string" &&
-          this.model[this.activeInput].indexOf(".") > -1)
-      ) {
-        this.model[this.activeInput] = 0;
-      } else {
-        this.total = 0;
-        this.model.discount = 0;
-        //todo: should also clear items?
-        if(this.model.items.length > 0) this.resetItems();
-      }
+      this.defaultItem.price = 0;
+      this.model.discount = 0;
     },
     async resetItems() {
       this.model.items = [];
       await this.getItems();
     },
     itemSelected(item) {
-      let entry = this.lodash.find(
-        this.model.items,
-        i => i.itemID === item.$itemID
-      );
-      if (entry) {
-        entry.amount++;
-      } else {
-        this.model.items.push({
-          itemID: item.$itemID,
-          $itemID: item.$itemID,
-          itemName: item.itemName,
-          price: item.price,
-          discount: 0,
-          currency: item.$currency,
-          amount: 1
-        });
-      }
-      item.amount++;
-      this.total += item.price - item.discount;
+      this.model.items.push({
+        itemID: item.$itemID,
+        itemName: item.itemName,
+        price: item.price,
+        discount: 0,
+        currency: item.$currency,
+        quantity: 1,
+        amount: this.calculateAmount(item)
+      });
     },
     editItemCnt(item) {
       let entry = this.lodash.find(
         this.model.items,
-        i => i.itemID === item.$itemID
+        i => i.itemID === item.itemID
       );
       if (entry) {
         this.selectedItem = this.lodash.cloneDeep(entry);
@@ -333,25 +282,25 @@ export default {
     async saveItem(item) {
       let entry = this.lodash.find(
         this.model.items,
-        i => i.itemID === item.$itemID
+        i => i.itemID === item.itemID
       );
 
       let recalc = 0;
-      if(item.amount){
-        recalc = (item.price * item.amount) - item.discount;
+      if (item.quantity) {
+        recalc = item.price * item.quantity - item.discount;
       }
-      if (entry){
-        recalc -= ((entry.price * entry.amount) - entry.discount ); 
+      if (entry) {
+        recalc -= entry.price * entry.quantity - entry.discount;
       }
 
-      if (item.amount) {
+      if (item.quantity) {
         if (entry) {
-          entry.amount = item.amount;
+          entry.quantity = item.quantity;
           entry.discount = item.discount;
         }
       } else {
-        let idx = this.model.items.findIndex(i => i.itemID === item.$itemID);
-        if(idx > -1){
+        let idx = this.model.items.findIndex(i => i.itemID === item.itemID);
+        if (idx > -1) {
           this.model.items.splice(idx, 1);
         }
       }
@@ -359,24 +308,6 @@ export default {
       this.total += recalc;
       this.itemPriceDialog = false;
       await this.getItems();
-    },
-    setActiveInput(type) {
-      this.activeInput = type;
-    },
-    calculatePercentage() {
-      if (this.totalAmount == 0) {
-        return (this.activeInput = "amount");
-      }
-      if (this.model.discount >= 100) {
-        return this.$toasted.show(
-          this.$t("PercentageShouldBeLessThanOneHundred"),
-          { type: "error" }
-        );
-      }
-      this.model.discount = (
-        (this.totalAmount / 100) *
-        this.model.discount
-      ).toFixed(2);
     }
   }
 };
