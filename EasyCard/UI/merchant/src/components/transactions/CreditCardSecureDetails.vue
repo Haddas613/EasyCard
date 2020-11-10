@@ -9,6 +9,7 @@
             class="white--text"
             :disabled="selectedToken == null"
             :block="$vuetify.breakpoint.smAndDown"
+            outlined
             @click="resetToken()"
           >
           <v-icon left>mdi-delete</v-icon>
