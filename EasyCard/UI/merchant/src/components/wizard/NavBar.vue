@@ -45,7 +45,10 @@
             </v-btn>
           </v-col>
           <v-col class="d-flex justify-space-around">
-            <v-toolbar-title class="subtitle-2 font-weight-bold">{{title}}</v-toolbar-title>
+            <v-toolbar-title class="subtitle-2 font-weight-bold">
+              <slot name="title" v-if="hasSlot('title')"></slot>
+              <template v-else>{{title}}</template>
+            </v-toolbar-title>
           </v-col>
           <v-col
             cols="2"
@@ -170,6 +173,9 @@ export default {
     onClickClose() {
       this.$emit("close");
     },
+    hasSlot(name = "default") {
+      return !!this.$slots[name] || !!this.$scopedSlots[name];
+    }
   }
 };
 </script>

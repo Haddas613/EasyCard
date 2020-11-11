@@ -8,12 +8,23 @@
           class="white--text"
           outlined
           :block="$vuetify.breakpoint.smAndDown"
-          @click="model.amount = 0; ok()"
+          @click="model.quantity = 0; ok()"
         >
           <v-icon left>mdi-delete</v-icon>
           {{$t("RemoveItem")}}
         </v-btn>
       </div>
+      <v-row>
+        <v-col cols="12">
+          <v-text-field
+            class="mx-2 mt-4"
+            v-model="model.itemName"
+            outlined
+            :label="$t('Name')"
+            hide-details="true"
+          ></v-text-field>
+        </v-col>
+      </v-row>
       <v-row no-gutters>
         <v-col cols="12" md="6">
           <v-text-field
@@ -30,26 +41,14 @@
           <v-text-field
             class="mx-2 mt-4"
             v-if="model"
-            v-model.number="model.amount"
-            outlined
-            type="number"
-            :label="$t('Quantity')"
-            @change="amountChanged()"
-            hide-details="true"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="4">
-          <v-text-field
-            class="mx-2 mt-4"
-            v-if="model"
-            :value="(model.price * model.amount).toFixed(2)"
+            :value="(model.price * model.quantity).toFixed(2)"
             outlined
             readonly
             :label="$t('NetAmount')"
             hide-details="true"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="6">
           <v-text-field
             class="mx-2 mt-4"
             v-if="model"
@@ -74,7 +73,7 @@
             </template>
           </v-text-field>
         </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="6">
           <v-text-field
             class="mx-2 mt-4"
             v-if="model"
@@ -106,7 +105,7 @@
             readonly
             outlined
             :label="$t('VATPercent')"
-            @change="amountChanged()"
+            @change="quantityChanged()"
             hide-details="true"
           ></v-text-field>
         </v-col>
@@ -166,13 +165,13 @@ export default {
     },
     totalAmount: {
       get: function(){
-        return ((this.model.price * this.model.amount) - this.model.discount).toFixed(2);
+        return ((this.model.price * this.model.quantity) - this.model.discount).toFixed(2);
       }
     }
   },
   methods: {
-    amountChanged() {
-      if (this.model && !this.model.amount) {
+    quantityChanged() {
+      if (this.model && !this.model.quantity) {
         this.ok();
       } else {
         this.calculateItemDiscount();
@@ -180,7 +179,9 @@ export default {
     },
     async ok() {
       //TODO: validation
-      this.$emit("ok", this.model);
+      let result = {...this.model};
+      result.amount = (result.price * result.quantity) - result.discount;
+      this.$emit("ok", result);
     },
     calculateItemDiscount() {
       if (this.percentageMode) {
@@ -192,7 +193,7 @@ export default {
         }
 
         this.model.discount = (
-          ((this.model.price * this.model.amount) / 100) *
+          ((this.model.price * this.model.quantity) / 100) *
           this.discount
         ).toFixed(2);
       } else {

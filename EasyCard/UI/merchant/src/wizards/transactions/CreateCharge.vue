@@ -11,14 +11,24 @@
       :canchangeterminal="steps[step].canChangeTerminal"
       :tdmenuitems="threeDotMenuItems"
       :title="navTitle"
-    ></navbar>
+    >
+      <template v-if="$refs.numpadRef && steps[step].showItemsCount" v-slot:title>
+        <v-btn :disabled="!$refs.numpadRef.model.items.length" color="ecgray" small @click="$refs.numpadRef.ok();">
+          {{$t("@ItemsQuantity").replace("@quantity", $refs.numpadRef.model.items.length)}}
+        </v-btn>
+      </template>
+    </navbar>
     <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad btn-text="Charge" v-on:ok="processAmount($event)"></numpad>
+          <numpad btn-text="Charge" v-on:ok="processAmount($event)" ref="numpadRef"></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
+          <basket v-if="step === 2" btn-text="Charge" v-on:ok="processAmount($event)" :data="model"></basket>
+        </v-stepper-content>
+
+        <v-stepper-content step="3" class="py-0 px-0">
           <customers-list
             :key="terminal.terminalID"
             :show-previously-charged="true"
@@ -27,7 +37,7 @@
           ></customers-list>
         </v-stepper-content>
 
-        <v-stepper-content step="3" class="py-0 px-0">
+        <v-stepper-content step="4" class="py-0 px-0">
           <credit-card-secure-details
             :key="creditCardRefreshState"
             :data="model"
@@ -37,11 +47,11 @@
           ></credit-card-secure-details>
         </v-stepper-content>
 
-        <v-stepper-content step="4" class="py-0 px-0">
+        <v-stepper-content step="5" class="py-0 px-0">
           <additional-settings-form :data="model" :issue-document="true" v-on:ok="processAdditionalSettings($event)"></additional-settings-form>
         </v-stepper-content>
 
-        <v-stepper-content step="5" class="py-0 px-0">
+        <v-stepper-content step="6" class="py-0 px-0">
           <transaction-success
             :amount="model.transactionAmount"
             v-if="success"
@@ -61,6 +71,7 @@ export default {
   components: {
     Navbar: () => import("../../components/wizard/NavBar"),
     Numpad: () => import("../../components/misc/Numpad"),
+    Basket: () => import("../../components/misc/Basket"),
     CustomersList: () => import("../../components/customers/CustomersList"),
     CreditCardSecureDetails: () => import("../../components/transactions/CreditCardSecureDetails"),
     TransactionSuccess: () => import("../../components/transactions/TransactionSuccess"),
@@ -106,21 +117,25 @@ export default {
       steps: {
         1: {
           title: "Amount",
-          canChangeTerminal: true
+          canChangeTerminal: true,
+          showItemsCount: true
         },
         2: {
+          title: "Basket",
+        },
+        3: {
           title: "ChooseCustomer",
           skippable: true
         },
-        3: {
+        4: {
           title: "PaymentInfo"
           // skippable: true
         },
-        4: {
+        5: {
           title: "AdditionalSettings"
         },
         //Last step may be dynamically altered to represent error if transaction creation has failed.
-        5: {
+        6: {
           title: "Success",
           completed: true
         }
@@ -204,8 +219,10 @@ export default {
       this.model.transactionAmount = data.amount;
       this.model.note = data.note;
       this.model.items = data.items;
-      if (this.skipCustomerStep) this.step += 2;
-      else this.step++;
+      // if (this.skipCustomerStep) this.step += 2;
+      // else this.step++;
+
+      this.step++;
     },
     processCreditCard(data) {
       if (data.type === "creditcard") {

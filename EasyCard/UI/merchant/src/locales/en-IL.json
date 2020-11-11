@@ -57,6 +57,7 @@
   "@TransactionsOf": "Transactions of @customer",
   "@Displayed": "@amount displayed",
   "@ChooseFromSavedCount": "Choose from saved (@count)",
+  "@ItemsQuantity": "@quantity Items",
   "NoSavedCards": "No saved cards",
   "TerminalNotSelected": "Terminal not selected",
   "ToList": "To list",

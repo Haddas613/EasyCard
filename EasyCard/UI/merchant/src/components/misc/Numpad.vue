@@ -1,15 +1,8 @@
 <template>
   <v-flex fill-height>
-    <item-pricing-dialog
-      v-if="selectedItem"
-      :key="selectedItem.itemID"
-      :item="selectedItem"
-      :show.sync="itemPriceDialog"
-      v-on:ok="saveItem($event)"
-    ></item-pricing-dialog>
     <v-btn
       :color="totalAmount > model.discount ? 'primary' : 'error darken-2'"
-      class="text-none charge-btn v-btn--flat"
+      class="text-none complete-btn v-btn--flat"
       height="48px"
       @click="ok()"
       block
@@ -67,14 +60,7 @@
           clearable
         ></v-text-field>
         <v-divider></v-divider>
-        <v-flex class="d-flex justify-end">
-          <v-switch class="pb-1 mt-0 px-4" v-model="showOnlySelectedItems" hide-details="true">
-            <template v-slot:label>
-              <small>{{$t('Selected')}}</small>
-            </template>
-          </v-switch>
-        </v-flex>
-        <ec-list class="pb-1" :items="showOnlySelectedItems ? model.items : items" dense>
+        <ec-list class="pb-1" :items="items" dense>
           <template v-slot:left="{ item }">
             <v-col cols="12" class="text-align-initial">
               <span class="body-2">{{item.itemName}}</span>
@@ -136,11 +122,8 @@ export default {
         quantity: 1
       },
       activeArea: "calc",
-      selectedItem: null,
       search: null,
       searchTimeout: null,
-      itemPriceDialog: false,
-      showOnlySelectedItems: false
     };
   },
   props: {
@@ -224,6 +207,8 @@ export default {
       }
     },
     ok() {
+      this.stash();
+
       this.$emit("ok", {
         ...this.model,
         amount: parseFloat(this.totalAmount) - parseFloat(this.discount || "0")
@@ -269,16 +254,6 @@ export default {
         amount: this.calculateAmount(item)
       });
     },
-    editItemCnt(item) {
-      let entry = this.lodash.find(
-        this.model.items,
-        i => i.itemID === item.itemID
-      );
-      if (entry) {
-        this.selectedItem = this.lodash.cloneDeep(entry);
-        this.itemPriceDialog = true;
-      }
-    },
     async saveItem(item) {
       let entry = this.lodash.find(
         this.model.items,
@@ -322,7 +297,7 @@ export default {
   font-size: 2rem;
   font-weight: 300;
 }
-button.charge-btn {
+button.complete-btn {
   z-index: 2;
   &[disabled] {
     background-color: var(--v-ecdgray-lighten5) !important;
