@@ -2,18 +2,18 @@
   <v-list :two-line="!dense" :dense="dense" subheader class="py-0 fill-height">
     <v-list-item v-for="(item, index) in items" :key="index" v-on="clickable ? {click: () => onclick(item)} : {}">
       <v-list-item-action v-if="hasSlot('prepend')">
-        <slot v-bind:item="item" name="prepend"></slot>
+        <slot v-bind:item="item" v-bind:index="index" name="prepend"></slot>
       </v-list-item-action>
       <v-list-item-content>
         <v-row no-gutters style="width:50%;" :class="{'col-reverse' : $vuetify.breakpoint.smAndDown}">
-          <slot v-bind:item="item" name="left"></slot>
+          <slot v-bind:item="item" v-bind:index="index" name="left"></slot>
         </v-row>
         <v-row no-gutters style="width:50%;" :class="{'col-reverse' : $vuetify.breakpoint.smAndDown}">
-          <slot v-bind:item="item" name="right"></slot>
+          <slot v-bind:item="item" v-bind:index="index" name="right"></slot>
         </v-row>
       </v-list-item-content>
       <v-list-item-action v-if="hasSlot('append')">
-        <slot v-bind:item="item" name="append"></slot>
+        <slot v-bind:item="item" v-bind:index="index" name="append"></slot>
       </v-list-item-action>
     </v-list-item>
   </v-list>
