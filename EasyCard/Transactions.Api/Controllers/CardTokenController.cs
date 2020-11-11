@@ -81,11 +81,18 @@ namespace Transactions.Api.Controllers
         {
             var dbData = await CreateTokenInternal(model);
 
-            return CreatedAtAction(nameof(CreateToken), new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID));
+            if (dbData.Value.Status == StatusEnum.Error)
+            {
+                return dbData;
+            }
+            else
+            {
+                return CreatedAtAction(nameof(CreateToken), dbData);
+            }
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        protected internal async Task<CreditCardTokenDetails> CreateTokenInternal(TokenRequest model)
+        protected internal async Task<ActionResult<OperationResponse>> CreateTokenInternal(TokenRequest model)
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
@@ -162,7 +169,7 @@ namespace Transactions.Api.Controllers
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);
 
-                    throw new IntegrationException(processorResponse.ErrorMessage, null);
+                    return BadRequest(new OperationResponse($"{Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID, HttpContext.TraceIdentifier, processorResponse.Errors));
                 }
             }
             catch (Exception ex)
@@ -171,7 +178,7 @@ namespace Transactions.Api.Controllers
 
                 await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, TransactionFinalizationStatusEnum.Initial, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
 
-                throw;
+                return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, HttpContext.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByProcesor.ToString(), (ex as IntegrationException)?.Message));
             }
 
             // save token itself
@@ -180,7 +187,7 @@ namespace Transactions.Api.Controllers
 
             await creditCardTokenService.CreateEntity(dbData);
 
-            return dbData;
+            return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID);
         }
 
         [HttpGet]

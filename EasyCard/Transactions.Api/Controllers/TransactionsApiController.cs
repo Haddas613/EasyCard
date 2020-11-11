@@ -222,8 +222,14 @@ namespace Transactions.Api.Controllers
 
                 var tokenRequest = mapper.Map<TokenRequest>(model);
 
-                var token = await cardTokenController.CreateTokenInternal(tokenRequest);
-                model.CreditCardToken = token.CreditCardTokenID;
+                var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest);
+
+                if (tokenResponse.Value.Status == StatusEnum.Error)
+                {
+                    return tokenResponse;
+                }
+
+                model.CreditCardToken = tokenResponse.Value.EntityUID;
                 model.CreditCardSecureDetails = null;
             }
 
