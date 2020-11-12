@@ -208,13 +208,10 @@ export default {
         this.items = [];
       }
     },
-    ok() {
+    ok(skipBasket = false) {
       this.stash();
-
-      this.$emit("ok", {
-        ...this.model,
-        amount: parseFloat(this.totalAmount) - parseFloat(this.discount || "0")
-      });
+      itemPricingService.total.calculate(this.model, { vatRate: this.vatRate});
+      this.$emit("ok", {...this.model, skipBasket});
     },
     stash() {
       if (!this.defaultItem.price || this.defaultItem.price == "0") {

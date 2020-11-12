@@ -13,7 +13,7 @@
       :title="navTitle"
     >
       <template v-if="steps[step].showItemsCount" v-slot:title>
-        <v-btn v-if="$refs.numpadRef" :disabled="!$refs.numpadRef.model.items.length" color="ecgray" small @click="$refs.numpadRef.ok();">
+        <v-btn v-if="$refs.numpadRef" :disabled="!$refs.numpadRef.model.items.length" color="ecgray" small @click="$refs.numpadRef.ok(true)">
           {{$t("@ItemsQuantity").replace("@quantity", $refs.numpadRef.model.items.length)}}
         </v-btn>
       </template>
@@ -221,10 +221,8 @@ export default {
       this.model.vatTotal = data.vatTotal;
       this.model.note = data.note;
       this.model.items = data.items;
-      // if (this.skipCustomerStep) this.step += 2;
-      // else this.step++;
-
-      this.step++;
+      if (data.skipBasket || this.skipCustomerStep) this.step += 2;
+      else this.step++;
     },
     processCreditCard(data) {
       if (data.type === "creditcard") {
