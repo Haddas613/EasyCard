@@ -12,8 +12,8 @@
       :tdmenuitems="threeDotMenuItems"
       :title="navTitle"
     >
-      <template v-if="$refs.numpadRef && steps[step].showItemsCount" v-slot:title>
-        <v-btn :disabled="!$refs.numpadRef.model.items.length" color="ecgray" small @click="$refs.numpadRef.ok();">
+      <template v-if="steps[step].showItemsCount" v-slot:title>
+        <v-btn v-if="$refs.numpadRef" :disabled="!$refs.numpadRef.model.items.length" color="ecgray" small @click="$refs.numpadRef.ok();">
           {{$t("@ItemsQuantity").replace("@quantity", $refs.numpadRef.model.items.length)}}
         </v-btn>
       </template>
@@ -25,7 +25,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
-          <basket v-if="step === 2" btn-text="Charge" v-on:ok="processAmount($event)" :data="model"></basket>
+          <basket v-if="step === 2" btn-text="Total" v-on:ok="processAmount($event)" :data="model"></basket>
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">
@@ -216,7 +216,9 @@ export default {
       this.step++;
     },
     processAmount(data) {
-      this.model.transactionAmount = data.amount;
+      this.model.transactionAmount = data.totalAmount;
+      this.model.netTotal = data.netTotal;
+      this.model.vatTotal = data.vatTotal;
       this.model.note = data.note;
       this.model.items = data.items;
       // if (this.skipCustomerStep) this.step += 2;

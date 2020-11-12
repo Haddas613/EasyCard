@@ -4,7 +4,7 @@
       <v-list-item-action v-if="hasSlot('prepend')">
         <slot v-bind:item="item" v-bind:index="index" name="prepend"></slot>
       </v-list-item-action>
-      <v-list-item-content>
+      <v-list-item-content class="px-0 mx-0">
         <v-row no-gutters style="width:50%;" :class="{'col-reverse' : $vuetify.breakpoint.smAndDown}">
           <slot v-bind:item="item" v-bind:index="index" name="left"></slot>
         </v-row>

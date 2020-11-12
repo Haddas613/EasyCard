@@ -96,13 +96,14 @@
 
 <script>
 import { mapState } from "vuex";
+import itemPricingService from "../../helpers/item-pricing";
 
 export default {
   components: {
     EcMoney: () => import("../ec/EcMoney"),
     EcList: () => import("../ec/EcList"),
     ReIcon: () => import("../misc/ResponsiveIcon"),
-    itemPricingDialog: () => import("../../components/items/ItemPricingDialog")
+    ItemPricingDialog: () => import("../../components/items/ItemPricingDialog")
   },
   data() {
     return {
@@ -124,6 +125,7 @@ export default {
       activeArea: "calc",
       search: null,
       searchTimeout: null,
+      vatRate: 0.17 //TODO: Config
     };
   },
   props: {
@@ -218,7 +220,6 @@ export default {
       if (!this.defaultItem.price || this.defaultItem.price == "0") {
         return;
       }
-
       this.model.items.push(this.prepareItem());
       this.defaultItem.price = "0";
       this.defaultItem.amount = this.defaultItem.discount = "0";
@@ -229,60 +230,32 @@ export default {
         price: parseFloat(this.defaultItem.price),
         discount: parseFloat(this.defaultItem.discount)
       };
-      item.amount = this.calculateAmount(item);
+      this.calculatePricingForItem(item);
       return item;
     },
-    calculateAmount(item) {
-      return item.price - item.discount;
+    calculatePricingForItem(item){
+      itemPricingService.item.calculate(item, { vatRate: this.vatRate});
     },
     reset() {
       this.defaultItem.price = 0;
-      this.model.discount = 0;
+      this.defaultItem.discount = 0;
     },
     async resetItems() {
       this.model.items = [];
       await this.getItems();
     },
     itemSelected(item) {
-      this.model.items.push({
+      let newItem = {
         itemID: item.$itemID,
         itemName: item.itemName,
         price: item.price,
         discount: 0,
         currency: item.$currency,
         quantity: 1,
-        amount: this.calculateAmount(item)
-      });
-    },
-    async saveItem(item) {
-      let entry = this.lodash.find(
-        this.model.items,
-        i => i.itemID === item.itemID
-      );
+      };
 
-      let recalc = 0;
-      if (item.quantity) {
-        recalc = item.price * item.quantity - item.discount;
-      }
-      if (entry) {
-        recalc -= entry.price * entry.quantity - entry.discount;
-      }
-
-      if (item.quantity) {
-        if (entry) {
-          entry.quantity = item.quantity;
-          entry.discount = item.discount;
-        }
-      } else {
-        let idx = this.model.items.findIndex(i => i.itemID === item.itemID);
-        if (idx > -1) {
-          this.model.items.splice(idx, 1);
-        }
-      }
-
-      this.total += recalc;
-      this.itemPriceDialog = false;
-      await this.getItems();
+      this.calculatePricingForItem(newItem);
+      this.model.items.push(newItem);
     }
   }
 };

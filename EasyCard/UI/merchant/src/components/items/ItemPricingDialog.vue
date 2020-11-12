@@ -2,127 +2,132 @@
   <ec-dialog :dialog.sync="visible">
     <template v-slot:title>{{$t('EditItem')}}</template>
     <template>
-      <div class="d-flex px-2 pt-4 justify-end">
-        <v-btn
-          color="red"
-          class="white--text"
-          outlined
-          :block="$vuetify.breakpoint.smAndDown"
-          @click="model.quantity = 0; ok()"
-        >
-          <v-icon left>mdi-delete</v-icon>
-          {{$t("RemoveItem")}}
-        </v-btn>
-      </div>
-      <v-row>
-        <v-col cols="12">
-          <v-text-field
-            class="mx-2 mt-4"
-            v-model="model.itemName"
+      <v-flex class="px-2">
+        <div class="d-flex px-2 pt-4 justify-end">
+          <v-btn
+            color="red"
+            class="white--text"
             outlined
-            :label="$t('Name')"
-            hide-details="true"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row no-gutters>
-        <v-col cols="12" md="6">
-          <v-text-field
-            class="mx-2 mt-4"
-            v-if="model"
-            :value="model.price.toFixed(2)"
-            outlined
-            readonly
-            :label="$t('Price')"
-            hide-details="true"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="6">
-          <v-text-field
-            class="mx-2 mt-4"
-            v-if="model"
-            :value="(model.price * model.quantity).toFixed(2)"
-            outlined
-            readonly
-            :label="$t('NetAmount')"
-            hide-details="true"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="6">
-          <v-text-field
-            class="mx-2 mt-4"
-            v-if="model"
-            v-model.number="discount"
-            outlined
-            :label="$t('Discount')"
-            hide-details="true"
-            @input="calculateItemDiscount()"
+            :block="$vuetify.breakpoint.smAndDown"
+            @click="model.quantity = 0; ok()"
           >
-            <template v-slot:append>
-              <v-btn
-                class="shadow-none"
-                :color="percentageMode ? 'primary' : 'eclgray'"
-                fab
-                style="margin-top:-4px"
-                x-small
-                @click="percentageMode = !percentageMode; calculateItemDiscount()"
-                :title="$t('ApplyAsPercentage')"
-              >
-                <v-icon>mdi-percent</v-icon>
-              </v-btn>
-            </template>
-          </v-text-field>
-        </v-col>
-        <v-col cols="12" md="6">
-          <v-text-field
-            class="mx-2 mt-4"
-            v-if="model"
-            :value="totalAmount"
-            outlined
-            readonly
-            :label="$t('Total')"
-            hide-details="true"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row no-gutters>
-        <v-col cols="12" md="6">
-          <v-text-field
-            class="mx-2 mt-4"
-            v-if="model"
-            :value="(totalAmount * 0.17).toFixed(2)"
-            outlined
-            readonly
-            :label="$t('VAT')"
-            hide-details="true"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="6">
-          <v-text-field
-            class="mx-2 mt-4"
-            v-if="model"
-            value="17%"
-            readonly
-            outlined
-            :label="$t('VATPercent')"
-            @change="quantityChanged()"
-            hide-details="true"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <div class="d-flex px-2 pt-4 justify-end">
-        <v-btn
-          color="primary"
-          class="white--text"
-          :block="$vuetify.breakpoint.smAndDown"
-          @click="ok()"
-        >{{$t("OK")}}</v-btn>
-      </div>
+            <v-icon left>mdi-delete</v-icon>
+            {{$t("RemoveItem")}}
+          </v-btn>
+        </div>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-text-field
+              class="mx-2 mt-4"
+              v-model="model.itemName"
+              outlined
+              :label="$t('Name')"
+              hide-details="true"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row no-gutters>
+          <v-col cols="12" md="6">
+            <v-text-field
+              class="mx-2 mt-4"
+              v-model="model.price"
+              outlined
+              :label="$t('Price')"
+              hide-details="true"
+              @input="calculateItemPricing()"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field
+              class="mx-2 mt-4"
+              v-if="model"
+              :value="model.netAmount"
+              outlined
+              readonly
+              disabled
+              :label="$t('NetAmount')"
+              hide-details="true"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field
+              class="mx-2 mt-4"
+              v-if="model"
+              v-model.number="discount"
+              outlined
+              :label="$t('Discount')"
+              hide-details="true"
+              @input="calculateItemPricing()"
+            >
+              <template v-slot:append>
+                <v-btn
+                  class="shadow-none"
+                  :color="percentageMode ? 'primary' : 'eclgray'"
+                  fab
+                  style="margin-top:-4px"
+                  x-small
+                  @click="percentageMode = !percentageMode; calculateItemPricing()"
+                  :title="$t('ApplyAsPercentage')"
+                >
+                  <v-icon>mdi-percent</v-icon>
+                </v-btn>
+              </template>
+            </v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field
+              class="mx-2 mt-4"
+              v-if="model"
+              :value="model.amount"
+              outlined
+              readonly
+              disabled
+              :label="$t('Total')"
+              hide-details="true"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row no-gutters>
+          <v-col cols="12" md="6">
+            <v-text-field
+              class="mx-2 mt-4"
+              v-if="model"
+              :value="model.vat"
+              outlined
+              readonly
+              disabled
+              :label="$t('VAT')"
+              hide-details="true"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field
+              class="mx-2 mt-4"
+              v-if="model"
+              :value="`${vatRate * 100}%`"
+              readonly
+              disabled
+              outlined
+              :label="$t('VATPercent')"
+              hide-details="true"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <div class="d-flex px-2 pt-4 justify-end">
+          <v-btn
+            color="primary"
+            class="white--text"
+            :block="$vuetify.breakpoint.smAndDown"
+            @click="ok()"
+          >{{$t("OK")}}</v-btn>
+        </div>
+      </v-flex>
     </template>
   </ec-dialog>
 </template>
 
 <script>
+import itemPricingService from "../../helpers/item-pricing";
 export default {
   props: {
     item: {
@@ -142,13 +147,14 @@ export default {
     return {
       model: { ...this.item },
       percentageMode: false,
-      discount: this.item.discount
+      discount: this.item.discount,
+      vatRate: 0.17
     };
   },
   watch: {
     show(newValue, oldValue) {
       if (newValue) {
-        this.$set(this, 'model', this.item);
+        this.$set(this, "model", this.item);
         this.discount = this.item.discount;
         this.percentageMode = false;
       }
@@ -162,28 +168,16 @@ export default {
       set: function(val) {
         this.$emit("update:show", val);
       }
-    },
-    totalAmount: {
-      get: function(){
-        return ((this.model.price * this.model.quantity) - this.model.discount).toFixed(2);
-      }
     }
   },
   methods: {
-    quantityChanged() {
-      if (this.model && !this.model.quantity) {
-        this.ok();
-      } else {
-        this.calculateItemDiscount();
-      }
-    },
     async ok() {
       //TODO: validation
-      let result = {...this.model};
-      result.amount = (result.price * result.quantity) - result.discount;
+      let result = { ...this.model };
+      result.amount = result.price * result.quantity - result.discount;
       this.$emit("ok", result);
     },
-    calculateItemDiscount() {
+    calculateItemPricing() {
       if (this.percentageMode) {
         if (this.discount >= 100) {
           return this.$toasted.show(
@@ -192,13 +186,20 @@ export default {
           );
         }
 
-        this.model.discount = (
-          ((this.model.price * this.model.quantity) / 100) *
-          this.discount
-        ).toFixed(2);
+        let discountTemp =
+          ((this.model.price * this.model.quantity) / 100) * this.discount;
+        if (discountTemp) {
+          discountTemp = discountTemp.toFixed(2);
+        }
+
+        this.model.discount = parseFloat(discountTemp);
       } else {
-        this.model.discount = this.discount;
+        this.model.discount = this.discount
+          ? parseFloat(this.discount.toFixed(2))
+          : 0;
       }
+
+      itemPricingService.item.calculate(this.model, { vatRate: this.vatRate });
     }
   }
 };

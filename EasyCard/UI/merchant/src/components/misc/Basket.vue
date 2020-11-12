@@ -8,29 +8,38 @@
       v-on:ok="saveItem($event)"
     ></item-pricing-dialog>
     <v-btn
-      :color="totalAmount > 0 ? 'primary' : 'error darken-2'"
+      :color="model.totalAmount > 0 ? 'primary' : 'error darken-2'"
       class="text-none complete-btn v-btn--flat"
       height="48px"
       @click="ok()"
       block
-      :disabled="totalAmount == 0"
+      :disabled="model.totalAmount == 0"
       :fixed="$vuetify.breakpoint.smAndDown"
     >
       {{$t(btnText)}}
-      <ec-money :amount="totalAmount" class="px-1"></ec-money>
+      <ec-money :amount="model.totalAmount" class="px-1"></ec-money>
     </v-btn>
     <v-spacer style="height: 48px" v-if="$vuetify.breakpoint.smAndDown"></v-spacer>
     <v-flex class="white text-center align-stretch px-3">
-      <v-text-field
-        class="py-0 px-5 input-simple"
-        single-line
-        :hide-details="true"
-        solo
-        :label="$t('Search')"
-        prepend-icon="mdi-magnify"
-        v-model="search"
-        clearable
-      ></v-text-field>
+      <v-list :two-line="false" :dense="true" subheader class="py-0 fill-height body-2">
+        <v-list-item>
+          <v-list-item-content class="text-normal">
+            <v-row no-gutters>
+              <v-col cols="6" class="text-start">{{$t("Discount")}}</v-col>
+              <v-col cols="6" class="text-end">{{totalDiscount | currency(currencyStore.code)}}</v-col>
+            </v-row>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content class="text-normal">
+            <v-row no-gutters>
+              <v-col cols="6" class="text-start">{{$t("VAT")}}</v-col>
+              <v-col cols="3" class="text-end">17%</v-col>
+              <v-col cols="3" class="text-end">{{model.vatTotal | currency(currencyStore.code)}}</v-col>
+            </v-row>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
       <v-divider></v-divider>
       <ec-list v-if="model.items" class="pb-1" :items="model.items" dense>
         <template v-slot:prepend="{ item, index }">
@@ -47,11 +56,7 @@
 
         <template v-slot:right="{ item }">
           <v-col cols="12" md="6" lg="6" class="text-end caption">
-            <ec-money
-              v-if="item.discount"
-              :amount="-item.discount"
-              :currency="item.$currency"
-            ></ec-money>
+            <ec-money v-if="item.discount" :amount="-item.discount" :currency="item.currency"></ec-money>
           </v-col>
           <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold subtitle-2">
             <ec-money
@@ -73,6 +78,7 @@
 
 <script>
 import { mapState } from "vuex";
+import itemPricingService from "../../helpers/item-pricing";
 
 export default {
   components: {
@@ -84,19 +90,15 @@ export default {
   data() {
     return {
       model: {
+        totalAmount: 0,
+        netTotal: 0,
+        vatTotal: 0,
         ...this.data
-      },
-      defaultItem: {
-        price: 0,
-        discount: 0,
-        amount: 0,
-        itemName: "Custom charge",
-        currency: null,
-        quantity: 1
       },
       selectedItem: null,
       itemPriceDialog: false,
-      search: null
+      search: null,
+      vatRate: 0.17
     };
   },
   props: {
@@ -106,19 +108,19 @@ export default {
     },
     data: {
       type: Object,
-      required: true 
-    },
+      required: true
+    }
+  },
+  mounted () {
+    itemPricingService.total.calculate(this.model, { vatRate: this.vatRate});
   },
   computed: {
-    totalAmount() {
-      return this.lodash.sumBy(this.model.items, "amount");
+    totalDiscount() {
+      return this.lodash.sumBy(this.model.items, "discount");
     },
     ...mapState({
       currencyStore: state => state.settings.currency
     })
-  },
-  async mounted() {
-    this.defaultItem.currency = this.currencyStore.code;
   },
   methods: {
     ok() {
@@ -134,7 +136,7 @@ export default {
       let entry = this.model.items[idx];
 
       if (entry) {
-        this.selectedItem =  { idx: idx, ...entry };
+        this.selectedItem = { idx: idx, ...entry };
         this.itemPriceDialog = true;
       }
     },
@@ -143,19 +145,18 @@ export default {
       if (entry) {
         this.$set(this.model.items, item.idx, item);
       }
-      
+      itemPricingService.total.calculate(this.model, {vatRate: this.vatRate});
       this.itemPriceDialog = false;
     },
-    deleteItem(idx){
-      if(this.model.items[idx])
-        this.model.items.splice(idx, 1);
+    deleteItem(idx) {
+      if (this.model.items[idx]) this.model.items.splice(idx, 1);
+      itemPricingService.total.calculate(this.model, {vatRate: this.vatRate});
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-
 button.complete-btn {
   z-index: 2;
   &[disabled] {
