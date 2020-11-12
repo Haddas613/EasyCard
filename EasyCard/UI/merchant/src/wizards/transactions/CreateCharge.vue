@@ -225,7 +225,7 @@ export default {
       this.model.vatTotal = data.vatTotal;
       this.model.note = data.note;
       this.model.items = data.items;
-      if (skipBaset || this.skipCustomerStep) this.step += 2;
+      if (skipBasket || this.skipCustomerStep) this.step += 2;
       else this.step++;
     },
     processCreditCard(data) {
