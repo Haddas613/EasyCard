@@ -13,7 +13,7 @@
       :title="navTitle"
     >
       <template v-if="steps[step].showItemsCount" v-slot:title>
-        <v-btn v-if="$refs.numpadRef" :disabled="!$refs.numpadRef.model.items.length" color="ecgray" small @click="$refs.numpadRef.ok(true)">
+        <v-btn v-if="$refs.numpadRef" :disabled="!$refs.numpadRef.model.items.length" color="ecgray" small @click="processToBasket()">
           {{$t("@ItemsQuantity").replace("@quantity", $refs.numpadRef.model.items.length)}}
         </v-btn>
       </template>
@@ -21,7 +21,7 @@
     <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad btn-text="Charge" v-on:ok="processAmount($event)" ref="numpadRef"></numpad>
+          <numpad btn-text="Charge" v-on:ok="processAmount($event, true);" ref="numpadRef"></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
@@ -215,13 +215,17 @@ export default {
       this.creditCardRefreshState = data.consumerName;
       this.step++;
     },
-    processAmount(data) {
+    processToBasket(){
+      let data = this.$refs.numpadRef.getData();
+      this.processAmount(data);
+    },
+    processAmount(data, skipBasket = false) {
       this.model.transactionAmount = data.totalAmount;
       this.model.netTotal = data.netTotal;
       this.model.vatTotal = data.vatTotal;
       this.model.note = data.note;
       this.model.items = data.items;
-      if (data.skipBasket || this.skipCustomerStep) this.step += 2;
+      if (skipBaset || this.skipCustomerStep) this.step += 2;
       else this.step++;
     },
     processCreditCard(data) {
