@@ -506,8 +506,10 @@ namespace Transactions.Api.Controllers
 
                         return BadRequest(new OperationResponse($"{Messages.RejectedByAggregator}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, HttpContext.TraceIdentifier, aggregatorResponse.Errors));
                     }
-
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByAggregator);
+                    else
+                    {
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByAggregator);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -543,12 +545,14 @@ namespace Transactions.Api.Controllers
 
                 if (!processorResponse.Success)
                 {
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial,  rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);
 
                     processorFailedRsponse = BadRequest(new OperationResponse($"{Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID, HttpContext.TraceIdentifier, processorResponse.Errors));
                 }
-
-                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
+                else
+                {
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
+                }
             }
             catch (Exception ex)
             {
@@ -581,10 +585,12 @@ namespace Transactions.Api.Controllers
 
                             return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, HttpContext.TraceIdentifier));
                         }
+                        else
+                        {
+                            await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.CanceledByAggregator);
 
-                        await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.CanceledByAggregator);
-
-                        return processorFailedRsponse;
+                            return processorFailedRsponse;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -620,8 +626,10 @@ namespace Transactions.Api.Controllers
 
                             return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, HttpContext.TraceIdentifier, commitAggregatorResponse.Errors));
                         }
-
-                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.CommitedByAggregator);
+                        else
+                        {
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.CommitedByAggregator);
+                        }
                     }
                     catch (Exception ex)
                     {
