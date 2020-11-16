@@ -118,7 +118,7 @@ namespace Transactions.Api.Controllers
 
             await paymentRequestsService.CreateEntity(newPaymentRequest);
 
-            return CreatedAtAction(nameof(GetPaymentRequest), new { paymentRequestID = newPaymentRequest.PaymentRequestID }, new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newPaymentRequest.PaymentRequestID));
+            return CreatedAtAction(nameof(GetPaymentRequest), new { paymentRequestID = newPaymentRequest.PaymentRequestID }, new OperationResponse(Transactions.Shared.Messages.PaymentRequestCreated, StatusEnum.Success, newPaymentRequest.PaymentRequestID));
         }
     }
 }

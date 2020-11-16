@@ -28,6 +28,14 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)));
 
             CreateMap<CreditCardTokenDetails, CreditCardTokenSummary>();
+
+            CreateMap<CreateTransactionRequest, TokenRequest>()
+                .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
+                .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID))
+                .ForMember(d => d.ConsumerEmail, o => o.MapFrom(d => d.DealDetails.ConsumerEmail))
+                .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<CreditCardSecureDetails, TokenRequest>();
         }
     }
 }

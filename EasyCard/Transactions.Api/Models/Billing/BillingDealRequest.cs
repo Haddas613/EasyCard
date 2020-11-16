@@ -33,11 +33,6 @@ namespace Transactions.Api.Models.Billing
         public decimal? TransactionAmount { get; set; }
 
         /// <summary>
-        /// Number Of payments (cannot be more than 999)
-        /// </summary>
-        public int? NumberOfPayments { get; set; }
-
-        /// <summary>
         /// TotalAmount = TransactionAmount * NumberOfPayments
         /// </summary>
         public decimal? TotalAmount { get; set; }

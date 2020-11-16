@@ -220,7 +220,8 @@ namespace Transactions.Api.Controllers
                     throw new BusinessException(Messages.WhenSpecifiedTokenCCDIsNotValid);
                 }
 
-                var tokenRequest = mapper.Map<TokenRequest>(model);
+                var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
+                mapper.Map(model, tokenRequest);
 
                 var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest);
 

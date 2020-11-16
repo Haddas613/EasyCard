@@ -48,6 +48,7 @@ namespace Transactions.Shared.Enums
 
         // Note: we do not need this status - it will be calculated online
         // Overdue = -3,
+
         [EnumMember(Value = "paymentFailed")]
         PaymentFailed = -4,
 
