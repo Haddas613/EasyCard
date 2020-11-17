@@ -94,12 +94,12 @@ namespace Transactions.Business.Data
             var query = @"select TOP (@maxRecords) PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, NumberOfRecords
 from(
     select PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, r = row_number() over(partition by TransactionDate order by PaymentTransactionID desc), NumberOfRecords = count(*) over(partition by TransactionDate)
-    from dbo.PaymentTransaction WITH(NOLOCK) /**where**/
+    from dbo.PaymentTransaction WITH(NOLOCK) where JDealType = @jDealType
     ) a
 where r <= @pageSize
  order by PaymentTransactionID desc";
 
-            var selector = builder.AddTemplate(query, new { maxRecords = 100, pageSize = 10 }); // TODO: use config
+            var selector = builder.AddTemplate(query, new { maxRecords = 100, pageSize = 10, jDealType = JDealTypeEnum.J4 }); // TODO: use config
 
             if (terminalID.HasValue)
             {
