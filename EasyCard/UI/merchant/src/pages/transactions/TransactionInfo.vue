@@ -88,7 +88,7 @@
           </v-row>
         </v-card-text>
       </v-card>
-      <v-card flat class="my-2">
+      <v-card flat class="my-2" v-if="isInstallmentTransaction">
         <v-card-title
           class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
         >{{$t('InstallmentDetails')}}</v-card-title>
@@ -266,6 +266,11 @@ export default {
         this.model.allowTransmission = false;
       }
     }
+  },
+  computed:{
+    isInstallmentTransaction() {
+      return (this.model.$transactionType === "installments" || this.model.$transactionType === "credit");
+    },
   }
 };
 </script>
