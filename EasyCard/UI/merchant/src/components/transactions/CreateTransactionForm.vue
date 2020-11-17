@@ -15,7 +15,7 @@
     </v-snackbar>
 
     <v-snackbar
-      color="ecError"
+      color="ecred"
       v-model="errorSnack.showSnackbar"
       :top="true"
       :right="true"

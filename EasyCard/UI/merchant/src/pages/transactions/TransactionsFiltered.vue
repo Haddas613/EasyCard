@@ -85,9 +85,12 @@ export default {
       moment: moment,
       loading: false,
       transactionsFilter: {
+        ...this.filters
+      },
+      defaultFilter: {
         take: 100,
         skip: 0,
-        ...this.filters
+        jDealType: "J4"
       },
       showDialog: this.showFiltersDialog,
       datePeriod: null,
@@ -117,9 +120,8 @@ export default {
     },
     async applyFilters(data) {
       this.transactionsFilter = {
-        ...data,
-        skip: 0,
-        take: 100
+        ...this.defaultFilter,
+        ...data
       };
       await this.getDataFromApi();
     },
@@ -139,7 +141,7 @@ export default {
     }
   },
   async mounted() {
-    await this.getDataFromApi();
+    await this.applyFilters();
 
     this.$store.commit("ui/changeHeader", {
       value: {

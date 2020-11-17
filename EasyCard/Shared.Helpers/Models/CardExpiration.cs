@@ -36,5 +36,17 @@ namespace Shared.Helpers
                 return null;
             }
         }
+
+        public bool Expired
+        {
+            get
+            {
+                return ToDate()?.Date.AddMonths(1) < DateTime.UtcNow;
+            }
+
+            set
+            {
+            }
+        }
     }
 }

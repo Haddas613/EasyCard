@@ -136,5 +136,7 @@ namespace Transactions.Api.Models.Billing
         public string SourceIP { get; set; }
 
         public bool Active { get; set; }
+
+        public bool? CardExpired { get; set; }
     }
 }

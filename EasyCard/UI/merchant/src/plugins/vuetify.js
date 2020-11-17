@@ -29,7 +29,7 @@ export default new Vuetify({
         ecgray: colors.grey.lighten1,
         ecdgray: colors.grey.darken2,
         ecnavLink: colors.grey.darken4,
-        ecError: colors.red.darken2
+        ecred: colors.red.darken2
       },
       dark:{
         primary: colors.blue.darken4,
