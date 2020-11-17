@@ -187,7 +187,7 @@ namespace Transactions.Api.Controllers
 
             await creditCardTokenService.CreateEntity(dbData);
 
-            return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID);
+            return Ok(new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID));
         }
 
         [HttpGet]

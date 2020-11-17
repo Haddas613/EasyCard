@@ -51,11 +51,6 @@
             Transaction amount (should be omitted in case of installment deal)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.NumberOfPayments">
-            <summary>
-            Number Of payments (cannot be more than 999)
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.TotalAmount">
             <summary>
             TotalAmount = TransactionAmount * NumberOfPayments
