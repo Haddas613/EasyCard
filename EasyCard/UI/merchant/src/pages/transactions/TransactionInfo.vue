@@ -27,6 +27,10 @@
               <p>{{model.$transactionTimestamp | ecdate('LLLL')}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('TotalAmount')}}</p>
+              <p>{{model.totalAmount | currency(model.$currency)}}</p>
+            </v-col>
+            <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('TransmissionTime')}}</p>
               <p>
                 <span
