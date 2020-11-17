@@ -59,6 +59,15 @@
               ></billing-schedule-string>
             </v-tooltip>
             <v-icon v-else>mdi-calendar</v-icon>
+
+            <v-tooltip top v-if="item.cardExpired">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn color="ecred" dark icon v-bind="attrs" v-on="on">
+                  <v-icon :title="$t('CreditCardExpired')">mdi-credit-card</v-icon>
+                </v-btn>
+              </template>
+              {{$t('CreditCardHasExpired')}}
+            </v-tooltip>
           </template>
 
           <template v-slot:left="{ item }">
@@ -71,18 +80,26 @@
           </template>
 
           <template v-slot:right="{ item }">
-            <v-col cols="12" md="6" lg="6" class="text-end body-2">
-              <v-badge
-                inline
-                color="primary"
+            <v-col cols="12" md="6" lg="6" class="text-end body-2" v-bind:class="{'ecred--text': item.cardExpired}">
+              <v-chip small :color="item.cardExpired ? 'ecred': 'primary'" text-color="white">
+                <v-avatar left 
+                  :color="item.cardExpired ? 'ecred': 'primary'" 
+                  class="darken-2">
+                    {{item.numberOfPayments || '∞'}}
+                </v-avatar>
+                {{item.currency}}{{item.transactionAmount}}
+              </v-chip>
+              <!-- <v-badge
+                :color="item.cardExpired ? 'ecred': 'primary'"
                 :content="item.numberOfPayments || '...'"
-              >{{item.currency}}{{item.transactionAmount}}</v-badge>
+              >{{item.currency}}{{item.transactionAmount}}</v-badge> -->
             </v-col>
             <v-col
               cols="12"
               md="6"
               lg="6"
               class="text-end font-weight-bold button"
+              v-bind:class="{'ecred--text': item.cardExpired}"
             >{{item.currency}}{{item.totalAmount}}</v-col>
           </template>
 

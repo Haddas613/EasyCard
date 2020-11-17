@@ -52,5 +52,7 @@ namespace Transactions.Api.Models.Billing
         public BillingSchedule BillingSchedule { get; set; }
 
         public string CardNumber { get; set; }
+
+        public bool? CardExpired { get; set; }
     }
 }

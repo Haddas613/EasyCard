@@ -203,16 +203,6 @@ namespace Transactions.Api.Controllers
 
                 response.Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).ToListAsync();
 
-                if (response.NumberOfRecords > 0)
-                {
-                    var now = DateTime.UtcNow.Date;
-
-                    foreach (var t in response.Data)
-                    {
-                        t.Expired = DateTime.ParseExact(t.CardExpiration.ToString(), "MM/yy", CultureInfo.InvariantCulture).Date < now;
-                    }
-                }
-
                 return Ok(response);
             }
         }

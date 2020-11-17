@@ -24,9 +24,13 @@ namespace Transactions.Api.Mapping
 
             CreateMap<BillingDealUpdateRequest, BillingDeal>();
 
-            CreateMap<BillingDeal, BillingDealSummary>();
+            CreateMap<BillingDeal, BillingDealSummary>()
+                .ForMember(d => d.CardExpired, o => o
+                    .MapFrom(d => (d.CreditCardDetails != null && d.CreditCardDetails.CardExpiration != null) ? d.CreditCardDetails.CardExpiration.Expired : default));
 
-            CreateMap<BillingDeal, BillingDealResponse>();
+            CreateMap<BillingDeal, BillingDealResponse>()
+                .ForMember(d => d.CardExpired, o => o
+                    .MapFrom(d => (d.CreditCardDetails != null && d.CreditCardDetails.CardExpiration != null) ? d.CreditCardDetails.CardExpiration.Expired : default));
         }
     }
 }

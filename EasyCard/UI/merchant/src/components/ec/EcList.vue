@@ -1,7 +1,7 @@
 <template>
   <v-list :two-line="!dense" :dense="dense" subheader class="py-0 fill-height">
     <v-list-item v-for="(item, index) in items" :key="index" v-on="clickable ? {click: () => onclick(item)} : {}">
-      <v-list-item-action v-if="hasSlot('prepend')">
+      <v-list-item-action v-if="hasSlot('prepend')" v-bind:class="{'col-unset': $vuetify.breakpoint.mdAndUp}">
         <slot v-bind:item="item" v-bind:index="index" name="prepend"></slot>
       </v-list-item-action>
       <v-list-item-content>
@@ -12,7 +12,7 @@
           <slot v-bind:item="item" v-bind:index="index" name="right"></slot>
         </v-row>
       </v-list-item-content>
-      <v-list-item-action v-if="hasSlot('append')">
+      <v-list-item-action v-if="hasSlot('append')" v-bind:class="{'col-unset': $vuetify.breakpoint.mdAndUp}">
         <slot v-bind:item="item" v-bind:index="index" name="append"></slot>
       </v-list-item-action>
     </v-list-item>
@@ -51,5 +51,8 @@ export default {
 <style lang="scss" scoped>
 .col-reverse{
   flex-direction: column-reverse;
+}
+.col-unset{
+  flex-direction: unset;
 }
 </style>

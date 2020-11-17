@@ -27,7 +27,8 @@ namespace Transactions.Api.Mapping
             CreateMap<TokenRequest, CreditCardTokenDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)));
 
-            CreateMap<CreditCardTokenDetails, CreditCardTokenSummary>();
+            CreateMap<CreditCardTokenDetails, CreditCardTokenSummary>()
+                .ForMember(d => d.Expired, o => o.MapFrom(d => d.CardExpiration.Expired));
 
             CreateMap<CreateTransactionRequest, TokenRequest>()
                 .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
