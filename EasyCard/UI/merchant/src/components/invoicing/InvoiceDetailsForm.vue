@@ -20,6 +20,7 @@
           valuekey="code"
           return-object
           :model.sync="model.invoiceType"
+          @change="invoiceTypeDialog = false;"
         ></ec-radio-group>
       </template>
     </ec-dialog>
