@@ -35,7 +35,21 @@ namespace Transactions.Business.Services
 
         public IQueryable<CreditCardTokenDetails> GetTokens() => context.CreditCardTokenDetails;
 
-        public IQueryable<PaymentTransaction> GetTransactions() => context.PaymentTransactions;
+        public IQueryable<PaymentTransaction> GetTransactions()
+        {
+            if (user.IsAdmin())
+            {
+                return context.PaymentTransactions;
+            }
+            else if (user.IsTerminal())
+            {
+                return context.PaymentTransactions.Where(t => t.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.PaymentTransactions.Where(t => t.MerchantID == user.GetMerchantID());
+            }
+        }
 
         public async Task<IEnumerable<TransactionSummaryDb>> GetGroupedTransactionSummaries(Guid? terminalID, IDbContextTransaction dbTransaction) => await context.GetGroupedTransactionSummaries(terminalID, dbTransaction);
 

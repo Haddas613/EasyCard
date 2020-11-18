@@ -94,12 +94,16 @@ namespace Transactions.Business.Data
             var query = @"select TOP (@maxRecords) PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, NumberOfRecords
 from(
     select PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, r = row_number() over(partition by TransactionDate order by PaymentTransactionID desc), NumberOfRecords = count(*) over(partition by TransactionDate)
-    from dbo.PaymentTransaction WITH(NOLOCK) where JDealType = @jDealType
+    from dbo.PaymentTransaction WITH(NOLOCK) /**where**/
     ) a
 where r <= @pageSize
  order by PaymentTransactionID desc";
 
-            var selector = builder.AddTemplate(query, new { maxRecords = 100, pageSize = 10, jDealType = JDealTypeEnum.J4 }); // TODO: use config
+            var selector = builder.AddTemplate(query, new { maxRecords = 100, pageSize = 10 }); // TODO: use config
+
+            var jDealType = JDealTypeEnum.J4;
+
+            builder.Where($"{nameof(PaymentTransaction.JDealType)} = @{nameof(jDealType)}", new { jDealType });
 
             if (terminalID.HasValue)
             {
@@ -226,7 +230,7 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
 
             modelBuilder.Entity<CreditCardTokenDetails>().HasQueryFilter(t => user.IsAdmin() || (t.Active && (user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID())));
 
-            modelBuilder.Entity<PaymentTransaction>().HasQueryFilter(t => user.IsAdmin() || ((user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID())));
+            //modelBuilder.Entity<PaymentTransaction>().HasQueryFilter(t => user.IsAdmin() || ((user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID())));
 
             modelBuilder.Entity<BillingDeal>().HasQueryFilter(b => user.IsAdmin() || ((user.IsTerminal() && b.TerminalID == user.GetTerminalID() || b.MerchantID == user.GetMerchantID())));
 

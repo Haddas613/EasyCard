@@ -84,5 +84,7 @@ namespace Transactions.Api.Models.Transactions
         public string CreditCardVendor { get; set; }
 
         public Guid? BillingDealID { get; set; }
+
+        public SpecialTransactionTypeEnum? SpecialTransactionType { get; set; }
     }
 }

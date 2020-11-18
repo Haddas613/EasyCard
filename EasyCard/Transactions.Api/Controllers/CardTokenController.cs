@@ -79,15 +79,15 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateToken([FromBody] TokenRequest model)
         {
-            var dbData = await CreateTokenInternal(model);
+            var tokenResponse = await CreateTokenInternal(model);
 
-            if (dbData.Value.Status == StatusEnum.Error)
+            if (!(tokenResponse.Value?.Status == StatusEnum.Success))
             {
-                return dbData;
+                return tokenResponse;
             }
             else
             {
-                return CreatedAtAction(nameof(CreateToken), dbData);
+                return CreatedAtAction(nameof(CreateToken), tokenResponse.Value);
             }
         }
 
@@ -137,6 +137,8 @@ namespace Transactions.Api.Controllers
             storageData.InitialTransactionID = transaction.PaymentTransactionID;
             dbData.InitialTransactionID = transaction.PaymentTransactionID;
 
+            mapper.Map(storageData, transaction.CreditCardDetails);
+
             // terminal settings
 
             var terminalProcessor = ValidateExists(
@@ -170,6 +172,10 @@ namespace Transactions.Api.Controllers
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);
 
                     return BadRequest(new OperationResponse($"{Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID, HttpContext.TraceIdentifier, processorResponse.Errors));
+                }
+                else
+                {
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
                 }
             }
             catch (Exception ex)

@@ -225,7 +225,7 @@ namespace Transactions.Api.Controllers
 
                 var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest);
 
-                if (tokenResponse.Value.Status == StatusEnum.Error)
+                if (!(tokenResponse.Value?.Status == StatusEnum.Success))
                 {
                     return tokenResponse;
                 }
