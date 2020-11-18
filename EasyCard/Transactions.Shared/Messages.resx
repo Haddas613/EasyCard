@@ -195,6 +195,9 @@
   <data name="InvoiceCreated" xml:space="preserve">
     <value>Invoice Created</value>
   </data>
+  <data name="InvoicesForResendRequired" xml:space="preserve">
+    <value>Invoices are required</value>
+  </data>
   <data name="J2NotAllowed" xml:space="preserve">
     <value>J2 deal is not allowed</value>
   </data>

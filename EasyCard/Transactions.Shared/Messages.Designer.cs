@@ -295,6 +295,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invoices are required.
+        /// </summary>
+        public static string InvoicesForResendRequired {
+            get {
+                return ResourceManager.GetString("InvoicesForResendRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to J2 deal is not allowed.
         /// </summary>
         public static string J2NotAllowed {

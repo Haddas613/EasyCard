@@ -46,11 +46,20 @@
     <v-card width="100%" flat :loading="!invoices">
       <v-card-text class="px-0">
         <ec-list :items="invoices" v-if="invoices">
+          <template v-slot:prepend="{ item }">
+            <v-checkbox v-model="item.selected" :disabled="item.$status != 'initial'"></v-checkbox>
+          </template>
           <template v-slot:left="{ item }">
             <v-col cols="12" md="6" lg="6" class="pt-1 caption" v-if="item.invoiceNumber">
               <b>{{item.invoiceNumber}}</b>
             </v-col>
-            <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text" v-else>{{item.$invoiceDate | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
+            <v-col
+              cols="12"
+              md="6"
+              lg="6"
+              class="pt-1 caption ecgray--text"
+              v-else
+            >{{item.$invoiceDate | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
             <v-col cols="12" md="6" lg="6">{{item.cardOwnerName || '-'}}</v-col>
           </template>
 
@@ -91,6 +100,7 @@
 
 <script>
 import moment from "moment";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -172,9 +182,30 @@ export default {
     async loadMore() {
       this.invoicesFilter.skip += this.invoicesFilter.take;
       await this.getDataFromApi(true);
+    },
+    async resendSelectedInvoices(){
+      let invoices = this.lodash.filter(this.invoices, i => i.selected && i.$status == 'initial');
+      if(invoices.length === 0){
+        this.$toasted.show(this.$t("SelectInvoicesFirst"), { type: "error" });
+      }
+
+      let opResult = await this.$api.invoicing
+        .resend(this.terminalStore.terminalID, this.lodash.map(invoices, i => i.$invoiceID));
+
+      if(opResult.status === "success"){
+        let $dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
+        this.lodash.forEach(invoices, i => {
+          i.selected = false;
+          i.$status = 'sending';
+          i.status = $dictionaries.invoiceStatusEnum[i.$status];
+        }); 
+      }
     }
   },
   computed: {
+    ...mapState({
+      terminalStore: state => state.settings.terminal,
+    }),
     canLoadMore() {
       return (
         this.numberOfRecords > 0 &&
@@ -185,7 +216,7 @@ export default {
   },
   async mounted() {
     await this.getDataFromApi();
-
+    const vm = this;
     this.$store.commit("ui/changeHeader", {
       value: {
         threeDotMenu: [
@@ -193,6 +224,12 @@ export default {
             text: this.$t("Create"),
             fn: () => {
               this.$router.push({ name: "CreateInvoice" });
+            }
+          },
+          {
+            text: this.$t("ResendInvoices"),
+            fn: async () => {
+              await vm.resendSelectedInvoices();
             }
           }
         ]
