@@ -114,7 +114,7 @@ export default {
         result.installmentDetails = null;
       }
 
-      if (this.issueDocument) {
+      if (this.switchIssueDocument) {
         result.invoiceDetails = this.$refs.invoiceDetails.getData();
       } else {
         result.invoiceDetails = null;

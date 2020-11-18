@@ -85,6 +85,7 @@ export default {
       } else {
         this.$emit("update:model", val);
       }
+      this.$emit("change", val);
     },
     hasSlot(name = "default") {
       return !!this.$slots[name] || !!this.$scopedSlots[name];
