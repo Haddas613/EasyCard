@@ -95,9 +95,9 @@ export default {
     }
     
     if(!this.model.invoiceType){
-      this.model.invoiceType = this.dictionaries.invoiceTypeEnum.find(i => i.code == "invoiceWithPaymentInfo");
+      this.$set(this.model, 'invoiceType', this.dictionaries.invoiceTypeEnum.find(i => i.code == "invoiceWithPaymentInfo"));
     }else if(typeof(this.model.invoiceType) === "string"){
-      this.model.invoiceType = this.dictionaries.invoiceTypeEnum.find(i => i.code == this.model.invoiceType);
+      this.$set(this.model, 'invoiceType', this.dictionaries.invoiceTypeEnum.find(i => i.code == this.model.invoiceType));
     }
   },
   methods: {
