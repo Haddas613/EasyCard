@@ -11,16 +11,14 @@ namespace Shared.Integration.Models.Invoicing
 {
     public class InvoiceDetails
     {
-        public string InvoiceNumber { get; set; }
-
         [EnumDataType(typeof(InvoiceTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public InvoiceTypeEnum InvoiceType { get; set; }
 
+        [StringLength(250)]
         public string InvoiceSubject { get; set; }
 
+        // TODO: validation
         public string[] SendCCTo { get; set; }
-
-        public string DefaultInvoiceItem { get; set; }
     }
 }

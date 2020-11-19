@@ -60,6 +60,18 @@ namespace Transactions.Api.Models.Transactions
         [DataType(DataType.Currency)]
         public decimal? TransactionAmount { get; set; }
 
+        [Range(0, 1)]
+        [DataType(DataType.Currency)]
+        public decimal VATRate { get; set; }
+
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal VATTotal { get; set; }
+
+        [Range(0.01, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal NetTotal { get; set; }
+
         /// <summary>
         /// Installment payments details (should be omitted in case of regular deal)
         /// </summary>

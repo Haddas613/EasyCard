@@ -1,4 +1,5 @@
 ﻿using Merchants.Shared.Enums;
+using Merchants.Shared.Models;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,6 @@ namespace MerchantProfileApi.Models.Terminal
     {
         public TerminalResponse()
         {
-            Settings = new TerminalSettings();
-            BillingSettings = new TerminalBillingSettings();
         }
 
         public Guid TerminalID { get; set; }
@@ -27,12 +26,16 @@ namespace MerchantProfileApi.Models.Terminal
 
         public DateTime? Created { get; set; }
 
-        public IEnumerable<TerminalExternalSystemDetails> Integrations { get; set; }
-
         public IEnumerable<FeatureResponse> EnabledFeatures { get; set; }
 
         public TerminalSettings Settings { get; set; }
 
         public TerminalBillingSettings BillingSettings { get; set; }
+
+        public TerminalInvoiceSettings InvoiceSettings { get; set; }
+
+        public TerminalPaymentRequestSettings PaymentRequestSettings { get; set; }
+
+        public TerminalCheckoutSettings CheckoutSettings { get; set; }
     }
 }

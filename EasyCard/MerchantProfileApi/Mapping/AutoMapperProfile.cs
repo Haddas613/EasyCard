@@ -19,15 +19,14 @@ namespace MerchantProfileApi.Mapping
 
         private void RegisterTerminalMappings()
         {
-            CreateMap<TerminalRequest, Terminal>()
-                .ForMember(m => m.Created, o => o.MapFrom((src, tgt) => tgt.Created = DateTime.UtcNow));
             CreateMap<UpdateTerminalRequest, Terminal>();
 
-            CreateMap<Merchants.Business.Entities.Terminal.TerminalSettings, Models.Terminal.TerminalSettings>().ReverseMap();
+            CreateMap<TerminalSettingsUpdate, Merchants.Shared.Models.TerminalSettings>();
+            CreateMap<TerminalBillingSettingsUpdate, Merchants.Shared.Models.TerminalBillingSettings>();
+            CreateMap<TerminalInvoiceSettingsUpdate, Merchants.Shared.Models.TerminalInvoiceSettings>();
+            CreateMap<TerminalCheckoutSettingsUpdate, Merchants.Shared.Models.TerminalCheckoutSettings>();
+            CreateMap<TerminalPaymentRequestSettingsUpdate, Merchants.Shared.Models.TerminalPaymentRequestSettings>();
 
-            CreateMap<Merchants.Business.Entities.Terminal.TerminalBillingSettings, Models.Terminal.TerminalBillingSettings>()
-                .ForMember(m => m.BillingNotificationsEmails, o => o.MapFrom(
-                    (src) => src.BillingNotificationsEmails.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))).ReverseMap();
             CreateMap<Terminal, TerminalResponse>();
             CreateMap<Terminal, TerminalSummary>();
             CreateMap<ExternalSystem, ExternalSystemSummary>();

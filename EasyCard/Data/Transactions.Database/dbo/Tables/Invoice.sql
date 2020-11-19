@@ -24,13 +24,17 @@
     [OperationDoneByID]    UNIQUEIDENTIFIER NULL,
     [CorrelationId]        VARCHAR (50)     NULL,
     [SourceIP]             VARCHAR (50)     NULL,
-    [DefaultInvoiceItem]   NVARCHAR (50)    NULL,
     [InvoiceNumber]        NVARCHAR (20)    NULL,
-    [InvoiceSubject]       NVARCHAR (MAX)   NULL,
+    [InvoiceSubject]       NVARCHAR (250)   NULL,
     [SendCCTo]             NVARCHAR (MAX)   NULL,
     [PaymentTransactionID] UNIQUEIDENTIFIER NULL,
+    [NetTotal]             DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
+    [VATRate]              DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
+    [VATTotal]             DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
     CONSTRAINT [PK_Invoice] PRIMARY KEY CLUSTERED ([InvoiceID] ASC)
 );
+
+
 
 
 

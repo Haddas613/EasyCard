@@ -27,6 +27,11 @@ namespace Transactions.Business.Entities
         public Guid InvoiceID { get; set; }
 
         /// <summary>
+        /// Invoice reference in invoicing system
+        /// </summary>
+        public string InvoiceNumber { get; set; }
+
+        /// <summary>
         /// Date-time when entity created initially in UTC
         /// </summary>
         public DateTime? InvoiceTimestamp { get; set; }
@@ -73,6 +78,12 @@ namespace Transactions.Business.Entities
         /// </summary>
         public decimal InvoiceAmount { get; set; }
 
+        public decimal VATRate { get; set; }
+
+        public decimal VATTotal { get; set; }
+
+        public decimal NetTotal { get; set; }
+
         public string CardOwnerName { get; set; }
 
         public string CardOwnerNationalID { get; set; }
@@ -106,5 +117,7 @@ namespace Transactions.Business.Entities
         public string SourceIP { get; set; }
 
         public Guid? PaymentTransactionID { get; set; }
+
+        // TODO: recalculate items and fill default SKU
     }
 }

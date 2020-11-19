@@ -1,6 +1,7 @@
 ﻿using Merchants.Api.Models.Merchant;
 using Merchants.Api.Models.User;
 using Merchants.Shared.Enums;
+using Merchants.Shared.Models;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,9 @@ namespace Merchants.Api.Models.Terminal
         {
             Settings = new TerminalSettings();
             BillingSettings = new TerminalBillingSettings();
+            InvoiceSettings = new TerminalInvoiceSettings();
+            PaymentRequestSettings = new TerminalPaymentRequestSettings();
+            CheckoutSettings = new TerminalCheckoutSettings();
         }
 
         public Guid TerminalID { get; set; }
@@ -40,5 +44,11 @@ namespace Merchants.Api.Models.Terminal
         public TerminalSettings Settings { get; set; }
 
         public TerminalBillingSettings BillingSettings { get; set; }
+
+        public TerminalInvoiceSettings InvoiceSettings { get; set; }
+
+        public TerminalPaymentRequestSettings PaymentRequestSettings { get; set; }
+
+        public TerminalCheckoutSettings CheckoutSettings { get; set; }
     }
 }

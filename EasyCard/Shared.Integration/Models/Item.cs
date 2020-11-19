@@ -9,13 +9,18 @@ namespace Shared.Integration.Models
 {
     public class Item
     {
-        public Guid ItemID { get; set; }
+        public Guid? ItemID { get; set; }
 
+        [Required(AllowEmptyStrings = false)]
+        [StringLength(250)]
         public string ItemName { get; set; }
 
-        public decimal? Price { get; set; }
+        [StringLength(50)]
+        public string SKU { get; set; }
 
-        public CurrencyEnum Currency { get; set; }
+        [Required(AllowEmptyStrings = false)]
+        [Range(0, double.MaxValue)]
+        public decimal? Price { get; set; }
 
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
@@ -24,24 +29,36 @@ namespace Shared.Integration.Models
         /// <summary>
         /// Row amount
         /// </summary>
-        [Range(0.01, double.MaxValue)]
+        [Range(0, double.MaxValue)]
         [DataType(DataType.Currency)]
         public decimal? Amount { get; set; }
 
         /// <summary>
-        /// Tax rate (VAT)
+        /// VAT Rate
         /// </summary>
-        [Range(0.01, 1)]
+        [Range(0, 1)]
         [DataType(DataType.Currency)]
-        public decimal? TaxRate { get; set; }
+        public decimal? VATRate { get; set; }
 
         /// <summary>
-        /// Tax amount
+        /// VAT amount
         /// </summary>
-        [Range(0.01, double.MaxValue)]
+        [Range(0, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal? TaxAmount { get; set; }
+        public decimal? VAT { get; set; }
 
-        // TODO: sku
+        /// <summary>
+        /// Net amount (before VAT)
+        /// </summary>
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal? NetAmount { get; set; }
+
+        /// <summary>
+        /// Discount
+        /// </summary>
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal? Discount { get; set; }
     }
 }

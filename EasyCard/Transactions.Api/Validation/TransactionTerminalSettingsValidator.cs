@@ -1,4 +1,5 @@
 ﻿using Merchants.Business.Entities.Terminal;
+using Merchants.Shared.Models;
 using Shared.Business.Messages;
 using Shared.Helpers;
 using Shared.Integration.Models;

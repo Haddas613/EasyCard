@@ -23,6 +23,8 @@
     <Compile Remove="Migrations\20200711150807_Billing1.Designer.cs" />
     <Compile Remove="Migrations\20200817101215_Corrections6.cs" />
     <Compile Remove="Migrations\20200817101215_Corrections6.Designer.cs" />
+    <Compile Remove="Migrations\20201119203413_VATandOther.cs" />
+    <Compile Remove="Migrations\20201119203413_VATandOther.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

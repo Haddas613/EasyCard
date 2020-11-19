@@ -1,4 +1,5 @@
 ﻿using Merchants.Business.Entities.Terminal;
+using Merchants.Shared.Models;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;

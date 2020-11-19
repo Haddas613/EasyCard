@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Converters;
 using Shared.Helpers;
 using Shared.Integration.Models;
+using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -52,5 +53,22 @@ namespace Transactions.Api.Models.Transactions
         [DataType(DataType.Currency)]
         [Required]
         public decimal TransactionAmount { get; set; }
+
+        [Range(0, 1)]
+        [DataType(DataType.Currency)]
+        public decimal VATRate { get; set; }
+
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal VATTotal { get; set; }
+
+        [Range(0.01, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal NetTotal { get; set; }
+
+        /// <summary>
+        /// Invoice details
+        /// </summary>
+        public InvoiceDetails InvoiceDetails { get; set; }
     }
 }

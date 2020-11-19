@@ -1,7 +1,9 @@
 ﻿using Merchants.Business.Entities.Billing;
 using Merchants.Business.Entities.Merchant;
+using Merchants.Business.Entities.System;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Entities.User;
+using Merchants.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -42,6 +44,26 @@ namespace Merchants.Business.Data
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
             c => (IEnumerable<string>)c.ToHashSet());
 
+        private static readonly ValueConverter TerminalSettingsConverter = new ValueConverter<TerminalSettings, string>(
+            v => JsonConvert.SerializeObject(v),
+            v => JsonConvert.DeserializeObject<TerminalSettings>(v));
+
+        private static readonly ValueConverter TerminalInvoiceSettingsConverter = new ValueConverter<TerminalInvoiceSettings, string>(
+            v => JsonConvert.SerializeObject(v),
+            v => JsonConvert.DeserializeObject<TerminalInvoiceSettings>(v));
+
+        private static readonly ValueConverter TerminalPaymentRequestSettingsConverter = new ValueConverter<TerminalPaymentRequestSettings, string>(
+            v => JsonConvert.SerializeObject(v),
+            v => JsonConvert.DeserializeObject<TerminalPaymentRequestSettings>(v));
+
+        private static readonly ValueConverter TerminalCheckoutSettingsConverter = new ValueConverter<TerminalCheckoutSettings, string>(
+            v => JsonConvert.SerializeObject(v),
+            v => JsonConvert.DeserializeObject<TerminalCheckoutSettings>(v));
+
+        private static readonly ValueConverter TerminalBillingSettingsConverter = new ValueConverter<TerminalBillingSettings, string>(
+            v => JsonConvert.SerializeObject(v),
+            v => JsonConvert.DeserializeObject<TerminalBillingSettings>(v));
+
         public DbSet<Merchant> Merchants { get; set; }
 
         public DbSet<Feature> Features { get; set; }
@@ -59,6 +81,8 @@ namespace Merchants.Business.Data
         public DbSet<Consumer> Consumers { get; set; }
 
         public DbSet<CurrencyRate> CurrencyRates { get; set; }
+
+        public DbSet<SystemSettings> SystemSettings { get; set; }
 
         private readonly ClaimsPrincipal user;
 
@@ -86,7 +110,9 @@ namespace Merchants.Business.Data
             modelBuilder.ApplyConfiguration(new ConsumerConfiguration());
             modelBuilder.ApplyConfiguration(new CurrencyRateConfiguration());
 
-            // security filters
+            modelBuilder.ApplyConfiguration(new SystemSettingsConfiguration());
+
+            // TODO: move security filters to get methods
 
             modelBuilder.Entity<Merchant>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
 
@@ -147,22 +173,29 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.Label).IsRequired(true).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.ActivityStartDate).IsRequired(false);
 
-                builder.OwnsOne(b => b.Settings, s =>
-                {
-                    s.Property(p => p.CvvRequired).HasColumnName("CvvRequired").HasDefaultValue(false);
-                    s.Property(p => p.J5Allowed).HasColumnName("J5Allowed").HasDefaultValue(false);
-                    s.Property(p => p.J2Allowed).HasColumnName("J2Allowed").HasDefaultValue(false);
-                    s.Property(p => p.CvvRequired).HasColumnName("CvvRequired").HasDefaultValue(false);
-                    s.Property(p => p.EnableDeletionOfUntransmittedTransactions).HasColumnName("EnableDeletionOfUntransmittedTransactions").HasDefaultValue(false);
-                    s.Property(p => p.NationalIDRequired).HasColumnName("NationalIDRequired").HasDefaultValue(false);
-                    s.Property(p => p.PaymentButtonSettings).HasColumnName("PaymentButtonSettings").IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
-                    s.Property(p => p.RedirectPageSettings).HasColumnName("RedirectPageSettings").IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
-                });
+                //builder.OwnsOne(b => b.Settings, s =>
+                //{
+                //    s.Property(p => p.CvvRequired).HasColumnName("CvvRequired").HasDefaultValue(false);
+                //    s.Property(p => p.J5Allowed).HasColumnName("J5Allowed").HasDefaultValue(false);
+                //    s.Property(p => p.J2Allowed).HasColumnName("J2Allowed").HasDefaultValue(false);
+                //    s.Property(p => p.CvvRequired).HasColumnName("CvvRequired").HasDefaultValue(false);
+                //    s.Property(p => p.NationalIDRequired).HasColumnName("NationalIDRequired").HasDefaultValue(false);
+                //});
 
-                builder.OwnsOne(b => b.BillingSettings, s =>
-                {
-                    s.Property(p => p.BillingNotificationsEmails).HasColumnName("BillingNotificationsEmails").IsRequired(false);
-                });
+                //builder.OwnsOne(b => b.BillingSettings, s =>
+                //{
+                //    s.Property(p => p.BillingNotificationsEmails).HasColumnName("BillingNotificationsEmails").IsRequired(false);
+                //});
+
+                builder.Property(p => p.Settings).HasColumnName("Settings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalSettingsConverter);
+
+                builder.Property(p => p.BillingSettings).HasColumnName("BillingSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalBillingSettingsConverter);
+
+                builder.Property(p => p.CheckoutSettings).HasColumnName("CheckoutSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalCheckoutSettingsConverter);
+
+                builder.Property(p => p.PaymentRequestSettings).HasColumnName("PaymentRequestSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalPaymentRequestSettingsConverter);
+
+                builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalInvoiceSettingsConverter);
             }
         }
 
@@ -324,6 +357,29 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.Date).IsRequired(false).HasColumnType("date");
 
                 builder.Property(b => b.Rate).HasColumnType("decimal(19,4)").IsRequired(false);
+            }
+        }
+
+        internal class SystemSettingsConfiguration : IEntityTypeConfiguration<SystemSettings>
+        {
+            public void Configure(EntityTypeBuilder<SystemSettings> builder)
+            {
+                builder.ToTable("SystemSettings");
+
+                builder.HasKey(b => b.SystemSettingsID);
+                builder.Property(b => b.SystemSettingsID).ValueGeneratedNever();
+
+                builder.Property(p => p.UpdateTimestamp).IsRowVersion();
+
+                builder.Property(p => p.Settings).HasColumnName("Settings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalSettingsConverter);
+
+                builder.Property(p => p.BillingSettings).HasColumnName("BillingSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalBillingSettingsConverter);
+
+                builder.Property(p => p.CheckoutSettings).HasColumnName("CheckoutSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalCheckoutSettingsConverter);
+
+                builder.Property(p => p.PaymentRequestSettings).HasColumnName("PaymentRequestSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalPaymentRequestSettingsConverter);
+
+                builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalInvoiceSettingsConverter);
             }
         }
     }

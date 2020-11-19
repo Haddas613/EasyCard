@@ -53,8 +53,16 @@
     [Items]                          NVARCHAR (MAX)   NULL,
     [BillingDealID]                  UNIQUEIDENTIFIER NULL,
     [CustomerAddress]                NVARCHAR (MAX)   NULL,
+    [NetTotal]                       DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
+    [VATRate]                        DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
+    [VATTotal]                       DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
+    [InvoiceID]                      UNIQUEIDENTIFIER NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
+
+
 
 
 

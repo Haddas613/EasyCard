@@ -29,11 +29,6 @@ namespace Merchants.Api.Mapping
                 .ForMember(m => m.Created, o => o.MapFrom((src, tgt) => tgt.Created = DateTime.UtcNow));
             CreateMap<UpdateTerminalRequest, Terminal>();
 
-            CreateMap<Business.Entities.Terminal.TerminalSettings, Models.Terminal.TerminalSettings>().ReverseMap();
-
-            CreateMap<Business.Entities.Terminal.TerminalBillingSettings, Models.Terminal.TerminalBillingSettings>()
-                .ForMember(m => m.BillingNotificationsEmails, o => o.MapFrom(
-                    (src) => src.BillingNotificationsEmails.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries))).ReverseMap();
             CreateMap<Terminal, TerminalResponse>();
             CreateMap<Terminal, TerminalSummary>()
                 .ForMember(m => m.MerchantBusinessName, o => o.MapFrom(src => src.Merchant.BusinessName))

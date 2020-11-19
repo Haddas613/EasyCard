@@ -79,7 +79,7 @@ namespace Transactions.Api.Extensions.Filtering
 
             if (filter.InvoiceNumber != null)
             {
-                src = src.Where(t => t.InvoiceDetails.InvoiceNumber == filter.InvoiceNumber);
+                src = src.Where(t => t.InvoiceNumber == filter.InvoiceNumber);
             }
 
             if (filter.ConsumerID != null)

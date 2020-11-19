@@ -4,13 +4,8 @@
     [InitialTransactionID]        UNIQUEIDENTIFIER NULL,
     [TerminalID]                  UNIQUEIDENTIFIER NOT NULL,
     [MerchantID]                  UNIQUEIDENTIFIER NOT NULL,
-    [ProcessorID]                 BIGINT           NULL,
-    [AggregatorID]                BIGINT           NULL,
-    [InvoicingID]                 BIGINT           NULL,
-    [MarketerID]                  BIGINT           NULL,
     [Status]                      SMALLINT         NOT NULL,
     [Currency]                    SMALLINT         NOT NULL,
-    [NumberOfPayments]            INT              NOT NULL,
     [TransactionAmount]           DECIMAL (19, 4)  NOT NULL,
     [TotalAmount]                 DECIMAL (19, 4)  NOT NULL,
     [CurrentDeal]                 INT              NULL,
@@ -37,8 +32,19 @@
     [SourceIP]                    VARCHAR (50)     NULL,
     [CurrentTransactionID]        UNIQUEIDENTIFIER NULL,
     [CurrentTransactionTimestamp] DATETIME2 (7)    NULL,
+    [InvoiceSubject]              NVARCHAR (250)   NULL,
+    [InvoiceType]                 SMALLINT         NULL,
+    [NetTotal]                    DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
+    [SendCCTo]                    NVARCHAR (MAX)   NULL,
+    [VATRate]                     DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
+    [VATTotal]                    DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
+    [NextScheduledTransaction]    DATETIME2 (7)    NULL,
     CONSTRAINT [PK_BillingDeal] PRIMARY KEY CLUSTERED ([BillingDealID] ASC)
 );
+
+
+
+
 
 
 

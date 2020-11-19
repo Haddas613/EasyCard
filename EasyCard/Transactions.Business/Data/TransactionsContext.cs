@@ -30,8 +30,9 @@ namespace Transactions.Business.Data
     public class TransactionsContext : DbContext
     {
         public static readonly LoggerFactory DbCommandConsoleLoggerFactory
-          = new LoggerFactory(new[] {
-              new DebugLoggerProvider ()
+          = new LoggerFactory(new[]
+            {
+              new DebugLoggerProvider()
             });
 
         public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
@@ -305,6 +306,10 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                 builder.Property(b => b.InitialPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").IsRequired();
 
+                builder.Property(b => b.VATRate).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.VATTotal).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.NetTotal).HasColumnType("decimal(19,4)").IsRequired();
+
                 builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
             }
         }
@@ -414,7 +419,20 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter);
                 });
 
+                builder.OwnsOne(b => b.InvoiceDetails, s =>
+                {
+                    s.Property(p => p.InvoiceType).HasColumnName("InvoiceType");
+                   
+                    s.Property(p => p.InvoiceSubject).HasColumnName("InvoiceSubject").IsRequired(false).IsUnicode(true);
+                    s.Property(p => p.SendCCTo).HasColumnName("SendCCTo").IsRequired(false).IsUnicode(true).HasConversion(StringsArrayConverter);
+                });
+
                 builder.Property(b => b.TransactionAmount).HasColumnType("decimal(19,4)").IsRequired();
+
+                builder.Property(b => b.VATRate).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.VATTotal).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.NetTotal).HasColumnType("decimal(19,4)").IsRequired();
+
                 builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").IsRequired();
 
                 builder.Property(p => p.BillingSchedule).HasColumnName("BillingSchedule").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(BillingScheduleConverter);
@@ -438,6 +456,8 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                 builder.HasKey(b => b.InvoiceID);
                 builder.Property(b => b.InvoiceID).ValueGeneratedNever();
 
+                builder.Property(p => p.InvoiceNumber).HasColumnName("InvoiceNumber").IsRequired(false).HasMaxLength(20).IsUnicode(true);
+
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
                 builder.Property(p => p.TerminalID).IsRequired(true);
@@ -456,13 +476,15 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
                 {
                     s.Property(p => p.InvoiceType).HasColumnName("InvoiceType");
-                    s.Property(p => p.InvoiceNumber).HasColumnName("InvoiceNumber").IsRequired(false).HasMaxLength(20).IsUnicode(true);
                     s.Property(p => p.InvoiceSubject).HasColumnName("InvoiceSubject").IsRequired(false).IsUnicode(true);
                     s.Property(p => p.SendCCTo).HasColumnName("SendCCTo").IsRequired(false).IsUnicode(true).HasConversion(StringsArrayConverter);
-                    s.Property(p => p.DefaultInvoiceItem).HasColumnName("DefaultInvoiceItem").IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 });
 
                 builder.Property(b => b.InvoiceAmount).HasColumnType("decimal(19,4)").IsRequired();
+
+                builder.Property(b => b.VATRate).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.VATTotal).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.NetTotal).HasColumnType("decimal(19,4)").IsRequired();
 
                 builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
 
@@ -504,13 +526,15 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
                 {
                     s.Property(p => p.InvoiceType).HasColumnName("InvoiceType");
-                    s.Property(p => p.InvoiceNumber).HasColumnName("InvoiceNumber").IsRequired(false).HasMaxLength(20).IsUnicode(true);
                     s.Property(p => p.InvoiceSubject).HasColumnName("InvoiceSubject").IsRequired(false).IsUnicode(true);
                     s.Property(p => p.SendCCTo).HasColumnName("SendCCTo").IsRequired(false).IsUnicode(true).HasConversion(StringsArrayConverter);
-                    s.Property(p => p.DefaultInvoiceItem).HasColumnName("DefaultInvoiceItem").IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 });
 
                 builder.Property(b => b.PaymentRequestAmount).HasColumnType("decimal(19,4)").IsRequired();
+
+                builder.Property(b => b.VATRate).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.VATTotal).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.NetTotal).HasColumnType("decimal(19,4)").IsRequired();
 
                 builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
 
@@ -519,6 +543,9 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                 builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.FromAddress).IsRequired(false).HasMaxLength(100).IsUnicode(true);
+                builder.Property(b => b.RequestSubject).IsRequired(false).HasMaxLength(250).IsUnicode(true);
 
                 builder.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                 builder.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);

@@ -251,11 +251,6 @@
             SHVA or other system terminal ID
             </summary>
         </member>
-        <member name="P:MerchantProfileApi.Models.Terminal.TerminalSettings.MaxInstallments">
-            <summary>
-            If we set it to zero means installments blocked
-            </summary>
-        </member>
         <member name="P:MerchantProfileApi.Models.Terminal.TerminalSummary.ExternalProcessorReference">
             <summary>
             SHVA or other system terminal ID

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transactions.Business.Data;
 
 namespace Transactions.Business.Migrations
 {
     [DbContext(typeof(TransactionsContext))]
-    partial class TransactionsContextModelSnapshot : ModelSnapshot
+    [Migration("20201119203911_VATandOther")]
+    partial class VATandOther
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,9 +67,6 @@ namespace Transactions.Business.Migrations
 
                     b.Property<decimal>("NetTotal")
                         .HasColumnType("decimal(19,4)");
-
-                    b.Property<DateTime?>("NextScheduledTransaction")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("OperationDoneBy")
                         .IsRequired()
@@ -229,12 +228,6 @@ namespace Transactions.Business.Migrations
 
                     b.Property<DateTime?>("InvoiceDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("InvoiceNumber")
-                        .HasColumnName("InvoiceNumber")
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20)
-                        .IsUnicode(true);
 
                     b.Property<DateTime?>("InvoiceTimestamp")
                         .HasColumnType("datetime2");
@@ -499,9 +492,6 @@ namespace Transactions.Business.Migrations
                     b.Property<decimal>("InstallmentPaymentAmount")
                         .HasColumnType("decimal(19,4)");
 
-                    b.Property<Guid?>("InvoiceID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<long?>("InvoicingID")
                         .HasColumnType("bigint");
 
@@ -641,6 +631,12 @@ namespace Transactions.Business.Migrations
                         {
                             b1.Property<Guid>("BillingDealID")
                                 .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("InvoiceNumber")
+                                .HasColumnName("InvoiceNumber")
+                                .HasColumnType("nvarchar(20)")
+                                .HasMaxLength(20)
+                                .IsUnicode(true);
 
                             b1.Property<string>("InvoiceSubject")
                                 .HasColumnName("InvoiceSubject")
@@ -806,6 +802,12 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("InvoiceID")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<string>("InvoiceNumber")
+                                .HasColumnName("InvoiceNumber")
+                                .HasColumnType("nvarchar(20)")
+                                .HasMaxLength(20)
+                                .IsUnicode(true);
+
                             b1.Property<string>("InvoiceSubject")
                                 .HasColumnName("InvoiceSubject")
                                 .HasColumnType("nvarchar(250)")
@@ -882,6 +884,12 @@ namespace Transactions.Business.Migrations
                         {
                             b1.Property<Guid>("PaymentRequestID")
                                 .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("InvoiceNumber")
+                                .HasColumnName("InvoiceNumber")
+                                .HasColumnType("nvarchar(20)")
+                                .HasMaxLength(20)
+                                .IsUnicode(true);
 
                             b1.Property<string>("InvoiceSubject")
                                 .HasColumnName("InvoiceSubject")

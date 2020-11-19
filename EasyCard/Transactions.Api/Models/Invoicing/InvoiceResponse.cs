@@ -20,6 +20,11 @@ namespace Transactions.Api.Models.Invoicing
         public Guid InvoiceID { get; set; }
 
         /// <summary>
+        /// Invoice reference in invoicing system
+        /// </summary>
+        public string InvoiceNumber { get; set; }
+
+        /// <summary>
         /// Date-time when deal created initially in UTC
         /// </summary>
         public DateTime? InvoiceTimestamp { get; set; }

@@ -1,6 +1,7 @@
 ﻿using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.User;
 using Merchants.Shared.Enums;
+using Merchants.Shared.Models;
 using Shared.Business;
 using Shared.Helpers;
 using System;
@@ -15,6 +16,9 @@ namespace Merchants.Business.Entities.Terminal
         {
             Settings = new TerminalSettings();
             BillingSettings = new TerminalBillingSettings();
+            InvoiceSettings = new TerminalInvoiceSettings();
+            PaymentRequestSettings = new TerminalPaymentRequestSettings();
+            CheckoutSettings = new TerminalCheckoutSettings();
             Integrations = new HashSet<TerminalExternalSystem>();
             EnabledFeatures = new HashSet<Feature>();
             Created = DateTime.UtcNow;
@@ -40,6 +44,12 @@ namespace Merchants.Business.Entities.Terminal
         public TerminalSettings Settings { get; set; }
 
         public TerminalBillingSettings BillingSettings { get; set; }
+
+        public TerminalInvoiceSettings InvoiceSettings { get; set; }
+
+        public TerminalPaymentRequestSettings PaymentRequestSettings { get; set; }
+
+        public TerminalCheckoutSettings CheckoutSettings { get; set; }
 
         public virtual IEnumerable<TerminalExternalSystem> Integrations { get; set; }
 

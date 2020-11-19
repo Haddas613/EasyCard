@@ -98,43 +98,18 @@ namespace EasyInvoice.Converters
 
         public static ECInvoiceRow GetRow(Item message)
         {
-            var netAmount = message.Amount - message.TaxAmount;
-            var taxAmount = Math.Round(message.Price.GetValueOrDefault() * message.TaxRate.GetValueOrDefault(), 2, MidpointRounding.AwayFromZero);
-            var priceNet = message.Price - taxAmount;
-
             var res = new ECInvoiceRow
             {
-                Sku = "-", // TODO
+                Sku = message.SKU,
                 Name = message.ItemName,
                 Quantity = (int)message.Quantity,
                 TotalAmount = message.Amount,
 
                 Price = message.Price,
-                PriceNet = priceNet,
-                TaxAmount = taxAmount,
-                TotalNetAmount = netAmount,
-                TotalTaxAmount = message.TaxAmount,
-            };
-
-            return res;
-        }
-
-        public static ECInvoiceRow GetDefaultRow(InvoicingCreateDocumentRequest message)
-        {
-            var netAmount = message.InvoiceAmount - message.TaxAmount;
-
-            var res = new ECInvoiceRow
-            {
-                Sku = "-",
-                Name = message.InvoiceDetails.DefaultInvoiceItem, // TOODO: get from settings if empty
-                Quantity = 1,
-                TotalAmount = message.InvoiceAmount,
-
-                Price = message.InvoiceAmount,
-                PriceNet = netAmount,
-                TaxAmount = message.TaxAmount,
-                TotalNetAmount = netAmount,
-                TotalTaxAmount = message.TaxAmount,
+                PriceNet = message.NetAmount,
+                TaxAmount = message.VAT,
+                TotalNetAmount = message.NetAmount,
+                TotalTaxAmount = message.VAT,
             };
 
             return res;

@@ -136,6 +136,12 @@ namespace Transactions.Business.Entities
         /// </summary>
         public decimal TransactionAmount { get; set; }
 
+        public decimal VATRate { get; set; }
+
+        public decimal VATTotal { get; set; }
+
+        public decimal NetTotal { get; set; }
+
         /// <summary>
         /// Initial installment payment
         /// </summary>
@@ -201,6 +207,13 @@ namespace Transactions.Business.Entities
         /// </summary>
         public string CorrelationId { get; set; }
 
+        /// <summary>
+        /// Generated invoice ID
+        /// </summary>
+        public Guid? InvoiceID { get; set; }
+
+        // TODO: update SKU for all items
+        // TODO: calculate items
         [Obsolete]
         public void Calculate()
         {
@@ -214,7 +227,7 @@ namespace Transactions.Business.Entities
                 InitialPaymentAmount = TransactionAmount;
             }
 
-            TotalAmount = InitialPaymentAmount + InstallmentPaymentAmount * (NumberOfPayments - 1);
+            TotalAmount = InitialPaymentAmount + (InstallmentPaymentAmount * (NumberOfPayments - 1));
         }
 
         public Guid GetID()

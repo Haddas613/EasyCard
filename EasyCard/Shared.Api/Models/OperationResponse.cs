@@ -71,5 +71,7 @@ namespace Shared.Api.Models
         public IEnumerable<Error> Errors { get; set; }
 
         public string ConcurrencyToken { get; set; }
+
+        public OperationResponse InnerResponse { get; set; }
     }
 }

@@ -3,11 +3,9 @@
     [PaymentRequestTimestamp] DATETIME2 (7)    NULL,
     [TerminalID]              UNIQUEIDENTIFIER NOT NULL,
     [MerchantID]              UNIQUEIDENTIFIER NOT NULL,
-    [InvoiceNumber]           NVARCHAR (20)    NULL,
     [InvoiceType]             SMALLINT         NULL,
-    [InvoiceSubject]          NVARCHAR (MAX)   NULL,
+    [InvoiceSubject]          NVARCHAR (250)   NULL,
     [SendCCTo]                NVARCHAR (MAX)   NULL,
-    [DefaultInvoiceItem]      NVARCHAR (50)    NULL,
     [Status]                  SMALLINT         NOT NULL,
     [Currency]                SMALLINT         NOT NULL,
     [NumberOfPayments]        INT              NOT NULL,
@@ -28,6 +26,15 @@
     [SourceIP]                VARCHAR (50)     NULL,
     [DueDate]                 DATETIME2 (7)    NULL,
     [PaymentTransactionID]    UNIQUEIDENTIFIER NULL,
+    [FromAddress]             NVARCHAR (100)   NULL,
+    [NetTotal]                DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
+    [RequestSubject]          NVARCHAR (250)   NULL,
+    [VATRate]                 DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
+    [VATTotal]                DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
+
+
 

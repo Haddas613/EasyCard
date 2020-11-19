@@ -66,6 +66,15 @@ namespace Transactions.Business.Entities
         /// </summary>
         public decimal PaymentRequestAmount { get; set; }
 
+        /// <summary>
+        /// Will be used for invoice
+        /// </summary>
+        public decimal VATRate { get; set; }
+
+        public decimal VATTotal { get; set; }
+
+        public decimal NetTotal { get; set; }
+
         public string CardOwnerName { get; set; }
 
         public string CardOwnerNationalID { get; set; }
@@ -99,5 +108,11 @@ namespace Transactions.Business.Entities
         public string SourceIP { get; set; }
 
         public Guid? PaymentTransactionID { get; set; }
+
+        public string RequestSubject { get; set; }
+
+        public string FromAddress { get; set; }
+
+        // TODO: recalculate items and fill default SKU
     }
 }

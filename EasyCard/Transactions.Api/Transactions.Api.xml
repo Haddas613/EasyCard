@@ -51,14 +51,14 @@
             Transaction amount (should be omitted in case of installment deal)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.TotalAmount">
-            <summary>
-            TotalAmount = TransactionAmount * NumberOfPayments
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.BillingSchedule">
             <summary>
             Billing Schedule
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.InvoiceDetails">
+            <summary>
+            Invoice details
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.BillingDealID">
@@ -181,16 +181,6 @@
             End-customer Email
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.NumberOfPayments">
-            <summary>
-            Number Of payments (cannot be more than 999)
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.TotalAmount">
-            <summary>
-            TotalAmount = TransactionAmount * NumberOfPayments
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.Status">
             <summary>
             Processing status
@@ -292,19 +282,14 @@
             Transaction amount (should be omitted in case of installment deal)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.NumberOfPayments">
-            <summary>
-            Number Of payments (cannot be more than 999)
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.TotalAmount">
-            <summary>
-            TotalAmount = TransactionAmount * NumberOfPayments
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.BillingSchedule">
             <summary>
             Billing Schedule
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.InvoiceDetails">
+            <summary>
+            Invoice details
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.InvoiceDetails">
@@ -350,6 +335,11 @@
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceID">
             <summary>
             Primary reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceNumber">
+            <summary>
+            Invoice reference in invoicing system
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceTimestamp">
@@ -533,14 +523,9 @@
             Invoice details
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.TaxRate">
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.RequestSubject">
             <summary>
-            Tax rate (VAT)
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.TaxAmount">
-            <summary>
-            Tax amount
+            Email subject
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.PaymentRequestID">
@@ -992,6 +977,11 @@
         <member name="P:Transactions.Api.Models.Transactions.RefundRequest.TransactionAmount">
             <summary>
             Refund amount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.InvoiceDetails">
+            <summary>
+            Invoice details
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionRequestBase.TerminalID">

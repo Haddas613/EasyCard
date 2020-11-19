@@ -50,18 +50,25 @@ namespace Transactions.Api.Models.PaymentRequests
         /// </summary>
         public InvoiceDetails InvoiceDetails { get; set; }
 
-        /// <summary>
-        /// Tax rate (VAT)
-        /// </summary>
-        [Range(0.01, 1)]
+        [Range(0, 1)]
         [DataType(DataType.Currency)]
-        public decimal? TaxRate { get; set; }
+        public decimal VATRate { get; set; }
 
-        /// <summary>
-        /// Tax amount
-        /// </summary>
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal VATTotal { get; set; }
+
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal? TaxAmount { get; set; }
+        public decimal NetTotal { get; set; }
+
+        /// <summary>
+        /// Email subject
+        /// </summary>
+        [StringLength(250)]
+        public string RequestSubject { get; set; }
+
+        [StringLength(100)]
+        public string FromAddress { get; set; }
     }
 }

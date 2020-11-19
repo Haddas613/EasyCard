@@ -1,6 +1,7 @@
 ﻿using Merchants.Api.Controllers;
 using Merchants.Api.Models.Merchant;
 using Merchants.Api.Models.Terminal;
+using Merchants.Shared.Models;
 using Merchants.Tests.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;

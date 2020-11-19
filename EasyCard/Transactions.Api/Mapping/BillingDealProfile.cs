@@ -25,6 +25,7 @@ namespace Transactions.Api.Mapping
             CreateMap<BillingDealUpdateRequest, BillingDeal>();
 
             CreateMap<BillingDeal, BillingDealSummary>()
+                .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerName))
                 .ForMember(d => d.CardExpired, o => o
                     .MapFrom(d => (d.CreditCardDetails != null && d.CreditCardDetails.CardExpiration != null) ? d.CreditCardDetails.CardExpiration.Expired : default));
 
