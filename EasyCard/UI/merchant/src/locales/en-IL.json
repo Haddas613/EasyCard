@@ -179,6 +179,8 @@
   "RemoveItem": "Remove Item",
   "ResendInvoices": "Resend Invoices",
   "Resend": "Resend",
+  "ManualMode": "Manual mode",
+  "OnlyActual": "Only actual",
 
   "--AUTH--": null,
   "Login": "Login",
@@ -220,5 +222,8 @@
   "NotAccessible": "Not accessible",
   "SeparateEmailsWithCommas": "Separate Emails with Commas",
   "CreditCardHasExpired": "Credit card has expired",
-  "SelectInvoicesFirst": "Select Invoices first"
+  "SelectInvoicesFirst": "Select Invoices first",
+  "WhileEnabledYouCanManuallyTriggerTheTransaction": "While enabled you can manually trigger transaction",
+  "PleaseEnableManualModeFirst": "Please enable manual mode first",
+  "SelectDealsFirst": "Select Deals first"
 }

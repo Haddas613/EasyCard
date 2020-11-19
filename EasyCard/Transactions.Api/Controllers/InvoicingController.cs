@@ -132,7 +132,8 @@ namespace Transactions.Api.Controllers
 
             var response = new OperationResponse
             {
-                Status = StatusEnum.Success
+                Status = StatusEnum.Success,
+                Message = Messages.InvoicesQueuedForResend
             };
 
             return Ok(response);

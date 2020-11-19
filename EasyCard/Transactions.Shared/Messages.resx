@@ -126,6 +126,9 @@
   <data name="BillingDealDeleted" xml:space="preserve">
     <value>Billing Deal Deleted</value>
   </data>
+  <data name="BillingDealsRequired" xml:space="preserve">
+    <value>Billing Deals required</value>
+  </data>
   <data name="BillingDealUpdated" xml:space="preserve">
     <value>Billing Deal Updated</value>
   </data>
@@ -198,6 +201,9 @@
   <data name="InvoicesForResendRequired" xml:space="preserve">
     <value>Invoices are required</value>
   </data>
+  <data name="InvoicesQueuedForResend" xml:space="preserve">
+    <value>Invoices queued for resend</value>
+  </data>
   <data name="J2NotAllowed" xml:space="preserve">
     <value>J2 deal is not allowed</value>
   </data>
@@ -248,6 +254,9 @@
   </data>
   <data name="TransactionsForTransmissionRequired" xml:space="preserve">
     <value>Transactions list for transmission is required</value>
+  </data>
+  <data name="TransactionsQueued" xml:space="preserve">
+    <value>Transactions queued</value>
   </data>
   <data name="TransactionStatusIsNotValid" xml:space="preserve">
     <value>Transaction Status is not valid for this operation</value>
