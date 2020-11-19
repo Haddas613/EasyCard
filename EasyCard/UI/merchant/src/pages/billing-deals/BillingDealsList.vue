@@ -44,9 +44,23 @@
       </v-card-text>
     </v-card>
     <v-card width="100%" flat :loading="!billingDeals">
-      <v-card-text class="px-0">
-        <ec-list :items="billingDeals" v-if="billingDeals">
-          <template v-slot:prepend="{ item }">
+      <v-card-text class="px-0 pt-0">
+        <v-switch 
+        class="px-4 pb-2"
+        v-model="billingDealsFilter.onlyActive" 
+        @change="getDataFromApi(false)"
+        :label="$t('OnlyActual')" 
+        :hint="$t('WhileEnabledYouCanManuallyTriggerTheTransaction')" 
+        :persistent-hint="true"></v-switch>
+
+        <ec-list :items="billingDeals" v-if="billingDeals" :dense="true">
+          <template v-slot:prepend="{ item }" v-if="billingDealsFilter.onlyActive">
+            <div class="px-1">
+              <v-checkbox v-model="item.selected" v-if="!item.processed"></v-checkbox>
+              <v-icon v-else color="success">mdi-check-circle</v-icon>
+            </div>
+          </template>
+          <template v-slot:prepend="{ item }" v-else>
             <v-tooltip top v-if="item.billingSchedule">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="primary" dark icon v-bind="attrs" v-on="on">
@@ -124,6 +138,7 @@
 
 <script>
 import moment from "moment";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -159,6 +174,7 @@ export default {
       billingDealsFilter: {
         take: 100,
         skip: 0,
+        onlyActive: null,
         ...this.filters
       },
       showDialog: this.showFiltersDialog,
@@ -193,9 +209,7 @@ export default {
     },
     async applyFilters(data) {
       this.billingDealsFilter = {
-        ...data,
-        skip: 0,
-        take: 100
+        ...data
       };
       await this.getDataFromApi();
     },
@@ -206,6 +220,26 @@ export default {
     async loadMore() {
       this.billingDealsFilter.skip += this.billingDealsFilter.take;
       await this.getDataFromApi(true);
+    },
+    async createTransactions(){
+      if(!this.billingDealsFilter.onlyActive){
+        return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), { type: "error" });;
+      }
+
+      let billings = this.lodash.filter(this.billingDeals, i => i.selected);
+      if(billings.length === 0){
+        return this.$toasted.show(this.$t("SelectDealsFirst"), { type: "error" });
+      }
+
+      let opResult = await this.$api.billingDeals
+        .createTransactions(this.terminalStore.terminalID, this.lodash.map(billings, i => i.$billingDealID));
+
+      if(true || opResult.status === "success"){
+        this.lodash.forEach(billings, i => {
+          i.selected = false;
+          i.processed = true;
+        }); 
+      }
     }
   },
   computed: {
@@ -215,11 +249,14 @@ export default {
         this.billingDealsFilter.take + this.billingDealsFilter.skip <
           this.numberOfRecords
       );
-    }
+    },
+    ...mapState({
+      terminalStore: state => state.settings.terminal,
+    }),
   },
   async mounted() {
     await this.getDataFromApi();
-
+    const vm = this;
     this.$store.commit("ui/changeHeader", {
       value: {
         threeDotMenu: [
@@ -227,6 +264,12 @@ export default {
             text: this.$t("Create"),
             fn: () => {
               this.$router.push({ name: "CreateBillingDeal" });
+            }
+          },
+          {
+            text: this.$t("TriggerTransactions"),
+            fn: async () => {
+              await vm.createTransactions();
             }
           }
         ]

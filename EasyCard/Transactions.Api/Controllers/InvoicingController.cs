@@ -21,6 +21,7 @@ using Shared.Api.Extensions;
 using Shared.Helpers.Security;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
+using Transactions.Shared;
 
 namespace Transactions.Api.Controllers
 {
@@ -118,6 +119,24 @@ namespace Transactions.Api.Controllers
             await invoiceService.CreateEntity(newInvoice);
 
             return CreatedAtAction(nameof(GetInvoice), new { invoiceID = newInvoice.InvoiceID }, new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID));
+        }
+
+        [HttpPost]
+        [Route("resend")]
+        public async Task<ActionResult<OperationResponse>> Resend(ResendInvoiceRequest request)
+        {
+            if (request.InvoicesID == null || request.InvoicesID.Count() == 0)
+            {
+                return BadRequest(new OperationResponse(Messages.InvoicesForResendRequired, null, HttpContext.TraceIdentifier, nameof(request.InvoicesID), Messages.InvoicesForResendRequired));
+            }
+
+            var response = new OperationResponse
+            {
+                Status = StatusEnum.Success,
+                Message = Messages.InvoicesQueuedForResend
+            };
+
+            return Ok(response);
         }
     }
 }

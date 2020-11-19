@@ -25,7 +25,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
-          <basket v-if="step === 2" btn-text="Total" v-on:ok="processAmount($event)" :data="model"></basket>
+          <basket v-if="step === 2" btn-text="Total" v-on:ok="processAmount($event)" :items="model.dealDetails.items"></basket>
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">
@@ -104,7 +104,8 @@ export default {
           consumerEmail: null,
           consumerPhone: null,
           consumerID: null,
-          dealDescription: null
+          dealDescription: null,
+          items: []
         },
         invoiceDetails: null,
         installmentDetails: {
@@ -224,7 +225,7 @@ export default {
       this.model.netTotal = data.netTotal;
       this.model.vatTotal = data.vatTotal;
       this.model.note = data.note;
-      this.model.items = data.items;
+      this.model.dealDetails.items = data.items;
       if (skipBasket) {this.step += 2 + (this.skipCustomerStep ? 1 : 0)}
       else this.step++;
     },

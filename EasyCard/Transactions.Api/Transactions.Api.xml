@@ -292,6 +292,11 @@
             Invoice details
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.CreateTransactionFromBillingDealsRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.InvoiceDetails">
             <summary>
             Invoice details
@@ -491,6 +496,16 @@
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.TerminalID">
             <summary>
               Looks up a localized string similar to Terminal ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.ResendInvoiceRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.ResendInvoiceRequest.InvoicesID">
+            <summary>
+            IDs of invoices which need to be resend
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.TerminalID">

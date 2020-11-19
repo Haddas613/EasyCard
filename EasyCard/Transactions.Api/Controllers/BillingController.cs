@@ -182,5 +182,23 @@ namespace Transactions.Api.Controllers
 
             return Ok(new OperationResponse(Messages.BillingDealDeleted, StatusEnum.Success, billingDealID));
         }
+
+        [HttpPost]
+        [Route("create-transactions")]
+        public async Task<ActionResult<OperationResponse>> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request)
+        {
+            if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
+            {
+                return BadRequest(new OperationResponse(Messages.BillingDealsRequired, null, HttpContext.TraceIdentifier, nameof(request.BillingDealsID), Messages.BillingDealsRequired));
+            }
+
+            var response = new OperationResponse
+            {
+                Status = StatusEnum.Success,
+                Message = Messages.TransactionsQueued
+            };
+
+            return Ok(response);
+        }
     }
 }

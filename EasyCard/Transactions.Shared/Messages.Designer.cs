@@ -88,6 +88,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Billing Deals required.
+        /// </summary>
+        public static string BillingDealsRequired {
+            get {
+                return ResourceManager.GetString("BillingDealsRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Billing Deal Updated.
         /// </summary>
         public static string BillingDealUpdated {
@@ -295,6 +304,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invoices are required.
+        /// </summary>
+        public static string InvoicesForResendRequired {
+            get {
+                return ResourceManager.GetString("InvoicesForResendRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invoices queued for resend.
+        /// </summary>
+        public static string InvoicesQueuedForResend {
+            get {
+                return ResourceManager.GetString("InvoicesQueuedForResend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to J2 deal is not allowed.
         /// </summary>
         public static string J2NotAllowed {
@@ -444,6 +471,15 @@ namespace Transactions.Shared {
         public static string TransactionsForTransmissionRequired {
             get {
                 return ResourceManager.GetString("TransactionsForTransmissionRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transactions queued.
+        /// </summary>
+        public static string TransactionsQueued {
+            get {
+                return ResourceManager.GetString("TransactionsQueued", resourceCulture);
             }
         }
         

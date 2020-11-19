@@ -177,6 +177,11 @@
   "InstallmentTransaction": "Installment Transaction",
   "AddToken": "Add Token",
   "RemoveItem": "Remove Item",
+  "ResendInvoices": "Resend Invoices",
+  "Resend": "Resend",
+  "ManualMode": "Manual mode",
+  "OnlyActual": "Only actual",
+  "TriggerTransactions": "Trigger Transactions",
 
   "--AUTH--": null,
   "Login": "Login",
@@ -217,5 +222,9 @@
   "SavedCards": "Saved Cards",
   "NotAccessible": "Not accessible",
   "SeparateEmailsWithCommas": "Separate Emails with Commas",
-  "CreditCardHasExpired": "Credit card has expired"
+  "CreditCardHasExpired": "Credit card has expired",
+  "SelectInvoicesFirst": "Select Invoices first",
+  "WhileEnabledYouCanManuallyTriggerTheTransaction": "While enabled you can manually trigger transaction",
+  "PleaseEnableManualModeFirst": "Please enable manual mode first",
+  "SelectDealsFirst": "Select Deals first"
 }

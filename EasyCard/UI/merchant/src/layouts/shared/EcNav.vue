@@ -279,7 +279,7 @@ export default {
         return this.terminalStore;
       },
       set: function(nv) {
-        this.$store.commit("settings/changeTerminal", {
+        this.$store.dispatch("settings/changeTerminal", {
           vm: this,
           newTerminal: nv
         });
@@ -290,7 +290,7 @@ export default {
         return this.currencyStore;
       },
       set: function(nv) {
-        this.$store.commit("settings/changeCurrency", {
+        this.$store.dispatch("settings/changeCurrency", {
           vm: this,
           newCurrency: nv
         });

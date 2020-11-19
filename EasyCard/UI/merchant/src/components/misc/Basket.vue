@@ -93,7 +93,7 @@ export default {
         totalAmount: 0,
         netTotal: 0,
         vatTotal: 0,
-        ...this.data
+        items: [...this.items]
       },
       selectedItem: null,
       itemPriceDialog: false,
@@ -106,8 +106,8 @@ export default {
       type: String,
       default: "OK"
     },
-    data: {
-      type: Object,
+    items: {
+      type: Array,
       required: true
     }
   },
