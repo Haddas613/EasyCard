@@ -181,6 +181,7 @@
   "Resend": "Resend",
   "ManualMode": "Manual mode",
   "OnlyActual": "Only actual",
+  "TriggerTransactions": "Trigger Transactions",
 
   "--AUTH--": null,
   "Login": "Login",
