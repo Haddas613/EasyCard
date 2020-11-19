@@ -11,14 +11,24 @@
       :canchangeterminal="steps[step].canChangeTerminal"
       :tdmenuitems="threeDotMenuItems"
       :title="navTitle"
-    ></navbar>
+    >
+    <template v-if="steps[step].showItemsCount" v-slot:title>
+      <v-btn v-if="$refs.numpadRef" :disabled="!$refs.numpadRef.model.items.length" color="ecgray" small @click="processToBasket()">
+        {{$t("@ItemsQuantity").replace("@quantity", $refs.numpadRef.model.items.length)}}
+      </v-btn>
+    </template>
+    </navbar>
     <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad btn-text="Invoice" v-on:ok="processAmount($event)"></numpad>
+          <numpad btn-text="Charge" v-on:ok="processAmount($event, true);" ref="numpadRef"></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
+          <basket v-if="step === 2" btn-text="Total" v-on:ok="processAmount($event)" :items="model.dealDetails.items"></basket>
+        </v-stepper-content>
+
+        <v-stepper-content step="3" class="py-0 px-0">
           <customers-list
             :key="terminal.terminalID"
             :show-previously-charged="true"
@@ -27,11 +37,11 @@
           ></customers-list>
         </v-stepper-content>
 
-        <v-stepper-content step="3" class="py-0 px-0">
-          <invoice-form v-if="step === 3" :data="model" v-on:ok="processInvoice($event)"></invoice-form>
+        <v-stepper-content step="4" class="py-0 px-0">
+          <invoice-form v-if="step === 4" :data="model" v-on:ok="processInvoice($event)"></invoice-form>
         </v-stepper-content>
 
-        <v-stepper-content step="4" class="py-0 px-0">
+        <v-stepper-content step="5" class="py-0 px-0">
           <wizard-result :errors="errors">
             <template v-if="customer">
               <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
@@ -55,6 +65,7 @@ export default {
   components: {
     Navbar: () => import("../../components/wizard/NavBar"),
     Numpad: () => import("../../components/misc/Numpad"),
+    Basket: () => import("../../components/misc/Basket"),
     CustomersList: () => import("../../components/customers/CustomersList"),
     WizardResult: () =>
       import("../../components/wizard/WizardResult"),
@@ -92,17 +103,21 @@ export default {
       steps: {
         1: {
           title: "Amount",
-          canChangeTerminal: true
+          canChangeTerminal: true,
+          showItemsCount: true
         },
         2: {
+          title: "Basket",
+        },
+        3: {
           title: "ChooseCustomer",
           skippable: true
         },
-        3: {
+        4: {
           title: "InvoiceSettings"
         },
         //Last step may be dynamically altered to represent error if transaction creation has failed.
-        4: {
+        5: {
           title: "Success",
           completed: true
         }
@@ -157,12 +172,19 @@ export default {
       this.model.cardOwnerName = data.consumerName;
       this.model.cardOwnerNationalID = data.consumerNationalID;
       this.step++;
+      console.log(this.model)
     },
-    processAmount(data) {
-      this.model.invoiceAmount = data.amount;
+    processToBasket(){
+      let data = this.$refs.numpadRef.getData();
+      this.processAmount(data);
+    },
+    processAmount(data, skipBasket = false) {
+      this.model.invoiceAmount = data.totalAmount;
+      this.model.netTotal = data.netTotal;
+      this.model.vatTotal = data.vatTotal;
       this.model.note = data.note;
-      this.model.items = data.items;
-      if (this.skipCustomerStep) this.step += 2;
+      this.model.dealDetails.items = data.items;
+      if (skipBasket) {this.step += 2 + (this.skipCustomerStep ? 1 : 0)}
       else this.step++;
     },
     async processInvoice(data) {
