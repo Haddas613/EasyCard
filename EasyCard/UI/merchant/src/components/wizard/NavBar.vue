@@ -129,7 +129,7 @@ export default {
         return this.terminalStore;
       },
       set: function(nv) {
-        this.$store.commit("settings/changeTerminal", {
+        this.$store.dispatch("settings/changeTerminal", {
           vm: this,
           newTerminal: nv
         });

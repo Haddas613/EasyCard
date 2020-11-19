@@ -12,4 +12,8 @@ export default class TerminalsApi {
         this.$terminals = await this.base.get(this.terminalsUrl, params);
         return this.$terminals;
     }
+
+    async getTerminal(terminalID) {
+        return this.base.get(this.terminalsUrl + '/' + terminalID);
+    }
 }
