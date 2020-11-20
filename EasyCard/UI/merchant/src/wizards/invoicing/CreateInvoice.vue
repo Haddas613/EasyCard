@@ -172,7 +172,6 @@ export default {
       this.model.cardOwnerName = data.consumerName;
       this.model.cardOwnerNationalID = data.consumerNationalID;
       this.step++;
-      console.log(this.model)
     },
     processToBasket(){
       let data = this.$refs.numpadRef.getData();
@@ -182,6 +181,7 @@ export default {
       this.model.invoiceAmount = data.totalAmount;
       this.model.netTotal = data.netTotal;
       this.model.vatTotal = data.vatTotal;
+      this.model.vatRate = data.vatRate;
       this.model.note = data.note;
       this.model.dealDetails.items = data.items;
       if (skipBasket) {this.step += 2 + (this.skipCustomerStep ? 1 : 0)}

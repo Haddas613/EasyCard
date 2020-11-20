@@ -9,6 +9,7 @@ const itemFunctions = {
         item.amount = amount;
         item.netAmount = netAmount;
         item.vat = vat;
+        item.vatRate = opts.vatRate;
     },
     calculateAmount: function(item){
         return parseFloat(((item.price * item.quantity) - item.discount).toFixed(2));
@@ -31,6 +32,7 @@ const totalFunctions = {
         model.totalAmount = totalAmount;
         model.netTotal = netTotal;
         model.vatTotal = vatTotal;
+        model.vatRate = opts.vatRate;
     },
     calculateNetTotal: function(amount, vatRate){
         return parseFloat((amount / (1 + vatRate)).toFixed(2));

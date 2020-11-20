@@ -224,6 +224,7 @@ export default {
       this.model.transactionAmount = data.totalAmount;
       this.model.netTotal = data.netTotal;
       this.model.vatTotal = data.vatTotal;
+      this.model.vatRate = data.vatRate;
       this.model.note = data.note;
       this.model.dealDetails.items = data.items;
       if (skipBasket) {this.step += 2 + (this.skipCustomerStep ? 1 : 0)}

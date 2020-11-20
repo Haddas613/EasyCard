@@ -124,9 +124,9 @@ export default {
   },
   methods: {
     ok() {
+      itemPricingService.total.calculate(this.model, {vatRate: this.vatRate});
       this.$emit("ok", {
-        ...this.model,
-        amount: parseFloat(this.totalAmount) - parseFloat(this.discount || "0")
+        ...this.model
       });
     },
     calculateAmount(item) {
