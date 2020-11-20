@@ -11,8 +11,8 @@
               <small>{{model.$invoiceID}}</small>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
-              <p>{{terminalName}}</p>
+              <p class="caption ecgray--text text--darken-2">{{$t('InvoiceNumber')}}</p>
+              <p>{{model.invoiceNumber || '-'}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('TransactionID')}}</p>
@@ -41,6 +41,12 @@
               <p>{{model.invoiceAmount | currency(model.$currency)}}</p>
             </v-col>
           </v-row>
+          <v-row class="info-container">
+            <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
+              <p>{{terminalName}}</p>
+            </v-col>
+          </v-row>
         </v-card-text>
       </v-card>
       <v-card flat class="my-2">
@@ -58,7 +64,8 @@
                   link
                   :to="{name: 'Customer', params: {id: model.dealDetails.consumerID}}"
                 >
-                  <small>{{(model.dealDetails.consumerID || '-') | guid}}</small>
+                  <small v-if="model.cardOwnerName">{{((model.cardOwnerName || model.dealDetails.consumerID) || '-')}}</small>
+                  <small v-else>{{model.dealDetails.consumerID | guid}}</small>
                 </router-link>
               </v-col>
               <v-col cols="12" md="4" class="info-block">
