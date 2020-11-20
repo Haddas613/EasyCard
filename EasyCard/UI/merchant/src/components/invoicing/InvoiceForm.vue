@@ -26,6 +26,7 @@
           ref="instDetails"
           :data="model.installmentDetails"
           v-if="isInstallmentTransaction"
+          :total-amount="model.invoiceAmount"
           :hide-title="true"
         ></installment-details>
 
@@ -101,7 +102,7 @@ export default {
 
       let result = { ...this.model };
       if (this.$refs.instDetails) {
-        result.installmentDetails = this.$refs.instDetails.model;
+        result.installmentDetails = this.$refs.instDetails.getData();
       } else {
         result.installmentDetails = null;
       }

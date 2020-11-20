@@ -16,7 +16,9 @@ const primitives = {
 
     expired: (allowedTo) => (v) => (v >= allowedTo) || i18n.t('Expired'),
 
-    biggerThan: (min) => (v) => (v > min) || i18n.t('@BiggerThan').replace('@min', min),
+    biggerThan: (min, orEqual = false) => (v) => (orEqual ? v >= min : v > min) || i18n.t('@BiggerThan').replace('@min', min),
+
+    lessThan: (min, orEqual = false) => (v) => (orEqual ? v <= min : v < min) || i18n.t('@LessThan').replace('@max', min),
 
     positiveOnly: (v) => (!v || v >= 0) || i18n.t('OnlyPositiveNumbersAreAllowed'),
 

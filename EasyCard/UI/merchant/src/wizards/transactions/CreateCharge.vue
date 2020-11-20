@@ -48,7 +48,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="5" class="py-0 px-0">
-          <additional-settings-form :data="model" :issue-document="true" v-on:ok="processAdditionalSettings($event)"></additional-settings-form>
+          <additional-settings-form :key="model.transactionAmount" :data="model" :issue-document="true" v-on:ok="processAdditionalSettings($event)"></additional-settings-form>
         </v-stepper-content>
 
         <v-stepper-content step="6" class="py-0 px-0">
@@ -130,7 +130,7 @@ export default {
         },
         4: {
           title: "PaymentInfo"
-          // skippable: true
+          // ,skippable: true
         },
         5: {
           title: "AdditionalSettings"

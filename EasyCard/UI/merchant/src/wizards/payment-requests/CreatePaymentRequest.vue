@@ -38,7 +38,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="4" class="py-0 px-0">
-          <payment-request-form :data="model" v-on:ok="processPaymentRequest($event)"></payment-request-form>
+          <payment-request-form :key="model.paymentRequestAmount" :data="model" v-on:ok="processPaymentRequest($event)"></payment-request-form>
         </v-stepper-content>
 
         <v-stepper-content step="5" class="py-0 px-0">

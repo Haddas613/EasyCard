@@ -48,7 +48,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="5" class="py-0 px-0">
-          <additional-settings-form :data="model" v-on:ok="processAdditionalSettings($event)"></additional-settings-form>
+          <additional-settings-form :key="model.transactionAmount" :data="model" v-on:ok="processAdditionalSettings($event)"></additional-settings-form>
         </v-stepper-content>
 
         <v-stepper-content step="6" class="py-0 px-0">

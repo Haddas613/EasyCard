@@ -53,6 +53,7 @@
   "@MaxLength": "Must be less than @max characters",
   "@StringLength": "Must be more than @min and less than @max characters",
   "@BiggerThan": "Must be bigger than @min",
+  "@LessThan": "Must be less than @max",
   "@ItemsSelected": "@amount Items selected",
   "@TransactionsOf": "Transactions of @customer",
   "@Displayed": "@amount displayed",
