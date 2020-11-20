@@ -178,34 +178,11 @@
           </template>
         </ec-dialog-invoker>
       </v-col>
-      <v-col cols="12" md="4" class="py-0">
-        <v-text-field
-          v-model.number="model.numberOfPayments"
-          :label="$t('NumberOfPayments')"
-          required
-          :rules="[vr.primitives.required, vr.primitives.inRange(1, 999)]"
-          type="number"
-          min="1"
-          step="1"
-          outlined
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="4" class="py-0">
+      <v-col cols="12" md="12" class="py-0 px-2">
         <v-text-field
           v-model.number="model.transactionAmount"
           :label="$t('TransactionAmount')"
           :rules="[vr.primitives.required, vr.primitives.precision(2)]"
-          required
-          outlined
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="4" class="py-0">
-        <v-text-field
-          v-model.number="totalAmount"
-          :label="$t('TotalAmount')"
-          :rules="[vr.primitives.required]"
-          type="number"
-          disabled
           required
           outlined
         ></v-text-field>
