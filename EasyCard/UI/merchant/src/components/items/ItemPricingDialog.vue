@@ -3,18 +3,6 @@
     <template v-slot:title>{{$t('EditItem')}}</template>
     <template>
       <v-flex class="px-2">
-        <div class="d-flex px-2 pt-4 justify-end">
-          <v-btn
-            color="red"
-            class="white--text"
-            outlined
-            :block="$vuetify.breakpoint.smAndDown"
-            @click="model.quantity = 0; ok()"
-          >
-            <v-icon left>mdi-delete</v-icon>
-            {{$t("RemoveItem")}}
-          </v-btn>
-        </div>
         <v-row no-gutters>
           <v-col cols="12">
             <v-text-field
