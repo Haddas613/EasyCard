@@ -122,6 +122,8 @@ namespace Merchants.Api.Controllers
             return CreatedAtAction(nameof(GetTerminal), new { terminalID = newTerminal.TerminalID }, new OperationResponse(Messages.TerminalCreated, StatusEnum.Success, newTerminal.TerminalID));
         }
 
+        // TODO: concurrency check
+
         /// <summary>
         /// Ypdates basic terminal information and settings
         /// </summary>

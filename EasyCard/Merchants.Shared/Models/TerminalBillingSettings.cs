@@ -12,6 +12,6 @@ namespace Merchants.Shared.Models
         /// <summary>
         /// If it is true, each next recurrent payment, configured by billing deal schedule, will be created automatically
         /// </summary>
-        public bool CreateRecurrentPaymentsAutomatically { get; set; }
+        public bool? CreateRecurrentPaymentsAutomatically { get; set; }
     }
 }

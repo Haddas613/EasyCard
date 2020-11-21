@@ -115,6 +115,11 @@
               Looks up a localized string similar to Item Updated.
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Messages.TerminalUpdated">
+            <summary>
+              Looks up a localized string similar to Terminal Updated.
+            </summary>
+        </member>
         <member name="T:MerchantProfileApi.Models.Billing.ConsumerRequest">
             <summary>
             Create consumer

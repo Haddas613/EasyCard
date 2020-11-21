@@ -131,5 +131,14 @@ namespace MerchantProfileApi {
                 return ResourceManager.GetString("ItemUpdated", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal Updated.
+        /// </summary>
+        public static string TerminalUpdated {
+            get {
+                return ResourceManager.GetString("TerminalUpdated", resourceCulture);
+            }
+        }
     }
 }

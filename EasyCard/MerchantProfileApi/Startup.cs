@@ -154,6 +154,7 @@ namespace ProfileApi
             services.AddScoped<IConsumersService, ConsumersService>();
             services.AddScoped<IItemsService, ItemsService>();
             services.AddScoped<ICurrencyRateService, CurrencyRateService>();
+            services.AddScoped<ISystemSettingsService, SystemSettingsService>();
 
             services.AddAutoMapper(typeof(Startup));
 

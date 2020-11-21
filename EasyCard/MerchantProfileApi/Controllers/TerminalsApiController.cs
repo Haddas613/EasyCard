@@ -14,6 +14,7 @@ using ProfileApi;
 using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
+using Shared.Api.Models.Enums;
 using Shared.Helpers.Security;
 
 namespace MerchantProfileApi.Controllers
@@ -30,13 +31,15 @@ namespace MerchantProfileApi.Controllers
         private readonly IMerchantsService merchantsService;
         private readonly IMapper mapper;
         private readonly IUserManagementClient userManagementClient;
+        private readonly ISystemSettingsService systemSettingsService;
 
-        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper, IUserManagementClient userManagementClient)
+        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper, IUserManagementClient userManagementClient, ISystemSettingsService systemSettingsService)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
             this.userManagementClient = userManagementClient;
+            this.systemSettingsService = systemSettingsService;
         }
 
         [HttpGet]
@@ -57,10 +60,27 @@ namespace MerchantProfileApi.Controllers
         [Route("{terminalID}")]
         public async Task<ActionResult<TerminalResponse>> GetTerminal([FromRoute]Guid terminalID)
         {
-            var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminals().Include(t => t.Integrations)
-                .FirstOrDefaultAsync(m => m.TerminalID == terminalID)));
+            var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID)));
+
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            mapper.Map(systemSettings, terminal);
 
             return Ok(terminal);
+        }
+
+        // TODO: concurrency check
+        [HttpPut]
+        [Route("{terminalID}")]
+        public async Task<ActionResult<OperationResponse>> UpdateTerminal([FromRoute]Guid terminalID, [FromBody]UpdateTerminalRequest model)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+
+            mapper.Map(model, terminal);
+
+            await terminalsService.UpdateEntity(terminal);
+
+            return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID));
         }
 
         [HttpPost]
@@ -71,7 +91,7 @@ namespace MerchantProfileApi.Controllers
 
             var opResult = await userManagementClient.CreateTerminalApiKey(new CreateTerminalApiKeyRequest { TerminalID = terminal.TerminalID, MerchantID = terminal.MerchantID });
 
-            // TODO: failed case
+            // TODO: CreateTerminalApiKey failed case
             return Ok(new OperationResponse { EntityReference = opResult.ApiKey });
         }
     }

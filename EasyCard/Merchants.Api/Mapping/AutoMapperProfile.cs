@@ -2,9 +2,11 @@
 using IdentityServerClient;
 using Merchants.Api.Models;
 using Merchants.Api.Models.Merchant;
+using Merchants.Api.Models.System;
 using Merchants.Api.Models.Terminal;
 using Merchants.Api.Models.User;
 using Merchants.Business.Entities.Merchant;
+using Merchants.Business.Entities.System;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Models.Integration;
 using System;
@@ -21,6 +23,7 @@ namespace Merchants.Api.Mapping
             RegisterMerchantMappings();
             RegisterTerminalMappings();
             RegisterUserMappings();
+            RegisterSystemSettingsMappings();
         }
 
         private void RegisterTerminalMappings()
@@ -54,6 +57,12 @@ namespace Merchants.Api.Mapping
             CreateMap<UserProfileDataResponse, UserResponse>();
             CreateMap<InviteUserRequest, CreateUserRequestModel>();
             CreateMap<Business.Entities.User.UserInfo, UserSummary>();
+        }
+
+        private void RegisterSystemSettingsMappings()
+        {
+            CreateMap<SystemSettings, SystemSettingsResponse>();
+            CreateMap<SystemSettingsRequest, SystemSettings>();
         }
     }
 }
