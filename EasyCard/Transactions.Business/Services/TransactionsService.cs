@@ -138,7 +138,7 @@ namespace Transactions.Business.Services
             return await context.StartTransmission(terminalID, transactionIDs, dbTransaction);
         }
 
-        private async Task UpdateEntity(PaymentTransaction entity, string historyMessage, TransactionOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null)
+        public async Task UpdateEntity(PaymentTransaction entity, string historyMessage, TransactionOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null)
         {
             List<string> changes = new List<string>();
 

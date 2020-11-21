@@ -13,5 +13,7 @@ namespace Shared.Business.Security
         string GetIP();
 
         string GetCorrelationId();
+
+        string TraceIdentifier { get; }
     }
 }

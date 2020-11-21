@@ -99,6 +99,7 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        // NOTE: this creates only db record - Invoicing system integration should be processed in a queue
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreateInvoice([FromBody] InvoiceRequest model)
@@ -108,7 +109,8 @@ namespace Transactions.Api.Controllers
 
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
-            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+
+            // var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             var newInvoice = mapper.Map<Invoice>(model);
 
@@ -118,7 +120,7 @@ namespace Transactions.Api.Controllers
 
             await invoiceService.CreateEntity(newInvoice);
 
-            return CreatedAtAction(nameof(GetInvoice), new { invoiceID = newInvoice.InvoiceID }, new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID));
+            return Ok(new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID));
         }
 
         [HttpPost]
@@ -127,7 +129,7 @@ namespace Transactions.Api.Controllers
         {
             if (request.InvoicesID == null || request.InvoicesID.Count() == 0)
             {
-                return BadRequest(new OperationResponse(Messages.InvoicesForResendRequired, null, HttpContext.TraceIdentifier, nameof(request.InvoicesID), Messages.InvoicesForResendRequired));
+                return BadRequest(new OperationResponse(Messages.InvoicesForResendRequired, null, httpContextAccessor.TraceIdentifier, nameof(request.InvoicesID), Messages.InvoicesForResendRequired));
             }
 
             var response = new OperationResponse

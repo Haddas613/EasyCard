@@ -27,7 +27,7 @@ namespace Transactions.Api.Validation
             //    throw new BusinessException(Messages.CvvRequiredButStoredTokenCannotUseCvv);
             //}
 
-            if (terminalSettings.NationalIDRequired && string.IsNullOrWhiteSpace(model.CardOwnerNationalID))
+            if (terminalSettings.NationalIDRequired == true && string.IsNullOrWhiteSpace(model.CardOwnerNationalID))
             {
                 throw new BusinessException(Messages.CardOwnerNationalIDRequiredButNotPresentInToken);
             }

@@ -322,16 +322,6 @@
             Invoice amount (should be omitted in case of installment deal)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.TaxRate">
-            <summary>
-            Tax rate (VAT)
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.TaxAmount">
-            <summary>
-            Tax amount
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.InstallmentDetails">
             <summary>
             Installment payments details (should be omitted in case of regular deal)
@@ -867,16 +857,6 @@
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.InvoiceDetails">
             <summary>
             Invoice details
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.TaxRate">
-            <summary>
-            Tax rate (VAT)
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.TaxAmount">
-            <summary>
-            Tax amount
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">

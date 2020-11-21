@@ -18,6 +18,7 @@ using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
+using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Integration.Exceptions;
@@ -51,6 +52,7 @@ namespace Transactions.Api.Controllers
         private readonly IProcessorResolver processorResolver;
         private readonly IConsumersService consumersService;
         private readonly ITerminalsService terminalsService;
+        private readonly IHttpContextAccessorWrapper httpContextAccessor;
 
         public CardTokenController(
             ITransactionsService transactionsService,
@@ -61,7 +63,8 @@ namespace Transactions.Api.Controllers
             IOptions<ApplicationSettings> appSettings,
             ILogger<CardTokenController> logger,
             IProcessorResolver processorResolver,
-            IConsumersService consumersService)
+            IConsumersService consumersService,
+            IHttpContextAccessorWrapper httpContextAccessor)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -72,6 +75,7 @@ namespace Transactions.Api.Controllers
             this.appSettings = appSettings.Value;
             this.logger = logger;
             this.processorResolver = processorResolver;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPost]
@@ -171,7 +175,7 @@ namespace Transactions.Api.Controllers
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);
 
-                    return BadRequest(new OperationResponse($"{Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID, HttpContext.TraceIdentifier, processorResponse.Errors));
+                    return BadRequest(new OperationResponse($"{Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, processorResponse.Errors));
                 }
                 else
                 {
@@ -184,7 +188,7 @@ namespace Transactions.Api.Controllers
 
                 await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, TransactionFinalizationStatusEnum.Initial, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
 
-                return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, HttpContext.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByProcesor.ToString(), (ex as IntegrationException)?.Message));
+                return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByProcesor.ToString(), (ex as IntegrationException)?.Message));
             }
 
             // save token itself
@@ -193,7 +197,7 @@ namespace Transactions.Api.Controllers
 
             await creditCardTokenService.CreateEntity(dbData);
 
-            return Ok(new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID));
+            return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID);
         }
 
         [HttpGet]

@@ -277,6 +277,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed To Create Invoice.
+        /// </summary>
+        public static string FailedToCreateInvoice {
+            get {
+                return ResourceManager.GetString("FailedToCreateInvoice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed To Process Transaction.
         /// </summary>
         public static string FailedToProcessTransaction {

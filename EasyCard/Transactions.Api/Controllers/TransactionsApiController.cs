@@ -23,6 +23,7 @@ using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Api.Validation;
 using Shared.Business.Extensions;
+using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Helpers.Security;
@@ -66,6 +67,7 @@ namespace Transactions.Api.Controllers
         private readonly CardTokenController cardTokenController;
         private readonly InvoicingController invoicingController;
         private readonly IPaymentRequestsService paymentRequestsService;
+        private readonly IHttpContextAccessorWrapper httpContextAccessor;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -81,7 +83,8 @@ namespace Transactions.Api.Controllers
             IConsumersService consumersService,
             CardTokenController cardTokenController,
             InvoicingController invoicingController,
-            IPaymentRequestsService paymentRequestsService)
+            IPaymentRequestsService paymentRequestsService,
+            IHttpContextAccessorWrapper httpContextAccessor)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -98,6 +101,7 @@ namespace Transactions.Api.Controllers
             this.cardTokenController = cardTokenController;
             this.invoicingController = invoicingController;
             this.paymentRequestsService = paymentRequestsService;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
@@ -225,12 +229,14 @@ namespace Transactions.Api.Controllers
 
                 var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest);
 
-                if (!(tokenResponse.Value?.Status == StatusEnum.Success))
+                var tokenResponseOperation = tokenResponse.GetOperationResponse();
+
+                if (!(tokenResponseOperation?.Status == StatusEnum.Success))
                 {
                     return tokenResponse;
                 }
 
-                model.CreditCardToken = tokenResponse.Value.EntityUID;
+                model.CreditCardToken = tokenResponseOperation.EntityUID;
                 model.CreditCardSecureDetails = null;
             }
 
@@ -379,6 +385,7 @@ namespace Transactions.Api.Controllers
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
+            // TODO: mercge system settings with terminal settings
             TransactionTerminalSettingsValidator.Validate(terminal.Settings, model, token, jDealType, specialTransactionType, initialTransactionID);
 
             var transaction = mapper.Map<PaymentTransaction>(model);
@@ -505,7 +512,7 @@ namespace Transactions.Api.Controllers
                     {
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByAggregator, rejectionMessage: aggregatorResponse.ErrorMessage, rejectionReason: aggregatorResponse.RejectReasonCode);
 
-                        return BadRequest(new OperationResponse($"{Messages.RejectedByAggregator}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, HttpContext.TraceIdentifier, aggregatorResponse.Errors));
+                        return BadRequest(new OperationResponse($"{Messages.RejectedByAggregator}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, aggregatorResponse.Errors));
                     }
                     else
                     {
@@ -518,7 +525,7 @@ namespace Transactions.Api.Controllers
 
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByAggregator, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
 
-                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, HttpContext.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByAggregator.ToString(), (ex as IntegrationException)?.Message));
+                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByAggregator.ToString(), (ex as IntegrationException)?.Message));
                 }
             }
 
@@ -548,7 +555,7 @@ namespace Transactions.Api.Controllers
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);
 
-                    processorFailedRsponse = BadRequest(new OperationResponse($"{Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID, HttpContext.TraceIdentifier, processorResponse.Errors));
+                    processorFailedRsponse = BadRequest(new OperationResponse($"{Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, processorResponse.Errors));
                 }
                 else
                 {
@@ -561,7 +568,7 @@ namespace Transactions.Api.Controllers
 
                 await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, TransactionFinalizationStatusEnum.Initial, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
 
-                processorFailedRsponse = BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, HttpContext.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByProcesor.ToString(), (ex as IntegrationException)?.Message));
+                processorFailedRsponse = BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByProcesor.ToString(), (ex as IntegrationException)?.Message));
             }
 
             if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
@@ -584,7 +591,7 @@ namespace Transactions.Api.Controllers
 
                             await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
 
-                            return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, HttpContext.TraceIdentifier));
+                            return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
                         }
                         else
                         {
@@ -599,7 +606,7 @@ namespace Transactions.Api.Controllers
 
                         await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
 
-                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), (ex as IntegrationException)?.Message));
+                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), (ex as IntegrationException)?.Message));
                     }
                 }
 
@@ -625,7 +632,7 @@ namespace Transactions.Api.Controllers
 
                             await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionMessage: commitAggregatorResponse.ErrorMessage, rejectionReason: commitAggregatorResponse.RejectReasonCode);
 
-                            return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, HttpContext.TraceIdentifier, commitAggregatorResponse.Errors));
+                            return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, commitAggregatorResponse.Errors));
                         }
                         else
                         {
@@ -638,7 +645,7 @@ namespace Transactions.Api.Controllers
 
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
 
-                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, HttpContext.TraceIdentifier, TransactionStatusEnum.FailedToCommitByAggregator.ToString(), (ex as IntegrationException)?.Message));
+                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToCommitByAggregator.ToString(), (ex as IntegrationException)?.Message));
                     }
                 }
             }
@@ -647,21 +654,51 @@ namespace Transactions.Api.Controllers
                 return processorFailedRsponse;
             }
 
+            var endResponse = new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);
+
+            // TODO: validate InvoiceDetails
             if (model.IssueInvoice == true)
             {
-                try
+                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
                 {
-                    Models.Invoicing.InvoiceRequest invoiceRequest = new Models.Invoicing.InvoiceRequest();
-                    mapper.Map(transaction, invoiceRequest);
-                    var createInvoiceResponse = invoicingController.CreateInvoice(invoiceRequest);
-                }
-                catch (Exception ex)
-                {
-                    // TODO: process failed case
+                    try
+                    {
+                        Models.Invoicing.InvoiceRequest invoiceRequest = new Models.Invoicing.InvoiceRequest();
+                        mapper.Map(transaction, invoiceRequest);
+                        invoiceRequest.InvoiceDetails = model.InvoiceDetails;
+
+                        var createInvoiceResponse = await invoicingController.CreateInvoice(invoiceRequest);
+
+                        var createInvoiceResponseOperation = createInvoiceResponse.GetOperationResponse();
+
+                        endResponse.InnerResponse = createInvoiceResponseOperation;
+
+                        if (!(createInvoiceResponseOperation?.Status == StatusEnum.Success) || endResponse.InnerResponse == null)
+                        {
+                            logger.LogError($"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
+
+                            if (endResponse.InnerResponse == null)
+                            {
+                                endResponse.InnerResponse = new OperationResponse($"{Messages.FailedToCreateInvoice}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier);
+                            }
+                        }
+                        else
+                        {
+                            transaction.InvoiceID = createInvoiceResponseOperation.EntityUID;
+
+                            await transactionsService.UpdateEntity(transaction, Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
+
+                        endResponse.InnerResponse = new OperationResponse($"{Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
+                    }
                 }
             }
 
-            return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID));
+            return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
         }
     }
 }

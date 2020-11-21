@@ -256,6 +256,7 @@ export default {
       this.model.installmentDetails = data.installmentDetails;
       this.model.terminalID = this.terminal.terminalID;
       this.model.invoiceDetails = data.invoiceDetails;
+      this.model.issueInvoice = !!this.model.invoiceDetails;
 
       let result = await this.$api.transactions.processTransaction(this.model);
 

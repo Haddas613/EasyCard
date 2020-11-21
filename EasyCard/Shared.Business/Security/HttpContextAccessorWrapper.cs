@@ -13,6 +13,8 @@ namespace Shared.Business.Security
 
         public HttpContext HttpContext { get => httpContextAccessor?.HttpContext; }
 
+        public string TraceIdentifier { get => httpContextAccessor?.HttpContext?.TraceIdentifier; }
+
         public HttpContextAccessorWrapper(IHttpContextAccessor httpContextAccessor)
         {
             this.httpContextAccessor = httpContextAccessor;

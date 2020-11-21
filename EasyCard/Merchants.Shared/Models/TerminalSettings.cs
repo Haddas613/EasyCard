@@ -40,6 +40,10 @@ namespace Merchants.Shared.Models
         [StringLength(250)]
         public string DefaultItemName { get; set; }
 
+        [StringLength(50)]
+        public string DefaultSKU { get; set; }
+
+        [Range(0, 1)]
         public decimal? VATRate { get; set; }
     }
 }

@@ -102,19 +102,5 @@ namespace Transactions.Api.Models.Transactions
         /// Invoice details
         /// </summary>
         public InvoiceDetails InvoiceDetails { get; set; }
-
-        /// <summary>
-        /// Tax rate (VAT)
-        /// </summary>
-        [Range(0.01, 1)]
-        [DataType(DataType.Currency)]
-        public decimal? TaxRate { get; set; }
-
-        /// <summary>
-        /// Tax amount
-        /// </summary>
-        [Range(0.01, double.MaxValue)]
-        [DataType(DataType.Currency)]
-        public decimal? TaxAmount { get; set; }
     }
 }

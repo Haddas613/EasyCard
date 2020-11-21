@@ -189,6 +189,9 @@
   <data name="FailedToCreateCCToken" xml:space="preserve">
     <value>Failed To Create Credit Card Token</value>
   </data>
+  <data name="FailedToCreateInvoice" xml:space="preserve">
+    <value>Failed To Create Invoice</value>
+  </data>
   <data name="FailedToProcessTransaction" xml:space="preserve">
     <value>Failed To Process Transaction</value>
   </data>

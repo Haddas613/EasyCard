@@ -38,6 +38,8 @@ namespace Shared.Tests.Fixtures
         /// </summary>
         public string UserIp { get; set; }
 
+        public string TraceIdentifier => throw new NotImplementedException();
+
         public HttpContextAccessorWrapperFixture()
         {
             UserClaims = new ClaimsPrincipal();

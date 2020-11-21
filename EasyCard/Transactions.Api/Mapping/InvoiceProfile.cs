@@ -25,6 +25,11 @@ namespace Transactions.Api.Mapping
                   .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID));
 
             CreateMap<Invoice, InvoiceResponse>();
+
+            CreateMap<PaymentTransaction, InvoiceRequest>()
+                .ForMember(d => d.InvoiceAmount, o => o.MapFrom(d => d.TransactionAmount))
+                .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerName))
+                .ForMember(d => d.CardOwnerNationalID, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerNationalID));
         }
     }
 }

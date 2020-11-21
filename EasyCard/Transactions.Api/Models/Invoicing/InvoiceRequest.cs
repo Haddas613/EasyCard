@@ -52,19 +52,17 @@ namespace Transactions.Api.Models.Invoicing
         [DataType(DataType.Currency)]
         public decimal? InvoiceAmount { get; set; }
 
-        /// <summary>
-        /// Tax rate (VAT)
-        /// </summary>
-        [Range(0.01, 1)]
+        [Range(0, 1)]
         [DataType(DataType.Currency)]
-        public decimal? TaxRate { get; set; }
+        public decimal VATRate { get; set; }
 
-        /// <summary>
-        /// Tax amount
-        /// </summary>
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal VATTotal { get; set; }
+
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal? TaxAmount { get; set; }
+        public decimal NetTotal { get; set; }
 
         /// <summary>
         /// Installment payments details (should be omitted in case of regular deal)
