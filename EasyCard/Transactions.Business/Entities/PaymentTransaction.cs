@@ -212,6 +212,11 @@ namespace Transactions.Business.Entities
         /// </summary>
         public Guid? InvoiceID { get; set; }
 
+        /// <summary>
+        /// Create document for transaction
+        /// </summary>
+        public bool IssueInvoice { get; set; }
+
         // TODO: update SKU for all items
         // TODO: calculate items
         [Obsolete]

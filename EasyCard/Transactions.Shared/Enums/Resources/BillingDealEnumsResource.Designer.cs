@@ -61,15 +61,6 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Active.
-        /// </summary>
-        public static string Active {
-            get {
-                return ResourceManager.GetString("Active", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to After Number of Payments.
         /// </summary>
         public static string AfterNumberOfPayments {
@@ -84,24 +75,6 @@ namespace Transactions.Shared.Enums.Resources {
         public static string Day {
             get {
                 return ResourceManager.GetString("Day", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Inactive.
-        /// </summary>
-        public static string Inactive {
-            get {
-                return ResourceManager.GetString("Inactive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Initial.
-        /// </summary>
-        public static string Initial {
-            get {
-                return ResourceManager.GetString("Initial", resourceCulture);
             }
         }
         
@@ -129,6 +102,15 @@ namespace Transactions.Shared.Enums.Resources {
         public static string SpecifiedDate {
             get {
                 return ResourceManager.GetString("SpecifiedDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test.
+        /// </summary>
+        public static string Test {
+            get {
+                return ResourceManager.GetString("Test", resourceCulture);
             }
         }
         

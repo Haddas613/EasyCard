@@ -27,13 +27,6 @@ namespace Transactions.Api.Models.Billing
 
         public DateTime? BillingDealTimestamp { get; set; }
 
-        /// <summary>
-        /// Processing status
-        /// </summary>
-        [EnumDataType(typeof(BillingDealStatusEnum))]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public BillingDealStatusEnum Status { get; set; }
-
         public string CardOwnerName { get; set; }
 
         /// <summary>
@@ -44,5 +37,7 @@ namespace Transactions.Api.Models.Billing
         public string CardNumber { get; set; }
 
         public bool? CardExpired { get; set; }
+
+        public bool Active { get; set; }
     }
 }

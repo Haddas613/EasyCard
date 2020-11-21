@@ -120,7 +120,7 @@ namespace Transactions.Api.Controllers
 
             await invoiceService.CreateEntity(newInvoice);
 
-            return Ok(new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID));
+            return new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID);
         }
 
         [HttpPost]

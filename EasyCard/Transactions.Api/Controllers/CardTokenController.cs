@@ -85,14 +85,50 @@ namespace Transactions.Api.Controllers
         {
             var tokenResponse = await CreateTokenInternal(model);
 
-            if (!(tokenResponse.Value?.Status == StatusEnum.Success))
+            var tokenResponseOperation = tokenResponse.GetOperationResponse();
+
+            if (!(tokenResponseOperation?.Status == StatusEnum.Success))
             {
                 return tokenResponse;
             }
             else
             {
-                return CreatedAtAction(nameof(CreateToken), tokenResponse.Value);
+                return CreatedAtAction(nameof(CreateToken), tokenResponseOperation);
             }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<SummariesResponse<CreditCardTokenSummary>>> GetTokens([FromQuery] CreditCardTokenFilter filter)
+        {
+            var query = creditCardTokenService.GetTokens().AsNoTracking().Filter(filter);
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var response = new SummariesResponse<CreditCardTokenSummary> { NumberOfRecords = await query.CountAsync() };
+
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(CreditCardTokenDetails.CreditCardTokenID), filter.OrderByDirection).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
+
+                response.Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).ToListAsync();
+
+                return Ok(response);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{key}")]
+        public async Task<ActionResult<OperationResponse>> DeleteToken(string key)
+        {
+            var guid = new Guid(key);
+            var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(t => t.CreditCardTokenID == guid));
+
+            var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == token.TerminalID).FirstOrDefaultAsync());
+
+            await keyValueStorage.Delete(key);
+
+            token.Active = false;
+            await creditCardTokenService.UpdateEntity(token);
+
+            return Ok(new OperationResponse(Messages.TokenDeleted, StatusEnum.Success, guid));
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -198,40 +234,6 @@ namespace Transactions.Api.Controllers
             await creditCardTokenService.CreateEntity(dbData);
 
             return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID);
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<SummariesResponse<CreditCardTokenSummary>>> GetTokens([FromQuery] CreditCardTokenFilter filter)
-        {
-            var query = creditCardTokenService.GetTokens().AsNoTracking().Filter(filter);
-
-            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
-            {
-                var response = new SummariesResponse<CreditCardTokenSummary> { NumberOfRecords = await query.CountAsync() };
-
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(CreditCardTokenDetails.CreditCardTokenID), filter.OrderByDirection).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
-
-                response.Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).ToListAsync();
-
-                return Ok(response);
-            }
-        }
-
-        [HttpDelete]
-        [Route("{key}")]
-        public async Task<ActionResult<OperationResponse>> DeleteToken(string key)
-        {
-            var guid = new Guid(key);
-            var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(t => t.CreditCardTokenID == guid));
-
-            var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == token.TerminalID).FirstOrDefaultAsync());
-
-            await keyValueStorage.Delete(key);
-
-            token.Active = false;
-            await creditCardTokenService.UpdateEntity(token);
-
-            return Ok(new OperationResponse(Messages.TokenDeleted, StatusEnum.Success, guid));
         }
     }
 }

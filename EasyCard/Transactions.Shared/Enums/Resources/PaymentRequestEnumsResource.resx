@@ -153,6 +153,9 @@
   <data name="Sent" xml:space="preserve">
     <value>Sent</value>
   </data>
+  <data name="Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
   <data name="Viewed" xml:space="preserve">
     <value>Viewed</value>
   </data>

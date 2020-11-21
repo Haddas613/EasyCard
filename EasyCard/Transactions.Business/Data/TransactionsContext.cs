@@ -422,7 +422,7 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
                 {
                     s.Property(p => p.InvoiceType).HasColumnName("InvoiceType");
-                   
+
                     s.Property(p => p.InvoiceSubject).HasColumnName("InvoiceSubject").IsRequired(false).IsUnicode(true);
                     s.Property(p => p.SendCCTo).HasColumnName("SendCCTo").IsRequired(false).IsUnicode(true).HasConversion(StringsArrayConverter);
                 });

@@ -65,9 +65,9 @@ namespace Transactions.Api.Controllers
         private readonly ITerminalsService terminalsService;
         private readonly IConsumersService consumersService;
         private readonly CardTokenController cardTokenController;
-        private readonly InvoicingController invoicingController;
         private readonly IPaymentRequestsService paymentRequestsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
+        private readonly IInvoiceService invoiceService;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -82,7 +82,7 @@ namespace Transactions.Api.Controllers
             IBillingDealService billingDealService,
             IConsumersService consumersService,
             CardTokenController cardTokenController,
-            InvoicingController invoicingController,
+            IInvoiceService invoiceService,
             IPaymentRequestsService paymentRequestsService,
             IHttpContextAccessorWrapper httpContextAccessor)
         {
@@ -99,7 +99,7 @@ namespace Transactions.Api.Controllers
             this.billingDealService = billingDealService;
             this.consumersService = consumersService;
             this.cardTokenController = cardTokenController;
-            this.invoicingController = invoicingController;
+            this.invoiceService = invoiceService;
             this.paymentRequestsService = paymentRequestsService;
             this.httpContextAccessor = httpContextAccessor;
         }
@@ -663,37 +663,31 @@ namespace Transactions.Api.Controllers
                 {
                     try
                     {
-                        Models.Invoicing.InvoiceRequest invoiceRequest = new Models.Invoicing.InvoiceRequest();
+                        Invoice invoiceRequest = new Invoice();
                         mapper.Map(transaction, invoiceRequest);
                         invoiceRequest.InvoiceDetails = model.InvoiceDetails;
 
-                        var createInvoiceResponse = await invoicingController.CreateInvoice(invoiceRequest);
+                        invoiceRequest.MerchantID = terminal.MerchantID;
 
-                        var createInvoiceResponseOperation = createInvoiceResponse.GetOperationResponse();
+                        invoiceRequest.ApplyAuditInfo(httpContextAccessor);
 
-                        endResponse.InnerResponse = createInvoiceResponseOperation;
+                        await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
 
-                        if (!(createInvoiceResponseOperation?.Status == StatusEnum.Success) || endResponse.InnerResponse == null)
-                        {
-                            logger.LogError($"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
+                        endResponse.InnerResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
 
-                            if (endResponse.InnerResponse == null)
-                            {
-                                endResponse.InnerResponse = new OperationResponse($"{Messages.FailedToCreateInvoice}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier);
-                            }
-                        }
-                        else
-                        {
-                            transaction.InvoiceID = createInvoiceResponseOperation.EntityUID;
+                        transaction.InvoiceID = invoiceRequest.InvoiceID;
 
-                            await transactionsService.UpdateEntity(transaction, Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated);
-                        }
+                        await transactionsService.UpdateEntity(transaction, Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
+
+                        await dbTransaction.CommitAsync();
                     }
                     catch (Exception ex)
                     {
                         logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
 
                         endResponse.InnerResponse = new OperationResponse($"{Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
+
+                        await dbTransaction.RollbackAsync();
                     }
                 }
             }

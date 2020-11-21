@@ -134,11 +134,6 @@ namespace Transactions.Business.Entities
 
         public string SourceIP { get; set; }
 
-        /// <summary>
-        /// Processing status
-        /// </summary>
-        public BillingDealStatusEnum Status { get; set; }
-
         public bool Active { get; set; }
 
         // TODO: recalculate items and fill default SKU

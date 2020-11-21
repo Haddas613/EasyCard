@@ -180,5 +180,46 @@ namespace Transactions.Api.Models.Transactions
         public byte[] UpdateTimestamp { get; set; }
 
         public bool AllowTransmission { get; set; }
+
+        /// <summary>
+        /// Reference to initial billing deal
+        /// </summary>
+        public Guid? BillingDealID { get; set; }
+
+        /// <summary>
+        /// Rejection Reason Message
+        /// </summary>
+        public string RejectionMessage { get; set; }
+
+        public decimal VATRate { get; set; }
+
+        public decimal VATTotal { get; set; }
+
+        public decimal NetTotal { get; set; }
+
+        /// <summary>
+        /// We can know it from checkout page activity
+        /// </summary>
+        public string ConsumerIP { get; set; }
+
+        /// <summary>
+        /// Merchant's IP
+        /// </summary>
+        public string MerchantIP { get; set; }
+
+        /// <summary>
+        /// Request ID
+        /// </summary>
+        public string CorrelationId { get; set; }
+
+        /// <summary>
+        /// Generated invoice ID
+        /// </summary>
+        public Guid? InvoiceID { get; set; }
+
+        /// <summary>
+        /// Create document for transaction
+        /// </summary>
+        public bool IssueInvoice { get; set; }
     }
 }

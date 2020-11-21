@@ -86,39 +86,9 @@
             Merchant
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.ProcessorID">
-            <summary>
-            Shva or other processor
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.AggregatorID">
-            <summary>
-            Clearing House or Upay
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.InvoicingID">
-            <summary>
-            EasyInvoice or RapidOne
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.MarketerID">
-            <summary>
-            Marketer ID
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.Status">
-            <summary>
-            Processing status
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.Currency">
             <summary>
             Currency
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.NumberOfPayments">
-            <summary>
-            Number Of payments (cannot be more than 999)
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.TransactionAmount">
@@ -144,6 +114,11 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.CurrentTransactionID">
             <summary>
             Reference to last deal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.NextScheduledTransaction">
+            <summary>
+            Date-time when next transaction should be generated
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.CreditCardDetails">
@@ -176,14 +151,14 @@
             Concurrency key
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealsFilter.ConsumerEmail">
             <summary>
             End-customer Email
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.Status">
-            <summary>
-            Processing status
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.BillingSchedule">
@@ -1147,6 +1122,41 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.UpdateTimestamp">
             <summary>
             Concurrency key
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.BillingDealID">
+            <summary>
+            Reference to initial billing deal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.RejectionMessage">
+            <summary>
+            Rejection Reason Message
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.ConsumerIP">
+            <summary>
+            We can know it from checkout page activity
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.MerchantIP">
+            <summary>
+            Merchant's IP
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.CorrelationId">
+            <summary>
+            Request ID
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.InvoiceID">
+            <summary>
+            Generated invoice ID
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.IssueInvoice">
+            <summary>
+            Create document for transaction
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionsFilter.ConsumerEmail">

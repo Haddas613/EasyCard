@@ -165,6 +165,8 @@ namespace Transactions.Api.Controllers
             response.NumberOfRecords = transactionsResponse.Count;
             response.Data = transactionsResponse;
 
+            var transmissionDate = DateTime.UtcNow;
+
             // TODO: use with batch or with queue
             var transactionIDs = transactionsResponse.Where(d => d.TransmissionStatus == TransmissionStatusEnum.TransmissionFailed || d.TransmissionStatus == TransmissionStatusEnum.Transmitted).Select(d => d.PaymentTransactionID).ToList();
             var transactions = await transactionsService.GetTransactions().Where(d => transactionIDs.Contains(d.PaymentTransactionID)).ToListAsync();
@@ -184,6 +186,8 @@ namespace Transactions.Api.Controllers
                     }
                     else
                     {
+                        transaction.ShvaTransactionDetails.TransmissionDate = transmissionDate;
+                        transaction.ShvaTransactionDetails.ShvaTransmissionNumber = processorResponse.TransmissionReference;
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.TransmittedByProcessor);
                     }
                 }
