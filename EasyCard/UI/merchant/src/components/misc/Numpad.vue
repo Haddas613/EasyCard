@@ -88,7 +88,6 @@
             </v-btn>
           </template>
         </ec-list>
-        <!-- <v-spacer class="py-8" v-if="$vuetify.breakpoint.smAndDown"></v-spacer> -->
       </div>
     </v-flex>
   </v-flex>

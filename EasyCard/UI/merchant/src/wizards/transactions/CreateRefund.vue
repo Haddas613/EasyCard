@@ -52,12 +52,21 @@
         </v-stepper-content>
 
         <v-stepper-content step="6" class="py-0 px-0">
-          <transaction-success
-            :amount="model.transactionAmount"
-            v-if="success"
-            :customer="customer"
-          ></transaction-success>
-          <transaction-error :errors="errors" v-if="!success"></transaction-error>
+           <wizard-result :errors="errors" v-if="result">
+            <template v-if="customer">
+              <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+              <p>{{customer.consumerName}}</p>
+              <div class="pt-5">
+                <p>{{$t("RefundedCustomer")}}</p>
+                <p>{{customer.consumerEmail}} ● <ec-money :amount="model.transactionAmount" bold></ec-money></p>
+              </div>
+            </template>
+            <template v-slot:link v-if="result.entityReference">
+              <router-link class="primary--text" link
+                  :to="{ name: 'Transaction', params: { id: result.entityReference } }"
+                >{{$t("GoToTransaction")}}</router-link>
+            </template>
+          </wizard-result>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -72,10 +81,10 @@ export default {
     Navbar: () => import("../../components/wizard/NavBar"),
     Numpad: () => import("../../components/misc/Numpad"),
     Basket: () => import("../../components/misc/Basket"),
+    EcMoney: () => import("../../components/ec/EcMoney"),
     CustomersList: () => import("../../components/customers/CustomersList"),
     CreditCardSecureDetails: () => import("../../components/transactions/CreditCardSecureDetails"),
-    TransactionSuccess: () => import("../../components/transactions/TransactionSuccess"),
-    TransactionError: () => import("../../components/transactions/TransactionError"),
+    WizardResult: () => import("../../components/wizard/WizardResult"),
     AdditionalSettingsForm: () => import("../../components/transactions/AdditionalSettingsForm")
   },
   props: ["customerid"],
@@ -143,7 +152,8 @@ export default {
       },
       threeDotMenuItems: null,
       success: true,
-      errors: []
+      errors: [],
+      result: null
     };
   },
   computed: {
@@ -263,6 +273,7 @@ export default {
       this.model.issueInvoice = !!this.model.invoiceDetails;
 
       let result = await this.$api.transactions.refund(this.model);
+      this.result = result;
 
       //assuming current step is one before the last
       let lastStep = this.steps[this.step + 1];
