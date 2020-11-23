@@ -170,6 +170,7 @@ export default {
           data.consumerNationalID;
       }
     }
+    this.model.dealDetails.dealDescription = this.terminal.settings.defaultRefundDescription;
   },
   methods: {
     goBack() {

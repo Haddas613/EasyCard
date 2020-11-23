@@ -66,19 +66,20 @@ export default {
     };
   },
   async mounted() {
-    if(!this.model.dealDescription){
-        //TODO
-        this.model.dealDescription = "Automatically generated description.";
-    }
+    // if(!this.model.dealDescription){
+    //     this.model.dealDescription = this.terminalStore.settings.defaultChargeDescription;
+    // }
   },
   methods: {
     getData() {
       let result = { ...this.model }; 
       return result;
     }
-  }
+  },
+  computed: {
+    // ...mapState({
+    //   terminalStore: state => state.settings.terminalStore
+    // })
+  },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

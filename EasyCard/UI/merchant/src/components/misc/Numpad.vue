@@ -118,7 +118,7 @@ export default {
         price: 0,
         discount: 0,
         amount: 0,
-        itemName: "Custom charge",
+        itemName: null,
         currency: null,
         quantity: 1
       },
@@ -167,11 +167,13 @@ export default {
       );
     },
     ...mapState({
-      currencyStore: state => state.settings.currency
+      currencyStore: state => state.settings.currency,
+      terminalStore: state => state.settings.terminal
     })
   },
   async mounted() {
     this.defaultItem.currency = this.currencyStore.code;
+    this.defaultItem.itemName = this.terminalStore.settings.defaultItemName;
     await this.getItems();
   },
   methods: {

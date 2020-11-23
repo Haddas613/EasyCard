@@ -91,12 +91,11 @@ export default {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
     let $dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
     if(!this.model.invoiceSubject){
-        //TODO: Generate invoice subject
-      this.model.invoiceSubject = "Test invoice subject. Generated automatically";
+      this.model.invoiceSubject = this.terminalStore.invoiceSettings.defaultInvoiceSubject;
     }
     
     if(!this.model.invoiceType){
-      this.$set(this.model, 'invoiceType', this.dictionaries.invoiceTypeEnum.find(i => i.code == "invoiceWithPaymentInfo"));
+      this.$set(this.model, 'invoiceType', this.dictionaries.invoiceTypeEnum.find(i => i.code == this.terminalStore.invoiceSettings.defaultInvoiceType));
     }else if(typeof(this.model.invoiceType) === "string"){
       this.$set(this.model, 'invoiceType', this.dictionaries.invoiceTypeEnum.find(i => i.code == this.model.invoiceType));
     }

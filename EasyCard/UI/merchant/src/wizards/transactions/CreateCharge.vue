@@ -150,7 +150,6 @@ export default {
     navTitle() {
       return this.$t(this.steps[this.step].title);
     },
-    terminal: {},
     ...mapState({
       terminal: state => state.settings.terminal
     })
@@ -170,6 +169,7 @@ export default {
           data.consumerNationalID;
       }
     }
+    this.model.dealDetails.dealDescription = this.terminal.settings.defaultChargeDescription;
   },
   methods: {
     goBack() {
@@ -295,6 +295,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

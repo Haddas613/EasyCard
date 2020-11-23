@@ -171,7 +171,6 @@ export default {
       this.model.dealDetails.consumerPhone = data.consumerPhone;
       this.model.dealDetails.consumerID = data.consumerID;
       this.step++;
-      console.log(this.model)
     },
     processToBasket(){
       let data = this.$refs.numpadRef.getData();
