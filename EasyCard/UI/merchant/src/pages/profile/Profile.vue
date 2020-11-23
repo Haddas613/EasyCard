@@ -76,8 +76,9 @@ export default {
         return this.terminalStore;
       },
       set: function(nv) {
+        console.log("Profile")
         this.$store.dispatch("settings/changeTerminal", {
-          vm: this,
+          api: this.$api,
           newTerminal: nv
         });
       }
@@ -88,7 +89,7 @@ export default {
       },
       set: function(nv) {
         this.$store.dispatch("settings/changeCurrency", {
-          vm: this,
+          api: this.$api,
           newCurrency: nv
         });
       }

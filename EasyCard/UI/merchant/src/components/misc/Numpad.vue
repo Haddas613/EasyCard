@@ -10,7 +10,7 @@
       :fixed="$vuetify.breakpoint.smAndDown"
     >
       {{$t(btnText)}}
-      <ec-money :amount="totalAmount - model.discount" class="px-1"></ec-money>
+      <ec-money :amount="totalAmount - model.discount" class="px-1" :currency="currencyStore.code"></ec-money>
     </v-btn>
     <v-spacer style="height: 48px" v-if="$vuetify.breakpoint.smAndDown"></v-spacer>
     <v-flex class="white text-center align-stretch px-3">

@@ -10,34 +10,33 @@ const actions = {
     let terminals = (await api.terminals.getTerminals());
     terminals = terminals ? terminals.data : [];
     let state = store.state;
-
     if (!state.terminal || !state.terminal.terminalID) {
-      store.dispatch('changeTerminal', {newTerminal: terminals[0].code})
+      await store.dispatch('changeTerminal', {api, newTerminal: terminals[0].terminalID});
     } else {
       let exists = lodash.some(terminals, t => t.terminalID === state.terminal.terminalID);
-      if (!exists) store.dispatch('changeTerminal', {newTerminal: terminals[0].code})
+      if (!exists) await store.dispatch('changeTerminal', {api, newTerminal: terminals[0].terminalID});
     }
 
     let dictionaries = await api.dictionaries.getTransactionDictionaries();
     let currencies = dictionaries ? dictionaries.currencyEnum : [];
     if (!state.currency || !state.currency.code) {
       if (currencies.length > 0) {
-        store.dispatch('changeCurrency', {newCurrency: currencies[0]})
+        await store.dispatch('changeCurrency', {api, newCurrency: currencies[0]});
       }
     }
     //cache validation for currencies
     else if (currencies.length > 0 && state.currency) {
       let exists = lodash.some(state.currencies, c => c.code === state.currency.code);
-      if (!exists) store.dispatch('changeCurrency', {newCurrency: currencies[0]})
+      if (!exists) await store.dispatch('changeCurrency', {api, newCurrency: currencies[0]});
     }
   },
-  async changeTerminal({ commit }, { vm, newTerminal }) {
-    let terminal = await vm.$api.terminals
+  async changeTerminal({ commit }, { api, newTerminal }) {
+    let terminal = await api.terminals
       .getTerminal(typeof (newTerminal) === "string" ? newTerminal : newTerminal.terminalID);
 
     commit('setTerminal', terminal);
   },
-  changeCurrency({ commit }, { vm, newCurrency }) {
+  async changeCurrency({ commit }, { api, newCurrency }) {
     commit('setCurrency', newCurrency);
   }
 };

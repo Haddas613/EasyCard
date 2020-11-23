@@ -129,8 +129,9 @@ export default {
         return this.terminalStore;
       },
       set: function(nv) {
+        console.log("NavBar")
         this.$store.dispatch("settings/changeTerminal", {
-          vm: this,
+          api: this.$api,
           newTerminal: nv
         });
         this.$emit('terminal-changed', nv);
@@ -148,20 +149,6 @@ export default {
   async mounted() {
     let terminals = await this.$api.terminals.getTerminals();
     this.terminals = terminals ? terminals.data : [];
-
-    //validate if stored terminal is still accessible. Clear it otherwise
-    if (this.terminals.length > 0 && this.terminal) {
-      let exists = this.lodash.some(
-        this.terminals,
-        t => t.terminalID === this.terminal.terminalID
-      );
-      if (!exists) this.terminal = null;
-    }
-    else if(this.terminals.length > 0 && !this.terminal){
-      this.terminal = this.terminals[0];
-    } else {
-      this.terminal = null;
-    }
   },
   methods: {
     onClickBack() {

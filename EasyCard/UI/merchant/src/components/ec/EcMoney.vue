@@ -1,5 +1,9 @@
 <template>
-  <span>{{amount | currency(currencyCode)}}</span>
+  <span>
+    <template v-if="currency">{{amount | currency(currency)}}</template>
+    <template v-else-if="currencyStore.code">{{amount | currency(currencyStore.code)}}</template>
+    <template v-else>{{amount}}</template>
+  </span>
 </template>
 
 <script>
@@ -16,19 +20,11 @@ export default {
       required: false
     }
   },
-  data() {
-      return {
-          currencyCode: null
-      }
-  },
   computed: {
     ...mapState({
       currencyStore: state => state.settings.currency
     })
   },
-  beforeMount() {
-    this.currencyCode = this.currency || this.currencyStore.code;
-  }
 };
 </script>
 
