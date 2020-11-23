@@ -35,7 +35,7 @@
       </v-col>
       <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
       <v-col cols="1" class="centered">
-        <v-btn icon @click="clearRef('cardNumberInp')">
+        <v-btn icon @click="clearProp('cardNumber')">
          <v-icon class="error--text" v-if="errors['cardNumber']">mdi-close</v-icon>
         </v-btn>
       </v-col>
@@ -59,7 +59,7 @@
       </v-col>
       <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
       <v-col cols="1" class="centered">
-        <v-btn icon @click="clearRef('expiryInp')">
+        <v-btn icon @click="clearProp('expiry')">
           <v-icon class="error--text" v-if="errors['expiry']">mdi-close</v-icon>
         </v-btn>
       </v-col>
@@ -84,7 +84,7 @@
       </v-col>
       <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
       <v-col cols="1" class="centered">
-        <v-btn icon  @click="clearRef('cvvInp')">
+        <v-btn icon  @click="clearProp('cvv')">
           <v-icon class="error--text" v-if="errors['cvv']">mdi-close</v-icon>
         </v-btn>
       </v-col>
@@ -94,7 +94,7 @@
       <v-col cols="7" class="centered">
         <v-row class="input-container">
           <v-col cols="12" class="dense">
-            <span class="error--text" v-if="errors['nationalId']" @click="clearRef('cvvInp')">{{errors['nationalId']}}</span>
+            <span class="error--text" v-if="errors['nationalId']" @click="model.cardOwnerNationalID = null;errors['nationalId'] = null;">{{errors['nationalId']}}</span>
           </v-col>
           <v-col cols="12" class="dense">
             <input
@@ -144,9 +144,12 @@ export default {
     };
   },
   methods: {
-    clearRef(refname){
-      if(this.$refs[refname]){
-        this.$refs[refname].value = null;
+    clearProp(propName){
+      if(this.errors[propName]){
+        this.errors[propName] = false;
+      }
+      if(this.$refs[propName + 'Inp']){
+        this.$refs[propName + 'Inp'].value = null;
       }
     },
     getData() {
