@@ -60,7 +60,7 @@
           clearable
         ></v-text-field>
         <v-divider></v-divider>
-        <ec-list class="pb-1" :items="items" dense>
+        <ec-list class="pb-1" :items="apiItems" dense>
           <template v-slot:left="{ item }">
             <v-col cols="12" class="text-align-initial">
               <span class="body-2">{{item.itemName}}</span>
@@ -108,11 +108,11 @@ export default {
   data() {
     return {
       total: 0,
-      items: [],
+      apiItems: [],
       model: {
         amount: "0",
         discount: "0",
-        items: []
+        items: [...this.items]
       },
       defaultItem: {
         price: 0,
@@ -132,6 +132,13 @@ export default {
     btnText: {
       type: String,
       default: "OK"
+    },
+    items: {
+      type: Array,
+      required: false,
+      default: () => {
+        return []
+      }
     }
   },
   watch: {
@@ -203,9 +210,9 @@ export default {
           itm.amount = itm.price;
           itm.discount = 0;
         }
-        this.items = data.data;
+        this.apiItems = data.data;
       } else {
-        this.items = [];
+        this.apiItems = [];
       }
     },
     ok() {

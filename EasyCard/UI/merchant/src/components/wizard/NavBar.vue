@@ -129,7 +129,6 @@ export default {
         return this.terminalStore;
       },
       set: function(nv) {
-        console.log("NavBar")
         this.$store.dispatch("settings/changeTerminal", {
           api: this.$api,
           newTerminal: nv

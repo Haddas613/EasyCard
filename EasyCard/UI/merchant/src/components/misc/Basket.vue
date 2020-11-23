@@ -126,6 +126,7 @@ export default {
     ok() {
       itemPricingService.total.calculate(this.model, {vatRate: this.vatRate});
       this.$emit("ok", {
+        silent: true,
         ...this.model
       });
     },
@@ -145,12 +146,16 @@ export default {
       if (entry) {
         this.$set(this.model.items, item.idx, item);
       }
-      itemPricingService.total.calculate(this.model, {vatRate: this.vatRate});
+      this.recalculate();
       this.itemPriceDialog = false;
     },
     deleteItem(idx) {
       if (this.model.items[idx]) this.model.items.splice(idx, 1);
-      itemPricingService.total.calculate(this.model, {vatRate: this.vatRate});
+      this.recalculate();
+    },
+    recalculate(){
+       itemPricingService.total.calculate(this.model, {vatRate: this.vatRate});
+       this.$emit('update', this.model);
     }
   }
 };

@@ -21,11 +21,11 @@
     <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad btn-text="Charge" v-on:ok="processAmount($event, true);" ref="numpadRef"></numpad>
+          <numpad v-if="step === 1" btn-text="Charge" v-on:ok="processAmount($event, true);" ref="numpadRef" :items="model.dealDetails.items"></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
-          <basket v-if="step === 2" btn-text="Total" v-on:ok="processAmount($event)" :items="model.dealDetails.items"></basket>
+          <basket v-if="step === 2" btn-text="Total" v-on:ok="processAmount($event)" v-on:update="updateAmount($event)" :items="model.dealDetails.items"></basket>
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">
@@ -221,14 +221,17 @@ export default {
       this.processAmount(data);
     },
     processAmount(data, skipBasket = false) {
+      this.updateAmount(data);
+      if (skipBasket) {this.step += 2 + (this.skipCustomerStep ? 1 : 0)}
+      else this.step++;
+    },
+    updateAmount(data) {
       this.model.transactionAmount = data.totalAmount;
       this.model.netTotal = data.netTotal;
       this.model.vatTotal = data.vatTotal;
       this.model.vatRate = data.vatRate;
       this.model.note = data.note;
       this.model.dealDetails.items = data.items;
-      if (skipBasket) {this.step += 2 + (this.skipCustomerStep ? 1 : 0)}
-      else this.step++;
     },
     processCreditCard(data) {
       if (data.type === "creditcard") {
