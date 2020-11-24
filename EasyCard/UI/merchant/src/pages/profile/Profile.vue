@@ -1,5 +1,6 @@
 <template>
-  <v-card flat>
+  <div>
+    <v-card flat>
     <v-card-text>
       <v-row no-gutters>
         <v-col cols="4" md="2">
@@ -41,13 +42,23 @@
       </v-row>
     </v-card-text>
   </v-card>
+  <v-card class="mt-2" flat v-if="false">
+    <v-card-title class="subtitle-1">{{$t("TerminalSettings")}}</v-card-title>
+    <v-divider></v-divider>
+    <v-card-text>
+      <terminal-settings-form :data="terminalStore" class="pt-1"></terminal-settings-form>
+    </v-card-text>
+  </v-card>
+  </div>
 </template>
 
 <script>
-import LangSwitcher from "../../components/LanguageSwitcher";
 import { mapState } from "vuex";
 export default {
-  components: { LangSwitcher },
+  components: { 
+    LangSwitcher: () => import("../../components/LanguageSwitcher"),
+    TerminalSettingsForm: () => import("../../components/settings/TerminalSettingsForm"),
+  },
   data() {
     return {
       terminals: [],

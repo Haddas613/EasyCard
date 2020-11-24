@@ -42,6 +42,7 @@
   "InvoiceSettings": "Invoice Settings",
   "PaymentRequestSettings": "Payment Request Settings",
   "MyProfile": "My profile",
+  "TerminalSettings": "Terminal Settings",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
