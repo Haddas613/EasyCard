@@ -164,6 +164,7 @@
   "DateTo": "Date To",
   "VAT": "VAT",
   "VATPercent": "VAT %",
+  "NotTransmitted": "Not transmitted",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -223,13 +224,18 @@
   "DeleteSelected": "Delete Selected",
   "SavedCards": "Saved Cards",
   "NotAccessible": "Not accessible",
-  "SeparateEmailsWithCommas": "Separate Emails with Commas",
   "CreditCardHasExpired": "Credit card has expired",
   "SelectInvoicesFirst": "Select Invoices first",
-  "WhileEnabledYouCanManuallyTriggerTheTransaction": "While enabled you can manually trigger transaction",
   "PleaseEnableManualModeFirst": "Please enable manual mode first",
   "SelectDealsFirst": "Select Deals first",
   "RefundedCustomer": "Refunded Customer",
   "ChargedCustomer": "Charged Customer",
+  "SelectTransactionsFirst": "Select Transactions First",
+
+  "--HINTS--": null,
+  "ShowOnlyNotTransmittedTransactions": "Show only not transmitted transactions",
+  "WhileEnabledYouCanManuallyTriggerTheTransaction": "While enabled you can manually trigger transaction",
+  "CantBeUsedInNotTransmittedMode": "Disabled while in non transmitted mode",
+  "SeparateEmailsWithCommas": "Separate Emails with Commas",
   "ThisCreditCardIsAlreadyAddedAsToken": "This credit card is already added as Token"
 }

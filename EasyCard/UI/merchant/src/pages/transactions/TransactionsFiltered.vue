@@ -3,6 +3,7 @@
     <transactions-filter-dialog
       :show.sync="showDialog"
       :filter="transactionsFilter"
+      :key="transactionsFilter.notTransmitted"
       v-on:ok="applyFilters($event)"
     ></transactions-filter-dialog>
     <v-card class="my-2" width="100%" flat>
@@ -43,11 +44,23 @@
             </v-row>
           </v-col>
         </v-row>
+        <v-row no-gutters class="px-1 body-2">
+          <v-switch 
+            v-model="transactionsFilter.notTransmitted" 
+            @change="getDataFromApi(false)"
+            dense
+            persistent-hint
+            :hint="$t('ShowOnlyNotTransmittedTransactions')">
+            <template v-slot:label>
+              <small>{{$t('NotTransmitted')}}</small>
+            </template>
+          </v-switch>
+        </v-row>
       </v-card-text>
     </v-card>
     <v-card width="100%" flat :loading="!transactions">
       <v-card-text class="px-0">
-        <transactions-list :key="loading" :transactions="transactions"></transactions-list>
+        <transactions-list :key="loading" :transactions="transactions" :selectable="transactionsFilter.notTransmitted"></transactions-list>
         <v-flex class="text-center" v-if="canLoadMore">
           <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
         </v-flex>
@@ -58,7 +71,7 @@
 
 <script>
 import moment from "moment";
-
+import { mapState } from "vuex";
 export default {
   components: {
     EcList: () => import("../../components/ec/EcList"),
@@ -70,7 +83,11 @@ export default {
   },
   props: {
     filters: {
-      default: null
+      default: () => {
+        return {
+          notTransmitted: false
+        }
+      },
     },
     showFiltersDialog: {
       type: Boolean,
@@ -132,13 +149,29 @@ export default {
     async loadMore() {
       this.transactionsFilter.skip += this.transactionsFilter.take;
       await this.getDataFromApi(true);
+    },
+    async transmitSelected(){
+      let selected = this.lodash.filter(this.transactions, t => t.selected);
+      if(selected.length === 0){
+        return this.$toasted.show(this.$t("SelectTransactionsFirst"), { type: "error" });
+      }
+
+      let opResult = await this.$api.transmissions.transmit({
+        terminalID: this.terminalStore.terminalID, 
+        paymentTransactionIDs: this.lodash.map(selected, i => i.$paymentTransactionID)
+      });
+
+      await this.getDataFromApi(false);
     }
   },
   computed: {
     canLoadMore() {
       return this.numberOfRecords > 0 
         && (this.transactionsFilter.take + this.transactionsFilter.skip) < this.numberOfRecords;
-    }
+    },
+    ...mapState({
+      terminalStore: state => state.settings.terminal,
+    })
   },
   async mounted() {
     await this.applyFilters();
@@ -151,6 +184,10 @@ export default {
             fn: () => {
               this.$router.push({ name: "Charge" });
             }
+          },
+          {
+            text: this.$t("Transmit"),
+            fn: async () => await this.transmitSelected()
           }
         ]
       }

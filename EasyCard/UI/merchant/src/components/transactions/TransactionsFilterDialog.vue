@@ -60,8 +60,11 @@
               item-value="code"
               v-model="model.quickStatusFilter"
               :label="$t('Status')"
+              :disabled="model.notTransmitted"
               outlined
               clearable
+              :persistent-hint="model.notTransmitted"
+              :hint="$t('CantBeUsedInNotTransmittedMode')"
             ></v-select>
           </v-col>
           <v-col cols="12" md="6" class="py-0">

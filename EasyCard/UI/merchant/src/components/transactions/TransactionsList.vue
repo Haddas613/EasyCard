@@ -1,7 +1,12 @@
 <template>
   <v-flex>
     <ec-list :items="data" v-if="data">
-      <template v-slot:prepend>
+      <template v-slot:prepend="{ item }" v-if="selectable">
+         <v-checkbox
+            v-model="item.selected"
+         ></v-checkbox>
+      </template>
+      <template v-slot:prepend v-else>
         <v-icon>mdi-credit-card-outline</v-icon>
       </template>
 
@@ -57,6 +62,11 @@ export default {
     transactions: {
         required: true,
         default: () => []
+    },
+    selectable: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   data() {
@@ -70,7 +80,7 @@ export default {
         Canceled: "accent--text"
       },
       customerInfo: null,
-      moment: moment,
+      moment: moment
     };
   }
 };

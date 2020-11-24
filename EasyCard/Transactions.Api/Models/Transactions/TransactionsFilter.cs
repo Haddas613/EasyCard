@@ -86,5 +86,7 @@ namespace Transactions.Api.Models.Transactions
         public Guid? BillingDealID { get; set; }
 
         public SpecialTransactionTypeEnum? SpecialTransactionType { get; set; }
+
+        public bool NotTransmitted { get; set; }
     }
 }

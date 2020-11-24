@@ -45,7 +45,12 @@ namespace Transactions.Api.Extensions.Filtering
 
             src = HandleDateFiltering(src, filter);
 
-            if (filter.QuickStatusFilter != null)
+
+            if (filter.NotTransmitted)
+            {
+                src = src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator);
+            }
+            else if (filter.QuickStatusFilter != null)
             {
                 src = FilterByQuickStatus(src, filter.QuickStatusFilter.Value);
             }
