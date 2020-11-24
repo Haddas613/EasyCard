@@ -13,103 +13,118 @@
       </template>
     </v-text-field>
     <div class="input-special-group">
+      <v-alert
+        dense 
+        color="accent"
+        colored-border
+        icon="mdi-credit-card"
+        :border="$vuetify.rtl ? 'right': 'left'"
+        v-if="(tokens && tokens.length) && tokenAlreadyExists"
+      >
+        <small>{{$t("ThisCreditCardIsAlreadyAddedAsToken")}}</small>
+      </v-alert>
+
       <v-row class="input-special">
-      <v-col md="2" cols="3" class="label pr-1">{{$t('CardNo')}}</v-col>
-      <v-col cols="7" class="centered">
-        <v-row class="input-container">
-          <v-col cols="12" class="dense">
-            <span class="error--text" v-if="errors['cardNumber']">{{errors['cardNumber']}}</span>
-          </v-col>
-          <v-col cols="12" class="dense">
-            <input
-              type="tel"
-              class="dense-input"
-              ref="cardNumberInp"
-              v-cardformat:formatCardNumberOrCardReader
-              placeholder="XXXX XXXX XXXX XXXX"
-              @keydown.enter="parseCardReader()"
-              @input="checkIfCardReader($event)"
-            />
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
-      <v-col cols="1" class="centered">
-        <v-btn icon @click="clearProp('cardNumber')">
-         <v-icon class="error--text" v-if="errors['cardNumber']">mdi-close</v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row class="input-special">
-      <v-col md="2" cols="3" class="label">{{$t('Expiry')}}</v-col>
-      <v-col cols="7" class="centered">
-        <v-row class="input-container">
-          <v-col cols="12" class="dense">
-            <span class="error--text" v-if="errors['expiry']">{{errors['expiry']}}</span>
-          </v-col>
-          <v-col cols="12" class="dense">
-            <input
-              class="dense-input"
-              ref="expiryInp"
-              placeholder="MM/YY"
-              v-cardformat:formatCardExpiry
-            />
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
-      <v-col cols="1" class="centered">
-        <v-btn icon @click="clearProp('expiry')">
-          <v-icon class="error--text" v-if="errors['expiry']">mdi-close</v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row class="input-special">
-      <v-col md="2" cols="3" class="label">{{$t('CVV')}}</v-col>
-      <v-col cols="7" class="centered">
-        <v-row class="input-container">
-          <v-col cols="12" class="dense">
-            <span class="error--text" v-if="errors['cvv']">{{errors['cvv']}}</span>
-          </v-col>
-          <v-col cols="12" class="dense">
-            <input
-              class="dense-input"
-              type="tel"
-              ref="cvvInp"
-              placeholder="XXX"
-              v-cardformat:formatCardCVC
-            />
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
-      <v-col cols="1" class="centered">
-        <v-btn icon  @click="clearProp('cvv')">
-          <v-icon class="error--text" v-if="errors['cvv']">mdi-close</v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row class="input-special">
-      <v-col md="2" cols="3" class="label">{{$t('NatID')}}</v-col>
-      <v-col cols="7" class="centered">
-        <v-row class="input-container">
-          <v-col cols="12" class="dense">
-            <span class="error--text" v-if="errors['nationalId']" @click="model.cardOwnerNationalID = null;errors['nationalId'] = null;">{{errors['nationalId']}}</span>
-          </v-col>
-          <v-col cols="12" class="dense">
-            <input
-              class="dense-input"
-              v-model="model.cardOwnerNationalID"
-              placeholder="XXXXXXXXX"
-            />
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
-      <v-col cols="1" class="centered">
-        <v-icon class="error--text" v-if="errors['nationalID']">mdi-close</v-icon>
-      </v-col>
-    </v-row>
+        <v-col md="2" cols="3" class="label pr-1">{{$t('CardNo')}}</v-col>
+        <v-col cols="7" class="centered">
+          <v-row class="input-container">
+            <v-col cols="12" class="dense">
+              <span class="error--text" v-if="errors['cardNumber']">{{errors['cardNumber']}}</span>
+            </v-col>
+            <v-col cols="12" class="dense">
+              <input
+                type="tel"
+                class="dense-input"
+                ref="cardNumberInp"
+                v-cardformat:formatCardNumberOrCardReader
+                placeholder="XXXX XXXX XXXX XXXX"
+                @keydown.enter="parseCardReader()"
+                @input="checkIfCardReader($event)"
+              />
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
+        <v-col cols="1" class="centered">
+          <v-btn icon @click="clearProp('cardNumber')">
+            <v-icon class="error--text" v-if="errors['cardNumber']">mdi-close</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row class="input-special">
+        <v-col md="2" cols="3" class="label">{{$t('Expiry')}}</v-col>
+        <v-col cols="7" class="centered">
+          <v-row class="input-container">
+            <v-col cols="12" class="dense">
+              <span class="error--text" v-if="errors['expiry']">{{errors['expiry']}}</span>
+            </v-col>
+            <v-col cols="12" class="dense">
+              <input
+                class="dense-input"
+                ref="expiryInp"
+                placeholder="MM/YY"
+                v-cardformat:formatCardExpiry
+              />
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
+        <v-col cols="1" class="centered">
+          <v-btn icon @click="clearProp('expiry')">
+            <v-icon class="error--text" v-if="errors['expiry']">mdi-close</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row class="input-special">
+        <v-col md="2" cols="3" class="label">{{$t('CVV')}}</v-col>
+        <v-col cols="7" class="centered">
+          <v-row class="input-container">
+            <v-col cols="12" class="dense">
+              <span class="error--text" v-if="errors['cvv']">{{errors['cvv']}}</span>
+            </v-col>
+            <v-col cols="12" class="dense">
+              <input
+                class="dense-input"
+                type="tel"
+                ref="cvvInp"
+                placeholder="XXX"
+                v-cardformat:formatCardCVC
+              />
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
+        <v-col cols="1" class="centered">
+          <v-btn icon @click="clearProp('cvv')">
+            <v-icon class="error--text" v-if="errors['cvv']">mdi-close</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row class="input-special">
+        <v-col md="2" cols="3" class="label">{{$t('NatID')}}</v-col>
+        <v-col cols="7" class="centered">
+          <v-row class="input-container">
+            <v-col cols="12" class="dense">
+              <span
+                class="error--text"
+                v-if="errors['nationalId']"
+                @click="model.cardOwnerNationalID = null;errors['nationalId'] = null;"
+              >{{errors['nationalId']}}</span>
+            </v-col>
+            <v-col cols="12" class="dense">
+              <input
+                class="dense-input"
+                v-model="model.cardOwnerNationalID"
+                placeholder="XXXXXXXXX"
+              />
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
+        <v-col cols="1" class="centered">
+          <v-icon class="error--text" v-if="errors['nationalID']">mdi-close</v-icon>
+        </v-col>
+      </v-row>
     </div>
   </v-flex>
 </template>
@@ -122,6 +137,11 @@ export default {
     data: {
       type: Object,
       default: null,
+      required: false
+    },
+    tokens: {
+      type: Array,
+      default: () => [],
       required: false
     }
   },
@@ -140,16 +160,17 @@ export default {
           ValidationRules.primitives.required,
           ValidationRules.special.israeliNationalId
         ]
-      }
+      },
+      tokenAlreadyExists: false
     };
   },
   methods: {
-    clearProp(propName){
-      if(this.errors[propName]){
+    clearProp(propName) {
+      if (this.errors[propName]) {
         this.errors[propName] = false;
       }
-      if(this.$refs[propName + 'Inp']){
-        this.$refs[propName + 'Inp'].value = null;
+      if (this.$refs[propName + "Inp"]) {
+        this.$refs[propName + "Inp"].value = null;
       }
     },
     getData() {
@@ -190,8 +211,7 @@ export default {
         cardOwnerName: this.model.cardOwnerName,
         cardNumber: this.$refs.cardNumberInp.value.replace(/\s/g, ""),
         cardExpiration: this.$refs.expiryInp.value.replace(/\s/g, ""),
-        cardOwnerNationalID: this.model
-          .cardOwnerNationalID,
+        cardOwnerNationalID: this.model.cardOwnerNationalID,
         cvv: this.$refs.cvvInp.value,
         cardReaderInput: this.model.cardReaderInput
       };
@@ -205,9 +225,27 @@ export default {
     checkIfCardReader($event) {
       if (!/^;\d{15,17}=\d{19,21}\?$/.test(this.$refs.cardNumberInp.value)) {
         this.resetCardReader();
+        this.checkIfTokenExists();
         return false;
       }
+      this.tokenAlreadyExists = false;
       return true;
+    },
+    checkIfTokenExists(){
+      if (!this.tokens || this.tokens.length === 0){ return;}
+      if (!this.$cardFormat.validateCardNumber(this.$refs.cardNumberInp.value)) {
+        return this.tokenAlreadyExists = false;
+      }
+      let bin = this.cardNumberToBin();
+      this.tokenAlreadyExists =  bin ? this.lodash.some(this.tokens, t => t.cardNumber == bin) : false;
+    },
+    cardNumberToBin(){
+      let val = `${this.$refs.cardNumberInp.value}`;
+      if (!val){ return false;}
+      try{
+        val = val.replaceAll(" ", "");
+        return val.substring(0, 6) + '****' + val.substring(val.length - 4, val.length)
+      }catch { return null; }
     },
     parseCardReader() {
       if (!this.checkIfCardReader()) return;
@@ -217,10 +255,7 @@ export default {
       console.log(`parseCardReader, split value: ${sep.join("\t")}`);
 
       //get rid of ';' at the beginning
-      this.$refs.cardNumberInp.value = sep[0].substr(
-        1,
-        sep[0].length
-      );
+      this.$refs.cardNumberInp.value = sep[0].substr(1, sep[0].length);
       this.$refs.expiryInp.value = `${sep[1].substr(2, 2)}/${sep[1].substr(
         0,
         2

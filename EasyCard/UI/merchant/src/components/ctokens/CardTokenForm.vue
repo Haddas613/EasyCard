@@ -12,6 +12,7 @@
         <credit-card-secure-details-form
           :key="customer != null"
           :data="model"
+          :tokens="customerTokens"
           ref="ccsecuredetailsform"
         ></credit-card-secure-details-form>
       </v-form>
@@ -61,6 +62,7 @@ export default {
   data() {
     return {
       model: { ...this.data },
+      customerTokens: [],
       customer: null,
       vr: ValidationRules
     };
@@ -74,10 +76,18 @@ export default {
       if (!this.model.terminalID) {
         this.model.terminalID = this.customer.terminalID;
       }
+
+      this.customerTokens =
+        (
+          await this.$api.cardTokens.getCustomerCardTokens(
+            this.model.consumerID
+          )
+        ).data || [];
     }
     // else if (!this.customer) {
     //   return this.$router.push({ name: "404" });
     // }
+    
     this.model.cardOwnerName = this.customer.consumerName;
     this.model.cardOwnerNationalID = this.customer.consumerNationalID;
     this.model.consumerEmail = this.customer.consumerEmail;

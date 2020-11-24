@@ -58,6 +58,7 @@
         <credit-card-secure-details-form
           :data="model.creditCardSecureDetails"
           ref="ccsecuredetailsform"
+          :tokens="customerTokens"
         ></credit-card-secure-details-form>
         <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')" :disabled="!model.dealDetails.consumerID"></v-checkbox>
       </v-form>

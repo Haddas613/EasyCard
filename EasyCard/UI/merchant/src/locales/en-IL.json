@@ -230,5 +230,6 @@
   "PleaseEnableManualModeFirst": "Please enable manual mode first",
   "SelectDealsFirst": "Select Deals first",
   "RefundedCustomer": "Refunded Customer",
-  "ChargedCustomer": "Charged Customer"
+  "ChargedCustomer": "Charged Customer",
+  "ThisCreditCardIsAlreadyAddedAsToken": "This credit card is already added as Token"
 }
