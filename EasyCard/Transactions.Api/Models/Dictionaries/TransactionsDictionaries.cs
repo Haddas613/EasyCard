@@ -43,5 +43,7 @@ namespace Transactions.Api.Models.Dictionaries
         public Dictionary<string, string> PaymentRequestStatusEnum { get; set; }
 
         public Dictionary<string, string> PayReqQuickStatusFilterTypeEnum { get; set; }
+
+        public Dictionary<string, string> PaymentTypeEnum { get; set; }
     }
 }

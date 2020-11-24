@@ -22,7 +22,7 @@ namespace Transactions.Shared.Enums.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class PaymentTypeResource {
+    public class PaymentTypeResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Transactions.Shared.Enums.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Transactions.Shared.Enums.Resources.PaymentTypeResource", typeof(PaymentTypeResource).Assembly);
@@ -51,7 +51,7 @@ namespace Transactions.Shared.Enums.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Transactions.Shared.Enums.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Bank.
         /// </summary>
-        internal static string Bank {
+        public static string Bank {
             get {
                 return ResourceManager.GetString("Bank", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Transactions.Shared.Enums.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Bitcoin.
         /// </summary>
-        internal static string Bitcoin {
+        public static string Bitcoin {
             get {
                 return ResourceManager.GetString("Bitcoin", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Transactions.Shared.Enums.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Card.
         /// </summary>
-        internal static string Card {
+        public static string Card {
             get {
                 return ResourceManager.GetString("Card", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Transactions.Shared.Enums.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Cash.
         /// </summary>
-        internal static string Cash {
+        public static string Cash {
             get {
                 return ResourceManager.GetString("Cash", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Transactions.Shared.Enums.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Check.
         /// </summary>
-        internal static string Check {
+        public static string Check {
             get {
                 return ResourceManager.GetString("Check", resourceCulture);
             }

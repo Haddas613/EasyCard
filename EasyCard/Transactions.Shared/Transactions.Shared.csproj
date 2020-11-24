@@ -46,7 +46,7 @@
       <LastGenOutput>PaymentRequestEnumsResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Enums\Resources\PaymentTypeResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>PaymentTypeResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Enums\Resources\TransactionStatusResource.he-IL.resx">

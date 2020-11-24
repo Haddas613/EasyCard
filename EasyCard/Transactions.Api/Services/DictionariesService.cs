@@ -63,6 +63,8 @@ namespace Transactions.Api.Services
             var prStatusEnumType = typeof(PaymentRequestStatusEnum);
             var prQuickStatusEnumType = typeof(PayReqQuickStatusFilterTypeEnum);
 
+            var paymentTypeEnum = typeof(PaymentTypeEnum);
+
             var tranStatuses = Enum.GetValues(transactionStatusEnumType).Cast<TransactionStatusEnum>()
                 .ToDictionary(m => transactionStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => TransactionStatusResource.ResourceManager.GetString(m.ToString(), culture) );
 
@@ -117,6 +119,9 @@ namespace Transactions.Api.Services
             var prQuickStatusTypes = Enum.GetValues(prQuickStatusEnumType).Cast<PayReqQuickStatusFilterTypeEnum>()
                 .ToDictionary(m => prQuickStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => PaymentRequestEnumsResource.ResourceManager.GetString(m.ToString(), culture));
 
+            var paymentTypes = Enum.GetValues(paymentTypeEnum).Cast<PaymentTypeEnum>()
+                .ToDictionary(m => prStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => PaymentTypeResource.ResourceManager.GetString(m.ToString(), culture));
+
             response.TransactionStatusEnum = tranStatuses;
             response.TransactionTypeEnum = tranTypes;
             response.SpecialTransactionTypeEnum = spTranTypes;
@@ -135,6 +140,7 @@ namespace Transactions.Api.Services
             response.InvoiceStatusEnum = invoiceStatuses;
             response.PaymentRequestStatusEnum = prStatusTypes;
             response.PayReqQuickStatusFilterTypeEnum = prQuickStatusTypes;
+            response.PaymentTypeEnum = paymentTypes;
 
             return response;
         }
