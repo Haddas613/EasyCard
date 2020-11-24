@@ -120,7 +120,7 @@ namespace Transactions.Api.Services
                 .ToDictionary(m => prQuickStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => PaymentRequestEnumsResource.ResourceManager.GetString(m.ToString(), culture));
 
             var paymentTypes = Enum.GetValues(paymentTypeEnum).Cast<PaymentTypeEnum>()
-                .ToDictionary(m => prStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => PaymentTypeResource.ResourceManager.GetString(m.ToString(), culture));
+                .ToDictionary(m => paymentTypeEnum.GetDataContractAttrForEnum(m.ToString()), m => PaymentTypeResource.ResourceManager.GetString(m.ToString(), culture));
 
             response.TransactionStatusEnum = tranStatuses;
             response.TransactionTypeEnum = tranTypes;
