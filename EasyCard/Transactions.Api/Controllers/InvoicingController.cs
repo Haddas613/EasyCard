@@ -22,6 +22,8 @@ using Shared.Helpers.Security;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Transactions.Shared;
+using SharedIntegration = Shared.Integration;
+using Shared.Helpers;
 
 namespace Transactions.Api.Controllers
 {
@@ -38,6 +40,7 @@ namespace Transactions.Api.Controllers
         private readonly IConsumersService consumersService;
         private readonly ITerminalsService terminalsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
+        private readonly ISystemSettingsService systemSettingsService;
 
         public InvoicingController(
                     IInvoiceService invoiceService,
@@ -45,7 +48,8 @@ namespace Transactions.Api.Controllers
                     ITerminalsService terminalsService,
                     ILogger<CardTokenController> logger,
                     IHttpContextAccessorWrapper httpContextAccessor,
-                    IConsumersService consumersService)
+                    IConsumersService consumersService,
+                    ISystemSettingsService systemSettingsService)
         {
             this.invoiceService = invoiceService;
             this.mapper = mapper;
@@ -54,6 +58,7 @@ namespace Transactions.Api.Controllers
             this.logger = logger;
             this.httpContextAccessor = httpContextAccessor;
             this.consumersService = consumersService;
+            this.systemSettingsService = systemSettingsService;
         }
 
         [HttpGet]
@@ -110,13 +115,40 @@ namespace Transactions.Api.Controllers
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
-            // var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+            // TODO: caching
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            // merge system settings with terminal settings
+            mapper.Map(systemSettings, terminal);
 
             var newInvoice = mapper.Map<Invoice>(model);
 
             newInvoice.MerchantID = terminal.MerchantID;
 
             newInvoice.ApplyAuditInfo(httpContextAccessor);
+
+            if (newInvoice.DealDetails == null)
+            {
+                newInvoice.DealDetails = new Business.Entities.DealDetails();
+            }
+
+            if (newInvoice.InvoiceDetails == null)
+            {
+                newInvoice.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
+            }
+
+            // Check consumer
+            var consumer = newInvoice.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == newInvoice.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
+
+            if (consumer != null)
+            {
+                if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(newInvoice.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(newInvoice.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    throw new EntityConflictException(Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
+                }
+            }
+
+            newInvoice.Calculate();
 
             await invoiceService.CreateEntity(newInvoice);
 

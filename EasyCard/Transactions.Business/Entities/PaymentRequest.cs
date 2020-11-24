@@ -1,15 +1,17 @@
 ﻿using Shared.Business;
+using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Entities
 {
-    public class PaymentRequest : IEntityBase<Guid>, IAuditEntity
+    public class PaymentRequest : IEntityBase<Guid>, IAuditEntity, IFinancialItem
     {
         public PaymentRequest()
         {
@@ -65,6 +67,9 @@ namespace Transactions.Business.Entities
         /// This amount
         /// </summary>
         public decimal PaymentRequestAmount { get; set; }
+
+        [NotMapped]
+        public decimal Amount { get => PaymentRequestAmount; set => PaymentRequestAmount = value; }
 
         /// <summary>
         /// Will be used for invoice

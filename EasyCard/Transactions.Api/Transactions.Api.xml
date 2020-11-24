@@ -347,16 +347,6 @@
             Invoice amount (should be omitted in case of installment deal)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.TaxRate">
-            <summary>
-            Tax rate (VAT)
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.TaxAmount">
-            <summary>
-            Tax amount
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InstallmentDetails">
             <summary>
             Installment payments details (should be omitted in case of regular deal)
@@ -784,6 +774,11 @@
             Currency
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.PaymentTypeEnum">
+            <summary>
+            Payment Type
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.CardPresence">
             <summary>
             Is the card physically scanned (telephone deal or magnetic)
@@ -1029,6 +1024,11 @@
             Processing status
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.PaymentTypeEnum">
+            <summary>
+            Payment Type
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.FinalizationStatus">
             <summary>
             Status of finalization operations in case of failed transaction, rejection or cancelation
@@ -1172,6 +1172,11 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.Status">
             <summary>
             Processing status
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.PaymentTypeEnum">
+            <summary>
+            Payment Type
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.SpecialTransactionType">

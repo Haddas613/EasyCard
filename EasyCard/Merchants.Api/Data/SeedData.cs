@@ -35,24 +35,24 @@ namespace Merchants.Api.Data
                     {
                         systemSettings = new Business.Entities.System.SystemSettings
                         {
-                            BillingSettings = new Shared.Models.TerminalBillingSettings
+                            BillingSettings = new Shared.Models.SystemBillingSettings
                             {
                                 CreateRecurrentPaymentsAutomatically = false,
                             },
-                            CheckoutSettings = new Shared.Models.TerminalCheckoutSettings
+                            CheckoutSettings = new Shared.Models.SystemCheckoutSettings
                             {
                             },
-                            InvoiceSettings = new Shared.Models.TerminalInvoiceSettings
+                            InvoiceSettings = new Shared.Models.SystemInvoiceSettings
                             {
                                 DefaultInvoiceSubject = "Invoice from ECNG",
                                 DefaultInvoiceType = SharedIntegration.Models.Invoicing.InvoiceTypeEnum.InvoiceWithPaymentInfo
                             },
-                            PaymentRequestSettings = new Shared.Models.TerminalPaymentRequestSettings
+                            PaymentRequestSettings = new Shared.Models.SystemPaymentRequestSettings
                             {
                                 DefaultRequestSubject = "Payment request from ECNG",
                                 FromAddress = "no-reply@ecng.co.il"
                             },
-                            Settings = new Shared.Models.TerminalSettings
+                            Settings = new Shared.Models.SystemGlobalSettings
                             {
                                 CvvRequired = true,
                                 DefaultChargeDescription = "Goods and services from ECNG",
@@ -66,7 +66,8 @@ namespace Merchants.Api.Data
                                 MinCreditInstallments = 2,
                                 MinInstallments = 2,
                                 NationalIDRequired = true,
-                                VATRate = 0.17m
+                                VATRate = 0.17m,
+                                DefaultSKU = "_"
                             }
                         };
 

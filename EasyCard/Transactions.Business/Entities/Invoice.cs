@@ -1,16 +1,18 @@
 ﻿using Shared.Business;
+using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Transactions.Shared.Enums;
 using Transactions.Shared.Models;
 
 namespace Transactions.Business.Entities
 {
-    public class Invoice : IEntityBase<Guid>, IAuditEntity
+    public class Invoice : IEntityBase<Guid>, IAuditEntity, IFinancialItem
     {
         public Invoice()
         {
@@ -78,6 +80,9 @@ namespace Transactions.Business.Entities
         /// </summary>
         public decimal InvoiceAmount { get; set; }
 
+        [NotMapped]
+        public decimal Amount { get => InvoiceAmount; set => InvoiceAmount = value; }
+
         public decimal VATRate { get; set; }
 
         public decimal VATTotal { get; set; }
@@ -118,6 +123,11 @@ namespace Transactions.Business.Entities
 
         public Guid? PaymentTransactionID { get; set; }
 
-        // TODO: recalculate items and fill default SKU
+        // TODO: calculate items
+        [Obsolete]
+        public void Calculate()
+        {
+
+        }
     }
 }

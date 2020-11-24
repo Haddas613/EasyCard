@@ -10,15 +10,15 @@ namespace Merchants.Api.Models.System
     {
         public int SystemSettingsID { get; set; }
 
-        public TerminalSettings Settings { get; set; }
+        public SystemGlobalSettings Settings { get; set; }
 
-        public TerminalBillingSettings BillingSettings { get; set; }
+        public SystemBillingSettings BillingSettings { get; set; }
 
-        public TerminalInvoiceSettings InvoiceSettings { get; set; }
+        public SystemInvoiceSettings InvoiceSettings { get; set; }
 
-        public TerminalPaymentRequestSettings PaymentRequestSettings { get; set; }
+        public SystemPaymentRequestSettings PaymentRequestSettings { get; set; }
 
-        public TerminalCheckoutSettings CheckoutSettings { get; set; }
+        public SystemCheckoutSettings CheckoutSettings { get; set; }
 
         public byte[] UpdateTimestamp { get; set; }
     }

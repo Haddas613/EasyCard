@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Transactions.Shared.Enums;
 using Enums = Transactions.Shared.Enums;
 using IntegrationModels = Shared.Integration.Models;
 
@@ -35,6 +36,13 @@ namespace Transactions.Api.Models.Transactions
         [EnumDataType(typeof(CurrencyEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyEnum Currency { get; set; }
+
+        /// <summary>
+        /// Payment Type
+        /// </summary>
+        [EnumDataType(typeof(PaymentTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PaymentTypeEnum PaymentTypeEnum { get; set; }
 
         /// <summary>
         /// Is the card physically scanned (telephone deal or magnetic)

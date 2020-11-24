@@ -19,6 +19,7 @@ using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
+using Shared.Business.Security;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Helpers.Security;
 using Shared.Integration.ExternalSystems;
@@ -52,13 +53,14 @@ namespace Transactions.Api.Controllers
         private readonly IProcessorResolver processorResolver;
         private readonly ILogger logger;
         private readonly ApplicationSettings appSettings;
+        private readonly IHttpContextAccessorWrapper httpContextAccessor;
 
         // TODO: service client
         private readonly ITerminalsService terminalsService;
 
         public TransmissionController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper,
             IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver, ITerminalsService terminalsService, ILogger<TransactionsApiController> logger,
-            IOptions<ApplicationSettings> appSettings)
+            IOptions<ApplicationSettings> appSettings, IHttpContextAccessorWrapper httpContextAccessor)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -69,6 +71,7 @@ namespace Transactions.Api.Controllers
             this.terminalsService = terminalsService;
             this.logger = logger;
             this.appSettings = appSettings.Value;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -187,6 +190,9 @@ namespace Transactions.Api.Controllers
                     else
                     {
                         transaction.ShvaTransactionDetails.TransmissionDate = transmissionDate;
+                        transaction.ShvaTransactionDetails.ManuallyTransmitted = httpContextAccessor.GetUser().IsMerchant();
+
+                        // TODO: Transmission ID from Shva
                         transaction.ShvaTransactionDetails.ShvaTransmissionNumber = processorResponse.TransmissionReference;
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.TransmittedByProcessor);
                     }

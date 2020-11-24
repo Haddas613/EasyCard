@@ -57,8 +57,12 @@
     [VATRate]                        DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
     [VATTotal]                       DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
     [InvoiceID]                      UNIQUEIDENTIFIER NULL,
+    [IssueInvoice]                   BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
+    [PaymentTypeEnum]                SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

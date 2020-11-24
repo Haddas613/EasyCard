@@ -29,6 +29,7 @@ namespace Transactions.Api.Mapping
             // TODO: specify all members and ignore rest
             CreateMap<PaymentTransaction, Invoice>()
                 .ForMember(d => d.InvoiceID, o => o.Ignore())
+                .ForMember(d => d.Status, o => o.Ignore())
                 .ForMember(d => d.InvoiceAmount, o => o.MapFrom(d => d.TransactionAmount))
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerName))
                 .ForMember(d => d.CardOwnerNationalID, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerNationalID));

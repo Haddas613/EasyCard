@@ -42,7 +42,9 @@ using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
+using Transactions.Api.Extensions;
 using SharedBusiness = Shared.Business;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
@@ -68,6 +70,7 @@ namespace Transactions.Api.Controllers
         private readonly IPaymentRequestsService paymentRequestsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly IInvoiceService invoiceService;
+        private readonly ISystemSettingsService systemSettingsService;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -84,7 +87,8 @@ namespace Transactions.Api.Controllers
             CardTokenController cardTokenController,
             IInvoiceService invoiceService,
             IPaymentRequestsService paymentRequestsService,
-            IHttpContextAccessorWrapper httpContextAccessor)
+            IHttpContextAccessorWrapper httpContextAccessor,
+            ISystemSettingsService systemSettingsService)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -102,6 +106,7 @@ namespace Transactions.Api.Controllers
             this.invoiceService = invoiceService;
             this.paymentRequestsService = paymentRequestsService;
             this.httpContextAccessor = httpContextAccessor;
+            this.systemSettingsService = systemSettingsService;
         }
 
         [HttpGet]
@@ -385,7 +390,12 @@ namespace Transactions.Api.Controllers
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
-            // TODO: mercge system settings with terminal settings
+            // TODO: caching
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            // merge system settings with terminal settings
+            mapper.Map(systemSettings, terminal);
+
             TransactionTerminalSettingsValidator.Validate(terminal.Settings, model, token, jDealType, specialTransactionType, initialTransactionID);
 
             var transaction = mapper.Map<PaymentTransaction>(model);
@@ -403,11 +413,12 @@ namespace Transactions.Api.Controllers
                 transaction.DealDetails = new Business.Entities.DealDetails();
             }
 
-            if (string.IsNullOrWhiteSpace(transaction.DealDetails?.DealDescription))
+            if (model.IssueInvoice == true && model.InvoiceDetails == null)
             {
-                transaction.DealDetails.DealDescription = "TODO";
+                model.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
             }
 
+            // Update card information based on token
             CreditCardTokenDetails dbToken = null;
             if (token != null)
             {
@@ -435,10 +446,11 @@ namespace Transactions.Api.Controllers
                 mapper.Map(model.CreditCardSecureDetails, transaction.CreditCardDetails);
             }
 
-            if (transaction.DealDetails.ConsumerID != null)
-            {
-                var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer");
+            // Check consumer
+            var consumer = transaction.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
 
+            if (consumer != null)
+            {
                 if (dbToken != null)
                 {
                     if (consumer.ConsumerID != dbToken.ConsumerID)
@@ -458,17 +470,16 @@ namespace Transactions.Api.Controllers
                         throw new EntityConflictException(Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
                     }
                 }
-
-                if (string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail))
-                {
-                    transaction.DealDetails.ConsumerEmail = consumer.ConsumerEmail;
-                }
-
-                if (string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerPhone))
-                {
-                    transaction.DealDetails.ConsumerPhone = consumer.ConsumerPhone;
-                }
             }
+
+            // Update details if needed
+            transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction);
+            if (transaction.IssueInvoice)
+            {
+                model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings);
+            }
+
+            transaction.Calculate();
 
             transaction.MerchantIP = GetIP();
             transaction.CorrelationId = GetCorrelationID();
@@ -492,8 +503,6 @@ namespace Transactions.Api.Controllers
 
             var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
             mapper.Map(processorSettings, transaction);
-
-            transaction.Calculate();
 
             await transactionsService.CreateEntity(transaction);
 

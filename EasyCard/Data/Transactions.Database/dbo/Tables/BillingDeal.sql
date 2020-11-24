@@ -4,7 +4,6 @@
     [InitialTransactionID]        UNIQUEIDENTIFIER NULL,
     [TerminalID]                  UNIQUEIDENTIFIER NOT NULL,
     [MerchantID]                  UNIQUEIDENTIFIER NOT NULL,
-    [Status]                      SMALLINT         NOT NULL,
     [Currency]                    SMALLINT         NOT NULL,
     [TransactionAmount]           DECIMAL (19, 4)  NOT NULL,
     [TotalAmount]                 DECIMAL (19, 4)  NOT NULL,
@@ -41,6 +40,8 @@
     [NextScheduledTransaction]    DATETIME2 (7)    NULL,
     CONSTRAINT [PK_BillingDeal] PRIMARY KEY CLUSTERED ([BillingDealID] ASC)
 );
+
+
 
 
 

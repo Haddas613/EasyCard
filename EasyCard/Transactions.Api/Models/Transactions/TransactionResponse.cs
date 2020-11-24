@@ -78,7 +78,16 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Processing status
         /// </summary>
+        [EnumDataType(typeof(TransactionStatusEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
         public TransactionStatusEnum Status { get; set; }
+
+        /// <summary>
+        /// Payment Type
+        /// </summary>
+        [EnumDataType(typeof(PaymentTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PaymentTypeEnum PaymentTypeEnum { get; set; }
 
         [EnumDataType(typeof(QuickStatusFilterTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]

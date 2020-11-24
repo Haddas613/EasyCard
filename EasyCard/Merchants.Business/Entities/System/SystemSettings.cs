@@ -9,24 +9,24 @@ namespace Merchants.Business.Entities.System
     {
         public SystemSettings()
         {
-            Settings = new TerminalSettings();
-            BillingSettings = new TerminalBillingSettings();
-            InvoiceSettings = new TerminalInvoiceSettings();
-            PaymentRequestSettings = new TerminalPaymentRequestSettings();
-            CheckoutSettings = new TerminalCheckoutSettings();
+            Settings = new SystemGlobalSettings();
+            BillingSettings = new SystemBillingSettings();
+            InvoiceSettings = new SystemInvoiceSettings();
+            PaymentRequestSettings = new SystemPaymentRequestSettings();
+            CheckoutSettings = new SystemCheckoutSettings();
         }
 
         public int SystemSettingsID { get; set; }
 
-        public TerminalSettings Settings { get; set; }
+        public SystemGlobalSettings Settings { get; set; }
 
-        public TerminalBillingSettings BillingSettings { get; set; }
+        public SystemBillingSettings BillingSettings { get; set; }
 
-        public TerminalInvoiceSettings InvoiceSettings { get; set; }
+        public SystemInvoiceSettings InvoiceSettings { get; set; }
 
-        public TerminalPaymentRequestSettings PaymentRequestSettings { get; set; }
+        public SystemPaymentRequestSettings PaymentRequestSettings { get; set; }
 
-        public TerminalCheckoutSettings CheckoutSettings { get; set; }
+        public SystemCheckoutSettings CheckoutSettings { get; set; }
 
         public byte[] UpdateTimestamp { get; set; }
     }

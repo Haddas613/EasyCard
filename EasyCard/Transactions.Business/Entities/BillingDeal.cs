@@ -1,16 +1,18 @@
 ﻿using Shared.Business;
+using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Transactions.Shared.Enums;
 using Transactions.Shared.Models;
 
 namespace Transactions.Business.Entities
 {
-    public class BillingDeal : IEntityBase<Guid>, IAuditEntity
+    public class BillingDeal : IEntityBase<Guid>, IAuditEntity, IFinancialItem
     {
         public BillingDeal()
         {
@@ -54,6 +56,9 @@ namespace Transactions.Business.Entities
         /// Single transaction amount
         /// </summary>
         public decimal TransactionAmount { get; set; }
+
+        [NotMapped]
+        public decimal Amount { get => TransactionAmount; set => TransactionAmount = value; }
 
         public decimal VATRate { get; set; }
 

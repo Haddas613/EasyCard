@@ -1,14 +1,16 @@
 ﻿using Shared.Business;
+using Shared.Business.Financial;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Entities
 {
-    public class PaymentTransaction : IEntityBase<Guid>
+    public class PaymentTransaction : IEntityBase<Guid>, IFinancialItem
     {
         public PaymentTransaction()
         {
@@ -87,6 +89,11 @@ namespace Transactions.Business.Entities
         public TransactionStatusEnum Status { get; set; }
 
         /// <summary>
+        /// Payment Type
+        /// </summary>
+        public PaymentTypeEnum PaymentTypeEnum { get; set; }
+
+        /// <summary>
         /// Status of finalization operations in case of failed transaction, rejection or cancelation
         /// </summary>
         public TransactionFinalizationStatusEnum? FinalizationStatus { get; set; }
@@ -135,6 +142,9 @@ namespace Transactions.Business.Entities
         /// This transaction amount
         /// </summary>
         public decimal TransactionAmount { get; set; }
+
+        [NotMapped]
+        public decimal Amount { get => TransactionAmount; set => TransactionAmount = value; }
 
         public decimal VATRate { get; set; }
 
@@ -217,7 +227,6 @@ namespace Transactions.Business.Entities
         /// </summary>
         public bool IssueInvoice { get; set; }
 
-        // TODO: update SKU for all items
         // TODO: calculate items
         [Obsolete]
         public void Calculate()

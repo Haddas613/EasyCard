@@ -6,14 +6,11 @@ using System.Text;
 
 namespace Merchants.Shared.Models
 {
-    public class TerminalInvoiceSettings
+    public class SystemInvoiceSettings
     {
         [StringLength(250)]
         public string DefaultInvoiceSubject { get; set; }
 
         public InvoiceTypeEnum? DefaultInvoiceType { get; set; }
-
-        // TODO: validation
-        public string[] SendCCTo { get; set; }
     }
 }
