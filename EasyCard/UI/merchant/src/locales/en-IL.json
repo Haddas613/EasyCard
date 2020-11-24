@@ -183,6 +183,7 @@
   "ManualMode": "Manual mode",
   "OnlyActual": "Only actual",
   "TriggerTransactions": "Trigger Transactions",
+  "GoToTransaction": "Go to transaction",
 
   "--AUTH--": null,
   "Login": "Login",
@@ -227,5 +228,7 @@
   "SelectInvoicesFirst": "Select Invoices first",
   "WhileEnabledYouCanManuallyTriggerTheTransaction": "While enabled you can manually trigger transaction",
   "PleaseEnableManualModeFirst": "Please enable manual mode first",
-  "SelectDealsFirst": "Select Deals first"
+  "SelectDealsFirst": "Select Deals first",
+  "RefundedCustomer": "Refunded Customer",
+  "ChargedCustomer": "Charged Customer"
 }

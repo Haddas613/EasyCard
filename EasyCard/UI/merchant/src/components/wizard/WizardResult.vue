@@ -26,6 +26,9 @@
         <template v-else>
           <slot></slot>
         </template>
+        <template v-if="hasSlot('link')">
+          <slot name="link"></slot>
+        </template>
       </v-col>
     </v-row>
   </v-container>
@@ -38,6 +41,11 @@ export default {
       type: Array,
       default: []
     }
-  }
+  },
+  methods: {
+    hasSlot(name = "default") {
+      return !!this.$slots[name] || !!this.$scopedSlots[name];
+    }
+  },
 };
 </script>
