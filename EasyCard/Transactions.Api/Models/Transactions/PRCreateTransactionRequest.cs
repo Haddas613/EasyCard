@@ -57,6 +57,7 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Primary reference
         /// </summary>
-        public Guid PaymentRequestID { get; set; }
+        [Required]
+        public Guid? PaymentRequestID { get; set; }
     }
 }

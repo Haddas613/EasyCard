@@ -222,10 +222,17 @@ namespace Transactions.Business.Entities
         /// </summary>
         public Guid? InvoiceID { get; set; }
 
+        // NOTE: this field required in case if InvoiceID is empty due to exception
+
         /// <summary>
         /// Create document for transaction
         /// </summary>
         public bool IssueInvoice { get; set; }
+
+        /// <summary>
+        /// Payment request reference
+        /// </summary>
+        public Guid? PaymentRequestID { get; set; }
 
         // TODO: calculate items
         [Obsolete]

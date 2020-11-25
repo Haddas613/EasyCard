@@ -49,6 +49,11 @@ namespace Transactions.Business.Entities
         public InvoiceDetails InvoiceDetails { get; set; }
 
         /// <summary>
+        /// Create document for transaction
+        /// </summary>
+        public bool IssueInvoice { get; set; }
+
+        /// <summary>
         /// Processing status
         /// </summary>
         public PaymentRequestStatusEnum Status { get; set; }

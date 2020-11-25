@@ -474,7 +474,7 @@ namespace Transactions.Api.Controllers
 
             // Update details if needed
             transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction);
-            if (transaction.IssueInvoice)
+            if (model.IssueInvoice.GetValueOrDefault())
             {
                 model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings);
             }

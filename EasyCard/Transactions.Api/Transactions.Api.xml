@@ -56,6 +56,11 @@
             Billing Schedule
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.IssueInvoice">
+            <summary>
+            Create document
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.InvoiceDetails">
             <summary>
             Invoice details
@@ -491,6 +496,11 @@
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.InvoiceDetails">
             <summary>
             Invoice details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.IssueInvoice">
+            <summary>
+            Create document
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.RequestSubject">

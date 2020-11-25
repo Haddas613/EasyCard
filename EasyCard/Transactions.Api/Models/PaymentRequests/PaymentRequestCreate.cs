@@ -50,6 +50,11 @@ namespace Transactions.Api.Models.PaymentRequests
         /// </summary>
         public InvoiceDetails InvoiceDetails { get; set; }
 
+        /// <summary>
+        /// Create document
+        /// </summary>
+        public bool? IssueInvoice { get; set; }
+
         [Range(0, 1)]
         [DataType(DataType.Currency)]
         public decimal VATRate { get; set; }

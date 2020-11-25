@@ -51,6 +51,11 @@ namespace Transactions.Api.Models.Billing
         public BillingSchedule BillingSchedule { get; set; }
 
         /// <summary>
+        /// Create document
+        /// </summary>
+        public bool? IssueInvoice { get; set; }
+
+        /// <summary>
         /// Invoice details
         /// </summary>
         public InvoiceDetails InvoiceDetails { get; set; }

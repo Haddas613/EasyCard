@@ -185,7 +185,7 @@ namespace Transactions.Api.Controllers
                     {
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.TransmissionToProcessorFailed);
 
-                        // TODO: cancel in clearing house
+                        // TODO: cancel in clearing house - but - it is possible to retry transmission
                     }
                     else
                     {

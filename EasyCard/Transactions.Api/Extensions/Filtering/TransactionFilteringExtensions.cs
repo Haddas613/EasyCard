@@ -45,7 +45,7 @@ namespace Transactions.Api.Extensions.Filtering
 
             src = HandleDateFiltering(src, filter);
 
-
+            // TODO: we can try to transmit transactions which are failed to transmit
             if (filter.NotTransmitted)
             {
                 src = src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator);

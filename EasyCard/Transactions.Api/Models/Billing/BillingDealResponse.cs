@@ -119,5 +119,16 @@ namespace Transactions.Api.Models.Billing
         /// Invoice details
         /// </summary>
         public InvoiceDetails InvoiceDetails { get; set; }
+
+        /// <summary>
+        /// Create document for transaction
+        /// </summary>
+        public bool IssueInvoice { get; set; }
+
+        public decimal VATRate { get; set; }
+
+        public decimal VATTotal { get; set; }
+
+        public decimal NetTotal { get; set; }
     }
 }
