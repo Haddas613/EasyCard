@@ -124,7 +124,6 @@ export default {
       activeArea: "calc",
       search: null,
       searchTimeout: null,
-      vatRate: 0.17 //TODO: Config
     };
   },
   props: {
@@ -172,7 +171,7 @@ export default {
   },
   async mounted() {
     this.defaultItem.currency = this.currencyStore.code;
-    this.defaultItem.itemName = this.terminalStore.settings.defaultItemName;
+    this.defaultItem.itemName = this.terminalStore.settings.defaultItemName || 'Custom Charge';
     await this.getItems();
   },
   methods: {
@@ -222,7 +221,7 @@ export default {
     },
     getData(){
       this.stash();
-      itemPricingService.total.calculate(this.model, { vatRate: this.vatRate});
+      itemPricingService.total.calculate(this.model, { vatRate: this.terminalStore.settings.vatRate});
       return this.model
     },
     stash() {
@@ -243,7 +242,7 @@ export default {
       return item;
     },
     calculatePricingForItem(item){
-      itemPricingService.item.calculate(item, { vatRate: this.vatRate});
+      itemPricingService.item.calculate(item, { vatRate: this.terminalStore.settings.vatRate});
     },
     reset() {
       this.defaultItem.price = 0;

@@ -92,7 +92,7 @@
             <v-text-field
               class="mx-2 mt-4"
               v-if="model"
-              :value="`${vatRate * 100}%`"
+              :value="`${terminalStore.settings.vatRate * 100}%`"
               readonly
               disabled
               outlined
@@ -116,6 +116,7 @@
 
 <script>
 import itemPricingService from "../../helpers/item-pricing";
+import { mapState } from "vuex";
 export default {
   props: {
     item: {
@@ -136,7 +137,6 @@ export default {
       model: { ...this.item },
       percentageMode: false,
       discount: this.item.discount,
-      vatRate: 0.17
     };
   },
   watch: {
@@ -156,7 +156,10 @@ export default {
       set: function(val) {
         this.$emit("update:show", val);
       }
-    }
+    },
+    ...mapState({
+      terminalStore: state => state.settings.terminal
+    })
   },
   methods: {
     async ok() {
@@ -187,7 +190,7 @@ export default {
           : 0;
       }
 
-      itemPricingService.item.calculate(this.model, { vatRate: this.vatRate });
+      itemPricingService.item.calculate(this.model, { vatRate: this.terminalStore.settings.vatRate });
     }
   }
 };

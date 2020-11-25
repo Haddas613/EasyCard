@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import TransactionsApi from './modules/transactions/TransactionsApi';
-import DictionariesApi from './modules/transactions/DictionariesApi';
+import DictionariesApi from './modules/common/DictionariesApi';
 import TerminalsApi from './modules/profile/TerminalsApi';
 import ConsumersApi from './modules/profile/ConsumersApi';
 import ItemsApi from './modules/profile/ItemsApi';
