@@ -251,6 +251,37 @@
             SHVA or other system terminal ID
             </summary>
         </member>
+        <member name="T:MerchantProfileApi.Models.Terminal.TerminalEnumsResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalEnumsResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalEnumsResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalEnumsResource.Approved">
+            <summary>
+              Looks up a localized string similar to Approved.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalEnumsResource.Disabled">
+            <summary>
+              Looks up a localized string similar to Disabled.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalEnumsResource.PendingApproval">
+            <summary>
+              Looks up a localized string similar to Pending Approval.
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Models.Terminal.TerminalExternalSystemDetails.ExternalProcessorReference">
             <summary>
             SHVA or other system terminal ID

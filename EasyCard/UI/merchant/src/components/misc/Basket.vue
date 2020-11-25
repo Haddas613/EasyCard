@@ -98,7 +98,6 @@ export default {
       selectedItem: null,
       itemPriceDialog: false,
       search: null,
-      vatRate: 0.17
     };
   },
   props: {
@@ -112,19 +111,20 @@ export default {
     }
   },
   mounted () {
-    itemPricingService.total.calculate(this.model, { vatRate: this.vatRate});
+    itemPricingService.total.calculate(this.model, { vatRate: this.terminalStore.settings.vatRate});
   },
   computed: {
     totalDiscount() {
       return this.lodash.sumBy(this.model.items, "discount");
     },
     ...mapState({
-      currencyStore: state => state.settings.currency
+      currencyStore: state => state.settings.currency,
+      terminalStore: state => state.settings.terminal
     })
   },
   methods: {
     ok() {
-      itemPricingService.total.calculate(this.model, {vatRate: this.vatRate});
+      itemPricingService.total.calculate(this.model, {vatRate: this.terminalStore.settings.vatRate});
       this.$emit("ok", {
         silent: true,
         ...this.model
@@ -154,7 +154,7 @@ export default {
       this.recalculate();
     },
     recalculate(){
-       itemPricingService.total.calculate(this.model, {vatRate: this.vatRate});
+       itemPricingService.total.calculate(this.model, {vatRate: this.terminalStore.settings.vatRate});
        this.$emit('update', this.model);
     }
   }

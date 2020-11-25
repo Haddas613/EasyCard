@@ -5,8 +5,8 @@ export default class TerminalsApi {
         this.terminalsUrl = this.baseUrl + '/api/terminals';
     }
 
-    async getTerminals(params) {
-        if(this.$terminals){
+    async getTerminals(params, refreshCache = false) {
+        if(!refreshCache && this.$terminals){
             return this.$terminals;
         }
         this.$terminals = await this.base.get(this.terminalsUrl, params);
@@ -15,5 +15,9 @@ export default class TerminalsApi {
 
     async getTerminal(terminalID) {
         return this.base.get(this.terminalsUrl + '/' + terminalID);
+    }
+
+    async updateTerminal(data){
+        return this.base.put(this.terminalsUrl + '/' + data.terminalID, data);
     }
 }
