@@ -179,7 +179,8 @@ export default {
       },
       showDialog: this.showFiltersDialog,
       datePeriod: null,
-      numberOfRecords: 0
+      numberOfRecords: 0,
+      selectAll: false
     };
   },
   methods: {
@@ -205,6 +206,7 @@ export default {
           this.datePeriod = null;
         }
       }
+      this.selectAll = false;
       this.loading = false;
     },
     async applyFilters(data) {
@@ -223,7 +225,7 @@ export default {
     },
     async createTransactions(){
       if(!this.billingDealsFilter.onlyActive){
-        return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), { type: "error" });;
+        return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), { type: "error" });
       }
 
       let billings = this.lodash.filter(this.billingDeals, i => i.selected);
@@ -239,6 +241,15 @@ export default {
           i.selected = false;
           i.processed = true;
         }); 
+      }
+    },
+    switchSelectAll(){
+      if(!this.billingDealsFilter.onlyActive){
+        return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), { type: "error" });
+      }
+      this.selectAll = !this.selectAll;
+      for(var i of this.billingDeals){
+          this.$set(i, 'selected', this.selectAll);
       }
     }
   },
@@ -270,6 +281,12 @@ export default {
             text: this.$t("TriggerTransactions"),
             fn: async () => {
               await vm.createTransactions();
+            }
+          },
+          {
+            text: this.$t("SelectAll"),
+            fn: () => {
+              vm.switchSelectAll();
             }
           }
         ]

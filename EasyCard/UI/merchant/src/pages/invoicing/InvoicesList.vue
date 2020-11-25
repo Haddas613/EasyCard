@@ -44,8 +44,11 @@
       </v-card-text>
     </v-card>
     <v-card width="100%" flat :loading="!invoices">
-      <v-card-text class="px-0">
-        <ec-list :items="invoices" v-if="invoices">
+      <v-card-text class="px-0" v-if="invoices">
+        <!-- <v-flex class="d-flex justify-start" v-if="$vuetify.breakpoint.mdAndUp">
+          <v-btn class="mx-2" :outlined="!selectAll" @click="switchSelectAll()" color="primary" x-small>{{$t('SelectAll')}}</v-btn>
+        </v-flex> -->
+        <ec-list :items="invoices">
           <template v-slot:prepend="{ item }">
             <v-checkbox v-model="item.selected" :disabled="item.$status != 'initial'"></v-checkbox>
           </template>
@@ -140,7 +143,8 @@ export default {
       },
       showDialog: this.showFiltersDialog,
       datePeriod: null,
-      numberOfRecords: 0
+      numberOfRecords: 0,
+      selectAll: false
     };
   },
   methods: {
@@ -165,6 +169,7 @@ export default {
           this.datePeriod = null;
         }
       }
+      this.selectAll = false;
       this.loading = false;
     },
     async applyFilters(data) {
@@ -188,6 +193,7 @@ export default {
       if(invoices.length === 0){
         return this.$toasted.show(this.$t("SelectInvoicesFirst"), { type: "error" });
       }
+      return console.log(invoices);
 
       let opResult = await this.$api.invoicing
         .resend(this.terminalStore.terminalID, this.lodash.map(invoices, i => i.$invoiceID));
@@ -199,6 +205,14 @@ export default {
           i.$status = 'sending';
           i.status = $dictionaries.invoiceStatusEnum[i.$status];
         }); 
+      }
+    },
+    switchSelectAll(){
+      this.selectAll = !this.selectAll;
+      for(var i of this.invoices){
+        if(i.$status == 'initial'){
+          this.$set(i, 'selected', this.selectAll);
+        }
       }
     }
   },
@@ -230,6 +244,12 @@ export default {
             text: this.$t("ResendInvoices"),
             fn: async () => {
               await vm.resendSelectedInvoices();
+            }
+          },
+          {
+            text: this.$t("SelectAll"),
+            fn: () => {
+              vm.switchSelectAll();
             }
           }
         ]
