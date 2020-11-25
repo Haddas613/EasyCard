@@ -193,7 +193,6 @@ export default {
       if(invoices.length === 0){
         return this.$toasted.show(this.$t("SelectInvoicesFirst"), { type: "error" });
       }
-      return console.log(invoices);
 
       let opResult = await this.$api.invoicing
         .resend(this.terminalStore.terminalID, this.lodash.map(invoices, i => i.$invoiceID));
