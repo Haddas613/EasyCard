@@ -53,6 +53,7 @@ namespace Transactions.Api.Controllers
         private readonly IConsumersService consumersService;
         private readonly ITerminalsService terminalsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
+        private readonly ISystemSettingsService systemSettingsService;
 
         public CardTokenController(
             ITransactionsService transactionsService,
@@ -64,7 +65,8 @@ namespace Transactions.Api.Controllers
             ILogger<CardTokenController> logger,
             IProcessorResolver processorResolver,
             IConsumersService consumersService,
-            IHttpContextAccessorWrapper httpContextAccessor)
+            IHttpContextAccessorWrapper httpContextAccessor,
+            ISystemSettingsService systemSettingsService)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -76,6 +78,7 @@ namespace Transactions.Api.Controllers
             this.logger = logger;
             this.processorResolver = processorResolver;
             this.httpContextAccessor = httpContextAccessor;
+            this.systemSettingsService = systemSettingsService;
         }
 
         [HttpPost]
@@ -136,6 +139,12 @@ namespace Transactions.Api.Controllers
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+
+            // TODO: caching
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            // merge system settings with terminal settings
+            mapper.Map(systemSettings, terminal);
 
             TokenTerminalSettingsValidator.Validate(terminal.Settings, model);
 
