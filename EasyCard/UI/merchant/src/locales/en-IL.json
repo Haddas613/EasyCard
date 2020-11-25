@@ -44,6 +44,8 @@
   "MyProfile": "My profile",
   "TerminalSettings": "Terminal Settings",
   "General": "General",
+  "CustomerDetails": "Customer Details",
+  "NotFound": "Not Found",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

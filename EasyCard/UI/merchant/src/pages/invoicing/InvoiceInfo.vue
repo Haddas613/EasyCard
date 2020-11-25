@@ -20,7 +20,7 @@
                 v-if="model.paymentTransactionID"
                 class="primary--text"
                 link
-                :to="{name: 'Transaction', params: {id: model.paymentTransactionID}}"
+                :to="{name: 'Transaction', params: {id: model.$paymentTransactionID}}"
               >
                 <small>{{(model.dealDetails.consumerID || '-') | guid}}</small>
               </router-link>
@@ -43,6 +43,20 @@
           </v-row>
           <v-row class="info-container">
             <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('InvoiceSubject')}}</p>
+              <p>{{model.invoiceDetails.invoiceSubject}}</p>
+            </v-col>
+            <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('InvoiceType')}}</p>
+              <p>{{model.invoiceDetails.invoiceType}}</p>
+            </v-col>
+            <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('SendCCTo')}}</p>
+              <p>{{model.invoiceDetails.isendCCTo || '-'}}</p>
+            </v-col>
+          </v-row>
+          <v-row class="info-container">
+            <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
               <p>{{terminalName}}</p>
             </v-col>
@@ -52,7 +66,7 @@
       <v-card flat class="my-2">
         <v-card-title
           class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
-        >{{$t("CreditCardDetails")}}</v-card-title>
+        >{{$t("CustomerDetails")}}</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
           <v-row class="info-container body-1 black--text" v-if="model">
@@ -97,7 +111,13 @@ export default {
     this.model = await this.$api.invoicing.getInvoice(this.$route.params.id);
 
     if (!this.model) {
-      return this.$router.push("/admin/invoicing/list");
+      return this.$router.push({name: "Invoices"});
+    }
+
+    let $dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
+    
+    if(this.model.invoiceDetails.invoiceType){
+      this.model.invoiceDetails.invoiceType = $dictionaries.invoiceTypeEnum[this.model.invoiceDetails.invoiceType];
     }
 
     let terminals = (await this.$api.terminals.getTerminals()).data;
