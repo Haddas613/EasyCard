@@ -60,7 +60,7 @@
     </v-card>
     <v-card width="100%" flat :loading="!transactions">
       <v-card-text class="px-0">
-        <transactions-list :key="loading" :transactions="transactions" :selectable="transactionsFilter.notTransmitted"></transactions-list>
+        <transactions-list :key="loading" :transactions="transactions" :selectable="transactionsFilter.notTransmitted" ref="transactionsList"></transactions-list>
         <v-flex class="text-center" v-if="canLoadMore">
           <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
         </v-flex>
@@ -111,7 +111,8 @@ export default {
       },
       showDialog: this.showFiltersDialog,
       datePeriod: null,
-      numberOfRecords: 0
+      numberOfRecords: 0,
+      selectAll: false
     };
   },
   methods: {
@@ -133,6 +134,7 @@ export default {
           this.datePeriod = null;
         }
       }
+      this.selectAll = false;
       this.loading = false;
     },
     async applyFilters(data) {
@@ -162,6 +164,15 @@ export default {
       });
 
       await this.getDataFromApi(false);
+    },
+    switchSelectAll(){
+      if(!this.transactionsFilter.notTransmitted){
+        return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), { type: "error" });
+      }
+      this.selectAll = !this.selectAll;
+      for(var i of this.transactions){
+          this.$set(i, 'selected', this.selectAll);
+      }
     }
   },
   computed: {
@@ -188,6 +199,12 @@ export default {
           {
             text: this.$t("Transmit"),
             fn: async () => await this.transmitSelected()
+          },
+          {
+            text: this.$t("SelectAll"),
+            fn: () => {
+              this.switchSelectAll();
+            }
           }
         ]
       }
