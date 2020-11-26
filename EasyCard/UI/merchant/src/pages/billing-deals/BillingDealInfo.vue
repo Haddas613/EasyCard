@@ -23,16 +23,10 @@
                 </v-col>
               </v-row>
               <v-row class="info-container">
-                <billing-schedule-string
-                  :schedule="model.billingSchedule"
-                  replacement-text="ScheduleIsNotDefined"
-                ></billing-schedule-string>
-              </v-row>
-              <v-row class="info-container">
-                <v-col cols="12" md="4" class="info-block">
+                <!-- <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('NumberOfPayments')}}</p>
                   <p>{{model.numberOfPayments}}</p>
-                </v-col>
+                </v-col> -->
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('TransactionAmount')}}</p>
                   <p>{{model.transactionAmount | currency(model.$currency)}}</p>
@@ -41,6 +35,12 @@
                   <p class="caption ecgray--text text--darken-2">{{$t('TotalAmount')}}</p>
                   <p>{{model.totalAmount | currency(model.$currency)}}</p>
                 </v-col>
+              </v-row>
+              <v-row class="info-container">
+                <billing-schedule-string
+                  :schedule="model.billingSchedule"
+                  replacement-text="ScheduleIsNotDefined"
+                ></billing-schedule-string>
               </v-row>
             </v-card-text>
           </v-card>
@@ -94,6 +94,28 @@
               </v-row>
             </v-card-text>
           </v-card>
+          <v-card flat class="my-2" v-if="model.invoiceDetails">
+            <v-card-title
+              class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
+            >{{$t("InvoiceDetails")}}</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <v-row class="info-container body-1 black--text" v-if="model">
+                <v-col cols="12" md="4" class="info-block">
+                  <p class="caption ecgray--text text--darken-2">{{$t('InvoiceSubject')}}</p>
+                  <p>{{model.invoiceDetails.invoiceSubject}}</p>
+                </v-col>
+                <v-col cols="12" md="4" class="info-block">
+                  <p class="caption ecgray--text text--darken-2">{{$t('InvoiceType')}}</p>
+                  <p>{{model.invoiceDetails.invoiceType}}</p>
+                </v-col>
+                <v-col cols="12" md="4" class="info-block">
+                  <p class="caption ecgray--text text--darken-2">{{$t('SendCCTo')}}</p>
+                  <p>{{model.invoiceDetails.isendCCTo || '-'}}</p>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
         </div>
       </v-tab-item>
 
@@ -135,7 +157,8 @@ export default {
       return this.$router.push("/admin/billing-deals/list");
     }
 
-    let data = (await this.$api.transactions.get(this.transactionsFilter)) || {};
+    let data =
+      (await this.$api.transactions.get(this.transactionsFilter)) || {};
     this.transactions = data.data || [];
     this.numberOfRecords = data.numberOfRecords || 0;
 
@@ -150,13 +173,22 @@ export default {
       this.terminalName = this.$t("NotAccessible");
     }
 
+    let $dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
+    
+    if(this.model.invoiceDetails && this.model.invoiceDetails.invoiceType){
+      this.model.invoiceDetails.invoiceType = $dictionaries.invoiceTypeEnum[this.model.invoiceDetails.invoiceType];
+    }
+
     this.$store.commit("ui/changeHeader", {
       value: {
         threeDotMenu: [
           {
             text: this.$t("Edit"),
             fn: () => {
-              this.$router.push({ name: "EditBillingDeal", id: this.$route.params.id});
+              this.$router.push({
+                name: "EditBillingDeal",
+                id: this.$route.params.id
+              });
             }
           }
         ]

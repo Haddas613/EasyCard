@@ -177,7 +177,7 @@ class ApiBase {
                     await this.oidc.signOut();
                     return null;
                 } else if (request.status === 404) {
-                    Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error' });
+                    Vue.toasted.show(i18n.t('NotFound'), { type: 'error' });
                     return null;
                 } else {
                     Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error' });

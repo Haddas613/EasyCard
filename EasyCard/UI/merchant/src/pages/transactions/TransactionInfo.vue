@@ -220,6 +220,10 @@ export default {
       this.$route.params.id
     );
 
+    if (!this.model) {
+      return this.$router.push({name: "Transactions"});
+    }
+
     let terminals = (await this.$api.terminals.getTerminals()).data;
     let usedTerminal = this.lodash.find(
       terminals,
@@ -229,10 +233,6 @@ export default {
       this.terminalName = usedTerminal.label;
     } else {
       this.terminalName = this.$t("NotAccessible");
-    }
-
-    if (!this.model) {
-      return this.$router.push("/admin/transactions/list");
     }
   },
   methods: {
