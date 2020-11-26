@@ -222,6 +222,9 @@
   <data name="PaymentRequestCreated" xml:space="preserve">
     <value>Payment Request created</value>
   </data>
+  <data name="PaymentRequestStatusIsClosed" xml:space="preserve">
+    <value>Payment Request Is Closed</value>
+  </data>
   <data name="PaymentRequestUpdated" xml:space="preserve">
     <value>Payment Request Updated</value>
   </data>

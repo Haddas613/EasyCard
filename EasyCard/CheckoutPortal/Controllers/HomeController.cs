@@ -7,26 +7,74 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CheckoutPortal.Models;
 using Transactions.Api.Client;
+using Shared.Helpers.Security;
+using Shared.Helpers;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Shared.Api.Security;
 
 namespace CheckoutPortal.Controllers
 {
+    [SecurityHeaders]
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> logger;
         private readonly ITransactionsApiClient transactionsApiClient;
+        private readonly ICryptoServiceCompact cryptoServiceCompact;
+        private readonly IMapper mapper;
 
-        public HomeController(ILogger<HomeController> logger, ITransactionsApiClient transactionsApiClient)
+        public HomeController(ILogger<HomeController> logger, ITransactionsApiClient transactionsApiClient, ICryptoServiceCompact cryptoServiceCompact, IMapper mapper)
         {
             this.logger = logger;
             this.transactionsApiClient = transactionsApiClient;
+            this.cryptoServiceCompact = cryptoServiceCompact;
+            this.mapper = mapper;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index([FromQuery]string redirectUrl, [FromQuery]string paymentRequestReference, [FromQuery]string apiKey, [FromQuery]CardRequest request)
         {
-            return View();
+            // redirect url is required if it is not payment request
+            if (string.IsNullOrWhiteSpace(paymentRequestReference) && string.IsNullOrWhiteSpace(redirectUrl))
+            {
+                throw new ApplicationException("redirectUrl is empty");
+            }
+
+            string apiKeyd = null;
+            Guid? paymentRequestID = null;
+
+            try
+            {
+                apiKeyd = cryptoServiceCompact.DecryptCompact(apiKey);
+                paymentRequestID = Guid.Parse(cryptoServiceCompact.DecryptCompact(paymentRequestReference));
+            }
+            catch(Exception ex)
+            {
+                logger.LogError(ex, $"Failed to decrypt request keys - apiKey: {apiKey}, paymentRequestReference: {paymentRequestReference}");
+
+                throw;
+            }
+
+            var checkoutConfig = await transactionsApiClient.GetCheckout(paymentRequestID, apiKey);
+
+            // TODO: check if terminal is not active
+
+            // TODO: check payment request state
+
+            if (!string.IsNullOrWhiteSpace(redirectUrl))
+            {
+                checkoutConfig.Settings.RedirectUrls.CheckRedirectUrls(redirectUrl);
+            }
+
+            var model = new ChargeViewModel();
+
+            mapper.Map(checkoutConfig.PaymentRequest, model);
+
+            return View(model);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Charge(ChargeViewModel chargeViewModel)
         {
             return RedirectToAction("Index");

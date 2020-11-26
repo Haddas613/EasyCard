@@ -376,6 +376,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment Request Is Closed.
+        /// </summary>
+        public static string PaymentRequestStatusIsClosed {
+            get {
+                return ResourceManager.GetString("PaymentRequestStatusIsClosed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment Request Updated.
         /// </summary>
         public static string PaymentRequestUpdated {

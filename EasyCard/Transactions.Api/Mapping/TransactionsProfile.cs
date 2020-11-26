@@ -65,7 +65,9 @@ namespace Transactions.Api.Mapping
             CreateMap<CheckCreditCardRequest, CreateTransactionRequest>();
             CreateMap<InitalBillingDealRequest, CreateTransactionRequest>();
             CreateMap<NextBillingDealRequest, CreateTransactionRequest>();
-            CreateMap<PaymentRequest, CreateTransactionRequest>();
+            CreateMap<PaymentRequest, CreateTransactionRequest>()
+                .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.PaymentRequestAmount));
+
             CreateMap<PRCreateTransactionRequest, CreateTransactionRequest>();
 
             CreateMap<Business.Entities.TransactionHistory, Models.Transactions.TransactionHistory>();

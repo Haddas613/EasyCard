@@ -11,9 +11,12 @@
     [InvoiceSettings]        NVARCHAR (MAX)   NULL,
     [PaymentRequestSettings] NVARCHAR (MAX)   NULL,
     [Settings]               NVARCHAR (MAX)   NULL,
+    [SharedApiKey]           VARBINARY (64)   NULL,
     CONSTRAINT [PK_Terminal] PRIMARY KEY CLUSTERED ([TerminalID] ASC),
     CONSTRAINT [FK_Terminal_Merchant_MerchantID] FOREIGN KEY ([MerchantID]) REFERENCES [dbo].[Merchant] ([MerchantID])
 );
+
+
 
 
 

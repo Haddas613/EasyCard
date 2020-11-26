@@ -218,6 +218,8 @@ namespace Merchants.Business.Data
                 builder.Property(p => p.PaymentRequestSettings).HasColumnName("PaymentRequestSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalPaymentRequestSettingsConverter);
 
                 builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalInvoiceSettingsConverter);
+
+                builder.Property(b => b.SharedApiKey).IsRequired(false).HasMaxLength(64);
             }
         }
 

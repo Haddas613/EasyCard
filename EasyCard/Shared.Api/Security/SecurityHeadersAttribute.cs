@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace IdentityServer.Security
+namespace Shared.Api.Security
 {
     public class SecurityHeadersAttribute : ActionFilterAttribute
     {

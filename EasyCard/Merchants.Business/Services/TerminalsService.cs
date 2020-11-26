@@ -33,11 +33,12 @@ namespace Merchants.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
+        // TODO: move security here
         public IQueryable<Terminal> GetTerminals() => context.Terminals;
 
         public async Task<Terminal> GetTerminal(Guid terminalID)
         {
-            var terminal = await context.Terminals
+            var terminal = await GetTerminals()
                     .Include(t => t.Merchant) // TODO: caching
                     .FirstOrDefaultAsync(m => m.TerminalID == terminalID);
 

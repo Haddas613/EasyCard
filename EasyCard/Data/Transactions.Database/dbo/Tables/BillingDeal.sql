@@ -38,8 +38,11 @@
     [VATRate]                     DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
     [VATTotal]                    DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
     [NextScheduledTransaction]    DATETIME2 (7)    NULL,
+    [IssueInvoice]                BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
     CONSTRAINT [PK_BillingDeal] PRIMARY KEY CLUSTERED ([BillingDealID] ASC)
 );
+
+
 
 
 

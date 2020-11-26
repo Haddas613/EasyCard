@@ -10,21 +10,22 @@ using System.Net.Http.Headers;
 using Shared.Helpers;
 using Transactions.Api.Models.Transactions;
 using Shared.Api.Models;
+using Transactions.Api.Models.Checkout;
 
 namespace Transactions.Api.Client
 {
     public class TransactionsApiClient : ITransactionsApiClient
     {
         private readonly IWebApiClient webApiClient;
-        private readonly IdentityServerClientSettings configuration;
+        private readonly TransactionsApiClientConfig apiConfiguration;
         private readonly ILogger logger;
         private readonly IWebApiClientTokenService tokenService;
 
-        public TransactionsApiClient(IWebApiClient webApiClient, ILogger<TransactionsApiClient> logger, IOptions<IdentityServerClientSettings> configuration, IWebApiClientTokenService tokenService)
+        public TransactionsApiClient(IWebApiClient webApiClient, ILogger<TransactionsApiClient> logger, IWebApiClientTokenService tokenService, IOptions<TransactionsApiClientConfig> apiConfiguration)
         {
             this.webApiClient = webApiClient;
             this.logger = logger;
-            this.configuration = configuration.Value;
+            this.apiConfiguration = apiConfiguration.Value;
             this.tokenService = tokenService;
         }
 
@@ -32,7 +33,7 @@ namespace Transactions.Api.Client
         {
             try
             {
-                return await webApiClient.Post<OperationResponse>(configuration.Authority, "api/transactions/create", model, BuildHeaders);
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, "api/transactions/create", model, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
@@ -45,12 +46,26 @@ namespace Transactions.Api.Client
         {
             try
             {
-                return await webApiClient.Post<OperationResponse>(configuration.Authority, "api/transactions/prcreate", model, BuildHeaders);
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, "api/transactions/prcreate", model, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
                 logger.LogError(clientError.Message);
                 return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+            }
+        }
+
+        public async Task<CheckoutData> GetCheckout(Guid? paymentRequestID, string apiKey)
+        {
+            try
+            {
+                return await webApiClient.Get<CheckoutData>(apiConfiguration.TransactionsApiAddress, "api/checkout", new { paymentRequestID, apiKey}, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                var response = clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+                logger.LogError($"Failed to get checkout data: {response.Message}, correlationID: {response.CorrelationId}");
+                throw;
             }
         }
 

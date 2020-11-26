@@ -31,8 +31,11 @@
     [RequestSubject]          NVARCHAR (250)   NULL,
     [VATRate]                 DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
     [VATTotal]                DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
+    [IssueInvoice]            BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
 
 
 

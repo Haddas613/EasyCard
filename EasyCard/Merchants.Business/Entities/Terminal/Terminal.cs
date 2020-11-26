@@ -55,6 +55,8 @@ namespace Merchants.Business.Entities.Terminal
 
         public virtual IEnumerable<Feature> EnabledFeatures { get; set; }
 
+        public byte[] SharedApiKey { get; set; }
+
         public Guid GetID()
         {
             return TerminalID;

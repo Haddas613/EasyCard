@@ -405,6 +405,10 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("nvarchar(max)")
                         .IsUnicode(false);
 
+                    b.Property<byte[]>("SharedApiKey")
+                        .HasColumnType("varbinary(64)")
+                        .HasMaxLength(64);
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 

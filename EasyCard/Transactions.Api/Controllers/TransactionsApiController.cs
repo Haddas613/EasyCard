@@ -271,20 +271,65 @@ namespace Transactions.Api.Controllers
         {
             var dbPaymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == prmodel.PaymentRequestID));
 
+            if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
+            {
+                return BadRequest(new OperationResponse($"{Messages.PaymentRequestStatusIsClosed}", StatusEnum.Error, dbPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+            }
+
             CreateTransactionRequest model = new CreateTransactionRequest();
 
             mapper.Map(dbPaymentRequest, model);
             mapper.Map(prmodel, model);
 
-            var createResult = await ProcessTransaction(model, null);
-
-            if (createResult.Value.Status == StatusEnum.Success)
+            if (model.SaveCreditCard == true)
             {
-                await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: createResult.Value.EntityUID.Value);
+                if (model.CreditCardToken != null)
+                {
+                    throw new BusinessException(Messages.WhenSpecifiedTokenCCDIsNotValid);
+                }
+
+                var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
+                mapper.Map(model, tokenRequest);
+
+                var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest);
+
+                var tokenResponseOperation = tokenResponse.GetOperationResponse();
+
+                if (!(tokenResponseOperation?.Status == StatusEnum.Success))
+                {
+                    return tokenResponse;
+                }
+
+                model.CreditCardToken = tokenResponseOperation.EntityUID;
+                model.CreditCardSecureDetails = null;
+            }
+
+            ActionResult<OperationResponse> createResult = null;
+
+            if (model.CreditCardToken != null)
+            {
+                if (model.CreditCardSecureDetails != null)
+                {
+                    throw new BusinessException(Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
+                }
+
+                var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
+                createResult = await ProcessTransaction(model, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
             }
             else
             {
-                await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.PaymentFailed, paymentTransactionID: createResult.Value.EntityUID.Value);
+                createResult = await ProcessTransaction(model, null);
+            }
+
+            var opResult = createResult.GetOperationResponse();
+
+            if (!(opResult?.Status == StatusEnum.Success))
+            {
+                await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.PaymentFailed, paymentTransactionID: opResult?.EntityUID);
+            }
+            else
+            {
+                await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: opResult?.EntityUID);
             }
 
             return createResult;

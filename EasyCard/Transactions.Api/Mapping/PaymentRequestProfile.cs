@@ -27,6 +27,7 @@ namespace Transactions.Api.Mapping
                   .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID));
 
             CreateMap<PaymentRequest, PaymentRequestResponse>();
+            CreateMap<PaymentRequest, PaymentRequestInfo>();
         }
     }
 }
