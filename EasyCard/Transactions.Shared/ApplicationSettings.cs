@@ -17,5 +17,9 @@ namespace Transactions.Shared
         public int TransmissionMaxBatchSize { get; set; } = 10;
 
         public string RequestsLogStorageTable { get; set; }
+
+        public string CheckoutPortalUrl { get; set; }
+
+        public string EncrKeyForSharedApiKey { get; set; }
     }
 }

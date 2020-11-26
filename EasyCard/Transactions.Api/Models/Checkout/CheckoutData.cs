@@ -13,6 +13,6 @@ namespace Transactions.Api.Models.Checkout
 
         public PaymentRequestInfo PaymentRequest { get; set; }
 
-        public TerminalCheckoutSettings Settings { get; set; }
+        public TerminalCheckoutCombinedSettings Settings { get; set; }
     }
 }

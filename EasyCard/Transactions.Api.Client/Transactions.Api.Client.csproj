@@ -7,6 +7,7 @@
   <ItemGroup>
     <Compile Include="..\Merchants.Shared\Models\TerminalCheckoutSettings.cs" Link="Models\TerminalCheckoutSettings.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\CheckoutData.cs" Link="Models\CheckoutData.cs" />
+    <Compile Include="..\Transactions.Api\Models\Checkout\TerminalCheckoutCombinedSettings.cs" Link="Models\TerminalCheckoutCombinedSettings.cs" />
     <Compile Include="..\Transactions.Api\Models\PaymentRequests\Enums\PayReqQuickStatusFilterTypeEnum.cs" Link="Models\PayReqQuickStatusFilterTypeEnum.cs" />
     <Compile Include="..\Transactions.Api\Models\PaymentRequests\PaymentRequestInfo.cs" Link="Models\PaymentRequestInfo.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\CreateTransactionRequest.cs" Link="Models\CreateTransactionRequest.cs" />

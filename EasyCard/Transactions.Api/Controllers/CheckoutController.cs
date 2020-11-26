@@ -21,7 +21,7 @@ namespace Transactions.Api.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Route("api/checkout")]
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)] // TODO: checkout portal
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)] // TODO: checkout portal identity
     [ApiController]
     public class CheckoutController : ApiControllerBase
     {
@@ -50,7 +50,6 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{transactionID}")]
         public async Task<ActionResult<CheckoutData>> GetCheckoutData(Guid? paymentRequestID, string apiKey)
         {
             Debug.WriteLine(User);
@@ -61,11 +60,14 @@ namespace Transactions.Api.Controllers
 
             var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.SharedApiKey == apiKeyB).FirstOrDefaultAsync());
 
-            response.Settings = terminal.CheckoutSettings;
+            response.Settings = new TerminalCheckoutCombinedSettings();
+
+            mapper.Map(terminal.CheckoutSettings, response.Settings);
+            mapper.Map(terminal.Settings, response.Settings);
 
             if (paymentRequestID.HasValue)
             {
-                var paymentRequest = EnsureExists(paymentRequestsService.GetPaymentRequests().Where(d => d.PaymentRequestID == paymentRequestID && d.TerminalID == terminal.TerminalID).FirstOrDefaultAsync());
+                var paymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().Where(d => d.PaymentRequestID == paymentRequestID && d.TerminalID == terminal.TerminalID).FirstOrDefaultAsync());
 
                 response.PaymentRequest = mapper.Map<PaymentRequestInfo>(paymentRequest);
             }

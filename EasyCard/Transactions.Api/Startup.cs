@@ -249,6 +249,12 @@ namespace Transactions.Api
             });
 
             services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();
+
+            services.AddSingleton<ICryptoServiceCompact, AesGcmCryptoServiceCompact>(serviceProvider =>
+            {
+                var cryptoCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
+                return new AesGcmCryptoServiceCompact(cryptoCfg.EncrKeyForSharedApiKey);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

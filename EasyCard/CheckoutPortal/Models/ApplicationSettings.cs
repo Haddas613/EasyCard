@@ -7,6 +7,6 @@ namespace CheckoutPortal.Models
 {
     public class ApplicationSettings
     {
-        public string SecretKey { get; set; }
+        public string EncrKeyForSharedApiKey { get; set; }
     }
 }

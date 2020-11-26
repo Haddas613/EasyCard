@@ -182,6 +182,12 @@ namespace ProfileApi
                 return new UserManagementClient(webApiClient, logger, cfg, tokenService);
             });
 
+            services.AddSingleton<ICryptoServiceCompact, AesGcmCryptoServiceCompact>(serviceProvider =>
+            {
+                var cryptoCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
+                return new AesGcmCryptoServiceCompact(cryptoCfg.EncrKeyForSharedApiKey);
+            });
+
             Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;  // TODO: remove for production
         }
 

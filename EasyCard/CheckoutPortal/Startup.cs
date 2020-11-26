@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -57,7 +58,8 @@ namespace CheckoutPortal
 
             services.Configure<Models.ApplicationSettings>(Configuration.GetSection("AppConfig"));
             services.Configure<TransactionsApiClientConfig>(Configuration.GetSection("ApiConfig"));
-            
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
 
@@ -75,7 +77,7 @@ namespace CheckoutPortal
             services.AddSingleton<ICryptoServiceCompact, AesGcmCryptoServiceCompact>(serviceProvider =>
             {
                 var cryptoCfg = serviceProvider.GetRequiredService<IOptions<Models.ApplicationSettings>>()?.Value;
-                return new AesGcmCryptoServiceCompact(cryptoCfg.SecretKey);
+                return new AesGcmCryptoServiceCompact(cryptoCfg.EncrKeyForSharedApiKey);
             });
         }
 

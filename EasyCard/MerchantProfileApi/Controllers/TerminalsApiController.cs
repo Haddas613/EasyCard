@@ -32,14 +32,16 @@ namespace MerchantProfileApi.Controllers
         private readonly IMapper mapper;
         private readonly IUserManagementClient userManagementClient;
         private readonly ISystemSettingsService systemSettingsService;
+        private readonly ICryptoServiceCompact cryptoServiceCompact;
 
-        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper, IUserManagementClient userManagementClient, ISystemSettingsService systemSettingsService)
+        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper, IUserManagementClient userManagementClient, ISystemSettingsService systemSettingsService, ICryptoServiceCompact cryptoServiceCompact)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
             this.userManagementClient = userManagementClient;
             this.systemSettingsService = systemSettingsService;
+            this.cryptoServiceCompact = cryptoServiceCompact;
         }
 
         [HttpGet]
@@ -69,7 +71,7 @@ namespace MerchantProfileApi.Controllers
             return Ok(terminal);
         }
 
-        // TODO: concurrency check
+        // TODO: concurrency check, handle exceptions
         [HttpPut]
         [Route("{terminalID}")]
         public async Task<ActionResult<OperationResponse>> UpdateTerminal([FromRoute]Guid terminalID, [FromBody]UpdateTerminalRequest model)
@@ -93,6 +95,21 @@ namespace MerchantProfileApi.Controllers
 
             // TODO: CreateTerminalApiKey failed case
             return Ok(new OperationResponse { EntityReference = opResult.ApiKey });
+        }
+
+        // TODO: concurrency check, handle exceptions
+        [HttpPost]
+        [Route("{terminalID}/resetSharedApiKey")]
+        public async Task<ActionResult<OperationResponse>> CreateSharedTerminalApiKey([FromRoute] Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+
+            var sharedApiKey = cryptoServiceCompact.EncryptCompact(Guid.NewGuid().ToString());
+            terminal.SharedApiKey = Convert.FromBase64String(sharedApiKey);
+
+            await terminalsService.UpdateEntity(terminal);
+
+            return Ok(new OperationResponse { EntityReference = sharedApiKey });
         }
     }
 }

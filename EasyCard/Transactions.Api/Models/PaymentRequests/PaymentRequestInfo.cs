@@ -43,6 +43,8 @@ namespace Transactions.Api.Models.PaymentRequests
 
         public string CardOwnerName { get; set; }
 
+        public string CardOwnerNationalID { get; set; }
+
         /// <summary>
         /// Deal information (optional)
         /// </summary>

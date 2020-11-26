@@ -27,5 +27,7 @@ namespace Transactions.Api.Models.PaymentRequests
         public Guid? ConsumerID { get; set; }
 
         public Guid? PaymentTransactionID { get; set; }
+
+        public string PaymentRequestUrl { get; set; }
     }
 }

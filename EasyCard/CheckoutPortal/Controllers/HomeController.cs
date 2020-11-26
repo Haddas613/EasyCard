@@ -12,6 +12,8 @@ using Shared.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Shared.Api.Security;
+using Microsoft.AspNetCore.Diagnostics;
+using System.IO;
 
 namespace CheckoutPortal.Controllers
 {
@@ -32,42 +34,55 @@ namespace CheckoutPortal.Controllers
             this.mapper = mapper;
         }
 
-        public async Task<IActionResult> Index([FromQuery]string redirectUrl, [FromQuery]string paymentRequestReference, [FromQuery]string apiKey, [FromQuery]CardRequest request)
+        public async Task<IActionResult> Index([FromQuery]CardRequest request)
         {
             // redirect url is required if it is not payment request
-            if (string.IsNullOrWhiteSpace(paymentRequestReference) && string.IsNullOrWhiteSpace(redirectUrl))
+            if (string.IsNullOrWhiteSpace(request.PaymentRequest) && string.IsNullOrWhiteSpace(request.RedirectUrl))
             {
                 throw new ApplicationException("redirectUrl is empty");
             }
 
-            string apiKeyd = null;
             Guid? paymentRequestID = null;
 
             try
             {
-                apiKeyd = cryptoServiceCompact.DecryptCompact(apiKey);
-                paymentRequestID = Guid.Parse(cryptoServiceCompact.DecryptCompact(paymentRequestReference));
+                var apiKeyd = cryptoServiceCompact.DecryptCompact(request.ApiKey);
+                paymentRequestID = !string.IsNullOrWhiteSpace(request.PaymentRequest) ? new Guid(Convert.FromBase64String(request.PaymentRequest)) : (Guid?)null;
             }
             catch(Exception ex)
             {
-                logger.LogError(ex, $"Failed to decrypt request keys - apiKey: {apiKey}, paymentRequestReference: {paymentRequestReference}");
+                logger.LogError(ex, $"Failed to decrypt request keys - apiKey: {request.ApiKey}, paymentRequestReference: {request.PaymentRequest}");
 
                 throw;
             }
 
-            var checkoutConfig = await transactionsApiClient.GetCheckout(paymentRequestID, apiKey);
+            Transactions.Api.Models.Checkout.CheckoutData checkoutConfig = null;
+
+            try
+            {
+                checkoutConfig = await transactionsApiClient.GetCheckout(paymentRequestID, request.ApiKey);
+            }
+            catch(Exception ex)
+            {
+                // TODO: show error description to customer
+                logger.LogError(ex, $"Failed to get payment request data");
+
+                throw;
+            }
 
             // TODO: check if terminal is not active
 
             // TODO: check payment request state
 
-            if (!string.IsNullOrWhiteSpace(redirectUrl))
+            if (!string.IsNullOrWhiteSpace(request.RedirectUrl))
             {
-                checkoutConfig.Settings.RedirectUrls.CheckRedirectUrls(redirectUrl);
+                checkoutConfig.Settings.RedirectUrls.CheckRedirectUrls(request.RedirectUrl);
             }
 
             var model = new ChargeViewModel();
 
+            // TODO: default deal description, consumer detals by consumerID
+            mapper.Map(request, model);
             mapper.Map(checkoutConfig.PaymentRequest, model);
 
             return View(model);
@@ -83,7 +98,10 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+
+            // TODO: show only business exceptions
+            return View(new ErrorViewModel { RequestId = HttpContext.TraceIdentifier, ExceptionMessage = exceptionHandlerPathFeature?.Error?.Message });
         }
     }
 }

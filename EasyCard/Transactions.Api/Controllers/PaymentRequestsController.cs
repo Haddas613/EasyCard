@@ -22,6 +22,8 @@ using Shared.Helpers.Security;
 using Transactions.Api.Models.PaymentRequests;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
+using Transactions.Shared;
+using Microsoft.Extensions.Options;
 
 namespace Transactions.Api.Controllers
 {
@@ -38,6 +40,8 @@ namespace Transactions.Api.Controllers
         private readonly IConsumersService consumersService;
         private readonly ITerminalsService terminalsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
+        private readonly ApplicationSettings appSettings;
+        private readonly ICryptoServiceCompact cryptoServiceCompact;
 
         public PaymentRequestsController(
                     IPaymentRequestsService paymentRequestsService,
@@ -45,7 +49,9 @@ namespace Transactions.Api.Controllers
                     ITerminalsService terminalsService,
                     ILogger<CardTokenController> logger,
                     IHttpContextAccessorWrapper httpContextAccessor,
-                    IConsumersService consumersService)
+                    IConsumersService consumersService,
+                    IOptions<ApplicationSettings> appSettings,
+                    ICryptoServiceCompact cryptoServiceCompact)
         {
             this.paymentRequestsService = paymentRequestsService;
             this.mapper = mapper;
@@ -54,6 +60,8 @@ namespace Transactions.Api.Controllers
             this.logger = logger;
             this.httpContextAccessor = httpContextAccessor;
             this.consumersService = consumersService;
+            this.appSettings = appSettings.Value;
+            this.cryptoServiceCompact = cryptoServiceCompact;
         }
 
         [HttpGet]
@@ -93,7 +101,11 @@ namespace Transactions.Api.Controllers
             {
                 var dbPaymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == paymentRequestID));
 
+                var terminal = EnsureExists(await terminalsService.GetTerminal(dbPaymentRequest.TerminalID.GetValueOrDefault()));
+
                 var paymentRequest = mapper.Map<PaymentRequestResponse>(dbPaymentRequest);
+
+                paymentRequest.PaymentRequestUrl = GetPaymentRequestUrl(paymentRequest.PaymentRequestID, terminal.SharedApiKey);
 
                 return Ok(paymentRequest);
             }
@@ -119,6 +131,16 @@ namespace Transactions.Api.Controllers
             await paymentRequestsService.CreateEntity(newPaymentRequest);
 
             return CreatedAtAction(nameof(GetPaymentRequest), new { paymentRequestID = newPaymentRequest.PaymentRequestID }, new OperationResponse(Transactions.Shared.Messages.PaymentRequestCreated, StatusEnum.Success, newPaymentRequest.PaymentRequestID));
+        }
+
+        private string GetPaymentRequestUrl(Guid? paymentRequestID, byte[] sharedTerminalApiKey)
+        {
+            var uriBuilder = new UriBuilder(appSettings.CheckoutPortalUrl);
+            var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+            query["paymentRequest"] = Convert.ToBase64String(paymentRequestID.Value.ToByteArray());
+            query["apiKey"] = Convert.ToBase64String(sharedTerminalApiKey);
+            uriBuilder.Query = query.ToString();
+            return uriBuilder.ToString();
         }
     }
 }

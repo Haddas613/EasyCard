@@ -1,10 +1,11 @@
-﻿@{
+﻿@using Shared.Helpers
+@{
     ViewData["Title"] = "Home Page";
 }
 @model ChargeViewModel
 
 <div class="text-center">
-    
+
 
     <partial name="_ValidationSummary" />
 
@@ -16,17 +17,22 @@
 
                 <div class="panel-heading">
                     <h3 class="panel-title">Charge</h3>
+                    <p>@Model.Description</p>
+                    <h3 class="panel-title">Amount: @Model.Amount.ToString("F2")@Model.Currency.GetCurrencySymbol()</h3>
                 </div>
 
                 <div class="panel-body">
 
                     <form asp-action="Charge" method="post">
-                        <input type="hidden" asp-for="ReturnUrl" />
+                        <input type="hidden" asp-for="RedirectUrl" />
+                        <input type="hidden" asp-for="PaymentRequest" />
+                        <input type="hidden" asp-for="ApiKey" />
 
                         <fieldset>
                             <div class="form-group">
                                 <label asp-for="CardNumber">Card Number</label>
                                 <input type="number" class="form-control" placeholder="Card Number" asp-for="CardNumber" autofocus autocomplete="off">
+                                <span asp-validation-for="CardNumber"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="CardExpiration.Year">Year</label>
@@ -42,22 +48,25 @@
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="CardOwnerName">Card Owner Name</label>
-                                <input class="form-control" placeholder="Card Owner Name" asp-for="CardOwnerName" autocomplete="off">
+                                <label asp-for="Name">Card Owner Name</label>
+                                <input class="form-control" placeholder="Card Owner Name" asp-for="Name" autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label asp-for="Email">Email</label>
                                 <input type="email" class="form-control" placeholder="Email" asp-for="Email" autocomplete="off">
                             </div>
                             <div class="form-group">
-                                <label asp-for="CardOwnerNationalID">National ID</label>
-                                <input type="number" class="form-control" placeholder="National ID" asp-for="CardOwnerNationalID" autocomplete="off">
+                                <label asp-for="NationalID">National ID</label>
+                                <input type="number" class="form-control" placeholder="National ID" asp-for="NationalID" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Phone">Phone</label>
+                                <input type="number" class="form-control" placeholder="Phone" asp-for="Phone" autocomplete="off">
                             </div>
 
 
                             <div class="form-group">
-                                <button type="submit" class="btn btn-primary" name="button" value="pay">Pay with EasyCard</button>
-                                <button class="btn btn-default" name="button" value="cancel">Cancel</button>
+                                <input type="submit" class="btn btn-primary" name="submit" value="Pay with EasyCard" />
                             </div>
                         </fieldset>
                     </form>
