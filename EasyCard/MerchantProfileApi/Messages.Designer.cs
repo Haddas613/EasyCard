@@ -133,6 +133,15 @@ namespace MerchantProfileApi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Private key Updated.
+        /// </summary>
+        public static string PrivateKeyUpdated {
+            get {
+                return ResourceManager.GetString("PrivateKeyUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terminal Updated.
         /// </summary>
         public static string TerminalUpdated {

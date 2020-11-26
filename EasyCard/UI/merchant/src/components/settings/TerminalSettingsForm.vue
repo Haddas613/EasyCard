@@ -149,6 +149,34 @@
     </v-row>
     <v-row>
       <v-col cols="12" class="subtitle-2 black--text pb-3">
+        {{$t("ApiKeys")}}
+        <v-divider class="pt-1"></v-divider>
+      </v-col>
+      <!-- <v-col cols="12">
+        <v-text-field
+          :value="model.settings.sharedApiKey"
+          :label="$t('SharedApiKey')"
+          readonly
+          outlined
+        ></v-text-field>
+      </v-col> -->
+      <v-col cols="12" md="12">
+        <v-btn color="primary" small @click="resetPrivateKey()">
+          {{$t("ResetPrivateKey")}}
+        </v-btn>
+      </v-col>
+      <v-col cols="12" md="12">
+        <v-text-field
+          v-if="privateApiKey"
+          :value="privateApiKey"
+          :label="$t('PrivateApiKey')"
+          readonly
+          outlined
+        ></v-text-field>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("Invoice")}}
         <v-divider class="pt-1"></v-divider>
       </v-col>
@@ -241,7 +269,8 @@ export default {
       vr: ValidationRules,
       model: { ...this.data },
       dictionaries: {},
-      merchantDictionaries: {}
+      merchantDictionaries: {},
+      privateApiKey: null
     };
   },
   async mounted() {
@@ -293,6 +322,16 @@ export default {
       result.settings.vatRate = result.settings.vatRatePercent ? (result.settings.vatRatePercent / 100).toFixed(2) : 0;
       return result;
     },
+    async resetPrivateKey(){
+      if(!this.model.terminalID){
+        return;
+      }
+      let operation = await this.$api.terminals.resetPrivateApiKey(this.model.terminalID);
+
+      if(operation.status === "success"){
+        this.privateApiKey = operation.entityReference;
+      }
+    }
   },
 };
 </script>

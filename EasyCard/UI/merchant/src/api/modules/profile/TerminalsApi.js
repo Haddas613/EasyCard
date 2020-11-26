@@ -20,4 +20,8 @@ export default class TerminalsApi {
     async updateTerminal(data){
         return this.base.put(this.terminalsUrl + '/' + data.terminalID, data);
     }
+
+    async resetPrivateApiKey(terminalID){
+        return this.base.post(this.terminalsUrl + `/${terminalID}/resetApiKey`);
+    }
 }
