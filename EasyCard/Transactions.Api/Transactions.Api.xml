@@ -161,6 +161,11 @@
             Invoice details
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.IssueInvoice">
+            <summary>
+            Create document for transaction
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealsFilter.ConsumerEmail">
             <summary>
             End-customer Email

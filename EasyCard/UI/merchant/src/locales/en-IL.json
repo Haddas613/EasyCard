@@ -46,6 +46,7 @@
   "General": "General",
   "CustomerDetails": "Customer Details",
   "NotFound": "Not Found",
+  "InvoiceDetails": "Invoice Details",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -189,6 +190,7 @@
   "NotificationEmails": "Notification emails",
   "CreateRecurrentPaymentsAutomatically": "Create Recurrent Payments Automatically",
   "VATRate": "VAT Rate",
+  "SendCCTo": "Send CC to",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
