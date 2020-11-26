@@ -37,8 +37,8 @@
               <p>{{model.$invoiceDate | ecdate('LLLL')}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('Amount')}}</p>
-              <p>{{model.invoiceAmount | currency(model.$currency)}}</p>
+              <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
+              <p>{{terminalName}}</p>
             </v-col>
           </v-row>
           <v-row class="info-container">
@@ -55,12 +55,41 @@
               <p>{{model.invoiceDetails.isendCCTo || '-'}}</p>
             </v-col>
           </v-row>
-          <v-row class="info-container">
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
-              <p>{{terminalName}}</p>
+        </v-card-text>
+      </v-card>
+      <v-card flat class="my-2">
+        <v-card-title
+          class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
+        >{{$t("TransactionDetails")}}</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-row class="info-container body-1 black--text">
+            <v-col cols="6" md="3" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('VAT')}}</p>
+              <p>{{model.vatRate * 100}}%</p>
+            </v-col>
+            <v-col cols="6" md="3" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('VATAmount')}}</p>
+              <p>{{model.vatTotal | currency(model.$currency)}}</p>
+            </v-col>
+            <v-col cols="6" md="3" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('NetAmount')}}</p>
+              <p>{{model.netTotal | currency(model.$currency)}}</p>
+            </v-col>
+            <v-col cols="6" md="3" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Amount')}}</p>
+              <p>{{model.invoiceAmount | currency(model.$currency)}}</p>
             </v-col>
           </v-row>
+        </v-card-text>
+      </v-card>
+      <v-card flat class="my-2">
+        <v-card-title
+          class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
+        >{{$t("Items")}}</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <transaction-items-list v-if="model.dealDetails && model.dealDetails.items.length > 0" :items="model.dealDetails.items"></transaction-items-list>
         </v-card-text>
       </v-card>
       <v-card flat class="my-2">
@@ -100,6 +129,9 @@
 
 <script>
 export default {
+  components: {
+    TransactionItemsList: () => import("../../components/transactions/TransactionItemsList"),
+  },
   data() {
     return {
       model: null,

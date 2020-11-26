@@ -3,13 +3,13 @@ import lodash from "lodash";
 const itemFunctions = {
     calculate: function(item, opts){
         let amount = this.calculateAmount(item);
-        let netAmount = amount ? this.calculateNetAmount(amount, opts.vatRate) : 0;
+        let netAmount = amount ? this.calculateNetAmount(amount, item.vatRate || opts.vatRate) : 0;
         let vat = this.calculateVat(amount, netAmount);
         
         item.amount = amount;
         item.netAmount = netAmount;
         item.vat = vat;
-        item.vatRate = opts.vatRate;
+        item.vatRate = item.vatRate || opts.vatRate;
     },
     calculateAmount: function(item){
         return parseFloat(((item.price * item.quantity) - item.discount).toFixed(2));
@@ -26,13 +26,13 @@ const itemFunctions = {
 const totalFunctions = {
     calculate: function(model, opts){
         let totalAmount = lodash.sumBy(model.items, "amount");
-        let netTotal = totalAmount ? this.calculateNetTotal(totalAmount, opts.vatRate) : 0;
-        let vatTotal = this.calculateVatTotal(model.items, netTotal, opts.vatRate);
+        let netTotal = totalAmount ? this.calculateNetTotal(totalAmount, model.vatRate || opts.vatRate) : 0;
+        let vatTotal = this.calculateVatTotal(model.items, netTotal, model.vatRate || opts.vatRate);
         
         model.totalAmount = totalAmount;
         model.netTotal = netTotal;
         model.vatTotal = vatTotal;
-        model.vatRate = opts.vatRate;
+        model.vatRate = model.vatRate || opts.vatRate;
     },
     calculateNetTotal: function(amount, vatRate){
         return parseFloat((amount / (1 + vatRate)).toFixed(2));

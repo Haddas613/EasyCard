@@ -47,6 +47,7 @@
   "CustomerDetails": "Customer Details",
   "NotFound": "Not Found",
   "InvoiceDetails": "Invoice Details",
+  "TransactionDetails": "Transaction Details",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -168,6 +169,7 @@
   "DateFrom": "Date From",
   "DateTo": "Date To",
   "VAT": "VAT",
+  "VATAmount": "VAT Amount",
   "VATPercent": "VAT %",
   "NotTransmitted": "Not transmitted",
   "Label": "Label",

@@ -34,7 +34,7 @@
           <v-list-item-content class="text-normal">
             <v-row no-gutters>
               <v-col cols="6" class="text-start">{{$t("VAT")}}</v-col>
-              <v-col cols="3" class="text-end">17%</v-col>
+              <v-col cols="3" class="text-end">{{terminalStore.settings.vatRate * 100}}%</v-col>
               <v-col cols="3" class="text-end">{{model.vatTotal | currency(currencyStore.code)}}</v-col>
             </v-row>
           </v-list-item-content>
@@ -85,7 +85,7 @@ export default {
     EcMoney: () => import("../ec/EcMoney"),
     EcList: () => import("../ec/EcList"),
     ReIcon: () => import("../misc/ResponsiveIcon"),
-    itemPricingDialog: () => import("../../components/items/ItemPricingDialog")
+    ItemPricingDialog: () => import("../../components/items/ItemPricingDialog")
   },
   data() {
     return {
