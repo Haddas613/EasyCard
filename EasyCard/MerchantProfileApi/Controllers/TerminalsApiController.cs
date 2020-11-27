@@ -109,7 +109,7 @@ namespace MerchantProfileApi.Controllers
 
             await terminalsService.UpdateEntity(terminal);
 
-            return Ok(new OperationResponse { EntityReference = sharedApiKey });
+            return Ok(new OperationResponse(Messages.SharedKeyUpdated, StatusEnum.Success, sharedApiKey));
         }
     }
 }

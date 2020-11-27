@@ -24,4 +24,8 @@ export default class TerminalsApi {
     async resetPrivateApiKey(terminalID){
         return this.base.post(this.terminalsUrl + `/${terminalID}/resetApiKey`);
     }
+
+    async resetSharedApiKey(terminalID){
+        return this.base.post(this.terminalsUrl + `/${terminalID}/resetSharedApiKey`);
+    }
 }

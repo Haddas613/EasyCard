@@ -8,7 +8,7 @@
           <v-row class="info-container body-1 black--text" v-if="model">
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('ID')}}</p>
-              <p>{{model.$paymentTransactionID}}</p>
+              <v-chip color="primary" small>{{model.$paymentTransactionID | guid}}</v-chip>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
@@ -66,14 +66,13 @@
           </v-row>
         </v-card-text>
       </v-card>
-      <v-card flat class="my-2">
+      <v-card flat class="my-2" v-if="model.dealDetails && model.dealDetails.items.length > 0">
         <v-card-title
           class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
         >{{$t("Items")}}</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
           <transaction-items-list
-            v-if="model.dealDetails && model.dealDetails.items.length > 0"
             :items="model.dealDetails.items"
           ></transaction-items-list>
         </v-card-text>

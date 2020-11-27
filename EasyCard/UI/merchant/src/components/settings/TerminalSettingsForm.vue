@@ -147,19 +147,34 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
+     <v-row>
       <v-col cols="12" class="subtitle-2 black--text pb-3">
-        {{$t("ApiKeys")}}
+        {{$t("SharedApiKey")}}
         <v-divider class="pt-1"></v-divider>
       </v-col>
-      <!-- <v-col cols="12">
+      <v-col cols="12" md="12">
+        <v-btn color="success" :outlined="!showSharedApiKey" small @click="showSharedApiKey = !showSharedApiKey;">
+          {{$t("ShowSharedKey")}}
+        </v-btn>
+        <v-btn class="mx-1" color="primary" small @click="resetSharedKey()">
+          {{$t("ResetSharedKey")}}
+        </v-btn>
+      </v-col>
+      <v-col cols="12" md="12">
         <v-text-field
-          :value="model.settings.sharedApiKey"
+          v-if="showSharedApiKey"
+          :value="model.sharedApiKey"
           :label="$t('SharedApiKey')"
           readonly
           outlined
         ></v-text-field>
-      </v-col> -->
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" class="subtitle-2 black--text pb-3">
+        {{$t("PrivateApiKey")}}
+        <v-divider class="pt-1"></v-divider>
+      </v-col>
       <v-col cols="12" md="12">
         <v-btn color="primary" small @click="resetPrivateKey()">
           {{$t("ResetPrivateKey")}}
@@ -270,7 +285,8 @@ export default {
       model: { ...this.data },
       dictionaries: {},
       merchantDictionaries: {},
-      privateApiKey: null
+      privateApiKey: null,
+      showSharedApiKey: false
     };
   },
   async mounted() {
@@ -331,6 +347,21 @@ export default {
       if(operation.status === "success"){
         this.privateApiKey = operation.entityReference;
       }
+    },
+    async resetSharedKey(){
+      if(!this.model.terminalID){
+        return;
+      }
+      let operation = await this.$api.terminals.resetSharedApiKey(this.model.terminalID);
+
+      if(operation.status === "success"){
+        this.showSharedKey = true;
+        this.model.sharedApiKey = operation.entityReference;
+        this.emitUpdate();
+      }
+    },
+    emitUpdate(){
+      this.$emit('update', this.model);
     }
   },
 };
