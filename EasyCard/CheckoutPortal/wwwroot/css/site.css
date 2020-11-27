@@ -12,15 +12,15 @@ a {
   color: #0366d6;
 }
 
-.btn-primary {
+/*.btn-primary {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
-}
+}*/
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
   color: #fff;
-  background-color: #1b6ec2;
+    background-color: #0f99c7;
   border-color: #1861ac;
 }
 
@@ -61,6 +61,7 @@ html {
 body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
+    background-color: #f4f6f7;
 }
 .footer {
   position: absolute;

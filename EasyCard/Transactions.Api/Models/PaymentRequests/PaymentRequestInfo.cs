@@ -55,19 +55,11 @@ namespace Transactions.Api.Models.PaymentRequests
         /// </summary>
         public IntegrationModels.DealDetails DealDetails { get; set; }
 
-        /// <summary>
-        /// Tax rate (VAT)
-        /// </summary>
-        [Range(0.01, 1)]
-        [DataType(DataType.Currency)]
-        public decimal? TaxRate { get; set; }
+        public decimal VATRate { get; set; }
 
-        /// <summary>
-        /// Tax amount
-        /// </summary>
-        [Range(0.01, double.MaxValue)]
-        [DataType(DataType.Currency)]
-        public decimal? TaxAmount { get; set; }
+        public decimal VATTotal { get; set; }
+
+        public decimal NetTotal { get; set; }
 
         /// <summary>
         /// Installment payments details (should be omitted in case of regular deal)
