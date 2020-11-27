@@ -20,15 +20,13 @@
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Status')}}</p>
-              <p v-bind:class="quickStatusesColors[model.quickStatus]">{{$t(model.quickStatus || 'None')}}</p>
+              <p
+                v-bind:class="quickStatusesColors[model.quickStatus]"
+              >{{$t(model.quickStatus || 'None')}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('TransactionTime')}}</p>
               <p>{{model.$transactionTimestamp | ecdate('LLLL')}}</p>
-            </v-col>
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('TotalAmount')}}</p>
-              <p>{{model.totalAmount | currency(model.$currency)}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('TransmissionTime')}}</p>
@@ -40,6 +38,44 @@
               </p>
             </v-col>
           </v-row>
+        </v-card-text>
+      </v-card>
+      <v-card flat class="my-2">
+        <v-card-title
+          class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
+        >{{$t("TransactionDetails")}}</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-row class="info-container body-1 black--text">
+            <v-col cols="6" md="3" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('VAT')}}</p>
+              <p>{{model.vatRate * 100}}%</p>
+            </v-col>
+            <v-col cols="6" md="3" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('VATAmount')}}</p>
+              <p>{{model.vatTotal | currency(model.$currency)}}</p>
+            </v-col>
+            <v-col cols="6" md="3" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('NetAmount')}}</p>
+              <p>{{model.netTotal | currency(model.$currency)}}</p>
+            </v-col>
+            <v-col cols="6" md="3" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('TotalAmount')}}</p>
+              <p>{{model.totalAmount | currency(model.$currency)}}</p>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+      <v-card flat class="my-2">
+        <v-card-title
+          class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
+        >{{$t("Items")}}</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <transaction-items-list
+            v-if="model.dealDetails && model.dealDetails.items.length > 0"
+            :items="model.dealDetails.items"
+          ></transaction-items-list>
         </v-card-text>
       </v-card>
       <v-card flat class="my-2">
@@ -202,6 +238,9 @@
 
 <script>
 export default {
+  components: {
+    TransactionItemsList: () => import("../../components/transactions/TransactionItemsList"),
+  },
   data() {
     return {
       model: null,
@@ -221,7 +260,7 @@ export default {
     );
 
     if (!this.model) {
-      return this.$router.push({name: "Transactions"});
+      return this.$router.push({ name: "Transactions" });
     }
 
     let terminals = (await this.$api.terminals.getTerminals()).data;
@@ -245,7 +284,10 @@ export default {
       if (!operation || operation.numberOfRecords !== 1) return;
       let opResult = operation.data[0];
 
-      if (opResult.paymentTransactionID == this.$route.params.id && opResult.transmissionStatus == "Transmitted") {
+      if (
+        opResult.paymentTransactionID == this.$route.params.id &&
+        opResult.transmissionStatus == "Transmitted"
+      ) {
         let tr = await this.$api.transactions.getTransaction(
           this.$route.params.id
         );
@@ -262,7 +304,10 @@ export default {
       if (!operation || operation.numberOfRecords !== 1) return;
       let opResult = operation.data[0];
 
-      if (opResult.paymentTransactionID == this.$route.params.id && opResult.transmissionStatus == "Transmitted") {
+      if (
+        opResult.paymentTransactionID == this.$route.params.id &&
+        opResult.transmissionStatus == "Transmitted"
+      ) {
         let tr = await this.$api.transactions.getTransaction(
           this.$route.params.id
         );
@@ -271,10 +316,13 @@ export default {
       }
     }
   },
-  computed:{
+  computed: {
     isInstallmentTransaction() {
-      return (this.model.$transactionType === "installments" || this.model.$transactionType === "credit");
-    },
+      return (
+        this.model.$transactionType === "installments" ||
+        this.model.$transactionType === "credit"
+      );
+    }
   }
 };
 </script>

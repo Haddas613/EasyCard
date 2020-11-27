@@ -47,6 +47,8 @@
   "CustomerDetails": "Customer Details",
   "NotFound": "Not Found",
   "InvoiceDetails": "Invoice Details",
+  "TransactionDetails": "Transaction Details",
+  "ApiKeys": "Api keys",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -168,6 +170,7 @@
   "DateFrom": "Date From",
   "DateTo": "Date To",
   "VAT": "VAT",
+  "VATAmount": "VAT Amount",
   "VATPercent": "VAT %",
   "NotTransmitted": "Not transmitted",
   "Label": "Label",
@@ -191,6 +194,7 @@
   "CreateRecurrentPaymentsAutomatically": "Create Recurrent Payments Automatically",
   "VATRate": "VAT Rate",
   "SendCCTo": "Send CC to",
+  "PrivateApiKey": "Private Api Key",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -212,6 +216,7 @@
   "TriggerTransactions": "Trigger Transactions",
   "GoToTransaction": "Go to transaction",
   "SelectAll": "Select all",
+  "ResetPrivateKey": "Reset Private Key",
 
   "--AUTH--": null,
   "Login": "Login",

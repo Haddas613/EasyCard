@@ -23,10 +23,38 @@
                 </v-col>
               </v-row>
               <v-row class="info-container">
+                <billing-schedule-string
+                  :schedule="model.billingSchedule"
+                  replacement-text="ScheduleIsNotDefined"
+                ></billing-schedule-string>
+              </v-row>
+            </v-card-text>
+          </v-card>
+          <v-card flat class="my-2">
+            <v-card-title
+              class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
+            >{{$t("TransactionDetails")}}</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <v-row class="info-container body-1 black--text">
+                <v-col cols="6" md="4" class="info-block">
+                  <p class="caption ecgray--text text--darken-2">{{$t('VAT')}}</p>
+                  <p>{{model.vatRate * 100}}%</p>
+                </v-col>
+                <v-col cols="6" md="4" class="info-block">
+                  <p class="caption ecgray--text text--darken-2">{{$t('VATAmount')}}</p>
+                  <p>{{model.vatTotal | currency(model.$currency)}}</p>
+                </v-col>
+                <v-col cols="6" md="4" class="info-block">
+                  <p class="caption ecgray--text text--darken-2">{{$t('NetAmount')}}</p>
+                  <p>{{model.netTotal | currency(model.$currency)}}</p>
+                </v-col>
+              </v-row>
+              <v-row class="info-container body-1 black--text">
                 <!-- <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('NumberOfPayments')}}</p>
                   <p>{{model.numberOfPayments}}</p>
-                </v-col> -->
+                </v-col>-->
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('TransactionAmount')}}</p>
                   <p>{{model.transactionAmount | currency(model.$currency)}}</p>
@@ -36,12 +64,15 @@
                   <p>{{model.totalAmount | currency(model.$currency)}}</p>
                 </v-col>
               </v-row>
-              <v-row class="info-container">
-                <billing-schedule-string
-                  :schedule="model.billingSchedule"
-                  replacement-text="ScheduleIsNotDefined"
-                ></billing-schedule-string>
-              </v-row>
+            </v-card-text>
+          </v-card>
+          <v-card flat class="my-2" v-if="model.dealDetails && model.dealDetails.items.length > 0">
+            <v-card-title
+              class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
+            >{{$t("Items")}}</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <transaction-items-list :items="model.dealDetails.items"></transaction-items-list>
             </v-card-text>
           </v-card>
           <v-card flat class="my-2">
@@ -146,7 +177,8 @@ export default {
     BillingScheduleString: () =>
       import("../../components/billing-deals/BillingScheduleString"),
     TransactionsList: () =>
-      import("../../components/transactions/TransactionsList")
+      import("../../components/transactions/TransactionsList"),
+    TransactionItemsList: () => import("../../components/transactions/TransactionItemsList"),
   },
   async mounted() {
     this.model = await this.$api.billingDeals.getBillingDeal(
@@ -174,9 +206,10 @@ export default {
     }
 
     let $dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
-    
-    if(this.model.invoiceDetails && this.model.invoiceDetails.invoiceType){
-      this.model.invoiceDetails.invoiceType = $dictionaries.invoiceTypeEnum[this.model.invoiceDetails.invoiceType];
+
+    if (this.model.invoiceDetails && this.model.invoiceDetails.invoiceType) {
+      this.model.invoiceDetails.invoiceType =
+        $dictionaries.invoiceTypeEnum[this.model.invoiceDetails.invoiceType];
     }
 
     this.$store.commit("ui/changeHeader", {
