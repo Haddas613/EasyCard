@@ -8,7 +8,7 @@
           <v-row class="info-container">
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('ID')}}</p>
-              <small>{{model.$paymentRequestID}}</small>
+              <v-chip color="primary" small>{{model.$paymentRequestID | guid}}</v-chip>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
@@ -41,6 +41,43 @@
               <p>{{model.paymentRequestAmount | currency(model.$currency)}}</p>
             </v-col>
           </v-row>
+        </v-card-text>
+      </v-card>
+      <v-card flat class="my-2">
+        <v-card-title
+          class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
+        >{{$t("TransactionDetails")}}</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-row class="info-container body-1 black--text">
+            <v-col cols="6" md="3" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('VAT')}}</p>
+              <p>{{model.vatRate * 100}}%</p>
+            </v-col>
+            <v-col cols="6" md="3" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('VATAmount')}}</p>
+              <p>{{model.vatTotal | currency(model.$currency)}}</p>
+            </v-col>
+            <v-col cols="6" md="3" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('NetAmount')}}</p>
+              <p>{{model.netTotal | currency(model.$currency)}}</p>
+            </v-col>
+            <v-col cols="6" md="3" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Amount')}}</p>
+              <p>{{model.paymentRequestAmount | currency(model.$currency)}}</p>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+      <v-card flat class="my-2" v-if="model.dealDetails && model.dealDetails.items.length > 0">
+        <v-card-title
+          class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
+        >{{$t("Items")}}</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <transaction-items-list
+            :items="model.dealDetails.items"
+          ></transaction-items-list>
         </v-card-text>
       </v-card>
       <v-card flat class="my-2">
@@ -79,6 +116,9 @@
 
 <script>
 export default {
+  components: {
+    TransactionItemsList: () => import("../../components/transactions/TransactionItemsList"),
+  },
   data() {
     return {
       model: null,
@@ -87,7 +127,9 @@ export default {
     };
   },
   async mounted() {
-    this.model = await this.$api.paymentRequests.getPaymentRequest(this.$route.params.id);
+    this.model = await this.$api.paymentRequests.getPaymentRequest(
+      this.$route.params.id
+    );
 
     if (!this.model) {
       return this.$router.push("/admin/payment-requests/list");

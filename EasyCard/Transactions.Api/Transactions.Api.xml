@@ -538,16 +538,6 @@
             Deal information (optional)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.TaxRate">
-            <summary>
-            Tax rate (VAT)
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.TaxAmount">
-            <summary>
-            Tax amount
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.InstallmentDetails">
             <summary>
             Installment payments details (should be omitted in case of regular deal)
