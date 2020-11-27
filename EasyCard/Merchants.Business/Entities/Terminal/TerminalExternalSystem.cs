@@ -18,11 +18,6 @@ namespace Merchants.Business.Entities.Terminal
 
         public Terminal Terminal { get; set; }
 
-        /// <summary>
-        /// SHVA or other system terminal ID
-        /// </summary>
-        public string ExternalProcessorReference { get; set; }
-
         public JObject Settings { get; set; }
 
         public byte[] UpdateTimestamp { get; set; }

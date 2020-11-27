@@ -56,26 +56,6 @@ namespace Transactions.Api.Models.Transactions
         public Guid? MerchantID { get; set; }
 
         /// <summary>
-        /// Shva or other processor
-        /// </summary>
-        public long? ProcessorID { get; set; }
-
-        /// <summary>
-        /// Clearing House or Upay
-        /// </summary>
-        public long? AggregatorID { get; set; }
-
-        /// <summary>
-        /// EasyInvoice or RapidOne
-        /// </summary>
-        public long? InvoicingID { get; set; }
-
-        /// <summary>
-        /// Marketer ID
-        /// </summary>
-        public long? MarketerID { get; set; }
-
-        /// <summary>
         /// Processing status
         /// </summary>
         [EnumDataType(typeof(TransactionStatusEnum))]

@@ -40,11 +40,6 @@
             SHVA or other system terminal ID
             </summary>
         </member>
-        <member name="P:Merchants.Api.Models.Terminal.TerminalExternalSystemDetails.ExternalProcessorReference">
-            <summary>
-            SHVA or other system terminal ID
-            </summary>
-        </member>
         <member name="T:Merchants.Api.Models.Terminal.TerminalStatusEnumResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

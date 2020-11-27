@@ -190,7 +190,6 @@ namespace MerchantsApi.Tests
             var externalSystemResponse = (await GetTerminal(new Guid(responseData.EntityReference))).Integrations
                 .FirstOrDefault(e => e.ExternalSystemID == existingExternalSystem.ExternalSystemID) ?? throw new Exception("No external system in GetTerminal response");
 
-            Assert.Equal(terminalExternalSystemRequest.ExternalProcessorReference, externalSystemResponse.ExternalProcessorReference);
             Assert.Equal("123", externalSystemResponse.Settings["SomeSetting"].Value<string>());
         }
 
@@ -224,7 +223,6 @@ namespace MerchantsApi.Tests
             var externalSystemResponse = (await GetTerminal(new Guid(responseData.EntityReference))).Integrations
                 .FirstOrDefault(e => e.ExternalSystemID == existingTerminalExternalSystem.ExternalSystemID) ?? throw new Exception("No external system in GetTerminal response");
 
-            Assert.Equal(terminalExternalSystemRequest.ExternalProcessorReference, externalSystemResponse.ExternalProcessorReference);
             Assert.Equal("456", externalSystemResponse.Settings["SomeSetting"].Value<string>());
             Assert.Equal("Test", externalSystemResponse.Settings["SomeNewSetting"].Value<string>());
         }

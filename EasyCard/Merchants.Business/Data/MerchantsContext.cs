@@ -195,20 +195,6 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.Label).IsRequired(true).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.ActivityStartDate).IsRequired(false);
 
-                //builder.OwnsOne(b => b.Settings, s =>
-                //{
-                //    s.Property(p => p.CvvRequired).HasColumnName("CvvRequired").HasDefaultValue(false);
-                //    s.Property(p => p.J5Allowed).HasColumnName("J5Allowed").HasDefaultValue(false);
-                //    s.Property(p => p.J2Allowed).HasColumnName("J2Allowed").HasDefaultValue(false);
-                //    s.Property(p => p.CvvRequired).HasColumnName("CvvRequired").HasDefaultValue(false);
-                //    s.Property(p => p.NationalIDRequired).HasColumnName("NationalIDRequired").HasDefaultValue(false);
-                //});
-
-                //builder.OwnsOne(b => b.BillingSettings, s =>
-                //{
-                //    s.Property(p => p.BillingNotificationsEmails).HasColumnName("BillingNotificationsEmails").IsRequired(false);
-                //});
-
                 builder.Property(p => p.Settings).HasColumnName("Settings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalSettingsConverter);
 
                 builder.Property(p => p.BillingSettings).HasColumnName("BillingSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalBillingSettingsConverter);
@@ -253,7 +239,6 @@ namespace Merchants.Business.Data
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
-                builder.Property(b => b.ExternalProcessorReference).IsRequired(false).HasMaxLength(50).IsUnicode(false);
                 builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
             }
         }

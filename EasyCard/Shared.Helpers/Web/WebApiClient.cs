@@ -363,5 +363,50 @@ namespace Shared.Helpers
                 }
             }
         }
+
+        public async Task<RawRequestResult> PostRawWithHeaders(string enpoint, string actionPath, string payload, string contentType,
+            Func<Task<NameValueCollection>> getHeaders = null, ProcessRequest onRequest = null, ProcessResponse onResponse = null
+            )
+        {
+            var url = UrlHelper.BuildUrl(enpoint, actionPath);
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+
+            if (getHeaders != null)
+            {
+                var headers = await getHeaders();
+                foreach (var header in headers.AllKeys)
+                {
+                    request.Headers.Add(header, headers.GetValues(header).FirstOrDefault());
+                }
+            }
+
+            request.Content = new StringContent(payload, Encoding.UTF8, contentType ?? "text/xml");
+
+            onRequest?.Invoke(url, payload);
+
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
+
+            var operationResponse = new RawRequestResult();
+            operationResponse.StatusCode = response.StatusCode;
+
+            foreach (var header in response.Headers)
+            {
+                operationResponse.ResponseHeaders.Add(header.Key, header.Value?.FirstOrDefault());
+            }
+
+            var res = await response.Content.ReadAsStringAsync();
+
+            onResponse?.Invoke(res, response.StatusCode, response.Headers);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return operationResponse;
+            }
+            else
+            {
+                throw new ApplicationException($"Failed POST to {url}: {response.StatusCode}");
+            }
+        }
     }
 }

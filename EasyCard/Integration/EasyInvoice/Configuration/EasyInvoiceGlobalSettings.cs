@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shva
+namespace EasyInvoice
 {
     public class EasyInvoiceGlobalSettings
     {

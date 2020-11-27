@@ -14,5 +14,13 @@
     "SettingsTypeFullName": "Shva.ShvaTerminalSettings, Shva",
     "Name": "Shva",
     "Active": true
+  },
+  {
+    "ExternalSystemID": 30,
+    "Type": "invoicing",
+    "InstanceTypeFullName": "EasyInvoice.ECInvoiceInvoicing, EasyInvoice",
+    "SettingsTypeFullName": "EasyInvoice.EasyInvoiceTerminalSettings, EasyInvoice",
+    "Name": "EasyInvoice",
+    "Active": true
   }
 ]

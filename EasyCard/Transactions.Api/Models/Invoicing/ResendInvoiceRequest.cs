@@ -18,6 +18,6 @@ namespace Transactions.Api.Models.Invoicing
         /// IDs of invoices which need to be resend
         /// </summary>
         [Required]
-        public IEnumerable<Guid> InvoicesID { get; set; }
+        public IEnumerable<Guid> InvoicesIDs { get; set; }
     }
 }

@@ -248,7 +248,6 @@ namespace Merchants.Business.Services
             {
                 dbEntity.UpdateTimestamp = entity.UpdateTimestamp;
                 dbEntity.Settings = entity.Settings;
-                dbEntity.ExternalProcessorReference = entity.ExternalProcessorReference;
                 dbEntity.Type = entity.Type;
                 await context.SaveChangesAsync();
             }

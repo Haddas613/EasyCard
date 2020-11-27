@@ -1,53 +1,126 @@
-﻿using Shared.Integration.ExternalSystems;
+﻿using EasyInvoice.Converters;
+using EasyInvoice.Models;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Shared.Helpers;
+using Shared.Integration;
+using Shared.Integration.Exceptions;
+using Shared.Integration.ExternalSystems;
+using Shared.Integration.Models.Invoicing;
 using System;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EasyInvoice
 {
-    public class ECInvoiceInvoicing
+    public class ECInvoiceInvoicing : IInvoicing
     {
-        public void Process()
+        private const string ResponseTokenHeader = "X-AUTH-TOKEN";
+
+        private readonly IIntegrationRequestLogStorageService storageService;
+        private readonly IWebApiClient apiClient;
+        private readonly EasyInvoiceGlobalSettings configuration;
+        private readonly ILogger logger;
+
+        public ECInvoiceInvoicing(
+            IWebApiClient apiClient,
+            EasyInvoiceGlobalSettings configuration,
+            ILogger<ECInvoiceInvoicing> logger,
+            IIntegrationRequestLogStorageService storageService)
         {
-            //DocumentResponse svcRes = null;
+            this.configuration = configuration;
 
-            //try
-            //{
-            //    var loginRequest = new { email = this.configuration.UserName, password = this.configuration.Password };
+            this.storageService = storageService;
 
-            //    var loginres = apiClient.PostRawWithHeaders(this.configuration.EasyInvoiceBaseUrl, "/api/v1/login", JsonConvert.SerializeObject(loginRequest), "application/json").Result;
+            this.apiClient = apiClient;
 
-            //    var authToken = loginres.ResponseHeaders.AllKeys.Any(k => k == responseTokenHeader) ? loginres.ResponseHeaders[responseTokenHeader] : this.configuration.AuthToken;
+            this.logger = logger;
+        }
 
-            //    NameValueCollection headers = new NameValueCollection();
+        public async Task<InvoicingCreateDocumentResponse> CreateDocument(InvoicingCreateDocumentRequest documentCreationRequest)
+        {
+            var terminal = documentCreationRequest.InvoiceingSettings as EasyInvoiceTerminalSettings;
 
-            //    headers.Add(responseTokenHeader, authToken);
-            //    headers.Add("Accept-language", "he");
+            var json = ECInvoiceConverter.GetInvoiceCreateDocumentRequest(documentCreationRequest);
+            json.KeyStorePassword = terminal.KeyStorePassword;
 
-            //    svcRes = await this.apiClient.Post<DocumentResponse>(this.configuration.EasyInvoiceBaseUrl, "/api/v1/docs", json, () => Task.FromResult(headers), integrationMessage);
-            //}
-            //catch (Exception ex)
-            //{
-            //    var correlationId = this.httpContextAccessor?.HttpContext?.TraceIdentifier;
+            NameValueCollection headers = new NameValueCollection();
 
-            //    this.logger.LogError(ex, $"Exception {correlationId}: {ex.Message} ({message.MessageId})");
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            //    await storageService.Save(integrationMessage);
+            try
+            {
+                var loginRequest = new { email = terminal.UserName, password = terminal.Password };
 
-            //    throw new IntegrationException("EasyInvoice integration request failed", message.MessageId);
-            //}
+                var loginres = apiClient.PostRawWithHeaders(this.configuration.BaseUrl, "/api/v1/login", JsonConvert.SerializeObject(loginRequest), "application/json").Result;
 
-            //await storageService.Save(integrationMessage);
+                var authToken = loginres.ResponseHeaders.AllKeys.Any(k => k == ResponseTokenHeader) ? loginres.ResponseHeaders[ResponseTokenHeader] : null;
 
-            //if (svcRes == null) throw new IntegrationException("EasyInvoice integration request failed", message.MessageId);
+                headers.Add(ResponseTokenHeader, authToken);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"EasyInvoice integration request failed: failed to get token: {ex.Message} ({integrationMessageId}). CorrelationId: {documentCreationRequest.CorrelationId}");
 
-            //var response = new OperationResponse() { Status = StatusEnum.Success, EntityID = svcRes.DocumentNumber, EntityReference = svcRes.DocumentUrl, DocumentUrl = svcRes.DocumentUrl, DocumentCopyUrl = svcRes.DocumentCopyUrl };
+                throw new IntegrationException("EasyInvoice integration request failed: failed to get token", integrationMessageId);
+            }
 
-            //if (svcRes.Errors?.Count > 0 || !string.IsNullOrWhiteSpace(svcRes.Error) || string.IsNullOrWhiteSpace(svcRes.DocumentUrl) || svcRes.DocumentNumber.GetValueOrDefault() <= 0)
-            //{
-            //    response.Status = StatusEnum.Error;
-            //    response.Message = svcRes.Message ?? svcRes.Error;
-            //}
+            ECInvoiceDocumentResponse svcRes = null;
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
 
-            //return response;
+            try
+            {
+                headers.Add("Accept-language", "he"); // TODO: get language from options
+
+                svcRes = await this.apiClient.Post<ECInvoiceDocumentResponse>(this.configuration.BaseUrl, "/api/v1/docs", json, () => Task.FromResult(headers),
+                     (url, request) =>
+                     {
+                         requestStr = request;
+                         requestUrl = url;
+                     },
+                     (response, responseStatus, responseHeaders) =>
+                     {
+                         responseStr = response;
+                         responseStatusStr = responseStatus.ToString();
+                     });
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"EasyInvoice integration request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {documentCreationRequest.CorrelationId}");
+
+                throw new IntegrationException("EasyInvoice integration request failed", integrationMessageId);
+            }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, documentCreationRequest.CorrelationId)
+                {
+                    Request = requestStr,
+                    Response = responseStr,
+                    ResponseStatus = responseStatusStr,
+                    Address = requestUrl
+                };
+
+                await storageService.Save(integrationMessage);
+            }
+
+            var response = new InvoicingCreateDocumentResponse
+            {
+                DocumentNumber = svcRes.DocumentNumber?.ToString(),
+                DownloadUrl = svcRes.DocumentUrl,
+                CopyDonwnloadUrl = svcRes.DocumentCopyUrl
+            };
+
+            if (svcRes.Errors?.Count > 0 || !string.IsNullOrWhiteSpace(svcRes.Error) || string.IsNullOrWhiteSpace(svcRes.DocumentUrl) || svcRes.DocumentNumber.GetValueOrDefault() <= 0)
+            {
+                response.Success = false;
+                response.ErrorMessage = svcRes.Message ?? svcRes.Error;
+            }
+
+            return response;
         }
     }
 }

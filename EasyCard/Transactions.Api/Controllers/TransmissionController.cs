@@ -186,6 +186,7 @@ namespace Transactions.Api.Controllers
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.TransmissionToProcessorFailed);
 
                         // TODO: cancel in clearing house - but - it is possible to retry transmission
+                        // TODO: cancel invoice
                     }
                     else
                     {
@@ -232,6 +233,8 @@ namespace Transactions.Api.Controllers
 
                 await dbTransaction.CommitAsync();
             }
+
+            // TODO: remove invoice
 
             if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
             {

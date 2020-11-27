@@ -48,10 +48,11 @@ namespace EmailSender
             var emailBody = TemplateProcessor.Substitute(template.BodyTemplate, substitutions);
 
             // sendgrid implementation
-            var message = new SendGridMessage();
-
-            message.Subject = emailSubject;
-            message.HtmlContent = emailBody;
+            var message = new SendGridMessage
+            {
+                Subject = emailSubject,
+                HtmlContent = emailBody
+            };
             message.AddTo(emailData.EmailTo);
             message.SetFrom(config["EmailFrom"]);
 

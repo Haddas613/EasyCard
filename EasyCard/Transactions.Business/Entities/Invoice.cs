@@ -76,6 +76,21 @@ namespace Transactions.Business.Entities
         public int NumberOfPayments { get; set; }
 
         /// <summary>
+        /// Initial installment payment
+        /// </summary>
+        public decimal InitialPaymentAmount { get; set; }
+
+        /// <summary>
+        /// TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+        /// </summary>
+        public decimal TotalAmount { get; set; }
+
+        /// <summary>
+        /// Amount of one instalment payment
+        /// </summary>
+        public decimal InstallmentPaymentAmount { get; set; }
+
+        /// <summary>
         /// This invoice amount
         /// </summary>
         public decimal InvoiceAmount { get; set; }
@@ -123,11 +138,14 @@ namespace Transactions.Business.Entities
 
         public Guid? PaymentTransactionID { get; set; }
 
+        public string DownloadUrl { get; set; }
+
+        public string CopyDonwnloadUrl { get; set; }
+
         // TODO: calculate items
         [Obsolete]
         public void Calculate()
         {
-
         }
     }
 }

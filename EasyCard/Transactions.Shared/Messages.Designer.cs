@@ -232,6 +232,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to EmailAddressRequired.
+        /// </summary>
+        public static string EmailRequired {
+            get {
+                return ResourceManager.GetString("EmailRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed To Cancel By Aggregator.
         /// </summary>
         public static string FailedToCancelByAggregator {
@@ -313,6 +322,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invoice generated.
+        /// </summary>
+        public static string InvoiceGenerated {
+            get {
+                return ResourceManager.GetString("InvoiceGenerated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invoice generation failed.
+        /// </summary>
+        public static string InvoiceGenerationFailed {
+            get {
+                return ResourceManager.GetString("InvoiceGenerationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invoices are required.
         /// </summary>
         public static string InvoicesForResendRequired {
@@ -327,6 +354,24 @@ namespace Transactions.Shared {
         public static string InvoicesQueuedForResend {
             get {
                 return ResourceManager.GetString("InvoicesQueuedForResend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invoice State is not valid.
+        /// </summary>
+        public static string InvoiceStateIsNotValid {
+            get {
+                return ResourceManager.GetString("InvoiceStateIsNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invoicing system is not defined.
+        /// </summary>
+        public static string InvoicingNotDefined {
+            get {
+                return ResourceManager.GetString("InvoicingNotDefined", resourceCulture);
             }
         }
         
@@ -403,6 +448,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of entities for processing batch is limited to {0}.
+        /// </summary>
+        public static string ProcesingItemsLimit {
+            get {
+                return ResourceManager.GetString("ProcesingItemsLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Processor is not defined.
         /// </summary>
         public static string ProcessorNotDefined {
@@ -426,6 +480,15 @@ namespace Transactions.Shared {
         public static string RejectedByProcessor {
             get {
                 return ResourceManager.GetString("RejectedByProcessor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no invoices to resend.
+        /// </summary>
+        public static string ThereAreNoInvoicesToResend {
+            get {
+                return ResourceManager.GetString("ThereAreNoInvoicesToResend", resourceCulture);
             }
         }
         

@@ -4,6 +4,13 @@
         <name>Transactions.Api</name>
     </assembly>
     <members>
+        <member name="M:Transactions.Api.Controllers.InvoicingController.GenerateOrResendInvoice(System.Nullable{System.Guid})">
+            <summary>
+            Generate invocie in EasyInvoice system
+            </summary>
+            <param name="invoiceID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.TransactionsApiController.CreateTransaction(Transactions.Api.Models.Transactions.CreateTransactionRequest)">
             <summary>
             Create the charge based on credit card or previously stored credit card token (J4 deal)
@@ -468,7 +475,7 @@
             EasyCard terminal reference
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Invoicing.ResendInvoiceRequest.InvoicesID">
+        <member name="P:Transactions.Api.Models.Invoicing.ResendInvoiceRequest.InvoicesIDs">
             <summary>
             IDs of invoices which need to be resend
             </summary>
@@ -1002,26 +1009,6 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.MerchantID">
             <summary>
             Merchant
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.ProcessorID">
-            <summary>
-            Shva or other processor
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AggregatorID">
-            <summary>
-            Clearing House or Upay
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.InvoicingID">
-            <summary>
-            EasyInvoice or RapidOne
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.MarketerID">
-            <summary>
-            Marketer ID
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.Status">

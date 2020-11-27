@@ -52,10 +52,10 @@ export default class InvoicingApi {
         return await this.base.delete(this.invoicingUrl + `/${id}`, data);
     }
 
-    async resend(terminalId, invoicesID){
+    async resend(terminalId, invoicesIDs){
         return await this.base.post(this.invoicingUrl + '/resend', {
-            teminalID: terminalId,
-            invoicesID: invoicesID
+            terminalID: terminalId,
+            invoicesIDs: invoicesID
         });
     }
 }

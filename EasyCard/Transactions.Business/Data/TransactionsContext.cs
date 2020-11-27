@@ -75,8 +75,6 @@ namespace Transactions.Business.Data
           v => v == null ? null : string.Join(",", v),
           v => v == null ? null : v.Split(",", StringSplitOptions.RemoveEmptyEntries));
 
-        //BillingSchedule
-
         public TransactionsContext(DbContextOptions<TransactionsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
             : base(options)
         {
@@ -195,7 +193,6 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
             bool existingConnection = true;
             try
             {
-
                 if (connection.State != ConnectionState.Open)
                 {
                     await connection.OpenAsync();
@@ -203,6 +200,67 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
                 }
 
                 var report = await connection.QueryAsync<TransmissionInfo>(query, new { NewStatus = TransactionStatusEnum.TransmissionInProgress, OldStatus = TransactionStatusEnum.CommitedByAggregator, TerminalID = terminalID, MerchantID = user.GetMerchantID(), TransactionIDs = transactionIDs, UpdatedDate = DateTime.UtcNow }, transaction: dbTransaction?.GetDbTransaction());
+
+                return report;
+            }
+            finally
+            {
+                if (!existingConnection)
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        public async Task<IEnumerable<Guid>> StartSending(Guid terminalID, IEnumerable<Guid> invoicesIDs, IDbContextTransaction dbTransaction)
+        {
+            user.CheckTerminalPermission(terminalID);
+
+            string query = @"
+DECLARE @OutputInvoiceIDs table(
+    [InvoiceID] [uniqueidentifier] NULL
+);
+
+UPDATE [dbo].[Invoice] SET [Status]=@NewStatus, [UpdatedDate]=@UpdatedDate 
+OUTPUT inserted.InvoiceID INTO @OutputInvoiceIDs
+WHERE [InvoiceID] in @InvoicesIDs AND [TerminalID] = @TerminalID AND [Status]<>@OldStatus";
+
+            // security check
+            // TODO: replace to query builder
+
+            if (user.IsAdmin())
+            {
+            }
+            else if (user.IsTerminal())
+            {
+                if (terminalID != user.GetTerminalID())
+                {
+                    throw new SecurityException("User has no access to requested data");
+                }
+            }
+            else if (user.IsMerchant())
+            {
+                query += " AND [MerchantID] = @MerchantID";
+            }
+            else
+            {
+                throw new SecurityException("User has no access to requested data");
+            }
+
+            query += @"
+SELECT InvoiceID from @OutputInvoiceIDs as a";
+
+            var connection = this.Database.GetDbConnection();
+            bool existingConnection = true;
+            try
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    await connection.OpenAsync();
+                    existingConnection = false;
+                }
+
+                var report = await connection.QueryAsync<Guid>(query, new { NewStatus = InvoiceStatusEnum.Sending, OldStatus = InvoiceStatusEnum.Sending, TerminalID = terminalID, MerchantID = user.GetMerchantID(), InvoicesIDs = invoicesIDs, UpdatedDate = DateTime.UtcNow }, transaction: dbTransaction?.GetDbTransaction());
 
                 return report;
             }

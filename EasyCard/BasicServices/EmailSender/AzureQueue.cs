@@ -10,7 +10,7 @@ namespace BasicServices
 {
     public class AzureQueue : IQueue
     {
-        private QueueClient _client;
+        private readonly QueueClient _client;
 
         public AzureQueue(string storageConnectionString, string queueName)
         {
