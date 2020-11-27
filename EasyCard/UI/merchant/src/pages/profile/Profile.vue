@@ -47,7 +47,12 @@
       <v-divider></v-divider>
       <v-card-text>
         <v-form ref="terminalSettingsForm" v-model="terminalSettingsFormValid" lazy-validation>
-          <terminal-settings-form :key="terminalStore ? terminalStore.terminalID : false" :data="terminalStore" class="pt-1" ref="terminalSettingsRef"></terminal-settings-form>
+          <terminal-settings-form 
+            :key="terminalStore ? terminalStore.terminalID : false" 
+            :data="terminalStore" 
+            class="pt-1" 
+            ref="terminalSettingsRef"
+            @update="refreshTerminal()"></terminal-settings-form>
           <v-flex class="d-flex justify-end">
             <v-btn color="primary" :disabled="!terminalSettingsFormValid" :block="$vuetify.breakpoint.smAndDown" @click="saveTerminalSettings()">{{$t('Save')}}</v-btn>
           </v-flex>
@@ -77,6 +82,7 @@ export default {
     this.terminals = terminals ? terminals.data : [];
     let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
     this.currencies = dictionaries ? dictionaries.currencyEnum : [];
+    await this.refreshTerminal();
   },
   computed: {
     isRtl: {
@@ -125,6 +131,9 @@ export default {
         let terminals = await this.$api.terminals.getTerminals(null, true);
         this.terminals = terminals ? terminals.data : [];
       }
+    },
+    async refreshTerminal(){
+      this.$store.dispatch("settings/refreshTerminal", { api: this.$api });
     }
   },
 };

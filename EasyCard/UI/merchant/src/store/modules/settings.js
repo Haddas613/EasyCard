@@ -30,6 +30,15 @@ const actions = {
       if (!exists) await store.dispatch('changeCurrency', {api, newCurrency: currencies[0]});
     }
   },
+  async refreshTerminal({state, commit }, { api }) {
+    if (!state.terminal || !state.terminal.terminalID){
+      return;
+    }
+    let terminal = await api.terminals
+      .getTerminal(state.terminal.terminalID);
+
+    commit('setTerminal', terminal);
+  },
   async changeTerminal({ commit }, { api, newTerminal }) {
     let terminal = await api.terminals
       .getTerminal(typeof (newTerminal) === "string" ? newTerminal : newTerminal.terminalID);

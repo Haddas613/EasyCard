@@ -117,7 +117,12 @@
         </member>
         <member name="P:MerchantProfileApi.Messages.PrivateKeyUpdated">
             <summary>
-              Looks up a localized string similar to Private key Updated.
+              Looks up a localized string similar to Private Key Updated.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.SharedKeyUpdated">
+            <summary>
+              Looks up a localized string similar to Shared Key Updated.
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Messages.TerminalUpdated">
