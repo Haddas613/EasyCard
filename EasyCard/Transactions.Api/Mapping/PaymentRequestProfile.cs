@@ -29,7 +29,8 @@ namespace Transactions.Api.Mapping
             CreateMap<PaymentRequest, PaymentRequestResponse>()
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.DueDate)));
 
-            CreateMap<PaymentRequest, PaymentRequestInfo>();
+            CreateMap<PaymentRequest, PaymentRequestInfo>()
+                .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.DueDate)));
 
             CreateMap<PaymentRequestHistory, PaymentRequestHistorySummary>();
         }

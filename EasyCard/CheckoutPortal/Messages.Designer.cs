@@ -61,11 +61,38 @@ namespace CheckoutPortal {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Credit card expiration provided is invalid.
+        /// </summary>
+        public static string CardExpirationValidator {
+            get {
+                return ResourceManager.GetString("CardExpirationValidator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checkout data provided by merchant is not valid.
         /// </summary>
         public static string InvalidCheckoutData {
             get {
                 return ResourceManager.GetString("InvalidCheckoutData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment Request Already Payed.
+        /// </summary>
+        public static string PaymentRequestAlreadyPayed {
+            get {
+                return ResourceManager.GetString("PaymentRequestAlreadyPayed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment Request Closed.
+        /// </summary>
+        public static string PaymentRequestClosed {
+            get {
+                return ResourceManager.GetString("PaymentRequestClosed", resourceCulture);
             }
         }
     }

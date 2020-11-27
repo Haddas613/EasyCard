@@ -1,22 +1,23 @@
 ﻿@model CheckoutPortal.Models.PaymentErrorViewModel
 
 @{
-    ViewData["Title"] = "PaymentError";
+    ViewData["Title"] = "Payment Error";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Payment Error</h1>
+<h4 class="text-danger">Payment Error.</h4>
+<h2 class="text-danger">@Model.ErrorMessage</h2>
 
-<div>
-    <h4>Error details</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ErrorMessage)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ErrorMessage)
-        </dd>
-    </dl>
-</div>
+<center>
+    <img src="~/img/progress-close.png" />
+</center>
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+}
+
+
 

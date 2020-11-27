@@ -57,6 +57,11 @@ namespace CheckoutPortal.Controllers
         {
             var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl);
 
+            if (!ModelState.IsValid)
+            {
+                return View("Index", request);
+            }
+
             if (checkoutConfig.PaymentRequest != null)
             {
                 var mdel = new Transactions.Api.Models.Transactions.PRCreateTransactionRequest() { CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails() };
@@ -88,7 +93,7 @@ namespace CheckoutPortal.Controllers
                 var result = await transactionsApiClient.CreateTransaction(mdel);
                 if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
                 {
-                    return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message });
+                    return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message, RequestId = HttpContext.TraceIdentifier });
                 }
             }
 
@@ -159,7 +164,15 @@ namespace CheckoutPortal.Controllers
 
             // TODO: check if terminal is not active
 
-            // TODO: check payment request state
+            // Check payment request state. TODO: we can try to pay failed requests again
+            if (checkoutConfig.PaymentRequest?.QuickStatus == Transactions.Api.Models.PaymentRequests.Enums.PayReqQuickStatusFilterTypeEnum.Completed)
+            {
+                throw new BusinessException(Messages.PaymentRequestAlreadyPayed);
+            }
+            else if (checkoutConfig.PaymentRequest?.QuickStatus == Transactions.Api.Models.PaymentRequests.Enums.PayReqQuickStatusFilterTypeEnum.Canceled)
+            {
+                throw new BusinessException(Messages.PaymentRequestClosed);
+            }
 
             try
             {

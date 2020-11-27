@@ -24,6 +24,7 @@ namespace CheckoutPortal.Models
         [StringLength(50, MinimumLength = 2)]
         public string Name { get; set; }
 
+        [Required]
         [StringLength(20)]
         public string NationalID { get; set; }
 
@@ -67,7 +68,7 @@ namespace CheckoutPortal.Models
 
         [Required]
         //[Shared.Helpers.Models.CardExpirationValidator]
-        [RegularExpression("^ *[0-9]{2} */ *[0-9]{2} *$")]
+        [RegularExpression("^ *[0-9]{2} */ *[0-9]{2} *$", ErrorMessageResourceName = "CardExpirationValidator", ErrorMessageResourceType = typeof(CheckoutPortal.Messages))]
         public string CardExpiration { get; set; }
 
         [Required]
