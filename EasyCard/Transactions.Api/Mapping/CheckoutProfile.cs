@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.System;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Shared.Models;
@@ -23,6 +24,14 @@ namespace Transactions.Api.Mapping
         {
             CreateMap<TerminalSettings, TerminalCheckoutCombinedSettings>();
             CreateMap<TerminalCheckoutSettings, TerminalCheckoutCombinedSettings>();
+
+            CreateMap<Merchant, TerminalCheckoutCombinedSettings>()
+                .ForMember(d => d.MarketingName, o => o.MapFrom(d => string.IsNullOrWhiteSpace(d.MarketingName) ? d.BusinessName : d.MarketingName))
+                .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<Terminal, TerminalCheckoutCombinedSettings>()
+                .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
+                .ForAllOtherMembers(d => d.Ignore());
         }
     }
 }

@@ -65,6 +65,8 @@ namespace Shared.Helpers
                 return null;
             }
 
+            expirationStr = expirationStr.Replace(" ", string.Empty);
+
             var parts = expirationStr.Split("/");
 
             if (parts.Length != 2)

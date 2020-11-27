@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CheckoutPortal.Models;
 using Merchants.Shared.Models;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using Transactions.Api.Models.PaymentRequests;
@@ -34,6 +35,29 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails == null ? null : d.DealDetails.ConsumerID))
                 .ForMember(d => d.Phone, o => o.MapFrom(d => d.DealDetails == null ? null : d.DealDetails.ConsumerPhone))
                 .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<ChargeViewModel, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>();
+
+            CreateMap<ChargeViewModel, Transactions.Api.Models.Transactions.CreateTransactionRequest>()
+                .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.Amount))
+                .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency));
+
+            CreateMap<ChargeViewModel, Shared.Integration.Models.CreditCardSecureDetails>()
+                .ForMember(d => d.CardNumber, o => o.MapFrom(d => string.IsNullOrWhiteSpace(d.CardNumber) ? null : d.CardNumber.Replace(" ", string.Empty)))
+                .ForMember(d => d.Cvv, o => o.MapFrom(d => d.Cvv))
+                .ForMember(d => d.CardExpiration, o => o.MapFrom(d => string.IsNullOrWhiteSpace(d.CardExpiration) ? null : CreditCardHelpers.ParseCardExpiration(d.CardExpiration)))
+                .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.Name))
+                .ForMember(d => d.CardOwnerNationalID, o => o.MapFrom(d => d.NationalID));
+
+            CreateMap<ChargeViewModel, Shared.Integration.Models.DealDetails>()
+                .ForMember(d => d.DealDescription, o => o.MapFrom(d => d.Description))
+                .ForMember(d => d.ConsumerEmail, o => o.MapFrom(d => d.Email))
+                .ForMember(d => d.ConsumerPhone, o => o.MapFrom(d => d.Phone))
+                .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.ConsumerID));
+
+            CreateMap<PaymentRequestInfo, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>();
+            CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>();
+            CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, Transactions.Api.Models.Transactions.CreateTransactionRequest>();
         }
     }
 }

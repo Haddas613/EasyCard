@@ -9,9 +9,9 @@ namespace Transactions.Api.Extensions
 {
     public static class PaymentRequestsHelper
     {
-        public static PayReqQuickStatusFilterTypeEnum GetQuickStatus(this PaymentRequestStatusEnum @enum)
+        public static PayReqQuickStatusFilterTypeEnum GetQuickStatus(this PaymentRequestStatusEnum @enum, DateTime? dueDate)
         {
-            if ((int)@enum >= 1 && (int)@enum <= 40)
+            if ((int)@enum >= 1 && (int)@enum < 4)
             {
                 return PayReqQuickStatusFilterTypeEnum.Pending;
             }
@@ -21,12 +21,12 @@ namespace Transactions.Api.Extensions
                 return PayReqQuickStatusFilterTypeEnum.Completed;
             }
 
-            if (@enum == PaymentRequestStatusEnum.Canceled)
+            if (@enum == PaymentRequestStatusEnum.Canceled || @enum == PaymentRequestStatusEnum.Rejected)
             {
                 return PayReqQuickStatusFilterTypeEnum.Canceled;
             }
 
-            if (@enum == PaymentRequestStatusEnum.Rejected)
+            if (dueDate.HasValue && dueDate < DateTime.UtcNow)
             {
                 return PayReqQuickStatusFilterTypeEnum.Overdue;
             }

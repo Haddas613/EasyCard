@@ -23,11 +23,15 @@ namespace Transactions.Api.Mapping
             CreateMap<PaymentRequestCreate, PaymentRequest>();
 
             CreateMap<PaymentRequest, PaymentRequestSummary>()
-                  .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus()))
-                  .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID));
+                .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.DueDate)))
+                .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID));
 
-            CreateMap<PaymentRequest, PaymentRequestResponse>();
+            CreateMap<PaymentRequest, PaymentRequestResponse>()
+                .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.DueDate)));
+
             CreateMap<PaymentRequest, PaymentRequestInfo>();
+
+            CreateMap<PaymentRequestHistory, PaymentRequestHistorySummary>();
         }
     }
 }

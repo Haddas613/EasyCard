@@ -20,14 +20,12 @@ namespace Transactions.Api.Models.PaymentRequests
         /// </summary>
         public Guid? TerminalID { get; set; }
 
-        [EnumDataType(typeof(PaymentRequestStatusEnum))]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public PaymentRequestStatusEnum Status { get; set; }
-
         public Guid? ConsumerID { get; set; }
 
         public Guid? PaymentTransactionID { get; set; }
 
         public string PaymentRequestUrl { get; set; }
-    }
+
+        public IEnumerable<PaymentRequestHistorySummary> History { get; set; }
+}
 }

@@ -11,5 +11,9 @@ namespace Transactions.Api.Models.Checkout
     {
         [StringLength(250)]
         public string DefaultChargeDescription { get; set; }
+
+        public string MarketingName { get; set; }
+
+        public Guid? TerminalID { get; set; }
     }
 }

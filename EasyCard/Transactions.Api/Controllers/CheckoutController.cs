@@ -64,6 +64,8 @@ namespace Transactions.Api.Controllers
 
             mapper.Map(terminal.CheckoutSettings, response.Settings);
             mapper.Map(terminal.Settings, response.Settings);
+            mapper.Map(terminal.Merchant, response.Settings);
+            mapper.Map(terminal, response.Settings);
 
             if (paymentRequestID.HasValue)
             {

@@ -14,15 +14,15 @@ namespace Shared.Integration.Models
     public enum CardPresenceEnum : short
     {
         /// <summary>
-        /// Magnetic
-        /// </summary>
-        [EnumMember(Value = "regular")]
-        Regular = 0,
-
-        /// <summary>
         /// Telephone deal
         /// </summary>
         [EnumMember(Value = "cardNotPresent")]
-        CardNotPresent = 1
+        CardNotPresent = 0,
+
+        /// <summary>
+        /// Magnetic
+        /// </summary>
+        [EnumMember(Value = "regular")]
+        Regular = 1,
     }
 }

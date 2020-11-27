@@ -69,6 +69,21 @@ namespace Transactions.Business.Entities
         public int NumberOfPayments { get; set; }
 
         /// <summary>
+        /// Initial installment payment
+        /// </summary>
+        public decimal InitialPaymentAmount { get; set; }
+
+        /// <summary>
+        /// TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+        /// </summary>
+        public decimal TotalAmount { get; set; }
+
+        /// <summary>
+        /// Amount of one instalment payment
+        /// </summary>
+        public decimal InstallmentPaymentAmount { get; set; }
+
+        /// <summary>
         /// This amount
         /// </summary>
         public decimal PaymentRequestAmount { get; set; }
@@ -123,6 +138,21 @@ namespace Transactions.Business.Entities
 
         public string FromAddress { get; set; }
 
-        // TODO: recalculate items and fill default SKU
+        // TODO: calculate items, VAT
+        [Obsolete]
+        public void Calculate()
+        {
+            if (NumberOfPayments == 0)
+            {
+                NumberOfPayments = 1;
+            }
+
+            if (InitialPaymentAmount == 0)
+            {
+                InitialPaymentAmount = PaymentRequestAmount;
+            }
+
+            TotalAmount = InitialPaymentAmount + (InstallmentPaymentAmount * (NumberOfPayments - 1));
+        }
     }
 }

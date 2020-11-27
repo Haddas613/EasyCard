@@ -69,10 +69,10 @@ namespace Transactions.Api.Extensions.Filtering
         private static IQueryable<PaymentRequest> FilterByQuickStatus(IQueryable<PaymentRequest> src, PayReqQuickStatusFilterTypeEnum typeEnum)
             => typeEnum switch
             {
-                PayReqQuickStatusFilterTypeEnum.Pending => src.Where(t => (int)t.Status >= 1 && (int)t.Status <= 3),
+                PayReqQuickStatusFilterTypeEnum.Pending => src.Where(t => (int)t.Status >= 1 && (int)t.Status < 4),
                 PayReqQuickStatusFilterTypeEnum.Completed => src.Where(t => t.Status == Shared.Enums.PaymentRequestStatusEnum.Payed),
-                PayReqQuickStatusFilterTypeEnum.Canceled => src.Where(t => t.Status == Shared.Enums.PaymentRequestStatusEnum.Canceled),
-                PayReqQuickStatusFilterTypeEnum.Overdue => src.Where(t => t.Status == Shared.Enums.PaymentRequestStatusEnum.Rejected),
+                PayReqQuickStatusFilterTypeEnum.Canceled => src.Where(t => t.Status == Shared.Enums.PaymentRequestStatusEnum.Canceled || t.Status == Shared.Enums.PaymentRequestStatusEnum.Rejected),
+                PayReqQuickStatusFilterTypeEnum.Overdue => src.Where(t => t.DueDate.HasValue && t.DueDate < DateTime.UtcNow),
                 PayReqQuickStatusFilterTypeEnum.Failed => src.Where(t => (int)t.Status < 0),
                 _ => src,
             };

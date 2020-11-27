@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Models.PaymentRequests.Enums;
+using Transactions.Shared.Enums;
 using IntegrationModels = Shared.Integration.Models;
 
 namespace Transactions.Api.Models.PaymentRequests
@@ -34,6 +35,10 @@ namespace Transactions.Api.Models.PaymentRequests
         [EnumDataType(typeof(CurrencyEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyEnum Currency { get; set; }
+
+        [EnumDataType(typeof(PaymentRequestStatusEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PaymentRequestStatusEnum Status { get; set; }
 
         [EnumDataType(typeof(PayReqQuickStatusFilterTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]

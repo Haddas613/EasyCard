@@ -9,7 +9,6 @@ namespace CheckoutPortal.Models
 {
     public class CardRequest
     {
-        // TODO: validation
         /// <summary>
         /// Deal description
         /// </summary>
@@ -18,16 +17,12 @@ namespace CheckoutPortal.Models
         /// <summary>
         /// Consumer name
         /// </summary>
-        [StringLength(50, MinimumLength = 2)]
         public string Name { get; set; }
 
-        [StringLength(20)]
         public string NationalID { get; set; }
 
-        // TODO: validation
         public string Email { get; set; }
 
-        // TODO: validation
         public string Phone { get; set; }
 
         public Guid? ConsumerID { get; set; }
@@ -36,10 +31,8 @@ namespace CheckoutPortal.Models
 
         public decimal Amount { get; set; }
 
-        // TODO: validation
         public string RedirectUrl { get; set; }
 
-        // TODO: validation
         /// <summary>
         /// Key for merchant's system - to have ability to validate redirect
         /// </summary>

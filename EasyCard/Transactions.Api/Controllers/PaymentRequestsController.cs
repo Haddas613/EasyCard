@@ -24,6 +24,7 @@ using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Transactions.Shared;
 using Microsoft.Extensions.Options;
+using Transactions.Api.Extensions;
 
 namespace Transactions.Api.Controllers
 {
@@ -42,6 +43,7 @@ namespace Transactions.Api.Controllers
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly ApplicationSettings appSettings;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
+        private readonly ISystemSettingsService systemSettingsService;
 
         public PaymentRequestsController(
                     IPaymentRequestsService paymentRequestsService,
@@ -51,7 +53,8 @@ namespace Transactions.Api.Controllers
                     IHttpContextAccessorWrapper httpContextAccessor,
                     IConsumersService consumersService,
                     IOptions<ApplicationSettings> appSettings,
-                    ICryptoServiceCompact cryptoServiceCompact)
+                    ICryptoServiceCompact cryptoServiceCompact,
+                    ISystemSettingsService systemSettingsService)
         {
             this.paymentRequestsService = paymentRequestsService;
             this.mapper = mapper;
@@ -62,6 +65,7 @@ namespace Transactions.Api.Controllers
             this.consumersService = consumersService;
             this.appSettings = appSettings.Value;
             this.cryptoServiceCompact = cryptoServiceCompact;
+            this.systemSettingsService = systemSettingsService;
         }
 
         [HttpGet]
@@ -107,6 +111,8 @@ namespace Transactions.Api.Controllers
 
                 paymentRequest.PaymentRequestUrl = GetPaymentRequestUrl(paymentRequest.PaymentRequestID, terminal.SharedApiKey);
 
+                paymentRequest.History = await mapper.ProjectTo<PaymentRequestHistorySummary>(paymentRequestsService.GetPaymentRequestHistory(dbPaymentRequest.PaymentRequestID).OrderByDescending(d => d.PaymentRequestHistoryID)).ToListAsync();
+
                 return Ok(paymentRequest);
             }
         }
@@ -120,9 +126,26 @@ namespace Transactions.Api.Controllers
 
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
-            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+
+            // TODO: caching
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            // merge system settings with terminal settings
+            mapper.Map(systemSettings, terminal);
+
+            // Check consumer
+            var consumer = model.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
 
             var newPaymentRequest = mapper.Map<PaymentRequest>(model);
+
+            // Update details if needed
+            newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest);
+            if (model.IssueInvoice.GetValueOrDefault())
+            {
+                model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings);
+            }
+
+            newPaymentRequest.Calculate();
 
             newPaymentRequest.MerchantID = terminal.MerchantID;
 

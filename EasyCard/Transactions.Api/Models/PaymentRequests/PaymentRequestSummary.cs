@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Transactions.Api.Extensions;
 using Transactions.Api.Models.PaymentRequests.Enums;
 using Transactions.Shared.Enums;
 

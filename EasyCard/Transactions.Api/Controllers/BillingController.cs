@@ -146,6 +146,8 @@ namespace Transactions.Api.Controllers
 
             newBillingDeal.MerchantID = terminal.MerchantID;
 
+            // TODO: calculation
+
             newBillingDeal.ApplyAuditInfo(httpContextAccessor);
 
             await billingDealService.CreateEntity(newBillingDeal);
