@@ -55,7 +55,7 @@ export default class InvoicingApi {
     async resend(terminalId, invoicesIDs){
         return await this.base.post(this.invoicingUrl + '/resend', {
             terminalID: terminalId,
-            invoicesIDs: invoicesID
+            invoicesIDs: invoicesIDs
         });
     }
 }

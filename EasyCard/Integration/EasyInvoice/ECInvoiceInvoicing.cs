@@ -1,6 +1,7 @@
 ﻿using EasyInvoice.Converters;
 using EasyInvoice.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Shared.Helpers;
 using Shared.Integration;
@@ -25,11 +26,11 @@ namespace EasyInvoice
 
         public ECInvoiceInvoicing(
             IWebApiClient apiClient,
-            EasyInvoiceGlobalSettings configuration,
+            IOptions<EasyInvoiceGlobalSettings> configuration,
             ILogger<ECInvoiceInvoicing> logger,
             IIntegrationRequestLogStorageService storageService)
         {
-            this.configuration = configuration;
+            this.configuration = configuration.Value;
 
             this.storageService = storageService;
 

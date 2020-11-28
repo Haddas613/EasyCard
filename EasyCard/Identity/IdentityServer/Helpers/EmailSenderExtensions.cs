@@ -16,7 +16,7 @@ namespace IdentityServer.Helpers
                 TemplateCode = EmailTemplateCodes.ConfirmationEmail,
                 EmailTo = email,
                 Subject = IdentityMessages.ConfirmAccount,
-                Substitutions = new TextSubstitution[] { new TextSubstitution { Substitution = "{confirmationLink}", Value = HtmlEncoder.Default.Encode(link) } }
+                Substitutions = new TextSubstitution[] { new TextSubstitution { Substitution = "confirmationLink", Value = HtmlEncoder.Default.Encode(link) } }
             };
 
             await emailSender.SendEmail(emailMessage);
@@ -29,7 +29,7 @@ namespace IdentityServer.Helpers
                 TemplateCode = EmailTemplateCodes.ResetPasswordEmail,
                 EmailTo = email,
                 Subject = IdentityMessages.ResetPassword,
-                Substitutions = new TextSubstitution[] { new TextSubstitution { Substitution = "{resetPasswordLink}", Value = HtmlEncoder.Default.Encode(link) } }
+                Substitutions = new TextSubstitution[] { new TextSubstitution { Substitution = "resetPasswordLink", Value = HtmlEncoder.Default.Encode(link) } }
             };
 
             await emailSender.SendEmail(emailMessage);
@@ -42,7 +42,7 @@ namespace IdentityServer.Helpers
                 TemplateCode = EmailTemplateCodes.TwoFactorAuth,
                 EmailTo = email,
                 Subject = IdentityMessages.TwoFactorAuth,
-                Substitutions = new TextSubstitution[] { new TextSubstitution { Substitution = "{code}", Value = HtmlEncoder.Default.Encode(code) } }
+                Substitutions = new TextSubstitution[] { new TextSubstitution { Substitution = "code", Value = HtmlEncoder.Default.Encode(code) } }
             };
 
             await emailSender.SendEmail(emailMessage);

@@ -13,8 +13,6 @@ namespace EasyInvoice.Converters
     {
         public static ECInvoiceCreateDocumentRequest GetInvoiceCreateDocumentRequest(InvoicingCreateDocumentRequest message)
         {
-            var res = new ECInvoiceCreateDocumentRequest() { };
-
             var json = new ECInvoiceCreateDocumentRequest
             {
                 CustomerAddress = GetCustomerAddress(message.DealDetails?.ConsumerAddress),
@@ -24,7 +22,6 @@ namespace EasyInvoice.Converters
                 CustomerTaxId = message.ConsumerNationalID,
                 Description = message.DealDetails?.DealDescription,
                 DocumentType = GetECInvoiceDocumentType((message.InvoiceDetails?.InvoiceType).GetValueOrDefault()).ToString(),
-                //KeyStorePassword = this.configuration.KeyStorePassword,
                 SendEmail = true,
                 TotalAmount = message.InvoiceAmount,
 
@@ -42,13 +39,9 @@ namespace EasyInvoice.Converters
                 {
                     GetPaymentFromCard(message)
                 }
-
-
             };
 
-
-
-            return res;
+            return json;
         }
 
         public static IList<ECInvoiceRow> GetRows(InvoicingCreateDocumentRequest message)

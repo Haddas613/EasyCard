@@ -12,6 +12,8 @@ namespace Transactions.Shared
 
         public string ClearingHouseRequestsLogStorageTable { get; set; }
 
+        public string EasyInvoiceRequestsLogStorageTable { get; set; }
+
         public int FiltersGlobalPageSizeLimit { get; set; } = 1000;
 
         public int TransmissionMaxBatchSize { get; set; } = 10;
@@ -21,5 +23,11 @@ namespace Transactions.Shared
         public string CheckoutPortalUrl { get; set; }
 
         public string EncrKeyForSharedApiKey { get; set; }
+
+        public string EmailTableName { get; set; }
+
+        public string EmailQueueName { get; set; }
+
+        public string InvoiceQueueName { get; set; }
     }
 }

@@ -29,6 +29,7 @@ using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
+using Shared.Helpers.Queue;
 using Shared.Helpers.Security;
 using Shared.Integration.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -39,6 +40,7 @@ using Transactions.Business.Data;
 using Transactions.Business.Services;
 using Transactions.Shared;
 using SharedApi = Shared.Api;
+using SharedHelpers = Shared.Helpers;
 
 namespace Transactions.Api
 {
@@ -215,9 +217,11 @@ namespace Transactions.Api
             // integration
             services.Configure<Shva.ShvaGlobalSettings>(Configuration.GetSection("ShvaGlobalSettings"));
             services.Configure<ClearingHouse.ClearingHouseGlobalSettings>(Configuration.GetSection("ClearingHouseGlobalSettings"));
+            services.Configure<EasyInvoice.EasyInvoiceGlobalSettings>(Configuration.GetSection("EasyInvoiceGlobalSettings"));
 
             services.AddSingleton<IAggregatorResolver, AggregatorResolver>();
             services.AddSingleton<IProcessorResolver, ProcessorResolver>();
+            services.AddSingleton<IInvoicingResolver, InvoicingResolver>();
 
             services.AddSingleton<Shva.ShvaProcessor, Shva.ShvaProcessor>(serviceProvider =>
             {
@@ -242,6 +246,17 @@ namespace Transactions.Api
                 return new ClearingHouse.ClearingHouseAggregator(webApiClient, logger, chCfg, tokenSvc, storageService);
             });
 
+            services.AddSingleton<EasyInvoice.ECInvoiceInvoicing, EasyInvoice.ECInvoiceInvoicing>(serviceProvider =>
+            {
+                var chCfg = serviceProvider.GetRequiredService<IOptions<EasyInvoice.EasyInvoiceGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<EasyInvoice.ECInvoiceInvoicing>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.EasyInvoiceRequestsLogStorageTable, cfg.EasyInvoiceRequestsLogStorageTable);
+
+                return new EasyInvoice.ECInvoiceInvoicing(webApiClient, chCfg, logger, storageService);
+            });
+
             services.Configure<RequestResponseLoggingSettings>((options) =>
             {
                 options.RequestsLogStorageTable = appConfig.RequestsLogStorageTable;
@@ -254,6 +269,20 @@ namespace Transactions.Api
             {
                 var cryptoCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
                 return new AesGcmCryptoServiceCompact(cryptoCfg.EncrKeyForSharedApiKey);
+            });
+
+            services.AddSingleton<SharedHelpers.Email.IEmailSender, AzureQueueEmailSender>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
+                var queue = new AzureQueue(cfg.DefaultStorageConnectionString, cfg.EmailQueueName);
+                return new AzureQueueEmailSender(queue, cfg.DefaultStorageConnectionString, cfg.EmailTableName);
+            });
+
+            services.AddSingleton<IQueueResolver, QueueResolver>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
+                var invoiceQueue = new AzureQueue(cfg.DefaultStorageConnectionString, cfg.InvoiceQueueName);
+                return new QueueResolver(invoiceQueue);
             });
         }
 

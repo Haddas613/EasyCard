@@ -35,7 +35,7 @@ namespace Transactions.Business.Services
 
         public async Task<IEnumerable<Guid>> StartSending(Guid terminalID, IEnumerable<Guid> invoicesIDs, IDbContextTransaction dbTransaction)
         {
-            return await context.StartSending(terminalID, invoicesIDs, dbTransaction);
+            return await context.StartSendingInvoices(terminalID, invoicesIDs, dbTransaction);
         }
 
         public async override Task UpdateEntity(Invoice entity, IDbContextTransaction dbTransaction = null)

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Shared.Helpers;
 using Shared.Integration.Models;
+using Shared.Integration.Models.Invoicing;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Business.Entities;
@@ -69,9 +70,17 @@ namespace Transactions.Api.Mapping
             CreateMap<AggregatorCancelTransactionResponse, PaymentTransaction>();
             CreateMap<AggregatorTransactionResponse, PaymentTransaction>();
 
-            CreateMap<CreditCardTokenKeyVault, SharedIntegration.Models.CreditCardSecureDetails>();
+            CreateMap<CreditCardTokenKeyVault, CreditCardSecureDetails>();
 
-            CreateMap<SharedIntegration.Models.CreditCardSecureDetails, SharedIntegration.Models.CreditCardSecureDetails>();
+            CreateMap<CreditCardSecureDetails, CreditCardSecureDetails>();
+
+            CreateMap<Invoice, InvoicingCreateDocumentRequest>()
+                 .ForMember(m => m.ConsumerName, s => s.MapFrom(src => src.CardOwnerName))
+                 .ForMember(m => m.ConsumerNationalID, s => s.MapFrom(src => src.CardOwnerNationalID));
+
+            CreateMap<InvoicingCreateDocumentResponse, Invoice>()
+                 .ForMember(m => m.InvoiceNumber, s => s.MapFrom(src => src.DocumentNumber));
+
         }
     }
 }

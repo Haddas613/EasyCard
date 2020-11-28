@@ -174,7 +174,8 @@ class ApiBase {
                     return result;
                 } else if (request.status === 401) {
                     Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error' });
-                    await this.oidc.signOut();
+                    //await this.oidc.signOut();
+                    location.reload();
                     return null;
                 } else if (request.status === 404) {
                     Vue.toasted.show(i18n.t('NotFound'), { type: 'error' });

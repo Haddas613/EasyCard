@@ -330,12 +330,12 @@ namespace Transactions.Api.Controllers
             var settings = terminal.InvoiceSettings;
 
             var emailSubject = invoice.InvoiceDetails?.InvoiceSubject ?? settings.DefaultInvoiceSubject;
-            var emailTemplateCode = settings.InvoiceTemplateCode ?? "invoice";
+            var emailTemplateCode = settings.InvoiceTemplateCode ?? "Invoice";
             var substitutions = new List<TextSubstitution>();
 
             substitutions.Add(new TextSubstitution(nameof(invoice.InvoiceNumber), invoice.InvoiceNumber));
-            substitutions.Add(new TextSubstitution(nameof(invoice.InvoiceDate), invoice.InvoiceDate.GetValueOrDefault().ToString("o")));
-            substitutions.Add(new TextSubstitution(nameof(invoice.InvoiceAmount), invoice.InvoiceAmount.ToString("F2")));
+            substitutions.Add(new TextSubstitution(nameof(invoice.InvoiceDate), invoice.InvoiceDate.GetValueOrDefault().ToString("d"))); // TODO: locale
+            substitutions.Add(new TextSubstitution(nameof(invoice.InvoiceAmount), $"{invoice.InvoiceAmount.ToString("F2")}{invoice.Currency.GetCurrencySymbol()}"));
             substitutions.Add(new TextSubstitution(nameof(invoice.CopyDonwnloadUrl), invoice.CopyDonwnloadUrl));
             substitutions.Add(new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName));
 

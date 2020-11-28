@@ -212,7 +212,7 @@ SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
             }
         }
 
-        public async Task<IEnumerable<Guid>> StartSending(Guid terminalID, IEnumerable<Guid> invoicesIDs, IDbContextTransaction dbTransaction)
+        public async Task<IEnumerable<Guid>> StartSendingInvoices(Guid terminalID, IEnumerable<Guid> invoicesIDs, IDbContextTransaction dbTransaction)
         {
             user.CheckTerminalPermission(terminalID);
 
@@ -554,6 +554,9 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
 
                 builder.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                 builder.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
+
+                builder.Property(b => b.CopyDonwnloadUrl).IsRequired(false).IsUnicode(false);
+                builder.Property(b => b.DownloadUrl).IsRequired(false).IsUnicode(false);
             }
         }
 

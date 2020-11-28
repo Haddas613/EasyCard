@@ -50,7 +50,7 @@
         </v-flex> -->
         <ec-list :items="invoices">
           <template v-slot:prepend="{ item }">
-            <v-checkbox v-model="item.selected" :disabled="item.$status != 'initial'"></v-checkbox>
+            <v-checkbox v-model="item.selected" :disabled="item.$status == 'sending'"></v-checkbox>
           </template>
           <template v-slot:left="{ item }">
             <v-col cols="12" md="6" lg="6" class="pt-1 caption" v-if="item.invoiceNumber">
