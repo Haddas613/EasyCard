@@ -25,6 +25,10 @@ using Shared.Api.UI;
 using Transactions.Shared;
 using Microsoft.Extensions.Options;
 using Transactions.Api.Extensions;
+using Shared.Helpers.Email;
+using Merchants.Business.Entities.Terminal;
+using Shared.Helpers.Templating;
+using Shared.Helpers;
 
 namespace Transactions.Api.Controllers
 {
@@ -44,6 +48,7 @@ namespace Transactions.Api.Controllers
         private readonly ApplicationSettings appSettings;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly ISystemSettingsService systemSettingsService;
+        private readonly IEmailSender emailSender;
 
         public PaymentRequestsController(
                     IPaymentRequestsService paymentRequestsService,
@@ -54,7 +59,8 @@ namespace Transactions.Api.Controllers
                     IConsumersService consumersService,
                     IOptions<ApplicationSettings> appSettings,
                     ICryptoServiceCompact cryptoServiceCompact,
-                    ISystemSettingsService systemSettingsService)
+                    ISystemSettingsService systemSettingsService,
+                    IEmailSender emailSender)
         {
             this.paymentRequestsService = paymentRequestsService;
             this.mapper = mapper;
@@ -66,6 +72,7 @@ namespace Transactions.Api.Controllers
             this.appSettings = appSettings.Value;
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.systemSettingsService = systemSettingsService;
+            this.emailSender = emailSender;
         }
 
         [HttpGet]
@@ -109,7 +116,7 @@ namespace Transactions.Api.Controllers
 
                 var paymentRequest = mapper.Map<PaymentRequestResponse>(dbPaymentRequest);
 
-                paymentRequest.PaymentRequestUrl = GetPaymentRequestUrl(paymentRequest.PaymentRequestID, terminal.SharedApiKey);
+                paymentRequest.PaymentRequestUrl = GetPaymentRequestUrl(paymentRequest.PaymentRequestID, terminal.SharedApiKey)?.Item1;
 
                 paymentRequest.History = await mapper.ProjectTo<PaymentRequestHistorySummary>(paymentRequestsService.GetPaymentRequestHistory(dbPaymentRequest.PaymentRequestID).OrderByDescending(d => d.PaymentRequestHistoryID)).ToListAsync();
 
@@ -153,17 +160,67 @@ namespace Transactions.Api.Controllers
 
             await paymentRequestsService.CreateEntity(newPaymentRequest);
 
-            return CreatedAtAction(nameof(GetPaymentRequest), new { paymentRequestID = newPaymentRequest.PaymentRequestID }, new OperationResponse(Transactions.Shared.Messages.PaymentRequestCreated, StatusEnum.Success, newPaymentRequest.PaymentRequestID));
+            var response = CreatedAtAction(nameof(GetPaymentRequest), new { paymentRequestID = newPaymentRequest.PaymentRequestID }, new OperationResponse(Transactions.Shared.Messages.PaymentRequestCreated, StatusEnum.Success, newPaymentRequest.PaymentRequestID));
+
+            if (terminal.SharedApiKey == null)
+            {
+                return BadRequest(new OperationResponse("Please add Shared Api Key first", StatusEnum.Error, newPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+            }
+
+            await emailSender.SendEmail(BuildPaymentRequestEmail(newPaymentRequest, terminal));
+
+            await paymentRequestsService.UpdateEntityWithStatus(newPaymentRequest, Shared.Enums.PaymentRequestStatusEnum.Sent);
+
+            return response;
         }
 
-        private string GetPaymentRequestUrl(Guid? paymentRequestID, byte[] sharedTerminalApiKey)
+        private Tuple<string, string> GetPaymentRequestUrl(Guid? paymentRequestID, byte[] sharedTerminalApiKey)
         {
+            if (sharedTerminalApiKey == null)
+            {
+                return null;
+            }
+
             var uriBuilder = new UriBuilder(appSettings.CheckoutPortalUrl);
             var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
             query["paymentRequest"] = Convert.ToBase64String(paymentRequestID.Value.ToByteArray());
             query["apiKey"] = Convert.ToBase64String(sharedTerminalApiKey);
             uriBuilder.Query = query.ToString();
-            return uriBuilder.ToString();
+            var url = uriBuilder.ToString();
+
+            query["reject"] = true.ToString();
+            uriBuilder.Query = query.ToString();
+            var rejectUrl = uriBuilder.ToString();
+
+            return Tuple.Create(url, rejectUrl);
+        }
+
+        private Email BuildPaymentRequestEmail(PaymentRequest paymentRequest, Terminal terminal)
+        {
+            var settings = terminal.PaymentRequestSettings;
+
+            var emailSubject = paymentRequest.RequestSubject ?? settings.DefaultRequestSubject;
+            var emailTemplateCode = settings.EmailTemplateCode ?? nameof(PaymentRequest);
+            var url = GetPaymentRequestUrl(paymentRequest.PaymentRequestID, terminal.SharedApiKey);
+            var substitutions = new List<TextSubstitution>();
+
+            substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{appSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));
+            substitutions.Add(new TextSubstitution("PayWithEasyCardBtnUrl", $"{appSettings.CheckoutPortalUrl}/img/pay-with-easycard.png")); // TODO: make dynamic path to fill "viewed" status
+            substitutions.Add(new TextSubstitution(nameof(paymentRequest.DueDate), paymentRequest.DueDate.GetValueOrDefault().ToString("d"))); // TODO: locale
+            substitutions.Add(new TextSubstitution(nameof(paymentRequest.PaymentRequestAmount), $"{paymentRequest.PaymentRequestAmount.ToString("F2")}{paymentRequest.Currency.GetCurrencySymbol()}"));
+            substitutions.Add(new TextSubstitution("PaymentRequestUrl", url.Item1));
+            substitutions.Add(new TextSubstitution("RejectPaymentRequestUrl", url.Item2));
+            substitutions.Add(new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName));
+
+            var email = new Email
+            {
+                EmailTo = paymentRequest.DealDetails?.ConsumerEmail,
+                Subject = emailSubject,
+                TemplateCode = emailTemplateCode,
+                Substitutions = substitutions.ToArray()
+            };
+
+            return email;
         }
     }
 }

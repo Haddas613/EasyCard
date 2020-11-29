@@ -69,6 +69,5 @@
     <Build Include="dbo\Tables\Invoice.sql" />
     <Build Include="dbo\Tables\PaymentRequestHistory.sql" />
     <Build Include="dbo\Tables\PaymentRequest.sql" />
-    <Build Include="Security\transactionsapi.sql" />
   </ItemGroup>
 </Project>

@@ -331,7 +331,7 @@ namespace Transactions.Api.Controllers
             var settings = terminal.InvoiceSettings;
 
             var emailSubject = invoice.InvoiceDetails?.InvoiceSubject ?? settings.DefaultInvoiceSubject;
-            var emailTemplateCode = settings.InvoiceTemplateCode ?? "Invoice";
+            var emailTemplateCode = settings.EmailTemplateCode ?? nameof(Invoice);
             var substitutions = new List<TextSubstitution>();
 
             substitutions.Add(new TextSubstitution(nameof(invoice.InvoiceNumber), invoice.InvoiceNumber));

@@ -16,6 +16,7 @@ namespace Merchants.Shared.Models
         // TODO: validation
         public string[] SendCCTo { get; set; }
 
-        public string InvoiceTemplateCode { get; set; }
+        [StringLength(50)]
+        public string EmailTemplateCode { get; set; }
     }
 }
