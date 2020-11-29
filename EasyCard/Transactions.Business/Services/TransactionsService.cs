@@ -33,7 +33,21 @@ namespace Transactions.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
-        public IQueryable<CreditCardTokenDetails> GetTokens() => context.CreditCardTokenDetails;
+        public IQueryable<CreditCardTokenDetails> GetTokens()
+        {
+            if (user.IsAdmin())
+            {
+                return context.CreditCardTokenDetails;
+            }
+            else if (user.IsTerminal())
+            {
+                return context.CreditCardTokenDetails.Where(t => t.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.CreditCardTokenDetails.Where(t => t.MerchantID == user.GetMerchantID());
+            }
+        }
 
         public IQueryable<PaymentTransaction> GetTransactions()
         {
@@ -48,6 +62,22 @@ namespace Transactions.Business.Services
             else
             {
                 return context.PaymentTransactions.Where(t => t.MerchantID == user.GetMerchantID());
+            }
+        }
+
+        public IQueryable<TransactionHistory> GetTransactionHistories()
+        {
+            if (user.IsAdmin())
+            {
+                return context.TransactionHistories;
+            }
+            else if (user.IsTerminal())
+            {
+                return context.TransactionHistories.Where(t => t.PaymentTransaction.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.TransactionHistories.Where(t => t.PaymentTransaction.MerchantID == user.GetMerchantID());
             }
         }
 
@@ -130,7 +160,7 @@ namespace Transactions.Business.Services
 
         public IQueryable<TransactionHistory> GetTransactionHistory(Guid transactionID)
         {
-            return context.TransactionHistories.Where(d => d.PaymentTransactionID == transactionID);
+            return GetTransactionHistories().Where(d => d.PaymentTransactionID == transactionID);
         }
 
         public async Task<IEnumerable<TransmissionInfo>> StartTransmission(Guid terminalID, IEnumerable<Guid> transactionIDs, IDbContextTransaction dbTransaction = null)

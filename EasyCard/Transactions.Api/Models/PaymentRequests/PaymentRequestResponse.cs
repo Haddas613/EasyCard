@@ -27,5 +27,7 @@ namespace Transactions.Api.Models.PaymentRequests
         public string PaymentRequestUrl { get; set; }
 
         public IEnumerable<PaymentRequestHistorySummary> History { get; set; }
-}
+
+        public decimal Amount { get; set; }
+    }
 }

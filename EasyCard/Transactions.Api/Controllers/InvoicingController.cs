@@ -237,7 +237,7 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse($"{Messages.InvoiceStateIsNotValid}", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier));
             }
 
-            var terminal = EnsureExists(await terminalsService.GetTerminal(dbInvoice.TerminalID.GetValueOrDefault()));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(dbInvoice.TerminalID));
 
             // TODO: caching
             var systemSettings = await systemSettingsService.GetSystemSettings();
@@ -283,6 +283,7 @@ namespace Transactions.Api.Controllers
                 var invoicing = invoicingResolver.GetInvoicing(terminalInvoicing);
 
                 var invoicingSettings = invoicingResolver.GetInvoicingTerminalSettings(terminalInvoicing, terminalInvoicing.Settings);
+                dbInvoice.InvoicingID = terminalInvoicing.ExternalSystemID;
 
                 try
                 {

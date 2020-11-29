@@ -285,15 +285,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
             modelBuilder.ApplyConfiguration(new PaymentRequestConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestHistoryConfiguration());
 
-            // security filters
-
-            modelBuilder.Entity<CreditCardTokenDetails>().HasQueryFilter(t => user.IsAdmin() || (t.Active && (user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID())));
-
-            //modelBuilder.Entity<PaymentTransaction>().HasQueryFilter(t => user.IsAdmin() || ((user.IsTerminal() && t.TerminalID == user.GetTerminalID() || t.MerchantID == user.GetMerchantID())));
-
-            modelBuilder.Entity<BillingDeal>().HasQueryFilter(b => user.IsAdmin() || ((user.IsTerminal() && b.TerminalID == user.GetTerminalID() || b.MerchantID == user.GetMerchantID())));
-
-            modelBuilder.Entity<TransactionHistory>().HasQueryFilter(t => user.IsAdmin() || ((user.IsTerminal() && t.PaymentTransaction.TerminalID == user.GetTerminalID() || t.PaymentTransaction.MerchantID == user.GetMerchantID())));
+            // NOTE: security filters moved to Get() methods
 
             base.OnModelCreating(modelBuilder);
         }
@@ -557,6 +549,21 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
 
                 builder.Property(b => b.CopyDonwnloadUrl).IsRequired(false).IsUnicode(false);
                 builder.Property(b => b.DownloadUrl).IsRequired(false).IsUnicode(false);
+
+                builder.OwnsOne(b => b.CreditCardDetails, s =>
+                {
+                    s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
+                    s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
+                    s.Ignore(p => p.CardBin);
+                    s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Ignore(b => b.CardReaderInput);
+                });
+
+                builder.Property(b => b.InstallmentPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.InitialPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").IsRequired();
             }
         }
 
@@ -610,6 +617,10 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
 
                 builder.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                 builder.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
+
+                builder.Property(b => b.InstallmentPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.InitialPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").IsRequired();
             }
         }
 

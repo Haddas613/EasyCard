@@ -88,6 +88,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Billing deal is closed.
+        /// </summary>
+        public static string BillingDealIsClosed {
+            get {
+                return ResourceManager.GetString("BillingDealIsClosed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Billing Deals required.
         /// </summary>
         public static string BillingDealsRequired {

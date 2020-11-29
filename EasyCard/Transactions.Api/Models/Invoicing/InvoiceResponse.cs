@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using IntegrationModels = Shared.Integration.Models;
+using TransactionsApi = Transactions.Api;
 
 namespace Transactions.Api.Models.Invoicing
 {
@@ -68,6 +69,8 @@ namespace Transactions.Api.Models.Invoicing
         [DataType(DataType.Currency)]
         public decimal? InvoiceAmount { get; set; }
 
+        public decimal Amount { get; set; }
+
         [Range(0, 1)]
         [DataType(DataType.Currency)]
         public decimal VATRate { get; set; }
@@ -86,5 +89,10 @@ namespace Transactions.Api.Models.Invoicing
         public InstallmentDetails InstallmentDetails { get; set; }
 
         public Guid? PaymentTransactionID { get; set; }
+
+        /// <summary>
+        /// Credit card information
+        /// </summary>
+        public TransactionsApi.Models.Transactions.CreditCardDetails CreditCardDetails { get; set; }
     }
 }

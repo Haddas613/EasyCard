@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Merchants.Business.Entities.Billing
 {
-    public class Item : IAuditEntity, IEntityBase<Guid>
+    public class Item : IAuditEntity, IEntityBase<Guid>, IMerchantEntity
     {
         public Item()
         {

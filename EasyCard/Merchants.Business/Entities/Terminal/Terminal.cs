@@ -3,6 +3,7 @@ using Merchants.Business.Entities.User;
 using Merchants.Shared.Enums;
 using Merchants.Shared.Models;
 using Shared.Business;
+using Shared.Business.Security;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Text;
 
 namespace Merchants.Business.Entities.Terminal
 {
-    public class Terminal : IEntityBase<Guid>
+    public class Terminal : IEntityBase<Guid>, IMerchantEntity
     {
         public Terminal()
         {

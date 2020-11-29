@@ -138,6 +138,8 @@ namespace Transactions.Business.Entities
 
         public string FromAddress { get; set; }
 
+        public DocumentOriginEnum DocumentOrigin { get; set; }
+
         // TODO: calculate items, VAT
         [Obsolete]
         public void Calculate()

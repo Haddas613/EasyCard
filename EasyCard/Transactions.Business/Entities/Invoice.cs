@@ -12,7 +12,7 @@ using Transactions.Shared.Models;
 
 namespace Transactions.Business.Entities
 {
-    public class Invoice : IEntityBase<Guid>, IAuditEntity, IFinancialItem
+    public class Invoice : IEntityBase<Guid>, IAuditEntity, IFinancialItem, ITerminalEntity, IMerchantEntity
     {
         public Invoice()
         {
@@ -46,12 +46,12 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Terminal
         /// </summary>
-        public Guid? TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
 
         /// <summary>
         /// Merchant
         /// </summary>
-        public Guid? MerchantID { get; set; }
+        public Guid MerchantID { get; set; }
 
         /// <summary>
         /// EasyInvoice or RapidOne
@@ -141,6 +141,13 @@ namespace Transactions.Business.Entities
         public string DownloadUrl { get; set; }
 
         public string CopyDonwnloadUrl { get; set; }
+
+        /// <summary>
+        /// Credit card information
+        /// </summary>
+        public CreditCardDetails CreditCardDetails { get; set; }
+
+        public DocumentOriginEnum DocumentOrigin { get; set; }
 
         // TODO: calculate items
         [Obsolete]

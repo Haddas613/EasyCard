@@ -118,6 +118,8 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         public decimal TransactionAmount { get; set; }
 
+        public decimal Amount { get; set; }
+
         /// <summary>
         /// Initial installment payment
         /// </summary>
@@ -210,5 +212,9 @@ namespace Transactions.Api.Models.Transactions
         /// Create document for transaction
         /// </summary>
         public bool IssueInvoice { get; set; }
+
+        [EnumDataType(typeof(DocumentOriginEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public DocumentOriginEnum DocumentOrigin { get; set; }
     }
 }

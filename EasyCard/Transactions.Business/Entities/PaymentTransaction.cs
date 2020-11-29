@@ -234,6 +234,8 @@ namespace Transactions.Business.Entities
         /// </summary>
         public Guid? PaymentRequestID { get; set; }
 
+        public DocumentOriginEnum DocumentOrigin { get; set; }
+
         // TODO: calculate items, VAT
         [Obsolete]
         public void Calculate()

@@ -48,6 +48,8 @@ namespace Transactions.Api.Models.Billing
         /// </summary>
         public decimal TransactionAmount { get; set; }
 
+        public decimal Amount { get; set; }
+
         /// <summary>
         /// TotalAmount = TransactionAmount * NumberOfPayments
         /// </summary>

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transactions.Business.Data;
 
 namespace Transactions.Business.Migrations
 {
     [DbContext(typeof(TransactionsContext))]
-    partial class TransactionsContextModelSnapshot : ModelSnapshot
+    [Migration("20201128154725_InvoiceFields3")]
+    partial class InvoiceFields3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,16 +58,14 @@ namespace Transactions.Business.Migrations
                     b.Property<DateTime?>("CurrentTransactionTimestamp")
                         .HasColumnType("datetime2");
 
-                    b.Property<short>("DocumentOrigin")
-                        .HasColumnType("smallint");
-
                     b.Property<Guid?>("InitialTransactionID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IssueInvoice")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("MerchantID")
+                    b.Property<Guid?>("MerchantID")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("NetTotal")
@@ -90,7 +90,8 @@ namespace Transactions.Business.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(false);
 
-                    b.Property<Guid>("TerminalID")
+                    b.Property<Guid?>("TerminalID")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("TotalAmount")
@@ -168,9 +169,6 @@ namespace Transactions.Business.Migrations
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<short>("DocumentOrigin")
-                        .HasColumnType("smallint");
-
                     b.Property<Guid?>("InitialTransactionID")
                         .HasColumnType("uniqueidentifier");
 
@@ -232,18 +230,15 @@ namespace Transactions.Business.Migrations
                     b.Property<short>("Currency")
                         .HasColumnType("smallint");
 
-                    b.Property<short>("DocumentOrigin")
-                        .HasColumnType("smallint");
-
                     b.Property<string>("DownloadUrl")
                         .HasColumnType("varchar(max)")
                         .IsUnicode(false);
 
                     b.Property<decimal>("InitialPaymentAmount")
-                        .HasColumnType("decimal(19,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("InstallmentPaymentAmount")
-                        .HasColumnType("decimal(19,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("InvoiceAmount")
                         .HasColumnType("decimal(19,4)");
@@ -300,7 +295,7 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(19,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()
@@ -346,9 +341,6 @@ namespace Transactions.Business.Migrations
                     b.Property<short>("Currency")
                         .HasColumnType("smallint");
 
-                    b.Property<short>("DocumentOrigin")
-                        .HasColumnType("smallint");
-
                     b.Property<DateTime?>("DueDate")
                         .HasColumnType("datetime2");
 
@@ -358,10 +350,10 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(true);
 
                     b.Property<decimal>("InitialPaymentAmount")
-                        .HasColumnType("decimal(19,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("InstallmentPaymentAmount")
-                        .HasColumnType("decimal(19,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IssueInvoice")
                         .HasColumnType("bit");
@@ -414,7 +406,7 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(19,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()
@@ -525,9 +517,6 @@ namespace Transactions.Business.Migrations
 
                     b.Property<int?>("CurrentDeal")
                         .HasColumnType("int");
-
-                    b.Property<short>("DocumentOrigin")
-                        .HasColumnType("smallint");
 
                     b.Property<short?>("FinalizationStatus")
                         .HasColumnType("smallint");

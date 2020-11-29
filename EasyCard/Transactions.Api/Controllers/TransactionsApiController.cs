@@ -418,6 +418,11 @@ namespace Transactions.Api.Controllers
         {
             var billingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(d => d.BillingDealID == model.BillingDealID));
 
+            if (!billingDeal.Active)
+            {
+                return BadRequest(new OperationResponse($"{Messages.BillingDealIsClosed}", StatusEnum.Error, billingDeal.BillingDealID, httpContextAccessor.TraceIdentifier));
+            }
+
             var token = EnsureExists(await keyValueStorage.Get(billingDeal.CreditCardToken.ToString()), "CreditCardToken");
 
             var transaction = mapper.Map<CreateTransactionRequest>(model);
@@ -452,6 +457,7 @@ namespace Transactions.Api.Controllers
             transaction.JDealType = jDealType;
             transaction.BillingDealID = billingDealID;
             transaction.InitialTransactionID = initialTransactionID;
+            transaction.DocumentOrigin = GetDocumentOrigin(billingDealID);
 
             if (transaction.DealDetails == null)
             {
@@ -747,6 +753,33 @@ namespace Transactions.Api.Controllers
             }
 
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
+        }
+
+        private DocumentOriginEnum GetDocumentOrigin(Guid? billingDealID)
+        {
+            if (billingDealID.HasValue)
+            {
+                return DocumentOriginEnum.Billing;
+            }
+            else if (User.IsTerminal())
+            {
+                return DocumentOriginEnum.API;
+
+            }
+            else if (User.IsMerchant())
+            {
+                return DocumentOriginEnum.UI;
+            }
+            else if (User.IsAdmin())
+            {
+                // TODO: checkout identty
+                return DocumentOriginEnum.Checkout;
+            }
+            else
+            {
+                // TODO: how to determine device
+                return DocumentOriginEnum.Device;
+            }
         }
     }
 }

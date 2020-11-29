@@ -116,9 +116,14 @@ namespace EasyInvoice.Converters
                 CreditCard4LastDigits = CreditCardHelpers.GetCardLastFourDigits(message.CreditCardDetails.CardNumber),
                 CreditCardType = message.CreditCardDetails.CardVendor,
                 PaymentDateTime = message.InvoiceDate.GetValueOrDefault(DateTime.Today).ToString("o"),
-
-                // TODO: installments
+                NumberOfPayments = message.NumberOfPayments
             };
+
+            if (message.NumberOfPayments > 1)
+            {
+                res.AmountOfFirstPayment = message.InitialPaymentAmount;
+                res.AmountOfEachAdditionalPayment = message.InstallmentPaymentAmount;
+            }
 
             return res;
         }

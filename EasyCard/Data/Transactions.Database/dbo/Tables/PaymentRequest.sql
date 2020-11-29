@@ -32,11 +32,14 @@
     [VATRate]                  DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
     [VATTotal]                 DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
     [IssueInvoice]             BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
-    [InitialPaymentAmount]     DECIMAL (18, 2)  DEFAULT ((0.0)) NOT NULL,
-    [InstallmentPaymentAmount] DECIMAL (18, 2)  DEFAULT ((0.0)) NOT NULL,
-    [TotalAmount]              DECIMAL (18, 2)  DEFAULT ((0.0)) NOT NULL,
+    [InitialPaymentAmount]     DECIMAL (19, 4)  NOT NULL,
+    [InstallmentPaymentAmount] DECIMAL (19, 4)  NOT NULL,
+    [TotalAmount]              DECIMAL (19, 4)  NOT NULL,
+    [DocumentOrigin]           SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
 
 
 

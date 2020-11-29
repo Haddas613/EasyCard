@@ -126,6 +126,9 @@
   <data name="BillingDealDeleted" xml:space="preserve">
     <value>Billing Deal Deleted</value>
   </data>
+  <data name="BillingDealIsClosed" xml:space="preserve">
+    <value>Billing deal is closed</value>
+  </data>
   <data name="BillingDealsRequired" xml:space="preserve">
     <value>Billing Deals required</value>
   </data>

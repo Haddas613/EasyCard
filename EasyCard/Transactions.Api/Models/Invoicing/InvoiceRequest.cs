@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Transactions.Api.Models.Transactions;
 using Transactions.Shared.Models;
 using IntegrationModels = Shared.Integration.Models;
+using TransactionsApi = Transactions.Api;
 
 namespace Transactions.Api.Models.Invoicing
 {
@@ -68,5 +69,10 @@ namespace Transactions.Api.Models.Invoicing
         /// Installment payments details (should be omitted in case of regular deal)
         /// </summary>
         public InstallmentDetails InstallmentDetails { get; set; }
+
+        /// <summary>
+        /// Credit card information
+        /// </summary>
+        public TransactionsApi.Models.Transactions.CreditCardDetails CreditCardDetails { get; set; }
     }
 }

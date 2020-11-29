@@ -8,6 +8,7 @@
     [DisplayName]           NVARCHAR (50)    NULL,
     [Email]                 NVARCHAR (50)    NULL,
     [Roles]                 VARCHAR (MAX)    NULL,
+    [MerchantID]            UNIQUEIDENTIFIER DEFAULT ('00000000-0000-0000-0000-000000000000') NOT NULL,
     CONSTRAINT [PK_UserTerminalMapping] PRIMARY KEY CLUSTERED ([UserTerminalMappingID] ASC),
     CONSTRAINT [FK_UserTerminalMapping_Terminal_TerminalID] FOREIGN KEY ([TerminalID]) REFERENCES [dbo].[Terminal] ([TerminalID])
 );
@@ -17,9 +18,10 @@
 
 
 
+
+
 GO
-CREATE UNIQUE NONCLUSTERED INDEX [IX_UserTerminalMapping_UserID_TerminalID]
-    ON [dbo].[UserTerminalMapping]([UserID] ASC, [TerminalID] ASC);
+
 
 
 GO

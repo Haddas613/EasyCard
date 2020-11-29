@@ -60,8 +60,11 @@
     [IssueInvoice]                   BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
     [PaymentTypeEnum]                SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     [PaymentRequestID]               UNIQUEIDENTIFIER NULL,
+    [DocumentOrigin]                 SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

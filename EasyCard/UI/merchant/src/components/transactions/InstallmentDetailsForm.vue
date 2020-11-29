@@ -107,9 +107,9 @@ export default {
         return 0;
       }
 
-      // if(this.model.numberOfPayments === 1){ return this.totalAmount;}
+      if (this.model.numberOfPayments === 1){ return 0;}
 
-      return ((this.totalAmount - this.model.initialPaymentAmount) / this.model.numberOfPayments).toFixed(2);
+      return ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1)).toFixed(2);
     }
     // totalAmount() {
     //   if (

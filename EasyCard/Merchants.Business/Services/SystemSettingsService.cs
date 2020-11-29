@@ -2,8 +2,10 @@
 using Merchants.Business.Entities.System;
 using Microsoft.EntityFrameworkCore;
 using Shared.Business.Security;
+using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
+using System.Security;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,9 +25,13 @@ namespace Merchants.Business.Services
             this.user = httpContextAccessor.GetUser();
         }
 
-        // TODO: check permission
         public async Task UpdateSystemSettings(SystemSettings entity)
         {
+            if (!user.IsAdmin())
+            {
+                throw new SecurityException("Method acces is not allowed");
+            }
+
             using var transaction = context.Database.BeginTransaction();
             var exist = context.SystemSettings.Find(entity.SystemSettingsID);
             if (exist == null)

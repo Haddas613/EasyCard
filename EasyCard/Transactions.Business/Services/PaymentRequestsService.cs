@@ -32,7 +32,21 @@ namespace Transactions.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
-        public IQueryable<PaymentRequest> GetPaymentRequests() => context.PaymentRequests;
+        public IQueryable<PaymentRequest> GetPaymentRequests()
+        {
+            if (user.IsAdmin())
+            {
+                return context.PaymentRequests;
+            }
+            else if (user.IsTerminal())
+            {
+                return context.PaymentRequests.Where(t => t.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.PaymentRequests.Where(t => t.MerchantID == user.GetMerchantID());
+            }
+        }
 
         public IQueryable<PaymentRequestHistory> GetPaymentRequestHistory(Guid paymentRequestID) => context.PaymentRequestHistories.Where(d => d.PaymentRequestID == paymentRequestID);
 

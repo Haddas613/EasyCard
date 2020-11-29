@@ -4,6 +4,7 @@ using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Entities
 {
@@ -55,5 +56,7 @@ namespace Transactions.Business.Entities
         /// Reference to initial transaction
         /// </summary>
         public Guid? InitialTransactionID { get; set; }
+
+        public DocumentOriginEnum DocumentOrigin { get; set; }
     }
 }

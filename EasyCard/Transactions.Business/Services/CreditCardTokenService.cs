@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
 using Shared.Business.Security;
+using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Transactions.Business.Data;
@@ -16,11 +18,14 @@ namespace Transactions.Business.Services
     {
         private readonly TransactionsContext context;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
+        private readonly ClaimsPrincipal user;
 
-        public CreditCardTokenService(TransactionsContext context, IHttpContextAccessorWrapper httpContextAccessor) : base(context)
+        public CreditCardTokenService(TransactionsContext context, IHttpContextAccessorWrapper httpContextAccessor)
+            : base(context)
         {
             this.context = context;
             this.httpContextAccessor = httpContextAccessor;
+            user = httpContextAccessor.GetUser();
         }
 
         public async override Task CreateEntity(CreditCardTokenDetails entity, IDbContextTransaction dbTransaction = null)
@@ -30,7 +35,21 @@ namespace Transactions.Business.Services
             await base.CreateEntity(entity, dbTransaction);
         }
 
-        public IQueryable<CreditCardTokenDetails> GetTokens() => context.CreditCardTokenDetails;
+        public IQueryable<CreditCardTokenDetails> GetTokens()
+        {
+            if (user.IsAdmin())
+            {
+                return context.CreditCardTokenDetails;
+            }
+            else if (user.IsTerminal())
+            {
+                return context.CreditCardTokenDetails.Where(t => t.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.CreditCardTokenDetails.Where(t => t.MerchantID == user.GetMerchantID());
+            }
+        }
 
         public async override Task UpdateEntity(CreditCardTokenDetails entity, IDbContextTransaction dbTransaction = null)
         {

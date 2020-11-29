@@ -33,12 +33,26 @@ namespace Merchants.Business.Services
 
         public IQueryable<MerchantHistory> GetMerchantHistories()
         {
-            return context.MerchantHistories;
+            if (user.IsAdmin())
+            {
+                return context.MerchantHistories;
+            }
+            else
+            {
+                return context.MerchantHistories.Where(t => t.MerchantID == user.GetMerchantID());
+            }
         }
 
         public IQueryable<Merchant> GetMerchants()
         {
-            return context.Merchants;
+            if (user.IsAdmin())
+            {
+                return context.Merchants;
+            }
+            else
+            {
+                return context.Merchants.Where(t => t.MerchantID == user.GetMerchantID());
+            }
         }
 
         public async override Task UpdateEntity(Merchant entity, IDbContextTransaction dbTransaction = null)

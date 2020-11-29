@@ -319,6 +319,11 @@
             Installment payments details (should be omitted in case of regular deal)
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.CreditCardDetails">
+            <summary>
+            Credit card information
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceID">
             <summary>
             Primary reference
@@ -367,6 +372,11 @@
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InstallmentDetails">
             <summary>
             Installment payments details (should be omitted in case of regular deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.CreditCardDetails">
+            <summary>
+            Credit card information
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoicesFilter.ConsumerEmail">

@@ -12,7 +12,7 @@ using Transactions.Shared.Models;
 
 namespace Transactions.Business.Entities
 {
-    public class BillingDeal : IEntityBase<Guid>, IAuditEntity, IFinancialItem
+    public class BillingDeal : IEntityBase<Guid>, IAuditEntity, IFinancialItem, ITerminalEntity, IMerchantEntity
     {
         public BillingDeal()
         {
@@ -40,12 +40,12 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Terminal
         /// </summary>
-        public Guid? TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
 
         /// <summary>
         /// Merchant
         /// </summary>
-        public Guid? MerchantID { get; set; }
+        public Guid MerchantID { get; set; }
 
         /// <summary>
         /// Currency
@@ -145,6 +145,8 @@ namespace Transactions.Business.Entities
         public string SourceIP { get; set; }
 
         public bool Active { get; set; }
+
+        public DocumentOriginEnum DocumentOrigin { get; set; }
 
         // TODO: recalculate items and fill default SKU
     }

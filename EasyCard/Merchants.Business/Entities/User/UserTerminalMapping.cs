@@ -12,6 +12,8 @@ namespace Merchants.Business.Entities.User
 
         public Guid TerminalID { get; set; }
 
+        public Guid MerchantID { get; set; }
+
         public Terminal.Terminal Terminal { get; set; }
 
         public DateTime OperationDate { get; set; }

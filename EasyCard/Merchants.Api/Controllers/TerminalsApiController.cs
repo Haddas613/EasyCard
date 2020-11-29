@@ -89,7 +89,8 @@ namespace Merchants.Api.Controllers
 
             var terminal = mapper.Map<TerminalResponse>(dbTerminal);
 
-            terminal.Users = await mapper.ProjectTo<UserSummary>(terminalsService.GetTerminalUsers(terminal.TerminalID)).ToListAsync();
+            // TODO: enable it when user-terminal mappings will be enabled
+            // terminal.Users = await mapper.ProjectTo<UserSummary>(terminalsService.GetTerminalUsers(terminal.TerminalID)).ToListAsync();
 
             var externalSystems = externalSystemsService.GetExternalSystems().ToDictionary(d => d.ExternalSystemID);
 

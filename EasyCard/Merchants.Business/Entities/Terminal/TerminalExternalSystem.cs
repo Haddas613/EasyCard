@@ -1,12 +1,13 @@
 ﻿using Merchants.Shared.Enums;
 using Newtonsoft.Json.Linq;
+using Shared.Business.Security;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Merchants.Business.Entities.Terminal
 {
-    public class TerminalExternalSystem
+    public class TerminalExternalSystem : ITerminalEntity
     {
         public long TerminalExternalSystemID { get; set; }
 

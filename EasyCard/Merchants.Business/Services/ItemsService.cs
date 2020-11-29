@@ -2,6 +2,7 @@
 using Merchants.Business.Entities.Billing;
 using Shared.Business;
 using Shared.Business.Security;
+using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,16 @@ namespace Merchants.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
-        public IQueryable<Item> GetItems() => context.Items;
+        public IQueryable<Item> GetItems()
+        {
+            if (user.IsAdmin())
+            {
+                return context.Items;
+            }
+            else
+            {
+                return context.Items.Where(t => t.MerchantID == user.GetMerchantID());
+            }
+        }
     }
 }
