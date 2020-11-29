@@ -11,6 +11,21 @@ namespace MerchantProfileApi.Models.Terminal
     // set of settings which can be changed by merchant (some settings can be updated only by admin - see TerminalSettings.cs)
     public class TerminalSettingsUpdate
     {
+        [Range(1, 100)]
+        public int? MinInstallments { get; set; }
+
+        /// <summary>
+        /// If we set it to zero means installments blocked
+        /// </summary>
+        [Range(0, 100)]
+        public int? MaxInstallments { get; set; }
+
+        [Range(1, 100)]
+        public int? MinCreditInstallments { get; set; }
+
+        [Range(0, 100)]
+        public int? MaxCreditInstallments { get; set; }
+
         [StringLength(250)]
         public string DefaultChargeDescription { get; set; }
 
@@ -20,6 +35,10 @@ namespace MerchantProfileApi.Models.Terminal
         [StringLength(250)]
         public string DefaultItemName { get; set; }
 
+        [StringLength(50)]
+        public string DefaultSKU { get; set; }
+
+        [Range(0, 1)]
         public decimal? VATRate { get; set; }
     }
 }

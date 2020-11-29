@@ -7,7 +7,10 @@ namespace MerchantProfileApi.Models.Terminal
 {
     public class TerminalCheckoutSettingsUpdate
     {
+        // TODO: move to other place (sepends on implementation)
+        public string CustomCssReference { get; set; }
+
         // TODO: validation
-        public IEnumerable<string> RedurectUrls { get; set; }
+        public IEnumerable<string> RedirectUrls { get; set; }
     }
 }

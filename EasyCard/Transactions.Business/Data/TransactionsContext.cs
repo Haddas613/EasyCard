@@ -24,6 +24,7 @@ using Newtonsoft.Json.Linq;
 using Transactions.Shared.Models;
 using System.Linq;
 using Shared.Integration.Models;
+using Shared.Business.Extensions;
 
 namespace Transactions.Business.Data
 {
@@ -54,14 +55,6 @@ namespace Transactions.Business.Data
         private static readonly ValueConverter CardExpirationConverter = new ValueConverter<CardExpiration, string>(
             v => v.ToString(),
             v => CreditCardHelpers.ParseCardExpiration(v));
-
-        private static readonly ValueConverter SettingsJObjectConverter = new ValueConverter<JObject, string>(
-           v => v.ToString(Formatting.None),
-           v => JObject.Parse(v));
-
-        private static readonly ValueConverter BillingScheduleConverter = new ValueConverter<BillingSchedule, string>(
-           v => JsonConvert.SerializeObject(v),
-           v => JsonConvert.DeserializeObject<BillingSchedule>(v));
 
         private static readonly ValueConverter ItemsConverter = new ValueConverter<IEnumerable<Item>, string>(
            v => JsonConvert.SerializeObject(v),
@@ -485,7 +478,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
 
                 builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").IsRequired();
 
-                builder.Property(p => p.BillingSchedule).HasColumnName("BillingSchedule").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(BillingScheduleConverter);
+                builder.Property(p => p.BillingSchedule).HasColumnName("BillingSchedule").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
                 builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
 

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Debug;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Shared.Business.Extensions;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
 using System;
@@ -43,27 +44,6 @@ namespace Merchants.Business.Data
             (c1, c2) => c1.SequenceEqual(c2),
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
             c => (IEnumerable<string>)c.ToHashSet());
-
-        // terminal settings
-        private static readonly ValueConverter TerminalSettingsConverter = new ValueConverter<TerminalSettings, string>(
-            v => JsonConvert.SerializeObject(v),
-            v => JsonConvert.DeserializeObject<TerminalSettings>(v));
-
-        private static readonly ValueConverter TerminalInvoiceSettingsConverter = new ValueConverter<TerminalInvoiceSettings, string>(
-            v => JsonConvert.SerializeObject(v),
-            v => JsonConvert.DeserializeObject<TerminalInvoiceSettings>(v));
-
-        private static readonly ValueConverter TerminalPaymentRequestSettingsConverter = new ValueConverter<TerminalPaymentRequestSettings, string>(
-            v => JsonConvert.SerializeObject(v),
-            v => JsonConvert.DeserializeObject<TerminalPaymentRequestSettings>(v));
-
-        private static readonly ValueConverter TerminalCheckoutSettingsConverter = new ValueConverter<TerminalCheckoutSettings, string>(
-            v => JsonConvert.SerializeObject(v),
-            v => JsonConvert.DeserializeObject<TerminalCheckoutSettings>(v));
-
-        private static readonly ValueConverter TerminalBillingSettingsConverter = new ValueConverter<TerminalBillingSettings, string>(
-            v => JsonConvert.SerializeObject(v),
-            v => JsonConvert.DeserializeObject<TerminalBillingSettings>(v));
 
         // syste settings
         private static readonly ValueConverter SystemSettingsConverter = new ValueConverter<SystemGlobalSettings, string>(
@@ -136,16 +116,6 @@ namespace Merchants.Business.Data
 
             // NOTE: security filters moved to get methods
 
-            //modelBuilder.Entity<Merchant>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
-
-            //modelBuilder.Entity<MerchantHistory>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
-
-            //modelBuilder.Entity<Terminal>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.MerchantID == user.GetMerchantID()));
-
-            //modelBuilder.Entity<TerminalExternalSystem>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.Terminal.MerchantID == user.GetMerchantID()));
-
-            //modelBuilder.Entity<UserTerminalMapping>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.Terminal.MerchantID == user.GetMerchantID()));
-
             modelBuilder.Entity<Item>()
                 .HasQueryFilter(p => p.Active && (this.user.IsAdmin() || p.Merchant.MerchantID == this.user.GetMerchantID()));
 
@@ -195,15 +165,15 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.Label).IsRequired(true).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.ActivityStartDate).IsRequired(false);
 
-                builder.Property(p => p.Settings).HasColumnName("Settings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalSettingsConverter);
+                builder.Property(p => p.Settings).HasColumnName("Settings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
-                builder.Property(p => p.BillingSettings).HasColumnName("BillingSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalBillingSettingsConverter);
+                builder.Property(p => p.BillingSettings).HasColumnName("BillingSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
-                builder.Property(p => p.CheckoutSettings).HasColumnName("CheckoutSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalCheckoutSettingsConverter);
+                builder.Property(p => p.CheckoutSettings).HasColumnName("CheckoutSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
-                builder.Property(p => p.PaymentRequestSettings).HasColumnName("PaymentRequestSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalPaymentRequestSettingsConverter);
+                builder.Property(p => p.PaymentRequestSettings).HasColumnName("PaymentRequestSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
-                builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(TerminalInvoiceSettingsConverter);
+                builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
                 builder.Property(b => b.SharedApiKey).IsRequired(false).HasMaxLength(64);
             }

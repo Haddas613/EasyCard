@@ -13,5 +13,11 @@ namespace MerchantProfileApi.Models.Terminal
         public string DefaultInvoiceSubject { get; set; }
 
         public InvoiceTypeEnum? DefaultInvoiceType { get; set; }
+
+        // TODO: validation
+        public string[] SendCCTo { get; set; }
+
+        [StringLength(50)]
+        public string EmailTemplateCode { get; set; }
     }
 }
