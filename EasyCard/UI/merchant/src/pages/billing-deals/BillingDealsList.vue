@@ -114,7 +114,7 @@
               lg="6"
               class="text-end font-weight-bold button"
               v-bind:class="{'ecred--text': item.cardExpired}"
-            >{{item.currency}}{{item.totalAmount}}</v-col>
+            >{{item.currency}}{{item.transactionAmount}}</v-col>
           </template>
 
           <template v-slot:append="{ item }">
