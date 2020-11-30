@@ -43,7 +43,9 @@
                 {{$t('PaymentRequestURL')}} 
                 <v-chip class="mb-1" @click="$copyToClipboard(model.paymentRequestUrl)" x-small color="primary">{{$t("Copy")}}</v-chip>
               </p>
-              <a role="button" target="_blank" class="d-flex primary--text text-oneline" :href="model.paymentRequestUrl">{{model.paymentRequestUrl}}</a>
+              <a role="button" target="_blank" :href="model.paymentRequestUrl">
+                <small>{{model.paymentRequestUrl}}</small>
+              </a>
             </v-col>
           </v-row>
         </v-card-text>
