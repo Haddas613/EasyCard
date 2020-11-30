@@ -48,6 +48,7 @@
   "NotFound": "Not Found",
   "InvoiceDetails": "Invoice Details",
   "TransactionDetails": "Transaction Details",
+  "DealDetails": "Deal Details",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

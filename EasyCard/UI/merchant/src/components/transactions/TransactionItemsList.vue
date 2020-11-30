@@ -5,6 +5,9 @@
         <v-col cols="12" class="text-align-initial">
           <span class="body-2">{{item.itemName}}</span>
         </v-col>
+        <!-- <v-col cols="12" md="6" class="text-align-initial">
+          <span class="body-2">{{item.quantity}}</span>
+        </v-col> -->
       </template>
 
       <template v-slot:right="{ item }">

@@ -52,7 +52,7 @@
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('SendCCTo')}}</p>
-              <p>{{model.invoiceDetails.isendCCTo || '-'}}</p>
+              <p>{{model.invoiceDetails.sendCCTo || '-'}}</p>
             </v-col>
           </v-row>
         </v-card-text>
@@ -95,10 +95,14 @@
       <v-card flat class="my-2">
         <v-card-title
           class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
-        >{{$t("CustomerDetails")}}</v-card-title>
+        >{{$t("DealDetails")}}</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
           <v-row class="info-container body-1 black--text">
+            <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('DealDescription')}}</p>
+              <p>{{(model.dealDetails.dealDescription || '-')}}</p>
+            </v-col>
             <template v-if="model.dealDetails.consumerID">
               <v-col cols="12" md="4" class="info-block">
                 <p class="caption ecgray--text text--darken-2">{{$t('CustomerID')}}</p>
@@ -120,6 +124,36 @@
                 <p>{{(model.dealDetails.consumerPhone || '-')}}</p>
               </v-col>
             </template>
+          </v-row>
+        </v-card-text>
+      </v-card>
+      <v-card flat class="my-2" v-if="model.creditCardDetails">
+        <v-card-title
+          class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
+        >{{$t("CreditCardDetails")}}</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-row class="info-container body-1 black--text">
+            <v-col cols="6" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('CardNumber')}}</p>
+              <p>{{model.creditCardDetails.cardNumber || '-'}}</p>
+            </v-col>
+            <v-col cols="6" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('CardExpiration')}}</p>
+              <p>{{model.creditCardDetails.cardExpiration || '-'}}</p>
+            </v-col>
+            <v-col cols="6" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('CardVendor')}}</p>
+              <p>{{model.creditCardDetails.cardVendor || '-'}}</p>
+            </v-col>
+            <v-col cols="6" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('CardOwnerName')}}</p>
+              <p>{{model.creditCardDetails.cardOwnerName || '-'}}</p>
+            </v-col>
+            <v-col cols="6" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('NationalID')}}</p>
+              <p>{{model.creditCardDetails.cardOwnerNationalID || '-'}}</p>
+            </v-col>
           </v-row>
         </v-card-text>
       </v-card>
