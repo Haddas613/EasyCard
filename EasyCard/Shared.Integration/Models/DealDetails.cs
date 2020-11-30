@@ -56,6 +56,6 @@ namespace Shared.Integration.Models
         /// <summary>
         /// Consumer address
         /// </summary>
-        public Address ConsumerAddress { get; set; }
+        public string ConsumerAddress { get; set; }
     }
 }

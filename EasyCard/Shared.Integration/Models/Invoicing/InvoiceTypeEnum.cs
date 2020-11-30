@@ -11,7 +11,7 @@ namespace Shared.Integration.Models.Invoicing
         Invoice = 1,
 
         [EnumMember(Value = "invoiceWithPaymentInfo")]
-        InvoiceWithPaymentInfo = 0,
+        InvoiceWithPaymentInfo = 2,
 
         [EnumMember(Value = "creditNote")]
         CreditNote = 3,

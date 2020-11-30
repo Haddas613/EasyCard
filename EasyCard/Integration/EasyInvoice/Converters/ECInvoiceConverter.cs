@@ -71,7 +71,7 @@ namespace EasyInvoice.Converters
             }
         }
 
-        public static ECInvoiceCustomerAddress GetCustomerAddress(Address message)
+        public static ECInvoiceCustomerAddress GetCustomerAddress(string message)
         {
             if (message == null)
             {
@@ -80,9 +80,9 @@ namespace EasyInvoice.Converters
 
             var res = new ECInvoiceCustomerAddress
             {
-                City = message.City,
-                Street = message.Street,
-                PostalCode = message.Zip,
+                City = "",
+                Street = message,
+                PostalCode = "",
             };
 
             return res;

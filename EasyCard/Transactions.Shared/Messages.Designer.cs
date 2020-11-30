@@ -430,6 +430,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment request payment failed.
+        /// </summary>
+        public static string PaymentRequestPaymentFailed {
+            get {
+                return ResourceManager.GetString("PaymentRequestPaymentFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment request payed.
+        /// </summary>
+        public static string PaymentRequestPaymentSuccessed {
+            get {
+                return ResourceManager.GetString("PaymentRequestPaymentSuccessed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment Request Is Closed.
         /// </summary>
         public static string PaymentRequestStatusIsClosed {

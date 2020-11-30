@@ -240,6 +240,12 @@
   <data name="PaymentRequestCreated" xml:space="preserve">
     <value>Payment Request created</value>
   </data>
+  <data name="PaymentRequestPaymentFailed" xml:space="preserve">
+    <value>Payment request payment failed</value>
+  </data>
+  <data name="PaymentRequestPaymentSuccessed" xml:space="preserve">
+    <value>Payment request payed</value>
+  </data>
   <data name="PaymentRequestStatusIsClosed" xml:space="preserve">
     <value>Payment Request Is Closed</value>
   </data>
