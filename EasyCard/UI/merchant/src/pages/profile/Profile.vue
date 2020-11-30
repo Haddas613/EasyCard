@@ -48,6 +48,7 @@
       <v-card-text>
         <v-form ref="terminalSettingsForm" v-model="terminalSettingsFormValid" lazy-validation>
           <terminal-settings-form 
+            v-if="terminalRefreshed"
             :key="terminalStore ? terminalStore.terminalID : false" 
             :data="terminalStore" 
             class="pt-1" 
@@ -75,6 +76,7 @@ export default {
       terminals: [],
       currencies: [],
       terminalSettingsFormValid: true,
+      terminalRefreshed: false
     };
   },
   async mounted() {
@@ -83,6 +85,7 @@ export default {
     let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
     this.currencies = dictionaries ? dictionaries.currencyEnum : [];
     await this.refreshTerminal();
+    this.terminalRefreshed = true;
   },
   computed: {
     isRtl: {
@@ -133,7 +136,7 @@ export default {
       }
     },
     async refreshTerminal(){
-      this.$store.dispatch("settings/refreshTerminal", { api: this.$api });
+      await this.$store.dispatch("settings/refreshTerminal", { api: this.$api });
     }
   },
 };

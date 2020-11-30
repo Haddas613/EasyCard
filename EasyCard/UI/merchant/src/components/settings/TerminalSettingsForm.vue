@@ -298,7 +298,7 @@ export default {
         this.model.billingSettings.billingNotificationsEmails.join(",");
     }
 
-    this.model.settings.vatRatePercent = this.model.settings.vatRate * 100;
+    this.model.settings.vatRatePercent = (this.model.settings.vatRate * 100).toFixed(2);
 
     if (!this.model.invoiceSettings.defaultInvoiceType) {
       this.$set(
