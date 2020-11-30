@@ -243,7 +243,7 @@ export default {
       let val = `${this.$refs.cardNumberInp.value}`;
       if (!val){ return false;}
       try{
-        val = val.replaceAll(" ", "");
+        val = val.replace(/\s/g, "");
         return val.substring(0, 6) + '****' + val.substring(val.length - 4, val.length)
       }catch { return null; }
     },
