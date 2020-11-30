@@ -189,7 +189,7 @@ export default {
       await this.getDataFromApi(true);
     },
     async resendSelectedInvoices(){
-      let invoices = this.lodash.filter(this.invoices, i => i.selected && i.$status == 'initial');
+      let invoices = this.lodash.filter(this.invoices, i => i.selected && (i.$status == 'initial' || i.$status == 'sent'));
       if(invoices.length === 0){
         return this.$toasted.show(this.$t("SelectInvoicesFirst"), { type: "error" });
       }
