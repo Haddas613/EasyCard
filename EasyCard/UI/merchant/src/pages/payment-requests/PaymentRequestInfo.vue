@@ -39,9 +39,11 @@
               <p>{{model.paymentRequestAmount | currency(model.$currency)}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('PaymentRequestURL')}}</p>
-              <p role="button" class="primary--text text-oneline" :title="$t('ClickToCopy')"
-                @click="$copyToClipboard(model.paymentRequestUrl)">{{model.paymentRequestUrl}}</p>
+              <p class="caption ecgray--text text--darken-2 py-1">
+                {{$t('PaymentRequestURL')}} 
+                <v-chip class="mb-1" @click="$copyToClipboard(model.paymentRequestUrl)" x-small color="primary">{{$t("Copy")}}</v-chip>
+              </p>
+              <a role="button" target="_blank" class="primary--text text-oneline" :href="model.paymentRequestUrl">{{model.paymentRequestUrl}}</a>
             </v-col>
           </v-row>
         </v-card-text>

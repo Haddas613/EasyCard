@@ -182,6 +182,10 @@ export default {
 
     let $dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
     
+    if(this.model.invoiceDetails.sendCCTo && this.model.invoiceDetails.sendCCTo.length > 0){
+      this.model.invoiceDetails.sendCCTo = this.model.invoiceDetails.sendCCTo.join(",");
+    }
+
     if(this.model.invoiceDetails.invoiceType){
       this.model.invoiceDetails.invoiceType = $dictionaries.invoiceTypeEnum[this.model.invoiceDetails.invoiceType];
     }
