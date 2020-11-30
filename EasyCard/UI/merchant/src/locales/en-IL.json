@@ -196,6 +196,7 @@
   "SendCCTo": "Send CC to",
   "PrivateApiKey": "Private Api Key",
   "SharedApiKey": "Shared Api Key",
+  "PaymentRequestURL": "Payment Request URL",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -240,6 +241,8 @@
   "InvoiceSent": "Invoice Sent",
   "SuccessfullySaved": "Successfully Saved",
   "PaymentRequestSentTo": "Payment Request sent to",
+  "CopiedToClipboard": "Copied to Clipboard",
+  "CanNotCopyToClipboard": "Can not copy to Clipboard",
 
   "--MISC--": null,
   "AllCustomers": "All Customers",

@@ -1,5 +1,4 @@
 import i18n from '../i18n'
-import { ssrCompileToFunctions } from 'vue-template-compiler';
 
 const primitives = {
     /**Common */

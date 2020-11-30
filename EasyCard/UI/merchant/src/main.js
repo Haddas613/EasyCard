@@ -17,14 +17,16 @@ import guid from './extensions/filters/guid'
 import billingschedule from './extensions/filters/billingschedule'
 import vmoney from 'v-money';
 import auth from './auth'
+import VueClipboard from 'vue-clipboard2';
+import mixin from './extensions/mixins';
 
 Vue.config.productionTip = false
 
 Vue.use(auth);
 Vue.use(Api);
-Vue.use(VueLodash, { lodash: lodash })
+Vue.use(VueLodash, { lodash: lodash });
 Vue.use(VueCardFormat);
-Vue.use(vmoney, { precision: 2, decimal: '.', thousands: '' })
+Vue.use(vmoney, { precision: 2, decimal: '.', thousands: '' });
 Vue.use(Toasted, {
     iconPack: 'mdi',
     keepOnHover: true,
@@ -36,10 +38,12 @@ Vue.use(Toasted, {
         }
     },
 });
+Vue.use(VueClipboard);
 Vue.filter('ecdate', ecdate);
 Vue.filter('currency', currency);
 Vue.filter('guid', guid);
 Vue.filter('billingschedule', billingschedule);
+Vue.mixin(mixin);
 
 new Vue({
     router,
