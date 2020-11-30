@@ -37,6 +37,16 @@
                 <span v-if="!model.shvaTransactionDetails.transmissionDate">-</span>
               </p>
             </v-col>
+            <v-col cols="12" md="4" class="info-block" v-if="model.invoiceID">
+              <p class="caption ecgray--text text--darken-2">{{$t('InvoiceID')}}</p>
+              <router-link
+                class="primary--text"
+                link
+                :to="{name: 'Invoice', params: {id: model.invoiceID}}"
+              >
+                <small>{{(model.invoiceID || '-') | guid}}</small>
+              </router-link>
+            </v-col>
           </v-row>
         </v-card-text>
       </v-card>
@@ -72,9 +82,7 @@
         >{{$t("Items")}}</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
-          <transaction-items-list
-            :items="model.dealDetails.items"
-          ></transaction-items-list>
+          <transaction-items-list :items="model.dealDetails.items"></transaction-items-list>
         </v-card-text>
       </v-card>
       <v-card flat class="my-2">
@@ -238,7 +246,8 @@
 <script>
 export default {
   components: {
-    TransactionItemsList: () => import("../../components/transactions/TransactionItemsList"),
+    TransactionItemsList: () =>
+      import("../../components/transactions/TransactionItemsList")
   },
   data() {
     return {

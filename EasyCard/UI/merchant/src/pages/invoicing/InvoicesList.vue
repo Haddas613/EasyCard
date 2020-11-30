@@ -53,16 +53,15 @@
             <v-checkbox v-model="item.selected" :disabled="item.$status == 'sending'"></v-checkbox>
           </template>
           <template v-slot:left="{ item }">
-            <v-col cols="12" md="6" lg="6" class="pt-1 caption" v-if="item.invoiceNumber">
-              <b>{{item.invoiceNumber}}</b>
-            </v-col>
             <v-col
               cols="12"
               md="6"
               lg="6"
               class="pt-1 caption ecgray--text"
-              v-else
-            >{{item.$invoiceDate | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
+            >
+            {{item.$invoiceDate | ecdate('DD/MM/YYYY')}}
+            <v-chip color="primary" v-if="item.invoiceNumber" x-small>{{item.invoiceNumber}}</v-chip>
+            </v-col>
             <v-col cols="12" md="6" lg="6">{{item.cardOwnerName || '-'}}</v-col>
           </template>
 
