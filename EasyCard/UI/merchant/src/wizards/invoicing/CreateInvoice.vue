@@ -21,7 +21,7 @@
     <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad v-if="step === 1" btn-text="Charge" v-on:ok="processAmount($event, true);" ref="numpadRef" :items="model.dealDetails.items"></numpad>
+          <numpad v-if="step === 1" btn-text="Invoice" v-on:ok="processAmount($event, true);" ref="numpadRef" :items="model.dealDetails.items"></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
