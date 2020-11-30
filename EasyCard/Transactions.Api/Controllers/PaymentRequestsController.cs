@@ -152,6 +152,12 @@ namespace Transactions.Api.Controllers
                 model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings);
             }
 
+            if (consumer != null)
+            {
+                newPaymentRequest.CardOwnerName = consumer.ConsumerName;
+                newPaymentRequest.CardOwnerNationalID = consumer.ConsumerNationalID;
+            }
+
             newPaymentRequest.Calculate();
 
             newPaymentRequest.MerchantID = terminal.MerchantID;

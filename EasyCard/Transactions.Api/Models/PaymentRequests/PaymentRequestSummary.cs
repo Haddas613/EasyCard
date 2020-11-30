@@ -53,6 +53,8 @@ namespace Transactions.Api.Models.PaymentRequests
 
         public string CardOwnerName { get; set; }
 
+        public string ConsumerEmail { get; set; }
+
         public Guid? ConsumerID { get; set; }
 
         public Guid? PaymentTransactionID { get; set; }
