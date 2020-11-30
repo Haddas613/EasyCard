@@ -232,20 +232,24 @@ export default {
       return true;
     },
     checkIfTokenExists(){
-      if (!this.tokens || this.tokens.length === 0){ return;}
+      if (!this.tokens || this.tokens.length === 0){ 
+        console.log("no tokens to check")
+        return;}
       if (!this.$cardFormat.validateCardNumber(this.$refs.cardNumberInp.value)) {
+        console.log("card number is invalid")
         return this.tokenAlreadyExists = false;
       }
       let bin = this.cardNumberToBin();
+      console.log(`bin: ${bin}; token exists: ${this.lodash.some(this.tokens, t => t.cardNumber == bin)}`)
       this.tokenAlreadyExists =  bin ? this.lodash.some(this.tokens, t => t.cardNumber == bin) : false;
     },
     cardNumberToBin(){
       let val = `${this.$refs.cardNumberInp.value}`;
       if (!val){ return false;}
-      try{
+      // try{
         val = val.replaceAll(" ", "");
         return val.substring(0, 6) + '****' + val.substring(val.length - 4, val.length)
-      }catch { return null; }
+      // }catch { return null; }
     },
     parseCardReader() {
       if (!this.checkIfCardReader()) return;
