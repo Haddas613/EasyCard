@@ -5,6 +5,7 @@
         <v-card-title class="py-3 ecdgray--text subtitle-2 text-uppercase">{{$t('GeneralInfo')}}</v-card-title>
         <v-divider></v-divider>
         <v-card-text class="body-1 black--text" v-if="model">
+          <payment-request-history v-if="model.history && model.history.length" :data="model.history"></payment-request-history>
           <v-row class="info-container">
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('ID')}}</p>
@@ -161,6 +162,7 @@
 export default {
   components: {
     TransactionItemsList: () => import("../../components/transactions/TransactionItemsList"),
+    PaymentRequestHistory: () => import("../../components/payment-requests/PaymentRequestHistory")
   },
   data() {
     return {
