@@ -41,11 +41,12 @@
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2 py-1">
                 {{$t('PaymentRequestURL')}} 
-                <v-chip class="mb-1" @click="$copyToClipboard(model.paymentRequestUrl)" x-small color="primary">{{$t("Copy")}}</v-chip>
               </p>
-              <a role="button" target="_blank" :href="model.paymentRequestUrl">
+              <v-chip v-if="model.paymentRequestUrl" class="mb-1" @click="$copyToClipboard(model.paymentRequestUrl)" small color="primary">{{$t("Copy")}}</v-chip>
+              <p v-else>-</p>
+              <!-- <a role="button" target="_blank" :href="model.paymentRequestUrl">
                 <small>{{model.paymentRequestUrl}}</small>
-              </a>
+              </a> -->
             </v-col>
           </v-row>
         </v-card-text>
