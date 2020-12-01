@@ -38,7 +38,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="4" class="py-0 px-0">
-          <payment-request-form :key="model.paymentRequestAmount" :data="model" v-on:ok="processPaymentRequest($event)"></payment-request-form>
+          <payment-request-form  v-if="step === 4" :data="model" v-on:ok="processPaymentRequest($event)"></payment-request-form>
         </v-stepper-content>
 
         <v-stepper-content step="5" class="py-0 px-0">
@@ -170,6 +170,7 @@ export default {
       this.model.dealDetails.consumerEmail = data.consumerEmail;
       this.model.dealDetails.consumerPhone = data.consumerPhone;
       this.model.dealDetails.consumerID = data.consumerID;
+      this.model.consumerName = data.consumerName;
       this.step++;
     },
     processToBasket(){
@@ -196,6 +197,7 @@ export default {
       this.model.invoiceDetails = data.invoiceDetails;
       this.model.terminalID = this.terminal.terminalID;
       this.model.dueDate = data.dueDate;
+      this.model.consumerName = data.consumerName;
 
       let result = await this.$api.paymentRequests.createPaymentRequest(
         this.model

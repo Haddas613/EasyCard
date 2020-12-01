@@ -33,6 +33,15 @@
           :total-amount="model.paymentRequestAmount"
         ></installment-details>
 
+        <v-text-field
+          v-if="!model.dealDetails.consumerID"
+          v-model="model.consumerName"
+          :label="$t('CustomerName')"
+          :rules="[vr.primitives.required, vr.primitives.stringLength(3, 50)]"
+          background-color="white"
+          type="text"
+          outlined
+        ></v-text-field>
         <deal-details
           ref="dealDetails"
           :data="model.dealDetails"

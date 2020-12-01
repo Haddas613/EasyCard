@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Shared.Api.Models.Binding;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
@@ -75,5 +76,12 @@ namespace Transactions.Api.Models.PaymentRequests
 
         [StringLength(100)]
         public string FromAddress { get; set; }
+
+        /// <summary>
+        /// End-customer Name
+        /// </summary>
+        [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        public string ConsumerName { get; set; }
     }
 }
