@@ -22,12 +22,18 @@
                   <p>{{model.$billingDealTimestamp | ecdate('LLLL')}}</p>
                 </v-col>
               </v-row>
-              <v-row class="info-container">
-                <billing-schedule-string
+            </v-card-text>
+          </v-card>
+          <v-card flat class="my-2">
+            <v-card-title
+              class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
+            >{{$t("BillingSchedule")}}</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+              <billing-schedule-string
                   :schedule="model.billingSchedule"
                   replacement-text="ScheduleIsNotDefined"
                 ></billing-schedule-string>
-              </v-row>
             </v-card-text>
           </v-card>
           <v-card flat class="my-2">
@@ -37,31 +43,21 @@
             <v-divider></v-divider>
             <v-card-text>
               <v-row class="info-container body-1 black--text">
-                <v-col cols="6" md="4" class="info-block">
+                <v-col cols="6" md="3" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('VAT')}}</p>
-                  <p>{{model.vatRate * 100}}%</p>
+                  <p>{{(model.vatRate * 100).toFixed(0)}}%</p>
                 </v-col>
-                <v-col cols="6" md="4" class="info-block">
+                <v-col cols="6" md="3" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('VATAmount')}}</p>
                   <p>{{model.vatTotal | currency(model.$currency)}}</p>
                 </v-col>
-                <v-col cols="6" md="4" class="info-block">
+                <v-col cols="6" md="3" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('NetAmount')}}</p>
                   <p>{{model.netTotal | currency(model.$currency)}}</p>
                 </v-col>
-              </v-row>
-              <v-row class="info-container body-1 black--text">
-                <!-- <v-col cols="12" md="4" class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('NumberOfPayments')}}</p>
-                  <p>{{model.numberOfPayments}}</p>
-                </v-col>-->
-                <v-col cols="12" md="4" class="info-block">
+                <v-col cols="12" md="3" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('TransactionAmount')}}</p>
                   <p>{{model.transactionAmount | currency(model.$currency)}}</p>
-                </v-col>
-                <v-col cols="12" md="4" class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('TotalAmount')}}</p>
-                  <p>{{model.totalAmount | currency(model.$currency)}}</p>
                 </v-col>
               </v-row>
             </v-card-text>

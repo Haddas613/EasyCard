@@ -178,15 +178,53 @@
           </template>
         </ec-dialog-invoker>
       </v-col>
-      <v-col cols="12" md="12" class="py-0 px-2">
-        <v-text-field
-          v-model.number="model.transactionAmount"
-          :label="$t('TransactionAmount')"
-          :rules="[vr.primitives.required, vr.primitives.precision(2)]"
-          required
-          outlined
-        ></v-text-field>
-      </v-col>
+      <v-row class="px-2">
+        <v-col cols="12" md="6">
+          <v-text-field
+            class="mt-4"
+            v-model="model.transactionAmount"
+            outlined
+            :label="$t('Amount')"
+            hide-details="true"
+            @input="calculateTotal()"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-text-field
+            class="mt-4"
+            v-if="model"
+            :value="model.netTotal"
+            outlined
+            readonly
+            disabled
+            :label="$t('NetAmount')"
+            hide-details="true"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-text-field
+            class="mt-4"
+            v-if="model"
+            :value="model.vatTotal"
+            outlined
+            readonly
+            disabled
+            :label="$t('VAT')"
+            hide-details="true"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-text-field
+            class="mt-4"
+            :value="(model.vatRate * 100).toFixed(0)"
+            readonly
+            disabled
+            outlined
+            :label="$t('VATPercent')"
+            hide-details="true"
+          ></v-text-field>
+        </v-col>
+      </v-row>
       <deal-details
         class="px-2"
         ref="dealDetails"
@@ -209,6 +247,7 @@
 <script>
 import ValidationRules from "../../helpers/validation-rules";
 import { mapState } from "vuex";
+import itemPricingService from "../../helpers/item-pricing";
 
 export default {
   components: {
@@ -312,19 +351,25 @@ export default {
       if (!result) return;
       if (result.status === "success") {
         await this.getCustomerTokens();
-        this.token = this.lodash.find(this.customerTokens, t => t.creditCardTokenID == result.entityReference);
+        this.token = this.lodash.find(
+          this.customerTokens,
+          t => t.creditCardTokenID == result.entityReference
+        );
       } else {
         this.$toasted.show(result.message, { type: "error" });
       }
       this.$refs.ctokenDialogRef.reset();
     },
-    async getCustomerTokens(){
+    async getCustomerTokens() {
       this.customerTokens =
         (
           await this.$api.cardTokens.getCustomerCardTokens(
             this.model.dealDetails.consumerID
           )
         ).data || [];
+    },
+    calculateTotal(){
+      itemPricingService.total.calculateWithoutItems(this.model, 'transactionAmount', { vatRate: this.terminalStore.settings.vatRate });
     }
   },
   async mounted() {
@@ -356,6 +401,7 @@ export default {
         );
       }
     }
+    this.calculateTotal();
   }
 };
 </script>

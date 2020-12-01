@@ -92,7 +92,7 @@
             <v-text-field
               class="mx-2 mt-4"
               v-if="model"
-              :value="`${terminalStore.settings.vatRate * 100}%`"
+              :value="`${(terminalStore.settings.vatRate * 100).toFixed(0)}%`"
               readonly
               disabled
               outlined

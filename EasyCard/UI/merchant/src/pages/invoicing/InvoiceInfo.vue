@@ -66,7 +66,7 @@
           <v-row class="info-container body-1 black--text">
             <v-col cols="6" md="3" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('VAT')}}</p>
-              <p>{{model.vatRate * 100}}%</p>
+              <p>{{(model.vatRate * 100).toFixed(0)}}%</p>
             </v-col>
             <v-col cols="6" md="3" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('VATAmount')}}</p>

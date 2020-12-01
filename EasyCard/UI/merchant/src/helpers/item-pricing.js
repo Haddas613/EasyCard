@@ -37,6 +37,15 @@ const totalFunctions = {
         model.vatTotal = vatTotal;
         model.vatRate = vatRate;
     },
+    calculateWithoutItems: function(model, key, opts){
+        let totalAmount = model[key];
+        let vatRate = model.vatRate >= 0 ? model.vatRate : opts.vatRate;
+        let netTotal = totalAmount ? this.calculateNetTotal(totalAmount, vatRate) : 0;
+        let vatTotal = parseFloat((netTotal * vatRate).toFixed(2));
+        model.netTotal = netTotal;
+        model.vatTotal = vatTotal;
+        model.vatRate = vatRate;
+    },
     calculateNetTotal: function(amount, vatRate){
         return parseFloat((amount / (1 + vatRate)).toFixed(2));
     },
