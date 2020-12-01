@@ -50,32 +50,7 @@
           </v-row>
         </v-card-text>
       </v-card>
-      <v-card flat class="my-2">
-        <v-card-title
-          class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
-        >{{$t("TransactionDetails")}}</v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
-          <v-row class="info-container body-1 black--text">
-            <v-col cols="6" md="3" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('VAT')}}</p>
-              <p>{{(model.vatRate * 100).toFixed(0)}}%</p>
-            </v-col>
-            <v-col cols="6" md="3" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('VATAmount')}}</p>
-              <p>{{model.vatTotal | currency(model.$currency)}}</p>
-            </v-col>
-            <v-col cols="6" md="3" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('NetAmount')}}</p>
-              <p>{{model.netTotal | currency(model.$currency)}}</p>
-            </v-col>
-            <v-col cols="6" md="3" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('TotalAmount')}}</p>
-              <p>{{model.totalAmount | currency(model.$currency)}}</p>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
+      <amount-details :model="model" amount-key="transactionAmount"></amount-details>
       <v-card flat class="my-2" v-if="model.dealDetails && model.dealDetails.items.length > 0">
         <v-card-title
           class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
@@ -85,82 +60,13 @@
           <transaction-items-list :items="model.dealDetails.items"></transaction-items-list>
         </v-card-text>
       </v-card>
-      <v-card flat class="my-2">
-        <v-card-title
-          class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
-        >{{$t("CreditCardDetails")}}</v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
-          <v-row class="info-container body-1 black--text" v-if="model">
-            <template v-if="model.dealDetails.consumerID">
-              <v-col cols="12" md="4" class="info-block">
-                <p class="caption ecgray--text text--darken-2">{{$t('CustomerID')}}</p>
-                <router-link
-                  class="primary--text"
-                  link
-                  :to="{name: 'Customer', params: {id: model.dealDetails.consumerID}}"
-                >
-                  <small>{{(model.dealDetails.consumerID || '-') | guid}}</small>
-                </router-link>
-              </v-col>
-              <v-col cols="12" md="4" class="info-block">
-                <p class="caption ecgray--text text--darken-2">{{$t('CustomerEmail')}}</p>
-                <p>{{(model.dealDetails.consumerEmail || '-')}}</p>
-              </v-col>
-              <v-col cols="12" md="4" class="info-block">
-                <p class="caption ecgray--text text--darken-2">{{$t('CustomerPhone')}}</p>
-                <p>{{(model.dealDetails.consumerPhone || '-')}}</p>
-              </v-col>
-            </template>
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('CreditCardToken')}}</p>
-              <p>{{(model.creditCardToken || '-') | guid}}</p>
-            </v-col>
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('CardNumber')}}</p>
-              <p>{{model.creditCardDetails.cardNumber}}</p>
-            </v-col>
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('CardExpiration')}}</p>
-              <p>{{model.creditCardDetails.cardExpiration}}</p>
-            </v-col>
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('CardOwnerName')}}</p>
-              <p>{{model.creditCardDetails.cardOwnerName || '-'}}</p>
-            </v-col>
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('CardOwnerNationalID')}}</p>
-              <p>{{model.creditCardDetails.cardOwnerNationalID || '-'}}</p>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
-      <v-card flat class="my-2" v-if="isInstallmentTransaction">
-        <v-card-title
-          class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
-        >{{$t('InstallmentDetails')}}</v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
-          <v-row class="info-container body-1 black--text" v-if="model">
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('NumberOfPayments')}}</p>
-              <p>{{model.numberOfPayments}}</p>
-            </v-col>
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('InitialPaymentAmount')}}</p>
-              <p>{{model.initialPaymentAmount | currency(model.$currency)}}</p>
-            </v-col>
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('InstallmentPaymentAmount')}}</p>
-              <p>{{model.installmentPaymentAmount | currency(model.$currency)}}</p>
-            </v-col>
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('TotalAmount')}}</p>
-              <p>{{model.totalAmount | currency(model.$currency)}}</p>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
+      <deal-details
+        :model="model.dealDetails"
+        :consumer-name="model.creditCardDetails ? model.creditCardDetails.cardOwnerName : null"
+      ></deal-details>
+      <credit-card-details :model="model.creditCardDetails"></credit-card-details>
+
+      <installment-details v-if="isInstallmentTransaction" :model="model"></installment-details>
       <v-card flat class="my-2">
         <v-card-title
           class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
@@ -187,36 +93,7 @@
           </v-row>
         </v-card-text>
       </v-card>
-      <v-card flat class="my-2">
-        <v-card-title
-          class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
-        >{{$t('ShvaTransactionDetails')}}</v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
-          <v-row class="info-container body-1 black--text">
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('ShvaDealID')}}</p>
-              <p>{{model.shvaTransactionDetails.shvaDealID || '-'}}</p>
-            </v-col>
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('ShvaShovarNumber')}}</p>
-              <p>{{model.shvaTransactionDetails.shvaShovarNumber || '-'}}</p>
-            </v-col>
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('ShvaTerminalID')}}</p>
-              <p>{{model.shvaTransactionDetails.shvaTerminalID || '-'}}</p>
-            </v-col>
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('ShvaTransmissionNumber')}}</p>
-              <p>{{model.shvaTransactionDetails.shvaTransmissionNumber || '-'}}</p>
-            </v-col>
-            <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('Solek')}}</p>
-              <p>{{model.shvaTransactionDetails.solek || '-'}}</p>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card>
+      <shva-transaction-details :model="model.shvaTransactionDetails"></shva-transaction-details>
     </div>
     <v-row no-gutters v-if="model && model.allowTransmission" class="py-2">
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
@@ -247,7 +124,15 @@
 export default {
   components: {
     TransactionItemsList: () =>
-      import("../../components/transactions/TransactionItemsList")
+      import("../../components/transactions/TransactionItemsList"),
+    DealDetails: () => import("../../components/details/DealDetails"),
+    AmountDetails: () => import("../../components/details/AmountDetails"),
+    CreditCardDetails: () =>
+      import("../../components/details/CreditCardDetails"),
+    ShvaTransactionDetails: () =>
+      import("../../components/details/ShvaTransactionDetails"),
+    InstallmentDetails: () =>
+      import("../../components/details/InstallmentDetails")
   },
   data() {
     return {

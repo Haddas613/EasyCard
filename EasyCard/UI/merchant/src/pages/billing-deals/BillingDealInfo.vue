@@ -31,37 +31,12 @@
             <v-divider></v-divider>
             <v-card-text>
               <billing-schedule-string
-                  :schedule="model.billingSchedule"
-                  replacement-text="ScheduleIsNotDefined"
-                ></billing-schedule-string>
+                :schedule="model.billingSchedule"
+                replacement-text="ScheduleIsNotDefined"
+              ></billing-schedule-string>
             </v-card-text>
           </v-card>
-          <v-card flat class="my-2">
-            <v-card-title
-              class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
-            >{{$t("TransactionDetails")}}</v-card-title>
-            <v-divider></v-divider>
-            <v-card-text>
-              <v-row class="info-container body-1 black--text">
-                <v-col cols="6" md="3" class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('VAT')}}</p>
-                  <p>{{(model.vatRate * 100).toFixed(0)}}%</p>
-                </v-col>
-                <v-col cols="6" md="3" class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('VATAmount')}}</p>
-                  <p>{{model.vatTotal | currency(model.$currency)}}</p>
-                </v-col>
-                <v-col cols="6" md="3" class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('NetAmount')}}</p>
-                  <p>{{model.netTotal | currency(model.$currency)}}</p>
-                </v-col>
-                <v-col cols="12" md="3" class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('TransactionAmount')}}</p>
-                  <p>{{model.transactionAmount | currency(model.$currency)}}</p>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
+          <amount-details :model="model" amount-key="transactionAmount"></amount-details>
           <v-card flat class="my-2" v-if="model.dealDetails && model.dealDetails.items.length > 0">
             <v-card-title
               class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
@@ -71,56 +46,14 @@
               <transaction-items-list :items="model.dealDetails.items"></transaction-items-list>
             </v-card-text>
           </v-card>
-          <v-card flat class="my-2">
-            <v-card-title
-              class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
-            >{{$t("CreditCardDetails")}}</v-card-title>
-            <v-divider></v-divider>
-            <v-card-text>
-              <v-row class="info-container body-1 black--text" v-if="model">
-                <template v-if="model.dealDetails.consumerID">
-                  <v-col cols="12" md="4" class="info-block">
-                    <p class="caption ecgray--text text--darken-2">{{$t('CustomerID')}}</p>
-                    <router-link
-                      class="primary--text"
-                      link
-                      :to="{name: 'Customer', params: {id: model.dealDetails.consumerID}}"
-                    >
-                      <small>{{(model.dealDetails.consumerID || '-') | guid}}</small>
-                    </router-link>
-                  </v-col>
-                  <v-col cols="12" md="4" class="info-block">
-                    <p class="caption ecgray--text text--darken-2">{{$t('CustomerEmail')}}</p>
-                    <p>{{(model.dealDetails.consumerEmail || '-')}}</p>
-                  </v-col>
-                  <v-col cols="12" md="4" class="info-block">
-                    <p class="caption ecgray--text text--darken-2">{{$t('CustomerPhone')}}</p>
-                    <p>{{(model.dealDetails.consumerPhone || '-')}}</p>
-                  </v-col>
-                </template>
-                <v-col cols="12" md="4" class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('CreditCardToken')}}</p>
-                  <p>{{(model.creditCardToken || '-') | guid}}</p>
-                </v-col>
-                <v-col cols="12" md="4" class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('CardNumber')}}</p>
-                  <p>{{model.creditCardDetails.cardNumber}}</p>
-                </v-col>
-                <v-col cols="12" md="4" class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('CardExpiration')}}</p>
-                  <p>{{model.creditCardDetails.cardExpiration}}</p>
-                </v-col>
-                <v-col cols="12" md="4" class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('CardOwnerName')}}</p>
-                  <p>{{model.creditCardDetails.cardOwnerName || '-'}}</p>
-                </v-col>
-                <v-col cols="12" md="4" class="info-block">
-                  <p class="caption ecgray--text text--darken-2">{{$t('CardOwnerNationalID')}}</p>
-                  <p>{{model.creditCardDetails.cardOwnerNationalID || '-'}}</p>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
+
+          <deal-details
+            :model="model.dealDetails"
+            :consumer-name="model.creditCardDetails ? model.creditCardDetails.cardOwnerName : null"
+          ></deal-details>
+
+          <credit-card-details v-if="model.creditCardDetails" :model="model.creditCardDetails"></credit-card-details>
+
           <v-card flat class="my-2" v-if="model.invoiceDetails">
             <v-card-title
               class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
@@ -138,7 +71,7 @@
                 </v-col>
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('SendCCTo')}}</p>
-                  <p>{{model.invoiceDetails.isendCCTo || '-'}}</p>
+                  <p>{{model.invoiceDetails.sendCCTo || '-'}}</p>
                 </v-col>
               </v-row>
             </v-card-text>
@@ -156,6 +89,17 @@
 
 <script>
 export default {
+  components: {
+    BillingScheduleString: () =>
+      import("../../components/billing-deals/BillingScheduleString"),
+    TransactionsList: () =>
+      import("../../components/transactions/TransactionsList"),
+    TransactionItemsList: () =>
+      import("../../components/transactions/TransactionItemsList"),
+    DealDetails: () => import("../../components/details/DealDetails"),
+    AmountDetails: () => import("../../components/details/AmountDetails"),
+    CreditCardDetails: () => import("../../components/details/CreditCardDetails"),
+  },
   data() {
     return {
       model: null,
@@ -168,13 +112,6 @@ export default {
       },
       numberOfRecords: 0
     };
-  },
-  components: {
-    BillingScheduleString: () =>
-      import("../../components/billing-deals/BillingScheduleString"),
-    TransactionsList: () =>
-      import("../../components/transactions/TransactionsList"),
-    TransactionItemsList: () => import("../../components/transactions/TransactionItemsList"),
   },
   async mounted() {
     this.model = await this.$api.billingDeals.getBillingDeal(
@@ -199,6 +136,12 @@ export default {
       this.terminalName = usedTerminal.label;
     } else {
       this.terminalName = this.$t("NotAccessible");
+    }
+
+    if (this.model.invoiceDetails 
+      && this.model.invoiceDetails.sendCCTo 
+      && this.model.invoiceDetails.sendCCTo.length > 0) {
+        this.model.invoiceDetails.sendCCTo = this.model.invoiceDetails.sendCCTo.join(",");
     }
 
     let $dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
