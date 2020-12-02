@@ -21,7 +21,7 @@
                 v-if="model.paymentTransactionID"
                 class="primary--text"
                 link
-                :to="{name: 'Transaction', params: {id: model.paymentTransactionID}}"
+                :to="{name: 'Transaction', params: {id: model.$paymentTransactionID}}"
               >
                 <small>{{(model.dealDetails.consumerID || '-') | guid}}</small>
               </router-link>

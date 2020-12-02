@@ -165,7 +165,7 @@ export default {
     async ok() {
       //TODO: validation
       let result = { ...this.model };
-      result.amount = result.price * result.quantity - result.discount;
+      
       this.$emit("ok", result);
     },
     calculateItemPricing() {

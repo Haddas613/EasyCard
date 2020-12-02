@@ -27,7 +27,7 @@ const itemFunctions = {
 
 const totalFunctions = {
     calculate: function(model, opts){
-        let totalAmount = lodash.sumBy(model.items, "amount");
+        let totalAmount = parseFloat(lodash.sumBy(model.items, "amount").toFixed(2));
         let vatRate = model.vatRate >= 0 ? model.vatRate : opts.vatRate;
         let netTotal = totalAmount ? this.calculateNetTotal(totalAmount, vatRate) : 0;
         let vatTotal = this.calculateVatTotal(model.items, netTotal, vatRate);
