@@ -34,7 +34,7 @@
           <v-list-item-content class="text-normal">
             <v-row no-gutters>
               <v-col cols="6" class="text-start">{{$t("VAT")}}</v-col>
-              <v-col cols="3" class="text-end">{{terminalStore.settings.vatRate * 100}}%</v-col>
+              <v-col cols="3" class="text-end">{{(terminalStore.settings.vatRate * 100).toFixed(0)}}%</v-col>
               <v-col cols="3" class="text-end">{{model.vatTotal | currency(currencyStore.code)}}</v-col>
             </v-row>
           </v-list-item-content>
