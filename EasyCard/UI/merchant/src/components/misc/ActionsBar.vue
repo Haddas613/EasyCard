@@ -1,6 +1,6 @@
 <template>
   <v-flex>
-    <v-footer :fixed="true" :padless="true" v-if="footer">
+    <v-footer :fixed="true" :padless="true" v-if="footer" height="100">
       <v-card flat tile width="100%" class="text-center" dark color="grey darken-3">
         <v-card-text class="d-flex justify-space-between pb-0">
           <div v-for="item in items" class="py-0" :key="item.text">

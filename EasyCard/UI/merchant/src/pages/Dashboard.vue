@@ -16,14 +16,38 @@
         </v-list>
       </v-card-text>
     </v-card>
+    <v-row no-gutters class="stats-area" v-bind:class="{'mobile': $vuetify.breakpoint.xs}">
+      <v-col cols="12" md="4">
+        <sales-stats></sales-stats>
+      </v-col>
+      <v-col cols="12" md="4">
+        <cash-flow-stats></cash-flow-stats>
+      </v-col>
+      <v-col cols="12" md="4">
+        <top-items-stats></top-items-stats>
+      </v-col>
+      <v-col cols="12" md="4">
+        <charge-type-stats></charge-type-stats>
+      </v-col>
+      <v-col cols="12" md="4">
+        <information-stats></information-stats>
+      </v-col>
+    </v-row>
+    <div v-if="$vuetify.breakpoint.xs" class="footer-spacer"></div>
     <actions-bar v-if="$vuetify.breakpoint.xs"></actions-bar>
   </div>
 </template>
 
 <script>
-import ActionsBar from "../components/misc/ActionsBar";
 export default {
-  components: { ActionsBar },
+  components: { 
+    ActionsBar: () => import("../components/misc/ActionsBar"),
+    SalesStats: () => import("../components/stats/SalesStats"),
+    CashFlowStats: () => import("../components/stats/CashFlowStats"),
+    TopItemsStats: () => import("../components/stats/TopItemsStats"),
+    ChargeTypeStats: () => import("../components/stats/ChargeTypeStats"),
+    InformationStats: () => import("../components/stats/InformationStats"),
+  },
   data() {
     return {
       userName: null,
@@ -47,5 +71,15 @@ export default {
     background: linear-gradient(120deg, #139cca 40%, #1096c6 40%);
     // background: linear-gradient(120deg, #0f99c7f0 40%, #1096c6 41%);
 }
-
+.footer-spacer{
+  height: 100px;
+}
+.stats-area{
+  &.mobile{
+    margin-top: 170px;
+  }
+  div{
+    padding: 0 4px;
+  }
+}
 </style>

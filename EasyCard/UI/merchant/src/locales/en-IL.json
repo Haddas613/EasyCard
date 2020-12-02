@@ -50,6 +50,11 @@
   "TransactionDetails": "Transaction Details",
   "DealDetails": "Deal Details",
   "AmountDetails": "Amount Details",
+  "Sales": "Sales",
+  "CashFlow": "Cash Flow",
+  "TopItems": "Top Items",
+  "ChargeType": "Charge Type",
+  "Information": "Information",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -76,6 +81,7 @@
   "PercentageShouldBeLessThanOneHundred": "Percentage should be less than 100 to apply",
   "@AllowedPrecision": "Allowed precision is @val",
   "OnlyPositiveNumbersAreAllowed": "Only positive numbers are allowed",
+  "@TransactionsCount": "@count Transactions",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -270,6 +276,7 @@
   "RefundedCustomer": "Refunded Customer",
   "ChargedCustomer": "Charged Customer",
   "SelectTransactionsFirst": "Select Transactions First",
+  "Today": "Today",
 
   "--HINTS--": null,
   "ShowOnlyNotTransmittedTransactions": "Show only not transmitted transactions",
