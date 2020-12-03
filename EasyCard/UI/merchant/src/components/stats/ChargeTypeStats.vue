@@ -12,9 +12,9 @@
         <v-col cols="5" class="px-0">
           <v-row no-gutters v-for="d in data" :key="d.type">
             <v-col cols="4">
-              <v-div class="icon-circled">
+              <div class="icon-circled">
                 <v-icon :color="typeOpts[d.type].color">{{typeOpts[d.type].icon}}</v-icon>
-              </v-div>
+              </div>
             </v-col>
             <v-col cols="8">
               {{d.label}}
