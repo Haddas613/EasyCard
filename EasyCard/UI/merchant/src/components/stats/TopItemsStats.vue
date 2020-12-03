@@ -7,14 +7,40 @@
       </v-row>
     </v-card-title>
     <v-divider></v-divider>
-    <v-card-text>
-      <v-row align="center" justify="center" class="py-4">placeholder</v-row>
+    <v-card-text class="px-0">
+      <ec-list class="px-2" v-if="items && items.length > 0" :items="items" dense dashed>
+        <template v-slot:prepend="{index}">
+          {{index + 1}}.
+        </template>
+        <template v-slot:left="{ item }">
+          <v-col cols="12" class="text-align-initial text-oneline">
+            <span class="body-1">{{item.itemName}}</span>
+          </v-col>
+        </template>
+        <template v-slot:right="{ item }">
+          <v-col cols="12" class="text-end font-weight-bold subtitle-2">
+            {{item.price | currency(item.$currency)}}
+          </v-col>
+        </template>
+      </ec-list>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
-export default {};
+export default {
+  components: {
+    EcList: () => import("../ec/EcList"),
+  },
+  data() {
+    return {
+      items: null
+    }
+  },
+  async mounted(){
+    this.items = (await this.$api.items.getItems({take: 5})).data;
+  }
+};
 </script>
 
 <style lang="sass" scoped>

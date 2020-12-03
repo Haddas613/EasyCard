@@ -27,7 +27,8 @@ export default new Vuetify({
         //easy card custom colors
         ecbg: '#f4f6f7',
         ecgray: colors.grey.lighten1,
-        ecdgray: colors.grey.darken2,
+        ecdgray: colors.grey.darken2, //dark gray
+        eclgray: '#e0e0e0', //light gray
         ecnavLink: colors.grey.darken4,
         ecred: colors.red.darken2
       },
@@ -43,7 +44,9 @@ export default new Vuetify({
         //easy card custom colors
         ecbg: colors.shades.black,
         ecnavLink: colors.grey.lighten4,
-        ecError: colors.red.darken2
+        ecdgray: colors.grey.darken2, //dark gray
+        eclgray: '#e0e0e0', //light gray
+        ecred: colors.red.darken2
       }
     },
   },
