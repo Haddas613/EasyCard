@@ -57,7 +57,7 @@
           </v-row>
         </v-card-text>
       </v-card>
-      <amount-details :model="model"></amount-details>
+      <amount-details :model="model" amount-key="invoiceAmount"></amount-details>
       <v-card flat class="my-2" v-if="model.dealDetails && model.dealDetails.items.length > 0">
         <v-card-title
           class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
