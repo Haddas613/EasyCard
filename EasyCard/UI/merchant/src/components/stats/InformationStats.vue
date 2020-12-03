@@ -8,13 +8,48 @@
     </v-card-title>
     <v-divider></v-divider>
     <v-card-text>
-      <v-row align="center" justify="center" class="py-4">placeholder</v-row>
+      <ec-list class="" v-if="data && data.length > 0" :items="data" dense dashed>
+        <template v-slot:left="{ item }">
+          <v-col cols="12" class="text-align-initial text-oneline">
+            <span class="body-1">{{item.name}}</span>
+          </v-col>
+        </template>
+        <template v-slot:right="{ item }">
+          <v-col cols="12" class="text-end font-weight-bold subtitle-2">{{item.value}}</v-col>
+        </template>
+      </ec-list>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
-export default {};
+export default {
+  components: {
+    EcList: () => import("../ec/EcList")
+  },
+  data() {
+    return {
+      data: [
+        {
+          name: "Average Spend",
+          value: "$23"
+        },
+        {
+          name: "Total Customer",
+          value: "354"
+        },
+        {
+          name: "New Customers",
+          value: "237(63%)"
+        },
+        {
+          name: "Repeating Customers",
+          value: "127(37%)"
+        }
+      ]
+    };
+  }
+};
 </script>
 
 <style lang="sass" scoped>
