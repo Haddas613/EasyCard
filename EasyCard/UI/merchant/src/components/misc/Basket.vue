@@ -20,7 +20,6 @@
       <ec-money :amount="model.totalAmount" class="px-1"></ec-money>
     </v-btn>
     <v-spacer style="height: 48px" v-if="$vuetify.breakpoint.smAndDown"></v-spacer>
-    <pre>{{model.items}}</pre>
     <v-flex class="white text-center align-stretch px-3">
       <v-list :two-line="false" :dense="true" subheader class="py-0 fill-height body-2">
         <v-list-item>
