@@ -10,11 +10,13 @@
   "dependencies": {
     "-": "0.0.1",
     "@mdi/font": "^5.3.45",
+    "chart.js": "^2.9.4",
     "lodash": "^4.17.19",
     "moment": "^2.26.0",
     "sass-loader": "^8.0.2",
     "v-money": "^0.8.1",
     "vue": "^2.6.11",
+    "vue-chartjs": "^3.5.1",
     "vue-clipboard2": "^0.3.1",
     "vue-i18n": "^8.17.3",
     "vue-lodash": "^2.1.2",
