@@ -117,6 +117,7 @@ export default {
   height: 35px;
   width: 35px;
   display: flex;
+  margin-top: 4px;
   i{
     padding-right: 6px!important;
     padding-left: 6px!important;
