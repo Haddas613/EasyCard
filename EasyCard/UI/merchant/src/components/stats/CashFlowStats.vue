@@ -77,12 +77,6 @@ export default {
     };
   },
   mounted () {
-    // console.log(document.querySelector('.chart-container'))
-    // var ctx = document.getElementById('line-chart').getContext("2d");
-    
-    // var gradientStroke = ctx.createLinearGradient(500, 0, 100, 0);
-    // gradientStroke.addColorStop(0, '#80b6f4');
-    // gradientStroke.addColorStop(1, '#f49080');
   },
 };
 </script>
