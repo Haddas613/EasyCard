@@ -50,8 +50,12 @@ namespace MerchantProfileApi.Mapping
 
             CreateMap<SystemInvoiceSettings, TerminalInvoiceSettings>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
+
             CreateMap<SystemGlobalSettings, TerminalSettings>()
-               .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
+                .ForMember(d => d.VATRateGlobal, o => o.MapFrom(d => d.VATRate))
+                .ForMember(d => d.VATRate, o => o.Ignore())
+                .ForAllOtherMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
+
             CreateMap<SystemPaymentRequestSettings, TerminalPaymentRequestSettings>()
               .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
             CreateMap<SystemCheckoutSettings, TerminalCheckoutSettings>()

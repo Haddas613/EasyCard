@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Merchants.Shared.Models
@@ -43,7 +44,17 @@ namespace Merchants.Shared.Models
         [StringLength(50)]
         public string DefaultSKU { get; set; }
 
-        [Range(0, 1)]
-        public decimal? VATRate { get; set; }
+        public decimal? VATRate
+        {
+            get
+            {
+                return VATExempt ? 0 : VATRateGlobal;
+            }
+        }
+
+        [JsonIgnore]
+        public decimal VATRateGlobal { get; set; }
+
+        public bool VATExempt { get; set; }
     }
 }

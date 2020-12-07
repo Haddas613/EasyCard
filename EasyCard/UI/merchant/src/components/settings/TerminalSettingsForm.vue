@@ -40,7 +40,7 @@
       </v-col>
       <v-col cols="12" md="6">
         <v-text-field
-          v-model.number="model.settings.vatRatePercent"
+          :value="(model.settings.vatRate * 100).toFixed(0)"
           :label="$t('VATPercent')"
           :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(2)]"
           required
