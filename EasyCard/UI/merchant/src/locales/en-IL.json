@@ -204,6 +204,7 @@
   "PrivateApiKey": "Private Api Key",
   "SharedApiKey": "Shared Api Key",
   "PaymentRequestURL": "Payment Request URL",
+  "VATExempt": "VAT Exempt",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -283,5 +284,6 @@
   "WhileEnabledYouCanManuallyTriggerTheTransaction": "While enabled you can manually trigger transaction",
   "CantBeUsedInNotTransmittedMode": "Disabled while in non transmitted mode",
   "SeparateEmailsWithCommas": "Separate Emails with Commas",
-  "ThisCreditCardIsAlreadyAddedAsToken": "This credit card is already added as Token"
+  "ThisCreditCardIsAlreadyAddedAsToken": "This credit card is already added as Token",
+  "WhenEnabledVATWillBeIgnored": "When enabled VAT will be ignored"
 }

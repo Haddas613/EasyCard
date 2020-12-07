@@ -40,5 +40,7 @@ namespace MerchantProfileApi.Models.Terminal
 
         [Range(0, 1)]
         public decimal? VATRate { get; set; }
+
+        public bool VatExempt { get; set; }
     }
 }
