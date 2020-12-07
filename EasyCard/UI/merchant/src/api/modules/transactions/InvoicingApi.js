@@ -58,4 +58,7 @@ export default class InvoicingApi {
             invoicesIDs: invoicesIDs
         });
     }
+    async downloadPDF(invoiceID){
+        return await this.base.get(this.invoicingUrl + `/${invoiceID}/download`);
+    }
 }

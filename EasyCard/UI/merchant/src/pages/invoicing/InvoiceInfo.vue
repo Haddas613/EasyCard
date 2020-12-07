@@ -55,6 +55,19 @@
               <p>{{model.invoiceDetails.sendCCTo || '-'}}</p>
             </v-col>
           </v-row>
+          <v-row class="info-container">
+            <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Status')}}</p>
+              <v-btn outlined color="success" x-small v-if="model.$status == 'sent'" :title="$t('ClickToDownload')" @click="downloadInvoicePDF(model.$invoiceID)">
+                {{$t(model.status)}}
+                <v-icon right color="red" size="1rem">mdi-file-pdf-outline</v-icon>
+              </v-btn>
+              <p
+                v-bind:class="statusColors[model.status]"
+                v-else
+              >{{$t(model.status || 'None')}}</p>
+            </v-col>
+          </v-row>
         </v-card-text>
       </v-card>
       <amount-details :model="model" amount-key="invoiceAmount"></amount-details>
@@ -90,8 +103,24 @@ export default {
     return {
       model: null,
       terminalName: "-",
-      numberOfRecords: 0
+      numberOfRecords: 0,
+      statusColors: {
+        Pending: "gray--text",
+        None: "",
+        Sent: "success--text",
+        Sending: "primary--text",
+        SendingFailed: "error--text"
+      },
     };
+  },
+  methods: {
+    async downloadInvoicePDF(invoiceID){
+      let opResult = await this.$api.invoicing.downloadPDF(invoiceID);
+
+      if(opResult.status === "success" && opResult.entityReference){
+        window.open(opResult.entityReference);
+      }
+    }
   },
   async mounted() {
     this.model = await this.$api.invoicing.getInvoice(this.$route.params.id);

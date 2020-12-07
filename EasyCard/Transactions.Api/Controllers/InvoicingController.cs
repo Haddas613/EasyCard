@@ -124,6 +124,18 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("{invoiceID}/download")]
+        public async Task<ActionResult<OperationResponse>> GetInvoiceDownloadURL([FromRoute] Guid invoiceID)
+        {
+            using (var dbTransaction = invoiceService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var downloadUrl = EnsureExists(await invoiceService.GetInvoices().Where(m => m.InvoiceID == invoiceID).Select(i => i.DownloadUrl).FirstOrDefaultAsync());
+
+                return new OperationResponse {Status = StatusEnum.Success, EntityUID = invoiceID, EntityReference = downloadUrl };
+            }
+        }
+
         // NOTE: this creates only db record - Invoicing system integration should be processed in a queue
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]

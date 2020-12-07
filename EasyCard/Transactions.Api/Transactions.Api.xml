@@ -349,6 +349,11 @@
             Invoice details
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.Status">
+            <summary>
+            Processing status
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.TerminalID">
             <summary>
             EasyCard terminal reference

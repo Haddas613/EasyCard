@@ -285,5 +285,6 @@
   "CantBeUsedInNotTransmittedMode": "Disabled while in non transmitted mode",
   "SeparateEmailsWithCommas": "Separate Emails with Commas",
   "ThisCreditCardIsAlreadyAddedAsToken": "This credit card is already added as Token",
-  "WhenEnabledVATWillBeIgnored": "When enabled VAT will be ignored"
+  "WhenEnabledVATWillBeIgnored": "When enabled VAT will be ignored",
+  "ClickToDownload": "Click to download"
 }
