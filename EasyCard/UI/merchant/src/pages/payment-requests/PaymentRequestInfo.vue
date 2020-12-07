@@ -36,10 +36,6 @@
               <p>{{model.$dueDate | ecdate('LLLL')}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('Amount')}}</p>
-              <p>{{model.paymentRequestAmount | currency(model.$currency)}}</p>
-            </v-col>
-            <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2 py-1">
                 {{$t('PaymentRequestURL')}} 
               </p>
@@ -52,7 +48,7 @@
           </v-row>
         </v-card-text>
       </v-card>
-      <amount-details :model="model"></amount-details>
+      <amount-details :model="model" amount-key="paymentRequestAmount"></amount-details>
       <v-card flat class="my-2" v-if="model.dealDetails && model.dealDetails.items.length > 0">
         <v-card-title
           class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
