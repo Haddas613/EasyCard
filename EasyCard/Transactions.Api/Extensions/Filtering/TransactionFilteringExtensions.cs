@@ -101,7 +101,13 @@ namespace Transactions.Api.Extensions.Filtering
 
             if (!string.IsNullOrWhiteSpace(filter.CardNumber))
             {
-                src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardNumber, filter.CardNumber.UseWildCard(true)));
+                var cardNumber = filter.CardNumber.Replace("*", string.Empty).Trim();
+
+                // don't do anything if card number is nothing but a * symbol
+                if (!string.IsNullOrEmpty(cardNumber))
+                {
+                    src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardNumber, filter.CardNumber.UseWildCard(true)));
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(filter.ConsumerEmail))
