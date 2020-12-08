@@ -1,5 +1,17 @@
 <template>
   <v-flex>
+    <v-dialog v-model="deleteDialog" width="500">
+      <v-card>
+        <v-card-title>{{$t("Confirmation")}}</v-card-title>
+        <v-divider></v-divider>
+        <v-card-text class="pt-2">{{$t("AreYouSureYouWantToDeleteBillingDeal")}}</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="deleteDialog = false;">{{$t("Cancel")}}</v-btn>
+          <v-btn color="primary" @click="deleteBillingDeal()">{{$t("OK")}}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-tabs grow>
       <v-tab key="info">{{$t("GeneralInfo")}}</v-tab>
       <v-tab-item key="info">
@@ -20,6 +32,12 @@
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('Created')}}</p>
                   <p>{{model.$billingDealTimestamp | ecdate('LLLL')}}</p>
+                </v-col>
+
+                <v-col cols="12" md="4" class="info-block">
+                  <p class="caption ecgray--text text--darken-2">{{$t('Active')}}</p>
+                  <p v-if="model.active" class="success--text">{{$t("Yes")}}</p>
+                  <p v-else class="error--text">{{$t("No")}}</p>
                 </v-col>
               </v-row>
             </v-card-text>
@@ -98,7 +116,8 @@ export default {
       import("../../components/transactions/TransactionItemsList"),
     DealDetails: () => import("../../components/details/DealDetails"),
     AmountDetails: () => import("../../components/details/AmountDetails"),
-    CreditCardDetails: () => import("../../components/details/CreditCardDetails"),
+    CreditCardDetails: () =>
+      import("../../components/details/CreditCardDetails")
   },
   data() {
     return {
@@ -110,8 +129,19 @@ export default {
         skip: 0,
         billingDealID: this.$route.params.id
       },
-      numberOfRecords: 0
+      numberOfRecords: 0,
+      deleteDialog: false
     };
+  },
+  methods: {
+    async deleteBillingDeal() {
+      let opResult = await this.$api.billingDeals.deleteBillingDeal(
+        this.$route.params.id
+      );
+      if (opResult.status === "success") {
+        this.$router.push({ name: "BillingDeals" });
+      }
+    }
   },
   async mounted() {
     this.model = await this.$api.billingDeals.getBillingDeal(
@@ -138,10 +168,14 @@ export default {
       this.terminalName = this.$t("NotAccessible");
     }
 
-    if (this.model.invoiceDetails 
-      && this.model.invoiceDetails.sendCCTo 
-      && this.model.invoiceDetails.sendCCTo.length > 0) {
-        this.model.invoiceDetails.sendCCTo = this.model.invoiceDetails.sendCCTo.join(",");
+    if (
+      this.model.invoiceDetails &&
+      this.model.invoiceDetails.sendCCTo &&
+      this.model.invoiceDetails.sendCCTo.length > 0
+    ) {
+      this.model.invoiceDetails.sendCCTo = this.model.invoiceDetails.sendCCTo.join(
+        ","
+      );
     }
 
     let $dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
@@ -151,21 +185,28 @@ export default {
         $dictionaries.invoiceTypeEnum[this.model.invoiceDetails.invoiceType];
     }
 
-    this.$store.commit("ui/changeHeader", {
-      value: {
-        threeDotMenu: [
-          {
-            text: this.$t("Edit"),
-            fn: () => {
-              this.$router.push({
-                name: "EditBillingDeal",
-                id: this.$route.params.id
-              });
-            }
-          }
-        ]
+    let newHeader = {
+      threeDotMenu: [
+      {
+        text: this.$t("Edit"),
+        fn: () => {
+          this.$router.push({
+            name: "EditBillingDeal",
+            id: this.$route.params.id
+          });
+        }
       }
-    });
+    ]};
+
+    if (this.model.active) {
+      newHeader.threeDotMenu.push({
+        text: this.$t("Delete"),
+        fn: () => { this.deleteDialog = true; }
+      });
+    }else{
+      newHeader.text = { translate: true, value: 'BillingDeal(Deleted)' };
+    }
+    this.$store.commit("ui/changeHeader", { value: newHeader});
   }
 };
 </script>

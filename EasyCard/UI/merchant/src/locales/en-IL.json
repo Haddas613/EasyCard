@@ -55,6 +55,8 @@
   "TopItems": "Top Items",
   "ChargeType": "Charge Type",
   "Information": "Information",
+  "Confirmation": "Confirmation",
+  "BillingDeal(Deleted)" : "Billing Deal (deleted)",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -278,6 +280,8 @@
   "ChargedCustomer": "Charged Customer",
   "SelectTransactionsFirst": "Select Transactions First",
   "Today": "Today",
+  "Yes": "Yes",
+  "No": "No",
 
   "--HINTS--": null,
   "ShowOnlyNotTransmittedTransactions": "Show only not transmitted transactions",
@@ -286,5 +290,8 @@
   "SeparateEmailsWithCommas": "Separate Emails with Commas",
   "ThisCreditCardIsAlreadyAddedAsToken": "This credit card is already added as Token",
   "WhenEnabledVATWillBeIgnored": "When enabled VAT will be ignored",
-  "ClickToDownload": "Click to download"
+  "ClickToDownload": "Click to download",
+
+  "--MESSAGES--": null,
+  "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?"
 }

@@ -19,6 +19,8 @@ namespace Transactions.Api.Extensions.Filtering
                 return src;
             }
 
+            src = src.Where(t => t.Active == !filter.ShowOnlyDeleted);
+
             if (filter.TerminalID != null)
             {
                 src = src.Where(t => t.TerminalID == filter.TerminalID);

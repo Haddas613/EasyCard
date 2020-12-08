@@ -178,6 +178,11 @@
             End-customer Email
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealsFilter.OnlyActual">
+            <summary>
+            Billing deals that can be manually triggered
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.BillingSchedule">
             <summary>
             Billing Schedule
