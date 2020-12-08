@@ -100,7 +100,6 @@ export default {
       default: false
     },
     filterByTerminal: {
-      type: Boolean,
       default: false
     }
   },
@@ -158,10 +157,16 @@ export default {
     },
     async getCustomers(extendData) {
       let searchApply = this.search && this.search.trim().length >= 3;
+
+      let terminalID = null;
+      if(this.filterByTerminal){
+        terminalID = typeof(this.filterByTerminal) === 'string' ? this.filterByTerminal : this.terminalStore.terminalID;
+      }
+
       let customers = await this.$api.consumers.getConsumers({
         search: searchApply ? this.search : "",
         ...this.paging,
-        terminalID: this.filterByTerminal ? this.terminalStore.terminalID : null
+        terminalID: terminalID
       });
       this.customers = customers.data;
       this.totalAmount = customers.numberOfRecords;
