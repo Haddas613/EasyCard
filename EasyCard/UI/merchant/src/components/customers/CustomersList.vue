@@ -119,13 +119,11 @@ export default {
     };
   },
   async mounted() {
-    if (
-      this.showPreviouslyCharged &&
-      this.lastChargedCustomersStore.length > 0
-    ) {
+    if (this.showPreviouslyCharged && this.lastChargedCustomersStore.length > 0) {
+      let terminalID = typeof(this.filterByTerminal) === "string" ? this.filterByTerminal : this.terminalStore.terminalID;
       this.previouslyCharged = await this.$api.consumers.getLastChargedConsumers(
         this.lastChargedCustomersStore,
-        this.terminalStore.terminalID
+        terminalID
       );
     }
 

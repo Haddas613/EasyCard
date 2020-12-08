@@ -24,47 +24,12 @@
           outlined
         ></v-select>
       </v-col>
-      <v-col cols="12" md="6" class="pb-2 pt-0">
-        <ec-dialog :dialog.sync="customersDialog" color="ecbg">
-          <template v-slot:title>{{$t('Customers')}}</template>
-          <template>
-            <div class="d-flex pb-2 justify-end">
-              <v-btn
-                color="red"
-                class="white--text"
-                :disabled="selectedCustomer == null"
-                :block="$vuetify.breakpoint.smAndDown"
-                @click="selectedCustomer = null; customersDialog = false;"
-              >
-                <v-icon left>mdi-delete</v-icon>
-                {{$t("CancelSelection")}}
-              </v-btn>
-            </div>
-            <customers-list
-              :key="model.terminalID"
-              :show-previously-charged="true"
-              :filter-by-terminal="true"
-              v-on:ok="processCustomer($event)"
-            ></customers-list>
-          </template>
-        </ec-dialog>
-        <ec-dialog-invoker
-          v-on:click="customersDialog = true"
-          v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-7': $vuetify.breakpoint.mdAndUp}"
-        >
-          <template v-slot:prepend>
-            <v-icon>mdi-account</v-icon>
-          </template>
-          <template v-slot:left>
-            <div v-if="!selectedCustomer">{{$t("ChooseCustomer")}}</div>
-            <div v-if="selectedCustomer">
-              <span class="primary--text">{{selectedCustomer.consumerName}}</span>
-            </div>
-          </template>
-          <template v-slot:append>
-            <re-icon>mdi-chevron-right</re-icon>
-          </template>
-        </ec-dialog-invoker>
+      <v-col cols="12" md="6" class="pb-2" v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-7': $vuetify.breakpoint.mdAndUp}">
+        <customer-dialog-invoker 
+          :key="model.dealDetails.consumerID" 
+          :terminal="true" 
+          :customer-id="model.dealDetails.consumerID" 
+          @update="processCustomer($event)"></customer-dialog-invoker>
       </v-col>
       <v-col
         cols="12"
@@ -260,7 +225,8 @@ export default {
     EcRadioGroup: () => import("../inputs/EcRadioGroup"),
     ReIcon: () => import("../misc/ResponsiveIcon"),
     CardTokenFormDialog: () => import("../ctokens/CardTokenFormDialog"),
-    CardTokenString: () => import("../ctokens/CardTokenString")
+    CardTokenString: () => import("../ctokens/CardTokenString"),
+    CustomerDialogInvoker: () => import("../dialog-invokers/CustomerDialogInvoker")
   },
   props: {
     data: {
@@ -279,8 +245,6 @@ export default {
       tokensDialog: false,
       customerTokens: [],
       selectedToken: null,
-      selectedCustomer: null,
-      customersDialog: false,
       scheduleDialog: false,
       ctokenDialog: false
     };
@@ -308,12 +272,10 @@ export default {
   },
   methods: {
     async processCustomer(data) {
-      this.selectedCustomer = data;
       this.model.dealDetails.consumerEmail = data.consumerEmail;
       this.model.dealDetails.consumerPhone = data.consumerPhone;
       this.model.dealDetails.consumerID = data.consumerID;
       await this.getCustomerTokens();
-      this.customersDialog = false;
     },
     handleClick() {
       this.tokensDialog = this.customerTokens && this.customerTokens.length > 0;
@@ -384,9 +346,6 @@ export default {
         this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
     }
     if (this.model.dealDetails.consumerID) {
-      this.selectedCustomer = await this.$api.consumers.getConsumer(
-        this.model.dealDetails.consumerID
-      );
       this.customerTokens =
         (
           await this.$api.cardTokens.getCustomerCardTokens(

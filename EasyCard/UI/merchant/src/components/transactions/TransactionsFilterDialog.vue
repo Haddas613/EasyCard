@@ -16,46 +16,11 @@
       <div class="px-4 py-2">
         <v-row>
           <v-col cols="12" md="12" class="pb-2 pt-0">
-            <ec-dialog :dialog.sync="customersDialog" color="ecbg">
-              <template v-slot:title>{{$t('Customers')}}</template>
-              <template>
-                <div class="d-flex pb-2 justify-end">
-                  <v-btn
-                    color="red"
-                    class="white--text"
-                    :disabled="selectedCustomer == null"
-                    :block="$vuetify.breakpoint.smAndDown"
-                    @click="selectedCustomer = null; customersDialog = false;"
-                  >
-                    <v-icon left>mdi-delete</v-icon>
-                    {{$t("CancelSelection")}}
-                  </v-btn>
-                </div>
-                <customers-list
-                  :key="model.terminalID"
-                  :show-previously-charged="true"
-                  :filter-by-terminal="model.terminalID"
-                  v-on:ok="processCustomer($event)"
-                ></customers-list>
-              </template>
-            </ec-dialog>
-            <ec-dialog-invoker
-              v-on:click="customersDialog = true"
-              v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-7': $vuetify.breakpoint.mdAndUp}"
-            >
-              <template v-slot:prepend>
-                <v-icon>mdi-account</v-icon>
-              </template>
-              <template v-slot:left>
-                <div v-if="!selectedCustomer">{{$t("ChooseCustomer")}}</div>
-                <div v-if="selectedCustomer">
-                  <span class="primary--text">{{selectedCustomer.consumerName}}</span>
-                </div>
-              </template>
-              <template v-slot:append>
-                <re-icon>mdi-chevron-right</re-icon>
-              </template>
-            </ec-dialog-invoker>
+            <customer-dialog-invoker 
+            :key="model.consumerID" 
+            :terminal="model.terminalID" 
+            :customer-id="model.consumerID" 
+            @update="processCustomer($event)"></customer-dialog-invoker>
           </v-col>
           <v-col cols="12" md="6" class="py-0">
             <v-text-field
@@ -72,6 +37,7 @@
               v-model="model.terminalID"
               outlined
               :label="$t('Terminal')"
+              :disabled="model.consumerID != null"
               clearable
             ></v-autocomplete>
           </v-col>
@@ -188,7 +154,7 @@
               clearable
             ></v-select>
           </v-col>
-          <v-col cols="12" md="6" class="py-0">
+          <v-col cols="12" md="12" class="py-0">
             <v-text-field
               v-model="model.cardNumber"
               :label="$t('CardNumber')"
@@ -206,9 +172,7 @@ export default {
   components: {
     EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
     EcDialog: () => import("../../components/ec/EcDialog"),
-    EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
-    ReIcon: () => import("../../components/misc/ResponsiveIcon"),
-    CustomersList: () => import("../../components/customers/CustomersList"),
+    CustomerDialogInvoker: () => import("../../components/dialog-invokers/CustomerDialogInvoker")
   },
   props: {
     show: {
@@ -224,7 +188,11 @@ export default {
   },
   data() {
     return {
-      model: { ...this.filter },
+      model: { 
+        consumerID: null,
+        terminalID: null,
+        ...this.filter
+       },
       dictionaries: {},
       customersDialog: false,
       selectedCustomer: null,
@@ -234,9 +202,6 @@ export default {
   async mounted() {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
     this.terminals = (await this.$api.terminals.getTerminals()).data || [];
-    if(this.model.consumerID){
-      this.processCustomer(await this.$api.consumers.getConsumer(this.model.consumerID))
-    }
   },
   computed: {
     visible: {
@@ -254,10 +219,8 @@ export default {
       this.visible = false;
     },
     processCustomer(data) {
-      this.selectedCustomer = data;
-      this.model.terminalID = data.terminalID;
+      this.$set(this.model, 'terminalID', data.terminalID);
       this.model.consumerID = data.consumerID;
-      this.customersDialog = false;
     },
     resetFilter(){
       this.model = {};
