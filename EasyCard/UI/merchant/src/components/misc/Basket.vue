@@ -44,7 +44,8 @@
           <v-list-item-content class="text-normal">
             <v-row no-gutters>
               <v-col cols="6" class="text-start">{{$t("Total")}}</v-col>
-              <v-col cols="6" class="text-end">{{model.totalAmount | currency(currencyStore.code)}}</v-col>
+              <v-col cols="3" class="text-end">{{model.items.length}}</v-col>
+              <v-col cols="3" class="text-end">{{model.totalAmount | currency(currencyStore.code)}}</v-col>
             </v-row>
           </v-list-item-content>
         </v-list-item>

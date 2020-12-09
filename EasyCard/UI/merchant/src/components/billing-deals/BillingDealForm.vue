@@ -146,14 +146,14 @@
       </v-col>
       <v-col cols="12" class="pt-0">
         <numpad-dialog-invoker 
-          :key="model.dealDetails.items.length" 
+          :key="model.dealDetails.items.length + model.transactionAmount" 
           :data="model.dealDetails.items" 
           @ok="processAmount($event)"></numpad-dialog-invoker>
       </v-col>
       <v-col cols="12" class="pt-0">
         <basket 
           v-if="model.dealDetails.items && model.dealDetails.items.length" 
-          :key="model.dealDetails.items.length" 
+          :key="model.dealDetails.items.length + model.transactionAmount" 
           embed 
           v-on:ok="processAmount($event)" 
           v-on:update="processAmount($event)" 

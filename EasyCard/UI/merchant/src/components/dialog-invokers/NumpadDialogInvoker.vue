@@ -1,7 +1,7 @@
 <template>
   <div>
     <ec-dialog :dialog.sync="numpadDialog" color="ecbg">
-      <template v-slot:title>{{$t('SelectItems')}}</template>
+      <template v-slot:title>{{$t('AddItems')}}</template>
       <template>
         <v-flex fluid fill-height>
           <numpad
@@ -18,12 +18,7 @@
         <v-icon>mdi-basket</v-icon>
       </template>
       <template v-slot:left>
-        <div v-if="!model.items.length">{{$t("SelectItems")}}</div>
-        <div v-else>
-          <span
-            class="primary--text"
-          >{{$t("@ItemsSelected").replace("@amount", model.items.length)}}</span>
-        </div>
+        <div>{{$t("AddItems")}}</div>
       </template>
       <template v-slot:append>
         <re-icon>mdi-chevron-right</re-icon>

@@ -85,6 +85,7 @@
   "OnlyPositiveNumbersAreAllowed": "Only positive numbers are allowed",
   "@TransactionsCount": "@count Transactions",
   "SelectItems": "Select Items",
+  "AddItems": "Add Items",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
