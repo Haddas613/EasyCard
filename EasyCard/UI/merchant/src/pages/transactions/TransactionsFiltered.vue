@@ -139,6 +139,7 @@ export default {
     },
     async applyFilters(data) {
       this.transactionsFilter = {
+        ...this.filters,
         ...this.defaultFilter,
         ...data
       };
@@ -212,6 +213,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

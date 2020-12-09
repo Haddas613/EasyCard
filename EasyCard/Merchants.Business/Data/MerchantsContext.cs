@@ -45,27 +45,6 @@ namespace Merchants.Business.Data
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
             c => (IEnumerable<string>)c.ToHashSet());
 
-        // syste settings
-        private static readonly ValueConverter SystemSettingsConverter = new ValueConverter<SystemGlobalSettings, string>(
-        v => JsonConvert.SerializeObject(v),
-        v => JsonConvert.DeserializeObject<SystemGlobalSettings>(v));
-
-        private static readonly ValueConverter SystemInvoiceSettingsConverter = new ValueConverter<SystemInvoiceSettings, string>(
-            v => JsonConvert.SerializeObject(v),
-            v => JsonConvert.DeserializeObject<SystemInvoiceSettings>(v));
-
-        private static readonly ValueConverter SystemPaymentRequestSettingsConverter = new ValueConverter<SystemPaymentRequestSettings, string>(
-            v => JsonConvert.SerializeObject(v),
-            v => JsonConvert.DeserializeObject<SystemPaymentRequestSettings>(v));
-
-        private static readonly ValueConverter SystemCheckoutSettingsConverter = new ValueConverter<SystemCheckoutSettings, string>(
-            v => JsonConvert.SerializeObject(v),
-            v => JsonConvert.DeserializeObject<SystemCheckoutSettings>(v));
-
-        private static readonly ValueConverter SystemBillingSettingsConverter = new ValueConverter<SystemBillingSettings, string>(
-            v => JsonConvert.SerializeObject(v),
-            v => JsonConvert.DeserializeObject<SystemBillingSettings>(v));
-
         public DbSet<Merchant> Merchants { get; set; }
 
         public DbSet<Feature> Features { get; set; }
@@ -350,15 +329,15 @@ namespace Merchants.Business.Data
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
-                builder.Property(p => p.Settings).HasColumnName("Settings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(SystemSettingsConverter);
+                builder.Property(p => p.Settings).HasColumnName("Settings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
-                builder.Property(p => p.BillingSettings).HasColumnName("BillingSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(SystemBillingSettingsConverter);
+                builder.Property(p => p.BillingSettings).HasColumnName("BillingSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
-                builder.Property(p => p.CheckoutSettings).HasColumnName("CheckoutSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(SystemCheckoutSettingsConverter);
+                builder.Property(p => p.CheckoutSettings).HasColumnName("CheckoutSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
-                builder.Property(p => p.PaymentRequestSettings).HasColumnName("PaymentRequestSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(SystemPaymentRequestSettingsConverter);
+                builder.Property(p => p.PaymentRequestSettings).HasColumnName("PaymentRequestSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
-                builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasConversion(SystemInvoiceSettingsConverter);
+                builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
             }
         }
     }

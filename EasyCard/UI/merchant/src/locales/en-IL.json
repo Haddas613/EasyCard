@@ -55,6 +55,8 @@
   "TopItems": "Top Items",
   "ChargeType": "Charge Type",
   "Information": "Information",
+  "Confirmation": "Confirmation",
+  "BillingDeal(Deleted)" : "Billing Deal (deleted)",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -82,6 +84,8 @@
   "@AllowedPrecision": "Allowed precision is @val",
   "OnlyPositiveNumbersAreAllowed": "Only positive numbers are allowed",
   "@TransactionsCount": "@count Transactions",
+  "SelectItems": "Select Items",
+  "AddItems": "Add Items",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -204,6 +208,7 @@
   "PrivateApiKey": "Private Api Key",
   "SharedApiKey": "Shared Api Key",
   "PaymentRequestURL": "Payment Request URL",
+  "VATExempt": "VAT Exempt",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -224,6 +229,7 @@
   "OnlyActual": "Only actual",
   "TriggerTransactions": "Trigger Transactions",
   "GoToTransaction": "Go to transaction",
+  "GoToInvoice": "Go to invoice",
   "SelectAll": "Select all",
   "ResetPrivateKey": "Reset Private Key",
   "ResetSharedKey": "Reset Shared Key",
@@ -277,11 +283,18 @@
   "ChargedCustomer": "Charged Customer",
   "SelectTransactionsFirst": "Select Transactions First",
   "Today": "Today",
+  "Yes": "Yes",
+  "No": "No",
 
   "--HINTS--": null,
   "ShowOnlyNotTransmittedTransactions": "Show only not transmitted transactions",
   "WhileEnabledYouCanManuallyTriggerTheTransaction": "While enabled you can manually trigger transaction",
   "CantBeUsedInNotTransmittedMode": "Disabled while in non transmitted mode",
   "SeparateEmailsWithCommas": "Separate Emails with Commas",
-  "ThisCreditCardIsAlreadyAddedAsToken": "This credit card is already added as Token"
+  "ThisCreditCardIsAlreadyAddedAsToken": "This credit card is already added as Token",
+  "WhenEnabledVATWillBeIgnored": "When enabled VAT will be ignored",
+  "ClickToDownload": "Click to download",
+
+  "--MESSAGES--": null,
+  "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?"
 }

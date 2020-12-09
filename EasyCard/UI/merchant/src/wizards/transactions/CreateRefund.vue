@@ -65,6 +65,14 @@
               <router-link class="primary--text" link
                   :to="{ name: 'Transaction', params: { id: result.entityReference } }"
                 >{{$t("GoToTransaction")}}</router-link>
+              <div class="pt-4" v-if="result.innerResponse">
+                <p v-if="result.innerResponse.status == 'error'">
+                  {{result.innerResponse.message}}
+                </p>
+                <router-link v-else class="primary--text" link
+                  :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
+                >{{$t("GoToInvoice")}}</router-link>
+              </div>
             </template>
           </wizard-result>
         </v-stepper-content>

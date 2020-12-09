@@ -40,20 +40,29 @@
       </v-col>
       <v-col cols="12" md="6">
         <v-text-field
+          :value="(model.settings.vatRate * 100).toFixed(0)"
+          :label="$t('VATPercent')"
+          :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(2)]"
+          required
+          outlined
+          disabled
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-switch
+          class="pt-0 mt-2 px-2"
+          v-model="model.settings.vatExempt"
+          :label="$t('VATExempt')"
+          :hint="$t('WhenEnabledVATWillBeIgnored')"
+          persistent-hint
+        ></v-switch>
+      </v-col>
+      <v-col cols="12">
+        <v-text-field
           v-model="model.settings.defaultItemName"
           :counter="250"
           :rules="[vr.primitives.maxLength(250), vr.primitives.required]"
           :label="$t('DefaultItemName')"
-          outlined
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6">
-        <v-text-field
-          v-model.number="model.settings.vatRatePercent"
-          :label="$t('VATPercent')"
-          :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(2)]"
-          required
-          class="px-1"
           outlined
         ></v-text-field>
       </v-col>
@@ -75,7 +84,6 @@
           outlined
         ></v-text-field>
       </v-col>
-
       <v-col md="6" cols="12">
         <v-switch
           class="pt-0"
@@ -147,18 +155,19 @@
         ></v-text-field>
       </v-col>
     </v-row>
-     <v-row>
+    <v-row>
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("SharedApiKey")}}
         <v-divider class="pt-1"></v-divider>
       </v-col>
       <v-col cols="12" md="12">
-        <v-btn color="success" :outlined="!showSharedApiKey" small @click="showSharedApiKey = !showSharedApiKey;">
-          {{$t("ShowSharedKey")}}
-        </v-btn>
-        <v-btn class="mx-1" color="primary" small @click="resetSharedKey()">
-          {{$t("ResetSharedKey")}}
-        </v-btn>
+        <v-btn
+          color="success"
+          :outlined="!showSharedApiKey"
+          small
+          @click="showSharedApiKey = !showSharedApiKey;"
+        >{{$t("ShowSharedKey")}}</v-btn>
+        <v-btn class="mx-1" color="primary" small @click="resetSharedKey()">{{$t("ResetSharedKey")}}</v-btn>
       </v-col>
       <v-col cols="12" md="12">
         <v-text-field
@@ -176,9 +185,7 @@
         <v-divider class="pt-1"></v-divider>
       </v-col>
       <v-col cols="12" md="12">
-        <v-btn color="primary" small @click="resetPrivateKey()">
-          {{$t("ResetPrivateKey")}}
-        </v-btn>
+        <v-btn color="primary" small @click="resetPrivateKey()">{{$t("ResetPrivateKey")}}</v-btn>
       </v-col>
       <v-col cols="12" md="12">
         <v-text-field
@@ -293,12 +300,15 @@ export default {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
     this.merchantDictionaries = await this.$api.dictionaries.getMerchantDictionaries();
 
-    if(this.model.billingSettings.billingNotificationsEmails){
-      this.model.billingSettings.billingNotificationsEmailsRaw = 
-        this.model.billingSettings.billingNotificationsEmails.join(",");
+    if (this.model.billingSettings.billingNotificationsEmails) {
+      this.model.billingSettings.billingNotificationsEmailsRaw = this.model.billingSettings.billingNotificationsEmails.join(
+        ","
+      );
     }
 
-    this.model.settings.vatRatePercent = (this.model.settings.vatRate * 100).toFixed(2);
+    this.model.settings.vatRatePercent = (
+      this.model.settings.vatRate * 100
+    ).toFixed(2);
 
     if (!this.model.invoiceSettings.defaultInvoiceType) {
       this.$set(
@@ -323,9 +333,11 @@ export default {
   methods: {
     getData() {
       let result = { ...this.model };
-      if(this.model.billingSettings.billingNotificationsEmailsRaw){
+      if (this.model.billingSettings.billingNotificationsEmailsRaw) {
         result.billingSettings.billingNotificationsEmails = [];
-        let split = result.billingSettings.billingNotificationsEmailsRaw.split(",");
+        let split = result.billingSettings.billingNotificationsEmailsRaw.split(
+          ","
+        );
         for (var s of split) {
           let trimmed = s.trim();
           if (trimmed && this.vr.primitives.email(trimmed) === true) {
@@ -335,34 +347,40 @@ export default {
         delete result.billingSettings.billingNotificationsEmailsRaw;
       }
 
-      result.settings.vatRate = result.settings.vatRatePercent ? (result.settings.vatRatePercent / 100).toFixed(2) : 0;
+      result.settings.vatRate = result.settings.vatRatePercent
+        ? (result.settings.vatRatePercent / 100).toFixed(2)
+        : 0;
       return result;
     },
-    async resetPrivateKey(){
-      if(!this.model.terminalID){
+    async resetPrivateKey() {
+      if (!this.model.terminalID) {
         return;
       }
-      let operation = await this.$api.terminals.resetPrivateApiKey(this.model.terminalID);
+      let operation = await this.$api.terminals.resetPrivateApiKey(
+        this.model.terminalID
+      );
 
-      if(operation.status === "success"){
+      if (operation.status === "success") {
         this.privateApiKey = operation.entityReference;
       }
     },
-    async resetSharedKey(){
-      if(!this.model.terminalID){
+    async resetSharedKey() {
+      if (!this.model.terminalID) {
         return;
       }
-      let operation = await this.$api.terminals.resetSharedApiKey(this.model.terminalID);
+      let operation = await this.$api.terminals.resetSharedApiKey(
+        this.model.terminalID
+      );
 
-      if(operation.status === "success"){
+      if (operation.status === "success") {
         this.showSharedKey = true;
         this.model.sharedApiKey = operation.entityReference;
         this.emitUpdate();
       }
     },
-    emitUpdate(){
-      this.$emit('update', this.model);
+    emitUpdate() {
+      this.$emit("update", this.model);
     }
-  },
+  }
 };
 </script>

@@ -127,12 +127,14 @@ export default {
       let data = this.$refs.terminalSettingsRef.getData();
       let operaionResult = await this.$api.terminals.updateTerminal(data);
       if(operaionResult.status === "success"){
+        this.terminalRefreshed = false;
         this.$store.dispatch("settings/changeTerminal", {
           api: this.$api,
           newTerminal: data
         });
         let terminals = await this.$api.terminals.getTerminals(null, true);
         this.terminals = terminals ? terminals.data : [];
+        this.terminalRefreshed = true;
       }
     },
     async refreshTerminal(){

@@ -41,18 +41,22 @@
             </v-row>
           </v-col>
         </v-row>
+        <v-row no-gutters class="px-1 body-2">
+          <v-switch
+            v-model="billingDealsFilter.onlyActive"
+            @change="getDataFromApi(false)"
+            :hint="$t('WhileEnabledYouCanManuallyTriggerTheTransaction')"
+            :persistent-hint="true"
+          >
+            <template v-slot:label>
+              <small>{{$t('OnlyActual')}}</small>
+            </template>
+          </v-switch>
+        </v-row>
       </v-card-text>
     </v-card>
     <v-card width="100%" flat :loading="!billingDeals">
       <v-card-text class="px-0 pt-0">
-        <v-switch 
-        class="px-4 pb-2"
-        v-model="billingDealsFilter.onlyActive" 
-        @change="getDataFromApi(false)"
-        :label="$t('OnlyActual')" 
-        :hint="$t('WhileEnabledYouCanManuallyTriggerTheTransaction')" 
-        :persistent-hint="true"></v-switch>
-
         <ec-list :items="billingDeals" v-if="billingDeals" :dense="true">
           <template v-slot:prepend="{ item }" v-if="billingDealsFilter.onlyActive">
             <div class="px-1">
@@ -85,28 +89,35 @@
           </template>
 
           <template v-slot:left="{ item }">
-            <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text">{{item.$billingDealTimestamp | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
             <v-col
               cols="12"
               md="6"
               lg="6"
-            >{{item.cardOwnerName || '-'}}</v-col>
+              class="pt-1 caption ecgray--text"
+            >{{item.$billingDealTimestamp | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
+            <v-col cols="12" md="6" lg="6">{{item.cardOwnerName || '-'}}</v-col>
           </template>
 
           <template v-slot:right="{ item }">
-            <v-col cols="12" md="6" lg="6" class="text-end body-2" v-bind:class="{'ecred--text': item.cardExpired}">
+            <v-col
+              cols="12"
+              md="6"
+              lg="6"
+              class="text-end body-2"
+              v-bind:class="{'ecred--text': item.cardExpired}"
+            >
               <v-chip small :color="item.cardExpired ? 'ecred': 'primary'" text-color="white">
-                <v-avatar left 
-                  :color="item.cardExpired ? 'ecred': 'primary'" 
-                  class="darken-2">
-                    {{item.numberOfPayments || '∞'}}
-                </v-avatar>
+                <v-avatar
+                  left
+                  :color="item.cardExpired ? 'ecred': 'primary'"
+                  class="darken-2"
+                >{{item.numberOfPayments || '∞'}}</v-avatar>
                 {{item.currency}}{{item.transactionAmount}}
               </v-chip>
               <!-- <v-badge
                 :color="item.cardExpired ? 'ecred': 'primary'"
                 :content="item.numberOfPayments || '...'"
-              >{{item.currency}}{{item.transactionAmount}}</v-badge> -->
+              >{{item.currency}}{{item.transactionAmount}}</v-badge>-->
             </v-col>
             <v-col
               cols="12"
@@ -146,7 +157,8 @@ export default {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     BillingDealsFilterDialog: () =>
       import("../../components/billing-deals/BillingDealsFilterDialog"),
-    BillingScheduleString: () => import("../../components/billing-deals/BillingScheduleString"),
+    BillingScheduleString: () =>
+      import("../../components/billing-deals/BillingScheduleString"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker")
   },
   props: {
@@ -201,7 +213,8 @@ export default {
           let oldest = this.billingDeals[this.billingDeals.length - 1]
             .$billingDealTimestamp;
           this.datePeriod =
-            this.$options.filters.ecdate(oldest, "L") + ` - ${this.$options.filters.ecdate(newest, "L")}`;
+            this.$options.filters.ecdate(oldest, "L") +
+            ` - ${this.$options.filters.ecdate(newest, "L")}`;
         } else {
           this.datePeriod = null;
         }
@@ -223,33 +236,41 @@ export default {
       this.billingDealsFilter.skip += this.billingDealsFilter.take;
       await this.getDataFromApi(true);
     },
-    async createTransactions(){
-      if(!this.billingDealsFilter.onlyActive){
-        return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), { type: "error" });
+    async createTransactions() {
+      if (!this.billingDealsFilter.onlyActive) {
+        return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), {
+          type: "error"
+        });
       }
 
       let billings = this.lodash.filter(this.billingDeals, i => i.selected);
-      if(billings.length === 0){
-        return this.$toasted.show(this.$t("SelectDealsFirst"), { type: "error" });
+      if (billings.length === 0) {
+        return this.$toasted.show(this.$t("SelectDealsFirst"), {
+          type: "error"
+        });
       }
 
-      let opResult = await this.$api.billingDeals
-        .createTransactions(this.terminalStore.terminalID, this.lodash.map(billings, i => i.$billingDealID));
+      let opResult = await this.$api.billingDeals.createTransactions(
+        this.terminalStore.terminalID,
+        this.lodash.map(billings, i => i.$billingDealID)
+      );
 
-      if(true || opResult.status === "success"){
+      if (true || opResult.status === "success") {
         this.lodash.forEach(billings, i => {
           i.selected = false;
           i.processed = true;
-        }); 
+        });
       }
     },
-    switchSelectAll(){
-      if(!this.billingDealsFilter.onlyActive){
-        return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), { type: "error" });
+    switchSelectAll() {
+      if (!this.billingDealsFilter.onlyActive) {
+        return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), {
+          type: "error"
+        });
       }
       this.selectAll = !this.selectAll;
-      for(var i of this.billingDeals){
-          this.$set(i, 'selected', this.selectAll);
+      for (var i of this.billingDeals) {
+        this.$set(i, "selected", this.selectAll);
       }
     }
   },
@@ -262,8 +283,8 @@ export default {
       );
     },
     ...mapState({
-      terminalStore: state => state.settings.terminal,
-    }),
+      terminalStore: state => state.settings.terminal
+    })
   },
   async mounted() {
     await this.getDataFromApi();

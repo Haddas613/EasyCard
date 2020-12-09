@@ -1,5 +1,5 @@
 <template>
-  <v-list :two-line="!dense" :dense="dense" subheader class="py-0 fill-height">
+  <v-list :two-line="!dense" :dense="dense" subheader class="py-0 fill-height" :color="color">
     <v-list-item v-for="(item, index) in items" :key="index" v-on="clickable ? {click: () => onclick(item)} : {}" v-bind:class="{'px-0': dense, 'dashed': dashed}">
       <v-list-item-action v-if="hasSlot('prepend')" v-bind:class="{'col-unset': $vuetify.breakpoint.mdAndUp}">
         <slot v-bind:item="item" v-bind:index="index" name="prepend"></slot>
@@ -40,6 +40,10 @@ export default {
       type: Boolean,
       default: false,
       required: false
+    },
+    color: {
+      type: String,
+      default: "white"
     }
   },
   methods: {

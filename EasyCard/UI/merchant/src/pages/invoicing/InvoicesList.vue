@@ -47,38 +47,36 @@
       <v-card-text class="px-0" v-if="invoices">
         <!-- <v-flex class="d-flex justify-start" v-if="$vuetify.breakpoint.mdAndUp">
           <v-btn class="mx-2" :outlined="!selectAll" @click="switchSelectAll()" color="primary" x-small>{{$t('SelectAll')}}</v-btn>
-        </v-flex> -->
+        </v-flex>-->
         <ec-list :items="invoices">
           <template v-slot:prepend="{ item }">
             <v-checkbox v-model="item.selected" :disabled="item.$status == 'sending'"></v-checkbox>
           </template>
           <template v-slot:left="{ item }">
-            <v-col
-              cols="12"
-              md="6"
-              lg="6"
-              class="pt-1 caption ecgray--text"
-            >
-            {{item.$invoiceDate | ecdate('DD/MM/YYYY')}}
-            <v-chip color="primary" v-if="item.invoiceNumber" x-small>{{item.invoiceNumber}}</v-chip>
+            <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text">
+              {{item.$invoiceDate | ecdate('DD/MM/YYYY')}}
+              <v-chip color="primary" v-if="item.invoiceNumber" x-small>{{item.invoiceNumber}}</v-chip>
             </v-col>
             <v-col cols="12" md="6" lg="6">{{item.cardOwnerName || '-'}}</v-col>
           </template>
 
           <template v-slot:right="{ item }">
-            <v-col
-              cols="12"
-              md="6"
-              lg="6"
-              class="text-end body-2"
-              v-bind:class="statusColors[item.status]"
-            >{{$t(item.status || 'None')}}</v-col>
+            <v-col cols="12" md="6" lg="6" class="text-end body-2">
+              <v-btn outlined color="success" x-small v-if="item.$status == 'sent'" :title="$t('ClickToDownload')" @click="downloadInvoicePDF(item.$invoiceID)">
+                {{$t(item.status)}}
+                <v-icon right color="red" size="1rem">mdi-file-pdf-outline</v-icon>
+              </v-btn>
+              <span
+                v-bind:class="statusColors[item.status]"
+                v-else
+              >{{$t(item.status || 'None')}}</span>
+            </v-col>
             <v-col
               cols="12"
               md="6"
               lg="6"
               class="text-end font-weight-bold button"
-            >{{item.invoiceAmount  | currency(item.$currency)}}</v-col>
+            >{{item.invoiceAmount | currency(item.$currency)}}</v-col>
           </template>
 
           <template v-slot:append="{ item }">
@@ -187,36 +185,50 @@ export default {
       this.invoicesFilter.skip += this.invoicesFilter.take;
       await this.getDataFromApi(true);
     },
-    async resendSelectedInvoices(){
-      let invoices = this.lodash.filter(this.invoices, i => i.selected && (i.$status == 'initial' || i.$status == 'sent'));
-      if(invoices.length === 0){
-        return this.$toasted.show(this.$t("SelectInvoicesFirst"), { type: "error" });
+    async resendSelectedInvoices() {
+      let invoices = this.lodash.filter(
+        this.invoices,
+        i => i.selected && (i.$status == "initial" || i.$status == "sent")
+      );
+      if (invoices.length === 0) {
+        return this.$toasted.show(this.$t("SelectInvoicesFirst"), {
+          type: "error"
+        });
       }
 
-      let opResult = await this.$api.invoicing
-        .resend(this.terminalStore.terminalID, this.lodash.map(invoices, i => i.$invoiceID));
+      let opResult = await this.$api.invoicing.resend(
+        this.terminalStore.terminalID,
+        this.lodash.map(invoices, i => i.$invoiceID)
+      );
 
-      if(opResult.status === "success"){
+      if (opResult.status === "success") {
         let $dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
         this.lodash.forEach(invoices, i => {
           i.selected = false;
-          i.$status = 'sending';
+          i.$status = "sending";
           i.status = $dictionaries.invoiceStatusEnum[i.$status];
-        }); 
+        });
       }
     },
-    switchSelectAll(){
+    switchSelectAll() {
       this.selectAll = !this.selectAll;
-      for(var i of this.invoices){
-        if(i.$status == 'initial'){
-          this.$set(i, 'selected', this.selectAll);
+      for (var i of this.invoices) {
+        if (i.$status == "initial") {
+          this.$set(i, "selected", this.selectAll);
         }
+      }
+    },
+    async downloadInvoicePDF(invoiceID){
+      let opResult = await this.$api.invoicing.downloadPDF(invoiceID);
+
+      if(opResult.status === "success" && opResult.entityReference){
+        window.open(opResult.entityReference);
       }
     }
   },
   computed: {
     ...mapState({
-      terminalStore: state => state.settings.terminal,
+      terminalStore: state => state.settings.terminal
     }),
     canLoadMore() {
       return (

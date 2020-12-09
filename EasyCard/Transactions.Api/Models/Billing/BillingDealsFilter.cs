@@ -46,5 +46,12 @@ namespace Transactions.Api.Models.Billing
 
         [SwaggerExclude]
         public string CreditCardVendor { get; set; }
+
+        public bool ShowOnlyDeleted { get; set; } = false;
+
+        /// <summary>
+        /// Billing deals that can be manually triggered
+        /// </summary>
+        public bool OnlyActual { get; set; }
     }
 }

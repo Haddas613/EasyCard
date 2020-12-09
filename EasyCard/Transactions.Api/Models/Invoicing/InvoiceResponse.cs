@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Transactions.Shared.Enums;
 using IntegrationModels = Shared.Integration.Models;
 using TransactionsApi = Transactions.Api;
 
@@ -39,6 +40,13 @@ namespace Transactions.Api.Models.Invoicing
         /// Invoice details
         /// </summary>
         public InvoiceDetails InvoiceDetails { get; set; }
+
+        /// <summary>
+        /// Processing status
+        /// </summary>
+        [EnumDataType(typeof(InvoiceStatusEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public InvoiceStatusEnum Status { get; set; }
 
         /// <summary>
         /// EasyCard terminal reference

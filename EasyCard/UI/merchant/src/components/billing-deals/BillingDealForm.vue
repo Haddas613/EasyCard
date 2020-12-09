@@ -21,50 +21,16 @@
           v-model="model.currency"
           required
           :label="$t('Currency')"
+          disabled
           outlined
         ></v-select>
       </v-col>
-      <v-col cols="12" md="6" class="pb-2 pt-0">
-        <ec-dialog :dialog.sync="customersDialog" color="ecbg">
-          <template v-slot:title>{{$t('Customers')}}</template>
-          <template>
-            <div class="d-flex pb-2 justify-end">
-              <v-btn
-                color="red"
-                class="white--text"
-                :disabled="selectedCustomer == null"
-                :block="$vuetify.breakpoint.smAndDown"
-                @click="selectedCustomer = null; customersDialog = false;"
-              >
-                <v-icon left>mdi-delete</v-icon>
-                {{$t("CancelSelection")}}
-              </v-btn>
-            </div>
-            <customers-list
-              :key="model.terminalID"
-              :show-previously-charged="true"
-              :filter-by-terminal="true"
-              v-on:ok="processCustomer($event)"
-            ></customers-list>
-          </template>
-        </ec-dialog>
-        <ec-dialog-invoker
-          v-on:click="customersDialog = true"
-          v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-7': $vuetify.breakpoint.mdAndUp}"
-        >
-          <template v-slot:prepend>
-            <v-icon>mdi-account</v-icon>
-          </template>
-          <template v-slot:left>
-            <div v-if="!selectedCustomer">{{$t("ChooseCustomer")}}</div>
-            <div v-if="selectedCustomer">
-              <span class="primary--text">{{selectedCustomer.consumerName}}</span>
-            </div>
-          </template>
-          <template v-slot:append>
-            <re-icon>mdi-chevron-right</re-icon>
-          </template>
-        </ec-dialog-invoker>
+      <v-col cols="12" md="6" class="pb-2" v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-7': $vuetify.breakpoint.mdAndUp}">
+        <customer-dialog-invoker 
+          :key="model.dealDetails.consumerID" 
+          :terminal="true" 
+          :customer-id="model.dealDetails.consumerID" 
+          @update="processCustomer($event)"></customer-dialog-invoker>
       </v-col>
       <v-col
         cols="12"
@@ -178,7 +144,22 @@
           </template>
         </ec-dialog-invoker>
       </v-col>
-      <v-row class="px-2">
+      <v-col cols="12" class="pt-0">
+        <numpad-dialog-invoker 
+          :key="model.dealDetails.items.length + model.transactionAmount" 
+          :data="model.dealDetails.items" 
+          @ok="processAmount($event)"></numpad-dialog-invoker>
+      </v-col>
+      <v-col cols="12" class="pt-0">
+        <basket 
+          v-if="model.dealDetails.items && model.dealDetails.items.length" 
+          :key="model.dealDetails.items.length + model.transactionAmount" 
+          embed 
+          v-on:ok="processAmount($event)" 
+          v-on:update="processAmount($event)" 
+          :items="model.dealDetails.items"></basket>
+      </v-col>
+      <v-row class="px-2" v-if="false">
         <v-col cols="12" md="6">
           <v-text-field
             class="mt-4"
@@ -187,6 +168,7 @@
             :label="$t('Amount')"
             hide-details="true"
             @input="calculateTotal()"
+            disabled
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6">
@@ -231,14 +213,20 @@
         :data="model.dealDetails"
         :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
       ></deal-details>
+      <v-col cols="12">
+        <v-switch v-model="switchIssueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
+        <div v-if="switchIssueDocument">
+          <invoice-details-form ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-form>
+        </div>
+      </v-col>
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
         <v-btn class="mx-1" color="white" :to="{ name: 'BillingDeals' }">{{$t('Cancel')}}</v-btn>
-        <v-btn color="primary" @click="ok()" :disabled="!token">{{$t('Save')}}</v-btn>
+        <v-btn color="primary" @click="ok()" :disabled="!token">{{$t('OK')}}</v-btn>
       </v-col>
       <v-col cols="12" v-if="$vuetify.breakpoint.smAndDown">
         <v-btn block color="white" :to="{ name: 'BillingDeals' }">{{$t('Cancel')}}</v-btn>
         <v-spacer class="py-2"></v-spacer>
-        <v-btn block color="primary" @click="ok()" :disabled="!token">{{$t('Save')}}</v-btn>
+        <v-btn block color="primary" @click="ok()" :disabled="!token">{{$t('OK')}}</v-btn>
       </v-col>
     </v-row>
   </v-form>
@@ -252,7 +240,6 @@ import itemPricingService from "../../helpers/item-pricing";
 export default {
   components: {
     DealDetails: () => import("../transactions/DealDetailsForm"),
-    CustomersList: () => import("../customers/CustomersList"),
     BillingScheduleForm: () => import("./BillingScheduleForm"),
     BillingScheduleString: () => import("./BillingScheduleString"),
     EcDialog: () => import("../ec/EcDialog"),
@@ -260,7 +247,12 @@ export default {
     EcRadioGroup: () => import("../inputs/EcRadioGroup"),
     ReIcon: () => import("../misc/ResponsiveIcon"),
     CardTokenFormDialog: () => import("../ctokens/CardTokenFormDialog"),
-    CardTokenString: () => import("../ctokens/CardTokenString")
+    CardTokenString: () => import("../ctokens/CardTokenString"),
+    CustomerDialogInvoker: () => import("../dialog-invokers/CustomerDialogInvoker"),
+    NumpadDialogInvoker: () => import("../dialog-invokers/NumpadDialogInvoker"),
+    Basket: () => import("../misc/Basket"),
+    InvoiceDetailsForm: () => import("../invoicing/InvoiceDetailsForm"),
+    
   },
   props: {
     data: {
@@ -279,10 +271,9 @@ export default {
       tokensDialog: false,
       customerTokens: [],
       selectedToken: null,
-      selectedCustomer: null,
-      customersDialog: false,
       scheduleDialog: false,
-      ctokenDialog: false
+      ctokenDialog: false,
+      switchIssueDocument: false
     };
   },
   computed: {
@@ -308,12 +299,10 @@ export default {
   },
   methods: {
     async processCustomer(data) {
-      this.selectedCustomer = data;
       this.model.dealDetails.consumerEmail = data.consumerEmail;
       this.model.dealDetails.consumerPhone = data.consumerPhone;
       this.model.dealDetails.consumerID = data.consumerID;
       await this.getCustomerTokens();
-      this.customersDialog = false;
     },
     handleClick() {
       this.tokensDialog = this.customerTokens && this.customerTokens.length > 0;
@@ -321,7 +310,8 @@ export default {
     ok() {
       if (!this.$refs.form.validate()) return;
       let result = { ...this.model };
-      result.dealDetails = this.$refs.dealDetails.getData();
+      result.dealDetails = { ...this.$refs.dealDetails.getData() };
+      result.dealDetails.items = this.model.dealDetails.items;
       //if this is edit and billing schedule has not been clicked, no need to validate
       if (!this.$refs.billingScheduleRef && this.model.billingDealID) {
         return this.$emit("ok", result);
@@ -332,6 +322,17 @@ export default {
       ) {
         this.scheduleDialog = true;
         this.$toasted.show(this.$t("CheckScheduleSettings"), { type: "error" });
+        return;
+      }
+
+      if (this.switchIssueDocument) {
+        result.invoiceDetails = this.$refs.invoiceDetails.getData();
+      } else {
+        result.invoiceDetails = null;
+      }
+
+      if(!this.model.transactionAmount){
+        this.$toasted.show(this.$t("SelectItems"), { type: "error" });
         return;
       }
 
@@ -367,10 +368,22 @@ export default {
             this.model.dealDetails.consumerID
           )
         ).data || [];
+
+      this.selectedToken = this.customerTokens.length === 1 ? this.customerTokens[0] : null;
     },
     calculateTotal(){
       itemPricingService.total.calculateWithoutItems(this.model, 'transactionAmount', { vatRate: this.terminalStore.settings.vatRate });
-    }
+    },
+    processAmount(data) {
+      this.model.transactionAmount = data.totalAmount;
+      this.model.netTotal = data.netTotal;
+      this.model.vatTotal = data.vatTotal;
+      this.model.vatRate = data.vatRate;
+      this.model.note = data.note;
+      this.model.dealDetails.items = data.items;
+      // this.itemsRefreshKey = `${data.totalAmount}:${this.lodash.join(this.lodash.map(data.items, i => i.itemName))}`;
+      this.calculateTotal();
+    },
   },
   async mounted() {
     this.terminals = (await this.$api.terminals.getTerminals()).data || [];
@@ -384,9 +397,6 @@ export default {
         this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
     }
     if (this.model.dealDetails.consumerID) {
-      this.selectedCustomer = await this.$api.consumers.getConsumer(
-        this.model.dealDetails.consumerID
-      );
       this.customerTokens =
         (
           await this.$api.cardTokens.getCustomerCardTokens(

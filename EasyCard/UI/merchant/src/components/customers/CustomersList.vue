@@ -100,7 +100,6 @@ export default {
       default: false
     },
     filterByTerminal: {
-      type: Boolean,
       default: false
     }
   },
@@ -120,13 +119,11 @@ export default {
     };
   },
   async mounted() {
-    if (
-      this.showPreviouslyCharged &&
-      this.lastChargedCustomersStore.length > 0
-    ) {
+    if (this.showPreviouslyCharged && this.lastChargedCustomersStore.length > 0) {
+      let terminalID = typeof(this.filterByTerminal) === "string" ? this.filterByTerminal : this.terminalStore.terminalID;
       this.previouslyCharged = await this.$api.consumers.getLastChargedConsumers(
         this.lastChargedCustomersStore,
-        this.terminalStore.terminalID
+        terminalID
       );
     }
 
@@ -158,10 +155,16 @@ export default {
     },
     async getCustomers(extendData) {
       let searchApply = this.search && this.search.trim().length >= 3;
+
+      let terminalID = null;
+      if(this.filterByTerminal){
+        terminalID = typeof(this.filterByTerminal) === 'string' ? this.filterByTerminal : this.terminalStore.terminalID;
+      }
+
       let customers = await this.$api.consumers.getConsumers({
         search: searchApply ? this.search : "",
         ...this.paging,
-        terminalID: this.filterByTerminal ? this.terminalStore.terminalID : null
+        terminalID: terminalID
       });
       this.customers = customers.data;
       this.totalAmount = customers.numberOfRecords;
