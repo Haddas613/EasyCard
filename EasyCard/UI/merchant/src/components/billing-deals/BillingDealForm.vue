@@ -213,6 +213,12 @@
         :data="model.dealDetails"
         :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
       ></deal-details>
+      <v-col cols="12">
+        <v-switch v-model="switchIssueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
+        <div v-if="switchIssueDocument">
+          <invoice-details-form ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-form>
+        </div>
+      </v-col>
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
         <v-btn class="mx-1" color="white" :to="{ name: 'BillingDeals' }">{{$t('Cancel')}}</v-btn>
         <v-btn color="primary" @click="ok()" :disabled="!token">{{$t('OK')}}</v-btn>
@@ -245,6 +251,7 @@ export default {
     CustomerDialogInvoker: () => import("../dialog-invokers/CustomerDialogInvoker"),
     NumpadDialogInvoker: () => import("../dialog-invokers/NumpadDialogInvoker"),
     Basket: () => import("../misc/Basket"),
+    InvoiceDetailsForm: () => import("../invoicing/InvoiceDetailsForm"),
     
   },
   props: {
@@ -266,6 +273,7 @@ export default {
       selectedToken: null,
       scheduleDialog: false,
       ctokenDialog: false,
+      switchIssueDocument: false
     };
   },
   computed: {
@@ -317,6 +325,12 @@ export default {
         return;
       }
 
+      if (this.switchIssueDocument) {
+        result.invoiceDetails = this.$refs.invoiceDetails.getData();
+      } else {
+        result.invoiceDetails = null;
+      }
+
       if(!this.model.transactionAmount){
         this.$toasted.show(this.$t("SelectItems"), { type: "error" });
         return;
@@ -354,6 +368,8 @@ export default {
             this.model.dealDetails.consumerID
           )
         ).data || [];
+
+      this.selectedToken = this.customerTokens.length === 1 ? this.customerTokens[0] : null;
     },
     calculateTotal(){
       itemPricingService.total.calculateWithoutItems(this.model, 'transactionAmount', { vatRate: this.terminalStore.settings.vatRate });
