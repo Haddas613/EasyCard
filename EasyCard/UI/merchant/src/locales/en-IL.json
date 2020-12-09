@@ -229,6 +229,7 @@
   "OnlyActual": "Only actual",
   "TriggerTransactions": "Trigger Transactions",
   "GoToTransaction": "Go to transaction",
+  "GoToInvoice": "Go to invoice",
   "SelectAll": "Select all",
   "ResetPrivateKey": "Reset Private Key",
   "ResetSharedKey": "Reset Shared Key",
