@@ -146,14 +146,14 @@
       </v-col>
       <v-col cols="12" class="pt-0">
         <numpad-dialog-invoker 
-          :key="itemsRefreshKey" 
+          :key="model.dealDetails.items.length" 
           :data="model.dealDetails.items" 
           @ok="processAmount($event)"></numpad-dialog-invoker>
       </v-col>
       <v-col cols="12" class="pt-0">
         <basket 
           v-if="model.dealDetails.items && model.dealDetails.items.length" 
-          :key="itemsRefreshKey" 
+          :key="model.dealDetails.items.length" 
           embed 
           v-on:ok="processAmount($event)" 
           v-on:update="processAmount($event)" 
@@ -266,7 +266,6 @@ export default {
       selectedToken: null,
       scheduleDialog: false,
       ctokenDialog: false,
-      itemsRefreshKey: null
     };
   },
   computed: {
@@ -303,7 +302,8 @@ export default {
     ok() {
       if (!this.$refs.form.validate()) return;
       let result = { ...this.model };
-      result.dealDetails = this.$refs.dealDetails.getData();
+      result.dealDetails = { ...this.$refs.dealDetails.getData() };
+      result.dealDetails.items = this.model.dealDetails.items;
       //if this is edit and billing schedule has not been clicked, no need to validate
       if (!this.$refs.billingScheduleRef && this.model.billingDealID) {
         return this.$emit("ok", result);
@@ -365,7 +365,7 @@ export default {
       this.model.vatRate = data.vatRate;
       this.model.note = data.note;
       this.model.dealDetails.items = data.items;
-      this.itemsRefreshKey = `${data.totalAmount}:${this.lodash.join(this.lodash.map(data.items, i => i.itemName))}`;
+      // this.itemsRefreshKey = `${data.totalAmount}:${this.lodash.join(this.lodash.map(data.items, i => i.itemName))}`;
       this.calculateTotal();
     },
   },
