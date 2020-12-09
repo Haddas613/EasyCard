@@ -84,6 +84,7 @@
   "@AllowedPrecision": "Allowed precision is @val",
   "OnlyPositiveNumbersAreAllowed": "Only positive numbers are allowed",
   "@TransactionsCount": "@count Transactions",
+  "SelectItems": "Select Items",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",

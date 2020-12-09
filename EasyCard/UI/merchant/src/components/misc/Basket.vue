@@ -15,13 +15,14 @@
       block
       :disabled="model.totalAmount == 0"
       :fixed="$vuetify.breakpoint.smAndDown"
+      v-if="!embed"
     >
       {{$t(btnText)}}
       <ec-money :amount="model.totalAmount" class="px-1"></ec-money>
     </v-btn>
-    <v-spacer style="height: 48px" v-if="$vuetify.breakpoint.smAndDown"></v-spacer>
-    <v-flex class="white text-center align-stretch px-3">
-      <v-list :two-line="false" :dense="true" subheader class="py-0 fill-height body-2">
+    <v-spacer style="height: 48px" v-if="!embed && $vuetify.breakpoint.smAndDown"></v-spacer>
+    <v-flex class="text-center align-stretch px-3" v-bind:class="{'white': !embed}">
+      <v-list :two-line="false" :dense="true" subheader class="py-0 fill-height body-2" :color="embed ? 'ecbg' : null"> 
         <v-list-item>
           <v-list-item-content class="text-normal">
             <v-row no-gutters>
@@ -39,9 +40,17 @@
             </v-row>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item v-if="embed">
+          <v-list-item-content class="text-normal">
+            <v-row no-gutters>
+              <v-col cols="6" class="text-start">{{$t("Total")}}</v-col>
+              <v-col cols="6" class="text-end">{{model.totalAmount | currency(currencyStore.code)}}</v-col>
+            </v-row>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
       <v-divider></v-divider>
-      <ec-list v-if="model.items" class="pb-1" :items="model.items" dense>
+      <ec-list v-if="model.items" class="pb-1" :items="model.items" dense :color="embed ? 'ecbg' : null">
         <template v-slot:prepend="{ item, index }">
           <v-btn icon @click="deleteItem(index)">
             <v-icon>mdi-delete</v-icon>
@@ -108,6 +117,10 @@ export default {
     items: {
       type: Array,
       required: true
+    },
+    embed: {
+      type: Boolean,
+      default: false
     }
   },
   mounted () {
@@ -143,7 +156,6 @@ export default {
       if (entry) {
         this.$set(this.model.items, item.idx, item);
       }
-      console.log(item.amount)
       this.recalculate();
       this.itemPriceDialog = false;
     },

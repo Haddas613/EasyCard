@@ -26,7 +26,8 @@ export default {
           consumerEmail: null,
           consumerPhone: null,
           consumerID: null,
-          dealDescription: null
+          dealDescription: null,
+          items: []
         },
         billingSchedule: {}
       }

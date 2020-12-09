@@ -277,6 +277,8 @@ export default {
 .numpad-num {
   font-size: 2rem;
   font-weight: 300;
+  min-height: 4rem;
+  line-height: 2.5rem;
 }
 button.complete-btn {
   z-index: 2;
