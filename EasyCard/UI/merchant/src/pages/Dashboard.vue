@@ -16,20 +16,20 @@
         </v-list>
       </v-card-text>
     </v-card>
-    <v-row no-gutters class="stats-area" v-bind:class="{'mobile': $vuetify.breakpoint.xs}">
-      <v-col cols="12" md="4">
+    <v-row no-gutters class="stats-area d-flex" v-bind:class="{'mobile': $vuetify.breakpoint.xs}">
+      <v-col cols="12" md="4" class="dashboard-tile-item">
         <sales-stats></sales-stats>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="4" class="dashboard-tile-item">
         <cash-flow-stats></cash-flow-stats>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="4" class="dashboard-tile-item">
         <top-items-stats></top-items-stats>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="4" class="dashboard-tile-item">
         <charge-type-stats></charge-type-stats>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="4" class="dashboard-tile-item">
         <information-stats></information-stats>
       </v-col>
     </v-row>
@@ -80,6 +80,12 @@ export default {
   }
   div{
     padding: 0 4px;
+  }
+  .dashboard-tile-item{
+    display: flex;
+    div{
+      width: 100%;
+    }
   }
 }
 </style>
