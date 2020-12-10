@@ -1,13 +1,19 @@
 export default class DictionariesApi {
     constructor(base) {
         this.base = base;
-        this.dictionariesUrl = '/api/dictionaries';
+        this.transactionsBaseUrl = process.env.VUE_APP_TRANSACTIONS_API_BASE_ADDRESS;
+        this.transactionDictionariesUrl = this.transactionsBaseUrl + '/api/dictionaries';
+
+        this.merchantBaseUrl = process.env.VUE_APP_MERCHANT_API_BASE_ADDRESS;
+        this.merchantDictionariesUrl = this.merchantBaseUrl + '/api/dictionaries';
     }
 
     async getTransactionDictionaries() {
         if (!this.transactionDictionaries) {
+            let data = await this.base.get(this.transactionDictionariesUrl + '/transaction');
+            if(!data)
+                return null;
 
-            let data = await this.base.get(process.env.VUE_APP_TRANSACTIONS_API_BASE_ADDRESS + this.dictionariesUrl + '/transaction');
             this.$transactionDictionaries = data;
             this.transactionDictionaries = {};
 
@@ -32,7 +38,10 @@ export default class DictionariesApi {
     async getMerchantDictionaries() {
         if (!this.merchantDictionaries) {
 
-            let data = await this.base.get(process.env.VUE_APP_MERCHANT_API_BASE_ADDRESS + this.dictionariesUrl);
+            let data = await this.base.get(this.merchantDictionariesUrl + '/merchant');
+            if(!data)
+                return null;
+
             this.$merchantDictionaries = data;
             this.merchantDictionaries = {};
 

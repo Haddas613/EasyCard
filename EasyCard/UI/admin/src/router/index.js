@@ -1,17 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import MainLayout from '../layouts/main/Index.vue'
-import mainAuth from '../auth';
-
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
     name: 'Entry',
-    meta: {
-      authName: mainAuth.authName
-    },
     redirect: '/admin'
   },
   {
@@ -22,9 +17,6 @@ const routes = [
   {
     path: '/admin',
     component: MainLayout,
-    meta: {
-      authName: mainAuth.authName
-    },
     children: [
       {
         name: 'Dashboard',
@@ -58,6 +50,12 @@ const routes = [
         component: () => import('../pages/transactions/TransactionsList.vue'),
       },
       {
+        name: 'MyProfile',
+        path: 'profile',
+        component: () =>
+            import ('../pages/profile/Profile.vue'),
+      },
+      {
         name: '404',
         path: '*',
         component: () => import('../views/NotFound.vue'),
@@ -75,5 +73,17 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+
+// auth guard added to any route
+router.beforeEach(async(to, from, next) => {
+  const oidc = Vue.prototype.$oidc;
+  if (await oidc.isAuthenticated()) {
+      next()
+  } else {
+      oidc.signinRedirect(to)
+  }
+});
+
 
 export default router

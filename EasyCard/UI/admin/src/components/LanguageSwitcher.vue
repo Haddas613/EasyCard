@@ -1,5 +1,5 @@
 <template>
-  <v-select :items="['en-US', 'he-IL']" v-model="currentLocale"></v-select>
+  <v-select :items="['en-IL', 'he-IL']" v-model="currentLocale" outlined></v-select>
 </template>
 
 <script>

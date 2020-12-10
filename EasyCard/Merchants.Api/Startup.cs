@@ -54,8 +54,7 @@ namespace Merchants.Api
                     builder =>
                     {
                         builder.WithOrigins(
-                            "http://localhost:4200",
-                            "http://localhost:8080",
+                            "http://localhost:8081",
                             "http://ecng-merchants.azurewebsites.net")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
