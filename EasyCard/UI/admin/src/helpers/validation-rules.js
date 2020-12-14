@@ -26,7 +26,7 @@ const primitives = {
         
         let split = v.toString().split(".");
 
-        return split[split.length - 1].length <= 2 || i18n.t("@AllowedPrecision").replace("@val", precision);
+        return split[split.length - 1].length <= precision || i18n.t("@AllowedPrecision").replace("@val", precision);
     },
 
     email: (v) => {

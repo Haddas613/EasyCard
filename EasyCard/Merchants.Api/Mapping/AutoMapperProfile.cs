@@ -9,6 +9,7 @@ using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.System;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Models.Integration;
+using Merchants.Shared.Models;
 using System;
 using System.Collections.Generic;
 
@@ -34,12 +35,37 @@ namespace Merchants.Api.Mapping
 
             CreateMap<Terminal, TerminalResponse>();
             CreateMap<Terminal, TerminalSummary>()
-                .ForMember(m => m.MerchantBusinessName, o => o.MapFrom(src => src.Merchant.BusinessName))
-                .ForMember(m => m.MerchantID, o => o.MapFrom(src => src.MerchantID));
+                .ForMember(m => m.MerchantBusinessName, o => o.MapFrom(src => src.Merchant.BusinessName));
+                //.ForMember(m => m.MerchantID, o => o.MapFrom(src => src.MerchantID));
             CreateMap<ExternalSystem, ExternalSystemSummary>();
 
             CreateMap<TerminalExternalSystem, TerminalExternalSystemDetails>();
             CreateMap<ExternalSystemRequest, TerminalExternalSystem>();
+
+            // Mappings for settings (override terminal settings from system settings if null)
+
+            CreateMap<SystemSettings, TerminalResponse>()
+                .ForMember(d => d.Settings, o => o.MapFrom(d => d.Settings))
+                .ForMember(d => d.BillingSettings, o => o.MapFrom(d => d.BillingSettings))
+                .ForMember(d => d.PaymentRequestSettings, o => o.MapFrom(d => d.PaymentRequestSettings))
+                .ForMember(d => d.CheckoutSettings, o => o.MapFrom(d => d.CheckoutSettings))
+                .ForMember(d => d.InvoiceSettings, o => o.MapFrom(d => d.InvoiceSettings))
+                .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<SystemInvoiceSettings, TerminalInvoiceSettings>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
+
+            CreateMap<SystemGlobalSettings, TerminalSettings>()
+                .ForMember(d => d.VATRateGlobal, o => o.MapFrom(d => d.VATRate))
+                .ForMember(d => d.VATRate, o => o.Ignore())
+                .ForAllOtherMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
+
+            CreateMap<SystemPaymentRequestSettings, TerminalPaymentRequestSettings>()
+              .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
+            CreateMap<SystemCheckoutSettings, TerminalCheckoutSettings>()
+              .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
+            CreateMap<SystemBillingSettings, TerminalBillingSettings>()
+              .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
         }
 
         private void RegisterMerchantMappings()

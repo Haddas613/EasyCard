@@ -42,7 +42,7 @@
         <v-text-field
           :value="(model.settings.vatRate * 100).toFixed(0)"
           :label="$t('VATPercent')"
-          :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(2)]"
+          :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(0)]"
           required
           outlined
           disabled
@@ -89,15 +89,13 @@
           class="pt-0"
           v-model="model.settings.j5Allowed"
           :label="$t('J5Allowed')"
-          disabled
           hide-details
         ></v-switch>
-        <v-switch v-model="model.settings.j2Allowed" :label="$t('J2Allowed')" hide-details disabled></v-switch>
+        <v-switch v-model="model.settings.j2Allowed" :label="$t('J2Allowed')" hide-details></v-switch>
         <v-switch
           v-model="model.settings.enableCancellationOfUntransmittedTransactions"
           :label="$t('EnableCancellationOfUntransmittedTransactions')"
           hide-details
-          disabled
         ></v-switch>
       </v-col>
       <v-col md="6" cols="12">
@@ -106,13 +104,11 @@
           v-model="model.settings.cvvRequired"
           :label="$t('CvvRequired')"
           hide-details
-          disabled
         ></v-switch>
         <v-switch
           v-model="model.settings.nationalIDRequired"
           :label="$t('NationalIDRequired')"
           hide-details
-          disabled
         ></v-switch>
       </v-col>
       <v-col cols="12">
@@ -155,7 +151,8 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="false"> 
+      TODO: REMOVE
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("SharedApiKey")}}
         <v-divider class="pt-1"></v-divider>
@@ -179,7 +176,8 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="false"> 
+      TODO: REMOVE
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("PrivateApiKey")}}
         <v-divider class="pt-1"></v-divider>

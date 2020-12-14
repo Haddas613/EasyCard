@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import MainLayout from '../layouts/main/Index.vue'
+import store from '../store/index';
 Vue.use(VueRouter)
 
 const routes = [
@@ -25,27 +26,32 @@ const routes = [
         component: () => import('../pages/Dashboard.vue'),
       },
       {
-        name: 'Terminals/Create',
+        name: 'CreateTerminal',
         path: 'terminals/create',
         component: () => import('../pages/terminals/CreateTerminal.vue'),
       },
       {
-        name: 'Terminals/List',
+        name: 'Terminals',
         path: 'terminals/list',
         component: () => import('../pages/terminals/TerminalsList.vue'),
       },
       {
-        name: 'Merchants/Create',
+        name: 'EditTerminal',
+        path: 'terminals/edit/:id',
+        component: () => import('../pages/terminals/EditTerminal.vue'),
+      },
+      {
+        name: 'CreateMerchant',
         path: 'merchants/create',
         component: () => import('../pages/merchants/CreateMerchant.vue'),
       },
       {
-        name: 'Merchants/List',
+        name: 'MerchantsList',
         path: 'merchants/list',
         component: () => import('../pages/merchants/MerchantsList.vue'),
       },
       {
-        name: 'Transactions/List',
+        name: 'TransactionsList',
         path: 'transactions/list',
         component: () => import('../pages/transactions/TransactionsList.vue'),
       },
@@ -73,6 +79,20 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.afterEach((to, from) => {
+  store.commit("ui/changeHeader", {
+      value: {
+          text: {
+              translate: true,
+              value: to.name,
+          },
+          threeDotMenu: null,
+          altDisplay: to.meta.altDisplay,
+          navBtn: null
+      }
+  });
+});
 
 
 // auth guard added to any route

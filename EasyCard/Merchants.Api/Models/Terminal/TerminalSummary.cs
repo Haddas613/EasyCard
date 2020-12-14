@@ -21,7 +21,7 @@ namespace Merchants.Api.Models.Terminal
 
         public string MerchantBusinessName { get; set; }
 
-        public Guid? MerchantID { get; set; }
+        //public Guid? MerchantID { get; set; }
 
         //TODO: implement
         ///// <summary>

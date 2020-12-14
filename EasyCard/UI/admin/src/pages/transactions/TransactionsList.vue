@@ -1,6 +1,5 @@
 <template>
   <v-card class="mx-auto" outlined>
-    <v-card-title>{{$t('TransactionsList')}}</v-card-title>
     <v-expansion-panels :flat="true">
       <v-expansion-panel>
         <v-expansion-panel-header class="primary white--text">

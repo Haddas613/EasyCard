@@ -1,6 +1,6 @@
 <template>
   <v-main class="ecbg">
-    <v-container fluid center>
+    <v-container fluid center class="px-0 pt-0">
       <v-flex class="flex-column">
         <v-app-bar flat color="white" v-if="$vuetify.breakpoint.mdAndUp && !headerStore.altDisplay">
           <ec-header-content :drawer.sync="drawerObj"></ec-header-content>

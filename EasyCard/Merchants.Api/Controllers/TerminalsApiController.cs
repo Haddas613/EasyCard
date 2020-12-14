@@ -35,14 +35,21 @@ namespace Merchants.Api.Controllers
         private readonly IMapper mapper;
         private readonly IExternalSystemsService externalSystemsService;
         private readonly IUserManagementClient userManagementClient;
+        private readonly ISystemSettingsService systemSettingsService;
 
-        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper, IExternalSystemsService externalSystemsService, IUserManagementClient userManagementClient)
+        public TerminalsApiController(IMerchantsService merchantsService, 
+            ITerminalsService terminalsService,
+            IMapper mapper,
+            IExternalSystemsService externalSystemsService,
+            IUserManagementClient userManagementClient,
+            ISystemSettingsService systemSettingsService)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
             this.externalSystemsService = externalSystemsService;
             this.userManagementClient = userManagementClient;
+            this.systemSettingsService = systemSettingsService;
         }
 
         [HttpGet]
@@ -91,6 +98,10 @@ namespace Merchants.Api.Controllers
 
             // TODO: enable it when user-terminal mappings will be enabled
             // terminal.Users = await mapper.ProjectTo<UserSummary>(terminalsService.GetTerminalUsers(terminal.TerminalID)).ToListAsync();
+
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            mapper.Map(systemSettings, terminal);
 
             var externalSystems = externalSystemsService.GetExternalSystems().ToDictionary(d => d.ExternalSystemID);
 
