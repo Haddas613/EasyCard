@@ -241,6 +241,7 @@
   "ResetPrivateKey": "Reset Private Key",
   "ResetSharedKey": "Reset Shared Key",
   "ShowSharedKey": "Show Shared Key",
+  "CreateNew": "Create new",
 
   "--AUTH--": null,
   "Login": "Login",

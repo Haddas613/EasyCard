@@ -28,7 +28,7 @@
 export default {
   components: {
     TerminalSettingsForm: () =>
-      import("../../components/settings/TerminalSettingsForm")
+      import("../../components/terminals/TerminalSettingsForm")
   },
   data() {
     return {
@@ -52,12 +52,7 @@ export default {
       let data = this.$refs.terminalSettingsRef.getData();
       let operaionResult = await this.$api.terminals.updateTerminal(data);
       if (operaionResult.status === "success") {
-        this.terminal = null;
-        this.$store.dispatch("settings/changeTerminal", {
-          api: this.$api,
-          newTerminal: data
-        });
-        this.terminal = await this.$api.terminals.getTerminal(this.$route.params.id);
+         return this.$router.push({ name: "Terminals" });
       }
     },
     async refreshTerminal() {

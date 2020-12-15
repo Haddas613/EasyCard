@@ -19,9 +19,18 @@
         class="elevation-1"
       >
         <template v-slot:item.actions="{ item }">
-          <router-link class="text-decoration-none" link :to="{name: 'EditMerchant', params: {id: item.$merchantID}}">
+          <v-btn color="primary" outlined x-small link :to="{name: 'Merchant', params: {id: item.$merchantID}}">
+            <v-icon small>mdi-eye</v-icon>
+          </v-btn>
+          <v-btn class="mx-1" color="secondary" outlined x-small link :to="{name: 'EditMerchant', params: {id: item.$merchantID}}">
+            <v-icon small>mdi-pencil</v-icon>
+          </v-btn>
+          <!-- <router-link class="text-decoration-none" link :to="{name: 'EditMerchant', params: {id: item.$merchantID}}">
               <v-icon small color="secondary" class="mr-2">mdi-pencil</v-icon>
           </router-link>
+          <router-link class="text-decoration-none" link :to="{name: 'Merchant', params: {id: item.$merchantID}}">
+              <v-icon small color="primary" class="mr-2">mdi-eye</v-icon>
+          </router-link> -->
           <!-- <v-icon small @click="deleteItem(item)">mdi-delete</v-icon> -->
         </template>
       </v-data-table>

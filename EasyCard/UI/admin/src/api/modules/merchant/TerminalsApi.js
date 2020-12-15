@@ -37,6 +37,10 @@ export default class TerminalsApi {
         return this.base.get(this.terminalsUrl + '/' + terminalID);
     }
 
+    async createTerminal(data){
+        return this.base.post(this.terminalsUrl, data);
+    }
+
     async updateTerminal(data){
         return this.base.put(this.terminalsUrl + '/' + data.terminalID, data);
     }

@@ -27,6 +27,7 @@ const routes = [
       },
       {
         name: 'CreateTerminal',
+        props: true,
         path: 'terminals/create',
         component: () => import('../pages/terminals/CreateTerminal.vue'),
       },
@@ -54,6 +55,11 @@ const routes = [
         name: 'Merchants',
         path: 'merchants/list',
         component: () => import('../pages/merchants/MerchantsList.vue'),
+      },
+      {
+        name: 'Merchant',
+        path: 'merchants/view/:id',
+        component: () => import('../pages/merchants/MerchantInfo.vue'),
       },
       {
         name: 'TransactionsList',
