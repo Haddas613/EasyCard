@@ -1,31 +1,29 @@
 <template>
   <v-card width="100%" flat color="ecbg">
-    <v-card-text class="px-0">
+    <v-card-text>
       <merchant-form :data="model" v-on:ok="createMerchant($event)" class="px-4" v-if="model"></merchant-form>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
-// import MerchantForm from "../../components/merchants/MerchantForm";
+ import MerchantForm from "../../components/merchants/MerchantForm";
 
 export default {
   components: { MerchantForm },
   data() {
     return {
       model: {
-          terminalID: null,
-          merchantName: null,
-          merchantPhone: null,
-          merchantEmail: null,
-          merchantAddress: null,
+          businessName: null,
+          marketingName: null,
+          businessID: null,
+          contactPerson: null,
       }
     };
   },
   methods: {
     async createMerchant(data) {
-        
-      let result = await this.$api.merchants.createConsumer(data);
+      let result = await this.$api.merchants.createMerchant(data);
       //server errors will be displayed automatically
       if (!result) return;
 
@@ -38,6 +36,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

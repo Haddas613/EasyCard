@@ -37,6 +37,10 @@ export default class MerchantsApi {
         return this.base.get(this.merchantsUrl + '/' + merchantID);
     }
 
+    async createMerchant(data){
+        return this.base.post(this.merchantsUrl, data);
+    }
+
     async updateMerchant(data){
         return this.base.put(this.merchantsUrl + '/' + data.merchantID, data);
     }
