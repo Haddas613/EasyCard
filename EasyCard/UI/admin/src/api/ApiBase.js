@@ -8,6 +8,7 @@ import i18n from '../i18n'
 import BillingDealsApi from './modules/transactions/BillingDealsApi';
 import InvoicingApi from './modules/transactions/InvoicingApi';
 import PaymentRequestsApi from './modules/transactions/PaymentRequestsApi';
+import MerchantsApi from './modules/merchant/MerchantsApi';
 
 class ApiBase {
     constructor() {
@@ -18,6 +19,7 @@ class ApiBase {
         this.transactions = new TransactionsApi(this);
         this.dictionaries = new DictionariesApi(this);
         this.terminals = new TerminalsApi(this);
+        this.merchants = new MerchantsApi(this);
         this.billingDeals = new BillingDealsApi(this);
         this.invoicing = new InvoicingApi(this);
         this.paymentRequests = new PaymentRequestsApi(this);
