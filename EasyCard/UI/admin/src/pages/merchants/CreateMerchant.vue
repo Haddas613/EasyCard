@@ -28,7 +28,7 @@ export default {
       if (!result) return;
 
       if (result.status === "success") {
-        this.$router.push("/admin/merchants/list");
+        this.$router.push({ name: "Merchant", params: { id: result.entityReference }});
       } else {
         this.$toasted.show(result.message, { type: "error" });
       }

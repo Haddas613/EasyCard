@@ -17,28 +17,6 @@
           <v-col cols="12" md="4">
             <lang-switcher class></lang-switcher>
           </v-col>
-          <v-col cols="12" md="4">
-            <v-select
-              :items="terminals"
-              item-text="label"
-              item-value="terminalID"
-              return-object
-              v-model="terminal"
-              :label="$t('Terminal')"
-              outlined
-              v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" md="4">
-            <v-select
-              :items="currencies"
-              item-text="description"
-              return-object
-              v-model="currency"
-              :label="$t('Currency')"
-              outlined
-            ></v-select>
-          </v-col>
         </v-row>
       </v-card-text>
     </v-card>
@@ -53,48 +31,16 @@ export default {
   },
   data() {
     return {
-      terminals: [],
-      currencies: [],
     };
   },
   async mounted() {
     await this.$store.dispatch('settings/getDefaultSettings', { api: this.$api, lodash: this.lodash });
-    let terminals = await this.$api.terminals.getTerminals();
-    this.terminals = terminals ? terminals.data : [];
-    let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
-    this.currencies = dictionaries ? dictionaries.currencyEnum : [];
   },
   computed: {
     isRtl: {
       cache: false,
       get: function() {
         return this.$vuetify.rtl === true;
-      }
-    },
-    ...mapState({
-      terminalStore: state => state.settings.terminal,
-      currencyStore: state => state.settings.currency
-    }),
-    terminal: {
-      get: function() {
-        return this.terminalStore;
-      },
-      set: function(nv) {
-        this.$store.dispatch("settings/changeTerminal", {
-          api: this.$api,
-          newTerminal: nv
-        });
-      }
-    },
-    currency: {
-      get: function() {
-        return this.currencyStore;
-      },
-      set: function(nv) {
-        this.$store.dispatch("settings/changeCurrency", {
-          api: this.$api,
-          newCurrency: nv
-        });
       }
     }
   }

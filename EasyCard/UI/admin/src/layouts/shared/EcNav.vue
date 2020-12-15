@@ -179,18 +179,11 @@ export default {
           ]
         },
       ],
-      terminals: [],
-      currencies: [],
       userName: null
     };
   },
   async mounted() {
-    let terminals = await this.$api.terminals.getTerminals();
-    this.terminals = terminals ? terminals.data : [];
-    let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
-    this.currencies = dictionaries ? dictionaries.currencyEnum : [];
     this.userName = !!this.$oidc ? (await this.$oidc.getUserProfile()).name : null;
-    
   },
   computed: {
     drawerObj: {
@@ -205,33 +198,6 @@ export default {
       cache: false,
       get: function() {
         return this.$vuetify.rtl === true;
-      }
-    },
-    ...mapState({
-      terminalStore: state => state.settings.terminal,
-      currencyStore: state => state.settings.currency
-    }),
-    terminal: {
-      get: function() {
-        return this.terminalStore;
-      },
-      set: function(nv) {
-        console.log("EcNav")
-        this.$store.dispatch("settings/changeTerminal", {
-          api: this.$api,
-          newTerminal: nv
-        });
-      }
-    },
-    currency: {
-      get: function() {
-        return this.currencyStore;
-      },
-      set: function(nv) {
-        this.$store.dispatch("settings/changeCurrency", {
-          api: this.$api,
-          newCurrency: nv
-        });
       }
     }
   }

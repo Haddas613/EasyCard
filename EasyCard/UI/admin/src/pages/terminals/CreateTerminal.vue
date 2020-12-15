@@ -55,7 +55,7 @@ export default {
       let operaionResult = await this.$api.terminals.updateTerminal(data);
       if (operaionResult.status === "success") {
         if(this.$route.params.merchantID){
-            return this.$router.push({ name: "Merchant", id: this.$route.params.merchantID });
+            return this.$router.push({ name: "Merchant", params: { id: result.entityReference }});
         }else{
             return this.$router.push({ name: "Terminals" });
         }
