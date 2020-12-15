@@ -13,14 +13,8 @@
         <template v-if="model.consumerID">
           <v-col cols="12" md="4" class="info-block">
             <p class="caption ecgray--text text--darken-2">{{$t('Customer')}}</p>
-            <router-link
-              class="primary--text"
-              link
-              :to="{name: 'Customer', params: {id: model.consumerID}}"
-            >
-              <small v-if="consumerName">{{(consumerName)}}</small>
-              <small v-else>{{model.consumerID | guid}}</small>
-            </router-link>
+            <small v-if="consumerName">{{(consumerName)}}</small>
+            <small v-else>{{model.consumerID | guid}}</small>
           </v-col>
           <v-col cols="12" md="4" class="info-block">
             <p class="caption ecgray--text text--darken-2">{{$t('CustomerEmail')}}</p>

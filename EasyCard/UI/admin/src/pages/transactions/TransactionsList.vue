@@ -20,7 +20,16 @@
           :options.sync="options"
           :server-items-length="totalAmount"
           :loading="loading"
-          class="elevation-1"></v-data-table>
+          class="elevation-1">
+        <template v-slot:item.quickStatus="{ item }">
+          <span v-bind:class="quickStatusesColors[item.quickStatus]">{{item.quickStatus}}</span>
+        </template> 
+        <template v-slot:item.actions="{ item }">
+          <v-btn color="primary" outlined x-small link :to="{name: 'Transaction', params: {id: item.$paymentTransactionID}}">
+            <v-icon small>mdi-eye</v-icon>
+          </v-btn>
+        </template>    
+      </v-data-table>
     </div>
   </v-card>
 </template>
@@ -39,7 +48,14 @@ export default {
       options: {},
       pagination: {},
       headers: [],
-      transactionsFilter: {}
+      transactionsFilter: {},
+      quickStatusesColors: {
+        Pending: "primary--text",
+        None: "ecgray--text",
+        Completed: "success--text",
+        Failed: "error--text",
+        Canceled: "accent--text"
+      }
     }
   },
   watch: {
@@ -57,7 +73,7 @@ export default {
       this.loading = false;
 
       if(!this.headers || this.headers.length === 0){
-        this.headers = data.headers;
+        this.headers = [...data.headers, { value: "actions", text: this.$t("Actions") }];
       }
     },
     async applyFilter(filter){

@@ -73,7 +73,7 @@ export default {
       this.loading = false;
 
       if (!this.headers || this.headers.length === 0) {
-        this.headers = data.headers;
+        this.headers = [...data.headers, { value: "actions", text: this.$t("Actions") }];
       }
     },
     //TODO

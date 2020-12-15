@@ -19,9 +19,9 @@
         class="elevation-1"
       >
         <template v-slot:item.actions="{ item }">
-          <router-link class="text-decoration-none" link :to="{name: 'EditTerminal', params: {id: item.$terminalID}}">
-              <v-icon small color="secondary" class="mr-2">mdi-pencil</v-icon>
-          </router-link>
+          <v-btn class="mx-1" color="secondary" outlined x-small link :to="{name: 'EditTerminal', params: {id: item.$terminalID}}">
+            <v-icon small>mdi-pencil</v-icon>
+          </v-btn>
           <!-- <v-icon small @click="deleteItem(item)">mdi-delete</v-icon> -->
         </template>
       </v-data-table>
@@ -64,7 +64,7 @@ export default {
       this.loading = false;
 
       if (!this.headers || this.headers.length === 0) {
-        this.headers = data.headers;
+        this.headers = [...data.headers, { value: "actions", text: this.$t("Actions") }];
       }
     },
     //TODO

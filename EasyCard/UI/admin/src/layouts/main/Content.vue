@@ -5,7 +5,9 @@
         <v-app-bar flat color="white" v-if="$vuetify.breakpoint.mdAndUp && !headerStore.altDisplay">
           <ec-header-content :drawer.sync="drawerObj"></ec-header-content>
         </v-app-bar>
-        <router-view />
+        <div class="px-1">
+          <router-view />
+        </div>
       </v-flex>
     </v-container>
   </v-main>

@@ -1,5 +1,3 @@
-import i18n from "../../../i18n";
-
 export default class TerminalsApi {
     constructor(base) {
         this.base = base;
@@ -10,7 +8,7 @@ export default class TerminalsApi {
     async get(params) {
         if (!this.headers) {
             let data = await this.base.get(this.terminalsUrl + '/$meta')
-            this.headers = [...this.base._formatHeaders(data), { value: "actions", text: i18n.t("Actions") }]
+            this.headers = this.base._formatHeaders(data);
             this.$headers = data.columns
         }
 
