@@ -1,17 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import MainLayout from '../layouts/main/Index.vue'
-import mainAuth from '../auth';
-
+import store from '../store/index';
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
     name: 'Entry',
-    meta: {
-      authName: mainAuth.authName
-    },
     redirect: '/admin'
   },
   {
@@ -22,9 +18,6 @@ const routes = [
   {
     path: '/admin',
     component: MainLayout,
-    meta: {
-      authName: mainAuth.authName
-    },
     children: [
       {
         name: 'Dashboard',
@@ -33,29 +26,56 @@ const routes = [
         component: () => import('../pages/Dashboard.vue'),
       },
       {
-        name: 'Terminals/Create',
+        name: 'CreateTerminal',
+        props: true,
         path: 'terminals/create',
         component: () => import('../pages/terminals/CreateTerminal.vue'),
       },
       {
-        name: 'Terminals/List',
+        name: 'Terminals',
         path: 'terminals/list',
         component: () => import('../pages/terminals/TerminalsList.vue'),
       },
       {
-        name: 'Merchants/Create',
+        name: 'EditTerminal',
+        path: 'terminals/edit/:id',
+        component: () => import('../pages/terminals/EditTerminal.vue'),
+      },
+      {
+        name: 'CreateMerchant',
         path: 'merchants/create',
         component: () => import('../pages/merchants/CreateMerchant.vue'),
       },
       {
-        name: 'Merchants/List',
+        name: 'EditMerchant',
+        path: 'merchants/edit/:id',
+        component: () => import('../pages/merchants/EditMerchant.vue'),
+      },
+      {
+        name: 'Merchants',
         path: 'merchants/list',
         component: () => import('../pages/merchants/MerchantsList.vue'),
       },
       {
-        name: 'Transactions/List',
+        name: 'Merchant',
+        path: 'merchants/view/:id',
+        component: () => import('../pages/merchants/MerchantInfo.vue'),
+      },
+      {
+        name: 'Transaction',
+        path: 'transactions/view/:id',
+        component: () => import('../pages/transactions/TransactionInfo.vue'),
+      },
+      {
+        name: 'TransactionsList',
         path: 'transactions/list',
         component: () => import('../pages/transactions/TransactionsList.vue'),
+      },
+      {
+        name: 'MyProfile',
+        path: 'profile',
+        component: () =>
+            import ('../pages/profile/Profile.vue'),
       },
       {
         name: '404',
@@ -75,5 +95,31 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.afterEach((to, from) => {
+  store.commit("ui/changeHeader", {
+      value: {
+          text: {
+              translate: true,
+              value: to.name,
+          },
+          threeDotMenu: null,
+          altDisplay: to.meta.altDisplay,
+          navBtn: null
+      }
+  });
+});
+
+
+// auth guard added to any route
+router.beforeEach(async(to, from, next) => {
+  const oidc = Vue.prototype.$oidc;
+  if (await oidc.isAuthenticated()) {
+      next()
+  } else {
+      oidc.signinRedirect(to)
+  }
+});
+
 
 export default router

@@ -4,6 +4,9 @@ const primitives = {
     /**Common */
     required: (v) => !!v || i18n.t('Required'),
 
+    /**Only required if dependent value is truthy */
+    requiredDepends: (d) => (v) => (!d || !!v) || i18n.t('Required'),
+
     maxLength: (max) => (v) => (!v || v.length <= max) || i18n.t('@MaxLength').replace("@max", max),
     stringLength: (min, max) => (v) => (!v || (v.length >= min && v.length <= max)) || i18n.t('@StringLength').replace("@min", min).replace("@max", max),
 
@@ -12,7 +15,19 @@ const primitives = {
 
     expired: (allowedTo) => (v) => (v >= allowedTo) || i18n.t('Expired'),
 
-    biggerThan: (min) => (v) => (v > min) || i18n.t('@BiggerThan').replace('@min', min),
+    biggerThan: (min, orEqual = false) => (v) => (orEqual ? v >= min : v > min) || i18n.t('@BiggerThan').replace('@min', min),
+
+    lessThan: (min, orEqual = false) => (v) => (orEqual ? v <= min : v < min) || i18n.t('@LessThan').replace('@max', min),
+
+    positiveOnly: (v) => (!v || v >= 0) || i18n.t('OnlyPositiveNumbersAreAllowed'),
+
+    precision: (precision) => (v) => {
+        if(!v || v.toString().indexOf(".") === -1){ return true }
+        
+        let split = v.toString().split(".");
+
+        return split[split.length - 1].length <= precision || i18n.t("@AllowedPrecision").replace("@val", precision);
+    },
 
     email: (v) => {
         if(!v)

@@ -19,19 +19,16 @@ namespace Merchants.Api.Models.Terminal
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string Label { get; set; }
 
-        [Required]
+        public Guid? TerminalTemplateID { get; set; }
+
         public TerminalSettings Settings { get; set; }
 
-        [Required]
         public TerminalBillingSettings BillingSettings { get; set; }
 
-        [Required]
         public TerminalInvoiceSettings InvoiceSettings { get; set; }
 
-        [Required]
         public TerminalPaymentRequestSettings PaymentRequestSettings { get; set; }
 
-        [Required]
         public TerminalCheckoutSettings CheckoutSettings { get; set; }
     }
 }

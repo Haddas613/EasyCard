@@ -70,56 +70,16 @@
           </v-list-item-content>
         </v-list-item>
       </template>
-      <template v-if="false">
-        TODO: REMOVE
-        <v-list-item>
-          <v-list-item-action>
-            <v-switch class="px-2" :color="'accent'" label="RTL" v-model="$vuetify.rtl"></v-switch>
-          </v-list-item-action>
-          <v-list-item-content>
-            <lang-switcher class></lang-switcher>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-list-item>
-          <v-list-item-action class="my-1 mx-0">
-            <v-select
-              :items="terminals"
-              item-text="label"
-              item-value="terminalID"
-              return-object
-              v-model="terminal"
-              :label="$t('Terminal')"
-              outlined
-            ></v-select>
-          </v-list-item-action>
-        </v-list-item>
-
-        <v-list-item>
-          <v-list-item-action class="my-1 mx-0">
-            <v-select
-              :items="currencies"
-              item-text="description"
-              return-object
-              v-model="currency"
-              :label="$t('Currency')"
-              outlined
-            ></v-select>
-          </v-list-item-action>
-        </v-list-item>
-      </template>
     </v-list>
   </v-navigation-drawer>
 </template>
 <script>
-import LangSwitcher from "../../components/LanguageSwitcher";
 import { mapState } from "vuex";
 
 
 export default {
   name: "EcNav",
   props: ["drawer"],
-  components: { LangSwitcher },
   data() {
     return {
       items: [
@@ -230,30 +190,13 @@ export default {
               to: "/admin/billing-deals/create"
             }
           ]
-        },
-        //TODO: REMOVE
-        // { divider: true, dividerArea: "userAuth" },
-        // { icon: "mdi-account-cog", text: "Profile", to: "/admin/profile" },
-        // {
-        //   icon: "mdi-logout",
-        //   text: "Logout",
-        //   fn: () => {
-        //     mainAuth.signOut();
-        //   }
-        // }
+        }
       ],
-      terminals: [],
-      currencies: [],
       userName: null
     };
   },
   async mounted() {
-    let terminals = await this.$api.terminals.getTerminals();
-    this.terminals = terminals ? terminals.data : [];
-    let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
-    this.currencies = dictionaries ? dictionaries.currencyEnum : [];
     this.userName = !!this.$oidc ? (await this.$oidc.getUserProfile()).name : null;
-    
   },
   computed: {
     drawerObj: {
@@ -270,33 +213,6 @@ export default {
         return this.$vuetify.rtl === true;
       }
     },
-    ...mapState({
-      terminalStore: state => state.settings.terminal,
-      currencyStore: state => state.settings.currency
-    }),
-    terminal: {
-      get: function() {
-        return this.terminalStore;
-      },
-      set: function(nv) {
-        console.log("EcNav")
-        this.$store.dispatch("settings/changeTerminal", {
-          api: this.$api,
-          newTerminal: nv
-        });
-      }
-    },
-    currency: {
-      get: function() {
-        return this.currencyStore;
-      },
-      set: function(nv) {
-        this.$store.dispatch("settings/changeCurrency", {
-          api: this.$api,
-          newCurrency: nv
-        });
-      }
-    }
   }
 };
 </script>

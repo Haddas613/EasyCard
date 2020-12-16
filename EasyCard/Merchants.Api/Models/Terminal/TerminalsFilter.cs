@@ -8,6 +8,8 @@ namespace Merchants.Api.Models.Terminal
 {
     public class TerminalsFilter : FilterBase
     {
+        public Guid? MerchantID { get; set; }
+
         public string Label { get; set; }
     }
 }

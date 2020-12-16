@@ -71,6 +71,7 @@ namespace Transactions.Api.Controllers
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly IInvoiceService invoiceService;
         private readonly ISystemSettingsService systemSettingsService;
+        private readonly IMerchantsService merchantsService;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -88,7 +89,8 @@ namespace Transactions.Api.Controllers
             IInvoiceService invoiceService,
             IPaymentRequestsService paymentRequestsService,
             IHttpContextAccessorWrapper httpContextAccessor,
-            ISystemSettingsService systemSettingsService)
+            ISystemSettingsService systemSettingsService,
+            IMerchantsService merchantsService)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -107,6 +109,7 @@ namespace Transactions.Api.Controllers
             this.paymentRequestsService = paymentRequestsService;
             this.httpContextAccessor = httpContextAccessor;
             this.systemSettingsService = systemSettingsService;
+            this.merchantsService = merchantsService;
         }
 
         [HttpGet]
@@ -116,10 +119,8 @@ namespace Transactions.Api.Controllers
         {
             return new TableMeta
             {
-                Columns = typeof(TransactionSummary)
-                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
-                    .Select(d => d.GetColMeta(TransactionSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
-                    .ToDictionary(d => d.Key)
+                Columns = (httpContextAccessor.GetUser().IsAdmin() ? typeof(TransactionSummaryAdmin) : typeof(TransactionSummary))
+                    .GetObjectMeta(TransactionSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
             };
         }
 
@@ -154,10 +155,23 @@ namespace Transactions.Api.Controllers
         {
             Debug.WriteLine(User);
 
-            var transaction = mapper.Map<TransactionResponse>(EnsureExists(await transactionsService.GetTransactions()
-                .FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
+            if (httpContextAccessor.GetUser().IsAdmin())
+            {
+                var transaction = mapper.Map<TransactionResponseAdmin>(EnsureExists(
+                    await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
 
-            return Ok(transaction);
+                //TODO: cache
+                var merchantName = await merchantsService.GetMerchants().Where(m => m.MerchantID == transaction.MerchantID).Select(m => m.BusinessName).FirstOrDefaultAsync();
+                transaction.MerchantName = merchantName;
+                return Ok(transaction);
+            }
+            else
+            {
+                var transaction = mapper.Map<TransactionResponse>(EnsureExists(
+                    await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
+
+                return Ok(transaction);
+            }
         }
 
         [HttpGet]
@@ -194,17 +208,38 @@ namespace Transactions.Api.Controllers
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
-
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByDirection).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
+                var dataQuery = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByDirection).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
 
                 // TODO: validate generated sql
                 var sql = query.ToSql();
+                var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
 
-                // TODO: try to remove ProjectTo
-                response.Data = await mapper.ProjectTo<TransactionSummary>(query).ToListAsync();
+                if (httpContextAccessor.GetUser().IsAdmin())
+                {
+                    var summary = await mapper.ProjectTo<TransactionSummaryAdmin>(dataQuery).ToListAsync();
 
-                return Ok(response);
+                    var merchantsId = summary.Select(t => t.MerchantID).Distinct();
+
+                    var merchantsName = await merchantsService.GetMerchants().Where(m => merchantsId.Contains(m.MerchantID))
+                        .ToDictionaryAsync(k => k.MerchantID, v => v.BusinessName);
+
+                    summary.ForEach(s =>
+                    {
+                        if (merchantsName.ContainsKey(s.MerchantID))
+                        {
+                            s.MerchantName = merchantsName[s.MerchantID];
+                        }
+                    });
+
+                    response.Data = summary;
+                    return Ok(response);
+                }
+                else
+                {
+                    // TODO: try to remove ProjectTo
+                    response.Data = await mapper.ProjectTo<TransactionSummary>(dataQuery).ToListAsync();
+                    return Ok(response);
+                }
             }
         }
 

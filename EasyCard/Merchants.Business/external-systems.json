@@ -5,6 +5,7 @@
     "InstanceTypeFullName": "ClearingHouse.ClearingHouseAggregator, ClearingHouse",
     "SettingsTypeFullName": "ClearingHouse.ClearingHouseTerminalSettings, ClearingHouse",
     "Name": "PayDay Clearing House",
+    "Alias":  "payday-clearing-house",
     "Active": true
   },
   {
@@ -13,6 +14,7 @@
     "InstanceTypeFullName": "Shva.ShvaProcessor, Shva",
     "SettingsTypeFullName": "Shva.ShvaTerminalSettings, Shva",
     "Name": "Shva",
+    "Alias": "shva",
     "Active": true
   },
   {
@@ -21,6 +23,7 @@
     "InstanceTypeFullName": "EasyInvoice.ECInvoiceInvoicing, EasyInvoice",
     "SettingsTypeFullName": "EasyInvoice.EasyInvoiceTerminalSettings, EasyInvoice",
     "Name": "EasyInvoice",
+    "Alias": "easy-invoice",
     "Active": true
   }
 ]
