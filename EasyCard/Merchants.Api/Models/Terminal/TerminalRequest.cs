@@ -19,6 +19,8 @@ namespace Merchants.Api.Models.Terminal
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string Label { get; set; }
 
+        public Guid? TerminalTemplateID { get; set; }
+
         public TerminalSettings Settings { get; set; }
 
         public TerminalBillingSettings BillingSettings { get; set; }

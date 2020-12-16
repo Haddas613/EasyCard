@@ -10,9 +10,18 @@
               :counter="50"
               :rules="[vr.primitives.required, vr.primitives.stringLength(6, 50)]"
               :label="$t('BusinessName')"
-              class="px-1"
               outlined
             ></v-text-field>
+          </v-col>
+          <v-col cols="12" class="py-0">
+            <v-select
+              :items="terminalTemplates"
+              item-text="label"
+              item-value="terminalTemplateID"
+              v-model="model.terminalTemplateID"
+              :label="$t('TerminalTemplate')"
+              outlined
+            ></v-select>
           </v-col>
         </v-row>
       </v-form>
@@ -49,10 +58,12 @@ export default {
     return {
       model: {
         label: null,
-        merchantID: this.merchantId
+        merchantID: this.merchantId,
+        terminalTemplateID: null
       },
       valid: true,
-      vr: ValidationRules
+      vr: ValidationRules,
+      terminalTemplates: []
     };
   },
   computed: {
@@ -63,6 +74,14 @@ export default {
       set: function(val) {
         this.$emit("update:show", val);
       }
+    }
+  },
+  async mounted () {
+    let templates = (await this.$api.terminals.getTerminalTemplates()).data || [];
+
+    if(templates && templates.length > 0){
+      this.terminalTemplates = templates;
+      this.model.terminalTemplateID = templates[0].terminalTemplateID;
     }
   },
   methods: {

@@ -60,6 +60,7 @@
   "BillingDeal(Deleted)" : "Billing Deal (deleted)",
   "TerminalsList": "Terminals List",
   "CreateTerminal": "Create Terminal",
+  "EditTerminal": "Edit Terminal",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -216,6 +217,7 @@
   "SharedApiKey": "Shared Api Key",
   "PaymentRequestURL": "Payment Request URL",
   "VATExempt": "VAT Exempt",
+  "TerminalTemplate": "Terminal Template",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

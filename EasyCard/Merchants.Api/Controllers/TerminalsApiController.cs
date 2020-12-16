@@ -19,6 +19,7 @@ using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Business.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -127,6 +128,11 @@ namespace Merchants.Api.Controllers
         {
             var merchant = EnsureExists(await merchantsService.GetMerchants().FirstOrDefaultAsync(d => d.MerchantID == model.MerchantID));
 
+            if (model.TerminalTemplateID.HasValue)
+            {
+                //TODO: Process terminal template
+            }
+
             var newTerminal = mapper.Map<Terminal>(model);
 
             await terminalsService.CreateEntity(newTerminal);
@@ -192,6 +198,20 @@ namespace Merchants.Api.Controllers
 
             // TODO: failed case
             return Ok(new OperationResponse { EntityReference = opResult.ApiKey });
+        }
+
+        [HttpGet]
+        [Route("templates")]
+        public async Task<ActionResult<SummariesResponse<TerminalTemplatesSummary>>> GetTerminalTemplates()// TODO: Add filters & pagination
+        {
+            var response = new SummariesResponse<TerminalTemplatesSummary> { NumberOfRecords = 1 };
+
+            response.Data = new List<TerminalTemplatesSummary>
+            {
+                new TerminalTemplatesSummary { Label = "default", TerminalTemplateID = Guid.NewGuid() }
+            };
+
+            return Ok(response);
         }
     }
 }
