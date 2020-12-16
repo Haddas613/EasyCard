@@ -1176,6 +1176,16 @@
             Create document for transaction
             </summary>
         </member>
+        <member name="T:Transactions.Api.Models.Transactions.TransactionResponseAdmin">
+            <summary>
+            Payment transaction details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponseAdmin.MerchantName">
+            <summary>
+            Merchant name
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionsFilter.ConsumerEmail">
             <summary>
             End-customer Email

@@ -21,6 +21,11 @@
           :server-items-length="totalAmount"
           :loading="loading"
           class="elevation-1">
+        <template v-slot:item.merchantName="{ item }">
+          <router-link class="text-decoration-none" link :to="{name: 'Merchant', params: {id: item.merchantID}}">
+            {{item.merchantName || item.merchantID}}
+          </router-link>
+        </template>    
         <template v-slot:item.quickStatus="{ item }">
           <span v-bind:class="quickStatusesColors[item.quickStatus]">{{item.quickStatus}}</span>
         </template> 
