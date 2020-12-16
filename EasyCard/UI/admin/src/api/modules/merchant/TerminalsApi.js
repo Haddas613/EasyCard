@@ -54,4 +54,8 @@ export default class TerminalsApi {
     async getTerminalTemplates(params) {
         return await this.base.get(this.terminalsUrl + '/templates', params);
     }
+
+    async getAvailableIntegrations(){
+        return await this.base.get(this.terminalsUrl + '/availableIntegrations');
+    }
 }

@@ -26,12 +26,6 @@ const routes = [
         component: () => import('../pages/Dashboard.vue'),
       },
       {
-        name: 'CreateTerminal',
-        props: true,
-        path: 'terminals/create',
-        component: () => import('../pages/terminals/CreateTerminal.vue'),
-      },
-      {
         name: 'Terminals',
         path: 'terminals/list',
         component: () => import('../pages/terminals/TerminalsList.vue'),
