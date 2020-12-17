@@ -16,6 +16,6 @@ namespace Merchants.Api.Models.Terminal
 
         public string Name { get; set; }
 
-        public string Alias { get; set; }
+        public string Key { get; set; }
     }
 }

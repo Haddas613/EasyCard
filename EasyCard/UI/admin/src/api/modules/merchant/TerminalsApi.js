@@ -58,4 +58,8 @@ export default class TerminalsApi {
     async getAvailableIntegrations(){
         return await this.base.get(this.terminalsUrl + '/availableIntegrations');
     }
+
+    async saveTerminalExternalSystem(terminalID, data){
+        return this.base.put(this.terminalsUrl + `/${terminalID}/externalsystem`, data);
+    }
 }

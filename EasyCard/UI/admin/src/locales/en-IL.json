@@ -218,6 +218,12 @@
   "PaymentRequestURL": "Payment Request URL",
   "VATExempt": "VAT Exempt",
   "TerminalTemplate": "Terminal Template",
+  "UserName": "User Name",
+  "Password": "Password",
+  "MerchantNumber": "Merchant Number",
+  "MerchantReference": "Merchant Reference",
+  "ShvaTerminalReference": "Shva Terminal Reference",
+  "KeyStorePassword": "Key Store Password",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

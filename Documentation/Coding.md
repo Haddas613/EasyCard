@@ -100,3 +100,18 @@ TBC
 
 4. Models validation - TBC
 
+## UI: Admin panel - External Systems / Integrations
+
+To add a new integration you need to follow next steps.
+
+1. Create a new subfolder in `src/integrations/` like `src/integrations/integration-name`. Use kebab-case for folder naming for convenience.
+2. Create corresponding components implementations(take others as an example) E.g src/integrations/integration-name/IntegrationName`SettingsForm`.vue
+3. If required, make use of props that will be passed to your component automatically. For example `SettingsForm` components will get `terminalId:string` and `data:object` props.
+
+### Additional notes
+
+1. When adding a folder to integrations use **kebab-case**
+2. When adding a component **only** use **PascalCase**
+3. `Integrations` folder may **only** contain single file components. **Don't** add anything other than that.
+4. Current required components: `__SettingsForm` (where `__` is an integration key)
+5. All added components are added globally, but should not be used manually. They will automatically appear in designated places
