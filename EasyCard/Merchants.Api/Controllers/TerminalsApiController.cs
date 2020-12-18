@@ -68,6 +68,31 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
+        [Route("templates")]
+        public async Task<ActionResult<SummariesResponse<TerminalTemplatesSummary>>> GetTerminalTemplates()// TODO: Add filters & pagination
+        {
+            var response = new SummariesResponse<TerminalTemplatesSummary> { NumberOfRecords = 1 };
+
+            response.Data = new List<TerminalTemplatesSummary>
+            {
+                new TerminalTemplatesSummary { Label = "default", TerminalTemplateID = Guid.NewGuid() }
+            };
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("availableIntegrations")]
+        public async Task<ActionResult<Dictionary<string, IEnumerable<ExternalSystem>>>> GetAvailableIntegrations()
+        {
+            //TODO: translations for keys
+            var externalSystems = externalSystemsService.GetExternalSystems().Where(s => s.Active)
+                .GroupBy(k => k.Type);
+
+            return Ok(externalSystems.ToDictionary(k => k.Key, v => v));
+        }
+
+        [HttpGet]
         public async Task<ActionResult<SummariesResponse<TerminalSummary>>> GetTerminals([FromQuery] TerminalsFilter filter)
         {
             // TODO: validate filters (see transactions list)
@@ -198,20 +223,6 @@ namespace Merchants.Api.Controllers
 
             // TODO: failed case
             return Ok(new OperationResponse { EntityReference = opResult.ApiKey });
-        }
-
-        [HttpGet]
-        [Route("templates")]
-        public async Task<ActionResult<SummariesResponse<TerminalTemplatesSummary>>> GetTerminalTemplates()// TODO: Add filters & pagination
-        {
-            var response = new SummariesResponse<TerminalTemplatesSummary> { NumberOfRecords = 1 };
-
-            response.Data = new List<TerminalTemplatesSummary>
-            {
-                new TerminalTemplatesSummary { Label = "default", TerminalTemplateID = Guid.NewGuid() }
-            };
-
-            return Ok(response);
         }
     }
 }

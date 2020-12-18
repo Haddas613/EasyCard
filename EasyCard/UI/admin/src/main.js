@@ -18,6 +18,7 @@ import vmoney from 'v-money';
 import auth from './auth'
 import VueClipboard from 'vue-clipboard2';
 import mixin from './extensions/mixins';
+import "./integrations";
 
 Vue.config.productionTip = false
 

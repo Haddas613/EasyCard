@@ -54,4 +54,16 @@ export default class TerminalsApi {
     async getTerminalTemplates(params) {
         return await this.base.get(this.terminalsUrl + '/templates', params);
     }
+
+    async getAvailableIntegrations(){
+        return await this.base.get(this.terminalsUrl + '/availableIntegrations');
+    }
+
+    async saveTerminalExternalSystem(terminalID, data){
+        return this.base.put(this.terminalsUrl + `/${terminalID}/externalsystem`, data);
+    }
+
+    async deleteTerminalExternalSystem(terminalID, externalSystemID){
+        return this.base.delete(this.terminalsUrl + `/${terminalID}/externalsystem/${externalSystemID}`);
+    }
 }
