@@ -224,6 +224,8 @@
   "MerchantReference": "Merchant Reference",
   "ShvaTerminalReference": "Shva Terminal Reference",
   "KeyStorePassword": "Key Store Password",
+  "IntegrationType": "Integration Type",
+  "IntegrationName": "Integration Name",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -250,6 +252,7 @@
   "ResetSharedKey": "Reset Shared Key",
   "ShowSharedKey": "Show Shared Key",
   "CreateNew": "Create new",
+  "AddIntegration": "Add Integration",
 
   "--AUTH--": null,
   "Login": "Login",
@@ -312,5 +315,6 @@
   "ClickToDownload": "Click to download",
 
   "--MESSAGES--": null,
-  "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?"
+  "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?",
+  "NotSupportedContactAdministration": "Not supported. Contact administration"
 }

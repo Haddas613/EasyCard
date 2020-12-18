@@ -10,7 +10,6 @@ namespace Merchants.Api.Models.Terminal
 {
     public class TerminalExternalSystemDetails
     {
-        [JsonIgnore]
         public long ExternalSystemID { get; set; }
 
         public ExternalSystemSummary ExternalSystem { get; set; }

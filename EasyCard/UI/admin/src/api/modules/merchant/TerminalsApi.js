@@ -62,4 +62,8 @@ export default class TerminalsApi {
     async saveTerminalExternalSystem(terminalID, data){
         return this.base.put(this.terminalsUrl + `/${terminalID}/externalsystem`, data);
     }
+
+    async deleteTerminalExternalSystem(terminalID, externalSystemID){
+        return this.base.delete(this.terminalsUrl + `/${terminalID}/externalsystem/${externalSystemID}`);
+    }
 }

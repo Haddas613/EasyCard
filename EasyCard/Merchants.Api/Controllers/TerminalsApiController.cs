@@ -83,12 +83,13 @@ namespace Merchants.Api.Controllers
 
         [HttpGet]
         [Route("availableIntegrations")]
-        public async Task<ActionResult<SummariesResponse<ExternalSystem>>> GetAvailableIntegrations()
+        public async Task<ActionResult<Dictionary<string, IEnumerable<ExternalSystem>>>> GetAvailableIntegrations()
         {
-            var externalSystems = externalSystemsService.GetExternalSystems().Where(s => s.Active);
-            var response = new SummariesResponse<ExternalSystem> { NumberOfRecords = externalSystems.Count(), Data = externalSystems };
+            //TODO: translations for keys
+            var externalSystems = externalSystemsService.GetExternalSystems().Where(s => s.Active)
+                .GroupBy(k => k.Type);
 
-            return Ok(response);
+            return Ok(externalSystems.ToDictionary(k => k.Key, v => v));
         }
 
         [HttpGet]
