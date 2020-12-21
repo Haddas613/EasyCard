@@ -496,7 +496,7 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("varchar(max)")
                         .IsUnicode(false);
 
-                    b.Property<Guid>("TerminalID")
+                    b.Property<Guid?>("TerminalID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserID")
@@ -560,9 +560,7 @@ namespace Merchants.Business.Migrations
                 {
                     b.HasOne("Merchants.Business.Entities.Terminal.Terminal", "Terminal")
                         .WithMany()
-                        .HasForeignKey("TerminalID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("TerminalID");
                 });
 #pragma warning restore 612, 618
         }

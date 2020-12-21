@@ -9,7 +9,7 @@ namespace Merchants.Api.Models.User
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class UserSummary
     {
-        public string UserID { get; set; }
+        public Guid UserID { get; set; }
 
         public string DisplayName { get; set; }
 

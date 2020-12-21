@@ -150,7 +150,7 @@
   <data name="UserOperationSuccess" xml:space="preserve">
     <value>User Operation Success</value>
   </data>
-  <data name="UserUnlinkedFromTerminal" xml:space="preserve">
-    <value>User unlinked from terminal</value>
+  <data name="UserUnlinkedFromMerchant" xml:space="preserve">
+    <value>User unlinked from Merchant</value>
   </data>
 </root>

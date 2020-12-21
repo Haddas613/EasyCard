@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.Merchant;
+using Merchants.Api.Models.User;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Services;
 using Merchants.Shared;
@@ -84,6 +85,7 @@ namespace Merchants.Api.Controllers
                 var merchant = mapper.Map<MerchantResponse>(dbMerchant);
 
                 merchant.Terminals = await mapper.ProjectTo<Models.Terminal.TerminalSummary>(terminalsService.GetTerminals().AsNoTracking().Where(d => d.MerchantID == dbMerchant.MerchantID)).ToListAsync();
+                merchant.Users = await mapper.ProjectTo<UserSummary>(merchantsService.GetMerchantUsers(merchant.MerchantID)).ToListAsync();
 
                 return Ok(merchant);
             }

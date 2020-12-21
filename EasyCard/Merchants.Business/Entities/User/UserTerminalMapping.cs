@@ -10,7 +10,7 @@ namespace Merchants.Business.Entities.User
 
         public Guid UserID { get; set; }
 
-        public Guid TerminalID { get; set; }
+        public Guid? TerminalID { get; set; }
 
         public Guid MerchantID { get; set; }
 

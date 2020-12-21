@@ -61,6 +61,8 @@
   "TerminalsList": "Terminals List",
   "CreateTerminal": "Create Terminal",
   "EditTerminal": "Edit Terminal",
+  "CreateUser": "Create User",
+  "Users": "Users",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -226,6 +228,7 @@
   "KeyStorePassword": "Key Store Password",
   "IntegrationType": "Integration Type",
   "IntegrationName": "Integration Name",
+  "InviteMessage": "Invite Message",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

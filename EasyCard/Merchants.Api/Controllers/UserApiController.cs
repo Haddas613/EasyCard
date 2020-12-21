@@ -46,10 +46,6 @@ namespace Merchants.Api.Controllers
 
             var userData = mapper.Map<UserResponse>(userEntity);
 
-            // TODO: enable it when user-terminal mappings will be enabled
-            // userData.Terminals = (await terminalsService.GetUserTerminals(userEntity.UserID).ToListAsync())
-            //     .Select(d => mapper.Map<Models.Terminal.TerminalSummary>(d));
-
             return Ok(new List<UserResponse> { userData });
         }
 
@@ -60,10 +56,6 @@ namespace Merchants.Api.Controllers
             var userEntity = EnsureExists(await userManagementClient.GetUserByID(userID));
 
             var userData = mapper.Map<UserResponse>(userEntity);
-
-            // TODO: enable it when user-terminal mappings will be enabled
-            // userData.Terminals = (await terminalsService.GetUserTerminals(userID).ToListAsync())
-            //    .Select(d => mapper.Map<Models.Terminal.TerminalSummary>(d));
 
             return Ok(userData);
         }
@@ -87,9 +79,22 @@ namespace Merchants.Api.Controllers
                 }
 
                 user = await userManagementClient.GetUserByEmail(request.Email);
+
+                var userToMerchantInfo = mapper.Map<UserInfo>(user);
+
+                await merchantsService.LinkUserToMerchant(userToMerchantInfo, request.MerchantID);
             }
             else
             {
+                var userIsLinkedToMerchant = (await merchantsService.GetMerchantUsers(merchant.MerchantID).CountAsync(u => u.UserID == user.UserID)) > 0;
+
+                if (!userIsLinkedToMerchant)
+                {
+                    var userToMerchantInfo = mapper.Map<UserInfo>(user);
+
+                    await merchantsService.LinkUserToMerchant(userToMerchantInfo, request.MerchantID);
+                }
+
                 var resendInvitationResponse = await userManagementClient.ResendInvitation(new ResendInvitationRequestModel { Email = user.Email });
 
                 if (resendInvitationResponse.ResponseCode != UserOperationResponseCodeEnum.InvitationResent)
@@ -105,9 +110,6 @@ namespace Merchants.Api.Controllers
                 Roles = request.Roles,
                 UserID = user.UserID
             };
-
-            // TODO: enable it when user-terminal mappings will be enabled
-            // await terminalsService.LinkUserToTerminal(userInfo, terminal);
 
             return CreatedAtAction(nameof(GetUser), new { userID = user.UserID }, new OperationResponse(Messages.UserInvited, StatusEnum.Success, user.UserID, correlationId: GetCorrelationID()));
         }
@@ -154,37 +156,15 @@ namespace Merchants.Api.Controllers
             return Ok(opResult.Convert(correlationID: GetCorrelationID()));
         }
 
-        //[HttpPut]
-        //[Route("{userID}/linkToTerminal")]
-        //public async Task<ActionResult<OperationResponse>> LinkUserToTerminal([FromRoute]Guid userID, [FromBody] LinkUserToTerminalRequest request)
-        //{
-        //    var user = EnsureExists(await userManagementClient.GetUserByID(userID));
+        [HttpDelete]
+        [Route("{userID}/unlinkFromMerchant/{merchantID}")]
+        public async Task<ActionResult<OperationResponse>> UnlinkUserFromTerminal([FromRoute]Guid userID, [FromRoute]Guid merchantID)
+        {
+            _ = EnsureExists(await userManagementClient.GetUserByID(userID));
 
-        //    var terminal = EnsureExists(await terminalsService.GetTerminals()
-        //        .FirstOrDefaultAsync(m => m.TerminalID == request.TerminalID));
+            await merchantsService.UnLinkUserFromMerchant(userID, merchantID);
 
-        //    var userInfo = new UserInfo
-        //    {
-        //         DisplayName = user.DisplayName,
-        //         Email = user.Email,
-        //         Roles = request.Roles,
-        //         UserID = user.UserID
-        //    };
-
-        //    await terminalsService.LinkUserToTerminal(userInfo, terminal);
-
-        //    return Ok(new OperationResponse { Message = Messages.UserLinkedToTerminal, Status = StatusEnum.Success });
-        //}
-
-        //[HttpDelete]
-        //[Route("{userID}/unlinkFromTerminal/{terminalID}")]
-        //public async Task<ActionResult<OperationResponse>> UnlinkUserFromTerminal([FromRoute]Guid userID, [FromRoute]Guid terminalID)
-        //{
-        //    _ = EnsureExists(await userManagementClient.GetUserByID(userID));
-
-        //    await terminalsService.UnLinkUserFromTerminal(userID, terminalID);
-
-        //    return Ok(new OperationResponse { Message = Messages.UserUnlinkedFromTerminal, Status = StatusEnum.Success });
-        //}
+            return Ok(new OperationResponse { Message = Messages.UserUnlinkedFromMerchant, Status = StatusEnum.Success });
+        }
     }
 }

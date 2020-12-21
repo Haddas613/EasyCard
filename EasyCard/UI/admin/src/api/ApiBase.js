@@ -9,6 +9,7 @@ import BillingDealsApi from './modules/transactions/BillingDealsApi';
 import InvoicingApi from './modules/transactions/InvoicingApi';
 import PaymentRequestsApi from './modules/transactions/PaymentRequestsApi';
 import MerchantsApi from './modules/merchant/MerchantsApi';
+import UsersApi from './modules/merchant/UsersApi';
 
 class ApiBase {
     constructor() {
@@ -23,6 +24,7 @@ class ApiBase {
         this.billingDeals = new BillingDealsApi(this);
         this.invoicing = new InvoicingApi(this);
         this.paymentRequests = new PaymentRequestsApi(this);
+        this.users = new UsersApi(this);
     }
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */

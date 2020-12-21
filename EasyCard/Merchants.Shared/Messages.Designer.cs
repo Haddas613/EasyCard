@@ -160,11 +160,11 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User unlinked from terminal.
+        ///   Looks up a localized string similar to User unlinked from Merchant.
         /// </summary>
-        public static string UserUnlinkedFromTerminal {
+        public static string UserUnlinkedFromMerchant {
             get {
-                return ResourceManager.GetString("UserUnlinkedFromTerminal", resourceCulture);
+                return ResourceManager.GetString("UserUnlinkedFromMerchant", resourceCulture);
             }
         }
     }

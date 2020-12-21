@@ -11,9 +11,6 @@ namespace Merchants.Api.Models.User
         [Required]
         public Guid MerchantID { get; set; }
 
-        [Required]
-        public Guid TerminalID { get; set; }
-
         [StringLength(512)]
         public string InviteMessage { get; set; }
 

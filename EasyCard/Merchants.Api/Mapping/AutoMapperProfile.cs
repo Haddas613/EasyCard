@@ -83,6 +83,7 @@ namespace Merchants.Api.Mapping
             CreateMap<UserProfileDataResponse, UserResponse>();
             CreateMap<InviteUserRequest, CreateUserRequestModel>();
             CreateMap<Business.Entities.User.UserInfo, UserSummary>();
+            CreateMap<UserProfileDataResponse, Business.Entities.User.UserInfo>();
         }
 
         private void RegisterSystemSettingsMappings()
