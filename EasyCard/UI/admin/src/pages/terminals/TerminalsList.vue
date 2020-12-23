@@ -31,7 +31,6 @@
 
 <script>
 export default {
-  name: "TerminalsList",
   components: {},
   data() {
     return {

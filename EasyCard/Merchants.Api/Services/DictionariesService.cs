@@ -11,6 +11,7 @@ using Shared.Helpers.Resources;
 using Merchants.Api.Models.Dictionaries;
 using Merchants.Shared.Enums;
 using Merchants.Api.Models.Terminal;
+using Merchants.Api.Models.User;
 
 namespace Merchants.Api.Services
 {
@@ -38,10 +39,17 @@ namespace Merchants.Api.Services
 
             var transactionStatusEnumType = typeof(TerminalStatusEnum);
 
+            var userStatusEnumType = typeof(UserStatusEnum);
+
             var termStatuses = Enum.GetValues(transactionStatusEnumType).Cast<TerminalStatusEnum>()
                 .ToDictionary(m => transactionStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => TerminalStatusEnumResource.ResourceManager.GetString(m.ToString(), culture) );
 
+            var userStatuses = Enum.GetValues(userStatusEnumType).Cast<UserStatusEnum>()
+                .ToDictionary(m => userStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => UserEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
             response.TerminalStatusEnum = termStatuses;
+            response.UserStatusEnum = userStatuses;
+
             return response;
         }
     }

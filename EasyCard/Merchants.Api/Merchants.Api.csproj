@@ -69,6 +69,16 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TerminalStatusEnumResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Models\User\UserEnumsResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UserEnumsResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Models\User\UserSummaryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UserSummaryResource.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -83,6 +93,14 @@
     <EmbeddedResource Update="Models\Terminal\TerminalStatusEnumResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>TerminalStatusEnumResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\User\UserEnumsResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserEnumsResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\User\UserSummaryResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserSummaryResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

@@ -115,6 +115,11 @@ export default {
               to: "/admin/merchants/list"
             },
             {
+              icon: "mdi-account-network",
+              text: "UsersList",
+              to: "/admin/users/list"
+            },
+            {
               icon: "mdi-plus",
               text: "CreateMerchant",
               to: "/admin/merchants/create"

@@ -51,6 +51,11 @@ const routes = [
         component: () => import('../pages/merchants/MerchantsList.vue'),
       },
       {
+        name: 'Users',
+        path: 'users/list',
+        component: () => import('../pages/users/UsersList.vue'),
+      },
+      {
         name: 'Merchant',
         path: 'merchants/view/:id',
         component: () => import('../pages/merchants/MerchantInfo.vue'),

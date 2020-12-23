@@ -16,6 +16,8 @@ namespace Merchants.Business.Services
 
         IQueryable<MerchantHistory> GetMerchantHistories();
 
+        IQueryable<UserTerminalMapping> GetMerchantUsers();
+
         IQueryable<UserInfo> GetMerchantUsers(Guid merchantID);
 
         Task LinkUserToMerchant(UserInfo userID, Guid merchantID, IDbContextTransaction dbTransaction = null);

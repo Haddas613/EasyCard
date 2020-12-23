@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using IdentityServerClient;
 using Merchants.Api.Extensions;
+using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.User;
 using Merchants.Business.Entities.User;
 using Merchants.Business.Services;
@@ -14,8 +15,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.Api;
+using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Api.Models.Metadata;
+using Shared.Api.UI;
 using Shared.Business.Extensions;
 
 namespace Merchants.Api.Controllers
@@ -40,13 +44,31 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserResponse>>> GetUsers([FromQuery] GetUsersFilter filter)
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("$meta")]
+        public TableMeta GetMetadata()
         {
-            var userEntity = EnsureExists(await userManagementClient.GetUserByEmail(filter.Email));
+            return new TableMeta
+            {
+                Columns = typeof(UserSummary)
+                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+                    .Select(d => d.GetColMeta(UserSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
+                    .ToDictionary(d => d.Key)
+            };
+        }
 
-            var userData = mapper.Map<UserResponse>(userEntity);
+        [HttpGet]
+        public async Task<ActionResult<SummariesResponse<UserSummary>>> GetUsers([FromQuery] GetUsersFilter filter)
+        {
+            var query = merchantsService.GetMerchantUsers().Filter(filter);
 
-            return Ok(new List<UserResponse> { userData });
+            var response = new SummariesResponse<UserSummary>
+            {
+                NumberOfRecords = await query.CountAsync(),
+                Data = await mapper.ProjectTo<UserSummary>(query.OrderByDescending(u => u.UserTerminalMappingID)).ApplyPagination(filter).ToListAsync()
+            };
+
+            return Ok(response);
         }
 
         [HttpGet]

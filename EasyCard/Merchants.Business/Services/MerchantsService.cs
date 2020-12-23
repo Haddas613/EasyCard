@@ -238,5 +238,6 @@ namespace Merchants.Business.Services
             }
         }
 
+        public IQueryable<UserTerminalMapping> GetMerchantUsers() => context.UserTerminalMappings;
     }
 }

@@ -8,6 +8,7 @@ using Merchants.Api.Models.User;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.System;
 using Merchants.Business.Entities.Terminal;
+using Merchants.Business.Entities.User;
 using Merchants.Business.Models.Integration;
 using Merchants.Shared.Models;
 using System;
@@ -82,6 +83,7 @@ namespace Merchants.Api.Mapping
         {
             CreateMap<UserProfileDataResponse, UserResponse>();
             CreateMap<InviteUserRequest, CreateUserRequestModel>();
+            CreateMap<UserTerminalMapping, UserSummary>();
             CreateMap<Business.Entities.User.UserInfo, UserSummary>();
             CreateMap<UserProfileDataResponse, Business.Entities.User.UserInfo>();
         }

@@ -63,6 +63,7 @@
   "EditTerminal": "Edit Terminal",
   "CreateUser": "Create User",
   "Users": "Users",
+  "UsersList": "Users List",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
