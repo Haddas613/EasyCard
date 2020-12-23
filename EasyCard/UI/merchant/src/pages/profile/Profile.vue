@@ -47,13 +47,13 @@
       <v-divider></v-divider>
       <v-card-text>
         <v-form ref="terminalSettingsForm" v-model="terminalSettingsFormValid" lazy-validation>
-          <terminal-settings-form 
+          <terminal-settings-fields 
             v-if="terminalRefreshed"
             :key="terminalStore ? terminalStore.terminalID : false" 
             :data="terminalStore" 
             class="pt-1" 
             ref="terminalSettingsRef"
-            @update="refreshTerminal()"></terminal-settings-form>
+            @update="refreshTerminal()"></terminal-settings-fields>
           <v-flex class="d-flex justify-end">
             <v-btn color="primary" :disabled="!terminalSettingsFormValid" :block="$vuetify.breakpoint.smAndDown" @click="saveTerminalSettings()">{{$t('Save')}}</v-btn>
           </v-flex>

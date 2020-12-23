@@ -55,11 +55,11 @@
         </template>
       </ec-dialog-invoker>
       <v-form class="ec-form" ref="form" lazy-validation v-if="!token">
-        <credit-card-secure-details-form
+        <credit-card-secure-details-fields
           :data="model.creditCardSecureDetails"
           ref="ccsecuredetailsform"
           :tokens="customerTokens"
-        ></credit-card-secure-details-form>
+        ></credit-card-secure-details-fields>
         <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')" :disabled="!model.dealDetails.consumerID"></v-checkbox>
       </v-form>
     </v-card-text>
