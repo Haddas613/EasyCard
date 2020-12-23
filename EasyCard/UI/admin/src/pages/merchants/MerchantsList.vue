@@ -19,10 +19,10 @@
         class="elevation-1"
       >
         <template v-slot:item.actions="{ item }">
-          <v-btn color="primary" outlined x-small link :to="{name: 'Merchant', params: {id: item.$merchantID}}">
+          <v-btn color="primary" outlined small link :to="{name: 'Merchant', params: {id: item.$merchantID}}">
             <v-icon small>mdi-eye</v-icon>
           </v-btn>
-          <v-btn class="mx-1" color="secondary" outlined x-small link :to="{name: 'EditMerchant', params: {id: item.$merchantID}}">
+          <v-btn class="mx-1" color="secondary" outlined small link :to="{name: 'EditMerchant', params: {id: item.$merchantID}}">
             <v-icon small>mdi-pencil</v-icon>
           </v-btn>
           <!-- <router-link class="text-decoration-none" link :to="{name: 'EditMerchant', params: {id: item.$merchantID}}">

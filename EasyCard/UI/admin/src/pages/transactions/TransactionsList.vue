@@ -30,7 +30,7 @@
           <span v-bind:class="quickStatusesColors[item.quickStatus]">{{item.quickStatus}}</span>
         </template> 
         <template v-slot:item.actions="{ item }">
-          <v-btn color="primary" outlined x-small link :to="{name: 'Transaction', params: {id: item.$paymentTransactionID}}">
+          <v-btn color="primary" outlined small link :to="{name: 'Transaction', params: {id: item.$paymentTransactionID}}">
             <v-icon small>mdi-eye</v-icon>
           </v-btn>
         </template>    

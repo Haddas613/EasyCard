@@ -257,6 +257,11 @@
   "ShowSharedKey": "Show Shared Key",
   "CreateNew": "Create new",
   "AddIntegration": "Add Integration",
+  "Invite": "Invite",
+  "Lock": "Lock",
+  "Unlock": "Unlock",
+  "Reset": "Reset",
+  "ResetPassword": "Reset Password",
 
   "--AUTH--": null,
   "Login": "Login",

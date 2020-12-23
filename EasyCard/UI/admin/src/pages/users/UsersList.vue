@@ -20,19 +20,18 @@
           </router-link>
         </template>
         <template v-slot:item.actions="{ item }">
-          <!-- <v-btn color="primary" outlined x-small link :to="{name: 'Merchant', params: {id: item.$userID}}">
-            <v-icon small>mdi-eye</v-icon>
+          <v-btn class="mx-1" color="primary" outlined small :title="$t('Invite')" :loading="actionInProgress" @click="inviteUser(item)" v-if="item.$status == 'Invited'">
+            <v-icon small>mdi-email</v-icon>
           </v-btn>
-          <v-btn class="mx-1" color="secondary" outlined x-small link :to="{name: 'EditMerchant', params: {id: item.$userID}}">
-            <v-icon small>mdi-pencil</v-icon>
-          </v-btn>-->
-          <!-- <router-link class="text-decoration-none" link :to="{name: 'EditMerchant', params: {id: item.$userID}}">
-              <v-icon small color="secondary" class="mr-2">mdi-pencil</v-icon>
-          </router-link>
-          <router-link class="text-decoration-none" link :to="{name: 'Merchant', params: {id: item.$userID}}">
-              <v-icon small color="primary" class="mr-2">mdi-eye</v-icon>
-          </router-link>-->
-          <!-- <v-icon small @click="deleteItem(item)">mdi-delete</v-icon> -->
+          <v-btn class="mx-1" color="error" outlined small :title="$t('Lock')" :loading="actionInProgress" @click="lockUser(item)" v-if="item.$status == 'Active'">
+            <v-icon small>mdi-lock</v-icon>
+          </v-btn>
+          <v-btn class="mx-1" color="success" outlined small :title="$t('Unlock')" :loading="actionInProgress" @click="unlockUser(item)" v-if="item.$status == 'Locked'">
+            <v-icon small>mdi-lock-open</v-icon>
+          </v-btn>
+          <v-btn class="mx-1" color="secondary" outlined small :title="$t('ResetPassword')" :loading="actionInProgress" @click="resetUserPassword(item.$userID)">
+            <v-icon small>mdi-lock-reset</v-icon>
+          </v-btn>
         </template>
       </v-data-table>
     </div>
@@ -50,7 +49,8 @@ export default {
       options: {},
       pagination: {},
       headers: [],
-      usersFilter: {}
+      usersFilter: {},
+      actionInProgress: false
     };
   },
   watch: {
@@ -60,6 +60,9 @@ export default {
       },
       deep: true
     }
+  },
+  async mounted () {
+    this.$merchantDictionaries = await this.$api.dictionaries.$getMerchantDictionaries();
   },
   methods: {
     async getDataFromApi() {
@@ -83,6 +86,43 @@ export default {
     async applyFilter(filter) {
       this.usersFilter = filter;
       await this.getDataFromApi();
+    },
+    async inviteUser(user){
+      this.actionInProgress = true;
+      let operation = await this.$api.users.inviteUser({
+        merchantID: user.$merchantID,
+        email: user.email
+      });
+
+      if(operation.status == "success"){
+        user.status = this.$merchantDictionaries['userStatusEnum']['invited'];
+      }else{
+        this.$toasted.show(operation.message, { type: "error" });
+      }
+      this.actionInProgress = false;
+    },
+    async lockUser(user){
+      this.actionInProgress = true;
+      let operation = await this.$api.users.lockUser(user.$userID);
+
+      if(operation.status == "success"){
+        user.status = this.$merchantDictionaries['userStatusEnum']['locked'];
+      }
+      this.actionInProgress = false;
+    },
+    async unlockUser(user){
+      this.actionInProgress = true;
+      let operation = await this.$api.users.unlockUser(user.$userID);
+
+      if(operation.status == "success"){
+        user.status = this.$merchantDictionaries['userStatusEnum']['active'];
+      }
+      this.actionInProgress = false;
+    },
+    async resetUserPassword(userID){
+      this.actionInProgress = true;
+      let operation = await this.$api.users.resetUserPassword(userID);
+      this.actionInProgress = false;
     }
   }
 };

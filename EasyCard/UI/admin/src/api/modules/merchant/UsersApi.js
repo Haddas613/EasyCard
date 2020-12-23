@@ -30,6 +30,18 @@ export default class UsersApi {
         return this.base.post(this.usersUrl + `/invite`, data);
     }
 
+    async lockUser(userID){
+        return this.base.post(this.usersUrl + `/${userID}/lock`);
+    }
+
+    async unlockUser(userID){
+        return this.base.post(this.usersUrl + `/${userID}/unlock`);
+    }
+
+    async resetUserPassword(userID){
+        return this.base.post(this.usersUrl + `/${userID}/resetPassword`);
+    }
+
     async unlinkUserFromMerchant(userID, merchantID){
         return this.base.delete(this.usersUrl + `/${userID}/unlinkFromMerchant/${merchantID}`);
     }
