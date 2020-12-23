@@ -163,14 +163,14 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
-import CreditCardSecureDetails from "./CreditCardSecureDetailsForm";
+import CreditCardSecureDetails from "./CreditCardSecureDetailsFields";
 import InstallmentDetails from "./InstallmentDetailsForm";
 
 export default {
   components: {
     CreditCardSecureDetails,
     InstallmentDetails,
-    DealDetails: () => import("../transactions/DealDetailsForm")
+    DealDetails: () => import("../transactions/DealDetailsFields")
   },
   name: "CreateTransactionForm",
   props: {

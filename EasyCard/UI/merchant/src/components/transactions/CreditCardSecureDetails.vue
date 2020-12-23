@@ -74,7 +74,7 @@ import ValidationRules from "../../helpers/validation-rules";
 
 export default {
   components: {
-    CreditCardSecureDetailsForm: () => import("./CreditCardSecureDetailsForm"),
+    CreditCardSecureDetailsFields: () => import("./CreditCardSecureDetailsFields"),
     EcDialog: () => import("../../components/ec/EcDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
     EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),

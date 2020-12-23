@@ -68,8 +68,8 @@ import { mapState } from "vuex";
 export default {
   components: {
     LangSwitcher: () => import("../../components/LanguageSwitcher"),
-    TerminalSettingsForm: () =>
-      import("../../components/settings/TerminalSettingsForm")
+    TerminalSettingsFields: () =>
+      import("../../components/settings/TerminalSettingsFields")
   },
   data() {
     return {

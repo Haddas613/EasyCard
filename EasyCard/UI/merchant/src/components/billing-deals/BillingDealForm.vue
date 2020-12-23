@@ -216,7 +216,7 @@
       <v-col cols="12">
         <v-switch v-model="switchIssueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
         <div v-if="switchIssueDocument">
-          <invoice-details-form ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-form>
+          <invoice-details-fields ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
         </div>
       </v-col>
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
@@ -239,7 +239,7 @@ import itemPricingService from "../../helpers/item-pricing";
 
 export default {
   components: {
-    DealDetails: () => import("../transactions/DealDetailsForm"),
+    DealDetails: () => import("../transactions/DealDetailsFields"),
     BillingScheduleForm: () => import("./BillingScheduleForm"),
     BillingScheduleString: () => import("./BillingScheduleString"),
     EcDialog: () => import("../ec/EcDialog"),
@@ -251,7 +251,7 @@ export default {
     CustomerDialogInvoker: () => import("../dialog-invokers/CustomerDialogInvoker"),
     NumpadDialogInvoker: () => import("../dialog-invokers/NumpadDialogInvoker"),
     Basket: () => import("../misc/Basket"),
-    InvoiceDetailsForm: () => import("../invoicing/InvoiceDetailsForm"),
+    InvoiceDetailsFields: () => import("../invoicing/InvoiceDetailsFields"),
     
   },
   props: {

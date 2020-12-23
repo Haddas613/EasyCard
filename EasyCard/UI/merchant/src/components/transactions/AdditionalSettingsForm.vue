@@ -34,7 +34,7 @@
 
         <v-switch v-model="switchIssueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
         <div v-if="switchIssueDocument">
-          <invoice-details-form ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-form>
+          <invoice-details-fields ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
         </div>
       </v-form>
     </v-card-text>
@@ -51,8 +51,8 @@ import { mapState } from "vuex";
 export default {
   components: {
     InstallmentDetails: () => import("./InstallmentDetailsForm"),
-    DealDetails: () => import("../transactions/DealDetailsForm"),
-    InvoiceDetailsForm: () => import("../invoicing/InvoiceDetailsForm"),
+    DealDetails: () => import("../transactions/DealDetailsFields"),
+    InvoiceDetailsFields: () => import("../invoicing/InvoiceDetailsFields"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
   },
   props: {

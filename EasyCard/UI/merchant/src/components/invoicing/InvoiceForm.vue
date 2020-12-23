@@ -36,7 +36,7 @@
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
         ></deal-details>
 
-        <invoice-details-form ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-form>
+        <invoice-details-fields ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
       </v-form>
     </v-card-text>
     <v-card-actions class="px-2">
@@ -52,8 +52,8 @@ import { mapState } from "vuex";
 export default {
   components: {
     InstallmentDetails: () => import("../transactions/InstallmentDetailsForm"),
-    DealDetails: () => import("../transactions/DealDetailsForm"),
-    InvoiceDetailsForm: () => import("./InvoiceDetailsForm"),
+    DealDetails: () => import("../transactions/DealDetailsFields"),
+    InvoiceDetailsFields: () => import("./InvoiceDetailsFields"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     EcDialog: () => import("../../components/ec/EcDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),

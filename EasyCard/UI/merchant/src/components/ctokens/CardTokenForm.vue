@@ -9,12 +9,12 @@
           :label="$t('Email')"
           outlined
         ></v-text-field>
-        <credit-card-secure-details-form
+        <credit-card-secure-details-fields
           :key="customer != null"
           :data="model"
           :tokens="customerTokens"
           ref="ccsecuredetailsform"
-        ></credit-card-secure-details-form>
+        ></credit-card-secure-details-fields>
       </v-form>
     </v-card-text>
     <v-card-actions v-if="showActions">
@@ -41,11 +41,11 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
-import CreditCardSecureDetailsForm from "../transactions/CreditCardSecureDetailsForm";
+import CreditCardSecureDetailsFields from "../transactions/CreditCardSecureDetailsFields";
 
 export default {
   components: {
-    CreditCardSecureDetailsForm
+    CreditCardSecureDetailsFields
   },
   props: {
     data: {
