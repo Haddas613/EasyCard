@@ -14,6 +14,7 @@ using IdentityServer.Security.Auditing;
 using IdentityServer.Services;
 using IdentityServer4;
 using IdentityServer4.Validation;
+using Merchants.Api.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +31,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Shared.Api;
+using Shared.Helpers;
 using Shared.Helpers.Email;
 using Shared.Helpers.Security;
 using SharedApi = Shared.Api;
@@ -213,6 +215,20 @@ namespace IdentityServer
             });
 
             services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();
+
+            services.Configure<MerchantsApiClientConfig>(Configuration.GetSection("ApiConfig"));
+            services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
+
+            services.AddSingleton<IMerchantsApiClient, MerchantsApiClient>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
+                var apiCfg = serviceProvider.GetRequiredService<IOptions<MerchantsApiClientConfig>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<MerchantsApiClient>>();
+                var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
+
+                return new MerchantsApiClient(webApiClient, logger, tokenService, apiCfg);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
