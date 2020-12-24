@@ -36,10 +36,8 @@ namespace MerchantsApi.Tests
             var clientMockSetup = new UserManagementClientMockSetup();
             var controller = new UserApiController(merchantsFixture.TerminalsService, clientMockSetup.MockObj.Object, merchantsFixture.Mapper, null);  // TODO: mock
             var userEmail = Guid.NewGuid().ToString();
-            var terminal = (await merchantsFixture.MerchantsContext.Terminals.FirstOrDefaultAsync())
-                ?? throw new Exception("There is no terminals");
 
-            var actionResult = await controller.InviteUser(new InviteUserRequest { Email = userEmail, TerminalID = terminal.TerminalID });
+            var actionResult = await controller.InviteUser(new InviteUserRequest { Email = userEmail });
 
             var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             var responseData = response.Value as OperationResponse;

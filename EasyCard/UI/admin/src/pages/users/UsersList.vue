@@ -29,7 +29,7 @@
           <v-btn class="mx-1" color="success" outlined small :title="$t('Unlock')" :loading="actionInProgress" @click="unlockUser(item)" v-if="item.$status == 'Locked'">
             <v-icon small>mdi-lock-open</v-icon>
           </v-btn>
-          <v-btn class="mx-1" color="secondary" outlined small :title="$t('ResetPassword')" :loading="actionInProgress" @click="resetUserPassword(item.$userID)">
+          <v-btn class="mx-1" color="accent" outlined small :title="$t('ResetPassword')" :loading="actionInProgress" @click="resetUserPassword(item.$userID)">
             <v-icon small>mdi-lock-reset</v-icon>
           </v-btn>
         </template>

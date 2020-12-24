@@ -250,6 +250,9 @@ namespace Merchants.Business.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(true);
 
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()

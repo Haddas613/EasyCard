@@ -34,6 +34,7 @@ using Shared.Api;
 using Shared.Helpers;
 using Shared.Helpers.Email;
 using Shared.Helpers.Security;
+using AutoMapper;
 using SharedApi = Shared.Api;
 
 namespace IdentityServer
@@ -73,7 +74,8 @@ namespace IdentityServer
                      options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
 
                      // Note: do not use options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; - use [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)] attribute in place
-                 });
+                 })
+                 .AddRazorRuntimeCompilation(); //TODO: remove on release?
 
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
@@ -99,6 +101,8 @@ namespace IdentityServer
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
 
             services.Configure<CryptoSettings>(Configuration.GetSection("CryptoConfig"));
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));

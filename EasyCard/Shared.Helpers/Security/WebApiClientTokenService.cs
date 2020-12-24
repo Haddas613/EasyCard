@@ -29,6 +29,7 @@ namespace Shared.Helpers.Security
 
         public virtual async Task<TokenResponse> GetToken()
         {
+            //TODO: Remove?
             if (string.IsNullOrWhiteSpace(this.TokenEndpoint))
             {
                 await SemaphoreSlim.WaitAsync();

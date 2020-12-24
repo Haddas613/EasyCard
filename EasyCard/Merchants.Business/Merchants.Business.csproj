@@ -13,6 +13,8 @@
     <Compile Remove="Migrations\20200711151415_Billing2.Designer.cs" />
     <Compile Remove="Migrations\20200731122944_Consumer_ConsumerNationalID.cs" />
     <Compile Remove="Migrations\20200731122944_Consumer_ConsumerNationalID.Designer.cs" />
+    <Compile Remove="Migrations\20201224112240_Name.cs" />
+    <Compile Remove="Migrations\20201224112240_Name.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
