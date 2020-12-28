@@ -3,13 +3,17 @@
     <v-card class="mx-2 my-2">
       <v-card-title class="py-2">
         <v-row no-gutters class="py-0">
-          <v-col cols="9" class="d-flex">
+          <v-col cols="12" md="8" class="d-flex">
             <span class="pt-2 ecdgray--text subtitle-2 text-uppercase">{{$t('PersonalInformation')}}</span>
           </v-col>
-          <v-col cols="3" class="d-flex justify-end">
+          <v-col cols="12" md="4" class="d-flex justify-end">
+            <v-btn color="secondary">
+              <v-icon left class="body-1">mdi-account-convert</v-icon>
+              {{$t("LoginAsMerchant")}}
+            </v-btn>
             <v-btn
               text
-              class="primary--text px-0"
+              class="primary--text mx-1"
               link
               :to="{name: 'EditMerchant', params: { id: this.$route.params.id}}"
             >

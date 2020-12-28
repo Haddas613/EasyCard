@@ -262,6 +262,7 @@
   "Unlock": "Unlock",
   "Reset": "Reset",
   "ResetPassword": "Reset Password",
+  "LoginAsMerchant": "Login as Merchant",
 
   "--AUTH--": null,
   "Login": "Login",
