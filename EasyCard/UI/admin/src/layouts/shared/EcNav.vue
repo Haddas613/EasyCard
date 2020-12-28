@@ -136,11 +136,6 @@ export default {
               icon: "mdi-format-list-bulleted",
               text: "TerminalsList",
               to: "/admin/terminals/list"
-            },
-            {
-              icon: "mdi-plus",
-              text: "CreateTerminal",
-              to: "/admin/terminals/create"
             }
           ]
         },
