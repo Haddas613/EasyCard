@@ -20,7 +20,12 @@ namespace IdentityServer.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var model = new HomeIndexViewModel
+            {
+                IsAuthorized = User?.Identity.IsAuthenticated == true,
+                UserName = User.Identity?.Name
+            };
+            return View(model);
         }
 
         public IActionResult Privacy()

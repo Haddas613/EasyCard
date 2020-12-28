@@ -35,7 +35,7 @@ namespace Merchants.Api.Client
         {
             try
             {
-                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsApiAddress, "api/merchants", merchantRequest, BuildHeaders);
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsApiAddress, "api/merchant", merchantRequest, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
@@ -49,6 +49,19 @@ namespace Merchants.Api.Client
             try
             {
                 return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsApiAddress, "api/terminals", terminalRequest, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+            }
+        }
+
+        public async Task<OperationResponse> LinkUserToMerchant(LinkUserToMerchantRequest request)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsApiAddress, "api/user/linkToMerchant", request, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {

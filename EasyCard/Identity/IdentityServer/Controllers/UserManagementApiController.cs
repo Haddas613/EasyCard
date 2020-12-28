@@ -110,23 +110,22 @@ namespace IdentityServer.Controllers
                     return new BadRequestResult();
                 }
 
+                var allClaims = await userManager.GetClaimsAsync(user);
+
+                await userManager.AddClaim(allClaims, user, "extension_MerchantID", model.MerchantID);
+                await userManager.AddToRoleAsync(user, "Merchant");
+
                 logger.LogInformation("User created a new account");
             }
 
             //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ConfirmationEmailExpirationInHours));
 
-            var callbackUrl = Url.EmailConfirmationLink(code, Request.Scheme);
+            var callbackUrl = Url.EmailConfirmationLink(code, Request?.Scheme ?? "https");
             await emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-
-            var allClaims = await userManager.GetClaimsAsync(user);
-
-            await userManager.AddClaim(allClaims, user, "extension_MerchantID", model.MerchantID);
 
             //await _userManager.AddClaim(allClaims, user, "extension_FirstName", model.FirstName);
             //await _userManager.AddClaim(allClaims, user, "extension_LastName", model.LastName);
-
-            await userManager.AddToRoleAsync(user, "Merchant");
 
             var operationResult = new UserOperationResponse
             {

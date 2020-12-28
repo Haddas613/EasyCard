@@ -9,7 +9,7 @@ namespace Shared.Helpers
     {
         public static T TryConvert<T>(this WebApiClientErrorException webApiClientErrorEx, T defaultValue)
         {
-            if (webApiClientErrorEx.Response == null)
+            if (string.IsNullOrEmpty(webApiClientErrorEx.Response))
             {
                 return defaultValue;
             }

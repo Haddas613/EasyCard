@@ -141,8 +141,8 @@
   <data name="UserInvited" xml:space="preserve">
     <value>User Invited</value>
   </data>
-  <data name="UserLinkedToTerminal" xml:space="preserve">
-    <value>User Linked To Terminal</value>
+  <data name="UserLinkedToMerchant" xml:space="preserve">
+    <value>User linked to Merchant</value>
   </data>
   <data name="UserOperationFailed" xml:space="preserve">
     <value>User Operation Failed</value>

@@ -30,7 +30,7 @@ namespace IdentityServer.Models.Registration
         public string MarketingName { get; set; }
 
         [Required]
-        [StringLength(20)]
+        [StringLength(9, MinimumLength = 9)]
         public string BusinessID { get; set; }
 
         [Required]

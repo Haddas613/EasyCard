@@ -72,7 +72,7 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{userID}")]
+        [Route("{userID:guid}")]
         public async Task<ActionResult<UserResponse>> GetUser([FromRoute]Guid userID)
         {
             var userEntity = EnsureExists(await userManagementClient.GetUserByID(userID));
@@ -137,7 +137,7 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{userID}/lock")]
+        [Route("{userID:guid}/lock")]
         public async Task<ActionResult<OperationResponse>> LockUser([FromRoute]Guid userID)
         {
             var opResult = await userManagementClient.LockUser(userID);
@@ -151,7 +151,7 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{userID}/unlock")]
+        [Route("{userID:guid}/unlock")]
         public async Task<ActionResult<OperationResponse>> UnLockUser([FromRoute]Guid userID)
         {
             var opResult = await userManagementClient.UnLockUser(userID);
@@ -165,7 +165,7 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{userID}/resetPassword")]
+        [Route("{userID:guid}/resetPassword")]
         public async Task<ActionResult<OperationResponse>> ResetPasswordForUser([FromRoute]Guid userID)
         {
             var opResult = await userManagementClient.ResetPassword(userID);
@@ -178,9 +178,22 @@ namespace Merchants.Api.Controllers
             return Ok(opResult.Convert(correlationID: GetCorrelationID()));
         }
 
+        [HttpPost]
+        [Route("linkToMerchant")]
+        public async Task<ActionResult<OperationResponse>> LinkUserToMerchant(LinkUserToMerchantRequest request)
+        {
+            _ = EnsureExists(await userManagementClient.GetUserByID(request.UserID));
+
+            var model = mapper.Map<UserInfo>(request);
+
+            await merchantsService.LinkUserToMerchant(model, request.MerchantID);
+
+            return Ok(new OperationResponse { Message = Messages.UserLinkedToMerchant, Status = StatusEnum.Success });
+        }
+
         [HttpDelete]
-        [Route("{userID}/unlinkFromMerchant/{merchantID}")]
-        public async Task<ActionResult<OperationResponse>> UnlinkUserFromTerminal([FromRoute]Guid userID, [FromRoute]Guid merchantID)
+        [Route("{userID:guid}/unlinkFromMerchant/{merchantID}")]
+        public async Task<ActionResult<OperationResponse>> UnlinkUserFromMerchant([FromRoute]Guid userID, [FromRoute]Guid merchantID)
         {
             _ = EnsureExists(await userManagementClient.GetUserByID(userID));
 

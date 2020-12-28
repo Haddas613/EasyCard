@@ -1,13 +1,24 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@model HomeIndexViewModel
 
 <div class="text-center">
     <h1 class="display-4">Welcome to EasyCard</h1>
-    <p>
-        <a asp-action="Login" asp-controller="Account" class="btn btn-primary" name="button" value="login">Login</a>
-    </p>
-    <p>
-        <a asp-action="Index" asp-controller="Registration" class="btn btn-info">Register</a>
-    </p>
+    @if (!Model.IsAuthorized)
+    {
+        <p>
+            <a asp-action="Login" asp-controller="Account" class="btn btn-primary" name="button" value="login">Login</a>
+        </p>
+        <p>
+            <a asp-action="Index" asp-controller="Registration" class="btn btn-info">Register</a>
+        </p>
+    }
+    else
+    {
+        <p>You are logged in as <b>@Model.UserName</b></p>
+        <p>
+            <a asp-action="Logout" asp-controller="Account" class="btn btn-secondary">Logout</a>
+        </p>
+    }
 </div>

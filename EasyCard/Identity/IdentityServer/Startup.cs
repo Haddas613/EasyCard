@@ -208,7 +208,8 @@ namespace IdentityServer
             });
 
             services.AddScoped<IAuditLogger, AuditLogger>();
-            services.AddScoped<ITerminalApiKeyService, TerminalApiKeyService>();
+            services.AddScoped<ITerminalApiKeyService, TerminalApiKeyService>(); 
+            services.AddScoped<UserManageService, UserManageService>();
 
             // DI: request logging
 

@@ -133,11 +133,11 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User Linked To Terminal.
+        ///   Looks up a localized string similar to User linked to Merchant.
         /// </summary>
-        public static string UserLinkedToTerminal {
+        public static string UserLinkedToMerchant {
             get {
-                return ResourceManager.GetString("UserLinkedToTerminal", resourceCulture);
+                return ResourceManager.GetString("UserLinkedToMerchant", resourceCulture);
             }
         }
         

@@ -86,6 +86,7 @@ namespace Merchants.Api.Mapping
             CreateMap<UserTerminalMapping, UserSummary>();
             CreateMap<Business.Entities.User.UserInfo, UserSummary>();
             CreateMap<UserProfileDataResponse, Business.Entities.User.UserInfo>();
+            CreateMap<LinkUserToMerchantRequest, Business.Entities.User.UserInfo>();
         }
 
         private void RegisterSystemSettingsMappings()

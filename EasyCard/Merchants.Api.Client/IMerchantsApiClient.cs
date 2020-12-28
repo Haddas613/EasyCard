@@ -12,5 +12,7 @@ namespace Merchants.Api.Client
         Task<OperationResponse> CreateMerchant(MerchantRequest merchantRequest);
 
         Task<OperationResponse> CreateTerminal(TerminalRequest terminalRequest);
+
+        Task<OperationResponse> LinkUserToMerchant(LinkUserToMerchantRequest request);
     }
 }
