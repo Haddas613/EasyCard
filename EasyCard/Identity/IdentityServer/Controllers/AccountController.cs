@@ -440,25 +440,25 @@ namespace IdentityServer.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(string code = null)
         {
-            if (code == null)
-            {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
-            }
+            //if (code == null)
+            //{
+            //    return RedirectToAction(nameof(HomeController.Index), "Home");
+            //}
 
-            var userId = cryptoService.DecryptWithExpiration(code);
+            //var userId = cryptoService.DecryptWithExpiration(code);
 
-            if (userId == null)
-            {
-                logger.LogError($"Confirmation code expired or invalid");
-                return RedirectToAction(nameof(HomeController.Index), "Home");
-            }
+            //if (userId == null)
+            //{
+            //    logger.LogError($"Confirmation code expired or invalid");
+            //    return RedirectToAction(nameof(HomeController.Index), "Home");
+            //}
 
-            var user = await userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                logger.LogError($"Confirmation code is invalid");
-                return RedirectToAction(nameof(HomeController.Index), "Home");
-            }
+            //var user = await userManager.FindByIdAsync(userId);
+            //if (user == null)
+            //{
+            //    logger.LogError($"Confirmation code is invalid");
+            //    return RedirectToAction(nameof(HomeController.Index), "Home");
+            //}
 
             var model = new ResetPasswordViewModel { Code = code };
             return View(model);

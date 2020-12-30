@@ -183,6 +183,7 @@ export default {
     };
   },
   async mounted() {
+    //TODO: check profile roles
     this.userName = !!this.$oidc ? (await this.$oidc.getUserProfile()).name : null;
   },
   computed: {
