@@ -20,10 +20,7 @@
       >
         <template v-slot:item.actions="{ item }">
           <v-btn color="primary" outlined small link :to="{name: 'Merchant', params: {id: item.$merchantID}}">
-            <v-icon small>mdi-eye</v-icon>
-          </v-btn>
-          <v-btn class="mx-1" color="secondary" outlined small link :to="{name: 'EditMerchant', params: {id: item.$merchantID}}">
-            <v-icon small>mdi-pencil</v-icon>
+            <re-icon small>mdi-arrow-right</re-icon>
           </v-btn>
           <!-- <router-link class="text-decoration-none" link :to="{name: 'EditMerchant', params: {id: item.$merchantID}}">
               <v-icon small color="secondary" class="mr-2">mdi-pencil</v-icon>
@@ -40,7 +37,9 @@
 
 <script>
 export default {
-  components: {},
+  components: {
+    ReIcon: () => import("../../components/misc/ResponsiveIcon")
+  },
   data() {
     return {
       totalAmount: 0,

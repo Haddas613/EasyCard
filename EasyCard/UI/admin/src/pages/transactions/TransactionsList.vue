@@ -31,7 +31,7 @@
         </template> 
         <template v-slot:item.actions="{ item }">
           <v-btn color="primary" outlined small link :to="{name: 'Transaction', params: {id: item.$paymentTransactionID}}">
-            <v-icon small>mdi-eye</v-icon>
+            <re-icon small>mdi-arrow-right</re-icon>
           </v-btn>
         </template>    
       </v-data-table>
@@ -40,11 +40,12 @@
 </template>
 
 <script>
-import TransactionsFilter from '../../components/transactions/TransactionsFilter';
-
 export default {
   name: "TransactionsList",
-  components: { TransactionsFilter },
+  components: { 
+    TransactionsFilter : () => import("../../components/transactions/TransactionsFilter"), 
+    ReIcon: () => import("../../components/misc/ResponsiveIcon") 
+  },
   data() {
     return {
       totalAmount: 0,
