@@ -86,6 +86,7 @@
   "@TransactionsCount": "@count Transactions",
   "SelectItems": "Select Items",
   "AddItems": "Add Items",
+  "@MaxSelectionCount": "You can only select up to @count items",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
