@@ -64,6 +64,8 @@
   "CreateUser": "Create User",
   "Users": "Users",
   "UsersList": "Users List",
+  "Checkout": "Checkout",
+  "CheckoutRedirectUrls": "Checkout Redirect URLs",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -93,6 +95,7 @@
   "@TransactionsCount": "@count Transactions",
   "SelectItems": "Select Items",
   "AddItems": "Add Items",
+  "@RedirectURLNumber": "Redirect URL #@number",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -230,6 +233,8 @@
   "IntegrationType": "Integration Type",
   "IntegrationName": "Integration Name",
   "InviteMessage": "Invite Message",
+  "MerchantLogoURL": "Merchant Logo URL",
+  "RedirectURL": "Redirect URL",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

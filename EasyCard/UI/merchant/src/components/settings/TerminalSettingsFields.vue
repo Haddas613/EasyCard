@@ -245,6 +245,16 @@
           outlined
         ></v-text-field>
       </v-col>
+      <v-col cols="12" md="7">
+        <v-text-field
+          v-model="model.paymentRequestSettings.merchantLogo"
+          :label="$t('MerchantLogoURL')"
+          outlined
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="5">
+        <img class="mt-1" v-if="model.paymentRequestSettings.merchantLogo" v-bind:src="model.paymentRequestSettings.merchantLogo" height="48">
+      </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" class="subtitle-2 black--text pb-3">
@@ -272,6 +282,40 @@
         ></v-switch>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12" class="subtitle-2 black--text">
+        {{$t("CheckoutRedirectUrls")}}
+        <v-divider class="pt-1"></v-divider>
+      </v-col>
+      <v-col cols="12" class="d-flex justify-end py-0">
+          <v-btn color="success" small @click="addRedirectUrl()">
+            <v-icon left class="body-1">mdi-plus-circle</v-icon>
+            {{$t('Add')}}
+          </v-btn>
+      </v-col>
+      <v-col cols="12">
+        <ec-list color="ecbg"
+            :items="model.checkoutSettings.redirectUrls" 
+            v-if="model.checkoutSettings.redirectUrls && model.checkoutSettings.redirectUrls.length > 0"
+            stretch 
+            dense>
+          <template v-slot:left="{ index }">
+            <v-col cols="12">
+              <v-text-field 
+                v-model="model.checkoutSettings.redirectUrls[index]" 
+                outlined 
+                :label="$t('@RedirectURLNumber').replace('@number', index + 1)"
+                :rules="[vr.primitives.required]"></v-text-field>
+            </v-col>
+          </template>
+          <template v-slot:append="{ item }">
+            <v-btn class="mb-8" icon @click="deleteRedirectUrl(item)">
+              <v-icon class="red--text">mdi-delete</v-icon>
+            </v-btn>
+          </template>
+        </ec-list>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -279,6 +323,9 @@
 import ValidationRules from "../../helpers/validation-rules";
 
 export default {
+  components: {
+    EcList: () => import("../ec/EcList"),
+  },
   props: {
     data: {
       type: Object,
@@ -350,6 +397,7 @@ export default {
       result.settings.vatRate = result.settings.vatRatePercent
         ? (result.settings.vatRatePercent / 100).toFixed(2)
         : 0;
+        
       return result;
     },
     async resetPrivateKey() {
@@ -380,6 +428,22 @@ export default {
     },
     emitUpdate() {
       this.$emit("update", this.model);
+    },
+    deleteRedirectUrl(item){
+      let idx = this.model.checkoutSettings.redirectUrls.findIndex(i => i == item);
+      if(idx === -1) { return ;}
+
+      this.model.checkoutSettings.redirectUrls.splice(idx, 1);
+    },
+    addRedirectUrl(){
+      if(!this.model.checkoutSettings.redirectUrls){
+        this.model.checkoutSettings.redirectUrls = [];
+      }else{
+        let idx = this.model.checkoutSettings.redirectUrls.findIndex(i => !i);
+        if(idx !== -1) { return ;}
+      }
+
+      this.model.checkoutSettings.redirectUrls.push("");
     }
   }
 };
