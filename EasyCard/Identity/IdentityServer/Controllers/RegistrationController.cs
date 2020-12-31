@@ -63,7 +63,6 @@ namespace IdentityServer.Controllers
                 return View(nameof(Index));
             }
 
-            //TODO: 1 create merchant; 2 create user; 3 map merchant to user
             var merchantRequest = mapper.Map<MerchantRequest>(model);
             var merchantResult = await merchantsApiClient.CreateMerchant(merchantRequest);
 

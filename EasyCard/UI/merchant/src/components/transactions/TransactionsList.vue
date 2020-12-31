@@ -4,6 +4,7 @@
       <template v-slot:prepend="{ item }" v-if="selectable">
          <v-checkbox
             v-model="item.selected"
+            @change="itemSelected(item)"
          ></v-checkbox>
       </template>
       <template v-slot:prepend v-else>
@@ -67,6 +68,19 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    selectLimit: {
+      type: Number,
+      default: 0
+    }
+  },
+  methods: {
+    itemSelected(item) {
+      if(!this.selectLimit){ return; }
+      if(this.lodash.countBy(this.data, d => d.selected).true > this.selectLimit){
+        this.$toasted.show(this.$t("@MaxSelectionCount").replace("@count", this.selectLimit), { type: "error" });
+        item.selected = false;
+      }
     }
   },
   data() {
@@ -85,6 +99,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

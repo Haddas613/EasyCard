@@ -60,7 +60,7 @@
     </v-card>
     <v-card width="100%" flat :loading="!transactions">
       <v-card-text class="px-0">
-        <transactions-list :key="loading" :transactions="transactions" :selectable="transactionsFilter.notTransmitted" ref="transactionsList"></transactions-list>
+        <transactions-list :key="loading" :transactions="transactions" :select-limit="selectLimit" :selectable="transactionsFilter.notTransmitted" ref="transactionsList"></transactions-list>
         <v-flex class="text-center" v-if="canLoadMore">
           <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
         </v-flex>
@@ -112,7 +112,8 @@ export default {
       showDialog: this.showFiltersDialog,
       datePeriod: null,
       numberOfRecords: 0,
-      selectAll: false
+      selectAll: false,
+      selectLimit: 10
     };
   },
   methods: {
@@ -170,6 +171,11 @@ export default {
       if(!this.transactionsFilter.notTransmitted){
         return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), { type: "error" });
       }
+
+      if(this.transactions.length > this.selectLimit){
+        return this.$toasted.show(this.$t("@MaxSelectionCount").replace("@count", this.selectLimit), { type: "error" });
+      }
+
       this.selectAll = !this.selectAll;
       for(var i of this.transactions){
           this.$set(i, 'selected', this.selectAll);

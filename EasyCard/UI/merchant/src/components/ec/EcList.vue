@@ -5,14 +5,14 @@
         <slot v-bind:item="item" v-bind:index="index" name="prepend"></slot>
       </v-list-item-action>
       <v-list-item-content>
-        <v-row no-gutters style="width:50%;" :class="{'col-reverse' : $vuetify.breakpoint.smAndDown}">
+        <v-row no-gutters :class="{'col-reverse' : $vuetify.breakpoint.smAndDown, 'w50': !stretch}">
           <slot v-bind:item="item" v-bind:index="index" name="left"></slot>
         </v-row>
-        <v-row no-gutters style="width:50%;" :class="{'col-reverse' : $vuetify.breakpoint.smAndDown}">
+        <v-row no-gutters :class="{'col-reverse' : $vuetify.breakpoint.smAndDown, 'w50': !stretch}" v-if="hasSlot('right')">
           <slot v-bind:item="item" v-bind:index="index" name="right"></slot>
         </v-row>
       </v-list-item-content>
-      <v-list-item-action v-if="hasSlot('append')" v-bind:class="{'col-unset': $vuetify.breakpoint.mdAndUp}">
+      <v-list-item-action v-bind:class="{'col-unset': $vuetify.breakpoint.mdAndUp}">
         <slot v-bind:item="item" v-bind:index="index" name="append"></slot>
       </v-list-item-action>
     </v-list-item>
@@ -44,6 +44,10 @@ export default {
     color: {
       type: String,
       default: "white"
+    },
+    stretch: {
+      type: Boolean, 
+      default: false
     }
   },
   methods: {
@@ -66,5 +70,8 @@ export default {
 }
 .dashed:not(:last-child) {
   border-bottom: 1px solid var(--v-eclgray-base);
+}
+.w50{
+  width:50%;
 }
 </style>
