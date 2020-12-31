@@ -77,7 +77,7 @@ export default {
     }
   },
   async mounted () {
-    let templates = (await this.$api.terminals.getTerminalTemplates()).data || [];
+    let templates = (await this.$api.terminalTemplates.get()).data || [];
 
     if(templates && templates.length > 0){
       this.terminalTemplates = templates;

@@ -51,10 +51,6 @@ export default class TerminalsApi {
         return this.base.post(this.terminalsUrl + `/${terminalID}/resetSharedApiKey`);
     }
 
-    async getTerminalTemplates(params) {
-        return await this.base.get(this.terminalsUrl + '/templates', params);
-    }
-
     async getAvailableIntegrations(){
         return await this.base.get(this.terminalsUrl + '/availableIntegrations');
     }

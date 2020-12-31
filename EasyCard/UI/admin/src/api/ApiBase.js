@@ -10,6 +10,7 @@ import InvoicingApi from './modules/transactions/InvoicingApi';
 import PaymentRequestsApi from './modules/transactions/PaymentRequestsApi';
 import MerchantsApi from './modules/merchant/MerchantsApi';
 import UsersApi from './modules/merchant/UsersApi';
+import TerminalTemplatesApi from './modules/merchant/TerminalTemplatesApi';
 
 class ApiBase {
     constructor() {
@@ -25,6 +26,7 @@ class ApiBase {
         this.invoicing = new InvoicingApi(this);
         this.paymentRequests = new PaymentRequestsApi(this);
         this.users = new UsersApi(this);
+        this.terminalTemplates = new TerminalTemplatesApi(this);
     }
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */
@@ -34,7 +36,6 @@ class ApiBase {
         if (!access_token) {
             Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error' });
             // this.oidc.signOut();
-            console.log(this.oidc)
             return null;
         }
         if (params) {

@@ -179,6 +179,7 @@ namespace Merchants.Api
             services.AddDbContext<MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IMerchantsService, MerchantsService>();
             services.AddScoped<ITerminalsService, TerminalsService>();
+            services.AddScoped<ITerminalTemplatesService, TerminalTemplatesService>();
             services.AddScoped<ISystemSettingsService, SystemSettingsService>();
 
             services.AddAutoMapper(typeof(Startup));
