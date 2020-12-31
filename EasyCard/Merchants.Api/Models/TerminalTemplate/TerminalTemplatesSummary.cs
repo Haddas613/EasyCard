@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Merchants.Api.Models.Terminal
+namespace Merchants.Api.Models.TerminalTemplate
 {
     public class TerminalTemplatesSummary
     {
-        public Guid TerminalTemplateID { get; set; }
+        public long TerminalTemplateID { get; set; }
 
         public string Label { get; set; }
+
+        public DateTime? Created { get; set; }
     }
 }

@@ -68,20 +68,6 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
-        [Route("templates")]
-        public async Task<ActionResult<SummariesResponse<TerminalTemplatesSummary>>> GetTerminalTemplates()// TODO: Add filters & pagination
-        {
-            var response = new SummariesResponse<TerminalTemplatesSummary> { NumberOfRecords = 1 };
-
-            response.Data = new List<TerminalTemplatesSummary>
-            {
-                new TerminalTemplatesSummary { Label = "default", TerminalTemplateID = Guid.NewGuid() }
-            };
-
-            return Ok(response);
-        }
-
-        [HttpGet]
         [Route("availableIntegrations")]
         public async Task<ActionResult<Dictionary<string, IEnumerable<ExternalSystem>>>> GetAvailableIntegrations()
         {

@@ -51,6 +51,8 @@ namespace Merchants.Business.Data
 
         public DbSet<Terminal> Terminals { get; set; }
 
+        public DbSet<TerminalTemplate> TerminalTemplates { get; set; }
+
         public DbSet<TerminalExternalSystem> TerminalExternalSystems { get; set; }
 
         public DbSet<UserTerminalMapping> UserTerminalMappings { get; set; }
@@ -82,6 +84,7 @@ namespace Merchants.Business.Data
         {
             modelBuilder.ApplyConfiguration(new MerchantConfiguration());
             modelBuilder.ApplyConfiguration(new TerminalConfiguration());
+            modelBuilder.ApplyConfiguration(new TerminalTemplateConfiguration());
             modelBuilder.ApplyConfiguration(new FeatureConfiguration());
             modelBuilder.ApplyConfiguration(new TerminalExternalSystemConfiguration());
             modelBuilder.ApplyConfiguration(new UserTerminalMappingConfiguration());
@@ -155,6 +158,31 @@ namespace Merchants.Business.Data
                 builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
                 builder.Property(b => b.SharedApiKey).IsRequired(false).HasMaxLength(64);
+            }
+        }
+
+        internal class TerminalTemplateConfiguration : IEntityTypeConfiguration<TerminalTemplate>
+        {
+            public void Configure(EntityTypeBuilder<TerminalTemplate> builder)
+            {
+                builder.ToTable("TerminalTemplate");
+
+                builder.HasKey(b => b.TerminalTemplateID);
+                builder.Property(b => b.TerminalTemplateID).ValueGeneratedOnAdd();
+
+                builder.Property(p => p.UpdateTimestamp).IsRowVersion();
+
+                builder.Property(b => b.Label).IsRequired(true).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(p => p.Settings).HasColumnName("Settings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.BillingSettings).HasColumnName("BillingSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.CheckoutSettings).HasColumnName("CheckoutSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.PaymentRequestSettings).HasColumnName("PaymentRequestSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
             }
         }
 
