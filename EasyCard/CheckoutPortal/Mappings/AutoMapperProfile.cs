@@ -23,6 +23,16 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.RedirectUrl, o => o.MapFrom(d => d.RedirectUrl))
                 .ForMember(d => d.ApiKey, o => o.MapFrom(d => d.ApiKey))
                 .ForMember(d => d.PaymentRequest, o => o.MapFrom(d => d.PaymentRequest))
+
+                .ForMember(d => d.Amount, o => o.MapFrom(d => d.Amount))
+                .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
+                .ForMember(d => d.Description, o => o.MapFrom(d => d.Description))
+                .ForMember(d => d.Email, o => o.MapFrom(d => d.Email))
+                .ForMember(d => d.Name, o => o.MapFrom(d => d.Name))
+                .ForMember(d => d.NationalID, o => o.MapFrom(d => d.NationalID))
+                .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.ConsumerID))
+                .ForMember(d => d.Phone, o => o.MapFrom(d => d.Phone))
+
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<PaymentRequestInfo, ChargeViewModel>()

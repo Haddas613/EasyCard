@@ -110,5 +110,14 @@ namespace Transactions.Api.Models.Transactions
         /// Invoice details
         /// </summary>
         public InvoiceDetails InvoiceDetails { get; set; }
+
+        public void Calculate()
+        {
+            if (NetTotal == 0)
+            {
+                NetTotal = Math.Round(TransactionAmount.GetValueOrDefault() / (1m + VATRate), 2, MidpointRounding.AwayFromZero);
+                VATTotal = TransactionAmount.GetValueOrDefault() - NetTotal;
+            }
+        }
     }
 }

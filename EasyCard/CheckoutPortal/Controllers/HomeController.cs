@@ -62,6 +62,8 @@ namespace CheckoutPortal.Controllers
                 return View("Index", request);
             }
 
+            Shared.Api.Models.OperationResponse result = null;
+
             if (checkoutConfig.PaymentRequest != null)
             {
                 var mdel = new Transactions.Api.Models.Transactions.PRCreateTransactionRequest() { CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails() };
@@ -72,7 +74,7 @@ namespace CheckoutPortal.Controllers
                 mapper.Map(checkoutConfig.PaymentRequest, mdel);
                 mapper.Map(checkoutConfig.Settings, mdel);
 
-                var result = await transactionsApiClient.CreateTransactionPR(mdel);
+                result = await transactionsApiClient.CreateTransactionPR(mdel);
                 if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
                 {
                     return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message });
@@ -90,7 +92,9 @@ namespace CheckoutPortal.Controllers
                 mapper.Map(request, mdel.DealDetails);
                 mapper.Map(checkoutConfig.Settings, mdel);
 
-                var result = await transactionsApiClient.CreateTransaction(mdel);
+                mdel.Calculate();
+
+                result = await transactionsApiClient.CreateTransaction(mdel);
                 if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
                 {
                     return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message, RequestId = HttpContext.TraceIdentifier });
@@ -103,7 +107,9 @@ namespace CheckoutPortal.Controllers
             }
             else
             {
-                return Redirect(request.RedirectUrl); // TODO: add transaction ID
+                var redirectUrl = UrlHelper.BuildUrl(request.RedirectUrl, null, new { transactionID = result.EntityUID });
+
+                return Redirect(redirectUrl);
             }
         }
 
