@@ -24,6 +24,7 @@ namespace Transactions.Api.Mapping
         {
             CreateMap<TerminalSettings, TerminalCheckoutCombinedSettings>();
             CreateMap<TerminalCheckoutSettings, TerminalCheckoutCombinedSettings>();
+            CreateMap<TerminalPaymentRequestSettings, TerminalCheckoutCombinedSettings>();
 
             CreateMap<Merchant, TerminalCheckoutCombinedSettings>()
                 .ForMember(d => d.MarketingName, o => o.MapFrom(d => string.IsNullOrWhiteSpace(d.MarketingName) ? d.BusinessName : d.MarketingName))

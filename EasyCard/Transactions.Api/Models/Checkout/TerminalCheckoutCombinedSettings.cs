@@ -15,5 +15,9 @@ namespace Transactions.Api.Models.Checkout
         public string MarketingName { get; set; }
 
         public Guid? TerminalID { get; set; }
+
+        public decimal? VATRate { get; set; }
+
+        public string MerchantLogo { get; set; }
     }
 }

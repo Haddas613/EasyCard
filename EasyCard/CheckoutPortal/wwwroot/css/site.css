@@ -12,6 +12,10 @@ a {
   color: #0366d6;
 }
 
+.navbar-dark {
+    background-color: #0f99c7;
+}
+
 /*.btn-primary {
   color: #fff;
   background-color: #1b6ec2;

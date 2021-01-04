@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var viewModel = ViewBag.MainLayoutViewModel as Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -6,13 +10,25 @@
     <title>@ViewData["Title"] - EasyCard Checkout Portal</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    @if (viewModel?.CustomCssReference != null)
+    {
+        <link rel="stylesheet" href="@viewModel?.CustomCssReference" />
+    }
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand">
-                    <img src="~/img/logo.png" alt="EasyCard" style="" />
+                    @if (viewModel?.MerchantLogo != null)
+                    {
+                        <img src="@viewModel?.MerchantLogo" alt="EasyCard" style="" />
+                    }
+                    else
+                    {
+                        <img src="~/img/logo.png" alt="EasyCard" style="" />
+                    }
+                    <span>@viewModel?.MarketingName</span>
                 </a>
             </div>
         </nav>

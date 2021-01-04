@@ -60,8 +60,15 @@ namespace Transactions.Api.Controllers
 
             var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.SharedApiKey == apiKeyB).FirstOrDefaultAsync());
 
+            // TODO: caching
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            // merge system settings with terminal settings
+            mapper.Map(systemSettings, terminal);
+
             response.Settings = new TerminalCheckoutCombinedSettings();
 
+            mapper.Map(terminal.PaymentRequestSettings, response.Settings);
             mapper.Map(terminal.CheckoutSettings, response.Settings);
             mapper.Map(terminal.Settings, response.Settings);
             mapper.Map(terminal.Merchant, response.Settings);

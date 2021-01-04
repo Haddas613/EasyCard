@@ -41,11 +41,17 @@ namespace CheckoutPortal.Controllers
         {
             var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl);
 
+            // TODO: add merchant site origin instead of unsafe-inline
+            Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
+
             var model = new ChargeViewModel();
 
             // TODO: consumer detals by consumerID
             mapper.Map(request, model);
             mapper.Map(checkoutConfig.PaymentRequest, model);
+            mapper.Map(checkoutConfig.Settings, model);
+
+            ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
 
             return View(model);
         }
@@ -57,10 +63,15 @@ namespace CheckoutPortal.Controllers
         {
             var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl);
 
+            // TODO: add merchant site origin instead of unsafe-inline
+            Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
+
             if (!ModelState.IsValid)
             {
                 return View("Index", request);
             }
+
+            ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
 
             Shared.Api.Models.OperationResponse result = null;
 
@@ -97,7 +108,15 @@ namespace CheckoutPortal.Controllers
                 result = await transactionsApiClient.CreateTransaction(mdel);
                 if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
                 {
-                    return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message, RequestId = HttpContext.TraceIdentifier });
+                    ModelState.AddModelError("Charge", result.Message);
+                    foreach (var err in result.Errors)
+                    {
+                        ModelState.AddModelError(err.Code, err.Description);
+                    }
+
+                    return View("Index", request);
+
+                    //return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message, RequestId = HttpContext.TraceIdentifier });
                 }
             }
 

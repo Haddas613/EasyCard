@@ -95,6 +95,9 @@ namespace CheckoutPortal
             app.UseHsts();
             //}
             app.UseHttpsRedirection();
+
+            
+
             app.UseStaticFiles();
 
             app.UseRouting();
