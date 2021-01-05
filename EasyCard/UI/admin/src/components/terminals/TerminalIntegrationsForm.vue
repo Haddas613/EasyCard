@@ -152,6 +152,9 @@ export default {
     async deleteIntegration(integrationID){
       await this.$api.terminals.deleteTerminalExternalSystem(this.terminal.terminalID, integrationID);
       let idx = this.lodash.findIndex(this.model.integrations, i => i.externalSystemID == integrationID);
+
+      let type = this.lodash.find(this.integrationTypes, t => t.name == this.model.integrations[idx].externalSystem.type);
+      type.disabled = false;
       this.model.integrations.splice(idx, 1);
     }
   }
