@@ -10,6 +10,6 @@ namespace Merchants.Business.Services
 {
     public interface ITerminalTemplatesService : IServiceBase<TerminalTemplate, long>
     {
-        public IQueryable<TerminalTemplate> GetTerminals();
+        public IQueryable<TerminalTemplate> GetQuery();
     }
 }

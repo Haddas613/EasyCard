@@ -4,6 +4,7 @@ using Merchants.Api.Models;
 using Merchants.Api.Models.Merchant;
 using Merchants.Api.Models.System;
 using Merchants.Api.Models.Terminal;
+using Merchants.Api.Models.TerminalTemplate;
 using Merchants.Api.Models.User;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.System;
@@ -67,6 +68,19 @@ namespace Merchants.Api.Mapping
               .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
             CreateMap<SystemBillingSettings, TerminalBillingSettings>()
               .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
+
+            CreateMap<TerminalTemplate, TerminalTemplateSummary>();
+            CreateMap<TerminalTemplateRequest, TerminalTemplate>()
+               .ForMember(m => m.Created, o => o.MapFrom((src, tgt) => tgt.Created = DateTime.UtcNow));
+
+            CreateMap<SystemSettings, TerminalTemplateResponse>()
+                .ForMember(d => d.Settings, o => o.MapFrom(d => d.Settings))
+                .ForMember(d => d.BillingSettings, o => o.MapFrom(d => d.BillingSettings))
+                .ForMember(d => d.PaymentRequestSettings, o => o.MapFrom(d => d.PaymentRequestSettings))
+                .ForMember(d => d.CheckoutSettings, o => o.MapFrom(d => d.CheckoutSettings))
+                .ForMember(d => d.InvoiceSettings, o => o.MapFrom(d => d.InvoiceSettings))
+                .ForAllOtherMembers(d => d.Ignore());
+
         }
 
         private void RegisterMerchantMappings()

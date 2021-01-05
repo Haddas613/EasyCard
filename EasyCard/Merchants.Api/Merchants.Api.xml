@@ -19,6 +19,13 @@
             <param name="model"></param>
             <returns></returns>
         </member>
+        <member name="M:Merchants.Api.Controllers.TerminalTemplatesApiController.CreateTerminalTemplate(Merchants.Api.Models.TerminalTemplate.TerminalTemplateRequest)">
+            <summary>
+            Add terminal template basic information
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="T:Merchants.Api.Models.Merchant.MerchantSummaryResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

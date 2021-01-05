@@ -136,6 +136,11 @@ export default {
               icon: "mdi-format-list-bulleted",
               text: "TerminalsList",
               to: "/admin/terminals/list"
+            },
+            {
+              icon: "mdi-format-list-bulleted-type",
+              text: "TerminalTemplates",
+              to: "/admin/terminal-templates/list"
             }
           ]
         },

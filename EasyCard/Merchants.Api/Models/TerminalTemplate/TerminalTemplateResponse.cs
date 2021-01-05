@@ -1,37 +1,38 @@
-﻿using Merchants.Business.Entities.Merchant;
-using Merchants.Business.Entities.User;
+﻿using Merchants.Api.Models.Merchant;
+using Merchants.Api.Models.Terminal;
+using Merchants.Api.Models.User;
 using Merchants.Shared.Enums;
 using Merchants.Shared.Models;
-using Shared.Business;
-using Shared.Business.Security;
-using Shared.Helpers;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Merchants.Business.Entities.Terminal
+namespace Merchants.Api.Models.TerminalTemplate
 {
-    public class TerminalTemplate : IEntityBase<long>
+    public class TerminalTemplateResponse
     {
-        public TerminalTemplate()
+        public TerminalTemplateResponse()
         {
             Settings = new TerminalSettings();
             BillingSettings = new TerminalBillingSettings();
             InvoiceSettings = new TerminalInvoiceSettings();
             PaymentRequestSettings = new TerminalPaymentRequestSettings();
             CheckoutSettings = new TerminalCheckoutSettings();
-            Integrations = new HashSet<TerminalExternalSystem>();
-            EnabledFeatures = new HashSet<Feature>();
-            Created = DateTime.UtcNow;
         }
 
         public long TerminalTemplateID { get; set; }
 
         public string Label { get; set; }
 
-        public byte[] UpdateTimestamp { get; set; }
+        public bool Active { get; set; }
 
         public DateTime? Created { get; set; }
+
+        public IEnumerable<TerminalExternalSystemDetails> Integrations { get; set; }
+
+        public IEnumerable<FeatureResponse> EnabledFeatures { get; set; }
 
         public TerminalSettings Settings { get; set; }
 
@@ -42,16 +43,5 @@ namespace Merchants.Business.Entities.Terminal
         public TerminalPaymentRequestSettings PaymentRequestSettings { get; set; }
 
         public TerminalCheckoutSettings CheckoutSettings { get; set; }
-
-        public virtual IEnumerable<TerminalExternalSystem> Integrations { get; set; }
-
-        public virtual IEnumerable<Feature> EnabledFeatures { get; set; }
-
-        public bool Active { get; set; }
-
-        public long GetID()
-        {
-            return TerminalTemplateID;
-        }
     }
 }

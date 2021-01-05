@@ -106,6 +106,15 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Terminal Template Created.
+        /// </summary>
+        public static string TerminalTemplateCreated {
+            get {
+                return ResourceManager.GetString("TerminalTemplateCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terminal Updated.
         /// </summary>
         public static string TerminalUpdated {

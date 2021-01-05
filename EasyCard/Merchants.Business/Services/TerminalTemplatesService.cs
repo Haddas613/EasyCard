@@ -34,9 +34,9 @@ namespace Merchants.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
-        public IQueryable<TerminalTemplate> GetTerminals()
+        public IQueryable<TerminalTemplate> GetQuery()
         {
-            throw new NotImplementedException();
+            return context.TerminalTemplates;
         }
     }
 }

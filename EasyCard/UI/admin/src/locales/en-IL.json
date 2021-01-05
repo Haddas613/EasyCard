@@ -66,6 +66,8 @@
   "UsersList": "Users List",
   "Checkout": "Checkout",
   "CheckoutRedirectUrls": "Checkout Redirect URLs",
+  "TerminalTemplates": "Terminal Templates",
+  "EditTerminalTemplate": "Edit Terminal Template",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

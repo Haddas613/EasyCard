@@ -36,7 +36,7 @@ namespace MerchantsApi.Tests
             var controller = new TerminalsApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper, merchantsFixture.ExternalSystemsService, null, null); // TODO: fixture
             var merchant = await merchantsFixture.MerchantsService.GetMerchants().FirstAsync();
             var billingEmails = new List<string> { "mail1@mail.com", "mail2@mail.com" };
-            var terminalModel = new TerminalRequest
+            var terminalModel = new TerminalTemplateRequest
             {
                 Label = Guid.NewGuid().ToString(),
                 MerchantID = merchant.MerchantID,

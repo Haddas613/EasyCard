@@ -36,6 +36,16 @@ const routes = [
         component: () => import('../pages/terminals/EditTerminal.vue'),
       },
       {
+        name: 'TerminalTemplates',
+        path: 'terminal-templates/list',
+        component: () => import('../pages/terminal-templates/TerminalTemplatesList.vue'),
+      },
+      {
+        name: 'EditTerminalTemplate',
+        path: 'terminal-templates/edit/:id',
+        component: () => import('../pages/terminal-templates/EditTerminalTemplate.vue'),
+      },
+      {
         name: 'CreateMerchant',
         path: 'merchants/create',
         component: () => import('../pages/merchants/CreateMerchant.vue'),

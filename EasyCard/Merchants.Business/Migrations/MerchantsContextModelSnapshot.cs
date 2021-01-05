@@ -479,6 +479,9 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
                     b.Property<string>("BillingSettings")
                         .HasColumnName("BillingSettings")
                         .HasColumnType("nvarchar(max)")
