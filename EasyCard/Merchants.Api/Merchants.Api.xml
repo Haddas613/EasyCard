@@ -26,6 +26,14 @@
             <param name="model"></param>
             <returns></returns>
         </member>
+        <member name="M:Merchants.Api.Controllers.TerminalTemplatesApiController.UpdateTerminal(System.Int64,Merchants.Api.Models.TerminalTemplate.TerminalTemplateRequest)">
+            <summary>
+            Ypdates basic terminal information and settings
+            </summary>
+            <param name="terminalTemplateID"></param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="T:Merchants.Api.Models.Merchant.MerchantSummaryResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

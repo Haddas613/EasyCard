@@ -67,7 +67,7 @@
         <v-card-text>
           <component
             v-bind:is="getIntegrationComponentName(int.externalSystem.key)"
-            v-bind="{data: int, terminalId: terminal.terminalID}"
+            v-bind="{data: int, terminalId: terminal[idKey], apiName: apiName}"
             v-if="$options.components[getIntegrationComponentName(int.externalSystem.key)]"
           ></component>
           <p v-else>
@@ -89,6 +89,11 @@ export default {
     terminal: {
       type: Object,
       required: true
+    },
+    apiName: {
+      type: String,
+      default: 'terminals',
+      required: false
     }
   },
   data() {
@@ -100,7 +105,8 @@ export default {
       selectedIntegrationID: null,
       integrationDialog: false,
       valid: false,
-      vr: ValidationRules
+      vr: ValidationRules,
+      idKey: 'terminalID'
     };
   },
   async mounted() {
@@ -112,6 +118,9 @@ export default {
       }
     });
     this.integrations = integrations;
+    if(this.apiName == 'terminalTemplates'){
+      this.idKey = 'terminalTemplateID';
+    }
   },
   methods: {
     getIntegrationComponentName(key) {
@@ -127,7 +136,7 @@ export default {
       type.disabled = true;
 
       let integration = this.lodash.find(this.integrations[type.name], i => i.externalSystemID == this.selectedIntegrationID);
-      this.$api.terminals.saveTerminalExternalSystem(this.terminal.terminalID, integration);
+      this.$api[this.apiName].saveExternalSystem(this.terminal[this.idKey], integration);
 
       integration = this.mapIntegration(integration);
       this.model.integrations.push(integration);
@@ -150,7 +159,7 @@ export default {
       }
     },
     async deleteIntegration(integrationID){
-      await this.$api.terminals.deleteTerminalExternalSystem(this.terminal.terminalID, integrationID);
+      await this.$api[this.apiName].deleteExternalSystem(this.terminal[this.idKey], integrationID);
       let idx = this.lodash.findIndex(this.model.integrations, i => i.externalSystemID == integrationID);
 
       let type = this.lodash.find(this.integrationTypes, t => t.name == this.model.integrations[idx].externalSystem.type);

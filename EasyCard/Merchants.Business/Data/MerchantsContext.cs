@@ -55,6 +55,8 @@ namespace Merchants.Business.Data
 
         public DbSet<TerminalExternalSystem> TerminalExternalSystems { get; set; }
 
+        public DbSet<TerminalTemplateExternalSystem> TerminalTemplateExternalSystems { get; set; }
+
         public DbSet<UserTerminalMapping> UserTerminalMappings { get; set; }
 
         public DbSet<MerchantHistory> MerchantHistories { get; set; }
@@ -87,6 +89,7 @@ namespace Merchants.Business.Data
             modelBuilder.ApplyConfiguration(new TerminalTemplateConfiguration());
             modelBuilder.ApplyConfiguration(new FeatureConfiguration());
             modelBuilder.ApplyConfiguration(new TerminalExternalSystemConfiguration());
+            modelBuilder.ApplyConfiguration(new TerminalTemplateExternalSystemConfiguration());
             modelBuilder.ApplyConfiguration(new UserTerminalMappingConfiguration());
             modelBuilder.ApplyConfiguration(new MerchantHistoryConfiguration());
 
@@ -202,6 +205,21 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.NameHE).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.Price).HasColumnType("decimal(19,4)").HasDefaultValue(decimal.Zero).IsRequired(false);
+            }
+        }
+
+        internal class TerminalTemplateExternalSystemConfiguration : IEntityTypeConfiguration<TerminalTemplateExternalSystem>
+        {
+            public void Configure(EntityTypeBuilder<TerminalTemplateExternalSystem> builder)
+            {
+                builder.ToTable("TerminalTemplateExternalSystem");
+
+                builder.HasKey(b => b.TerminalTemplateExternalSystemID);
+                builder.Property(b => b.TerminalTemplateExternalSystemID).ValueGeneratedOnAdd();
+
+                builder.Property(p => p.UpdateTimestamp).IsRowVersion();
+
+                builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
             }
         }
 

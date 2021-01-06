@@ -67,16 +67,6 @@ namespace Merchants.Business.Services
             return terminal;
         }
 
-        //public IQueryable<Terminal> GetUserTerminals(Guid userID)
-        //{
-        //    return context.UserTerminalMappings.Where(d => d.UserID == userID).Include(d => d.Terminal).Select(d => d.Terminal);
-        //}
-
-        //public IQueryable<UserInfo> GetTerminalUsers(Guid terminalID)
-        //{
-        //    return context.UserTerminalMappings.Where(d => d.TerminalID == terminalID).Select(d => new UserInfo { DisplayName = d.DisplayName, Email = d.Email, UserID = d.UserID, Roles = d.Roles });
-        //}
-
         public IQueryable<TerminalExternalSystem> GetTerminalExternalSystems()
         {
             if (user.IsAdmin())

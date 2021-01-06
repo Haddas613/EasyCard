@@ -25,6 +25,9 @@ export default {
       required: true
     },
     terminalId: {
+      required: true
+    },
+    apiName: {
       type: String,
       required: true
     }
@@ -49,7 +52,7 @@ export default {
         return;
       }
       this.loading = true;
-      this.$api.terminals.saveTerminalExternalSystem(this.terminalId, this.model);
+      this.$api[this.apiName].saveExternalSystem(this.terminalId, this.model);
       this.loading = false;
     }
   },

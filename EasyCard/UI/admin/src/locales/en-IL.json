@@ -68,6 +68,7 @@
   "CheckoutRedirectUrls": "Checkout Redirect URLs",
   "TerminalTemplates": "Terminal Templates",
   "EditTerminalTemplate": "Edit Terminal Template",
+  "CreateTerminalTemplate": "Create Terminal Template",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

@@ -7,6 +7,7 @@ using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.Terminal;
 using Merchants.Api.Models.TerminalTemplate;
 using Merchants.Business.Entities.Terminal;
+using Merchants.Business.Models.Integration;
 using Merchants.Business.Services;
 using Merchants.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -73,7 +74,7 @@ namespace Merchants.Api.Controllers
         [Route("{terminalTemplateID}")]
         public async Task<ActionResult<TerminalTemplateResponse>> GetTerminalTemplate([FromRoute]long terminalTemplateID)
         {
-            var dbTemplate = EnsureExists(await terminalTemplatesService.GetQuery().FirstOrDefaultAsync(t => t.TerminalTemplateID == terminalTemplateID));
+            var dbTemplate = EnsureExists(await terminalTemplatesService.GetTerminalTemplate(terminalTemplateID));
 
             var template = mapper.Map<TerminalTemplateResponse>(dbTemplate);
 
@@ -110,5 +111,50 @@ namespace Merchants.Api.Controllers
             return CreatedAtAction(nameof(GetTerminalTemplate), new { terminalTemplateID = newTemplate.TerminalTemplateID }, new OperationResponse(Messages.TerminalTemplateCreated, StatusEnum.Success, newTemplate.TerminalTemplateID.ToString()));
         }
 
+        /// <summary>
+        /// Ypdates basic terminal information and settings
+        /// </summary>
+        /// <param name="terminalTemplateID"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("{terminalTemplateID}")]
+        public async Task<ActionResult<OperationResponse>> UpdateTerminal([FromRoute]long terminalTemplateID, [FromBody]TerminalTemplateRequest model)
+        {
+            var terminal = EnsureExists(await terminalTemplatesService.GetQuery().FirstOrDefaultAsync(d => d.TerminalTemplateID == terminalTemplateID));
+
+            mapper.Map(model, terminal);
+
+            await terminalTemplatesService.UpdateEntity(terminal);
+
+            return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalTemplateID.ToString()));
+        }
+
+        [HttpPut]
+        [Route("{terminalTemplateID}/externalsystem")]
+        public async Task<ActionResult<OperationResponse>> SaveTerminalExternalSystem([FromRoute]long terminalTemplateID, [FromBody]ExternalSystemRequest model)
+        {
+            var externalSystem = EnsureExists(externalSystemsService.GetExternalSystem(model.ExternalSystemID), nameof(ExternalSystem));
+
+            var templateExternalSystem = new TerminalTemplateExternalSystem();
+
+            mapper.Map(model, templateExternalSystem);
+            templateExternalSystem.TerminalTemplateID = terminalTemplateID;
+            templateExternalSystem.Type = externalSystem.Type;
+
+            await terminalTemplatesService.SaveTerminalTemplateExternalSystem(templateExternalSystem);
+
+            return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalTemplateID.ToString()));
+        }
+
+        [HttpDelete]
+        [Route("{terminalTemplateID}/externalsystem/{externalSystemID}")]
+        public async Task<ActionResult<OperationResponse>> DeleteTerminalExternalSystem([FromRoute]long terminalTemplateID, long externalSystemID)
+        {
+            // TODO: validation if it exists
+            await terminalTemplatesService.RemoveTerminalTemplateExternalSystem(terminalTemplateID, externalSystemID);
+
+            return Ok(new OperationResponse(Messages.ExternalSystemRemoved, StatusEnum.Success, terminalTemplateID.ToString()));
+        }
     }
 }

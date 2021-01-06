@@ -9,8 +9,8 @@
         <v-tab-item key="settings" class="pt-2">
           <v-form ref="terminalSettingsForm" v-model="terminalSettingsFormValid" lazy-validation>
             <terminal-settings-fields
-              v-if="terminal"
-              :data="terminal"
+              v-if="terminalTemplate"
+              :data="terminalTemplate"
               class="pt-1"
               ref="terminalSettingsRef"
               @update="refreshTerminal()"
@@ -26,7 +26,7 @@
           </v-form>
         </v-tab-item>
         <v-tab-item key="integrations">
-          <terminal-integrations-form :terminal="terminal" v-if="terminal"></terminal-integrations-form>
+          <terminal-integrations-form :terminal="terminalTemplate" v-if="terminalTemplate" api-name="terminalTemplates"></terminal-integrations-form>
         </v-tab-item>
       </v-tabs-items>
     </v-card-text>
@@ -43,18 +43,18 @@ export default {
   },
   data() {
     return {
-      terminal: null,
+      terminalTemplate: null,
       terminalSettingsFormValid: true,
       tab: "settings"
     };
   },
   async mounted() {
-    let terminal = await this.$api.terminals.getTerminal(this.$route.params.id);
-    if (!terminal) {
-      return this.$router.push({ name: "Terminals" });
+    let terminalTemplate = await this.$api.terminalTemplates.getTerminalTemplate(this.$route.params.id);
+    if (!terminalTemplate) {
+      return this.$router.push({ name: "TerminalTemplates" });
     }
 
-    this.terminal = terminal;
+    this.terminalTemplate = terminalTemplate;
   },
   methods: {
     async saveTerminalSettings() {
@@ -62,15 +62,10 @@ export default {
         return;
       }
       let data = this.$refs.terminalSettingsRef.getData();
-      let operaionResult = await this.$api.terminals.updateTerminal(data);
+      let operaionResult = await this.$api.terminalTemplates.updateTerminalTemplate(data);
       if (operaionResult.status === "success") {
-        return this.$router.push({ name: "Terminals" });
+        return this.$router.push({ name: "TerminalTemplates" });
       }
-    },
-    async refreshTerminal() {
-      await this.$store.dispatch("settings/refreshTerminal", {
-        api: this.$api
-      });
     }
   }
 };

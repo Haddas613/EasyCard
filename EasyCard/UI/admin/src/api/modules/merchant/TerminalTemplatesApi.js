@@ -23,11 +23,23 @@ export default class TerminalsApi {
         return data;
     }
 
-    async getTerminalTemplate(terminalID) {
-        return this.base.get(this.templatesUrl + '/' + terminalID);
+    async getTerminalTemplate(terminalTemplateID) {
+        return this.base.get(this.templatesUrl + '/' + terminalTemplateID);
     }
 
     async createTerminalTemplate(data){
         return this.base.post(this.templatesUrl, data);
+    }
+
+    async updateTerminalTemplate(data){
+        return this.base.put(this.templatesUrl + '/' + data.terminalTemplateID, data);
+    }
+
+    async saveExternalSystem(terminalTemplateID, data){
+        return this.base.put(this.templatesUrl + `/${terminalTemplateID}/externalsystem`, data);
+    }
+
+    async deleteExternalSystem(terminalTemplateID, externalSystemID){
+        return this.base.delete(this.templatesUrl + `/${terminalTemplateID}/externalsystem/${externalSystemID}`);
     }
 }

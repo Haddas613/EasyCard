@@ -20,7 +20,7 @@ namespace Merchants.Business.Entities.Terminal
             InvoiceSettings = new TerminalInvoiceSettings();
             PaymentRequestSettings = new TerminalPaymentRequestSettings();
             CheckoutSettings = new TerminalCheckoutSettings();
-            Integrations = new HashSet<TerminalExternalSystem>();
+            Integrations = new HashSet<TerminalTemplateExternalSystem>();
             EnabledFeatures = new HashSet<Feature>();
             Created = DateTime.UtcNow;
         }
@@ -43,7 +43,7 @@ namespace Merchants.Business.Entities.Terminal
 
         public TerminalCheckoutSettings CheckoutSettings { get; set; }
 
-        public virtual IEnumerable<TerminalExternalSystem> Integrations { get; set; }
+        public virtual IEnumerable<TerminalTemplateExternalSystem> Integrations { get; set; }
 
         public virtual IEnumerable<Feature> EnabledFeatures { get; set; }
 

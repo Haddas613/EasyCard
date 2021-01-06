@@ -452,9 +452,6 @@ namespace Merchants.Business.Migrations
                     b.Property<Guid>("TerminalID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<long?>("TerminalTemplateID")
-                        .HasColumnType("bigint");
-
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
@@ -466,8 +463,6 @@ namespace Merchants.Business.Migrations
                     b.HasKey("TerminalExternalSystemID");
 
                     b.HasIndex("TerminalID");
-
-                    b.HasIndex("TerminalTemplateID");
 
                     b.ToTable("TerminalExternalSystem");
                 });
@@ -524,6 +519,41 @@ namespace Merchants.Business.Migrations
                     b.HasKey("TerminalTemplateID");
 
                     b.ToTable("TerminalTemplate");
+                });
+
+            modelBuilder.Entity("Merchants.Business.Entities.Terminal.TerminalTemplateExternalSystem", b =>
+                {
+                    b.Property<long>("TerminalTemplateExternalSystemID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("ExternalSystemID")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Settings")
+                        .HasColumnType("nvarchar(max)")
+                        .IsUnicode(true);
+
+                    b.Property<long>("TerminalTemplateID")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("UpdateTimestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("TerminalTemplateExternalSystemID");
+
+                    b.HasIndex("TerminalTemplateID");
+
+                    b.ToTable("TerminalTemplateExternalSystem");
                 });
 
             modelBuilder.Entity("Merchants.Business.Entities.User.UserTerminalMapping", b =>
@@ -625,10 +655,15 @@ namespace Merchants.Business.Migrations
                         .HasForeignKey("TerminalID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
 
-                    b.HasOne("Merchants.Business.Entities.Terminal.TerminalTemplate", null)
+            modelBuilder.Entity("Merchants.Business.Entities.Terminal.TerminalTemplateExternalSystem", b =>
+                {
+                    b.HasOne("Merchants.Business.Entities.Terminal.TerminalTemplate", "TerminalTemplate")
                         .WithMany("Integrations")
-                        .HasForeignKey("TerminalTemplateID");
+                        .HasForeignKey("TerminalTemplateID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Merchants.Business.Entities.User.UserTerminalMapping", b =>
