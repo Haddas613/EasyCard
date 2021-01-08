@@ -8,84 +8,116 @@
 
 
 
-    <div class="row">
+<div class="row">
 
 
-        <div class="col-md-6">
-            <div class="panel panel-default">
+    <div class="col-md-6">
+        <div class="panel panel-default">
 
 
-                <partial name="_ValidationSummary" />
+            <partial name="_ValidationSummary" />
 
-                <div class="panel-heading">
-                    <p>@Model.Description</p>
-                    <h3 class="panel-title">Amount: @Model.Amount.ToString("F2")@Model.Currency.GetCurrencySymbol()</h3>
-                </div>
+            <div class="panel-heading">
+                <p>@Model.Description</p>
+                @if (Model.Amount.GetValueOrDefault() > 0)
+                {
+                <h3 class="panel-title">Amount: @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()</h3>
+                }
+            </div>
 
-                <div class="panel-body">
 
-                    <form asp-action="Charge" method="post">
-                        <input type="hidden" asp-for="RedirectUrl" />
-                        <input type="hidden" asp-for="PaymentRequest" />
-                        <input type="hidden" asp-for="ApiKey" />
-                        <input type="hidden" asp-for="Currency" />
-                        <input type="hidden" asp-for="Amount" />
-                        <input type="hidden" asp-for="Description" />
+            <div class="panel-body">
 
-                        <fieldset>
-                            <div class="form-group">
-                                <label asp-for="CardNumber">Card Number<small class="text-muted">[<span class="cc-brand"></span>]</small></label>
-                                <input id="cc-number" type="tel" class="form-control cc-number" asp-for="CardNumber" autofocus autocomplete="cc-number" placeholder="•••• •••• •••• ••••">
+                <form asp-action="Charge" method="post">
+                    <input type="hidden" asp-for="RedirectUrl" />
+                    <input type="hidden" asp-for="PaymentRequest" />
+                    <input type="hidden" asp-for="ApiKey" />
+                    <input type="hidden" asp-for="Currency" />
+                    <input type="hidden" asp-for="Description" />
+                    @if (Model.Amount.GetValueOrDefault() > 0)
+                    {
+                    <input type="hidden" asp-for="Amount" />
+                    }
+
+                    <fieldset>
+                        @if (!(Model.Amount.GetValueOrDefault() > 0))
+                        {
+                        <div class="form-group row">
+                            <label asp-for="Amount" class="col-sm-3 col-form-label col-form-label-sm">Amount (@Model.Currency.GetCurrencySymbol())</label>
+                            <div class="col-sm-9">
+                                <input type="tel" class="form-control form-control-sm" placeholder="Amount" asp-for="Amount" autocomplete="off">
+                                <span asp-validation-for="Amount"></span>
+                            </div>
+                        </div>
+                        }
+
+                        <div class="form-group row">
+                            <label asp-for="CardNumber" class="col-sm-3 col-form-label col-form-label-sm">Card Number<small class="text-muted">[<span class="cc-brand"></span>]</small></label>
+                            <div class="col-sm-9">
+                                <input id="cc-number" type="tel" class="form-control cc-number form-control-sm" asp-for="CardNumber" autofocus autocomplete="cc-number" placeholder="•••• •••• •••• ••••">
                                 <span asp-validation-for="CardNumber"></span>
                                 <span class="control-validation"></span>
                             </div>
-                            <div class="form-group">
-                                <label asp-for="CardExpiration">Expiration</label>
-                                <input id="cc-exp" type="tel" class="form-control cc-exp" placeholder="••/••" asp-for="CardExpiration" autocomplete="cc-exp">
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="CardExpiration" class="col-sm-3 col-form-label col-form-label-sm">Expiration</label>
+                            <div class="col-sm-9">
+                                <input id="cc-exp" type="tel" class="form-control cc-exp form-control-sm" placeholder="••/••" asp-for="CardExpiration" autocomplete="cc-exp">
                                 <span asp-validation-for="CardExpiration"></span>
                                 <span class="control-validation"></span>
                             </div>
+                        </div>
 
-                            <div class="form-group">
-                                <label asp-for="Cvv">Cvv</label>
-                                <input type="tel" class="form-control cc-cvc" placeholder="•••" asp-for="Cvv" autocomplete="off">
+                        <div class="form-group row">
+                            <label asp-for="Cvv" class="col-sm-3 col-form-label col-form-label-sm">Cvv</label>
+                            <div class="col-sm-9">
+                                <input type="tel" class="form-control cc-cvc form-control-sm" placeholder="•••" asp-for="Cvv" autocomplete="off">
                                 <span asp-validation-for="Cvv"></span>
                                 <span class="control-validation"></span>
                             </div>
+                        </div>
 
-                            <div class="form-group">
-                                <label asp-for="Name">Card Owner Name</label>
-                                <input class="form-control" placeholder="Card Owner Name" asp-for="Name" autocomplete="off">
+                        <div class="form-group row">
+                            <label asp-for="Name" class="col-sm-3 col-form-label col-form-label-sm">Card Owner Name</label>
+                            <div class="col-sm-9">
+                                <input class="form-control form-control-sm" placeholder="Card Owner Name" asp-for="Name" autocomplete="off">
                                 <span asp-validation-for="Name"></span>
                             </div>
-                            <div class="form-group">
-                                <label asp-for="Email">Email</label>
-                                <input type="email" class="form-control" placeholder="Email" asp-for="Email" autocomplete="off">
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="Email" class="col-sm-3 col-form-label col-form-label-sm">Email</label>
+                            <div class="col-sm-9">
+                                <input type="email" class="form-control form-control-sm" placeholder="Email" asp-for="Email" autocomplete="off">
                                 <span asp-validation-for="Email"></span>
                             </div>
-                            <div class="form-group">
-                                <label asp-for="NationalID">National ID</label>
-                                <input type="tel" class="form-control" placeholder="National ID" asp-for="NationalID" autocomplete="off">
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="NationalID" class="col-sm-3 col-form-label col-form-label-sm">National ID</label>
+                            <div class="col-sm-9">
+                                <input type="tel" class="form-control form-control-sm" placeholder="National ID" asp-for="NationalID" autocomplete="off">
                                 <span asp-validation-for="NationalID"></span>
                             </div>
-                            <div class="form-group">
-                                <label asp-for="Phone">Phone</label>
-                                <input type="tel" class="form-control" placeholder="Phone" asp-for="Phone" autocomplete="off">
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="Phone" class="col-sm-3 col-form-label col-form-label-sm">Phone</label>
+                            <div class="col-sm-9">
+                                <input type="tel" class="form-control form-control-sm" placeholder="Phone" asp-for="Phone" autocomplete="off">
                                 <span asp-validation-for="Phone"></span>
                             </div>
+                        </div>
 
 
-                            <div class="form-group">
-                                @*<input type="submit" class="btn btn-primary" name="submit" value="Pay with EasyCard" />*@
-                                <input type=image src="~/img/pay-with-easycard.png" alt="Pay with EasyCard">
-                            </div>
-                        </fieldset>
-                    </form>
-                </div>
+                        <div class="form-group row">
+                            @*<input type="submit" class="btn btn-primary" name="submit" value="Pay with EasyCard" />*@
+                            <input type=image src="~/img/pay-with-easycard.png" alt="Pay with EasyCard">
+                        </div>
+                    </fieldset>
+                </form>
             </div>
         </div>
-
     </div>
+
+</div>
 
 
 

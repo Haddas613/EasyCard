@@ -41,7 +41,7 @@ namespace CheckoutPortal.Models
 
         [Required]
         [Range(0.01, 1000000)]
-        public decimal Amount { get; set; }
+        public decimal? Amount { get; set; }
 
         [StringLength(500)]
         public string RedirectUrl { get; set; }

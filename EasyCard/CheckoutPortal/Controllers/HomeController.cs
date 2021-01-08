@@ -17,7 +17,6 @@ using System.IO;
 
 namespace CheckoutPortal.Controllers
 {
-    [SecurityHeaders]
     [AllowAnonymous]
     public class HomeController : Controller
     {
@@ -42,7 +41,7 @@ namespace CheckoutPortal.Controllers
             var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl);
 
             // TODO: add merchant site origin instead of unsafe-inline
-            Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
+            //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
             var model = new ChargeViewModel();
 
@@ -57,14 +56,14 @@ namespace CheckoutPortal.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Charge(ChargeViewModel request)
         {
             var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl);
 
             // TODO: add merchant site origin instead of unsafe-inline
-            Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
+            //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
             if (!ModelState.IsValid)
             {

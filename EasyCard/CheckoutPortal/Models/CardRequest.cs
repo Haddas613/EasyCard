@@ -29,13 +29,13 @@ namespace CheckoutPortal.Models
 
         public CurrencyEnum Currency { get; set; }
 
-        public decimal Amount { get; set; }
+        public decimal? Amount { get; set; }
+
+        // TODO
+        public bool UserAmount { get; set; }
 
         public string RedirectUrl { get; set; }
 
-        /// <summary>
-        /// Key for merchant's system - to have ability to validate redirect
-        /// </summary>
         public string ApiKey { get; set; }
 
         /// <summary>
