@@ -31,6 +31,7 @@ namespace Transactions.Api.Controllers
         private readonly IPaymentRequestsService paymentRequestsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly ISystemSettingsService systemSettingsService;
+        private readonly IConsumersService consumersService;
 
         public CheckoutController(
             IMapper mapper,
@@ -38,7 +39,8 @@ namespace Transactions.Api.Controllers
             ILogger<TransactionsApiController> logger,
             IPaymentRequestsService paymentRequestsService,
             IHttpContextAccessorWrapper httpContextAccessor,
-            ISystemSettingsService systemSettingsService)
+            ISystemSettingsService systemSettingsService,
+            IConsumersService consumersService)
         {
             this.mapper = mapper;
 
@@ -47,10 +49,11 @@ namespace Transactions.Api.Controllers
             this.paymentRequestsService = paymentRequestsService;
             this.httpContextAccessor = httpContextAccessor;
             this.systemSettingsService = systemSettingsService;
+            this.consumersService = consumersService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<CheckoutData>> GetCheckoutData(Guid? paymentRequestID, string apiKey)
+        public async Task<ActionResult<CheckoutData>> GetCheckoutData(Guid? paymentRequestID, string apiKey, Guid? consumerID)
         {
             Debug.WriteLine(User);
 
@@ -79,6 +82,17 @@ namespace Transactions.Api.Controllers
                 var paymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().Where(d => d.PaymentRequestID == paymentRequestID && d.TerminalID == terminal.TerminalID).FirstOrDefaultAsync());
 
                 response.PaymentRequest = mapper.Map<PaymentRequestInfo>(paymentRequest);
+            }
+
+            if (consumerID.HasValue)
+            {
+                var consumer = await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == consumerID);
+
+                if (consumer != null)
+                {
+                    response.Consumer = new ConsumerInfo();
+                    mapper.Map(consumer, response.Consumer);
+                }
             }
 
             return response;

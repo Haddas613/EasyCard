@@ -33,6 +33,8 @@ namespace Transactions.Api.Mapping
             CreateMap<Terminal, TerminalCheckoutCombinedSettings>()
                 .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
                 .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<Merchants.Business.Entities.Billing.Consumer, ConsumerInfo>();
         }
     }
 }

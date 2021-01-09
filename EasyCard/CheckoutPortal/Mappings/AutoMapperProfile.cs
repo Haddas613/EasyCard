@@ -49,6 +49,13 @@ namespace CheckoutPortal.Mappings
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, ChargeViewModel>()
                 .ForAllOtherMembers(d => d.Ignore());
 
+            CreateMap<Transactions.Api.Models.Checkout.ConsumerInfo, ChargeViewModel>()
+                .ForMember(d => d.Phone, o => o.MapFrom(d => d.ConsumerPhone))
+                .ForMember(d => d.NationalID, o => o.MapFrom(d => d.ConsumerNationalID))
+                .ForMember(d => d.Email, o => o.MapFrom(d => d.ConsumerEmail))
+                .ForMember(d => d.Name, o => o.MapFrom(d => d.ConsumerName))
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
+
             CreateMap<ChargeViewModel, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>();
 
             CreateMap<ChargeViewModel, Transactions.Api.Models.Transactions.CreateTransactionRequest>()

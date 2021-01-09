@@ -294,6 +294,11 @@
             EasyCard terminal reference
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Checkout.ConsumerInfo.ConsumerEmail">
+            <summary>
+            End-customer Email
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.InvoiceDetails">
             <summary>
             Invoice details

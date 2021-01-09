@@ -14,5 +14,7 @@ namespace Transactions.Api.Models.Checkout
         public PaymentRequestInfo PaymentRequest { get; set; }
 
         public TerminalCheckoutCombinedSettings Settings { get; set; }
+
+        public ConsumerInfo Consumer { get; set; }
     }
 }

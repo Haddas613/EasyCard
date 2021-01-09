@@ -38,7 +38,7 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Index([FromQuery]CardRequest request)
         {
-            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl);
+            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl, request.ConsumerID);
 
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
@@ -50,6 +50,11 @@ namespace CheckoutPortal.Controllers
             mapper.Map(checkoutConfig.PaymentRequest, model);
             mapper.Map(checkoutConfig.Settings, model);
 
+            if (checkoutConfig.Consumer != null)
+            {
+                mapper.Map(checkoutConfig.Consumer, model);
+            }
+
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
 
             return View(model);
@@ -60,7 +65,7 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Charge(ChargeViewModel request)
         {
-            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl);
+            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl, request.ConsumerID);
 
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
@@ -154,7 +159,7 @@ namespace CheckoutPortal.Controllers
             return View(new ErrorViewModel { RequestId = HttpContext.TraceIdentifier, ExceptionMessage = exceptionHandlerPathFeature?.Error?.Message });
         }
 
-        private async Task<Transactions.Api.Models.Checkout.CheckoutData> GetCheckoutData(string apiKey, string paymentRequest, string redirectUrl)
+        private async Task<Transactions.Api.Models.Checkout.CheckoutData> GetCheckoutData(string apiKey, string paymentRequest, string redirectUrl, Guid? consumerID)
         {
             // redirect url is required if it is not payment request
             if (string.IsNullOrWhiteSpace(paymentRequest) && string.IsNullOrWhiteSpace(redirectUrl))
@@ -178,7 +183,7 @@ namespace CheckoutPortal.Controllers
             Transactions.Api.Models.Checkout.CheckoutData checkoutConfig;
             try
             {
-                checkoutConfig = await transactionsApiClient.GetCheckout(paymentRequestID, apiKey);
+                checkoutConfig = await transactionsApiClient.GetCheckout(paymentRequestID, apiKey, consumerID);
             }
             catch (Exception ex)
             {

@@ -1,6 +1,7 @@
 ﻿using MerchantProfileApi.Models.Billing;
 using Merchants.Business.Entities.Billing;
 using Microsoft.EntityFrameworkCore;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,21 @@ namespace MerchantProfileApi.Extensions
             if (filter.TerminalID.HasValue)
             {
                 src = src.Where(c => c.TerminalID == filter.TerminalID.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Email))
+            {
+                src = src.Where(c => EF.Functions.Like(c.ConsumerEmail, filter.Email.UseWildCard(true)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Phone))
+            {
+                src = src.Where(c => EF.Functions.Like(c.ConsumerPhone, filter.Phone.UseWildCard(true)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.NationalID))
+            {
+                src = src.Where(c => c.ConsumerNationalID == filter.NationalID);
             }
 
             return src;

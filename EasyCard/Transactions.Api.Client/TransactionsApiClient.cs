@@ -55,11 +55,11 @@ namespace Transactions.Api.Client
             }
         }
 
-        public async Task<CheckoutData> GetCheckout(Guid? paymentRequestID, string apiKey)
+        public async Task<CheckoutData> GetCheckout(Guid? paymentRequestID, string apiKey, Guid? consumerID = null)
         {
             try
             {
-                return await webApiClient.Get<CheckoutData>(apiConfiguration.TransactionsApiAddress, "api/checkout", new { paymentRequestID, apiKey}, BuildHeaders);
+                return await webApiClient.Get<CheckoutData>(apiConfiguration.TransactionsApiAddress, "api/checkout", new { paymentRequestID, apiKey, consumerID }, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
