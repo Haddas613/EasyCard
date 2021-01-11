@@ -19,5 +19,18 @@ namespace Transactions.Api.Models.Checkout
         public string ConsumerPhone { get; set; }
 
         public string ConsumerNationalID { get; set; }
+
+        public IEnumerable<TokenInfo> Tokens { get; set; }
+    }
+
+    public class TokenInfo
+    {
+        public Guid CreditCardTokenID { get; set; }
+
+        public string CardNumber { get; set; }
+
+        public string CardExpiration { get; set; }
+
+        public string CardVendor { get; set; }
     }
 }

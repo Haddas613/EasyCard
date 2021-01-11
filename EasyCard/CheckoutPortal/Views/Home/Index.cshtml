@@ -21,7 +21,7 @@
                 <p>@Model.Description</p>
                 @if (Model.Amount.GetValueOrDefault() > 0)
                 {
-                <h3 class="panel-title">Amount: @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()</h3>
+                    <h3 class="panel-title">Amount: @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()</h3>
                 }
             </div>
 
@@ -36,21 +36,39 @@
                     <input type="hidden" asp-for="Description" />
                     @if (Model.Amount.GetValueOrDefault() > 0)
                     {
-                    <input type="hidden" asp-for="Amount" />
+                        <input type="hidden" asp-for="Amount" />
                     }
 
-                    <fieldset>
+                    <fieldset class="border rounded p-2 m-2">
                         @if (!(Model.Amount.GetValueOrDefault() > 0))
                         {
-                        <div class="form-group row">
-                            <label asp-for="Amount" class="col-sm-3 col-form-label col-form-label-sm">Amount (@Model.Currency.GetCurrencySymbol())</label>
-                            <div class="col-sm-9">
-                                <input type="tel" class="form-control form-control-sm" placeholder="Amount" asp-for="Amount" autocomplete="off">
-                                <span asp-validation-for="Amount"></span>
+                            <div class="form-group row">
+                                <label asp-for="Amount" class="col-sm-3 col-form-label col-form-label-sm">Amount (@Model.Currency.GetCurrencySymbol())</label>
+                                <div class="col-sm-9">
+                                    <input type="tel" class="form-control form-control-sm" placeholder="Amount" asp-for="Amount" autocomplete="off">
+                                    <span asp-validation-for="Amount"></span>
+                                </div>
                             </div>
-                        </div>
                         }
+                        @if (Model.SavedTokens?.Count() > 0)
+                        {
+                            <div class="form-group row">
+                                <label asp-for="CreditCardToken" class="col-sm-3 col-form-label col-form-label-sm">Use saved card</label>
+                                <div class="col-sm-9">
 
+                                    <div class="form-check">
+                                        @foreach (var savedToken in Model.SavedTokens)
+                                        {
+                                            <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@savedToken.Key" disabled />@savedToken.Value<br />
+                                        }
+                                        <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@Guid.Empty" checked />Enter new card<br />
+                                    </div>
+
+                                </div>
+                            </div>
+                        }
+                    </fieldset>
+                    <fieldset class="border rounded p-2 m-2">
                         <div class="form-group row">
                             <label asp-for="CardNumber" class="col-sm-3 col-form-label col-form-label-sm">Card Number<small class="text-muted">[<span class="cc-brand"></span>]</small></label>
                             <div class="col-sm-9">
@@ -77,6 +95,19 @@
                             </div>
                         </div>
 
+                        @if (Model.ConsumerID.HasValue)
+                        {
+                            <div class="form-group row">
+                                <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="SaveCreditCard">Save Card</label>
+                                <div class="col-sm-9">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" asp-for="SaveCreditCard">
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </fieldset>
+                    <fieldset class="border rounded p-2 m-2">
                         <div class="form-group row">
                             <label asp-for="Name" class="col-sm-3 col-form-label col-form-label-sm">Card Owner Name</label>
                             <div class="col-sm-9">
@@ -106,12 +137,13 @@
                             </div>
                         </div>
 
+                    </fieldset>
 
-                        <div class="form-group row">
-                            @*<input type="submit" class="btn btn-primary" name="submit" value="Pay with EasyCard" />*@
+                    <div class="form-group row">
+                        <div class="col-sm-9">
                             <input type=image src="~/img/pay-with-easycard.png" alt="Pay with EasyCard">
                         </div>
-                    </fieldset>
+                    </div>
                 </form>
             </div>
         </div>

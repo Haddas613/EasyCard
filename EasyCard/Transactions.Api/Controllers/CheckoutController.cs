@@ -32,6 +32,7 @@ namespace Transactions.Api.Controllers
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly ISystemSettingsService systemSettingsService;
         private readonly IConsumersService consumersService;
+        private readonly ICreditCardTokenService creditCardTokenService;
 
         public CheckoutController(
             IMapper mapper,
@@ -40,7 +41,8 @@ namespace Transactions.Api.Controllers
             IPaymentRequestsService paymentRequestsService,
             IHttpContextAccessorWrapper httpContextAccessor,
             ISystemSettingsService systemSettingsService,
-            IConsumersService consumersService)
+            IConsumersService consumersService,
+            ICreditCardTokenService creditCardTokenService)
         {
             this.mapper = mapper;
 
@@ -50,6 +52,7 @@ namespace Transactions.Api.Controllers
             this.httpContextAccessor = httpContextAccessor;
             this.systemSettingsService = systemSettingsService;
             this.consumersService = consumersService;
+            this.creditCardTokenService = creditCardTokenService;
         }
 
         [HttpGet]
@@ -92,6 +95,13 @@ namespace Transactions.Api.Controllers
                 {
                     response.Consumer = new ConsumerInfo();
                     mapper.Map(consumer, response.Consumer);
+
+                    var tokens = await creditCardTokenService.GetTokens().Where(d => d.ConsumerID == consumer.ConsumerID).Select(d => new TokenInfo { CardNumber = d.CardNumber, CardExpiration = d.CardExpiration.ToString(), CardVendor = d.CardVendor, CreditCardTokenID = d.CreditCardTokenID }).ToListAsync();
+
+                    if (tokens.Count > 0)
+                    {
+                        response.Consumer.Tokens = tokens;
+                    }
                 }
             }
 

@@ -53,7 +53,14 @@ namespace CheckoutPortal.Controllers
             if (checkoutConfig.Consumer != null)
             {
                 mapper.Map(checkoutConfig.Consumer, model);
+
+                if (checkoutConfig.Consumer.Tokens?.Count() > 0)
+                {
+                    model.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new KeyValuePair<Guid, string>(d.CreditCardTokenID, $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}"));
+                }
             }
+
+
 
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
 

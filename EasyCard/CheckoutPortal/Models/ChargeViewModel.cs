@@ -80,5 +80,17 @@ namespace CheckoutPortal.Models
         /// </summary>
         [StringLength(10)]
         public string AuthNum { get; set; }
+
+        /// <summary>
+        /// Save credit card from request
+        /// </summary>
+        public bool SaveCreditCard { get; set; }
+
+        /// <summary>
+        /// Stored credit card details token (should be omitted in case if full credit card details used)
+        /// </summary>
+        public Guid? CreditCardToken { get; set; }
+
+        public IEnumerable<KeyValuePair<Guid, string>> SavedTokens { get; set; }
     }
 }
