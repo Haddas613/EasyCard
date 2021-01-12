@@ -3,6 +3,7 @@ using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.System;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Entities.User;
+using Merchants.Shared.Enums;
 using Merchants.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -44,6 +45,16 @@ namespace Merchants.Business.Data
             (c1, c2) => c1.SequenceEqual(c2),
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
             c => (IEnumerable<string>)c.ToHashSet());
+
+        private static readonly ValueConverter FeatureEnumArrayConverter = new ValueConverter<ICollection<FeatureEnum>, string>(
+            v => string.Join(",", v.ToString()),
+            v => v != null ? v.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries).Select(s => (FeatureEnum)short.Parse(s)).ToHashSet() : null);
+
+        private static readonly ValueComparer FeatureEnumArrayComparer = new ValueComparer<ICollection<FeatureEnum>>(
+            (c1, c2) => c1.SequenceEqual(c2),
+            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+            c => (ICollection<FeatureEnum>)c.ToHashSet());
+
 
         public DbSet<Merchant> Merchants { get; set; }
 
@@ -160,6 +171,9 @@ namespace Merchants.Business.Data
 
                 builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
+                builder.Property(b => b.EnabledFeatures).IsRequired(false).IsUnicode(false).HasConversion(FeatureEnumArrayConverter)
+                    .Metadata.SetValueComparer(FeatureEnumArrayComparer);
+
                 builder.Property(b => b.SharedApiKey).IsRequired(false).HasMaxLength(64);
             }
         }
@@ -186,6 +200,9 @@ namespace Merchants.Business.Data
                 builder.Property(p => p.PaymentRequestSettings).HasColumnName("PaymentRequestSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
                 builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(b => b.EnabledFeatures).IsRequired(false).IsUnicode(false).HasConversion(FeatureEnumArrayConverter)
+                    .Metadata.SetValueComparer(FeatureEnumArrayComparer);
             }
         }
 
@@ -196,11 +213,9 @@ namespace Merchants.Business.Data
                 builder.ToTable("Feature");
 
                 builder.HasKey(b => b.FeatureID);
-                builder.Property(b => b.FeatureID).ValueGeneratedOnAdd();
+                builder.Property(b => b.FeatureID).ValueGeneratedNever();
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
-
-                builder.Property(b => b.FeatureCode).IsRequired(true).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.NameEN).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.NameHE).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 

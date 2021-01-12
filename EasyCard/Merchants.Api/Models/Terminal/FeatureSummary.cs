@@ -1,12 +1,12 @@
 ﻿using Merchants.Shared.Enums;
-using Shared.Business;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Merchants.Business.Entities.Merchant
+namespace Merchants.Api.Models.Terminal
 {
-    public class Feature : IEntityBase<FeatureEnum>
+    public class FeatureSummary
     {
         public FeatureEnum FeatureID { get; set; }
 
@@ -17,7 +17,5 @@ namespace Merchants.Business.Entities.Merchant
         public decimal? Price { get; set; }
 
         public byte[] UpdateTimestamp { get; set; }
-
-        public FeatureEnum GetID() => FeatureID;
     }
 }

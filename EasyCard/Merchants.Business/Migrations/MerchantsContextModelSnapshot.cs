@@ -182,16 +182,8 @@ namespace Merchants.Business.Migrations
 
             modelBuilder.Entity("Merchants.Business.Entities.Merchant.Feature", b =>
                 {
-                    b.Property<long>("FeatureID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("FeatureCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50)
-                        .IsUnicode(true);
+                    b.Property<short>("FeatureID")
+                        .HasColumnType("smallint");
 
                     b.Property<string>("NameEN")
                         .HasColumnType("nvarchar(50)")
@@ -208,22 +200,12 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("decimal(19,4)")
                         .HasDefaultValue(0m);
 
-                    b.Property<Guid?>("TerminalID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long?>("TerminalTemplateID")
-                        .HasColumnType("bigint");
-
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
                     b.HasKey("FeatureID");
-
-                    b.HasIndex("TerminalID");
-
-                    b.HasIndex("TerminalTemplateID");
 
                     b.ToTable("Feature");
                 });
@@ -389,6 +371,10 @@ namespace Merchants.Business.Migrations
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("EnabledFeatures")
+                        .HasColumnType("varchar(max)")
+                        .IsUnicode(false);
+
                     b.Property<string>("InvoiceSettings")
                         .HasColumnName("InvoiceSettings")
                         .HasColumnType("nvarchar(max)")
@@ -489,6 +475,10 @@ namespace Merchants.Business.Migrations
 
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("EnabledFeatures")
+                        .HasColumnType("varchar(max)")
+                        .IsUnicode(false);
 
                     b.Property<string>("InvoiceSettings")
                         .HasColumnName("InvoiceSettings")
@@ -613,17 +603,6 @@ namespace Merchants.Business.Migrations
                         .HasForeignKey("MerchantID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Merchants.Business.Entities.Merchant.Feature", b =>
-                {
-                    b.HasOne("Merchants.Business.Entities.Terminal.Terminal", null)
-                        .WithMany("EnabledFeatures")
-                        .HasForeignKey("TerminalID");
-
-                    b.HasOne("Merchants.Business.Entities.Terminal.TerminalTemplate", null)
-                        .WithMany("EnabledFeatures")
-                        .HasForeignKey("TerminalTemplateID");
                 });
 
             modelBuilder.Entity("Merchants.Business.Entities.Merchant.MerchantHistory", b =>
