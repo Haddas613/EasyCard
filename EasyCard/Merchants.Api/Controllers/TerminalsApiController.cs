@@ -37,13 +37,15 @@ namespace Merchants.Api.Controllers
         private readonly IExternalSystemsService externalSystemsService;
         private readonly IUserManagementClient userManagementClient;
         private readonly ISystemSettingsService systemSettingsService;
+        private readonly ITerminalTemplatesService terminalTemplatesService;
 
         public TerminalsApiController(IMerchantsService merchantsService, 
             ITerminalsService terminalsService,
             IMapper mapper,
             IExternalSystemsService externalSystemsService,
             IUserManagementClient userManagementClient,
-            ISystemSettingsService systemSettingsService)
+            ISystemSettingsService systemSettingsService,
+            ITerminalTemplatesService terminalTemplatesService)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
@@ -51,6 +53,7 @@ namespace Merchants.Api.Controllers
             this.externalSystemsService = externalSystemsService;
             this.userManagementClient = userManagementClient;
             this.systemSettingsService = systemSettingsService;
+            this.terminalTemplatesService = terminalTemplatesService;
         }
 
         [HttpGet]
@@ -139,12 +142,16 @@ namespace Merchants.Api.Controllers
         {
             var merchant = EnsureExists(await merchantsService.GetMerchants().FirstOrDefaultAsync(d => d.MerchantID == model.MerchantID));
 
+            var newTerminal = mapper.Map<Terminal>(model);
+
             if (model.TerminalTemplateID.HasValue)
             {
-                //TODO: Process terminal template
+                var template = EnsureExists(await terminalTemplatesService.GetTerminalTemplate(model.TerminalTemplateID.Value));
+
+                mapper.Map(template, newTerminal);
             }
 
-            var newTerminal = mapper.Map<Terminal>(model);
+            newTerminal.Status = Shared.Enums.TerminalStatusEnum.Approved;
 
             await terminalsService.CreateEntity(newTerminal);
 

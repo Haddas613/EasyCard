@@ -9,5 +9,7 @@ namespace Merchants.Api.Models.TerminalTemplate
     public class TerminalTemplatesFilter : FilterBase
     {
         public string Label { get; set; }
+
+        public bool? Active { get; set; }
     }
 }

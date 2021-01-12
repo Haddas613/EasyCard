@@ -43,9 +43,9 @@ namespace Merchants.Business.Entities.Terminal
 
         public TerminalCheckoutSettings CheckoutSettings { get; set; }
 
-        public virtual IEnumerable<TerminalTemplateExternalSystem> Integrations { get; set; }
+        public virtual ICollection<TerminalTemplateExternalSystem> Integrations { get; set; }
 
-        public virtual IEnumerable<Feature> EnabledFeatures { get; set; }
+        public virtual ICollection<Feature> EnabledFeatures { get; set; }
 
         public bool Active { get; set; }
 

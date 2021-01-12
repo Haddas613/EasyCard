@@ -52,9 +52,9 @@ namespace Merchants.Business.Entities.Terminal
 
         public TerminalCheckoutSettings CheckoutSettings { get; set; }
 
-        public virtual IEnumerable<TerminalExternalSystem> Integrations { get; set; }
+        public virtual ICollection<TerminalExternalSystem> Integrations { get; set; }
 
-        public virtual IEnumerable<Feature> EnabledFeatures { get; set; }
+        public virtual ICollection<Feature> EnabledFeatures { get; set; }
 
         public byte[] SharedApiKey { get; set; }
 

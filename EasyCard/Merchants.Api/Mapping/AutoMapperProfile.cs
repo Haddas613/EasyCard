@@ -69,6 +69,8 @@ namespace Merchants.Api.Mapping
             CreateMap<SystemBillingSettings, TerminalBillingSettings>()
               .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
 
+            CreateMap<TerminalTemplate, Terminal>()
+                .ForMember(d => d.Label, o => o.Ignore());
             CreateMap<TerminalTemplate, TerminalTemplateSummary>();
             CreateMap<TerminalTemplate, TerminalTemplateResponse>();
             CreateMap<TerminalTemplateRequest, TerminalTemplate>()
@@ -83,6 +85,7 @@ namespace Merchants.Api.Mapping
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<TerminalTemplateExternalSystem, TerminalExternalSystemDetails>();
+            CreateMap<TerminalTemplateExternalSystem, TerminalExternalSystem>();
             CreateMap<ExternalSystemRequest, TerminalTemplateExternalSystem>();
         }
 

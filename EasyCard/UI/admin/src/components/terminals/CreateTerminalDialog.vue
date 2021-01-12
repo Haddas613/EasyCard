@@ -63,7 +63,10 @@ export default {
       },
       valid: true,
       vr: ValidationRules,
-      terminalTemplates: []
+      terminalTemplates: [],
+      terminalTemplatesFilter:{
+        active: true
+      }
     };
   },
   computed: {
@@ -77,7 +80,7 @@ export default {
     }
   },
   async mounted () {
-    let templates = (await this.$api.terminalTemplates.get()).data || [];
+    let templates = (await this.$api.terminalTemplates.get(this.terminalTemplatesFilter)).data || [];
 
     if(templates && templates.length > 0){
       this.terminalTemplates = templates;
