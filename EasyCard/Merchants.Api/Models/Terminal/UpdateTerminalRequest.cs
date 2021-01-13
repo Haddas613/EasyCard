@@ -1,4 +1,5 @@
-﻿using Merchants.Shared.Models;
+﻿using Merchants.Shared.Enums;
+using Merchants.Shared.Models;
 using Newtonsoft.Json;
 using Shared.Api.Models.Binding;
 using System;
@@ -30,5 +31,7 @@ namespace Merchants.Api.Models.Terminal
 
         [Required]
         public TerminalCheckoutSettings CheckoutSettings { get; set; }
+
+        public IEnumerable<FeatureEnum> EnabledFeatures { get; set; }
     }
 }

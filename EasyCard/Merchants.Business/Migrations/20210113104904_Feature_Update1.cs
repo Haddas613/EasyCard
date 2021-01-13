@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Merchants.Business.Migrations
 {
-    public partial class Feature_Update : Migration
+    public partial class Feature_Update1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,6 +13,10 @@ namespace Merchants.Business.Migrations
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Feature_TerminalTemplate_TerminalTemplateID",
+                table: "Feature");
+
+            migrationBuilder.DropPrimaryKey(
+                name: "PK_Feature",
                 table: "Feature");
 
             migrationBuilder.DropIndex(
@@ -25,6 +29,10 @@ namespace Merchants.Business.Migrations
 
             migrationBuilder.DropColumn(
                 name: "FeatureCode",
+                table: "Feature");
+
+            migrationBuilder.DropColumn(
+                name: "FeatureID",
                 table: "Feature");
 
             migrationBuilder.DropColumn(
@@ -49,18 +57,25 @@ namespace Merchants.Business.Migrations
                 unicode: false,
                 nullable: true);
 
-            migrationBuilder.AlterColumn<short>(
-                name: "FeatureID",
+            migrationBuilder.AddColumn<short>(
+                name: "FeatureIDTMP",
                 table: "Feature",
                 type: "smallint",
                 nullable: false,
-                oldClrType: typeof(long),
-                oldType: "bigint")
-                .OldAnnotation("SqlServer:Identity", "1, 1");
+                defaultValue: (short)0);
+
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_Feature",
+                table: "Feature",
+                column: "FeatureIDTMP");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropPrimaryKey(
+                name: "PK_Feature",
+                table: "Feature");
+
             migrationBuilder.DropColumn(
                 name: "EnabledFeatures",
                 table: "TerminalTemplate");
@@ -69,14 +84,9 @@ namespace Merchants.Business.Migrations
                 name: "EnabledFeatures",
                 table: "Terminal");
 
-            migrationBuilder.AlterColumn<long>(
-                name: "FeatureID",
-                table: "Feature",
-                type: "bigint",
-                nullable: false,
-                oldClrType: typeof(short),
-                oldType: "smallint")
-                .Annotation("SqlServer:Identity", "1, 1");
+            migrationBuilder.DropColumn(
+                name: "FeatureIDTMP",
+                table: "Feature");
 
             migrationBuilder.AddColumn<string>(
                 name: "FeatureCode",
@@ -85,6 +95,14 @@ namespace Merchants.Business.Migrations
                 maxLength: 50,
                 nullable: false,
                 defaultValue: "");
+
+            migrationBuilder.AddColumn<long>(
+                name: "FeatureID",
+                table: "Feature",
+                type: "bigint",
+                nullable: false,
+                defaultValue: 0L)
+                .Annotation("SqlServer:Identity", "1, 1");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "TerminalID",
@@ -97,6 +115,11 @@ namespace Merchants.Business.Migrations
                 table: "Feature",
                 type: "bigint",
                 nullable: true);
+
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_Feature",
+                table: "Feature",
+                column: "FeatureID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Feature_TerminalID",

@@ -47,14 +47,13 @@ namespace Merchants.Business.Data
             c => (IEnumerable<string>)c.ToHashSet());
 
         private static readonly ValueConverter FeatureEnumArrayConverter = new ValueConverter<ICollection<FeatureEnum>, string>(
-            v => string.Join(",", v.ToString()),
+            v => string.Join(",", v.Select(e => ((short)e).ToString())),
             v => v != null ? v.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries).Select(s => (FeatureEnum)short.Parse(s)).ToHashSet() : null);
 
         private static readonly ValueComparer FeatureEnumArrayComparer = new ValueComparer<ICollection<FeatureEnum>>(
             (c1, c2) => c1.SequenceEqual(c2),
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
             c => (ICollection<FeatureEnum>)c.ToHashSet());
-
 
         public DbSet<Merchant> Merchants { get; set; }
 

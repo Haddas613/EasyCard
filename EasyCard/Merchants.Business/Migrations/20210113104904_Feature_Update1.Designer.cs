@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Merchants.Business.Migrations
 {
     [DbContext(typeof(MerchantsContext))]
-    [Migration("20210112143609_Feature_Update")]
-    partial class Feature_Update
+    [Migration("20210113104904_Feature_Update1")]
+    partial class Feature_Update1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -184,7 +184,7 @@ namespace Merchants.Business.Migrations
 
             modelBuilder.Entity("Merchants.Business.Entities.Merchant.Feature", b =>
                 {
-                    b.Property<short>("FeatureID")
+                    b.Property<short>("FeatureIDTMP")
                         .HasColumnType("smallint");
 
                     b.Property<string>("NameEN")
@@ -207,7 +207,7 @@ namespace Merchants.Business.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.HasKey("FeatureID");
+                    b.HasKey("FeatureIDTMP");
 
                     b.ToTable("Feature");
                 });

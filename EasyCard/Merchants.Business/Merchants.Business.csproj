@@ -15,6 +15,12 @@
     <Compile Remove="Migrations\20200731122944_Consumer_ConsumerNationalID.Designer.cs" />
     <Compile Remove="Migrations\20201224112240_Name.cs" />
     <Compile Remove="Migrations\20201224112240_Name.Designer.cs" />
+    <Compile Remove="Migrations\20210112143609_Feature_Update.cs" />
+    <Compile Remove="Migrations\20210112143609_Feature_Update.Designer.cs" />
+    <Compile Remove="Migrations\20210113103956_Feature_Update1.cs" />
+    <Compile Remove="Migrations\20210113103956_Feature_Update1.Designer.cs" />
+    <Compile Remove="Migrations\20210113104258_Feature_Update1.cs" />
+    <Compile Remove="Migrations\20210113104258_Feature_Update1.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

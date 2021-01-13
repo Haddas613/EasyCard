@@ -1,5 +1,6 @@
 ﻿using Merchants.Business.Data;
 using Merchants.Business.Services;
+using Merchants.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Business.Security;
@@ -73,8 +74,41 @@ namespace Merchants.Api.Data
 
                         systemSettingsService.UpdateSystemSettings(systemSettings).Wait();
                     }
+
+                    SeedFeaturesData(context);
                 }
             }
+        }
+
+        private static void SeedFeaturesData(MerchantsContext context)
+        {
+            var dbFeatures = context.Features.ToList().ToDictionary(k => k.FeatureID, v => v);
+            var enumFeatures = Enum.GetValues(typeof(FeatureEnum)).Cast<FeatureEnum>();
+
+            var addingFeatures = new List<Business.Entities.Merchant.Feature>();
+
+            foreach (var @enum in enumFeatures)
+            {
+                if (!dbFeatures.ContainsKey(@enum))
+                {
+                    var name = Enum.GetName(typeof(FeatureEnum), @enum);
+                    addingFeatures.Add(new Business.Entities.Merchant.Feature
+                    {
+                        FeatureID = @enum,
+                        NameEN = name,
+                        NameHE = name,
+                        Price = 0
+                    });
+                }
+            }
+
+            if (addingFeatures.Count == 0)
+            {
+                return;
+            }
+
+            context.AddRange(addingFeatures);
+            context.SaveChanges();
         }
     }
 }

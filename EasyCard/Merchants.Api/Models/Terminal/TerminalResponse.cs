@@ -39,7 +39,7 @@ namespace Merchants.Api.Models.Terminal
 
         public IEnumerable<TerminalExternalSystemDetails> Integrations { get; set; }
 
-        public IEnumerable<FeatureSummary> EnabledFeatures { get; set; }
+        public IEnumerable<FeatureEnum> EnabledFeatures { get; set; }
 
         public TerminalSettings Settings { get; set; }
 
