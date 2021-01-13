@@ -20,7 +20,7 @@ class AuthService {
 
             client_id: 'admin_frontend',
             response_type: 'id_token token',
-            scope: 'openid profile merchants_api transactions_api',
+            scope: 'openid profile merchants_api transactions_api roles',
         };
 
         this.userManager = new UserManager(settings);

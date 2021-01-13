@@ -11,6 +11,7 @@ namespace IdentityServer
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
+                new IdentityResource("roles", "Roles", new[] { JwtClaimTypes.Role }),
             };
 
         public static IEnumerable<ApiScope> ApiScopes =>
@@ -84,7 +85,8 @@ namespace IdentityServer
                     },
                     AllowedCorsOrigins = { " http://localhost:8080", "https://localhost:44339", "https://ecng-profile.azurewebsites.net" },
                     AllowAccessTokensViaBrowser = true,
-                    AllowedScopes = { "openid", "profile", "transactions_api" }
+                    AllowedScopes = { "openid", "profile", "transactions_api", "roles" },
+                    AlwaysIncludeUserClaimsInIdToken = true,
                 },
 
                 // SPA client using code flow + pkce
@@ -112,7 +114,8 @@ namespace IdentityServer
                     PostLogoutRedirectUris = { "https://localhost:44331/index.html", "https://ecng-identity.azurewebsites.net" },
                     AllowedCorsOrigins = { " http://localhost:8081", "https://localhost:44390", "https://ecng-merchants.azurewebsites.net" },
                     AllowAccessTokensViaBrowser = true,
-                    AllowedScopes = { "openid", "profile", "transactions_api", "merchants_api" }
+                    AllowedScopes = { "openid", "profile", "transactions_api", "merchants_api", "roles" },
+                    AlwaysIncludeUserClaimsInIdToken = true,
                 },
                 new Client
                 {
