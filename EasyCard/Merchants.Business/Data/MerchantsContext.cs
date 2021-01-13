@@ -59,6 +59,8 @@ namespace Merchants.Business.Data
 
         public DbSet<Feature> Features { get; set; }
 
+        public DbSet<Plan> Plans { get; set; }
+
         public DbSet<Terminal> Terminals { get; set; }
 
         public DbSet<TerminalTemplate> TerminalTemplates { get; set; }
@@ -217,6 +219,23 @@ namespace Merchants.Business.Data
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
                 builder.Property(b => b.NameEN).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.NameHE).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.Price).HasColumnType("decimal(19,4)").HasDefaultValue(decimal.Zero).IsRequired(false);
+            }
+        }
+
+        internal class PlansConfiguration : IEntityTypeConfiguration<Plan>
+        {
+            public void Configure(EntityTypeBuilder<Plan> builder)
+            {
+                builder.ToTable("Plan");
+
+                builder.HasKey(b => b.PlanID);
+                builder.Property(b => b.PlanID).ValueGeneratedOnAdd();
+
+                builder.Property(p => p.UpdateTimestamp).IsRowVersion();
+                builder.Property(b => b.Title).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                builder.Property(b => b.Description).IsRequired(false).IsUnicode(true);
 
                 builder.Property(b => b.Price).HasColumnType("decimal(19,4)").HasDefaultValue(decimal.Zero).IsRequired(false);
             }

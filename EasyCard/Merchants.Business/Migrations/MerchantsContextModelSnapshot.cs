@@ -310,6 +310,38 @@ namespace Merchants.Business.Migrations
                     b.ToTable("MerchantHistory");
                 });
 
+            modelBuilder.Entity("Merchants.Business.Entities.Merchant.Plan", b =>
+                {
+                    b.Property<long>("PlanID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<long>("TerminalTemplateID")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("UpdateTimestamp")
+                        .HasColumnType("varbinary(max)");
+
+                    b.HasKey("PlanID");
+
+                    b.HasIndex("TerminalTemplateID");
+
+                    b.ToTable("Plans");
+                });
+
             modelBuilder.Entity("Merchants.Business.Entities.System.SystemSettings", b =>
                 {
                     b.Property<int>("SystemSettingsID")
@@ -616,6 +648,15 @@ namespace Merchants.Business.Migrations
                     b.HasOne("Merchants.Business.Entities.Terminal.Terminal", "Terminal")
                         .WithMany()
                         .HasForeignKey("TerminalID");
+                });
+
+            modelBuilder.Entity("Merchants.Business.Entities.Merchant.Plan", b =>
+                {
+                    b.HasOne("Merchants.Business.Entities.Terminal.TerminalTemplate", "TerminalTemplate")
+                        .WithMany()
+                        .HasForeignKey("TerminalTemplateID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Merchants.Business.Entities.Terminal.Terminal", b =>

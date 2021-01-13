@@ -182,6 +182,7 @@ namespace Merchants.Api
             services.AddScoped<ITerminalTemplatesService, TerminalTemplatesService>();
             services.AddScoped<ISystemSettingsService, SystemSettingsService>();
             services.AddScoped<IFeaturesService, FeaturesService>();
+            services.AddScoped<IPlansService, PlansService>();
 
             services.AddAutoMapper(typeof(Startup));
 
