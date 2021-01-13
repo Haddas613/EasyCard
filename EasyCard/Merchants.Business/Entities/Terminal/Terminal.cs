@@ -21,7 +21,7 @@ namespace Merchants.Business.Entities.Terminal
             PaymentRequestSettings = new TerminalPaymentRequestSettings();
             CheckoutSettings = new TerminalCheckoutSettings();
             Integrations = new HashSet<TerminalExternalSystem>();
-            EnabledFeatures = new HashSet<Feature>();
+            EnabledFeatures = new HashSet<FeatureEnum>();
             Created = DateTime.UtcNow;
             TerminalID = Guid.NewGuid().GetSequentialGuid(Created.Value);
         }
@@ -54,7 +54,7 @@ namespace Merchants.Business.Entities.Terminal
 
         public virtual ICollection<TerminalExternalSystem> Integrations { get; set; }
 
-        public virtual ICollection<Feature> EnabledFeatures { get; set; }
+        public virtual ICollection<FeatureEnum> EnabledFeatures { get; set; }
 
         public byte[] SharedApiKey { get; set; }
 

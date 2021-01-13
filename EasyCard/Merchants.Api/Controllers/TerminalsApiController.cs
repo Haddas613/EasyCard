@@ -38,14 +38,17 @@ namespace Merchants.Api.Controllers
         private readonly IUserManagementClient userManagementClient;
         private readonly ISystemSettingsService systemSettingsService;
         private readonly ITerminalTemplatesService terminalTemplatesService;
+        private readonly IFeaturesService featuresService;
 
-        public TerminalsApiController(IMerchantsService merchantsService, 
+        public TerminalsApiController(
+            IMerchantsService merchantsService,
             ITerminalsService terminalsService,
             IMapper mapper,
             IExternalSystemsService externalSystemsService,
             IUserManagementClient userManagementClient,
             ISystemSettingsService systemSettingsService,
-            ITerminalTemplatesService terminalTemplatesService)
+            ITerminalTemplatesService terminalTemplatesService,
+            IFeaturesService featuresService)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
@@ -54,6 +57,7 @@ namespace Merchants.Api.Controllers
             this.userManagementClient = userManagementClient;
             this.systemSettingsService = systemSettingsService;
             this.terminalTemplatesService = terminalTemplatesService;
+            this.featuresService = featuresService;
         }
 
         [HttpGet]
@@ -71,7 +75,7 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
-        [Route("availableIntegrations")]
+        [Route("available-integrations")]
         public async Task<ActionResult<Dictionary<string, IEnumerable<ExternalSystem>>>> GetAvailableIntegrations()
         {
             //TODO: translations for keys
@@ -79,6 +83,15 @@ namespace Merchants.Api.Controllers
                 .GroupBy(k => k.Type);
 
             return Ok(externalSystems.ToDictionary(k => k.Key, v => v));
+        }
+
+        [HttpGet]
+        [Route("available-features")]
+        public async Task<ActionResult<FeatureSummary>> GetAvailableFeatures()
+        {
+            var features = await mapper.ProjectTo<FeatureSummary>(featuresService.GetQuery()).ToListAsync();
+
+            return Ok(features);
         }
 
         [HttpGet]

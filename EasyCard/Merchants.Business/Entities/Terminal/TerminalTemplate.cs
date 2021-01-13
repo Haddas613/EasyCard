@@ -21,7 +21,7 @@ namespace Merchants.Business.Entities.Terminal
             PaymentRequestSettings = new TerminalPaymentRequestSettings();
             CheckoutSettings = new TerminalCheckoutSettings();
             Integrations = new HashSet<TerminalTemplateExternalSystem>();
-            EnabledFeatures = new HashSet<Feature>();
+            EnabledFeatures = new HashSet<FeatureEnum>();
             Created = DateTime.UtcNow;
         }
 
@@ -45,7 +45,7 @@ namespace Merchants.Business.Entities.Terminal
 
         public virtual ICollection<TerminalTemplateExternalSystem> Integrations { get; set; }
 
-        public virtual ICollection<Feature> EnabledFeatures { get; set; }
+        public virtual ICollection<FeatureEnum> EnabledFeatures { get; set; }
 
         public bool Active { get; set; }
 
