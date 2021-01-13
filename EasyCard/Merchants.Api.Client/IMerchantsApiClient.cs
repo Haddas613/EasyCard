@@ -14,5 +14,7 @@ namespace Merchants.Api.Client
         Task<OperationResponse> CreateTerminal(TerminalRequest terminalRequest);
 
         Task<OperationResponse> LinkUserToMerchant(LinkUserToMerchantRequest request);
+
+        Task<SummariesResponse<PlanSummary>> GetPlans();
     }
 }

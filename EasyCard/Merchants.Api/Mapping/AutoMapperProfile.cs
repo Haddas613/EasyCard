@@ -88,6 +88,7 @@ namespace Merchants.Api.Mapping
             CreateMap<TerminalTemplateExternalSystem, TerminalExternalSystem>();
             CreateMap<ExternalSystemRequest, TerminalTemplateExternalSystem>();
             CreateMap<Feature, FeatureSummary>();
+            CreateMap<Plan, PlanSummary>();
         }
 
         private void RegisterMerchantMappings()

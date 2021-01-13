@@ -57,6 +57,19 @@ namespace Merchants.Api.Client
             }
         }
 
+        public async Task<SummariesResponse<PlanSummary>> GetPlans()
+        {
+            try
+            {
+                return await webApiClient.Get<SummariesResponse<PlanSummary>>(apiConfiguration.MerchantsApiAddress, "api/plans", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                return new SummariesResponse<PlanSummary>();
+            }
+        }
+
         public async Task<OperationResponse> LinkUserToMerchant(LinkUserToMerchantRequest request)
         {
             try
