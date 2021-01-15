@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Merchants.Api.Models.Terminal;
+using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Services;
+using Merchants.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,13 +24,15 @@ namespace Merchants.Api.Controllers
     {
         private readonly IPlansService plansService;
         private readonly IFeaturesService featuresService;
+        private readonly ITerminalTemplatesService templatesService;
         private readonly IMapper mapper;
 
-        public PlansApiController(IPlansService plansService, IFeaturesService featuresService, IMapper mapper)
+        public PlansApiController(IPlansService plansService, IFeaturesService featuresService, IMapper mapper, ITerminalTemplatesService templatesService)
         {
             this.plansService = plansService;
             this.featuresService = featuresService;
             this.mapper = mapper;
+            this.templatesService = templatesService;
         }
 
         [HttpGet]

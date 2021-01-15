@@ -41,9 +41,13 @@ namespace IdentityServer.Controllers
             this.userManageService = userManageService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var model = new RegisterViewModel
+            {
+                Plans = (await merchantsApiClient.GetPlans()).Data
+            };
+            return View(model);
         }
 
         [HttpPost]

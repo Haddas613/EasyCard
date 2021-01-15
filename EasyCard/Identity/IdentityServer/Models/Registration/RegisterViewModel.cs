@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using Merchants.Api.Client.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -57,7 +58,7 @@ namespace IdentityServer.Models.Registration
         [Required]
         public int PlanId { get; set; }
 
-        //[BindNever]
-        //public IEnumerable<Plan> Plans{ get; set; }
+        [BindNever]
+        public IEnumerable<PlanSummary> Plans { get; set; }
     }
 }
