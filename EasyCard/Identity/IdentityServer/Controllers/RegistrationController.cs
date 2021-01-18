@@ -54,9 +54,11 @@ namespace IdentityServer.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
+            model.Plans = (await merchantsApiClient.GetPlans()).Data;
+
             if (!ModelState.IsValid)
             {
-                return View(nameof(Index));
+                return View(nameof(Index), model);
             }
 
             var emailIsTaken = (await userManager.FindByEmailAsync(model.Email)) != null;
@@ -64,7 +66,7 @@ namespace IdentityServer.Controllers
             if (emailIsTaken)
             {
                 ModelState.AddModelError(nameof(model.Email), "That email is already taken");
-                return View(nameof(Index));
+                return View(nameof(Index), model);
             }
 
             var merchantRequest = mapper.Map<MerchantRequest>(model);
@@ -73,7 +75,22 @@ namespace IdentityServer.Controllers
             if (merchantResult.Status != Shared.Api.Models.Enums.StatusEnum.Success)
             {
                 ModelState.AddModelError("General", merchantResult.Message);
-                return View(nameof(Index));
+                return View(nameof(Index), model);
+            }
+
+            var selectedPlan = model.Plans.First(p => p.PlanID == model.PlanId);
+            var terminalRequest = new TerminalRequest
+            {
+                MerchantID = merchantResult.EntityUID.Value,
+                Label = selectedPlan.Title,
+                TerminalTemplateID = selectedPlan.TerminalTemplateID
+            };
+            var terminalResult = await merchantsApiClient.CreateTerminal(terminalRequest);
+
+            if (terminalResult.Status != Shared.Api.Models.Enums.StatusEnum.Success)
+            {
+                ModelState.AddModelError("General", terminalResult.Message);
+                return View(nameof(Index), model);
             }
 
             var userModel = new IdentityServerClient.CreateUserRequestModel
@@ -88,7 +105,7 @@ namespace IdentityServer.Controllers
             if (!userResult.Succeeded)
             {
                 ModelState.AddModelError("General", string.Join(",", userResult.Errors.Select(e => e.Description)));
-                return View(nameof(Index));
+                return View(nameof(Index), model);
             }
 
             var user = await userManager.FindByEmailAsync(model.Email);
@@ -111,7 +128,7 @@ namespace IdentityServer.Controllers
             if (merchantLinkResult.Status != Shared.Api.Models.Enums.StatusEnum.Success)
             {
                 ModelState.AddModelError("General", merchantLinkResult.Message);
-                return View(nameof(Index));
+                return View(nameof(Index), model);
             }
 
             return View("RegistrationSuccess");

@@ -16,7 +16,37 @@
 
             <div class="panel-body">
                 <form asp-action="Register" method="post">
-                    <fieldset>
+                    @if (Model.Plans?.Count() > 0)
+                    {
+                        <fieldset name="plans">
+                            <div class="row">
+                                @foreach (var plan in Model.Plans)
+                                {
+                                <div class="col-md-3 col-xs-12">
+                                    <div class="card text-white bg-primary mb-3 plan-card">
+                                        <div class="card-header">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" asp-for="PlanId" name="PlanId" value="@plan.PlanID" id="plan-id-@plan.PlanID">
+                                                <label class="form-check-label" for="plan-id-@plan.PlanID">
+                                                    @plan.Title
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text">
+                                                @plan.Description
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                }
+                                <div class="col-md-12 col-xs-12">
+                                    <span asp-validation-for="PlanId"></span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    }
+                    <fieldset name="user-data">
                         <div class="row">
                             <div class="col-md-6 col-xs-12 form-group">
                                 <label asp-for="BusinessName">Business name</label>

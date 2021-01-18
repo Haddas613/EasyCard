@@ -79,3 +79,6 @@ body {
 .field-validation-error {
     color: var(--red);
 }
+.plan-card {
+    height: 200px;
+}
