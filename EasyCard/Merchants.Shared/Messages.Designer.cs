@@ -106,11 +106,29 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Terminal template approved.
+        /// </summary>
+        public static string TerminalTemplateApproved {
+            get {
+                return ResourceManager.GetString("TerminalTemplateApproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terminal Template Created.
         /// </summary>
         public static string TerminalTemplateCreated {
             get {
                 return ResourceManager.GetString("TerminalTemplateCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal template disabled.
+        /// </summary>
+        public static string TerminalTemplateDisabled {
+            get {
+                return ResourceManager.GetString("TerminalTemplateDisabled", resourceCulture);
             }
         }
         

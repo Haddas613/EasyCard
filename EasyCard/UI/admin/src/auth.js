@@ -57,6 +57,30 @@ class AuthService {
             return !!data ? data.access_token : null;
         });
     }
+
+    async isInRole(role){
+        if(!this.roles){
+            this.roles = {};
+        }
+
+        if(typeof(this.roles[role]) === "undefined"){
+            const user = await this.userManager.getUser();
+            if(!user || !user.profile){
+                return false;
+            }
+            this.roles[role] = (user.profile.role && user.profile.role.indexOf(role) > -1);
+        }
+
+        return this.roles[role];
+    }
+
+    async isBillingAdmin(){
+        return this.isInRole("BillingAdministrator");
+    }
+
+    async isBusinessAdmin(){
+        return this.isInRole("BusinessAdministrator");
+    }
 }
 
 export default {

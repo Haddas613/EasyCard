@@ -132,8 +132,14 @@
   <data name="TerminalCreated" xml:space="preserve">
     <value>Terminal Created</value>
   </data>
+  <data name="TerminalTemplateApproved" xml:space="preserve">
+    <value>Terminal template approved</value>
+  </data>
   <data name="TerminalTemplateCreated" xml:space="preserve">
     <value>Terminal Template Created</value>
+  </data>
+  <data name="TerminalTemplateDisabled" xml:space="preserve">
+    <value>Terminal template disabled</value>
   </data>
   <data name="TerminalUpdated" xml:space="preserve">
     <value>Terminal Updated</value>

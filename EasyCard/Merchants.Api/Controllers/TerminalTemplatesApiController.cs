@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
 using AutoMapper;
 using Merchants.Api.Extensions.Filtering;
@@ -20,6 +21,7 @@ using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
+using Shared.Helpers.Security;
 
 namespace Merchants.Api.Controllers
 {
@@ -151,10 +153,44 @@ namespace Merchants.Api.Controllers
         [Route("{terminalTemplateID}/externalsystem/{externalSystemID}")]
         public async Task<ActionResult<OperationResponse>> DeleteTerminalExternalSystem([FromRoute]long terminalTemplateID, long externalSystemID)
         {
-            // TODO: validation if it exists
+            EnsureExists(await terminalTemplatesService.GetTerminalTemplate(terminalTemplateID));
             await terminalTemplatesService.RemoveTerminalTemplateExternalSystem(terminalTemplateID, externalSystemID);
 
             return Ok(new OperationResponse(Messages.ExternalSystemRemoved, StatusEnum.Success, terminalTemplateID.ToString()));
+        }
+
+        [HttpPost]
+        [Route("{terminalTemplateID}/approve")]
+        public async Task<ActionResult<OperationResponse>> ApproveTerminalTemplate([FromRoute]long terminalTemplateID)
+        {
+            if (!User.IsBillingAdmin())
+            {
+                throw new SecurityException();
+            }
+
+            var terminalTemplate = EnsureExists(await terminalTemplatesService.GetTerminalTemplate(terminalTemplateID));
+
+            terminalTemplate.Active = true;
+            await terminalTemplatesService.UpdateEntity(terminalTemplate);
+
+            return Ok(new OperationResponse(Messages.TerminalTemplateApproved, StatusEnum.Success, terminalTemplateID.ToString()));
+        }
+
+        [HttpPost]
+        [Route("{terminalTemplateID}/disapprove")]
+        public async Task<ActionResult<OperationResponse>> DisapproveTerminalTemplate([FromRoute]long terminalTemplateID)
+        {
+            if (!User.IsBillingAdmin())
+            {
+                throw new SecurityException();
+            }
+
+            var terminalTemplate = EnsureExists(await terminalTemplatesService.GetTerminalTemplate(terminalTemplateID));
+
+            terminalTemplate.Active = false;
+            await terminalTemplatesService.UpdateEntity(terminalTemplate);
+
+            return Ok(new OperationResponse(Messages.TerminalTemplateDisabled, StatusEnum.Success, terminalTemplateID.ToString()));
         }
     }
 }

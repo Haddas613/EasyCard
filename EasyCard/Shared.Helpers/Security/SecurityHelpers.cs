@@ -28,8 +28,10 @@ namespace Shared.Helpers.Security
 
         public static bool IsBillingAdmin(this ClaimsPrincipal user)
         {
-            return user.HasClaim("scope", "admin_api") &&
-                   user?.IsInRole(Roles.BillingAdministrator) == true;
+            //return user.HasClaim("scope", "admin_api") &&
+            //       user?.IsInRole(Roles.BillingAdministrator) == true;
+
+            return user?.IsInRole(Roles.BillingAdministrator) == true;
         }
 
         public static bool IsMerchant(this ClaimsPrincipal user)

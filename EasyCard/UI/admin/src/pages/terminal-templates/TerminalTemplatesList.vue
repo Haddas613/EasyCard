@@ -27,8 +27,14 @@
         class="elevation-1"
       >
         <template v-slot:item.actions="{ item }">
-          <v-btn class="mx-1" color="secondary" outlined x-small link :to="{name: 'EditTerminalTemplate', params: {id: item.terminalTemplateID}}">
+          <v-btn class="mx-1" color="secondary" outlined small link :to="{name: 'EditTerminalTemplate', params: {id: item.terminalTemplateID}}">
             <v-icon small>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn class="mx-1" color="error" outlined small v-if="isBillingAdmin && item.active" @click="disapprove(item)">
+            <v-icon small>mdi-cancel</v-icon>
+          </v-btn>
+          <v-btn class="mx-1" color="success" outlined small v-if="isBillingAdmin && !item.active" @click="approve(item)">
+            <v-icon small>mdi-chevron-down-circle</v-icon>
           </v-btn>
           <!-- <v-icon small @click="deleteItem(item)">mdi-delete</v-icon> -->
         </template>
@@ -51,7 +57,8 @@ export default {
       pagination: {},
       headers: [],
       terminalTemplatesFilter: {},
-      showCreateTerminalTemplateDialog: false
+      showCreateTerminalTemplateDialog: false,
+      isBillingAdmin: false,
     };
   },
   watch: {
@@ -61,6 +68,9 @@ export default {
       },
       deep: true
     }
+  },
+  async mounted () {
+    this.isBillingAdmin = await this.$oidc.isBillingAdmin();
   },
   methods: {
     async getDataFromApi() {
@@ -81,6 +91,14 @@ export default {
     async applyFilter(filter) {
       this.terminalTemplatesFilter = filter;
       await this.getDataFromApi();
+    },
+    async approve(terminalTemplate){
+      await this.$api.terminalTemplates.approve(terminalTemplate.terminalTemplateID);
+      terminalTemplate.active = true;
+    },
+    async disapprove(terminalTemplate){
+      await this.$api.terminalTemplates.disapprove(terminalTemplate.terminalTemplateID);
+      terminalTemplate.active = false;
     }
   }
 };

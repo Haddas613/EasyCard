@@ -42,4 +42,12 @@ export default class TerminalsApi {
     async deleteExternalSystem(terminalTemplateID, externalSystemID){
         return this.base.delete(this.templatesUrl + `/${terminalTemplateID}/externalsystem/${externalSystemID}`);
     }
+
+    async approve(terminalTemplateID){
+        return this.base.post(this.templatesUrl + `/${terminalTemplateID}/approve`);
+    }
+
+    async disapprove(terminalTemplateID){
+        return this.base.post(this.templatesUrl + `/${terminalTemplateID}/disapprove`);
+    }
 }
