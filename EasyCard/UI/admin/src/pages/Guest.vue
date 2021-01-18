@@ -35,9 +35,7 @@ import LangSwitcher from "../components/LanguageSwitcher"
 export default {
   components: {LangSwitcher},
   mounted() {
-    if (mainAuth.isAuthenticated) {
-      this.$router.push(this.buttonLink);
-    }
+    
   },
   data() {
     return {

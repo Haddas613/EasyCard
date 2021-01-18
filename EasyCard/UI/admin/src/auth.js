@@ -24,6 +24,8 @@ class AuthService {
         };
 
         this.userManager = new UserManager(settings);
+        this.billingAdminRole = "BillingAdministrator";
+        this.businessAdminRole = "BusinessAdministrator";
     }
 
     getUser() {
@@ -36,10 +38,13 @@ class AuthService {
         });
     }
 
-    isAuthenticated() {
-        return this.getAccessToken().then((access_token) => {
-            return access_token != null;
-        });
+    async isAuthenticated() {
+        const user = await this.userManager.getUser();
+        if(!user || (!(await this.isBusinessAdmin()) && !(await this.isBillingAdmin()))){
+            this.signOut();
+            return false;
+        }
+        return !!(user && user.access_token); 
     }
 
     signinRedirect(route) {
@@ -52,10 +57,13 @@ class AuthService {
         return this.userManager.signoutRedirect();
     }
 
-    getAccessToken() {
-        return this.userManager.getUser().then((data) => {
-            return !!data ? data.access_token : null;
-        });
+    async getAccessToken() {
+        if(!(await this.isAuthenticated())){
+            return null;
+        }
+       
+        const user = await this.userManager.getUser();
+        return user ? user.access_token : null; 
     }
 
     async isInRole(role){
@@ -75,11 +83,11 @@ class AuthService {
     }
 
     async isBillingAdmin(){
-        return this.isInRole("BillingAdministrator");
+        return this.isInRole(this.billingAdminRole);
     }
 
     async isBusinessAdmin(){
-        return this.isInRole("BusinessAdministrator");
+        return this.isInRole(this.businessAdminRole);
     }
 }
 
