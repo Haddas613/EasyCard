@@ -16,5 +16,7 @@ namespace Merchants.Api.Client
         Task<OperationResponse> LinkUserToMerchant(LinkUserToMerchantRequest request);
 
         Task<SummariesResponse<PlanSummary>> GetPlans();
+
+        Task<OperationResponse> LogUserActivity(UserActivityRequest request);
     }
 }

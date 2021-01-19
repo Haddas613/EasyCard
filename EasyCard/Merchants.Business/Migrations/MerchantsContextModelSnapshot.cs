@@ -615,6 +615,9 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("varchar(max)")
                         .IsUnicode(false);
 
+                    b.Property<short>("Status")
+                        .HasColumnType("smallint");
+
                     b.Property<Guid?>("TerminalID")
                         .HasColumnType("uniqueidentifier");
 

@@ -7,13 +7,13 @@ namespace Merchants.Shared.Enums
 {
     public enum UserStatusEnum : short
     {
-        [EnumMember(Value = "Invited")]
+        [EnumMember(Value = "invited")]
         Invited = 0,
 
-        [EnumMember(Value = "Locked")]
+        [EnumMember(Value = "locked")]
         Locked = -1,
 
-        [EnumMember(Value = "Active")]
+        [EnumMember(Value = "active")]
         Active = 1,
     }
 }

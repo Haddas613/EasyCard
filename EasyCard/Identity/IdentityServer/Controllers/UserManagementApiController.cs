@@ -9,6 +9,7 @@ using IdentityServer.Data;
 using IdentityServer.Helpers;
 using IdentityServer.Models;
 using IdentityServerClient;
+using Merchants.Api.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -33,6 +34,7 @@ namespace IdentityServer.Controllers
         private readonly IEmailSender emailSender;
         private readonly ICryptoService cryptoService;
         private readonly ApplicationSettings configuration;
+        private readonly IMerchantsApiClient merchantsApiClient;
 
         public UserManagementApiController(
             UserManager<ApplicationUser> userManager,
@@ -41,7 +43,8 @@ namespace IdentityServer.Controllers
             ILogger<UserManagementApiController> logger,
             IEmailSender emailSender,
             ICryptoService cryptoService,
-            IOptions<ApplicationSettings> configuration
+            IOptions<ApplicationSettings> configuration,
+            IMerchantsApiClient merchantsApiClient
             )
         {
             this.userManager = userManager;
@@ -51,6 +54,7 @@ namespace IdentityServer.Controllers
             this.emailSender = emailSender;
             this.cryptoService = cryptoService;
             this.configuration = configuration?.Value;
+            this.merchantsApiClient = merchantsApiClient;
         }
 
         /// <summary>
@@ -277,6 +281,12 @@ namespace IdentityServer.Controllers
                 });
             }
 
+            await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+            {
+                UserActivity = Merchants.Shared.Enums.UserActivityEnum.Locked,
+                UserID = user.Id
+            });
+
             res = await userManager.SetLockoutEndDateAsync(user, DateTime.UtcNow.AddYears(100));
 
             if (!res.Succeeded)
@@ -319,6 +329,12 @@ namespace IdentityServer.Controllers
                     Message = res.Errors.FirstOrDefault()?.Description
                 });
             }
+
+            await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+            {
+                UserActivity = Merchants.Shared.Enums.UserActivityEnum.Unlocked,
+                UserID = user.Id
+            });
 
             return Ok(new UserOperationResponse
             {

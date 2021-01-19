@@ -83,6 +83,19 @@ namespace Merchants.Api.Client
             }
         }
 
+        public async Task<OperationResponse> LogUserActivity(UserActivityRequest request)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsApiAddress, "api/user/logActivity", request, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+            }
+        }
+
         private async Task<NameValueCollection> BuildHeaders()
         {
             var token = await tokenService.GetToken();

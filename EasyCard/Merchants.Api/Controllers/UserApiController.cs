@@ -10,6 +10,7 @@ using Merchants.Api.Models.User;
 using Merchants.Business.Entities.User;
 using Merchants.Business.Services;
 using Merchants.Shared;
+using Merchants.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -51,9 +52,7 @@ namespace Merchants.Api.Controllers
             return new TableMeta
             {
                 Columns = typeof(UserSummary)
-                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
-                    .Select(d => d.GetColMeta(UserSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
-                    .ToDictionary(d => d.Key)
+                    .GetObjectMeta(UserSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
             };
         }
 
@@ -200,6 +199,24 @@ namespace Merchants.Api.Controllers
             await merchantsService.UnLinkUserFromMerchant(userID, merchantID);
 
             return Ok(new OperationResponse { Message = Messages.UserUnlinkedFromMerchant, Status = StatusEnum.Success });
+        }
+
+        [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("logActivity")]
+        public async Task<ActionResult<OperationResponse>> LogActivity(UserActivityRequest request)
+        {
+            var user = EnsureExists(await userManagementClient.GetUserByID(Guid.Parse(request.UserID)));
+
+            var status = request.UserActivity switch
+            {
+                UserActivityEnum.Locked => UserStatusEnum.Locked,
+                _ => UserStatusEnum.Active
+            };
+
+            await merchantsService.UpdateUserStatus(user.UserID, status);
+
+            return Ok(new OperationResponse { Message = Messages.UserLinkedToMerchant, Status = StatusEnum.Success });
         }
     }
 }

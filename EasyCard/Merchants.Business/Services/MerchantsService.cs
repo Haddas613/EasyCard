@@ -1,6 +1,7 @@
 ﻿using Merchants.Business.Data;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.User;
+using Merchants.Shared.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -239,5 +240,29 @@ namespace Merchants.Business.Services
         }
 
         public IQueryable<UserTerminalMapping> GetMerchantUsers() => context.UserTerminalMappings;
+
+        public async Task UpdateUserStatus(Guid userID, UserStatusEnum status, IDbContextTransaction dbTransaction = null)
+        {
+            var entities = await context.UserTerminalMappings.Where(m => m.UserID == userID).ToListAsync();
+
+            if (entities.Count > 0)
+            {
+                foreach (var entity in entities)
+                {
+                    entity.Status = status;
+                }
+
+                if (dbTransaction != null)
+                {
+                    await context.SaveChangesAsync();
+                }
+                else
+                {
+                    using var transaction = BeginDbTransaction();
+                    await context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                }
+            }
+        }
     }
 }

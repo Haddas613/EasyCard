@@ -2,6 +2,7 @@
 using IdentityServer.Data.Entities;
 using IdentityServer.Models;
 using IdentityServer.Security;
+using Merchants.Api.Client;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,11 +16,13 @@ namespace IdentityServer.Security.Auditing
     {
         private readonly ApplicationDbContext context;
         private readonly IHttpContextAccessor accessor;
+        private readonly IMerchantsApiClient merchantsApiClient;
 
-        public AuditLogger(ApplicationDbContext context, IHttpContextAccessor accessor)
+        public AuditLogger(ApplicationDbContext context, IHttpContextAccessor accessor, IMerchantsApiClient merchantsApiClient)
         {
             this.context = context;
             this.accessor = accessor;
+            this.merchantsApiClient = merchantsApiClient;
         }
 
         public async Task RegisterConfirmEmail(ApplicationUser user)
@@ -42,6 +45,12 @@ namespace IdentityServer.Security.Auditing
             var audit = await GetAudit(user, AuditingTypeEnum.LoggedIn);
 
             await SaveAudit(audit);
+
+            await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+            {
+                UserActivity = Merchants.Shared.Enums.UserActivityEnum.LoggedIn,
+                UserID = user.Id
+            });
         }
 
         public async Task RegisterLogout(ApplicationUser user)
@@ -70,6 +79,12 @@ namespace IdentityServer.Security.Auditing
             var audit = await GetAudit(user, AuditingTypeEnum.PasswordResetted);
 
             await SaveAudit(audit);
+
+            await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+            {
+                UserActivity = Merchants.Shared.Enums.UserActivityEnum.ResetPassword,
+                UserID = user.Id
+            });
         }
 
         private async Task SaveAudit(UserAudit audit)

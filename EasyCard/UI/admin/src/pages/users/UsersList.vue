@@ -19,14 +19,17 @@
             {{item.merchantID}}
           </router-link>
         </template>
+        <template v-slot:item.status="{ item }">
+          <span v-bind:class="statusColors[item.$status]">{{item.status}}</span>
+        </template>
         <template v-slot:item.actions="{ item }">
-          <v-btn class="mx-1" color="primary" outlined small :title="$t('Invite')" :loading="actionInProgress" @click="inviteUser(item)" v-if="item.$status == 'Invited'">
+          <v-btn class="mx-1" color="primary" outlined small :title="$t('Invite')" :loading="actionInProgress" @click="inviteUser(item)" v-if="item.$status == 'invited'">
             <v-icon small>mdi-email</v-icon>
           </v-btn>
-          <v-btn class="mx-1" color="error" outlined small :title="$t('Lock')" :loading="actionInProgress" @click="lockUser(item)" v-if="item.$status == 'Active'">
+          <v-btn class="mx-1" color="error" outlined small :title="$t('Lock')" :loading="actionInProgress" @click="lockUser(item)" v-if="item.$status == 'active'">
             <v-icon small>mdi-lock</v-icon>
           </v-btn>
-          <v-btn class="mx-1" color="success" outlined small :title="$t('Unlock')" :loading="actionInProgress" @click="unlockUser(item)" v-if="item.$status == 'Locked'">
+          <v-btn class="mx-1" color="success" outlined small :title="$t('Unlock')" :loading="actionInProgress" @click="unlockUser(item)" v-if="item.$status == 'locked'">
             <v-icon small>mdi-lock-open</v-icon>
           </v-btn>
           <v-btn class="mx-1" color="orange darken-3" outlined small :title="$t('ResetPassword')" :loading="actionInProgress" @click="resetUserPassword(item.$userID)">
@@ -50,7 +53,12 @@ export default {
       pagination: {},
       headers: [],
       usersFilter: {},
-      actionInProgress: false
+      actionInProgress: false,
+      statusColors: {
+        invited: "primary--text",
+        active: "success--text",
+        locked: "error--text",
+      },
     };
   },
   watch: {
@@ -95,7 +103,7 @@ export default {
       });
 
       if(operation.status == "success"){
-        user.status = this.$merchantDictionaries['userStatusEnum']['invited'];
+        await this.getDataFromApi();
       }else{
         this.$toasted.show(operation.message, { type: "error" });
       }
@@ -106,7 +114,7 @@ export default {
       let operation = await this.$api.users.lockUser(user.$userID);
 
       if(operation.status == "success"){
-        user.status = this.$merchantDictionaries['userStatusEnum']['locked'];
+        await this.getDataFromApi();
       }
       this.actionInProgress = false;
     },
@@ -115,7 +123,7 @@ export default {
       let operation = await this.$api.users.unlockUser(user.$userID);
 
       if(operation.status == "success"){
-        user.status = this.$merchantDictionaries['userStatusEnum']['active'];
+        await this.getDataFromApi();
       }
       this.actionInProgress = false;
     },

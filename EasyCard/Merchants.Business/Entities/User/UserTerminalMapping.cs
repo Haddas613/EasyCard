@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Merchants.Shared.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -25,6 +26,8 @@ namespace Merchants.Business.Entities.User
         public string DisplayName { get; set; }
 
         public string Email { get; set; }
+
+        public UserStatusEnum Status { get; set; }
 
         public IEnumerable<string> Roles { get; set; }
     }
