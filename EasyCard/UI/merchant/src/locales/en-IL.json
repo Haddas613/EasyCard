@@ -58,7 +58,6 @@
   "Confirmation": "Confirmation",
   "BillingDeal(Deleted)" : "Billing Deal (deleted)",
   "Checkout": "Checkout",
-  "CheckoutRedirectUrls": "Checkout Redirect URLs",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -215,6 +214,8 @@
   "VATExempt": "VAT Exempt",
   "MerchantLogoURL": "Merchant Logo URL",
   "RedirectURL": "Redirect URL",
+  "CheckoutRedirectUrls": "Checkout Redirect URLs",
+  "CustomCSSURL": "Custom CSS URL",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

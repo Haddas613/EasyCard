@@ -65,7 +65,6 @@
   "Users": "Users",
   "UsersList": "Users List",
   "Checkout": "Checkout",
-  "CheckoutRedirectUrls": "Checkout Redirect URLs",
   "TerminalTemplates": "Terminal Templates",
   "EditTerminalTemplate": "Edit Terminal Template",
   "CreateTerminalTemplate": "Create Terminal Template",
@@ -238,6 +237,8 @@
   "InviteMessage": "Invite Message",
   "MerchantLogoURL": "Merchant Logo URL",
   "RedirectURL": "Redirect URL",
+  "CheckoutRedirectUrls": "Checkout Redirect URLs",
+  "CustomCSSURL": "Custom CSS URL",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

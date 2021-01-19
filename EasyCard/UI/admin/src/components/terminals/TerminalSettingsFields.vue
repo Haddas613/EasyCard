@@ -261,7 +261,23 @@
         ></v-switch>
       </v-col>
     </v-row>
-     <v-row>
+    <v-row>
+      <v-col cols="12" class="subtitle-2 black--text pb-3">
+        {{$t("Checkout")}}
+        <v-divider class="pt-1"></v-divider>
+      </v-col>
+      <v-col cols="12" md="7">
+        <v-text-field
+          v-model="model.checkoutSettings.customCssReference"
+          :counter="512"
+          :rules="[vr.primitives.maxLength(512)]"
+          :label="$t('CustomCSSURL')"
+          outlined
+          persistent-hint
+        ></v-text-field>
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col cols="12" class="subtitle-2 black--text">
         {{$t("CheckoutRedirectUrls")}}
         <v-divider class="pt-1"></v-divider>
