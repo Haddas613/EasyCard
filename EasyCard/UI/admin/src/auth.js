@@ -40,11 +40,17 @@ class AuthService {
 
     async isAuthenticated() {
         const user = await this.userManager.getUser();
-        if(!user || (!(await this.isBusinessAdmin()) && !(await this.isBillingAdmin()))){
-            this.signOut();
+        if(!user){
             return false;
         }
         return !!(user && user.access_token); 
+    }
+
+    async isAdmin(){
+        let isBusinessAdmin = await this.isBusinessAdmin();
+        let isBillingAdmin = await this.isBillingAdmin();
+        
+        return (isBusinessAdmin || isBillingAdmin);
     }
 
     signinRedirect(route) {
