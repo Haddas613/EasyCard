@@ -157,12 +157,9 @@ namespace Merchants.Api.Controllers
 
             var newTerminal = mapper.Map<Terminal>(model);
 
-            if (model.TerminalTemplateID.HasValue)
-            {
-                var template = EnsureExists(await terminalTemplatesService.GetTerminalTemplate(model.TerminalTemplateID.Value));
+            var template = EnsureExists(await terminalTemplatesService.GetTerminalTemplate(model.TerminalTemplateID));
 
-                mapper.Map(template, newTerminal);
-            }
+            mapper.Map(template, newTerminal);
 
             newTerminal.Status = Shared.Enums.TerminalStatusEnum.Approved;
 
