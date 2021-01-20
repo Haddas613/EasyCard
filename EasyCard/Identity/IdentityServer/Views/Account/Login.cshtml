@@ -30,16 +30,6 @@
                                     <label asp-for="Password"></label>
                                     <input type="password" class="form-control" placeholder="Password" asp-for="Password" autocomplete="off">
                                 </div>
-                                @if (Model.AllowRememberLogin)
-                                {
-                                    <div class="form-group login-remember">
-                                        <label asp-for="RememberLogin">
-                                            <input asp-for="RememberLogin">
-                                            <strong>Remember My Login</strong>
-                                        </label>
-                                    </div>
-                                }
-
                                 <div>
                                     <p>The default users are alice/bob, password: Pass123$</p>
                                 </div>

@@ -595,7 +595,6 @@ namespace IdentityServer.Controllers
 
             return new LoginViewModel
             {
-                AllowRememberLogin = AccountOptions.AllowRememberLogin,
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
                 ReturnUrl = returnUrl,
                 Username = context?.LoginHint,
