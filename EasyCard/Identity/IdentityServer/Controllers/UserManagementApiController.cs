@@ -116,7 +116,7 @@ namespace IdentityServer.Controllers
 
                 var allClaims = await userManager.GetClaimsAsync(user);
 
-                await userManager.AddClaim(allClaims, user, "extension_MerchantID", model.MerchantID);
+                await userManager.AddClaim(allClaims, user, Claims.MerchantIDClaim, model.MerchantID);
                 await userManager.AddToRoleAsync(user, "Merchant");
 
                 logger.LogInformation("User created a new account");
@@ -156,13 +156,28 @@ namespace IdentityServer.Controllers
 
             if (user.PasswordHash != null)
             {
-                return Conflict(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserAlreadyExists, Message = "User has already set password" });
+                //TODO: send new merchant available email
+                //return Conflict(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserAlreadyExists, Message = "User has already set password" });
+            }
+            else
+            {
+                var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ConfirmationEmailExpirationInHours));
+
+                var callbackUrl = Url.EmailConfirmationLink(code, Request.Scheme);
+                await emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
             }
 
-            var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ConfirmationEmailExpirationInHours));
+            if (!string.IsNullOrEmpty(model.MerchantID))
+            {
+                var allClaims = await userManager.GetClaimsAsync(user);
 
-            var callbackUrl = Url.EmailConfirmationLink(code, Request.Scheme);
-            await emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+                var merchantClaim = allClaims.FirstOrDefault(c => c.Type == Claims.MerchantIDClaim && c.Value == model.MerchantID);
+
+                if (merchantClaim == null)
+                {
+                    await userManager.AddClaim(allClaims, user, Claims.MerchantIDClaim, model.MerchantID);
+                }
+            }
 
             var operationResult = new UserOperationResponse
             {
@@ -357,7 +372,7 @@ namespace IdentityServer.Controllers
 
             var allClaims = await userManager.GetClaimsAsync(user);
 
-            var merchantClaim = allClaims.FirstOrDefault(c => c.Type == "extension_MerchantID" && c.Value == merchantId);
+            var merchantClaim = allClaims.FirstOrDefault(c => c.Type == Claims.MerchantIDClaim && c.Value == merchantId);
 
             if (merchantClaim == null)
             {

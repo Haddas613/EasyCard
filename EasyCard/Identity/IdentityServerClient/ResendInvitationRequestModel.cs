@@ -7,5 +7,7 @@ namespace IdentityServerClient
     public class ResendInvitationRequestModel
     {
         public string Email { get; set; }
+
+        public string MerchantID { get; set; }
     }
 }

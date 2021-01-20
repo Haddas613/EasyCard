@@ -116,7 +116,7 @@ namespace Merchants.Api.Controllers
                     await merchantsService.LinkUserToMerchant(userToMerchantInfo, request.MerchantID);
                 }
 
-                var resendInvitationResponse = await userManagementClient.ResendInvitation(new ResendInvitationRequestModel { Email = user.Email });
+                var resendInvitationResponse = await userManagementClient.ResendInvitation(new ResendInvitationRequestModel { Email = user.Email, MerchantID = request.MerchantID.ToString() });
 
                 if (resendInvitationResponse.ResponseCode != UserOperationResponseCodeEnum.InvitationResent)
                 {
