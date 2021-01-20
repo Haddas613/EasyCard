@@ -1,98 +1,118 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="12" md="2" sm="6">
-        <v-text-field v-model="model.paymentTransactionID" :label="$t('PaymentTransactionID')"></v-text-field>
+      <v-col cols="12" md="3" sm="6">
+        <v-text-field outlined v-model="model.terminalID" :label="$t('Terminal')"></v-text-field>
       </v-col>
-      <v-col cols="12" md="2" sm="6">
-        <v-text-field v-model="model.terminalID" :label="$t('Terminal')"></v-text-field>
+      <v-col cols="12" md="3" sm="6">
+        <v-text-field outlined v-model="model.merchantID" :label="$t('Merchant')"></v-text-field>
       </v-col>
-      <v-col cols="12" md="2" sm="6">
-        <v-text-field v-model="model.merchantID" :label="$t('Merchant')"></v-text-field>
-      </v-col>
-      <v-col cols="12" md="2" sm="6">
+       <v-col cols="12" md="3" sm="6">
         <v-select
-          :items="dictionaries.transactionTypes"
+          :items="dictionaries.quickDateFilterTypeEnum"
+          item-text="description"
+          item-value="code"
+          v-model="model.quickDateFilter"
+          :label="$t('QuickDate')"
+          outlined
+          clearable
+        ></v-select>
+      </v-col>
+      <v-col cols="12" md="3" sm="6">
+        <v-select
+          outlined
+          :items="dictionaries.transactionTypeEnum"
           item-text="description"
           item-value="code"
           v-model="model.transactionType"
           :label="$t('TransactionType')"
+          clearable
         ></v-select>
       </v-col>
-      <v-col cols="12" md="2" sm="6">
+      <v-col cols="12" md="3" sm="6">
         <v-select
-          :multiple="true"
-          :items="dictionaries.transactionStatuses"
+          :items="dictionaries.quickStatusFilterTypeEnum"
           item-text="description"
           item-value="code"
-          v-model="model.statuses"
+          v-model="model.quickStatusFilter"
           :label="$t('Status')"
-          disabled
+          outlined
+          clearable
         ></v-select>
       </v-col>
-      <v-col cols="12" md="2" sm="6">
+      <v-col cols="12" md="3" sm="6">
         <v-select
-          :items="dictionaries.cardPresences"
+          :items="dictionaries.cardPresenceEnum"
           item-text="description"
           item-value="code"
           v-model="model.cardPresence"
           :label="$t('CardPresence')"
+          outlined
+          clearable
         ></v-select>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" md="2" sm="6">
+      <v-col cols="12" md="3" sm="6">
         <v-text-field
           v-model="model.amountFrom"
           :label="$t('AmountFrom')"
           type="number"
           min="0"
           step="0.01"
+          outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="2" sm="6">
+      <v-col cols="12" md="3" sm="6">
         <v-text-field
           v-model="model.amountTo"
           :label="$t('AmountTo')"
           type="number"
           min="0"
           step="0.01"
+          outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="2" sm="6">
+      <v-col cols="12" md="3" sm="6">
         <v-select
-          :items="dictionaries.currencies"
+          :items="dictionaries.currencyEnum"
           item-text="description"
           item-value="code"
           v-model="model.currency"
           :label="$t('Currency')"
+          outlined
+          clearable
         ></v-select>
       </v-col>
-      <v-col cols="12" md="2" sm="6">
+      <v-col cols="12" md="3" sm="6">
         <v-select
-          :items="dictionaries.specialTransactionTypes"
+          :items="dictionaries.specialTransactionTypeEnum"
           item-text="description"
           item-value="code"
           v-model="model.specialTransactionType"
           :label="$t('SpecialTransactionType')"
+          outlined
+          clearable
         ></v-select>
       </v-col>
-      <v-col cols="12" md="2" sm="6">
+      <v-col cols="12" md="3" sm="6">
         <v-select
-          :items="dictionaries.jDealTypes"
+          :items="dictionaries.jDealTypeEnum"
           item-text="description"
           item-value="code"
           v-model="model.jDealType"
           :label="$t('JDealType')"
+          outlined
+          clearable
         ></v-select>
       </v-col>
-      <v-col cols="12" md="2" sm="6">
+      <v-col cols="12" md="3" sm="6">
         <v-select
-          :items="dictionaries.rejectionReasons"
+          :items="dictionaries.rejectionReasonEnum"
           item-text="description"
           item-value="code"
           v-model="model.rejectionReason"
-          :label="$t('CardPresence')"
+          :label="$t('RejectionReason')"
+          outlined
+          clearable
         ></v-select>
       </v-col>
     </v-row>
@@ -115,13 +135,6 @@ export default {
   },
   async mounted() {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
-    const all = { code: null, description: this.$t("All") };
-    this.dictionaries.transactionTypes = [all, ...this.dictionaries.transactionTypeEnum];
-    this.dictionaries.currencies = [all, ...this.dictionaries.currencyEnum];
-    this.dictionaries.cardPresences = [all, ...this.dictionaries.cardPresenceEnum];
-    this.dictionaries.specialTransactionTypes = [all, ...this.dictionaries.specialTransactionTypeEnum];
-    this.dictionaries.jDealTypes = [all, ...this.dictionaries.jDealTypeEnum];
-    this.dictionaries.rejectionReasons = [all, ...this.dictionaries.rejectionReasonEnum];
   },
   props: {
     filterData: {
@@ -130,6 +143,9 @@ export default {
   },
   methods: {
     apply() {
+      if(!this.model.statuses){
+        this.model.statuses = null; //fix empty string
+      }
       this.$emit("apply", this.model);
     }
   }

@@ -120,6 +120,9 @@
   <data name="CancelledByMerchant" xml:space="preserve">
     <value>Cancelled by merchant</value>
   </data>
+  <data name="CommitedByAggregator" xml:space="preserve">
+    <value>Commited by aggregator</value>
+  </data>
   <data name="CommitedToAggregator" xml:space="preserve">
     <value>Commited to aggregator</value>
   </data>
@@ -153,8 +156,17 @@
   <data name="RejectedToAggregator" xml:space="preserve">
     <value>Rejected to aggregator</value>
   </data>
+  <data name="TransmissionCancelingInProgress" xml:space="preserve">
+    <value>Transmission canceling in progress</value>
+  </data>
+  <data name="TransmissionInProgress" xml:space="preserve">
+    <value>Transmission in progress</value>
+  </data>
   <data name="TransmissionToProcessorFailed" xml:space="preserve">
     <value>Transmission to processor failed</value>
+  </data>
+  <data name="TransmittedByProcessor" xml:space="preserve">
+    <value>Transmitted by processor</value>
   </data>
   <data name="TransmittedToProcessor" xml:space="preserve">
     <value>Transmitted to processor</value>

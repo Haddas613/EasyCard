@@ -56,6 +56,7 @@ namespace Transactions.Api.Extensions.Filtering
             }
             else if (filter.Statuses != null && filter.Statuses.Count > 0)
             {
+                //TODO: use OR builder (invalid cast)
                 src = src.Where(t => filter.Statuses.Contains(t.Status));
             }
 
