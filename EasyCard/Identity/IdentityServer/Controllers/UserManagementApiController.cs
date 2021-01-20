@@ -344,6 +344,41 @@ namespace IdentityServer.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("user/{userId}/unlink/{merchantId}")]
+        public async Task<IActionResult> Unlink([FromRoute]string userId, [FromRoute]string merchantId)
+        {
+            var user = userManager.Users.FirstOrDefault(x => x.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound($"User {userId} does not exist");
+            }
+
+            var allClaims = await userManager.GetClaimsAsync(user);
+
+            var merchantClaim = allClaims.FirstOrDefault(c => c.Type == "extension_MerchantID" && c.Value == merchantId);
+
+            if (merchantClaim == null)
+            {
+                return Ok(new UserOperationResponse
+                {
+                    UserID = new Guid(user.Id),
+                    ResponseCode = UserOperationResponseCodeEnum.UserUnlinkedFromMerchant,
+                    Message = "User is not unlinked to merchant"
+                });
+            }
+
+            await userManager.RemoveClaimAsync(user, merchantClaim);
+
+            return Ok(new UserOperationResponse
+            {
+                UserID = new Guid(user.Id),
+                ResponseCode = UserOperationResponseCodeEnum.UserUnlinkedFromMerchant,
+                Message = "User unlinked from merchant"
+            });
+        }
+
         private async Task<ActionResult<UserProfileDataResponse>> GetUser(ApplicationUser user)
         {
             if (user == null)

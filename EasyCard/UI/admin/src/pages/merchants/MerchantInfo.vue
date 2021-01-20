@@ -106,7 +106,19 @@
           </template>
 
           <template v-slot:append="{ item }">
-            <v-btn icon @click="unlinkFromMerchant(item.userID)">
+            <v-btn class="mx-1" color="primary" icon :title="$t('Invite')" :loading="actionInProgress" @click="inviteUser(item)" v-if="item.status == 'invited'">
+              <v-icon>mdi-email</v-icon>
+            </v-btn>
+            <v-btn class="mx-1" color="error" icon :title="$t('Lock')" :loading="actionInProgress" @click="lockUser(item)" v-if="item.status == 'active'">
+              <v-icon>mdi-lock</v-icon>
+            </v-btn>
+            <v-btn class="mx-1" color="success" icon :title="$t('Unlock')" :loading="actionInProgress" @click="unlockUser(item)" v-if="item.status == 'locked'">
+              <v-icon>mdi-lock-open</v-icon>
+            </v-btn>
+            <v-btn class="mx-1" color="orange darken-3" icon :title="$t('ResetPassword')" :loading="actionInProgress" @click="resetUserPassword(item.userID)">
+              <v-icon>mdi-lock-reset</v-icon>
+            </v-btn>
+            <v-btn icon @click="unlinkFromMerchant(item.userID)" :loading="actionInProgress">
               <v-icon color="error">mdi-delete</v-icon>
             </v-btn>
           </template>
@@ -142,6 +154,7 @@ export default {
       terminals: null,
       showCreateTerminalDialog: false,
       showCreateUserDialog: false,
+      actionInProgress: false
     };
   },
   methods: {
@@ -162,6 +175,43 @@ export default {
       if (operationResult.status === "success") {
         await this.getMerchant();
       }
+    },
+    async inviteUser(user){
+      this.actionInProgress = true;
+      let operation = await this.$api.users.inviteUser({
+        merchantID: this.$route.params.id,
+        email: user.email
+      });
+
+      if(operation.status != "success"){
+        await this.getMerchant();
+      }else{
+        this.$toasted.show(operation.message, { type: "error" });
+      }
+      this.actionInProgress = false;
+    },
+    async lockUser(user){
+      this.actionInProgress = true;
+      let operation = await this.$api.users.lockUser(user.$userID);
+
+      if(operation.status == "success"){
+        await this.getMerchant();
+      }
+      this.actionInProgress = false;
+    },
+    async unlockUser(user){
+      this.actionInProgress = true;
+      let operation = await this.$api.users.unlockUser(user.$userID);
+
+      if(operation.status == "success"){
+        await this.getMerchant();
+      }
+      this.actionInProgress = false;
+    },
+    async resetUserPassword(userID){
+      this.actionInProgress = true;
+      let operation = await this.$api.users.resetUserPassword(userID);
+      this.actionInProgress = false;
     }
   },
   async mounted() {

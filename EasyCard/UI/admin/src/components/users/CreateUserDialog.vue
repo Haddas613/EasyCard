@@ -84,11 +84,11 @@ export default {
       this.loading = true;
       let operationResult = await this.$api.users.inviteUser(this.model);
       if (operationResult.status === "success") {
-        this.visible = false;
         this.model.email = null;
         this.model.inviteMessage = null;
         this.$emit("ok");
       }
+      this.visible = false;
       this.loading = false;
     }
   }

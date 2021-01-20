@@ -191,10 +191,17 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("{userID:guid}/unlinkFromMerchant/{merchantID}")]
+        [Route("{userID:guid}/unlinkFromMerchant/{merchantID:guid}")]
         public async Task<ActionResult<OperationResponse>> UnlinkUserFromMerchant([FromRoute]Guid userID, [FromRoute]Guid merchantID)
         {
             _ = EnsureExists(await userManagementClient.GetUserByID(userID));
+
+            var opResult = await userManagementClient.UnlinkUserFromMerchant(userID, merchantID);
+
+            if (opResult.ResponseCode != UserOperationResponseCodeEnum.UserUnlinkedFromMerchant)
+            {
+                return BadRequest(opResult.Convert(correlationID: GetCorrelationID()));
+            }
 
             await merchantsService.UnLinkUserFromMerchant(userID, merchantID);
 
