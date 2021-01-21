@@ -1,8 +1,11 @@
 <template>
   <v-container fluid class="py-0">
     <v-row>
-      <v-col cols="12">
+      <v-col cols="12" md="6">
         <v-text-field outlined hide-details="true" v-model="model.search" :label="$t('Search')"></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-text-field outlined hide-details="true" v-model="model.merchantID" :label="$t('MerchantID')"></v-text-field>
       </v-col>
     </v-row>
     <v-row>

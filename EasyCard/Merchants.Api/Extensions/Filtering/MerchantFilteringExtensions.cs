@@ -10,6 +10,11 @@ namespace Merchants.Api.Extensions.Filtering
     {
         public static IQueryable<Merchant> Filter(this IQueryable<Merchant> src, MerchantsFilter filter)
         {
+            if (filter.MerchantID.HasValue)
+            {
+                src = src.Where(t => t.MerchantID == filter.MerchantID.Value);
+            }
+
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
                 src = src.Where(t => EF.Functions.Like(t.BusinessName, filter.Search.UseWildCard(true))
