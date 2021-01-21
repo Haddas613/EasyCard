@@ -23,6 +23,11 @@ namespace Merchants.Api.Extensions.Filtering
                 src = src.Where(t => EF.Functions.Like(t.Label, filter.Label.UseWildCard(true)));
             }
 
+            if (filter.Status.HasValue)
+            {
+                src = src.Where(t => t.Status == filter.Status.Value);
+            }
+
             return src;
         }
     }

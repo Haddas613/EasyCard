@@ -4,7 +4,7 @@
       <v-expansion-panel>
         <v-expansion-panel-header class="primary white--text">{{$t('Filters')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
-          <div class="pt-4 pb-2">filter: work in progress</div>
+          <terminals-filter  :filter-data="terminalsFilter" v-on:apply="applyFilter($event)"></terminals-filter>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -31,7 +31,9 @@
 
 <script>
 export default {
-  components: {},
+  components: {
+    TerminalsFilter: () => import("../../components/terminals/TerminalsFilter")
+  },
   data() {
     return {
       totalAmount: 0,
@@ -66,7 +68,6 @@ export default {
         this.headers = [...data.headers, { value: "actions", text: this.$t("Actions") }];
       }
     },
-    //TODO
     async applyFilter(filter) {
       this.terminalsFilter = filter;
       await this.getDataFromApi();

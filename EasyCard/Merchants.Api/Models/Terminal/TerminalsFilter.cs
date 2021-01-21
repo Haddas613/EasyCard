@@ -1,4 +1,5 @@
-﻿using Shared.Api.Models;
+﻿using Merchants.Shared.Enums;
+using Shared.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,7 @@ namespace Merchants.Api.Models.Terminal
         public Guid? MerchantID { get; set; }
 
         public string Label { get; set; }
+
+        public TerminalStatusEnum? Status { get; set; }
     }
 }

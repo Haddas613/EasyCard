@@ -6,9 +6,7 @@
           {{$t('Filters')}}
         </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <div class="pt-4 pb-2">
-            <transactions-filter :filter-data="options" v-on:apply="applyFilter($event)"></transactions-filter>
-          </div>
+          <transactions-filter :filter-data="transactionsFilter" v-on:apply="applyFilter($event)"></transactions-filter>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -26,6 +24,9 @@
             {{item.merchantName || item.merchantID}}
           </router-link>
         </template>    
+        <template v-slot:item.transactionAmount="{ item }">
+          <b>{{item.currency}}{{item.transactionAmount}}</b>
+        </template>  
         <template v-slot:item.quickStatus="{ item }">
           <span v-bind:class="quickStatusesColors[item.quickStatus]">{{item.quickStatus}}</span>
         </template> 
