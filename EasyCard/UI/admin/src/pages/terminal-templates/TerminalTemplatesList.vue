@@ -12,7 +12,7 @@
       <v-expansion-panel>
         <v-expansion-panel-header class="primary white--text">{{$t('Filters')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
-          <div class="pt-4 pb-2">filter: work in progress</div>
+          <terminal-templates-filter  :filter-data="terminalTemplatesFilter" v-on:apply="applyFilter($event)"></terminal-templates-filter>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -47,6 +47,7 @@
 export default {
   components: {
     CreateTerminalTemplateDialog: () => import("../../components/terminal-templates/CreateTerminalTemplateDialog"),
+    TerminalTemplatesFilter: () => import("../../components/terminals/TerminalTemplatesFilter")
   },
   data() {
     return {

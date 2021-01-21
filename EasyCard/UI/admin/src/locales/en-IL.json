@@ -239,6 +239,7 @@
   "RedirectURL": "Redirect URL",
   "CheckoutRedirectUrls": "Checkout Redirect URLs",
   "CustomCSSURL": "Custom CSS URL",
+  "OnlyActive": "Only Active",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
