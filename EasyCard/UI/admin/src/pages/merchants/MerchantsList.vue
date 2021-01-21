@@ -4,7 +4,7 @@
       <v-expansion-panel>
         <v-expansion-panel-header class="primary white--text">{{$t('Filters')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
-          <div class="pt-4 pb-2">filter: work in progress</div>
+          <merchants-filter  :filter-data="merchantsFilter" v-on:apply="applyFilter($event)"></merchants-filter>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -38,7 +38,8 @@
 <script>
 export default {
   components: {
-    ReIcon: () => import("../../components/misc/ResponsiveIcon")
+    ReIcon: () => import("../../components/misc/ResponsiveIcon"),
+    MerchantsFilter: () => import("../../components//merchants/MerchantsFilter"),
   },
   data() {
     return {
