@@ -4,7 +4,7 @@
       <v-expansion-panel>
         <v-expansion-panel-header class="primary white--text">{{$t('Filters')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
-          <merchants-filter  :filter-data="merchantsFilter" v-on:apply="applyFilter($event)"></merchants-filter>
+          <merchants-filter :filter-data="merchantsFilter" v-on:apply="applyFilter($event)"></merchants-filter>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>

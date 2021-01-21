@@ -1,8 +1,8 @@
 <template>
-  <v-container fluid>
+  <v-container fluid class="py-0">
     <v-row>
       <v-col cols="12">
-        <v-text-field outlined hide-details="true" v-model="data.search" :label="$t('Search')"></v-text-field>
+        <v-text-field outlined hide-details="true" v-model="model.search" :label="$t('Search')"></v-text-field>
       </v-col>
     </v-row>
     <v-row>
