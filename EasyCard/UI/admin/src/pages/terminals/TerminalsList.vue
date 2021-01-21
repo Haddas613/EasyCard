@@ -60,6 +60,11 @@ export default {
         ...this.terminalsFilter,
         ...this.options
       });
+
+      if(!data){
+        return;
+      }
+
       this.terminals = data.data;
       this.totalAmount = data.numberOfRecords;
       this.loading = false;

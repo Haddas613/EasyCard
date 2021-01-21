@@ -25,7 +25,7 @@
           </router-link>
         </template>    
         <template v-slot:item.transactionAmount="{ item }">
-          <b>{{item.currency}}{{item.transactionAmount}}</b>
+          <b>{{item.transactionAmount | currency(item.currency)}}</b>
         </template>  
         <template v-slot:item.quickStatus="{ item }">
           <span v-bind:class="quickStatusesColors[item.quickStatus]">{{item.quickStatus}}</span>

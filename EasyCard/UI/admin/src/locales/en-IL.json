@@ -240,6 +240,7 @@
   "CheckoutRedirectUrls": "Checkout Redirect URLs",
   "CustomCSSURL": "Custom CSS URL",
   "OnlyActive": "Only Active",
+  "TerminalID": "Terminal ID",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

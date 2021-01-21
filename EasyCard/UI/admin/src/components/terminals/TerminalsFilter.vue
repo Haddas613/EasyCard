@@ -2,7 +2,27 @@
   <v-container fluid>
     <v-row>
       <!-- <merchant-terminal-filter v-model="model"></merchant-terminal-filter> -->
-      <v-col cols="12" md="6" sm="6">
+      <v-col cols="12" md="3">
+        <v-text-field
+          v-model="model.terminalID"
+          :label="$t('TerminalID')"
+          outlined
+          hide-details="true"
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="3">
+        <v-select
+          :items="dictionaries.terminalStatusEnum"
+          item-text="description"
+          item-value="code"
+          v-model="model.status"
+          :label="$t('Status')"
+          outlined
+          hide-details="true"
+          clearable
+        ></v-select>
+      </v-col>
+      <v-col cols="12" md="3">
         <v-text-field
           v-model="model.label"
           :label="$t('Label')"
@@ -10,17 +30,13 @@
           hide-details="true"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="6" sm="6">
-        <v-select
-          :items="dictionaries.terminalStatusEnum"
-          item-text="description"
-          item-value="code"
-          v-model="model.terminalStatus"
-          :label="$t('Status')"
+      <v-col cols="12" md="3">
+        <v-text-field
+          v-model="model.merchantID"
+          :label="$t('MerchantID')"
           outlined
           hide-details="true"
-          clearable
-        ></v-select>
+        ></v-text-field>
       </v-col>
     </v-row>
     <v-row>

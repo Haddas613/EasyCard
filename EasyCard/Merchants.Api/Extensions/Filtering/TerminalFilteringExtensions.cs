@@ -13,6 +13,11 @@ namespace Merchants.Api.Extensions.Filtering
     {
         public static IQueryable<Terminal> Filter(this IQueryable<Terminal> src, TerminalsFilter filter)
         {
+            if (filter.TerminalID.HasValue)
+            {
+                return src.Where(t => t.TerminalID == filter.TerminalID.Value);
+            }
+
             if (filter.MerchantID.HasValue)
             {
                 src = src.Where(t => t.MerchantID == filter.MerchantID.Value);
