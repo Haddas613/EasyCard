@@ -224,7 +224,7 @@ namespace Transactions.Api.Controllers
                 transaction = EnsureExists(await transactionsService.GetTransactions()
                  .FirstOrDefaultAsync(m => m.PaymentTransactionID == cancelTransmissionRequest.PaymentTransactionID && m.TerminalID == cancelTransmissionRequest.TerminalID));
 
-                if (transaction.Status != TransactionStatusEnum.CommitedByAggregator)
+                if (transaction.Status != TransactionStatusEnum.CommitedByAggregator || transaction.InvoiceID.HasValue)
                 {
                     return BadRequest(new OperationResponse(Messages.TransactionStatusIsNotValid, StatusEnum.Error));
                 }

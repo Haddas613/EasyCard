@@ -95,10 +95,11 @@
       </v-card>
       <shva-transaction-details :model="model.shvaTransactionDetails"></shva-transaction-details>
     </div>
-    <v-row no-gutters v-if="model && model.allowTransmission" class="py-2">
+    <v-row no-gutters v-if="model" class="py-2">
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
-        <v-btn class="mx-1" color="primary" @click="transmit()">{{$t('Transmission')}}</v-btn>
+        <v-btn v-if="model.allowTransmission" class="mx-1" color="primary" @click="transmit()">{{$t('Transmission')}}</v-btn>
         <v-btn
+          v-if="model.allowTransmissionCancellation"
           color="red"
           class="white--text"
           outlined
@@ -106,9 +107,10 @@
         >{{$t('CancelTransmission')}}</v-btn>
       </v-col>
       <v-col cols="12" v-if="$vuetify.breakpoint.smAndDown" class="px-2 pb-2">
-        <v-btn block color="primary" @click="transmit()">{{$t('Transmission')}}</v-btn>
+        <v-btn v-if="model.allowTransmission" block color="primary" @click="transmit()">{{$t('Transmission')}}</v-btn>
         <v-spacer class="py-2"></v-spacer>
         <v-btn
+          v-if="model.allowTransmissionCancellation"
           block
           color="red"
           class="white--text"
