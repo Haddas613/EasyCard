@@ -8,7 +8,7 @@
         <v-text-field v-model="model.settings.password" :label="$t('Password')" outlined></v-text-field>
       </v-col>
       <v-col cols="12" md="4" class="py-0">
-        <v-text-field v-model="model.settings.merchantNumber" :label="$t('MerchantNumber')" outlined></v-text-field>
+        <v-text-field v-model="model.settings.merchantNumber" :label="$t('ShvaTerminalReference')" outlined></v-text-field>
       </v-col>
     </v-row>
     <div class="d-flex justify-end">
