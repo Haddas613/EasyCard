@@ -154,6 +154,21 @@ namespace IdentityServer.Controllers
                 return NotFound(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserNotFound });
             }
 
+            if (await userManager.IsLockedOutAsync(user))
+            {
+                var unlockRes = await userManager.SetLockoutEndDateAsync(user, null);
+
+                if (!unlockRes.Succeeded)
+                {
+                    return BadRequest(new UserOperationResponse
+                    {
+                        UserID = new Guid(user.Id),
+                        ResponseCode = UserOperationResponseCodeEnum.UnknwnError,
+                        Message = unlockRes.Errors.FirstOrDefault()?.Description
+                    });
+                }
+            }
+
             if (user.PasswordHash != null)
             {
                 //TODO: send new merchant available email
@@ -380,11 +395,20 @@ namespace IdentityServer.Controllers
                 {
                     UserID = new Guid(user.Id),
                     ResponseCode = UserOperationResponseCodeEnum.UserUnlinkedFromMerchant,
-                    Message = "User is not unlinked to merchant"
+                    Message = "User is not linked to merchant"
                 });
             }
 
             await userManager.RemoveClaimAsync(user, merchantClaim);
+
+            // check if user has any merchant claims left, if not we block him
+            allClaims = (await userManager.GetClaimsAsync(user)).Where(c => c.Type == Claims.MerchantIDClaim).ToList();
+
+            if (allClaims.Count == 0)
+            {
+                await userManager.SetLockoutEnabledAsync(user, true);
+                await userManager.SetLockoutEndDateAsync(user, DateTime.UtcNow.AddYears(100));
+            }
 
             return Ok(new UserOperationResponse
             {
