@@ -183,7 +183,7 @@ export default {
         email: user.email
       });
 
-      if(operation.status != "success"){
+      if(operation.status == "success"){
         await this.getMerchant();
       }else{
         this.$toasted.show(operation.message, { type: "error" });
