@@ -26,7 +26,7 @@ namespace MerchantProfileApi.Models.Terminal
 
         public DateTime? Created { get; set; }
 
-        public IEnumerable<FeatureResponse> EnabledFeatures { get; set; }
+        public IEnumerable<FeatureEnum> EnabledFeatures { get; set; }
 
         public TerminalSettings Settings { get; set; }
 
