@@ -76,9 +76,14 @@ const routes = [
         component: () => import('../pages/transactions/TransactionInfo.vue'),
       },
       {
-        name: 'TransactionsList',
+        name: 'Transactions',
         path: 'transactions/list',
         component: () => import('../pages/transactions/TransactionsList.vue'),
+      },
+      {
+        name: 'SystemLogs',
+        path: 'system-logs/list',
+        component: () => import('../pages/system-logs/SystemLogsList.vue'),
       },
       {
         name: 'MyProfile',

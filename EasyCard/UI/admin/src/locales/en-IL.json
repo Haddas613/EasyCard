@@ -68,6 +68,12 @@
   "TerminalTemplates": "Terminal Templates",
   "EditTerminalTemplate": "Edit Terminal Template",
   "CreateTerminalTemplate": "Create Terminal Template",
+  "System": "System",
+  "SystemLogs": "System Logs",
+  "LogDetails": "Log Details",
+  "SystemLogsList": "System Logs List",
+  "CorrelationID": "Correlation ID",
+  "FormatCode": "Format Code",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

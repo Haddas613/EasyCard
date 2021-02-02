@@ -183,6 +183,19 @@ export default {
             }
           ]
         },
+        {
+          icon: "mdi-console",
+          "icon-alt": "mdi-console",
+          text: "System",
+          expanded: false,
+          children: [
+            {
+              icon: "mdi-format-list-bulleted",
+              text: "SystemLogs",
+              to: "/admin/system-logs/list"
+            }
+          ]
+        },
       ],
       userName: null
     };

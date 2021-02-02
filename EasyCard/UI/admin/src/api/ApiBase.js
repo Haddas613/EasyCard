@@ -10,6 +10,7 @@ import InvoicingApi from './modules/transactions/InvoicingApi';
 import PaymentRequestsApi from './modules/transactions/PaymentRequestsApi';
 import MerchantsApi from './modules/merchant/MerchantsApi';
 import UsersApi from './modules/merchant/UsersApi';
+import SystemApi from './modules/merchant/SystemApi';
 import TerminalTemplatesApi from './modules/merchant/TerminalTemplatesApi';
 
 class ApiBase {
@@ -27,6 +28,7 @@ class ApiBase {
         this.paymentRequests = new PaymentRequestsApi(this);
         this.users = new UsersApi(this);
         this.terminalTemplates = new TerminalTemplatesApi(this);
+        this.system = new SystemApi(this);
     }
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */

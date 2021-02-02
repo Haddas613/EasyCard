@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
 using Shared.Api.Logging;
 using Shared.Api.Models;
+using Shared.Api.Models.Metadata;
+using Shared.Api.UI;
 using System;
 using System.Threading.Tasks;
 using SharedApi = Shared.Api;
@@ -29,6 +31,18 @@ namespace Merchants.Api.Controllers
             this.mapper = mapper;
             this.databaseLogService = databaseLogService;
             this.systemSettingsService = systemSettingsService;
+        }
+
+        [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("$meta")]
+        public TableMeta GetMetadata()
+        {
+            return new TableMeta
+            {
+                Columns = typeof(DatabaseLogEntry)
+                    .GetObjectMeta(UserSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
+            };
         }
 
         [HttpGet]
