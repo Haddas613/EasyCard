@@ -1,4 +1,5 @@
 using Merchants.Api.Controllers;
+using Merchants.Api.Models.Audit;
 using Merchants.Api.Models.Merchant;
 using Merchants.Tests.Fixtures;
 using Microsoft.EntityFrameworkCore;
@@ -134,18 +135,19 @@ namespace MerchantsApi.Tests
             Assert.True(responseData.NumberOfRecords == 1); //assuming the name is unique
         }
 
-        [Fact(DisplayName = "GetMerchants: GetHistory return result")]
+        [Fact(DisplayName = "Audit: GetMerchantHistory return result")]
         [Order(5)]
-        public async Task GetMerchants_GetHistoryReturnsResult()
+        public async Task Audit_GetMerchantHistoryReturnsResult()
         {
-            var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper, merchantsFixture.TerminalsService);
-            var filter = new MerchantHistoryFilter();
+            var controller = new AuditApiController(merchantsFixture.Mapper, merchantsFixture.MerchantsService);
             var referenceHistory = merchantsFixture.MerchantsService.GetMerchantHistories().FirstOrDefault(h => h.MerchantID != null)
                 ?? throw new Exception("Couldn't get reference merchant id");
-            var actionResult = await controller.GetMerchantHistory(referenceHistory.MerchantID.Value, filter);
+
+            var filter = new AuditFilter { MerchantID = referenceHistory.MerchantID.Value };
+            var actionResult = await controller.Get(filter);
 
             var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
-            var responseData = response.Value as SummariesResponse<MerchantHistoryResponse>;
+            var responseData = response.Value as SummariesResponse<AuditEntryResponse>;
 
             Assert.NotNull(response);
             Assert.Equal(200, response.StatusCode);

@@ -91,27 +91,6 @@ namespace Merchants.Api.Controllers
             }
         }
 
-        [HttpGet]
-        [Obsolete("TODO: Delete, AuditApi is a replacement")]
-        [Route("{merchantID}/history")]
-        public async Task<ActionResult<SummariesResponse<MerchantHistoryResponse>>> GetMerchantHistory([FromRoute]Guid merchantID, [FromQuery] MerchantHistoryFilter filter)
-        {
-            // TODO: validate filters (see transactions list)
-
-            var query = merchantsService.GetMerchantHistories().Where(h => h.MerchantID == merchantID).AsNoTracking().Filter(filter);
-
-            using (var dbTransaction = merchantsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
-            {
-                var response = new SummariesResponse<MerchantHistoryResponse> { NumberOfRecords = await query.CountAsync() };
-
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(Merchant.MerchantID), filter.OrderByDirection).ApplyPagination(filter);
-
-                response.Data = await mapper.ProjectTo<MerchantHistoryResponse>(query).ToListAsync();
-
-                return Ok(response);
-            }
-        }
-
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreateMerchant([FromBody]MerchantRequest merchant)

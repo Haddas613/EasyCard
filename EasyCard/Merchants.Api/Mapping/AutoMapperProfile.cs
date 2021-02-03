@@ -98,7 +98,6 @@ namespace Merchants.Api.Mapping
             CreateMap<Merchant, MerchantResponse>();
             CreateMap<MerchantRequest, Merchant>();
             CreateMap<UpdateMerchantRequest, Merchant>();
-            CreateMap<MerchantHistory, MerchantHistoryResponse>();
             CreateMap<MerchantHistory, AuditEntryResponse>()
                 .ForMember(d => d.TerminalName, o => o.MapFrom(src => src.Terminal.Label))
                 .ForMember(d => d.MerchantName, o => o.MapFrom(src => src.Merchant.BusinessName));

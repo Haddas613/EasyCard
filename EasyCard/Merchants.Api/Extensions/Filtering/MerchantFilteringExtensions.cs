@@ -26,10 +26,5 @@ namespace Merchants.Api.Extensions.Filtering
 
             return src;
         }
-
-        public static IQueryable<MerchantHistory> Filter(this IQueryable<MerchantHistory> src, MerchantHistoryFilter filter)
-        {
-            return src;
-        }
     }
 }

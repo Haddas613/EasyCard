@@ -46,7 +46,7 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<SummariesResponse<AuditEntryResponse>>> GetMerchantHistory([FromQuery] AuditFilter filter)
+        public async Task<ActionResult<SummariesResponse<AuditEntryResponse>>> Get([FromQuery] AuditFilter filter)
         {
             var query = merchantsService.GetMerchantHistories()
                 .Include(a => a.Merchant)
