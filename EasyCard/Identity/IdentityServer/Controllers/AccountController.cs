@@ -556,6 +556,8 @@ namespace IdentityServer.Controllers
                     EnableLocalLogin = local,
                     ReturnUrl = returnUrl,
                     Username = context?.LoginHint,
+                    IsAuthorized = User?.Identity.IsAuthenticated == true,
+                    UserName = User.Identity?.Name
                 };
 
                 if (!local)
@@ -598,7 +600,9 @@ namespace IdentityServer.Controllers
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
                 ReturnUrl = returnUrl,
                 Username = context?.LoginHint,
-                ExternalProviders = providers.ToArray()
+                ExternalProviders = providers.ToArray(),
+                IsAuthorized = User?.Identity.IsAuthenticated == true,
+                UserName = User.Identity?.Name
             };
         }
 

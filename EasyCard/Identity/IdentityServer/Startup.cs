@@ -269,7 +269,7 @@ namespace IdentityServer
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Account}/{action=Login}/{id?}");
             });
 
             Microsoft.AspNetCore.Identity.RoleManager<IdentityRole> roleManager = serviceProvider.GetService<Microsoft.AspNetCore.Identity.RoleManager<IdentityRole>>();
