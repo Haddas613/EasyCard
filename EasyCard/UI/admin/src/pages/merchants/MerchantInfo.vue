@@ -62,7 +62,11 @@
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text class="body-1 black--text">
-        <create-terminal-dialog :show.sync="showCreateTerminalDialog" v-on:ok="getTerminals()" :merchant-id="$route.params.id"></create-terminal-dialog>
+        <create-terminal-dialog
+          :show.sync="showCreateTerminalDialog"
+          v-on:ok="getTerminals()"
+          :merchant-id="$route.params.id"
+        ></create-terminal-dialog>
         <ec-list :items="terminals" v-if="terminals && terminals.length > 0">
           <template v-slot:left="{ item }">
             <v-col cols="12" md="6" lg="6" class="caption ecgray--text">{{item.terminalID}}</v-col>
@@ -98,7 +102,11 @@
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text class="body-1 black--text">
-        <create-user-dialog :show.sync="showCreateUserDialog" v-on:ok="getMerchant()" :merchant-id="$route.params.id"></create-user-dialog>
+        <create-user-dialog
+          :show.sync="showCreateUserDialog"
+          v-on:ok="getMerchant()"
+          :merchant-id="$route.params.id"
+        ></create-user-dialog>
         <ec-list :items="model.users" v-if="model.users && model.users.length > 0">
           <template v-slot:left="{ item }">
             <v-col cols="12" md="6" lg="6" class="caption ecgray--text">{{item.userID | guid}}</v-col>
@@ -106,17 +114,51 @@
           </template>
 
           <template v-slot:append="{ item }">
-            <v-btn class="mx-1" color="primary" icon :title="$t('Invite')" :loading="actionInProgress" @click="inviteUser(item)" v-if="item.status == 'invited'">
+            <v-btn
+              class="mx-1"
+              color="primary"
+              icon
+              :title="$t('Invite')"
+              :loading="actionInProgress"
+              @click="inviteUser(item)"
+              v-if="item.status == 'invited'"
+            >
               <v-icon>mdi-email</v-icon>
             </v-btn>
-            <v-btn class="mx-1" color="error" icon :title="$t('Lock')" :loading="actionInProgress" @click="lockUser(item)" v-if="item.status == 'active'">
+            <v-btn
+              class="mx-1"
+              color="error"
+              icon
+              :title="$t('Lock')"
+              :loading="actionInProgress"
+              @click="lockUser(item)"
+              v-if="item.status == 'active'"
+            >
               <v-icon>mdi-lock</v-icon>
             </v-btn>
-            <v-btn class="mx-1" color="success" icon :title="$t('Unlock')" :loading="actionInProgress" @click="unlockUser(item)" v-if="item.status == 'locked'">
+            <v-btn
+              class="mx-1"
+              color="success"
+              icon
+              :title="$t('Unlock')"
+              :loading="actionInProgress"
+              @click="unlockUser(item)"
+              v-if="item.status == 'locked'"
+            >
               <v-icon>mdi-lock-open</v-icon>
             </v-btn>
-            <v-btn class="mx-1" color="orange darken-3" icon :title="$t('ResetPassword')" :loading="actionInProgress" @click="resetUserPassword(item.userID)">
+            <v-btn
+              class="mx-1"
+              color="orange darken-3"
+              icon
+              :title="$t('ResetPassword')"
+              :loading="actionInProgress"
+              @click="resetUserPassword(item.userID)"
+            >
               <v-icon>mdi-lock-reset</v-icon>
+            </v-btn>
+            <v-btn class="mx-1" color="deep-purple" icon link :title="$t('SeeHistory')" :to="{name:'Audits',params:{filters:{userID: item.userID}}}">
+              <v-icon>mdi-book-account</v-icon>
             </v-btn>
             <v-btn icon @click="unlinkFromMerchant(item.userID)" :loading="actionInProgress">
               <v-icon color="error">mdi-delete</v-icon>
@@ -138,8 +180,9 @@ import EcList from "../../components/ec/EcList";
 export default {
   components: {
     EcList: () => import("../../components/ec/EcList"),
-    CreateTerminalDialog: () => import("../../components/terminals/CreateTerminalDialog"),
-    CreateUserDialog: () => import("../../components/users/CreateUserDialog"),
+    CreateTerminalDialog: () =>
+      import("../../components/terminals/CreateTerminalDialog"),
+    CreateUserDialog: () => import("../../components/users/CreateUserDialog")
   },
   props: {
     data: {
@@ -158,57 +201,63 @@ export default {
     };
   },
   methods: {
-    async getTerminals(){
-      this.terminals = (await this.$api.terminals.get({ merchantID: this.$route.params.id }))
-        .data || [];
+    async getTerminals() {
+      this.terminals =
+        (await this.$api.terminals.get({ merchantID: this.$route.params.id }))
+          .data || [];
     },
-    async getMerchant(){
-      let merchant = await this.$api.merchants.getMerchant(this.$route.params.id);
+    async getMerchant() {
+      let merchant = await this.$api.merchants.getMerchant(
+        this.$route.params.id
+      );
 
       if (!merchant) {
         return this.$router.push("/admin/merchants/list");
       }
       this.model = merchant;
     },
-    async unlinkFromMerchant(userID){
-      let operationResult = await this.$api.users.unlinkUserFromMerchant(userID, this.$route.params.id);
+    async unlinkFromMerchant(userID) {
+      let operationResult = await this.$api.users.unlinkUserFromMerchant(
+        userID,
+        this.$route.params.id
+      );
       if (operationResult.status === "success") {
         await this.getMerchant();
       }
     },
-    async inviteUser(user){
+    async inviteUser(user) {
       this.actionInProgress = true;
       let operation = await this.$api.users.inviteUser({
         merchantID: this.$route.params.id,
         email: user.email
       });
 
-      if(operation.status == "success"){
+      if (operation.status == "success") {
         await this.getMerchant();
-      }else{
+      } else {
         this.$toasted.show(operation.message, { type: "error" });
       }
       this.actionInProgress = false;
     },
-    async lockUser(user){
+    async lockUser(user) {
       this.actionInProgress = true;
       let operation = await this.$api.users.lockUser(user.$userID);
 
-      if(operation.status == "success"){
+      if (operation.status == "success") {
         await this.getMerchant();
       }
       this.actionInProgress = false;
     },
-    async unlockUser(user){
+    async unlockUser(user) {
       this.actionInProgress = true;
       let operation = await this.$api.users.unlockUser(user.$userID);
 
-      if(operation.status == "success"){
+      if (operation.status == "success") {
         await this.getMerchant();
       }
       this.actionInProgress = false;
     },
-    async resetUserPassword(userID){
+    async resetUserPassword(userID) {
       this.actionInProgress = true;
       let operation = await this.$api.users.resetUserPassword(userID);
       this.actionInProgress = false;
@@ -224,7 +273,22 @@ export default {
     await this.getTerminals();
     this.$store.commit("ui/changeHeader", {
       value: {
-        text: { translate: false, value: this.model.businessName }
+        text: { translate: false, value: this.model.businessName },
+        threeDotMenu: [
+          {
+            text: this.$t("SeeHistory"),
+            fn: () => {
+              this.$router.push({
+                name: "Audits",
+                params: {
+                  filters: {
+                    merchantID: this.$route.params.id
+                  }
+                }
+              });
+            }
+          }
+        ]
       }
     });
   }

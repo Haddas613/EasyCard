@@ -72,8 +72,10 @@
   "SystemLogs": "System Logs",
   "LogDetails": "Log Details",
   "SystemLogsList": "System Logs List",
-  "CorrelationID": "Correlation ID",
-  "FormatCode": "Format Code",
+  "SeeAuditing": "See Auditing",
+  "Audit": "Audit",
+  "History": "History",
+  "SeeHistory": "See History",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -247,6 +249,9 @@
   "CustomCSSURL": "Custom CSS URL",
   "OnlyActive": "Only Active",
   "TerminalID": "Terminal ID",
+  "CorrelationID": "Correlation ID",
+  "FormatCode": "Format Code",
+  "OperationCode": "Operation Code",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

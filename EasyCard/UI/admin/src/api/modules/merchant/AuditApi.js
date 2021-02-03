@@ -1,18 +1,18 @@
-export default class SystemApi {
+export default class AuditApi {
     constructor(base) {
         this.base = base;
         this.baseUrl = process.env.VUE_APP_MERCHANT_API_BASE_ADDRESS;
-        this.systemUrl = this.baseUrl + '/api/system';
+        this.auditUrl = this.baseUrl + '/api/audit';
     }
 
-    async getSystemLogs(params) {
+    async get(params) {
         if (!this.headers) {
-            let data = await this.base.get(this.systemUrl + '/$meta')
+            let data = await this.base.get(this.auditUrl + '/$meta')
             this.headers = this.base._formatHeaders(data);
             this.$headers = data.columns
         }
 
-        let data = await await this.base.get(this.systemUrl + '/log', params);
+        let data = await await this.base.get(this.auditUrl, params);
 
         let dictionaries = await this.base.dictionaries.$getMerchantDictionaries()
 

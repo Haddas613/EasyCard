@@ -55,6 +55,26 @@ export default {
     }
 
     this.terminal = terminal;
+
+    this.$store.commit("ui/changeHeader", {
+      value: {
+        threeDotMenu: [
+          {
+            text: this.$t("SeeHistory"),
+            fn: () => {
+              this.$router.push({
+                name: "Audits",
+                params: {
+                  filters: {
+                    terminalID: this.$route.params.id
+                  }
+                }
+              });
+            }
+          }
+        ]
+      }
+    });
   },
   methods: {
     async saveTerminalSettings() {

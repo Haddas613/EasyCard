@@ -86,6 +86,12 @@ const routes = [
         component: () => import('../pages/system-logs/SystemLogsList.vue'),
       },
       {
+        name: 'Audits',
+        path: 'audit/list',
+        props: true,
+        component: () => import('../pages/audit/AuditList.vue'),
+      },
+      {
         name: 'MyProfile',
         path: 'profile',
         component: () =>

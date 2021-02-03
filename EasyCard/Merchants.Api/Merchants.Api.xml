@@ -34,6 +34,57 @@
             <param name="model"></param>
             <returns></returns>
         </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditFilter.UserID">
+            <summary>
+            MerchantHistory.OperationDoneByID
+            </summary>
+        </member>
+        <member name="T:Merchants.Api.Models.Audit.AuditResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.OperationCode">
+            <summary>
+              Looks up a localized string similar to Code.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.OperationDate">
+            <summary>
+              Looks up a localized string similar to Date.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.OperationDescription">
+            <summary>
+              Looks up a localized string similar to Description.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.OperationDoneBy">
+            <summary>
+              Looks up a localized string similar to Done by.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
+            </summary>
+        </member>
         <member name="T:Merchants.Api.Models.Merchant.MerchantSummaryResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -48,6 +99,62 @@
             <summary>
               Overrides the current thread's CurrentUICulture property for all
               resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:Merchants.Api.Models.System.DatabaseLogEntryResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.ApiName">
+            <summary>
+              Looks up a localized string similar to ApiName.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.CategoryName">
+            <summary>
+              Looks up a localized string similar to Category Name.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.CorrelationID">
+            <summary>
+              Looks up a localized string similar to Correlation ID.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.IP">
+            <summary>
+              Looks up a localized string similar to IP.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.LogLevel">
+            <summary>
+              Looks up a localized string similar to Log Level.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.Message">
+            <summary>
+              Looks up a localized string similar to Message.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.Timestamp">
+            <summary>
+              Looks up a localized string similar to Timestamp.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.UserName">
+            <summary>
+              Looks up a localized string similar to User Name.
             </summary>
         </member>
         <member name="T:Merchants.Api.Models.TerminalTemplate.TerminalTemplatesSummaryResource">

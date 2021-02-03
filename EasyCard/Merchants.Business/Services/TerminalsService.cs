@@ -130,6 +130,7 @@ namespace Merchants.Business.Services
                 OperationDate = DateTime.UtcNow,
                 OperationDoneBy = user?.GetDoneBy(),
                 OperationDoneByID = user?.GetDoneByID(),
+                TerminalID = terminal.TerminalID,
                 MerchantID = terminal.MerchantID,
                 OperationDescription = changesStr,
                 SourceIP = httpContextAccessor.GetIP()
@@ -167,6 +168,7 @@ namespace Merchants.Business.Services
                     OperationDate = DateTime.UtcNow,
                     OperationDoneBy = user?.GetDoneBy(),
                     OperationDoneByID = user?.GetDoneByID(),
+                    TerminalID = terminalID,
                     MerchantID = terminal.MerchantID,
                     SourceIP = httpContextAccessor.GetIP()
                 };
@@ -204,6 +206,7 @@ namespace Merchants.Business.Services
                 OperationDate = DateTime.UtcNow,
                 OperationDoneBy = user?.GetDoneBy(),
                 OperationDoneByID = user?.GetDoneByID(),
+                TerminalID = entity.TerminalID,
                 MerchantID = entity.MerchantID,
                 OperationDescription = changesStr,
                 SourceIP = httpContextAccessor.GetIP()
@@ -239,6 +242,7 @@ namespace Merchants.Business.Services
             if (dbTransaction != null)
             {
                 await base.CreateEntity(entity, dbTransaction);
+                history.TerminalID = entity.TerminalID;
                 context.MerchantHistories.Add(history);
                 await context.SaveChangesAsync();
             }
@@ -246,6 +250,7 @@ namespace Merchants.Business.Services
             {
                 using var transaction = BeginDbTransaction();
                 await base.CreateEntity(entity, dbTransaction);
+                history.TerminalID = entity.TerminalID;
                 context.MerchantHistories.Add(history);
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();

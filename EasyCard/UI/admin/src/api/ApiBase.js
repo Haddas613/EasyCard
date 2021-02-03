@@ -11,6 +11,7 @@ import PaymentRequestsApi from './modules/transactions/PaymentRequestsApi';
 import MerchantsApi from './modules/merchant/MerchantsApi';
 import UsersApi from './modules/merchant/UsersApi';
 import SystemApi from './modules/merchant/SystemApi';
+import AuditApi from './modules/merchant/AuditApi';
 import TerminalTemplatesApi from './modules/merchant/TerminalTemplatesApi';
 
 class ApiBase {
@@ -29,6 +30,7 @@ class ApiBase {
         this.users = new UsersApi(this);
         this.terminalTemplates = new TerminalTemplatesApi(this);
         this.system = new SystemApi(this);
+        this.audit = new AuditApi(this);
     }
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */

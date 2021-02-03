@@ -55,10 +55,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Models\Audit\AuditResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AuditResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Models\Merchant\MerchantSummaryResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>MerchantSummaryResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Models\System\DatabaseLogEntryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DatabaseLogEntryResource.resx</DependentUpon>
     </Compile>
     <Compile Update="Models\TerminalTemplate\TerminalTemplatesSummaryResource.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -88,9 +98,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Models\Audit\AuditResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AuditResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Models\Merchant\MerchantSummaryResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MerchantSummaryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\System\DatabaseLogEntryResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>DatabaseLogEntryResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Models\TerminalTemplate\TerminalTemplatesSummaryResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

@@ -190,9 +190,14 @@ export default {
           expanded: false,
           children: [
             {
-              icon: "mdi-format-list-bulleted",
+              icon: "mdi-history",
               text: "SystemLogs",
               to: "/admin/system-logs/list"
+            },
+            {
+              icon: "mdi-book-account",
+              text: "Audits",
+              to: "/admin/audit/list"
             }
           ]
         },

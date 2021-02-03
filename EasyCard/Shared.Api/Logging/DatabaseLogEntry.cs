@@ -26,6 +26,7 @@ namespace Shared.Api.Logging
 
         public DateTime? Timestamp { get; set; }
 
+        [MetadataOptions(Hidden = true)]
         public string CorrelationID { get; set; }
 
         [MetadataOptions(Hidden = true)]

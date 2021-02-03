@@ -92,6 +92,7 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
+        [Obsolete("TODO: Delete, AuditApi is a replacement")]
         [Route("{merchantID}/history")]
         public async Task<ActionResult<SummariesResponse<MerchantHistoryResponse>>> GetMerchantHistory([FromRoute]Guid merchantID, [FromQuery] MerchantHistoryFilter filter)
         {

@@ -35,6 +35,9 @@
           <v-btn class="mx-1" color="orange darken-3" outlined small :title="$t('ResetPassword')" :loading="actionInProgress" @click="resetUserPassword(item.$userID)">
             <v-icon small>mdi-lock-reset</v-icon>
           </v-btn>
+          <v-btn class="mx-1" color="deep-purple" outlined link small :title="$t('SeeHistory')" :to="{name:'Audits',params:{filters:{userID: item.$userID}}}">
+            <v-icon small>mdi-book-account</v-icon>
+          </v-btn>
         </template>
       </v-data-table>
     </div>

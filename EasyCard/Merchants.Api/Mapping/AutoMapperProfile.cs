@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IdentityServerClient;
 using Merchants.Api.Models;
+using Merchants.Api.Models.Audit;
 using Merchants.Api.Models.Merchant;
 using Merchants.Api.Models.System;
 using Merchants.Api.Models.Terminal;
@@ -98,6 +99,9 @@ namespace Merchants.Api.Mapping
             CreateMap<MerchantRequest, Merchant>();
             CreateMap<UpdateMerchantRequest, Merchant>();
             CreateMap<MerchantHistory, MerchantHistoryResponse>();
+            CreateMap<MerchantHistory, AuditEntryResponse>()
+                .ForMember(d => d.TerminalName, o => o.MapFrom(src => src.Terminal.Label))
+                .ForMember(d => d.MerchantName, o => o.MapFrom(src => src.Merchant.BusinessName));
         }
 
         private void RegisterUserMappings()

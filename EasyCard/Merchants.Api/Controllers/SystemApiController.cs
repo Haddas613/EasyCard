@@ -41,7 +41,7 @@ namespace Merchants.Api.Controllers
             return new TableMeta
             {
                 Columns = typeof(DatabaseLogEntry)
-                    .GetObjectMeta(UserSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
+                    .GetObjectMeta(DatabaseLogEntryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
             };
         }
 
