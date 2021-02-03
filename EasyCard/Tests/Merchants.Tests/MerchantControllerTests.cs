@@ -110,7 +110,7 @@ namespace MerchantsApi.Tests
         public async Task GetMerchants_FiltersAndReturnsCollectionOfMerchants()
         {
             var controller = new MerchantApiController(merchantsFixture.MerchantsService, merchantsFixture.Mapper, merchantsFixture.TerminalsService);
-            var filter = new MerchantsFilter { BusinessName = Guid.NewGuid().ToString() }; //assumed unique non-taken name
+            var filter = new MerchantsFilter { Search = Guid.NewGuid().ToString() }; //assumed unique non-taken name
             var actionResult = await controller.GetMerchants(filter);
 
             var response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
@@ -123,7 +123,7 @@ namespace MerchantsApi.Tests
             Assert.True(responseData.NumberOfRecords == 0);
 
             var existingMerchant = await merchantsFixture.MerchantsService.GetMerchants().FirstOrDefaultAsync();
-            actionResult = await controller.GetMerchants(new MerchantsFilter { BusinessName = existingMerchant.BusinessName });
+            actionResult = await controller.GetMerchants(new MerchantsFilter { Search = existingMerchant.BusinessName });
             response = actionResult.Result as Microsoft.AspNetCore.Mvc.ObjectResult;
             responseData = response.Value as SummariesResponse<MerchantSummary>;
 
