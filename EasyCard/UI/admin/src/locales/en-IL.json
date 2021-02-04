@@ -348,5 +348,6 @@
 
   "--MESSAGES--": null,
   "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?",
-  "NotSupportedContactAdministration": "Not supported. Contact administration"
+  "NotSupportedContactAdministration": "Not supported. Contact administration",
+  "TerminalTemplateSaveInfoMessage": "Changes made to Terminal Template will only be reflected on terminals created after that."
 }

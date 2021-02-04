@@ -15,7 +15,9 @@
               ref="terminalSettingsRef"
               @update="refreshTerminal()"
             ></terminal-settings-fields>
-            <v-flex class="d-flex justify-end">
+            <v-alert class="pt-4 text-center" border="top" colored-border type="info" elevation="2">
+              {{$t("TerminalTemplateSaveInfoMessage")}}
+              <v-flex class="d-flex justify-end">
               <v-btn
                 color="primary"
                 :disabled="!terminalSettingsFormValid"
@@ -23,6 +25,7 @@
                 @click="saveTerminalSettings()"
               >{{$t('Save')}}</v-btn>
             </v-flex>
+            </v-alert>
           </v-form>
         </v-tab-item>
         <v-tab-item key="integrations">
