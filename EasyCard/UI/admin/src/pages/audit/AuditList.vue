@@ -5,7 +5,7 @@
       <template>
         <div v-if="selectedAudit" class="body-1 black--text">
           <h3>
-            {{selectedAudit.operationDoneBy || '-NO USER-'}}, {{selectedAudit.$operationDate | ecdate('MM/DD/YYYY HH:MM')}}
+            {{selectedAudit.operationDoneBy || '-NO USER-'}}, {{selectedAudit.$operationDate | ecdate}}
           </h3>
           <p class="pt-1">{{$t('OperationCode')}}: <b>{{selectedAudit.operationCode}}</b></p>
           <v-switch :label="$t('FormatCode')" v-model="preMode"></v-switch>
@@ -38,7 +38,7 @@
       >
       
       <template v-slot:item.operationDate="{ item }">
-        {{item.$operationDate | ecdate('MM/DD/YYYY HH:MM')}}
+        {{item.$operationDate | ecdate}}
       </template> 
       <template v-slot:item.operationCode="{ item }">
         <small>{{item.operationCode}}</small>

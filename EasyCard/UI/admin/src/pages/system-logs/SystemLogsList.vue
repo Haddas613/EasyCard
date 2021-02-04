@@ -9,7 +9,7 @@
               <span v-if="logLevels[selectedLog.logLevel]" v-bind:class="logLevels[selectedLog.logLevel].color">{{logLevels[selectedLog.logLevel].title}}</span>
               <span v-else>{{selectedLog.logLevel}}</span>
             </span>
-            {{selectedLog.userName || '-NO USER-'}}, {{selectedLog.$timestamp | ecdate('MM/DD/YYYY HH:MM')}}
+            {{selectedLog.userName || '-NO USER-'}}, {{selectedLog.$timestamp | ecdate}}
           </h3>
           <p class="pt-1">{{$t('CorrelationID')}}: <b>{{selectedLog.correlationID}}</b></p>
           <v-switch :label="$t('FormatCode')" v-model="preMode"></v-switch>
@@ -47,7 +47,7 @@
         class="elevation-1"
       >
       <template v-slot:item.timestamp="{ item }">
-        {{item.$timestamp | ecdate('MM/DD/YYYY HH:MM')}}
+        {{item.$timestamp | ecdate}}
       </template> 
       <template v-slot:item.logLevel="{ item }">
           <span v-if="logLevels[item.logLevel]" v-bind:class="logLevels[item.logLevel].color">{{logLevels[item.logLevel].title}}</span>
