@@ -25,5 +25,14 @@
     "Name": "EasyInvoice",
     "Key": "easy-invoice",
     "Active": true
+  },
+  {
+    "ExternalSystemID": 40,
+    "Type": "invoicing",
+    "InstanceTypeFullName": null,
+    "SettingsTypeFullName": null,
+    "Name": "RapidOne Invoicing",
+    "Key": "rapid-one-invoicing",
+    "Active": true
   }
 ]
