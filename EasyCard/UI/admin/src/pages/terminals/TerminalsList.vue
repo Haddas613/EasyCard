@@ -22,7 +22,12 @@
           <v-btn class="mx-1" color="secondary" outlined x-small link :to="{name: 'EditTerminal', params: {id: item.$terminalID}}">
             <v-icon small>mdi-pencil</v-icon>
           </v-btn>
-          <!-- <v-icon small @click="deleteItem(item)">mdi-delete</v-icon> -->
+          <v-btn class="mx-1" color="error" outlined x-small v-if="item.$status != 'disabled'" @click="disable(item)">
+            <v-icon small>mdi-cancel</v-icon>
+          </v-btn>
+          <v-btn class="mx-1" color="success" outlined x-small v-if="item.$status == 'disabled'" @click="enable(item)">
+            <v-icon small>mdi-chevron-down-circle</v-icon>
+          </v-btn>
         </template>
       </v-data-table>
     </div>
@@ -75,6 +80,14 @@ export default {
     },
     async applyFilter(filter) {
       this.terminalsFilter = filter;
+      await this.getDataFromApi();
+    },
+    async enable(terminal){
+      let opResult = await this.$api.terminals.enableTerminal(terminal.$terminalID);
+      await this.getDataFromApi();
+    },
+    async disable(terminal){
+      let opResult = await this.$api.terminals.disableTerminal(terminal.$terminalID);
       await this.getDataFromApi();
     }
   }

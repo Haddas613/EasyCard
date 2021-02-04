@@ -227,5 +227,32 @@ namespace Merchants.Api.Controllers
             // TODO: failed case
             return Ok(new OperationResponse { EntityReference = opResult.ApiKey });
         }
+
+        [HttpPut]
+        [Route("{terminalID}/disable")]
+        public async Task<ActionResult<OperationResponse>> DisableTerminal([FromRoute]Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+
+            terminal.Status = Shared.Enums.TerminalStatusEnum.Disabled;
+            terminal.SharedApiKey = null;
+
+            await terminalsService.UpdateEntity(terminal);
+
+            return Ok(new OperationResponse(Messages.TerminalDisabled, StatusEnum.Success, terminalID));
+        }
+
+        [HttpPut]
+        [Route("{terminalID}/enable")]
+        public async Task<ActionResult<OperationResponse>> EnableTerminal([FromRoute]Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+
+            terminal.Status = Shared.Enums.TerminalStatusEnum.Approved;
+
+            await terminalsService.UpdateEntity(terminal);
+
+            return Ok(new OperationResponse(Messages.TerminalEnabled, StatusEnum.Success, terminalID));
+        }
     }
 }
