@@ -546,6 +546,8 @@ namespace IdentityServer.Controllers
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
             var context = await interaction.GetAuthorizationContextAsync(returnUrl);
+            var isAdmin = (User?.IsAdmin()).Value;
+
             if (context?.IdP != null && await schemeProvider.GetSchemeAsync(context.IdP) != null)
             {
                 var local = context.IdP == IdentityServer4.IdentityServerConstants.LocalIdentityProvider;
@@ -557,7 +559,9 @@ namespace IdentityServer.Controllers
                     ReturnUrl = returnUrl,
                     Username = context?.LoginHint,
                     IsAuthorized = User?.Identity.IsAuthenticated == true,
-                    UserName = User.Identity?.Name
+                    UserName = User.Identity?.Name,
+                    IsAdmin = isAdmin,
+                    ClientSystemURL = isAdmin ? configuration.MerchantsApiAddress : configuration.ProfileApiAddress
                 };
 
                 if (!local)
@@ -602,7 +606,9 @@ namespace IdentityServer.Controllers
                 Username = context?.LoginHint,
                 ExternalProviders = providers.ToArray(),
                 IsAuthorized = User?.Identity.IsAuthenticated == true,
-                UserName = User.Identity?.Name
+                UserName = User.Identity?.Name,
+                IsAdmin = isAdmin,
+                ClientSystemURL = isAdmin ? configuration.MerchantsApiAddress : configuration.ProfileApiAddress
             };
         }
 

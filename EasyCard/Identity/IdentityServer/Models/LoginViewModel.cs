@@ -13,6 +13,12 @@ namespace IdentityServer.Models
         [BindNever]
         public bool IsAuthorized { get; set; }
 
+        [BindNever]
+        public bool IsAdmin { get; set; }
+
+        [BindNever]
+        public string ClientSystemURL { get; set; }
+
         public bool EnableLocalLogin { get; set; } = true;
 
         public IEnumerable<ExternalProvider> ExternalProviders { get; set; } = Enumerable.Empty<ExternalProvider>();
