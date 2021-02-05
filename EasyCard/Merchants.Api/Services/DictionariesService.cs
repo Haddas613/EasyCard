@@ -12,6 +12,8 @@ using Merchants.Api.Models.Dictionaries;
 using Merchants.Shared.Enums;
 using Merchants.Api.Models.Terminal;
 using Merchants.Api.Models.User;
+using Microsoft.Extensions.Logging;
+using Merchants.Api.Models.System;
 
 namespace Merchants.Api.Services
 {
@@ -41,14 +43,20 @@ namespace Merchants.Api.Services
 
             var userStatusEnumType = typeof(UserStatusEnum);
 
+            var logLevelsType = typeof(LogLevel);
+
             var termStatuses = Enum.GetValues(transactionStatusEnumType).Cast<TerminalStatusEnum>()
                 .ToDictionary(m => transactionStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => TerminalStatusEnumResource.ResourceManager.GetString(m.ToString(), culture) );
 
             var userStatuses = Enum.GetValues(userStatusEnumType).Cast<UserStatusEnum>()
                 .ToDictionary(m => userStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => UserEnumsResource.ResourceManager.GetString(m.ToString(), culture));
 
+            var logLevels = Enum.GetValues(logLevelsType).Cast<LogLevel>()
+                .ToDictionary(m => logLevelsType.GetDataContractAttrForEnum(m.ToString()), m => SystemEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
             response.TerminalStatusEnum = termStatuses;
             response.UserStatusEnum = userStatuses;
+            response.LogLevelsEnum = logLevels;
 
             return response;
         }

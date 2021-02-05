@@ -1,5 +1,13 @@
 <template>
   <v-card class="mx-auto" outlined>
+    <v-expansion-panels :flat="true">
+      <v-expansion-panel>
+        <v-expansion-panel-header class="primary white--text">{{$t('Filters')}}</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <users-filter :filter-data="usersFilter" v-on:apply="applyFilter($event)"></users-filter>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
     <v-divider></v-divider>
     <div>
       <v-data-table
@@ -46,7 +54,9 @@
 
 <script>
 export default {
-  components: {},
+  components: {
+    UsersFilter: () => import("../../components/users/UsersFilter"),
+  },
   data() {
     return {
       totalAmount: 0,

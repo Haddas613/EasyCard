@@ -39,7 +39,7 @@ namespace Shared.Api.Logging
 
             if (!string.IsNullOrWhiteSpace(query.CorrelationID))
             {
-                builder.Where($"{nameof(DatabaseLogEntry.CorrelationID)} = @{nameof(query.CorrelationID)}", new { query.CorrelationID });
+                builder.Where($"{nameof(DatabaseLogEntry.CorrelationID)} >= @{nameof(query.CorrelationID)}", new { query.CorrelationID });
             }
 
             if (!string.IsNullOrWhiteSpace(query.CategoryName))
@@ -79,7 +79,7 @@ namespace Shared.Api.Logging
 
             if (query.To != null)
             {
-                builder.Where($"{nameof(DatabaseLogEntry.Timestamp)} <= @{nameof(query.To)}", new { query.To });
+                builder.Where($"{nameof(DatabaseLogEntry.Timestamp)} < @{nameof(query.To)}", new { To = query.To.Value.Date.AddDays(1) });
             }
 
             if (!string.IsNullOrWhiteSpace(query.Message))

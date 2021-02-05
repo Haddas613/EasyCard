@@ -32,7 +32,7 @@
       <v-expansion-panel>
         <v-expansion-panel-header class="primary white--text">{{$t('Filters')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
-          TODO: Filter
+          <system-logs-filter :filter-data="systemLogsFilter" v-on:apply="applyFilter($event)"></system-logs-filter>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -57,13 +57,12 @@
         <small>{{item.categoryName}}</small>
       </template> 
       <template v-slot:item.message="{ item }">
-        <span v-if="!item.message || item.message.length < 100">{{item.message}}</span>
-        <span v-else class="cursor-pointer primary--text" @click="showLogDetails(item)">
+        <span class="cursor-pointer primary--text" @click="showLogDetails(item)">
           {{item.message | length(100)}}...
         </span>
       </template>
       <template v-slot:item.correlationID="{ item }">
-        <small>{{item.correlationID}}</small>
+        <small>{{item.correlationID | guid}}</small>
       </template>
       </v-data-table>
     </div>
@@ -75,6 +74,7 @@ export default {
   components: {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     EcDialog: () => import("../../components/ec/EcDialog"),
+    SystemLogsFilter: () => import("../../components/system-logs/SystemLogsFilter")
   },
   data() {
     return {
@@ -139,8 +139,9 @@ export default {
         this.headers = data.headers;
       }
     },
-    //TODO
+    
     async applyFilter(filter) {
+      this.options.page = 1;
       this.systemLogsFilter = filter;
       await this.getDataFromApi();
     },

@@ -106,6 +106,7 @@
   "SelectItems": "Select Items",
   "AddItems": "Add Items",
   "@RedirectURLNumber": "Redirect URL #@number",
+  "MustBeValidGUID": "Must be valid GUID",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -254,6 +255,8 @@
   "OperationCode": "Operation Code",
   "AggregatorTerminalReference": "Aggregator Terminal reference",
   "ProcessorTerminalReference": "Processor Terminal reference",
+  "UserOrMerchantID": "User or Merchant ID",
+  "NameOrEmail": "Name or Email",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

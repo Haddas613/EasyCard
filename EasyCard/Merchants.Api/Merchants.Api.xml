@@ -157,6 +157,57 @@
               Looks up a localized string similar to User Name.
             </summary>
         </member>
+        <member name="T:Merchants.Api.Models.System.SystemEnumsResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.Critical">
+            <summary>
+              Looks up a localized string similar to Critical.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.Debug">
+            <summary>
+              Looks up a localized string similar to Debug.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.Error">
+            <summary>
+              Looks up a localized string similar to Error.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.Information">
+            <summary>
+              Looks up a localized string similar to Information.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.None">
+            <summary>
+              Looks up a localized string similar to None.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.Trace">
+            <summary>
+              Looks up a localized string similar to Trace.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.Warning">
+            <summary>
+              Looks up a localized string similar to Warning.
+            </summary>
+        </member>
         <member name="T:Merchants.Api.Models.TerminalTemplate.TerminalTemplatesSummaryResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

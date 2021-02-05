@@ -39,7 +39,7 @@
 export default {
   components: {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
-    MerchantsFilter: () => import("../../components//merchants/MerchantsFilter"),
+    MerchantsFilter: () => import("../../components/merchants/MerchantsFilter"),
   },
   data() {
     return {

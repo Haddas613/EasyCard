@@ -72,6 +72,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DatabaseLogEntryResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Models\System\SystemEnumsResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SystemEnumsResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Models\TerminalTemplate\TerminalTemplatesSummaryResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -111,6 +116,10 @@
     <EmbeddedResource Update="Models\System\DatabaseLogEntryResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>DatabaseLogEntryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\System\SystemEnumsResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SystemEnumsResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Models\TerminalTemplate\TerminalTemplatesSummaryResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

@@ -44,8 +44,7 @@
         <small>{{item.operationCode}}</small>
       </template> 
       <template v-slot:item.operationDescription="{ item }">
-        <span v-if="!item.operationDescription || item.operationDescription.length < 100">{{item.operationDescription}}</span>
-        <span v-else class="cursor-pointer primary--text" @click="showDetails(item)">
+        <span class="cursor-pointer primary--text" @click="showDetails(item)">
           {{item.operationDescription | length(100)}}...
         </span>
       </template>
