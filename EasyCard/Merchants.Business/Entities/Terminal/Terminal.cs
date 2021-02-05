@@ -58,6 +58,18 @@ namespace Merchants.Business.Entities.Terminal
 
         public byte[] SharedApiKey { get; set; }
 
+        /// <summary>
+        /// Copy of the corresponding <see cref="TerminalExternalSystem"/> processor integration settings terminal reference.
+        /// For search purposes.
+        /// </summary>
+        public string ProcessorTerminalReference { get; set; }
+
+        /// <summary>
+        /// Copy of the corresponding <see cref="TerminalExternalSystem"/> aggregator integration settings terminal reference.
+        /// For search purposes.
+        /// </summary>
+        public string AggregatorTerminalReference { get; set; }
+
         public Guid GetID()
         {
             return TerminalID;

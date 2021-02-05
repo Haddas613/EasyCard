@@ -28,6 +28,7 @@ namespace Merchants.Api.Mapping
             RegisterTerminalMappings();
             RegisterUserMappings();
             RegisterSystemSettingsMappings();
+            MapIntegrations();
         }
 
         private void RegisterTerminalMappings()
@@ -117,6 +118,17 @@ namespace Merchants.Api.Mapping
         {
             CreateMap<SystemSettings, SystemSettingsResponse>();
             CreateMap<SystemSettingsRequest, SystemSettings>();
+        }
+
+        private void MapIntegrations()
+        {
+            CreateMap<Shva.ShvaTerminalSettings, Terminal>()
+               .ForMember(m => m.ProcessorTerminalReference, s => s.MapFrom(src => src.MerchantNumber))
+               .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<ClearingHouse.ClearingHouseTerminalSettings, Terminal>()
+               .ForMember(m => m.AggregatorTerminalReference, s => s.MapFrom(src => src.MerchantReference))
+               .ForAllOtherMembers(d => d.Ignore());
         }
     }
 }

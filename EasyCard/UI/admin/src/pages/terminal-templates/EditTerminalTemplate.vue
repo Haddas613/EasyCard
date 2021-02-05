@@ -15,7 +15,7 @@
               ref="terminalSettingsRef"
               @update="refreshTerminal()"
             ></terminal-settings-fields>
-            <v-alert class="pt-4 text-center" border="top" colored-border type="info" elevation="2">
+            <v-alert class="pt-4 text-center" border="top" colored-border type="info" elevation="2" v-if="terminalTemplate">
               {{$t("TerminalTemplateSaveInfoMessage")}}
               <v-flex class="d-flex justify-end">
               <v-btn

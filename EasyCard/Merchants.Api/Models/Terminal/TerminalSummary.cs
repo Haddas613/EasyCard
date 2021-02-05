@@ -47,7 +47,12 @@ namespace Merchants.Api.Models.Terminal
         /// <summary>
         /// SHVA or other system terminal ID
         /// </summary>
-        public string ExternalProcessorReference { get; set; }
+        public string AggregatorTerminalReference { get; set; }
+
+        /// <summary>
+        /// SHVA or other system terminal ID
+        /// </summary>
+        public string ProcessorTerminalReference { get; set; }
 
         [EnumDataType(typeof(TerminalStatusEnum))]
         [JsonConverter(typeof(StringEnumConverter))]

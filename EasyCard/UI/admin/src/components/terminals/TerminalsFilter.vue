@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <!-- <merchant-terminal-filter v-model="model"></merchant-terminal-filter> -->
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <v-text-field
           v-model="model.terminalID"
           :label="$t('TerminalID')"
@@ -10,7 +10,7 @@
           hide-details="true"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <v-select
           :items="dictionaries.terminalStatusEnum"
           item-text="description"
@@ -22,7 +22,7 @@
           clearable
         ></v-select>
       </v-col>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <v-text-field
           v-model="model.label"
           :label="$t('Label')"
@@ -30,10 +30,26 @@
           hide-details="true"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <v-text-field
           v-model="model.merchantID"
           :label="$t('MerchantID')"
+          outlined
+          hide-details="true"
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field
+          v-model="model.aggregatorTerminalReference"
+          :label="$t('AggregatorTerminalReference')"
+          outlined
+          hide-details="true"
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field
+          v-model="model.processorTerminalReference"
+          :label="$t('ProcessorTerminalReference')"
           outlined
           hide-details="true"
         ></v-text-field>

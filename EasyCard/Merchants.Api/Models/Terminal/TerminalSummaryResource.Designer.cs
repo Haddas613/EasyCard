@@ -70,7 +70,16 @@ namespace Merchants.Api.Models.Terminal {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to External Processor Reference.
+        ///   Looks up a localized string similar to Aggregator Ref.
+        /// </summary>
+        public static string AggregatorTerminalReference {
+            get {
+                return ResourceManager.GetString("AggregatorTerminalReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External Processor Ref.
         /// </summary>
         public static string ExternalProcessorReference {
             get {
@@ -102,6 +111,15 @@ namespace Merchants.Api.Models.Terminal {
         public static string MerchantID {
             get {
                 return ResourceManager.GetString("MerchantID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Processor Ref.
+        /// </summary>
+        public static string ProcessorTerminalReference {
+            get {
+                return ResourceManager.GetString("ProcessorTerminalReference", resourceCulture);
             }
         }
         

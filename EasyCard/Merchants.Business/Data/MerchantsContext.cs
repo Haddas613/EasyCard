@@ -175,6 +175,10 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.EnabledFeatures).IsRequired(false).IsUnicode(false).HasConversion(FeatureEnumArrayConverter)
                     .Metadata.SetValueComparer(FeatureEnumArrayComparer);
 
+                builder.Property(b => b.AggregatorTerminalReference).HasMaxLength(50).IsRequired(false).IsUnicode(false);
+
+                builder.Property(b => b.ProcessorTerminalReference).HasMaxLength(50).IsRequired(false).IsUnicode(false);
+
                 builder.Property(b => b.SharedApiKey).IsRequired(false).HasMaxLength(64);
             }
         }

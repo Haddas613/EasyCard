@@ -16,5 +16,9 @@ namespace Merchants.Api.Models.Terminal
         public string Label { get; set; }
 
         public TerminalStatusEnum? Status { get; set; }
+
+        public string AggregatorTerminalReference { get; set; }
+
+        public string ProcessorTerminalReference { get; set; }
     }
 }

@@ -193,6 +193,7 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}/externalsystem")]
         public async Task<ActionResult<OperationResponse>> SaveTerminalExternalSystem([FromRoute]Guid terminalID, [FromBody]ExternalSystemRequest model)
         {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
             var externalSystem = EnsureExists(externalSystemsService.GetExternalSystem(model.ExternalSystemID), nameof(ExternalSystem));
 
             var texternalSystem = new TerminalExternalSystem();
@@ -201,7 +202,11 @@ namespace Merchants.Api.Controllers
             texternalSystem.TerminalID = terminalID;
             texternalSystem.Type = externalSystem.Type;
 
+            var settings = texternalSystem.Settings.ToObject(Type.GetType(externalSystem.SettingsTypeFullName));
+            mapper.Map(settings, terminal);
+
             await terminalsService.SaveTerminalExternalSystem(texternalSystem);
+            await terminalsService.UpdateEntity(terminal);
 
             return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID));
         }
@@ -210,9 +215,20 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}/externalsystem/{externalSystemID}")]
         public async Task<ActionResult<OperationResponse>> DeleteTerminalExternalSystem([FromRoute]Guid terminalID, long externalSystemID)
         {
-            // TODO: validation if it exists
-            await terminalsService.RemoveTerminalExternalSystem(terminalID, externalSystemID);
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+            var externalSystem = EnsureExists(externalSystemsService.GetExternalSystem(externalSystemID), nameof(ExternalSystem));
 
+            if (externalSystem.Type == Shared.Enums.ExternalSystemTypeEnum.Aggregator)
+            {
+                terminal.AggregatorTerminalReference = null;
+            }
+            else if (externalSystem.Type == Shared.Enums.ExternalSystemTypeEnum.Processor)
+            {
+                terminal.ProcessorTerminalReference = null;
+            }
+
+            await terminalsService.RemoveTerminalExternalSystem(terminalID, externalSystemID);
+            await terminalsService.UpdateEntity(terminal);
             return Ok(new OperationResponse(Messages.ExternalSystemRemoved, StatusEnum.Success, terminalID));
         }
 

@@ -224,7 +224,12 @@
               Looks up a localized string similar to Pending Approval.
             </summary>
         </member>
-        <member name="P:Merchants.Api.Models.Terminal.TerminalSummary.ExternalProcessorReference">
+        <member name="P:Merchants.Api.Models.Terminal.TerminalSummary.AggregatorTerminalReference">
+            <summary>
+            SHVA or other system terminal ID
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Terminal.TerminalSummary.ProcessorTerminalReference">
             <summary>
             SHVA or other system terminal ID
             </summary>
@@ -250,9 +255,14 @@
               Looks up a localized string similar to Activity Start Date.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.Terminal.TerminalSummaryResource.AggregatorTerminalReference">
+            <summary>
+              Looks up a localized string similar to Aggregator Ref.
+            </summary>
+        </member>
         <member name="P:Merchants.Api.Models.Terminal.TerminalSummaryResource.ExternalProcessorReference">
             <summary>
-              Looks up a localized string similar to External Processor Reference.
+              Looks up a localized string similar to External Processor Ref.
             </summary>
         </member>
         <member name="P:Merchants.Api.Models.Terminal.TerminalSummaryResource.Label">
@@ -268,6 +278,11 @@
         <member name="P:Merchants.Api.Models.Terminal.TerminalSummaryResource.MerchantID">
             <summary>
               Looks up a localized string similar to Merchant ID.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Terminal.TerminalSummaryResource.ProcessorTerminalReference">
+            <summary>
+              Looks up a localized string similar to Processor Ref.
             </summary>
         </member>
         <member name="P:Merchants.Api.Models.Terminal.TerminalSummaryResource.Status">

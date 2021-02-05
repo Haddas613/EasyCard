@@ -390,6 +390,11 @@ namespace Merchants.Business.Migrations
                     b.Property<DateTime?>("ActivityStartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("AggregatorTerminalReference")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
                     b.Property<string>("BillingSettings")
                         .HasColumnName("BillingSettings")
                         .HasColumnType("nvarchar(max)")
@@ -424,6 +429,11 @@ namespace Merchants.Business.Migrations
                     b.Property<string>("PaymentRequestSettings")
                         .HasColumnName("PaymentRequestSettings")
                         .HasColumnType("nvarchar(max)")
+                        .IsUnicode(false);
+
+                    b.Property<string>("ProcessorTerminalReference")
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
                         .IsUnicode(false);
 
                     b.Property<string>("Settings")

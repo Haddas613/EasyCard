@@ -33,6 +33,16 @@ namespace Merchants.Api.Extensions.Filtering
                 src = src.Where(t => t.Status == filter.Status.Value);
             }
 
+            if (!string.IsNullOrWhiteSpace(filter.AggregatorTerminalReference))
+            {
+                src = src.Where(t => EF.Functions.Like(t.AggregatorTerminalReference, filter.AggregatorTerminalReference.UseWildCard(true)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.ProcessorTerminalReference))
+            {
+                src = src.Where(t => EF.Functions.Like(t.ProcessorTerminalReference, filter.ProcessorTerminalReference.UseWildCard(true)));
+            }
+
             return src;
         }
     }

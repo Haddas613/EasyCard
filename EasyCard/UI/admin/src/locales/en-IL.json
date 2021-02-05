@@ -252,6 +252,8 @@
   "CorrelationID": "Correlation ID",
   "FormatCode": "Format Code",
   "OperationCode": "Operation Code",
+  "AggregatorTerminalReference": "Aggregator Terminal reference",
+  "ProcessorTerminalReference": "Processor Terminal reference",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
