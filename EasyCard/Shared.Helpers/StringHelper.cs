@@ -47,7 +47,7 @@ namespace Shared.Helpers
         /// <param name="src"></param>
         /// <param name="encloseInPercents">If true string will be enclosed with '%'. E.g. "%some text%" </param>
         /// <returns></returns>
-        public static string UseWildCard(this string src, bool encloseInPercents) => encloseInPercents ? $"%{src.Replace("*", "%")}%" : $"{src.Replace("*", "%")}";
+        public static string UseWildCard(this string src, bool encloseInPercents) => encloseInPercents ? $"%{src.Replace("*", "%").Trim()}%" : $"{src.Replace("*", "%").Trim()}";
 
         public static string ToCamelCase(this string value)
         {
