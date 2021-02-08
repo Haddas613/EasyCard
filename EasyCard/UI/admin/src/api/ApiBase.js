@@ -13,6 +13,7 @@ import UsersApi from './modules/merchant/UsersApi';
 import SystemApi from './modules/merchant/SystemApi';
 import AuditApi from './modules/merchant/AuditApi';
 import TerminalTemplatesApi from './modules/merchant/TerminalTemplatesApi';
+import ShvaApi from './modules/integrations/ShvaApi';
 
 class ApiBase {
     constructor() {
@@ -31,6 +32,9 @@ class ApiBase {
         this.terminalTemplates = new TerminalTemplatesApi(this);
         this.system = new SystemApi(this);
         this.audit = new AuditApi(this);
+        this.integrations= {
+            shva: new ShvaApi(this)
+        };
     }
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */

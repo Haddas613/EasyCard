@@ -12,7 +12,6 @@
       <v-text-field
         v-model="model"
         :label="inputText"
-        prepend-icon="mdi-calendar"
         readonly
         v-bind="attrs"
         v-on="on"

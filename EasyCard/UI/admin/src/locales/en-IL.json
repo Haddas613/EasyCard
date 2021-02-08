@@ -260,6 +260,7 @@
   "UserID": "User ID",
   "Code": "Code",
   "TerminalName": "Terminal Name",
+  "NewPassword": "New Password",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -293,6 +294,8 @@
   "Reset": "Reset",
   "ResetPassword": "Reset Password",
   "LoginAsMerchant": "Login as Merchant",
+  "SetNewPassword": "Set new password",
+  "TestConnection": "Test connection",
 
   "--AUTH--": null,
   "Login": "Login",
@@ -357,5 +360,6 @@
   "--MESSAGES--": null,
   "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?",
   "NotSupportedContactAdministration": "Not supported. Contact administration",
-  "TerminalTemplateSaveInfoMessage": "Changes made to Terminal Template will only be reflected on terminals created after that."
+  "TerminalTemplateSaveInfoMessage": "Changes made to Terminal Template will only be reflected on terminals created after that.",
+  "ShvaNewPasswordInfoMessage": "By doing this all Terminals who use that User with old Password will no longer function. Make sure to change password for all SHVA integrations on all Terminals with that user if required."
 }
