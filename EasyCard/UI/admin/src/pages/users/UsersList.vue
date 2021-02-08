@@ -103,8 +103,8 @@ export default {
         ];
       }
     },
-    //TODO
     async applyFilter(filter) {
+      this.options.page = 1;
       this.usersFilter = filter;
       await this.getDataFromApi();
     },

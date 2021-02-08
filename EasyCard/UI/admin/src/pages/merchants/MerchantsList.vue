@@ -75,8 +75,8 @@ export default {
         this.headers = [...data.headers, { value: "actions", text: this.$t("Actions") }];
       }
     },
-    //TODO
     async applyFilter(filter) {
+      this.options.page = 1;
       this.merchantsFilter = filter;
       await this.getDataFromApi();
     }

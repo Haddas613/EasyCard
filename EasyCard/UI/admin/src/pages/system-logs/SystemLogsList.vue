@@ -139,7 +139,6 @@ export default {
         this.headers = data.headers;
       }
     },
-    
     async applyFilter(filter) {
       this.options.page = 1;
       this.systemLogsFilter = filter;

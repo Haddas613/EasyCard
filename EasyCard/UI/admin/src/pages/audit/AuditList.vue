@@ -118,6 +118,7 @@ export default {
       }
     },
     async applyFilter(filter) {
+      this.options.page = 1;
       this.auditsFilter = filter;
       await this.getDataFromApi();
     },

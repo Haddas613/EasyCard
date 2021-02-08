@@ -170,6 +170,7 @@ export default {
       this.loading = false;
     },
     async applyFilters(data) {
+      this.options.page = 1;
       this.invoicesFilter = {
         ...data,
         skip: 0,
