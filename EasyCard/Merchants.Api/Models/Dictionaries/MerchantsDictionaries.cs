@@ -12,5 +12,7 @@ namespace Merchants.Api.Models.Dictionaries
         public Dictionary<string, string> UserStatusEnum { get; set; }
 
         public Dictionary<string, string> LogLevelsEnum { get; set; }
+
+        public Dictionary<string, string> OperationCodesEnum { get; set; }
     }
 }

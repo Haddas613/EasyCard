@@ -45,6 +45,8 @@ namespace Merchants.Api.Services
 
             var logLevelsType = typeof(LogLevel);
 
+            var operationCodesType = typeof(OperationCodesEnum);
+
             var termStatuses = Enum.GetValues(transactionStatusEnumType).Cast<TerminalStatusEnum>()
                 .ToDictionary(m => transactionStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => TerminalStatusEnumResource.ResourceManager.GetString(m.ToString(), culture) );
 
@@ -54,9 +56,13 @@ namespace Merchants.Api.Services
             var logLevels = Enum.GetValues(logLevelsType).Cast<LogLevel>()
                 .ToDictionary(m => logLevelsType.GetDataContractAttrForEnum(m.ToString()), m => SystemEnumsResource.ResourceManager.GetString(m.ToString(), culture));
 
+            var operationCodes = Enum.GetValues(operationCodesType).Cast<OperationCodesEnum>()
+                .ToDictionary(m => operationCodesType.GetDataContractAttrForEnum(m.ToString()), m => m.ToString());
+
             response.TerminalStatusEnum = termStatuses;
             response.UserStatusEnum = userStatuses;
             response.LogLevelsEnum = logLevels;
+            response.OperationCodesEnum = operationCodes;
 
             return response;
         }

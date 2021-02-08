@@ -257,6 +257,9 @@
   "ProcessorTerminalReference": "Processor Terminal reference",
   "UserOrMerchantID": "User or Merchant ID",
   "NameOrEmail": "Name or Email",
+  "UserID": "User ID",
+  "Code": "Code",
+  "TerminalName": "Terminal Name",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

@@ -22,7 +22,7 @@
       <v-expansion-panel>
         <v-expansion-panel-header class="primary white--text">{{$t('Filters')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
-          TODO: Filter
+          <audit-filter :filter-data="auditFilter" v-on:apply="applyFilter($event)"></audit-filter>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -68,6 +68,7 @@ export default {
   components: {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     EcDialog: () => import("../../components/ec/EcDialog"),
+    AuditFilter: () => import("../../components/audit/AuditFilter")
   },
   props: {
     filters: {
@@ -86,7 +87,7 @@ export default {
       options: {},
       pagination: {},
       headers: [],
-      auditsFilter: {
+      auditFilter: {
         ...this.filters
       },
       showDetailsDialog: false,
@@ -106,7 +107,7 @@ export default {
     async getDataFromApi() {
       this.loading = true;
       let data = await this.$api.audit.get({
-        ...this.auditsFilter,
+        ...this.auditFilter,
         ...this.options
       });
       this.audits = data.data;
@@ -119,7 +120,7 @@ export default {
     },
     async applyFilter(filter) {
       this.options.page = 1;
-      this.auditsFilter = filter;
+      this.auditFilter = filter;
       await this.getDataFromApi();
     },
     showDetails(log){
