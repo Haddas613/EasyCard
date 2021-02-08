@@ -202,7 +202,14 @@ namespace Merchants.Api.Controllers
             texternalSystem.TerminalID = terminalID;
             texternalSystem.Type = externalSystem.Type;
 
-            var settings = texternalSystem.Settings.ToObject(Type.GetType(externalSystem.SettingsTypeFullName));
+            var settingsType = Type.GetType(externalSystem.SettingsTypeFullName);
+
+            if (settingsType == null)
+            {
+                throw new ApplicationException($"Could not create instance of {externalSystem.SettingsTypeFullName}");
+            }
+
+            var settings = texternalSystem.Settings.ToObject(settingsType);
             mapper.Map(settings, terminal);
 
             await terminalsService.SaveTerminalExternalSystem(texternalSystem);

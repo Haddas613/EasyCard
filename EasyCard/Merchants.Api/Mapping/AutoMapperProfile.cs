@@ -129,6 +129,9 @@ namespace Merchants.Api.Mapping
             CreateMap<ClearingHouse.ClearingHouseTerminalSettings, Terminal>()
                .ForMember(m => m.AggregatorTerminalReference, s => s.MapFrom(src => src.MerchantReference))
                .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<EasyInvoice.EasyInvoiceTerminalSettings, Terminal>()
+               .ForAllMembers(d => d.Ignore());
         }
     }
 }
