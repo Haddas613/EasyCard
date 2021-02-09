@@ -90,9 +90,9 @@ export default {
       type: Object,
       required: true
     },
-    apiName: {
-      type: String,
-      default: 'terminals',
+    isTemplate: {
+      type: Boolean,
+      default: false,
       required: false
     }
   },
@@ -106,11 +106,15 @@ export default {
       integrationDialog: false,
       valid: false,
       vr: ValidationRules,
-      idKey: 'terminalID'
+      idKey: 'terminalID',
+      //api key for integrations to use ($api['terminals'] for example)
+      apiName: this.isTemplate ? 'terminalTemplates' : 'terminals'
     };
   },
   async mounted() {
-    let integrations = await this.$api.terminals.getAvailableIntegrations();
+    let integrations = await this.$api.terminals.getAvailableIntegrations({
+      showForTemplatesOnly: this.isTemplate
+    });
     this.integrationTypes = Object.keys(integrations).map(e => {
       return {
         name: e,

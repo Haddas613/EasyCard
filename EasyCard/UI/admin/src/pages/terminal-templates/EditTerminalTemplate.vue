@@ -29,7 +29,7 @@
           </v-form>
         </v-tab-item>
         <v-tab-item key="integrations">
-          <terminal-integrations-form :terminal="terminalTemplate" v-if="terminalTemplate" api-name="terminalTemplates"></terminal-integrations-form>
+          <terminal-integrations-form :terminal="terminalTemplate" v-if="terminalTemplate" is-template></terminal-integrations-form>
         </v-tab-item>
       </v-tabs-items>
     </v-card-text>

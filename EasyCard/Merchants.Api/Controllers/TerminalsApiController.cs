@@ -76,13 +76,17 @@ namespace Merchants.Api.Controllers
 
         [HttpGet]
         [Route("available-integrations")]
-        public async Task<ActionResult<Dictionary<string, IEnumerable<ExternalSystem>>>> GetAvailableIntegrations()
+        public async Task<ActionResult<Dictionary<string, IEnumerable<ExternalSystem>>>> GetAvailableIntegrations(bool showForTemplatesOnly = false)
         {
             //TODO: translations for keys
-            var externalSystems = externalSystemsService.GetExternalSystems().Where(s => s.Active)
-                .GroupBy(k => k.Type);
+            var externalSystems = externalSystemsService.GetExternalSystems().Where(s => s.Active);
 
-            return Ok(externalSystems.ToDictionary(k => k.Key, v => v));
+            if (showForTemplatesOnly)
+            {
+                externalSystems = externalSystems.Where(s => s.CanBeUsedInTerminalTemplate);
+            }
+
+            return Ok(externalSystems.GroupBy(k => k.Type).ToDictionary(k => k.Key, v => v));
         }
 
         [HttpGet]

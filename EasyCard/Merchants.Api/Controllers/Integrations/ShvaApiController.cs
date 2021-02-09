@@ -17,7 +17,7 @@ namespace Merchants.Api.Controllers.Integrations
     [Produces("application/json")]
     [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
-    public class ShvaController : ApiControllerBase
+    public class ShvaApiController : ApiControllerBase
     {
         [HttpPost]
         [Route("new-password")]
@@ -33,17 +33,17 @@ namespace Merchants.Api.Controllers.Integrations
             }
             else
             {
-                return BadRequest(ShvaMessages.EitherTerminalOrTerminalTemplateIDMustBeSpecified);
+                return BadRequest(ShvaMessagesResource.EitherTerminalOrTerminalTemplateIDMustBeSpecified);
             }
 
-            return Ok(new OperationResponse(ShvaMessages.NewPasswordSetSuccessfully, StatusEnum.Success));
+            return Ok(new OperationResponse(ShvaMessagesResource.NewPasswordSetSuccessfully, StatusEnum.Success));
         }
 
         [HttpPost]
         [Route("test-connection")]
         public async Task<ActionResult<OperationResponse>> TestConnection(ExternalSystemRequest request)
         {
-            return Ok(new OperationResponse(ShvaMessages.ConnectionSuccess, StatusEnum.Success));
+            return Ok(new OperationResponse(ShvaMessagesResource.ConnectionSuccess, StatusEnum.Success));
         }
     }
 }

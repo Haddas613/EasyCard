@@ -29,10 +29,16 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(VaryByQueryKeys = new string[] { "showForTemplatesOnly" })]
         [Route("externalsystems")]
-        public async Task<ActionResult<SummariesResponse<ExternalSystemSummary>>> GetExternalSystems()
+        public async Task<ActionResult<SummariesResponse<ExternalSystemSummary>>> GetExternalSystems(bool showForTemplatesOnly = false)
         {
             var exSystems = externalSystemsService.GetExternalSystems();
+
+            if (showForTemplatesOnly)
+            {
+                exSystems = exSystems.Where(s => s.CanBeUsedInTerminalTemplate);
+            }
 
             var response = new SummariesResponse<ExternalSystemSummary> { NumberOfRecords = exSystems.Count(), Data = mapper.Map<IEnumerable<ExternalSystemSummary>>(exSystems) };
 

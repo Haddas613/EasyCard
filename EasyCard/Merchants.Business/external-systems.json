@@ -15,7 +15,8 @@
     "SettingsTypeFullName": "Shva.ShvaTerminalSettings, Shva",
     "Name": "Shva",
     "Key": "shva",
-    "Active": true
+    "Active": true,
+    "CanBeUsedInTerminalTemplate": true
   },
   {
     "ExternalSystemID": 30,

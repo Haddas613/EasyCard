@@ -22,14 +22,14 @@ namespace Merchants.Api.Models.Integrations.Shva {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class ShvaMessages {
+    public class ShvaMessagesResource {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal ShvaMessages() {
+        internal ShvaMessagesResource() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Merchants.Api.Models.Integrations.Shva {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Merchants.Api.Models.Integrations.Shva.ShvaMessages", typeof(ShvaMessages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource", typeof(ShvaMessagesResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -14,6 +14,7 @@ import SystemApi from './modules/merchant/SystemApi';
 import AuditApi from './modules/merchant/AuditApi';
 import TerminalTemplatesApi from './modules/merchant/TerminalTemplatesApi';
 import ShvaApi from './modules/integrations/ShvaApi';
+import EasyInvoiceApi from './modules/integrations/EasyInvoiceApi';
 
 class ApiBase {
     constructor() {
@@ -32,8 +33,9 @@ class ApiBase {
         this.terminalTemplates = new TerminalTemplatesApi(this);
         this.system = new SystemApi(this);
         this.audit = new AuditApi(this);
-        this.integrations= {
-            shva: new ShvaApi(this)
+        this.integrations = {
+            shva: new ShvaApi(this),
+            easyInvoice: new EasyInvoiceApi(this)
         };
     }
 

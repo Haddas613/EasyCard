@@ -6,14 +6,16 @@
         <v-alert class="pt-4" border="top" colored-border type="warning" elevation="2">
           {{$t("ShvaNewPasswordInfoMessage")}}
         </v-alert>
-        <v-row>
+        <v-form ref="newPasswordFormRef" lazy-validation>
+          <v-row>
           <v-col cols="12" md="6" class="py-0">
-            <v-text-field v-model="model.settings.userName" :label="$t('UserName')" outlined></v-text-field>
+            <v-text-field v-model="model.settings.userName" :rules="[vr.primitives.required, vr.primitives.stringLength(3, 64)]" :label="$t('UserName')" outlined></v-text-field>
           </v-col>
           <v-col cols="12" md="6" class="py-0">
-            <v-text-field v-model="newPasswordModel" :label="$t('NewPassword')" outlined></v-text-field>
+            <v-text-field v-model="newPasswordModel" :rules="[vr.primitives.required, vr.primitives.stringLength(6, 64)]" :label="$t('NewPassword')" outlined></v-text-field>
           </v-col>
         </v-row>
+        </v-form>
         <div class="d-flex justify-end">
           <v-btn @click="newPasswordDialog = false" :loading="loading">{{$t("Cancel")}}</v-btn>
           <v-btn class="mx-1" color="primary" @click="setNewPassword()" :loading="loading">{{$t("Save")}}</v-btn>
@@ -23,8 +25,8 @@
     <v-form v-model="formValid" lazy-validation>
       <v-row v-if="model.settings">
         <v-col cols="12" class="pt-0">
-          <v-btn color="success" @click="testConnection()">{{$t("TestConnection")}}</v-btn>
-          <v-btn class="mx-1" color="primary" @click="openNewPasswordDialog()">{{$t("SetNewPassword")}}</v-btn>
+          <v-btn small color="success" @click="testConnection()">{{$t("TestConnection")}}</v-btn>
+          <v-btn small class="mx-1" color="primary" @click="openNewPasswordDialog()">{{$t("SetNewPassword")}}</v-btn>
         </v-col>
         <v-col cols="12" md="4" class="py-0">
           <v-text-field v-model="model.settings.userName" :label="$t('UserName')" outlined></v-text-field>
@@ -48,7 +50,12 @@
 </template>
 
 <script>
+import ValidationRules from "../../helpers/validation-rules";
+
 export default {
+  components: {
+    EcDialog: () => import("../../components/ec/EcDialog")
+  },
   props: {
     data: {
       type: Object,
@@ -62,9 +69,6 @@ export default {
       required: true
     }
   },
-  components: {
-    EcDialog: () => import("../../components/ec/EcDialog")
-  },
   data() {
     return {
       model: {
@@ -73,7 +77,8 @@ export default {
       formValid: false,
       loading: false,
       newPasswordDialog: false,
-      newPasswordModel: null
+      newPasswordModel: null,
+      vr: ValidationRules
     };
   },
   mounted() {
@@ -95,6 +100,9 @@ export default {
       this.newPasswordDialog = true;
     },
     async setNewPassword(){
+      if(!this.$refs.newPasswordFormRef.validate()){
+        return;
+      }
       this.loading = true;
       let payload = {
         ...this.model,
