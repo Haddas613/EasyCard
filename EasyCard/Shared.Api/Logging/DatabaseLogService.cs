@@ -39,7 +39,7 @@ namespace Shared.Api.Logging
 
             if (!string.IsNullOrWhiteSpace(query.CorrelationID))
             {
-                builder.Where($"{nameof(DatabaseLogEntry.CorrelationID)} >= @{nameof(query.CorrelationID)}", new { query.CorrelationID });
+                builder.Where($"{nameof(DatabaseLogEntry.CorrelationID)} = @{nameof(query.CorrelationID)}", new { query.CorrelationID });
             }
 
             if (!string.IsNullOrWhiteSpace(query.CategoryName))
