@@ -206,18 +206,21 @@ namespace Merchants.Api.Controllers
             texternalSystem.TerminalID = terminalID;
             texternalSystem.Type = externalSystem.Type;
 
-            var settingsType = Type.GetType(externalSystem.SettingsTypeFullName);
-
-            if (settingsType == null)
+            if (externalSystem.SettingsTypeFullName != null)
             {
-                throw new ApplicationException($"Could not create instance of {externalSystem.SettingsTypeFullName}");
+                var settingsType = Type.GetType(externalSystem.SettingsTypeFullName);
+
+                if (settingsType == null)
+                {
+                    throw new ApplicationException($"Could not create instance of {externalSystem.SettingsTypeFullName}");
+                }
+
+                var settings = texternalSystem.Settings.ToObject(settingsType);
+                mapper.Map(settings, terminal);
+                await terminalsService.UpdateEntity(terminal);
             }
 
-            var settings = texternalSystem.Settings.ToObject(settingsType);
-            mapper.Map(settings, terminal);
-
             await terminalsService.SaveTerminalExternalSystem(texternalSystem);
-            await terminalsService.UpdateEntity(terminal);
 
             return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID));
         }

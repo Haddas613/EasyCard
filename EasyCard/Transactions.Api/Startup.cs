@@ -31,6 +31,7 @@ using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Helpers.Queue;
 using Shared.Helpers.Security;
+using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Transactions.Api.Controllers;
@@ -244,6 +245,11 @@ namespace Transactions.Api
                 var tokenSvc = new WebApiClientTokenService(webApiClient.HttpClient, chCfg);
 
                 return new ClearingHouse.ClearingHouseAggregator(webApiClient, logger, chCfg, tokenSvc, storageService);
+            });
+
+            services.AddSingleton<NullAggregator, NullAggregator>(serviceProvider =>
+            {
+                return new NullAggregator();
             });
 
             services.AddSingleton<EasyInvoice.ECInvoiceInvoicing, EasyInvoice.ECInvoiceInvoicing>(serviceProvider =>

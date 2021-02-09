@@ -35,5 +35,15 @@
     "Name": "RapidOne Invoicing",
     "Key": "rapid-one-invoicing",
     "Active": true
+  },
+  {
+    "ExternalSystemID": 1,
+    "Type": "aggregator",
+    "InstanceTypeFullName": "Shared.Integration.ExternalSystems.NullAggregator, Shared.Integration",
+    "SettingsTypeFullName": null,
+    "Name": "NULL Aggregator",
+    "Key": "null-aggregator",
+    "Active": true,
+    "CanBeUsedInTerminalTemplate": true
   }
 ]
