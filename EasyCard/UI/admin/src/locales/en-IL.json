@@ -297,6 +297,7 @@
   "LoginAsMerchant": "Login as Merchant",
   "SetNewPassword": "Set new password",
   "TestConnection": "Test connection",
+  "LoadMerchantData": "Load merchant data",
 
   "--AUTH--": null,
   "Login": "Login",

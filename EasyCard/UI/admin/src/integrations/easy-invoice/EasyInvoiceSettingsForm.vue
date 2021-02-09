@@ -21,8 +21,8 @@
     </ec-dialog>
     <v-form v-model="formValid" lazy-validation>
       <v-row v-if="model.settings">
-        <v-col cols="12" class="pt-0">
-          <v-btn small class="mx-1" color="primary" @click="openNewCustomerDialog()">{{$t("CreateNewCustomer")}}</v-btn>
+        <v-col cols="12" class="pt-0 text-end pb-4">
+          <v-btn small color="secondary" class="mx-1" @click="openNewCustomerDialog()">{{$t("CreateNewCustomer")}}</v-btn>
         </v-col>
         <v-col cols="12" md="4" class="py-0">
           <v-text-field v-model="model.settings.keyStorePassword" :label="$t('KeyStorePassword')" outlined></v-text-field>
