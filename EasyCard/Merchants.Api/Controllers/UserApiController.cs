@@ -8,6 +8,7 @@ using Merchants.Api.Extensions;
 using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.User;
 using Merchants.Business.Entities.User;
+using Merchants.Business.Models.Merchant;
 using Merchants.Business.Services;
 using Merchants.Shared;
 using Merchants.Shared.Enums;
@@ -213,15 +214,11 @@ namespace Merchants.Api.Controllers
         [Route("logActivity")]
         public async Task<ActionResult<OperationResponse>> LogActivity(UserActivityRequest request)
         {
-            var user = EnsureExists(await userManagementClient.GetUserByID(Guid.Parse(request.UserID)));
+            _ = EnsureExists(await userManagementClient.GetUserByID(Guid.Parse(request.UserID)));
 
-            var status = request.UserActivity switch
-            {
-                UserActivityEnum.Locked => UserStatusEnum.Locked,
-                _ => UserStatusEnum.Active
-            };
+            var updateData = mapper.Map<UpdateUserStatusData>(request);
 
-            await merchantsService.UpdateUserStatus(user.UserID, status);
+            await merchantsService.UpdateUserStatus(updateData);
 
             return Ok(new OperationResponse { Message = Messages.UserLinkedToMerchant, Status = StatusEnum.Success });
         }

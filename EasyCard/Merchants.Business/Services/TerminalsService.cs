@@ -2,6 +2,7 @@
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Entities.User;
+using Merchants.Business.Models.Audit;
 using Merchants.Business.Models.Integration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -296,6 +297,23 @@ namespace Merchants.Business.Services
                 context.TerminalExternalSystems.Remove(dbEntity);
             }
 
+            await context.SaveChangesAsync();
+        }
+
+        public async Task AddAuditEntry(AuditEntryData auditData)
+        {
+            var history = new MerchantHistory
+            {
+                OperationCode = auditData.OperationCode,
+                OperationDate = DateTime.UtcNow,
+                OperationDoneBy = user?.GetDoneBy(),
+                OperationDoneByID = user?.GetDoneByID(),
+                MerchantID = auditData.MerchantID,
+                TerminalID = auditData.TerminalID,
+                SourceIP = httpContextAccessor.GetIP(),
+            };
+
+            context.MerchantHistories.Add(history);
             await context.SaveChangesAsync();
         }
     }

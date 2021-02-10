@@ -49,7 +49,9 @@ namespace IdentityServer.Security.Auditing
             await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
             {
                 UserActivity = Merchants.Shared.Enums.UserActivityEnum.LoggedIn,
-                UserID = user.Id
+                UserID = user.Id,
+                DisplayName = user.UserName,
+                Email = user.Email
             });
         }
 
@@ -83,7 +85,9 @@ namespace IdentityServer.Security.Auditing
             await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
             {
                 UserActivity = Merchants.Shared.Enums.UserActivityEnum.ResetPassword,
-                UserID = user.Id
+                UserID = user.Id,
+                DisplayName = user.UserName,
+                Email = user.Email
             });
         }
 

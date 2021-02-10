@@ -18,5 +18,7 @@ namespace Merchants.Api.Client
         Task<SummariesResponse<PlanSummary>> GetPlans();
 
         Task<OperationResponse> LogUserActivity(UserActivityRequest request);
+
+        Task<OperationResponse> AuditResetApiKey(Guid terminalID, Guid merchantID);
     }
 }

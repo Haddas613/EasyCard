@@ -1,5 +1,6 @@
 ﻿using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.User;
+using Merchants.Business.Models.Merchant;
 using Merchants.Shared.Enums;
 using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
@@ -25,6 +26,6 @@ namespace Merchants.Business.Services
 
         Task UnLinkUserFromMerchant(Guid userID, Guid merchantID, IDbContextTransaction dbTransaction = null);
 
-        Task UpdateUserStatus(Guid userID, UserStatusEnum status, IDbContextTransaction dbTransaction = null);
+        Task UpdateUserStatus(UpdateUserStatusData data, IDbContextTransaction dbTransaction = null);
     }
 }

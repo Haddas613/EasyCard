@@ -12,6 +12,8 @@ using Merchants.Business.Entities.System;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Entities.User;
 using Merchants.Business.Models.Integration;
+using Merchants.Business.Models.Merchant;
+using Merchants.Shared.Enums;
 using Merchants.Shared.Models;
 using System;
 using System.Collections.Generic;
@@ -99,6 +101,17 @@ namespace Merchants.Api.Mapping
             CreateMap<Merchant, MerchantResponse>();
             CreateMap<MerchantRequest, Merchant>();
             CreateMap<UpdateMerchantRequest, Merchant>();
+            CreateMap<UserActivityRequest, UpdateUserStatusData>()
+                .ForMember(d => d.UserID, o => o.MapFrom(src => Guid.Parse(src.UserID)))
+                .ForMember(d => d.Status, o => o.MapFrom((src, d) =>
+                    {
+                        return src.UserActivity switch
+                        {
+                            UserActivityEnum.Locked => UserStatusEnum.Locked,
+                            _ => UserStatusEnum.Active
+                        };
+                    }
+                ));
             CreateMap<MerchantHistory, AuditEntryResponse>()
                 .ForMember(d => d.TerminalName, o => o.MapFrom(src => src.Terminal.Label))
                 .ForMember(d => d.MerchantName, o => o.MapFrom(src => src.Merchant.BusinessName));

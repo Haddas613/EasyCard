@@ -14,6 +14,7 @@ using IdentityServer.Models;
 using IdentityServer.Services;
 using IdentityServer4.Models;
 using IdentityServerClient;
+using Merchants.Api.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -39,19 +40,22 @@ namespace IdentityServer.Controllers
         private readonly ITerminalApiKeyService terminalApiKeyService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
+        private readonly IMerchantsApiClient merchantsApiClient;
 
         public TerminalApiKeyController(
             ILogger<UserManagementApiController> logger,
             ICryptoService cryptoService,
             ITerminalApiKeyService terminalApiKeyService,
             UserManager<ApplicationUser> userManager,
-            ICryptoServiceCompact cryptoServiceCompact)
+            ICryptoServiceCompact cryptoServiceCompact,
+            IMerchantsApiClient merchantsApiClient)
         {
             this.logger = logger;
             this.cryptoService = cryptoService;
             this.terminalApiKeyService = terminalApiKeyService;
             this.userManager = userManager;
             this.cryptoServiceCompact = cryptoServiceCompact;
+            this.merchantsApiClient = merchantsApiClient;
         }
 
         [HttpPost]
@@ -77,6 +81,8 @@ namespace IdentityServer.Controllers
 
             await userManager.AddClaim(allClaims, user, Claims.TerminalIDClaim, model.TerminalID.ToString());
             await userManager.AddClaim(allClaims, user, Claims.MerchantIDClaim, model.MerchantID.ToString());
+
+            await merchantsApiClient.AuditResetApiKey(model.TerminalID, model.MerchantID);
 
             return Ok(new ApiKeyOperationResponse { ApiKey = cryptoServiceCompact.EncryptCompact(user.Id) });
         }
