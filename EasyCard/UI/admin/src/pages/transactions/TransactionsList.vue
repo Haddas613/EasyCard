@@ -24,6 +24,11 @@
             {{item.merchantName || item.merchantID}}
           </router-link>
         </template>    
+        <template v-slot:item.terminalName="{ item }">
+          <router-link class="text-decoration-none" link :to="{name: 'EditTerminal', params: {id: item.terminalID}}">
+            {{item.terminalName || item.terminalID}}
+          </router-link>
+        </template> 
         <template v-slot:item.transactionAmount="{ item }">
           <b>{{item.transactionAmount | currency(item.currency)}}</b>
         </template>  

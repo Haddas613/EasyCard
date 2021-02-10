@@ -218,16 +218,20 @@ namespace Transactions.Api.Controllers
                 {
                     var summary = await mapper.ProjectTo<TransactionSummaryAdmin>(dataQuery).ToListAsync();
 
-                    var merchantsId = summary.Select(t => t.MerchantID).Distinct();
+                    var terminalsId = summary.Select(t => t.TerminalID).Distinct();
 
-                    var merchantsName = await merchantsService.GetMerchants().Where(m => merchantsId.Contains(m.MerchantID))
-                        .ToDictionaryAsync(k => k.MerchantID, v => v.BusinessName);
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
 
                     summary.ForEach(s =>
                     {
-                        if (merchantsName.ContainsKey(s.MerchantID))
+                        if (terminals.ContainsKey(s.TerminalID))
                         {
-                            s.MerchantName = merchantsName[s.MerchantID];
+                            s.TerminalName = terminals[s.TerminalID].Label;
+                            s.MerchantName = terminals[s.TerminalID].BusinessName;
                         }
                     });
 

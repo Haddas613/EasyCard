@@ -21,6 +21,11 @@ namespace Transactions.Api.Models.Transactions
         [MetadataOptions(Hidden = true)]
         public Guid MerchantID { get; set; }
 
+        public string TerminalName { get; set; }
+
+        [MetadataOptions(Hidden = true)]
+        public new Guid TerminalID { get; set; }
+
         [MetadataOptions(Hidden = true)]
         public new CurrencyEnum Currency { get; set; }
     }
