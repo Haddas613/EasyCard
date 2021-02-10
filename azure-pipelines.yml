@@ -55,13 +55,17 @@ steps:
     configuration: '$(buildConfiguration)'
     
 
-- task: PublishBuildArtifacts@1
 
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'Transactions.Api'
+    publishLocation: 'Container'
 
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'PublishProfile'
     PublishProfilePath: '$(System.DefaultWorkingDirectory)/EasyCard/Transactions.Api/Properties/PublishProfiles/ecng-transactions - Web Deploy.pubxml'
     PublishProfilePassword: '$(TransactionsApiDeplPwd)'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    Package: '$(Build.ArtifactStagingDirectory)/Transactions.Api/**/*.zip'
 
