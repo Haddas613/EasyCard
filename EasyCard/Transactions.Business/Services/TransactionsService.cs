@@ -35,7 +35,7 @@ namespace Transactions.Business.Services
 
         public IQueryable<CreditCardTokenDetails> GetTokens()
         {
-            if (user.IsAdmin())
+            if (user.IsAdmin() && !user.IsImpersonatedAdmin())
             {
                 return context.CreditCardTokenDetails;
             }
@@ -51,7 +51,7 @@ namespace Transactions.Business.Services
 
         public IQueryable<PaymentTransaction> GetTransactions()
         {
-            if (user.IsAdmin())
+            if (user.IsAdmin() && !user.IsImpersonatedAdmin())
             {
                 return context.PaymentTransactions;
             }
@@ -67,7 +67,7 @@ namespace Transactions.Business.Services
 
         public IQueryable<TransactionHistory> GetTransactionHistories()
         {
-            if (user.IsAdmin())
+            if (user.IsAdmin() && !user.IsImpersonatedAdmin())
             {
                 return context.TransactionHistories;
             }

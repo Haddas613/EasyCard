@@ -304,7 +304,11 @@ router.afterEach((to, from) => {
 router.beforeEach(async(to, from, next) => {
     const oidc = Vue.prototype.$oidc;
     if (await oidc.isAuthenticated()) {
-        next()
+        if(await oidc.isMerchant()){
+            next();
+          }else{
+            oidc.signOut();
+          }
     } else {
         oidc.signinRedirect(to)
     }

@@ -7,9 +7,15 @@
             <span class="pt-2 ecdgray--text subtitle-2 text-uppercase">{{$t('PersonalInformation')}}</span>
           </v-col>
           <v-col cols="12" md="4" class="d-flex justify-end">
-            <v-btn color="secondary">
+            <v-btn color="secondary" @click="loginAsMerchant()" v-if="!loginAsMerchantURL">
               <v-icon left class="body-1">mdi-account-convert</v-icon>
               {{$t("LoginAsMerchant")}}
+            </v-btn>
+            <v-btn color="secondary" v-show="loginAsMerchantURL" ref="loginAsMerchantBtn">
+              <a class="white--text text-decoration-none" :href="loginAsMerchantURL" target="_blank">
+                <v-icon left class="body-1">mdi-account-convert</v-icon>
+                {{$t("LoginAsMerchant")}}
+              </a>
             </v-btn>
             <v-btn
               text
@@ -197,7 +203,8 @@ export default {
       terminals: null,
       showCreateTerminalDialog: false,
       showCreateUserDialog: false,
-      actionInProgress: false
+      actionInProgress: false,
+      loginAsMerchantURL: null
     };
   },
   methods: {
@@ -261,6 +268,13 @@ export default {
       this.actionInProgress = true;
       let operation = await this.$api.users.resetUserPassword(userID);
       this.actionInProgress = false;
+    },
+    async loginAsMerchant(){
+      let operation = await this.$api.merchants.loginAsMerchant(this.$route.params.id);
+      if(operation.status === "success" && operation.message){
+        this.loginAsMerchantURL = operation.message;
+        window.open(operation.message, "_blank");
+      }
     }
   },
   async mounted() {

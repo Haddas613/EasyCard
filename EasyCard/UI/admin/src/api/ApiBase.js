@@ -89,7 +89,7 @@ class ApiBase {
         return new Promise((s, e) => s(this._ongoingRequests[_urlKey])).finally(() => delete this._ongoingRequests[_urlKey])
     }
 
-    async post(url, payload) {
+    async post(url, payload, showSuccessToastr = true) {
         const access_token = await this.oidc.getAccessToken()
 
         if (!access_token) {
@@ -111,7 +111,7 @@ class ApiBase {
             body: JSON.stringify(payload)
         });
 
-        return this._handleRequest(request, true);
+        return this._handleRequest(request, showSuccessToastr);
     }
 
     async put(url, payload) {

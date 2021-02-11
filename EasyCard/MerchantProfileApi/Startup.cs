@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using IdentityServer4.AccessTokenValidation;
@@ -82,6 +83,47 @@ namespace ProfileApi
                     options.RoleClaimType = "role";
                     options.NameClaimType = "name";
                     options.EnableCaching = true;
+
+                    options.JwtBearerEvents = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                    {
+                        OnTokenValidated = async (context) =>
+                        {
+                            if (context.Principal.IsAdmin())
+                            {
+                                var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                                var userId = context.Principal.GetDoneByID();
+                                var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
+
+                                if (merchantID != null)
+                                {
+                                    var impersonationIdentity = new ClaimsIdentity(new[]
+                                    {
+                                        new Claim(Claims.MerchantIDClaim, merchantID.ToString()),
+                                        new Claim(ClaimTypes.Role, Roles.Merchant)
+                                    });
+                                    context.Principal?.AddIdentity(impersonationIdentity);
+                                }
+                            }
+                            else if (context.Principal.IsMerchant())
+                            {
+                                var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                                var userId = context.Principal.GetDoneByID();
+                                var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
+
+                                if (merchantID != null)
+                                {
+                                    var midentity = (ClaimsIdentity)context.Principal.Identity;
+                                    var midclaim = midentity.FindFirst(Claims.MerchantIDClaim);
+                                    if (midclaim != null)
+                                    {
+                                        midentity.TryRemoveClaim(midclaim);
+                                    }
+
+                                    midentity.AddClaim(new Claim(Claims.MerchantIDClaim, merchantID.ToString()));
+                                }
+                            }
+                        }
+                    };
                 });
 
             services.AddAuthorization(options =>
@@ -91,7 +133,7 @@ namespace ProfileApi
                 options.AddPolicy(Policy.TerminalOrMerchantFrontend, policy =>
                     policy.RequireAssertion(context => context.User.IsTerminal() || context.User.IsMerchantFrontend()));
                 options.AddPolicy(Policy.MerchantFrontend, policy =>
-                   policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
+                   policy.RequireAssertion(context => context.User.IsMerchantFrontend() || context.User.IsImpersonatedAdmin()));
             });
 
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
@@ -155,6 +197,7 @@ namespace ProfileApi
             services.AddScoped<IItemsService, ItemsService>();
             services.AddScoped<ICurrencyRateService, CurrencyRateService>();
             services.AddScoped<ISystemSettingsService, SystemSettingsService>();
+            services.AddScoped<IImpersonationService, ImpersonationService>();
 
             services.AddAutoMapper(typeof(Startup));
 

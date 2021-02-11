@@ -119,7 +119,7 @@ namespace Transactions.Api.Controllers
         {
             return new TableMeta
             {
-                Columns = (httpContextAccessor.GetUser().IsAdmin() ? typeof(TransactionSummaryAdmin) : typeof(TransactionSummary))
+                Columns = (httpContextAccessor.GetUser().IsMerchant() ? typeof(TransactionSummary) : typeof(TransactionSummaryAdmin))
                     .GetObjectMeta(TransactionSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
             };
         }
@@ -155,7 +155,14 @@ namespace Transactions.Api.Controllers
         {
             Debug.WriteLine(User);
 
-            if (httpContextAccessor.GetUser().IsAdmin())
+            if (httpContextAccessor.GetUser().IsMerchant())
+            {
+                var transaction = mapper.Map<TransactionResponse>(EnsureExists(
+                    await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
+
+                return Ok(transaction);
+            }
+            else
             {
                 var transaction = mapper.Map<TransactionResponseAdmin>(EnsureExists(
                     await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
@@ -163,13 +170,6 @@ namespace Transactions.Api.Controllers
                 //TODO: cache
                 var merchantName = await merchantsService.GetMerchants().Where(m => m.MerchantID == transaction.MerchantID).Select(m => m.BusinessName).FirstOrDefaultAsync();
                 transaction.MerchantName = merchantName;
-                return Ok(transaction);
-            }
-            else
-            {
-                var transaction = mapper.Map<TransactionResponse>(EnsureExists(
-                    await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
-
                 return Ok(transaction);
             }
         }
@@ -214,7 +214,13 @@ namespace Transactions.Api.Controllers
                 var sql = query.ToSql();
                 var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
 
-                if (httpContextAccessor.GetUser().IsAdmin())
+                if (httpContextAccessor.GetUser().IsMerchant())
+                {
+                    // TODO: try to remove ProjectTo
+                    response.Data = await mapper.ProjectTo<TransactionSummary>(dataQuery).ToListAsync();
+                    return Ok(response);
+                }
+                else
                 {
                     var summary = await mapper.ProjectTo<TransactionSummaryAdmin>(dataQuery).ToListAsync();
 
@@ -236,12 +242,6 @@ namespace Transactions.Api.Controllers
                     });
 
                     response.Data = summary;
-                    return Ok(response);
-                }
-                else
-                {
-                    // TODO: try to remove ProjectTo
-                    response.Data = await mapper.ProjectTo<TransactionSummary>(dataQuery).ToListAsync();
                     return Ok(response);
                 }
             }

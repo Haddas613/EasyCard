@@ -38,7 +38,7 @@ namespace Merchants.Business.Services
 
         public IQueryable<Terminal> GetTerminals()
         {
-            if (user.IsAdmin())
+            if (user.IsAdmin() && !user.IsImpersonatedAdmin())
             {
                 return context.Terminals;
             }

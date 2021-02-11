@@ -183,6 +183,7 @@ namespace Merchants.Api
             services.AddScoped<ISystemSettingsService, SystemSettingsService>();
             services.AddScoped<IFeaturesService, FeaturesService>();
             services.AddScoped<IPlansService, PlansService>();
+            services.AddScoped<IImpersonationService, ImpersonationService>();
 
             services.AddAutoMapper(typeof(Startup));
 

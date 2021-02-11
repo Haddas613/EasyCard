@@ -81,6 +81,8 @@ namespace Merchants.Business.Data
 
         public DbSet<SystemSettings> SystemSettings { get; set; }
 
+        public DbSet<Impersonation> Impersonations { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         public MerchantsContext(DbContextOptions<MerchantsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
@@ -110,6 +112,7 @@ namespace Merchants.Business.Data
             modelBuilder.ApplyConfiguration(new CurrencyRateConfiguration());
 
             modelBuilder.ApplyConfiguration(new SystemSettingsConfiguration());
+            modelBuilder.ApplyConfiguration(new ImpersonationConfiguration());
 
             // NOTE: security filters moved to get methods
 
@@ -421,6 +424,16 @@ namespace Merchants.Business.Data
                 builder.Property(p => p.PaymentRequestSettings).HasColumnName("PaymentRequestSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
                 builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+            }
+        }
+
+        internal class ImpersonationConfiguration : IEntityTypeConfiguration<Impersonation>
+        {
+            public void Configure(EntityTypeBuilder<Impersonation> builder)
+            {
+                builder.ToTable("Impersonation");
+
+                builder.HasKey(b => b.UserId);
             }
         }
     }

@@ -57,6 +57,19 @@ class AuthService {
             return !!data ? data.access_token : null;
         });
     }
+    async isMerchant(){
+        if(!this.isMerchant){
+            this.isMerchant = false;
+        }
+
+        const user = await this.userManager.getUser();
+        if(!user || !user.profile){
+            return false;
+        }
+        this.isMerchant = (user.profile.role && user.profile.role.indexOf('Merchant') > -1);
+
+        return this.isMerchant;
+    }
 }
 
 export default {

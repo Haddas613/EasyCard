@@ -50,4 +50,8 @@ export default class MerchantsApi {
     async resetSharedApiKey(merchantID){
         return this.base.post(this.merchantsUrl + `/${merchantID}/resetSharedApiKey`);
     }
+
+    async loginAsMerchant(merchantID){
+        return this.base.post(this.merchantsUrl + `/${merchantID}/loginAsMerchant`, null, false);
+    }
 }

@@ -210,6 +210,20 @@ namespace Merchants.Business.Migrations
                     b.ToTable("Feature");
                 });
 
+            modelBuilder.Entity("Merchants.Business.Entities.Merchant.Impersonation", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MerchantID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Impersonation");
+                });
+
             modelBuilder.Entity("Merchants.Business.Entities.Merchant.Merchant", b =>
                 {
                     b.Property<Guid>("MerchantID")

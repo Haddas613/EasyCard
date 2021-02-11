@@ -8,7 +8,6 @@ namespace Shared.Business.Security
 {
     public class HttpContextAccessorWrapper : IHttpContextAccessorWrapper
     {
-        private readonly ClaimsPrincipal user;
         private readonly IHttpContextAccessor httpContextAccessor;
 
         public HttpContext HttpContext { get => httpContextAccessor?.HttpContext; }
@@ -18,12 +17,11 @@ namespace Shared.Business.Security
         public HttpContextAccessorWrapper(IHttpContextAccessor httpContextAccessor)
         {
             this.httpContextAccessor = httpContextAccessor;
-            this.user = httpContextAccessor?.HttpContext?.User;
         }
 
         public ClaimsPrincipal GetUser()
         {
-            return this.user;
+            return httpContextAccessor?.HttpContext?.User;
         }
 
         public string GetIP()

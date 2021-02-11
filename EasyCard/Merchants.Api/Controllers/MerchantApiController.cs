@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
@@ -33,12 +34,21 @@ namespace Merchants.Api.Controllers
         private readonly IMerchantsService merchantsService;
         private readonly IMapper mapper;
         private readonly ITerminalsService terminalsService;
+        private readonly ApplicationSettings config;
+        private readonly IImpersonationService impersonationService;
 
-        public MerchantApiController(IMerchantsService merchantsService, IMapper mapper, ITerminalsService terminalsService)
+        public MerchantApiController(
+            IMerchantsService merchantsService,
+            IMapper mapper,
+            ITerminalsService terminalsService,
+            IOptions<ApplicationSettings> config,
+            IImpersonationService impersonationService)
         {
             this.merchantsService = merchantsService;
             this.mapper = mapper;
             this.terminalsService = terminalsService;
+            this.config = config.Value;
+            this.impersonationService = impersonationService;
         }
 
         [HttpGet]
@@ -112,6 +122,22 @@ namespace Merchants.Api.Controllers
             await merchantsService.UpdateEntity(merchant);
 
             return Ok(new OperationResponse(Messages.MerchantUpdated, StatusEnum.Success, merchantID));
+        }
+
+        [HttpPost]
+        [Route("{merchantID:guid}/loginAsMerchant")]
+        public async Task<ActionResult<OperationResponse>> LoginAsMerchant([FromRoute]Guid merchantID)
+        {
+            var updateResponse = await impersonationService.LoginAsMerchant(merchantID);
+
+            if (updateResponse.Status != StatusEnum.Success)
+            {
+                return new ObjectResult(updateResponse) { StatusCode = 400 };
+            }
+
+            updateResponse.Message = config.MerchantProfileURL;
+
+            return new ObjectResult(updateResponse) { StatusCode = 200 };
         }
     }
 }
