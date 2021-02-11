@@ -11,6 +11,10 @@ namespace Merchants.Api.Models.User
     {
         public string UserID { get; set; }
 
+        public string DisplayName { get; set; }
+
+        public string Email { get; set; }
+
         public UserActivityEnum UserActivity { get; set; }
 
         public JObject AdditionalData { get; set; }

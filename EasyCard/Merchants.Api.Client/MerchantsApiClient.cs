@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using SharedApi = Shared.Api;
 
 namespace Merchants.Api.Client
 {
@@ -108,6 +109,19 @@ namespace Merchants.Api.Client
             }
 
             return headers;
+        }
+
+        public async Task<OperationResponse> AuditResetApiKey(Guid terminalID, Guid merchantID)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsApiAddress, $"api/terminals/{terminalID}/auditResetApiKey/{merchantID}", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                return new OperationResponse("Error", SharedApi.Models.Enums.StatusEnum.Error);
+            }
         }
     }
 }

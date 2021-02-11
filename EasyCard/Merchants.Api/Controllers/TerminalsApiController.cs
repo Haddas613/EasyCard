@@ -4,6 +4,7 @@ using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.Terminal;
 using Merchants.Api.Models.User;
 using Merchants.Business.Entities.Terminal;
+using Merchants.Business.Models.Audit;
 using Merchants.Business.Models.Integration;
 using Merchants.Business.Services;
 using Merchants.Shared;
@@ -22,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SharedBusiness = Shared.Business;
 
 namespace Merchants.Api.Controllers
 {
@@ -283,6 +285,25 @@ namespace Merchants.Api.Controllers
             await terminalsService.UpdateEntity(terminal);
 
             return Ok(new OperationResponse(Messages.TerminalEnabled, StatusEnum.Success, terminalID));
+        }
+
+        [HttpPost]
+        [Route("{terminalID}/auditResetApiKey/{merchantID}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<OperationResponse>> AuditResetApiKey([FromRoute] Guid terminalID, [FromRoute] Guid merchantID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+
+            var auditEntry = new AuditEntryData
+            {
+                MerchantID = merchantID,
+                TerminalID = terminalID,
+                OperationCode = SharedBusiness.Audit.OperationCodesEnum.TerminalApiKeyChanged
+            };
+
+            await terminalsService.AddAuditEntry(auditEntry);
+
+            return Ok(new OperationResponse { Status = StatusEnum.Success });
         }
     }
 }

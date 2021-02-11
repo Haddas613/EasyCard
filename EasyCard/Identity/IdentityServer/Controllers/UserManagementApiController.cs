@@ -314,7 +314,9 @@ namespace IdentityServer.Controllers
             await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
             {
                 UserActivity = Merchants.Shared.Enums.UserActivityEnum.Locked,
-                UserID = user.Id
+                UserID = user.Id,
+                DisplayName = user.UserName,
+                Email = user.Email
             });
 
             res = await userManager.SetLockoutEndDateAsync(user, DateTime.UtcNow.AddYears(100));
@@ -363,7 +365,9 @@ namespace IdentityServer.Controllers
             await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
             {
                 UserActivity = Merchants.Shared.Enums.UserActivityEnum.Unlocked,
-                UserID = user.Id
+                UserID = user.Id,
+                DisplayName = user.UserName,
+                Email = user.Email
             });
 
             return Ok(new UserOperationResponse

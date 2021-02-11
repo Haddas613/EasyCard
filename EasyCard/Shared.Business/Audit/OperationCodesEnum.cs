@@ -27,6 +27,8 @@ namespace Shared.Business.Audit
         TerminalUpdated,
 
         UserTerminalLinkAdded,
-        UserTerminalLinkRemoved
+        UserTerminalLinkRemoved,
+
+        TerminalApiKeyChanged
     }
 }

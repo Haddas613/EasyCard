@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using BasicServices;
@@ -93,6 +94,46 @@ namespace Transactions.Api
                     options.RoleClaimType = "role";
                     options.NameClaimType = "name";
                     options.EnableCaching = true;
+                    options.JwtBearerEvents = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                    {
+                        OnTokenValidated = async (context) =>
+                        {
+                            //if (context.Principal.IsAdmin())
+                            //{
+                            //    var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                            //    var userId = context.Principal.GetDoneByID();
+                            //    var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
+
+                            //    if (merchantID != null)
+                            //    {
+                            //        var impersonationIdentity = new ClaimsIdentity(new[]
+                            //        {
+                            //                new Claim(Claims.MerchantIDClaim, merchantID.ToString()),
+                            //                new Claim(ClaimTypes.Role, Roles.Merchant)
+                            //        });
+                            //        context.Principal?.AddIdentity(impersonationIdentity);
+                            //    }
+                            //}
+                            //else if (context.Principal.IsMerchant())
+                            //{
+                            //    var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                            //    var userId = context.Principal.GetDoneByID();
+                            //    var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
+
+                            //    if (merchantID != null)
+                            //    {
+                            //        var midentity = (ClaimsIdentity)context.Principal.Identity;
+                            //        var midclaim = midentity.FindFirst(Claims.MerchantIDClaim);
+                            //        if (midclaim != null)
+                            //        {
+                            //            midentity.TryRemoveClaim(midclaim);
+                            //        }
+
+                            //        midentity.AddClaim(new Claim(Claims.MerchantIDClaim, merchantID.ToString()));
+                            //    }
+                            //}
+                        }
+                    };
                 });
 
             Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;  // TODO: remove for production
@@ -104,7 +145,7 @@ namespace Transactions.Api
                 options.AddPolicy(Policy.TerminalOrMerchantFrontendOrAdmin, policy =>
                     policy.RequireAssertion(context => context.User.IsTerminal() || context.User.IsMerchantFrontend() || context.User.IsAdmin()));
                 options.AddPolicy(Policy.MerchantFrontend, policy =>
-                   policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
+                   policy.RequireAssertion(context => context.User.IsMerchantFrontend() || context.User.IsImpersonatedAdmin()));
                 options.AddPolicy(Policy.AnyAdmin, policy =>
                    policy.RequireAssertion(context => context.User.IsAdmin()));
             });
@@ -188,6 +229,7 @@ namespace Transactions.Api
             services.AddScoped<ITerminalsService, TerminalsService>();
             services.AddScoped<IConsumersService, ConsumersService>();
             services.AddScoped<IItemsService, ItemsService>();
+            services.AddScoped<IImpersonationService, ImpersonationService>();
             services.AddTransient<CardTokenController, CardTokenController>();
             services.AddTransient<InvoicingController, InvoicingController>();
             services.AddTransient<PaymentRequestsController, PaymentRequestsController>();

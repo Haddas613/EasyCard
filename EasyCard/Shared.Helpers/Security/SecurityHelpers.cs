@@ -22,7 +22,7 @@ namespace Shared.Helpers.Security
 
         public static bool IsImpersonatedAdmin(this ClaimsPrincipal user)
         {
-            return user.HasClaim("scope", "merchant_api") &&
+            return (user?.IsInRole(Roles.Merchant) == true) &&
                 (user?.IsInRole(Roles.BillingAdministrator) == true || user?.IsInRole(Roles.BusinessAdministrator) == true);
         }
 
@@ -36,7 +36,7 @@ namespace Shared.Helpers.Security
 
         public static bool IsMerchant(this ClaimsPrincipal user)
         {
-            return (user?.IsInRole(Roles.Merchant) == true) || user?.IsImpersonatedAdmin() == true;
+            return (user?.IsInRole(Roles.Merchant) == true);
         }
 
         public static bool IsTerminal(this ClaimsPrincipal user)

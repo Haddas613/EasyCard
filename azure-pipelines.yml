@@ -29,6 +29,12 @@ steps:
   displayName: 'npm install and build'
   workingDirectory: 'EasyCard\UI\merchant'
 
+- script: |
+    npm install
+    npm run build
+  displayName: 'npm install and build'
+  workingDirectory: 'EasyCard\UI\admin'
+
 
 - task: NuGetToolInstaller@1
 
@@ -47,3 +53,19 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+    
+
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'Transactions.Api'
+    publishLocation: 'Container'
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'PublishProfile'
+    PublishProfilePath: '$(System.DefaultWorkingDirectory)/EasyCard/Transactions.Api/Properties/PublishProfiles/ecng-transactions - Web Deploy.pubxml'
+    PublishProfilePassword: '$(TransactionsApiDeplPwd)'
+    Package: '$(Build.ArtifactStagingDirectory)/Transactions.Api/**/*.zip'
+
