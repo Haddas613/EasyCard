@@ -4,7 +4,7 @@
       <v-tab key="settings">{{$t("TerminalSettings")}}</v-tab>
       <v-tab key="integrations">{{$t("Integrations")}}</v-tab>
     </v-tabs>
-    <v-card-text >
+    <v-card-text>
       <v-tabs-items v-model="tab" class="bg-ecbg">
         <v-tab-item key="settings" class="pt-2">
           <v-form ref="terminalSettingsForm" v-model="terminalSettingsFormValid" lazy-validation>
@@ -75,6 +75,6 @@ export default {
 </script>
 <style lang="scss" scoped>
   .bg-ecbg{
-    background-color: var(--v-ecbg-base);
+    background-color: var(--v-ecbg-base) !important;
   }
 </style>

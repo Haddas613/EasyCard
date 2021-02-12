@@ -1,14 +1,14 @@
 <template>
-  <v-list :two-line="!dense" :dense="dense" subheader class="py-0 fill-height" :color="color">
+  <v-list :two-line="!dense" :dense="dense" subheader class="ec-list py-0 fill-height" :color="color">
     <v-list-item v-for="(item, index) in items" :key="index" v-on="clickable ? {click: () => onclick(item)} : {}" v-bind:class="{'px-0': dense, 'dashed': dashed}">
       <v-list-item-action v-if="hasSlot('prepend')" v-bind:class="{'col-unset': $vuetify.breakpoint.mdAndUp}">
         <slot v-bind:item="item" v-bind:index="index" name="prepend"></slot>
       </v-list-item-action>
-      <v-list-item-content>
-        <v-row no-gutters :class="{'col-reverse' : $vuetify.breakpoint.smAndDown, 'w50': !stretch}">
+      <v-list-item-content class="body-2">
+        <v-row no-gutters class="flex-adjust" :class="{'col-reverse' : $vuetify.breakpoint.smAndDown, 'w50': !stretch}">
           <slot v-bind:item="item" v-bind:index="index" name="left"></slot>
         </v-row>
-        <v-row no-gutters :class="{'col-reverse' : $vuetify.breakpoint.smAndDown, 'w50': !stretch}" v-if="hasSlot('right')">
+        <v-row no-gutters class="flex-adjust" :class="{'col-reverse' : $vuetify.breakpoint.smAndDown, 'w50': !stretch}" v-if="hasSlot('right')">
           <slot v-bind:item="item" v-bind:index="index" name="right"></slot>
         </v-row>
       </v-list-item-content>
@@ -28,7 +28,7 @@ export default {
     },
     dense: {
       type: Boolean,
-      default: false,
+      default: true,
       required: false
     },
     clickable: {
@@ -73,5 +73,8 @@ export default {
 }
 .w50{
   width:50%;
+}
+.flex-adjust{
+  flex: 1 1 auto;
 }
 </style>

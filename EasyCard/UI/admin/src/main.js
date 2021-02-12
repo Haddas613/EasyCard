@@ -5,8 +5,8 @@ import store from './store'
 import vuetify from './plugins/vuetify';
 import i18n from './i18n'
 import 'vue-oidc-client/src/polyfill';
-import Api from './api/ApiBase';
 import './assets/css/main.scss';
+import Api from './api/ApiBase';
 import VueLodash from 'vue-lodash'
 import lodash from 'lodash'
 import VueCardFormat from './plugins/card-validator';
