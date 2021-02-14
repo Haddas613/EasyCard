@@ -111,7 +111,7 @@ namespace MerchantProfileApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreateConsumer([FromBody] ConsumerRequest model)
         {
-            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == (model.TerminalID ?? httpContextAccessor.GetUser().GetTerminalID())));
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == model.TerminalID));
 
             var newConsumer = mapper.Map<Consumer>(model);
 

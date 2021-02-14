@@ -24,9 +24,5 @@ namespace IdentityServer.Models
         public string DefaultStorageConnectionString { get; set; }
 
         public string RequestsLogStorageTable { get; set; }
-
-        public string MerchantsApiAddress { get; set; }
-
-        public string ProfileApiAddress { get; set; }
     }
 }

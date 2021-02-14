@@ -57,6 +57,7 @@ namespace IdentityServer
         {
             var config = Configuration.GetSection("AppConfig")?.Get<ApplicationSettings>();
             var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
+            var azureADConfig = Configuration.GetSection("AzureADConfig")?.Get<AzureADSettings>();
 
             services.AddLogging(logging =>
             {
@@ -138,24 +139,23 @@ namespace IdentityServer
                     options.Authority = identity.Authority;
                     options.RequireHttpsMetadata = true;
                     options.EnableCaching = true;
+                })
+                .AddOpenIdConnect("oidc", "Azure AD", options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    options.SignOutScheme = IdentityServerConstants.SignoutScheme;
+
+                    options.Authority = azureADConfig.AzureAdAuthority;
+                    options.ClientId = azureADConfig.AzureAdClientId;
+                    options.ResponseType = "id_token";
+                    options.SaveTokens = true;
+                    options.GetClaimsFromUserInfoEndpoint = true;
+
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        ValidateAudience = false,
+                    };
                 });
-
-                //.AddOpenIdConnect("oidc", "OpenID Connect", options =>
-                //{
-                //    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                //    options.SignOutScheme = IdentityServerConstants.SignoutScheme;
-
-                //    options.Authority = identity.AzureAdAuthority;
-                //    options.ClientId = identity.AzureAdClientId;
-                //    options.ResponseType = "id_token";
-                //    options.SaveTokens = true;
-                //    options.GetClaimsFromUserInfoEndpoint = true;
-
-                //    options.TokenValidationParameters = new TokenValidationParameters
-                //    {
-                //        ValidateAudience = false,
-                //    };
-                //});
 
             services.AddAuthorization(options =>
             {
@@ -208,7 +208,7 @@ namespace IdentityServer
             });
 
             services.AddScoped<IAuditLogger, AuditLogger>();
-            services.AddScoped<ITerminalApiKeyService, TerminalApiKeyService>(); 
+            services.AddScoped<ITerminalApiKeyService, TerminalApiKeyService>();
             services.AddScoped<UserManageService, UserManageService>();
 
             // DI: request logging
@@ -221,18 +221,20 @@ namespace IdentityServer
 
             services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();
 
-            services.Configure<MerchantsApiClientConfig>(Configuration.GetSection("ApiConfig"));
+            services.Configure<ApiSettings>(Configuration.GetSection("ApiConfig"));
             services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
+            services.Configure<AzureADSettings>(Configuration.GetSection("AzureADConfig"));
 
             services.AddSingleton<IMerchantsApiClient, MerchantsApiClient>(serviceProvider =>
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
-                var apiCfg = serviceProvider.GetRequiredService<IOptions<MerchantsApiClientConfig>>();
+                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>().Value;
+                IOptions<MerchantsApiClientConfig> merchantApiSettingsOptions = Options.Create(new MerchantsApiClientConfig { MerchantsManagementApiAddress = apiCfg.AdminApiAddress });
                 var webApiClient = new WebApiClient();
                 var logger = serviceProvider.GetRequiredService<ILogger<MerchantsApiClient>>();
                 var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
 
-                return new MerchantsApiClient(webApiClient, logger, tokenService, apiCfg);
+                return new MerchantsApiClient(webApiClient, logger, tokenService, merchantApiSettingsOptions);
             });
         }
 
@@ -276,7 +278,7 @@ namespace IdentityServer
 
             try
             {
-                foreach (var role in new[] { "Merchant", "BusinessAdministrator", "BillingAdministrator" })
+                foreach (var role in new[] { Roles.Merchant, Roles.BusinessAdministrator, Roles.BillingAdministrator })
                 {
                     if (!roleManager.RoleExistsAsync(role).Result)
                     {
@@ -301,7 +303,7 @@ namespace IdentityServer
                 logger.LogError(ex.Message);
             }
 
-            loggerFactory.CreateLogger("MerchantProfile.Startup").LogInformation("Started");
+            loggerFactory.CreateLogger("IdentityServer.Startup").LogInformation("Started");
         }
     }
 }

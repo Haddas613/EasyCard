@@ -19,5 +19,7 @@ namespace Shared.Api.Models
 
         // TODO: check with UI
         public OrderByDirectionEnum OrderByDirection { get; set; }
+
+        public bool ShowDeleted { get; set; }
     }
 }

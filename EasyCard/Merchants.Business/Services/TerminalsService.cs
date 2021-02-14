@@ -38,17 +38,17 @@ namespace Merchants.Business.Services
 
         public IQueryable<Terminal> GetTerminals()
         {
-            if (user.IsAdmin() && !user.IsImpersonatedAdmin())
+            if (user.IsAdmin())
             {
-                return context.Terminals;
+                return context.Terminals.AsNoTracking();
             }
             else if (user.IsTerminal())
             {
-                return context.Terminals.Where(t => t.TerminalID == user.GetTerminalID());
+                return context.Terminals.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
             }
             else
             {
-                return context.Terminals.Where(t => t.MerchantID == user.GetMerchantID());
+                return context.Terminals.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
             }
         }
 
@@ -73,15 +73,15 @@ namespace Merchants.Business.Services
         {
             if (user.IsAdmin())
             {
-                return context.TerminalExternalSystems;
+                return context.TerminalExternalSystems.AsNoTracking();
             }
             else if (user.IsTerminal())
             {
-                return context.TerminalExternalSystems.Where(t => t.TerminalID == user.GetTerminalID());
+                return context.TerminalExternalSystems.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
             }
             else
             {
-                return context.TerminalExternalSystems.Where(t => t.Terminal.MerchantID == user.GetMerchantID());
+                return context.TerminalExternalSystems.AsNoTracking().Where(t => t.Terminal.MerchantID == user.GetMerchantID());
             }
         }
 

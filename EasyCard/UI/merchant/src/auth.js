@@ -24,6 +24,10 @@ class AuthService {
         };
 
         this.userManager = new UserManager(settings);
+
+        this.billingAdminRole = "BillingAdministrator";
+        this.businessAdminRole = "BusinessAdministrator";
+        this.merchantRole = "Merchant";
     }
 
     getUser() {
@@ -57,18 +61,46 @@ class AuthService {
             return !!data ? data.access_token : null;
         });
     }
-    async isMerchant(){
-        if(!this.isMerchant){
-            this.isMerchant = false;
-        }
 
+    async getUserDisplayName() {
+        if(!!this.userDisplayName){
+            return this.userDisplayName;
+        }
+       
         const user = await this.userManager.getUser();
         if(!user || !user.profile){
-            return false;
+            return null;
         }
-        this.isMerchant = (user.profile.role && user.profile.role.indexOf('Merchant') > -1);
 
-        return this.isMerchant;
+        return user.profile.extension_FirstName + " " + user.profile.extension_LastName; // TODO: user.profile.name if first/lastname is empty
+    }
+
+    async isMerchant(){
+        return this.isInRole(this.merchantRole);
+    }
+
+    async isInRole(role){
+        if(!this.roles){
+            this.roles = {};
+        }
+
+        if(typeof(this.roles[role]) === "undefined"){
+            const user = await this.userManager.getUser();
+            if(!user || !user.profile){
+                return false;
+            }
+            this.roles[role] = (user.profile.role && user.profile.role.indexOf(role) > -1);
+        }
+
+        return this.roles[role];
+    }
+
+    async isBillingAdmin(){
+        return this.isInRole(this.billingAdminRole);
+    }
+
+    async isBusinessAdmin(){
+        return this.isInRole(this.businessAdminRole);
     }
 }
 

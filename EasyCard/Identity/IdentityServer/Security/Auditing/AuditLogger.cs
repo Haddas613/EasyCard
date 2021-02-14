@@ -93,27 +93,38 @@ namespace IdentityServer.Security.Auditing
 
         private async Task SaveAudit(UserAudit audit)
         {
-            context.UserAudits.Add(audit);
-            await context.SaveChangesAsync();
+            if (audit != null)
+            {
+                context.UserAudits.Add(audit);
+                await context.SaveChangesAsync();
+            }
         }
 
-        private async Task<UserAudit> GetAudit(ApplicationUser user, AuditingTypeEnum type) => await GetAudit(user.Email, type, user);
+        private async Task<UserAudit> GetAudit(ApplicationUser user, AuditingTypeEnum type) => await GetAudit(user?.Email, type, user);
 
         private async Task<UserAudit> GetAudit(string email, AuditingTypeEnum type, ApplicationUser user = null)
         {
-            if (user == null)
+            if (user == null && !string.IsNullOrWhiteSpace(email))
             {
                 user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
             }
 
-            return new UserAudit
+            if (user != null)
             {
-                Email = email,
-                OperationCode = type.ToString(),
-                UserId = user?.Id,
-                SourceIP = accessor.HttpContext.Connection?.RemoteIpAddress?.ToString(),
-                OperationDate = DateTime.UtcNow
-            };
+                return new UserAudit
+                {
+                    Email = email,
+                    OperationCode = type.ToString(),
+                    UserId = user?.Id,
+                    SourceIP = accessor.HttpContext.Connection?.RemoteIpAddress?.ToString(),
+                    OperationDate = DateTime.UtcNow
+                };
+            }
+            else
+            {
+                // TODO: log error
+                return null;
+            }
         }
     }
 }

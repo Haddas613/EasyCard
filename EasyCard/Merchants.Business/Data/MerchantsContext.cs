@@ -114,14 +114,6 @@ namespace Merchants.Business.Data
             modelBuilder.ApplyConfiguration(new SystemSettingsConfiguration());
             modelBuilder.ApplyConfiguration(new ImpersonationConfiguration());
 
-            // NOTE: security filters moved to get methods
-
-            modelBuilder.Entity<Item>()
-                .HasQueryFilter(p => p.Active && (this.user.IsAdmin() || p.Merchant.MerchantID == this.user.GetMerchantID()));
-
-            modelBuilder.Entity<Consumer>()
-                .HasQueryFilter(p => p.Active && (this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID()));
-
             var cascadeFKs = modelBuilder.Model.GetEntityTypes()
                 .SelectMany(t => t.GetForeignKeys())
                 .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);

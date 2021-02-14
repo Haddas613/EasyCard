@@ -98,40 +98,40 @@ namespace Transactions.Api
                     {
                         OnTokenValidated = async (context) =>
                         {
-                            //if (context.Principal.IsAdmin())
-                            //{
-                            //    var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
-                            //    var userId = context.Principal.GetDoneByID();
-                            //    var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
+                            if (context.Principal.IsInteractiveAdmin())
+                            {
+                                var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                                var userId = context.Principal.GetDoneByID();
+                                var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
 
-                            //    if (merchantID != null)
-                            //    {
-                            //        var impersonationIdentity = new ClaimsIdentity(new[]
-                            //        {
-                            //                new Claim(Claims.MerchantIDClaim, merchantID.ToString()),
-                            //                new Claim(ClaimTypes.Role, Roles.Merchant)
-                            //        });
-                            //        context.Principal?.AddIdentity(impersonationIdentity);
-                            //    }
-                            //}
-                            //else if (context.Principal.IsMerchant())
-                            //{
-                            //    var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
-                            //    var userId = context.Principal.GetDoneByID();
-                            //    var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
+                                if (merchantID != null)
+                                {
+                                    var impersonationIdentity = new ClaimsIdentity(new[]
+                                    {
+                                            new Claim(Claims.MerchantIDClaim, merchantID.ToString()),
+                                            new Claim(ClaimTypes.Role, Roles.Merchant)
+                                    });
+                                    context.Principal?.AddIdentity(impersonationIdentity);
+                                }
+                            }
+                            else if (context.Principal.IsMerchant())
+                            {
+                                var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                                var userId = context.Principal.GetDoneByID();
+                                var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
 
-                            //    if (merchantID != null)
-                            //    {
-                            //        var midentity = (ClaimsIdentity)context.Principal.Identity;
-                            //        var midclaim = midentity.FindFirst(Claims.MerchantIDClaim);
-                            //        if (midclaim != null)
-                            //        {
-                            //            midentity.TryRemoveClaim(midclaim);
-                            //        }
+                                if (merchantID != null)
+                                {
+                                    var midentity = (ClaimsIdentity)context.Principal.Identity;
+                                    var midclaim = midentity.FindFirst(Claims.MerchantIDClaim);
+                                    if (midclaim != null)
+                                    {
+                                        midentity.TryRemoveClaim(midclaim);
+                                    }
 
-                            //        midentity.AddClaim(new Claim(Claims.MerchantIDClaim, merchantID.ToString()));
-                            //    }
-                            //}
+                                    midentity.AddClaim(new Claim(Claims.MerchantIDClaim, merchantID.ToString()));
+                                }
+                            }
                         }
                     };
                 });
@@ -145,7 +145,7 @@ namespace Transactions.Api
                 options.AddPolicy(Policy.TerminalOrMerchantFrontendOrAdmin, policy =>
                     policy.RequireAssertion(context => context.User.IsTerminal() || context.User.IsMerchantFrontend() || context.User.IsAdmin()));
                 options.AddPolicy(Policy.MerchantFrontend, policy =>
-                   policy.RequireAssertion(context => context.User.IsMerchantFrontend() || context.User.IsImpersonatedAdmin()));
+                   policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
                 options.AddPolicy(Policy.AnyAdmin, policy =>
                    policy.RequireAssertion(context => context.User.IsAdmin()));
             });

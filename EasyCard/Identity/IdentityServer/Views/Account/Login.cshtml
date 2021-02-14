@@ -17,9 +17,10 @@
     <div class="row">
         @if (!Model.IsAuthorized)
         {
-            @if (Model.EnableLocalLogin)
-            {
+
                 <div class="col-sm-12 d-flex justify-content-center">
+                    @if (Model.EnableLocalLogin)
+                    {
                     <div class="panel panel-default">
                         @*<div class="panel-heading">
                             <h3 class="panel-title">Local Login</h3>
@@ -45,43 +46,51 @@
                                     </div>
                                     <div class="form-group d-flex justify-content-end">
                                         @*<a asp-action="Index" asp-controller="Registration" class="btn btn-outline-info mx-1">Register</a>*@
-                                        <a asp-action="ForgotPassword" asp-controller="Account" class="btn btn-outline-info mx-1">Reset Password</a>
+                                        <a asp-action="ForgotPassword" asp-controller="Account" class="btn btn-outline-info mx-1">Forgot Password</a>
                                         <button class="btn btn-primary mx-1" name="button" value="login">Login</button>
                                         @*<button class="btn btn-default" name="button" value="cancel">Cancel</button>*@
                                     </div>
+
+                                     
+
                                 </fieldset>
                             </form>
-                        </div>
-                    </div>
-                </div>
-            }
 
-            @if (Model.VisibleExternalProviders.Any())
-            {
-                <div class="col-md-6 col-sm-6 external-providers">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">External Login</h3>
-                        </div>
-                        <div class="panel-body">
-                            <ul class="list-inline">
-                                @foreach (var provider in Model.VisibleExternalProviders)
-                                {
-                                    <li>
-                                        <a class="btn btn-default"
-                                           asp-controller="External"
-                                           asp-action="Challenge"
-                                           asp-route-provider="@provider.AuthenticationScheme"
-                                           asp-route-returnUrl="@Model.ReturnUrl">
-                                            @provider.DisplayName
-                                        </a>
-                                    </li>
+                            <section>
+                                <hr />
+                                @{
+                                    var loginProviders = Model.VisibleExternalProviders;
+                                    if (loginProviders.Count() == 0)
+                                    {
+                                        <div>
+
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                                            <div>
+                                                <p>
+                                                    @foreach (var provider in loginProviders)
+                                                    {
+                                                        <button type="submit" class="btn btn-outline-info mx-1" name="provider" value="@provider.AuthenticationScheme" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                                    }
+                                                </p>
+                                            </div>
+                                        </form>
+                                    }
                                 }
-                            </ul>
+                            </section>
                         </div>
                     </div>
+                    }
                 </div>
-            }
+
+                
+
+
+
+            
 
             @if (!Model.EnableLocalLogin && !Model.VisibleExternalProviders.Any())
             {
@@ -96,11 +105,11 @@
             <div class="col-sm-12 d-flex justify-content-center">
                 @if (Model.IsAdmin)
                 {
-                    <a href="@(Model.ClientSystemURL)" class="btn btn-primary text-white">Login to Admin UI</a>
+                    <a href="@(Model.ClientSystemURL)" class="btn btn-primary text-white">Go to Admin UI</a>
                 }
                 else
                 {
-                    <a href="@(Model.ClientSystemURL)" class="btn btn-primary text-white">Login to Merchant UI</a>
+                    <a href="@(Model.ClientSystemURL)" class="btn btn-primary text-white">Go to Merchant UI</a>
                 }
                 <a asp-action="Logout" asp-controller="Account" class="btn btn-secondary mx-1">Logout</a>
             </div>

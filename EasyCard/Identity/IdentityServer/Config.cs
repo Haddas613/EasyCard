@@ -11,14 +11,14 @@ namespace IdentityServer
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResource("roles", "Roles", new[] { JwtClaimTypes.Role }),
+                new IdentityResource("roles", "Roles", new[] { JwtClaimTypes.Role,  Shared.Helpers.Security.Claims.FirstNameClaim, Shared.Helpers.Security.Claims.LastNameClaim }),
             };
 
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>
             {
                 new ApiScope("merchants_api", "Merchants Api", new[] { JwtClaimTypes.Subject, JwtClaimTypes.Name, JwtClaimTypes.Role, JwtClaimTypes.Audience, Shared.Helpers.Security.Claims.MerchantIDClaim }),
-                new ApiScope("transactions_api", "Transactions Api", new[] { JwtClaimTypes.Subject, JwtClaimTypes.Name, JwtClaimTypes.Role, Shared.Helpers.Security.Claims.TerminalIDClaim, Shared.Helpers.Security.Claims.MerchantIDClaim }),
+                new ApiScope("transactions_api", "Transactions Api", new[] { JwtClaimTypes.Subject, JwtClaimTypes.Name, JwtClaimTypes.Role, Shared.Helpers.Security.Claims.TerminalIDClaim, Shared.Helpers.Security.Claims.MerchantIDClaim, Shared.Helpers.Security.Claims.FirstNameClaim, Shared.Helpers.Security.Claims.LastNameClaim }),
                 new ApiScope("management_api", "User Management")
             };
 

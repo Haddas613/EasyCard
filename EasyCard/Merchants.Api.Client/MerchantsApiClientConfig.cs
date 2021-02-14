@@ -6,6 +6,6 @@ namespace Merchants.Api.Client
 {
     public class MerchantsApiClientConfig
     {
-        public string MerchantsApiAddress { get; set; }
+        public string MerchantsManagementApiAddress { get; set; }
     }
 }

@@ -35,49 +35,49 @@ namespace Transactions.Business.Services
 
         public IQueryable<CreditCardTokenDetails> GetTokens()
         {
-            if (user.IsAdmin() && !user.IsImpersonatedAdmin())
+            if (user.IsAdmin())
             {
-                return context.CreditCardTokenDetails;
+                return context.CreditCardTokenDetails.AsNoTracking();
             }
             else if (user.IsTerminal())
             {
-                return context.CreditCardTokenDetails.Where(t => t.TerminalID == user.GetTerminalID());
+                return context.CreditCardTokenDetails.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
             }
             else
             {
-                return context.CreditCardTokenDetails.Where(t => t.MerchantID == user.GetMerchantID());
+                return context.CreditCardTokenDetails.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
             }
         }
 
         public IQueryable<PaymentTransaction> GetTransactions()
         {
-            if (user.IsAdmin() && !user.IsImpersonatedAdmin())
+            if (user.IsAdmin())
             {
-                return context.PaymentTransactions;
+                return context.PaymentTransactions.AsNoTracking();
             }
             else if (user.IsTerminal())
             {
-                return context.PaymentTransactions.Where(t => t.TerminalID == user.GetTerminalID());
+                return context.PaymentTransactions.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
             }
             else
             {
-                return context.PaymentTransactions.Where(t => t.MerchantID == user.GetMerchantID());
+                return context.PaymentTransactions.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
             }
         }
 
         public IQueryable<TransactionHistory> GetTransactionHistories()
         {
-            if (user.IsAdmin() && !user.IsImpersonatedAdmin())
+            if (user.IsAdmin())
             {
-                return context.TransactionHistories;
+                return context.TransactionHistories.AsNoTracking();
             }
             else if (user.IsTerminal())
             {
-                return context.TransactionHistories.Where(t => t.PaymentTransaction.TerminalID == user.GetTerminalID());
+                return context.TransactionHistories.AsNoTracking().Where(t => t.PaymentTransaction.TerminalID == user.GetTerminalID());
             }
             else
             {
-                return context.TransactionHistories.Where(t => t.PaymentTransaction.MerchantID == user.GetMerchantID());
+                return context.TransactionHistories.AsNoTracking().Where(t => t.PaymentTransaction.MerchantID == user.GetMerchantID());
             }
         }
 

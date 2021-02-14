@@ -10,7 +10,7 @@
     <v-list class="py-0">
       <v-list-item two-line class="py-4">
         <v-list-item-avatar>
-          <img src="https://randomuser.me/api/portraits/men/81.jpg" />
+          <avatar username="TODO" :rounded="true"></avatar>
         </v-list-item-avatar>
 
         <v-list-item-content>
@@ -75,9 +75,12 @@
 </template>
 <script>
 import { mapState } from "vuex";
-
+import Avatar from "vue-avatar";
 
 export default {
+  components: {
+    Avatar
+  },
   name: "EcNav",
   props: ["drawer"],
   data() {
@@ -196,7 +199,7 @@ export default {
     };
   },
   async mounted() {
-    this.userName = !!this.$oidc ? (await this.$oidc.getUserProfile()).name : null;
+    this.userName = !!this.$oidc ? (await this.$oidc.getUserDisplayName()) : null;
   },
   computed: {
     drawerObj: {

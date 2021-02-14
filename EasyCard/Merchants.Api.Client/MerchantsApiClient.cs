@@ -36,7 +36,7 @@ namespace Merchants.Api.Client
         {
             try
             {
-                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsApiAddress, "api/merchant", merchantRequest, BuildHeaders);
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsManagementApiAddress, "api/merchant", merchantRequest, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
@@ -49,7 +49,7 @@ namespace Merchants.Api.Client
         {
             try
             {
-                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsApiAddress, "api/terminals", terminalRequest, BuildHeaders);
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsManagementApiAddress, "api/terminals", terminalRequest, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
@@ -62,7 +62,7 @@ namespace Merchants.Api.Client
         {
             try
             {
-                return await webApiClient.Get<SummariesResponse<PlanSummary>>(apiConfiguration.MerchantsApiAddress, "api/plans", null, BuildHeaders);
+                return await webApiClient.Get<SummariesResponse<PlanSummary>>(apiConfiguration.MerchantsManagementApiAddress, "api/plans", null, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
@@ -75,7 +75,7 @@ namespace Merchants.Api.Client
         {
             try
             {
-                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsApiAddress, "api/user/linkToMerchant", request, BuildHeaders);
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsManagementApiAddress, "api/user/linkToMerchant", request, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
@@ -88,7 +88,7 @@ namespace Merchants.Api.Client
         {
             try
             {
-                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsApiAddress, "api/user/logActivity", request, BuildHeaders);
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsManagementApiAddress, "api/user/logActivity", request, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
@@ -115,7 +115,7 @@ namespace Merchants.Api.Client
         {
             try
             {
-                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsApiAddress, $"api/terminals/{terminalID}/auditResetApiKey/{merchantID}", null, BuildHeaders);
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantsManagementApiAddress, $"api/terminals/{terminalID}/auditResetApiKey/{merchantID}", null, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {

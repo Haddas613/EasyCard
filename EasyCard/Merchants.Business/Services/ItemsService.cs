@@ -1,5 +1,6 @@
 ﻿using Merchants.Business.Data;
 using Merchants.Business.Entities.Billing;
+using Microsoft.EntityFrameworkCore;
 using Shared.Business;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
@@ -29,11 +30,12 @@ namespace Merchants.Business.Services
         {
             if (user.IsAdmin())
             {
-                return context.Items;
+                return context.Items.AsNoTracking();
             }
             else
             {
-                return context.Items.Where(t => t.MerchantID == user.GetMerchantID());
+                // Merchant and non-interactive terminal has shared items list
+                return context.Items.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
             }
         }
     }

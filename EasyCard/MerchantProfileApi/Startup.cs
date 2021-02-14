@@ -88,7 +88,7 @@ namespace ProfileApi
                     {
                         OnTokenValidated = async (context) =>
                         {
-                            if (context.Principal.IsAdmin())
+                            if (context.Principal.IsInteractiveAdmin())
                             {
                                 var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
                                 var userId = context.Principal.GetDoneByID();
@@ -133,7 +133,7 @@ namespace ProfileApi
                 options.AddPolicy(Policy.TerminalOrMerchantFrontend, policy =>
                     policy.RequireAssertion(context => context.User.IsTerminal() || context.User.IsMerchantFrontend()));
                 options.AddPolicy(Policy.MerchantFrontend, policy =>
-                   policy.RequireAssertion(context => context.User.IsMerchantFrontend() || context.User.IsImpersonatedAdmin()));
+                   policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
             });
 
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention

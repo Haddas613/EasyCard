@@ -22,6 +22,7 @@ using Shared.Helpers.Email;
 using Shared.Helpers.Security;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace IdentityServer.Controllers
@@ -45,6 +46,8 @@ namespace IdentityServer.Controllers
         private readonly ApplicationSettings configuration;
 
         private readonly IAuditLogger auditLogger;
+        private readonly AzureADSettings azureADConfig;
+        private readonly ApiSettings apiConfiguration;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -57,7 +60,9 @@ namespace IdentityServer.Controllers
             ILogger<AccountController> logger,
             ICryptoService cryptoService,
             IOptions<ApplicationSettings> configuration,
-            IAuditLogger auditLogger)
+            IAuditLogger auditLogger,
+            IOptions<AzureADSettings> azureADConfig,
+            IOptions<ApiSettings> apiConfiguration)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -71,6 +76,9 @@ namespace IdentityServer.Controllers
             this.cryptoService = cryptoService;
             this.configuration = configuration.Value;
             this.auditLogger = auditLogger;
+
+            this.azureADConfig = azureADConfig.Value;
+            this.apiConfiguration = apiConfiguration.Value;
         }
 
         /// <summary>
@@ -169,7 +177,7 @@ namespace IdentityServer.Controllers
 
                 if (result.IsLockedOut)
                 {
-                    //_logger.LogWarning("User account locked out.");
+                    //logger.LogWarning("User account locked out.");
 
                     //await _managementApiClient.RegisterLocked(model.Email);
 
@@ -277,7 +285,7 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            //var result = await _userManager.ConfirmEmailAsync(user, code);
+            //var result = await userManager.ConfirmEmailAsync(user, code);
             //return View(result.Succeeded ? "ConfirmEmail" : "Error");
 
             if (!string.IsNullOrWhiteSpace(user.PasswordHash))
@@ -302,19 +310,19 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            //var user = await _userManager.FindByIdAsync(model.UserId);
+            //var user = await userManager.FindByIdAsync(model.UserId);
             //if (user == null)
             //{
-            //    _logger.LogError($"UserId does not exist");
+            //    logger.LogError($"UserId does not exist");
             //    //throw new ApplicationException($"Unable to load user with ID '{userId}'.");
             //    return RedirectToAction(nameof(HomeController.Index), "Home");
             //}
-            //var confirmEmailResult = await _userManager.ConfirmEmailAsync(user, model.Code);
+            //var confirmEmailResult = await userManager.ConfirmEmailAsync(user, model.Code);
 
             //if (!confirmEmailResult.Succeeded)
             //{
             //    var errors = string.Join(", ", confirmEmailResult.Errors.Select(err => err.Code + ":" + err.Description));
-            //    _logger.LogError($"Email confirmation failed: {errors}");
+            //    logger.LogError($"Email confirmation failed: {errors}");
             //    return RedirectToAction(nameof(HomeController.Index), "Home");
             //}
 
@@ -397,7 +405,7 @@ namespace IdentityServer.Controllers
                     //var validationResult = await _managementApiClient.ValidateUser(model.Email, model.BankAccount);
                     //if (validationResult?.Status == StatusEnum.Error)
                     //{
-                    //    _logger.LogError($"User email '{model.Email}' and bank account number '{model.BankAccount}' mismatched or user is not valid");
+                    //    logger.LogError($"User email '{model.Email}' and bank account number '{model.BankAccount}' mismatched or user is not valid");
                     //    // Don't reveal that the user does not exist or is not confirmed
                     //    return RedirectToAction(nameof(ForgotPasswordConfirmation), new { Message = validationResult.Message });
                     //}
@@ -405,7 +413,7 @@ namespace IdentityServer.Controllers
 
                 // For more information on how to enable account confirmation and password reset please
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                //var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                //var code = await userManager.GeneratePasswordResetTokenAsync(user);
 
                 var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ResetPasswordEmailExpirationInHours));
 
@@ -482,7 +490,7 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
 
-            //var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            //var result = await userManager.ResetPasswordAsync(user, model.Code, model.Password);
             //if (result.Succeeded)
             //{
             //    return RedirectToAction(nameof(ResetPasswordConfirmation));
@@ -531,9 +539,171 @@ namespace IdentityServer.Controllers
             return View();
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public IActionResult ExternalLogin(string provider, string returnUrl = null)
+        {
+            // Request a redirect to the external login provider.
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { returnUrl });
+            var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return Challenge(properties, provider);
+        }
+
+        // TODO: log errors
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        {
+            if (remoteError != null)
+            {
+                ModelState.AddModelError("ExternalLogin", $"Error from external provider: {remoteError}");
+                logger.LogWarning($"Error from external provider: {remoteError}");
+                return RedirectToAction(nameof(Login));
+            }
+
+            var tempUser = await HttpContext.AuthenticateAsync(IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme);
+
+            if (tempUser?.Succeeded != true)
+            {
+                //throw new Exception("External authentication error");
+                logger.LogWarning($"External authentication error: {tempUser?.Failure?.Message}");
+                return RedirectToAction(nameof(Login));
+            }
+
+            // retrieve claims of the external user
+            var externalUser = tempUser.Principal;
+
+            if (externalUser == null)
+            {
+                throw new Exception("External authentication error");
+            }
+
+            // retrieve claims of the external user
+            var claims = externalUser.Claims.ToList();
+
+            // try to determine the unique id of the external user - the most common claim type for that are the sub claim and the NameIdentifier
+            // depending on the external provider, some other claim type might be used
+            var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Subject);
+
+            if (userIdClaim == null)
+            {
+                userIdClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+            }
+
+            foreach (var claim in claims)
+            {
+                logger.LogWarning(claim.Type + ": " + claim.Value);
+            }
+
+            if (userIdClaim == null)
+            {
+                //throw new Exception("Unknown userid");
+                logger.LogWarning("Unknown userid");
+                return RedirectToAction(nameof(Login));
+            }
+
+            var externalUserId = userIdClaim.Value;
+            var externalProvider = userIdClaim.Issuer;
+            var email = (tempUser.Principal.FindFirstValue(ClaimTypes.Email) ?? tempUser.Principal.FindFirstValue(JwtClaimTypes.Email)) ?? tempUser.Principal.FindFirstValue(ClaimTypes.Name);
+
+            if (email == null)
+            {
+                //throw new Exception("Unknown email"); --add details to log
+                logger.LogWarning("Unknown email");
+                return RedirectToAction(nameof(Login));
+            }
+
+            var firstName = tempUser.Principal.FindFirstValue(ClaimTypes.GivenName);
+            var lastName = tempUser.Principal.FindFirstValue(ClaimTypes.Surname);
+
+            var justName = tempUser.Principal.FindFirstValue("name");
+
+            if (string.IsNullOrWhiteSpace(firstName) && string.IsNullOrWhiteSpace(lastName)) firstName = justName;
+
+            // TODO: get roles
+            var roles = claims.FindAll(x => x.Type == "groups");
+
+            var isECNGBillingAdmin = roles.FirstOrDefault(x => x.Value == azureADConfig.AzureAdBillingAdministratorGrpId) != null; //"ECNGBillingAdmin"
+            var isECNGBusinessAdmin = roles.FirstOrDefault(x => x.Value == azureADConfig.AzureAdBusinessAdministratorGrpId) != null; //"ECNGBusinessAdmin"
+
+            // Sign in the user with this external login provider if the user already has a login.
+            var result = await signInManager.ExternalLoginSignInAsync(externalProvider, externalUserId, true, true); //ispersistent:false
+            if (result.Succeeded) // external user already in identity database
+            {
+                var user = await userManager.FindByEmailAsync(email);
+
+                var allClaims = await userManager.GetClaimsAsync(user);
+
+                await userManager.AddClaim(allClaims, user, "extension_FirstName", firstName);
+                await userManager.AddClaim(allClaims, user, "extension_LastName", lastName);
+
+                logger.LogInformation("User logged in with {Name} provider.", "test");
+
+                await RefreshExternalUserRoles(user, isECNGBillingAdmin, isECNGBusinessAdmin);
+
+                return RedirectToLocal(returnUrl);
+            }
+
+            if (result.IsLockedOut)
+            {
+                return RedirectToAction(nameof(Lockout));
+            }
+
+            // If the user does not have an account, then create an account.
+
+            var newUser = await userManager.FindByEmailAsync(email);
+            if (newUser == null)
+            {
+                newUser = new ApplicationUser { UserName = email, Email = email };
+                var newUserResult = await userManager.CreateAsync(newUser);
+                if (!newUserResult.Succeeded)
+                {
+                    logger.LogInformation("User is not created");
+
+                    // TODO: error details
+                    return new BadRequestResult();
+                }
+            }
+
+            var allClaimsNew = await userManager.GetClaimsAsync(newUser);
+
+            await userManager.AddClaim(allClaimsNew, newUser, "extension_FirstName", firstName);
+            await userManager.AddClaim(allClaimsNew, newUser, "extension_LastName", lastName);
+
+            await RefreshExternalUserRoles(newUser, isECNGBillingAdmin, isECNGBusinessAdmin);
+
+            var userLoginInfo = new UserLoginInfo(externalProvider, externalUserId, email);
+
+            var addLoginresult = await userManager.AddLoginAsync(newUser, userLoginInfo);
+            if (!addLoginresult.Succeeded)
+            {
+                logger.LogInformation("User is not created");
+
+                // TODO: error details
+                return new BadRequestResult();
+            }
+
+            await signInManager.SignInAsync(newUser, isPersistent: true); //isPersistent: false
+            logger.LogInformation("User created an account using {Name} provider.", userLoginInfo.LoginProvider);
+            return RedirectToLocal(returnUrl);
+        }
+
         /*****************************************/
         /* helper APIs for the AccountController */
         /*****************************************/
+
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (string.IsNullOrWhiteSpace(returnUrl))
+            {
+                return RedirectToAction(nameof(Login));
+            }
+            else
+            {
+                return Redirect(returnUrl);
+            }
+        }
 
         private void AddErrors(IdentityResult result)
         {
@@ -559,9 +729,9 @@ namespace IdentityServer.Controllers
                     ReturnUrl = returnUrl,
                     Username = context?.LoginHint,
                     IsAuthorized = User?.Identity.IsAuthenticated == true,
-                    UserName = User.Identity?.Name,
+                    UserName = User.GetDoneByName(),
                     IsAdmin = isAdmin,
-                    ClientSystemURL = isAdmin ? configuration.MerchantsApiAddress : configuration.ProfileApiAddress
+                    ClientSystemURL = isAdmin ? apiConfiguration.AdminApiAddress : apiConfiguration.MerchantProfileApiAddress
                 };
 
                 if (!local)
@@ -606,9 +776,9 @@ namespace IdentityServer.Controllers
                 Username = context?.LoginHint,
                 ExternalProviders = providers.ToArray(),
                 IsAuthorized = User?.Identity.IsAuthenticated == true,
-                UserName = User.Identity?.Name,
+                UserName = User.GetDoneByName(),
                 IsAdmin = isAdmin,
-                ClientSystemURL = isAdmin ? configuration.MerchantsApiAddress : configuration.ProfileApiAddress
+                ClientSystemURL = isAdmin ? apiConfiguration.AdminApiAddress : apiConfiguration.MerchantProfileApiAddress
             };
         }
 
@@ -680,6 +850,29 @@ namespace IdentityServer.Controllers
             }
 
             return vm;
+        }
+
+        private async Task RefreshExternalUserRoles(ApplicationUser newUser, bool isECNGBillingAdmin, bool isECNGBusinessAdmin)
+        {
+            if (User.IsInRole(Roles.BusinessAdministrator) && !isECNGBusinessAdmin)
+            {
+                logger.LogWarning($"Remove user {newUser.Email} from role BusinessAdministrator");
+                await userManager.RemoveFromRoleAsync(newUser, Roles.BusinessAdministrator);
+            }
+            else if (!User.IsInRole(Roles.BusinessAdministrator) && isECNGBusinessAdmin)
+            {
+                await userManager.AddToRoleAsync(newUser, Roles.BusinessAdministrator);
+            }
+
+            if (User.IsInRole(Roles.BillingAdministrator) && !isECNGBillingAdmin)
+            {
+                logger.LogWarning($"Remove user {newUser.Email} from role BillingAdministrator");
+                await userManager.RemoveFromRoleAsync(newUser, Roles.BillingAdministrator);
+            }
+            else if (!User.IsInRole(Roles.BillingAdministrator) && isECNGBillingAdmin)
+            {
+                await userManager.AddToRoleAsync(newUser, Roles.BillingAdministrator);
+            }
         }
     }
 }
