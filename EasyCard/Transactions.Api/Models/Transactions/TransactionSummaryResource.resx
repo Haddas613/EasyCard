@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CardOwnerName" xml:space="preserve">
+    <value>Card Owner</value>
+  </data>
   <data name="CardPresence" xml:space="preserve">
     <value>Card Present</value>
   </data>
@@ -127,19 +130,28 @@
     <value>Currency</value>
   </data>
   <data name="JDealType" xml:space="preserve">
-    <value>J Deal Type</value>
+    <value>JDeal type</value>
   </data>
   <data name="MerchantID" xml:space="preserve">
     <value>Merchant ID</value>
   </data>
+  <data name="MerchantName" xml:space="preserve">
+    <value>Merchant</value>
+  </data>
   <data name="PaymentTransactionID" xml:space="preserve">
     <value>ID</value>
   </data>
+  <data name="PaymentTypeEnum" xml:space="preserve">
+    <value>Pay type</value>
+  </data>
+  <data name="QuickStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
   <data name="RejectionReason" xml:space="preserve">
-    <value>Rejection Reason</value>
+    <value>Rej. Reason</value>
   </data>
   <data name="SpecialTransactionType" xml:space="preserve">
-    <value>Special Transaction Type</value>
+    <value>Spec. type</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>Status</value>
@@ -147,10 +159,16 @@
   <data name="TerminalID" xml:space="preserve">
     <value>Terminal ID</value>
   </data>
+  <data name="TerminalName" xml:space="preserve">
+    <value>Terminal</value>
+  </data>
   <data name="TransactionAmount" xml:space="preserve">
-    <value>Transaction Amount</value>
+    <value>Amount</value>
+  </data>
+  <data name="TransactionTimestamp" xml:space="preserve">
+    <value>Date</value>
   </data>
   <data name="TransactionType" xml:space="preserve">
-    <value>Transaction Type</value>
+    <value>Transaction type</value>
   </data>
 </root>

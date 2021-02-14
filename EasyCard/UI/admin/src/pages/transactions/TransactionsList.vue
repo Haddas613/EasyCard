@@ -18,6 +18,7 @@
           :options.sync="options"
           :server-items-length="totalAmount"
           :loading="loading"
+          :header-props="{ sortIcon: null }"
           class="elevation-1">
         <template v-slot:item.merchantName="{ item }">
           <router-link class="text-decoration-none" link :to="{name: 'Merchant', params: {id: item.merchantID}}">
@@ -40,6 +41,19 @@
             <re-icon small>mdi-arrow-right</re-icon>
           </v-btn>
         </template>    
+        <template v-slot:item.cardPresence="{ item }">
+          <span :title="item.cardPresence">
+            <v-icon v-if="item.$cardPresence == 'regular'" color="success">mdi-credit-card-check</v-icon>
+            <v-icon v-else>mdi-credit-card-off-outline</v-icon>
+          </span>
+        </template>  
+        <template v-slot:item.transactionType="{ item }">
+          <span :title="item.transactionType">
+            <v-icon v-if="item.$transactionType == 'regularDeal'" color="primary">mdi-cash</v-icon>
+            <v-icon v-else-if="item.$transactionType == 'Installments'" color="accent">mdi-credit-card-check</v-icon>
+            <v-icon v-else color="secondary">mdi-credit-card-off</v-icon>
+          </span>
+        </template>  
       </v-data-table>
     </div>
   </v-card>

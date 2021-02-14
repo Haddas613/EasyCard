@@ -113,7 +113,7 @@
           v-on:ok="getMerchant()"
           :merchant-id="$route.params.id"
         ></create-user-dialog>
-        <ec-list :items="model.users" v-if="model.users && model.users.length > 0">
+        <ec-list :items="model.users" v-if="model.users && model.users.length > 0" :dense="true">
           <template v-slot:left="{ item }">
             <v-col cols="12" md="6" lg="6" class="caption ecgray--text">{{item.userID | guid}}</v-col>
             <v-col cols="12" md="6" lg="6">{{item.email}}</v-col>

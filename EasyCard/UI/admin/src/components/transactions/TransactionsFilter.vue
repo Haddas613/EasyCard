@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row>
-       <merchant-terminal-filter v-model="model"></merchant-terminal-filter>
+       <merchant-terminal-filter class="pt-3" v-model="model"></merchant-terminal-filter>
        <v-col cols="12" md="3" sm="6">
         <v-select
           :items="dictionaries.quickDateFilterTypeEnum"

@@ -1247,6 +1247,11 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.CardOwnerName">
+            <summary>
+              Looks up a localized string similar to Card Owner.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.CardPresence">
             <summary>
               Looks up a localized string similar to Card Present.
@@ -1264,7 +1269,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.JDealType">
             <summary>
-              Looks up a localized string similar to J Deal Type.
+              Looks up a localized string similar to JDeal type.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.MerchantID">
@@ -1272,19 +1277,34 @@
               Looks up a localized string similar to Merchant ID.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.PaymentTransactionID">
             <summary>
               Looks up a localized string similar to ID.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.PaymentTypeEnum">
+            <summary>
+              Looks up a localized string similar to Pay type.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.QuickStatus">
+            <summary>
+              Looks up a localized string similar to Status.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.RejectionReason">
             <summary>
-              Looks up a localized string similar to Rejection Reason.
+              Looks up a localized string similar to Rej. Reason.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.SpecialTransactionType">
             <summary>
-              Looks up a localized string similar to Special Transaction Type.
+              Looks up a localized string similar to Spec. type.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.Status">
@@ -1297,14 +1317,24 @@
               Looks up a localized string similar to Terminal ID.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.TransactionAmount">
             <summary>
-              Looks up a localized string similar to Transaction Amount.
+              Looks up a localized string similar to Amount.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.TransactionTimestamp">
+            <summary>
+              Looks up a localized string similar to Date.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.TransactionType">
             <summary>
-              Looks up a localized string similar to Transaction Type.
+              Looks up a localized string similar to Transaction type.
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.TransmitTransactionsRequest">

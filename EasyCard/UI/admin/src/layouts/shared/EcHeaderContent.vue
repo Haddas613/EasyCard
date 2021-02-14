@@ -16,7 +16,7 @@
       </template>
     </v-col>
     <v-col cols="8" md="4" lg="4" xl="4" class="d-flex justify-space-around">
-      <v-toolbar-title v-bind:class="{'subtitle-1': $vuetify.breakpoint.smAndDown}" v-if="!headerStore.altDisplay">{{headerText}}</v-toolbar-title>
+      <v-toolbar-title v-if="!headerStore.altDisplay">{{headerText}}</v-toolbar-title>
     </v-col>
     <v-col cols="2" md="4" lg="4" xl="4" class="d-flex justify-end">
       <template v-if="tdMenuItems">

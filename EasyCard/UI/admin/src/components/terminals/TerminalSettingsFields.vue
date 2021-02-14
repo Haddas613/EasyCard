@@ -38,26 +38,7 @@
         {{$t("General")}}
         <v-divider class="pt-1"></v-divider>
       </v-col>
-      <v-col cols="12" md="6">
-        <v-text-field
-          :value="(model.settings.vatRate * 100).toFixed(0)"
-          :label="$t('VATPercent')"
-          :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(0)]"
-          required
-          outlined
-          disabled
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6">
-        <v-switch
-          class="pt-0 mt-2 px-2"
-          v-model="model.settings.vatExempt"
-          :label="$t('VATExempt')"
-          :hint="$t('WhenEnabledVATWillBeIgnored')"
-          persistent-hint
-        ></v-switch>
-      </v-col>
-      <v-col cols="12">
+      <v-col cols="12" md="4">
         <v-text-field
           v-model="model.settings.defaultItemName"
           :counter="250"
@@ -66,7 +47,7 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12">
+      <v-col cols="12" md="4" class="px-1">
         <v-text-field
           v-model="model.settings.defaultChargeDescription"
           :counter="250"
@@ -75,7 +56,7 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12">
+      <v-col cols="12" md="4">
         <v-text-field
           v-model="model.settings.defaultRefundDescription"
           :counter="250"
@@ -83,6 +64,27 @@
           :label="$t('DefaultRefundDescription')"
           outlined
         ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-text-field
+          class="w99"
+          :value="(model.settings.vatRate * 100).toFixed(0)"
+          :label="$t('VATPercent')"
+          :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(0)]"
+          required
+          outlined
+          disabled
+          hide-details
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-switch
+          class="pt-0 mt-0 pb-2"
+          v-model="model.settings.vatExempt"
+          :label="$t('VATExempt')"
+          :hint="$t('WhenEnabledVATWillBeIgnored')"
+          persistent-hint
+        ></v-switch>
       </v-col>
       <v-col md="6" cols="12">
         <v-switch
@@ -114,7 +116,7 @@
       <v-col cols="12">
         <v-spacer class="py-4"></v-spacer>
       </v-col>
-      <v-col md="6" cols="12">
+      <v-col md="3" cols="12">
         <v-text-field
           v-model="model.settings.minInstallments"
           :label="$t('MinInstallments')"
@@ -122,7 +124,7 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col md="6" cols="12">
+      <v-col md="3" cols="12">
         <v-text-field
           v-model="model.settings.maxInstallments"
           v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
@@ -132,7 +134,7 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col md="6" cols="12">
+      <v-col md="3" cols="12">
         <v-text-field
           v-model="model.settings.minCreditInstallments"
           :label="$t('MinCreditInstallments')"
@@ -140,7 +142,7 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col md="6" cols="12">
+      <v-col md="3" cols="12">
         <v-text-field
           v-model="model.settings.maxCreditInstallments"
           v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
@@ -442,3 +444,9 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.w99{
+  width: 99%;
+}
+</style>

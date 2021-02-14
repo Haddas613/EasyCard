@@ -1,0 +1,37 @@
+$color-pack: true !default;
+
+$general-font-size: 15px;
+
+$body-font-family: 'Roboto', sans-serif !default;
+$font-size-root: $general-font-size !default;
+$line-height-root: 1.5 !default;
+$border-radius-root: 4px !default;
+
+
+// Elements //
+$blockquote-font-size: 18px !default;
+$blockquote-font-weight: 300 !default;
+$code-kbd-border-radius: 3px !default;
+$code-kbd-font-size: 85% !default;
+$code-kbd-font-weight: normal !default;
+$code-padding: .2em .4em !default;
+$kbd-padding: .2em .4rem !default;
+$input-top-spacing: 16px !default;
+
+
+// text field //
+$text-field-line-height: 8px;
+$text-field-active-label-height: 8px !default;
+$text-field-padding: 5px 0 5px !default;
+$text-field-min-height: 40px !default;
+$input-font-size: $general-font-size !default;
+
+// switch //
+$switch-font-size: $general-font-size !default;
+
+// input //
+$input-font-size: $general-font-size !default;
+$input-label-height: $general-font-size + 2 !default;
+$label-font-size: $general-font-size !default;
+
+@import './override.scss';
