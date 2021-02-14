@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 using SharedBusiness = Shared.Business;
 
 namespace Merchants.Api.Controllers
@@ -109,14 +110,15 @@ namespace Merchants.Api.Controllers
 
             using (var dbTransaction = terminalsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<TerminalSummary> { NumberOfRecords = await query.CountAsync() };
+                var numberOfRecords = query.DeferredCount().FutureValue();
+
+                var response = new SummariesResponse<TerminalSummary>();
 
                 query = query.OrderByDynamic(filter.SortBy ?? nameof(Terminal.TerminalID), filter.OrderByDirection).ApplyPagination(filter);
 
-                // TODO: validate generated sql
-                var sql = query.ToSql();
+                response.Data = await mapper.ProjectTo<TerminalSummary>(query).Future().ToListAsync();
 
-                response.Data = await mapper.ProjectTo<TerminalSummary>(query).ToListAsync();
+                response.NumberOfRecords = numberOfRecords.Value;
 
                 return Ok(response);
             }

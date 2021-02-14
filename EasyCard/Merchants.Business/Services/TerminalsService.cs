@@ -19,6 +19,7 @@ using System.Security;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace Merchants.Business.Services
 {
@@ -54,16 +55,18 @@ namespace Merchants.Business.Services
 
         public async Task<Terminal> GetTerminal(Guid terminalID)
         {
-            var terminal = await GetTerminals()
-                    .Include(t => t.Merchant) // TODO: caching
-                    .FirstOrDefaultAsync(m => m.TerminalID == terminalID);
+            var terminalQuery = GetTerminals()
+                    .Include(t => t.Merchant)
+                    .Where(m => m.TerminalID == terminalID).Future();
+
+            var integrationsQuery = GetTerminalExternalSystems().Where(m => m.TerminalID == terminalID).Future();
+
+            var terminal = (await terminalQuery.ToListAsync()).FirstOrDefault();
 
             if (terminal != null)
             {
-                // TODO: caching
-                context.Entry(terminal)
-                    .Collection(b => b.Integrations)
-                    .Load();
+                // futureStates is already resolved and contains the result
+                terminal.Integrations = integrationsQuery.ToList();
             }
 
             return terminal;

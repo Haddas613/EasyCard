@@ -43,8 +43,9 @@ using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
 using Transactions.Api.Extensions;
-using SharedBusiness = Shared.Business;
+using Z.EntityFramework.Plus;
 using SharedIntegration = Shared.Integration;
+using SharedBusiness = Shared.Business;
 
 namespace Transactions.Api.Controllers
 {
@@ -210,13 +211,12 @@ namespace Transactions.Api.Controllers
             {
                 var dataQuery = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByDirection).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
 
-                // TODO: validate generated sql
-                var sql = query.ToSql();
-                var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
+                var numberOfRecords = query.DeferredCount().FutureValue();
+                var response = new SummariesResponse<TransactionSummary>();
 
                 if (httpContextAccessor.GetUser().IsAdmin())
                 {
-                    var summary = await mapper.ProjectTo<TransactionSummaryAdmin>(dataQuery).ToListAsync();
+                    var summary = await mapper.ProjectTo<TransactionSummaryAdmin>(dataQuery).Future().ToListAsync();
 
                     var terminalsId = summary.Select(t => t.TerminalID).Distinct();
 
@@ -236,12 +236,14 @@ namespace Transactions.Api.Controllers
                     });
 
                     response.Data = summary;
+                    response.NumberOfRecords = numberOfRecords.Value;
                     return Ok(response);
                 }
                 else
                 {
                     // TODO: try to remove ProjectTo
-                    response.Data = await mapper.ProjectTo<TransactionSummary>(dataQuery).ToListAsync();
+                    response.Data = await mapper.ProjectTo<TransactionSummary>(dataQuery).Future().ToListAsync();
+                    response.NumberOfRecords = numberOfRecords.Value;
                     return Ok(response);
                 }
             }
