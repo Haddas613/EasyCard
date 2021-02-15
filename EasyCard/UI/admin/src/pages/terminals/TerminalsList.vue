@@ -18,6 +18,11 @@
         :loading="loading"
         class="elevation-1"
       >
+        <template v-slot:item.merchantBusinessName="{ item }">
+          <router-link v-if="item.merchantID" class="text-decoration-none" link :to="{name: 'Merchant', params: {id: item.merchantID}}">
+            {{item.merchantBusinessName || item.merchantID}}
+          </router-link>
+        </template> 
         <template v-slot:item.actions="{ item }">
           <v-btn class="mx-1" color="secondary" outlined x-small link :to="{name: 'EditTerminal', params: {id: item.$terminalID}}">
             <v-icon small>mdi-pencil</v-icon>

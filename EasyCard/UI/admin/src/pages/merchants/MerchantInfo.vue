@@ -301,6 +301,19 @@ export default {
                 }
               });
             }
+          },
+          {
+            text: this.$t("Transactions"),
+            fn: () => {
+              this.$router.push({
+                name: "Transactions",
+                params: {
+                  filters: {
+                    merchantID: this.$route.params.id
+                  }
+                }
+              });
+            }
           }
         ]
       }

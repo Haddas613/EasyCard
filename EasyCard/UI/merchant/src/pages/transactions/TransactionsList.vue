@@ -125,7 +125,7 @@ export default {
         ...this.transactionsFilter,
         ...this.options
       });
-      if (data) {
+      if (data && data.length > 0) {
         this.groupedTransactions = this.groupedTransactions.concat(data);
         let newest = this.groupedTransactions[0].groupValue.transactionDate;
         let oldest =

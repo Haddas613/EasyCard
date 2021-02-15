@@ -2,6 +2,7 @@
 using Merchants.Shared.Enums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Shared.Api.UI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -21,7 +22,8 @@ namespace Merchants.Api.Models.Terminal
 
         public string MerchantBusinessName { get; set; }
 
-        //public Guid? MerchantID { get; set; }
+        [MetadataOptions(Hidden = true)]
+        public Guid? MerchantID { get; set; }
 
         //TODO: implement
         ///// <summary>

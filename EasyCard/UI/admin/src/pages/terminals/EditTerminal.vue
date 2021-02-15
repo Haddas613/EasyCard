@@ -7,6 +7,38 @@
     <v-card-text>
       <v-tabs-items v-model="tab" class="bg-ecbg">
         <v-tab-item key="settings" class="pt-2">
+          <v-card class="mb-4" outlined v-if="terminal && terminal.merchant">
+            <v-card-title class="pb-0 mb-0 subtitle-2 black--text">
+              {{$t("MerchantInfo")}}
+            </v-card-title>
+            <v-card-text>
+              <v-row class="body-2 black--text">
+                <v-col cols="12">
+                  <v-divider></v-divider>
+                </v-col>
+                <v-col cols="12" md="3">
+                  <p class="caption ecgray--text text--darken-2">{{$t('BusinessName')}}</p>
+                  <p>
+                    <router-link v-if="terminal.merchant.merchantID" class="text-decoration-none" link :to="{name: 'Merchant', params: {id: terminal.merchant.merchantID}}">
+                      {{terminal.merchant.businessName || terminal.merchant.merchantID}}
+                    </router-link>
+                  </p>
+                </v-col>
+                <v-col cols="12" md="3">
+                  <p class="caption ecgray--text text--darken-2">{{$t('MarketingName')}}</p>
+                  <p>{{terminal.merchant.marketingName}}</p>
+                </v-col>
+                <v-col cols="12" md="3">
+                  <p class="caption ecgray--text text--darken-2">{{$t('BusinessID')}}</p>
+                  <p>{{terminal.merchant.businessID}}</p>
+                </v-col>
+                <v-col cols="12" md="3">
+                  <p class="caption ecgray--text text--darken-2">{{$t('ContactPerson')}}</p>
+                  <p>{{terminal.merchant.contactPerson}}</p>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
           <v-form ref="terminalSettingsForm" v-model="terminalSettingsFormValid" lazy-validation>
             <terminal-settings-fields
               v-if="terminal"
@@ -64,6 +96,19 @@ export default {
             fn: () => {
               this.$router.push({
                 name: "Audits",
+                params: {
+                  filters: {
+                    terminalID: this.$route.params.id
+                  }
+                }
+              });
+            }
+          },
+          {
+            text: this.$t("Transactions"),
+            fn: () => {
+              this.$router.push({
+                name: "Transactions",
                 params: {
                   filters: {
                     terminalID: this.$route.params.id

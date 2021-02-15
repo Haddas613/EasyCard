@@ -31,7 +31,9 @@
           </router-link>
         </template> 
         <template v-slot:item.transactionAmount="{ item }">
-          <b>{{item.transactionAmount | currency(item.currency)}}</b>
+          <p class="text-right">
+            <b>{{item.transactionAmount | currency(item.currency)}}</b>
+          </p>
         </template>  
         <template v-slot:item.quickStatus="{ item }">
           <span v-bind:class="quickStatusesColors[item.quickStatus]">{{item.quickStatus}}</span>
@@ -50,8 +52,8 @@
         <template v-slot:item.transactionType="{ item }">
           <span :title="item.transactionType">
             <v-icon v-if="item.$transactionType == 'regularDeal'" color="primary">mdi-cash</v-icon>
-            <v-icon v-else-if="item.$transactionType == 'Installments'" color="accent">mdi-credit-card-check</v-icon>
-            <v-icon v-else color="secondary">mdi-credit-card-off</v-icon>
+            <v-icon v-else-if="item.$transactionType == 'installments'" color="accent">mdi-credit-card-check</v-icon>
+            <v-icon v-else color="secondary">mdi-credit-card-outline</v-icon>
           </span>
         </template>  
       </v-data-table>
@@ -66,6 +68,13 @@ export default {
     TransactionsFilter : () => import("../../components/transactions/TransactionsFilter"), 
     ReIcon: () => import("../../components/misc/ResponsiveIcon") 
   },
+  props: {
+    filters: {
+      default: () => {
+        return {}
+      },
+    },
+  },
   data() {
     return {
       totalAmount: 0,
@@ -74,7 +83,9 @@ export default {
       options: {},
       pagination: {},
       headers: [],
-      transactionsFilter: {},
+      transactionsFilter: {
+        ...this.filters
+      },
       quickStatusesColors: {
         Pending: "primary--text",
         None: "ecgray--text",

@@ -77,6 +77,7 @@ const routes = [
       },
       {
         name: 'Transactions',
+        props: true,
         path: 'transactions/list',
         component: () => import('../pages/transactions/TransactionsList.vue'),
       },
