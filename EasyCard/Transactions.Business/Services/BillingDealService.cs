@@ -39,15 +39,15 @@ namespace Transactions.Business.Services
         {
             if (user.IsAdmin())
             {
-                return context.BillingDeals;
+                return context.BillingDeals.AsNoTracking();
             }
             else if (user.IsTerminal())
             {
-                return context.BillingDeals.Where(t => t.TerminalID == user.GetTerminalID());
+                return context.BillingDeals.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
             }
             else
             {
-                return context.BillingDeals.Where(t => t.MerchantID == user.GetMerchantID());
+                return context.BillingDeals.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
             }
         }
 

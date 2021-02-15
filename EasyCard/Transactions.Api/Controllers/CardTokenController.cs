@@ -33,6 +33,7 @@ using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
+using Z.EntityFramework.Plus;
 
 namespace Transactions.Api.Controllers
 {
@@ -104,14 +105,16 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<SummariesResponse<CreditCardTokenSummary>>> GetTokens([FromQuery] CreditCardTokenFilter filter)
         {
             var query = creditCardTokenService.GetTokens().AsNoTracking().Filter(filter);
+            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<CreditCardTokenSummary> { NumberOfRecords = await query.CountAsync() };
+                var response = new SummariesResponse<CreditCardTokenSummary>();
 
                 query = query.OrderByDynamic(filter.SortBy ?? nameof(CreditCardTokenDetails.CreditCardTokenID), filter.OrderByDirection).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
 
-                response.Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).ToListAsync();
+                response.Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
+                response.NumberOfRecords = numberOfRecordsFuture.Value;
 
                 return Ok(response);
             }

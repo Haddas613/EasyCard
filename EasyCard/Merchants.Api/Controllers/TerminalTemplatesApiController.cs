@@ -22,6 +22,7 @@ using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Helpers.Security;
+using Z.EntityFramework.Plus;
 
 namespace Merchants.Api.Controllers
 {
@@ -62,12 +63,12 @@ namespace Merchants.Api.Controllers
         public async Task<ActionResult<SummariesResponse<TerminalTemplateSummary>>> GetTerminalTemplates([FromQuery]TerminalTemplatesFilter filter)
         {
             var query = terminalTemplatesService.GetQuery().Filter(filter);
+            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
-            var response = new SummariesResponse<TerminalTemplateSummary>
-            {
-                NumberOfRecords = await query.CountAsync(),
-                Data = await mapper.ProjectTo<TerminalTemplateSummary>(query.ApplyPagination(filter)).ToListAsync()
-            };
+            var response = new SummariesResponse<TerminalTemplateSummary>();
+
+            response.Data = await mapper.ProjectTo<TerminalTemplateSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
+            response.NumberOfRecords = numberOfRecordsFuture.Value;
 
             return Ok(response);
         }

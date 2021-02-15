@@ -32,6 +32,7 @@ using Merchants.Shared.Models;
 using Shared.Helpers.Templating;
 using Merchants.Business.Entities.Terminal;
 using SharedIntegration = Shared.Integration;
+using Z.EntityFramework.Plus;
 
 namespace Transactions.Api.Controllers
 {
@@ -99,12 +100,14 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<SummariesResponse<InvoiceSummary>>> GetInvoices([FromQuery] InvoicesFilter filter)
         {
             var query = invoiceService.GetInvoices().Filter(filter);
+            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
             using (var dbTransaction = invoiceService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<InvoiceSummary> { NumberOfRecords = await query.CountAsync() };
+                var response = new SummariesResponse<InvoiceSummary>();
 
-                response.Data = await mapper.ProjectTo<InvoiceSummary>(query.OrderByDescending(i => i.InvoiceID).ApplyPagination(filter)).ToListAsync();
+                response.Data = await mapper.ProjectTo<InvoiceSummary>(query.OrderByDescending(i => i.InvoiceID).ApplyPagination(filter)).Future().ToListAsync();
+                response.NumberOfRecords = numberOfRecordsFuture.Value;
 
                 return Ok(response);
             }

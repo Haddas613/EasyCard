@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shared.Api;
 using Shared.Api.Models;
+using Z.EntityFramework.Plus;
 
 namespace Merchants.Api.Controllers
 {
@@ -38,8 +39,11 @@ namespace Merchants.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<PlanSummary>>> GetPlans()
         {
-            var dbPlans = await plansService.GetQuery().Include( p => p.TerminalTemplate).ToListAsync();
-            var features = (await featuresService.GetQuery().ToListAsync()).ToDictionary(k => k.FeatureID, v => mapper.Map<FeatureSummary>(v));
+            var plansQueryFuture = plansService.GetQuery().Include(p => p.TerminalTemplate).Future();
+            var featuresQueryFuture = featuresService.GetQuery().Future();
+
+            var dbPlans = await plansQueryFuture.ToListAsync();
+            var features = (await featuresQueryFuture.ToListAsync()).ToDictionary(k => k.FeatureID, v => mapper.Map<FeatureSummary>(v));
 
             var plans = new List<PlanSummary>(dbPlans.Count);
 

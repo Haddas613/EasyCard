@@ -23,6 +23,7 @@ using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Business.Extensions;
+using Z.EntityFramework.Plus;
 
 namespace Merchants.Api.Controllers
 {
@@ -61,11 +62,12 @@ namespace Merchants.Api.Controllers
         public async Task<ActionResult<SummariesResponse<UserSummary>>> GetUsers([FromQuery] GetUsersFilter filter)
         {
             var query = merchantsService.GetMerchantUsers().Filter(filter);
+            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
             var response = new SummariesResponse<UserSummary>
             {
-                NumberOfRecords = await query.CountAsync(),
-                Data = await mapper.ProjectTo<UserSummary>(query.OrderByDescending(u => u.UserTerminalMappingID)).ApplyPagination(filter).ToListAsync()
+                Data = await mapper.ProjectTo<UserSummary>(query.OrderByDescending(u => u.UserTerminalMappingID)).ApplyPagination(filter).Future().ToListAsync(),
+                NumberOfRecords = numberOfRecordsFuture.Value
             };
 
             return Ok(response);

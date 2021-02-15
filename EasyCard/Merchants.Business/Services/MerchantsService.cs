@@ -38,11 +38,11 @@ namespace Merchants.Business.Services
         {
             if (user.IsAdmin())
             {
-                return context.MerchantHistories;
+                return context.MerchantHistories.AsNoTracking();
             }
             else
             {
-                return context.MerchantHistories.Where(t => t.MerchantID == user.GetMerchantID());
+                return context.MerchantHistories.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
             }
         }
 
@@ -50,11 +50,11 @@ namespace Merchants.Business.Services
         {
             if (user.IsAdmin())
             {
-                return context.Merchants;
+                return context.Merchants.AsNoTracking();
             }
             else
             {
-                return context.Merchants.Where(t => t.MerchantID == user.GetMerchantID());
+                return context.Merchants.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
             }
         }
 

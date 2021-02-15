@@ -71,7 +71,7 @@ namespace Merchants.Api.Controllers
         {
             // TODO: validate filters (see transactions list)
 
-            var query = merchantsService.GetMerchants().AsNoTracking().Filter(filter);
+            var query = merchantsService.GetMerchants().Filter(filter);
 
             using (var dbTransaction = merchantsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
@@ -99,7 +99,7 @@ namespace Merchants.Api.Controllers
 
                 var merchant = mapper.Map<MerchantResponse>(dbMerchant);
 
-                merchant.Terminals = await mapper.ProjectTo<Models.Terminal.TerminalSummary>(terminalsService.GetTerminals().AsNoTracking().Where(d => d.MerchantID == dbMerchant.MerchantID)).ToListAsync();
+                merchant.Terminals = await mapper.ProjectTo<Models.Terminal.TerminalSummary>(terminalsService.GetTerminals().Where(d => d.MerchantID == dbMerchant.MerchantID)).ToListAsync();
                 merchant.Users = await mapper.ProjectTo<UserSummary>(merchantsService.GetMerchantUsers(merchant.MerchantID)).ToListAsync();
 
                 return Ok(merchant);

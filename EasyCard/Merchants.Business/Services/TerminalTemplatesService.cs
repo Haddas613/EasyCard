@@ -36,7 +36,7 @@ namespace Merchants.Business.Services
 
         public IQueryable<TerminalTemplate> GetQuery()
         {
-            return context.TerminalTemplates;
+            return context.TerminalTemplates.AsNoTracking();
         }
 
         public async Task<TerminalTemplate> GetTerminalTemplate(long terminalTemplateID)

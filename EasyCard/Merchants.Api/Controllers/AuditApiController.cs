@@ -15,6 +15,7 @@ using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
+using Z.EntityFramework.Plus;
 
 namespace Merchants.Api.Controllers
 {
@@ -56,11 +57,14 @@ namespace Merchants.Api.Controllers
 
             using (var dbTransaction = merchantsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<AuditEntryResponse> { NumberOfRecords = await query.CountAsync() };
+                var numberOfRecordsFuture = query.DeferredCount().FutureValue();
+
+                var response = new SummariesResponse<AuditEntryResponse> ();
 
                 query = query.OrderByDynamic(filter.SortBy ?? nameof(AuditEntryResponse.MerchantHistoryID), filter.OrderByDirection).ApplyPagination(filter);
 
-                response.Data = await mapper.ProjectTo<AuditEntryResponse>(query).ToListAsync();
+                response.Data = await mapper.ProjectTo<AuditEntryResponse>(query).Future().ToListAsync();
+                response.NumberOfRecords = numberOfRecordsFuture.Value;
 
                 return Ok(response);
             }

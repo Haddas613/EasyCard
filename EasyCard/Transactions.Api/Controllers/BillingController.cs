@@ -35,6 +35,7 @@ using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
+using Z.EntityFramework.Plus;
 
 namespace Transactions.Api.Controllers
 {
@@ -102,13 +103,15 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<SummariesResponse<BillingDealSummary>>> GetBillingDeals([FromQuery] BillingDealsFilter filter)
         {
             var query = billingDealService.GetBillingDeals().Filter(filter);
+            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
             using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
                 var response = new SummariesResponse<BillingDealSummary> { NumberOfRecords = await query.CountAsync() };
 
                 //TODO: ordering
-                response.Data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDescending(b => b.BillingDealTimestamp).ApplyPagination(filter)).ToListAsync();
+                response.Data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDescending(b => b.BillingDealTimestamp).ApplyPagination(filter)).Future().ToListAsync();
+                response.NumberOfRecords = numberOfRecordsFuture.Value;
 
                 return Ok(response);
             }

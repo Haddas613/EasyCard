@@ -104,7 +104,7 @@ namespace Merchants.Api.Controllers
         {
             // TODO: validate filters (see transactions list)
 
-            var query = terminalsService.GetTerminals().AsNoTracking().Filter(filter);
+            var query = terminalsService.GetTerminals().Filter(filter);
 
             using (var dbTransaction = terminalsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {

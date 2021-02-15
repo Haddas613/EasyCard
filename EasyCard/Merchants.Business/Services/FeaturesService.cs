@@ -1,6 +1,7 @@
 ﻿using Merchants.Business.Data;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Shared.Enums;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
 using Shared.Business.Security;
@@ -28,6 +29,6 @@ namespace Merchants.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
-        public IQueryable<Feature> GetQuery() => context.Features;
+        public IQueryable<Feature> GetQuery() => context.Features.AsNoTracking();
     }
 }

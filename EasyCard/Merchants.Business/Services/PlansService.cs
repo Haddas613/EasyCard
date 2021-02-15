@@ -1,5 +1,6 @@
 ﻿using Merchants.Business.Data;
 using Merchants.Business.Entities.Merchant;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
 using System;
@@ -21,6 +22,6 @@ namespace Merchants.Business.Services
             this.context = context;
         }
 
-        public IQueryable<Plan> GetQuery() => context.Plans;
+        public IQueryable<Plan> GetQuery() => context.Plans.AsNoTracking();
     }
 }
