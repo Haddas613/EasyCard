@@ -17,6 +17,7 @@ using System.Security;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace Merchants.Business.Services
 {
@@ -41,23 +42,26 @@ namespace Merchants.Business.Services
 
         public async Task<TerminalTemplate> GetTerminalTemplate(long terminalTemplateID)
         {
-            var terminal = await GetQuery()
-                    .FirstOrDefaultAsync(m => m.TerminalTemplateID == terminalTemplateID);
+            var templateQuery = context.TerminalTemplates
+                    .Where(m => m.TerminalTemplateID == terminalTemplateID)
+                    .Future();
 
-            if (terminal != null)
+            var integrationsQuery = GetTerminalTemplateExternalSystems().Where(m => m.TerminalTemplateID == terminalTemplateID).Future();
+
+            var template = (await templateQuery.ToListAsync()).FirstOrDefault();
+
+            if (template != null)
             {
-                // TODO: caching
-                context.Entry(terminal)
-                    .Collection(b => b.Integrations)
-                    .Load();
+                // futureStates is already resolved and contains the result
+                template.Integrations = integrationsQuery.ToList();
             }
 
-            return terminal;
+            return template;
         }
 
         public IQueryable<TerminalTemplateExternalSystem> GetTerminalTemplateExternalSystems()
         {
-            return context.TerminalTemplateExternalSystems;
+            return context.TerminalTemplateExternalSystems.AsNoTracking();
         }
 
         public async Task RemoveTerminalTemplateExternalSystem(long terminalTemplateID, long externalSystemID)
