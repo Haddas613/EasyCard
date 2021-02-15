@@ -8,9 +8,9 @@
     class="will-change-inherit"
   >
     <v-list class="py-0">
-      <v-list-item two-line class="py-4">
+      <v-list-item two-line>
         <v-list-item-avatar>
-          <img src="https://randomuser.me/api/portraits/men/81.jpg" />
+          <avatar :username="userName" :rounded="true"></avatar>
         </v-list-item-avatar>
 
         <v-list-item-content>
@@ -74,14 +74,15 @@
   </v-navigation-drawer>
 </template>
 <script>
-import LangSwitcher from "../../components/LanguageSwitcher";
 import { mapState } from "vuex";
-
 
 export default {
   name: "EcNav",
   props: ["drawer"],
-  components: { LangSwitcher },
+  components: { 
+    LangSwitcher: () => import("../../components/LanguageSwitcher"), 
+    Avatar: () => import("vue-avatar") 
+  },
   data() {
     return {
       items: [
@@ -207,7 +208,7 @@ export default {
   },
   async mounted() {
     //TODO: check profile roles
-    this.userName = !!this.$oidc ? (await this.$oidc.getUserProfile()).name : null;
+    this.userName = !!this.$oidc ? (await this.$oidc.getUserDisplayName()) : null;
   },
   computed: {
     drawerObj: {

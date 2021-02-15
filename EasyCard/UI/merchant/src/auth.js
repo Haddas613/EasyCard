@@ -72,7 +72,13 @@ class AuthService {
             return null;
         }
 
-        return user.profile.extension_FirstName + " " + user.profile.extension_LastName; // TODO: user.profile.name if first/lastname is empty
+        let fullname = `${user.profile.extension_FirstName || null} ${user.profile.extension_LastName || null}`;
+        
+        if(fullname.trim()){
+            return fullname;
+        }
+
+        return user.profile.name;
     }
 
     async isMerchant(){

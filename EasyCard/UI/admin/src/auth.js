@@ -95,6 +95,25 @@ class AuthService {
     async isBusinessAdmin(){
         return this.isInRole(this.businessAdminRole);
     }
+
+    async getUserDisplayName() {
+        if(!!this.userDisplayName){
+            return this.userDisplayName;
+        }
+        
+        const user = await this.userManager.getUser();
+        if(!user || !user.profile){
+            return null;
+        }
+
+        let fullname = `${user.profile.extension_FirstName || null} ${user.profile.extension_LastName || null}`;
+        
+        if(fullname.trim()){
+            return fullname;
+        }
+
+        return user.profile.name;
+    }
 }
 
 export default {
