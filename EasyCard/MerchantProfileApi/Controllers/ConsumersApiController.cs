@@ -21,6 +21,7 @@ using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
+using Z.EntityFramework.Plus;
 
 namespace MerchantProfileApi.Controllers
 {
@@ -72,12 +73,14 @@ namespace MerchantProfileApi.Controllers
             var merchantID = User.GetMerchantID();
 
             var query = consumersService.GetConsumers().Filter(filter);
+            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
             using (var dbTransaction = consumersService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<ConsumerSummary> { NumberOfRecords = await query.CountAsync() };
+                var response = new SummariesResponse<ConsumerSummary>();
 
-                response.Data = await mapper.ProjectTo<ConsumerSummary>(query.ApplyPagination(filter)).ToListAsync();
+                response.Data = await mapper.ProjectTo<ConsumerSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
+                response.NumberOfRecords = numberOfRecordsFuture.Value;
 
                 return Ok(response);
             }

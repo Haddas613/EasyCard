@@ -16,6 +16,7 @@ using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Helpers.Security;
+using Z.EntityFramework.Plus;
 
 namespace MerchantProfileApi.Controllers
 {
@@ -51,9 +52,12 @@ namespace MerchantProfileApi.Controllers
 
             var query = terminalsService.GetTerminals().Filter(filter);
 
-            var response = new SummariesResponse<TerminalSummary> { NumberOfRecords = await query.CountAsync() };
+            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
-            response.Data = await mapper.ProjectTo<TerminalSummary>(query.ApplyPagination(filter)).ToListAsync();
+            var response = new SummariesResponse<TerminalSummary>();
+
+            response.Data = await mapper.ProjectTo<TerminalSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
+            response.NumberOfRecords = numberOfRecordsFuture.Value;
 
             return Ok(response);
         }

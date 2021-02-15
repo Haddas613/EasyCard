@@ -22,6 +22,7 @@ using Shared.Api.UI;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Security;
+using Z.EntityFramework.Plus;
 
 namespace MerchantProfileApi.Controllers
 {
@@ -65,21 +66,22 @@ namespace MerchantProfileApi.Controllers
         public async Task<ActionResult<SummariesResponse<ItemSummary>>> GetItems([FromQuery] ItemsFilter filter)
         {
             var query = itemsService.GetItems().Filter(filter);
+            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
             using (var dbTransaction = itemsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<ItemSummary> { NumberOfRecords = await query.CountAsync() };
+                var response = new SummariesResponse<ItemSummary> ();
 
                 if (filter.Currency == null)
                 {
-                    response.Data = await mapper.ProjectTo<ItemSummary>(query.ApplyPagination(filter)).ToListAsync();
+                    response.Data = await mapper.ProjectTo<ItemSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
                 }
                 else
                 {
                     var rates = await currencyRateService.GetLatestRates(); // TODO: caching
                     var currency = filter.Currency.GetValueOrDefault(CurrencyEnum.ILS);
 
-                    var data = await query.ApplyPagination(filter).ToListAsync();
+                    var data = await query.ApplyPagination(filter).Future().ToListAsync();
 
                     response.Data = data.Select(d => new ItemSummary
                     {
@@ -90,6 +92,7 @@ namespace MerchantProfileApi.Controllers
                     });
                 }
 
+                response.NumberOfRecords = numberOfRecordsFuture.Value;
                 return Ok(response);
             }
         }
