@@ -12,7 +12,8 @@
     <template v-if="$vuetify.breakpoint.mdAndUp">
        <v-row :align="'center'">
         <v-col cols="2" md="4" lg="4" xl="4">
-          <v-app-bar-nav-icon @click.stop="drawerObj = !drawerObj" />
+          <v-app-bar-nav-icon @click.stop="drawerObj = !drawerObj" class="pb-1" />
+          <span class="text-subtitle-1">{{terminalName}}</span>
         </v-col>
         <v-col cols="8" md="4" lg="4" xl="4" class="d-flex justify-space-around">
           <v-toolbar-title class="display-1 hidden-sm-and-down">
@@ -55,8 +56,14 @@ export default {
       }
     },
     ...mapState({
-      headerStore: state => state.ui.header
+      headerStore: state => state.ui.header,
+      terminalStore: state => state.settings.terminal
     }),
+    terminalName() {
+      return this.terminalStore.label
+        ? this.terminalStore.label
+        : this.$t("TerminalNotSelected");
+    }
   }
 };
 </script>
