@@ -8,7 +8,7 @@
             <img src="https://ecng-identity.azurewebsites.net/img/logo.png">
           </v-list-item>
           <v-list-item-avatar height="50" width="auto">
-            <img src="https://randomuser.me/api/portraits/men/81.jpg" />
+            <avatar v-if="userName" :username="userName" :rounded="true"></avatar>
           </v-list-item-avatar>
           <v-list-item class="justify-center">
             <p class="subtitle-1 pt-4">{{$t('@GoodMorning').replace("@name", userName)}}</p>
@@ -47,6 +47,7 @@ export default {
     TopItemsStats: () => import("../components/stats/TopItemsStats"),
     ChargeTypeStats: () => import("../components/stats/ChargeTypeStats"),
     InformationStats: () => import("../components/stats/InformationStats"),
+    Avatar: () => import("vue-avatar")
   },
   data() {
     return {
@@ -55,7 +56,7 @@ export default {
     }
   },
   async mounted(){
-    this.userName = !!this.$oidc ? (await this.$oidc.getUserProfile()).name : null;
+    this.userName = !!this.$oidc ? (await this.$oidc.getUserDisplayName()) : null;
   }
 };
 </script>

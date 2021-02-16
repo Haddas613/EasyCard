@@ -72,8 +72,8 @@ class AuthService {
             return null;
         }
 
-        let fullname = `${user.profile.extension_FirstName || null} ${user.profile.extension_LastName || null}`;
-        
+        let fullname = `${user.profile.extension_FirstName || ""} ${user.profile.extension_LastName || ""}`;
+
         if(fullname.trim()){
             return fullname;
         }
