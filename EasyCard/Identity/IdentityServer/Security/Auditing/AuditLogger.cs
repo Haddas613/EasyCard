@@ -91,6 +91,21 @@ namespace IdentityServer.Security.Auditing
             });
         }
 
+        public async Task RegisterTwoFactorCompleted(ApplicationUser user)
+        {
+            var audit = await GetAudit(user, AuditingTypeEnum.UserEnabledTwoFactor);
+
+            await SaveAudit(audit);
+
+            await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+            {
+                UserActivity = Merchants.Shared.Enums.UserActivityEnum.SetTwoFactorAuth,
+                UserID = user.Id,
+                DisplayName = user.UserName,
+                Email = user.Email,
+            });
+        }
+
         private async Task SaveAudit(UserAudit audit)
         {
             if (audit != null)

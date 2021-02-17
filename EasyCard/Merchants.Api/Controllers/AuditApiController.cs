@@ -59,7 +59,7 @@ namespace Merchants.Api.Controllers
             {
                 var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
-                var response = new SummariesResponse<AuditEntryResponse> ();
+                var response = new SummariesResponse<AuditEntryResponse>();
 
                 query = query.OrderByDynamic(filter.SortBy ?? nameof(AuditEntryResponse.MerchantHistoryID), filter.OrderByDirection).ApplyPagination(filter);
 

@@ -19,5 +19,7 @@ namespace IdentityServer.Security.Auditing
 
         LoggedIn,
         LoggedOut,
+
+        UserEnabledTwoFactor
     }
 }

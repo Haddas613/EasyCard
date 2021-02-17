@@ -31,6 +31,9 @@ namespace IdentityServer.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
+        private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
+        private const string TwoFactorAuthProvider = "Phone";
+
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IIdentityServerInteractionService interaction;
@@ -310,27 +313,6 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            //var user = await userManager.FindByIdAsync(model.UserId);
-            //if (user == null)
-            //{
-            //    logger.LogError($"UserId does not exist");
-            //    //throw new ApplicationException($"Unable to load user with ID '{userId}'.");
-            //    return RedirectToAction(nameof(HomeController.Index), "Home");
-            //}
-            //var confirmEmailResult = await userManager.ConfirmEmailAsync(user, model.Code);
-
-            //if (!confirmEmailResult.Succeeded)
-            //{
-            //    var errors = string.Join(", ", confirmEmailResult.Errors.Select(err => err.Code + ":" + err.Description));
-            //    logger.LogError($"Email confirmation failed: {errors}");
-            //    return RedirectToAction(nameof(HomeController.Index), "Home");
-            //}
-
-            //return View(result.Succeeded ? "ConfirmEmail" : "Error");
-
-            // var model = new ConfirmEmailViewModel { Code = code };
-            //return View(model);
-
             var userId = cryptoService.DecryptWithExpiration(model.Code);
 
             // TODO: show error message
@@ -351,16 +333,31 @@ namespace IdentityServer.Controllers
             if (addPasswordResult.Succeeded)
             {
                 await auditLogger.RegisterConfirmEmail(user);
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+
+                var allClaims = await userManager.GetClaimsAsync(user);
+
+                await userManager.AddClaim(allClaims, user, Claims.FirstNameClaim, model.FirstName);
+                await userManager.AddClaim(allClaims, user, Claims.LastNameClaim, model.LastName);
+
+                if (await userManager.IsInRoleAsync(user, Roles.Merchant))
+                {
+                    return Redirect(apiConfiguration.MerchantProfileApiAddress);
+                }
+                else
+                {
+                    return RedirectToAction(nameof(HomeController.Index), "Home");
+                }
 
                 //return RedirectToAction(nameof(ManageController.EnableAuthenticator), "Manage");
             }
+            else
+            {
+                var pwderrors = string.Join(", ", addPasswordResult.Errors.Select(err => err.Code + ":" + err.Description));
+                logger.LogError($"User {user.Email} set password failed: {pwderrors}");
 
-            var pwderrors = string.Join(", ", addPasswordResult.Errors.Select(err => err.Code + ":" + err.Description));
-            logger.LogError($"User {user.Email} set password failed: {pwderrors}");
-
-            AddErrors(addPasswordResult);
-            return View();
+                AddErrors(addPasswordResult);
+                return View();
+            }
         }
 
         [HttpGet]
@@ -635,8 +632,8 @@ namespace IdentityServer.Controllers
 
                 var allClaims = await userManager.GetClaimsAsync(user);
 
-                await userManager.AddClaim(allClaims, user, "extension_FirstName", firstName);
-                await userManager.AddClaim(allClaims, user, "extension_LastName", lastName);
+                await userManager.AddClaim(allClaims, user, Claims.FirstNameClaim, firstName);
+                await userManager.AddClaim(allClaims, user, Claims.LastNameClaim, lastName);
 
                 logger.LogInformation("User logged in with {Name} provider.", "test");
 
@@ -668,8 +665,8 @@ namespace IdentityServer.Controllers
 
             var allClaimsNew = await userManager.GetClaimsAsync(newUser);
 
-            await userManager.AddClaim(allClaimsNew, newUser, "extension_FirstName", firstName);
-            await userManager.AddClaim(allClaimsNew, newUser, "extension_LastName", lastName);
+            await userManager.AddClaim(allClaimsNew, newUser, Claims.FirstNameClaim, firstName);
+            await userManager.AddClaim(allClaimsNew, newUser, Claims.LastNameClaim, lastName);
 
             await RefreshExternalUserRoles(newUser, isECNGBillingAdmin, isECNGBusinessAdmin);
 
@@ -687,6 +684,171 @@ namespace IdentityServer.Controllers
             await signInManager.SignInAsync(newUser, isPersistent: true); //isPersistent: false
             logger.LogInformation("User created an account using {Name} provider.", userLoginInfo.LoginProvider);
             return RedirectToLocal(returnUrl);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EnableAuthenticator()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            if (user.TwoFactorEnabled)
+            {
+                return RedirectToAction(nameof(TwoFactorAuthentication));
+            }
+
+            var model = new EnableAuthenticatorViewModel
+            {
+                PhoneNumber = user.PhoneNumber
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EnableAuthenticator(string submit, EnableAuthenticatorViewModel model)
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            if (user.TwoFactorEnabled)
+            {
+                return RedirectToAction(nameof(TwoFactorAuthentication));
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
+            {
+                var setPhoneResult = await userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
+                if (!setPhoneResult.Succeeded)
+                {
+                    throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
+                }
+            }
+
+            var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProvider);
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                return View("Error");
+            }
+
+            if (submit == "sms" && !string.IsNullOrWhiteSpace(model.PhoneNumber))
+            {
+                throw new NotImplementedException();
+
+                // TODO: implement SMS
+
+                //var message = configuration.UserEnableTwoFactorSmsTemplate.Replace("{code}", code);
+
+                //var messageId = Guid.NewGuid().ToString();
+                //var phoneNumber = await userManager.GetPhoneNumberAsync(user);
+
+                //var response = await this.smsService.Send(new ClearingHouse.Shared.Services.SmsMessage
+                //{
+                //    MerchantID = null,
+                //    MessageId = messageId,
+                //    Body = message,
+                //    From = configuration.SmsFromDetails,
+                //    To = phoneNumber
+                //});
+
+                //if (response.Status == StatusEnum.Error)
+                //{
+                //    return View("Error");
+                //}
+            }
+            else
+            {
+                await this.emailSender.Send2faEmailAsync(user.Email, code);
+            }
+
+            return RedirectToAction(nameof(VerifyAuthentificatorCode));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> VerifyAuthentificatorCode()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            if (user.TwoFactorEnabled)
+            {
+                return RedirectToAction(nameof(TwoFactorAuthentication));
+            }
+
+            return View(new VerifyAuthentificatorCodeViewModel { PhoneNumber = user.PhoneNumber });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> VerifyAuthentificatorCode(VerifyAuthentificatorCodeViewModel model)
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            if (user.TwoFactorEnabled)
+            {
+                return RedirectToAction(nameof(TwoFactorAuthentication));
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.PhoneNumber = user.PhoneNumber;
+                return View(model);
+            }
+
+            //Strip spaces and hypens
+            var verificationCode = model.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+            var is2faTokenValid = await userManager.VerifyTwoFactorTokenAsync(user, TwoFactorAuthProvider, verificationCode);
+
+            if (!is2faTokenValid)
+            {
+                model.PhoneNumber = user.PhoneNumber;
+                ModelState.AddModelError("Code", "Verification code is invalid.");
+                return View(model);
+            }
+
+            await userManager.SetTwoFactorEnabledAsync(user, true);
+            await userManager.ResetAuthenticatorKeyAsync(user);
+            logger.LogInformation($"User with ID {user.Id} has confirmed 2FA with mobile phone number {user.PhoneNumber}", user.Id);
+
+            var allClaims = await userManager.GetClaimsAsync(user);
+            await auditLogger.RegisterTwoFactorCompleted(user);
+
+            // TODO: from query string
+            return Redirect(apiConfiguration.MerchantProfileApiAddress);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> TwoFactorAuthentication()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            var model = new TwoFactorAuthenticationViewModel
+            {
+                HasAuthenticator = await userManager.GetAuthenticatorKeyAsync(user) != null,
+                Is2faEnabled = user.TwoFactorEnabled,
+                RecoveryCodesLeft = await userManager.CountRecoveryCodesAsync(user),
+            };
+
+            return View(model);
         }
 
         /*****************************************/

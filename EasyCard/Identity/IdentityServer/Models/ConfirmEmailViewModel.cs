@@ -20,5 +20,15 @@ namespace IdentityServer.Models
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
+
+        [Required(AllowEmptyStrings = false)]
+        [StringLength(100, MinimumLength = 2)]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Required(AllowEmptyStrings = false)]
+        [StringLength(100, MinimumLength = 2)]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
     }
 }

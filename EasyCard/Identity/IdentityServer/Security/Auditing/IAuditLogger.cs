@@ -21,5 +21,7 @@ namespace IdentityServer.Security.Auditing
         Task RegisterLogout(ApplicationUser user);
 
         Task RegisterConfirmEmail(ApplicationUser user);
+
+        Task RegisterTwoFactorCompleted(ApplicationUser user);
     }
 }
