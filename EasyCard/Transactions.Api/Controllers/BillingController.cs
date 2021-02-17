@@ -107,10 +107,10 @@ namespace Transactions.Api.Controllers
 
             using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<BillingDealSummary> { NumberOfRecords = await query.CountAsync() };
+                var response = new SummariesResponse<BillingDealSummary>();
 
                 //TODO: ordering
-                response.Data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDescending(b => b.BillingDealTimestamp).ApplyPagination(filter)).Future().ToListAsync();
+                response.Data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDescending(b => b.BillingDealTimestamp.Value).ApplyPagination(filter)).Future().ToListAsync();
                 response.NumberOfRecords = numberOfRecordsFuture.Value;
 
                 return Ok(response);

@@ -29,6 +29,7 @@ using Shared.Helpers.Email;
 using Merchants.Business.Entities.Terminal;
 using Shared.Helpers.Templating;
 using Shared.Helpers;
+using Z.EntityFramework.Plus;
 
 namespace Transactions.Api.Controllers
 {
@@ -93,13 +94,14 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<SummariesResponse<PaymentRequestSummary>>> GetPaymentRequests([FromQuery] PaymentRequestsFilter filter)
         {
             var query = paymentRequestsService.GetPaymentRequests().Filter(filter);
+            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
             using (var dbTransaction = paymentRequestsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<PaymentRequestSummary> { NumberOfRecords = await query.CountAsync() };
+                var response = new SummariesResponse<PaymentRequestSummary>();
 
                 response.Data = await mapper.ProjectTo<PaymentRequestSummary>(query.OrderByDescending(p => p.PaymentRequestTimestamp).ApplyPagination(filter)).ToListAsync();
-
+                response.NumberOfRecords = numberOfRecordsFuture.Value;
                 return Ok(response);
             }
         }
