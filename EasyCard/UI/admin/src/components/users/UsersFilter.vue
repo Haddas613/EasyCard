@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid class="py-0">
-    <v-form :v-model="formIsValid" ref="form">
+  <v-container fluid>
+    <v-form v-model="formIsValid" ref="form">
       <v-row>
         <v-col cols="12" md="4">
           <v-text-field

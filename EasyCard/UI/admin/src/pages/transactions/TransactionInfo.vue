@@ -158,7 +158,7 @@ export default {
   methods: {
     async transmit() {
       let operation = await this.$api.transmissions.transmit({
-        terminalID: this.model.$terminalID,
+        terminalID: this.model.terminalID,
         paymentTransactionIDs: [this.model.$paymentTransactionID]
       });
 
@@ -169,6 +169,7 @@ export default {
         opResult.paymentTransactionID == this.$route.params.id &&
         opResult.transmissionStatus == "Transmitted"
       ) {
+        this.$toasted.show(this.$t('TransactionTransmitted'), { type: 'success', duration: 5000 });
         let tr = await this.$api.transactions.getTransaction(
           this.$route.params.id
         );
@@ -178,7 +179,7 @@ export default {
     },
     async cancelTransmission() {
       let operation = await this.$api.transmissions.cancelTransmission({
-        terminalID: this.model.$terminalID,
+        terminalID: this.model.terminalID,
         paymentTransactionID: this.model.$paymentTransactionID
       });
 
@@ -189,6 +190,7 @@ export default {
         opResult.paymentTransactionID == this.$route.params.id &&
         opResult.transmissionStatus == "Transmitted"
       ) {
+        this.$toasted.show(this.$t('TransactionTransmitted'), { type: 'success', duration: 5000 });
         let tr = await this.$api.transactions.getTransaction(
           this.$route.params.id
         );

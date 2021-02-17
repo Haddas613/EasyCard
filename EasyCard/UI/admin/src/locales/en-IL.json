@@ -321,6 +321,7 @@
   "PaymentRequestSentTo": "Payment Request sent to",
   "CopiedToClipboard": "Copied to Clipboard",
   "CanNotCopyToClipboard": "Can not copy to Clipboard",
+  "TransactionTransmitted": "Transaction Transmitted",
 
   "--MISC--": null,
   "AllMerchants": "All Merchants",

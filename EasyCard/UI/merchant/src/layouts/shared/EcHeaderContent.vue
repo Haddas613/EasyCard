@@ -17,6 +17,7 @@
     </v-col>
     <v-col cols="8" md="4" lg="4" xl="4" class="d-flex justify-space-around">
       <v-toolbar-title v-bind:class="{'subtitle-1': $vuetify.breakpoint.smAndDown}" v-if="!headerStore.altDisplay">{{headerText}}</v-toolbar-title>
+      <v-toolbar-title v-bind:class="{'subtitle-1': $vuetify.breakpoint.smAndDown}" v-else>{{terminalName}}</v-toolbar-title>
     </v-col>
     <v-col cols="2" md="4" lg="4" xl="4" class="d-flex justify-end">
       <template v-if="tdMenuItems">
@@ -52,7 +53,8 @@ export default {
   },
   computed: {
     ...mapState({
-      headerStore: state => state.ui.header
+      headerStore: state => state.ui.header,
+      terminalStore: state => state.settings.terminal
     }),
     drawerObj: {
       get: function() {
@@ -68,6 +70,11 @@ export default {
       return this.headerStore.text.translate
         ? this.$t(this.headerStore.text.value)
         : this.headerStore.text.value;
+    },
+    terminalName() {
+      return this.terminalStore.label
+        ? this.terminalStore.label
+        : this.$t("TerminalNotSelected");
     },
     tdMenuItems() {
       if (

@@ -1,22 +1,26 @@
 <template>
-  <v-container fluid class="py-0">
-    <v-row>
-      <v-col cols="12" md="6">
-        <v-text-field outlined hide-details="true" v-model="model.search" :label="$t('Search')"></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6">
-        <v-text-field outlined hide-details="true" v-model="model.merchantID" :label="$t('MerchantID')"></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" class="d-flex justify-end">
-        <v-btn color="success" class="mr-4" @click="apply()">{{$t('Apply')}}</v-btn>
-      </v-col>
-    </v-row>
+  <v-container fluid>
+    <v-form :v-model="formIsValid" ref="form">
+      <v-row>
+        <v-col cols="12" md="6" class="pb-0">
+          <v-text-field outlined v-model="model.search" :label="$t('Search')"></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6" class="pb-0">
+          <v-text-field outlined v-model="model.merchantID" :label="$t('MerchantID')" :rules="[vr.primitives.guid]"></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" class="d-flex justify-end">
+          <v-btn color="success" class="mr-4" @click="apply()" :disabled="!formIsValid">{{$t('Apply')}}</v-btn>
+        </v-col>
+      </v-row>
+    </v-form>
   </v-container>
 </template>
 
 <script>
+import ValidationRules from "../../helpers/validation-rules";
+
 export default {
   name: "MerchantsFilter",
   components: {
@@ -25,7 +29,9 @@ export default {
   data() {
     return {
       model: { ...this.filterData },
-      dictionaries: {}
+      dictionaries: {},
+      vr: ValidationRules,
+      formIsValid: true,
     };
   },
   async mounted() {
@@ -38,6 +44,9 @@ export default {
   },
   methods: {
     apply() {
+      if(!this.$refs.form.validate()){
+        return;
+      }
       this.$emit("apply", this.model);
     }
   }

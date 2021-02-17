@@ -10,7 +10,7 @@
     <v-list class="py-0">
       <v-list-item two-line>
         <v-list-item-avatar>
-          <avatar :username="userName" :rounded="true"></avatar>
+          <avatar v-if="userName" :username="userName" :rounded="true"></avatar>
         </v-list-item-avatar>
 
         <v-list-item-content>
