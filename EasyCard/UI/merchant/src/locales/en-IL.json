@@ -89,6 +89,7 @@
   "AddItems": "Add Items",
   "@MaxSelectionCount": "You can only select up to @count items",
   "@RedirectURLNumber": "Redirect URL #@number",
+  "MustBeValidID": "Must be valid ID",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",

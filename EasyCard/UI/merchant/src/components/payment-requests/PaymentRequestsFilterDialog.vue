@@ -2,7 +2,7 @@
   <ec-dialog :dialog.sync="visible">
     <template v-slot:title>{{$t('FilterPaymentRequests')}}</template>
     <template v-slot:right>
-      <v-btn color="primary" @click="apply()">{{$t('Apply')}}</v-btn>
+      <v-btn color="primary" @click="apply()" :disabled="!formIsValid">{{$t('Apply')}}</v-btn>
     </template>
     <template>
       <div class="d-flex px-4 py-2 justify-end">
@@ -12,89 +12,94 @@
           @click="model = {}">{{$t("Reset")}}</v-btn>
       </div>
       <div class="px-4 py-2">
-        <v-row>
-          <v-col cols="12" md="6" class="py-0">
-            <v-text-field
-              v-model="model.paymentRequestID"
-              :label="$t('PaymentRequestID')"
-              outlined
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6" class="py-0">
-            <v-autocomplete
-              :items="terminals"
-              item-text="label"
-              item-value="terminalID"
-              v-model="model.terminalID"
-              outlined
-              :label="$t('Terminal')"
-              clearable
-            ></v-autocomplete>
-          </v-col>
-          <v-col cols="12" md="12" class="py-0">
-            <v-select
-              :items="dictionaries.payReqQuickStatusFilterTypeEnum"
-              item-text="description"
-              item-value="code"
-              v-model="model.quickStatus"
-              :label="$t('PaymentRequestStatus')"
-              outlined
-              clearable
-            ></v-select>
-          </v-col>
-          <v-col cols="12" md="6" class="py-0">
-            <v-select
-              :items="dictionaries.quickDateFilterTypeEnum"
-              item-text="description"
-              item-value="code"
-              v-model="model.quickDateFilter"
-              :label="$t('QuickDate')"
-              outlined
-              clearable
-            ></v-select>
-          </v-col>
-          <v-col cols="12" md="6" class="py-0">
-            <v-select
-              :items="dictionaries.dateFilterTypeEnum"
-              item-text="description"
-              item-value="code"
-              v-model="model.dateType"
-              :label="$t('DateType')"
-              outlined
-              clearable
-            ></v-select>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" md="6" class="py-0">
-            <v-select
-              :items="dictionaries.currencyEnum"
-              item-text="description"
-              item-value="code"
-              v-model="model.currency"
-              :label="$t('Currency')"
-              outlined
-              clearable
-            ></v-select>
-          </v-col>
-          <v-col cols="12" md="6" class="py-0">
-            <v-text-field
-              v-model="model.paymentRequestAmount"
-              :label="$t('Amount')"
-              type="number"
-              min="0"
-              step="0.01"
-              outlined
-              clearable
-            ></v-text-field>
-          </v-col>
-        </v-row>
+        <v-form ref="form" v-model="formIsValid">
+          <v-row>
+            <v-col cols="12" md="6" class="py-0">
+              <v-text-field
+                v-model="model.paymentRequestID"
+                :label="$t('PaymentRequestID')"
+                :rules="[vr.primitives.guid]"
+                outlined
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6" class="py-0">
+              <v-autocomplete
+                :items="terminals"
+                item-text="label"
+                item-value="terminalID"
+                v-model="model.terminalID"
+                outlined
+                :label="$t('Terminal')"
+                clearable
+              ></v-autocomplete>
+            </v-col>
+            <v-col cols="12" md="12" class="py-0">
+              <v-select
+                :items="dictionaries.payReqQuickStatusFilterTypeEnum"
+                item-text="description"
+                item-value="code"
+                v-model="model.quickStatus"
+                :label="$t('PaymentRequestStatus')"
+                outlined
+                clearable
+              ></v-select>
+            </v-col>
+            <v-col cols="12" md="6" class="py-0">
+              <v-select
+                :items="dictionaries.quickDateFilterTypeEnum"
+                item-text="description"
+                item-value="code"
+                v-model="model.quickDateFilter"
+                :label="$t('QuickDate')"
+                outlined
+                clearable
+              ></v-select>
+            </v-col>
+            <v-col cols="12" md="6" class="py-0">
+              <v-select
+                :items="dictionaries.dateFilterTypeEnum"
+                item-text="description"
+                item-value="code"
+                v-model="model.dateType"
+                :label="$t('DateType')"
+                outlined
+                clearable
+              ></v-select>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" md="6" class="py-0">
+              <v-select
+                :items="dictionaries.currencyEnum"
+                item-text="description"
+                item-value="code"
+                v-model="model.currency"
+                :label="$t('Currency')"
+                outlined
+                clearable
+              ></v-select>
+            </v-col>
+            <v-col cols="12" md="6" class="py-0">
+              <v-text-field
+                v-model="model.paymentRequestAmount"
+                :label="$t('Amount')"
+                type="number"
+                min="0"
+                step="0.01"
+                outlined
+                clearable
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-form>
       </div>
     </template>
   </ec-dialog>
 </template>
 
 <script>
+import ValidationRules from "../../helpers/validation-rules";
+
 export default {
   components: {
     EcDialog: () => import("../../components/ec/EcDialog")
@@ -115,7 +120,9 @@ export default {
     return {
       model: { ...this.filter },
       dictionaries: {},
-      terminals: []
+      terminals: [],
+      formIsValid: true,
+      vr: ValidationRules
     };
   },
   async mounted() {
@@ -134,6 +141,10 @@ export default {
   },
   methods: {
     apply() {
+      if(!this.$refs.form.validate()){
+        return;
+      }
+
       this.$emit('ok', this.model);
       this.visible = false;
     }
