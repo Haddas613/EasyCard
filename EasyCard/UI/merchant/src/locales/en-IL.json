@@ -9,7 +9,7 @@
   "EditCustomer": "Edit Customer",
   "DeleteCustomer": "Delete Customer",
   "CreateRefund": "Create Refund",
-  "@GoodMorning": "Good Morning, @name",
+  "@WelcomeText": "Welcome, @name",
   "ItemsList": "Items List",
   "CreateItem": "Create Item",
   "EditItem": "Edit Item",

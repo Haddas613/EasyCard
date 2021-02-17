@@ -11,7 +11,7 @@
             <avatar v-if="userName" :username="userName" :rounded="true"></avatar>
           </v-list-item-avatar>
           <v-list-item class="justify-center">
-            <p class="subtitle-1 pt-4">{{$t('@GoodMorning').replace("@name", userName)}}</p>
+            <p class="subtitle-1 pt-4">{{$t('@WelcomeText').replace("@name", userName)}}</p>
           </v-list-item>
         </v-list>
       </v-card-text>
