@@ -128,10 +128,7 @@ export default {
       let operaionResult = await this.$api.terminals.updateTerminal(data);
       if(operaionResult.status === "success"){
         this.terminalRefreshed = false;
-        this.$store.dispatch("settings/changeTerminal", {
-          api: this.$api,
-          newTerminal: data
-        });
+        await this.refreshTerminal();
         let terminals = await this.$api.terminals.getTerminals(null, true);
         this.terminals = terminals ? terminals.data : [];
         this.terminalRefreshed = true;

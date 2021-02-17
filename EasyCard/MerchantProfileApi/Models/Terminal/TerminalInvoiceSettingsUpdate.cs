@@ -18,6 +18,14 @@ namespace MerchantProfileApi.Models.Terminal
         [JsonConverter(typeof(StringEnumConverter))]
         public InvoiceTypeEnum? DefaultInvoiceType { get; set; }
 
+        [EnumDataType(typeof(InvoiceTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public InvoiceTypeEnum? DefaultRefundInvoiceType { get; set; }
+
+        [EnumDataType(typeof(InvoiceTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public InvoiceTypeEnum? DefaultCreditInvoiceType { get; set; }
+
         // TODO: validation
         public string[] SendCCTo { get; set; }
 

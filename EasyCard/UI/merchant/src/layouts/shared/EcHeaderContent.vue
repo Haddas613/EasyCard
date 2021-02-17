@@ -72,7 +72,7 @@ export default {
         : this.headerStore.text.value;
     },
     terminalName() {
-      return this.terminalStore.label
+      return (this.terminalStore && this.terminalStore.label)
         ? this.terminalStore.label
         : this.$t("TerminalNotSelected");
     },

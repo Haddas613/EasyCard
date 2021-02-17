@@ -226,6 +226,8 @@
   "CvvRequired": "Cvv Required",
   "DefaultInvoiceSubject": "Default Invoice Subject",
   "DefaultInvoiceType": "Default Invoice Type",
+  "DefaultRefundInvoiceType": "Default Refund Invoice Type",
+  "DefaultCreditInvoiceType": "Default Credit Invoice Type",
   "DefaultRequestSubject": "Default Request Subject",
   "FromAddress": "From Address",
   "NotificationEmails": "Notification emails",

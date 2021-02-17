@@ -48,7 +48,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="5" class="py-0 px-0">
-          <additional-settings-form :key="model.transactionAmount" :data="model" v-on:ok="processAdditionalSettings($event)"></additional-settings-form>
+          <additional-settings-form :key="model.transactionAmount" :data="model" v-on:ok="processAdditionalSettings($event)" :invoice-type="invoiceType"></additional-settings-form>
         </v-stepper-content>
 
         <v-stepper-content step="6" class="py-0 px-0">
@@ -83,6 +83,7 @@
 
 <script>
 import { mapState } from "vuex";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -101,6 +102,7 @@ export default {
       customer: null,
       skipCustomerStep: false,
       creditCardRefreshState: null,
+      invoiceType: null,
       model: {
         terminalID: null,
         transactionType: null,
@@ -189,6 +191,7 @@ export default {
       }
     }
     this.model.dealDetails.dealDescription = this.terminal.settings.defaultRefundDescription;
+    this.invoiceType = this.terminal.invoiceSettings.defaultRefundInvoiceType || appConstants.invoicing.defaultRefundInvoiceType;
   },
   methods: {
     goBack() {
