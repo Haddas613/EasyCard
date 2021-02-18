@@ -507,6 +507,7 @@ namespace Transactions.Api.Controllers
 
             if (model.IssueInvoice == true && model.InvoiceDetails == null)
             {
+                //TODO: Handle refund & credit default invoice types
                 model.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
             }
 

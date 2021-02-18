@@ -202,7 +202,7 @@
         {{$t("Invoice")}}
         <v-divider class="pt-1"></v-divider>
       </v-col>
-      <v-col cols="12" md="7">
+      <v-col cols="12" md="6">
         <v-text-field
           v-model="model.invoiceSettings.defaultInvoiceSubject"
           :counter="128"
@@ -211,7 +211,7 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="5">
+      <v-col cols="12" md="6">
         <v-select
           :items="dictionaries.invoiceTypeEnum"
           item-text="description"
@@ -219,7 +219,26 @@
           v-model="model.invoiceSettings.defaultInvoiceType"
           :label="$t('DefaultInvoiceType')"
           outlined
-          clearable
+        ></v-select>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-select
+          :items="dictionaries.invoiceTypeEnum"
+          item-text="description"
+          item-value="code"
+          v-model="model.invoiceSettings.defaultRefundInvoiceType"
+          :label="$t('DefaultRefundInvoiceType')"
+          outlined
+        ></v-select>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-select
+          :items="dictionaries.invoiceTypeEnum"
+          item-text="description"
+          item-value="code"
+          v-model="model.invoiceSettings.defaultCreditInvoiceType"
+          :label="$t('DefaultCreditInvoiceType')"
+          outlined
         ></v-select>
       </v-col>
     </v-row>
@@ -337,6 +356,7 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -374,22 +394,18 @@ export default {
     ).toFixed(2);
 
     if (!this.model.invoiceSettings.defaultInvoiceType) {
-      this.$set(
-        this.model.invoiceSettings,
-        "invoiceType",
-        this.dictionaries.invoiceTypeEnum.find(
-          i => i.code == this.terminalStore.invoiceSettings.defaultInvoiceType
-        )
+      this.$set(this.model.invoiceSettings, "defaultInvoiceType",
+        appConstants.invoicing.defaultInvoiceType
       );
-    } else if (
-      typeof this.model.invoiceSettings.defaultInvoiceType === "string"
-    ) {
-      this.$set(
-        this.model.invoiceSettings,
-        "invoiceType",
-        this.dictionaries.invoiceTypeEnum.find(
-          i => i.code == this.model.invoiceSettings.defaultInvoiceType
-        )
+    }
+    if (!this.model.invoiceSettings.defaultRefundInvoiceType) {
+      this.$set(this.model.invoiceSettings, "defaultRefundInvoiceType",
+        appConstants.invoicing.defaultRefundInvoiceType
+      );
+    }
+    if (!this.model.invoiceSettings.defaultCreditInvoiceType) {
+      this.$set(this.model.invoiceSettings, "defaultCreditInvoiceType",
+        appConstants.invoicing.defaultCreditInvoiceType
       );
     }
   },

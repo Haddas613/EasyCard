@@ -16,6 +16,7 @@
           item-value="code"
           v-model="model.transactionType"
           :label="$t('TransactionType')"
+          @change="updateTransactionType()"
           outlined
         ></v-select>
 
@@ -34,7 +35,7 @@
 
         <v-switch v-model="switchIssueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
         <div v-if="switchIssueDocument">
-          <invoice-details-fields ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
+          <invoice-details-fields :key="invoiceTypeUpd" ref="invoiceDetails" :data="model.invoiceDetails" :invoice-type="invoiceTypeUpd"></invoice-details-fields>
         </div>
       </v-form>
     </v-card-text>
@@ -46,6 +47,7 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import appConstants from "../../helpers/app-constants";
 import { mapState } from "vuex";
 
 export default {
@@ -64,6 +66,10 @@ export default {
     issueDocument: {
       type: Boolean,
       default: false
+    },
+    invoiceType: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -75,7 +81,8 @@ export default {
       },
       vr: ValidationRules,
       switchIssueDocument: this.issueDocument,
-      messageDialog: false
+      messageDialog: false,
+      invoiceTypeUpd: this.invoiceType
     };
   },
   computed: {
@@ -86,7 +93,8 @@ export default {
       );
     },
     ...mapState({
-      currencyStore: state => state.settings.currency
+      currencyStore: state => state.settings.currency,
+      terminal: state => state.settings.terminal
     })
   },
   async mounted() {
@@ -122,6 +130,14 @@ export default {
       }
       result.dealDetails = this.$refs.dealDetails.getData();
       this.$emit("ok", result);
+    },
+    updateTransactionType(){
+      if(this.model.transactionType === "credit"){
+        this.invoiceTypeUpd = this.terminal.invoiceSettings.defaultCreditInvoiceType || appConstants.invoicing.defaultCreditInvoiceType;
+      }else{
+        this.invoiceTypeUpd = this.invoiceType;
+      }
+      console.log(this.terminal.invoiceSettings.defaultCreditInvoiceType)
     }
   }
 };

@@ -68,12 +68,16 @@ export default {
     data: {
       default: null,
       required: false
+    },
+    invoiceType: {
+      default: null
     }
   },
   data() {
     return {
       dictionaries: {},
       model: {
+        invoiceType: null,
         ...this.data
       },
       vr: ValidationRules,
@@ -92,6 +96,8 @@ export default {
     if(!this.model.invoiceSubject){
       this.model.invoiceSubject = this.terminalStore.invoiceSettings.defaultInvoiceSubject;
     }
+
+    this.model.invoiceType = this.invoiceType;
     
     if(!this.model.invoiceType){
       this.$set(this.model, 'invoiceType', this.dictionaries.invoiceTypeEnum.find(i => i.code == this.terminalStore.invoiceSettings.defaultInvoiceType));

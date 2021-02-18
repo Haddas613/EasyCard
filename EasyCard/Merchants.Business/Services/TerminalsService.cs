@@ -72,19 +72,20 @@ namespace Merchants.Business.Services
             return terminal;
         }
 
+        //TODO: Add AsNoTracking, but make sure that saving works
         public IQueryable<TerminalExternalSystem> GetTerminalExternalSystems()
         {
             if (user.IsAdmin())
             {
-                return context.TerminalExternalSystems.AsNoTracking();
+                return context.TerminalExternalSystems;
             }
             else if (user.IsTerminal())
             {
-                return context.TerminalExternalSystems.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
+                return context.TerminalExternalSystems.Where(t => t.TerminalID == user.GetTerminalID());
             }
             else
             {
-                return context.TerminalExternalSystems.AsNoTracking().Where(t => t.Terminal.MerchantID == user.GetMerchantID());
+                return context.TerminalExternalSystems.Where(t => t.Terminal.MerchantID == user.GetMerchantID());
             }
         }
 

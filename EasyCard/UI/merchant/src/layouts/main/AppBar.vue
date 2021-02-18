@@ -60,7 +60,7 @@ export default {
       terminalStore: state => state.settings.terminal
     }),
     terminalName() {
-      return this.terminalStore.label
+      return (this.terminalStore && this.terminalStore.label)
         ? this.terminalStore.label
         : this.$t("TerminalNotSelected");
     }

@@ -59,9 +59,10 @@ namespace Merchants.Business.Services
             return template;
         }
 
+        //TODO: Add AsNoTracking, but make sure that saving works
         public IQueryable<TerminalTemplateExternalSystem> GetTerminalTemplateExternalSystems()
         {
-            return context.TerminalTemplateExternalSystems.AsNoTracking();
+            return context.TerminalTemplateExternalSystems;
         }
 
         public async Task RemoveTerminalTemplateExternalSystem(long terminalTemplateID, long externalSystemID)
