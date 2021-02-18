@@ -120,6 +120,7 @@
   "CardPresence": "Card Presence",
   "JDealType": "JDeal Type",
   "EnterNameEmailOrPhone": "Enter name, email or phone",
+  "EnterNameEmailPhoneOrNationalID": "Enter name, email, phone or national id",
   "ChooseCustomer": "Choose Customer",
   "PreviouslyCharged": "Previously Charged",
   "CardNo": "Card No.",

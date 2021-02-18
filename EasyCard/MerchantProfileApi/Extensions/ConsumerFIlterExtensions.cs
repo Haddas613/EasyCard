@@ -27,6 +27,7 @@ namespace MerchantProfileApi.Extensions
                 var search = filter.Search.Trim();
                 src = src.Where(c => EF.Functions.Like(c.ConsumerName, $"%{search}%")
                 || EF.Functions.Like(c.ConsumerEmail, $"%{search}%")
+                || EF.Functions.Like(c.ConsumerNationalID, $"%{search}%")
                 || EF.Functions.Like(c.ConsumerPhone, $"%{search}%"));
             }
 

@@ -6,7 +6,7 @@
         single-line
         :hide-details="true"
         solo
-        :label="$t('EnterNameEmailOrPhone')"
+        :label="$t('EnterNameEmailPhoneOrNationalID')"
         prepend-icon="mdi-magnify"
         v-model="search"
         clearable
@@ -192,8 +192,8 @@ export default {
     async search(newValue, oldValue) {
       if (this.searchTimeout) clearTimeout(this.searchTimeout);
 
-      let searchWasAppliable = oldValue && oldValue.trim().length >= 3;
-      let searchApply = newValue && newValue.trim().length >= 3;
+      let searchWasAppliable = oldValue && oldValue.trim().length > 3;
+      let searchApply = newValue && newValue.trim().length > 3;
 
       if (!searchWasAppliable && !searchApply) {
         return;
