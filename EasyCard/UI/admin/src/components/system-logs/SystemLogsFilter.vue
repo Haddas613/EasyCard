@@ -4,7 +4,6 @@
       <v-row>
         <v-col cols="12" md="3">
           <v-select
-            outlined
             hide-details="auto"
             :items="dictionaries.logLevelsEnum"
             item-text="description"
@@ -15,7 +14,7 @@
           ></v-select>
         </v-col>
         <v-col cols="12" md="3">
-          <v-text-field outlined hide-details="auto" v-model="model.correlationID" :label="$t('CorrelationID')"></v-text-field>
+          <v-text-field hide-details="auto" v-model="model.correlationID" :label="$t('CorrelationID')"></v-text-field>
         </v-col>
         <v-col cols="12" md="3">
           <ec-date-input :key="model.from" v-model="model.from" :label="$t('DateFrom')"></ec-date-input>
@@ -25,7 +24,6 @@
         </v-col>
         <v-col cols="12" md="3">
           <v-text-field
-            outlined
             hide-details="auto"
             :rules="[vr.primitives.guid]"
             v-model="model.userID"
@@ -34,13 +32,13 @@
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="3">
-          <v-text-field outlined hide-details="auto" v-model="model.userName" :label="$t('UserName')"></v-text-field>
+          <v-text-field hide-details="auto" v-model="model.userName" :label="$t('UserName')"></v-text-field>
         </v-col>
         <v-col cols="12" md="3">
-          <v-text-field outlined hide-details="auto" v-model="model.ip" :label="$t('IP')"></v-text-field>
+          <v-text-field hide-details="auto" v-model="model.ip" :label="$t('IP')"></v-text-field>
         </v-col>
         <v-col cols="12" md="3">
-          <v-text-field outlined hide-details="auto" v-model="model.message" :label="$t('Message')"></v-text-field>
+          <v-text-field hide-details="auto" v-model="model.message" :label="$t('Message')"></v-text-field>
         </v-col>
       </v-row>
       <v-row>

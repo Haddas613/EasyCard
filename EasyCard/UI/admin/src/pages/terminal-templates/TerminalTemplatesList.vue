@@ -10,7 +10,7 @@
     </v-card-title>
     <v-expansion-panels :flat="true">
       <v-expansion-panel>
-        <v-expansion-panel-header class="primary white--text">{{$t('Filters')}}</v-expansion-panel-header>
+        <v-expansion-panel-header>{{$t('Filters')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
           <terminal-templates-filter  :filter-data="terminalTemplatesFilter" v-on:apply="applyFilter($event)"></terminal-templates-filter>
         </v-expansion-panel-content>

@@ -2,7 +2,7 @@
   <v-card class="mx-auto" outlined>
     <v-expansion-panels :flat="true">
       <v-expansion-panel>
-        <v-expansion-panel-header class="primary white--text">
+        <v-expansion-panel-header>
           {{$t('Filters')}}
         </v-expansion-panel-header>
         <v-expansion-panel-content>

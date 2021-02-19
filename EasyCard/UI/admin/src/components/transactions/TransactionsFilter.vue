@@ -10,14 +10,12 @@
             item-value="code"
             v-model="model.quickDateFilter"
             :label="$t('QuickDate')"
-            outlined
             hide-details="true"
             clearable
           ></v-select>
         </v-col>
         <v-col cols="12" md="3" sm="6">
           <v-select
-            outlined
             hide-details="true"
             :items="dictionaries.transactionTypeEnum"
             item-text="description"
@@ -34,7 +32,6 @@
             item-value="code"
             v-model="model.quickStatusFilter"
             :label="$t('Status')"
-            outlined
             hide-details="true"
             clearable
           ></v-select>
@@ -46,7 +43,6 @@
             item-value="code"
             v-model="model.cardPresence"
             :label="$t('CardPresence')"
-            outlined
             hide-details="true"
             clearable
           ></v-select>
@@ -58,7 +54,6 @@
             type="number"
             min="0"
             step="0.01"
-            outlined
             hide-details="true"
           ></v-text-field>
         </v-col>
@@ -69,7 +64,6 @@
             type="number"
             min="0"
             step="0.01"
-            outlined
             hide-details="true"
           ></v-text-field>
         </v-col>
@@ -80,7 +74,6 @@
             item-value="code"
             v-model="model.currency"
             :label="$t('Currency')"
-            outlined
             hide-details="true"
             clearable
           ></v-select>
@@ -92,7 +85,6 @@
             item-value="code"
             v-model="model.specialTransactionType"
             :label="$t('SpecialTransactionType')"
-            outlined
             hide-details="true"
             clearable
           ></v-select>
@@ -104,7 +96,6 @@
             item-value="code"
             v-model="model.jDealType"
             :label="$t('JDealType')"
-            outlined
             hide-details="true"
             clearable
           ></v-select>
@@ -116,7 +107,6 @@
             item-value="code"
             v-model="model.rejectionReason"
             :label="$t('RejectionReason')"
-            outlined
             hide-details="true"
             clearable
           ></v-select>

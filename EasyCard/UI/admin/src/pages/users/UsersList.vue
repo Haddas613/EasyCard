@@ -2,7 +2,7 @@
   <v-card class="mx-auto" outlined>
     <v-expansion-panels :flat="true">
       <v-expansion-panel>
-        <v-expansion-panel-header class="primary white--text">{{$t('Filters')}}</v-expansion-panel-header>
+        <v-expansion-panel-header>{{$t('Filters')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
           <users-filter :filter-data="usersFilter" v-on:apply="applyFilter($event)"></users-filter>
         </v-expansion-panel-content>

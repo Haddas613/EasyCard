@@ -6,7 +6,6 @@
         <v-text-field
           v-model="model.label"
           :label="$t('Label')"
-          outlined
           hide-details="true"
         ></v-text-field>
       </v-col>

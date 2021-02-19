@@ -30,7 +30,7 @@
     </ec-dialog>
     <v-expansion-panels :flat="true">
       <v-expansion-panel>
-        <v-expansion-panel-header class="primary white--text">{{$t('Filters')}}</v-expansion-panel-header>
+        <v-expansion-panel-header>{{$t('Filters')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
           <system-logs-filter :filter-data="systemLogsFilter" v-on:apply="applyFilter($event)"></system-logs-filter>
         </v-expansion-panel-content>

@@ -4,7 +4,6 @@
       <v-row>
         <v-col cols="12" md="4">
           <v-text-field
-            outlined
             :rules="[vr.primitives.guid]"
             v-model="model.searchGuid"
             :label="$t('UserOrMerchantID')"
@@ -12,11 +11,10 @@
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="4">
-          <v-text-field outlined v-model="model.search" :label="$t('NameOrEmail')"></v-text-field>
+          <v-text-field v-model="model.search" :label="$t('NameOrEmail')"></v-text-field>
         </v-col>
         <v-col cols="12" md="4">
           <v-select
-            outlined
             :items="dictionaries.userStatusEnum"
             item-text="description"
             item-value="code"

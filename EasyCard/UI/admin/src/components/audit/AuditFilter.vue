@@ -4,7 +4,6 @@
       <v-row>
         <v-col cols="12" md="4">
           <v-select
-            outlined
             hide-details="auto"
             :items="dictionaries.operationCodesEnum"
             item-text="description"
@@ -22,7 +21,6 @@
         </v-col>
         <v-col cols="12" md="4">
           <v-text-field
-            outlined
             hide-details="auto"
             :rules="[vr.primitives.guid]"
             v-model="model.terminalID"
@@ -31,11 +29,10 @@
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="4">
-          <v-text-field outlined hide-details="auto" v-model="model.terminalName" :label="$t('TerminalName')"></v-text-field>
+          <v-text-field hide-details="auto" v-model="model.terminalName" :label="$t('TerminalName')"></v-text-field>
         </v-col>
         <v-col cols="12" md="4">
           <v-text-field
-            outlined
             hide-details="auto"
             :rules="[vr.primitives.guid]"
             v-model="model.merchantID"
@@ -44,11 +41,10 @@
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="4">
-          <v-text-field outlined hide-details="auto" v-model="model.merchantName" :label="$t('MerchantName')"></v-text-field>
+          <v-text-field hide-details="auto" v-model="model.merchantName" :label="$t('MerchantName')"></v-text-field>
         </v-col>
         <v-col cols="12" md="4">
           <v-text-field
-            outlined
             hide-details="auto"
             :rules="[vr.primitives.guid]"
             v-model="model.userID"
@@ -57,7 +53,7 @@
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="4">
-          <v-text-field outlined hide-details="auto" v-model="model.userName" :label="$t('UserName')"></v-text-field>
+          <v-text-field hide-details="auto" v-model="model.userName" :label="$t('UserName')"></v-text-field>
         </v-col>
       </v-row>
       <v-row>

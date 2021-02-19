@@ -3,10 +3,10 @@
     <v-form :v-model="formIsValid" ref="form">
       <v-row>
         <v-col cols="12" md="6" class="pb-0">
-          <v-text-field outlined v-model="model.search" :label="$t('Search')"></v-text-field>
+          <v-text-field v-model="model.search" :label="$t('Search')"></v-text-field>
         </v-col>
         <v-col cols="12" md="6" class="pb-0">
-          <v-text-field outlined v-model="model.merchantID" :label="$t('MerchantID')" :rules="[vr.primitives.guid]"></v-text-field>
+          <v-text-field v-model="model.merchantID" :label="$t('MerchantID')" :rules="[vr.primitives.guid]"></v-text-field>
         </v-col>
       </v-row>
       <v-row>

@@ -20,7 +20,7 @@
     </ec-dialog>
     <v-expansion-panels :flat="true">
       <v-expansion-panel>
-        <v-expansion-panel-header class="primary white--text">{{$t('Filters')}}</v-expansion-panel-header>
+        <v-expansion-panel-header>{{$t('Filters')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
           <audit-filter :filter-data="auditFilter" v-on:apply="applyFilter($event)"></audit-filter>
         </v-expansion-panel-content>
