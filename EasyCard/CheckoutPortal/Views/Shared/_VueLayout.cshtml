@@ -1,0 +1,80 @@
+﻿@{
+    var viewModel = ViewBag.MainLayoutViewModel as Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EasyCard Checkout Portal</title>
+    <link rel="stylesheet" href="~/css/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="~/css/vuetify.min.css" />
+
+    @if (viewModel?.CustomCssReference != null)
+    {
+        <link rel="stylesheet" href="@viewModel?.CustomCssReference" />
+    }
+</head>
+<body>
+    @RenderSection("Component", required: false)
+    <div id="app">
+        <v-app id="inspire">
+            <v-app-bar app color="primary" flat>
+                <v-row align="center">
+                    <v-col cols="2" md="4" lg="4" xl="4">
+                        @viewModel?.MarketingName
+                    </v-col>
+                    <v-col cols="8" md="4" lg="4" xl="4" class="d-flex justify-space-around">
+                        <v-toolbar-title class="display-1 hidden-sm-and-down">
+                            @if (viewModel?.MerchantLogo != null)
+                            {
+                                <img src="@viewModel?.MerchantLogo" alt="EasyCard" style="" />
+                            }
+                            else
+                            {
+                                <img src="~/img/logo.png" alt="EasyCard" style="" />
+                            }
+                        </v-toolbar-title>
+                    </v-col>
+                    <v-col cols="2" md="4" lg="4" xl="4" class="d-flex justify-end">
+
+                    </v-col>
+                </v-row>
+                <v-avatar>
+                    
+                </v-avatar>
+            </v-app-bar>
+
+            <v-main class="grey lighten-3">
+                <v-container>
+                    <v-row>
+                        <v-spacer class="hidden-xs"></v-spacer>
+
+                        <v-col cols="12"
+                               sm="8">
+                            <v-sheet rounded>
+                                @RenderBody()
+                            </v-sheet>
+                        </v-col>
+
+                        <v-spacer class="hidden-xs"></v-spacer>
+                    </v-row>
+                </v-container>
+            </v-main>
+        </v-app>
+    </div>
+    <script src="~/lib/vue/vue.js"></script>
+    <script src="~/lib/vue/vuetify.js"></script>
+    @RenderSection("Scripts", required: false)
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+            components: {
+                ...window.components
+            },
+        }).$mount('#app')
+    </script>
+</body>
+</html>

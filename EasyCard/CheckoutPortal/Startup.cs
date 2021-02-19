@@ -46,14 +46,15 @@ namespace CheckoutPortal
             });
 
             services.AddControllersWithViews()
-                            .AddNewtonsoftJson(options =>
-                            {
-                                options.SerializerSettings.Converters.Add(new StringEnumConverter());
-                                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                                options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
 
-                                // Note: do not use options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; - use [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)] attribute in place
-                            });
+                    // Note: do not use options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; - use [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)] attribute in place
+                })
+                .AddRazorRuntimeCompilation();
 
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings

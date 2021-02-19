@@ -1,0 +1,39 @@
+﻿
+@model ChargeViewModel
+@{
+    ViewData["Title"] = "VueTest";
+    Layout = "_VueLayout";
+}
+
+<test-component inline-template class="py-2 px-4">
+    <form asp-action="Index" method="post" ref="form">
+        <v-text-field v-model="model" label="Model"></v-text-field>
+        <p>Model value: {{model}}</p>
+        <div class="text-end">
+            <v-btn color="primary" @@click="$refs.form.submit()">OK</v-btn>
+        </div>
+    </form>
+</test-component>
+
+@section Component{ 
+<script>
+    (function () {
+        window.components = {
+        ...window.components,
+        TestComponent: {
+            name: "test-component",
+            data() {
+                return {
+                    model: null,
+                }
+            },
+            methods: {
+                async submit() {
+                    console.log(this.$refs.form);
+                }
+            }
+        }
+    }
+    })()
+</script>
+}
