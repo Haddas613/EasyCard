@@ -51,12 +51,14 @@ steps:
     SourceFolder: '$(system.defaultworkingdirectory)/EasyCard/UI/merchant/dist'
     Contents: '**'
     TargetFolder: '$(system.defaultworkingdirectory)/EasyCard/MerchantProfileApi/wwwroot'
+    overWrite: true
 
 - task: CopyFiles@2
   inputs:
     SourceFolder: '$(system.defaultworkingdirectory)/EasyCard/UI/admin/dist'
     Contents: '**'
     TargetFolder: '$(system.defaultworkingdirectory)/EasyCard/Merchants.Api/wwwroot'
+    overWrite: true
 
 - task: VSBuild@1
   inputs:
