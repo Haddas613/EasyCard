@@ -74,7 +74,7 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)\Transactions.Api.zip'
     ArtifactName: 'Transactions.Api'
     publishLocation: 'Container'
 
@@ -82,7 +82,7 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)\MerchantProfileApi.zip'
     ArtifactName: 'MerchantProfileApi'
     publishLocation: 'Container'
 
