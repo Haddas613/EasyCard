@@ -51,6 +51,12 @@ steps:
     Contents: '**'
     TargetFolder: '$(system.defaultworkingdirectory)/EasyCard/MerchantProfileApi/wwwroot'
 
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)/EasyCard/UI/admin/dist'
+    Contents: '**'
+    TargetFolder: '$(system.defaultworkingdirectory)/EasyCard/Merchants.Api/wwwroot'
+
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
@@ -71,18 +77,23 @@ steps:
     configuration: '$(buildConfiguration)'
     
 
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.ArtifactStagingDirectory)'
+    Contents: |
+      Transactions.Api.zip
+      MerchantProfileApi.zip
+      Merchants.Api.zip
+      IdentityServer.zip
+      CheckoutPortal.zip
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/publishable'
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)\Transactions.Api.zip'
-    ArtifactName: 'Transactions.Api'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/publishable'
+    ArtifactName: 'publishable'
     publishLocation: 'Container'
 
 
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)\MerchantProfileApi.zip'
-    ArtifactName: 'MerchantProfileApi'
-    publishLocation: 'Container'
 
