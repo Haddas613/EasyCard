@@ -42,6 +42,13 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)/EasyCard/UI/merchant/dist'
+    Contents: '**'
+    TargetFolder: '$(system.defaultworkingdirectory)/EasyCard/MerchantProfileApi/wwwroot'
+
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
@@ -63,4 +70,10 @@ steps:
     publishLocation: 'Container'
 
 
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'MerchantProfileApi'
+    publishLocation: 'Container'
 
