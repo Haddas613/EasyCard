@@ -13,6 +13,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  versionNumber: '$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)'
 
 
 steps:
@@ -59,6 +60,20 @@ steps:
     Contents: '**'
     TargetFolder: '$(system.defaultworkingdirectory)/EasyCard/Merchants.Api/wwwroot'
     overWrite: true
+
+- task: replacetokens@3
+  inputs:
+    rootDirectory: '$(system.defaultworkingdirectory)/EasyCard'
+    targetFiles: '**/config.json'
+    encoding: 'auto'
+    writeBOM: true
+    actionOnMissing: 'warn'
+    keepToken: false
+    tokenPrefix: '#{'
+    tokenSuffix: '}#'
+    useLegacyPattern: false
+    enableTransforms: false
+    enableTelemetry: false
 
 - task: VSBuild@1
   inputs:
