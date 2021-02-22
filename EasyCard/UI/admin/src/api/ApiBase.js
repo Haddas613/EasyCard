@@ -80,11 +80,7 @@ class ApiBase {
             method: 'GET',
             withCredentials: true,
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`,
-                'Accept': 'application/json'
-            }
+            headers: this._buildRequestHeaders()
         });
         this._ongoingRequests[_urlKey] = this._handleRequest(request);
 
@@ -105,11 +101,7 @@ class ApiBase {
             method: 'POST',
             withCredentials: true,
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`,
-                'Accept': 'application/json'
-            },
+            headers: this._buildRequestHeaders(),
             body: JSON.stringify(payload)
         });
 
@@ -130,11 +122,7 @@ class ApiBase {
             method: 'PUT',
             withCredentials: true,
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`,
-                'Accept': 'application/json'
-            },
+            headers: this._buildRequestHeaders(),
             body: JSON.stringify(payload)
         });
 
@@ -155,11 +143,7 @@ class ApiBase {
             method: 'DELETE',
             withCredentials: true,
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`,
-                'Accept': 'application/json'
-            }
+            headers: this._buildRequestHeaders()
         });
 
         return this._handleRequest(request, true);
@@ -204,6 +188,18 @@ class ApiBase {
             store.commit("ui/requestsCountDecrement");
         }
         return null;
+    }
+
+    _buildRequestHeaders(access_token){
+        const locale = (store.state.localization && store.state.localization.currentLocale) 
+            ? store.state.localization.currentLocale : process.env.VUE_APP_I18N_LOCALE;
+
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${access_token}`,
+            'Accept': 'application/json',
+            'Accept-Language': `${locale}`
+        }
     }
 
     _formatHeaders(headers) {

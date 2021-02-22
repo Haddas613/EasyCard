@@ -8,6 +8,7 @@ using Merchants.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +28,9 @@ using Shared.Helpers;
 using Shared.Helpers.Security;
 using Swashbuckle.AspNetCore.Filters;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using SharedApi = Shared.Api;
@@ -232,6 +235,18 @@ namespace Merchants.Api
             app.UseRequestResponseLogging();
 
             app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
+
+            app.UseRequestLocalization(options =>
+            {
+                var supportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("en-IL"),
+                    new CultureInfo("he-IL")
+                };
+                options.DefaultRequestCulture = new RequestCulture("en-IL");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
 
             var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
             app.UseStaticFiles();

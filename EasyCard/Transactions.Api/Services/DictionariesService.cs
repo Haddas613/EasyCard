@@ -23,22 +23,24 @@ namespace Transactions.Api.Services
     {
         private static ConcurrentDictionary<string, TransactionsDictionaries> allResponses = new ConcurrentDictionary<string, TransactionsDictionaries>();
 
-        public static TransactionsDictionaries GetDictionaries(string language)
+        public static TransactionsDictionaries GetDictionaries(CultureInfo culture)
         {
-            var lang = language?.ToLower().Trim() ?? "en-us";
-            if (!allResponses.TryGetValue(lang, out var response))
+            if (culture == null)
             {
-                response = GetDictionariesInternal(lang);
-                allResponses.TryAdd(lang, response);
+                culture = new CultureInfo("en-IL");
+            }
+
+            if (!allResponses.TryGetValue(culture.Name, out var response))
+            {
+                response = GetDictionariesInternal(culture);
+                allResponses.TryAdd(culture.Name, response);
             }
 
             return response;
         }
 
-        private static TransactionsDictionaries GetDictionariesInternal(string language)
+        private static TransactionsDictionaries GetDictionariesInternal(CultureInfo culture)
         {
-            CultureInfo culture = new CultureInfo(language);
-
             var response = new TransactionsDictionaries();
 
             var transactionStatusEnumType = typeof(TransactionStatusEnum);

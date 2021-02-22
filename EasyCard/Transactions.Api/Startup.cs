@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -149,6 +151,18 @@ namespace Transactions.Api
                 options.AddPolicy(Policy.AnyAdmin, policy =>
                    policy.RequireAssertion(context => context.User.IsAdmin()));
             });
+
+            //services.Configure<RequestLocalizationOptions>(options =>
+            //{
+            //    var supportedCultures = new List<CultureInfo>
+            //    {
+            //        new CultureInfo("en"),
+            //        new CultureInfo("he")
+            //    };
+            //    options.DefaultRequestCulture = new RequestCulture("en");
+            //    options.SupportedCultures = supportedCultures;
+            //    options.SupportedUICultures = supportedCultures;
+            //});
 
             DefaultContractResolver contractResolver = new DefaultContractResolver
             {
@@ -346,6 +360,18 @@ namespace Transactions.Api
             app.UseStaticFiles();
 
             app.UseHttpsRedirection();
+
+            app.UseRequestLocalization(options =>
+            {
+                var supportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("en-IL"),
+                    new CultureInfo("he-IL")
+                };
+                options.DefaultRequestCulture = new RequestCulture("en-IL");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();

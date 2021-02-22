@@ -21,21 +21,24 @@ namespace Merchants.Api.Services
     {
         private static ConcurrentDictionary<string, MerchantsDictionaries> allResponses = new ConcurrentDictionary<string, MerchantsDictionaries>();
 
-        public static MerchantsDictionaries GetDictionaries(string language)
+        public static MerchantsDictionaries GetDictionaries(CultureInfo culture)
         {
-            var lang = language?.ToLower().Trim() ?? "en-us";
-            if (!allResponses.TryGetValue(lang, out var response))
+            if (culture == null)
             {
-                response = GetDictionariesInternal(lang);
-                allResponses.TryAdd(lang, response);
+                culture = new CultureInfo("en-IL");
+            }
+
+            if (!allResponses.TryGetValue(culture.Name, out var response))
+            {
+                response = GetDictionariesInternal(culture);
+                allResponses.TryAdd(culture.Name, response);
             }
 
             return response;
         }
 
-        private static MerchantsDictionaries GetDictionariesInternal(string language)
+        private static MerchantsDictionaries GetDictionariesInternal(CultureInfo culture)
         {
-            CultureInfo culture = new CultureInfo(language);
 
             var response = new MerchantsDictionaries();
 

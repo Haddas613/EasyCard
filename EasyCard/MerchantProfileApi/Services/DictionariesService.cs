@@ -21,22 +21,24 @@ namespace MerchantProfileApi.Services
     {
         private static ConcurrentDictionary<string, MerchantDictionaries> allResponses = new ConcurrentDictionary<string, MerchantDictionaries>();
 
-        public static MerchantDictionaries GetDictionaries(string language)
+        public static MerchantDictionaries GetDictionaries(CultureInfo culture)
         {
-            var lang = language?.ToLower().Trim() ?? "en-us";
-            if (!allResponses.TryGetValue(lang, out var response))
+            if (culture == null)
             {
-                response = GetDictionariesInternal(lang);
-                allResponses.TryAdd(lang, response);
+                culture = new CultureInfo("en-IL");
+            }
+
+            if (!allResponses.TryGetValue(culture.Name, out var response))
+            {
+                response = GetDictionariesInternal(culture);
+                allResponses.TryAdd(culture.Name, response);
             }
 
             return response;
         }
 
-        private static MerchantDictionaries GetDictionariesInternal(string language)
+        private static MerchantDictionaries GetDictionariesInternal(CultureInfo culture)
         {
-            CultureInfo culture = new CultureInfo(language);
-
             var response = new MerchantDictionaries();
 
             var terminalStatusEnum = typeof(TerminalStatusEnum);

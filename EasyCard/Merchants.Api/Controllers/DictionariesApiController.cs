@@ -4,6 +4,7 @@ using Merchants.Api.Models.Terminal;
 using Merchants.Api.Services;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
 using Shared.Api.Models;
@@ -48,9 +49,12 @@ namespace Merchants.Api.Controllers
         [HttpGet]
         [Route("merchant")]
         [ResponseCache(VaryByHeader = "User-Agent", Duration = 3600)]
-        public async Task<ActionResult<MerchantsDictionaries>> GetDictionaries([FromQuery]string language)
+        public async Task<ActionResult<MerchantsDictionaries>> GetDictionaries()
         {
-            var dictionaries = DictionariesService.GetDictionaries(language);
+            var rqf = Request.HttpContext.Features.Get<IRequestCultureFeature>();
+            var culture = rqf.RequestCulture?.Culture;
+
+            var dictionaries = DictionariesService.GetDictionaries(culture);
 
             return Ok(dictionaries);
         }
