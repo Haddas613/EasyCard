@@ -25,7 +25,7 @@ steps:
   displayName: 'npm install'
   workingDirectory: 'EasyCard\UI\merchant'
   
-- script: npm run build
+- script: npm run build $(Build.SourceBranchName)
   displayName: 'npm build'
   workingDirectory: 'EasyCard\UI\merchant'
 
@@ -33,7 +33,7 @@ steps:
   displayName: 'npm install'
   workingDirectory: 'EasyCard\UI\admin'
 
-- script: npm run build
+- script: npm run build $(Build.SourceBranchName)
   displayName: 'npm build'
   workingDirectory: 'EasyCard\UI\admin'
 
