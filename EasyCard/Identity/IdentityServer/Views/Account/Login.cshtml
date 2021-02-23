@@ -4,11 +4,12 @@
     <div class="page-header text-center">
         @if (Model.IsAuthorized)
         {
-            <h1 class="mb-4">Welcome, @Model.UserName</h1>
+            <h1 class="display-4">Welcome to EasyCard</h1>
+            <p>You are logged in as <b>@Model.UserName</b></p>
         }
         else
         {
-            <h1 class="mb-4">Login to EasyCard</h1>
+            <h5 class="mb-4">Login to EasyCard</h5>
         }
     </div>
 
@@ -106,7 +107,7 @@
                 {
                     <a href="@(Model.ClientSystemURL)" class="btn btn-primary text-white">Go to Merchant UI</a>
                 }
-                <a asp-action="Logout" asp-controller="Account" class="btn btn-secondary mx-1">Logout</a>
+                <a asp-action="Logout" asp-controller="Account" class="btn btn-outline-dark mx-1">Logout</a>
             </div>
         }
     </div>

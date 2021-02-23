@@ -78,6 +78,16 @@ namespace IdentityServer
                  })
                  .AddRazorRuntimeCompilation(); //TODO: remove on release?
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 8;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                //options.Password.RequiredUniqueChars = 5;
+            });
+
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {

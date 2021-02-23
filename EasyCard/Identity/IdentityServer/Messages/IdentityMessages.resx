@@ -126,6 +126,9 @@
   <data name="ForgotPasswordPasswordReseted" xml:space="preserve">
     <value>Password reset link has been sent on your email</value>
   </data>
+  <data name="ForgotPasswordSuccess" xml:space="preserve">
+    <value>Link with instructions has been sent to that email</value>
+  </data>
   <data name="ResetPassword" xml:space="preserve">
     <value>Please set new password</value>
   </data>

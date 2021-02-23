@@ -388,10 +388,10 @@ namespace IdentityServer.Controllers
                 var user = await userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
-                    logger.LogError($"User {model.Email} does not exist");
+                    logger.LogError($"ForgotPassword attempt to reset non existing user with email: {model.Email}");
 
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToAction(nameof(ForgotPasswordConfirmation), new { Message = IdentityMessages.ForgotPasswordInvalidEmail });
+                    //Don't reveail if user doesn't exists
+                    return RedirectToAction(nameof(ForgotPasswordConfirmation));
                 }
 
                 //Validate user bank account
@@ -425,7 +425,7 @@ namespace IdentityServer.Controllers
                 await emailSender.SendEmailResetPasswordAsync(model.Email, callbackUrl);
 
                 await auditLogger.RegisterForgotPassword(model.Email);
-                return RedirectToAction(nameof(ForgotPasswordConfirmation), new { Message = IdentityMessages.ForgotPasswordPasswordReseted });
+                return RedirectToAction(nameof(ForgotPasswordConfirmation));
             }
 
             // If we got this far, something failed, redisplay form
@@ -435,9 +435,9 @@ namespace IdentityServer.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult ForgotPasswordConfirmation(string message)
+        public IActionResult ForgotPasswordConfirmation()
         {
-            ViewData["ValidationMessage"] = message;
+            ViewData["Message"] = IdentityMessages.ForgotPasswordSuccess;
             ViewData["PreviousUrl"] = Request.Headers["Referer"].ToString();
             return View();
         }
@@ -446,25 +446,25 @@ namespace IdentityServer.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(string code = null)
         {
-            //if (code == null)
-            //{
-            //    return RedirectToAction(nameof(HomeController.Index), "Home");
-            //}
+            if (code == null)
+            {
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
 
-            //var userId = cryptoService.DecryptWithExpiration(code);
+            var userId = cryptoService.DecryptWithExpiration(code);
 
-            //if (userId == null)
-            //{
-            //    logger.LogError($"Confirmation code expired or invalid");
-            //    return RedirectToAction(nameof(HomeController.Index), "Home");
-            //}
+            if (userId == null)
+            {
+                logger.LogError($"Confirmation code expired or invalid");
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
 
-            //var user = await userManager.FindByIdAsync(userId);
-            //if (user == null)
-            //{
-            //    logger.LogError($"Confirmation code is invalid");
-            //    return RedirectToAction(nameof(HomeController.Index), "Home");
-            //}
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                logger.LogError($"Confirmation code is invalid");
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
 
             var model = new ResetPasswordViewModel { Code = code };
             return View(model);
