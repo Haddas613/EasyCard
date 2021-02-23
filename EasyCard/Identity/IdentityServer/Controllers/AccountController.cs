@@ -332,7 +332,7 @@ namespace IdentityServer.Controllers
             var addPasswordResult = await userManager.AddPasswordAsync(user, model.Password);
             if (addPasswordResult.Succeeded)
             {
-                await auditLogger.RegisterConfirmEmail(user);
+                await auditLogger.RegisterConfirmEmail(user, $"{model.FirstName} {model.LastName}".Trim());
 
                 var allClaims = await userManager.GetClaimsAsync(user);
 

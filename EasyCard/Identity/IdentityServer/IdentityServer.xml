@@ -134,9 +134,14 @@
             Business name
             </summary>
         </member>
-        <member name="P:IdentityServer.Models.Registration.RegisterViewModel.ContactName">
+        <member name="P:IdentityServer.Models.Registration.RegisterViewModel.FirstName">
             <summary>
-            Contact name
+            First name
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Models.Registration.RegisterViewModel.LastName">
+            <summary>
+            Last name
             </summary>
         </member>
         <member name="P:IdentityServer.Models.Registration.RegisterViewModel.MarketingName">

@@ -25,12 +25,20 @@ namespace IdentityServer.Security.Auditing
             this.merchantsApiClient = merchantsApiClient;
         }
 
-        public async Task RegisterConfirmEmail(ApplicationUser user)
+        public async Task RegisterConfirmEmail(ApplicationUser user, string fullName)
         {
             var audit = await GetAudit(user, AuditingTypeEnum.EmailConfirmed);
 
             context.UserAudits.Add(audit);
             await context.SaveChangesAsync();
+
+            await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+            {
+                UserActivity = Merchants.Shared.Enums.UserActivityEnum.EmailConfirmed,
+                UserID = user.Id,
+                DisplayName = fullName,
+                Email = user.Email
+            });
         }
 
         public async Task RegisterForgotPassword(string email)
@@ -50,7 +58,7 @@ namespace IdentityServer.Security.Auditing
             {
                 UserActivity = Merchants.Shared.Enums.UserActivityEnum.LoggedIn,
                 UserID = user.Id,
-                DisplayName = user.UserName,
+                //DisplayName = user.UserName,
                 Email = user.Email
             });
         }

@@ -18,11 +18,18 @@ namespace IdentityServer.Models.Registration
         public string BusinessName { get; set; }
 
         /// <summary>
-        /// Contact name
+        /// First name
         /// </summary>
         [Required]
         [StringLength(50, MinimumLength = 2)]
-        public string ContactName { get; set; }
+        public string FirstName { get; set; }
+
+        /// <summary>
+        /// Last name
+        /// </summary>
+        [Required]
+        [StringLength(50, MinimumLength = 2)]
+        public string LastName { get; set; }
 
         /// <summary>
         /// Marketing name

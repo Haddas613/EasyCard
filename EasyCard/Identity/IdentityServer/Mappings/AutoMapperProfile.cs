@@ -22,7 +22,7 @@ namespace IdentityServer.Mappings
                 .ForMember(d => d.BusinessID, o => o.MapFrom(src => src.BusinessID))
                 .ForMember(d => d.BusinessName, o => o.MapFrom(src => src.BusinessName))
                 .ForMember(d => d.MarketingName, o => o.MapFrom(src => src.MarketingName))
-                .ForMember(d => d.ContactPerson, o => o.MapFrom(src => src.ContactName))
+                .ForMember(d => d.ContactPerson, o => o.MapFrom(src => $"{src.FirstName} {src.LastName}".Trim()))
                 .ForMember(d => d.PhoneNumber, o => o.MapFrom(src => src.PhoneNumber));
         }
     }
