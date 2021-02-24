@@ -91,6 +91,7 @@
   "@MaxSelectionCount": "You can only select up to @count items",
   "@RedirectURLNumber": "Redirect URL #@number",
   "MustBeValidID": "Must be valid ID",
+  "@AppVersion": "App Version: @version",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",

@@ -3,8 +3,13 @@
     <v-card flat color="ecbg">
       <v-card-text>
         <v-row no-gutters>
-          <v-col cols="12" class="text-end">
-            <v-btn @click="$oidc.signOut()">
+          <v-col cols="6" class="text-start d-flex align-center">
+            <span>
+              {{$t("@AppVersion").replace("@version", appVersion)}}
+            </span>
+          </v-col>
+          <v-col cols="6" class="text-end">
+            <v-btn class="mb-1" @click="$oidc.signOut()">
               <v-icon left>mdi-logout</v-icon>
               {{$t("SignOut")}}
             </v-btn>
@@ -73,7 +78,8 @@ export default {
       terminals: [],
       currencies: [],
       terminalSettingsFormValid: true,
-      terminalRefreshed: false
+      terminalRefreshed: false,
+      appVersion: process.env.VUE_APP_VERSION
     };
   },
   async mounted() {
