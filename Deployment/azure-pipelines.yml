@@ -20,7 +20,7 @@ steps:
     versionSpec: '12.x'
   displayName: 'Install Node.js'
 
-- task: replacetokens
+- task: replacetokens@3
   inputs:
     rootDirectory: '$(system.defaultworkingdirectory)/EasyCard/UI'
     targetFiles: '**/.env.$(Build.SourceBranchName)'
