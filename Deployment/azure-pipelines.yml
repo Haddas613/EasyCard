@@ -20,6 +20,19 @@ steps:
     versionSpec: '12.x'
   displayName: 'Install Node.js'
 
+- task: replacetokens
+  inputs:
+    rootDirectory: '$(system.defaultworkingdirectory)/EasyCard/UI'
+    targetFiles: '**/.env.$(Build.SourceBranchName)'
+    encoding: 'auto'
+    writeBOM: true
+    actionOnMissing: 'warn'
+    keepToken: false
+    tokenPrefix: '#{'
+    tokenSuffix: '}#'
+    useLegacyPattern: false
+    enableTransforms: false
+    enableTelemetry: false
 
 - script: npm install
   displayName: 'npm install'
@@ -62,20 +75,6 @@ steps:
   inputs:
     rootDirectory: '$(system.defaultworkingdirectory)/EasyCard'
     targetFiles: '**/appsettings.json'
-    encoding: 'auto'
-    writeBOM: true
-    actionOnMissing: 'warn'
-    keepToken: false
-    tokenPrefix: '#{'
-    tokenSuffix: '}#'
-    useLegacyPattern: false
-    enableTransforms: false
-    enableTelemetry: false
-    
-- task: replacetokens@3
-  inputs:
-    rootDirectory: '$(system.defaultworkingdirectory)/EasyCard/UI'
-    targetFiles: '**/.env.$(Build.SourceBranchName)'
     encoding: 'auto'
     writeBOM: true
     actionOnMissing: 'warn'
