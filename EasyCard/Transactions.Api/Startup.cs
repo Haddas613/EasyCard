@@ -366,7 +366,7 @@ namespace Transactions.Api
 
             var apiSettings = Configuration.GetSection("API")?.Get<ApiSettings>();
 
-            if (!string.IsNullOrEmpty(apiSettings.Version))
+            if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
             {
                 app.Use(async (context, next) =>
                 {
