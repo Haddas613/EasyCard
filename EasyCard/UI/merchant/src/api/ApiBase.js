@@ -149,7 +149,7 @@ class ApiBase {
                 } else if (showSuccessToastr && result.status === "success") {
                     Vue.toasted.show(result.message, { type: 'success', duration: 5000 });
                 }
-
+                await this._checkAppVersion(request.headers);
                 return result;
             } else {
                 //Server Validation errors are returned to component
@@ -178,8 +178,8 @@ class ApiBase {
         return null;
     }
 
-    _buildRequestHeaders(access_token){
-        const locale = (store.state.localization && store.state.localization.currentLocale) 
+    _buildRequestHeaders(access_token) {
+        const locale = (store.state.localization && store.state.localization.currentLocale)
             ? store.state.localization.currentLocale : process.env.VUE_APP_I18N_LOCALE;
 
         return {
@@ -192,6 +192,24 @@ class ApiBase {
 
     _formatHeaders(headers) {
         return Object.keys(headers.columns).map(key => { return { value: key, text: headers.columns[key].name } });
+    }
+
+    async _checkAppVersion(responseHeaders) {
+        if (this.lastCheckTimestamp && this.lastCheckTimestamp.getTime() > (new Date()).setMinutes(-5)) {
+            return;
+        }
+
+        let responseHeaderVal = responseHeaders.get('x-version');
+        if(!responseHeaderVal){
+            return;
+        }
+
+        if (responseHeaderVal.toLowerCase().trim() != process.env.VUE_APP_VERSION.toLowerCase().trim()) {
+            store.commit("ui/setVersionMismatch", true);
+        }else{
+            store.commit("ui/setVersionMismatch", false);
+        }
+        this.lastCheckTimestamp = new Date();
     }
 
     format(d, headers, dictionaries) {
@@ -220,7 +238,7 @@ class ApiBase {
 }
 
 export default {
-    install: function(Vue, ) {
+    install: function (Vue, ) {
         Object.defineProperty(Vue.prototype, '$api', { value: new ApiBase() });
     }
 }

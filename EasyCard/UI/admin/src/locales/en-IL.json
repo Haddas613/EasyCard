@@ -78,6 +78,7 @@
   "SeeHistory": "See History",
   "CreateNewCustomer": "Create new Customer",
   "MerchantInfo": "Merchant Info",
+  "UpdateAvailable": "Update Available",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -368,5 +369,6 @@
   "NotSupportedContactAdministration": "Not supported. Contact administration",
   "TerminalTemplateSaveInfoMessage": "Changes made to Terminal Template will only be reflected on terminals created after that.",
   "ShvaNewPasswordInfoMessage": "By doing this all Terminals who use that User with old Password will no longer function. Make sure to change password for all SHVA integrations on all Terminals with that user if required.",
-  "NullAggregatorConnectedMessage": "NULL Aggregator connected."
+  "NullAggregatorConnectedMessage": "NULL Aggregator connected.",
+  "NewAppVersionAvailableClickToRefreshThePage": "New App Version Available. Click to refresh the page."
 }

@@ -162,6 +162,7 @@ class ApiBase {
                     Vue.toasted.show(result.message, { type: 'success', duration: 5000 });
                 }
 
+                await this._checkAppVersion(request.headers);
                 return result;
             } else {
                 //Server Validation errors are returned to component
@@ -204,6 +205,24 @@ class ApiBase {
 
     _formatHeaders(headers) {
         return Object.keys(headers.columns).map(key => { return { value: key, text: headers.columns[key].name } });
+    }
+
+    async _checkAppVersion(responseHeaders) {
+        if (this.lastCheckTimestamp && this.lastCheckTimestamp.getTime() > (new Date()).setMinutes(-5)) {
+            return;
+        }
+
+        let responseHeaderVal = responseHeaders.get('x-version');
+        if(!responseHeaderVal){
+            return;
+        }
+
+        if (responseHeaderVal.toLowerCase().trim() != process.env.VUE_APP_VERSION.toLowerCase().trim()) {
+            store.commit("ui/setVersionMismatch", true);
+        }else{
+            store.commit("ui/setVersionMismatch", false);
+        }
+        this.lastCheckTimestamp = new Date();
     }
 
     format(d, headers, dictionaries) {

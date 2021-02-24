@@ -58,6 +58,7 @@
   "Confirmation": "Confirmation",
   "BillingDeal(Deleted)" : "Billing Deal (deleted)",
   "Checkout": "Checkout",
+  "UpdateAvailable": "Update Available",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -307,5 +308,6 @@
   "ClickToDownload": "Click to download",
 
   "--MESSAGES--": null,
-  "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?"
+  "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?",
+  "NewAppVersionAvailableClickToRefreshThePage": "New App Version Available. Click to refresh the page."
 }

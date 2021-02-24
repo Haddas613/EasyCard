@@ -29,6 +29,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Shared.Api;
+using Shared.Api.Configuration;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
@@ -68,7 +69,8 @@ namespace ProfileApi
                             "http://localhost:4200",
                             "http://localhost:8080")
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .WithExposedHeaders("X-Version");
                     });
             });
 
@@ -248,14 +250,28 @@ namespace ProfileApi
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("SystemConnection"), serviceProvider.GetService<IHttpContextAccessor>(), "Profile"));
+            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
 
             app.UseRequestResponseLogging();
 
             app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
 
-            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
-
             app.UseStaticFiles();
+
+            var apiSettings = Configuration.GetSection("API")?.Get<ApiSettings>();
+
+            if (!string.IsNullOrEmpty(apiSettings.Version))
+            {
+                app.Use(async (context, next) =>
+                {
+                    context.Response.Headers.Add("X-Version", apiSettings.Version);
+                    await next.Invoke();
+                });
+            }
+            else
+            {
+                logger.LogError("Missing API.Version in appsettings.json");
+            }
 
             app.UseRequestLocalization(options =>
             {

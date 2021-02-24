@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Shared.Api;
+using Shared.Api.Configuration;
 using Shared.Api.Logging;
 using Shared.Api.Models.Binding;
 using Shared.Api.Validation;
@@ -60,7 +61,8 @@ namespace Merchants.Api
                             "http://localhost:8081",
                             "http://ecng-merchants.azurewebsites.net")
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .WithExposedHeaders("X-Version");
                     });
             });
 
@@ -231,10 +233,26 @@ namespace Merchants.Api
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("SystemConnection"), serviceProvider.GetService<IHttpContextAccessor>(), "AdminApi"));
+            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
 
             app.UseRequestResponseLogging();
 
             app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
+
+            var apiSettings = Configuration.GetSection("API")?.Get<ApiSettings>();
+
+            if (!string.IsNullOrEmpty(apiSettings.Version))
+            {
+                app.Use(async (context, next) =>
+                {
+                    context.Response.Headers.Add("X-Version", apiSettings.Version);
+                    await next.Invoke();
+                });
+            }
+            else
+            {
+                logger.LogError("Missing API.Version in appsettings.json");
+            }
 
             app.UseRequestLocalization(options =>
             {
@@ -247,8 +265,6 @@ namespace Merchants.Api
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
-
-            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
             app.UseStaticFiles();
 
             //app.UseHttpsRedirection();

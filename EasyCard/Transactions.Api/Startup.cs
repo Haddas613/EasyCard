@@ -27,6 +27,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Shared.Api;
+using Shared.Api.Configuration;
 using Shared.Api.Swagger;
 using Shared.Api.Validation;
 using Shared.Business.Security;
@@ -82,7 +83,8 @@ namespace Transactions.Api
                                             "https://ecng-profile.azurewebsites.net",
                                             "https://ecng-merchants.azurewebsites.net")
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .WithExposedHeaders("X-Version");
                     });
             });
 
@@ -352,6 +354,7 @@ namespace Transactions.Api
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("SystemConnection"), serviceProvider.GetService<IHttpContextAccessor>(), "TransactionsApi"));
+            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
 
             app.UseRequestResponseLogging();
 
@@ -360,6 +363,21 @@ namespace Transactions.Api
             app.UseStaticFiles();
 
             app.UseHttpsRedirection();
+
+            var apiSettings = Configuration.GetSection("API")?.Get<ApiSettings>();
+
+            if (!string.IsNullOrEmpty(apiSettings.Version))
+            {
+                app.Use(async (context, next) =>
+                {
+                    context.Response.Headers.Add("X-Version", apiSettings.Version);
+                    await next.Invoke();
+                });
+            }
+            else
+            {
+                logger.LogError("Missing API.Version in appsettings.json");
+            }
 
             app.UseRequestLocalization(options =>
             {

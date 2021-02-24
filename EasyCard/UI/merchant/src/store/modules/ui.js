@@ -12,8 +12,8 @@ const state = () => ({
          * This is default behavior for Dashboard page */
         altDisplay: true
     },
-    requestsCount: 0
-
+    requestsCount: 0,
+    versionMismatch: false
 });
 
 const getters = {};
@@ -29,7 +29,10 @@ const mutations = {
     },
     requestsCountDecrement(state) {
         state.requestsCount--;
-    }
+    },
+    setVersionMismatch(state, newVersionMismatch) {
+        state.versionMismatch = newVersionMismatch;
+    },
 }
 
 export default {
