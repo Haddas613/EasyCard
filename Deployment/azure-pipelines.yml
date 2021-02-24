@@ -71,6 +71,20 @@ steps:
     useLegacyPattern: false
     enableTransforms: false
     enableTelemetry: false
+    
+- task: replacetokens@3
+  inputs:
+    rootDirectory: '$(system.defaultworkingdirectory)/EasyCard/UI'
+    targetFiles: '**/.env.$(Build.SourceBranchName)'
+    encoding: 'auto'
+    writeBOM: true
+    actionOnMissing: 'warn'
+    keepToken: false
+    tokenPrefix: '#{'
+    tokenSuffix: '}#'
+    useLegacyPattern: false
+    enableTransforms: false
+    enableTelemetry: false
 
 - task: VSBuild@1
   inputs:
