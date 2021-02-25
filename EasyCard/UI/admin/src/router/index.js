@@ -22,6 +22,9 @@ const routes = [
       {
         name: 'Dashboard',
         path: 'dashboard',
+        meta: {
+          altDisplay: true,
+        },
         alias: '',
         component: () => import('../pages/Dashboard.vue'),
       },
