@@ -195,12 +195,18 @@ class ApiBase {
         const locale = (store.state.localization && store.state.localization.currentLocale) 
             ? store.state.localization.currentLocale : process.env.VUE_APP_I18N_LOCALE;
 
-        return {
+        let headers =  {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${access_token}`,
             'Accept': 'application/json',
-            'Accept-Language': `${locale}`
+            'Accept-Language': `${locale}`,
         }
+
+        if(process.env.VUE_APP_VERSION){
+            headers['X-Version'] = process.env.VUE_APP_VERSION;
+        }
+
+        return headers;
     }
 
     _formatHeaders(headers) {
