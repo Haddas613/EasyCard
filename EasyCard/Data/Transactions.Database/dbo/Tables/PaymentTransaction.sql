@@ -86,3 +86,12 @@
 
 
 
+
+
+
+GO
+CREATE TRIGGER t_PaymentTransaction_etl
+ON [dbo].[PaymentTransaction]
+AFTER INSERT, UPDATE   
+AS  
+   insert into [dbo].[_t_PaymentTransactions] ([PaymentTransactionID]) select inserted.[PaymentTransactionID] from inserted

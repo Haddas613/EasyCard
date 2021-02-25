@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
+    <ProjectReference Include="..\Transactions.Shared\Transactions.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

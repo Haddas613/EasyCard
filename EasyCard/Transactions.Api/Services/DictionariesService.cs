@@ -16,6 +16,7 @@ using Shared.Helpers.Resources;
 using Transactions.Api.Models.Transactions.Enums;
 using Shared.Integration.Models.Invoicing;
 using Transactions.Api.Models.PaymentRequests.Enums;
+using Shared.Api.Models.Enums;
 
 namespace Transactions.Api.Services
 {

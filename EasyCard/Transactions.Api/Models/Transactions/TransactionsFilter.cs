@@ -1,4 +1,5 @@
 ﻿using Shared.Api.Models;
+using Shared.Api.Models.Enums;
 using Shared.Api.Swagger;
 using Shared.Helpers;
 using Shared.Integration.Models;

@@ -1,4 +1,5 @@
 ﻿using Shared.Api.Models;
+using Shared.Api.Models.Enums;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;
