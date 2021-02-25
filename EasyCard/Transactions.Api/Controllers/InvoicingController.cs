@@ -106,7 +106,7 @@ namespace Transactions.Api.Controllers
             {
                 var response = new SummariesResponse<InvoiceSummary>();
 
-                response.Data = await mapper.ProjectTo<InvoiceSummary>(query.OrderByDescending(i => i.InvoiceID).ApplyPagination(filter)).Future().ToListAsync();
+                response.Data = await mapper.ProjectTo<InvoiceSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceID), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
                 response.NumberOfRecords = numberOfRecordsFuture.Value;
 
                 return Ok(response);

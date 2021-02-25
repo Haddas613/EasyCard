@@ -61,7 +61,7 @@ namespace Merchants.Api.Controllers
 
                 var response = new SummariesResponse<AuditEntryResponse>();
 
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(AuditEntryResponse.MerchantHistoryID), filter.OrderByDirection).ApplyPagination(filter);
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(AuditEntryResponse.MerchantHistoryID), filter.SortDesc).ApplyPagination(filter);
 
                 response.Data = await mapper.ProjectTo<AuditEntryResponse>(query).Future().ToListAsync();
                 response.NumberOfRecords = numberOfRecordsFuture.Value;

@@ -110,7 +110,7 @@ namespace Transactions.Api.Controllers
                 var response = new SummariesResponse<BillingDealSummary>();
 
                 //TODO: ordering
-                response.Data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDescending(b => b.BillingDealTimestamp.Value).ApplyPagination(filter)).Future().ToListAsync();
+                response.Data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
                 response.NumberOfRecords = numberOfRecordsFuture.Value;
 
                 return Ok(response);
