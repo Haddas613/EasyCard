@@ -266,6 +266,7 @@
   "Code": "Code",
   "TerminalName": "Terminal Name",
   "NewPassword": "New Password",
+  "SHVATerminalName": "SHVA Terminal Name",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

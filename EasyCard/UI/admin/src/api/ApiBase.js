@@ -46,7 +46,7 @@ class ApiBase {
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */
     async get(url, params) {
         const access_token = await this.oidc.getAccessToken()
-
+        
         if (!access_token) {
             Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error' });
             // this.oidc.signOut();
@@ -80,7 +80,7 @@ class ApiBase {
             method: 'GET',
             withCredentials: true,
             mode: 'cors',
-            headers: this._buildRequestHeaders()
+            headers: this._buildRequestHeaders(access_token),
         });
         this._ongoingRequests[_urlKey] = this._handleRequest(request);
 
@@ -101,7 +101,7 @@ class ApiBase {
             method: 'POST',
             withCredentials: true,
             mode: 'cors',
-            headers: this._buildRequestHeaders(),
+            headers: this._buildRequestHeaders(access_token),
             body: JSON.stringify(payload)
         });
 
@@ -122,7 +122,7 @@ class ApiBase {
             method: 'PUT',
             withCredentials: true,
             mode: 'cors',
-            headers: this._buildRequestHeaders(),
+            headers: this._buildRequestHeaders(access_token),
             body: JSON.stringify(payload)
         });
 
@@ -143,7 +143,7 @@ class ApiBase {
             method: 'DELETE',
             withCredentials: true,
             mode: 'cors',
-            headers: this._buildRequestHeaders()
+            headers: this._buildRequestHeaders(access_token),
         });
 
         return this._handleRequest(request, true);
@@ -195,12 +195,18 @@ class ApiBase {
         const locale = (store.state.localization && store.state.localization.currentLocale) 
             ? store.state.localization.currentLocale : process.env.VUE_APP_I18N_LOCALE;
 
-        return {
+        let headers =  {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${access_token}`,
             'Accept': 'application/json',
-            'Accept-Language': `${locale}`
+            'Accept-Language': `${locale}`,
         }
+
+        if(process.env.VUE_APP_VERSION){
+            headers['X-Version'] = process.env.VUE_APP_VERSION;
+        }
+
+        return headers;
     }
 
     _formatHeaders(headers) {
