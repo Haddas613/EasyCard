@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Reporting.Api</name>
+    </assembly>
+    <members>
+        <member name="F:Reporting.Api.Policy.Terminal">
+            <summary>
+            Noninteractive api access
+            </summary>
+        </member>
+        <member name="F:Reporting.Api.Policy.TerminalOrMerchantFrontend">
+            <summary>
+            Noninteractive api access or merchant UI
+            </summary>
+        </member>
+        <member name="F:Reporting.Api.Policy.MerchantFrontend">
+            <summary>
+            Merchant UI access
+            </summary>
+        </member>
+    </members>
+</doc>
