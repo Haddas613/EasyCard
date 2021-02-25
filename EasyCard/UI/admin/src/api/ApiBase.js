@@ -46,7 +46,7 @@ class ApiBase {
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */
     async get(url, params) {
         const access_token = await this.oidc.getAccessToken()
-
+        
         if (!access_token) {
             Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error' });
             // this.oidc.signOut();
@@ -80,7 +80,7 @@ class ApiBase {
             method: 'GET',
             withCredentials: true,
             mode: 'cors',
-            headers: this._buildRequestHeaders()
+            headers: this._buildRequestHeaders(access_token),
         });
         this._ongoingRequests[_urlKey] = this._handleRequest(request);
 
@@ -101,7 +101,7 @@ class ApiBase {
             method: 'POST',
             withCredentials: true,
             mode: 'cors',
-            headers: this._buildRequestHeaders(),
+            headers: this._buildRequestHeaders(access_token),
             body: JSON.stringify(payload)
         });
 
@@ -122,7 +122,7 @@ class ApiBase {
             method: 'PUT',
             withCredentials: true,
             mode: 'cors',
-            headers: this._buildRequestHeaders(),
+            headers: this._buildRequestHeaders(access_token),
             body: JSON.stringify(payload)
         });
 
@@ -143,7 +143,7 @@ class ApiBase {
             method: 'DELETE',
             withCredentials: true,
             mode: 'cors',
-            headers: this._buildRequestHeaders()
+            headers: this._buildRequestHeaders(access_token),
         });
 
         return this._handleRequest(request, true);
