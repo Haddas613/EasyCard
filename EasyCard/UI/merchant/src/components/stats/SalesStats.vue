@@ -1,9 +1,11 @@
 <template>
   <v-card flat class="my-2">
-    <v-card-title class="px-2 py-3 ecdgray--text subtitle-3 text-uppercase">
-      <v-row no-gutters>
+    <v-card-title class="px-2 py-2 ecdgray--text subtitle-3 text-uppercase">
+      <v-row no-gutters align="center">
         <v-col cols="6">{{$t("Sales")}}</v-col>
-        <v-col cols="6" class="text-none text-end body-2">{{$t("Today")}}</v-col>
+        <v-col cols="6" class="text-none text-end body-2">
+          <stats-filter></stats-filter>
+        </v-col>
       </v-row>
     </v-card-title>
     <v-divider></v-divider>
@@ -24,7 +26,8 @@ import moment from "moment";
 
 export default {
   components: {
-    EcDialogInvoker: () => import("../ec/EcDialogInvoker")
+    EcDialogInvoker: () => import("../ec/EcDialogInvoker"),
+    StatsFilter: () => import("./StatsFilter")
   },
   data() {
     return {

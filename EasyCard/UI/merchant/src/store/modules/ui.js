@@ -1,4 +1,6 @@
 
+import appConstants from "../../helpers/app-constants";
+
 const state = () => ({
     /**This is main navigation header. Wizard header is accessed directly by component. On each route change all values are set correspondingly */
     header: {
@@ -13,7 +15,8 @@ const state = () => ({
         altDisplay: true
     },
     requestsCount: 0,
-    versionMismatch: false
+    versionMismatch: false,
+    dashboardDateFilter: appConstants.filtering.defaultDashboardQuickDateType
 });
 
 const getters = {};
@@ -30,9 +33,12 @@ const mutations = {
     requestsCountDecrement(state) {
         state.requestsCount--;
     },
-    setVersionMismatch(state, newVersionMismatch) {
+    setVersionMismatch(state, newVersionMismatch ) {
         state.versionMismatch = newVersionMismatch;
     },
+    setDashboardDateFilter(state, value){
+        state.dashboardDateFilter = value;
+    }
 }
 
 export default {
