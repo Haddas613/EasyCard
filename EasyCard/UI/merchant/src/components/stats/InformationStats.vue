@@ -8,7 +8,7 @@
     </v-card-title>
     <v-divider></v-divider>
     <v-card-text>
-      <ec-list class="" v-if="data && data.length > 0" :items="data" dense dashed>
+      <ec-list class="" v-if="stats && stats.length > 0" :items="stats" dense dashed>
         <template v-slot:left="{ item }">
           <v-col cols="12" class="text-align-initial text-oneline">
             <span class="body-1">{{item.name}}</span>
@@ -23,31 +23,63 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import moment from "moment";
+
 export default {
   components: {
     EcList: () => import("../ec/EcList")
   },
   data() {
     return {
-      data: [
+      stats: [
         {
-          name: "Average Spend",
-          value: "$23"
+          name: this.$t("AverageSpend"),
+          value: null
         },
         {
-          name: "Total Customer",
-          value: "354"
+          name: this.$t("TotalCustomers"),
+          value: null
         },
         {
-          name: "New Customers",
-          value: "237(63%)"
+          name: this.$t("NewCustomers"),
+          value: null
         },
         {
-          name: "Repeating Customers",
-          value: "127(37%)"
+          name: this.$t("RepeatingCustomers"),
+          value: null
         }
       ]
     };
+  },
+  computed: {
+    ...mapState({
+      terminalStore: state => state.settings.terminal,
+    }),
+  },
+  async mounted(){
+    let report = await this.$api.reporting.dashboard.getConsumersTotals({
+      terminalID: this.terminalStore.terminalID,
+      dateFrom: moment().toISOString(),
+      dateTo: moment().toISOString(),
+    });
+
+    if(!report || report.length === 0){
+      return;
+    }
+
+    const r = report[0];
+    //Average spend
+    this.stats[0].value = this.$options.filters.currency(r.averageAmount || 0, 'ILS');
+
+    //Total customers
+    this.stats[1].value = r.customersCount;
+
+    //New customers
+    this.stats[2].value = `${r.newCustomers}(${r.newCustomersRate}%)`;
+
+    //Repeating customers
+    this.stats[3].value = `${r.repeatingCustomers}(${r.repeatingCustomersRate}%)`;
   }
 };
 </script>

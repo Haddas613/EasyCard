@@ -37,7 +37,7 @@ namespace Reporting.Api.Controllers
         }
 
         [HttpGet]
-        [Route("TransactionsTotals")]
+        [Route("transactionsTotals")]
         public async Task<ActionResult<IEnumerable<TransactionsTotals>>> GetTransactionsTotals([FromQuery]MerchantDashboardQuery query)
         {
             var res = await dashboardService.GetTransactionsTotals(query);
@@ -46,7 +46,7 @@ namespace Reporting.Api.Controllers
         }
 
         [HttpGet]
-        [Route("PaymentTypeTotals")]
+        [Route("paymentTypeTotals")]
         public async Task<ActionResult<IEnumerable<PaymentTypeTotals>>> GetPaymentTypeTotals([FromQuery] MerchantDashboardQuery query)
         {
             var res = await dashboardService.GetPaymentTypeTotals(query);
@@ -55,7 +55,7 @@ namespace Reporting.Api.Controllers
         }
 
         [HttpGet]
-        [Route("TransactionTimeline")]
+        [Route("transactionTimeline")]
         public async Task<ActionResult<IEnumerable<TransactionTimeline>>> GetTransactionTimeline([FromQuery] MerchantDashboardQuery query)
         {
             var res = await dashboardService.GetTransactionTimeline(query);
@@ -64,7 +64,7 @@ namespace Reporting.Api.Controllers
         }
 
         [HttpGet]
-        [Route("ItemsTotals")]
+        [Route("itemsTotals")]
         public async Task<ActionResult<IEnumerable<ItemsTotals>>> GetItemsTotals([FromQuery] MerchantDashboardQuery query)
         {
             var res = await dashboardService.GetItemsTotals(query);
@@ -73,7 +73,7 @@ namespace Reporting.Api.Controllers
         }
 
         [HttpGet]
-        [Route("ConsumersTotals")]
+        [Route("consumersTotals")]
         public async Task<ActionResult<IEnumerable<ConsumersTotals>>> GetConsumersTotals([FromQuery] MerchantDashboardQuery query)
         {
             var res = await dashboardService.GetConsumersTotals(query);

@@ -3,26 +3,33 @@
     <v-card-title class="px-2 py-3 ecdgray--text subtitle-3 text-uppercase">
       <v-row no-gutters>
         <v-col cols="6">{{$t("CashFlow")}}</v-col>
-        <v-col cols="6" class="text-none text-end body-2">{{$t("Today")}}</v-col>
+        <v-col cols="6" class="text-none text-end body-2">{{$t("3Months")}}</v-col>
       </v-row>
     </v-card-title>
     <v-divider></v-divider>
     <v-card-text class="px-0">
-      <v-container class="chart-container px-0">
+      <v-container class="chart-container px-0" v-if="!nothingToShow">
         <line-chart v-if="draw" :options="chartOptions" :data="chartData"></line-chart>
       </v-container>
+      <p class="text-center" v-else>
+        {{$t("NothingToShow")}}
+      </p>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
+import { mapState } from "vuex";
+import moment from "moment";
+
 export default {
   components: {
     LineChart: () => import("../charts/LineChart")
   },
   data() {
     return {
-      draw: true, //set to true when ready to draw chart
+      draw: false, //set to true when ready to draw chart
+      nothingToShow: false,
       chartOptions: {
         scales: {
           yAxes: [
@@ -32,7 +39,7 @@ export default {
                 //max: 1500,
                 // stepSize: 500,
                 // display: false,
-                maxTicksLimit: 3,
+                // maxTicksLimit: 3,
               },
               gridLines: {
                 drawOnChartArea: true,
@@ -62,21 +69,41 @@ export default {
         }
       },
       chartData: {
-        labels: ["Jul", "Aug", "Sep"],
+        //labels: ["Jul", "Aug", "Sep"],
         datasets: [
           {
             pointRadius: 0,
             borderColor: '#fd8442bf',
-            label: "Data One",
             backgroundColor: '#fd84420d',
             // backgroundColor: '#ffa53269',
-            data: [250, 750, 500]
+            data: []
           }
         ]
       }
     };
   },
-  mounted () {
+  computed: {
+    ...mapState({
+      terminalStore: state => state.settings.terminal,
+    }),
+  },
+  async mounted () {
+    
+     let report = await this.$api.reporting.dashboard.getTransactionTimeline({
+      terminalID: this.terminalStore.terminalID,
+      timelineDateFrom: moment().add(-3, 'M').toISOString(),
+      timelineDateTo: moment().toISOString(),
+    });
+
+    if(!report || report.length < 3){
+      this.nothingToShow = true;
+      return;
+    }
+    this.chartData.labels = this.lodash.map(report, e => moment(e.date).format("MM/DD"));
+    this.chartData.datasets[0].data = this.lodash.map(report, e => e.totalAmount);
+    this.chartOptions.scales.yAxes[0].ticks.max = Math.ceil(this.lodash.max(this.chartData.datasets[0].data) / 10) * 10;
+    this.chartOptions.scales.yAxes[0].ticks.stepSize = Math.ceil(this.lodash.meanBy(this.chartData.datasets[0].data) / 10) * 10;
+    this.draw = true;
   },
 };
 </script>

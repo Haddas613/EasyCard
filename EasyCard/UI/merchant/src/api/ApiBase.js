@@ -12,6 +12,8 @@ import TransmissionsApi from './modules/transactions/TransmissionsApi';
 import BillingDealsApi from './modules/transactions/BillingDealsApi';
 import InvoicingApi from './modules/transactions/InvoicingApi';
 import PaymentRequestsApi from './modules/transactions/PaymentRequestsApi';
+import DashboardReportingApi from './modules/reporting/DashboardReportingApi';
+
 
 class ApiBase {
     constructor() {
@@ -29,6 +31,9 @@ class ApiBase {
         this.billingDeals = new BillingDealsApi(this);
         this.invoicing = new InvoicingApi(this);
         this.paymentRequests = new PaymentRequestsApi(this);
+        this.reporting = {
+            dashboard: new DashboardReportingApi(this)
+        };
     }
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */

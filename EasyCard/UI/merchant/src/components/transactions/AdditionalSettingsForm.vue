@@ -137,7 +137,6 @@ export default {
       }else{
         this.invoiceTypeUpd = this.invoiceType;
       }
-      console.log(this.terminal.invoiceSettings.defaultCreditInvoiceType)
     }
   }
 };

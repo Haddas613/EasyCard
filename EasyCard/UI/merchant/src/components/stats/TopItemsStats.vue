@@ -9,8 +9,8 @@
     <v-divider></v-divider>
     <v-card-text class="px-0">
       <ec-list class="px-2" v-if="items && items.length > 0" :items="items" dense dashed>
-        <template v-slot:prepend="{index}">
-          {{index + 1}}.
+        <template v-slot:prepend="{ item }">
+          {{item.rowN}}
         </template>
         <template v-slot:left="{ item }">
           <v-col cols="12" class="text-align-initial text-oneline">
@@ -19,15 +19,21 @@
         </template>
         <template v-slot:right="{ item }">
           <v-col cols="12" class="text-end font-weight-bold subtitle-2">
-            {{item.price | currency(item.$currency)}}
+            {{item.totalAmount | currency('ILS')}}
           </v-col>
         </template>
       </ec-list>
+      <p class="text-center" v-else>
+        {{$t("NothingToShow")}}
+      </p>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
+import { mapState } from "vuex";
+import moment from "moment";
+
 export default {
   components: {
     EcList: () => import("../ec/EcList"),
@@ -37,8 +43,23 @@ export default {
       items: null
     }
   },
+  computed: {
+    ...mapState({
+      terminalStore: state => state.settings.terminal,
+    }),
+  },
   async mounted(){
-    this.items = (await this.$api.items.getItems({take: 5})).data;
+    let report = await this.$api.reporting.dashboard.getItemsTotals({
+      terminalID: this.terminalStore.terminalID,
+      dateFrom: moment().toISOString(),
+      dateTo: moment().toISOString(),
+    });
+
+    if(!report || report.length === 0){
+      return;
+    }
+
+    this.items = report;
   }
 };
 </script>

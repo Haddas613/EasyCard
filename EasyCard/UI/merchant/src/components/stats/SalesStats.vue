@@ -10,8 +10,8 @@
     <v-card-text>
       <v-row align="center" justify="center" class="py-4">
         <v-col class="text-center">
-          <h1 class="sum black--text">$1,120.36</h1>
-          <p class="undertext pt-4">{{$t("@TransactionsCount").replace("@count", 58)}}</p>
+          <h1 class="sum black--text">{{stats.totalAmount | currency('ILS')}}</h1>
+          <p class="undertext pt-4">{{$t("@TransactionsCount").replace("@count", stats.transactionsCount)}}</p>
         </v-col>
       </v-row>
     </v-card-text>
@@ -19,10 +19,40 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import moment from "moment";
+
 export default {
   components: {
     EcDialogInvoker: () => import("../ec/EcDialogInvoker")
-  }
+  },
+  data() {
+    return {
+      stats: {
+        transactionsCount: 0,
+        totalAmount: 0
+      }
+    }
+  },
+  computed: {
+    ...mapState({
+      terminalStore: state => state.settings.terminal,
+    }),
+  },
+  async mounted () {
+    let report = await this.$api.reporting.dashboard.getTransactionsTotals({
+      terminalID: this.terminalStore.terminalID,
+      dateFrom: moment().toISOString(),
+      dateTo: moment().toISOString(),
+    });
+
+    if(!report || report.length === 0){
+      return;
+    }
+
+    this.stats.transactionsCount = report[0].transactionsCount || 0;
+    this.stats.totalAmount = report[0].totalAmount || 0;
+  },
 };
 </script>
 
