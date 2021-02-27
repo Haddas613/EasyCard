@@ -81,10 +81,10 @@ namespace Reporting.Business.Services
         {
             query.MerchantID = httpContextAccessor.GetUser().GetMerchantID();
 
-            var sql = @"select TOP(100) isnull(sum(t.TransactionAmount),0) as TotalAmount, d.[Date]
+            var sql = @"select isnull(sum(t.TransactionAmount),0) as TotalAmount, d.[Date]
 	from [dbo].[Timeline] as d left outer join 
-	[dbo].[PaymentTransaction] as t on d.[Date] = t.[TransactionDate]
-	where t.MerchantID = @MerchantID and t.TerminalID = @TerminalID and d.[Date] <= @TimelineDateTo and  d.[Date] >= @TimelineDateFrom
+	[dbo].[PaymentTransaction] as t on d.[Date] = t.[TransactionDate] and t.MerchantID = @MerchantID and t.TerminalID = @TerminalID
+	where d.[Date] <= @TimelineDateTo and  d.[Date] >= @TimelineDateFrom
 	group by d.[Date]
 	order by d.[Date]";
 

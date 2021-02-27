@@ -11,8 +11,6 @@ using System.Text;
 using Transactions.Business.Entities;
 using Shared.Helpers.Security;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
-using Microsoft.Extensions.Logging.Debug;
 using System.Threading.Tasks;
 using System.Security;
 using System.Data;
@@ -30,12 +28,6 @@ namespace Transactions.Business.Data
 {
     public class TransactionsContext : DbContext
     {
-        public static readonly LoggerFactory DbCommandConsoleLoggerFactory
-          = new LoggerFactory(new[]
-            {
-              new DebugLoggerProvider()
-            });
-
         public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
 
         public DbSet<CreditCardTokenDetails> CreditCardTokenDetails { get; set; }

@@ -30,9 +30,9 @@ using Shared.Integration.Models.Invoicing;
 using Shared.Helpers.Email;
 using Merchants.Shared.Models;
 using Shared.Helpers.Templating;
+using Z.EntityFramework.Plus;
 using Merchants.Business.Entities.Terminal;
 using SharedIntegration = Shared.Integration;
-using Z.EntityFramework.Plus;
 
 namespace Transactions.Api.Controllers
 {
@@ -185,7 +185,16 @@ namespace Transactions.Api.Controllers
 
             newInvoice.Calculate();
 
+            // TODO: check result
             await invoiceService.CreateEntity(newInvoice);
+
+            var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { newInvoice.InvoiceID }, null);
+
+            // TODO: validate
+            if (invoicesToResend.Count() > 0)
+            {
+                await queue.PushToQueue(invoicesToResend.First());
+            }
 
             return new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID);
         }

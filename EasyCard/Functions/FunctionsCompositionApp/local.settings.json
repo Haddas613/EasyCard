@@ -1,0 +1,11 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=ecng;AccountKey=4NjfZ4WcFlvNBzKHgbyGDdl+iYBiUv1SPU2hVneIqDyX0TsHUXtG707cfrGxnOCHD85L8mLRamck9w014/m1Vg==;EndpointSuffix=core.windows.net",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "emailqueue": "email",
+    "EmailTemplatesStorageTable": "emailtemplates",
+    "SendgridApiKey": "TestKey",
+    "EmailFrom": "noreply@ecng.co.il"
+  }
+}

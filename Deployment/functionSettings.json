@@ -1,0 +1,67 @@
+[
+  {
+    "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+    "value": "354136c0-2043-4c78-a7b7-a372cb59c8f3",
+    "slotSetting": true
+  },
+  {
+    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+    "value": "InstrumentationKey=354136c0-2043-4c78-a7b7-a372cb59c8f3",
+    "slotSetting": false
+  },
+  {
+    "name": "AzureWebJobsDashboard",
+    "value": "DefaultEndpointsProtocol=https;AccountName=ecng;AccountKey=4NjfZ4WcFlvNBzKHgbyGDdl+iYBiUv1SPU2hVneIqDyX0TsHUXtG707cfrGxnOCHD85L8mLRamck9w014/m1Vg==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "AzureWebJobsStorage",
+    "value": "DefaultEndpointsProtocol=https;AccountName=ecng;AccountKey=4NjfZ4WcFlvNBzKHgbyGDdl+iYBiUv1SPU2hVneIqDyX0TsHUXtG707cfrGxnOCHD85L8mLRamck9w014/m1Vg==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "EmailFrom",
+    "value": "noreply@ecng.co.il",
+    "slotSetting": false
+  },
+  {
+    "name": "emailqueue",
+    "value": "email",
+    "slotSetting": false
+  },
+  {
+    "name": "EmailTemplatesStorageTable",
+    "value": "emailtemplates",
+    "slotSetting": false
+  },
+  {
+    "name": "FUNCTIONS_EXTENSION_VERSION",
+    "value": "~3",
+    "slotSetting": false
+  },
+  {
+    "name": "FUNCTIONS_WORKER_RUNTIME",
+    "value": "dotnet",
+    "slotSetting": false
+  },
+  {
+    "name": "SendgridApiKey",
+    "value": "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",
+    "slotSetting": false
+  },
+  {
+    "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+    "value": "DefaultEndpointsProtocol=https;AccountName=ecng;AccountKey=4NjfZ4WcFlvNBzKHgbyGDdl+iYBiUv1SPU2hVneIqDyX0TsHUXtG707cfrGxnOCHD85L8mLRamck9w014/m1Vg==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "WEBSITE_CONTENTSHARE",
+    "value": "ecng-emailsender",
+    "slotSetting": false
+  },
+  {
+    "name": "WEBSITE_RUN_FROM_PACKAGE",
+    "value": "1",
+    "slotSetting": false
+  }
+]

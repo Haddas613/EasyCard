@@ -1,0 +1,12 @@
+[
+  {
+    "name": "EmailFrom",
+    "value": "noreply@ecng.co.il",
+    "slotSetting": false
+  },
+  {
+    "name": "EmailTemplatesStorageTable",
+    "value": "emailtemplates",
+    "slotSetting": false
+  }
+]

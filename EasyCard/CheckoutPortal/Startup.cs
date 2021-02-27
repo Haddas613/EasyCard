@@ -77,7 +77,7 @@ namespace CheckoutPortal
                 var logger = serviceProvider.GetRequiredService<ILogger<TransactionsApiClient>>();
                 var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
 
-                return new TransactionsApiClient(webApiClient, logger, tokenService, apiCfg);
+                return new TransactionsApiClient(webApiClient, /*logger,*/ tokenService, apiCfg);
             });
 
             services.AddSingleton<ICryptoServiceCompact, AesGcmCryptoServiceCompact>(serviceProvider =>

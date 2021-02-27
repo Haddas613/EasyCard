@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+﻿//using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -18,13 +18,13 @@ namespace Transactions.Api.Client
     {
         private readonly IWebApiClient webApiClient;
         private readonly TransactionsApiClientConfig apiConfiguration;
-        private readonly ILogger logger;
+        //private readonly ILogger logger;
         private readonly IWebApiClientTokenService tokenService;
 
-        public TransactionsApiClient(IWebApiClient webApiClient, ILogger<TransactionsApiClient> logger, IWebApiClientTokenService tokenService, IOptions<TransactionsApiClientConfig> apiConfiguration)
+        public TransactionsApiClient(IWebApiClient webApiClient, /*ILogger logger,*/ IWebApiClientTokenService tokenService, IOptions<TransactionsApiClientConfig> apiConfiguration)
         {
             this.webApiClient = webApiClient;
-            this.logger = logger;
+            //this.logger = logger;
             this.apiConfiguration = apiConfiguration.Value;
             this.tokenService = tokenService;
         }
@@ -37,7 +37,7 @@ namespace Transactions.Api.Client
             }
             catch (WebApiClientErrorException clientError)
             {
-                logger.LogError(clientError.Message);
+                //logger.LogError(clientError.Message);
                 return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
             }
         }
@@ -50,7 +50,7 @@ namespace Transactions.Api.Client
             }
             catch (WebApiClientErrorException clientError)
             {
-                logger.LogError(clientError.Message);
+                //logger.LogError(clientError.Message);
                 return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
             }
         }
@@ -64,8 +64,21 @@ namespace Transactions.Api.Client
             catch (WebApiClientErrorException clientError)
             {
                 var response = clientError.TryConvert(new OperationResponse { Message = clientError.Message });
-                logger.LogError($"Failed to get checkout data: {response?.Message}, correlationID: {response?.CorrelationId}");
+                //logger.LogError($"Failed to get checkout data: {response?.Message}, correlationID: {response?.CorrelationId}");
                 throw;
+            }
+        }
+
+        public async Task<OperationResponse> GenerateInvoice(Guid? invoiceID)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/invoicing/generate/{invoiceID}", new { }, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
             }
         }
 

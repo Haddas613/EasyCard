@@ -1,0 +1,22 @@
+{
+  "version": "2.0",
+  "logging": {
+    "applicationInsights": {
+      "samplingExcludedTypes": "Request",
+      "samplingSettings": {
+        "isEnabled": true
+      }
+    }
+  },
+  "Values": {
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=ecng;AccountKey=4NjfZ4WcFlvNBzKHgbyGDdl+iYBiUv1SPU2hVneIqDyX0TsHUXtG707cfrGxnOCHD85L8mLRamck9w014/m1Vg==;EndpointSuffix=core.windows.net",
+    "EmailTemplatesStorageTable": "emailtemplates"
+  },
+  "queues": {
+    "maxPollingInterval": 2000,
+    "visibilityTimeout": "00:00:30",
+    "batchSize": 1,
+    "maxDequeueCount": 5,
+    "newBatchThreshold": 8
+  }
+}

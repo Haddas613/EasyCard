@@ -43,9 +43,10 @@ using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
 using Transactions.Api.Extensions;
+using Shared.Helpers.Queue;
 using Z.EntityFramework.Plus;
-using SharedIntegration = Shared.Integration;
 using SharedBusiness = Shared.Business;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
@@ -73,6 +74,7 @@ namespace Transactions.Api.Controllers
         private readonly IInvoiceService invoiceService;
         private readonly ISystemSettingsService systemSettingsService;
         private readonly IMerchantsService merchantsService;
+        private readonly IQueue invoiceQueue;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -91,7 +93,8 @@ namespace Transactions.Api.Controllers
             IPaymentRequestsService paymentRequestsService,
             IHttpContextAccessorWrapper httpContextAccessor,
             ISystemSettingsService systemSettingsService,
-            IMerchantsService merchantsService)
+            IMerchantsService merchantsService,
+            IQueueResolver queueResolver)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -111,6 +114,7 @@ namespace Transactions.Api.Controllers
             this.httpContextAccessor = httpContextAccessor;
             this.systemSettingsService = systemSettingsService;
             this.merchantsService = merchantsService;
+            this.invoiceQueue = queueResolver.GetQueue(QueueResolver.InvoiceQueue);
         }
 
         [HttpGet]
@@ -780,6 +784,14 @@ namespace Transactions.Api.Controllers
                         transaction.InvoiceID = invoiceRequest.InvoiceID;
 
                         await transactionsService.UpdateEntity(transaction, Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
+
+                        var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
+
+                        // TODO: validate, rollback
+                        if (invoicesToResend.Count() > 0)
+                        {
+                            await invoiceQueue.PushToQueue(invoicesToResend.First());
+                        }
 
                         await dbTransaction.CommitAsync();
                     }

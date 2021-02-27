@@ -30,5 +30,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.1.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Reporting.Api.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 
 </Project>

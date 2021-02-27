@@ -11,7 +11,6 @@ using Shared.Helpers.Security;
 using Shared.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Shared.Api.Security;
 using Microsoft.AspNetCore.Diagnostics;
 using System.IO;
 

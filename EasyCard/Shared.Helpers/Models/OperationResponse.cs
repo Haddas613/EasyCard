@@ -71,7 +71,7 @@ namespace Shared.Api.Models
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string EntityReference { get; set; }
 
-        public string CorrelationId { get; internal set; }
+        public string CorrelationId { get; set; }
 
         public string EntityType { get; set; }
 
