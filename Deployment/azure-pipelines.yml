@@ -10,7 +10,8 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  versionNumber: $[ variables['Build.BuildNumber'] ]
+  buildNumber: $[ variables['Build.BuildNumber'] ]
+  versionNumber: '1.0.0.$(buildNumber)'
 
 
 steps:
@@ -114,6 +115,8 @@ steps:
       Merchants.Api.zip
       IdentityServer.zip
       CheckoutPortal.zip
+      FunctionsCompositionApp.zip
+      Reporting.Api.zip
     TargetFolder: '$(Build.ArtifactStagingDirectory)/publishable'
 
 - task: PublishBuildArtifacts@1

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shared.Api.Extensions.Filtering;
 using Shared.Helpers;
 using System;
 using System.Linq;

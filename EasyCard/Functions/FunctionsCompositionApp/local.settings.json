@@ -7,5 +7,13 @@
     "EmailTemplatesStorageTable": "emailtemplates",
     "SendgridApiKey": "TestKey",
     "EmailFrom": "noreply@ecng.co.il"
+  },
+  "IdentityServerClient": {
+    "Authority": "https://ecng-identity.azurewebsites.net",
+    "ClientID": "management_api",
+    "ClientSecret": "yuwsCT8cbJVgw2W6"
+  },
+  "ApiConfig": {
+    "TransactionsApiAddress": "https://ecng-transactions.azurewebsites.net"
   }
 }

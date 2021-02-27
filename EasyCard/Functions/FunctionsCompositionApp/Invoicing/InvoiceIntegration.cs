@@ -20,7 +20,7 @@ namespace FunctionsCompositionApp.Invoicing
 
             var config = new ConfigurationBuilder()
                 .SetBasePath(context.FunctionAppDirectory)
-                .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("host.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables()
                 .Build();
 
@@ -32,7 +32,7 @@ namespace FunctionsCompositionApp.Invoicing
 
             if (response.Status == Shared.Api.Models.Enums.StatusEnum.Error)
             {
-                log.LogError(response.Message);
+                log.LogError($"{response.Message}; InvoiceID {messageBody}; CorrelationID: {response.CorrelationId}");
             }
             else
             {
@@ -42,8 +42,14 @@ namespace FunctionsCompositionApp.Invoicing
 
         private static ITransactionsApiClient GetTransactionsApiClient(ILogger logger, IConfigurationRoot config)
         {
+            var section = config.GetSection("IdentityServerClient");
+            logger.LogInformation($"Section {section?.Value}");
+
             var identitySection = config.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
             var apiCfgsection = config.GetSection("ApiConfig")?.Get<TransactionsApiClientConfig>();
+
+            logger.LogInformation($"Authority {identitySection?.Authority}");
+            logger.LogInformation($"ClientID {identitySection?.ClientID}");
 
             var cfg = Options.Create(identitySection);
             var apiCfg = Options.Create(apiCfgsection);

@@ -109,12 +109,13 @@ namespace EasyInvoice.Converters
 
         public static ECInvoicePayment GetPaymentFromCard(InvoicingCreateDocumentRequest message)
         {
+            // TODO: validate that card details is present
             var res = new ECInvoicePayment
             {
                 PaymentMethod = ECInvoicePaymentMethodEnum.CREDIT_CARD_REGULAR_CREDIT.ToString(),
                 Amount = message.InvoiceAmount,
                 CreditCard4LastDigits = CreditCardHelpers.GetCardLastFourDigits(message.CreditCardDetails.CardNumber),
-                CreditCardType = message.CreditCardDetails.CardVendor,
+                CreditCardType = message.CreditCardDetails.CardVendor, // TODO: ECInvoice does not support LEUMI_CARD, also it should be in uppercase: [OTHER, VISA, MASTERCARD, DINERS_CLUB, ISRACARD, AMEX, DISCOVER, JCB]
                 PaymentDateTime = message.InvoiceDate.GetValueOrDefault(DateTime.Today).ToString("o"),
                 NumberOfPayments = message.NumberOfPayments
             };

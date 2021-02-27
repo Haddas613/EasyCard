@@ -201,7 +201,7 @@ namespace Reporting.Api
 
             services.AddScoped<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
 
-            services.AddDbContext<MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<MerchantsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("MerchantsConnection")));
             services.AddScoped<IMerchantsService, MerchantsService>();
             services.AddScoped<ITerminalsService, TerminalsService>();
             services.AddScoped<IConsumersService, ConsumersService>();

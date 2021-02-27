@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shared.Api.Extensions.Filtering;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace Transactions.Api.Extensions.Filtering
             {
                 var dateTime = CommonFiltertingExtensions.QuickDateToDateTime(filter.QuickDateFilter.Value);
 
+                // TODO: use invoice date
                 if (filter.DateType == DateFilterTypeEnum.Created)
                 {
                     src = src.Where(t => t.InvoiceTimestamp >= dateTime);
