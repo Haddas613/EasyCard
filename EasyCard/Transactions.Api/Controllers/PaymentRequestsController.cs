@@ -100,7 +100,7 @@ namespace Transactions.Api.Controllers
             {
                 var response = new SummariesResponse<PaymentRequestSummary>();
 
-                response.Data = await mapper.ProjectTo<PaymentRequestSummary>(query.OrderByDescending(p => p.PaymentRequestTimestamp).ApplyPagination(filter)).ToListAsync();
+                response.Data = await mapper.ProjectTo<PaymentRequestSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(PaymentRequest.PaymentRequestTimestamp), filter.SortDesc).ApplyPagination(filter)).ToListAsync();
                 response.NumberOfRecords = numberOfRecordsFuture.Value;
                 return Ok(response);
             }

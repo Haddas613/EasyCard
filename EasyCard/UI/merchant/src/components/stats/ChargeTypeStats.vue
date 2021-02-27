@@ -1,33 +1,38 @@
 <template>
   <v-card flat class="my-2">
-    <v-card-title class="px-2 py-3 ecdgray--text subtitle-3 text-uppercase">
-      <v-row no-gutters>
+    <v-card-title class="px-2 py-2 ecdgray--text subtitle-3 text-uppercase">
+      <v-row no-gutters align="center">
         <v-col cols="6">{{$t("ChargeType")}}</v-col>
-        <v-col cols="6" class="text-none text-end body-2">{{$t("Today")}}</v-col>
+        <v-col cols="6" class="text-none text-end body-2">
+          <stats-filter></stats-filter>
+        </v-col>
       </v-row>
     </v-card-title>
     <v-divider></v-divider>
     <v-card-text>
       <v-row>
-        <v-col cols="5" class="px-0">
-          <v-row no-gutters v-for="d in data" :key="d.type">
+        <v-col cols="5" class="px-0" v-if="!nothingToShow">
+          <v-row no-gutters v-for="d in stats" :key="d.paymentTypeEnum">
             <v-col cols="5">
               <div class="icon-circled">
-                <v-icon :color="typeOpts[d.type].color">{{typeOpts[d.type].icon}}</v-icon>
+                <v-icon :color="getTypeOpts(d.paymentTypeEnum).color">{{getTypeOpts(d.paymentTypeEnum).icon}}</v-icon>
               </div>
             </v-col>
             <v-col cols="7">
-              {{d.label}}
+              {{getTypeOpts(d.paymentTypeEnum).label}}
               <p>
-                <ec-money :amount="d.value" :currency="d.currency" bold></ec-money>
+                <b>{{d.totalAmount | currency('ILS')}}</b>
               </p>
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="7" class="px-0">
+        <v-col cols="7" class="px-0" v-if="!nothingToShow">
           <v-container class="chart-container px-0">
             <pie-chart v-if="draw" :options="chartOptions" :data="chartData"></pie-chart>
           </v-container>
+        </v-col>
+        <v-col cols="12" class="px-0" v-if="nothingToShow">
+          <p class="text-center">{{$t("NothingToShow")}}</p>
         </v-col>
       </v-row>
     </v-card-text>
@@ -35,67 +40,80 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import moment from "moment";
+
 export default {
   components: {
     PieChart: () => import("../charts/PieChart"),
-    EcMoney: () => import("../ec/EcMoney")
+    EcMoney: () => import("../ec/EcMoney"),
+    StatsFilter: () => import("./StatsFilter")
   },
   data() {
     return {
       draw: false, //set to true when ready to draw chart
+      stats: [],
+      chartOptions: null,
+      nothingToShow: false,
+      chartData: {
+        labels: [],
+        datasets: [
+          {
+            pointRadius: 0,
+            data: []
+          }
+        ]
+      },
       typeOpts: {
         card: {
+          label: this.$t("Card"),
           color: this.$vuetify.theme.themes.light.primary,
           icon: "mdi-credit-card-outline"
         },
         cash: {
+          label: this.$t("Cash"),
           color: this.$vuetify.theme.themes.light.secondary,
           icon: "mdi-cash"
         },
         bitcoin: {
+          label: this.$t("Bitcoin"),
           color: this.$vuetify.theme.themes.light.accent,
+          icon: "mdi-bitcoin"
+        },
+        _default: {
+          label: this.$t("NotSpecified"),
+          color: this.$vuetify.theme.themes.light.ecgray,
           icon: "mdi-cash"
         }
       },
-      data: [
-        {
-          label: "Credit Card",
-          type: 'card',
-          value: 500,
-          currency: 'USD'
-        },
-        {
-          label: "Cash",
-          type: 'cash',
-          value: 140,
-          currency: 'USD'
-        },
-        {
-          label: "Bitcoin",
-          type: 'bitcoin',
-          value: 26,
-          currency: 'USD'
-        }
-      ],
-      chartOptions: null,
-      chartData: {
-        labels: ["Credit Card", "Cash", "Bitcoin"],
-        datasets: [
-          {
-            pointRadius: 0,
-            label: "Data One",
-            data: [500, 140, 26]
-          }
-        ]
-      }
     };
   },
-  mounted() {
-    this.chartData.datasets[0].backgroundColor = [
-      this.typeOpts["card"].color,
-      this.typeOpts["cash"].color,
-      this.typeOpts["bitcoin"].color
-    ];
+  methods: {
+    getTypeOpts(type) {
+      return (type && this.typeOpts[type]) ? this.typeOpts[type] : this.typeOpts._default;
+    }
+  },
+  computed: {
+    ...mapState({
+      terminalStore: state => state.settings.terminal,
+    }),
+  },
+  async mounted() {
+    let report = await this.$api.reporting.dashboard.getPaymentTypeTotals({
+      terminalID: this.terminalStore.terminalID,
+      dateFrom: moment().toISOString(),
+      dateTo: moment().toISOString(),
+    });
+
+    if(!report || report.length === 0){
+      this.nothingToShow = true;
+      return;
+    }
+
+    this.stats = report;
+    this.chartData.labels = this.lodash.map(report, e => this.getTypeOpts(e.paymentTypeEnum).label);
+    this.chartData.datasets[0].backgroundColor = this.lodash.map(report, e => this.getTypeOpts(e.paymentTypeEnum).color);
+    this.chartData.datasets[0].data = this.lodash.map(report, e => e.totalAmount);
     this.draw = true;
   }
 };

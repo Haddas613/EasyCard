@@ -36,30 +36,30 @@ namespace Reporting.Shared.Models
 
     public class ConsumersTotals
     {
-        public int? CustomersCount { get; set; }
+        public int CustomersCount { get; set; }
 
-        public decimal? AverageAmount { get; set; }
+        public decimal AverageAmount { get; set; }
 
-        public decimal? RepeatingCustomers { get; set; }
+        public decimal RepeatingCustomers { get; set; }
 
-        public decimal? NewCustomers { get; set; }
+        public decimal NewCustomers { get; set; }
 
-        public decimal? TotalAmount { get; set; }
+        public decimal TotalAmount { get; set; }
 
-        public decimal? RepeatingCustomersRate
+        public decimal RepeatingCustomersRate
         {
             get
             {
-                if (TotalAmount == null) return null;
+                if (TotalAmount == 0 || RepeatingCustomers == 0) return 0;
                 return RepeatingCustomers / TotalAmount;
             }
         }
 
-        public decimal? NewCustomersRate
+        public decimal NewCustomersRate
         {
             get
             {
-                if (TotalAmount == null) return null;
+                if (TotalAmount == 0 || NewCustomers == 0) return 0;
                 return NewCustomers / TotalAmount;
             }
         }
@@ -76,6 +76,6 @@ namespace Reporting.Shared.Models
     {
         public PaymentTypeEnum? PaymentTypeEnum { get; set; }
 
-        public decimal? TotalAmount { get; set; }
+        public decimal TotalAmount { get; set; }
     }
 }

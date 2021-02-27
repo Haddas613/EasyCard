@@ -3,6 +3,9 @@ const appConstants = {
         defaultInvoiceType: 'invoiceWithPaymentInfo',
         defaultRefundInvoiceType: 'refundInvoice',
         defaultCreditInvoiceType: 'creditNote',
+    },
+    filtering:{
+        defaultDashboardQuickDateType: 'Last24Hours'
     }
 };
 

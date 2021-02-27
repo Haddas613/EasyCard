@@ -29,7 +29,7 @@ namespace Shared.Api.Logging
 
             var count = builder.AddTemplate("SELECT COUNT (*) FROM [dbo].[SystemLog] WITH(NOLOCK) /**where**/");
 
-            builder.OrderBy($"[{GetSortBy(query)}] {query.OrderByDirection}");
+            builder.OrderBy($"[{GetSortBy(query)}] {(query.SortDesc.GetValueOrDefault(true) ? "DESC" : "ASC")}");
 
             // filters
             if (query.LogLevel != null)

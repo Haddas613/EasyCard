@@ -79,7 +79,7 @@ namespace Merchants.Api.Controllers
 
                 var response = new SummariesResponse<MerchantSummary>();
 
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(Merchant.MerchantID), filter.OrderByDirection).ApplyPagination(filter);
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(Merchant.MerchantID), filter.SortDesc).ApplyPagination(filter);
 
                 response.Data = await mapper.ProjectTo<MerchantSummary>(query).Future().ToListAsync();
 

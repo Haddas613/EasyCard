@@ -112,7 +112,7 @@ namespace Merchants.Api.Controllers
 
                 var response = new SummariesResponse<TerminalSummary>();
 
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(Terminal.TerminalID), filter.OrderByDirection).ApplyPagination(filter);
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(Terminal.TerminalID), filter.SortDesc).ApplyPagination(filter);
 
                 response.Data = await mapper.ProjectTo<TerminalSummary>(query).Future().ToListAsync();
 
