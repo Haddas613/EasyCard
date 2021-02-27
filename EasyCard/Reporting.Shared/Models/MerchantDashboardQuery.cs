@@ -35,15 +35,17 @@ namespace Reporting.Shared.Models
                 DateFrom = CommonFiltertingExtensions.QuickDateToDateTime(QuickDateFilter.Value).Date;
             }
 
-            if (DateFrom == null)
-            {
-                DateFrom = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
-            }
-
             if (DateTo == null)
             {
                 DateTo = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
             }
+
+            //if (DateFrom == null)
+            //{
+            //    DateFrom = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+            //}
+
+            DateFrom = DateTo.Value.AddDays(-30).Date;
 
             if (TimelineDateTo == null)
             {
