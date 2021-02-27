@@ -91,7 +91,7 @@ steps:
     solution: '$(solution)'
     msbuildArgs: '
     /p:DeployOnBuild=true
-    /p:WebPublishMethod=Package
+    /p:WebPublishMethod=FileSystem
     /p:PackageAsSingleFile=false
     /p:SkipInvalidConfigurations=true
     /p:PackageLocation="$(build.artifactStagingDirectory)"'
