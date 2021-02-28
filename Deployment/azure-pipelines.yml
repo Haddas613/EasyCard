@@ -74,7 +74,7 @@ steps:
 
 - task: replacetokens@3
   inputs:
-    rootDirectory: '$(system.defaultworkingdirectory)/EasyCard'
+    rootDirectory: 'EasyCard'
     targetFiles: '**/appsettings.json'
     encoding: 'auto'
     writeBOM: true
@@ -115,9 +115,17 @@ steps:
       Merchants.Api.zip
       IdentityServer.zip
       CheckoutPortal.zip
-      FunctionsCompositionApp.zip
       Reporting.Api.zip
     TargetFolder: '$(Build.ArtifactStagingDirectory)/publishable'
+    
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(system.defaultworkingdirectory)/EasyCard/Functions/FunctionsCompositionApp/obj/Release/netcoreapp3.1/PubTmp/Out'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/publishable/FunctionsCompositionApp.zip'
+    replaceExistingArchive: true
 
 - task: PublishBuildArtifacts@1
   inputs:
