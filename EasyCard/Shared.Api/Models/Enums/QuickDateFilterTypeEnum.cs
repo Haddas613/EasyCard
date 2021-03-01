@@ -8,19 +8,19 @@ namespace Shared.Api.Models.Enums
 {
     public enum QuickDateFilterTypeEnum : short
     {
-        [EnumMember(Value = "Last24Hours")]
+        [EnumMember(Value = "last24Hours")]
         Last24Hours = 1,
 
-        [EnumMember(Value = "LastWeek")]
+        [EnumMember(Value = "lastWeek")]
         LastWeek = 2,
 
-        [EnumMember(Value = "LastTwoWeeks")]
+        [EnumMember(Value = "lastTwoWeeks")]
         LastTwoWeeks = 3,
 
-        [EnumMember(Value = "LastMonth")]
+        [EnumMember(Value = "lastMonth")]
         LastMonth = 4,
 
-        [EnumMember(Value = "LastYear")]
+        [EnumMember(Value = "lastYear")]
         LastYear = 5
     }
 }

@@ -8,19 +8,19 @@ namespace Shared.Api.Models.Enums
 {
     public enum QuickTimeFilterTypeEnum : short
     {
-        [EnumMember(Value = "Last5Minutes")]
+        [EnumMember(Value = "last5Minutes")]
         Last5Minutes = 1,
 
-        [EnumMember(Value = "Last15Minutes")]
+        [EnumMember(Value = "last15Minutes")]
         Last15Minutes = 2,
 
-        [EnumMember(Value = "Last30Minutes")]
+        [EnumMember(Value = "last30Minutes")]
         Last30Minutes = 3,
 
-        [EnumMember(Value = "LastHour")]
+        [EnumMember(Value = "lastHour")]
         LastHour = 4,
 
-        [EnumMember(Value = "Last24Hours")]
+        [EnumMember(Value = "last24Hours")]
         Last24Hours = 5
     }
 }
