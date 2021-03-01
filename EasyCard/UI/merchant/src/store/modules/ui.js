@@ -16,7 +16,19 @@ const state = () => ({
     },
     requestsCount: 0,
     versionMismatch: false,
-    dashboardDateFilter: appConstants.filtering.defaultDashboardQuickDateType
+    dashboardDateFilter: {
+        quickDateType: appConstants.filtering.defaultDashboardQuickDateType,
+        customDate: false,
+        dateFrom: null,
+        dateTo: null
+    },
+    //For timeline chart & other elements that typically require wider range
+    dashboardDateFilterAlt: {
+        quickDateType: appConstants.filtering.defaultDashboardAltQuickDateType,
+        customDate: false,
+        dateFrom: null,
+        dateTo: null
+    }
 });
 
 const getters = {};
@@ -38,6 +50,9 @@ const mutations = {
     },
     setDashboardDateFilter(state, value){
         state.dashboardDateFilter = value;
+    },
+    setDashboardDateFilterAlt(state, value){
+        state.dashboardDateFilterAlt = value;
     }
 }
 

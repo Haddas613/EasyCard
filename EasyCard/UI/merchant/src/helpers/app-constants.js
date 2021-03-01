@@ -5,7 +5,8 @@ const appConstants = {
         defaultCreditInvoiceType: 'creditNote',
     },
     filtering:{
-        defaultDashboardQuickDateType: 'last24Hours'
+        defaultDashboardQuickDateType: 'last24Hours',
+        defaultDashboardAltQuickDateType: 'lastMonth',
     }
 };
 

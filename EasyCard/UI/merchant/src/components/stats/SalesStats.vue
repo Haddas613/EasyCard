@@ -40,22 +40,34 @@ export default {
   computed: {
     ...mapState({
       terminalStore: state => state.settings.terminal,
+      storeDateFilter: state => state.ui.dashboardDateFilter
     }),
   },
   async mounted () {
-    let report = await this.$api.reporting.dashboard.getTransactionsTotals({
-      terminalID: this.terminalStore.terminalID,
-      dateFrom: moment().toISOString(),
-      dateTo: moment().toISOString(),
-    });
-
-    if(!report || report.length === 0){
-      return;
-    }
-
-    this.stats.transactionsCount = report[0].transactionsCount || 0;
-    this.stats.totalAmount = report[0].totalAmount || 0;
+    await this.getData();
   },
+  methods: {
+    async getData() {
+      let report = await this.$api.reporting.dashboard.getTransactionsTotals({
+        terminalID: this.terminalStore.terminalID,
+        dateFrom: this.storeDateFilter.dateFrom ? (moment(this.storeDateFilter.dateFrom).toISOString()) : null,
+        dateTo: this.storeDateFilter.dateTo ? (moment(this.storeDateFilter.dateTo).toISOString()) : null,
+        quickDateFilter: this.storeDateFilter.quickDateType
+      });
+
+      if(!report || report.length === 0){
+        return;
+      }
+
+      this.stats.transactionsCount = report[0].transactionsCount || 0;
+      this.stats.totalAmount = report[0].totalAmount || 0;
+    }
+  },
+  watch: {
+    storeDateFilter(newValue, oldValue) {
+      this.getData();
+    }
+  }
 };
 </script>
 

@@ -58,31 +58,43 @@ export default {
   computed: {
     ...mapState({
       terminalStore: state => state.settings.terminal,
+      storeDateFilter: state => state.ui.dashboardDateFilter
     }),
   },
   async mounted(){
-    let report = await this.$api.reporting.dashboard.getConsumersTotals({
-      terminalID: this.terminalStore.terminalID,
-      dateFrom: moment().toISOString(),
-      dateTo: moment().toISOString(),
-    });
+    await this.getData();
+  },
+  methods: {
+    async getData() {
+      let report = await this.$api.reporting.dashboard.getConsumersTotals({
+        terminalID: this.terminalStore.terminalID,
+        dateFrom: this.storeDateFilter.dateFrom ? (moment(this.storeDateFilter.dateFrom).toISOString()) : null,
+        dateTo: this.storeDateFilter.dateTo ? (moment(this.storeDateFilter.dateTo).toISOString()) : null,
+        quickDateFilter: this.storeDateFilter.quickDateType
+      });
 
-    if(!report || report.length === 0){
-      return;
+      if(!report || report.length === 0){
+        return;
+      }
+
+      const r = report[0];
+      //Average spend
+      this.stats[0].value = this.$options.filters.currency(r.averageAmount || 0, 'ILS');
+
+      //Total customers
+      this.stats[1].value = r.customersCount;
+
+      //New customers
+      this.stats[2].value = `${r.newCustomers.toFixed(0)}(${r.newCustomersRate}%)`;
+
+      //Repeating customers
+      this.stats[3].value = `${r.repeatingCustomers.toFixed(0)}(${r.repeatingCustomersRate}%)`;
     }
-
-    const r = report[0];
-    //Average spend
-    this.stats[0].value = this.$options.filters.currency(r.averageAmount || 0, 'ILS');
-
-    //Total customers
-    this.stats[1].value = r.customersCount;
-
-    //New customers
-    this.stats[2].value = `${r.newCustomers}(${r.newCustomersRate}%)`;
-
-    //Repeating customers
-    this.stats[3].value = `${r.repeatingCustomers}(${r.repeatingCustomersRate}%)`;
+  },
+  watch: {
+    storeDateFilter(newValue, oldValue) {
+      this.getData();
+    }
   }
 };
 </script>
