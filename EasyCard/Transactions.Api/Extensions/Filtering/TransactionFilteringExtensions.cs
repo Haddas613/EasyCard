@@ -177,7 +177,7 @@ namespace Transactions.Api.Extensions.Filtering
             {
                 var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(filter.QuickDateFilter.Value);
 
-                src = src.Where(t => t.TransactionDate >= dateRange.Item1 && t.TransactionDate <= dateRange.Item2);
+                src = src.Where(t => t.TransactionDate >= dateRange.DateFrom && t.TransactionDate <= dateRange.DateTo);
             }
             else
             {

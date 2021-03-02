@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Shared.Api.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -79,6 +80,16 @@ namespace Reporting.Shared.Models
         public decimal? GivenPeriodMeasure { get; set; }
 
         public decimal? AltPeriodMeasure { get; set; }
+
+        public DateTime? DateFrom { get; set; }
+
+        public DateTime? DateTo { get; set; }
+
+        public DateTime? AltDateFrom { get; set; }
+
+        public DateTime? AltDateTo { get; set; }
+
+        public ReportGranularityEnum? Granularity { get; set; }
     }
 
     public class TransactionTimeline
@@ -91,7 +102,7 @@ namespace Reporting.Shared.Models
         {
             get
             {
-                return DimensionValue is DateTime? ? ((DateTime?)DimensionValue)?.ToString("dd/MM") : DimensionValue?.ToString();
+                return DimensionValue is DateTime? ? ((DateTime?)DimensionValue)?.ToString("dd/MM") : $"{Year}-{DimensionValue?.ToString()}";
             }
         }
 

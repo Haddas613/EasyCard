@@ -85,7 +85,14 @@ namespace Reporting.Business.Services
         {
             NormalizeFilter(request);
 
-            var response = new TransactionTimelines();
+            var response = new TransactionTimelines
+            {
+                 DateFrom = request.DateFrom,
+                 DateTo = request.DateTo,
+                 AltDateFrom = request.AltDateFrom,
+                 AltDateTo = request.AltDateTo,
+                 Granularity = request.Granularity
+            };
 
             var query = new
             {
@@ -138,6 +145,7 @@ namespace Reporting.Business.Services
             return response;
         }
 
+        // TODO: join and filter tran status
         public async Task<IEnumerable<ItemsTotals>> GetItemsTotals(MerchantDashboardQuery request)
         {
             NormalizeFilter(request);
@@ -163,6 +171,7 @@ namespace Reporting.Business.Services
             }
         }
 
+        // TODO: use exists
         public async Task<IEnumerable<ConsumersTotals>> GetConsumersTotals(MerchantDashboardQuery request)
         {
             NormalizeFilter(request);
@@ -214,15 +223,23 @@ namespace Reporting.Business.Services
                 {
                     request.DateFrom = request.DateTo.Value.AddDays(-30).Date;
                 }
+
+                if (!request.Granularity.HasValue)
+                {
+                    request.Granularity = CommonFiltertingExtensions.GetReportGranularity(request.DateFrom.Value, request.DateTo.Value);
+                }
             }
             else
             {
                 var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(request.QuickDateFilter.Value);
-                request.DateFrom = dateRange.Item1;
-                request.DateTo = dateRange.Item2;
-            }
+                request.DateFrom = dateRange.DateFrom;
+                request.DateTo = dateRange.DateTo;
 
-            request.Granularity = CommonFiltertingExtensions.GetReportGranularity(request.QuickDateFilter, request.DateFrom, request.DateTo, request.Granularity);
+                if (!request.Granularity.HasValue)
+                {
+                    request.Granularity = CommonFiltertingExtensions.GetReportGranularity(request.QuickDateFilter.Value);
+                }
+            }
         }
     }
 }
