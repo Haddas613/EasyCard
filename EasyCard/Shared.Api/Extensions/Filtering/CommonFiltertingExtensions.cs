@@ -80,5 +80,50 @@ namespace Shared.Api.Extensions.Filtering
                 return ReportGranularityEnum.Date;
             }
         }
+
+        public static DateRange AltQuickDateToDateRange(QuickDateFilterAltEnum? typeEnum)
+        {
+            var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+            var yesterday = today.AddDays(-1);
+            var thisSunday = today.AddDays(-(int)today.DayOfWeek);
+            var prevSunday = thisSunday.AddDays(-7);
+            var prevPrevSunday = prevSunday.AddDays(-7);
+            var thisMonthStart = today.AddDays(-today.Day + 1);
+            var prevMonthStart = thisMonthStart.AddMonths(-1);
+            var prevPrevMonthStart = thisMonthStart.AddMonths(-2);
+
+            return typeEnum switch
+            {
+                QuickDateFilterAltEnum.LastWeek => new DateRange(prevPrevSunday, prevPrevSunday.AddDays(6)),
+                QuickDateFilterAltEnum.LastMonth => new DateRange(prevPrevMonthStart.AddMonths(1), prevPrevMonthStart.AddMonths(2).AddDays(-1)),
+                _ => new DateRange(yesterday, yesterday)
+            };
+        }
+
+        // Generate period which are previous related to given value
+        public static DateRange QuickDateToPrevDateRange(QuickDateFilterTypeEnum? typeEnum)
+        {
+            var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+            var yesterday = today.AddDays(-1);
+            var thisSunday = today.AddDays(-(int)today.DayOfWeek);
+            var prevSunday = thisSunday.AddDays(-7);
+            var prevPrevSunday = prevSunday.AddDays(-7);
+            var thisMonthStart = today.AddDays(-today.Day + 1);
+            var prevMonthStart = thisMonthStart.AddMonths(-1);
+            var prevPrevMonthStart = thisMonthStart.AddMonths(-2);
+
+            return typeEnum switch
+            {
+                QuickDateFilterTypeEnum.Today => new DateRange(yesterday, yesterday),
+                QuickDateFilterTypeEnum.Yesterday => new DateRange(yesterday.AddDays(-1), yesterday.AddDays(-1)),
+                QuickDateFilterTypeEnum.ThisWeek => new DateRange(prevSunday, prevSunday.AddDays(6)),
+                QuickDateFilterTypeEnum.LastWeek => new DateRange(prevPrevSunday, prevPrevSunday.AddDays(6)),
+                QuickDateFilterTypeEnum.Last30Days => new DateRange(today.AddDays(-61), today.AddDays(-31)),
+                QuickDateFilterTypeEnum.ThisMonth => new DateRange(prevMonthStart, prevMonthStart.AddMonths(1).AddDays(-1)),
+                QuickDateFilterTypeEnum.LastMonth => new DateRange(prevPrevMonthStart.AddMonths(1), prevPrevMonthStart.AddMonths(2).AddDays(-1)),
+                QuickDateFilterTypeEnum.Last3Months => new DateRange(prevPrevMonthStart.AddMonths(-2), prevPrevMonthStart.AddDays(-1)),
+                _ => new DateRange(today, today),
+            };
+        }
     }
 }

@@ -13,6 +13,7 @@ using Transactions.Shared.Enums;
 using Shared.Integration.Models;
 using Shared.Helpers;
 using Shared.Api.Extensions.Filtering;
+using Shared.Api.Models.Enums;
 
 namespace Reporting.Business.Services
 {
@@ -211,6 +212,8 @@ namespace Reporting.Business.Services
 
         private void NormalizeFilter(MerchantDashboardQuery request)
         {
+            var useDateRange = false;
+
             // If not enough info
             if (!request.QuickDateFilter.HasValue || request.DateTo.HasValue || request.DateFrom.HasValue)
             {
@@ -231,6 +234,7 @@ namespace Reporting.Business.Services
             }
             else
             {
+                useDateRange = true;
                 var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(request.QuickDateFilter.Value);
                 request.DateFrom = dateRange.DateFrom;
                 request.DateTo = dateRange.DateTo;
@@ -238,6 +242,34 @@ namespace Reporting.Business.Services
                 if (!request.Granularity.HasValue)
                 {
                     request.Granularity = CommonFiltertingExtensions.GetReportGranularity(request.QuickDateFilter.Value);
+                }
+            }
+
+            if (request.AltQuickDateFilter != QuickDateFilterAltEnum.NoComparison && (request.AltQuickDateFilter.HasValue || request.AltDateTo.HasValue || request.AltDateFrom.HasValue))
+            {
+                if (request.AltDateTo.HasValue || request.AltDateFrom.HasValue || (request.AltQuickDateFilter.Value == QuickDateFilterAltEnum.PrevPeriod && !useDateRange))
+                {
+                    if (request.AltDateTo == null)
+                    {
+                        request.AltDateTo = request.DateFrom.Value.AddDays(-1);
+                    }
+
+                    if (request.AltDateFrom == null)
+                    {
+                        request.AltDateFrom = request.AltDateTo.Value.AddDays(-(request.DateTo.Value - request.DateFrom.Value).TotalDays).Date;
+                    }
+                }
+                else if(request.AltQuickDateFilter.Value == QuickDateFilterAltEnum.PrevPeriod && useDateRange)
+                {
+                    var dateRange = CommonFiltertingExtensions.QuickDateToPrevDateRange(request.QuickDateFilter.Value);
+                    request.AltDateFrom = dateRange.DateFrom;
+                    request.AltDateTo = dateRange.DateTo;
+                }
+                else
+                {
+                    var dateRange = CommonFiltertingExtensions.AltQuickDateToDateRange(request.AltQuickDateFilter.Value);
+                    request.AltDateFrom = dateRange.DateFrom;
+                    request.AltDateTo = dateRange.DateTo;
                 }
             }
         }

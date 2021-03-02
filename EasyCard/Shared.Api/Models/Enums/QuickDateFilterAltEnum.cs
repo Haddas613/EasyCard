@@ -14,13 +14,10 @@ namespace Shared.Api.Models.Enums
         [EnumMember(Value = "prevPeriod")]
         PrevPeriod = 1,
 
-        [EnumMember(Value = "lastTwoWeeks")]
-        LastTwoWeeks = 3,
-
         [EnumMember(Value = "lastMonth")]
-        LastMonth = 4,
+        LastMonth = 6,
 
-        [EnumMember(Value = "lastYear")]
-        LastYear = 5
+        [EnumMember(Value = "lastWeek")]
+        LastWeek = 3,
     }
 }
