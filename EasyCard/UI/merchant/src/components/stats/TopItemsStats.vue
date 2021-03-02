@@ -49,20 +49,32 @@ export default {
   computed: {
     ...mapState({
       terminalStore: state => state.settings.terminal,
+      storeDateFilter: state => state.ui.dashboardDateFilter
     }),
   },
   async mounted(){
-    let report = await this.$api.reporting.dashboard.getItemsTotals({
-      terminalID: this.terminalStore.terminalID,
-      dateFrom: moment().toISOString(),
-      dateTo: moment().toISOString(),
-    });
+    await this.getData();
+  },
+  methods: {
+    async getData() {
+      let report = await this.$api.reporting.dashboard.getItemsTotals({
+        terminalID: this.terminalStore.terminalID,
+        dateFrom: this.storeDateFilter.dateFrom ? (moment(this.storeDateFilter.dateFrom).toISOString()) : null,
+        dateTo: this.storeDateFilter.dateTo ? (moment(this.storeDateFilter.dateTo).toISOString()) : null,
+        quickDateFilter: this.storeDateFilter.quickDateType
+      });
 
-    if(!report || report.length === 0){
-      return;
+      if(!report || report.length === 0){
+        return;
+      }
+
+      this.items = report;
     }
-
-    this.items = report;
+  },
+  watch: {
+    storeDateFilter(newValue, oldValue) {
+      this.getData();
+    }
   }
 };
 </script>

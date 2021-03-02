@@ -65,7 +65,7 @@
                       v-on="on"
                     ></v-text-field>
                   </template>
-                  <v-date-picker v-model="model.dateTo" :max="model.dateFrom" no-title scrollable>
+                  <v-date-picker v-model="model.dateTo" no-title scrollable>
                     <v-spacer></v-spacer>
                     <v-btn
                       text
@@ -129,13 +129,13 @@ export default {
       if(!this.model.customDate){
         this.model.dateFrom =  this.model.dateTo = null;
       }
-      this.$store.commit('ui/setDashboardDateFilter',  this.model);
+      this.$store.commit('ui/setDashboardDateFilterAlt',  this.model);
       this.filterDialog = false;
     }
   },
   computed: {
     ...mapState({
-      storeDateFilter: state => state.ui.dashboardDateFilter,
+      storeDateFilter: state => state.ui.dashboardDateFilterAlt,
     }),
     title: function(){
       if(this.storeDateFilter.dateFrom || this.storeDateFilter.dateTo){

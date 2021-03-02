@@ -91,30 +91,41 @@ export default {
   methods: {
     getTypeOpts(type) {
       return (type && this.typeOpts[type]) ? this.typeOpts[type] : this.typeOpts._default;
-    }
+    },
+    async getData() {
+      this.draw = false;
+      let report = await this.$api.reporting.dashboard.getPaymentTypeTotals({
+        terminalID: this.terminalStore.terminalID,
+        dateFrom: this.storeDateFilter.dateFrom ? (moment(this.storeDateFilter.dateFrom).toISOString()) : null,
+        dateTo: this.storeDateFilter.dateTo ? (moment(this.storeDateFilter.dateTo).toISOString()) : null,
+        quickDateFilter: this.storeDateFilter.quickDateType
+      });
+
+      if(!report || report.length === 0){
+        this.nothingToShow = true;
+        return;
+      }
+
+      this.stats = report;
+      this.chartData.labels = this.lodash.map(report, e => this.getTypeOpts(e.paymentTypeEnum).label);
+      this.chartData.datasets[0].backgroundColor = this.lodash.map(report, e => this.getTypeOpts(e.paymentTypeEnum).color);
+      this.chartData.datasets[0].data = this.lodash.map(report, e => e.totalAmount);
+      this.draw = true;
+      }
   },
   computed: {
     ...mapState({
       terminalStore: state => state.settings.terminal,
+      storeDateFilter: state => state.ui.dashboardDateFilter
     }),
   },
   async mounted() {
-    let report = await this.$api.reporting.dashboard.getPaymentTypeTotals({
-      terminalID: this.terminalStore.terminalID,
-      dateFrom: moment().toISOString(),
-      dateTo: moment().toISOString(),
-    });
-
-    if(!report || report.length === 0){
-      this.nothingToShow = true;
-      return;
+    await this.getData();
+  },
+  watch: {
+    storeDateFilter(newValue, oldValue) {
+      this.getData();
     }
-
-    this.stats = report;
-    this.chartData.labels = this.lodash.map(report, e => this.getTypeOpts(e.paymentTypeEnum).label);
-    this.chartData.datasets[0].backgroundColor = this.lodash.map(report, e => this.getTypeOpts(e.paymentTypeEnum).color);
-    this.chartData.datasets[0].data = this.lodash.map(report, e => e.totalAmount);
-    this.draw = true;
   }
 };
 </script>

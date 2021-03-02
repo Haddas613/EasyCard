@@ -3,7 +3,9 @@
     <v-card-title class="px-2 py-3 ecdgray--text subtitle-3 text-uppercase">
       <v-row no-gutters>
         <v-col cols="6">{{$t("CashFlow")}}</v-col>
-        <v-col cols="6" class="text-none text-end body-2">{{$t("3Months")}}</v-col>
+        <v-col cols="6" class="text-none text-end body-2">
+          <stats-filter-alt></stats-filter-alt>
+        </v-col>
       </v-row>
     </v-card-title>
     <v-divider></v-divider>
@@ -24,7 +26,8 @@ import moment from "moment";
 
 export default {
   components: {
-    LineChart: () => import("../charts/LineChart")
+    LineChart: () => import("../charts/LineChart"),
+    StatsFilterAlt: () => import("./StatsFilterAlt")
   },
   data() {
     return {
@@ -85,26 +88,38 @@ export default {
   computed: {
     ...mapState({
       terminalStore: state => state.settings.terminal,
+      storeDateFilter: state => state.ui.dashboardDateFilterAlt
     }),
   },
   async mounted () {
-    
-     let report = await this.$api.reporting.dashboard.getTransactionTimeline({
-      terminalID: this.terminalStore.terminalID,
-      timelineDateFrom: moment().add(-3, 'M').toISOString(),
-      timelineDateTo: moment().toISOString(),
-    });
-
-    if(!report || report.length < 3){
-      this.nothingToShow = true;
-      return;
-    }
-    this.chartData.labels = this.lodash.map(report, e => moment(e.date).format("MM/DD"));
-    this.chartData.datasets[0].data = this.lodash.map(report, e => e.totalAmount);
-    this.chartOptions.scales.yAxes[0].ticks.max = Math.ceil(this.lodash.max(this.chartData.datasets[0].data) / 10) * 10;
-    this.chartOptions.scales.yAxes[0].ticks.stepSize = Math.ceil(this.lodash.meanBy(this.chartData.datasets[0].data) / 10) * 10;
-    this.draw = true;
+     await this.getData();
   },
+  methods: {
+    async getData() {
+      this.draw = false;
+      let report = await this.$api.reporting.dashboard.getTransactionTimeline({
+        terminalID: this.terminalStore.terminalID,
+        dateFrom: this.storeDateFilter.dateFrom ? (moment(this.storeDateFilter.dateFrom).toISOString()) : null,
+        dateTo: this.storeDateFilter.dateTo ? (moment(this.storeDateFilter.dateTo).toISOString()) : null,
+        quickDateFilter: this.storeDateFilter.quickDateType
+      });
+
+      if(!report || report.length < 3){
+        this.nothingToShow = true;
+        return;
+      }
+      this.chartData.labels = this.lodash.map(report, e => moment(e.date).format("MM/DD"));
+      this.chartData.datasets[0].data = this.lodash.map(report, e => e.totalAmount);
+      this.chartOptions.scales.yAxes[0].ticks.max = Math.ceil(this.lodash.max(this.chartData.datasets[0].data) / 10) * 10;
+      this.chartOptions.scales.yAxes[0].ticks.stepSize = Math.ceil(this.lodash.meanBy(this.chartData.datasets[0].data) / 10) * 10;
+      this.draw = true;
+    }
+  },
+  watch: {
+    storeDateFilter(newValue, oldValue) {
+      this.getData();
+    }
+  }
 };
 </script>
 
