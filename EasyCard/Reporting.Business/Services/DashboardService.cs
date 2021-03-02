@@ -146,7 +146,6 @@ namespace Reporting.Business.Services
             return response;
         }
 
-        // TODO: join and filter tran status
         public async Task<IEnumerable<ItemsTotals>> GetItemsTotals(MerchantDashboardQuery request)
         {
             NormalizeFilter(request);
@@ -161,8 +160,8 @@ namespace Reporting.Business.Services
 
             var sql = @"select top (5) ROW_NUMBER() OVER(ORDER BY items.TotalAmount DESC) AS RowN, items.[ItemName], items.TotalAmount
 	from (
-    select t.[ItemName], sum(t.Amount) as TotalAmount from [dbo].[PaymentTransactionItem] as t
-	where t.MerchantID = @MerchantID and t.TerminalID = @TerminalID and t.TransactionDate <= @DateTo and t.TransactionDate >= @DateFrom
+    select t.[ItemName], sum(t.Amount) as TotalAmount from [dbo].[PaymentTransactionItem] as t inner join [dbo].[PaymentTransaction] as g on g.PaymentTransactionID = t.PaymentTransactionID
+	where t.MerchantID = @MerchantID and t.TerminalID = @TerminalID and t.TransactionDate <= @DateTo and t.TransactionDate >= @DateFrom and g.QuickType = 0
 	group by t.[ItemName]
 	) items";
 
@@ -172,7 +171,6 @@ namespace Reporting.Business.Services
             }
         }
 
-        // TODO: use exists
         public async Task<IEnumerable<ConsumersTotals>> GetConsumersTotals(MerchantDashboardQuery request)
         {
             NormalizeFilter(request);
@@ -185,24 +183,22 @@ namespace Reporting.Business.Services
                 DateTo = request.DateTo,
             };
 
-            var sql = @"select count(*) as CustomersCount, AVG(a.TotalAmount) as AverageAmount, 
-	sum(case when b.MinTransactionDate < @DateFrom then a.TotalAmount else 0 end) as RepeatingCustomers,
-	sum(case when b.MinTransactionDate >= @DateFrom then a.TotalAmount else 0 end) as NewCustomers,
-	sum(a.TotalAmount) as TotalAmount
+            var sql = @"select count(*) as CustomersCount, AVG(b.TotalAmount) as AverageAmount, 
+	sum(case when b.RepeatingCustomer = 1 then b.TotalAmount else 0 end) as RepeatingCustomers,
+	sum(case when b.RepeatingCustomer = 0 then b.TotalAmount else 0 end) as NewCustomers,
+	sum(b.TotalAmount) as TotalAmount
+	from
+	(
+	select a.ConsumerRef, a.TotalAmount,
+	(case when exists(select * from [dbo].[PaymentTransaction] as prev where prev.MerchantID = @MerchantID and prev.TerminalID = @TerminalID and prev.ConsumerRef = a.ConsumerRef and prev.TransactionDate < @DateFrom) then 1 else 0 end) as RepeatingCustomer
 	from
 	(
 	select sum(t.TransactionAmount) as TotalAmount, t.ConsumerRef
 	from [dbo].[PaymentTransaction] as t 
-	where t.MerchantID = @MerchantID and t.TerminalID = @TerminalID and t.TransactionDate <= @DateTo and t.TransactionDate >= @DateFrom
+	where t.MerchantID = @MerchantID and t.TerminalID = @TerminalID and t.TransactionDate <= @DateTo and t.TransactionDate >= @DateFrom and t.QuickType = 0
 	group by t.ConsumerRef
 	) as a
-	left outer join 
-	(
-	select MIN(t.TransactionDate) as MinTransactionDate, t.ConsumerRef
-	from [dbo].[PaymentTransaction] as t 
-	where t.MerchantID = @MerchantID and t.TerminalID = @TerminalID 
-	group by t.ConsumerRef
-	) as b on b.ConsumerRef = a.ConsumerRef";
+	) as b";
 
             using (var connection = new SqlConnection(connectionString))
             {

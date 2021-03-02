@@ -57,7 +57,7 @@ namespace Reporting.Shared.Models
             get
             {
                 if (TotalAmount == 0 || RepeatingCustomers == 0) return 0;
-                return RepeatingCustomers / TotalAmount;
+                return Math.Round(RepeatingCustomers / TotalAmount, 4);
             }
         }
 
@@ -66,7 +66,7 @@ namespace Reporting.Shared.Models
             get
             {
                 if (TotalAmount == 0 || NewCustomers == 0) return 0;
-                return NewCustomers / TotalAmount;
+                return Math.Round(NewCustomers / TotalAmount, 4);
             }
         }
     }

@@ -39,7 +39,7 @@ namespace Shared.Api.Extensions.Filtering
                 QuickDateFilterTypeEnum.Yesterday => new DateRange(yesterday, yesterday),
                 QuickDateFilterTypeEnum.ThisWeek => new DateRange(thisSunday, thisSunday.AddDays(6)),
                 QuickDateFilterTypeEnum.LastWeek => new DateRange(prevSunday, prevSunday.AddDays(6)),
-                QuickDateFilterTypeEnum.Last30Days => new DateRange(today.AddDays(-30), today),
+                QuickDateFilterTypeEnum.Last30Days => new DateRange(today.AddDays(-29), today),
                 QuickDateFilterTypeEnum.ThisMonth => new DateRange(thisMonthStart, thisMonthStart.AddMonths(1).AddDays(-1)),
                 QuickDateFilterTypeEnum.LastMonth => new DateRange(prevMonthStart, prevMonthStart.AddMonths(1).AddDays(-1)),
                 QuickDateFilterTypeEnum.Last3Months => new DateRange(prevPrevMonthStart, prevPrevMonthStart.AddMonths(3).AddDays(-1)),
@@ -118,10 +118,10 @@ namespace Shared.Api.Extensions.Filtering
                 QuickDateFilterTypeEnum.Yesterday => new DateRange(yesterday.AddDays(-1), yesterday.AddDays(-1)),
                 QuickDateFilterTypeEnum.ThisWeek => new DateRange(prevSunday, prevSunday.AddDays(6)),
                 QuickDateFilterTypeEnum.LastWeek => new DateRange(prevPrevSunday, prevPrevSunday.AddDays(6)),
-                QuickDateFilterTypeEnum.Last30Days => new DateRange(today.AddDays(-61), today.AddDays(-31)),
+                QuickDateFilterTypeEnum.Last30Days => new DateRange(today.AddDays(-59), today.AddDays(-30)),
                 QuickDateFilterTypeEnum.ThisMonth => new DateRange(prevMonthStart, prevMonthStart.AddMonths(1).AddDays(-1)),
                 QuickDateFilterTypeEnum.LastMonth => new DateRange(prevPrevMonthStart.AddMonths(1), prevPrevMonthStart.AddMonths(2).AddDays(-1)),
-                QuickDateFilterTypeEnum.Last3Months => new DateRange(prevPrevMonthStart.AddMonths(-2), prevPrevMonthStart.AddDays(-1)),
+                QuickDateFilterTypeEnum.Last3Months => new DateRange(prevPrevMonthStart.AddMonths(-3), prevPrevMonthStart.AddDays(-1)),
                 _ => new DateRange(today, today),
             };
         }
