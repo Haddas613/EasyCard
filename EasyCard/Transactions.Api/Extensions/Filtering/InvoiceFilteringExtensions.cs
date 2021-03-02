@@ -34,17 +34,19 @@ namespace Transactions.Api.Extensions.Filtering
             //TODO: Quick time filters using SequentialGuid https://stackoverflow.com/questions/54920200/entity-framework-core-guid-greater-than-for-paging
             if (filter.QuickDateFilter != null)
             {
-                var dateTime = CommonFiltertingExtensions.QuickDateToDateTime(filter.QuickDateFilter.Value);
+                // TODO: redo with base date
 
-                // TODO: use invoice date
-                if (filter.DateType == DateFilterTypeEnum.Created)
-                {
-                    src = src.Where(t => t.InvoiceTimestamp >= dateTime);
-                }
-                else if (filter.DateType == DateFilterTypeEnum.Updated)
-                {
-                    src = src.Where(t => t.UpdatedDate >= dateTime);
-                }
+                //var dateTime = CommonFiltertingExtensions.QuickDateToDateTime(filter.QuickDateFilter.Value);
+
+                //// TODO: use invoice date
+                //if (filter.DateType == DateFilterTypeEnum.Created)
+                //{
+                //    src = src.Where(t => t.InvoiceTimestamp >= dateTime);
+                //}
+                //else if (filter.DateType == DateFilterTypeEnum.Updated)
+                //{
+                //    src = src.Where(t => t.UpdatedDate >= dateTime);
+                //}
             }
             else
             {

@@ -33,16 +33,18 @@ namespace Transactions.Api.Extensions.Filtering
 
             if (filter.QuickDateFilter != null)
             {
-                var dateTime = CommonFiltertingExtensions.QuickDateToDateTime(filter.QuickDateFilter.Value);
+                // TODO: redo with base date
 
-                if (filter.DateType == DateFilterTypeEnum.Created)
-                {
-                    src = src.Where(t => t.PaymentRequestTimestamp >= dateTime);
-                }
-                else if (filter.DateType == DateFilterTypeEnum.Updated)
-                {
-                    src = src.Where(t => t.UpdatedDate >= dateTime);
-                }
+                //var dateTime = CommonFiltertingExtensions.QuickDateToDateTime(filter.QuickDateFilter.Value);
+
+                //if (filter.DateType == DateFilterTypeEnum.Created)
+                //{
+                //    src = src.Where(t => t.PaymentRequestTimestamp >= dateTime);
+                //}
+                //else if (filter.DateType == DateFilterTypeEnum.Updated)
+                //{
+                //    src = src.Where(t => t.UpdatedDate >= dateTime);
+                //}
             }
 
             //if (filter.Status != null)

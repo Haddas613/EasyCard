@@ -14,7 +14,7 @@ namespace Reporting.Business.Services
         public Task<IEnumerable<PaymentTypeTotals>> GetPaymentTypeTotals(MerchantDashboardQuery query);
 
 
-        public Task<IEnumerable<TransactionTimeline>> GetTransactionTimeline(MerchantDashboardQuery query);
+        public Task<TransactionTimelines> GetTransactionTimeline(MerchantDashboardQuery query);
 
 
         public Task<IEnumerable<ItemsTotals>> GetItemsTotals(MerchantDashboardQuery query);

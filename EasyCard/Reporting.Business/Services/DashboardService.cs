@@ -8,6 +8,11 @@ using System.Linq;
 using Reporting.Shared.Models;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
+using SharedIntegration = Shared.Integration;
+using Transactions.Shared.Enums;
+using Shared.Integration.Models;
+using Shared.Helpers;
+using Shared.Api.Extensions.Filtering;
 
 namespace Reporting.Business.Services
 {
@@ -22,40 +27,29 @@ namespace Reporting.Business.Services
             this.httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<MerchantDashboardResponse> GetMerchantDashboard(MerchantDashboardQuery query)
+        public async Task<IEnumerable<TransactionsTotals>> GetTransactionsTotals(MerchantDashboardQuery request)
         {
-            query.MerchantID = httpContextAccessor.GetUser().GetMerchantID();
+            NormalizeFilter(request);
 
-            using (var connection = new SqlConnection(connectionString))
+            var query = new
             {
-                var response = new MerchantDashboardResponse
-                {
-                   
-                };
+                TerminalID = request.TerminalID,
+                MerchantID = httpContextAccessor.GetUser().GetMerchantID(),
+                RegularSpecialType = SpecialTransactionTypeEnum.RegularDeal,
+                RefundSpecialType = SpecialTransactionTypeEnum.Refund,
+                DateFrom = request.DateFrom,
+                DateTo = request.DateTo,
+            };
 
-                using (var multi = await connection.QueryMultipleAsync("PR_MerchantsDashboard", query, commandType: System.Data.CommandType.StoredProcedure))
-                {
-                    response.TransactionsTotals = await multi.ReadAsync<TransactionsTotals>();
-
-                    response.PaymentTypeTotal = await multi.ReadAsync<PaymentTypeTotals>();
-
-                    response.TransactionTimeline = await multi.ReadAsync<TransactionTimeline>();
-
-                    response.ItemsTotals = await multi.ReadAsync<ItemsTotals>();
-
-                    response.ConsumersTotals = await multi.ReadAsync<ConsumersTotals>();
-                }
-
-                return response;
-            }
-        }
-
-        public async Task<IEnumerable<TransactionsTotals>> GetTransactionsTotals(MerchantDashboardQuery query)
-        {
-            query.MerchantID = httpContextAccessor.GetUser().GetMerchantID();
-
-            var sql = @"select count(*) as TransactionsCount, sum(t.TransactionAmount) as TotalAmount from [dbo].[PaymentTransaction] as t 
-	where t.MerchantID = @MerchantID and t.TerminalID = @TerminalID and t.TransactionDate <= @DateTo and t.TransactionDate >= @DateFrom";
+            var sql = @"select 
+    sum(case when t.SpecialTransactionType = @RegularSpecialType then 1 else 0 end) as RegularTransactionsCount,
+    sum(case when t.SpecialTransactionType = @RefundSpecialType then 1 else 0 end) as RefundTransactionsCount,
+    sum(case when t.SpecialTransactionType = @RegularSpecialType then t.TotalAmount else 0 end) as RegularTransactionsAmount,
+    sum(case when t.SpecialTransactionType = @RefundSpecialType then t.TotalAmount else 0 end) as RefundTransactionsAmount,
+    from [dbo].[PaymentTransaction] as t where
+    t.MerchantID = @MerchantID and t.TerminalID = @TerminalID 
+    and t.QuickType IN (0, -1)
+    and t.TransactionDate <= @DateTo and t.TransactionDate >= @DateFrom";
 
             using (var connection = new SqlConnection(connectionString))
             {
@@ -63,12 +57,22 @@ namespace Reporting.Business.Services
             }
         }
 
-        public async Task<IEnumerable<PaymentTypeTotals>> GetPaymentTypeTotals(MerchantDashboardQuery query)
+        public async Task<IEnumerable<PaymentTypeTotals>> GetPaymentTypeTotals(MerchantDashboardQuery request)
         {
-            query.MerchantID = httpContextAccessor.GetUser().GetMerchantID();
+            NormalizeFilter(request);
 
-            var sql = @"select sum(t.TransactionAmount) as TotalAmount, t.PaymentTypeEnum from [dbo].[PaymentTransaction] as t
-	where t.MerchantID = @MerchantID and t.TerminalID = @TerminalID and t.TransactionDate <= @DateTo and t.TransactionDate >= @DateFrom
+            var query = new
+            {
+                TerminalID = request.TerminalID,
+                MerchantID = httpContextAccessor.GetUser().GetMerchantID(),
+                DateFrom = request.DateFrom,
+                DateTo = request.DateTo,
+            };
+
+            var sql = @"select sum(t.TotalAmount) as TotalAmount, t.PaymentTypeEnum from [dbo].[PaymentTransaction] as t where 
+    t.MerchantID = @MerchantID and t.TerminalID = @TerminalID 
+    and t.QuickType = 0
+    and t.TransactionDate <= @DateTo and t.TransactionDate >= @DateFrom
 	group by t.PaymentTypeEnum";
 
             using (var connection = new SqlConnection(connectionString))
@@ -77,26 +81,74 @@ namespace Reporting.Business.Services
             }
         }
 
-        public async Task<IEnumerable<TransactionTimeline>> GetTransactionTimeline(MerchantDashboardQuery query)
+        public async Task<TransactionTimelines> GetTransactionTimeline(MerchantDashboardQuery request)
         {
-            query.MerchantID = httpContextAccessor.GetUser().GetMerchantID();
+            NormalizeFilter(request);
 
-            var sql = @"select isnull(sum(t.TransactionAmount),0) as TotalAmount, d.[Date]
+            var response = new TransactionTimelines();
+
+            var query = new
+            {
+                TerminalID = request.TerminalID,
+                MerchantID = httpContextAccessor.GetUser().GetMerchantID(),
+                DateFrom = request.DateFrom,
+                DateTo = request.DateTo,
+            };
+
+            if (!(request.DateFrom.HasValue && request.DateTo.HasValue))
+            {
+                throw new Exception("Both DateFrom and DateTo should be specified");
+            }
+
+            string grouping = request.Granularity.ToString() ?? "Date";
+            // TODO: enum from request
+            var measure = "TotalAmount";
+
+            var sql = @"select isnull(sum(t.[/**measure**/]),0) as [Measure], d.[Year], d.[/**grouping**/] as [DimensionValue]
 	from [dbo].[Timeline] as d left outer join 
-	[dbo].[PaymentTransaction] as t on d.[Date] = t.[TransactionDate] and t.MerchantID = @MerchantID and t.TerminalID = @TerminalID
-	where d.[Date] <= @TimelineDateTo and  d.[Date] >= @TimelineDateFrom
-	group by d.[Date]
-	order by d.[Date]";
+	[dbo].[PaymentTransaction] as t on d.[Date] = t.[TransactionDate] and t.MerchantID = @MerchantID and t.TerminalID = @TerminalID and t.QuickType = 0
+	where d.[Date] <= @DateTo and  d.[Date] >= @DateFrom
+	group by d.[Year], d.[/**grouping**/]
+	order by d.[Year], d.[/**grouping**/]";
 
+            sql = sql.Replace("/**measure**/", measure).Replace("/**grouping**/", grouping);
+           
             using (var connection = new SqlConnection(connectionString))
             {
-                return await connection.QueryAsync<TransactionTimeline>(sql, query);
+                response.GivenPeriod = await connection.QueryAsync<TransactionTimeline>(sql, query);
+
+                response.GivenPeriodMeasure = response.GivenPeriod.Sum(d => d.Measure);
+
+                if (request.AltDateFrom.HasValue || request.AltDateTo.HasValue)
+                {
+                    var altQuery = new
+                    {
+                        TerminalID = request.TerminalID,
+                        MerchantID = httpContextAccessor.GetUser().GetMerchantID(),
+                        DateFrom = request.AltDateFrom,
+                        DateTo = request.AltDateTo,
+                    };
+
+                    response.AltPeriod = await connection.QueryAsync<TransactionTimeline>(sql, altQuery);
+
+                    response.AltPeriodMeasure = response.AltPeriod.Sum(d => d.Measure);
+                }
             }
+
+            return response;
         }
 
-        public async Task<IEnumerable<ItemsTotals>> GetItemsTotals(MerchantDashboardQuery query)
+        public async Task<IEnumerable<ItemsTotals>> GetItemsTotals(MerchantDashboardQuery request)
         {
-            query.MerchantID = httpContextAccessor.GetUser().GetMerchantID();
+            NormalizeFilter(request);
+
+            var query = new
+            {
+                TerminalID = request.TerminalID,
+                MerchantID = httpContextAccessor.GetUser().GetMerchantID(),
+                DateFrom = request.DateFrom,
+                DateTo = request.DateTo,
+            };
 
             var sql = @"select top (5) ROW_NUMBER() OVER(ORDER BY items.TotalAmount DESC) AS RowN, items.[ItemName], items.TotalAmount
 	from (
@@ -111,9 +163,17 @@ namespace Reporting.Business.Services
             }
         }
 
-        public async Task<IEnumerable<ConsumersTotals>> GetConsumersTotals(MerchantDashboardQuery query)
+        public async Task<IEnumerable<ConsumersTotals>> GetConsumersTotals(MerchantDashboardQuery request)
         {
-            query.MerchantID = httpContextAccessor.GetUser().GetMerchantID();
+            NormalizeFilter(request);
+
+            var query = new
+            {
+                TerminalID = request.TerminalID,
+                MerchantID = httpContextAccessor.GetUser().GetMerchantID(),
+                DateFrom = request.DateFrom,
+                DateTo = request.DateTo,
+            };
 
             var sql = @"select count(*) as CustomersCount, AVG(a.TotalAmount) as AverageAmount, 
 	sum(case when b.MinTransactionDate < @TimelineDateFrom then a.TotalAmount else 0 end) as RepeatingCustomers,
@@ -138,6 +198,31 @@ namespace Reporting.Business.Services
             {
                 return await connection.QueryAsync<ConsumersTotals>(sql, query);
             }
+        }
+
+        private void NormalizeFilter(MerchantDashboardQuery request)
+        {
+            // If not enough info
+            if (!request.QuickDateFilter.HasValue || request.DateTo.HasValue || request.DateFrom.HasValue)
+            {
+                if (request.DateTo == null)
+                {
+                    request.DateTo = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+                }
+
+                if (request.DateFrom == null)
+                {
+                    request.DateFrom = request.DateTo.Value.AddDays(-30).Date;
+                }
+            }
+            else
+            {
+                var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(request.QuickDateFilter.Value);
+                request.DateFrom = dateRange.Item1;
+                request.DateTo = dateRange.Item2;
+            }
+
+            request.Granularity = CommonFiltertingExtensions.GetReportGranularity(request.QuickDateFilter, request.DateFrom, request.DateTo, request.Granularity);
         }
     }
 }

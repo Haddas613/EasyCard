@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Transactions.Shared.Enums;
@@ -20,9 +21,13 @@ namespace Reporting.Shared.Models
 
     public class TransactionsTotals
     {
-        public int? TransactionsCount { get; set; }
+        public int? RegularTransactionsCount { get; set; }
 
-        public decimal? TotalAmount { get; set; }
+        public int? RefundTransactionsCount { get; set; }
+
+        public decimal? RegularTransactionsAmount { get; set; }
+
+        public decimal? RefundTransactionsAmount { get; set; }
     }
 
     public class ItemsTotals
@@ -65,11 +70,32 @@ namespace Reporting.Shared.Models
         }
     }
 
+    public class TransactionTimelines
+    {
+        public IEnumerable<TransactionTimeline> GivenPeriod { get; set; }
+
+        public IEnumerable<TransactionTimeline> AltPeriod { get; set; }
+
+        public decimal? GivenPeriodMeasure { get; set; }
+
+        public decimal? AltPeriodMeasure { get; set; }
+    }
+
     public class TransactionTimeline
     {
-        public DateTime? Date { get; set; }
+        public int? Year { get; set; }
 
-        public decimal? TotalAmount { get; set; }
+        public object DimensionValue { get; set; }
+
+        public string Dimension
+        {
+            get
+            {
+                return DimensionValue is DateTime? ? ((DateTime?)DimensionValue)?.ToString("dd/MM") : DimensionValue?.ToString();
+            }
+        }
+
+        public decimal? Measure { get; set; }
     }
 
     public class PaymentTypeTotals

@@ -2,10 +2,12 @@
 using Shared.Api.Extensions.Filtering;
 using Shared.Api.Models.Enums;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Transactions.Shared.Enums;
 
 namespace Reporting.Shared.Models
 {
@@ -18,44 +20,14 @@ namespace Reporting.Shared.Models
 
         public DateTime? DateTo { get; set; }
 
-        public DateTime? TimelineDateFrom { get; set; }
-
-        public DateTime? TimelineDateTo { get; set; }
-
         public QuickDateFilterTypeEnum? QuickDateFilter { get; set; }
 
-        [JsonIgnore]
-        public Guid? MerchantID { get; set; }
+        public DateTime? AltDateFrom { get; set; }
 
-        public void SetDefault()
-        {
-            // TODO: dateTo
-            if (QuickDateFilter.HasValue)
-            {
-                DateFrom = CommonFiltertingExtensions.QuickDateToDateTime(QuickDateFilter.Value).Date;
-            }
+        public DateTime? AltDateTo { get; set; }
 
-            if (DateTo == null)
-            {
-                DateTo = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
-            }
+        public QuickDateFilterAltEnum? AltQuickDateFilter { get; set; }
 
-            //if (DateFrom == null)
-            //{
-            //    DateFrom = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
-            //}
-
-            DateFrom = DateTo.Value.AddDays(-30).Date;
-
-            if (TimelineDateTo == null)
-            {
-                TimelineDateTo = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
-            }
-
-            if (TimelineDateFrom == null)
-            {
-                TimelineDateFrom = TimelineDateTo.Value.AddDays(-30).Date;
-            }
-        }
+        public ReportGranularityEnum? Granularity { get; set; }
     }
 }
