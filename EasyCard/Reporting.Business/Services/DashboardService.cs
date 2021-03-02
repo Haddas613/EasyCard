@@ -45,7 +45,7 @@ namespace Reporting.Business.Services
     sum(case when t.SpecialTransactionType = @RegularSpecialType then 1 else 0 end) as RegularTransactionsCount,
     sum(case when t.SpecialTransactionType = @RefundSpecialType then 1 else 0 end) as RefundTransactionsCount,
     sum(case when t.SpecialTransactionType = @RegularSpecialType then t.TotalAmount else 0 end) as RegularTransactionsAmount,
-    sum(case when t.SpecialTransactionType = @RefundSpecialType then t.TotalAmount else 0 end) as RefundTransactionsAmount,
+    sum(case when t.SpecialTransactionType = @RefundSpecialType then t.TotalAmount else 0 end) as RefundTransactionsAmount
     from [dbo].[PaymentTransaction] as t where
     t.MerchantID = @MerchantID and t.TerminalID = @TerminalID 
     and t.QuickType IN (0, -1)
