@@ -25,6 +25,8 @@ const state = () => ({
     //For timeline chart & other elements that typically require wider range
     dashboardDateFilterAlt: {
         quickDateType: appConstants.filtering.defaultDashboardAltQuickDateType,
+        granularity: appConstants.filtering.defaultDashboardAltGranularity,
+        altQuickDateFilter: appConstants.filtering.defaultDashboardAltQuickDateFilterAltEnum,
         customDate: false,
         dateFrom: null,
         dateTo: null

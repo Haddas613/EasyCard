@@ -5,7 +5,7 @@
     </v-btn>
     <ec-dialog :dialog.sync="filterDialog">
       <template v-slot:title>
-        {{$t('SelectDate')}}
+        {{$t('Filter')}}
       </template>
       <template v-slot:right>
         <v-btn color="primary" @click="apply()">{{$t('Apply')}}</v-btn>
@@ -13,6 +13,28 @@
       <template>
         <v-form ref="form" v-model="formIsValid">
           <v-row>
+            <v-col cols="12" md="6" class="px-6">
+              <v-select
+                :items="dictionaries.reportGranularityEnum"
+                item-text="description"
+                item-value="code"
+                v-model="model.granularity"
+                :label="$t('Granularity')"
+                outlined
+                hide-details
+              ></v-select>
+            </v-col>
+            <v-col cols="12" md="6" class="px-6">
+              <v-select
+                :items="dictionaries.quickDateFilterAltEnum"
+                item-text="description"
+                item-value="code"
+                v-model="model.altQuickDateFilter"
+                :label="$t('Reference')"
+                outlined
+                hide-details
+              ></v-select>
+            </v-col>
             <v-col cols="12" class="py-0 px-6">
               <v-switch v-model="model.customDate" :label="$t('Custom')"></v-switch>
             </v-col>

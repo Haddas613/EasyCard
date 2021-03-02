@@ -5,7 +5,7 @@
     </v-btn>
     <ec-dialog :dialog.sync="filterDialog">
       <template v-slot:title>
-        {{$t('SelectDate')}}
+        {{$t('Filter')}}
       </template>
       <template v-slot:right>
         <v-btn color="primary" @click="apply()">{{$t('Apply')}}</v-btn>

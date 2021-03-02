@@ -59,6 +59,8 @@
   "BillingDeal(Deleted)" : "Billing Deal (deleted)",
   "Checkout": "Checkout",
   "UpdateAvailable": "Update Available",
+  "Reference": "Reference",
+  "Selection": "Selection",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -86,6 +88,7 @@
   "@AllowedPrecision": "Allowed precision is @val",
   "OnlyPositiveNumbersAreAllowed": "Only positive numbers are allowed",
   "@TransactionsCount": "@count Transactions",
+  "@RefundsCount": "@count Refunds",
   "SelectItems": "Select Items",
   "AddItems": "Add Items",
   "@MaxSelectionCount": "You can only select up to @count items",
@@ -222,6 +225,7 @@
   "RedirectURL": "Redirect URL",
   "CheckoutRedirectUrls": "Checkout Redirect URLs",
   "CustomCSSURL": "Custom CSS URL",
+  "Granularity": "Granularity",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

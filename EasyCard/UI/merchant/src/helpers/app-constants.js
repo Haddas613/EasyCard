@@ -7,6 +7,8 @@ const appConstants = {
     filtering:{
         defaultDashboardQuickDateType: 'today',
         defaultDashboardAltQuickDateType: 'lastMonth',
+        defaultDashboardAltGranularity: 'week',
+        defaultDashboardAltQuickDateFilterAltEnum: 'noComparison',
     }
 };
 

@@ -43,6 +43,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RejectionReasonResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\ReportEnumsResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReportEnumsResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\SpecialTransactionTypeResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -82,6 +87,10 @@
     <EmbeddedResource Update="Resources\RejectionReasonResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>RejectionReasonResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\ReportEnumsResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ReportEnumsResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\SpecialTransactionTypeResource .he-IL.resx">
       <LastGenOutput>SpecialTransactionTypeResource .Designer.cs</LastGenOutput>

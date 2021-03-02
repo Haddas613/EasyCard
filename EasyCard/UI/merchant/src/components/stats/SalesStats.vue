@@ -11,9 +11,16 @@
     <v-divider></v-divider>
     <v-card-text>
       <v-row align="center" justify="center" class="py-4">
-        <v-col class="text-center">
-          <h1 class="sum black--text">{{stats.totalAmount | currency('ILS')}}</h1>
-          <p class="undertext pt-4">{{$t("@TransactionsCount").replace("@count", stats.transactionsCount)}}</p>
+        <v-col cols="12" class="text-center">
+          <h1 class="sum black--text">{{stats.regularTransactionsAmount | currency('ILS')}}</h1>
+          <p class="undertext pt-4">{{$t("@TransactionsCount").replace("@count", stats.regularTransactionsCount)}}</p>
+        </v-col>
+        <v-col cols="12">
+          <v-divider></v-divider>
+        </v-col>
+        <v-col cols="12" class="text-center mt-4">
+          <h1 class="sum error--text text--darken-1">{{stats.refundTransactionsAmount | currency('ILS')}}</h1>
+          <p class="undertext pt-4">{{$t("@RefundsCount").replace("@count", stats.refundTransactionsCount)}}</p>
         </v-col>
       </v-row>
     </v-card-text>
@@ -32,8 +39,10 @@ export default {
   data() {
     return {
       stats: {
-        transactionsCount: 0,
-        totalAmount: 0
+        regularTransactionsCount: 0,
+        regularTransactionsAmount: 0,
+        refundTransactionsCount: 0,
+        refundTransactionsAmount: 0,
       }
     }
   },
@@ -59,8 +68,7 @@ export default {
         return;
       }
 
-      this.stats.transactionsCount = report[0].transactionsCount || 0;
-      this.stats.totalAmount = report[0].totalAmount || 0;
+      this.stats = report[0];
     }
   },
   watch: {

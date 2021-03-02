@@ -68,6 +68,9 @@ namespace Transactions.Api.Services
 
             var paymentTypeEnum = typeof(PaymentTypeEnum);
 
+            var reportGranularityTypeEnum = typeof(ReportGranularityEnum);
+            var quickDateFilterAltTypeEnum = typeof(QuickDateFilterAltEnum);
+
             var tranStatuses = Enum.GetValues(transactionStatusEnumType).Cast<TransactionStatusEnum>()
                 .ToDictionary(m => transactionStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => TransactionStatusResource.ResourceManager.GetString(m.ToString(), culture) );
 
@@ -125,6 +128,12 @@ namespace Transactions.Api.Services
             var paymentTypes = Enum.GetValues(paymentTypeEnum).Cast<PaymentTypeEnum>()
                 .ToDictionary(m => paymentTypeEnum.GetDataContractAttrForEnum(m.ToString()), m => PaymentTypeResource.ResourceManager.GetString(m.ToString(), culture));
 
+            var reportGranularityTypes = Enum.GetValues(reportGranularityTypeEnum).Cast<ReportGranularityEnum>()
+                .ToDictionary(m => reportGranularityTypeEnum.GetDataContractAttrForEnum(m.ToString()), m => ReportEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
+            var quickDateFilterAltTypes = Enum.GetValues(quickDateFilterAltTypeEnum).Cast<QuickDateFilterAltEnum>()
+                .ToDictionary(m => quickDateFilterAltTypeEnum.GetDataContractAttrForEnum(m.ToString()), m => ReportEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
             response.TransactionStatusEnum = tranStatuses;
             response.TransactionTypeEnum = tranTypes;
             response.SpecialTransactionTypeEnum = spTranTypes;
@@ -144,6 +153,8 @@ namespace Transactions.Api.Services
             response.PaymentRequestStatusEnum = prStatusTypes;
             response.PayReqQuickStatusFilterTypeEnum = prQuickStatusTypes;
             response.PaymentTypeEnum = paymentTypes;
+            response.ReportGranularityEnum = reportGranularityTypes;
+            response.QuickDateFilterAltEnum = quickDateFilterAltTypes;
 
             return response;
         }
