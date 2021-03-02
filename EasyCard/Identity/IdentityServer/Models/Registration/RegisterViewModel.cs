@@ -54,6 +54,7 @@ namespace IdentityServer.Models.Registration
         [Required]
         [DataType(DataType.Password)]
         [StringLength(32, MinimumLength = 8)]
+        [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$", ErrorMessage = "Password must have minimum eight characters, at least one letter, one number and one special character")]
         public string Password { get; set; }
 
         [Required]

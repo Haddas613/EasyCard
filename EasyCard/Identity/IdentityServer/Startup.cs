@@ -81,10 +81,10 @@ namespace IdentityServer
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequiredLength = 8;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireDigit = false;
-                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireDigit = true;
+                options.Password.RequireNonAlphanumeric = true;
                 //options.Password.RequiredUniqueChars = 5;
             });
 
