@@ -26,8 +26,6 @@ namespace Transactions.Api.Models.Invoicing
 
         public DateTime? DateTo { get; set; }
 
-        public DateFilterTypeEnum DateType { get; set; }
-
         public InvoiceTypeEnum? InvoiceType { get; set; }
 
         public Guid? ConsumerID { get; set; }

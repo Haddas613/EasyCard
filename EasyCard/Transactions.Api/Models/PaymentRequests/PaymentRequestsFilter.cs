@@ -25,8 +25,6 @@ namespace Transactions.Api.Models.PaymentRequests
 
         public DateTime? DateTo { get; set; }
 
-        public DateFilterTypeEnum DateType { get; set; }
-
         //public PaymentRequestStatusEnum? Status { get; set; }
 
         public PayReqQuickStatusFilterTypeEnum? QuickStatus { get; set; }
