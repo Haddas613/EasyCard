@@ -108,10 +108,13 @@ export default {
         this.nothingToShow = true;
         return;
       }
-      this.chartData.labels = this.lodash.map(report, e => moment(e.date).format("MM/DD"));
-      this.chartData.datasets[0].data = this.lodash.map(report, e => e.totalAmount);
+      
+      this.chartData.labels = this.lodash.map(report.givenPeriod, e => e.dimension);
+      this.chartData.datasets[0].data = this.lodash.map(report.givenPeriod, e => e.measure);
       this.chartOptions.scales.yAxes[0].ticks.max = Math.ceil(this.lodash.max(this.chartData.datasets[0].data) / 10) * 10;
       this.chartOptions.scales.yAxes[0].ticks.stepSize = Math.ceil(this.lodash.meanBy(this.chartData.datasets[0].data) / 10) * 10;
+
+
       this.draw = true;
     }
   },

@@ -92,7 +92,7 @@ namespace Transactions.Api.Services
             var filterQuickTimeTypes = Enum.GetValues(filterQuickTimeEnumType).Cast<QuickTimeFilterTypeEnum>()
                 .ToDictionary(m => filterQuickTimeEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture) );
 
-            var filterQuickDateTypes = Enum.GetValues(filterQuickTimeEnumType).Cast<QuickDateFilterTypeEnum>()
+            var filterQuickDateTypes = Enum.GetValues(filterQuickDateEnumType).Cast<QuickDateFilterTypeEnum>()
                 .ToDictionary(m => filterQuickDateEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture));
 
             var filterQuickStatusTypes = Enum.GetValues(filterQuickStatusEnumType).Cast<QuickStatusFilterTypeEnum>()
