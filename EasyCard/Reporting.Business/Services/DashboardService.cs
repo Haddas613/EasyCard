@@ -176,8 +176,8 @@ namespace Reporting.Business.Services
             };
 
             var sql = @"select count(*) as CustomersCount, AVG(a.TotalAmount) as AverageAmount, 
-	sum(case when b.MinTransactionDate < @TimelineDateFrom then a.TotalAmount else 0 end) as RepeatingCustomers,
-	sum(case when b.MinTransactionDate >= @TimelineDateFrom then a.TotalAmount else 0 end) as NewCustomers,
+	sum(case when b.MinTransactionDate < @DateFrom then a.TotalAmount else 0 end) as RepeatingCustomers,
+	sum(case when b.MinTransactionDate >= @DateFrom then a.TotalAmount else 0 end) as NewCustomers,
 	sum(a.TotalAmount) as TotalAmount
 	from
 	(
