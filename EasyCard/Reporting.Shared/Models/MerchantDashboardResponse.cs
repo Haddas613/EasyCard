@@ -21,13 +21,13 @@ namespace Reporting.Shared.Models
 
     public class TransactionsTotals
     {
-        public int? RegularTransactionsCount { get; set; }
+        public int RegularTransactionsCount { get; set; }
 
-        public int? RefundTransactionsCount { get; set; }
+        public int RefundTransactionsCount { get; set; }
 
-        public decimal? RegularTransactionsAmount { get; set; }
+        public decimal RegularTransactionsAmount { get; set; }
 
-        public decimal? RefundTransactionsAmount { get; set; }
+        public decimal RefundTransactionsAmount { get; set; }
     }
 
     public class ItemsTotals
