@@ -48,33 +48,6 @@ namespace Transactions.Api.Extensions.Filtering
                 //    src = src.Where(t => t.UpdatedDate >= dateTime);
                 //}
             }
-            else
-            {
-                if (filter.DateType == DateFilterTypeEnum.Created)
-                {
-                    if (filter.DateFrom != null)
-                    {
-                        src = src.Where(t => t.InvoiceTimestamp.Value.Date >= filter.DateFrom.Value.Date);
-                    }
-
-                    if (filter.DateTo != null)
-                    {
-                        src = src.Where(t => t.InvoiceTimestamp.Value.Date <= filter.DateTo.Value.Date);
-                    }
-                }
-                else if (filter.DateType == DateFilterTypeEnum.Updated)
-                {
-                    if (filter.DateFrom != null)
-                    {
-                        src = src.Where(t => t.UpdatedDate.Value.Date >= filter.DateFrom.Value.Date);
-                    }
-
-                    if (filter.DateTo != null)
-                    {
-                        src = src.Where(t => t.UpdatedDate.Value.Date <= filter.DateTo.Value.Date);
-                    }
-                }
-            }
 
             if (filter.InvoiceType != null)
             {

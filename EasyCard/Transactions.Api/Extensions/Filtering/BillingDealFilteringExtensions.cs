@@ -95,34 +95,6 @@ namespace Transactions.Api.Extensions.Filtering
                 //    src = src.Where(t => t.UpdatedDate >= dateTime);
                 //}
             }
-            else
-            {
-                if (filter.DateType == DateFilterTypeEnum.Created)
-                {
-                    if (filter.DateFrom != null)
-                    {
-                        src = src.Where(t => t.BillingDealTimestamp >= filter.DateFrom.Value);
-                    }
-
-                    if (filter.DateTo != null)
-                    {
-                        src = src.Where(t => t.BillingDealTimestamp <= filter.DateTo.Value);
-                    }
-                }
-
-                if (filter.DateType == DateFilterTypeEnum.Updated)
-                {
-                    if (filter.DateFrom != null)
-                    {
-                        src = src.Where(t => t.UpdatedDate >= filter.DateFrom.Value);
-                    }
-
-                    if (filter.DateTo != null)
-                    {
-                        src = src.Where(t => t.UpdatedDate <= filter.DateTo.Value);
-                    }
-                }
-            }
 
             return src;
         }

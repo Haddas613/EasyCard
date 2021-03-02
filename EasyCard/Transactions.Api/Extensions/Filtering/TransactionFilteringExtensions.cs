@@ -179,34 +179,6 @@ namespace Transactions.Api.Extensions.Filtering
 
                 src = src.Where(t => t.TransactionDate >= dateRange.DateFrom && t.TransactionDate <= dateRange.DateTo);
             }
-            else
-            {
-                if (filter.DateType == DateFilterTypeEnum.Created)
-                {
-                    if (filter.DateFrom != null)
-                    {
-                        src = src.Where(t => t.TransactionTimestamp >= filter.DateFrom.Value);
-                    }
-
-                    if (filter.DateTo != null)
-                    {
-                        src = src.Where(t => t.TransactionTimestamp <= filter.DateTo.Value);
-                    }
-                }
-
-                if (filter.DateType == DateFilterTypeEnum.Updated)
-                {
-                    if (filter.DateFrom != null)
-                    {
-                        src = src.Where(t => t.UpdatedDate >= filter.DateFrom.Value);
-                    }
-
-                    if (filter.DateTo != null)
-                    {
-                        src = src.Where(t => t.UpdatedDate <= filter.DateTo.Value);
-                    }
-                }
-            }
 
             return src;
         }

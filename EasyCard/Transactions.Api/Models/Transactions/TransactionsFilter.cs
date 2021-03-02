@@ -54,9 +54,6 @@ namespace Transactions.Api.Models.Transactions
 
         public DateTime? DateTo { get; set; }
 
-        // TODO: should be removed - not relevant for transactions
-        public DateFilterTypeEnum DateType { get; set; }
-
         public Guid? ConsumerID { get; set; }
 
         public Guid? CreditCardTokenID { get; set; }

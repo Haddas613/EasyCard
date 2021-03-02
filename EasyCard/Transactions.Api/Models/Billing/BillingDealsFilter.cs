@@ -28,8 +28,6 @@ namespace Transactions.Api.Models.Billing
 
         public DateTime? DateTo { get; set; }
 
-        public DateFilterTypeEnum DateType { get; set; }
-
         public Guid? ConsumerID { get; set; }
 
         public Guid? CreditCardTokenID { get; set; }
