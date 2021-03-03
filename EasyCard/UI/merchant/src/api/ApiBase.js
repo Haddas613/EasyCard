@@ -14,12 +14,13 @@ import InvoicingApi from './modules/transactions/InvoicingApi';
 import PaymentRequestsApi from './modules/transactions/PaymentRequestsApi';
 import DashboardReportingApi from './modules/reporting/DashboardReportingApi';
 import appInsights from "../plugins/app-insights";
-
+import cfg from "../app.config";
 
 class ApiBase {
     constructor() {
         this.oidc = Vue.prototype.$oidc;
         this._ongoingRequests = {};
+        this.cfg = cfg;
 
         /**Apis */
         this.transactions = new TransactionsApi(this);
@@ -187,7 +188,7 @@ class ApiBase {
 
     _buildRequestHeaders(access_token) {
         const locale = (store.state.localization && store.state.localization.currentLocale)
-            ? store.state.localization.currentLocale : process.env.VUE_APP_I18N_LOCALE;
+            ? store.state.localization.currentLocale : cfg.VUE_APP_I18N_LOCALE;
 
             let headers =  {
                 'Content-Type': 'application/json',
@@ -196,8 +197,8 @@ class ApiBase {
                 'Accept-Language': `${locale}`,
             }
     
-            if(process.env.VUE_APP_VERSION){
-                headers['X-Version'] = process.env.VUE_APP_VERSION;
+            if(cfg.VUE_APP_VERSION){
+                headers['X-Version'] = cfg.VUE_APP_VERSION;
             }
     
             return headers;
@@ -217,7 +218,7 @@ class ApiBase {
             return;
         }
 
-        if (responseHeaderVal.toLowerCase().trim() != process.env.VUE_APP_VERSION.toLowerCase().trim()) {
+        if (responseHeaderVal.toLowerCase().trim() != cfg.VUE_APP_VERSION.toLowerCase().trim()) {
             store.commit("ui/setVersionMismatch", true);
         }else{
             store.commit("ui/setVersionMismatch", false);

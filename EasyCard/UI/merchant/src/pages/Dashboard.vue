@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       userName: null,
-      publicPath: process.env.BASE_URL
+      publicPath: this.base.cfg.BASE_URL
     }
   },
   async mounted(){

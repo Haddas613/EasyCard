@@ -1,7 +1,7 @@
 export default class DashboardReportingApi {
     constructor(base) {
         this.base = base;
-        this.baseUrl = process.env.VUE_APP_REPORT_API_BASE_ADDRESS;
+        this.baseUrl = this.base.cfg.VUE_APP_REPORT_API_BASE_ADDRESS;
         this.dashboardUrl = this.baseUrl + '/api/dashboard';
     }
 

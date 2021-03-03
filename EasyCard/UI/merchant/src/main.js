@@ -21,6 +21,8 @@ import VueClipboard from 'vue-clipboard2';
 import mixin from './extensions/mixins';
 import appInsights from "./plugins/app-insights";
 
+import config from './app.config';
+
 Vue.config.productionTip = false
 Vue.config.errorHandler = (err, vm, info) => {
     // err: error trace
@@ -45,6 +47,11 @@ Vue.use(Toasted, {
         }
     },
 });
+Vue.use({
+    install: function (Vue, ) {
+        Object.defineProperty(Vue.prototype, '$cfg', { value: config });
+    }
+})
 Vue.use(VueClipboard);
 Vue.filter('ecdate', ecdate);
 Vue.filter('currency', currency);

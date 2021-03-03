@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import MainLayout from '../layouts/main/Index.vue'
 import WizardLayout from '../layouts/wizard/Index.vue'
 import store from '../store/index';
+import cfg from "../app.config";
 
 Vue.use(VueRouter)
 
@@ -280,7 +281,7 @@ const routes = [{
 
 const router = new VueRouter({
     mode: 'history',
-    base: process.env.BASE_URL,
+    base: cfg.BASE_URL,
     routes
 })
 

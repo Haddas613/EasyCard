@@ -8,6 +8,7 @@
 </template>
 
 <script>
+
 import { mapState } from "vuex";
 import i18n from "./i18n";
 

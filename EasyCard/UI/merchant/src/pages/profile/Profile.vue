@@ -79,7 +79,7 @@ export default {
       currencies: [],
       terminalSettingsFormValid: true,
       terminalRefreshed: false,
-      appVersion: process.env.VUE_APP_VERSION
+      appVersion: this.$cfg.VUE_APP_VERSION
     };
   },
   async mounted() {
