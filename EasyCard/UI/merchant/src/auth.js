@@ -5,7 +5,7 @@ class AuthService {
     constructor() {
 
         const loco = window.location
-        const appRootUrl = `${loco.protocol}//${loco.host}${cfg.BASE_URL}`
+        const appRootUrl = `${loco.protocol}//${loco.host}`
 
         const settings = {
             userStore: new WebStorageStateStore({ store: window.localStorage }),

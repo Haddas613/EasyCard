@@ -1,7 +1,7 @@
 export default class MerchantsApi {
     constructor(base) {
         this.base = base;
-        this.baseUrl = process.env.VUE_APP_MERCHANT_API_BASE_ADDRESS;
+        this.baseUrl = this.base.cfg.VUE_APP_MERCHANT_API_BASE_ADDRESS;
         this.merchantsUrl = this.baseUrl + '/api/merchant';
     }
 

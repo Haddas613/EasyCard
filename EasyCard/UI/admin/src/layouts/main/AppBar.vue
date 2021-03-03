@@ -47,7 +47,7 @@ export default {
   },
   data() {
     return {
-      appVersion: process.env.VUE_APP_VERSION
+      appVersion: this.$cfg.VUE_APP_VERSION
     }
   },
   components: { ActionsBar, EcHeaderContent },

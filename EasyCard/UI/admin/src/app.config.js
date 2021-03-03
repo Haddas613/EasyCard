@@ -8,6 +8,6 @@ const config = {
         VUE_APP_VERSION: process.env.VUE_APP_VERSION
     },
     ...window.config
-};
+}
 
 export default config;

@@ -17,11 +17,13 @@ import ShvaApi from './modules/integrations/ShvaApi';
 import EasyInvoiceApi from './modules/integrations/EasyInvoiceApi';
 import ClearingHouseApi from './modules/integrations/ClearingHouseApi';
 import TransmissionApi from './modules/transactions/TransmissionsApi'
+import cfg from "../app.config";
 
 class ApiBase {
     constructor() {
         this.oidc = Vue.prototype.$oidc;
         this._ongoingRequests = {};
+        this.cfg = cfg;
 
         /**Apis */
         this.transactions = new TransactionsApi(this);
@@ -193,7 +195,7 @@ class ApiBase {
 
     _buildRequestHeaders(access_token){
         const locale = (store.state.localization && store.state.localization.currentLocale) 
-            ? store.state.localization.currentLocale : process.env.VUE_APP_I18N_LOCALE;
+            ? store.state.localization.currentLocale : this.cfg.VUE_APP_I18N_LOCALE;
 
         let headers =  {
             'Content-Type': 'application/json',
@@ -202,8 +204,8 @@ class ApiBase {
             'Accept-Language': `${locale}`,
         }
 
-        if(process.env.VUE_APP_VERSION){
-            headers['X-Version'] = process.env.VUE_APP_VERSION;
+        if(this.cfg.VUE_APP_VERSION){
+            headers['X-Version'] = this.cfg.VUE_APP_VERSION;
         }
 
         return headers;
@@ -223,7 +225,7 @@ class ApiBase {
             return;
         }
 
-        if (responseHeaderVal.toLowerCase().trim() != process.env.VUE_APP_VERSION.toLowerCase().trim()) {
+        if (responseHeaderVal.toLowerCase().trim() != this.cfg.VUE_APP_VERSION.toLowerCase().trim()) {
             store.commit("ui/setVersionMismatch", true);
         }else{
             store.commit("ui/setVersionMismatch", false);
