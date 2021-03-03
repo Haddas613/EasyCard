@@ -50,8 +50,10 @@ namespace Transactions.Api.Models.Transactions
         [SwaggerExclude]
         public long? ClearingHouseTransactionID { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? DateFrom { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? DateTo { get; set; }
 
         public Guid? ConsumerID { get; set; }

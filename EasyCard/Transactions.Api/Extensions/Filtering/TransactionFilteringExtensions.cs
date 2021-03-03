@@ -179,6 +179,18 @@ namespace Transactions.Api.Extensions.Filtering
 
                 src = src.Where(t => t.TransactionDate >= dateRange.DateFrom && t.TransactionDate <= dateRange.DateTo);
             }
+            else
+            {
+                if (filter.DateFrom != null)
+                {
+                    src = src.Where(t => t.TransactionDate >= filter.DateFrom.Value);
+                }
+
+                if (filter.DateTo != null)
+                {
+                    src = src.Where(t => t.TransactionDate <= filter.DateTo.Value);
+                }
+            }
 
             return src;
         }

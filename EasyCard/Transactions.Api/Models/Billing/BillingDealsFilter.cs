@@ -24,8 +24,10 @@ namespace Transactions.Api.Models.Billing
 
         public QuickDateFilterTypeEnum? QuickDateFilter { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? DateFrom { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? DateTo { get; set; }
 
         public Guid? ConsumerID { get; set; }

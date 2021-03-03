@@ -4,6 +4,7 @@ using Shared.Helpers;
 using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Transactions.Enums;
@@ -22,8 +23,10 @@ namespace Transactions.Api.Models.Invoicing
 
         public QuickDateFilterTypeEnum? QuickDateFilter { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? DateFrom { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? DateTo { get; set; }
 
         public InvoiceTypeEnum? InvoiceType { get; set; }
