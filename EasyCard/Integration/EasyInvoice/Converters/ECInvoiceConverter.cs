@@ -34,12 +34,16 @@ namespace EasyInvoice.Converters
 
                 TransactionDateTime = message.InvoiceDate?.ToString("o"),
                 Rows = GetRows(message),
-
-                Payments = new List<ECInvoicePayment>
-                {
-                    GetPaymentFromCard(message)
-                }
             };
+
+            var payments = GetPaymentFromCard(message);
+            if (payments != null)
+            {
+                json.Payments = new List<ECInvoicePayment>
+                {
+                    payments
+                };
+            }
 
             return json;
         }
@@ -109,7 +113,11 @@ namespace EasyInvoice.Converters
 
         public static ECInvoicePayment GetPaymentFromCard(InvoicingCreateDocumentRequest message)
         {
-            // TODO: validate that card details is present
+            if (message.CreditCardDetails == null)
+            {
+                return null;
+            }
+
             var res = new ECInvoicePayment
             {
                 PaymentMethod = ECInvoicePaymentMethodEnum.CREDIT_CARD_REGULAR_CREDIT.ToString(),
