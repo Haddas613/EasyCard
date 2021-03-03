@@ -151,8 +151,8 @@ export default {
       this.draw = false;
       let report = await this.$api.reporting.dashboard.getTransactionTimeline({
         terminalID: this.terminalStore.terminalID,
-        dateFrom: this.storeDateFilter.dateFrom ? (moment(this.storeDateFilter.dateFrom).toISOString()) : null,
-        dateTo: this.storeDateFilter.dateTo ? (moment(this.storeDateFilter.dateTo).toISOString()) : null,
+        dateFrom: this.$formatDate(this.storeDateFilter.dateFrom),
+        dateTo: this.$formatDate(this.storeDateFilter.dateTo),
         quickDateFilter: this.storeDateFilter.quickDateType,
         altQuickDateFilter: this.storeDateFilter.altQuickDateFilter
       });

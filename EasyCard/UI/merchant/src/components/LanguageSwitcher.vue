@@ -1,5 +1,5 @@
 <template>
-  <v-select :items="['en-IL', 'he-IL']" v-model="currentLocale" outlined></v-select>
+  <v-select :items="locales" item-text="description" item-value="code" v-model="currentLocale" outlined></v-select>
 </template>
 
 <script>
@@ -7,6 +7,20 @@ import { mapState } from 'vuex'
 
 export default {
   name: "LangSwitcher",
+  data() {
+    return {
+      locales: [
+        {
+          code: "en-IL",
+          description: "English"
+        },
+        {
+          code: "he-IL",
+          description: "עִברִית"
+        }
+      ]
+    }
+  },
   methods: {
   },
   computed: {

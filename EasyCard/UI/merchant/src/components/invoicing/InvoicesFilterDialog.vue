@@ -194,7 +194,11 @@ export default {
         return;
       }
 
-      this.$emit("ok", this.model);
+      this.$emit("ok", {
+        ...this.model,
+        dateFrom: this.$formatDate(this.model.dateFrom),
+        dateTo: this.$formatDate(this.model.dateTo),
+      });
       this.visible = false;
     }
   }
