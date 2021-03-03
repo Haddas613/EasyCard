@@ -188,7 +188,7 @@ export default {
     async resendSelectedInvoices() {
       let invoices = this.lodash.filter(
         this.invoices,
-        i => i.selected && (i.$status == "initial" || i.$status == "sent")
+        i => i.selected && (i.$status != "sending")
       );
       if (invoices.length === 0) {
         return this.$toasted.show(this.$t("SelectInvoicesFirst"), {
