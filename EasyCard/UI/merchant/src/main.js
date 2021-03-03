@@ -19,8 +19,15 @@ import vmoney from 'v-money';
 import auth from './auth'
 import VueClipboard from 'vue-clipboard2';
 import mixin from './extensions/mixins';
+import appInsights from "./plugins/app-insights";
 
 Vue.config.productionTip = false
+Vue.config.errorHandler = (err, vm, info) => {
+    // err: error trace
+    // vm: component in which error occured
+    // info: Vue specific error information such as lifecycle hooks, events etc.
+    appInsights.trackException({exception: err, properties: {src: info}});
+};
 
 Vue.use(auth);
 Vue.use(Api);

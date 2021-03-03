@@ -13,6 +13,7 @@ import BillingDealsApi from './modules/transactions/BillingDealsApi';
 import InvoicingApi from './modules/transactions/InvoicingApi';
 import PaymentRequestsApi from './modules/transactions/PaymentRequestsApi';
 import DashboardReportingApi from './modules/reporting/DashboardReportingApi';
+import appInsights from "../plugins/app-insights";
 
 
 class ApiBase {
@@ -170,6 +171,7 @@ class ApiBase {
                     Vue.toasted.show(i18n.t('NotFound'), { type: 'error' });
                     return null;
                 } else {
+                    appInsights.trackException({exception: new Error(`ApiError`), properties: request});
                     Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error' });
                     return null;
                 }
