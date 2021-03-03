@@ -3,7 +3,7 @@
     <v-overlay :value="requestsCountStore > 0" z-index="10">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-    <router-view />
+    <router-view v-if="renderReady" />
   </div>
 </template>
 
@@ -15,6 +15,7 @@ export default {
   data() {
     return {
       requestsCount: 0,
+      renderReady: false
     };
   },
   computed: {
@@ -25,14 +26,7 @@ export default {
   async beforeMount () {
     if(!!this.$oidc && await this.$oidc.isAuthenticated()) {
       await this.$store.dispatch('settings/getDefaultSettings', { api: this.$api, lodash: this.lodash });
-    }
-  },
-  async beforeUpdate () {
-    if(false /*!this.$store.currency || !this.$store.terminal*/) {
-      if(!!this.$oidc && await this.$oidc.isAuthenticated()) {
-        debugger
-        await this.$store.dispatch('settings/getDefaultSettings', { api: this.$api, lodash: this.lodash });
-      }
+      this.renderReady = true;
     }
   },
 };

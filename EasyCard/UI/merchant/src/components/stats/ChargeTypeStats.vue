@@ -100,7 +100,7 @@ export default {
         dateTo: this.storeDateFilter.dateTo ? (moment(this.storeDateFilter.dateTo).toISOString()) : null,
         quickDateFilter: this.storeDateFilter.quickDateType
       });
-
+      
       if(!report || report.length === 0){
         this.nothingToShow = true;
         return;
@@ -110,8 +110,9 @@ export default {
       this.chartData.labels = this.lodash.map(report, e => this.getTypeOpts(e.paymentTypeEnum).label);
       this.chartData.datasets[0].backgroundColor = this.lodash.map(report, e => this.getTypeOpts(e.paymentTypeEnum).color);
       this.chartData.datasets[0].data = this.lodash.map(report, e => e.totalAmount);
+      this.nothingToShow = false;
       this.draw = true;
-      }
+    }
   },
   computed: {
     ...mapState({
