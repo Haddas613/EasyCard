@@ -40,7 +40,7 @@
     "ExternalSystemID": 1,
     "Type": "aggregator",
     "InstanceTypeFullName": "Shared.Integration.ExternalSystems.NullAggregator, Shared.Integration",
-    "SettingsTypeFullName": null,
+    "SettingsTypeFullName": "Shared.Integration.ExternalSystems.NullAggregatorSettings, Shared.Integration",
     "Name": "NULL Aggregator",
     "Key": "null-aggregator",
     "Active": true,
