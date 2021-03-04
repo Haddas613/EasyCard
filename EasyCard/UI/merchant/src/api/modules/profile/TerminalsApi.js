@@ -9,6 +9,7 @@ export default class TerminalsApi {
         if(!refreshCache && this.$terminals){
             return this.$terminals;
         }
+        
         this.$terminals = await this.base.get(this.terminalsUrl, params);
         return this.$terminals;
     }

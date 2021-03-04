@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       userName: null,
-      publicPath: this.base.cfg.BASE_URL
+      publicPath: this.$cfg.BASE_URL
     }
   },
   async mounted(){

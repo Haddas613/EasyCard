@@ -29,6 +29,7 @@ Vue.config.errorHandler = (err, vm, info) => {
     // vm: component in which error occured
     // info: Vue specific error information such as lifecycle hooks, events etc.
     appInsights.trackException({exception: err, properties: {src: info}});
+    throw err;
 };
 
 Vue.use(auth);
