@@ -47,6 +47,8 @@ using Shared.Helpers.Queue;
 using Z.EntityFramework.Plus;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
+using Shared.Helpers.Email;
+using Shared.Helpers.Templating;
 
 namespace Transactions.Api.Controllers
 {
@@ -75,6 +77,7 @@ namespace Transactions.Api.Controllers
         private readonly ISystemSettingsService systemSettingsService;
         private readonly IMerchantsService merchantsService;
         private readonly IQueue invoiceQueue;
+        private readonly IEmailSender emailSender;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -94,7 +97,8 @@ namespace Transactions.Api.Controllers
             IHttpContextAccessorWrapper httpContextAccessor,
             ISystemSettingsService systemSettingsService,
             IMerchantsService merchantsService,
-            IQueueResolver queueResolver)
+            IQueueResolver queueResolver,
+            IEmailSender emailSender)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -115,6 +119,7 @@ namespace Transactions.Api.Controllers
             this.systemSettingsService = systemSettingsService;
             this.merchantsService = merchantsService;
             this.invoiceQueue = queueResolver.GetQueue(QueueResolver.InvoiceQueue);
+            this.emailSender = emailSender;
         }
 
         [HttpGet]
@@ -806,6 +811,16 @@ namespace Transactions.Api.Controllers
                 }
             }
 
+            try
+            {
+                var email = BuildTransactionSuccessEmail(transaction, terminal);
+                await emailSender.SendEmail(email);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, $"{nameof(ProcessTransaction)}: EmailSend");
+            }
+
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
         }
 
@@ -834,6 +849,35 @@ namespace Transactions.Api.Controllers
                 // TODO: how to determine device
                 return DocumentOriginEnum.Device;
             }
+        }
+
+        private Email BuildTransactionSuccessEmail(PaymentTransaction transaction, Merchants.Business.Entities.Terminal.Terminal terminal)
+        {
+            var settings = terminal.PaymentRequestSettings;
+
+            var emailSubject = "Payment Success";
+            var emailTemplateCode = nameof(PaymentTransaction);
+            var substitutions = new List<TextSubstitution>();
+
+            substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{appSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));
+            substitutions.Add(new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName));
+            substitutions.Add(new TextSubstitution(nameof(transaction.TransactionDate), transaction.TransactionDate.GetValueOrDefault().ToString("d"))); // TODO: locale
+            substitutions.Add(new TextSubstitution(nameof(transaction.TransactionAmount), $"{transaction.TotalAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"));
+
+            if (transaction.DealDetails?.ConsumerEmail == null)
+            {
+                throw new ArgumentNullException(nameof(transaction.DealDetails.ConsumerEmail));
+            }
+
+            var email = new Email
+            {
+                EmailTo = transaction.DealDetails.ConsumerEmail,
+                Subject = emailSubject,
+                TemplateCode = emailTemplateCode,
+                Substitutions = substitutions.ToArray()
+            };
+
+            return email;
         }
     }
 }
