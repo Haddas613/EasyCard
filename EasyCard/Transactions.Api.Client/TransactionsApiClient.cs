@@ -82,6 +82,31 @@ namespace Transactions.Api.Client
             }
         }
 
+        public async Task<OperationResponse> TransmitTerminalTransactions(Guid? terminalID)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/transmission/transmitByTerminal/{terminalID}", new { }, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+            }
+        }
+
+        public async Task<IEnumerable<Guid>> GetNonTransmittedTransactionsTerminals()
+        {
+            try
+            {
+                return await webApiClient.Get<IEnumerable<Guid>>(apiConfiguration.TransactionsApiAddress, $"api/transmission/nontransmittedtransactionterminals", new { }, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                throw;
+            }
+        }
+
         private async Task<NameValueCollection> BuildHeaders()
         {
             var token = await tokenService.GetToken();

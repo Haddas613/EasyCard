@@ -403,6 +403,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nothing to transmit.
+        /// </summary>
+        public static string NothingToTransmit {
+            get {
+                return ResourceManager.GetString("NothingToTransmit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NumberOfPayments should be greater than or equal {0}.
         /// </summary>
         public static string NumberOfPaymentsShouldBeGreaterThan {

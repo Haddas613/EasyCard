@@ -104,7 +104,7 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Reporting.Database", "Data\
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Identity.Database", "Data\Identity.Database\Identity.Database.sqlproj", "{8F52C6B7-2123-4973-A908-5A45518098AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionsCompositionApp", "Functions\FunctionsCompositionApp\FunctionsCompositionApp.csproj", "{11E3FC60-00CE-4BB5-82EF-15066836B3F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionsCompositionApp", "Functions\FunctionsCompositionApp\FunctionsCompositionApp.csproj", "{11E3FC60-00CE-4BB5-82EF-15066836B3F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

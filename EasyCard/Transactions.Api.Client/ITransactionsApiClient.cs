@@ -17,5 +17,9 @@ namespace Transactions.Api.Client
         Task<CheckoutData> GetCheckout(Guid? paymentRequestID, string apiKey, Guid? consumerID = null);
 
         Task<OperationResponse> GenerateInvoice(Guid? invoiceID);
+
+        Task<OperationResponse> TransmitTerminalTransactions(Guid? terminalID);
+
+        Task<IEnumerable<Guid>> GetNonTransmittedTransactionsTerminals();
     }
 }

@@ -96,6 +96,22 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize(Policy = Policy.AnyAdmin)]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("nontransmittedtransactionterminals")]
+        public async Task<ActionResult<IEnumerable<Guid>>> GetNonTransmittedTransactionsTerminals()
+        {
+            //TODO: Check with terminal settings
+            var query = transactionsService.GetTransactions().AsNoTracking().Where(d => d.Status == TransactionStatusEnum.CommitedByAggregator).Select(t => t.TerminalID).Distinct();
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var response = await query.ToListAsync();
+                return Ok(response);
+            }
+        }
+
         [HttpPost]
         [Route("transmit")]
         public async Task<ActionResult<SummariesResponse<TransmitTransactionResponse>>> TransmitTransactions(TransmitTransactionsRequest transmitTransactionsRequest)
@@ -275,6 +291,29 @@ namespace Transactions.Api.Controllers
             }
 
             return new OperationResponse(Messages.TransactionCanceled, StatusEnum.Success);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [HttpPost]
+        [Route("transmitByTerminal/{terminalID:guid}")]
+        public async Task<ActionResult<OperationResponse>> TransmitByTerminal([FromRoute]Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+
+            var nonTransmittedTransactions = (await GetNotTransmittedTransactions(new TransmissionFilter { TerminalID = terminalID })).Value;
+
+            if (nonTransmittedTransactions.NumberOfRecords == 0)
+            {
+                return new OperationResponse(Messages.NothingToTransmit, StatusEnum.Success);
+            }
+
+            await TransmitTransactions(new TransmitTransactionsRequest
+            {
+                TerminalID = terminalID,
+                PaymentTransactionIDs = nonTransmittedTransactions.Data.Select(t => t.PaymentTransactionID)
+            });
+
+            return new OperationResponse(Messages.TransactionsTransmitted, StatusEnum.Success);
         }
     }
 }

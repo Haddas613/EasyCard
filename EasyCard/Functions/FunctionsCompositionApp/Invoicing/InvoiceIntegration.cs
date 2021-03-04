@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Shared.Helpers;
 using Shared.Helpers.Security;
 using Transactions.Api.Client;
+using SharedApi = Shared.Api;
 
 namespace FunctionsCompositionApp.Invoicing
 {
@@ -30,7 +31,7 @@ namespace FunctionsCompositionApp.Invoicing
 
             var response = await transactionsApiClient.GenerateInvoice(invoiceID);
 
-            if (response.Status == Shared.Api.Models.Enums.StatusEnum.Error)
+            if (response.Status == SharedApi.Models.Enums.StatusEnum.Error)
             {
                 log.LogError($"{response.Message}; InvoiceID {messageBody}; CorrelationID: {response.CorrelationId}");
             }

@@ -26,7 +26,6 @@
     <Folder Include="Monitoring\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Properties\ServiceDependencies\" />
-    <Folder Include="Shared\" />
     <Folder Include="Reporting\" />
   </ItemGroup>
   <ItemGroup>
