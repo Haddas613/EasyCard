@@ -13,7 +13,7 @@ namespace FunctionsCompositionApp.Transactions
     public static class GetTransmissionTerminals
     {
         [FunctionName("GetTransmissionTerminals")]
-        public static async Task Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, 
+        public static async Task Run([TimerTrigger("%GetTransmissionTerminalsScheduleTriggerTime%")]TimerInfo myTimer, 
             ILogger log, 
             ExecutionContext context, 
             [Queue("transmission")]IAsyncCollector<string> outputQueue)
