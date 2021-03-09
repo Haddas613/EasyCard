@@ -1,4 +1,5 @@
-﻿using Shared.Helpers;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -91,6 +92,7 @@ namespace CheckoutPortal.Models
         /// </summary>
         public Guid? CreditCardToken { get; set; }
 
+        [BindNever]
         public IEnumerable<KeyValuePair<Guid, string>> SavedTokens { get; set; }
     }
 }

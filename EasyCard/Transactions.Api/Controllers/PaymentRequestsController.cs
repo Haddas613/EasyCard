@@ -118,7 +118,7 @@ namespace Transactions.Api.Controllers
 
                 var paymentRequest = mapper.Map<PaymentRequestResponse>(dbPaymentRequest);
 
-                paymentRequest.PaymentRequestUrl = GetPaymentRequestUrl(paymentRequest.PaymentRequestID, terminal.SharedApiKey)?.Item1;
+                paymentRequest.PaymentRequestUrl = GetPaymentRequestUrl(dbPaymentRequest, terminal.SharedApiKey)?.Item1;
 
                 paymentRequest.History = await mapper.ProjectTo<PaymentRequestHistorySummary>(paymentRequestsService.GetPaymentRequestHistory(dbPaymentRequest.PaymentRequestID).OrderByDescending(d => d.PaymentRequestHistoryID)).ToListAsync();
 
@@ -182,7 +182,7 @@ namespace Transactions.Api.Controllers
             return response;
         }
 
-        private Tuple<string, string> GetPaymentRequestUrl(Guid? paymentRequestID, byte[] sharedTerminalApiKey)
+        private Tuple<string, string> GetPaymentRequestUrl(PaymentRequest dbPaymentRequest, byte[] sharedTerminalApiKey)
         {
             if (sharedTerminalApiKey == null)
             {
@@ -191,8 +191,14 @@ namespace Transactions.Api.Controllers
 
             var uriBuilder = new UriBuilder(appSettings.CheckoutPortalUrl);
             var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
-            query["paymentRequest"] = Convert.ToBase64String(paymentRequestID.Value.ToByteArray());
+            query["paymentRequest"] = Convert.ToBase64String(dbPaymentRequest.PaymentRequestID.ToByteArray());
             query["apiKey"] = Convert.ToBase64String(sharedTerminalApiKey);
+
+            if (dbPaymentRequest.DealDetails?.ConsumerID.HasValue == true)
+            {
+                query["consumerID"] = dbPaymentRequest.DealDetails.ConsumerID.Value.ToString();
+            }
+
             uriBuilder.Query = query.ToString();
             var url = uriBuilder.ToString();
 
@@ -209,7 +215,7 @@ namespace Transactions.Api.Controllers
 
             var emailSubject = paymentRequest.RequestSubject ?? settings.DefaultRequestSubject;
             var emailTemplateCode = settings.EmailTemplateCode ?? nameof(PaymentRequest);
-            var url = GetPaymentRequestUrl(paymentRequest.PaymentRequestID, terminal.SharedApiKey);
+            var url = GetPaymentRequestUrl(paymentRequest, terminal.SharedApiKey);
             var substitutions = new List<TextSubstitution>();
 
             substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{appSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));

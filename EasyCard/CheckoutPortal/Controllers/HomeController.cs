@@ -13,6 +13,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using System.IO;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace CheckoutPortal.Controllers
 {
@@ -73,8 +74,33 @@ namespace CheckoutPortal.Controllers
         {
             var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl, request.ConsumerID);
 
+            if (checkoutConfig.Consumer != null)
+            {
+                if (checkoutConfig.Consumer.Tokens?.Count() > 0)
+                {
+                    request.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new KeyValuePair<Guid, string>(d.CreditCardTokenID, $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}"));
+                }
+            }
+
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
+
+            // If token is present and correct, credit card validation is removed from model state
+            if (request.CreditCardToken.HasValue && request.CreditCardToken.Value != Guid.Empty)
+            {
+                if(!request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
+                {
+                    ModelState.AddModelError(nameof(request.CreditCardToken), "Token is not recognized");
+                    return View("Index", request);
+                }
+
+                ModelState[nameof(request.Cvv)].Errors.Clear();
+                ModelState[nameof(request.Cvv)].ValidationState = ModelValidationState.Skipped;
+                ModelState[nameof(request.CardNumber)].Errors.Clear();
+                ModelState[nameof(request.CardNumber)].ValidationState = ModelValidationState.Skipped;
+                ModelState[nameof(request.CardExpiration)].Errors.Clear();
+                ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
+            }
 
             if (!ModelState.IsValid)
             {
@@ -95,6 +121,11 @@ namespace CheckoutPortal.Controllers
                 mapper.Map(checkoutConfig.PaymentRequest, mdel);
                 mapper.Map(checkoutConfig.Settings, mdel);
 
+                if (request.CreditCardToken.HasValue)
+                {
+                    mdel.CreditCardSecureDetails = null;
+                }
+
                 result = await transactionsApiClient.CreateTransactionPR(mdel);
                 if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
                 {
@@ -106,12 +137,18 @@ namespace CheckoutPortal.Controllers
                 var mdel = new Transactions.Api.Models.Transactions.CreateTransactionRequest()
                 {
                     CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails(),
-                    DealDetails = new Shared.Integration.Models.DealDetails()
+                    DealDetails = new Shared.Integration.Models.DealDetails(),
+                    CreditCardToken = request.CreditCardToken
                 }; 
                 mapper.Map(request, mdel);
                 mapper.Map(request, mdel.CreditCardSecureDetails);
                 mapper.Map(request, mdel.DealDetails);
                 mapper.Map(checkoutConfig.Settings, mdel);
+
+                if (request.CreditCardToken.HasValue)
+                {
+                    mdel.CreditCardSecureDetails = null;
+                }
 
                 mdel.Calculate();
 

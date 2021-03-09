@@ -8,20 +8,17 @@
 
 
 
-<div class="row">
-
-
+<div class="row justify-content-center">
     <div class="col-md-6">
         <div class="panel panel-default">
-
 
             <partial name="_ValidationSummary" />
 
             <div class="panel-heading">
-                <p>@Model.Description</p>
+                <p class="px-2">@Model.Description</p>
                 @if (Model.Amount.GetValueOrDefault() > 0)
                 {
-                    <h3 class="panel-title">Amount: @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()</h3>
+                    <h3 class="panel-title text-center">Amount: @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()</h3>
                 }
             </div>
 
@@ -34,41 +31,45 @@
                     <input type="hidden" asp-for="ApiKey" />
                     <input type="hidden" asp-for="Currency" />
                     <input type="hidden" asp-for="Description" />
+                    <input type="hidden" asp-for="ConsumerID" />
                     @if (Model.Amount.GetValueOrDefault() > 0)
                     {
                         <input type="hidden" asp-for="Amount" />
                     }
 
-                    <fieldset class="border rounded p-2 m-2">
-                        @if (!(Model.Amount.GetValueOrDefault() > 0))
-                        {
-                            <div class="form-group row">
-                                <label asp-for="Amount" class="col-sm-3 col-form-label col-form-label-sm">Amount (@Model.Currency.GetCurrencySymbol())</label>
-                                <div class="col-sm-9">
-                                    <input type="tel" class="form-control form-control-sm" placeholder="Amount" asp-for="Amount" autocomplete="off">
-                                    <span asp-validation-for="Amount"></span>
-                                </div>
-                            </div>
-                        }
-                        @if (Model.SavedTokens?.Count() > 0)
-                        {
-                            <div class="form-group row">
-                                <label asp-for="CreditCardToken" class="col-sm-3 col-form-label col-form-label-sm">Use saved card</label>
-                                <div class="col-sm-9">
-
-                                    <div class="form-check">
-                                        @foreach (var savedToken in Model.SavedTokens)
-                                        {
-                                            <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@savedToken.Key" disabled />@savedToken.Value<br />
-                                        }
-                                        <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@Guid.Empty" checked />Enter new card<br />
+                    @if (!(Model.Amount.GetValueOrDefault() > 0) || Model.SavedTokens?.Count() > 0)
+                    {
+                        <fieldset class="border rounded p-2 m-2">
+                            @if (!(Model.Amount.GetValueOrDefault() > 0))
+                            {
+                                <div class="form-group row">
+                                    <label asp-for="Amount" class="col-sm-3 col-form-label col-form-label-sm">Amount (@Model.Currency.GetCurrencySymbol())</label>
+                                    <div class="col-sm-9">
+                                        <input type="tel" class="form-control form-control-sm" placeholder="Amount" asp-for="Amount" autocomplete="off">
+                                        <span asp-validation-for="Amount"></span>
                                     </div>
-
                                 </div>
-                            </div>
-                        }
-                    </fieldset>
-                    <fieldset class="border rounded p-2 m-2">
+                            }
+                            @if (Model.SavedTokens?.Count() > 0)
+                            {
+                                <div class="form-group row">
+                                    <label asp-for="CreditCardToken" class="col-sm-3 col-form-label col-form-label-sm">Use saved card</label>
+                                    <div class="col-sm-9">
+
+                                        <div class="form-check">
+                                            @foreach (var savedToken in Model.SavedTokens)
+                                            {
+                                                <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@savedToken.Key" />@savedToken.Value<br />
+                                            }
+                                            <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@Guid.Empty" checked />Enter new card<br />
+                                        </div>
+
+                                    </div>
+                                </div>
+                            }
+                        </fieldset>
+                    }
+                    <fieldset class="border rounded p-2 m-2" id="card-info-group-area">
                         <div class="form-group row">
                             <label asp-for="CardNumber" class="col-sm-3 col-form-label col-form-label-sm">Card Number</label>
                             <div class="col-sm-9">
@@ -139,8 +140,8 @@
 
                     </fieldset>
 
-                    <div class="form-group row">
-                        <div class="col-sm-9">
+                    <div class="form-group row text-center">
+                        <div class="col-sm-12">
                             <input type=image src="~/img/pay-with-easycard.png" alt="Pay with EasyCard">
                         </div>
                     </div>
@@ -151,10 +152,15 @@
 
 </div>
 
-
-
-
-
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        $('input[name="CreditCardToken"]').on('change', function (e) {
+            if (e.target.value == "@(Guid.Empty)") {
+                $("#card-info-group-area").attr("hidden", false);
+            } else {
+                $("#card-info-group-area").attr("hidden", true);
+            }
+        });
+    </script>
 }

@@ -40,7 +40,7 @@
       <v-col cols="12">
         <v-textarea
           v-model="model.dealDescription"
-          :counter="1024"
+          :counter="250"
           outlined
           rows="3"
           :rules="[vr.primitives.required,  vr.primitives.maxLength(1024)]"

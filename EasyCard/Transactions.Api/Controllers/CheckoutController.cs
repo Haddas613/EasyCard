@@ -84,6 +84,14 @@ namespace Transactions.Api.Controllers
             {
                 var paymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().Where(d => d.PaymentRequestID == paymentRequestID && d.TerminalID == terminal.TerminalID).FirstOrDefaultAsync());
 
+                if (consumerID.HasValue)
+                {
+                    if (consumerID.Value != paymentRequest.DealDetails.ConsumerID)
+                    {
+                        return Unauthorized($"{consumerID} does not have access to payment request {paymentRequest.PaymentRequestID}");
+                    }
+                }
+
                 response.PaymentRequest = mapper.Map<PaymentRequestInfo>(paymentRequest);
             }
 
