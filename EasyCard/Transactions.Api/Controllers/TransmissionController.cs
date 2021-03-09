@@ -300,9 +300,12 @@ namespace Transactions.Api.Controllers
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
-            var nonTransmittedTransactions = (await GetNotTransmittedTransactions(new TransmissionFilter { TerminalID = terminalID })).Value;
+            var actionResult = await GetNotTransmittedTransactions(new TransmissionFilter { TerminalID = terminalID });
 
-            if (nonTransmittedTransactions.NumberOfRecords == 0)
+            var response = actionResult.Result as ObjectResult;
+            var nonTransmittedTransactions = response.Value as SummariesResponse<TransactionSummary>;
+
+            if (nonTransmittedTransactions == null || nonTransmittedTransactions.NumberOfRecords == 0)
             {
                 return new OperationResponse(Messages.NothingToTransmit, StatusEnum.Success);
             }
