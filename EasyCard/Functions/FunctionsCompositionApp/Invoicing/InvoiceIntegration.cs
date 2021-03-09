@@ -1,10 +1,12 @@
 using System;
 using System.Threading.Tasks;
+using FunctionsCompositionApp.Shared;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shared.Api.Configuration;
 using Shared.Helpers;
 using Shared.Helpers.Security;
 using Transactions.Api.Client;
@@ -27,7 +29,7 @@ namespace FunctionsCompositionApp.Invoicing
 
             var invoiceID = Guid.Parse(messageBody);
 
-            var transactionsApiClient = GetTransactionsApiClient(log, config);
+            var transactionsApiClient = TransactionsApiClientHelper.GetTransactionsApiClient(log, config);
 
             var response = await transactionsApiClient.GenerateInvoice(invoiceID);
 
@@ -39,25 +41,6 @@ namespace FunctionsCompositionApp.Invoicing
             {
                 log.LogInformation(response.Message);
             }
-        }
-
-        private static ITransactionsApiClient GetTransactionsApiClient(ILogger logger, IConfigurationRoot config)
-        {
-            var section = config.GetSection("IdentityServerClient");
-            logger.LogInformation($"Section {section?.Value}");
-
-            var identitySection = config.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
-            var apiCfgsection = config.GetSection("ApiConfig")?.Get<TransactionsApiClientConfig>();
-
-            logger.LogInformation($"Authority {identitySection?.Authority}");
-            logger.LogInformation($"ClientID {identitySection?.ClientID}");
-
-            var cfg = Options.Create(identitySection);
-            var apiCfg = Options.Create(apiCfgsection);
-            var webApiClient = new WebApiClient();
-            var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
-
-            return new TransactionsApiClient(webApiClient, /*logger,*/ tokenService, apiCfg);
         }
     }
 }

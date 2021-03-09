@@ -45,10 +45,11 @@ using Transactions.Shared.Enums;
 using Transactions.Api.Extensions;
 using Shared.Helpers.Queue;
 using Z.EntityFramework.Plus;
-using SharedBusiness = Shared.Business;
-using SharedIntegration = Shared.Integration;
 using Shared.Helpers.Email;
 using Shared.Helpers.Templating;
+using SharedBusiness = Shared.Business;
+using SharedIntegration = Shared.Integration;
+using Shared.Api.Configuration;
 
 namespace Transactions.Api.Controllers
 {
@@ -66,6 +67,7 @@ namespace Transactions.Api.Controllers
         private readonly IProcessorResolver processorResolver;
         private readonly ILogger logger;
         private readonly ApplicationSettings appSettings;
+        private readonly ApiSettings apiSettings;
         private readonly ICreditCardTokenService creditCardTokenService;
         private readonly IBillingDealService billingDealService;
         private readonly ITerminalsService terminalsService;
@@ -98,12 +100,13 @@ namespace Transactions.Api.Controllers
             ISystemSettingsService systemSettingsService,
             IMerchantsService merchantsService,
             IQueueResolver queueResolver,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IOptions<ApiSettings> apiSettings)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
             this.mapper = mapper;
-
+            this.apiSettings = apiSettings.Value;
             this.aggregatorResolver = aggregatorResolver;
             this.processorResolver = processorResolver;
             this.terminalsService = terminalsService;
@@ -859,7 +862,7 @@ namespace Transactions.Api.Controllers
             var emailTemplateCode = nameof(PaymentTransaction);
             var substitutions = new List<TextSubstitution>();
 
-            substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{appSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));
+            substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));
             substitutions.Add(new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName));
             substitutions.Add(new TextSubstitution(nameof(transaction.TransactionDate), transaction.TransactionDate.GetValueOrDefault().ToString("d"))); // TODO: locale
             substitutions.Add(new TextSubstitution(nameof(transaction.TransactionAmount), $"{transaction.TotalAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"));

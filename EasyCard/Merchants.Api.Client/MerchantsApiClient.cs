@@ -1,6 +1,7 @@
 ﻿using Merchants.Api.Client.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shared.Api.Configuration;
 using Shared.Api.Models;
 using Shared.Helpers;
 using Shared.Helpers.Security;
@@ -17,14 +18,14 @@ namespace Merchants.Api.Client
     public class MerchantsApiClient : IMerchantsApiClient
     {
         private readonly IWebApiClient webApiClient;
-        private readonly MerchantsApiClientConfig apiConfiguration;
+        private readonly ApiSettings apiConfiguration;
         private readonly ILogger logger;
         private readonly IWebApiClientTokenService tokenService;
 
         public MerchantsApiClient(IWebApiClient webApiClient, 
             ILogger<MerchantsApiClient> logger, 
             IWebApiClientTokenService tokenService, 
-            IOptions<MerchantsApiClientConfig> apiConfiguration)
+            IOptions<ApiSettings> apiConfiguration)
         {
             this.webApiClient = webApiClient;
             this.logger = logger;

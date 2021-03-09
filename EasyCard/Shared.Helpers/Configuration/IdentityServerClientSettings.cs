@@ -15,6 +15,8 @@ namespace Shared.Helpers.Security
 
         public string ClientSecret { get; set; }
 
+        public string ClientSecretAlt { get; set; }
+
         public string Scope { get; set; }
     }
 }
