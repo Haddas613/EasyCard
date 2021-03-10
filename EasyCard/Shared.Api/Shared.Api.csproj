@@ -31,4 +31,8 @@
     <ProjectReference Include="..\Shared.Business\Shared.Business.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Configuration\" />
+  </ItemGroup>
+
 </Project>

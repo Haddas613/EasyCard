@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shared.Api.Configuration;
 using Shared.Api.Security;
 using Shared.Helpers.Email;
 using Shared.Helpers.Security;
@@ -341,7 +342,7 @@ namespace IdentityServer.Controllers
 
                 if (await userManager.IsInRoleAsync(user, Roles.Merchant))
                 {
-                    return Redirect(apiConfiguration.MerchantProfileApiAddress);
+                    return Redirect(apiConfiguration.MerchantProfileURL);
                 }
                 else
                 {
@@ -829,7 +830,7 @@ namespace IdentityServer.Controllers
             await auditLogger.RegisterTwoFactorCompleted(user);
 
             // TODO: from query string
-            return Redirect(apiConfiguration.MerchantProfileApiAddress);
+            return Redirect(apiConfiguration.MerchantProfileURL);
         }
 
         [HttpGet]
@@ -893,7 +894,7 @@ namespace IdentityServer.Controllers
                     IsAuthorized = User?.Identity.IsAuthenticated == true,
                     UserName = User.GetDoneByName(),
                     IsAdmin = isAdmin,
-                    ClientSystemURL = isAdmin ? apiConfiguration.AdminApiAddress : apiConfiguration.MerchantProfileApiAddress
+                    ClientSystemURL = isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL
                 };
 
                 if (!local)
@@ -940,7 +941,7 @@ namespace IdentityServer.Controllers
                 IsAuthorized = User?.Identity.IsAuthenticated == true,
                 UserName = User.GetDoneByName(),
                 IsAdmin = isAdmin,
-                ClientSystemURL = isAdmin ? apiConfiguration.AdminApiAddress : apiConfiguration.MerchantProfileApiAddress
+                ClientSystemURL = isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL
             };
         }
 

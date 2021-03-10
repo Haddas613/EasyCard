@@ -13,7 +13,7 @@
     "ClientID": "management_api",
     "ClientSecret": "yuwsCT8cbJVgw2W6"
   },
-  "ApiConfig": {
+  "API": {
     "TransactionsApiAddress": "https://ecng-transactions.azurewebsites.net"
   }
 }

@@ -30,6 +30,7 @@ using Merchants.Business.Entities.Terminal;
 using Shared.Helpers.Templating;
 using Shared.Helpers;
 using Z.EntityFramework.Plus;
+using Shared.Api.Configuration;
 
 namespace Transactions.Api.Controllers
 {
@@ -47,6 +48,7 @@ namespace Transactions.Api.Controllers
         private readonly ITerminalsService terminalsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly ApplicationSettings appSettings;
+        private readonly ApiSettings apiSettings;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly ISystemSettingsService systemSettingsService;
         private readonly IEmailSender emailSender;
@@ -61,11 +63,12 @@ namespace Transactions.Api.Controllers
                     IOptions<ApplicationSettings> appSettings,
                     ICryptoServiceCompact cryptoServiceCompact,
                     ISystemSettingsService systemSettingsService,
-                    IEmailSender emailSender)
+                    IEmailSender emailSender,
+                    IOptions<ApiSettings> apiSettings)
         {
             this.paymentRequestsService = paymentRequestsService;
             this.mapper = mapper;
-
+            this.apiSettings = apiSettings.Value;
             this.terminalsService = terminalsService;
             this.logger = logger;
             this.httpContextAccessor = httpContextAccessor;
@@ -189,7 +192,7 @@ namespace Transactions.Api.Controllers
                 return null;
             }
 
-            var uriBuilder = new UriBuilder(appSettings.CheckoutPortalUrl);
+            var uriBuilder = new UriBuilder(apiSettings.CheckoutPortalUrl);
             var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
             query["paymentRequest"] = Convert.ToBase64String(dbPaymentRequest.PaymentRequestID.ToByteArray());
             query["apiKey"] = Convert.ToBase64String(sharedTerminalApiKey);
@@ -218,8 +221,8 @@ namespace Transactions.Api.Controllers
             var url = GetPaymentRequestUrl(paymentRequest, terminal.SharedApiKey);
             var substitutions = new List<TextSubstitution>();
 
-            substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{appSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));
-            substitutions.Add(new TextSubstitution("PayWithEasyCardBtnUrl", $"{appSettings.CheckoutPortalUrl}/img/pay-with-easycard.png")); // TODO: make dynamic path to fill "viewed" status
+            substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));
+            substitutions.Add(new TextSubstitution("PayWithEasyCardBtnUrl", $"{apiSettings.CheckoutPortalUrl}/img/pay-with-easycard.png")); // TODO: make dynamic path to fill "viewed" status
             substitutions.Add(new TextSubstitution(nameof(paymentRequest.DueDate), paymentRequest.DueDate.GetValueOrDefault().ToString("d"))); // TODO: locale
             substitutions.Add(new TextSubstitution(nameof(paymentRequest.PaymentRequestAmount), $"{paymentRequest.PaymentRequestAmount.ToString("F2")}{paymentRequest.Currency.GetCurrencySymbol()}"));
             substitutions.Add(new TextSubstitution("PaymentRequestUrl", url.Item1));

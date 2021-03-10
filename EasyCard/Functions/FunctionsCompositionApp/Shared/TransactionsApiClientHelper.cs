@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shared.Api.Configuration;
 using Shared.Helpers;
 using Shared.Helpers.Security;
 using System;
@@ -18,7 +19,7 @@ namespace FunctionsCompositionApp.Shared
             logger.LogInformation($"Section {section?.Value}");
 
             var identitySection = config.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
-            var apiCfgsection = config.GetSection("ApiConfig")?.Get<TransactionsApiClientConfig>();
+            var apiCfgsection = config.GetSection("API")?.Get<ApiSettings>();
 
             logger.LogInformation($"Authority {identitySection?.Authority}");
             logger.LogInformation($"ClientID {identitySection?.ClientID}");

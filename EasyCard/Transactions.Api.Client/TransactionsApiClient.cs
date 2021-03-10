@@ -11,17 +11,18 @@ using Shared.Helpers;
 using Transactions.Api.Models.Transactions;
 using Shared.Api.Models;
 using Transactions.Api.Models.Checkout;
+using Shared.Api.Configuration;
 
 namespace Transactions.Api.Client
 {
     public class TransactionsApiClient : ITransactionsApiClient
     {
         private readonly IWebApiClient webApiClient;
-        private readonly TransactionsApiClientConfig apiConfiguration;
+        private readonly ApiSettings apiConfiguration;
         //private readonly ILogger logger;
         private readonly IWebApiClientTokenService tokenService;
 
-        public TransactionsApiClient(IWebApiClient webApiClient, /*ILogger logger,*/ IWebApiClientTokenService tokenService, IOptions<TransactionsApiClientConfig> apiConfiguration)
+        public TransactionsApiClient(IWebApiClient webApiClient, /*ILogger logger,*/ IWebApiClientTokenService tokenService, IOptions<ApiSettings> apiConfiguration)
         {
             this.webApiClient = webApiClient;
             //this.logger = logger;
@@ -86,7 +87,7 @@ namespace Transactions.Api.Client
         {
             try
             {
-                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/transmission/transmitByTerminal/{terminalID}", new { }, BuildHeaders);
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/transmission/transmitByTerminal/{terminalID}", null, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
@@ -99,7 +100,7 @@ namespace Transactions.Api.Client
         {
             try
             {
-                return await webApiClient.Get<IEnumerable<Guid>>(apiConfiguration.TransactionsApiAddress, $"api/transmission/nontransmittedtransactionterminals", new { }, BuildHeaders);
+                return await webApiClient.Get<IEnumerable<Guid>>(apiConfiguration.TransactionsApiAddress, $"api/transmission/nontransmittedtransactionterminals", null, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {

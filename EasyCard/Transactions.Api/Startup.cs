@@ -257,6 +257,7 @@ namespace Transactions.Api
 
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
             services.Configure<AzureKeyVaultSettings>(Configuration.GetSection("AzureKeyVaultTokenStorageSettings"));
+            services.Configure<ApiSettings>(Configuration.GetSection("API"));
 
             services.AddHttpContextAccessor();
 
@@ -364,7 +365,7 @@ namespace Transactions.Api
 
             app.UseHttpsRedirection();
 
-            var apiSettings = Configuration.GetSection("API")?.Get<ApiSettings>();
+            var apiSettings = serviceProvider.GetRequiredService<IOptions<ApiSettings>>().Value;
 
             if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
             {

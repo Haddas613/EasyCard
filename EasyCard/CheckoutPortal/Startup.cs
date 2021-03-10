@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using Shared.Api.Configuration;
 using Shared.Helpers;
 using Shared.Helpers.Security;
 using Transactions.Api.Client;
@@ -63,7 +64,7 @@ namespace CheckoutPortal
             };
 
             services.Configure<Models.ApplicationSettings>(Configuration.GetSection("AppConfig"));
-            services.Configure<TransactionsApiClientConfig>(Configuration.GetSection("ApiConfig"));
+            services.Configure<ApiSettings>(Configuration.GetSection("API"));
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -72,7 +73,7 @@ namespace CheckoutPortal
             services.AddSingleton<ITransactionsApiClient, TransactionsApiClient>(serviceProvider =>
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
-                var apiCfg = serviceProvider.GetRequiredService<IOptions<TransactionsApiClientConfig>>();
+                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
                 var webApiClient = new WebApiClient();
                 var logger = serviceProvider.GetRequiredService<ILogger<TransactionsApiClient>>();
                 var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);

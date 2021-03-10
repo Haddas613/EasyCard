@@ -197,6 +197,7 @@ namespace ProfileApi
 
             // DI: basics
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
+            services.Configure<ApiSettings>(Configuration.GetSection("API"));
 
             services.AddHttpContextAccessor();
 
@@ -306,6 +307,7 @@ namespace ProfileApi
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
             });
 
