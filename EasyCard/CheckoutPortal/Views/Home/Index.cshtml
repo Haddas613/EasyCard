@@ -5,7 +5,14 @@
 @model ChargeViewModel
 
 
-
+<form asp-action="CancelPayment" method="post" hidden id="cancel-form">
+    <input type="hidden" asp-for="RedirectUrl" />
+    <input type="hidden" asp-for="PaymentRequest" />
+    <input type="hidden" asp-for="ApiKey" />
+    <input type="hidden" asp-for="Currency" />
+    <input type="hidden" asp-for="Description" />
+    <input type="hidden" asp-for="ConsumerID" />
+</form>
 
 
 <div class="row justify-content-center">
@@ -25,7 +32,7 @@
 
             <div class="panel-body">
 
-                <form asp-action="Charge" method="post">
+                <form asp-action="Charge" method="post" id="checkout-form">
                     <input type="hidden" asp-for="RedirectUrl" />
                     <input type="hidden" asp-for="PaymentRequest" />
                     <input type="hidden" asp-for="ApiKey" />
@@ -141,7 +148,12 @@
                     </fieldset>
 
                     <div class="form-group row text-center">
-                        <div class="col-sm-12">
+                        <div class="col-sm-4">
+                            <button class="mt-2 btn btn-outline-danger" id="cancel-btn">
+                                Cancel Payment
+                            </button>
+                        </div>
+                        <div class="col-sm-8">
                             <input type=image src="~/img/pay-with-easycard.png" alt="Pay with EasyCard">
                         </div>
                     </div>
@@ -161,6 +173,11 @@
             } else {
                 $("#card-info-group-area").attr("hidden", true);
             }
+        });
+
+        $("#cancel-btn").on('click', function (e) {
+            e.preventDefault();
+            $('#cancel-form').submit();
         });
     </script>
 }

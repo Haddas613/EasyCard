@@ -21,5 +21,7 @@ namespace Transactions.Api.Client
         Task<OperationResponse> TransmitTerminalTransactions(Guid? terminalID);
 
         Task<IEnumerable<Guid>> GetNonTransmittedTransactionsTerminals();
+
+        Task<OperationResponse> CancelPaymentRequest(Guid paymentRequestID);
     }
 }

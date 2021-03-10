@@ -31,6 +31,7 @@ using Shared.Helpers.Templating;
 using Shared.Helpers;
 using Z.EntityFramework.Plus;
 using Shared.Api.Configuration;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Controllers
 {
@@ -183,6 +184,22 @@ namespace Transactions.Api.Controllers
             await paymentRequestsService.UpdateEntityWithStatus(newPaymentRequest, Shared.Enums.PaymentRequestStatusEnum.Sent);
 
             return response;
+        }
+
+        [HttpDelete]
+        [Route("{paymentRequestID}")]
+        public async Task<ActionResult<OperationResponse>> CancelPaymentRequest([FromRoute] Guid paymentRequestID)
+        {
+            var dbPaymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == paymentRequestID));
+
+            if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
+            {
+                return BadRequest(new OperationResponse($"{Messages.PaymentRequestStatusIsClosed}", StatusEnum.Error, dbPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+            }
+
+            await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Canceled,  message: Messages.PaymentRequestCanceled);
+
+            return Ok(new OperationResponse { EntityUID = paymentRequestID, Status = StatusEnum.Success, Message = Messages.PaymentRequestCanceled });
         }
 
         private Tuple<string, string> GetPaymentRequestUrl(PaymentRequest dbPaymentRequest, byte[] sharedTerminalApiKey)

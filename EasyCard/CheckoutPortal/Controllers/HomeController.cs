@@ -179,9 +179,46 @@ namespace CheckoutPortal.Controllers
             }
         }
 
+        [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public async Task<IActionResult> CancelPayment(ChargeViewModel request)
+        {
+            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl, request.ConsumerID);
+
+            if (checkoutConfig.PaymentRequest != null)
+            {
+                var result = await transactionsApiClient.CancelPaymentRequest(checkoutConfig.PaymentRequest.PaymentRequestID);
+
+                if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
+                {
+                    logger.LogError($"{nameof(CancelPayment)}: Could not cancel payment request {checkoutConfig.PaymentRequest.PaymentRequestID}. Reason: {result.Message}");
+                    return RedirectToAction("PaymentError");
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(request.RedirectUrl))
+            {
+                return RedirectToAction("PaymentCanceled");
+            }
+            else
+            {
+                var redirectUrl = UrlHelper.BuildUrl(request.RedirectUrl, null, new { rejectionReason = "Canceled by customer" });
+
+                return Redirect(redirectUrl);
+            }
+
+        }
+
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> PaymentResult()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public async Task<IActionResult> PaymentCanceled()
         {
             return View();
         }

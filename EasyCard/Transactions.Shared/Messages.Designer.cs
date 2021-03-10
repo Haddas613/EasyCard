@@ -430,6 +430,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment Request canceled.
+        /// </summary>
+        public static string PaymentRequestCanceled {
+            get {
+                return ResourceManager.GetString("PaymentRequestCanceled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment Request created.
         /// </summary>
         public static string PaymentRequestCreated {

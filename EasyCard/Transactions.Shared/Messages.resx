@@ -240,6 +240,9 @@
   <data name="NumberOfPaymentsShouldBeLessThan" xml:space="preserve">
     <value>NumberOfPayments should be less than or equal {0}</value>
   </data>
+  <data name="PaymentRequestCanceled" xml:space="preserve">
+    <value>Payment Request canceled</value>
+  </data>
   <data name="PaymentRequestCreated" xml:space="preserve">
     <value>Payment Request created</value>
   </data>
