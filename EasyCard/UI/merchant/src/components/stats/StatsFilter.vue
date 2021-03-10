@@ -65,7 +65,7 @@
                       v-on="on"
                     ></v-text-field>
                   </template>
-                  <v-date-picker v-model="model.dateTo" :max="model.dateFrom" no-title scrollable>
+                  <v-date-picker v-model="model.dateTo" :min="model.dateFrom" no-title scrollable>
                     <v-spacer></v-spacer>
                     <v-btn
                       text
@@ -141,7 +141,7 @@ export default {
       if(this.storeDateFilter.dateFrom || this.storeDateFilter.dateTo){
         let df = this.storeDateFilter.dateFrom;
         let dt = this.storeDateFilter.dateTo;
-        return `${df ? moment(df).format("MM/DD") : "~"} - ${dt ? moment(dt).format("MM/DD") : "~"}`;
+        return `${df ? moment(df).format("DD/MM") : "~"} - ${dt ? moment(dt).format("DD/MM") : "~"}`;
       }
 
       return this.dictionariesRaw.quickDateFilterTypeEnum[this.storeDateFilter.quickDateType] 

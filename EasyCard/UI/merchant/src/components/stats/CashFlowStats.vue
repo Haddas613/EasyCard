@@ -11,13 +11,13 @@
     <v-divider></v-divider>
     <v-card-text class="px-0">
       <v-row class="px-2 black--text body-2">
-        <v-col cols="12" md="5" class="pb-0">
+        <v-col cols="6" md="6" class="pb-0">
           <span class="main-line-color">{{$t("Selection")}}</span>
           <div v-if="report">
             <div>
               <small>{{givenPeriodDate}}</small>
             </div>
-            <div class="pt-1">
+            <div class="pt-2">
               <div>{{$t("Total")}}</div>
               <div>
                 <b>{{report.givenPeriodMeasure | currency('ILS')}}</b>
@@ -25,10 +25,10 @@
             </div>
           </div>
         </v-col>
-        <v-col md="2" class="px-0 hidden-sm-and-down text-center">
+        <!-- <v-col cols="auto" class="px-0 hidden-sm-and-down text-center">
           <v-divider vertical></v-divider>
-        </v-col>
-        <v-col cols="12" md="5" class="pb-0">
+        </v-col> -->
+        <v-col cols="6" md="6" class="pb-0 justify-end">
           <span class="ref-line-color">{{$t("Reference")}}</span>
           <div v-if="report">
             <div>
@@ -134,13 +134,13 @@ export default {
       if(!this.report || !this.report.dateFrom || !this.report.dateTo){
         return '-';
       }
-      return `${moment(this.report.dateFrom).format('MM/DD/YY')} ~ ${moment(this.report.dateTo).format('MM/DD/YY')}`;
+      return `${moment(this.report.dateFrom).format('DD/MM/YY')} ~ ${moment(this.report.dateTo).format('DD/MM/YY')}`;
     },
     altPeriodDate(){
       if(!this.report || !this.report.altDateFrom || !this.report.altDateTo){
         return '-';
       }
-      return `${moment(this.report.altDateFrom).format('MM/DD/YY')} ~ ${moment(this.report.altDateTo).format('MM/DD/YY')}`;
+      return `${moment(this.report.altDateFrom).format('DD/MM/YY')} ~ ${moment(this.report.altDateTo).format('DD/MM/YY')}`;
     },
   },
   async mounted () {
