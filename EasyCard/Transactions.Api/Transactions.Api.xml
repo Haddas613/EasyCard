@@ -986,6 +986,11 @@
             Refund amount
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.IssueInvoice">
+            <summary>
+            Create document
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.RefundRequest.InvoiceDetails">
             <summary>
             Invoice details
