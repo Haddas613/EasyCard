@@ -375,7 +375,8 @@ namespace Transactions.Api.Controllers
 
             if (!(opResult?.Status == StatusEnum.Success))
             {
-                await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.PaymentFailed, paymentTransactionID: opResult?.EntityUID, message: Messages.PaymentRequestPaymentFailed);
+                //ECNG-442: Payments request. Not possible to make a transaction from Checkout deal in case of SHVA error
+                //await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.PaymentFailed, paymentTransactionID: opResult?.EntityUID, message: Messages.PaymentRequestPaymentFailed);
             }
             else
             {
