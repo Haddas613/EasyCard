@@ -60,8 +60,6 @@ namespace CheckoutPortal.Controllers
                 }
             }
 
-
-
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
 
             return View(model);
@@ -91,6 +89,7 @@ namespace CheckoutPortal.Controllers
                 if(!request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
                 {
                     ModelState.AddModelError(nameof(request.CreditCardToken), "Token is not recognized");
+                    logger.LogWarning($"{nameof(Charge)}: unrecognized token from user. Token: {request.CreditCardToken.Value}; PaymentRequestId: {(checkoutConfig.PaymentRequest?.PaymentRequestID.ToString() ?? "-")}");
                     return View("Index", request);
                 }
 
@@ -127,8 +126,10 @@ namespace CheckoutPortal.Controllers
                 }
 
                 result = await transactionsApiClient.CreateTransactionPR(mdel);
+
                 if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
                 {
+                    logger.LogError($"{nameof(Charge)}.{nameof(transactionsApiClient.CreateTransactionPR)}: {result.Message}");
                     return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message });
                 }
             }
@@ -155,6 +156,8 @@ namespace CheckoutPortal.Controllers
                 result = await transactionsApiClient.CreateTransaction(mdel);
                 if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
                 {
+                    logger.LogError($"{nameof(Charge)}.{nameof(transactionsApiClient.CreateTransaction)}: {result.Message}");
+
                     ModelState.AddModelError("Charge", result.Message);
                     foreach (var err in result.Errors)
                     {
