@@ -172,6 +172,28 @@ namespace Transactions.Api.Controllers
                 newInvoice.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
             }
 
+            //TODO: do not duplicate values and properties
+            if (newInvoice.CreditCardDetails != null)
+            {
+                if (!string.IsNullOrEmpty(newInvoice.CreditCardDetails.CardOwnerName))
+                {
+                    newInvoice.CardOwnerName = newInvoice.CreditCardDetails.CardOwnerName;
+                }
+                else
+                {
+                    newInvoice.CreditCardDetails.CardOwnerName = newInvoice.CardOwnerName;
+                }
+
+                if (!string.IsNullOrEmpty(newInvoice.CreditCardDetails.CardOwnerNationalID))
+                {
+                    newInvoice.CardOwnerNationalID = newInvoice.CreditCardDetails.CardOwnerNationalID;
+                }
+                else
+                {
+                    newInvoice.CreditCardDetails.CardOwnerNationalID = newInvoice.CardOwnerNationalID;
+                }
+            }
+
             // Check consumer
             var consumer = newInvoice.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == newInvoice.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
 

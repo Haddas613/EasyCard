@@ -196,6 +196,8 @@ export default {
       this.model.installmentDetails = data.installmentDetails;
       this.model.invoiceDetails = data.invoiceDetails;
       this.model.terminalID = this.terminal.terminalID;
+      this.model.cardOwnerName = data.cardOwnerName;
+      this.model.cardOwnerNationalID = data.cardOwnerNationalID;
 
       let result = await this.$api.invoicing.createInvoice(this.model);
 

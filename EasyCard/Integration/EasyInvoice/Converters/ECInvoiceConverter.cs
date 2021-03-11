@@ -118,12 +118,17 @@ namespace EasyInvoice.Converters
                 return null;
             }
 
+            if (!Enum.TryParse<ECInvoiceCreditCardTypeEnum>(message.CreditCardDetails.CardVendor, true, out var ccType))
+            {
+                ccType = ECInvoiceCreditCardTypeEnum.OTHER;
+            }
+
             var res = new ECInvoicePayment
             {
                 PaymentMethod = ECInvoicePaymentMethodEnum.CREDIT_CARD_REGULAR_CREDIT.ToString(),
                 Amount = message.InvoiceAmount,
                 CreditCard4LastDigits = CreditCardHelpers.GetCardLastFourDigits(message.CreditCardDetails.CardNumber),
-                CreditCardType = message.CreditCardDetails.CardVendor, // TODO: ECInvoice does not support LEUMI_CARD, also it should be in uppercase: [OTHER, VISA, MASTERCARD, DINERS_CLUB, ISRACARD, AMEX, DISCOVER, JCB]
+                CreditCardType = ccType.ToString(), // TODO: ECInvoice does not support LEUMI_CARD
                 PaymentDateTime = message.InvoiceDate.GetValueOrDefault(DateTime.Today).ToString("o"),
                 NumberOfPayments = message.NumberOfPayments
             };
