@@ -49,7 +49,7 @@ namespace Shared.Api.Extensions
                 return source;
             }
 
-            string method = orderDesc.GetValueOrDefault(true) ? "OrderBy" : "OrderByDescending";
+            string method = orderDesc.GetValueOrDefault(true) ? "OrderByDescending" : "OrderBy";
             var parameter = Expression.Parameter(typeof(T), "x");
             var selector = Expression.PropertyOrField(parameter, prop.Name);
 
