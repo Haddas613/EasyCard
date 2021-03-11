@@ -74,6 +74,7 @@ namespace Merchants.Api.Mapping
               .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
 
             CreateMap<TerminalTemplate, Terminal>()
+                .ForMember(d => d.Created, o => o.Ignore())
                 .ForMember(d => d.Label, o => o.Ignore());
             CreateMap<TerminalTemplate, TerminalTemplateSummary>();
             CreateMap<TerminalTemplate, TerminalTemplateResponse>();
