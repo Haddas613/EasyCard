@@ -61,6 +61,15 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Awaiting for Transmission.
+        /// </summary>
+        public static string AwaitingForTransmission {
+            get {
+                return ResourceManager.GetString("AwaitingForTransmission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Canceled.
         /// </summary>
         public static string Canceled {

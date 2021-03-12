@@ -19,5 +19,8 @@ namespace Transactions.Api.Models.Transactions.Enums
 
         [EnumMember(Value = "Canceled")]
         Canceled = 4,
+
+        [EnumMember(Value = "AwaitingForTransmission")]
+        AwaitingForTransmission = 5,
     }
 }
