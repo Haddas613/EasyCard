@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helpers\" />
+    <Folder Include="Helpers\Attributes\" />
     <Folder Include="wwwroot\lib\jquery-payment\" />
   </ItemGroup>
 

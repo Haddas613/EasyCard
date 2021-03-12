@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Shared.Api.Configuration;
+using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Security;
 using Transactions.Api.Client;
@@ -67,6 +68,10 @@ namespace CheckoutPortal
 
             services.Configure<Models.ApplicationSettings>(Configuration.GetSection("AppConfig"));
             services.Configure<ApiSettings>(Configuration.GetSection("API"));
+
+            services.AddHttpContextAccessor();
+
+            services.AddScoped<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
 
             services.AddAutoMapper(typeof(Startup));
 
