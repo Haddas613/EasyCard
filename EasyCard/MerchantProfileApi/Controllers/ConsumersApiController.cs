@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ProfileApi;
 using Shared.Api;
 using Shared.Api.Extensions;
@@ -21,6 +22,7 @@ using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
+using Transactions.Api.Client;
 using Z.EntityFramework.Plus;
 
 namespace MerchantProfileApi.Controllers
@@ -39,13 +41,23 @@ namespace MerchantProfileApi.Controllers
         private readonly IMapper mapper;
         private readonly ITerminalsService terminalsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
+        private readonly ITransactionsApiClient transactionsApiClient;
+        private readonly ILogger logger;
 
-        public ConsumersApiController(IConsumersService consumersService, IMapper mapper, ITerminalsService terminalsService, IHttpContextAccessorWrapper httpContextAccessor)
+        public ConsumersApiController(
+            IConsumersService consumersService,
+            IMapper mapper,
+            ITerminalsService terminalsService,
+            IHttpContextAccessorWrapper httpContextAccessor,
+            ITransactionsApiClient transactionsApiClient,
+            ILogger<ConsumersApiController> logger)
         {
             this.consumersService = consumersService;
             this.mapper = mapper;
             this.terminalsService = terminalsService;
             this.httpContextAccessor = httpContextAccessor;
+            this.transactionsApiClient = transactionsApiClient;
+            this.logger = logger;
         }
 
         [HttpGet]
@@ -167,6 +179,13 @@ namespace MerchantProfileApi.Controllers
 
             consumer.Active = false;
 
+            var consumerDataDeleteResponse = await transactionsApiClient.DeleteConsumerRelatedData(consumerID);
+
+            if (consumerDataDeleteResponse.Status == StatusEnum.Error)
+            {
+                logger.LogError($"{nameof(DeleteConsumer)}: {consumerID} ERROR. Details: {consumerDataDeleteResponse.Message}");
+            }
+
             consumer.ApplyAuditInfo(httpContextAccessor);
 
             await consumersService.UpdateEntity(consumer);
@@ -191,6 +210,14 @@ namespace MerchantProfileApi.Controllers
                 var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == consumer.TerminalID));
 
                 consumer.Active = false;
+
+                var consumerDataDeleteResponse = await transactionsApiClient.DeleteConsumerRelatedData(consumerID);
+
+                if (consumerDataDeleteResponse.Status == StatusEnum.Error)
+                {
+                    logger.LogError($"{nameof(BulkDeleteConsumers)}: {consumerID} ERROR. Details: {consumerDataDeleteResponse.Message}");
+                    continue;
+                }
 
                 consumer.ApplyAuditInfo(httpContextAccessor);
 

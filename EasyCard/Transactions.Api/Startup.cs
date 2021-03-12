@@ -249,6 +249,7 @@ namespace Transactions.Api
             services.AddTransient<CardTokenController, CardTokenController>();
             services.AddTransient<InvoicingController, InvoicingController>();
             services.AddTransient<PaymentRequestsController, PaymentRequestsController>();
+            services.AddTransient<BillingController, BillingController>();
 
             services.AddSingleton<IExternalSystemsService, ExternalSystemService>(serviceProvider =>
             {

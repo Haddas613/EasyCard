@@ -35,6 +35,7 @@ using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Security;
 using Swashbuckle.AspNetCore.Filters;
+using Transactions.Api.Client;
 using SharedApi = Shared.Api;
 
 namespace ProfileApi
@@ -227,6 +228,17 @@ namespace ProfileApi
             // DI: identity client
 
             services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
+
+            services.AddSingleton<ITransactionsApiClient, TransactionsApiClient>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
+                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<TransactionsApiClient>>();
+                var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
+
+                return new TransactionsApiClient(webApiClient, /*logger,*/ tokenService, apiCfg);
+            });
 
             services.AddSingleton<IUserManagementClient, UserManagementClient>(serviceProvider =>
             {
