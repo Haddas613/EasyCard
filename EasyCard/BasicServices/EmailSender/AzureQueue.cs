@@ -21,7 +21,16 @@ namespace BasicServices
 
         public async Task PushToQueue<T>(T model)
         {
-            string json = JsonConvert.SerializeObject(model);
+            string json = null;
+
+            if (model is string || model is Guid || model is Guid?)
+            {
+                json = model.ToString();
+            }
+            else
+            {
+                json = JsonConvert.SerializeObject(model);
+            }
 
             await _client.SendMessageAsync(Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json)));
         }

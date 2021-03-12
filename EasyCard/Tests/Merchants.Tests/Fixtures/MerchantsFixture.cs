@@ -73,7 +73,7 @@ namespace Merchants.Tests.Fixtures
             ImpersonationService = new ImpersonationService(MerchantsContext, HttpContextAccessorWrapper, null);
             var appSettings = new ApplicationSettings
             {
-                MerchantProfileURL = "https://example.com"
+                //MerchantProfileURL = "https://example.com"
             };
             var appConfigMock = new Mock<IOptions<ApplicationSettings>>();
             appConfigMock.SetupGet(cfg => cfg.Value).Returns(appSettings);

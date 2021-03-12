@@ -11,9 +11,9 @@ using Shared.Helpers.Security;
 using Shared.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Shared.Api.Security;
 using Microsoft.AspNetCore.Diagnostics;
 using System.IO;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace CheckoutPortal.Controllers
 {
@@ -60,8 +60,6 @@ namespace CheckoutPortal.Controllers
                 }
             }
 
-
-
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
 
             return View(model);
@@ -74,8 +72,34 @@ namespace CheckoutPortal.Controllers
         {
             var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl, request.ConsumerID);
 
+            if (checkoutConfig.Consumer != null)
+            {
+                if (checkoutConfig.Consumer.Tokens?.Count() > 0)
+                {
+                    request.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new KeyValuePair<Guid, string>(d.CreditCardTokenID, $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}"));
+                }
+            }
+
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
+
+            // If token is present and correct, credit card validation is removed from model state
+            if (request.CreditCardToken.HasValue && request.CreditCardToken.Value != Guid.Empty)
+            {
+                if(!request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
+                {
+                    ModelState.AddModelError(nameof(request.CreditCardToken), "Token is not recognized");
+                    logger.LogWarning($"{nameof(Charge)}: unrecognized token from user. Token: {request.CreditCardToken.Value}; PaymentRequestId: {(checkoutConfig.PaymentRequest?.PaymentRequestID.ToString() ?? "-")}");
+                    return View("Index", request);
+                }
+
+                ModelState[nameof(request.Cvv)].Errors.Clear();
+                ModelState[nameof(request.Cvv)].ValidationState = ModelValidationState.Skipped;
+                ModelState[nameof(request.CardNumber)].Errors.Clear();
+                ModelState[nameof(request.CardNumber)].ValidationState = ModelValidationState.Skipped;
+                ModelState[nameof(request.CardExpiration)].Errors.Clear();
+                ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
+            }
 
             if (!ModelState.IsValid)
             {
@@ -96,9 +120,16 @@ namespace CheckoutPortal.Controllers
                 mapper.Map(checkoutConfig.PaymentRequest, mdel);
                 mapper.Map(checkoutConfig.Settings, mdel);
 
+                if (request.CreditCardToken.HasValue)
+                {
+                    mdel.CreditCardSecureDetails = null;
+                }
+
                 result = await transactionsApiClient.CreateTransactionPR(mdel);
+
                 if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
                 {
+                    logger.LogError($"{nameof(Charge)}.{nameof(transactionsApiClient.CreateTransactionPR)}: {result.Message}");
                     return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message });
                 }
             }
@@ -107,18 +138,26 @@ namespace CheckoutPortal.Controllers
                 var mdel = new Transactions.Api.Models.Transactions.CreateTransactionRequest()
                 {
                     CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails(),
-                    DealDetails = new Shared.Integration.Models.DealDetails()
+                    DealDetails = new Shared.Integration.Models.DealDetails(),
+                    CreditCardToken = request.CreditCardToken
                 }; 
                 mapper.Map(request, mdel);
                 mapper.Map(request, mdel.CreditCardSecureDetails);
                 mapper.Map(request, mdel.DealDetails);
                 mapper.Map(checkoutConfig.Settings, mdel);
 
+                if (request.CreditCardToken.HasValue)
+                {
+                    mdel.CreditCardSecureDetails = null;
+                }
+
                 mdel.Calculate();
 
                 result = await transactionsApiClient.CreateTransaction(mdel);
                 if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
                 {
+                    logger.LogError($"{nameof(Charge)}.{nameof(transactionsApiClient.CreateTransaction)}: {result.Message}");
+
                     ModelState.AddModelError("Charge", result.Message);
                     foreach (var err in result.Errors)
                     {
@@ -143,9 +182,46 @@ namespace CheckoutPortal.Controllers
             }
         }
 
+        [HttpPost]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public async Task<IActionResult> CancelPayment(ChargeViewModel request)
+        {
+            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl, request.ConsumerID);
+
+            if (checkoutConfig.PaymentRequest != null)
+            {
+                var result = await transactionsApiClient.CancelPaymentRequest(checkoutConfig.PaymentRequest.PaymentRequestID);
+
+                if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
+                {
+                    logger.LogError($"{nameof(CancelPayment)}: Could not cancel payment request {checkoutConfig.PaymentRequest.PaymentRequestID}. Reason: {result.Message}");
+                    return RedirectToAction("PaymentError");
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(request.RedirectUrl))
+            {
+                return RedirectToAction("PaymentCanceled");
+            }
+            else
+            {
+                var redirectUrl = UrlHelper.BuildUrl(request.RedirectUrl, null, new { rejectionReason = "Canceled by customer" });
+
+                return Redirect(redirectUrl);
+            }
+
+        }
+
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> PaymentResult()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public async Task<IActionResult> PaymentCanceled()
         {
             return View();
         }

@@ -20,8 +20,6 @@ namespace Transactions.Shared
 
         public string RequestsLogStorageTable { get; set; }
 
-        public string CheckoutPortalUrl { get; set; }
-
         public string EncrKeyForSharedApiKey { get; set; }
 
         public string EmailTableName { get; set; }

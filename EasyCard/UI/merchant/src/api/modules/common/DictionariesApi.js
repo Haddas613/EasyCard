@@ -1,10 +1,10 @@
 export default class DictionariesApi {
     constructor(base) {
         this.base = base;
-        this.transactionsBaseUrl = process.env.VUE_APP_TRANSACTIONS_API_BASE_ADDRESS;
+        this.transactionsBaseUrl = this.base.cfg.VUE_APP_TRANSACTIONS_API_BASE_ADDRESS;
         this.transactionDictionariesUrl = this.transactionsBaseUrl + '/api/dictionaries';
 
-        this.profileBaseUrl = process.env.VUE_APP_PROFILE_API_BASE_ADDRESS;
+        this.profileBaseUrl = this.base.cfg.VUE_APP_PROFILE_API_BASE_ADDRESS;
         this.profileDictionariesUrl = this.profileBaseUrl + '/api/dictionaries';
     }
 

@@ -231,11 +231,17 @@
   <data name="J5NotAllowed" xml:space="preserve">
     <value>J5 deal is not allowed</value>
   </data>
+  <data name="NothingToTransmit" xml:space="preserve">
+    <value>Nothing to transmit</value>
+  </data>
   <data name="NumberOfPaymentsShouldBeGreaterThan" xml:space="preserve">
     <value>NumberOfPayments should be greater than or equal {0}</value>
   </data>
   <data name="NumberOfPaymentsShouldBeLessThan" xml:space="preserve">
     <value>NumberOfPayments should be less than or equal {0}</value>
+  </data>
+  <data name="PaymentRequestCanceled" xml:space="preserve">
+    <value>Payment Request canceled</value>
   </data>
   <data name="PaymentRequestCreated" xml:space="preserve">
     <value>Payment Request created</value>

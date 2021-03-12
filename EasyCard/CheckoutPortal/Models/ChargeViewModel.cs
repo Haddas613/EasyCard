@@ -1,4 +1,6 @@
-﻿using Shared.Helpers;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Shared.Helpers;
+using Shared.Helpers.Models.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -61,8 +63,8 @@ namespace CheckoutPortal.Models
 
         [Required]
         [StringLength(19, MinimumLength = 9)]
-        [RegularExpression("^[0-9 ]*$")]
-        [CreditCard]
+        [RegularExpression("^[0-9]*$")]
+        [CreditCardPlus]
         public string CardNumber { get; set; }
 
         [Required]
@@ -72,7 +74,7 @@ namespace CheckoutPortal.Models
 
         [Required]
         [StringLength(4, MinimumLength = 3)]
-        [RegularExpression("^[0-9]*$")]
+        [RegularExpression("^[0-4]*$")]
         public string Cvv { get; set; }
 
         /// <summary>
@@ -91,6 +93,7 @@ namespace CheckoutPortal.Models
         /// </summary>
         public Guid? CreditCardToken { get; set; }
 
+        [BindNever]
         public IEnumerable<KeyValuePair<Guid, string>> SavedTokens { get; set; }
     }
 }

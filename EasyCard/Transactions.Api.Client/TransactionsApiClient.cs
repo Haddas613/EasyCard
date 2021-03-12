@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+﻿//using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -11,20 +11,21 @@ using Shared.Helpers;
 using Transactions.Api.Models.Transactions;
 using Shared.Api.Models;
 using Transactions.Api.Models.Checkout;
+using Shared.Api.Configuration;
 
 namespace Transactions.Api.Client
 {
     public class TransactionsApiClient : ITransactionsApiClient
     {
         private readonly IWebApiClient webApiClient;
-        private readonly TransactionsApiClientConfig apiConfiguration;
-        private readonly ILogger logger;
+        private readonly ApiSettings apiConfiguration;
+        //private readonly ILogger logger;
         private readonly IWebApiClientTokenService tokenService;
 
-        public TransactionsApiClient(IWebApiClient webApiClient, ILogger<TransactionsApiClient> logger, IWebApiClientTokenService tokenService, IOptions<TransactionsApiClientConfig> apiConfiguration)
+        public TransactionsApiClient(IWebApiClient webApiClient, /*ILogger logger,*/ IWebApiClientTokenService tokenService, IOptions<ApiSettings> apiConfiguration)
         {
             this.webApiClient = webApiClient;
-            this.logger = logger;
+            //this.logger = logger;
             this.apiConfiguration = apiConfiguration.Value;
             this.tokenService = tokenService;
         }
@@ -37,7 +38,7 @@ namespace Transactions.Api.Client
             }
             catch (WebApiClientErrorException clientError)
             {
-                logger.LogError(clientError.Message);
+                //logger.LogError(clientError.Message);
                 return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
             }
         }
@@ -50,7 +51,7 @@ namespace Transactions.Api.Client
             }
             catch (WebApiClientErrorException clientError)
             {
-                logger.LogError(clientError.Message);
+                //logger.LogError(clientError.Message);
                 return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
             }
         }
@@ -64,8 +65,72 @@ namespace Transactions.Api.Client
             catch (WebApiClientErrorException clientError)
             {
                 var response = clientError.TryConvert(new OperationResponse { Message = clientError.Message });
-                logger.LogError($"Failed to get checkout data: {response?.Message}, correlationID: {response?.CorrelationId}");
+                //logger.LogError($"Failed to get checkout data: {response?.Message}, correlationID: {response?.CorrelationId}");
                 throw;
+            }
+        }
+
+        public async Task<OperationResponse> GenerateInvoice(Guid? invoiceID)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/invoicing/generate/{invoiceID}", new { }, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+            }
+        }
+
+        public async Task<OperationResponse> TransmitTerminalTransactions(Guid? terminalID)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/transmission/transmitByTerminal/{terminalID}", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+            }
+        }
+
+        public async Task<IEnumerable<Guid>> GetNonTransmittedTransactionsTerminals()
+        {
+            try
+            {
+                return await webApiClient.Get<IEnumerable<Guid>>(apiConfiguration.TransactionsApiAddress, $"api/transmission/nontransmittedtransactionterminals", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                throw;
+            }
+        }
+
+        public async Task<OperationResponse> CancelPaymentRequest(Guid paymentRequestID)
+        {
+            try
+            {
+                return await webApiClient.Delete<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/paymentRequests/{paymentRequestID}", BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+            }
+        }
+
+        public async Task<OperationResponse> DeleteConsumerRelatedData(Guid consumerID)
+        {
+            try
+            {
+                return await webApiClient.Delete<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/adminwebhook/deleteConsumerRelatedData/{consumerID}", BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
             }
         }
 

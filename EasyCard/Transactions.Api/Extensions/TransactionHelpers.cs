@@ -16,6 +16,11 @@ namespace Transactions.Api.Extensions
                 return QuickStatusFilterTypeEnum.Canceled;
             }
 
+            if (@enum == Shared.Enums.TransactionStatusEnum.CommitedByAggregator)
+            {
+                return QuickStatusFilterTypeEnum.AwaitingForTransmission;
+            }
+
             if ((int)@enum > 0 && (int)@enum < 40)
             {
                 return QuickStatusFilterTypeEnum.Pending;

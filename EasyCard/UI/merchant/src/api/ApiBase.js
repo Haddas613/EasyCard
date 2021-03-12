@@ -12,11 +12,15 @@ import TransmissionsApi from './modules/transactions/TransmissionsApi';
 import BillingDealsApi from './modules/transactions/BillingDealsApi';
 import InvoicingApi from './modules/transactions/InvoicingApi';
 import PaymentRequestsApi from './modules/transactions/PaymentRequestsApi';
+import DashboardReportingApi from './modules/reporting/DashboardReportingApi';
+import appInsights from "../plugins/app-insights";
+import cfg from "../app.config";
 
 class ApiBase {
     constructor() {
         this.oidc = Vue.prototype.$oidc;
         this._ongoingRequests = {};
+        this.cfg = cfg;
 
         /**Apis */
         this.transactions = new TransactionsApi(this);
@@ -29,6 +33,9 @@ class ApiBase {
         this.billingDeals = new BillingDealsApi(this);
         this.invoicing = new InvoicingApi(this);
         this.paymentRequests = new PaymentRequestsApi(this);
+        this.reporting = {
+            dashboard: new DashboardReportingApi(this)
+        };
     }
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */
@@ -68,11 +75,7 @@ class ApiBase {
             method: 'GET',
             withCredentials: true,
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`,
-                'Accept': 'application/json'
-            }
+            headers: this._buildRequestHeaders(access_token)
         });
         this._ongoingRequests[_urlKey] = this._handleRequest(request);
 
@@ -93,11 +96,7 @@ class ApiBase {
             method: 'POST',
             withCredentials: true,
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`,
-                'Accept': 'application/json'
-            },
+            headers: this._buildRequestHeaders(access_token),
             body: JSON.stringify(payload)
         });
 
@@ -118,11 +117,7 @@ class ApiBase {
             method: 'PUT',
             withCredentials: true,
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`,
-                'Accept': 'application/json'
-            },
+            headers: this._buildRequestHeaders(access_token),
             body: JSON.stringify(payload)
         });
 
@@ -143,11 +138,7 @@ class ApiBase {
             method: 'DELETE',
             withCredentials: true,
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`,
-                'Accept': 'application/json'
-            }
+            headers: this._buildRequestHeaders(access_token)
         });
 
         return this._handleRequest(request, true);
@@ -165,7 +156,7 @@ class ApiBase {
                 } else if (showSuccessToastr && result.status === "success") {
                     Vue.toasted.show(result.message, { type: 'success', duration: 5000 });
                 }
-
+                await this._checkAppVersion(request.headers);
                 return result;
             } else {
                 //Server Validation errors are returned to component
@@ -181,6 +172,7 @@ class ApiBase {
                     Vue.toasted.show(i18n.t('NotFound'), { type: 'error' });
                     return null;
                 } else {
+                    appInsights.trackException({exception: new Error(`ApiError`), properties: request});
                     Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error' });
                     return null;
                 }
@@ -194,8 +186,44 @@ class ApiBase {
         return null;
     }
 
+    _buildRequestHeaders(access_token) {
+        const locale = (store.state.localization && store.state.localization.currentLocale)
+            ? store.state.localization.currentLocale : cfg.VUE_APP_I18N_LOCALE;
+
+            let headers =  {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${access_token}`,
+                'Accept': 'application/json',
+                'Accept-Language': `${locale}`,
+            }
+    
+            if(cfg.VUE_APP_VERSION){
+                headers['X-Version'] = cfg.VUE_APP_VERSION;
+            }
+    
+            return headers;
+    }
+
     _formatHeaders(headers) {
         return Object.keys(headers.columns).map(key => { return { value: key, text: headers.columns[key].name } });
+    }
+
+    async _checkAppVersion(responseHeaders) {
+        if (this.lastCheckTimestamp && this.lastCheckTimestamp.getTime() > (new Date()).setMinutes(-5)) {
+            return;
+        }
+
+        let responseHeaderVal = responseHeaders.get('x-version');
+        if(!responseHeaderVal){
+            return;
+        }
+
+        if (responseHeaderVal.toLowerCase().trim() != cfg.VUE_APP_VERSION.toLowerCase().trim()) {
+            store.commit("ui/setVersionMismatch", true);
+        }else{
+            store.commit("ui/setVersionMismatch", false);
+        }
+        this.lastCheckTimestamp = new Date();
     }
 
     format(d, headers, dictionaries) {
@@ -224,7 +252,7 @@ class ApiBase {
 }
 
 export default {
-    install: function(Vue, ) {
+    install: function (Vue, ) {
         Object.defineProperty(Vue.prototype, '$api', { value: new ApiBase() });
     }
 }

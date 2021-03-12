@@ -33,7 +33,7 @@ namespace Shared.Api.Extensions
             return src;
         }
 
-        public static IQueryable<T> OrderByDynamic<T>(this IQueryable<T> source, string orderByProperty, OrderByDirectionEnum orderByType)
+        public static IQueryable<T> OrderByDynamic<T>(this IQueryable<T> source, string orderByProperty, bool? orderDesc)
         {
             var expression = source.Expression;
 
@@ -49,7 +49,7 @@ namespace Shared.Api.Extensions
                 return source;
             }
 
-            string method = orderByType == OrderByDirectionEnum.ASC ? "OrderBy" : "OrderByDescending";
+            string method = orderDesc.GetValueOrDefault(true) ? "OrderByDescending" : "OrderBy";
             var parameter = Expression.Parameter(typeof(T), "x");
             var selector = Expression.PropertyOrField(parameter, prop.Name);
 

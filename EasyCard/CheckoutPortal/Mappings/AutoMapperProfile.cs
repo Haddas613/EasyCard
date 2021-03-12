@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using CheckoutPortal.Models;
-using Merchants.Shared.Models;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;

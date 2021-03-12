@@ -30,6 +30,8 @@ using Merchants.Business.Entities.Terminal;
 using Shared.Helpers.Templating;
 using Shared.Helpers;
 using Z.EntityFramework.Plus;
+using Shared.Api.Configuration;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Controllers
 {
@@ -47,6 +49,7 @@ namespace Transactions.Api.Controllers
         private readonly ITerminalsService terminalsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly ApplicationSettings appSettings;
+        private readonly ApiSettings apiSettings;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly ISystemSettingsService systemSettingsService;
         private readonly IEmailSender emailSender;
@@ -61,11 +64,12 @@ namespace Transactions.Api.Controllers
                     IOptions<ApplicationSettings> appSettings,
                     ICryptoServiceCompact cryptoServiceCompact,
                     ISystemSettingsService systemSettingsService,
-                    IEmailSender emailSender)
+                    IEmailSender emailSender,
+                    IOptions<ApiSettings> apiSettings)
         {
             this.paymentRequestsService = paymentRequestsService;
             this.mapper = mapper;
-
+            this.apiSettings = apiSettings.Value;
             this.terminalsService = terminalsService;
             this.logger = logger;
             this.httpContextAccessor = httpContextAccessor;
@@ -100,7 +104,7 @@ namespace Transactions.Api.Controllers
             {
                 var response = new SummariesResponse<PaymentRequestSummary>();
 
-                response.Data = await mapper.ProjectTo<PaymentRequestSummary>(query.OrderByDescending(p => p.PaymentRequestTimestamp).ApplyPagination(filter)).ToListAsync();
+                response.Data = await mapper.ProjectTo<PaymentRequestSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(PaymentRequest.PaymentRequestTimestamp), filter.SortDesc).ApplyPagination(filter)).ToListAsync();
                 response.NumberOfRecords = numberOfRecordsFuture.Value;
                 return Ok(response);
             }
@@ -118,7 +122,7 @@ namespace Transactions.Api.Controllers
 
                 var paymentRequest = mapper.Map<PaymentRequestResponse>(dbPaymentRequest);
 
-                paymentRequest.PaymentRequestUrl = GetPaymentRequestUrl(paymentRequest.PaymentRequestID, terminal.SharedApiKey)?.Item1;
+                paymentRequest.PaymentRequestUrl = GetPaymentRequestUrl(dbPaymentRequest, terminal.SharedApiKey)?.Item1;
 
                 paymentRequest.History = await mapper.ProjectTo<PaymentRequestHistorySummary>(paymentRequestsService.GetPaymentRequestHistory(dbPaymentRequest.PaymentRequestID).OrderByDescending(d => d.PaymentRequestHistoryID)).ToListAsync();
 
@@ -182,17 +186,39 @@ namespace Transactions.Api.Controllers
             return response;
         }
 
-        private Tuple<string, string> GetPaymentRequestUrl(Guid? paymentRequestID, byte[] sharedTerminalApiKey)
+        [HttpDelete]
+        [Route("{paymentRequestID}")]
+        public async Task<ActionResult<OperationResponse>> CancelPaymentRequest([FromRoute] Guid paymentRequestID)
+        {
+            var dbPaymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == paymentRequestID));
+
+            if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
+            {
+                return BadRequest(new OperationResponse($"{Messages.PaymentRequestStatusIsClosed}", StatusEnum.Error, dbPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+            }
+
+            await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Canceled,  message: Messages.PaymentRequestCanceled);
+
+            return Ok(new OperationResponse { EntityUID = paymentRequestID, Status = StatusEnum.Success, Message = Messages.PaymentRequestCanceled });
+        }
+
+        private Tuple<string, string> GetPaymentRequestUrl(PaymentRequest dbPaymentRequest, byte[] sharedTerminalApiKey)
         {
             if (sharedTerminalApiKey == null)
             {
                 return null;
             }
 
-            var uriBuilder = new UriBuilder(appSettings.CheckoutPortalUrl);
+            var uriBuilder = new UriBuilder(apiSettings.CheckoutPortalUrl);
             var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
-            query["paymentRequest"] = Convert.ToBase64String(paymentRequestID.Value.ToByteArray());
+            query["paymentRequest"] = Convert.ToBase64String(dbPaymentRequest.PaymentRequestID.ToByteArray());
             query["apiKey"] = Convert.ToBase64String(sharedTerminalApiKey);
+
+            if (dbPaymentRequest.DealDetails?.ConsumerID.HasValue == true)
+            {
+                query["consumerID"] = dbPaymentRequest.DealDetails.ConsumerID.Value.ToString();
+            }
+
             uriBuilder.Query = query.ToString();
             var url = uriBuilder.ToString();
 
@@ -209,12 +235,12 @@ namespace Transactions.Api.Controllers
 
             var emailSubject = paymentRequest.RequestSubject ?? settings.DefaultRequestSubject;
             var emailTemplateCode = settings.EmailTemplateCode ?? nameof(PaymentRequest);
-            var url = GetPaymentRequestUrl(paymentRequest.PaymentRequestID, terminal.SharedApiKey);
+            var url = GetPaymentRequestUrl(paymentRequest, terminal.SharedApiKey);
             var substitutions = new List<TextSubstitution>();
 
-            substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{appSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));
-            substitutions.Add(new TextSubstitution("PayWithEasyCardBtnUrl", $"{appSettings.CheckoutPortalUrl}/img/pay-with-easycard.png")); // TODO: make dynamic path to fill "viewed" status
-            substitutions.Add(new TextSubstitution(nameof(paymentRequest.DueDate), paymentRequest.DueDate.GetValueOrDefault().ToString("d"))); // TODO: locale
+            substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));
+            substitutions.Add(new TextSubstitution("PayWithEasyCardBtnUrl", $"{apiSettings.CheckoutPortalUrl}/img/pay-with-easycard.png")); // TODO: make dynamic path to fill "viewed" status
+            substitutions.Add(new TextSubstitution(nameof(paymentRequest.DueDate), paymentRequest.DueDate.HasValue ? paymentRequest.DueDate.Value.ToString("dd/MM/yyyy") : "-")); // TODO: locale
             substitutions.Add(new TextSubstitution(nameof(paymentRequest.PaymentRequestAmount), $"{paymentRequest.PaymentRequestAmount.ToString("F2")}{paymentRequest.Currency.GetCurrencySymbol()}"));
             substitutions.Add(new TextSubstitution("PaymentRequestUrl", url.Item1));
             substitutions.Add(new TextSubstitution("RejectPaymentRequestUrl", url.Item2));

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Invoicing;
 using Transactions.Business.Entities;
+using TransactionsApi = Transactions.Api;
 
 namespace Transactions.Api.Mapping
 {
@@ -20,6 +21,8 @@ namespace Transactions.Api.Mapping
         private void RegisterInvoiceMappings()
         {
             CreateMap<InvoiceRequest, Invoice>();
+
+            CreateMap<TransactionsApi.Models.Transactions.CreditCardDetails, Transactions.Business.Entities.CreditCardDetails>();
 
             CreateMap<Invoice, InvoiceSummary>()
                   .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID));

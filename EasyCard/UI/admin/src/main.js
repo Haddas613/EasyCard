@@ -20,6 +20,7 @@ import auth from './auth'
 import VueClipboard from 'vue-clipboard2';
 import mixin from './extensions/mixins';
 import "./integrations";
+import config from './app.config';
 
 Vue.config.productionTip = false
 
@@ -39,6 +40,11 @@ Vue.use(Toasted, {
         }
     },
 });
+Vue.use({
+    install: function (Vue, ) {
+        Object.defineProperty(Vue.prototype, '$cfg', { value: config });
+    }
+})
 Vue.use(VueClipboard);
 Vue.filter('ecdate', ecdate);
 Vue.filter('currency', currency);

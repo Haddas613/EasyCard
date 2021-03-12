@@ -36,6 +36,7 @@ using Shared.Helpers.Email;
 using Shared.Helpers.Security;
 using AutoMapper;
 using SharedApi = Shared.Api;
+using Shared.Api.Configuration;
 
 namespace IdentityServer
 {
@@ -58,6 +59,7 @@ namespace IdentityServer
             var config = Configuration.GetSection("AppConfig")?.Get<ApplicationSettings>();
             var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
             var azureADConfig = Configuration.GetSection("AzureADConfig")?.Get<AzureADSettings>();
+            var apiConfig = Configuration.GetSection("API")?.Get<ApiSettings>();
 
             services.AddLogging(logging =>
             {
@@ -77,6 +79,16 @@ namespace IdentityServer
                      // Note: do not use options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; - use [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)] attribute in place
                  })
                  .AddRazorRuntimeCompilation(); //TODO: remove on release?
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 8;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireDigit = true;
+                options.Password.RequireNonAlphanumeric = true;
+                //options.Password.RequiredUniqueChars = 5;
+            });
 
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
@@ -100,7 +112,7 @@ namespace IdentityServer
             });
 
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
-
+            services.Configure<ApiSettings>(Configuration.GetSection("API"));
             services.Configure<CryptoSettings>(Configuration.GetSection("CryptoConfig"));
 
             services.AddAutoMapper(typeof(Startup));
@@ -112,6 +124,8 @@ namespace IdentityServer
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders(); // TODO: replace
 
+            var clientsConfig = new Config(apiConfig, identity);
+
             var builder = services.AddIdentityServer(options =>
             {
                 options.Events.RaiseErrorEvents = true;
@@ -119,10 +133,10 @@ namespace IdentityServer
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
             })
-            .AddInMemoryIdentityResources(Config.Ids)
-            .AddInMemoryApiResources(Config.Apis)
-            .AddInMemoryApiScopes(Config.ApiScopes)
-            .AddInMemoryClients(Config.Clients)
+            .AddInMemoryIdentityResources(clientsConfig.Ids)
+            .AddInMemoryApiResources(clientsConfig.Apis)
+            .AddInMemoryApiScopes(clientsConfig.ApiScopes)
+            .AddInMemoryClients(clientsConfig.Clients)
             .AddAspNetIdentity<ApplicationUser>()
 
             //.AddProfileService<ProfileService>()
@@ -228,13 +242,12 @@ namespace IdentityServer
             services.AddSingleton<IMerchantsApiClient, MerchantsApiClient>(serviceProvider =>
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
-                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>().Value;
-                IOptions<MerchantsApiClientConfig> merchantApiSettingsOptions = Options.Create(new MerchantsApiClientConfig { MerchantsManagementApiAddress = apiCfg.AdminApiAddress });
+                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
                 var webApiClient = new WebApiClient();
                 var logger = serviceProvider.GetRequiredService<ILogger<MerchantsApiClient>>();
                 var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
 
-                return new MerchantsApiClient(webApiClient, logger, tokenService, merchantApiSettingsOptions);
+                return new MerchantsApiClient(webApiClient, logger, tokenService, apiCfg);
             });
         }
 

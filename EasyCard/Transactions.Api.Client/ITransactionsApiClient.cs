@@ -15,5 +15,15 @@ namespace Transactions.Api.Client
         Task<OperationResponse> CreateTransactionPR(PRCreateTransactionRequest model);
 
         Task<CheckoutData> GetCheckout(Guid? paymentRequestID, string apiKey, Guid? consumerID = null);
+
+        Task<OperationResponse> GenerateInvoice(Guid? invoiceID);
+
+        Task<OperationResponse> TransmitTerminalTransactions(Guid? terminalID);
+
+        Task<IEnumerable<Guid>> GetNonTransmittedTransactionsTerminals();
+
+        Task<OperationResponse> CancelPaymentRequest(Guid paymentRequestID);
+
+        Task<OperationResponse> DeleteConsumerRelatedData(Guid consumerID);
     }
 }

@@ -10,6 +10,7 @@ using MerchantProfileApi.Models.Terminal;
 using MerchantProfileApi.Services;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProfileApi;
@@ -32,9 +33,12 @@ namespace MerchantProfileApi.Controllers
         [HttpGet]
         [Route("merchant")]
         [ResponseCache(VaryByHeader = "User-Agent", Duration = 3600)]
-        public async Task<ActionResult<MerchantDictionaries>> GetMerchantDictionaries([FromQuery]string language)
+        public async Task<ActionResult<MerchantDictionaries>> GetMerchantDictionaries()
         {
-            var dictionaries = DictionariesService.GetDictionaries(language);
+            var rqf = Request.HttpContext.Features.Get<IRequestCultureFeature>();
+            var culture = rqf.RequestCulture?.Culture;
+
+            var dictionaries = DictionariesService.GetDictionaries(culture);
             return Ok(dictionaries);
         }
     }

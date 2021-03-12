@@ -1,7 +1,7 @@
 export default class BillingDealsApi {
     constructor(base) {
         this.base = base;
-        this.baseUrl = process.env.VUE_APP_TRANSACTIONS_API_BASE_ADDRESS;
+        this.baseUrl = this.base.cfg.VUE_APP_TRANSACTIONS_API_BASE_ADDRESS;
         this.billingUrl = this.baseUrl + '/api/billing';
     }
 

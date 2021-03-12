@@ -8,6 +8,7 @@ using Merchants.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Shared.Api;
+using Shared.Api.Configuration;
 using Shared.Api.Logging;
 using Shared.Api.Models.Binding;
 using Shared.Api.Validation;
@@ -27,7 +29,9 @@ using Shared.Helpers;
 using Shared.Helpers.Security;
 using Swashbuckle.AspNetCore.Filters;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using SharedApi = Shared.Api;
@@ -57,7 +61,8 @@ namespace Merchants.Api
                             "http://localhost:8081",
                             "http://ecng-merchants.azurewebsites.net")
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .WithExposedHeaders("X-Version");
                     });
             });
 
@@ -168,6 +173,7 @@ namespace Merchants.Api
 
             // DI: basics
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
+            services.Configure<ApiSettings>(Configuration.GetSection("API"));
 
             services.AddHttpContextAccessor();
 
@@ -228,12 +234,38 @@ namespace Merchants.Api
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("SystemConnection"), serviceProvider.GetService<IHttpContextAccessor>(), "AdminApi"));
+            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
 
             app.UseRequestResponseLogging();
 
             app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
 
-            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
+            var apiSettings = Configuration.GetSection("API")?.Get<ApiSettings>();
+
+            if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
+            {
+                app.Use(async (context, next) =>
+                {
+                    context.Response.Headers.Add("X-Version", apiSettings.Version);
+                    await next.Invoke();
+                });
+            }
+            else
+            {
+                logger.LogError("Missing API.Version in appsettings.json");
+            }
+
+            app.UseRequestLocalization(options =>
+            {
+                var supportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("en-IL"),
+                    new CultureInfo("he-IL")
+                };
+                options.DefaultRequestCulture = new RequestCulture("en-IL");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
             app.UseStaticFiles();
 
             //app.UseHttpsRedirection();
@@ -258,6 +290,7 @@ namespace Merchants.Api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
             });
 

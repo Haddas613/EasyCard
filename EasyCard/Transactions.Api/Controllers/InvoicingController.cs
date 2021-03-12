@@ -30,9 +30,9 @@ using Shared.Integration.Models.Invoicing;
 using Shared.Helpers.Email;
 using Merchants.Shared.Models;
 using Shared.Helpers.Templating;
+using Z.EntityFramework.Plus;
 using Merchants.Business.Entities.Terminal;
 using SharedIntegration = Shared.Integration;
-using Z.EntityFramework.Plus;
 
 namespace Transactions.Api.Controllers
 {
@@ -106,7 +106,7 @@ namespace Transactions.Api.Controllers
             {
                 var response = new SummariesResponse<InvoiceSummary>();
 
-                response.Data = await mapper.ProjectTo<InvoiceSummary>(query.OrderByDescending(i => i.InvoiceID).ApplyPagination(filter)).Future().ToListAsync();
+                response.Data = await mapper.ProjectTo<InvoiceSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceID), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
                 response.NumberOfRecords = numberOfRecordsFuture.Value;
 
                 return Ok(response);
@@ -172,6 +172,28 @@ namespace Transactions.Api.Controllers
                 newInvoice.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
             }
 
+            //TODO: do not duplicate values and properties
+            if (newInvoice.CreditCardDetails != null)
+            {
+                if (!string.IsNullOrEmpty(newInvoice.CreditCardDetails.CardOwnerName))
+                {
+                    newInvoice.CardOwnerName = newInvoice.CreditCardDetails.CardOwnerName;
+                }
+                else
+                {
+                    newInvoice.CreditCardDetails.CardOwnerName = newInvoice.CardOwnerName;
+                }
+
+                if (!string.IsNullOrEmpty(newInvoice.CreditCardDetails.CardOwnerNationalID))
+                {
+                    newInvoice.CardOwnerNationalID = newInvoice.CreditCardDetails.CardOwnerNationalID;
+                }
+                else
+                {
+                    newInvoice.CreditCardDetails.CardOwnerNationalID = newInvoice.CardOwnerNationalID;
+                }
+            }
+
             // Check consumer
             var consumer = newInvoice.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == newInvoice.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
 
@@ -185,7 +207,16 @@ namespace Transactions.Api.Controllers
 
             newInvoice.Calculate();
 
+            // TODO: check result
             await invoiceService.CreateEntity(newInvoice);
+
+            var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { newInvoice.InvoiceID }, null);
+
+            // TODO: validate
+            if (invoicesToResend.Count() > 0)
+            {
+                await queue.PushToQueue(invoicesToResend.First());
+            }
 
             return new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID);
         }

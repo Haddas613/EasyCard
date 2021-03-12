@@ -48,16 +48,22 @@
                     }
                     <fieldset name="user-data">
                         <div class="row">
+                            <div class="col-md-3 col-xs-12 form-group">
+                                <label asp-for="FirstName">First name</label>
+                                <input id="contact-name" type="text" class="form-control" asp-for="FirstName" autocomplete="off">
+                                <span asp-validation-for="FirstName"></span>
+                            </div>
+
+                            <div class="col-md-3 col-xs-12 form-group">
+                                <label asp-for="LastName">Last name</label>
+                                <input id="contact-name" type="text" class="form-control" asp-for="LastName" autocomplete="off">
+                                <span asp-validation-for="LastName"></span>
+                            </div>
+
                             <div class="col-md-6 col-xs-12 form-group">
                                 <label asp-for="BusinessName">Business name</label>
                                 <input id="business-name" type="text" class="form-control" asp-for="BusinessName" autocomplete="off">
                                 <span asp-validation-for="BusinessName"></span>
-                            </div>
-
-                            <div class="col-md-6 col-xs-12 form-group">
-                                <label asp-for="ContactName">Contact name</label>
-                                <input id="contact-name" type="text" class="form-control" asp-for="ContactName" autocomplete="off">
-                                <span asp-validation-for="ContactName"></span>
                             </div>
 
                             <div class="col-md-6 col-xs-12 form-group">

@@ -1,16 +1,17 @@
 import { UserManager, WebStorageStateStore, User } from 'oidc-client';
+import cfg from "./app.config";
 
 class AuthService {
     constructor() {
 
         const loco = window.location
-        const appRootUrl = `${loco.protocol}//${loco.host}${process.env.BASE_URL}`
+        const appRootUrl = `${loco.protocol}//${loco.host}/`
 
         const settings = {
             userStore: new WebStorageStateStore({ store: window.localStorage }),
             automaticSilentRenew: true,
             filterProtocolClaims: true,
-            authority: process.env.VUE_APP_AUTHORITY,
+            authority: cfg.VUE_APP_AUTHORITY,
 
             redirect_uri: `${appRootUrl}callback.html`,
 

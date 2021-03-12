@@ -7,6 +7,9 @@ const primitives = {
     /**Only required if dependent value is truthy */
     requiredDepends: (d) => (v) => (!d || !!v) || i18n.t('Required'),
 
+    /**Only required if dependent value is false */
+    requiredDependsOnFalsy: (d) => (v) => (!!v || (!!d)) || i18n.t('Required'),
+
     maxLength: (max) => (v) => (!v || v.length <= max) || i18n.t('@MaxLength').replace("@max", max),
     stringLength: (min, max) => (v) => (!v || (v.length >= min && v.length <= max)) || i18n.t('@StringLength').replace("@min", min).replace("@max", max),
 

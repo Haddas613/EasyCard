@@ -18,11 +18,18 @@ namespace IdentityServer.Models.Registration
         public string BusinessName { get; set; }
 
         /// <summary>
-        /// Contact name
+        /// First name
         /// </summary>
         [Required]
         [StringLength(50, MinimumLength = 2)]
-        public string ContactName { get; set; }
+        public string FirstName { get; set; }
+
+        /// <summary>
+        /// Last name
+        /// </summary>
+        [Required]
+        [StringLength(50, MinimumLength = 2)]
+        public string LastName { get; set; }
 
         /// <summary>
         /// Marketing name
@@ -47,6 +54,7 @@ namespace IdentityServer.Models.Registration
         [Required]
         [DataType(DataType.Password)]
         [StringLength(32, MinimumLength = 8)]
+        [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$", ErrorMessage = "Password must have minimum eight characters, at least one letter, one number and one special character")]
         public string Password { get; set; }
 
         [Required]

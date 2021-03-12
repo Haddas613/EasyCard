@@ -66,7 +66,7 @@ namespace Merchants.Api.Controllers
 
             var response = new SummariesResponse<UserSummary>
             {
-                Data = await mapper.ProjectTo<UserSummary>(query.OrderByDescending(u => u.UserTerminalMappingID)).ApplyPagination(filter).Future().ToListAsync(),
+                Data = await mapper.ProjectTo<UserSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(UserTerminalMapping.UserTerminalMappingID), filter.SortDesc)).ApplyPagination(filter).Future().ToListAsync(),
                 NumberOfRecords = numberOfRecordsFuture.Value
             };
 

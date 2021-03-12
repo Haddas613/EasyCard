@@ -82,3 +82,6 @@ body {
 .plan-card {
     height: 200px;
 }
+.panel-ecng{
+    min-width: 40%;
+}

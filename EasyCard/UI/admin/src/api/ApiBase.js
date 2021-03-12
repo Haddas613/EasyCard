@@ -17,11 +17,13 @@ import ShvaApi from './modules/integrations/ShvaApi';
 import EasyInvoiceApi from './modules/integrations/EasyInvoiceApi';
 import ClearingHouseApi from './modules/integrations/ClearingHouseApi';
 import TransmissionApi from './modules/transactions/TransmissionsApi'
+import cfg from "../app.config";
 
 class ApiBase {
     constructor() {
         this.oidc = Vue.prototype.$oidc;
         this._ongoingRequests = {};
+        this.cfg = cfg;
 
         /**Apis */
         this.transactions = new TransactionsApi(this);
@@ -46,7 +48,7 @@ class ApiBase {
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */
     async get(url, params) {
         const access_token = await this.oidc.getAccessToken()
-
+        
         if (!access_token) {
             Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error' });
             // this.oidc.signOut();
@@ -80,11 +82,7 @@ class ApiBase {
             method: 'GET',
             withCredentials: true,
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`,
-                'Accept': 'application/json'
-            }
+            headers: this._buildRequestHeaders(access_token),
         });
         this._ongoingRequests[_urlKey] = this._handleRequest(request);
 
@@ -105,11 +103,7 @@ class ApiBase {
             method: 'POST',
             withCredentials: true,
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`,
-                'Accept': 'application/json'
-            },
+            headers: this._buildRequestHeaders(access_token),
             body: JSON.stringify(payload)
         });
 
@@ -130,11 +124,7 @@ class ApiBase {
             method: 'PUT',
             withCredentials: true,
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`,
-                'Accept': 'application/json'
-            },
+            headers: this._buildRequestHeaders(access_token),
             body: JSON.stringify(payload)
         });
 
@@ -155,11 +145,7 @@ class ApiBase {
             method: 'DELETE',
             withCredentials: true,
             mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${access_token}`,
-                'Accept': 'application/json'
-            }
+            headers: this._buildRequestHeaders(access_token),
         });
 
         return this._handleRequest(request, true);
@@ -178,6 +164,7 @@ class ApiBase {
                     Vue.toasted.show(result.message, { type: 'success', duration: 5000 });
                 }
 
+                await this._checkAppVersion(request.headers);
                 return result;
             } else {
                 //Server Validation errors are returned to component
@@ -206,8 +193,44 @@ class ApiBase {
         return null;
     }
 
+    _buildRequestHeaders(access_token){
+        const locale = (store.state.localization && store.state.localization.currentLocale) 
+            ? store.state.localization.currentLocale : this.cfg.VUE_APP_I18N_LOCALE;
+
+        let headers =  {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${access_token}`,
+            'Accept': 'application/json',
+            'Accept-Language': `${locale}`,
+        }
+
+        if(this.cfg.VUE_APP_VERSION){
+            headers['X-Version'] = this.cfg.VUE_APP_VERSION;
+        }
+
+        return headers;
+    }
+
     _formatHeaders(headers) {
         return Object.keys(headers.columns).map(key => { return { value: key, text: headers.columns[key].name } });
+    }
+
+    async _checkAppVersion(responseHeaders) {
+        if (this.lastCheckTimestamp && this.lastCheckTimestamp.getTime() > (new Date()).setMinutes(-5)) {
+            return;
+        }
+
+        let responseHeaderVal = responseHeaders.get('x-version');
+        if(!responseHeaderVal){
+            return;
+        }
+
+        if (responseHeaderVal.toLowerCase().trim() != this.cfg.VUE_APP_VERSION.toLowerCase().trim()) {
+            store.commit("ui/setVersionMismatch", true);
+        }else{
+            store.commit("ui/setVersionMismatch", false);
+        }
+        this.lastCheckTimestamp = new Date();
     }
 
     format(d, headers, dictionaries) {

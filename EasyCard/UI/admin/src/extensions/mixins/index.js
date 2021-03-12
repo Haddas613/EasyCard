@@ -8,6 +8,9 @@ const mixins = {
                 self.$toasted.show(self.$t("CanNotCopyToClipboard"));
                 console.log(`Error while copying to clipboard: ${e}`);
             });
+        },
+        $formatDate: function(date){
+            return date ? moment(date).format("YYYY-MM-DD") : null;
         }
     }
 };

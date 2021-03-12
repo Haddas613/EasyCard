@@ -119,6 +119,11 @@
               Looks up a localized string similar to Password reset link has been sent on your email.
             </summary>
         </member>
+        <member name="P:IdentityServer.Messages.IdentityMessages.ForgotPasswordSuccess">
+            <summary>
+              Looks up a localized string similar to Link with instructions has been sent to that email.
+            </summary>
+        </member>
         <member name="P:IdentityServer.Messages.IdentityMessages.ResetPassword">
             <summary>
               Looks up a localized string similar to Please set new password.
@@ -134,9 +139,14 @@
             Business name
             </summary>
         </member>
-        <member name="P:IdentityServer.Models.Registration.RegisterViewModel.ContactName">
+        <member name="P:IdentityServer.Models.Registration.RegisterViewModel.FirstName">
             <summary>
-            Contact name
+            First name
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Models.Registration.RegisterViewModel.LastName">
+            <summary>
+            Last name
             </summary>
         </member>
         <member name="P:IdentityServer.Models.Registration.RegisterViewModel.MarketingName">

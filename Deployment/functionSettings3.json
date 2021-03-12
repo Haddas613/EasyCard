@@ -1,0 +1,27 @@
+[
+  {
+    "name": "EmailFrom",
+    "value": "noreply@ecng.co.il",
+    "slotSetting": false
+  },
+  {
+    "name": "EmailTemplatesStorageTable",
+    "value": "emailtemplates",
+    "slotSetting": false
+  },
+  {
+    "name": "SendgridApiKey",
+    "value": "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",
+    "slotSetting": false
+  },
+  {
+    "name": "EmailTemplatesStorageTable",
+    "value": "emailtemplates",
+    "slotSetting": false
+  },
+  {
+    "name": "IdentityServerClient:Authority",
+    "value": "https://ecng-identity.azurewebsites.net",
+    "slotSetting": false
+  }
+]

@@ -8,10 +8,10 @@ namespace Transactions.Api.Models.Transactions.Enums
 {
     public enum DateFilterTypeEnum : short
     {
-        [EnumMember(Value = "Created")]
+        [EnumMember(Value = "created")]
         Created = 0,
 
-        [EnumMember(Value = "Updated")]
+        [EnumMember(Value = "updated")]
         Updated = 1,
     }
 }

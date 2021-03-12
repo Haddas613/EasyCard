@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shared.Api.Extensions.Filtering;
 using Shared.Helpers;
 using System;
 using System.Linq;
@@ -78,46 +79,23 @@ namespace Transactions.Api.Extensions.Filtering
 
         private static IQueryable<BillingDeal> HandleDateFiltering(IQueryable<BillingDeal> src, BillingDealsFilter filter)
         {
-            //TODO: Quick time filters using SequentialGuid https://stackoverflow.com/questions/54920200/entity-framework-core-guid-greater-than-for-paging
+            // TODO: date filtering for billing deals
             if (filter.QuickDateFilter != null)
             {
-                var dateTime = CommonFiltertingExtensions.QuickDateToDateTime(filter.QuickDateFilter.Value);
+                var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(filter.QuickDateFilter.Value);
 
-                if (filter.DateType == DateFilterTypeEnum.Created)
-                {
-                    src = src.Where(t => t.BillingDealTimestamp >= dateTime);
-                }
-                else if (filter.DateType == DateFilterTypeEnum.Updated)
-                {
-                    src = src.Where(t => t.UpdatedDate >= dateTime);
-                }
+                src = src.Where(t => t.UpdatedDate >= dateRange.DateFrom && t.UpdatedDate <= dateRange.DateTo);
             }
             else
             {
-                if (filter.DateType == DateFilterTypeEnum.Created)
+                if (filter.DateFrom != null)
                 {
-                    if (filter.DateFrom != null)
-                    {
-                        src = src.Where(t => t.BillingDealTimestamp >= filter.DateFrom.Value);
-                    }
-
-                    if (filter.DateTo != null)
-                    {
-                        src = src.Where(t => t.BillingDealTimestamp <= filter.DateTo.Value);
-                    }
+                    src = src.Where(t => t.UpdatedDate >= filter.DateFrom.Value);
                 }
 
-                if (filter.DateType == DateFilterTypeEnum.Updated)
+                if (filter.DateTo != null)
                 {
-                    if (filter.DateFrom != null)
-                    {
-                        src = src.Where(t => t.UpdatedDate >= filter.DateFrom.Value);
-                    }
-
-                    if (filter.DateTo != null)
-                    {
-                        src = src.Where(t => t.UpdatedDate <= filter.DateTo.Value);
-                    }
+                    src = src.Where(t => t.UpdatedDate <= filter.DateTo.Value);
                 }
             }
 

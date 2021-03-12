@@ -19,8 +19,18 @@ import vmoney from 'v-money';
 import auth from './auth'
 import VueClipboard from 'vue-clipboard2';
 import mixin from './extensions/mixins';
+import appInsights from "./plugins/app-insights";
+
+import config from './app.config';
 
 Vue.config.productionTip = false
+Vue.config.errorHandler = (err, vm, info) => {
+    // err: error trace
+    // vm: component in which error occured
+    // info: Vue specific error information such as lifecycle hooks, events etc.
+    appInsights.trackException({exception: err, properties: {src: info}});
+    throw err;
+};
 
 Vue.use(auth);
 Vue.use(Api);
@@ -38,6 +48,11 @@ Vue.use(Toasted, {
         }
     },
 });
+Vue.use({
+    install: function (Vue, ) {
+        Object.defineProperty(Vue.prototype, '$cfg', { value: config });
+    }
+})
 Vue.use(VueClipboard);
 Vue.filter('ecdate', ecdate);
 Vue.filter('currency', currency);

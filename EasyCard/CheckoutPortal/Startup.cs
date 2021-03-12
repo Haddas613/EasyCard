@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 //using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,9 +15,12 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using Shared.Api.Configuration;
+using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Security;
 using Transactions.Api.Client;
+using SharedApi = Shared.Api;
 
 namespace CheckoutPortal
 {
@@ -63,7 +67,11 @@ namespace CheckoutPortal
             };
 
             services.Configure<Models.ApplicationSettings>(Configuration.GetSection("AppConfig"));
-            services.Configure<TransactionsApiClientConfig>(Configuration.GetSection("ApiConfig"));
+            services.Configure<ApiSettings>(Configuration.GetSection("API"));
+
+            services.AddHttpContextAccessor();
+
+            services.AddScoped<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -72,12 +80,12 @@ namespace CheckoutPortal
             services.AddSingleton<ITransactionsApiClient, TransactionsApiClient>(serviceProvider =>
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
-                var apiCfg = serviceProvider.GetRequiredService<IOptions<TransactionsApiClientConfig>>();
+                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
                 var webApiClient = new WebApiClient();
                 var logger = serviceProvider.GetRequiredService<ILogger<TransactionsApiClient>>();
                 var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
 
-                return new TransactionsApiClient(webApiClient, logger, tokenService, apiCfg);
+                return new TransactionsApiClient(webApiClient, /*logger,*/ tokenService, apiCfg);
             });
 
             services.AddSingleton<ICryptoServiceCompact, AesGcmCryptoServiceCompact>(serviceProvider =>
@@ -90,8 +98,11 @@ namespace CheckoutPortal
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
+            loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("SystemConnection"), serviceProvider.GetService<IHttpContextAccessor>(), "Profile"));
+            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
+
             app.UseExceptionHandler("/Home/Error");
             
             app.UseHsts();

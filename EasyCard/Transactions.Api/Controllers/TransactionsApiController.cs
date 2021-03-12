@@ -43,9 +43,13 @@ using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
 using Transactions.Api.Extensions;
+using Shared.Helpers.Queue;
 using Z.EntityFramework.Plus;
-using SharedIntegration = Shared.Integration;
+using Shared.Helpers.Email;
+using Shared.Helpers.Templating;
 using SharedBusiness = Shared.Business;
+using SharedIntegration = Shared.Integration;
+using Shared.Api.Configuration;
 
 namespace Transactions.Api.Controllers
 {
@@ -63,6 +67,7 @@ namespace Transactions.Api.Controllers
         private readonly IProcessorResolver processorResolver;
         private readonly ILogger logger;
         private readonly ApplicationSettings appSettings;
+        private readonly ApiSettings apiSettings;
         private readonly ICreditCardTokenService creditCardTokenService;
         private readonly IBillingDealService billingDealService;
         private readonly ITerminalsService terminalsService;
@@ -73,6 +78,8 @@ namespace Transactions.Api.Controllers
         private readonly IInvoiceService invoiceService;
         private readonly ISystemSettingsService systemSettingsService;
         private readonly IMerchantsService merchantsService;
+        private readonly IQueue invoiceQueue;
+        private readonly IEmailSender emailSender;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -91,12 +98,15 @@ namespace Transactions.Api.Controllers
             IPaymentRequestsService paymentRequestsService,
             IHttpContextAccessorWrapper httpContextAccessor,
             ISystemSettingsService systemSettingsService,
-            IMerchantsService merchantsService)
+            IMerchantsService merchantsService,
+            IQueueResolver queueResolver,
+            IEmailSender emailSender,
+            IOptions<ApiSettings> apiSettings)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
             this.mapper = mapper;
-
+            this.apiSettings = apiSettings.Value;
             this.aggregatorResolver = aggregatorResolver;
             this.processorResolver = processorResolver;
             this.terminalsService = terminalsService;
@@ -111,6 +121,8 @@ namespace Transactions.Api.Controllers
             this.httpContextAccessor = httpContextAccessor;
             this.systemSettingsService = systemSettingsService;
             this.merchantsService = merchantsService;
+            this.invoiceQueue = queueResolver.GetQueue(QueueResolver.InvoiceQueue);
+            this.emailSender = emailSender;
         }
 
         [HttpGet]
@@ -209,7 +221,7 @@ namespace Transactions.Api.Controllers
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var dataQuery = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByDirection).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
+                var dataQuery = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.SortDesc).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
 
                 var numberOfRecords = query.DeferredCount().FutureValue();
                 var response = new SummariesResponse<TransactionSummary>();
@@ -366,7 +378,8 @@ namespace Transactions.Api.Controllers
 
             if (!(opResult?.Status == StatusEnum.Success))
             {
-                await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.PaymentFailed, paymentTransactionID: opResult?.EntityUID, message: Messages.PaymentRequestPaymentFailed);
+                //ECNG-442: Payments request. Not possible to make a transaction from Checkout deal in case of SHVA error
+                //await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.PaymentFailed, paymentTransactionID: opResult?.EntityUID, message: Messages.PaymentRequestPaymentFailed);
             }
             else
             {
@@ -781,6 +794,14 @@ namespace Transactions.Api.Controllers
 
                         await transactionsService.UpdateEntity(transaction, Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
 
+                        var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
+
+                        // TODO: validate, rollback
+                        if (invoicesToResend.Count() > 0)
+                        {
+                            await invoiceQueue.PushToQueue(invoicesToResend.First());
+                        }
+
                         await dbTransaction.CommitAsync();
                     }
                     catch (Exception ex)
@@ -792,6 +813,16 @@ namespace Transactions.Api.Controllers
                         await dbTransaction.RollbackAsync();
                     }
                 }
+            }
+
+            try
+            {
+                var email = BuildTransactionSuccessEmail(transaction, terminal);
+                await emailSender.SendEmail(email);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, $"{nameof(ProcessTransaction)}: EmailSend");
             }
 
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
@@ -822,6 +853,35 @@ namespace Transactions.Api.Controllers
                 // TODO: how to determine device
                 return DocumentOriginEnum.Device;
             }
+        }
+
+        private Email BuildTransactionSuccessEmail(PaymentTransaction transaction, Merchants.Business.Entities.Terminal.Terminal terminal)
+        {
+            var settings = terminal.PaymentRequestSettings;
+
+            var emailSubject = "Payment Success";
+            var emailTemplateCode = nameof(PaymentTransaction);
+            var substitutions = new List<TextSubstitution>();
+
+            substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));
+            substitutions.Add(new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName));
+            substitutions.Add(new TextSubstitution(nameof(transaction.TransactionDate), transaction.TransactionDate.GetValueOrDefault().ToString("d"))); // TODO: locale
+            substitutions.Add(new TextSubstitution(nameof(transaction.TransactionAmount), $"{transaction.TotalAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"));
+
+            if (transaction.DealDetails?.ConsumerEmail == null)
+            {
+                throw new ArgumentNullException(nameof(transaction.DealDetails.ConsumerEmail));
+            }
+
+            var email = new Email
+            {
+                EmailTo = transaction.DealDetails.ConsumerEmail,
+                Subject = emailSubject,
+                TemplateCode = emailTemplateCode,
+                Substitutions = substitutions.ToArray()
+            };
+
+            return email;
         }
     }
 }

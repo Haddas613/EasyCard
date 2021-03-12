@@ -88,10 +88,26 @@ namespace Transactions.Api.Controllers
             {
                 var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
 
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByDirection);
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.SortDesc);
 
                 response.Data = await mapper.ProjectTo<TransactionSummary>(query.ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit)).ToListAsync();
 
+                return Ok(response);
+            }
+        }
+
+        [HttpGet]
+        [Authorize(Policy = Policy.AnyAdmin)]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("nontransmittedtransactionterminals")]
+        public async Task<ActionResult<IEnumerable<Guid>>> GetNonTransmittedTransactionsTerminals()
+        {
+            //TODO: Check with terminal settings
+            var query = transactionsService.GetTransactions().AsNoTracking().Where(d => d.Status == TransactionStatusEnum.CommitedByAggregator).Select(t => t.TerminalID).Distinct();
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var response = await query.ToListAsync();
                 return Ok(response);
             }
         }
@@ -275,6 +291,32 @@ namespace Transactions.Api.Controllers
             }
 
             return new OperationResponse(Messages.TransactionCanceled, StatusEnum.Success);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [HttpPost]
+        [Route("transmitByTerminal/{terminalID:guid}")]
+        public async Task<ActionResult<OperationResponse>> TransmitByTerminal([FromRoute]Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+
+            var actionResult = await GetNotTransmittedTransactions(new TransmissionFilter { TerminalID = terminalID });
+
+            var response = actionResult.Result as ObjectResult;
+            var nonTransmittedTransactions = response.Value as SummariesResponse<TransactionSummary>;
+
+            if (nonTransmittedTransactions == null || nonTransmittedTransactions.NumberOfRecords == 0)
+            {
+                return new OperationResponse(Messages.NothingToTransmit, StatusEnum.Success);
+            }
+
+            await TransmitTransactions(new TransmitTransactionsRequest
+            {
+                TerminalID = terminalID,
+                PaymentTransactionIDs = nonTransmittedTransactions.Data.Select(t => t.PaymentTransactionID)
+            });
+
+            return new OperationResponse(Messages.TransactionsTransmitted, StatusEnum.Success);
         }
     }
 }

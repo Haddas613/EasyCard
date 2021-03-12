@@ -1,4 +1,5 @@
 ﻿using Shared.Api.Models;
+using Shared.Api.Models.Enums;
 using Shared.Api.Swagger;
 using Shared.Helpers;
 using System;
@@ -23,11 +24,11 @@ namespace Transactions.Api.Models.Billing
 
         public QuickDateFilterTypeEnum? QuickDateFilter { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? DateFrom { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? DateTo { get; set; }
-
-        public DateFilterTypeEnum DateType { get; set; }
 
         public Guid? ConsumerID { get; set; }
 

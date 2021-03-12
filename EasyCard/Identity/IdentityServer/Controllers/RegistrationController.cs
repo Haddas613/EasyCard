@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using IdentityServer.Data;
+using IdentityServer.Helpers;
 using IdentityServer.Models;
 using IdentityServer.Models.Registration;
 using IdentityServer.Services;
@@ -114,10 +115,15 @@ namespace IdentityServer.Controllers
             user.PasswordHash = userManager.PasswordHasher.HashPassword(user, model.Password);
             await userManager.UpdateAsync(user);
 
+            var allClaims = await userManager.GetClaimsAsync(user);
+
+            await userManager.AddClaim(allClaims, user, Claims.FirstNameClaim, model.FirstName);
+            await userManager.AddClaim(allClaims, user, Claims.LastNameClaim, model.LastName);
+
             var merchantLinkRequest = new LinkUserToMerchantRequest
             {
                 Email = model.Email,
-                DisplayName = model.ContactName,
+                DisplayName = $"{model.FirstName} {model.LastName}".Trim(),
                 UserID = Guid.Parse(user.Id),
                 MerchantID = merchantResult.EntityUID.Value,
                 Roles = new List<string>(),

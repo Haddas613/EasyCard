@@ -1,4 +1,5 @@
 ﻿using Shared.Api.Models;
+using Shared.Api.Models.Enums;
 using Shared.Api.Swagger;
 using Shared.Helpers;
 using Shared.Integration.Models;
@@ -49,11 +50,11 @@ namespace Transactions.Api.Models.Transactions
         [SwaggerExclude]
         public long? ClearingHouseTransactionID { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? DateFrom { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? DateTo { get; set; }
-
-        public DateFilterTypeEnum DateType { get; set; }
 
         public Guid? ConsumerID { get; set; }
 

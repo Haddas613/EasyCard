@@ -34,12 +34,16 @@ namespace EasyInvoice.Converters
 
                 TransactionDateTime = message.InvoiceDate?.ToString("o"),
                 Rows = GetRows(message),
-
-                Payments = new List<ECInvoicePayment>
-                {
-                    GetPaymentFromCard(message)
-                }
             };
+
+            var payments = GetPaymentFromCard(message);
+            if (payments != null)
+            {
+                json.Payments = new List<ECInvoicePayment>
+                {
+                    payments
+                };
+            }
 
             return json;
         }
@@ -109,12 +113,22 @@ namespace EasyInvoice.Converters
 
         public static ECInvoicePayment GetPaymentFromCard(InvoicingCreateDocumentRequest message)
         {
+            if (message.CreditCardDetails == null)
+            {
+                return null;
+            }
+
+            if (!Enum.TryParse<ECInvoiceCreditCardTypeEnum>(message.CreditCardDetails.CardVendor, true, out var ccType))
+            {
+                ccType = ECInvoiceCreditCardTypeEnum.OTHER;
+            }
+
             var res = new ECInvoicePayment
             {
                 PaymentMethod = ECInvoicePaymentMethodEnum.CREDIT_CARD_REGULAR_CREDIT.ToString(),
                 Amount = message.InvoiceAmount,
                 CreditCard4LastDigits = CreditCardHelpers.GetCardLastFourDigits(message.CreditCardDetails.CardNumber),
-                CreditCardType = message.CreditCardDetails.CardVendor,
+                CreditCardType = ccType.ToString(), // TODO: ECInvoice does not support LEUMI_CARD
                 PaymentDateTime = message.InvoiceDate.GetValueOrDefault(DateTime.Today).ToString("o"),
                 NumberOfPayments = message.NumberOfPayments
             };

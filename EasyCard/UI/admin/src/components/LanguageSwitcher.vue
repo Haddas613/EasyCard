@@ -15,8 +15,11 @@ export default {
     }),
     currentLocale: {
       get: function() { return this.currentLocaleStore },
-      set: function(newValue){
-        this.$store.commit('localization/changeLanguage', {vm: this, newLocale: newValue})
+      set: async function(newValue){
+        await this.$store.commit('localization/changeLanguage', {vm: this, newLocale: newValue});
+        
+        // retrieve all dictionaries with new locale
+        location.reload();
       }
     }
   },

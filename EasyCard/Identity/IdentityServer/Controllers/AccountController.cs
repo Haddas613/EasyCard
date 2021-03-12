@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shared.Api.Configuration;
 using Shared.Api.Security;
 using Shared.Helpers.Email;
 using Shared.Helpers.Security;
@@ -332,7 +333,7 @@ namespace IdentityServer.Controllers
             var addPasswordResult = await userManager.AddPasswordAsync(user, model.Password);
             if (addPasswordResult.Succeeded)
             {
-                await auditLogger.RegisterConfirmEmail(user);
+                await auditLogger.RegisterConfirmEmail(user, $"{model.FirstName} {model.LastName}".Trim());
 
                 var allClaims = await userManager.GetClaimsAsync(user);
 
@@ -341,7 +342,7 @@ namespace IdentityServer.Controllers
 
                 if (await userManager.IsInRoleAsync(user, Roles.Merchant))
                 {
-                    return Redirect(apiConfiguration.MerchantProfileApiAddress);
+                    return Redirect(apiConfiguration.MerchantProfileURL);
                 }
                 else
                 {
@@ -388,10 +389,10 @@ namespace IdentityServer.Controllers
                 var user = await userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
-                    logger.LogError($"User {model.Email} does not exist");
+                    logger.LogError($"ForgotPassword attempt to reset non existing user with email: {model.Email}");
 
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToAction(nameof(ForgotPasswordConfirmation), new { Message = IdentityMessages.ForgotPasswordInvalidEmail });
+                    //Don't reveail if user doesn't exists
+                    return RedirectToAction(nameof(ForgotPasswordConfirmation));
                 }
 
                 //Validate user bank account
@@ -425,7 +426,7 @@ namespace IdentityServer.Controllers
                 await emailSender.SendEmailResetPasswordAsync(model.Email, callbackUrl);
 
                 await auditLogger.RegisterForgotPassword(model.Email);
-                return RedirectToAction(nameof(ForgotPasswordConfirmation), new { Message = IdentityMessages.ForgotPasswordPasswordReseted });
+                return RedirectToAction(nameof(ForgotPasswordConfirmation));
             }
 
             // If we got this far, something failed, redisplay form
@@ -435,9 +436,9 @@ namespace IdentityServer.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult ForgotPasswordConfirmation(string message)
+        public IActionResult ForgotPasswordConfirmation()
         {
-            ViewData["ValidationMessage"] = message;
+            ViewData["Message"] = IdentityMessages.ForgotPasswordSuccess;
             ViewData["PreviousUrl"] = Request.Headers["Referer"].ToString();
             return View();
         }
@@ -446,25 +447,25 @@ namespace IdentityServer.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ResetPassword(string code = null)
         {
-            //if (code == null)
-            //{
-            //    return RedirectToAction(nameof(HomeController.Index), "Home");
-            //}
+            if (code == null)
+            {
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
 
-            //var userId = cryptoService.DecryptWithExpiration(code);
+            var userId = cryptoService.DecryptWithExpiration(code);
 
-            //if (userId == null)
-            //{
-            //    logger.LogError($"Confirmation code expired or invalid");
-            //    return RedirectToAction(nameof(HomeController.Index), "Home");
-            //}
+            if (userId == null)
+            {
+                logger.LogError($"Confirmation code expired or invalid");
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
 
-            //var user = await userManager.FindByIdAsync(userId);
-            //if (user == null)
-            //{
-            //    logger.LogError($"Confirmation code is invalid");
-            //    return RedirectToAction(nameof(HomeController.Index), "Home");
-            //}
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                logger.LogError($"Confirmation code is invalid");
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
 
             var model = new ResetPasswordViewModel { Code = code };
             return View(model);
@@ -829,7 +830,7 @@ namespace IdentityServer.Controllers
             await auditLogger.RegisterTwoFactorCompleted(user);
 
             // TODO: from query string
-            return Redirect(apiConfiguration.MerchantProfileApiAddress);
+            return Redirect(apiConfiguration.MerchantProfileURL);
         }
 
         [HttpGet]
@@ -893,7 +894,7 @@ namespace IdentityServer.Controllers
                     IsAuthorized = User?.Identity.IsAuthenticated == true,
                     UserName = User.GetDoneByName(),
                     IsAdmin = isAdmin,
-                    ClientSystemURL = isAdmin ? apiConfiguration.AdminApiAddress : apiConfiguration.MerchantProfileApiAddress
+                    ClientSystemURL = isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL
                 };
 
                 if (!local)
@@ -940,7 +941,7 @@ namespace IdentityServer.Controllers
                 IsAuthorized = User?.Identity.IsAuthenticated == true,
                 UserName = User.GetDoneByName(),
                 IsAdmin = isAdmin,
-                ClientSystemURL = isAdmin ? apiConfiguration.AdminApiAddress : apiConfiguration.MerchantProfileApiAddress
+                ClientSystemURL = isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL
             };
         }
 

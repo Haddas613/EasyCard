@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AwaitingForTransmission" xml:space="preserve">
+    <value>Awaiting for Transmission</value>
+  </data>
   <data name="Canceled" xml:space="preserve">
     <value>Canceled</value>
   </data>
@@ -135,8 +138,14 @@
   <data name="Last24Hours" xml:space="preserve">
     <value>Last 24 hours</value>
   </data>
+  <data name="Last30Days" xml:space="preserve">
+    <value>Last 30 Days</value>
+  </data>
   <data name="Last30Minutes" xml:space="preserve">
     <value>Last 30 minutes</value>
+  </data>
+  <data name="Last3Months" xml:space="preserve">
+    <value>Last 3 Months</value>
   </data>
   <data name="Last5Minutes" xml:space="preserve">
     <value>Last 5 minutes</value>
@@ -162,7 +171,19 @@
   <data name="Pending" xml:space="preserve">
     <value>Pending</value>
   </data>
+  <data name="ThisMonth" xml:space="preserve">
+    <value>This Month</value>
+  </data>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>This week</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Today</value>
+  </data>
   <data name="Updated" xml:space="preserve">
     <value>Updated</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Yesterday</value>
   </data>
 </root>

@@ -173,9 +173,10 @@ namespace MerchantsApi.Tests
             return new MerchantApiController(
                 merchantsFixture.MerchantsService,
                 merchantsFixture.Mapper,
-                merchantsFixture.TerminalsService, 
-                merchantsFixture.ApplicationSettings, 
-                merchantsFixture.ImpersonationService);
+                merchantsFixture.TerminalsService,
+                merchantsFixture.ApplicationSettings,
+                merchantsFixture.ImpersonationService,
+                null);
         }
     }
 }

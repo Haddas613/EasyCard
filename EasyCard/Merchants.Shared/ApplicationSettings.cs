@@ -11,7 +11,5 @@ namespace Merchants.Shared
         public string RequestsLogStorageTable { get; set; }
 
         public string EncrKeyForSharedApiKey { get; set; }
-
-        public string MerchantProfileURL { get; set; }
     }
 }

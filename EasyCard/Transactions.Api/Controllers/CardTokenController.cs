@@ -111,7 +111,7 @@ namespace Transactions.Api.Controllers
             {
                 var response = new SummariesResponse<CreditCardTokenSummary>();
 
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(CreditCardTokenDetails.CreditCardTokenID), filter.OrderByDirection).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(CreditCardTokenDetails.CreditCardTokenID), filter.SortDesc).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
 
                 response.Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
                 response.NumberOfRecords = numberOfRecordsFuture.Value;
@@ -129,7 +129,14 @@ namespace Transactions.Api.Controllers
 
             var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == token.TerminalID).FirstOrDefaultAsync());
 
-            await keyValueStorage.Delete(key);
+            try
+            {
+                await keyValueStorage.Delete(key);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, $"{nameof(DeleteToken)}: Error while deleting token from keyvalue storage. Message: {e.Message}");
+            }
 
             token.Active = false;
             await creditCardTokenService.UpdateEntity(token);

@@ -67,6 +67,11 @@ namespace Transactions.Api.Models.Transactions
         public decimal NetTotal { get; set; }
 
         /// <summary>
+        /// Create document
+        /// </summary>
+        public bool? IssueInvoice { get; set; }
+
+        /// <summary>
         /// Invoice details
         /// </summary>
         public InvoiceDetails InvoiceDetails { get; set; }

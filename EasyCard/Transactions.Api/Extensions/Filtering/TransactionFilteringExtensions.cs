@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shared.Api.Extensions.Filtering;
 using Shared.Helpers;
 using System;
 using System.Linq;
@@ -174,43 +175,20 @@ namespace Transactions.Api.Extensions.Filtering
             //TODO: Quick time filters using SequentialGuid https://stackoverflow.com/questions/54920200/entity-framework-core-guid-greater-than-for-paging
             if (filter.QuickDateFilter != null)
             {
-                var dateTime = CommonFiltertingExtensions.QuickDateToDateTime(filter.QuickDateFilter.Value);
+                var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(filter.QuickDateFilter.Value);
 
-                if (filter.DateType == DateFilterTypeEnum.Created)
-                {
-                    src = src.Where(t => t.TransactionTimestamp >= dateTime);
-                }
-                else if (filter.DateType == DateFilterTypeEnum.Updated)
-                {
-                    src = src.Where(t => t.UpdatedDate >= dateTime);
-                }
+                src = src.Where(t => t.TransactionDate >= dateRange.DateFrom && t.TransactionDate <= dateRange.DateTo);
             }
             else
             {
-                if (filter.DateType == DateFilterTypeEnum.Created)
+                if (filter.DateFrom != null)
                 {
-                    if (filter.DateFrom != null)
-                    {
-                        src = src.Where(t => t.TransactionTimestamp >= filter.DateFrom.Value);
-                    }
-
-                    if (filter.DateTo != null)
-                    {
-                        src = src.Where(t => t.TransactionTimestamp <= filter.DateTo.Value);
-                    }
+                    src = src.Where(t => t.TransactionDate >= filter.DateFrom.Value);
                 }
 
-                if (filter.DateType == DateFilterTypeEnum.Updated)
+                if (filter.DateTo != null)
                 {
-                    if (filter.DateFrom != null)
-                    {
-                        src = src.Where(t => t.UpdatedDate >= filter.DateFrom.Value);
-                    }
-
-                    if (filter.DateTo != null)
-                    {
-                        src = src.Where(t => t.UpdatedDate <= filter.DateTo.Value);
-                    }
+                    src = src.Where(t => t.TransactionDate <= filter.DateTo.Value);
                 }
             }
 
@@ -223,6 +201,7 @@ namespace Transactions.Api.Extensions.Filtering
                 QuickStatusFilterTypeEnum.Pending => src.Where(t => (int)t.Status > 0 && (int)t.Status < 40),
                 QuickStatusFilterTypeEnum.Completed => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.TransmittedByProcessor),
                 QuickStatusFilterTypeEnum.Failed => src.Where(t => (int)t.Status < 0),
+                QuickStatusFilterTypeEnum.AwaitingForTransmission => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator),
                 _ => src,
             };
     }

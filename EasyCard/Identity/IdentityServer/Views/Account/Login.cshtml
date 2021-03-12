@@ -4,11 +4,12 @@
     <div class="page-header text-center">
         @if (Model.IsAuthorized)
         {
-            <h1 class="mb-4">Welcome, @Model.UserName</h1>
+            <h1 class="display-4">Welcome to EasyCard</h1>
+            <p>You are logged in as <b>@Model.UserName</b></p>
         }
         else
         {
-            <h1 class="mb-4">Login to EasyCard</h1>
+            <h5 class="mb-4">Login to EasyCard</h5>
         }
     </div>
 
@@ -44,7 +45,7 @@
                                             <small>Not yet registered? Follow this <a asp-action="Index" asp-controller="Registration">link</a> to join EasyCard</small>
                                         </p>
                                     </div>
-                                    <div class="form-group d-flex justify-content-end">
+                                    <div class="form-group d-flex justify-content-center">
                                         @*<a asp-action="Index" asp-controller="Registration" class="btn btn-outline-info mx-1">Register</a>*@
                                         <a asp-action="ForgotPassword" asp-controller="Account" class="btn btn-outline-info mx-1">Forgot Password</a>
                                         <button class="btn btn-primary mx-1" name="button" value="login">Login</button>
@@ -60,22 +61,17 @@
                                 <hr />
                                 @{
                                     var loginProviders = Model.VisibleExternalProviders;
-                                    if (loginProviders.Count() == 0)
+                                    if (loginProviders.Count() > 0)
                                     {
-                                        <div>
-
-                                        </div>
-                                    }
-                                    else
-                                    {
+                                        <p class="text-center">
+                                            <small>Or log in by using external providers</small>
+                                        </p>
                                         <form asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
-                                            <div>
-                                                <p>
-                                                    @foreach (var provider in loginProviders)
-                                                    {
-                                                        <button type="submit" class="btn btn-outline-info mx-1" name="provider" value="@provider.AuthenticationScheme" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                                    }
-                                                </p>
+                                            <div class="text-center">
+                                                @foreach (var provider in loginProviders)
+                                                {
+                                                    <button type="submit" class="btn btn-sm btn-outline-primary" name="provider" value="@provider.AuthenticationScheme" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                                }
                                             </div>
                                         </form>
                                     }
@@ -111,7 +107,7 @@
                 {
                     <a href="@(Model.ClientSystemURL)" class="btn btn-primary text-white">Go to Merchant UI</a>
                 }
-                <a asp-action="Logout" asp-controller="Account" class="btn btn-secondary mx-1">Logout</a>
+                <a asp-action="Logout" asp-controller="Account" class="btn btn-outline-dark mx-1">Logout</a>
             </div>
         }
     </div>

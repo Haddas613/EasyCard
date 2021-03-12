@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Api.Extensions.Filtering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,17 +31,23 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.Currency == filter.Currency);
             }
 
+            // TODO: date filtering for payment request
             if (filter.QuickDateFilter != null)
             {
-                var dateTime = CommonFiltertingExtensions.QuickDateToDateTime(filter.QuickDateFilter.Value);
+                var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(filter.QuickDateFilter.Value);
 
-                if (filter.DateType == DateFilterTypeEnum.Created)
+                src = src.Where(t => t.DueDate >= dateRange.DateFrom && t.DueDate <= dateRange.DateTo);
+            }
+            else
+            {
+                if (filter.DateFrom != null)
                 {
-                    src = src.Where(t => t.PaymentRequestTimestamp >= dateTime);
+                    src = src.Where(t => t.DueDate >= filter.DateFrom.Value);
                 }
-                else if (filter.DateType == DateFilterTypeEnum.Updated)
+
+                if (filter.DateTo != null)
                 {
-                    src = src.Where(t => t.UpdatedDate >= dateTime);
+                    src = src.Where(t => t.DueDate <= filter.DateTo.Value);
                 }
             }
 

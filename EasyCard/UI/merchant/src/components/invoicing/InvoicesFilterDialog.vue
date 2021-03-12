@@ -70,18 +70,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12" md="6" class="py-0">
-              <v-select
-                :items="dictionaries.dateFilterTypeEnum"
-                item-text="description"
-                item-value="code"
-                v-model="model.dateType"
-                :label="$t('DateType')"
-                outlined
-                clearable
-              ></v-select>
-            </v-col>
-            <v-col cols="12" md="6" class="py-0">
+            <v-col cols="12" md="12" class="py-0">
               <v-select
                 :items="dictionaries.quickDateFilterTypeEnum"
                 item-text="description"
@@ -205,7 +194,11 @@ export default {
         return;
       }
 
-      this.$emit("ok", this.model);
+      this.$emit("ok", {
+        ...this.model,
+        dateFrom: this.$formatDate(this.model.dateFrom),
+        dateTo: this.$formatDate(this.model.dateTo),
+      });
       this.visible = false;
     }
   }

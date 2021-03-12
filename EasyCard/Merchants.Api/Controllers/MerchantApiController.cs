@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Shared.Api;
+using Shared.Api.Configuration;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
@@ -36,6 +37,7 @@ namespace Merchants.Api.Controllers
         private readonly IMapper mapper;
         private readonly ITerminalsService terminalsService;
         private readonly ApplicationSettings config;
+        private readonly ApiSettings apiSettings;
         private readonly IImpersonationService impersonationService;
 
         public MerchantApiController(
@@ -43,13 +45,15 @@ namespace Merchants.Api.Controllers
             IMapper mapper,
             ITerminalsService terminalsService,
             IOptions<ApplicationSettings> config,
-            IImpersonationService impersonationService)
+            IImpersonationService impersonationService,
+            IOptions<ApiSettings> apiSettings)
         {
             this.merchantsService = merchantsService;
             this.mapper = mapper;
             this.terminalsService = terminalsService;
             this.config = config.Value;
             this.impersonationService = impersonationService;
+            this.apiSettings = apiSettings.Value;
         }
 
         [HttpGet]
@@ -79,7 +83,7 @@ namespace Merchants.Api.Controllers
 
                 var response = new SummariesResponse<MerchantSummary>();
 
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(Merchant.MerchantID), filter.OrderByDirection).ApplyPagination(filter);
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(Merchant.MerchantID), filter.SortDesc).ApplyPagination(filter);
 
                 response.Data = await mapper.ProjectTo<MerchantSummary>(query).Future().ToListAsync();
 
@@ -140,7 +144,7 @@ namespace Merchants.Api.Controllers
                 return new ObjectResult(updateResponse) { StatusCode = 400 };
             }
 
-            updateResponse.Message = config.MerchantProfileURL;
+            updateResponse.Message = apiSettings.MerchantProfileURL;
 
             return new ObjectResult(updateResponse) { StatusCode = 200 };
         }

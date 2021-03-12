@@ -33,7 +33,7 @@
                 clearable
               ></v-autocomplete>
             </v-col>
-            <v-col cols="12" md="12" class="py-0">
+            <v-col cols="12" md="6" class="py-0">
               <v-select
                 :items="dictionaries.payReqQuickStatusFilterTypeEnum"
                 item-text="description"
@@ -51,17 +51,6 @@
                 item-value="code"
                 v-model="model.quickDateFilter"
                 :label="$t('QuickDate')"
-                outlined
-                clearable
-              ></v-select>
-            </v-col>
-            <v-col cols="12" md="6" class="py-0">
-              <v-select
-                :items="dictionaries.dateFilterTypeEnum"
-                item-text="description"
-                item-value="code"
-                v-model="model.dateType"
-                :label="$t('DateType')"
                 outlined
                 clearable
               ></v-select>

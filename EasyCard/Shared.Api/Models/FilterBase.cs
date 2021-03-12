@@ -1,4 +1,5 @@
-﻿using Shared.Api.Models.Enums;
+﻿using Microsoft.AspNetCore.Mvc;
+using Shared.Api.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,8 +18,7 @@ namespace Shared.Api.Models
 
         public string SortBy { get; set; }
 
-        // TODO: check with UI
-        public OrderByDirectionEnum OrderByDirection { get; set; }
+        public bool? SortDesc { get; set; }
 
         public bool ShowDeleted { get; set; }
     }

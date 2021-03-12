@@ -2,6 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import MainLayout from '../layouts/main/Index.vue'
 import store from '../store/index';
+
+import cfg from "../app.config";
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -22,6 +25,9 @@ const routes = [
       {
         name: 'Dashboard',
         path: 'dashboard',
+        meta: {
+          altDisplay: true,
+        },
         alias: '',
         component: () => import('../pages/Dashboard.vue'),
       },
@@ -113,7 +119,7 @@ const routes = [
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
+  base: cfg.BASE_URL,
   routes
 })
 

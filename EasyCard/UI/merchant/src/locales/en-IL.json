@@ -58,6 +58,9 @@
   "Confirmation": "Confirmation",
   "BillingDeal(Deleted)" : "Billing Deal (deleted)",
   "Checkout": "Checkout",
+  "UpdateAvailable": "Update Available",
+  "Reference": "Reference",
+  "Selection": "Selection",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -85,11 +88,13 @@
   "@AllowedPrecision": "Allowed precision is @val",
   "OnlyPositiveNumbersAreAllowed": "Only positive numbers are allowed",
   "@TransactionsCount": "@count Transactions",
+  "@RefundsCount": "@count Refunds",
   "SelectItems": "Select Items",
   "AddItems": "Add Items",
   "@MaxSelectionCount": "You can only select up to @count items",
   "@RedirectURLNumber": "Redirect URL #@number",
   "MustBeValidID": "Must be valid ID",
+  "@AppVersion": "App Version: @version",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -220,6 +225,7 @@
   "RedirectURL": "Redirect URL",
   "CheckoutRedirectUrls": "Checkout Redirect URLs",
   "CustomCSSURL": "Custom CSS URL",
+  "Granularity": "Granularity",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -307,5 +313,6 @@
   "ClickToDownload": "Click to download",
 
   "--MESSAGES--": null,
-  "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?"
+  "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?",
+  "NewAppVersionAvailableClickToRefreshThePage": "New App Version Available. Click to refresh the page."
 }

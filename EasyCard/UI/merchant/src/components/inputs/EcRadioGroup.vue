@@ -1,6 +1,6 @@
 <template>
   <v-list width="100%">
-    <v-radio-group :mandatory="mandatory" @change="onSelect($event)" v-model.lazy="selected">
+    <v-radio-group :mandatory="mandatory" @change="onSelect($event)" v-model.lazy="selected" v-if="items" :hide-details="!mandatory">
       <template v-for="(i, index) in items">
         <v-list-item v-bind:key="i[valuekey]">
           <v-list-item-content>

@@ -49,7 +49,7 @@ export default {
   data() {
     return {
       userName: null,
-      publicPath: process.env.BASE_URL
+      publicPath: this.$cfg.BASE_URL
     }
   },
   async mounted(){

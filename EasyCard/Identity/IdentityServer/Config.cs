@@ -1,12 +1,23 @@
 ﻿using IdentityModel;
 using IdentityServer4.Models;
+using Shared.Api.Configuration;
+using Shared.Helpers.Security;
 using System.Collections.Generic;
 
 namespace IdentityServer
 {
-    public static class Config
+    public class Config
     {
-        public static IEnumerable<IdentityResource> Ids =>
+        private readonly ApiSettings apiSettings;
+        private readonly IdentityServerClientSettings identitySettings;
+
+        public Config(ApiSettings apiSettings, IdentityServerClientSettings identitySettings)
+        {
+            this.apiSettings = apiSettings;
+            this.identitySettings = identitySettings;
+        }
+
+        public IEnumerable<IdentityResource> Ids =>
             new IdentityResource[]
             {
                 new IdentityResources.OpenId(),
@@ -14,7 +25,7 @@ namespace IdentityServer
                 new IdentityResource("roles", "Roles", new[] { JwtClaimTypes.Role,  Shared.Helpers.Security.Claims.FirstNameClaim, Shared.Helpers.Security.Claims.LastNameClaim }),
             };
 
-        public static IEnumerable<ApiScope> ApiScopes =>
+        public IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>
             {
                 new ApiScope("merchants_api", "Merchants Api", new[] { JwtClaimTypes.Subject, JwtClaimTypes.Name, JwtClaimTypes.Role, JwtClaimTypes.Audience, Shared.Helpers.Security.Claims.MerchantIDClaim }),
@@ -22,7 +33,7 @@ namespace IdentityServer
                 new ApiScope("management_api", "User Management")
             };
 
-        public static IEnumerable<ApiResource> Apis =>
+        public IEnumerable<ApiResource> Apis =>
             new ApiResource[]
             {
                 new ApiResource("merchants_api", "Merchants Api", new[] { JwtClaimTypes.Subject, JwtClaimTypes.Name, JwtClaimTypes.Role, JwtClaimTypes.Audience, Shared.Helpers.Security.Claims.MerchantIDClaim }),
@@ -36,7 +47,7 @@ namespace IdentityServer
                 },
             };
 
-        public static IEnumerable<Client> Clients =>
+        public IEnumerable<Client> Clients =>
             new Client[]
             {
                 // SPA client using code flow + pkce
@@ -45,8 +56,6 @@ namespace IdentityServer
                     ClientId = "merchant_frontend",
                     ClientName = "Merchant's Frontend",
 
-                    //ClientUri = "http://identityserver.io",
-
                     AllowedGrantTypes = GrantTypes.Implicit,
                     RequirePkce = true,
                     RequireClientSecret = false,
@@ -54,36 +63,21 @@ namespace IdentityServer
                     RedirectUris =
                     {
                         "http://localhost:8080/",
-                        "http://localhost:8080/auth/signinpop/main",
-                        "http://localhost:8080/auth/signinwin/main",
-                        "http://localhost:8080/auth/signinsilent/main",
-
-                        "https://localhost:44339/",
-                        "https://localhost:44339/auth/signinpop/main",
-                        "https://localhost:44339/auth/signinwin/main",
-                        "https://localhost:44339/auth/signinsilent/main",
-
                         "http://localhost:8080/callback.html",
                         "http://localhost:8080/silent-renew.html",
 
-                        "https://ecng-profile.azurewebsites.net",
-                        "https://ecng-profile.azurewebsites.net/auth/signinpop/main",
-                        "https://ecng-profile.azurewebsites.net/auth/signinwin/main",
-                        "https://ecng-profile.azurewebsites.net/auth/signinsilent/main",
-
-                        "https://ecng-profile.azurewebsites.net/callback.html",
-                        "https://ecng-profile.azurewebsites.net/silent-renew.html",
+                        $"{apiSettings.MerchantProfileURL}",
+                        $"{apiSettings.MerchantProfileURL}/callback.html",
+                        $"{apiSettings.MerchantProfileURL}t/silent-renew.html",
                     },
 
                     PostLogoutRedirectUris =
                     {
-                        "https://localhost:44331/index.html",
-                        "https://ecng-identity.azurewebsites.net",
-                        "https://ecng-profile.azurewebsites.net",
-                        "https://ecng-profile.azurewebsites.net/",
+                        $"{identitySettings.Authority}",
+                        $"{apiSettings.MerchantProfileURL}/",
                         "http://localhost:8080/",
                     },
-                    AllowedCorsOrigins = { " http://localhost:8080", "https://localhost:44339", "https://ecng-profile.azurewebsites.net" },
+                    AllowedCorsOrigins = { " http://localhost:8080", "https://localhost:44339", $"{apiSettings.MerchantProfileURL}", },
                     AllowAccessTokensViaBrowser = true,
                     AllowedScopes = { "openid", "profile", "transactions_api", "roles" },
                     AlwaysIncludeUserClaimsInIdToken = true,
@@ -106,13 +100,18 @@ namespace IdentityServer
                         "http://localhost:8081/callback.html",
                         "http://localhost:8081/silent-renew.html",
 
-                        "https://ecng-merchants.azurewebsites.net",
-                        "https://ecng-merchants.azurewebsites.net/callback.html",
-                        "https://ecng-merchants.azurewebsites.net/silent-renew.html",
+                        $"{apiSettings.MerchantsManagementApiAddress}",
+                        $"{apiSettings.MerchantsManagementApiAddress}/callback.html",
+                        $"{apiSettings.MerchantsManagementApiAddress}/silent-renew.html",
                     },
 
-                    PostLogoutRedirectUris = { "https://localhost:44331/index.html", "https://ecng-identity.azurewebsites.net" },
-                    AllowedCorsOrigins = { " http://localhost:8081", "https://localhost:44390", "https://ecng-merchants.azurewebsites.net" },
+                    PostLogoutRedirectUris =
+                    {
+                        $"{identitySettings.Authority}",
+                        $"{apiSettings.MerchantsManagementApiAddress}/",
+                        "http://localhost:8081/",
+                    },
+                    AllowedCorsOrigins = { " http://localhost:8081", "https://localhost:44390", $"{apiSettings.MerchantsManagementApiAddress}" },
                     AllowAccessTokensViaBrowser = true,
                     AllowedScopes = { "openid", "profile", "transactions_api", "merchants_api", "roles" },
                     AlwaysIncludeUserClaimsInIdToken = true,
@@ -125,7 +124,7 @@ namespace IdentityServer
                     AllowOfflineAccess = true,
                     ClientSecrets =
                     {
-                        new Secret("yuwsCT8cbJVgw2W6".Sha256())
+                        new Secret(identitySettings.ClientSecret.Sha256()), new Secret(identitySettings.ClientSecretAlt.Sha256())
                     },
                     AllowedScopes = { "management_api", "merchants_api" },
                     AccessTokenType = AccessTokenType.Jwt,
@@ -139,7 +138,7 @@ namespace IdentityServer
                     AllowOfflineAccess = true,
                     ClientSecrets =
                     {
-                        new Secret("yuwsCT8cbJVgw2W6".Sha256())
+                        new Secret("yuwsCT8cbJVgw2W6".Sha256()) // TODO
                     },
                     AllowedScopes = { "transactions_api" },
                     AccessTokenType = AccessTokenType.Jwt,

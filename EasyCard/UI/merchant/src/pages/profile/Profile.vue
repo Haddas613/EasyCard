@@ -3,11 +3,13 @@
     <v-card flat color="ecbg">
       <v-card-text>
         <v-row no-gutters>
-          <v-col cols="4" md="2">
-            <v-switch class="px-2" :color="'accent'" label="RTL" v-model="$vuetify.rtl"></v-switch>
+          <v-col cols="6" class="text-start d-flex align-center">
+            <span>
+              {{$t("@AppVersion").replace("@version", appVersion)}}
+            </span>
           </v-col>
-          <v-col cols="8" md="10" class="text-end">
-            <v-btn @click="$oidc.signOut()">
+          <v-col cols="6" class="text-end">
+            <v-btn class="mb-1" @click="$oidc.signOut()">
               <v-icon left>mdi-logout</v-icon>
               {{$t("SignOut")}}
             </v-btn>
@@ -76,7 +78,8 @@ export default {
       terminals: [],
       currencies: [],
       terminalSettingsFormValid: true,
-      terminalRefreshed: false
+      terminalRefreshed: false,
+      appVersion: this.$cfg.VUE_APP_VERSION
     };
   },
   async mounted() {
@@ -88,12 +91,6 @@ export default {
     this.terminalRefreshed = true;
   },
   computed: {
-    isRtl: {
-      cache: false,
-      get: function() {
-        return this.$vuetify.rtl === true;
-      }
-    },
     ...mapState({
       terminalStore: state => state.settings.terminal,
       currencyStore: state => state.settings.currency

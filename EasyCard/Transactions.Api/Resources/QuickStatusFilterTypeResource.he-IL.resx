@@ -118,15 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Completed" xml:space="preserve">
-    <value>Completed</value>
+    <value>Completed HE</value>
   </data>
   <data name="Failed" xml:space="preserve">
-    <value>Failed</value>
+    <value>Failed HE</value>
   </data>
   <data name="None" xml:space="preserve">
-    <value>None</value>
+    <value>None HE</value>
   </data>
   <data name="Pending" xml:space="preserve">
-    <value>Pending</value>
+    <value>Pending HE</value>
   </data>
 </root>
