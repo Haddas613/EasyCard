@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 //using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,7 @@ using Shared.Api.Configuration;
 using Shared.Helpers;
 using Shared.Helpers.Security;
 using Transactions.Api.Client;
+using SharedApi = Shared.Api;
 
 namespace CheckoutPortal
 {
@@ -91,8 +93,11 @@ namespace CheckoutPortal
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
+            loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("SystemConnection"), serviceProvider.GetService<IHttpContextAccessor>(), "Profile"));
+            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
+
             app.UseExceptionHandler("/Home/Error");
             
             app.UseHsts();
