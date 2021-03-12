@@ -121,6 +121,19 @@ namespace Transactions.Api.Client
             }
         }
 
+        public async Task<OperationResponse> DeleteConsumerRelatedData(Guid consumerID)
+        {
+            try
+            {
+                return await webApiClient.Delete<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/adminwebhook/deleteConsumerRelatedData/{consumerID}", BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+            }
+        }
+
         private async Task<NameValueCollection> BuildHeaders()
         {
             var token = await tokenService.GetToken();

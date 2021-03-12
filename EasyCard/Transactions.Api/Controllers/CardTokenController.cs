@@ -129,7 +129,14 @@ namespace Transactions.Api.Controllers
 
             var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == token.TerminalID).FirstOrDefaultAsync());
 
-            await keyValueStorage.Delete(key);
+            try
+            {
+                await keyValueStorage.Delete(key);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, $"{nameof(DeleteToken)}: Error while deleting token from keyvalue storage. Message: {e.Message}");
+            }
 
             token.Active = false;
             await creditCardTokenService.UpdateEntity(token);

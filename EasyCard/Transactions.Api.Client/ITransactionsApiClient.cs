@@ -23,5 +23,7 @@ namespace Transactions.Api.Client
         Task<IEnumerable<Guid>> GetNonTransmittedTransactionsTerminals();
 
         Task<OperationResponse> CancelPaymentRequest(Guid paymentRequestID);
+
+        Task<OperationResponse> DeleteConsumerRelatedData(Guid consumerID);
     }
 }
