@@ -8,6 +8,8 @@ namespace Merchants.Business.Entities.User
     {
         public Guid UserID { get; set; }
 
+        public Guid? MerchantID { get; set; }
+
         public string DisplayName { get; set; }
 
         public string Email { get; set; }
