@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using System.IO;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Transactions.Api.Models.Checkout;
 
 namespace CheckoutPortal.Controllers
 {
@@ -38,6 +39,12 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Index([FromQuery]CardRequest request)
         {
+
+            if (request == null || !Request.QueryString.HasValue)
+            {
+                return View("PaymentImpossible");
+            }
+
             var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl, request.ConsumerID);
 
             // TODO: add merchant site origin instead of unsafe-inline

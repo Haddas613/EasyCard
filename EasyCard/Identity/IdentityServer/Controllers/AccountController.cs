@@ -531,6 +531,49 @@ namespace IdentityServer.Controllers
         }
 
         [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await userManager.FindByIdAsync(User.GetDoneByID().Value.ToString());
+
+            var passwordChallenge = await signInManager.CheckPasswordSignInAsync(user, model.OldPassword, lockoutOnFailure: false);
+
+            if (!passwordChallenge.Succeeded)
+            {
+                ModelState.AddModelError(nameof(model.OldPassword), "Password is incorrect");
+                return View(model);
+            }
+
+            user.PasswordHash = userManager.PasswordHasher.HashPassword(user, model.NewPassword);
+
+            var result = await userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("General", "Something went wrong. Try again later or contact administrator");
+            }
+            else
+            {
+                await auditLogger.RegisterChangePassword(user);
+                model.Success = true;
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPasswordConfirmation()
         {

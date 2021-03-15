@@ -16,6 +16,8 @@ namespace IdentityServer.Security.Auditing
 
         Task RegisterResetPassword(ApplicationUser user);
 
+        Task RegisterChangePassword(ApplicationUser user);
+
         Task RegisterLogin(ApplicationUser user);
 
         Task RegisterLogout(ApplicationUser user);
