@@ -149,5 +149,12 @@ namespace IdentityServer.Security.Auditing
                 return null;
             }
         }
+
+        public async Task RegisterChangePassword(ApplicationUser user)
+        {
+            var audit = await GetAudit(user, AuditingTypeEnum.PasswordChanged);
+
+            await SaveAudit(audit);
+        }
     }
 }
