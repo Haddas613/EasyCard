@@ -23,6 +23,7 @@ namespace Transactions.Api.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     public class AdminWebhookController : ApiControllerBase
     {
