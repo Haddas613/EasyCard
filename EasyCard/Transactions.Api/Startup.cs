@@ -62,6 +62,7 @@ namespace Transactions.Api
         public void ConfigureServices(IServiceCollection services)
         {
             var appConfig = Configuration.GetSection("AppConfig").Get<ApplicationSettings>();
+            var apiConfig = Configuration.GetSection("API").Get<ApiSettings>();
 
             services.AddLogging(logging =>
             {
@@ -81,7 +82,10 @@ namespace Transactions.Api
                                             "http://localhost:8080",
                                             "http://localhost:8081",
                                             "https://ecng-profile.azurewebsites.net",
-                                            "https://ecng-merchants.azurewebsites.net")
+                                            "https://ecng-merchants.azurewebsites.net",
+                                            apiConfig.MerchantProfileURL,
+                                            apiConfig.MerchantsManagementApiAddress
+                                            )
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .WithExposedHeaders("X-Version");

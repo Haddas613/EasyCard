@@ -75,5 +75,6 @@
       <QuotedIdentifier>Off</QuotedIdentifier>
     </Build>
     <Build Include="dbo\Stored Procedures\PR_MerchantsDashboard.sql" />
+    <Build Include="dbo\Stored Procedures\PR_Transactions_ETL_1.sql" />
   </ItemGroup>
 </Project>

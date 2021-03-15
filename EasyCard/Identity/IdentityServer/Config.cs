@@ -68,7 +68,7 @@ namespace IdentityServer
 
                         $"{apiSettings.MerchantProfileURL}",
                         $"{apiSettings.MerchantProfileURL}/callback.html",
-                        $"{apiSettings.MerchantProfileURL}t/silent-renew.html",
+                        $"{apiSettings.MerchantProfileURL}/silent-renew.html",
                     },
 
                     PostLogoutRedirectUris =
@@ -77,7 +77,7 @@ namespace IdentityServer
                         $"{apiSettings.MerchantProfileURL}/",
                         "http://localhost:8080/",
                     },
-                    AllowedCorsOrigins = { " http://localhost:8080", "https://localhost:44339", $"{apiSettings.MerchantProfileURL}", },
+                    AllowedCorsOrigins = { "http://localhost:8080", "https://localhost:44339", $"{apiSettings.MerchantProfileURL}", },
                     AllowAccessTokensViaBrowser = true,
                     AllowedScopes = { "openid", "profile", "transactions_api", "roles" },
                     AlwaysIncludeUserClaimsInIdToken = true,
@@ -111,7 +111,7 @@ namespace IdentityServer
                         $"{apiSettings.MerchantsManagementApiAddress}/",
                         "http://localhost:8081/",
                     },
-                    AllowedCorsOrigins = { " http://localhost:8081", "https://localhost:44390", $"{apiSettings.MerchantsManagementApiAddress}" },
+                    AllowedCorsOrigins = { $"{apiSettings.MerchantsManagementApiAddress}", "http://localhost:8081", "https://localhost:44390" },
                     AllowAccessTokensViaBrowser = true,
                     AllowedScopes = { "openid", "profile", "transactions_api", "merchants_api", "roles" },
                     AlwaysIncludeUserClaimsInIdToken = true,

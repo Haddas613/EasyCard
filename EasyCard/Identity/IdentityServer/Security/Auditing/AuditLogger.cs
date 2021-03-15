@@ -5,6 +5,7 @@ using IdentityServer.Security;
 using Merchants.Api.Client;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,14 @@ namespace IdentityServer.Security.Auditing
         private readonly ApplicationDbContext context;
         private readonly IHttpContextAccessor accessor;
         private readonly IMerchantsApiClient merchantsApiClient;
+        private readonly ILogger logger;
 
-        public AuditLogger(ApplicationDbContext context, IHttpContextAccessor accessor, IMerchantsApiClient merchantsApiClient)
+        public AuditLogger(ApplicationDbContext context, IHttpContextAccessor accessor, IMerchantsApiClient merchantsApiClient, ILogger<AuditLogger> logger)
         {
             this.context = context;
             this.accessor = accessor;
             this.merchantsApiClient = merchantsApiClient;
+            this.logger = logger;
         }
 
         public async Task RegisterConfirmEmail(ApplicationUser user, string fullName)
@@ -32,13 +35,20 @@ namespace IdentityServer.Security.Auditing
             context.UserAudits.Add(audit);
             await context.SaveChangesAsync();
 
-            await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+            try
             {
-                UserActivity = Merchants.Shared.Enums.UserActivityEnum.EmailConfirmed,
-                UserID = user.Id,
-                DisplayName = fullName,
-                Email = user.Email
-            });
+                await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+                {
+                    UserActivity = Merchants.Shared.Enums.UserActivityEnum.EmailConfirmed,
+                    UserID = user.Id,
+                    DisplayName = fullName,
+                    Email = user.Email
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Failed to register user action audit", ex);
+            }
         }
 
         public async Task RegisterForgotPassword(string email)
@@ -54,13 +64,19 @@ namespace IdentityServer.Security.Auditing
 
             await SaveAudit(audit);
 
-            await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+            try
             {
-                UserActivity = Merchants.Shared.Enums.UserActivityEnum.LoggedIn,
-                UserID = user.Id,
-                //DisplayName = user.UserName,
-                Email = user.Email
-            });
+                await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+                {
+                    UserActivity = Merchants.Shared.Enums.UserActivityEnum.LoggedIn,
+                    UserID = user.Id,
+                    Email = user.Email
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Failed to register user action audit", ex);
+            }
         }
 
         public async Task RegisterLogout(ApplicationUser user)
@@ -90,13 +106,20 @@ namespace IdentityServer.Security.Auditing
 
             await SaveAudit(audit);
 
-            await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+            try
             {
-                UserActivity = Merchants.Shared.Enums.UserActivityEnum.ResetPassword,
-                UserID = user.Id,
-                DisplayName = user.UserName,
-                Email = user.Email
-            });
+                await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+                {
+                    UserActivity = Merchants.Shared.Enums.UserActivityEnum.ResetPassword,
+                    UserID = user.Id,
+                    DisplayName = user.UserName,
+                    Email = user.Email
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Failed to register user action audit", ex);
+            }
         }
 
         public async Task RegisterTwoFactorCompleted(ApplicationUser user)
@@ -105,21 +128,35 @@ namespace IdentityServer.Security.Auditing
 
             await SaveAudit(audit);
 
-            await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+            try
             {
-                UserActivity = Merchants.Shared.Enums.UserActivityEnum.SetTwoFactorAuth,
-                UserID = user.Id,
-                DisplayName = user.UserName,
-                Email = user.Email,
-            });
+                await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+                {
+                    UserActivity = Merchants.Shared.Enums.UserActivityEnum.SetTwoFactorAuth,
+                    UserID = user.Id,
+                    DisplayName = user.UserName,
+                    Email = user.Email,
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Failed to register user action audit", ex);
+            }
         }
 
         private async Task SaveAudit(UserAudit audit)
         {
-            if (audit != null)
+            try
             {
-                context.UserAudits.Add(audit);
-                await context.SaveChangesAsync();
+                if (audit != null)
+                {
+                    context.UserAudits.Add(audit);
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Failed to register user action audit", ex);
             }
         }
 
