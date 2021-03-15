@@ -23,6 +23,7 @@ using Transactions.Shared.Models;
 using System.Linq;
 using Shared.Integration.Models;
 using Shared.Business.Extensions;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Transactions.Business.Data
 {
@@ -52,6 +53,11 @@ namespace Transactions.Business.Data
            v => JsonConvert.SerializeObject(v),
            v => JsonConvert.DeserializeObject<IEnumerable<Item>>(v));
 
+        private static readonly ValueComparer ItemsComparer = new ValueComparer<IEnumerable<Item>>(
+          (c1, c2) => c1.SequenceEqual(c2),
+          c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+          c => c.ToHashSet());
+
         private static readonly ValueConverter CustomerAddressConverter = new ValueConverter<Address, string>(
            v => JsonConvert.SerializeObject(v),
            v => JsonConvert.DeserializeObject<Address>(v));
@@ -59,6 +65,11 @@ namespace Transactions.Business.Data
         private static readonly ValueConverter StringsArrayConverter = new ValueConverter<string[], string>(
           v => v == null ? null : string.Join(",", v),
           v => v == null ? null : v.Split(",", StringSplitOptions.RemoveEmptyEntries));
+
+        private static readonly ValueComparer StringArrayComparer = new ValueComparer<string[]>(
+           (c1, c2) => c1.SequenceEqual(c2),
+           c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+           c => (string[])c.Clone());
 
         public TransactionsContext(DbContextOptions<TransactionsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
             : base(options)
@@ -329,7 +340,8 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
-                    s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter);
+                    s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
+                        .Metadata.SetValueComparer(ItemsComparer);
                     s.Property(p => p.CustomerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
                 });
 
@@ -451,7 +463,8 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
-                    s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter);
+                    s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
+                        .Metadata.SetValueComparer(ItemsComparer);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
@@ -459,7 +472,8 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.InvoiceType).HasColumnName("InvoiceType");
 
                     s.Property(p => p.InvoiceSubject).HasColumnName("InvoiceSubject").IsRequired(false).IsUnicode(true);
-                    s.Property(p => p.SendCCTo).HasColumnName("SendCCTo").IsRequired(false).IsUnicode(true).HasConversion(StringsArrayConverter);
+                    s.Property(p => p.SendCCTo).HasColumnName("SendCCTo").IsRequired(false).IsUnicode(true).HasConversion(StringsArrayConverter)
+                        .Metadata.SetValueComparer(StringArrayComparer);
                 });
 
                 builder.Property(b => b.TransactionAmount).HasColumnType("decimal(19,4)").IsRequired();
@@ -505,14 +519,16 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
-                    s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter);
+                    s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
+                        .Metadata.SetValueComparer(ItemsComparer);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
                 {
                     s.Property(p => p.InvoiceType).HasColumnName("InvoiceType");
                     s.Property(p => p.InvoiceSubject).HasColumnName("InvoiceSubject").IsRequired(false).IsUnicode(true);
-                    s.Property(p => p.SendCCTo).HasColumnName("SendCCTo").IsRequired(false).IsUnicode(true).HasConversion(StringsArrayConverter);
+                    s.Property(p => p.SendCCTo).HasColumnName("SendCCTo").IsRequired(false).IsUnicode(true).HasConversion(StringsArrayConverter)
+                        .Metadata.SetValueComparer(StringArrayComparer);
                 });
 
                 builder.Property(b => b.InvoiceAmount).HasColumnType("decimal(19,4)").IsRequired();
@@ -573,14 +589,16 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
-                    s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter);
+                    s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
+                        .Metadata.SetValueComparer(ItemsComparer);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
                 {
                     s.Property(p => p.InvoiceType).HasColumnName("InvoiceType");
                     s.Property(p => p.InvoiceSubject).HasColumnName("InvoiceSubject").IsRequired(false).IsUnicode(true);
-                    s.Property(p => p.SendCCTo).HasColumnName("SendCCTo").IsRequired(false).IsUnicode(true).HasConversion(StringsArrayConverter);
+                    s.Property(p => p.SendCCTo).HasColumnName("SendCCTo").IsRequired(false).IsUnicode(true).HasConversion(StringsArrayConverter)
+                        .Metadata.SetValueComparer(StringArrayComparer);
                 });
 
                 builder.Property(b => b.PaymentRequestAmount).HasColumnType("decimal(19,4)").IsRequired();
