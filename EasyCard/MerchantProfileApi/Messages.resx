@@ -141,4 +141,13 @@
   <data name="ItemUpdated" xml:space="preserve">
     <value>Item Updated</value>
   </data>
+  <data name="PrivateKeyUpdated" xml:space="preserve">
+    <value>Private Key Updated</value>
+  </data>
+  <data name="SharedKeyUpdated" xml:space="preserve">
+    <value>Shared Key Updated</value>
+  </data>
+  <data name="TerminalUpdated" xml:space="preserve">
+    <value>Terminal Updated</value>
+  </data>
 </root>

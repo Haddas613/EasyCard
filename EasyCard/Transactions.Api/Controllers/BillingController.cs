@@ -16,6 +16,8 @@ using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Api.Models.Metadata;
+using Shared.Api.UI;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers.KeyValueStorage;
@@ -33,6 +35,7 @@ using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
+using Z.EntityFramework.Plus;
 
 namespace Transactions.Api.Controllers
 {
@@ -83,15 +86,32 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("$meta")]
+        public TableMeta GetMetadata()
+        {
+            return new TableMeta
+            {
+                Columns = typeof(BillingDealSummary)
+                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
+                    .Select(d => d.GetColMeta(BillingDealSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
+                    .ToDictionary(d => d.Key)
+            };
+        }
+
+        [HttpGet]
         public async Task<ActionResult<SummariesResponse<BillingDealSummary>>> GetBillingDeals([FromQuery] BillingDealsFilter filter)
         {
             var query = billingDealService.GetBillingDeals().Filter(filter);
+            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
             using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<BillingDealSummary> { NumberOfRecords = await query.CountAsync() };
+                var response = new SummariesResponse<BillingDealSummary>();
 
-                response.Data = await mapper.ProjectTo<BillingDealSummary>(query.ApplyPagination(filter)).ToListAsync();
+                //TODO: ordering
+                response.Data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
+                response.NumberOfRecords = numberOfRecordsFuture.Value;
 
                 return Ok(response);
             }
@@ -129,11 +149,13 @@ namespace Transactions.Api.Controllers
 
             newBillingDeal.MerchantID = terminal.MerchantID;
 
+            // TODO: calculation
+
             newBillingDeal.ApplyAuditInfo(httpContextAccessor);
 
             await billingDealService.CreateEntity(newBillingDeal);
 
-            return CreatedAtAction(nameof(GetBillingDeal), new { BillingDealID = newBillingDeal.BillingDealID }, new OperationResponse(Messages.BillingDealCreated, StatusEnum.Success, newBillingDeal.BillingDealID.ToString()));
+            return CreatedAtAction(nameof(GetBillingDeal), new { BillingDealID = newBillingDeal.BillingDealID }, new OperationResponse(Messages.BillingDealCreated, StatusEnum.Success, newBillingDeal.BillingDealID));
         }
 
         [HttpPut]
@@ -148,7 +170,7 @@ namespace Transactions.Api.Controllers
 
             await billingDealService.UpdateEntity(billingDeal);
 
-            return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID.ToString()));
+            return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
         }
 
         [HttpDelete]
@@ -163,7 +185,25 @@ namespace Transactions.Api.Controllers
 
             await billingDealService.UpdateEntity(billingDeal);
 
-            return Ok(new OperationResponse(Messages.BillingDealDeleted, StatusEnum.Success, billingDealID.ToString()));
+            return Ok(new OperationResponse(Messages.BillingDealDeleted, StatusEnum.Success, billingDealID));
+        }
+
+        [HttpPost]
+        [Route("create-transactions")]
+        public async Task<ActionResult<OperationResponse>> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request)
+        {
+            if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
+            {
+                return BadRequest(new OperationResponse(Messages.BillingDealsRequired, null, HttpContext.TraceIdentifier, nameof(request.BillingDealsID), Messages.BillingDealsRequired));
+            }
+
+            var response = new OperationResponse
+            {
+                Status = StatusEnum.Success,
+                Message = Messages.TransactionsQueued
+            };
+
+            return Ok(response);
         }
     }
 }

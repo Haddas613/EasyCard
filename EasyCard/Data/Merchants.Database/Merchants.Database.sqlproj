@@ -70,5 +70,7 @@
     <Build Include="dbo\Tables\MerchantHistory.sql" />
     <Build Include="dbo\Tables\Item.sql" />
     <Build Include="dbo\Tables\Consumer.sql" />
+    <Build Include="dbo\Tables\CurrencyRate.sql" />
+    <Build Include="dbo\Tables\SystemSettings.sql" />
   </ItemGroup>
 </Project>

@@ -106,6 +106,51 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Terminal Disabled.
+        /// </summary>
+        public static string TerminalDisabled {
+            get {
+                return ResourceManager.GetString("TerminalDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal Enabled.
+        /// </summary>
+        public static string TerminalEnabled {
+            get {
+                return ResourceManager.GetString("TerminalEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal template approved.
+        /// </summary>
+        public static string TerminalTemplateApproved {
+            get {
+                return ResourceManager.GetString("TerminalTemplateApproved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal Template Created.
+        /// </summary>
+        public static string TerminalTemplateCreated {
+            get {
+                return ResourceManager.GetString("TerminalTemplateCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal template disabled.
+        /// </summary>
+        public static string TerminalTemplateDisabled {
+            get {
+                return ResourceManager.GetString("TerminalTemplateDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terminal Updated.
         /// </summary>
         public static string TerminalUpdated {
@@ -133,11 +178,11 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User Linked To Terminal.
+        ///   Looks up a localized string similar to User linked to Merchant.
         /// </summary>
-        public static string UserLinkedToTerminal {
+        public static string UserLinkedToMerchant {
             get {
-                return ResourceManager.GetString("UserLinkedToTerminal", resourceCulture);
+                return ResourceManager.GetString("UserLinkedToMerchant", resourceCulture);
             }
         }
         
@@ -160,11 +205,11 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User unlinked from terminal.
+        ///   Looks up a localized string similar to User unlinked from Merchant.
         /// </summary>
-        public static string UserUnlinkedFromTerminal {
+        public static string UserUnlinkedFromMerchant {
             get {
-                return ResourceManager.GetString("UserUnlinkedFromTerminal", resourceCulture);
+                return ResourceManager.GetString("UserUnlinkedFromMerchant", resourceCulture);
             }
         }
     }

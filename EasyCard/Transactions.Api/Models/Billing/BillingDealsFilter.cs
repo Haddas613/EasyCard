@@ -1,4 +1,5 @@
 ﻿using Shared.Api.Models;
+using Shared.Api.Models.Enums;
 using Shared.Api.Swagger;
 using Shared.Helpers;
 using System;
@@ -21,13 +22,13 @@ namespace Transactions.Api.Models.Billing
 
         public CurrencyEnum? Currency { get; set; }
 
-        public QuickTimeFilterTypeEnum? QuickTimeFilter { get; set; }
+        public QuickDateFilterTypeEnum? QuickDateFilter { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? DateFrom { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? DateTo { get; set; }
-
-        public DateFilterTypeEnum DateType { get; set; }
 
         public Guid? ConsumerID { get; set; }
 
@@ -46,5 +47,12 @@ namespace Transactions.Api.Models.Billing
 
         [SwaggerExclude]
         public string CreditCardVendor { get; set; }
+
+        public bool ShowOnlyDeleted { get; set; } = false;
+
+        /// <summary>
+        /// Billing deals that can be manually triggered
+        /// </summary>
+        public bool OnlyActual { get; set; }
     }
 }

@@ -5,6 +5,7 @@
     "InstanceTypeFullName": "ClearingHouse.ClearingHouseAggregator, ClearingHouse",
     "SettingsTypeFullName": "ClearingHouse.ClearingHouseTerminalSettings, ClearingHouse",
     "Name": "PayDay Clearing House",
+    "Key": "payday-clearing-house",
     "Active": true
   },
   {
@@ -13,6 +14,36 @@
     "InstanceTypeFullName": "Shva.ShvaProcessor, Shva",
     "SettingsTypeFullName": "Shva.ShvaTerminalSettings, Shva",
     "Name": "Shva",
+    "Key": "shva",
+    "Active": true,
+    "CanBeUsedInTerminalTemplate": true
+  },
+  {
+    "ExternalSystemID": 30,
+    "Type": "invoicing",
+    "InstanceTypeFullName": "EasyInvoice.ECInvoiceInvoicing, EasyInvoice",
+    "SettingsTypeFullName": "EasyInvoice.EasyInvoiceTerminalSettings, EasyInvoice",
+    "Name": "EasyInvoice",
+    "Key": "easy-invoice",
     "Active": true
+  },
+  {
+    "ExternalSystemID": 40,
+    "Type": "invoicing",
+    "InstanceTypeFullName": null,
+    "SettingsTypeFullName": null,
+    "Name": "RapidOne Invoicing",
+    "Key": "rapid-one-invoicing",
+    "Active": true
+  },
+  {
+    "ExternalSystemID": 1,
+    "Type": "aggregator",
+    "InstanceTypeFullName": "Shared.Integration.ExternalSystems.NullAggregator, Shared.Integration",
+    "SettingsTypeFullName": "Shared.Integration.ExternalSystems.NullAggregatorSettings, Shared.Integration",
+    "Name": "NULL Aggregator",
+    "Key": "null-aggregator",
+    "Active": true,
+    "CanBeUsedInTerminalTemplate": true
   }
 ]

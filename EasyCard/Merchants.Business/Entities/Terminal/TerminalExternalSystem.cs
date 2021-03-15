@@ -1,12 +1,13 @@
 ﻿using Merchants.Shared.Enums;
 using Newtonsoft.Json.Linq;
+using Shared.Business.Security;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Merchants.Business.Entities.Terminal
 {
-    public class TerminalExternalSystem
+    public class TerminalExternalSystem : ITerminalEntity
     {
         public long TerminalExternalSystemID { get; set; }
 
@@ -17,11 +18,6 @@ namespace Merchants.Business.Entities.Terminal
         public Guid TerminalID { get; set; }
 
         public Terminal Terminal { get; set; }
-
-        /// <summary>
-        /// SHVA or other system terminal ID
-        /// </summary>
-        public string ExternalProcessorReference { get; set; }
 
         public JObject Settings { get; set; }
 

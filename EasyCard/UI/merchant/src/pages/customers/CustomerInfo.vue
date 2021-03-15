@@ -69,7 +69,11 @@
 
           <template v-slot:left="{ item }">
             <v-col cols="12" md="6" lg="6" class="caption ecgray--text">{{item.creditCardTokenID | guid}}</v-col>
-            <v-col cols="12" md="6" lg="6">{{item.cardNumber}}</v-col>
+            <v-col cols="12" md="6" lg="6">
+              <span v-bind:class="{'error--text': item.expired}">
+                {{item.cardNumber}}  <small class="px-1">{{item.cardExpiration}}</small>
+              </span>
+            </v-col>
           </template>
 
           <template v-slot:right="{ item }">
@@ -143,11 +147,12 @@ export default {
       return;
     }
 
-    this.model = await this.$api.consumers.getConsumer(this.$route.params.id);
+    let customer = await this.$api.consumers.getConsumer(this.$route.params.id);
 
-    if (!this.model) {
+    if (!customer) {
       return this.$router.push("/admin/customers/list");
     }
+    this.model = customer;
 
     this.tokens =
       (await this.$api.cardTokens.getCustomerCardTokens(this.$route.params.id))
@@ -175,7 +180,8 @@ export default {
             text: this.$t("Charge"),
             fn: () => {
               this.$store.commit("payment/addLastChargedCustomer", {
-                customerId: this.$route.params.id
+                customerID: this.$route.params.id,
+                terminalID: this.model.terminalID
               });
               this.$router.push({
                 name: "Charge",
@@ -184,11 +190,55 @@ export default {
             }
           },
           {
+            text: this.$t("Refund"),
+            fn: () => {
+              this.$router.push({
+                name: "Refund",
+                params: { customerid: this.$route.params.id }
+              });
+            }
+          },
+          {
             text: this.$t("Transactions"),
             fn: () => {
               this.$router.push({
-                name: "TransactionsCustomer",
-                params: { id: this.$route.params.id }
+                name: "TransactionsFiltered",
+                params: { filters: {
+                  consumerID: this.$route.params.id
+                } }
+              });
+            }
+          },
+          {
+            text: this.$t("BillingDeals"),
+            fn: () => {
+              this.$router.push({
+                name: "BillingDeals",
+                params: { filters: {
+                  consumerID: this.$route.params.id
+                } }
+              });
+            }
+          },
+          {
+            text: this.$t("Invoices"),
+            fn: () => {
+              this.$router.push({
+                name: "Invoices",
+                params: { filters: {
+                  consumerID: this.$route.params.id
+                } }
+              });
+            }
+          },
+          {
+            text: this.$t("PaymentRequests"),
+            fn: () => {
+              this.$router.push({
+                name: "PaymentRequests",
+                params: { filters: {
+                  consumerID: this.$route.params.id
+                } }
               });
             }
           },

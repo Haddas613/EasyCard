@@ -1,6 +1,8 @@
 <template>
   <v-app id="inspire" v-bind:dir="$vuetify.rtl ? 'rtl' : 'ltr'">
 
+    <app-version-overlay></app-version-overlay>
+
     <main-app-bar :drawer.sync="drawer"/>
 
     <ec-nav :drawer.sync="drawer"/>
@@ -11,8 +13,6 @@
 </template>
 
 <script>
-  import mainAuth from '../../auth';
-
   export default {
     name: 'MainIndex',
 
@@ -21,6 +21,7 @@
       EcNav: () => import('../shared/EcNav.vue'),
       MainContent: () => import('./Content.vue'),
       MainFooter: () => import('./Footer.vue'),
+      AppVersionOverlay: () => import("../../components/misc/AppVersionOverlay"),
     },
 
     data: () => ({

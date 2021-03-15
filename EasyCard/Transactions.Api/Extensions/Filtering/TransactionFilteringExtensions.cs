@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Shared.Api.Extensions.Filtering;
 using Shared.Helpers;
 using System;
 using System.Linq;
@@ -45,12 +46,18 @@ namespace Transactions.Api.Extensions.Filtering
 
             src = HandleDateFiltering(src, filter);
 
-            if (filter.QuickStatusFilter != null)
+            // TODO: we can try to transmit transactions which are failed to transmit
+            if (filter.NotTransmitted)
+            {
+                src = src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator);
+            }
+            else if (filter.QuickStatusFilter != null)
             {
                 src = FilterByQuickStatus(src, filter.QuickStatusFilter.Value);
             }
             else if (filter.Statuses != null && filter.Statuses.Count > 0)
             {
+                //TODO: use OR builder (invalid cast)
                 src = src.Where(t => filter.Statuses.Contains(t.Status));
             }
 
@@ -59,9 +66,14 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.JDealType == filter.JDealType);
             }
 
-            if (filter.Type != null)
+            if (filter.TransactionType != null)
             {
-                src = src.Where(t => t.TransactionType == filter.Type);
+                src = src.Where(t => t.TransactionType == filter.TransactionType);
+            }
+
+            if (filter.SpecialTransactionType != null)
+            {
+                src = src.Where(t => t.SpecialTransactionType == filter.SpecialTransactionType);
             }
 
             if (filter.CardPresence != null)
@@ -91,7 +103,13 @@ namespace Transactions.Api.Extensions.Filtering
 
             if (!string.IsNullOrWhiteSpace(filter.CardNumber))
             {
-                src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardNumber, filter.CardNumber.UseWildCard(true)));
+                var cardNumber = filter.CardNumber.Replace("*", string.Empty).Trim();
+
+                // don't do anything if card number is nothing but a * symbol
+                if (!string.IsNullOrEmpty(cardNumber))
+                {
+                    src = src.Where(t => EF.Functions.Like(t.CreditCardDetails.CardNumber, filter.CardNumber.UseWildCard(true)));
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(filter.ConsumerEmail))
@@ -155,52 +173,27 @@ namespace Transactions.Api.Extensions.Filtering
         private static IQueryable<PaymentTransaction> HandleDateFiltering(IQueryable<PaymentTransaction> src, TransactionsFilter filter)
         {
             //TODO: Quick time filters using SequentialGuid https://stackoverflow.com/questions/54920200/entity-framework-core-guid-greater-than-for-paging
-            if (filter.QuickTimeFilter != null)
+            if (filter.QuickDateFilter != null)
             {
-                src = FilterByQuickTime(src, filter.QuickTimeFilter.Value);
+                var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(filter.QuickDateFilter.Value);
+
+                src = src.Where(t => t.TransactionDate >= dateRange.DateFrom && t.TransactionDate <= dateRange.DateTo);
             }
             else
             {
-                if (filter.DateType == DateFilterTypeEnum.Created)
+                if (filter.DateFrom != null)
                 {
-                    if (filter.DateFrom != null)
-                    {
-                        src = src.Where(t => t.TransactionTimestamp >= filter.DateFrom.Value);
-                    }
-
-                    if (filter.DateTo != null)
-                    {
-                        src = src.Where(t => t.TransactionTimestamp <= filter.DateTo.Value);
-                    }
+                    src = src.Where(t => t.TransactionDate >= filter.DateFrom.Value);
                 }
 
-                if (filter.DateType == DateFilterTypeEnum.Updated)
+                if (filter.DateTo != null)
                 {
-                    if (filter.DateFrom != null)
-                    {
-                        src = src.Where(t => t.UpdatedDate >= filter.DateFrom.Value);
-                    }
-
-                    if (filter.DateTo != null)
-                    {
-                        src = src.Where(t => t.UpdatedDate <= filter.DateTo.Value);
-                    }
+                    src = src.Where(t => t.TransactionDate <= filter.DateTo.Value);
                 }
             }
 
             return src;
         }
-
-        private static IQueryable<PaymentTransaction> FilterByQuickTime(IQueryable<PaymentTransaction> src, QuickTimeFilterTypeEnum typeEnum)
-            => typeEnum switch
-            {
-                QuickTimeFilterTypeEnum.Last5Minutes => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddMinutes(-5)),
-                QuickTimeFilterTypeEnum.Last15Minutes => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddMinutes(-15)),
-                QuickTimeFilterTypeEnum.Last30Minutes => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddMinutes(-30)),
-                QuickTimeFilterTypeEnum.LastHour => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddHours(-1)),
-                QuickTimeFilterTypeEnum.Last24Hours => src.Where(t => t.UpdatedDate >= DateTime.UtcNow.AddHours(-24)),
-                _ => src,
-            };
 
         private static IQueryable<PaymentTransaction> FilterByQuickStatus(IQueryable<PaymentTransaction> src, QuickStatusFilterTypeEnum typeEnum)
             => typeEnum switch
@@ -208,6 +201,7 @@ namespace Transactions.Api.Extensions.Filtering
                 QuickStatusFilterTypeEnum.Pending => src.Where(t => (int)t.Status > 0 && (int)t.Status < 40),
                 QuickStatusFilterTypeEnum.Completed => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.TransmittedByProcessor),
                 QuickStatusFilterTypeEnum.Failed => src.Where(t => (int)t.Status < 0),
+                QuickStatusFilterTypeEnum.AwaitingForTransmission => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator),
                 _ => src,
             };
     }

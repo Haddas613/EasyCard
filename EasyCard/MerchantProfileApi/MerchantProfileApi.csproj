@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>fbddeba6-36a3-4509-a23d-d6b21102529e</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -40,6 +41,8 @@
     <ProjectReference Include="..\Identity\IdentityServerClient\IdentityServerClient.csproj" />
     <ProjectReference Include="..\Merchants.Business\Merchants.Business.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
+    <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
+    <ProjectReference Include="..\Transactions.Api.Client\Transactions.Api.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,6 +56,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ItemResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Models\Terminal\TerminalEnumsResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TerminalEnumsResource.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -63,6 +71,10 @@
     <EmbeddedResource Update="Models\Billing\ItemResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ItemResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Terminal\TerminalEnumsResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TerminalEnumsResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

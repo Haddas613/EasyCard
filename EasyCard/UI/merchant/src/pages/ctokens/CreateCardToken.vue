@@ -1,6 +1,5 @@
 <template>
   <v-card width="100%" flat color="ecbg">
-    <v-card-title class="hidden-sm-and-down">{{$t("CreateCardToken")}}</v-card-title>
     <v-card-text class="px-4">
       <card-token-form :data="model" v-on:ok="createToken($event)"></card-token-form>
     </v-card-text>
@@ -49,7 +48,7 @@ export default {
       //server errors will be displayed automatically
       if (!result) return;
       if (result.status === "success") {
-        this.$router.push({ name: 'Customer', params: {id: model.consumerID} });
+        this.$router.push({ name: 'Customer', params: {id: this.model.consumerID} });
       } else {
         this.$toasted.show(result.message, { type: "error" });
       }

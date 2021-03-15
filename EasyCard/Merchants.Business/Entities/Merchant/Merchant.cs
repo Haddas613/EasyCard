@@ -27,6 +27,8 @@ namespace Merchants.Business.Entities.Merchant
 
         public string ContactPerson { get; set; }
 
+        public string PhoneNumber { get; set; }
+
         public DateTime? Created { get; set; }
 
         public Guid GetID()

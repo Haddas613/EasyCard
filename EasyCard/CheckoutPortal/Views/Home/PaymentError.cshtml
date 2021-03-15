@@ -1,0 +1,23 @@
+﻿@model CheckoutPortal.Models.PaymentErrorViewModel
+
+@{
+    ViewData["Title"] = "Payment Error";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 class="text-danger">Payment Error.</h4>
+<h2 class="text-danger">@Model.ErrorMessage</h2>
+
+<center>
+    <img src="~/img/progress-close.png" />
+</center>
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+}
+
+
+

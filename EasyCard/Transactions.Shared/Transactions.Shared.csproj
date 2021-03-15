@@ -9,6 +9,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Enums\Resources\BillingDealEnumsResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BillingDealEnumsResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Enums\Resources\PaymentRequestEnumsResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PaymentRequestEnumsResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Enums\Resources\PaymentTypeResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PaymentTypeResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Enums\Resources\TransactionStatusResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -22,6 +37,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Enums\Resources\BillingDealEnumsResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>BillingDealEnumsResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Enums\Resources\PaymentRequestEnumsResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>PaymentRequestEnumsResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Enums\Resources\PaymentTypeResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>PaymentTypeResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Enums\Resources\TransactionStatusResource.he-IL.resx">
       <LastGenOutput>TransactionStatusResource.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>

@@ -9,14 +9,15 @@
           :label="$t('Email')"
           outlined
         ></v-text-field>
-        <credit-card-secure-details-form
+        <credit-card-secure-details-fields
           :key="customer != null"
           :data="model"
+          :tokens="customerTokens"
           ref="ccsecuredetailsform"
-        ></credit-card-secure-details-form>
+        ></credit-card-secure-details-fields>
       </v-form>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions v-if="showActions">
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
         <v-btn
           class="mx-1"
@@ -40,22 +41,28 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
-import CreditCardSecureDetailsForm from "../transactions/CreditCardSecureDetailsForm";
+import CreditCardSecureDetailsFields from "../transactions/CreditCardSecureDetailsFields";
 
 export default {
   components: {
-    CreditCardSecureDetailsForm
+    CreditCardSecureDetailsFields
   },
   props: {
     data: {
       type: Object,
       default: null,
       required: false
+    },
+    showActions: {
+      type: Boolean,
+      default: true,
+      required: false
     }
   },
   data() {
     return {
       model: { ...this.data },
+      customerTokens: [],
       customer: null,
       vr: ValidationRules
     };
@@ -69,30 +76,41 @@ export default {
       if (!this.model.terminalID) {
         this.model.terminalID = this.customer.terminalID;
       }
+
+      this.customerTokens =
+        (
+          await this.$api.cardTokens.getCustomerCardTokens(
+            this.model.consumerID
+          )
+        ).data || [];
     }
-    else if (!this.customer) {
-      return this.$router.push({ name: "404" });
-    }
+    // else if (!this.customer) {
+    //   return this.$router.push({ name: "404" });
+    // }
+    
     this.model.cardOwnerName = this.customer.consumerName;
     this.model.cardOwnerNationalID = this.customer.consumerNationalID;
     this.model.consumerEmail = this.customer.consumerEmail;
   },
   methods: {
     ok() {
+      let data = this.getData();
+
+      if(!data){ return;}
+
+      this.$emit("ok", data);
+    },
+    getData(){
       let form = this.$refs.form.validate();
 
       if (!form) return;
 
       let data = this.$refs.ccsecuredetailsform.getData();
 
-      if (!data) {
-        return;
-      }
-
-      this.$emit("ok", {
+      return {
         ...this.model,
         ...data
-      });
+      };
     }
   }
 };

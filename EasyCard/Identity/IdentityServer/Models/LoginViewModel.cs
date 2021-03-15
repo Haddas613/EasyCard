@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +7,17 @@ namespace IdentityServer.Models
 {
     public class LoginViewModel : LoginInputModel
     {
-        public bool AllowRememberLogin { get; set; } = true;
+        [BindNever]
+        public string UserName { get; set; }
+
+        [BindNever]
+        public bool IsAuthorized { get; set; }
+
+        [BindNever]
+        public bool IsAdmin { get; set; }
+
+        [BindNever]
+        public string ClientSystemURL { get; set; }
 
         public bool EnableLocalLogin { get; set; } = true;
 

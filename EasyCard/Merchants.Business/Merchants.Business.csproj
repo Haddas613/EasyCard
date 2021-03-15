@@ -13,19 +13,29 @@
     <Compile Remove="Migrations\20200711151415_Billing2.Designer.cs" />
     <Compile Remove="Migrations\20200731122944_Consumer_ConsumerNationalID.cs" />
     <Compile Remove="Migrations\20200731122944_Consumer_ConsumerNationalID.Designer.cs" />
+    <Compile Remove="Migrations\20201224112240_Name.cs" />
+    <Compile Remove="Migrations\20201224112240_Name.Designer.cs" />
+    <Compile Remove="Migrations\20210112143609_Feature_Update.cs" />
+    <Compile Remove="Migrations\20210112143609_Feature_Update.Designer.cs" />
+    <Compile Remove="Migrations\20210113103956_Feature_Update1.cs" />
+    <Compile Remove="Migrations\20210113103956_Feature_Update1.Designer.cs" />
+    <Compile Remove="Migrations\20210113104258_Feature_Update1.cs" />
+    <Compile Remove="Migrations\20210113104258_Feature_Update1.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.35" />
     <PackageReference Include="IdentityModel" Version="4.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0-preview.6.20312.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0-preview.6.20312.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.5" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="5.1.17" />
   </ItemGroup>
 
   <ItemGroup>

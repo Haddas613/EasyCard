@@ -1,4 +1,5 @@
 ﻿using Shared.Api.Models;
+using Shared.Api.Models.Enums;
 using Shared.Api.Swagger;
 using Shared.Helpers;
 using Shared.Integration.Models;
@@ -28,13 +29,13 @@ namespace Transactions.Api.Models.Transactions
 
         public CurrencyEnum? Currency { get; set; }
 
-        public QuickTimeFilterTypeEnum? QuickTimeFilter { get; set; }
+        public QuickDateFilterTypeEnum? QuickDateFilter { get; set; }
 
         public QuickStatusFilterTypeEnum? QuickStatusFilter { get; set; }
 
         public List<TransactionStatusEnum> Statuses { get; set; }
 
-        public TransactionTypeEnum? Type { get; set; }
+        public TransactionTypeEnum? TransactionType { get; set; }
 
         public JDealTypeEnum? JDealType { get; set; }
 
@@ -49,11 +50,11 @@ namespace Transactions.Api.Models.Transactions
         [SwaggerExclude]
         public long? ClearingHouseTransactionID { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? DateFrom { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime? DateTo { get; set; }
-
-        public DateFilterTypeEnum DateType { get; set; }
 
         public Guid? ConsumerID { get; set; }
 
@@ -84,5 +85,9 @@ namespace Transactions.Api.Models.Transactions
         public string CreditCardVendor { get; set; }
 
         public Guid? BillingDealID { get; set; }
+
+        public SpecialTransactionTypeEnum? SpecialTransactionType { get; set; }
+
+        public bool NotTransmitted { get; set; }
     }
 }

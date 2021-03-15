@@ -59,7 +59,7 @@ namespace Shva.Conveters
                 AuthNum = resultAshEndBody.globalObj?.outputObj?.authManpikNo?.valueTag,
 
                 Solek = (SolekEnum)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.solek?.valueTag),
-                CreditCardVendor = (CreditVendorType)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.manpik?.valueTag), // TODO
+                CreditCardVendor = (CardVendorEnum)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.manpik?.valueTag), // TODO
                 ShvaTransactionDate = resultAshEndBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime()
             };
         }
@@ -76,7 +76,7 @@ namespace Shva.Conveters
                 AuthNum = resultAshStartBody.globalObj?.outputObj?.authManpikNo?.valueTag,
 
                 Solek = (SolekEnum)Convert.ToInt32(resultAshStartBody.globalObj?.outputObj?.solek?.valueTag),
-                CreditCardVendor = (CreditVendorType)Convert.ToInt32(resultAshStartBody.globalObj?.outputObj?.manpik?.valueTag), // TODO
+                CreditCardVendor = (CardVendorEnum)Convert.ToInt32(resultAshStartBody.globalObj?.outputObj?.manpik?.valueTag), // TODO
                 ShvaTransactionDate = resultAshStartBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime()
             };
         }

@@ -1,7 +1,7 @@
 export default class ItemsApi {
     constructor(base) {
         this.base = base;
-        this.baseUrl = process.env.VUE_APP_PROFILE_API_BASE_ADDRESS;
+        this.baseUrl = this.base.cfg.VUE_APP_PROFILE_API_BASE_ADDRESS;
         this.itemsUrl = this.baseUrl + '/api/items';
     }
 
@@ -11,7 +11,7 @@ export default class ItemsApi {
             this.headers = this.base._formatHeaders(data)
             this.$headers = data.columns
         }
-
+        
         let data = await this.base.get(this.itemsUrl, params);
         let dictionaries = await this.base.dictionaries.$getTransactionDictionaries();
 

@@ -20,8 +20,11 @@
     [ConsumerEmail]        VARCHAR (50)     NULL,
     [ConsumerID]           UNIQUEIDENTIFIER NULL,
     [InitialTransactionID] UNIQUEIDENTIFIER NULL,
+    [DocumentOrigin]       SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     CONSTRAINT [PK_CreditCardTokenDetails] PRIMARY KEY CLUSTERED ([CreditCardTokenID] ASC)
 );
+
+
 
 
 

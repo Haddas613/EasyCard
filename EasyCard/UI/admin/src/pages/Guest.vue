@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-content>
+    <v-main>
       <v-container class="ecbg--lighten-4 fill-height text-center" fluid>
         <v-row align="center" justify="center">
           <v-col cols="12">
@@ -24,20 +24,18 @@
           </v-col>
         </v-row>
       </v-container>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
 <script>
-import mainAuth from "../auth";
+
 import LangSwitcher from "../components/LanguageSwitcher"
 
 export default {
   components: {LangSwitcher},
   mounted() {
-    if (mainAuth.isAuthenticated) {
-      this.$router.push(this.buttonLink);
-    }
+    
   },
   data() {
     return {

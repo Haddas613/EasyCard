@@ -2,6 +2,7 @@
 using Merchants.Shared.Enums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Shared.Api.UI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -21,6 +22,7 @@ namespace Merchants.Api.Models.Terminal
 
         public string MerchantBusinessName { get; set; }
 
+        [MetadataOptions(Hidden = true)]
         public Guid? MerchantID { get; set; }
 
         //TODO: implement
@@ -47,7 +49,12 @@ namespace Merchants.Api.Models.Terminal
         /// <summary>
         /// SHVA or other system terminal ID
         /// </summary>
-        public string ExternalProcessorReference { get; set; }
+        public string AggregatorTerminalReference { get; set; }
+
+        /// <summary>
+        /// SHVA or other system terminal ID
+        /// </summary>
+        public string ProcessorTerminalReference { get; set; }
 
         [EnumDataType(typeof(TerminalStatusEnum))]
         [JsonConverter(typeof(StringEnumConverter))]

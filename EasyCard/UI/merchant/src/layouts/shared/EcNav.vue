@@ -5,16 +5,19 @@
     app
     :right="isRtl"
     :color="'ecbg lighten-4'"
+    class="will-change-inherit"
   >
     <v-list class="py-0">
       <v-list-item two-line class="py-4">
         <v-list-item-avatar>
-          <img src="https://randomuser.me/api/portraits/men/81.jpg" />
+          <avatar v-if="userName" :username="userName" :rounded="true"></avatar>
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title>Name</v-list-item-title>
-          <v-list-item-subtitle>Subtext</v-list-item-subtitle>
+          <v-list-item-title class="text-underline">
+            <router-link class="ecnavLink--text" :to="{name: 'MyProfile'}">{{userName}}</router-link>
+          </v-list-item-title>
+          <!-- <v-list-item-subtitle>Subtext</v-list-item-subtitle> -->
         </v-list-item-content>
       </v-list-item>
 
@@ -67,54 +70,19 @@
           </v-list-item-content>
         </v-list-item>
       </template>
-      <v-list-item>
-        <v-list-item-action>
-          <v-switch class="px-2" :color="'accent'" label="RTL" v-model="$vuetify.rtl"></v-switch>
-        </v-list-item-action>
-        <v-list-item-content>
-          <lang-switcher class></lang-switcher>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item>
-        <v-list-item-action class="my-1 mx-0">
-          <v-select
-              :items="terminals"
-              item-text="label"
-              item-value="terminalID"
-              return-object
-              v-model="terminal"
-              :label="$t('Terminal')"
-              required
-              outlined
-            ></v-select>
-        </v-list-item-action>
-      </v-list-item>
-
-      <v-list-item>
-        <v-list-item-action class="my-1 mx-0">
-          <v-select
-          :items="currencies"
-          item-text="description"
-          return-object
-          v-model="currency"
-          :label="$t('Currency')"
-          outlined
-        ></v-select>
-        </v-list-item-action>
-      </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
 <script>
-import LangSwitcher from "../../components/LanguageSwitcher";
 import { mapState } from "vuex";
-import mainAuth from '../../auth';
+import Avatar from "vue-avatar";
 
 export default {
+  components: {
+    Avatar
+  },
   name: "EcNav",
   props: ["drawer"],
-  components: { LangSwitcher },
   data() {
     return {
       items: [
@@ -143,7 +111,7 @@ export default {
           expanded: false,
           children: [
             {
-              icon: "mdi-account-group",
+              icon: "mdi-format-list-bulleted",
               text: "CustomersList",
               to: "/admin/customers/list"
             },
@@ -161,7 +129,7 @@ export default {
           expanded: false,
           children: [
             {
-              icon: "mdi-basket-outline",
+              icon: "mdi-format-list-bulleted",
               text: "ItemsList",
               to: "/admin/items/list"
             },
@@ -172,19 +140,66 @@ export default {
             }
           ]
         },
-        { divider: true, dividerArea: "userAuth" },
-        { icon: "mdi-account-cog", text: "Profile", to: "/admin/profile" },
         {
-          icon: "mdi-logout",
-          text: "Logout",
-          fn: () => {
-            mainAuth.signOut();
-          }
+          icon: "mdi-file-document",
+          "icon-alt": "mdi-file-document-outline",
+          text: "Invoicing",
+          expanded: false,
+          children: [
+            {
+              icon: "mdi-format-list-bulleted",
+              text: "InvoicesList",
+              to: "/admin/invoicing/list"
+            },
+            {
+              icon: "mdi-plus",
+              text: "CreateInvoice",
+              to: "/wizard/invoicing/create"
+            }
+          ]
+        },
+        {
+          icon: "mdi-account-cash",
+          "icon-alt": "mdi-account-cash-outline",
+          text: "PaymentRequests",
+          expanded: false,
+          children: [
+            {
+              icon: "mdi-format-list-bulleted",
+              text: "PaymentRequestsList",
+              to: "/admin/payment-requests/list"
+            },
+            {
+              icon: "mdi-plus",
+              text: "CreatePaymentRequest",
+              to: "/wizard/payment-requests/create"
+            }
+          ]
+        },
+        {
+          icon: "mdi-rotate-right",
+          "icon-alt": "mdi-rotate-right",
+          text: "BillingDeals",
+          expanded: false,
+          children: [
+            {
+              icon: "mdi-format-list-bulleted",
+              text: "BillingDealsList",
+              to: "/admin/billing-deals/list"
+            },
+            {
+              icon: "mdi-plus",
+              text: "CreateBillingDeal",
+              to: "/admin/billing-deals/create"
+            }
+          ]
         }
       ],
-      terminals: [],
-      currencies: []
+      userName: null
     };
+  },
+  async mounted() {
+    this.userName = !!this.$oidc ? (await this.$oidc.getUserDisplayName()) : null;
   },
   computed: {
     drawerObj: {
@@ -201,65 +216,6 @@ export default {
         return this.$vuetify.rtl === true;
       }
     },
-    ...mapState({
-      terminalStore: state => state.settings.terminal,
-      currencyStore: state => state.settings.currency
-    }),
-    terminal: {
-      get: function() {
-        return this.terminalStore;
-      },
-      set: function(nv) {
-        this.$store.commit("settings/changeTerminal", {
-          vm: this,
-          newTerminal: nv
-        });
-      }
-    },
-    currency: {
-      get: function() {
-        return this.currencyStore;
-      },
-      set: function(nv) {
-        this.$store.commit("settings/changeCurrency", {
-          vm: this,
-          newCurrency: nv
-        });
-      }
-    }
-  },
-  async mounted() {
-    let terminals = (await this.$api.terminals.getTerminals());
-    this.terminals = terminals ? terminals.data : [];
-
-    //validate if stored terminal is still accessible. Clear it otherwise
-    if (this.terminals.length > 0 && this.terminal) {
-      let exists = this.lodash.some(this.terminals, t => t.terminalID === this.terminal.terminalID);
-      if(!exists)
-        this.terminal = null;
-    }
-    else if(this.terminals.length > 0 && !this.terminal){
-      this.terminal = this.terminals[0];
-    }
-    else{
-      this.terminal = null;
-    }
-
-    let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
-    this.currencies = dictionaries ? dictionaries.currencyEnum : [];
-    
-    //same cache validation for currencies
-    if (this.currencies.length > 0 && this.currency) {
-      let exists = this.lodash.some(this.currencies, c => c.code === this.currency.code);
-      if(!exists)
-        this.currency = null;
-    }
-    else if(this.currencies.length > 0 && !this.currency){
-      this.currency = this.currencies[0];
-    }
-    else{
-      this.currency = null;
-    }
   }
 };
 </script>

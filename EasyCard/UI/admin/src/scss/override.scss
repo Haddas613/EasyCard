@@ -1,0 +1,46 @@
+.v-text-field--filled > .v-input__control > .v-input__slot,
+.v-text-field--full-width > .v-input__control > .v-input__slot,
+.v-text-field--outlined > .v-input__control > .v-input__slot{
+    min-height: 40px !important;
+}
+
+.v-text-field--outlined .v-label{
+    top: 14px !important;
+}
+.v-select.v-text-field--outlined:not(.v-text-field--single-line) .v-select__selections{
+    padding: 4px 0 !important;
+}
+.v-select .v-select__selection--comma{
+    margin: 5px 4px 3px 0 !important;
+}
+.v-text-field--full-width .v-input__prepend-outer,
+.v-text-field--full-width .v-input__prepend-inner,
+.v-text-field--full-width .v-input__append-inner,
+.v-text-field--full-width .v-input__append-outer,
+.v-text-field--enclosed .v-input__prepend-outer,
+.v-text-field--enclosed .v-input__prepend-inner,
+.v-text-field--enclosed .v-input__append-inner,
+.v-text-field--enclosed .v-input__append-outer{
+    margin-top: 9px !important;
+}
+.v-input--selection-controls{
+    margin-top: 2px !important;
+}
+
+.row + .row{
+    padding-top: 0px !important;
+    margin-top: 0px !important;
+}
+.v-navigation-drawer__content .v-list-item__icon{
+    margin: 12px 0;
+}
+
+.v-toolbar__title{
+    font-size: 1.15rem;
+}
+.ec-list.v-list--dense{
+    .v-list-item--two-line, .v-list-item--dense, .v-list-item{
+        min-height: 0 !important;
+        height: 3rem;
+    }
+}

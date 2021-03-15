@@ -19,6 +19,124 @@
             <param name="model"></param>
             <returns></returns>
         </member>
+        <member name="M:Merchants.Api.Controllers.TerminalTemplatesApiController.CreateTerminalTemplate(Merchants.Api.Models.TerminalTemplate.TerminalTemplateRequest)">
+            <summary>
+            Add terminal template basic information
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Merchants.Api.Controllers.TerminalTemplatesApiController.UpdateTerminal(System.Int64,Merchants.Api.Models.TerminalTemplate.TerminalTemplateRequest)">
+            <summary>
+            Ypdates basic terminal information and settings
+            </summary>
+            <param name="terminalTemplateID"></param>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditFilter.UserID">
+            <summary>
+            MerchantHistory.OperationDoneByID
+            </summary>
+        </member>
+        <member name="T:Merchants.Api.Models.Audit.AuditResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.OperationCode">
+            <summary>
+              Looks up a localized string similar to Code.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.OperationDate">
+            <summary>
+              Looks up a localized string similar to Date.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.OperationDescription">
+            <summary>
+              Looks up a localized string similar to Description.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.OperationDoneBy">
+            <summary>
+              Looks up a localized string similar to Done by.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Audit.AuditResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
+            </summary>
+        </member>
+        <member name="T:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.CustomerCreatedSuccessfully">
+            <summary>
+              Looks up a localized string similar to Customer created successfully.
+            </summary>
+        </member>
+        <member name="T:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.ConnectionSuccess">
+            <summary>
+              Looks up a localized string similar to Connection success.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.EitherTerminalOrTerminalTemplateIDMustBeSpecified">
+            <summary>
+              Looks up a localized string similar to Either Terminal or Terminal Template ID must be specified.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.NewPasswordSetSuccessfully">
+            <summary>
+              Looks up a localized string similar to New password set successfully.
+            </summary>
+        </member>
         <member name="T:Merchants.Api.Models.Merchant.MerchantSummaryResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -35,19 +153,147 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="T:Merchants.Api.Models.System.DatabaseLogEntryResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.ApiName">
+            <summary>
+              Looks up a localized string similar to ApiName.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.CategoryName">
+            <summary>
+              Looks up a localized string similar to Category Name.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.CorrelationID">
+            <summary>
+              Looks up a localized string similar to Correlation ID.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.IP">
+            <summary>
+              Looks up a localized string similar to IP.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.LogLevel">
+            <summary>
+              Looks up a localized string similar to Log Level.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.Message">
+            <summary>
+              Looks up a localized string similar to Message.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.Timestamp">
+            <summary>
+              Looks up a localized string similar to Timestamp.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.DatabaseLogEntryResource.UserName">
+            <summary>
+              Looks up a localized string similar to User Name.
+            </summary>
+        </member>
+        <member name="T:Merchants.Api.Models.System.SystemEnumsResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.Critical">
+            <summary>
+              Looks up a localized string similar to Critical.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.Debug">
+            <summary>
+              Looks up a localized string similar to Debug.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.Error">
+            <summary>
+              Looks up a localized string similar to Error.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.Information">
+            <summary>
+              Looks up a localized string similar to Information.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.None">
+            <summary>
+              Looks up a localized string similar to None.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.Trace">
+            <summary>
+              Looks up a localized string similar to Trace.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.System.SystemEnumsResource.Warning">
+            <summary>
+              Looks up a localized string similar to Warning.
+            </summary>
+        </member>
+        <member name="T:Merchants.Api.Models.TerminalTemplate.TerminalTemplatesSummaryResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.TerminalTemplate.TerminalTemplatesSummaryResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.TerminalTemplate.TerminalTemplatesSummaryResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.TerminalTemplate.TerminalTemplatesSummaryResource.Created">
+            <summary>
+              Looks up a localized string similar to Created.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.TerminalTemplate.TerminalTemplatesSummaryResource.Label">
+            <summary>
+              Looks up a localized string similar to Label.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.TerminalTemplate.TerminalTemplatesSummaryResource.TerminalTemplateID">
+            <summary>
+              Looks up a localized string similar to Template ID.
+            </summary>
+        </member>
         <member name="P:Merchants.Api.Models.Terminal.ExternalSystemRequest.ExternalProcessorReference">
             <summary>
             SHVA or other system terminal ID
-            </summary>
-        </member>
-        <member name="P:Merchants.Api.Models.Terminal.TerminalExternalSystemDetails.ExternalProcessorReference">
-            <summary>
-            SHVA or other system terminal ID
-            </summary>
-        </member>
-        <member name="P:Merchants.Api.Models.Terminal.TerminalSettings.MaxInstallments">
-            <summary>
-            If we set it to zero means installments blocked
             </summary>
         </member>
         <member name="T:Merchants.Api.Models.Terminal.TerminalStatusEnumResource">
@@ -81,7 +327,12 @@
               Looks up a localized string similar to Pending Approval.
             </summary>
         </member>
-        <member name="P:Merchants.Api.Models.Terminal.TerminalSummary.ExternalProcessorReference">
+        <member name="P:Merchants.Api.Models.Terminal.TerminalSummary.AggregatorTerminalReference">
+            <summary>
+            SHVA or other system terminal ID
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Terminal.TerminalSummary.ProcessorTerminalReference">
             <summary>
             SHVA or other system terminal ID
             </summary>
@@ -107,9 +358,14 @@
               Looks up a localized string similar to Activity Start Date.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.Terminal.TerminalSummaryResource.AggregatorTerminalReference">
+            <summary>
+              Looks up a localized string similar to Aggregator Ref.
+            </summary>
+        </member>
         <member name="P:Merchants.Api.Models.Terminal.TerminalSummaryResource.ExternalProcessorReference">
             <summary>
-              Looks up a localized string similar to External Processor Reference.
+              Looks up a localized string similar to External Processor Ref.
             </summary>
         </member>
         <member name="P:Merchants.Api.Models.Terminal.TerminalSummaryResource.Label">
@@ -127,6 +383,11 @@
               Looks up a localized string similar to Merchant ID.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.Terminal.TerminalSummaryResource.ProcessorTerminalReference">
+            <summary>
+              Looks up a localized string similar to Processor Ref.
+            </summary>
+        </member>
         <member name="P:Merchants.Api.Models.Terminal.TerminalSummaryResource.Status">
             <summary>
               Looks up a localized string similar to Status.
@@ -135,6 +396,83 @@
         <member name="P:Merchants.Api.Models.Terminal.TerminalSummaryResource.TerminalID">
             <summary>
               Looks up a localized string similar to Terminal ID.
+            </summary>
+        </member>
+        <member name="T:Merchants.Api.Models.User.UserEnumsResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.User.UserEnumsResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.User.UserEnumsResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.User.UserEnumsResource.Active">
+            <summary>
+              Looks up a localized string similar to Active.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.User.UserEnumsResource.Invited">
+            <summary>
+              Looks up a localized string similar to Invited.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.User.UserEnumsResource.Locked">
+            <summary>
+              Looks up a localized string similar to Locked.
+            </summary>
+        </member>
+        <member name="T:Merchants.Api.Models.User.UserSummaryResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.User.UserSummaryResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.User.UserSummaryResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.User.UserSummaryResource.DisplayName">
+            <summary>
+              Looks up a localized string similar to Name.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.User.UserSummaryResource.Email">
+            <summary>
+              Looks up a localized string similar to Email.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.User.UserSummaryResource.MerchantID">
+            <summary>
+              Looks up a localized string similar to Merchant ID.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.User.UserSummaryResource.Roles">
+            <summary>
+              Looks up a localized string similar to Roles.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.User.UserSummaryResource.Status">
+            <summary>
+              Looks up a localized string similar to Status.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.User.UserSummaryResource.UserID">
+            <summary>
+              Looks up a localized string similar to User ID.
             </summary>
         </member>
     </members>

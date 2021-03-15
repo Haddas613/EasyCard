@@ -1,6 +1,5 @@
 <template>
   <v-card width="100%" flat color="ecbg">
-    <v-card-title class="hidden-sm-and-down">{{$t("CreateCustomer")}}</v-card-title>
     <v-card-text class="px-0">
       <customer-form :data="model" v-on:ok="createCustomer($event)" class="px-4" v-if="model"></customer-form>
     </v-card-text>

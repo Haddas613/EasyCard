@@ -11,8 +11,14 @@ namespace Shared.Integration.Models.Invoicing
         {
             this.DealDetails = new DealDetails();
             this.CreditCardDetails = new CreditCardDetails();
-            this.InstallmentDetails = new InstallmentDetails();
         }
+
+        public object InvoiceingSettings { get; set; }
+
+        /// <summary>
+        /// Request ID
+        /// </summary>
+        public string CorrelationId { get; set; }
 
         /// <summary>
         /// Invoice date
@@ -49,19 +55,34 @@ namespace Shared.Integration.Models.Invoicing
         /// </summary>
         public decimal? InvoiceAmount { get; set; }
 
-        /// <summary>
-        /// Tax rate (VAT)
-        /// </summary>
-        public decimal? TaxRate { get; set; }
+        public decimal VATRate { get; set; }
+
+        public decimal VATTotal { get; set; }
+
+        public decimal NetTotal { get; set; }
+
+        public string ConsumerName { get; set; }
+
+        public string ConsumerNationalID { get; set; }
 
         /// <summary>
-        /// Tax amount
+        /// Number Of payments (cannot be more than 999)
         /// </summary>
-        public decimal? TaxAmount { get; set; }
+        public int NumberOfPayments { get; set; }
 
         /// <summary>
-        /// Installment payments details (should be omitted in case of regular deal)
+        /// Initial installment payment
         /// </summary>
-        public InstallmentDetails InstallmentDetails { get; set; }
+        public decimal InitialPaymentAmount { get; set; }
+
+        /// <summary>
+        /// TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+        /// </summary>
+        public decimal TotalAmount { get; set; }
+
+        /// <summary>
+        /// Amount of one instalment payment
+        /// </summary>
+        public decimal InstallmentPaymentAmount { get; set; }
     }
 }

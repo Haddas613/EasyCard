@@ -5,11 +5,10 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Entities
 {
-    public class TransactionHistory: IAuditEntity
+    public class TransactionHistory : IAuditEntity
     {
         public TransactionHistory()
         {
-            //Terminals = new HashSet<Merchants.Business.Entities.Terminal.Terminal>();
             OperationDate = DateTime.UtcNow;
             TransactionHistoryID = Guid.NewGuid().GetSequentialGuid(OperationDate.Value);
         }

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using IdentityServer4.AccessTokenValidation;
@@ -14,6 +16,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,11 +29,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Shared.Api;
+using Shared.Api.Configuration;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Security;
 using Swashbuckle.AspNetCore.Filters;
+using Transactions.Api.Client;
 using SharedApi = Shared.Api;
 
 namespace ProfileApi
@@ -65,7 +70,8 @@ namespace ProfileApi
                             "http://localhost:4200",
                             "http://localhost:8080")
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .WithExposedHeaders("X-Version");
                     });
             });
 
@@ -82,6 +88,55 @@ namespace ProfileApi
                     options.RoleClaimType = "role";
                     options.NameClaimType = "name";
                     options.EnableCaching = true;
+
+                    options.JwtBearerEvents = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                    {
+                        OnTokenValidated = async (context) =>
+                        {
+                            try
+                            {
+                                if (context.Principal.IsInteractiveAdmin())
+                                {
+                                    var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                                    var userId = context.Principal.GetDoneByID();
+                                    var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
+
+                                    if (merchantID != null)
+                                    {
+                                        var impersonationIdentity = new ClaimsIdentity(new[]
+                                        {
+                                            new Claim(Claims.MerchantIDClaim, merchantID.ToString()),
+                                            new Claim(ClaimTypes.Role, Roles.Merchant)
+                                        });
+                                        context.Principal?.AddIdentity(impersonationIdentity);
+                                    }
+                                }
+                                else if (context.Principal.IsMerchant())
+                                {
+                                    var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                                    var userId = context.Principal.GetDoneByID();
+                                    var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
+
+                                    if (merchantID != null)
+                                    {
+                                        var midentity = (ClaimsIdentity)context.Principal.Identity;
+                                        var midclaim = midentity.FindFirst(Claims.MerchantIDClaim);
+                                        if (midclaim != null)
+                                        {
+                                            midentity.TryRemoveClaim(midclaim);
+                                        }
+
+                                        midentity.AddClaim(new Claim(Claims.MerchantIDClaim, merchantID.ToString()));
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                // TODO: logging
+                                System.Diagnostics.Debug.WriteLine(ex.Message);
+                            }
+                        }
+                    };
                 });
 
             services.AddAuthorization(options =>
@@ -143,6 +198,7 @@ namespace ProfileApi
 
             // DI: basics
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
+            services.Configure<ApiSettings>(Configuration.GetSection("API"));
 
             services.AddHttpContextAccessor();
 
@@ -153,6 +209,10 @@ namespace ProfileApi
             services.AddScoped<ITerminalsService, TerminalsService>();
             services.AddScoped<IConsumersService, ConsumersService>();
             services.AddScoped<IItemsService, ItemsService>();
+            services.AddScoped<ICurrencyRateService, CurrencyRateService>();
+            services.AddScoped<ISystemSettingsService, SystemSettingsService>();
+            services.AddScoped<IImpersonationService, ImpersonationService>();
+
             services.AddAutoMapper(typeof(Startup));
 
             // DI: request logging
@@ -169,6 +229,17 @@ namespace ProfileApi
 
             services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
 
+            services.AddSingleton<ITransactionsApiClient, TransactionsApiClient>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
+                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<TransactionsApiClient>>();
+                var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
+
+                return new TransactionsApiClient(webApiClient, /*logger,*/ tokenService, apiCfg);
+            });
+
             services.AddSingleton<IUserManagementClient, UserManagementClient>(serviceProvider =>
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
@@ -179,6 +250,12 @@ namespace ProfileApi
                 return new UserManagementClient(webApiClient, logger, cfg, tokenService);
             });
 
+            services.AddSingleton<ICryptoServiceCompact, AesGcmCryptoServiceCompact>(serviceProvider =>
+            {
+                var cryptoCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
+                return new AesGcmCryptoServiceCompact(cryptoCfg.EncrKeyForSharedApiKey);
+            });
+
             Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;  // TODO: remove for production
         }
 
@@ -186,14 +263,40 @@ namespace ProfileApi
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("SystemConnection"), serviceProvider.GetService<IHttpContextAccessor>(), "Profile"));
+            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
 
             app.UseRequestResponseLogging();
 
             app.UseExceptionHandler(GlobalExceptionHandler.HandleException);
 
-            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
-
             app.UseStaticFiles();
+
+            var apiSettings = Configuration.GetSection("API")?.Get<ApiSettings>();
+
+            if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
+            {
+                app.Use(async (context, next) =>
+                {
+                    context.Response.Headers.Add("X-Version", apiSettings.Version);
+                    await next.Invoke();
+                });
+            }
+            else
+            {
+                logger.LogError("Missing API.Version in appsettings.json");
+            }
+
+            app.UseRequestLocalization(options =>
+            {
+                var supportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("en-IL"),
+                    new CultureInfo("he-IL")
+                };
+                options.DefaultRequestCulture = new RequestCulture("en-IL");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
 
             app.UseSwagger();
 
@@ -216,6 +319,7 @@ namespace ProfileApi
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
             });
 

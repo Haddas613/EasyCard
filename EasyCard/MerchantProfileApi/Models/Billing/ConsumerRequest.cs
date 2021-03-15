@@ -16,8 +16,8 @@ namespace MerchantProfileApi.Models.Billing
         /// <summary>
         /// Target terminal
         /// </summary>
-        [Required]
-        public Guid TerminalID { get; set; }
+        [Required(AllowEmptyStrings = false)]
+        public Guid? TerminalID { get; set; }
 
         /// <summary>
         /// End-customer Email

@@ -56,29 +56,18 @@ namespace Transactions.Api.Models.Transactions
         public Guid? MerchantID { get; set; }
 
         /// <summary>
-        /// Shva or other processor
-        /// </summary>
-        public long? ProcessorID { get; set; }
-
-        /// <summary>
-        /// Clearing House or Upay
-        /// </summary>
-        public long? AggregatorID { get; set; }
-
-        /// <summary>
-        /// EasyInvoice or RapidOne
-        /// </summary>
-        public long? InvoicingID { get; set; }
-
-        /// <summary>
-        /// Marketer ID
-        /// </summary>
-        public long? MarketerID { get; set; }
-
-        /// <summary>
         /// Processing status
         /// </summary>
+        [EnumDataType(typeof(TransactionStatusEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
         public TransactionStatusEnum Status { get; set; }
+
+        /// <summary>
+        /// Payment Type
+        /// </summary>
+        [EnumDataType(typeof(PaymentTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PaymentTypeEnum PaymentTypeEnum { get; set; }
 
         [EnumDataType(typeof(QuickStatusFilterTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
@@ -128,6 +117,8 @@ namespace Transactions.Api.Models.Transactions
         /// This transaction amount
         /// </summary>
         public decimal TransactionAmount { get; set; }
+
+        public decimal Amount { get; set; }
 
         /// <summary>
         /// Initial installment payment
@@ -180,5 +171,51 @@ namespace Transactions.Api.Models.Transactions
         public byte[] UpdateTimestamp { get; set; }
 
         public bool AllowTransmission { get; set; }
+        public bool AllowTransmissionCancellation { get; set; }
+
+        /// <summary>
+        /// Reference to initial billing deal
+        /// </summary>
+        public Guid? BillingDealID { get; set; }
+
+        /// <summary>
+        /// Rejection Reason Message
+        /// </summary>
+        public string RejectionMessage { get; set; }
+
+        public decimal VATRate { get; set; }
+
+        public decimal VATTotal { get; set; }
+
+        public decimal NetTotal { get; set; }
+
+        /// <summary>
+        /// We can know it from checkout page activity
+        /// </summary>
+        public string ConsumerIP { get; set; }
+
+        /// <summary>
+        /// Merchant's IP
+        /// </summary>
+        public string MerchantIP { get; set; }
+
+        /// <summary>
+        /// Request ID
+        /// </summary>
+        public string CorrelationId { get; set; }
+
+        /// <summary>
+        /// Generated invoice ID
+        /// </summary>
+        public Guid? InvoiceID { get; set; }
+
+        /// <summary>
+        /// Create document for transaction
+        /// </summary>
+        public bool IssueInvoice { get; set; }
+
+        [EnumDataType(typeof(DocumentOriginEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public DocumentOriginEnum DocumentOrigin { get; set; }
     }
 }

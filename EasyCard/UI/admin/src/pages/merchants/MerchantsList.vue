@@ -1,36 +1,46 @@
 <template>
   <v-card class="mx-auto" outlined>
-    <v-card-title>{{$t('MerchantsList')}}</v-card-title>
     <v-expansion-panels :flat="true">
       <v-expansion-panel>
-       <v-expansion-panel-header class="primary white--text">
-          {{$t('Filters')}}
-        </v-expansion-panel-header>
+        <v-expansion-panel-header >{{$t('Filters')}}</v-expansion-panel-header>
         <v-expansion-panel-content>
-          <div class="pt-4 pb-2">
-            <merchants-filter :filter-data="options" v-on:apply="applyFilter($event)"></merchants-filter>
-          </div>
+          <merchants-filter :filter-data="merchantsFilter" v-on:apply="applyFilter($event)"></merchants-filter>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
     <v-divider></v-divider>
     <div>
-      <v-data-table 
-          :headers="headers"
-          :items="merchants"
-          :options.sync="options"
-          :server-items-length="totalAmount"
-          :loading="loading"
-          class="elevation-1"></v-data-table>
+      <v-data-table
+        :headers="headers"
+        :items="merchants"
+        :options.sync="options"
+        :server-items-length="totalAmount"
+        :loading="loading"
+        class="elevation-1"
+      >
+        <template v-slot:item.actions="{ item }">
+          <v-btn color="primary" outlined small link :to="{name: 'Merchant', params: {id: item.$merchantID}}">
+            <re-icon small>mdi-arrow-right</re-icon>
+          </v-btn>
+          <!-- <router-link class="text-decoration-none" link :to="{name: 'EditMerchant', params: {id: item.$merchantID}}">
+              <v-icon small color="secondary" class="mr-2">mdi-pencil</v-icon>
+          </router-link>
+          <router-link class="text-decoration-none" link :to="{name: 'Merchant', params: {id: item.$merchantID}}">
+              <v-icon small color="primary" class="mr-2">mdi-eye</v-icon>
+          </router-link> -->
+          <!-- <v-icon small @click="deleteItem(item)">mdi-delete</v-icon> -->
+        </template>
+      </v-data-table>
     </div>
   </v-card>
 </template>
 
 <script>
-import MerchantsFilter from '../../components/merchants/MerchantsFilter';
 export default {
-  name: "MerchantsList",
-  components: {MerchantsFilter},
+  components: {
+    ReIcon: () => import("../../components/misc/ResponsiveIcon"),
+    MerchantsFilter: () => import("../../components/merchants/MerchantsFilter"),
+  },
   data() {
     return {
       totalAmount: 0,
@@ -40,27 +50,33 @@ export default {
       pagination: {},
       headers: [],
       merchantsFilter: {}
-    }
+    };
   },
   watch: {
     options: {
-      handler: async function(){ await this.getDataFromApi() },
+      handler: async function() {
+        await this.getDataFromApi();
+      },
       deep: true
     }
   },
   methods: {
     async getDataFromApi() {
       this.loading = true;
-      let data = await this.$api.merchants.get({ ...this.merchantsFilter, ...this.options });
+      let data = await this.$api.merchants.get({
+        ...this.merchantsFilter,
+        ...this.options
+      });
       this.merchants = data.data;
       this.totalAmount = data.numberOfRecords;
       this.loading = false;
 
-      if(!this.headers || this.headers.length === 0){
-        this.headers = data.headers;
+      if (!this.headers || this.headers.length === 0) {
+        this.headers = [...data.headers, { value: "actions", text: this.$t("Actions") }];
       }
     },
-    async applyFilter(filter){
+    async applyFilter(filter) {
+      this.options.page = 1;
       this.merchantsFilter = filter;
       await this.getDataFromApi();
     }

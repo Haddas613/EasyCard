@@ -12,6 +12,5 @@ export default function(value, format = null){
             format = "dddd, MMMM D, YYYY"
         }
     }
-
-    return moment(value).locale(store.state.localization.currentLocale).format(format);
+    return moment.utc(value).local().locale(store.state.localization.currentLocale).format(format);
 }

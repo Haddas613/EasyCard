@@ -115,6 +115,21 @@
               Looks up a localized string similar to Item Updated.
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Messages.PrivateKeyUpdated">
+            <summary>
+              Looks up a localized string similar to Private Key Updated.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.SharedKeyUpdated">
+            <summary>
+              Looks up a localized string similar to Shared Key Updated.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.TerminalUpdated">
+            <summary>
+              Looks up a localized string similar to Terminal Updated.
+            </summary>
+        </member>
         <member name="T:MerchantProfileApi.Models.Billing.ConsumerRequest">
             <summary>
             Create consumer
@@ -246,12 +261,43 @@
             SHVA or other system terminal ID
             </summary>
         </member>
+        <member name="T:MerchantProfileApi.Models.Terminal.TerminalEnumsResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalEnumsResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalEnumsResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalEnumsResource.Approved">
+            <summary>
+              Looks up a localized string similar to Approved.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalEnumsResource.Disabled">
+            <summary>
+              Looks up a localized string similar to Disabled.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalEnumsResource.PendingApproval">
+            <summary>
+              Looks up a localized string similar to Pending Approval.
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Models.Terminal.TerminalExternalSystemDetails.ExternalProcessorReference">
             <summary>
             SHVA or other system terminal ID
             </summary>
         </member>
-        <member name="P:MerchantProfileApi.Models.Terminal.TerminalSettings.MaxInstallments">
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalSettingsUpdate.MaxInstallments">
             <summary>
             If we set it to zero means installments blocked
             </summary>
@@ -259,6 +305,21 @@
         <member name="P:MerchantProfileApi.Models.Terminal.TerminalSummary.ExternalProcessorReference">
             <summary>
             SHVA or other system terminal ID
+            </summary>
+        </member>
+        <member name="F:ProfileApi.Policy.Terminal">
+            <summary>
+            Noninteractive api access
+            </summary>
+        </member>
+        <member name="F:ProfileApi.Policy.TerminalOrMerchantFrontend">
+            <summary>
+            Noninteractive api access or merchant UI
+            </summary>
+        </member>
+        <member name="F:ProfileApi.Policy.MerchantFrontend">
+            <summary>
+            Merchant UI access
             </summary>
         </member>
     </members>

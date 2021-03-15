@@ -1,9 +1,6 @@
 <template>
   <v-flex width="100%">
-    <v-card width="100%" flat>
-      <v-card-title class="hidden-sm-and-down">{{$t('Customers')}}</v-card-title>
-    </v-card>
-    <customers-list :show-previously-charged="false" v-on:ok="customerClicked($event)"></customers-list>
+    <customers-list :show-previously-charged="false" v-on:ok="customerClicked($event)" :filter-by-terminal="true"></customers-list>
   </v-flex>
 </template>
 

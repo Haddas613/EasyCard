@@ -14,6 +14,7 @@ using IdentityServer.Security.Auditing;
 using IdentityServer.Services;
 using IdentityServer4;
 using IdentityServer4.Validation;
+using Merchants.Api.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -30,9 +31,12 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Shared.Api;
+using Shared.Helpers;
 using Shared.Helpers.Email;
 using Shared.Helpers.Security;
+using AutoMapper;
 using SharedApi = Shared.Api;
+using Shared.Api.Configuration;
 
 namespace IdentityServer
 {
@@ -54,6 +58,8 @@ namespace IdentityServer
         {
             var config = Configuration.GetSection("AppConfig")?.Get<ApplicationSettings>();
             var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
+            var azureADConfig = Configuration.GetSection("AzureADConfig")?.Get<AzureADSettings>();
+            var apiConfig = Configuration.GetSection("API")?.Get<ApiSettings>();
 
             services.AddLogging(logging =>
             {
@@ -71,7 +77,18 @@ namespace IdentityServer
                      options.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Include;
 
                      // Note: do not use options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; - use [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)] attribute in place
-                 });
+                 })
+                 .AddRazorRuntimeCompilation(); //TODO: remove on release?
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequiredLength = 8;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireDigit = true;
+                options.Password.RequireNonAlphanumeric = true;
+                //options.Password.RequiredUniqueChars = 5;
+            });
 
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
@@ -95,8 +112,10 @@ namespace IdentityServer
             });
 
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
-
+            services.Configure<ApiSettings>(Configuration.GetSection("API"));
             services.Configure<CryptoSettings>(Configuration.GetSection("CryptoConfig"));
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -105,6 +124,8 @@ namespace IdentityServer
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders(); // TODO: replace
 
+            var clientsConfig = new Config(apiConfig, identity);
+
             var builder = services.AddIdentityServer(options =>
             {
                 options.Events.RaiseErrorEvents = true;
@@ -112,10 +133,10 @@ namespace IdentityServer
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
             })
-            .AddInMemoryIdentityResources(Config.Ids)
-            .AddInMemoryApiResources(Config.Apis)
-            .AddInMemoryApiScopes(Config.ApiScopes)
-            .AddInMemoryClients(Config.Clients)
+            .AddInMemoryIdentityResources(clientsConfig.Ids)
+            .AddInMemoryApiResources(clientsConfig.Apis)
+            .AddInMemoryApiScopes(clientsConfig.ApiScopes)
+            .AddInMemoryClients(clientsConfig.Clients)
             .AddAspNetIdentity<ApplicationUser>()
 
             //.AddProfileService<ProfileService>()
@@ -132,24 +153,23 @@ namespace IdentityServer
                     options.Authority = identity.Authority;
                     options.RequireHttpsMetadata = true;
                     options.EnableCaching = true;
+                })
+                .AddOpenIdConnect("oidc", "Azure AD", options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                    options.SignOutScheme = IdentityServerConstants.SignoutScheme;
+
+                    options.Authority = azureADConfig.AzureAdAuthority;
+                    options.ClientId = azureADConfig.AzureAdClientId;
+                    options.ResponseType = "id_token";
+                    options.SaveTokens = true;
+                    options.GetClaimsFromUserInfoEndpoint = true;
+
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        ValidateAudience = false,
+                    };
                 });
-
-                //.AddOpenIdConnect("oidc", "OpenID Connect", options =>
-                //{
-                //    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                //    options.SignOutScheme = IdentityServerConstants.SignoutScheme;
-
-                //    options.Authority = identity.AzureAdAuthority;
-                //    options.ClientId = identity.AzureAdClientId;
-                //    options.ResponseType = "id_token";
-                //    options.SaveTokens = true;
-                //    options.GetClaimsFromUserInfoEndpoint = true;
-
-                //    options.TokenValidationParameters = new TokenValidationParameters
-                //    {
-                //        ValidateAudience = false,
-                //    };
-                //});
 
             services.AddAuthorization(options =>
             {
@@ -203,6 +223,7 @@ namespace IdentityServer
 
             services.AddScoped<IAuditLogger, AuditLogger>();
             services.AddScoped<ITerminalApiKeyService, TerminalApiKeyService>();
+            services.AddScoped<UserManageService, UserManageService>();
 
             // DI: request logging
 
@@ -213,6 +234,21 @@ namespace IdentityServer
             });
 
             services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();
+
+            services.Configure<ApiSettings>(Configuration.GetSection("ApiConfig"));
+            services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
+            services.Configure<AzureADSettings>(Configuration.GetSection("AzureADConfig"));
+
+            services.AddSingleton<IMerchantsApiClient, MerchantsApiClient>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
+                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<MerchantsApiClient>>();
+                var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
+
+                return new MerchantsApiClient(webApiClient, logger, tokenService, apiCfg);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -248,14 +284,14 @@ namespace IdentityServer
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Account}/{action=Login}/{id?}");
             });
 
             Microsoft.AspNetCore.Identity.RoleManager<IdentityRole> roleManager = serviceProvider.GetService<Microsoft.AspNetCore.Identity.RoleManager<IdentityRole>>();
 
             try
             {
-                foreach (var role in new[] { "Merchant", "BusinessAdministrator", "BillingAdministrator" })
+                foreach (var role in new[] { Roles.Merchant, Roles.BusinessAdministrator, Roles.BillingAdministrator })
                 {
                     if (!roleManager.RoleExistsAsync(role).Result)
                     {
@@ -280,7 +316,7 @@ namespace IdentityServer
                 logger.LogError(ex.Message);
             }
 
-            loggerFactory.CreateLogger("MerchantProfile.Startup").LogInformation("Started");
+            loggerFactory.CreateLogger("IdentityServer.Startup").LogInformation("Started");
         }
     }
 }

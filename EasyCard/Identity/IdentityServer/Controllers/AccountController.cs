@@ -9,6 +9,7 @@ using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
+using Merchants.Api.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,10 +17,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shared.Api.Configuration;
+using Shared.Api.Security;
 using Shared.Helpers.Email;
 using Shared.Helpers.Security;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace IdentityServer.Controllers
@@ -28,6 +32,9 @@ namespace IdentityServer.Controllers
     [AllowAnonymous]
     public class AccountController : Controller
     {
+        private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
+        private const string TwoFactorAuthProvider = "Phone";
+
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IIdentityServerInteractionService interaction;
@@ -43,6 +50,8 @@ namespace IdentityServer.Controllers
         private readonly ApplicationSettings configuration;
 
         private readonly IAuditLogger auditLogger;
+        private readonly AzureADSettings azureADConfig;
+        private readonly ApiSettings apiConfiguration;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -55,7 +64,9 @@ namespace IdentityServer.Controllers
             ILogger<AccountController> logger,
             ICryptoService cryptoService,
             IOptions<ApplicationSettings> configuration,
-            IAuditLogger auditLogger)
+            IAuditLogger auditLogger,
+            IOptions<AzureADSettings> azureADConfig,
+            IOptions<ApiSettings> apiConfiguration)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -69,6 +80,9 @@ namespace IdentityServer.Controllers
             this.cryptoService = cryptoService;
             this.configuration = configuration.Value;
             this.auditLogger = auditLogger;
+
+            this.azureADConfig = azureADConfig.Value;
+            this.apiConfiguration = apiConfiguration.Value;
         }
 
         /// <summary>
@@ -167,7 +181,7 @@ namespace IdentityServer.Controllers
 
                 if (result.IsLockedOut)
                 {
-                    //_logger.LogWarning("User account locked out.");
+                    //logger.LogWarning("User account locked out.");
 
                     //await _managementApiClient.RegisterLocked(model.Email);
 
@@ -275,7 +289,7 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            //var result = await _userManager.ConfirmEmailAsync(user, code);
+            //var result = await userManager.ConfirmEmailAsync(user, code);
             //return View(result.Succeeded ? "ConfirmEmail" : "Error");
 
             if (!string.IsNullOrWhiteSpace(user.PasswordHash))
@@ -300,27 +314,6 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            //var user = await _userManager.FindByIdAsync(model.UserId);
-            //if (user == null)
-            //{
-            //    _logger.LogError($"UserId does not exist");
-            //    //throw new ApplicationException($"Unable to load user with ID '{userId}'.");
-            //    return RedirectToAction(nameof(HomeController.Index), "Home");
-            //}
-            //var confirmEmailResult = await _userManager.ConfirmEmailAsync(user, model.Code);
-
-            //if (!confirmEmailResult.Succeeded)
-            //{
-            //    var errors = string.Join(", ", confirmEmailResult.Errors.Select(err => err.Code + ":" + err.Description));
-            //    _logger.LogError($"Email confirmation failed: {errors}");
-            //    return RedirectToAction(nameof(HomeController.Index), "Home");
-            //}
-
-            //return View(result.Succeeded ? "ConfirmEmail" : "Error");
-
-            // var model = new ConfirmEmailViewModel { Code = code };
-            //return View(model);
-
             var userId = cryptoService.DecryptWithExpiration(model.Code);
 
             // TODO: show error message
@@ -340,17 +333,32 @@ namespace IdentityServer.Controllers
             var addPasswordResult = await userManager.AddPasswordAsync(user, model.Password);
             if (addPasswordResult.Succeeded)
             {
-                await auditLogger.RegisterConfirmEmail(user);
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                await auditLogger.RegisterConfirmEmail(user, $"{model.FirstName} {model.LastName}".Trim());
+
+                var allClaims = await userManager.GetClaimsAsync(user);
+
+                await userManager.AddClaim(allClaims, user, Claims.FirstNameClaim, model.FirstName);
+                await userManager.AddClaim(allClaims, user, Claims.LastNameClaim, model.LastName);
+
+                if (await userManager.IsInRoleAsync(user, Roles.Merchant))
+                {
+                    return Redirect(apiConfiguration.MerchantProfileURL);
+                }
+                else
+                {
+                    return RedirectToAction(nameof(HomeController.Index), "Home");
+                }
 
                 //return RedirectToAction(nameof(ManageController.EnableAuthenticator), "Manage");
             }
+            else
+            {
+                var pwderrors = string.Join(", ", addPasswordResult.Errors.Select(err => err.Code + ":" + err.Description));
+                logger.LogError($"User {user.Email} set password failed: {pwderrors}");
 
-            var pwderrors = string.Join(", ", addPasswordResult.Errors.Select(err => err.Code + ":" + err.Description));
-            logger.LogError($"User {user.Email} set password failed: {pwderrors}");
-
-            AddErrors(addPasswordResult);
-            return View();
+                AddErrors(addPasswordResult);
+                return View();
+            }
         }
 
         [HttpGet]
@@ -381,10 +389,10 @@ namespace IdentityServer.Controllers
                 var user = await userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
-                    logger.LogError($"User {model.Email} does not exist");
+                    logger.LogError($"ForgotPassword attempt to reset non existing user with email: {model.Email}");
 
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToAction(nameof(ForgotPasswordConfirmation), new { Message = IdentityMessages.ForgotPasswordInvalidEmail });
+                    //Don't reveail if user doesn't exists
+                    return RedirectToAction(nameof(ForgotPasswordConfirmation));
                 }
 
                 //Validate user bank account
@@ -395,7 +403,7 @@ namespace IdentityServer.Controllers
                     //var validationResult = await _managementApiClient.ValidateUser(model.Email, model.BankAccount);
                     //if (validationResult?.Status == StatusEnum.Error)
                     //{
-                    //    _logger.LogError($"User email '{model.Email}' and bank account number '{model.BankAccount}' mismatched or user is not valid");
+                    //    logger.LogError($"User email '{model.Email}' and bank account number '{model.BankAccount}' mismatched or user is not valid");
                     //    // Don't reveal that the user does not exist or is not confirmed
                     //    return RedirectToAction(nameof(ForgotPasswordConfirmation), new { Message = validationResult.Message });
                     //}
@@ -403,7 +411,7 @@ namespace IdentityServer.Controllers
 
                 // For more information on how to enable account confirmation and password reset please
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                //var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                //var code = await userManager.GeneratePasswordResetTokenAsync(user);
 
                 var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ResetPasswordEmailExpirationInHours));
 
@@ -418,7 +426,7 @@ namespace IdentityServer.Controllers
                 await emailSender.SendEmailResetPasswordAsync(model.Email, callbackUrl);
 
                 await auditLogger.RegisterForgotPassword(model.Email);
-                return RedirectToAction(nameof(ForgotPasswordConfirmation), new { Message = IdentityMessages.ForgotPasswordPasswordReseted });
+                return RedirectToAction(nameof(ForgotPasswordConfirmation));
             }
 
             // If we got this far, something failed, redisplay form
@@ -428,9 +436,9 @@ namespace IdentityServer.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult ForgotPasswordConfirmation(string message)
+        public IActionResult ForgotPasswordConfirmation()
         {
-            ViewData["ValidationMessage"] = message;
+            ViewData["Message"] = IdentityMessages.ForgotPasswordSuccess;
             ViewData["PreviousUrl"] = Request.Headers["Referer"].ToString();
             return View();
         }
@@ -480,7 +488,7 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
 
-            //var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+            //var result = await userManager.ResetPasswordAsync(user, model.Code, model.Password);
             //if (result.Succeeded)
             //{
             //    return RedirectToAction(nameof(ResetPasswordConfirmation));
@@ -529,9 +537,336 @@ namespace IdentityServer.Controllers
             return View();
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public IActionResult ExternalLogin(string provider, string returnUrl = null)
+        {
+            // Request a redirect to the external login provider.
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { returnUrl });
+            var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return Challenge(properties, provider);
+        }
+
+        // TODO: log errors
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        {
+            if (remoteError != null)
+            {
+                ModelState.AddModelError("ExternalLogin", $"Error from external provider: {remoteError}");
+                logger.LogWarning($"Error from external provider: {remoteError}");
+                return RedirectToAction(nameof(Login));
+            }
+
+            var tempUser = await HttpContext.AuthenticateAsync(IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme);
+
+            if (tempUser?.Succeeded != true)
+            {
+                //throw new Exception("External authentication error");
+                logger.LogWarning($"External authentication error: {tempUser?.Failure?.Message}");
+                return RedirectToAction(nameof(Login));
+            }
+
+            // retrieve claims of the external user
+            var externalUser = tempUser.Principal;
+
+            if (externalUser == null)
+            {
+                throw new Exception("External authentication error");
+            }
+
+            // retrieve claims of the external user
+            var claims = externalUser.Claims.ToList();
+
+            // try to determine the unique id of the external user - the most common claim type for that are the sub claim and the NameIdentifier
+            // depending on the external provider, some other claim type might be used
+            var userIdClaim = claims.FirstOrDefault(x => x.Type == JwtClaimTypes.Subject);
+
+            if (userIdClaim == null)
+            {
+                userIdClaim = claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+            }
+
+            foreach (var claim in claims)
+            {
+                logger.LogWarning(claim.Type + ": " + claim.Value);
+            }
+
+            if (userIdClaim == null)
+            {
+                //throw new Exception("Unknown userid");
+                logger.LogWarning("Unknown userid");
+                return RedirectToAction(nameof(Login));
+            }
+
+            var externalUserId = userIdClaim.Value;
+            var externalProvider = userIdClaim.Issuer;
+            var email = (tempUser.Principal.FindFirstValue(ClaimTypes.Email) ?? tempUser.Principal.FindFirstValue(JwtClaimTypes.Email)) ?? tempUser.Principal.FindFirstValue(ClaimTypes.Name);
+
+            if (email == null)
+            {
+                //throw new Exception("Unknown email"); --add details to log
+                logger.LogWarning("Unknown email");
+                return RedirectToAction(nameof(Login));
+            }
+
+            var firstName = tempUser.Principal.FindFirstValue(ClaimTypes.GivenName);
+            var lastName = tempUser.Principal.FindFirstValue(ClaimTypes.Surname);
+
+            var justName = tempUser.Principal.FindFirstValue("name");
+
+            if (string.IsNullOrWhiteSpace(firstName) && string.IsNullOrWhiteSpace(lastName)) firstName = justName;
+
+            // TODO: get roles
+            var roles = claims.FindAll(x => x.Type == "groups");
+
+            var isECNGBillingAdmin = roles.FirstOrDefault(x => x.Value == azureADConfig.AzureAdBillingAdministratorGrpId) != null; //"ECNGBillingAdmin"
+            var isECNGBusinessAdmin = roles.FirstOrDefault(x => x.Value == azureADConfig.AzureAdBusinessAdministratorGrpId) != null; //"ECNGBusinessAdmin"
+
+            // Sign in the user with this external login provider if the user already has a login.
+            var result = await signInManager.ExternalLoginSignInAsync(externalProvider, externalUserId, true, true); //ispersistent:false
+            if (result.Succeeded) // external user already in identity database
+            {
+                var user = await userManager.FindByEmailAsync(email);
+
+                var allClaims = await userManager.GetClaimsAsync(user);
+
+                await userManager.AddClaim(allClaims, user, Claims.FirstNameClaim, firstName);
+                await userManager.AddClaim(allClaims, user, Claims.LastNameClaim, lastName);
+
+                logger.LogInformation("User logged in with {Name} provider.", "test");
+
+                await RefreshExternalUserRoles(user, isECNGBillingAdmin, isECNGBusinessAdmin);
+
+                return RedirectToLocal(returnUrl);
+            }
+
+            if (result.IsLockedOut)
+            {
+                return RedirectToAction(nameof(Lockout));
+            }
+
+            // If the user does not have an account, then create an account.
+
+            var newUser = await userManager.FindByEmailAsync(email);
+            if (newUser == null)
+            {
+                newUser = new ApplicationUser { UserName = email, Email = email };
+                var newUserResult = await userManager.CreateAsync(newUser);
+                if (!newUserResult.Succeeded)
+                {
+                    logger.LogInformation("User is not created");
+
+                    // TODO: error details
+                    return new BadRequestResult();
+                }
+            }
+
+            var allClaimsNew = await userManager.GetClaimsAsync(newUser);
+
+            await userManager.AddClaim(allClaimsNew, newUser, Claims.FirstNameClaim, firstName);
+            await userManager.AddClaim(allClaimsNew, newUser, Claims.LastNameClaim, lastName);
+
+            await RefreshExternalUserRoles(newUser, isECNGBillingAdmin, isECNGBusinessAdmin);
+
+            var userLoginInfo = new UserLoginInfo(externalProvider, externalUserId, email);
+
+            var addLoginresult = await userManager.AddLoginAsync(newUser, userLoginInfo);
+            if (!addLoginresult.Succeeded)
+            {
+                logger.LogInformation("User is not created");
+
+                // TODO: error details
+                return new BadRequestResult();
+            }
+
+            await signInManager.SignInAsync(newUser, isPersistent: true); //isPersistent: false
+            logger.LogInformation("User created an account using {Name} provider.", userLoginInfo.LoginProvider);
+            return RedirectToLocal(returnUrl);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EnableAuthenticator()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            if (user.TwoFactorEnabled)
+            {
+                return RedirectToAction(nameof(TwoFactorAuthentication));
+            }
+
+            var model = new EnableAuthenticatorViewModel
+            {
+                PhoneNumber = user.PhoneNumber
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EnableAuthenticator(string submit, EnableAuthenticatorViewModel model)
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            if (user.TwoFactorEnabled)
+            {
+                return RedirectToAction(nameof(TwoFactorAuthentication));
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
+            {
+                var setPhoneResult = await userManager.SetPhoneNumberAsync(user, model.PhoneNumber);
+                if (!setPhoneResult.Succeeded)
+                {
+                    throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
+                }
+            }
+
+            var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProvider);
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                return View("Error");
+            }
+
+            if (submit == "sms" && !string.IsNullOrWhiteSpace(model.PhoneNumber))
+            {
+                throw new NotImplementedException();
+
+                // TODO: implement SMS
+
+                //var message = configuration.UserEnableTwoFactorSmsTemplate.Replace("{code}", code);
+
+                //var messageId = Guid.NewGuid().ToString();
+                //var phoneNumber = await userManager.GetPhoneNumberAsync(user);
+
+                //var response = await this.smsService.Send(new ClearingHouse.Shared.Services.SmsMessage
+                //{
+                //    MerchantID = null,
+                //    MessageId = messageId,
+                //    Body = message,
+                //    From = configuration.SmsFromDetails,
+                //    To = phoneNumber
+                //});
+
+                //if (response.Status == StatusEnum.Error)
+                //{
+                //    return View("Error");
+                //}
+            }
+            else
+            {
+                await this.emailSender.Send2faEmailAsync(user.Email, code);
+            }
+
+            return RedirectToAction(nameof(VerifyAuthentificatorCode));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> VerifyAuthentificatorCode()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            if (user.TwoFactorEnabled)
+            {
+                return RedirectToAction(nameof(TwoFactorAuthentication));
+            }
+
+            return View(new VerifyAuthentificatorCodeViewModel { PhoneNumber = user.PhoneNumber });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> VerifyAuthentificatorCode(VerifyAuthentificatorCodeViewModel model)
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            if (user.TwoFactorEnabled)
+            {
+                return RedirectToAction(nameof(TwoFactorAuthentication));
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.PhoneNumber = user.PhoneNumber;
+                return View(model);
+            }
+
+            //Strip spaces and hypens
+            var verificationCode = model.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+            var is2faTokenValid = await userManager.VerifyTwoFactorTokenAsync(user, TwoFactorAuthProvider, verificationCode);
+
+            if (!is2faTokenValid)
+            {
+                model.PhoneNumber = user.PhoneNumber;
+                ModelState.AddModelError("Code", "Verification code is invalid.");
+                return View(model);
+            }
+
+            await userManager.SetTwoFactorEnabledAsync(user, true);
+            await userManager.ResetAuthenticatorKeyAsync(user);
+            logger.LogInformation($"User with ID {user.Id} has confirmed 2FA with mobile phone number {user.PhoneNumber}", user.Id);
+
+            var allClaims = await userManager.GetClaimsAsync(user);
+            await auditLogger.RegisterTwoFactorCompleted(user);
+
+            // TODO: from query string
+            return Redirect(apiConfiguration.MerchantProfileURL);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> TwoFactorAuthentication()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            var model = new TwoFactorAuthenticationViewModel
+            {
+                HasAuthenticator = await userManager.GetAuthenticatorKeyAsync(user) != null,
+                Is2faEnabled = user.TwoFactorEnabled,
+                RecoveryCodesLeft = await userManager.CountRecoveryCodesAsync(user),
+            };
+
+            return View(model);
+        }
+
         /*****************************************/
         /* helper APIs for the AccountController */
         /*****************************************/
+
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (string.IsNullOrWhiteSpace(returnUrl))
+            {
+                return RedirectToAction(nameof(Login));
+            }
+            else
+            {
+                return Redirect(returnUrl);
+            }
+        }
 
         private void AddErrors(IdentityResult result)
         {
@@ -544,6 +879,8 @@ namespace IdentityServer.Controllers
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
             var context = await interaction.GetAuthorizationContextAsync(returnUrl);
+            var isAdmin = (User?.IsAdmin()).Value;
+
             if (context?.IdP != null && await schemeProvider.GetSchemeAsync(context.IdP) != null)
             {
                 var local = context.IdP == IdentityServer4.IdentityServerConstants.LocalIdentityProvider;
@@ -554,6 +891,10 @@ namespace IdentityServer.Controllers
                     EnableLocalLogin = local,
                     ReturnUrl = returnUrl,
                     Username = context?.LoginHint,
+                    IsAuthorized = User?.Identity.IsAuthenticated == true,
+                    UserName = User.GetDoneByName(),
+                    IsAdmin = isAdmin,
+                    ClientSystemURL = isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL
                 };
 
                 if (!local)
@@ -593,11 +934,14 @@ namespace IdentityServer.Controllers
 
             return new LoginViewModel
             {
-                AllowRememberLogin = AccountOptions.AllowRememberLogin,
                 EnableLocalLogin = allowLocal && AccountOptions.AllowLocalLogin,
                 ReturnUrl = returnUrl,
                 Username = context?.LoginHint,
-                ExternalProviders = providers.ToArray()
+                ExternalProviders = providers.ToArray(),
+                IsAuthorized = User?.Identity.IsAuthenticated == true,
+                UserName = User.GetDoneByName(),
+                IsAdmin = isAdmin,
+                ClientSystemURL = isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL
             };
         }
 
@@ -669,6 +1013,29 @@ namespace IdentityServer.Controllers
             }
 
             return vm;
+        }
+
+        private async Task RefreshExternalUserRoles(ApplicationUser newUser, bool isECNGBillingAdmin, bool isECNGBusinessAdmin)
+        {
+            if (User.IsInRole(Roles.BusinessAdministrator) && !isECNGBusinessAdmin)
+            {
+                logger.LogWarning($"Remove user {newUser.Email} from role BusinessAdministrator");
+                await userManager.RemoveFromRoleAsync(newUser, Roles.BusinessAdministrator);
+            }
+            else if (!User.IsInRole(Roles.BusinessAdministrator) && isECNGBusinessAdmin)
+            {
+                await userManager.AddToRoleAsync(newUser, Roles.BusinessAdministrator);
+            }
+
+            if (User.IsInRole(Roles.BillingAdministrator) && !isECNGBillingAdmin)
+            {
+                logger.LogWarning($"Remove user {newUser.Email} from role BillingAdministrator");
+                await userManager.RemoveFromRoleAsync(newUser, Roles.BillingAdministrator);
+            }
+            else if (!User.IsInRole(Roles.BillingAdministrator) && isECNGBillingAdmin)
+            {
+                await userManager.AddToRoleAsync(newUser, Roles.BillingAdministrator);
+            }
         }
     }
 }

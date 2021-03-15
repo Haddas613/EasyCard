@@ -100,3 +100,21 @@ TBC
 
 4. Models validation - TBC
 
+## UI: Admin panel - External Systems / Integrations
+
+To add a new integration you need to follow next steps.
+
+1. Create a new subfolder in `src/integrations/` like `src/integrations/integration-name`. Use kebab-case for folder naming for convenience.
+2. Create corresponding components implementations(take others as an example) E.g src/integrations/integration-name/IntegrationName`SettingsForm`.vue
+3. Make use of props that will be passed to your component automatically. For example `SettingsForm` components will get `terminalId:string`, `data:object`
+and `apiName:string` props. Note that without **apiName** is required at least for saving (see _4_ for more details).
+1. Note that **terminalId** might be **terminalTemplateID**. ApiName will contain vue global **$api** api key, either **terminals** or **terminalTemplates**. Based on this you can know with which entity you work with. It's likely will only be used while saving like `this.api[this.apiName].saveExternalSystem`
+
+### Additional notes
+
+1. When adding a folder to integrations use **kebab-case**
+2. When adding a component **only** use **PascalCase**
+3. `Integrations` folder may **only** contain single file components. **Don't** add anything other than that.
+4. Current required components: `__SettingsForm` (where `__` is an integration key)
+5. All added components are added globally, but should not be used manually. They will automatically appear in designated places
+6. All components must be able to work with terminal templates. Make sure to provide all required infrastructure for both `api.terminals` and `api.terminalTemplates` and use them accordingly.

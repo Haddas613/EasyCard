@@ -52,5 +52,10 @@ namespace Shared.Integration.Models
         /// ID, Count, Name
         /// </summary>
         public IEnumerable<Item> Items { get; set; }
+
+        /// <summary>
+        /// Consumer address
+        /// </summary>
+        public string ConsumerAddress { get; set; }
     }
 }

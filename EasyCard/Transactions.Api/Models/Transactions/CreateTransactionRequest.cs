@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using Transactions.Api.Models.Invoicing;
+using Transactions.Shared.Enums;
 using Enums = Transactions.Shared.Enums;
 using IntegrationModels = Shared.Integration.Models;
 
@@ -38,6 +38,13 @@ namespace Transactions.Api.Models.Transactions
         public CurrencyEnum Currency { get; set; }
 
         /// <summary>
+        /// Payment Type
+        /// </summary>
+        [EnumDataType(typeof(PaymentTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PaymentTypeEnum PaymentTypeEnum { get; set; }
+
+        /// <summary>
         /// Is the card physically scanned (telephone deal or magnetic)
         /// </summary>
         [EnumDataType(typeof(CardPresenceEnum))]
@@ -60,6 +67,18 @@ namespace Transactions.Api.Models.Transactions
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
         public decimal? TransactionAmount { get; set; }
+
+        [Range(0, 1)]
+        [DataType(DataType.Currency)]
+        public decimal VATRate { get; set; }
+
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal VATTotal { get; set; }
+
+        [Range(0.01, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal NetTotal { get; set; }
 
         /// <summary>
         /// Installment payments details (should be omitted in case of regular deal)
@@ -92,18 +111,13 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         public InvoiceDetails InvoiceDetails { get; set; }
 
-        /// <summary>
-        /// Tax rate (VAT)
-        /// </summary>
-        [Range(0.01, 1)]
-        [DataType(DataType.Currency)]
-        public decimal? TaxRate { get; set; }
-
-        /// <summary>
-        /// Tax amount
-        /// </summary>
-        [Range(0.01, double.MaxValue)]
-        [DataType(DataType.Currency)]
-        public decimal? TaxAmount { get; set; }
+        public void Calculate()
+        {
+            if (NetTotal == 0)
+            {
+                NetTotal = Math.Round(TransactionAmount.GetValueOrDefault() / (1m + VATRate), 2, MidpointRounding.AwayFromZero);
+                VATTotal = TransactionAmount.GetValueOrDefault() - NetTotal;
+            }
+        }
     }
 }

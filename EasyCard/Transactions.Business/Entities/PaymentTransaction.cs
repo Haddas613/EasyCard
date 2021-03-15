@@ -1,14 +1,16 @@
 ﻿using Shared.Business;
+using Shared.Business.Financial;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Entities
 {
-    public class PaymentTransaction : IEntityBase<Guid>
+    public class PaymentTransaction : IEntityBase<Guid>, IFinancialItem
     {
         public PaymentTransaction()
         {
@@ -87,6 +89,11 @@ namespace Transactions.Business.Entities
         public TransactionStatusEnum Status { get; set; }
 
         /// <summary>
+        /// Payment Type
+        /// </summary>
+        public PaymentTypeEnum PaymentTypeEnum { get; set; }
+
+        /// <summary>
         /// Status of finalization operations in case of failed transaction, rejection or cancelation
         /// </summary>
         public TransactionFinalizationStatusEnum? FinalizationStatus { get; set; }
@@ -135,6 +142,15 @@ namespace Transactions.Business.Entities
         /// This transaction amount
         /// </summary>
         public decimal TransactionAmount { get; set; }
+
+        [NotMapped]
+        public decimal Amount { get => TransactionAmount; set => TransactionAmount = value; }
+
+        public decimal VATRate { get; set; }
+
+        public decimal VATTotal { get; set; }
+
+        public decimal NetTotal { get; set; }
 
         /// <summary>
         /// Initial installment payment
@@ -201,6 +217,26 @@ namespace Transactions.Business.Entities
         /// </summary>
         public string CorrelationId { get; set; }
 
+        /// <summary>
+        /// Generated invoice ID
+        /// </summary>
+        public Guid? InvoiceID { get; set; }
+
+        // NOTE: this field required in case if InvoiceID is empty due to exception
+
+        /// <summary>
+        /// Create document for transaction
+        /// </summary>
+        public bool IssueInvoice { get; set; }
+
+        /// <summary>
+        /// Payment request reference
+        /// </summary>
+        public Guid? PaymentRequestID { get; set; }
+
+        public DocumentOriginEnum DocumentOrigin { get; set; }
+
+        // TODO: calculate items, VAT
         [Obsolete]
         public void Calculate()
         {
@@ -214,7 +250,7 @@ namespace Transactions.Business.Entities
                 InitialPaymentAmount = TransactionAmount;
             }
 
-            TotalAmount = InitialPaymentAmount + InstallmentPaymentAmount * (NumberOfPayments - 1);
+            TotalAmount = InitialPaymentAmount + (InstallmentPaymentAmount * (NumberOfPayments - 1));
         }
 
         public Guid GetID()

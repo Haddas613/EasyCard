@@ -1,4 +1,5 @@
 ﻿using Shared.Helpers;
+using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,44 +39,16 @@ namespace Transactions.Api.Models.Billing
         public Guid? MerchantID { get; set; }
 
         /// <summary>
-        /// Shva or other processor
-        /// </summary>
-        public long? ProcessorID { get; set; }
-
-        /// <summary>
-        /// Clearing House or Upay
-        /// </summary>
-        public long? AggregatorID { get; set; }
-
-        /// <summary>
-        /// EasyInvoice or RapidOne
-        /// </summary>
-        public long? InvoicingID { get; set; }
-
-        /// <summary>
-        /// Marketer ID
-        /// </summary>
-        public long? MarketerID { get; set; }
-
-        /// <summary>
-        /// Processing status
-        /// </summary>
-        public BillingDealStatusEnum Status { get; set; }
-
-        /// <summary>
         /// Currency
         /// </summary>
         public CurrencyEnum Currency { get; set; }
 
         /// <summary>
-        /// Number Of payments (cannot be more than 999)
-        /// </summary>
-        public int NumberOfPayments { get; set; }
-
-        /// <summary>
         /// This transaction amount
         /// </summary>
         public decimal TransactionAmount { get; set; }
+
+        public decimal Amount { get; set; }
 
         /// <summary>
         /// TotalAmount = TransactionAmount * NumberOfPayments
@@ -96,6 +69,11 @@ namespace Transactions.Api.Models.Billing
         /// Reference to last deal
         /// </summary>
         public Guid? CurrentTransactionID { get; set; }
+
+        /// <summary>
+        /// Date-time when next transaction should be generated
+        /// </summary>
+        public DateTime? NextScheduledTransaction { get; set; }
 
         /// <summary>
         /// Credit card information (just to display)
@@ -136,5 +114,23 @@ namespace Transactions.Api.Models.Billing
         public string SourceIP { get; set; }
 
         public bool Active { get; set; }
+
+        public bool? CardExpired { get; set; }
+
+        /// <summary>
+        /// Invoice details
+        /// </summary>
+        public InvoiceDetails InvoiceDetails { get; set; }
+
+        /// <summary>
+        /// Create document for transaction
+        /// </summary>
+        public bool IssueInvoice { get; set; }
+
+        public decimal VATRate { get; set; }
+
+        public decimal VATTotal { get; set; }
+
+        public decimal NetTotal { get; set; }
     }
 }

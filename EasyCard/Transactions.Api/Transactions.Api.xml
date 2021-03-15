@@ -4,6 +4,13 @@
         <name>Transactions.Api</name>
     </assembly>
     <members>
+        <member name="M:Transactions.Api.Controllers.InvoicingController.GenerateOrResendInvoice(System.Nullable{System.Guid})">
+            <summary>
+            Generate invocie in EasyInvoice system
+            </summary>
+            <param name="invoiceID"></param>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.TransactionsApiController.CreateTransaction(Transactions.Api.Models.Transactions.CreateTransactionRequest)">
             <summary>
             Create the charge based on credit card or previously stored credit card token (J4 deal)
@@ -51,19 +58,19 @@
             Transaction amount (should be omitted in case of installment deal)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.NumberOfPayments">
-            <summary>
-            Number Of payments (cannot be more than 999)
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.TotalAmount">
-            <summary>
-            TotalAmount = TransactionAmount * NumberOfPayments
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.BillingSchedule">
             <summary>
             Billing Schedule
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.IssueInvoice">
+            <summary>
+            Create document
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.InvoiceDetails">
+            <summary>
+            Invoice details
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.BillingDealID">
@@ -91,39 +98,9 @@
             Merchant
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.ProcessorID">
-            <summary>
-            Shva or other processor
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.AggregatorID">
-            <summary>
-            Clearing House or Upay
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.InvoicingID">
-            <summary>
-            EasyInvoice or RapidOne
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.MarketerID">
-            <summary>
-            Marketer ID
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.Status">
-            <summary>
-            Processing status
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.Currency">
             <summary>
             Currency
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.NumberOfPayments">
-            <summary>
-            Number Of payments (cannot be more than 999)
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.TransactionAmount">
@@ -149,6 +126,11 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.CurrentTransactionID">
             <summary>
             Reference to last deal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.NextScheduledTransaction">
+            <summary>
+            Date-time when next transaction should be generated
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.CreditCardDetails">
@@ -181,29 +163,140 @@
             Concurrency key
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.IssueInvoice">
+            <summary>
+            Create document for transaction
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealsFilter.ConsumerEmail">
             <summary>
             End-customer Email
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.NumberOfPayments">
+        <member name="P:Transactions.Api.Models.Billing.BillingDealsFilter.OnlyActual">
             <summary>
-            Number Of payments (cannot be more than 999)
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.TotalAmount">
-            <summary>
-            TotalAmount = TransactionAmount * NumberOfPayments
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.Status">
-            <summary>
-            Processing status
+            Billing deals that can be manually triggered
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.BillingSchedule">
             <summary>
             Billing Schedule
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Billing.BillingDealSummaryResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.BillingDealID">
+            <summary>
+              Looks up a localized string similar to Billing Deal ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.BillingDealTimestamp">
+            <summary>
+              Looks up a localized string similar to Billing Deal Timestamp.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.BillingSchedule">
+            <summary>
+              Looks up a localized string similar to Billing Schedule.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CardNumber">
+            <summary>
+              Looks up a localized string similar to Card Number.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CardOwnerName">
+            <summary>
+              Looks up a localized string similar to Card Owner Name.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Currency">
+            <summary>
+              Looks up a localized string similar to Currency.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.MerchantID">
+            <summary>
+              Looks up a localized string similar to Merchant ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.NumberOfPayments">
+            <summary>
+              Looks up a localized string similar to Number of Payments.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Status">
+            <summary>
+              Looks up a localized string similar to Status.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.TerminalID">
+            <summary>
+              Looks up a localized string similar to Terminal ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.TotalAmount">
+            <summary>
+              Looks up a localized string similar to Total Amount.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.TransactionAmount">
+            <summary>
+              Looks up a localized string similar to Transaction Amount.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.CreditCardToken">
+            <summary>
+            Stored credit card details token (should be omitted in case if full credit card details used)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.TransactionAmount">
+            <summary>
+            Transaction amount (should be omitted in case of installment deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.BillingSchedule">
+            <summary>
+            Billing Schedule
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.CreateTransactionFromBillingDealsRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Checkout.ConsumerInfo.ConsumerEmail">
+            <summary>
+            End-customer Email
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.InvoiceDetails">
@@ -226,29 +319,376 @@
             Deal information (optional)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.CreditCardDetails">
-            <summary>
-            Credit card details
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.InvoiceAmount">
             <summary>
             Invoice amount (should be omitted in case of installment deal)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.TaxRate">
-            <summary>
-            Tax rate (VAT)
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.TaxAmount">
-            <summary>
-            Tax amount
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.InstallmentDetails">
             <summary>
             Installment payments details (should be omitted in case of regular deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.CreditCardDetails">
+            <summary>
+            Credit card information
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceID">
+            <summary>
+            Primary reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceNumber">
+            <summary>
+            Invoice reference in invoicing system
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceTimestamp">
+            <summary>
+            Date-time when deal created initially in UTC
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceDate">
+            <summary>
+            Legal invoice day
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.Status">
+            <summary>
+            Processing status
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.DealDetails">
+            <summary>
+            Deal information (optional)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceAmount">
+            <summary>
+            Invoice amount (should be omitted in case of installment deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InstallmentDetails">
+            <summary>
+            Installment payments details (should be omitted in case of regular deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.CreditCardDetails">
+            <summary>
+            Credit card information
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoicesFilter.ConsumerEmail">
+            <summary>
+            End-customer Email
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.InvoiceID">
+            <summary>
+            Primary reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.InvoiceTimestamp">
+            <summary>
+            Date-time when deal created initially in UTC
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.InvoiceDate">
+            <summary>
+            Legal invoice day
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.TerminalID">
+            <summary>
+            Terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.Status">
+            <summary>
+            Processing status
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Invoicing.InvoiceSummaryResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.CardOwnerName">
+            <summary>
+              Looks up a localized string similar to Card Owner Name.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.ConsumerID">
+            <summary>
+              Looks up a localized string similar to Consumer ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.Currency">
+            <summary>
+              Looks up a localized string similar to Currency.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.InvoiceAmount">
+            <summary>
+              Looks up a localized string similar to Invoice Amount.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.InvoiceDate">
+            <summary>
+              Looks up a localized string similar to Invoice Date.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.InvoiceID">
+            <summary>
+              Looks up a localized string similar to Invoice ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.InvoiceNumber">
+            <summary>
+              Looks up a localized string similar to Invoice Number.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.InvoiceTimestamp">
+            <summary>
+              Looks up a localized string similar to Invoice Timestamp.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.InvoiceType">
+            <summary>
+              Looks up a localized string similar to Invoice Type.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.TerminalID">
+            <summary>
+              Looks up a localized string similar to Terminal ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.ResendInvoiceRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.ResendInvoiceRequest.InvoicesIDs">
+            <summary>
+            IDs of invoices which need to be resend
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.TerminalID">
+            <summary>
+            Terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.DealDetails">
+            <summary>
+            Deal information (optional)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.DueDate">
+            <summary>
+            Due date
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.InstallmentDetails">
+            <summary>
+            Installment payments details (should be omitted in case of regular deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.IssueInvoice">
+            <summary>
+            Create document
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.RequestSubject">
+            <summary>
+            Email subject
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.ConsumerName">
+            <summary>
+            End-customer Name
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.PaymentRequestID">
+            <summary>
+            Primary reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.PaymentRequestTimestamp">
+            <summary>
+            Date-time when deal created initially in UTC
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.DueDate">
+            <summary>
+            Due date
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.DealDetails">
+            <summary>
+            Deal information (optional)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.InstallmentDetails">
+            <summary>
+            Installment payments details (should be omitted in case of regular deal)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.TerminalID">
+            <summary>
+            Terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummary.PaymentRequestID">
+            <summary>
+            Primary reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummary.PaymentRequestTimestamp">
+            <summary>
+            Date-time when deal created initially in UTC
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummary.DueDate">
+            <summary>
+            Due date
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummary.TerminalID">
+            <summary>
+            Terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummary.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.CardOwnerName">
+            <summary>
+              Looks up a localized string similar to Card Owner Name.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.ConsumerID">
+            <summary>
+              Looks up a localized string similar to Consumer ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.Currency">
+            <summary>
+              Looks up a localized string similar to Currency.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.DueDate">
+            <summary>
+              Looks up a localized string similar to Due Date.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestAmount">
+            <summary>
+              Looks up a localized string similar to Payment Request Amount.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestDate">
+            <summary>
+              Looks up a localized string similar to Payment Request Date.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestID">
+            <summary>
+              Looks up a localized string similar to Payment Request ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestNumber">
+            <summary>
+              Looks up a localized string similar to Payment Request Number.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestTimestamp">
+            <summary>
+              Looks up a localized string similar to Payment RequestTimestamp.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestType">
+            <summary>
+              Looks up a localized string similar to Payment Request Type.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.QuickStatus">
+            <summary>
+              Looks up a localized string similar to Quick Status.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.Status">
+            <summary>
+              Looks up a localized string similar to Status.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.TerminalID">
+            <summary>
+              Looks up a localized string similar to Terminal ID.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenFilter.ConsumerEmail">
@@ -376,6 +816,11 @@
             Currency
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.PaymentTypeEnum">
+            <summary>
+            Payment Type
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.CardPresence">
             <summary>
             Is the card physically scanned (telephone deal or magnetic)
@@ -426,16 +871,6 @@
             Invoice details
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.TaxRate">
-            <summary>
-            Tax rate (VAT)
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.TaxAmount">
-            <summary>
-            Tax amount
-            </summary>
-        </member>
         <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">
             <summary>
             Do not store full card number. Please use 123456****1234 pattern CreditCardHelpers.GetCardDigits()
@@ -481,6 +916,46 @@
             Refund amount
             </summary>
         </member>
+        <member name="T:Transactions.Api.Models.Transactions.PRCreateTransactionRequest">
+            <summary>
+            Create the charge based on payment request
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.CardPresence">
+            <summary>
+            Is the card physically scanned (telephone deal or magnetic)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.CreditCardSecureDetails">
+            <summary>
+            Credit card details (should be omitted in case if stored credit card token used)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.CreditCardToken">
+            <summary>
+            Stored credit card details token (should be omitted in case if full credit card details used)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.ConsumerIP">
+            <summary>
+            Original consumer IP
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.SaveCreditCard">
+            <summary>
+            Save credit card from request
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.PaymentRequestID">
+            <summary>
+            Primary reference
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.RefundRequest">
             <summary>
             Refund request
@@ -509,6 +984,16 @@
         <member name="P:Transactions.Api.Models.Transactions.RefundRequest.TransactionAmount">
             <summary>
             Refund amount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.IssueInvoice">
+            <summary>
+            Create document
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.InvoiceDetails">
+            <summary>
+            Invoice details
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionRequestBase.TerminalID">
@@ -561,29 +1046,14 @@
             Merchant
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.ProcessorID">
-            <summary>
-            Shva or other processor
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.AggregatorID">
-            <summary>
-            Clearing House or Upay
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.InvoicingID">
-            <summary>
-            EasyInvoice or RapidOne
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.MarketerID">
-            <summary>
-            Marketer ID
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.Status">
             <summary>
             Processing status
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.PaymentTypeEnum">
+            <summary>
+            Payment Type
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.FinalizationStatus">
@@ -681,6 +1151,51 @@
             Concurrency key
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.BillingDealID">
+            <summary>
+            Reference to initial billing deal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.RejectionMessage">
+            <summary>
+            Rejection Reason Message
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.ConsumerIP">
+            <summary>
+            We can know it from checkout page activity
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.MerchantIP">
+            <summary>
+            Merchant's IP
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.CorrelationId">
+            <summary>
+            Request ID
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.InvoiceID">
+            <summary>
+            Generated invoice ID
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.IssueInvoice">
+            <summary>
+            Create document for transaction
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Transactions.TransactionResponseAdmin">
+            <summary>
+            Payment transaction details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponseAdmin.MerchantName">
+            <summary>
+            Merchant name
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionsFilter.ConsumerEmail">
             <summary>
             End-customer Email
@@ -694,6 +1209,11 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.Status">
             <summary>
             Processing status
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.PaymentTypeEnum">
+            <summary>
+            Payment Type
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummary.SpecialTransactionType">
@@ -732,6 +1252,11 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.CardOwnerName">
+            <summary>
+              Looks up a localized string similar to Card Owner.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.CardPresence">
             <summary>
               Looks up a localized string similar to Card Present.
@@ -749,7 +1274,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.JDealType">
             <summary>
-              Looks up a localized string similar to J Deal Type.
+              Looks up a localized string similar to JDeal type.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.MerchantID">
@@ -757,19 +1282,34 @@
               Looks up a localized string similar to Merchant ID.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.PaymentTransactionID">
             <summary>
               Looks up a localized string similar to ID.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.PaymentTypeEnum">
+            <summary>
+              Looks up a localized string similar to Pay type.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.QuickStatus">
+            <summary>
+              Looks up a localized string similar to Status.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.RejectionReason">
             <summary>
-              Looks up a localized string similar to Rejection Reason.
+              Looks up a localized string similar to Rej. Reason.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.SpecialTransactionType">
             <summary>
-              Looks up a localized string similar to Special Transaction Type.
+              Looks up a localized string similar to Spec. type.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.Status">
@@ -782,14 +1322,24 @@
               Looks up a localized string similar to Terminal ID.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.TransactionAmount">
             <summary>
-              Looks up a localized string similar to Transaction Amount.
+              Looks up a localized string similar to Amount.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.TransactionTimestamp">
+            <summary>
+              Looks up a localized string similar to Date.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.TransactionType">
             <summary>
-              Looks up a localized string similar to Transaction Type.
+              Looks up a localized string similar to Transaction type.
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.TransmitTransactionsRequest">

@@ -9,19 +9,24 @@
             class="white--text"
             :disabled="selectedToken == null"
             :block="$vuetify.breakpoint.smAndDown"
+            outlined
             @click="resetToken()"
           >
           <v-icon left>mdi-delete</v-icon>
-          {{$t("CancelSelection")}}
+          {{$t("Remove")}}
           </v-btn>
         </div>
         <ec-radio-group
           :data="customerTokens"
-          labelkey="cardNumber"
           valuekey="creditCardTokenID"
+          item-disabled-key="expired"
           return-object
           :model.sync="token"
-        ></ec-radio-group>
+        > 
+          <template v-slot="{ item }">
+            <card-token-string :token="item"></card-token-string>
+          </template>
+        </ec-radio-group>
       </template>
     </ec-dialog>
     <v-card-text class="py-2">
@@ -35,13 +40,13 @@
           <v-icon>mdi-credit-card-outline</v-icon>
         </template>
         <template v-slot:left >
-          <div v-if="!selectedToken">
+          <div v-if="!token">
             <span v-if="customerTokens.length > 0" >{{$t("@ChooseFromSavedCount").replace("@count", customerTokens.length)}}</span>
             <span v-if="customerTokens.length === 0">{{$t("NoSavedCards")}}</span>
           </div>
-          <div v-if="selectedToken">
+          <div v-if="token">
             <span class="primary--text">
-              {{selectedTokenObj.cardNumber}}
+              {{token.cardNumber}}
             </span>
           </div>
         </template>
@@ -49,16 +54,17 @@
           <re-icon>mdi-chevron-right</re-icon>
         </template>
       </ec-dialog-invoker>
-      <v-form class="ec-form" ref="form" lazy-validation v-if="!selectedToken">
-        <credit-card-secure-details-form
+      <v-form class="ec-form" ref="form" lazy-validation v-if="!token">
+        <credit-card-secure-details-fields
           :data="model.creditCardSecureDetails"
           ref="ccsecuredetailsform"
-        ></credit-card-secure-details-form>
-        <v-checkbox v-model="model.creditCardSecureDetails.save" :label="$t('SaveCard')"></v-checkbox>
+          :tokens="customerTokens"
+        ></credit-card-secure-details-fields>
+        <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')" :disabled="!model.dealDetails.consumerID"></v-checkbox>
       </v-form>
     </v-card-text>
     <v-card-actions class="px-4">
-      <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t('Charge')}}</v-btn>
+      <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t(btnText)}}</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -68,16 +74,22 @@ import ValidationRules from "../../helpers/validation-rules";
 
 export default {
   components: {
-    CreditCardSecureDetailsForm: () => import("./CreditCardSecureDetailsForm"),
+    CreditCardSecureDetailsFields: () => import("./CreditCardSecureDetailsFields"),
     EcDialog: () => import("../../components/ec/EcDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
     EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
-    ReIcon: () => import("../../components/misc/ResponsiveIcon")
+    ReIcon: () => import("../../components/misc/ResponsiveIcon"),
+    CardTokenString: () => import("../../components/ctokens/CardTokenString")
   },
   props: {
     data: {
       type: Object,
       default: null,
+      required: false
+    },
+    btnText: {
+      type: String,
+      default: 'OK',
       required: false
     }
   },
@@ -100,6 +112,7 @@ export default {
         ).data || [];
       this.selectedToken = this.model.creditCardToken;
     }else{
+      this.model.saveCreditCard = false;
       this.selectedToken = this.selectedTokenObj = null;
     }
   },
@@ -111,6 +124,7 @@ export default {
       set: function(nv) {
         this.selectedToken = nv ? nv.creditCardTokenID : null;
         this.selectedTokenObj = nv;
+        this.tokensDialog = false;
       }
     }
   },
@@ -148,7 +162,8 @@ export default {
         type: "creditcard",
         data: {
           ...this.model.creditCardSecureDetails,
-          ...data
+          ...data,
+          saveCreditCard: this.model.saveCreditCard
         }
       });
     },

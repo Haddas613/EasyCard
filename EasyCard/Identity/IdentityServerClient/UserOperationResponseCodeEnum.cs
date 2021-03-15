@@ -15,6 +15,7 @@ namespace IdentityServerClient
         PasswordReseted = 5,
         InvitationResent = 6,
         UserLocked = 7,
-        UserUnlocked = 8
+        UserUnlocked = 8,
+        UserUnlinkedFromMerchant = 9
     }
 }

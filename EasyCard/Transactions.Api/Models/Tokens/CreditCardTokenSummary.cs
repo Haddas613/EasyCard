@@ -36,5 +36,7 @@ namespace Transactions.Api.Models.Tokens
         /// End-customer Email
         /// </summary>
         public string ConsumerEmail { get; set; }
+
+        public bool Expired { get; set; }
     }
 }

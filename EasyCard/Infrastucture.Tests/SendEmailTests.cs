@@ -27,7 +27,7 @@ namespace Infrastucture.Tests
                 TemplateCode = "TestEmail",
                 EmailTo = "volkovv@mydigicode.com",
                 Subject = "Test message",
-                Substitutions = new TextSubstitution[] { new TextSubstitution { Substitution = "{test}", Value = "Test Message" } }
+                Substitutions = new TextSubstitution[] { new TextSubstitution { Substitution = "test", Value = "Test Message" } }
             };
 
             emailSender.SendEmail(emailMessage).Wait();

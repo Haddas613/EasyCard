@@ -61,6 +61,15 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Card Owner.
+        /// </summary>
+        internal static string CardOwnerName {
+            get {
+                return ResourceManager.GetString("CardOwnerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Card Present.
         /// </summary>
         internal static string CardPresence {
@@ -88,7 +97,7 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to J Deal Type.
+        ///   Looks up a localized string similar to JDeal type.
         /// </summary>
         internal static string JDealType {
             get {
@@ -106,6 +115,15 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Merchant.
+        /// </summary>
+        internal static string MerchantName {
+            get {
+                return ResourceManager.GetString("MerchantName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ID.
         /// </summary>
         internal static string PaymentTransactionID {
@@ -115,7 +133,25 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rejection Reason.
+        ///   Looks up a localized string similar to Pay type.
+        /// </summary>
+        internal static string PaymentTypeEnum {
+            get {
+                return ResourceManager.GetString("PaymentTypeEnum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        internal static string QuickStatus {
+            get {
+                return ResourceManager.GetString("QuickStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rej. Reason.
         /// </summary>
         internal static string RejectionReason {
             get {
@@ -124,7 +160,7 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Special Transaction Type.
+        ///   Looks up a localized string similar to Spec. type.
         /// </summary>
         internal static string SpecialTransactionType {
             get {
@@ -151,7 +187,16 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction Amount.
+        ///   Looks up a localized string similar to Terminal.
+        /// </summary>
+        internal static string TerminalName {
+            get {
+                return ResourceManager.GetString("TerminalName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount.
         /// </summary>
         internal static string TransactionAmount {
             get {
@@ -160,7 +205,16 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction Type.
+        ///   Looks up a localized string similar to Date.
+        /// </summary>
+        internal static string TransactionTimestamp {
+            get {
+                return ResourceManager.GetString("TransactionTimestamp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction type.
         /// </summary>
         internal static string TransactionType {
             get {

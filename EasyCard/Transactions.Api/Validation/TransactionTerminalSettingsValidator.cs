@@ -1,4 +1,5 @@
 ﻿using Merchants.Business.Entities.Terminal;
+using Merchants.Shared.Models;
 using Shared.Business.Messages;
 using Shared.Helpers;
 using Shared.Integration.Models;
@@ -24,11 +25,11 @@ namespace Transactions.Api.Validation
 
             List<SharedHelpers.Error> errors = new List<SharedHelpers.Error>();
 
-            if (jDealType == JDealTypeEnum.J2 && !terminalSettings.J2Allowed)
+            if (jDealType == JDealTypeEnum.J2 && !(terminalSettings.J2Allowed == true))
             {
                 errors.Add(new SharedHelpers.Error($"{nameof(terminalSettings.J2Allowed)}", Messages.J2NotAllowed));
             }
-            else if (jDealType == JDealTypeEnum.J5 && !terminalSettings.J5Allowed)
+            else if (jDealType == JDealTypeEnum.J5 && !(terminalSettings.J5Allowed == true))
             {
                 errors.Add(new SharedHelpers.Error($"{nameof(terminalSettings.J5Allowed)}", Messages.J5NotAllowed));
             }
@@ -45,7 +46,7 @@ namespace Transactions.Api.Validation
                 //    throw new BusinessException(Messages.CvvRequiredButStoredTokenCannotUseCvv);
                 //}
 
-                if (terminalSettings.NationalIDRequired && string.IsNullOrWhiteSpace(token.CardOwnerNationalID))
+                if (terminalSettings.NationalIDRequired == true && string.IsNullOrWhiteSpace(token.CardOwnerNationalID))
                 {
                     throw new BusinessException(Messages.CardOwnerNationalIDRequiredButNotPresentInToken);
                 }
@@ -57,12 +58,12 @@ namespace Transactions.Api.Validation
                     throw new BusinessException(Messages.CreditCardSecureDetailsRequired);
                 }
 
-                if (terminalSettings.CvvRequired && string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.Cvv))
+                if (terminalSettings.CvvRequired == true && string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.Cvv))
                 {
                     errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.Cvv)}", Messages.CvvRequired));
                 }
 
-                if (terminalSettings.NationalIDRequired && string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID))
+                if (terminalSettings.NationalIDRequired == true && string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID))
                 {
                     errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.CardOwnerNationalID)}", Messages.CardOwnerNationalIDRequired));
                 }

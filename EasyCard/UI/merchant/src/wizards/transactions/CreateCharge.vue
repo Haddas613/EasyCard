@@ -4,46 +4,78 @@
       v-on:back="goBack()"
       v-on:close="$router.push('/admin/dashboard')"
       v-on:skip="step = step + 1"
+      v-on:terminal-changed="terminalChanged()"
       :skippable="steps[step].skippable"
       :closeable="steps[step].closeable"
       :completed="steps[step].completed"
       :canchangeterminal="steps[step].canChangeTerminal"
       :tdmenuitems="threeDotMenuItems"
       :title="navTitle"
-    ></navbar>
-    <v-stepper class="ec-stepper pt-1" v-model="step">
+    >
+      <template v-if="steps[step].showItemsCount" v-slot:title>
+        <v-btn v-if="$refs.numpadRef" :disabled="!$refs.numpadRef.model.items.length" color="ecgray" small @click="processToBasket()">
+          {{$t("@ItemsQuantity").replace("@quantity", $refs.numpadRef.model.items.length)}}
+        </v-btn>
+      </template>
+    </navbar>
+    <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad :btntext="$t('Charge')" v-on:ok="processAmount($event)"></numpad>
+          <numpad v-if="step === 1" btn-text="Charge" v-on:ok="processAmount($event, true);" ref="numpadRef" :items="model.dealDetails.items"></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
+          <basket v-if="step === 2" btn-text="Total" v-on:ok="processAmount($event)" v-on:update="updateAmount($event)" :items="model.dealDetails.items"></basket>
+        </v-stepper-content>
+
+        <v-stepper-content step="3" class="py-0 px-0">
           <customers-list
             :key="terminal.terminalID"
             :show-previously-charged="true"
+            :filter-by-terminal="true"
             v-on:ok="processCustomer($event)"
           ></customers-list>
         </v-stepper-content>
 
-        <v-stepper-content step="3" class="py-0 px-0">
+        <v-stepper-content step="4" class="py-0 px-0">
           <credit-card-secure-details
             :key="creditCardRefreshState"
             :data="model"
             v-on:ok="processCreditCard($event)"
+            ref="ccSecureDetails"
+            btn-text="Charge"
           ></credit-card-secure-details>
         </v-stepper-content>
 
-        <v-stepper-content step="4" class="py-0 px-0">
-          <additional-settings-form :data="model" v-on:ok="processAdditionalSettings($event)"></additional-settings-form>
+        <v-stepper-content step="5" class="py-0 px-0">
+          <additional-settings-form :key="model.transactionAmount" :data="model" :issue-document="true" v-on:ok="processAdditionalSettings($event)"></additional-settings-form>
         </v-stepper-content>
 
-        <v-stepper-content step="5" class="py-0 px-0">
-          <transaction-success
-            :amount="model.transactionAmount"
-            v-if="success"
-            :customer="customer"
-          ></transaction-success>
-          <transaction-error :errors="errors" v-if="!success"></transaction-error>
+        <v-stepper-content step="6" class="py-0 px-0">
+           <wizard-result :errors="errors" v-if="result">
+            <template v-if="customer">
+              <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+              <p>{{customer.consumerName}}</p>
+              <div class="pt-5">
+                <p>{{$t("ChargedCustomer")}}</p>
+                <p>{{customer.consumerEmail}} ● <ec-money :amount="model.transactionAmount" bold></ec-money></p>
+              </div>
+            </template>
+            <template v-slot:link v-if="result.entityReference">
+              <router-link class="primary--text" link
+                  :to="{ name: 'Transaction', params: { id: result.entityReference } }"
+                >{{$t("GoToTransaction")}}</router-link>
+
+                <div class="pt-4" v-if="result.innerResponse">
+                  <p v-if="result.innerResponse.status == 'error'">
+                    {{result.innerResponse.message}}
+                  </p>
+                  <router-link v-else class="primary--text" link
+                    :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
+                  >{{$t("GoToInvoice")}}</router-link>
+                </div>
+            </template>
+          </wizard-result>
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
@@ -51,27 +83,18 @@
 </template>
 
 <script>
-import Navbar from "../../components/wizard/NavBar";
-import Numpad from "../../components/misc/Numpad";
-import CustomersList from "../../components/customers/CustomersList";
-import CreateChargeForm from "../../components/transactions/CreateChargeForm";
-import CreateTransactionForm from "../../components/transactions/CreateTransactionForm";
-import CreditCardSecureDetails from "../../components/transactions/CreditCardSecureDetails";
-import TransactionSuccess from "../../components/transactions/TransactionSuccess";
-import TransactionError from "../../components/transactions/TransactionError";
-import AdditionalSettingsForm from "../../components/transactions/AdditionalSettingsForm";
 import { mapState } from "vuex";
 
 export default {
   components: {
-    Navbar,
-    Numpad,
-    CustomersList,
-    CreateChargeForm,
-    CreditCardSecureDetails,
-    TransactionSuccess,
-    TransactionError,
-    AdditionalSettingsForm
+    Navbar: () => import("../../components/wizard/NavBar"),
+    Numpad: () => import("../../components/misc/Numpad"),
+    Basket: () => import("../../components/misc/Basket"),
+    EcMoney: () => import("../../components/ec/EcMoney"),
+    CustomersList: () => import("../../components/customers/CustomersList"),
+    CreditCardSecureDetails: () => import("../../components/transactions/CreditCardSecureDetails"),
+    WizardResult: () => import("../../components/wizard/WizardResult"),
+    AdditionalSettingsForm: () => import("../../components/transactions/AdditionalSettingsForm")
   },
   props: ["customerid"],
   data() {
@@ -99,8 +122,10 @@ export default {
           consumerEmail: null,
           consumerPhone: null,
           consumerID: null,
-          dealDescription: null
+          dealDescription: null,
+          items: []
         },
+        invoiceDetails: null,
         installmentDetails: {
           numberOfPayments: 0,
           initialPaymentAmount: 0,
@@ -110,36 +135,42 @@ export default {
       step: 1,
       steps: {
         1: {
-          title: "Charge",
-          canChangeTerminal: true
+          title: "Amount",
+          canChangeTerminal: true,
+          showItemsCount: true
         },
         2: {
+          title: "Basket",
+        },
+        3: {
           title: "ChooseCustomer",
           skippable: true
         },
-        3: {
-          title: "Charge"
-          // skippable: true
-        },
         4: {
+          title: "PaymentInfo"
+          // ,skippable: true
+        },
+        5: {
           title: "AdditionalSettings"
         },
         //Last step may be dynamically altered to represent error if transaction creation has failed.
-        5: {
+        6: {
           title: "Success",
           completed: true
         }
       },
       threeDotMenuItems: null,
       success: true,
-      errors: []
+      errors: [],
+      result: {
+        entityReference: 123
+      }
     };
   },
   computed: {
     navTitle() {
       return this.$t(this.steps[this.step].title);
     },
-    terminal: {},
     ...mapState({
       terminal: state => state.settings.terminal
     })
@@ -153,39 +184,82 @@ export default {
         this.model.dealDetails.consumerEmail = data.consumerEmail;
         this.model.dealDetails.consumerPhone = data.consumerPhone;
         this.model.dealDetails.consumerID = data.consumerID;
-        this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState = data.consumerName;
+        this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState =
+          data.consumerName;
         this.model.creditCardSecureDetails.cardOwnerNationalID =
           data.consumerNationalID;
       }
     }
+    this.model.dealDetails.dealDescription = this.terminal.settings.defaultChargeDescription;
   },
   methods: {
     goBack() {
       if (this.step === 1) this.$router.push("/admin/dashboard");
       else this.step--;
     },
+    terminalChanged() {
+      this.skipCustomerStep = false;
+      this.customer = null;
+      this.model.dealDetails.consumerEmail = null;
+      this.model.dealDetails.consumerPhone = null;
+      this.model.dealDetails.consumerID = null;
+      this.creditCardRefreshState = null;
+      if (this.model.creditCardSecureDetails) {
+        this.model.creditCardSecureDetails.cardOwnerName = null;
+        this.model.creditCardSecureDetails.cardOwnerNationalID = null;
+      } else if (this.model.creditCardToken) {
+        this.model.creditCardToken = null;
+        this.$refs.ccSecureDetails.resetToken();
+      }
+    },
     processCustomer(data) {
       this.skipCustomerStep = false;
+      if(this.customer && data.consumerID === this.customer.consumerID){
+        return this.step++;;
+      }
       this.customer = data;
       this.model.dealDetails.consumerEmail = data.consumerEmail;
       this.model.dealDetails.consumerPhone = data.consumerPhone;
       this.model.dealDetails.consumerID = data.consumerID;
-      this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState = data.consumerName;
-      this.model.creditCardSecureDetails.cardOwnerNationalID =
-        data.consumerNationalID;
+      if (!this.model.creditCardSecureDetails) {
+        this.$set(this.model, "creditCardSecureDetails", {
+          cardOwnerName: data.consumerName,
+          cardOwnerNationalID: data.consumerNationalID
+        });
+      } else {
+        this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState =
+          data.consumerName;
+        this.model.creditCardSecureDetails.cardOwnerNationalID =
+          data.consumerNationalID;
+      }
+      this.model.creditCardToken = null;
+      this.$refs.ccSecureDetails.resetToken();
+      this.creditCardRefreshState = data.consumerName;
       this.step++;
     },
-    processAmount(data) {
-      this.model.transactionAmount = data.amount;
-      this.model.note = data.note;
-      this.model.items = data.items;
-      if (this.skipCustomerStep) this.step += 2;
+    processToBasket(){
+      let data = this.$refs.numpadRef.getData();
+      this.processAmount(data);
+    },
+    processAmount(data, skipBasket = false) {
+      this.updateAmount(data);
+      if (skipBasket) {this.step += 2 + (this.skipCustomerStep ? 1 : 0)}
       else this.step++;
+    },
+    updateAmount(data) {
+      this.model.transactionAmount = data.totalAmount;
+      this.model.netTotal = data.netTotal;
+      this.model.vatTotal = data.vatTotal;
+      this.model.vatRate = data.vatRate;
+      this.model.note = data.note;
+      this.model.dealDetails.items = data.items;
     },
     processCreditCard(data) {
       if (data.type === "creditcard") {
         data = data.data;
+        this.model.saveCreditCard = data.saveCreditCard || false;
         this.model.creditCardSecureDetails = data;
+        this.model.creditCardToken = null;
         if (data.cardReaderInput) {
           this.model.cardPresence = "regular";
         } else {
@@ -194,6 +268,7 @@ export default {
       } else if (data.type === "token") {
         this.model.creditCardSecureDetails = null;
         this.model.creditCardToken = data.data;
+        this.model.saveCreditCard = false;
       }
       this.step++;
     },
@@ -204,8 +279,11 @@ export default {
       this.model.jDealType = data.jDealType;
       this.model.installmentDetails = data.installmentDetails;
       this.model.terminalID = this.terminal.terminalID;
+      this.model.invoiceDetails = data.invoiceDetails;
+      this.model.issueInvoice = !!this.model.invoiceDetails;
 
       let result = await this.$api.transactions.processTransaction(this.model);
+      this.result = result;
 
       //assuming current step is one before the last
       let lastStep = this.steps[this.step + 1];
@@ -229,7 +307,8 @@ export default {
       }
       if (this.customer) {
         this.$store.commit("payment/addLastChargedCustomer", {
-          customerId: this.customer.consumerID
+          customerID: this.customer.consumerID,
+          terminalID: this.model.terminalID
         });
       }
 
@@ -238,6 +317,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

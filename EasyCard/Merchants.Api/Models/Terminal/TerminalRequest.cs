@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Merchants.Shared.Models;
+using Newtonsoft.Json;
 using Shared.Api.Models.Binding;
 using System;
 using System.Collections.Generic;
@@ -19,8 +20,16 @@ namespace Merchants.Api.Models.Terminal
         public string Label { get; set; }
 
         [Required]
+        public long TerminalTemplateID { get; set; }
+
         public TerminalSettings Settings { get; set; }
 
         public TerminalBillingSettings BillingSettings { get; set; }
+
+        public TerminalInvoiceSettings InvoiceSettings { get; set; }
+
+        public TerminalPaymentRequestSettings PaymentRequestSettings { get; set; }
+
+        public TerminalCheckoutSettings CheckoutSettings { get; set; }
     }
 }

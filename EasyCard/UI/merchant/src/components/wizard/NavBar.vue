@@ -45,7 +45,10 @@
             </v-btn>
           </v-col>
           <v-col class="d-flex justify-space-around">
-            <v-toolbar-title class="subtitle-2 font-weight-bold">{{title}}</v-toolbar-title>
+            <v-toolbar-title class="subtitle-2 font-weight-bold">
+              <slot name="title" v-if="hasSlot('title')"></slot>
+              <template v-else>{{title}}</template>
+            </v-toolbar-title>
           </v-col>
           <v-col
             cols="2"
@@ -126,10 +129,11 @@ export default {
         return this.terminalStore;
       },
       set: function(nv) {
-        this.$store.commit("settings/changeTerminal", {
-          vm: this,
+        this.$store.dispatch("settings/changeTerminal", {
+          api: this.$api,
           newTerminal: nv
         });
+        this.$emit('terminal-changed', nv);
       }
     },
     ...mapState({
@@ -144,20 +148,6 @@ export default {
   async mounted() {
     let terminals = await this.$api.terminals.getTerminals();
     this.terminals = terminals ? terminals.data : [];
-
-    //validate if stored terminal is still accessible. Clear it otherwise
-    if (this.terminals.length > 0 && this.terminal) {
-      let exists = this.lodash.some(
-        this.terminals,
-        t => t.terminalID === this.terminal.terminalID
-      );
-      if (!exists) this.terminal = null;
-    }
-    else if(this.terminals.length > 0 && !this.terminal){
-      this.terminal = this.terminals[0];
-    } else {
-      this.terminal = null;
-    }
   },
   methods: {
     onClickBack() {
@@ -169,6 +159,9 @@ export default {
     onClickClose() {
       this.$emit("close");
     },
+    hasSlot(name = "default") {
+      return !!this.$slots[name] || !!this.$scopedSlots[name];
+    }
   }
 };
 </script>

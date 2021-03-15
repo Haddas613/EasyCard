@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>c4e8c0ad-526f-4332-b80f-51f13967f352</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -21,13 +22,13 @@
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.5" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0-preview.6.20312.4">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.14.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="3.1.5" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
@@ -39,6 +40,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Identity\IdentityServerClient\IdentityServerClient.csproj" />
+    <ProjectReference Include="..\Integration\ClearingHouse\ClearingHouse.csproj" />
+    <ProjectReference Include="..\Integration\EasyInvoice\EasyInvoice.csproj" />
+    <ProjectReference Include="..\Integration\Shva\Shva.csproj" />
     <ProjectReference Include="..\Merchants.Business\Merchants.Business.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
   </ItemGroup>
@@ -54,10 +58,40 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Models\Audit\AuditResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AuditResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Models\Integrations\EasyInvoice\EasyInvoiceMessagesResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>EasyInvoiceMessagesResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Models\Integrations\Shva\ShvaMessagesResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ShvaMessagesResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Models\Merchant\MerchantSummaryResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>MerchantSummaryResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Models\System\DatabaseLogEntryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DatabaseLogEntryResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Models\System\SystemEnumsResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SystemEnumsResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Models\TerminalTemplate\TerminalTemplatesSummaryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TerminalTemplatesSummaryResource.resx</DependentUpon>
     </Compile>
     <Compile Update="Models\Terminal\TerminalSummaryResource.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -69,12 +103,46 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TerminalStatusEnumResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Models\User\UserEnumsResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UserEnumsResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Models\User\UserSummaryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UserSummaryResource.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Models\Audit\AuditResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AuditResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Integrations\EasyInvoice\EasyInvoiceMessagesResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>EasyInvoiceMessagesResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Integrations\Shva\ShvaMessagesResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ShvaMessagesResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Models\Merchant\MerchantSummaryResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MerchantSummaryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\System\DatabaseLogEntryResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>DatabaseLogEntryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\System\SystemEnumsResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SystemEnumsResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\TerminalTemplate\TerminalTemplatesSummaryResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TerminalTemplatesSummaryResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Models\Terminal\TerminalSummaryResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -83,6 +151,14 @@
     <EmbeddedResource Update="Models\Terminal\TerminalStatusEnumResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>TerminalStatusEnumResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\User\UserEnumsResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserEnumsResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\User\UserSummaryResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UserSummaryResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

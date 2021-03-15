@@ -131,5 +131,32 @@ namespace MerchantProfileApi {
                 return ResourceManager.GetString("ItemUpdated", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private Key Updated.
+        /// </summary>
+        public static string PrivateKeyUpdated {
+            get {
+                return ResourceManager.GetString("PrivateKeyUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared Key Updated.
+        /// </summary>
+        public static string SharedKeyUpdated {
+            get {
+                return ResourceManager.GetString("SharedKeyUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal Updated.
+        /// </summary>
+        public static string TerminalUpdated {
+            get {
+                return ResourceManager.GetString("TerminalUpdated", resourceCulture);
+            }
+        }
     }
 }

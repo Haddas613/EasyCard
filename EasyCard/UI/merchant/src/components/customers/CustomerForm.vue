@@ -111,7 +111,7 @@ export default {
   async mounted(){
     this.terminals = (await this.$api.terminals.getTerminals()).data || [];
     if(!this.model.terminalID){
-      this.model.terminalID = this.terminalStore || this.terminals[0].terminalID;
+      this.model.terminalID = this.terminalStore ? this.terminalStore.terminalID : this.terminals[0].terminalID;
     }
   }
 };

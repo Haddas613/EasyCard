@@ -1,19 +1,22 @@
 <template>
-  <div>
+  <div class="scroll-contain">
     <v-overlay :value="requestsCountStore > 0" z-index="10">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-    <router-view />
+    <router-view v-if="renderReady" />
   </div>
 </template>
 
 <script>
+
 import { mapState } from "vuex";
+import i18n from "./i18n";
 
 export default {
   data() {
     return {
-      requestsCount: 0
+      requestsCount: 0,
+      renderReady: false
     };
   },
   computed: {
@@ -21,31 +24,11 @@ export default {
       requestsCountStore: state => state.ui.requestsCount
     })
   },
-  watch: {
-    /**requests are watched with delay so overlay is not shown immediately
-     * but after a 1s delay
-     */
-    // requestsCountStore(newValue, oldValue) {
-    //   //decrement
-    //   // console.log(newValue, oldValue)
-    //   if (newValue < oldValue) {
-    //     this.requestsCount--;
-    //     console.log(newValue, oldValue, this.requestsCount)
-    //   }
-    //   //increment
-    //   else{
-    //     setTimeout(
-    //       (() => {
-    //         this.requestsCount++;
-    //         console.log(newValue, oldValue, this.requestsCount)
-    //       }).bind(this),
-    //       1000
-    //     );
-    //   }
-    // }
-  }
+  async beforeMount () {
+    if(!!this.$oidc && await this.$oidc.isAuthenticated()) {
+      await this.$store.dispatch('settings/getDefaultSettings', { api: this.$api, lodash: this.lodash });
+      this.renderReady = true;
+    }
+  },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

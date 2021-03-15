@@ -3,6 +3,7 @@ using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Text;
@@ -11,6 +12,13 @@ namespace Shared.Api.UI
 {
     public static class MetadataHelpers
     {
+        public static Dictionary<string, ColMeta> GetObjectMeta(this Type type, ResourceManager resourceManager, CultureInfo culture) => type
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Select(p => p.GetColMeta(resourceManager, culture))
+            .Where(p => !p.Hidden)
+            .OrderBy(p => p.Order)
+            .ToDictionary(d => d.Key);
+
         public static ColMeta GetColMeta(this PropertyInfo property, ResourceManager resourceManager, CultureInfo culture)
         {
             var description = resourceManager.GetString(property.Name, culture);
@@ -38,12 +46,22 @@ namespace Shared.Api.UI
                 }
             }
 
+            var attributes = property.GetCustomAttributes(typeof(MetadataOptionsAttribute), false);
+            MetadataOptionsAttribute metaAttribute = null;
+
+            if (attributes.Length > 0)
+            {
+                metaAttribute = (MetadataOptionsAttribute)attributes[0];
+            }
+
             return new ColMeta
             {
                 Key = property.Name.ToCamelCase(), // TODO: use data contract attribute
                 Name = description ?? property.Name,
                 DataType = dataType,
-                Dictionary = dictionary
+                Dictionary = dictionary,
+                Hidden = metaAttribute?.Hidden == true,
+                Order = (metaAttribute?.Order).GetValueOrDefault(1000)
             };
         }
     }

@@ -126,6 +126,12 @@
   <data name="BillingDealDeleted" xml:space="preserve">
     <value>Billing Deal Deleted</value>
   </data>
+  <data name="BillingDealIsClosed" xml:space="preserve">
+    <value>Billing deal is closed</value>
+  </data>
+  <data name="BillingDealsRequired" xml:space="preserve">
+    <value>Billing Deals required</value>
+  </data>
   <data name="BillingDealUpdated" xml:space="preserve">
     <value>Billing Deal Updated</value>
   </data>
@@ -171,6 +177,9 @@
   <data name="CvvRequiredButStoredTokenCannotUseCvv" xml:space="preserve">
     <value>CVV required, but stored credit card token cannot use cvv</value>
   </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>EmailAddressRequired</value>
+  </data>
   <data name="FailedToCancelByAggregator" xml:space="preserve">
     <value>Failed To Cancel By Aggregator</value>
   </data>
@@ -186,6 +195,9 @@
   <data name="FailedToCreateCCToken" xml:space="preserve">
     <value>Failed To Create Credit Card Token</value>
   </data>
+  <data name="FailedToCreateInvoice" xml:space="preserve">
+    <value>Failed To Create Invoice</value>
+  </data>
   <data name="FailedToProcessTransaction" xml:space="preserve">
     <value>Failed To Process Transaction</value>
   </data>
@@ -195,11 +207,32 @@
   <data name="InvoiceCreated" xml:space="preserve">
     <value>Invoice Created</value>
   </data>
+  <data name="InvoiceGenerated" xml:space="preserve">
+    <value>Invoice generated</value>
+  </data>
+  <data name="InvoiceGenerationFailed" xml:space="preserve">
+    <value>Invoice generation failed</value>
+  </data>
+  <data name="InvoicesForResendRequired" xml:space="preserve">
+    <value>Invoices are required</value>
+  </data>
+  <data name="InvoicesQueuedForResend" xml:space="preserve">
+    <value>Invoices queued for resend</value>
+  </data>
+  <data name="InvoiceStateIsNotValid" xml:space="preserve">
+    <value>Invoice State is not valid</value>
+  </data>
+  <data name="InvoicingNotDefined" xml:space="preserve">
+    <value>Invoicing system is not defined</value>
+  </data>
   <data name="J2NotAllowed" xml:space="preserve">
     <value>J2 deal is not allowed</value>
   </data>
   <data name="J5NotAllowed" xml:space="preserve">
     <value>J5 deal is not allowed</value>
+  </data>
+  <data name="NothingToTransmit" xml:space="preserve">
+    <value>Nothing to transmit</value>
   </data>
   <data name="NumberOfPaymentsShouldBeGreaterThan" xml:space="preserve">
     <value>NumberOfPayments should be greater than or equal {0}</value>
@@ -207,8 +240,29 @@
   <data name="NumberOfPaymentsShouldBeLessThan" xml:space="preserve">
     <value>NumberOfPayments should be less than or equal {0}</value>
   </data>
+  <data name="PaymentRequestCanceled" xml:space="preserve">
+    <value>Payment Request canceled</value>
+  </data>
+  <data name="PaymentRequestCreated" xml:space="preserve">
+    <value>Payment Request created</value>
+  </data>
+  <data name="PaymentRequestPaymentFailed" xml:space="preserve">
+    <value>Payment request payment failed</value>
+  </data>
+  <data name="PaymentRequestPaymentSuccessed" xml:space="preserve">
+    <value>Payment request payed</value>
+  </data>
+  <data name="PaymentRequestStatusIsClosed" xml:space="preserve">
+    <value>Payment Request Is Closed</value>
+  </data>
+  <data name="PaymentRequestUpdated" xml:space="preserve">
+    <value>Payment Request Updated</value>
+  </data>
   <data name="PleaseCheckValues" xml:space="preserve">
     <value>Please check specified values</value>
+  </data>
+  <data name="ProcesingItemsLimit" xml:space="preserve">
+    <value>The number of entities for processing batch is limited to {0}</value>
   </data>
   <data name="ProcessorNotDefined" xml:space="preserve">
     <value>Processor is not defined</value>
@@ -218,6 +272,9 @@
   </data>
   <data name="RejectedByProcessor" xml:space="preserve">
     <value>Transaction rejected by Processor</value>
+  </data>
+  <data name="ThereAreNoInvoicesToResend" xml:space="preserve">
+    <value>There are no invoices to resend</value>
   </data>
   <data name="ThereAreNoTransactionsToTransmit" xml:space="preserve">
     <value>There are no transactions to transmit</value>
@@ -239,6 +296,9 @@
   </data>
   <data name="TransactionsForTransmissionRequired" xml:space="preserve">
     <value>Transactions list for transmission is required</value>
+  </data>
+  <data name="TransactionsQueued" xml:space="preserve">
+    <value>Transactions queued</value>
   </data>
   <data name="TransactionStatusIsNotValid" xml:space="preserve">
     <value>Transaction Status is not valid for this operation</value>

@@ -132,6 +132,21 @@
   <data name="TerminalCreated" xml:space="preserve">
     <value>Terminal Created</value>
   </data>
+  <data name="TerminalDisabled" xml:space="preserve">
+    <value>Terminal Disabled</value>
+  </data>
+  <data name="TerminalEnabled" xml:space="preserve">
+    <value>Terminal Enabled</value>
+  </data>
+  <data name="TerminalTemplateApproved" xml:space="preserve">
+    <value>Terminal template approved</value>
+  </data>
+  <data name="TerminalTemplateCreated" xml:space="preserve">
+    <value>Terminal Template Created</value>
+  </data>
+  <data name="TerminalTemplateDisabled" xml:space="preserve">
+    <value>Terminal template disabled</value>
+  </data>
   <data name="TerminalUpdated" xml:space="preserve">
     <value>Terminal Updated</value>
   </data>
@@ -141,8 +156,8 @@
   <data name="UserInvited" xml:space="preserve">
     <value>User Invited</value>
   </data>
-  <data name="UserLinkedToTerminal" xml:space="preserve">
-    <value>User Linked To Terminal</value>
+  <data name="UserLinkedToMerchant" xml:space="preserve">
+    <value>User linked to Merchant</value>
   </data>
   <data name="UserOperationFailed" xml:space="preserve">
     <value>User Operation Failed</value>
@@ -150,7 +165,7 @@
   <data name="UserOperationSuccess" xml:space="preserve">
     <value>User Operation Success</value>
   </data>
-  <data name="UserUnlinkedFromTerminal" xml:space="preserve">
-    <value>User unlinked from terminal</value>
+  <data name="UserUnlinkedFromMerchant" xml:space="preserve">
+    <value>User unlinked from Merchant</value>
   </data>
 </root>

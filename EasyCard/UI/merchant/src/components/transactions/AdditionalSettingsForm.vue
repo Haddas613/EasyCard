@@ -16,6 +16,7 @@
           item-value="code"
           v-model="model.transactionType"
           :label="$t('TransactionType')"
+          @change="updateTransactionType()"
           outlined
         ></v-select>
 
@@ -23,68 +24,65 @@
           ref="instDetails"
           :data="model.installmentDetails"
           v-if="isInstallmentTransaction"
+          :total-amount="model.transactionAmount"
         ></installment-details>
 
-        <v-text-field
-          v-model="model.dealDetails.dealReference"
-          :counter="50"
-          :rules="[vr.primitives.maxLength(50)]"
-          :label="$t('DealReference')"
-          @keydown.native.space.prevent
-          outlined
-          required
-        ></v-text-field>
-        <v-text-field
-          v-model="model.dealDetails.consumerEmail"
-          :label="$t('ConsumerEmail')"
-          :rules="[vr.primitives.email]"
-          outlined
-          @keydown.native.space.prevent
-        ></v-text-field>
-        <v-text-field
-          v-model="model.dealDetails.consumerPhone"
-          :label="$t('ConsumerPhone')"
-          :rules="[vr.primitives.maxLength(50)]"
-          outlined
-          @keydown.native.space.prevent
-        ></v-text-field>
-        <v-textarea
-          v-model="model.dealDetails.dealDescription"
-          :counter="1024"
-          outlined
-          :rules="[vr.primitives.required,  vr.primitives.maxLength(1024)]"
-        >
-          <template v-slot:label>
-            <div>{{$t('DealDescription')}}</div>
-          </template>
-        </v-textarea>
+        <deal-details
+          ref="dealDetails"
+          :data="model.dealDetails"
+          :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
+        ></deal-details>
+
+        <v-switch v-model="switchIssueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
+        <div v-if="switchIssueDocument">
+          <invoice-details-fields :key="invoiceTypeUpd" ref="invoiceDetails" :data="model.invoiceDetails" :invoice-type="invoiceTypeUpd"></invoice-details-fields>
+        </div>
       </v-form>
     </v-card-text>
-    <v-btn color="primary" class="px-2" bottom :x-large="true" block @click="ok()">{{$t('Confirm')}}</v-btn>
+    <v-card-actions class="px-2">
+      <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t('Confirm')}}</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script>
-import InstallmentDetails from "./InstallmentDetailsForm";
 import ValidationRules from "../../helpers/validation-rules";
+import appConstants from "../../helpers/app-constants";
 import { mapState } from "vuex";
 
 export default {
   components: {
-    InstallmentDetails
+    InstallmentDetails: () => import("./InstallmentDetailsForm"),
+    DealDetails: () => import("../transactions/DealDetailsFields"),
+    InvoiceDetailsFields: () => import("../invoicing/InvoiceDetailsFields"),
+    ReIcon: () => import("../../components/misc/ResponsiveIcon"),
   },
   props: {
     data: {
       type: Object,
       default: null,
       required: true
+    },
+    issueDocument: {
+      type: Boolean,
+      default: false
+    },
+    invoiceType: {
+      type: String,
+      default: null
     }
   },
   data() {
     return {
       dictionaries: {},
-      model: { ...this.data },
-      vr: ValidationRules
+      model: { 
+        ...this.data, 
+        invoiceDetails: this.data.invoiceDetails || {} 
+      },
+      vr: ValidationRules,
+      switchIssueDocument: this.issueDocument,
+      messageDialog: false,
+      invoiceTypeUpd: this.invoiceType
     };
   },
   computed: {
@@ -95,7 +93,8 @@ export default {
       );
     },
     ...mapState({
-      currencyStore: state => state.settings.currency
+      currencyStore: state => state.settings.currency,
+      terminal: state => state.settings.terminal
     })
   },
   async mounted() {
@@ -104,23 +103,40 @@ export default {
       this.dictionaries = dictionaries;
       this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
 
-      if(!this.model.currency){
-        this.model.currency = this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
+      if (!this.model.currency) {
+        this.model.currency =
+          this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
       }
 
       this.model.jDealType = this.dictionaries.jDealTypeEnum[0].code;
-      this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
+      // this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
     }
   },
   methods: {
     ok() {
       if (!this.$refs.form.validate()) return;
 
-      if(this.$refs.instDetails){
-        this.model.installmentDetails = this.$refs.instDetails.model;
+      let result = { ...this.model };
+      if (this.$refs.instDetails) {
+        result.installmentDetails = this.$refs.instDetails.getData();
+      }else{
+        result.installmentDetails = null;
       }
-      
-      this.$emit("ok", this.model);
+
+      if (this.switchIssueDocument) {
+        result.invoiceDetails = this.$refs.invoiceDetails.getData();
+      } else {
+        result.invoiceDetails = null;
+      }
+      result.dealDetails = this.$refs.dealDetails.getData();
+      this.$emit("ok", result);
+    },
+    updateTransactionType(){
+      if(this.model.transactionType === "credit"){
+        this.invoiceTypeUpd = this.terminal.invoiceSettings.defaultCreditInvoiceType || appConstants.invoicing.defaultCreditInvoiceType;
+      }else{
+        this.invoiceTypeUpd = this.invoiceType;
+      }
     }
   }
 };

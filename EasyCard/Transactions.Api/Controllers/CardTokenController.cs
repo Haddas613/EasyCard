@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -17,6 +18,7 @@ using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
+using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Integration.Exceptions;
@@ -31,6 +33,7 @@ using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
+using Z.EntityFramework.Plus;
 
 namespace Transactions.Api.Controllers
 {
@@ -50,6 +53,8 @@ namespace Transactions.Api.Controllers
         private readonly IProcessorResolver processorResolver;
         private readonly IConsumersService consumersService;
         private readonly ITerminalsService terminalsService;
+        private readonly IHttpContextAccessorWrapper httpContextAccessor;
+        private readonly ISystemSettingsService systemSettingsService;
 
         public CardTokenController(
             ITransactionsService transactionsService,
@@ -60,7 +65,9 @@ namespace Transactions.Api.Controllers
             IOptions<ApplicationSettings> appSettings,
             ILogger<CardTokenController> logger,
             IProcessorResolver processorResolver,
-            IConsumersService consumersService)
+            IConsumersService consumersService,
+            IHttpContextAccessorWrapper httpContextAccessor,
+            ISystemSettingsService systemSettingsService)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -71,6 +78,8 @@ namespace Transactions.Api.Controllers
             this.appSettings = appSettings.Value;
             this.logger = logger;
             this.processorResolver = processorResolver;
+            this.httpContextAccessor = httpContextAccessor;
+            this.systemSettingsService = systemSettingsService;
         }
 
         [HttpPost]
@@ -78,16 +87,74 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         public async Task<ActionResult<OperationResponse>> CreateToken([FromBody] TokenRequest model)
         {
-            var dbData = await CreateTokenInternal(model);
+            var tokenResponse = await CreateTokenInternal(model);
 
-            return CreatedAtAction(nameof(CreateToken), new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID.ToString()));
+            var tokenResponseOperation = tokenResponse.GetOperationResponse();
+
+            if (!(tokenResponseOperation?.Status == StatusEnum.Success))
+            {
+                return tokenResponse;
+            }
+            else
+            {
+                return CreatedAtAction(nameof(CreateToken), tokenResponseOperation);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<SummariesResponse<CreditCardTokenSummary>>> GetTokens([FromQuery] CreditCardTokenFilter filter)
+        {
+            var query = creditCardTokenService.GetTokens().AsNoTracking().Filter(filter);
+            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var response = new SummariesResponse<CreditCardTokenSummary>();
+
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(CreditCardTokenDetails.CreditCardTokenID), filter.SortDesc).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
+
+                response.Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
+                response.NumberOfRecords = numberOfRecordsFuture.Value;
+
+                return Ok(response);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{key}")]
+        public async Task<ActionResult<OperationResponse>> DeleteToken(string key)
+        {
+            var guid = new Guid(key);
+            var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(t => t.CreditCardTokenID == guid));
+
+            var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == token.TerminalID).FirstOrDefaultAsync());
+
+            try
+            {
+                await keyValueStorage.Delete(key);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, $"{nameof(DeleteToken)}: Error while deleting token from keyvalue storage. Message: {e.Message}");
+            }
+
+            token.Active = false;
+            await creditCardTokenService.UpdateEntity(token);
+
+            return Ok(new OperationResponse(Messages.TokenDeleted, StatusEnum.Success, guid));
         }
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        protected internal async Task<CreditCardTokenDetails> CreateTokenInternal(TokenRequest model)
+        protected internal async Task<ActionResult<OperationResponse>> CreateTokenInternal(TokenRequest model)
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+
+            // TODO: caching
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            // merge system settings with terminal settings
+            mapper.Map(systemSettings, terminal);
 
             TokenTerminalSettingsValidator.Validate(terminal.Settings, model);
 
@@ -129,6 +196,8 @@ namespace Transactions.Api.Controllers
             storageData.InitialTransactionID = transaction.PaymentTransactionID;
             dbData.InitialTransactionID = transaction.PaymentTransactionID;
 
+            mapper.Map(storageData, transaction.CreditCardDetails);
+
             // terminal settings
 
             var terminalProcessor = ValidateExists(
@@ -161,7 +230,11 @@ namespace Transactions.Api.Controllers
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);
 
-                    throw new IntegrationException(processorResponse.ErrorMessage, null);
+                    return BadRequest(new OperationResponse($"{Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, processorResponse.Errors));
+                }
+                else
+                {
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
                 }
             }
             catch (Exception ex)
@@ -170,7 +243,7 @@ namespace Transactions.Api.Controllers
 
                 await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, TransactionFinalizationStatusEnum.Initial, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
 
-                throw;
+                return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByProcesor.ToString(), (ex as IntegrationException)?.Message));
             }
 
             // save token itself
@@ -179,41 +252,7 @@ namespace Transactions.Api.Controllers
 
             await creditCardTokenService.CreateEntity(dbData);
 
-            return dbData;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<SummariesResponse<CreditCardTokenSummary>>> GetTokens([FromQuery] CreditCardTokenFilter filter)
-        {
-            var query = creditCardTokenService.GetTokens().AsNoTracking().Filter(filter);
-
-            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
-            {
-                var response = new SummariesResponse<CreditCardTokenSummary> { NumberOfRecords = await query.CountAsync() };
-
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(CreditCardTokenDetails.CreditCardTokenID), filter.OrderByDirection).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
-
-                response.Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).ToListAsync();
-
-                return Ok(response);
-            }
-        }
-
-        [HttpDelete]
-        [Route("{key}")]
-        public async Task<ActionResult<OperationResponse>> DeleteToken(string key)
-        {
-            var guid = new Guid(key);
-            var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(t => t.CreditCardTokenID == guid));
-
-            var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.TerminalID == token.TerminalID).FirstOrDefaultAsync());
-
-            await keyValueStorage.Delete(key);
-
-            token.Active = false;
-            await creditCardTokenService.UpdateEntity(token);
-
-            return Ok(new OperationResponse(Messages.TokenDeleted, StatusEnum.Success, key));
+            return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID);
         }
     }
 }

@@ -41,9 +41,19 @@ namespace Transactions.Api.Mapping
 
             CreateMap<PaymentTransaction, TransactionResponse>()
                 .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator))
+                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator && !src.InvoiceID.HasValue))
+                .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus()));
+
+            CreateMap<PaymentTransaction, TransactionResponseAdmin>()
+                .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator))
+                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator && !src.InvoiceID.HasValue))
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus()));
 
             CreateMap<PaymentTransaction, TransactionSummary>()
+                .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.CreditCardDetails.CardOwnerName))
+                .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus()));
+
+            CreateMap<PaymentTransaction, TransactionSummaryAdmin>()
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.CreditCardDetails.CardOwnerName))
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus()));
 
@@ -65,6 +75,10 @@ namespace Transactions.Api.Mapping
             CreateMap<CheckCreditCardRequest, CreateTransactionRequest>();
             CreateMap<InitalBillingDealRequest, CreateTransactionRequest>();
             CreateMap<NextBillingDealRequest, CreateTransactionRequest>();
+            CreateMap<PaymentRequest, CreateTransactionRequest>()
+                .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.PaymentRequestAmount));
+
+            CreateMap<PRCreateTransactionRequest, CreateTransactionRequest>();
 
             CreateMap<Business.Entities.TransactionHistory, Models.Transactions.TransactionHistory>();
 

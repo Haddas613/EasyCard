@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Merchants.Shared.Enums;
+using Merchants.Shared.Models;
+using Newtonsoft.Json;
 using Shared.Api.Models.Binding;
 using System;
 using System.Collections.Generic;
@@ -18,6 +20,18 @@ namespace Merchants.Api.Models.Terminal
         [Required]
         public TerminalSettings Settings { get; set; }
 
+        [Required]
         public TerminalBillingSettings BillingSettings { get; set; }
+
+        [Required]
+        public TerminalInvoiceSettings InvoiceSettings { get; set; }
+
+        [Required]
+        public TerminalPaymentRequestSettings PaymentRequestSettings { get; set; }
+
+        [Required]
+        public TerminalCheckoutSettings CheckoutSettings { get; set; }
+
+        public IEnumerable<FeatureEnum> EnabledFeatures { get; set; }
     }
 }

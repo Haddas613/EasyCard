@@ -38,6 +38,8 @@ namespace Transactions.Shared.Enums
 
         FailedToCancelByAggregator,
 
-        CanceledByAggregator
+        CanceledByAggregator,
+
+        InvoiceCreated
     }
 }

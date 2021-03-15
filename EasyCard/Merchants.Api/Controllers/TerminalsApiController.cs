@@ -4,6 +4,7 @@ using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.Terminal;
 using Merchants.Api.Models.User;
 using Merchants.Business.Entities.Terminal;
+using Merchants.Business.Models.Audit;
 using Merchants.Business.Models.Integration;
 using Merchants.Business.Services;
 using Merchants.Shared;
@@ -19,8 +20,11 @@ using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Business.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
+using SharedBusiness = Shared.Business;
 
 namespace Merchants.Api.Controllers
 {
@@ -35,14 +39,28 @@ namespace Merchants.Api.Controllers
         private readonly IMapper mapper;
         private readonly IExternalSystemsService externalSystemsService;
         private readonly IUserManagementClient userManagementClient;
+        private readonly ISystemSettingsService systemSettingsService;
+        private readonly ITerminalTemplatesService terminalTemplatesService;
+        private readonly IFeaturesService featuresService;
 
-        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper, IExternalSystemsService externalSystemsService, IUserManagementClient userManagementClient)
+        public TerminalsApiController(
+            IMerchantsService merchantsService,
+            ITerminalsService terminalsService,
+            IMapper mapper,
+            IExternalSystemsService externalSystemsService,
+            IUserManagementClient userManagementClient,
+            ISystemSettingsService systemSettingsService,
+            ITerminalTemplatesService terminalTemplatesService,
+            IFeaturesService featuresService)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
             this.mapper = mapper;
             this.externalSystemsService = externalSystemsService;
             this.userManagementClient = userManagementClient;
+            this.systemSettingsService = systemSettingsService;
+            this.terminalTemplatesService = terminalTemplatesService;
+            this.featuresService = featuresService;
         }
 
         [HttpGet]
@@ -53,10 +71,32 @@ namespace Merchants.Api.Controllers
             return new TableMeta
             {
                 Columns = typeof(TerminalSummary)
-                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
-                    .Select(d => d.GetColMeta(TerminalSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
-                    .ToDictionary(d => d.Key)
+                    .GetObjectMeta(TerminalSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
             };
+        }
+
+        [HttpGet]
+        [Route("available-integrations")]
+        public async Task<ActionResult<Dictionary<string, IEnumerable<ExternalSystem>>>> GetAvailableIntegrations(bool showForTemplatesOnly = false)
+        {
+            //TODO: translations for keys
+            var externalSystems = externalSystemsService.GetExternalSystems().Where(s => s.Active);
+
+            if (showForTemplatesOnly)
+            {
+                externalSystems = externalSystems.Where(s => s.CanBeUsedInTerminalTemplate);
+            }
+
+            return Ok(externalSystems.GroupBy(k => k.Type).ToDictionary(k => k.Key, v => v));
+        }
+
+        [HttpGet]
+        [Route("available-features")]
+        public async Task<ActionResult<FeatureSummary>> GetAvailableFeatures()
+        {
+            var features = await mapper.ProjectTo<FeatureSummary>(featuresService.GetQuery()).ToListAsync();
+
+            return Ok(features);
         }
 
         [HttpGet]
@@ -64,18 +104,19 @@ namespace Merchants.Api.Controllers
         {
             // TODO: validate filters (see transactions list)
 
-            var query = terminalsService.GetTerminals().AsNoTracking().Filter(filter);
+            var query = terminalsService.GetTerminals().Filter(filter);
 
             using (var dbTransaction = terminalsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<TerminalSummary> { NumberOfRecords = await query.CountAsync() };
+                var numberOfRecords = query.DeferredCount().FutureValue();
 
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(Terminal.TerminalID), filter.OrderByDirection).ApplyPagination(filter);
+                var response = new SummariesResponse<TerminalSummary>();
 
-                // TODO: validate generated sql
-                var sql = query.ToSql();
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(Terminal.TerminalID), filter.SortDesc).ApplyPagination(filter);
 
-                response.Data = await mapper.ProjectTo<TerminalSummary>(query).ToListAsync();
+                response.Data = await mapper.ProjectTo<TerminalSummary>(query).Future().ToListAsync();
+
+                response.NumberOfRecords = numberOfRecords.Value;
 
                 return Ok(response);
             }
@@ -89,7 +130,12 @@ namespace Merchants.Api.Controllers
 
             var terminal = mapper.Map<TerminalResponse>(dbTerminal);
 
-            terminal.Users = await mapper.ProjectTo<UserSummary>(terminalsService.GetTerminalUsers(terminal.TerminalID)).ToListAsync();
+            // TODO: enable it when user-terminal mappings will be enabled
+            // terminal.Users = await mapper.ProjectTo<UserSummary>(terminalsService.GetTerminalUsers(terminal.TerminalID)).ToListAsync();
+
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            mapper.Map(systemSettings, terminal);
 
             var externalSystems = externalSystemsService.GetExternalSystems().ToDictionary(d => d.ExternalSystemID);
 
@@ -117,10 +163,18 @@ namespace Merchants.Api.Controllers
 
             var newTerminal = mapper.Map<Terminal>(model);
 
+            var template = EnsureExists(await terminalTemplatesService.GetTerminalTemplate(model.TerminalTemplateID));
+
+            mapper.Map(template, newTerminal);
+
+            newTerminal.Status = Shared.Enums.TerminalStatusEnum.Approved;
+
             await terminalsService.CreateEntity(newTerminal);
 
-            return CreatedAtAction(nameof(GetTerminal), new { terminalID = newTerminal.TerminalID }, new OperationResponse(Messages.TerminalCreated, StatusEnum.Success, newTerminal.TerminalID.ToString()));
+            return CreatedAtAction(nameof(GetTerminal), new { terminalID = newTerminal.TerminalID }, new OperationResponse(Messages.TerminalCreated, StatusEnum.Success, newTerminal.TerminalID));
         }
+
+        // TODO: concurrency check
 
         /// <summary>
         /// Ypdates basic terminal information and settings
@@ -138,13 +192,14 @@ namespace Merchants.Api.Controllers
 
             await terminalsService.UpdateEntity(terminal);
 
-            return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID.ToString()));
+            return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID));
         }
 
         [HttpPut]
         [Route("{terminalID}/externalsystem")]
         public async Task<ActionResult<OperationResponse>> SaveTerminalExternalSystem([FromRoute]Guid terminalID, [FromBody]ExternalSystemRequest model)
         {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
             var externalSystem = EnsureExists(externalSystemsService.GetExternalSystem(model.ExternalSystemID), nameof(ExternalSystem));
 
             var texternalSystem = new TerminalExternalSystem();
@@ -153,19 +208,44 @@ namespace Merchants.Api.Controllers
             texternalSystem.TerminalID = terminalID;
             texternalSystem.Type = externalSystem.Type;
 
+            if (externalSystem.SettingsTypeFullName != null)
+            {
+                var settingsType = Type.GetType(externalSystem.SettingsTypeFullName);
+
+                if (settingsType == null)
+                {
+                    throw new ApplicationException($"Could not create instance of {externalSystem.SettingsTypeFullName}");
+                }
+
+                var settings = texternalSystem.Settings.ToObject(settingsType);
+                mapper.Map(settings, terminal);
+                await terminalsService.UpdateEntity(terminal);
+            }
+
             await terminalsService.SaveTerminalExternalSystem(texternalSystem);
 
-            return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID.ToString()));
+            return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID));
         }
 
         [HttpDelete]
         [Route("{terminalID}/externalsystem/{externalSystemID}")]
         public async Task<ActionResult<OperationResponse>> DeleteTerminalExternalSystem([FromRoute]Guid terminalID, long externalSystemID)
         {
-            // TODO: validation if it exists
-            await terminalsService.RemoveTerminalExternalSystem(terminalID, externalSystemID);
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+            var externalSystem = EnsureExists(externalSystemsService.GetExternalSystem(externalSystemID), nameof(ExternalSystem));
 
-            return Ok(new OperationResponse(Messages.ExternalSystemRemoved, StatusEnum.Success, terminalID.ToString()));
+            if (externalSystem.Type == Shared.Enums.ExternalSystemTypeEnum.Aggregator)
+            {
+                terminal.AggregatorTerminalReference = null;
+            }
+            else if (externalSystem.Type == Shared.Enums.ExternalSystemTypeEnum.Processor)
+            {
+                terminal.ProcessorTerminalReference = null;
+            }
+
+            await terminalsService.RemoveTerminalExternalSystem(terminalID, externalSystemID);
+            await terminalsService.UpdateEntity(terminal);
+            return Ok(new OperationResponse(Messages.ExternalSystemRemoved, StatusEnum.Success, terminalID));
         }
 
         [HttpPost]
@@ -178,6 +258,52 @@ namespace Merchants.Api.Controllers
 
             // TODO: failed case
             return Ok(new OperationResponse { EntityReference = opResult.ApiKey });
+        }
+
+        [HttpPut]
+        [Route("{terminalID}/disable")]
+        public async Task<ActionResult<OperationResponse>> DisableTerminal([FromRoute]Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+
+            terminal.Status = Shared.Enums.TerminalStatusEnum.Disabled;
+            terminal.SharedApiKey = null;
+
+            await terminalsService.UpdateEntity(terminal);
+
+            return Ok(new OperationResponse(Messages.TerminalDisabled, StatusEnum.Success, terminalID));
+        }
+
+        [HttpPut]
+        [Route("{terminalID}/enable")]
+        public async Task<ActionResult<OperationResponse>> EnableTerminal([FromRoute]Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+
+            terminal.Status = Shared.Enums.TerminalStatusEnum.Approved;
+
+            await terminalsService.UpdateEntity(terminal);
+
+            return Ok(new OperationResponse(Messages.TerminalEnabled, StatusEnum.Success, terminalID));
+        }
+
+        [HttpPost]
+        [Route("{terminalID}/auditResetApiKey/{merchantID}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<OperationResponse>> AuditResetApiKey([FromRoute] Guid terminalID, [FromRoute] Guid merchantID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+
+            var auditEntry = new AuditEntryData
+            {
+                MerchantID = merchantID,
+                TerminalID = terminalID,
+                OperationCode = SharedBusiness.Audit.OperationCodesEnum.TerminalApiKeyChanged
+            };
+
+            await terminalsService.AddAuditEntry(auditEntry);
+
+            return Ok(new OperationResponse { Status = StatusEnum.Success });
         }
     }
 }

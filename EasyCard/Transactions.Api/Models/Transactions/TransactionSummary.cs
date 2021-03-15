@@ -19,8 +19,6 @@ namespace Transactions.Api.Models.Transactions
 
         public Guid TerminalID { get; set; }
 
-        public Guid MerchantID { get; set; }
-
         public decimal TransactionAmount { get; set; }
 
         [EnumDataType(typeof(TransactionTypeEnum))]
@@ -39,6 +37,13 @@ namespace Transactions.Api.Models.Transactions
         [EnumDataType(typeof(TransactionStatusEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public TransactionStatusEnum Status { get; set; }
+
+        /// <summary>
+        /// Payment Type
+        /// </summary>
+        [EnumDataType(typeof(PaymentTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PaymentTypeEnum PaymentTypeEnum { get; set; }
 
         [EnumDataType(typeof(QuickStatusFilterTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]

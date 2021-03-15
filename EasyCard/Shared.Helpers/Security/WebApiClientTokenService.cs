@@ -29,38 +29,39 @@ namespace Shared.Helpers.Security
 
         public virtual async Task<TokenResponse> GetToken()
         {
-            if (string.IsNullOrWhiteSpace(this.TokenEndpoint))
-            {
-                await SemaphoreSlim.WaitAsync();
-                {
-                    if (string.IsNullOrWhiteSpace(this.TokenEndpoint))
-                    {
-                        try
-                        {
-                            var disco = await httpClient.GetDiscoveryDocumentAsync(configuration.Authority);
-                            if (disco.IsError)
-                            {
-                                throw new ApplicationException($"Cannot resolve token endpoint: {disco.Error}");
-                            }
+            //TODO: Remove?
+            //if (string.IsNullOrWhiteSpace(this.TokenEndpoint))
+            //{
+            //    await SemaphoreSlim.WaitAsync();
+            //    {
+            //        if (string.IsNullOrWhiteSpace(this.TokenEndpoint))
+            //        {
+            //            try
+            //            {
+            //                var disco = await httpClient.GetDiscoveryDocumentAsync(configuration.Authority);
+            //                if (disco.IsError)
+            //                {
+            //                    throw new ApplicationException($"Cannot resolve token endpoint: {disco.Error}");
+            //                }
 
-                            this.TokenEndpoint = disco.TokenEndpoint;
-                        }
-                        catch
-                        {
-                            throw;
-                        }
-                        finally
-                        {
-                            SemaphoreSlim.Release();
-                        }
-                    }
-                }
-            }
+            //                this.TokenEndpoint = disco.TokenEndpoint;
+            //            }
+            //            catch
+            //            {
+            //                throw;
+            //            }
+            //            finally
+            //            {
+            //                SemaphoreSlim.Release();
+            //            }
+            //        }
+            //    }
+            //}
 
-            if (string.IsNullOrWhiteSpace(this.TokenEndpoint))
-            {
-                throw new ApplicationException($"Cannot resolve token endpoint");
-            }
+            //if (string.IsNullOrWhiteSpace(this.TokenEndpoint))
+            //{
+            //    throw new ApplicationException($"Cannot resolve token endpoint");
+            //}
 
             //use token if it exists and is still fresh
             if (this.Token != null)

@@ -2,6 +2,8 @@
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Entities.User;
+using Merchants.Business.Models.Audit;
+using Merchants.Business.Models.Integration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
@@ -13,9 +15,11 @@ using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace Merchants.Business.Services
 {
@@ -33,36 +37,57 @@ namespace Merchants.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
-        public IQueryable<Terminal> GetTerminals() => context.Terminals;
+        public IQueryable<Terminal> GetTerminals()
+        {
+            if (user.IsAdmin())
+            {
+                return context.Terminals.AsNoTracking();
+            }
+            else if (user.IsTerminal())
+            {
+                return context.Terminals.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.Terminals.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+            }
+        }
 
         public async Task<Terminal> GetTerminal(Guid terminalID)
         {
-            var terminal = await context.Terminals
-                    .Include(t => t.Merchant) // TODO: caching
-                    .FirstOrDefaultAsync(m => m.TerminalID == terminalID);
+            var terminalQuery = GetTerminals()
+                    .Include(t => t.Merchant)
+                    .Where(m => m.TerminalID == terminalID).Future();
+
+            var integrationsQuery = GetTerminalExternalSystems().Where(m => m.TerminalID == terminalID).Future();
+
+            var terminal = (await terminalQuery.ToListAsync()).FirstOrDefault();
 
             if (terminal != null)
             {
-                // TODO: caching
-                context.Entry(terminal)
-                    .Collection(b => b.Integrations)
-                    .Load();
+                // futureStates is already resolved and contains the result
+                terminal.Integrations = integrationsQuery.ToList();
             }
 
             return terminal;
         }
 
-        public IQueryable<Terminal> GetUserTerminals(Guid userID)
+        //TODO: Add AsNoTracking, but make sure that saving works
+        public IQueryable<TerminalExternalSystem> GetTerminalExternalSystems()
         {
-            return context.UserTerminalMappings.Where(d => d.UserID == userID).Include(d => d.Terminal).Select(d => d.Terminal);
+            if (user.IsAdmin())
+            {
+                return context.TerminalExternalSystems;
+            }
+            else if (user.IsTerminal())
+            {
+                return context.TerminalExternalSystems.Where(t => t.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.TerminalExternalSystems.Where(t => t.Terminal.MerchantID == user.GetMerchantID());
+            }
         }
-
-        public IQueryable<UserInfo> GetTerminalUsers(Guid terminalID)
-        {
-            return context.UserTerminalMappings.Where(d => d.TerminalID == terminalID).Select(d => new UserInfo { DisplayName = d.DisplayName, Email = d.Email, UserID = d.UserID, Roles = d.Roles });
-        }
-
-        public IQueryable<TerminalExternalSystem> GetTerminalExternalSystems() => context.TerminalExternalSystems;
 
         // TODO: security
         public async Task LinkUserToTerminal(UserInfo userInfo, Terminal terminal, IDbContextTransaction dbTransaction = null)
@@ -111,6 +136,7 @@ namespace Merchants.Business.Services
                 OperationDate = DateTime.UtcNow,
                 OperationDoneBy = user?.GetDoneBy(),
                 OperationDoneByID = user?.GetDoneByID(),
+                TerminalID = terminal.TerminalID,
                 MerchantID = terminal.MerchantID,
                 OperationDescription = changesStr,
                 SourceIP = httpContextAccessor.GetIP()
@@ -148,6 +174,7 @@ namespace Merchants.Business.Services
                     OperationDate = DateTime.UtcNow,
                     OperationDoneBy = user?.GetDoneBy(),
                     OperationDoneByID = user?.GetDoneByID(),
+                    TerminalID = terminalID,
                     MerchantID = terminal.MerchantID,
                     SourceIP = httpContextAccessor.GetIP()
                 };
@@ -185,6 +212,7 @@ namespace Merchants.Business.Services
                 OperationDate = DateTime.UtcNow,
                 OperationDoneBy = user?.GetDoneBy(),
                 OperationDoneByID = user?.GetDoneByID(),
+                TerminalID = entity.TerminalID,
                 MerchantID = entity.MerchantID,
                 OperationDescription = changesStr,
                 SourceIP = httpContextAccessor.GetIP()
@@ -220,6 +248,7 @@ namespace Merchants.Business.Services
             if (dbTransaction != null)
             {
                 await base.CreateEntity(entity, dbTransaction);
+                history.TerminalID = entity.TerminalID;
                 context.MerchantHistories.Add(history);
                 await context.SaveChangesAsync();
             }
@@ -227,6 +256,7 @@ namespace Merchants.Business.Services
             {
                 using var transaction = BeginDbTransaction();
                 await base.CreateEntity(entity, dbTransaction);
+                history.TerminalID = entity.TerminalID;
                 context.MerchantHistories.Add(history);
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -235,7 +265,12 @@ namespace Merchants.Business.Services
 
         public async Task SaveTerminalExternalSystem(TerminalExternalSystem entity)
         {
-            var dbEntity = await context.TerminalExternalSystems.FirstOrDefaultAsync(es => es.ExternalSystemID == entity.ExternalSystemID && es.TerminalID == entity.TerminalID);
+            if (!user.IsAdmin())
+            {
+                throw new SecurityException("Method acces is not allowed");
+            }
+
+            var dbEntity = await GetTerminalExternalSystems().FirstOrDefaultAsync(es => es.ExternalSystemID == entity.ExternalSystemID && es.TerminalID == entity.TerminalID);
 
             if (dbEntity == null)
             {
@@ -247,7 +282,6 @@ namespace Merchants.Business.Services
             {
                 dbEntity.UpdateTimestamp = entity.UpdateTimestamp;
                 dbEntity.Settings = entity.Settings;
-                dbEntity.ExternalProcessorReference = entity.ExternalProcessorReference;
                 dbEntity.Type = entity.Type;
                 await context.SaveChangesAsync();
             }
@@ -255,13 +289,35 @@ namespace Merchants.Business.Services
 
         public async Task RemoveTerminalExternalSystem(Guid terminalID, long externalSystemID)
         {
-            var dbEntity = await context.TerminalExternalSystems.FirstOrDefaultAsync(es => es.ExternalSystemID == externalSystemID && es.TerminalID == terminalID);
+            if (!user.IsAdmin())
+            {
+                throw new SecurityException("Method acces is not allowed");
+            }
+
+            var dbEntity = await GetTerminalExternalSystems().FirstOrDefaultAsync(es => es.ExternalSystemID == externalSystemID && es.TerminalID == terminalID);
 
             if (dbEntity != null)
             {
                 context.TerminalExternalSystems.Remove(dbEntity);
             }
 
+            await context.SaveChangesAsync();
+        }
+
+        public async Task AddAuditEntry(AuditEntryData auditData)
+        {
+            var history = new MerchantHistory
+            {
+                OperationCode = auditData.OperationCode,
+                OperationDate = DateTime.UtcNow,
+                OperationDoneBy = user?.GetDoneBy(),
+                OperationDoneByID = user?.GetDoneByID(),
+                MerchantID = auditData.MerchantID,
+                TerminalID = auditData.TerminalID,
+                SourceIP = httpContextAccessor.GetIP(),
+            };
+
+            context.MerchantHistories.Add(history);
             await context.SaveChangesAsync();
         }
     }

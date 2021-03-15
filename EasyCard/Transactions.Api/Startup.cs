@@ -1,44 +1,51 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoMapper;
+using BasicServices;
+using BasicServices.KeyValueStorage;
+using IdentityServer4.AccessTokenValidation;
+using Merchants.Business.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Shared.Api.Validation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using Shared.Api;
-using Transactions.Business.Data;
-using Microsoft.EntityFrameworkCore;
-using Merchants.Business.Services;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
+using Shared.Api.Configuration;
+using Shared.Api.Swagger;
+using Shared.Api.Validation;
 using Shared.Business.Security;
-using Transactions.Business.Services;
+using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
-using BasicServices.KeyValueStorage;
+using Shared.Helpers.Queue;
+using Shared.Helpers.Security;
+using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
+using Swashbuckle.AspNetCore.Filters;
+using Transactions.Api.Controllers;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Services;
-using Microsoft.Extensions.Options;
-using Shared.Helpers;
-using BasicServices;
+using Transactions.Business.Data;
+using Transactions.Business.Services;
 using Transactions.Shared;
-using Shared.Helpers.Security;
-using IdentityServer4.AccessTokenValidation;
-using Shared.Api.Swagger;
-using Swashbuckle.AspNetCore.Filters;
-using System.IO;
 using SharedApi = Shared.Api;
-using Transactions.Api.Controllers;
+using SharedHelpers = Shared.Helpers;
 
 namespace Transactions.Api
 {
@@ -71,12 +78,13 @@ namespace Transactions.Api
                     builder =>
                     {
                         builder.WithOrigins(
-                                            "http://localhost:4200",
                                             "http://localhost:8080",
+                                            "http://localhost:8081",
                                             "https://ecng-profile.azurewebsites.net",
                                             "https://ecng-merchants.azurewebsites.net")
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .WithExposedHeaders("X-Version");
                     });
             });
 
@@ -90,6 +98,46 @@ namespace Transactions.Api
                     options.RoleClaimType = "role";
                     options.NameClaimType = "name";
                     options.EnableCaching = true;
+                    options.JwtBearerEvents = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                    {
+                        OnTokenValidated = async (context) =>
+                        {
+                            if (context.Principal.IsInteractiveAdmin())
+                            {
+                                var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                                var userId = context.Principal.GetDoneByID();
+                                var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
+
+                                if (merchantID != null)
+                                {
+                                    var impersonationIdentity = new ClaimsIdentity(new[]
+                                    {
+                                            new Claim(Claims.MerchantIDClaim, merchantID.ToString()),
+                                            new Claim(ClaimTypes.Role, Roles.Merchant)
+                                    });
+                                    context.Principal?.AddIdentity(impersonationIdentity);
+                                }
+                            }
+                            else if (context.Principal.IsMerchant())
+                            {
+                                var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                                var userId = context.Principal.GetDoneByID();
+                                var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
+
+                                if (merchantID != null)
+                                {
+                                    var midentity = (ClaimsIdentity)context.Principal.Identity;
+                                    var midclaim = midentity.FindFirst(Claims.MerchantIDClaim);
+                                    if (midclaim != null)
+                                    {
+                                        midentity.TryRemoveClaim(midclaim);
+                                    }
+
+                                    midentity.AddClaim(new Claim(Claims.MerchantIDClaim, merchantID.ToString()));
+                                }
+                            }
+                        }
+                    };
                 });
 
             Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;  // TODO: remove for production
@@ -105,6 +153,18 @@ namespace Transactions.Api
                 options.AddPolicy(Policy.AnyAdmin, policy =>
                    policy.RequireAssertion(context => context.User.IsAdmin()));
             });
+
+            //services.Configure<RequestLocalizationOptions>(options =>
+            //{
+            //    var supportedCultures = new List<CultureInfo>
+            //    {
+            //        new CultureInfo("en"),
+            //        new CultureInfo("he")
+            //    };
+            //    options.DefaultRequestCulture = new RequestCulture("en");
+            //    options.SupportedCultures = supportedCultures;
+            //    options.SupportedUICultures = supportedCultures;
+            //});
 
             DefaultContractResolver contractResolver = new DefaultContractResolver
             {
@@ -185,7 +245,11 @@ namespace Transactions.Api
             services.AddScoped<ITerminalsService, TerminalsService>();
             services.AddScoped<IConsumersService, ConsumersService>();
             services.AddScoped<IItemsService, ItemsService>();
+            services.AddScoped<IImpersonationService, ImpersonationService>();
             services.AddTransient<CardTokenController, CardTokenController>();
+            services.AddTransient<InvoicingController, InvoicingController>();
+            services.AddTransient<PaymentRequestsController, PaymentRequestsController>();
+            services.AddTransient<BillingController, BillingController>();
 
             services.AddSingleton<IExternalSystemsService, ExternalSystemService>(serviceProvider =>
             {
@@ -194,6 +258,7 @@ namespace Transactions.Api
 
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
             services.Configure<AzureKeyVaultSettings>(Configuration.GetSection("AzureKeyVaultTokenStorageSettings"));
+            services.Configure<ApiSettings>(Configuration.GetSection("API"));
 
             services.AddHttpContextAccessor();
 
@@ -203,6 +268,9 @@ namespace Transactions.Api
             services.AddScoped<ITransactionsService, TransactionsService>();
             services.AddScoped<ICreditCardTokenService, CreditCardTokenService>();
             services.AddScoped<IBillingDealService, BillingDealService>();
+            services.AddScoped<IInvoiceService, InvoiceService>();
+            services.AddScoped<IPaymentRequestsService, PaymentRequestsService>();
+            services.AddScoped<ISystemSettingsService, SystemSettingsService>();
             services.AddAutoMapper(typeof(Startup));
 
             services.AddSingleton<IKeyValueStorage<CreditCardTokenKeyVault>, AzureKeyValueStorage<CreditCardTokenKeyVault>>();
@@ -210,9 +278,11 @@ namespace Transactions.Api
             // integration
             services.Configure<Shva.ShvaGlobalSettings>(Configuration.GetSection("ShvaGlobalSettings"));
             services.Configure<ClearingHouse.ClearingHouseGlobalSettings>(Configuration.GetSection("ClearingHouseGlobalSettings"));
+            services.Configure<EasyInvoice.EasyInvoiceGlobalSettings>(Configuration.GetSection("EasyInvoiceGlobalSettings"));
 
             services.AddSingleton<IAggregatorResolver, AggregatorResolver>();
             services.AddSingleton<IProcessorResolver, ProcessorResolver>();
+            services.AddSingleton<IInvoicingResolver, InvoicingResolver>();
 
             services.AddSingleton<Shva.ShvaProcessor, Shva.ShvaProcessor>(serviceProvider =>
             {
@@ -237,6 +307,22 @@ namespace Transactions.Api
                 return new ClearingHouse.ClearingHouseAggregator(webApiClient, logger, chCfg, tokenSvc, storageService);
             });
 
+            services.AddSingleton<NullAggregator, NullAggregator>(serviceProvider =>
+            {
+                return new NullAggregator();
+            });
+
+            services.AddSingleton<EasyInvoice.ECInvoiceInvoicing, EasyInvoice.ECInvoiceInvoicing>(serviceProvider =>
+            {
+                var chCfg = serviceProvider.GetRequiredService<IOptions<EasyInvoice.EasyInvoiceGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<EasyInvoice.ECInvoiceInvoicing>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.EasyInvoiceRequestsLogStorageTable, cfg.EasyInvoiceRequestsLogStorageTable);
+
+                return new EasyInvoice.ECInvoiceInvoicing(webApiClient, chCfg, logger, storageService);
+            });
+
             services.Configure<RequestResponseLoggingSettings>((options) =>
             {
                 options.RequestsLogStorageTable = appConfig.RequestsLogStorageTable;
@@ -244,12 +330,33 @@ namespace Transactions.Api
             });
 
             services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();
+
+            services.AddSingleton<ICryptoServiceCompact, AesGcmCryptoServiceCompact>(serviceProvider =>
+            {
+                var cryptoCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
+                return new AesGcmCryptoServiceCompact(cryptoCfg.EncrKeyForSharedApiKey);
+            });
+
+            services.AddSingleton<SharedHelpers.Email.IEmailSender, AzureQueueEmailSender>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
+                var queue = new AzureQueue(cfg.DefaultStorageConnectionString, cfg.EmailQueueName);
+                return new AzureQueueEmailSender(queue, cfg.DefaultStorageConnectionString, cfg.EmailTableName);
+            });
+
+            services.AddSingleton<IQueueResolver, QueueResolver>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
+                var invoiceQueue = new AzureQueue(cfg.DefaultStorageConnectionString, cfg.InvoiceQueueName);
+                return new QueueResolver(invoiceQueue);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             loggerFactory.AddProvider(new SharedApi.Logging.LoggerDatabaseProvider(Configuration.GetConnectionString("SystemConnection"), serviceProvider.GetService<IHttpContextAccessor>(), "TransactionsApi"));
+            var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
 
             app.UseRequestResponseLogging();
 
@@ -258,6 +365,33 @@ namespace Transactions.Api
             app.UseStaticFiles();
 
             app.UseHttpsRedirection();
+
+            var apiSettings = serviceProvider.GetRequiredService<IOptions<ApiSettings>>().Value;
+
+            if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
+            {
+                app.Use(async (context, next) =>
+                {
+                    context.Response.Headers.Add("X-Version", apiSettings.Version);
+                    await next.Invoke();
+                });
+            }
+            else
+            {
+                logger.LogError("Missing API.Version in appsettings.json");
+            }
+
+            app.UseRequestLocalization(options =>
+            {
+                var supportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("en-IL"),
+                    new CultureInfo("he-IL")
+                };
+                options.DefaultRequestCulture = new RequestCulture("en-IL");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();

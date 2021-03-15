@@ -1,0 +1,57 @@
+[
+  {
+    "name": "APPINSIGHTS_CONNECTIONSTRING",
+    "value": "InstrumentationKey=354136c0-2043-4c78-a7b7-a372cb59c8f3;IngestionEndpoint=https://westeurope-1.in.applicationinsights.azure.com/",
+    "slotSetting": false
+  },
+  {
+    "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+    "value": "354136c0-2043-4c78-a7b7-a372cb59c8f3",
+    "slotSetting": false
+  },
+  {
+    "name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+    "value": "1.0.0",
+    "slotSetting": false
+  },
+  {
+    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+    "value": "InstrumentationKey=354136c0-2043-4c78-a7b7-a372cb59c8f3;IngestionEndpoint=https://westeurope-1.in.applicationinsights.azure.com/",
+    "slotSetting": false
+  },
+  {
+    "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+    "value": "~2",
+    "slotSetting": false
+  },
+  {
+    "name": "AzureWebJobsStorage",
+    "value": "DefaultEndpointsProtocol=https;AccountName=ecng;AccountKey=4NjfZ4WcFlvNBzKHgbyGDdl+iYBiUv1SPU2hVneIqDyX0TsHUXtG707cfrGxnOCHD85L8mLRamck9w014/m1Vg==;EndpointSuffix=core.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "ConnectionStrings__AzureWebJobsStorage",
+    "value": "DefaultEndpointsProtocol=https;AccountName=ecng;AccountKey=4NjfZ4WcFlvNBzKHgbyGDdl+iYBiUv1SPU2hVneIqDyX0TsHUXtG707cfrGxnOCHD85L8mLRamck9w014/m1Vg==;BlobEndpoint=https://ecng.blob.core.windows.net/;TableEndpoint=https://ecng.table.core.windows.net/;QueueEndpoint=https://ecng.queue.core.windows.net/;FileEndpoint=https://ecng.file.core.windows.net/",
+    "slotSetting": false
+  },
+  {
+    "name": "DiagnosticServices_EXTENSION_VERSION",
+    "value": "~3",
+    "slotSetting": false
+  },
+  {
+    "name": "FUNCTIONS_EXTENSION_VERSION",
+    "value": "~3",
+    "slotSetting": false
+  },
+  {
+    "name": "FUNCTIONS_WORKER_RUNTIME",
+    "value": "dotnet",
+    "slotSetting": false
+  },
+  {
+    "name": "WEBSITE_RUN_FROM_PACKAGE",
+    "value": "1",
+    "slotSetting": false
+  }
+]

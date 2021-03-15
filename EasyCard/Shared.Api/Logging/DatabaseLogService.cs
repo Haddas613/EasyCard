@@ -29,7 +29,7 @@ namespace Shared.Api.Logging
 
             var count = builder.AddTemplate("SELECT COUNT (*) FROM [dbo].[SystemLog] WITH(NOLOCK) /**where**/");
 
-            builder.OrderBy($"[{GetSortBy(query)}] {query.OrderByDirection}");
+            builder.OrderBy($"[{GetSortBy(query)}] {(query.SortDesc.GetValueOrDefault(true) ? "DESC" : "ASC")}");
 
             // filters
             if (query.LogLevel != null)
@@ -79,7 +79,7 @@ namespace Shared.Api.Logging
 
             if (query.To != null)
             {
-                builder.Where($"{nameof(DatabaseLogEntry.Timestamp)} <= @{nameof(query.To)}", new { query.To });
+                builder.Where($"{nameof(DatabaseLogEntry.Timestamp)} < @{nameof(query.To)}", new { To = query.To.Value.Date.AddDays(1) });
             }
 
             if (!string.IsNullOrWhiteSpace(query.Message))

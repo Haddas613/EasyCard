@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Shared.Helpers;
+using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -32,19 +33,31 @@ namespace Transactions.Api.Models.Billing
         [DataType(DataType.Currency)]
         public decimal? TransactionAmount { get; set; }
 
-        /// <summary>
-        /// Number Of payments (cannot be more than 999)
-        /// </summary>
-        public int? NumberOfPayments { get; set; }
+        [Range(0, 1)]
+        [DataType(DataType.Currency)]
+        public decimal VATRate { get; set; }
 
-        /// <summary>
-        /// TotalAmount = TransactionAmount * NumberOfPayments
-        /// </summary>
-        public decimal? TotalAmount { get; set; }
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal VATTotal { get; set; }
+
+        [Range(0.01, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal NetTotal { get; set; }
 
         /// <summary>
         /// Billing Schedule
         /// </summary>
         public BillingSchedule BillingSchedule { get; set; }
+
+        /// <summary>
+        /// Create document
+        /// </summary>
+        public bool? IssueInvoice { get; set; }
+
+        /// <summary>
+        /// Invoice details
+        /// </summary>
+        public InvoiceDetails InvoiceDetails { get; set; }
     }
 }

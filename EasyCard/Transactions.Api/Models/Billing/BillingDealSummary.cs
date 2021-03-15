@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Shared.Enums;
+using Transactions.Shared.Models;
 
 namespace Transactions.Api.Models.Billing
 {
@@ -20,36 +21,23 @@ namespace Transactions.Api.Models.Billing
 
         public decimal TransactionAmount { get; set; }
 
-        /// <summary>
-        /// Number Of payments (cannot be more than 999)
-        /// </summary>
-        public int NumberOfPayments { get; set; }
-
-        /// <summary>
-        /// TotalAmount = TransactionAmount * NumberOfPayments
-        /// </summary>
-        public decimal TotalAmount { get; set; }
-
         [EnumDataType(typeof(CurrencyEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyEnum Currency { get; set; }
 
         public DateTime? BillingDealTimestamp { get; set; }
 
-        /// <summary>
-        /// Processing status
-        /// </summary>
-        [EnumDataType(typeof(BillingDealStatusEnum))]
-        [JsonConverter(typeof(StringEnumConverter))]
-        public BillingDealStatusEnum Status { get; set; }
-
         public string CardOwnerName { get; set; }
 
         /// <summary>
         /// Billing Schedule
         /// </summary>
-        public string BillingSchedule { get; set; }
+        public BillingSchedule BillingSchedule { get; set; }
 
         public string CardNumber { get; set; }
+
+        public bool? CardExpired { get; set; }
+
+        public bool Active { get; set; }
     }
 }

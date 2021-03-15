@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.Merchant;
+using Merchants.Api.Models.User;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Services;
 using Merchants.Shared;
@@ -12,13 +13,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Shared.Api;
+using Shared.Api.Configuration;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Business.Extensions;
+using Z.EntityFramework.Plus;
 
 namespace Merchants.Api.Controllers
 {
@@ -32,12 +36,24 @@ namespace Merchants.Api.Controllers
         private readonly IMerchantsService merchantsService;
         private readonly IMapper mapper;
         private readonly ITerminalsService terminalsService;
+        private readonly ApplicationSettings config;
+        private readonly ApiSettings apiSettings;
+        private readonly IImpersonationService impersonationService;
 
-        public MerchantApiController(IMerchantsService merchantsService, IMapper mapper, ITerminalsService terminalsService)
+        public MerchantApiController(
+            IMerchantsService merchantsService,
+            IMapper mapper,
+            ITerminalsService terminalsService,
+            IOptions<ApplicationSettings> config,
+            IImpersonationService impersonationService,
+            IOptions<ApiSettings> apiSettings)
         {
             this.merchantsService = merchantsService;
             this.mapper = mapper;
             this.terminalsService = terminalsService;
+            this.config = config.Value;
+            this.impersonationService = impersonationService;
+            this.apiSettings = apiSettings.Value;
         }
 
         [HttpGet]
@@ -59,15 +75,19 @@ namespace Merchants.Api.Controllers
         {
             // TODO: validate filters (see transactions list)
 
-            var query = merchantsService.GetMerchants().AsNoTracking().Filter(filter);
+            var query = merchantsService.GetMerchants().Filter(filter);
 
             using (var dbTransaction = merchantsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<MerchantSummary> { NumberOfRecords = await query.CountAsync() };
+                var numberOfRecords = query.DeferredCount().FutureValue();
 
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(Merchant.MerchantID), filter.OrderByDirection).ApplyPagination(filter);
+                var response = new SummariesResponse<MerchantSummary>();
 
-                response.Data = await mapper.ProjectTo<MerchantSummary>(query).ToListAsync();
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(Merchant.MerchantID), filter.SortDesc).ApplyPagination(filter);
+
+                response.Data = await mapper.ProjectTo<MerchantSummary>(query).Future().ToListAsync();
+
+                response.NumberOfRecords = numberOfRecords.Value;
 
                 return Ok(response);
             }
@@ -83,29 +103,10 @@ namespace Merchants.Api.Controllers
 
                 var merchant = mapper.Map<MerchantResponse>(dbMerchant);
 
-                merchant.Terminals = await mapper.ProjectTo<Models.Terminal.TerminalSummary>(terminalsService.GetTerminals().AsNoTracking().Where(d => d.MerchantID == dbMerchant.MerchantID)).ToListAsync();
+                merchant.Terminals = await mapper.ProjectTo<Models.Terminal.TerminalSummary>(terminalsService.GetTerminals().Where(d => d.MerchantID == dbMerchant.MerchantID)).ToListAsync();
+                merchant.Users = await mapper.ProjectTo<UserSummary>(merchantsService.GetMerchantUsers(merchant.MerchantID)).ToListAsync();
 
                 return Ok(merchant);
-            }
-        }
-
-        [HttpGet]
-        [Route("{merchantID}/history")]
-        public async Task<ActionResult<SummariesResponse<MerchantHistoryResponse>>> GetMerchantHistory([FromRoute]Guid merchantID, [FromQuery] MerchantHistoryFilter filter)
-        {
-            // TODO: validate filters (see transactions list)
-
-            var query = merchantsService.GetMerchantHistories().Where(h => h.MerchantID == merchantID).AsNoTracking().Filter(filter);
-
-            using (var dbTransaction = merchantsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
-            {
-                var response = new SummariesResponse<MerchantHistoryResponse> { NumberOfRecords = await query.CountAsync() };
-
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(Merchant.MerchantID), filter.OrderByDirection).ApplyPagination(filter);
-
-                response.Data = await mapper.ProjectTo<MerchantHistoryResponse>(query).ToListAsync();
-
-                return Ok(response);
             }
         }
 
@@ -116,7 +117,7 @@ namespace Merchants.Api.Controllers
             var newMerchant = mapper.Map<Merchant>(merchant);
             await merchantsService.CreateEntity(newMerchant);
 
-            return CreatedAtAction(nameof(GetMerchant), new { merchantID = newMerchant.MerchantID }, new OperationResponse(Messages.MerchantCreated, StatusEnum.Success, newMerchant.MerchantID.ToString()));
+            return CreatedAtAction(nameof(GetMerchant), new { merchantID = newMerchant.MerchantID }, new OperationResponse(Messages.MerchantCreated, StatusEnum.Success, newMerchant.MerchantID));
         }
 
         [HttpPut]
@@ -129,7 +130,23 @@ namespace Merchants.Api.Controllers
 
             await merchantsService.UpdateEntity(merchant);
 
-            return Ok(new OperationResponse(Messages.MerchantUpdated, StatusEnum.Success, merchantID.ToString()));
+            return Ok(new OperationResponse(Messages.MerchantUpdated, StatusEnum.Success, merchantID));
+        }
+
+        [HttpPost]
+        [Route("{merchantID:guid}/loginAsMerchant")]
+        public async Task<ActionResult<OperationResponse>> LoginAsMerchant([FromRoute]Guid merchantID)
+        {
+            var updateResponse = await impersonationService.LoginAsMerchant(merchantID);
+
+            if (updateResponse.Status != StatusEnum.Success)
+            {
+                return new ObjectResult(updateResponse) { StatusCode = 400 };
+            }
+
+            updateResponse.Message = apiSettings.MerchantProfileURL;
+
+            return new ObjectResult(updateResponse) { StatusCode = 200 };
         }
     }
 }

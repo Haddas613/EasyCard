@@ -58,6 +58,8 @@
     <Folder Include="Properties" />
     <Folder Include="dbo\" />
     <Folder Include="dbo\Tables\" />
+    <Folder Include="Security\" />
+    <Folder Include="dbo\Views\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\TransactionHistory.sql" />
@@ -66,5 +68,9 @@
     <Build Include="dbo\Tables\__EFMigrationsHistory.sql" />
     <Build Include="dbo\Tables\BillingDeal.sql" />
     <Build Include="dbo\Tables\Invoice.sql" />
+    <Build Include="dbo\Tables\PaymentRequestHistory.sql" />
+    <Build Include="dbo\Tables\PaymentRequest.sql" />
+    <Build Include="dbo\Views\vPaymentTransactionItem.sql" />
+    <Build Include="dbo\Tables\_t_PaymentTransactions.sql" />
   </ItemGroup>
 </Project>

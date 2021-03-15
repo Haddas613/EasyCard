@@ -14,6 +14,9 @@ using Transactions.Shared.Enums;
 using Transactions.Shared.Enums.Resources;
 using Shared.Helpers.Resources;
 using Transactions.Api.Models.Transactions.Enums;
+using Shared.Integration.Models.Invoicing;
+using Transactions.Api.Models.PaymentRequests.Enums;
+using Shared.Api.Models.Enums;
 
 namespace Transactions.Api.Services
 {
@@ -21,22 +24,24 @@ namespace Transactions.Api.Services
     {
         private static ConcurrentDictionary<string, TransactionsDictionaries> allResponses = new ConcurrentDictionary<string, TransactionsDictionaries>();
 
-        public static TransactionsDictionaries GetDictionaries(string language)
+        public static TransactionsDictionaries GetDictionaries(CultureInfo culture)
         {
-            var lang = language?.ToLower().Trim() ?? "en-us";
-            if (!allResponses.TryGetValue(lang, out var response))
+            if (culture == null)
             {
-                response = GetDictionariesInternal(lang);
-                allResponses.TryAdd(lang, response);
+                culture = new CultureInfo("en-IL");
+            }
+
+            if (!allResponses.TryGetValue(culture.Name, out var response))
+            {
+                response = GetDictionariesInternal(culture);
+                allResponses.TryAdd(culture.Name, response);
             }
 
             return response;
         }
 
-        private static TransactionsDictionaries GetDictionariesInternal(string language)
+        private static TransactionsDictionaries GetDictionariesInternal(CultureInfo culture)
         {
-            CultureInfo culture = new CultureInfo(language);
-
             var response = new TransactionsDictionaries();
 
             var transactionStatusEnumType = typeof(TransactionStatusEnum);
@@ -48,8 +53,23 @@ namespace Transactions.Api.Services
             var cardPresenceTypeEnumType = typeof(CardPresenceEnum);
 
             var filterQuickTimeEnumType = typeof(QuickTimeFilterTypeEnum);
+            var filterQuickDateEnumType = typeof(QuickDateFilterTypeEnum);
             var filterQuickStatusEnumType = typeof(QuickStatusFilterTypeEnum);
             var filterDateEnumType = typeof(DateFilterTypeEnum);
+            var invoiceTypeEnum = typeof(InvoiceTypeEnum);
+            var invoiceStatusEnum = typeof(InvoiceStatusEnum);
+
+            var repeatPeriodTypeEnumType = typeof(RepeatPeriodTypeEnum);
+            var startAtTypeEnumType = typeof(StartAtTypeEnum);
+            var endAtTypeEnumType = typeof(EndAtTypeEnum);
+
+            var prStatusEnumType = typeof(PaymentRequestStatusEnum);
+            var prQuickStatusEnumType = typeof(PayReqQuickStatusFilterTypeEnum);
+
+            var paymentTypeEnum = typeof(PaymentTypeEnum);
+
+            var reportGranularityTypeEnum = typeof(ReportGranularityEnum);
+            var quickDateFilterAltTypeEnum = typeof(QuickDateFilterAltEnum);
 
             var tranStatuses = Enum.GetValues(transactionStatusEnumType).Cast<TransactionStatusEnum>()
                 .ToDictionary(m => transactionStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => TransactionStatusResource.ResourceManager.GetString(m.ToString(), culture) );
@@ -75,11 +95,44 @@ namespace Transactions.Api.Services
             var filterQuickTimeTypes = Enum.GetValues(filterQuickTimeEnumType).Cast<QuickTimeFilterTypeEnum>()
                 .ToDictionary(m => filterQuickTimeEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture) );
 
+            var filterQuickDateTypes = Enum.GetValues(filterQuickDateEnumType).Cast<QuickDateFilterTypeEnum>()
+                .ToDictionary(m => filterQuickDateEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
             var filterQuickStatusTypes = Enum.GetValues(filterQuickStatusEnumType).Cast<QuickStatusFilterTypeEnum>()
                 .ToDictionary(m => filterQuickStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture) );
 
             var filterDateTypes = Enum.GetValues(filterDateEnumType).Cast<DateFilterTypeEnum>()
                 .ToDictionary(m => filterDateEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture) );
+
+            var invoiceTypes = Enum.GetValues(invoiceTypeEnum).Cast<InvoiceTypeEnum>()
+                .ToDictionary(m => invoiceTypeEnum.GetDataContractAttrForEnum(m.ToString()), m => InvoiceEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
+            var invoiceStatuses = Enum.GetValues(invoiceStatusEnum).Cast<InvoiceStatusEnum>()
+                .ToDictionary(m => invoiceStatusEnum.GetDataContractAttrForEnum(m.ToString()), m => InvoiceEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
+            var repeatPeriodTypes = Enum.GetValues(repeatPeriodTypeEnumType).Cast<RepeatPeriodTypeEnum>()
+                .ToDictionary(m => repeatPeriodTypeEnumType.GetDataContractAttrForEnum(m.ToString()), m => BillingDealEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
+            var startAtTypes = Enum.GetValues(startAtTypeEnumType).Cast<StartAtTypeEnum>()
+                .ToDictionary(m => startAtTypeEnumType.GetDataContractAttrForEnum(m.ToString()), m => BillingDealEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
+            var endAtTypes = Enum.GetValues(endAtTypeEnumType).Cast<EndAtTypeEnum>()
+                .ToDictionary(m => endAtTypeEnumType.GetDataContractAttrForEnum(m.ToString()), m => BillingDealEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
+            var prStatusTypes = Enum.GetValues(prStatusEnumType).Cast<PaymentRequestStatusEnum>()
+                .ToDictionary(m => prStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => PaymentRequestEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
+            var prQuickStatusTypes = Enum.GetValues(prQuickStatusEnumType).Cast<PayReqQuickStatusFilterTypeEnum>()
+                .ToDictionary(m => prQuickStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => PaymentRequestEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
+            var paymentTypes = Enum.GetValues(paymentTypeEnum).Cast<PaymentTypeEnum>()
+                .ToDictionary(m => paymentTypeEnum.GetDataContractAttrForEnum(m.ToString()), m => PaymentTypeResource.ResourceManager.GetString(m.ToString(), culture));
+
+            var reportGranularityTypes = Enum.GetValues(reportGranularityTypeEnum).Cast<ReportGranularityEnum>()
+                .ToDictionary(m => reportGranularityTypeEnum.GetDataContractAttrForEnum(m.ToString()), m => ReportEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
+            var quickDateFilterAltTypes = Enum.GetValues(quickDateFilterAltTypeEnum).Cast<QuickDateFilterAltEnum>()
+                .ToDictionary(m => quickDateFilterAltTypeEnum.GetDataContractAttrForEnum(m.ToString()), m => ReportEnumsResource.ResourceManager.GetString(m.ToString(), culture));
 
             response.TransactionStatusEnum = tranStatuses;
             response.TransactionTypeEnum = tranTypes;
@@ -89,8 +142,19 @@ namespace Transactions.Api.Services
             response.CurrencyEnum = currTypes;
             response.CardPresenceEnum = cardPresenceTypes;
             response.QuickTimeFilterTypeEnum = filterQuickTimeTypes;
+            response.QuickDateFilterTypeEnum = filterQuickDateTypes;
             response.QuickStatusFilterTypeEnum = filterQuickStatusTypes;
             response.DateFilterTypeEnum = filterDateTypes;
+            response.InvoiceTypeEnum = invoiceTypes;
+            response.RepeatPeriodTypeEnum = repeatPeriodTypes;
+            response.StartAtTypeEnum = startAtTypes;
+            response.EndAtTypeEnum = endAtTypes;
+            response.InvoiceStatusEnum = invoiceStatuses;
+            response.PaymentRequestStatusEnum = prStatusTypes;
+            response.PayReqQuickStatusFilterTypeEnum = prQuickStatusTypes;
+            response.PaymentTypeEnum = paymentTypes;
+            response.ReportGranularityEnum = reportGranularityTypes;
+            response.QuickDateFilterAltEnum = quickDateFilterAltTypes;
 
             return response;
         }

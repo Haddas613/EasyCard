@@ -19,6 +19,7 @@ using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
+using Shared.Business.Security;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Helpers.Security;
 using Shared.Integration.ExternalSystems;
@@ -52,13 +53,14 @@ namespace Transactions.Api.Controllers
         private readonly IProcessorResolver processorResolver;
         private readonly ILogger logger;
         private readonly ApplicationSettings appSettings;
+        private readonly IHttpContextAccessorWrapper httpContextAccessor;
 
         // TODO: service client
         private readonly ITerminalsService terminalsService;
 
         public TransmissionController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper,
             IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver, ITerminalsService terminalsService, ILogger<TransactionsApiController> logger,
-            IOptions<ApplicationSettings> appSettings)
+            IOptions<ApplicationSettings> appSettings, IHttpContextAccessorWrapper httpContextAccessor)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -69,6 +71,7 @@ namespace Transactions.Api.Controllers
             this.terminalsService = terminalsService;
             this.logger = logger;
             this.appSettings = appSettings.Value;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -85,10 +88,26 @@ namespace Transactions.Api.Controllers
             {
                 var response = new SummariesResponse<TransactionSummary> { NumberOfRecords = await query.CountAsync() };
 
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.OrderByDirection);
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.SortDesc);
 
                 response.Data = await mapper.ProjectTo<TransactionSummary>(query.ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit)).ToListAsync();
 
+                return Ok(response);
+            }
+        }
+
+        [HttpGet]
+        [Authorize(Policy = Policy.AnyAdmin)]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("nontransmittedtransactionterminals")]
+        public async Task<ActionResult<IEnumerable<Guid>>> GetNonTransmittedTransactionsTerminals()
+        {
+            //TODO: Check with terminal settings
+            var query = transactionsService.GetTransactions().AsNoTracking().Where(d => d.Status == TransactionStatusEnum.CommitedByAggregator).Select(t => t.TerminalID).Distinct();
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var response = await query.ToListAsync();
                 return Ok(response);
             }
         }
@@ -165,6 +184,8 @@ namespace Transactions.Api.Controllers
             response.NumberOfRecords = transactionsResponse.Count;
             response.Data = transactionsResponse;
 
+            var transmissionDate = DateTime.UtcNow;
+
             // TODO: use with batch or with queue
             var transactionIDs = transactionsResponse.Where(d => d.TransmissionStatus == TransmissionStatusEnum.TransmissionFailed || d.TransmissionStatus == TransmissionStatusEnum.Transmitted).Select(d => d.PaymentTransactionID).ToList();
             var transactions = await transactionsService.GetTransactions().Where(d => transactionIDs.Contains(d.PaymentTransactionID)).ToListAsync();
@@ -180,10 +201,16 @@ namespace Transactions.Api.Controllers
                     {
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.TransmissionToProcessorFailed);
 
-                        // TODO: cancel in clearing house
+                        // TODO: cancel in clearing house - but - it is possible to retry transmission
+                        // TODO: cancel invoice
                     }
                     else
                     {
+                        transaction.ShvaTransactionDetails.TransmissionDate = transmissionDate;
+                        transaction.ShvaTransactionDetails.ManuallyTransmitted = httpContextAccessor.GetUser().IsMerchant();
+
+                        // TODO: Transmission ID from Shva
+                        transaction.ShvaTransactionDetails.ShvaTransmissionNumber = processorResponse.TransmissionReference;
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.TransmittedByProcessor);
                     }
                 }
@@ -213,7 +240,7 @@ namespace Transactions.Api.Controllers
                 transaction = EnsureExists(await transactionsService.GetTransactions()
                  .FirstOrDefaultAsync(m => m.PaymentTransactionID == cancelTransmissionRequest.PaymentTransactionID && m.TerminalID == cancelTransmissionRequest.TerminalID));
 
-                if (transaction.Status != TransactionStatusEnum.CommitedByAggregator)
+                if (transaction.Status != TransactionStatusEnum.CommitedByAggregator || transaction.InvoiceID.HasValue)
                 {
                     return BadRequest(new OperationResponse(Messages.TransactionStatusIsNotValid, StatusEnum.Error));
                 }
@@ -222,6 +249,8 @@ namespace Transactions.Api.Controllers
 
                 await dbTransaction.CommitAsync();
             }
+
+            // TODO: remove invoice
 
             if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
             {
@@ -246,7 +275,7 @@ namespace Transactions.Api.Controllers
 
                         await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
 
-                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), aggregatorResponse.ErrorMessage));
+                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), aggregatorResponse.ErrorMessage));
                     }
 
                     await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.CanceledByAggregator);
@@ -257,11 +286,37 @@ namespace Transactions.Api.Controllers
 
                     await transactionsService.UpdateEntityWithStatus(transaction, transaction.Status, TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
 
-                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID.ToString(), HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), null));
+                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, HttpContext.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), null));
                 }
             }
 
             return new OperationResponse(Messages.TransactionCanceled, StatusEnum.Success);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [HttpPost]
+        [Route("transmitByTerminal/{terminalID:guid}")]
+        public async Task<ActionResult<OperationResponse>> TransmitByTerminal([FromRoute]Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+
+            var actionResult = await GetNotTransmittedTransactions(new TransmissionFilter { TerminalID = terminalID });
+
+            var response = actionResult.Result as ObjectResult;
+            var nonTransmittedTransactions = response.Value as SummariesResponse<TransactionSummary>;
+
+            if (nonTransmittedTransactions == null || nonTransmittedTransactions.NumberOfRecords == 0)
+            {
+                return new OperationResponse(Messages.NothingToTransmit, StatusEnum.Success);
+            }
+
+            await TransmitTransactions(new TransmitTransactionsRequest
+            {
+                TerminalID = terminalID,
+                PaymentTransactionIDs = nonTransmittedTransactions.Data.Select(t => t.PaymentTransactionID)
+            });
+
+            return new OperationResponse(Messages.TransactionsTransmitted, StatusEnum.Success);
         }
     }
 }

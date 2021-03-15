@@ -11,7 +11,6 @@ namespace Merchants.Api.Models.Merchant
     {
         public IEnumerable<TerminalSummary> Terminals { get; set; }
 
-        //TODO: remove (?)
-        //public IEnumerable<UserSummary> Users { get; set; }
+        public IEnumerable<UserSummary> Users { get; set; }
     }
 }

@@ -61,6 +61,24 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Awaiting for Transmission.
+        /// </summary>
+        public static string AwaitingForTransmission {
+            get {
+                return ResourceManager.GetString("AwaitingForTransmission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Canceled.
+        /// </summary>
+        public static string Canceled {
+            get {
+                return ResourceManager.GetString("Canceled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Completed.
         /// </summary>
         public static string Completed {
@@ -106,11 +124,29 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last 30 Days.
+        /// </summary>
+        public static string Last30Days {
+            get {
+                return ResourceManager.GetString("Last30Days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last 30 minutes.
         /// </summary>
         public static string Last30Minutes {
             get {
                 return ResourceManager.GetString("Last30Minutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last 3 Months.
+        /// </summary>
+        public static string Last3Months {
+            get {
+                return ResourceManager.GetString("Last3Months", resourceCulture);
             }
         }
         
@@ -133,6 +169,42 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last month.
+        /// </summary>
+        public static string LastMonth {
+            get {
+                return ResourceManager.GetString("LastMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last two weeks.
+        /// </summary>
+        public static string LastTwoWeeks {
+            get {
+                return ResourceManager.GetString("LastTwoWeeks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last week.
+        /// </summary>
+        public static string LastWeek {
+            get {
+                return ResourceManager.GetString("LastWeek", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last year.
+        /// </summary>
+        public static string LastYear {
+            get {
+                return ResourceManager.GetString("LastYear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
         public static string None {
@@ -151,11 +223,47 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This Month.
+        /// </summary>
+        public static string ThisMonth {
+            get {
+                return ResourceManager.GetString("ThisMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This week.
+        /// </summary>
+        public static string ThisWeek {
+            get {
+                return ResourceManager.GetString("ThisWeek", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Today.
+        /// </summary>
+        public static string Today {
+            get {
+                return ResourceManager.GetString("Today", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Updated.
         /// </summary>
         public static string Updated {
             get {
                 return ResourceManager.GetString("Updated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yesterday.
+        /// </summary>
+        public static string Yesterday {
+            get {
+                return ResourceManager.GetString("Yesterday", resourceCulture);
             }
         }
     }

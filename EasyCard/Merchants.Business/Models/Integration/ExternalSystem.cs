@@ -13,7 +13,7 @@ namespace Merchants.Business.Models.Integration
         /// </summary>
         [JsonConstructor]
         private ExternalSystem(long externalSystemID, ExternalSystemTypeEnum type, string instanceTypeFullName,
-            string settingsTypeFullName, string name, JObject settings, bool active)
+            string settingsTypeFullName, string name, JObject settings, bool active, string key, bool canBeUsedInTerminalTemplate)
         {
             ExternalSystemID = externalSystemID;
             Type = type;
@@ -22,6 +22,8 @@ namespace Merchants.Business.Models.Integration
             Name = name;
             Settings = settings;
             Active = active;
+            Key = key;
+            CanBeUsedInTerminalTemplate = canBeUsedInTerminalTemplate;
         }
 #pragma warning restore IDE0051 // Remove unused private members
 
@@ -44,5 +46,9 @@ namespace Merchants.Business.Models.Integration
         public JObject Settings { get; }
 
         public bool Active { get; }
+
+        public string Key { get; set; }
+
+        public bool CanBeUsedInTerminalTemplate { get; set; }
     }
 }

@@ -27,5 +27,9 @@ namespace Merchants.Api.Models.Merchant
         [StringLength(50, MinimumLength = 3)]
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ContactPerson { get; set; }
+
+        [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        public string PhoneNumber { get; set; }
     }
 }

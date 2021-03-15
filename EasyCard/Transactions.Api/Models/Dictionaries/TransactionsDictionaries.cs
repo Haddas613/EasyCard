@@ -24,8 +24,31 @@ namespace Transactions.Api.Models.Dictionaries
 
         public Dictionary<string, string> QuickTimeFilterTypeEnum { get; set; }
 
+        public Dictionary<string, string> QuickDateFilterTypeEnum { get; set; }
+
         public Dictionary<string, string> QuickStatusFilterTypeEnum { get; set; }
 
         public Dictionary<string, string> DateFilterTypeEnum { get; set; }
+
+        public Dictionary<string, string> InvoiceTypeEnum { get; set; }
+
+        public Dictionary<string, string> RepeatPeriodTypeEnum { get; set; }
+
+        public Dictionary<string, string> StartAtTypeEnum { get; set; }
+
+        public Dictionary<string, string> EndAtTypeEnum { get; set; }
+
+        public Dictionary<string, string> InvoiceStatusEnum { get; set; }
+
+        public Dictionary<string, string> PaymentRequestStatusEnum { get; set; }
+
+        public Dictionary<string, string> PayReqQuickStatusFilterTypeEnum { get; set; }
+
+        public Dictionary<string, string> PaymentTypeEnum { get; set; }
+
+        public Dictionary<string, string> ReportGranularityEnum { get; set; }
+
+        public Dictionary<string, string> QuickDateFilterAltEnum { get; set; }
+
     }
 }

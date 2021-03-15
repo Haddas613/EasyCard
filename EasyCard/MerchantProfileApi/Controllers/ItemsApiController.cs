@@ -20,7 +20,9 @@ using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Business.Security;
+using Shared.Helpers;
 using Shared.Helpers.Security;
+using Z.EntityFramework.Plus;
 
 namespace MerchantProfileApi.Controllers
 {
@@ -35,13 +37,15 @@ namespace MerchantProfileApi.Controllers
         private readonly IMapper mapper;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly IMerchantsService merchantsService;
+        private readonly ICurrencyRateService currencyRateService;
 
-        public ItemsApiController(IItemsService itemsService, IMapper mapper, IHttpContextAccessorWrapper httpContextAccessor, IMerchantsService merchantsService)
+        public ItemsApiController(IItemsService itemsService, IMapper mapper, IHttpContextAccessorWrapper httpContextAccessor, IMerchantsService merchantsService, ICurrencyRateService currencyRateService)
         {
             this.itemsService = itemsService;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
             this.merchantsService = merchantsService;
+            this.currencyRateService = currencyRateService;
         }
 
         [HttpGet]
@@ -62,13 +66,33 @@ namespace MerchantProfileApi.Controllers
         public async Task<ActionResult<SummariesResponse<ItemSummary>>> GetItems([FromQuery] ItemsFilter filter)
         {
             var query = itemsService.GetItems().Filter(filter);
+            var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
             using (var dbTransaction = itemsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<ItemSummary> { NumberOfRecords = await query.CountAsync() };
+                var response = new SummariesResponse<ItemSummary> ();
 
-                response.Data = await mapper.ProjectTo<ItemSummary>(query.ApplyPagination(filter)).ToListAsync();
+                if (filter.Currency == null)
+                {
+                    response.Data = await mapper.ProjectTo<ItemSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
+                }
+                else
+                {
+                    var rates = await currencyRateService.GetLatestRates(); // TODO: caching
+                    var currency = filter.Currency.GetValueOrDefault(CurrencyEnum.ILS);
 
+                    var data = await query.ApplyPagination(filter).Future().ToListAsync();
+
+                    response.Data = data.Select(d => new ItemSummary
+                    {
+                        Currency = currency,
+                        ItemID = d.ItemID,
+                        ItemName = d.ItemName,
+                        Price = rates.Convert(d.Currency, d.Price, currency)
+                    });
+                }
+
+                response.NumberOfRecords = numberOfRecordsFuture.Value;
                 return Ok(response);
             }
         }
@@ -100,7 +124,7 @@ namespace MerchantProfileApi.Controllers
 
             await itemsService.CreateEntity(newItem);
 
-            return CreatedAtAction(nameof(GetItem), new { itemID = newItem.ItemID }, new OperationResponse(Messages.ItemCreated, StatusEnum.Success, newItem.ItemID.ToString()));
+            return CreatedAtAction(nameof(GetItem), new { itemID = newItem.ItemID }, new OperationResponse(Messages.ItemCreated, StatusEnum.Success, newItem.ItemID));
         }
 
         [HttpPut]
@@ -115,7 +139,7 @@ namespace MerchantProfileApi.Controllers
 
             await itemsService.UpdateEntity(item);
 
-            return Ok(new OperationResponse(Messages.ItemUpdated, StatusEnum.Success, itemID.ToString()));
+            return Ok(new OperationResponse(Messages.ItemUpdated, StatusEnum.Success, itemID));
         }
 
         [HttpDelete]
@@ -130,7 +154,7 @@ namespace MerchantProfileApi.Controllers
 
             await itemsService.UpdateEntity(item);
 
-            return Ok(new OperationResponse(Messages.ItemDeleted, StatusEnum.Success, itemID.ToString()));
+            return Ok(new OperationResponse(Messages.ItemDeleted, StatusEnum.Success, itemID));
         }
 
         /// <summary>

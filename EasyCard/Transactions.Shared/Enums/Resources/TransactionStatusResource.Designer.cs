@@ -70,6 +70,15 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Commited by aggregator.
+        /// </summary>
+        public static string CommitedByAggregator {
+            get {
+                return ResourceManager.GetString("CommitedByAggregator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Commited to aggregator.
         /// </summary>
         public static string CommitedToAggregator {
@@ -169,11 +178,38 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transmission canceling in progress.
+        /// </summary>
+        public static string TransmissionCancelingInProgress {
+            get {
+                return ResourceManager.GetString("TransmissionCancelingInProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transmission in progress.
+        /// </summary>
+        public static string TransmissionInProgress {
+            get {
+                return ResourceManager.GetString("TransmissionInProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transmission to processor failed.
         /// </summary>
         public static string TransmissionToProcessorFailed {
             get {
                 return ResourceManager.GetString("TransmissionToProcessorFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transmitted by processor.
+        /// </summary>
+        public static string TransmittedByProcessor {
+            get {
+                return ResourceManager.GetString("TransmittedByProcessor", resourceCulture);
             }
         }
         

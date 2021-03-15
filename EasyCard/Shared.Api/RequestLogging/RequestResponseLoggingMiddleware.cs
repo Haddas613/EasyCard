@@ -170,7 +170,7 @@ namespace Shared.Api
             }
         }
 
-        // TODO:
+        // TODO: implement condition which will indicate how we can log request with cc details
         private bool IsCreditCardRequest(string requestMethod, string requestUrl)
         {
             return requestUrl?.StartsWith("/api/merchant/", StringComparison.InvariantCultureIgnoreCase) == true && requestUrl?.EndsWith("/addCreditCard", StringComparison.InvariantCultureIgnoreCase) == true && requestMethod == HttpMethods.Post;

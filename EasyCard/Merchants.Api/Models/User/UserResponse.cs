@@ -21,7 +21,8 @@ namespace Merchants.Api.Models.User
 
         public IEnumerable<string> Roles { get; set; }
 
-        public IEnumerable<TerminalSummary> Terminals { get; set; }
+        // TODO: enable it when user-terminal mappings will be enabled
+        //public IEnumerable<TerminalSummary> Terminals { get; set; }
 
         public JObject Settings { get; set; }
     }

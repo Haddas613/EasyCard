@@ -120,8 +120,11 @@
   <data name="ActivityStartDate" xml:space="preserve">
     <value>Activity Start Date</value>
   </data>
+  <data name="AggregatorTerminalReference" xml:space="preserve">
+    <value>Aggregator Ref</value>
+  </data>
   <data name="ExternalProcessorReference" xml:space="preserve">
-    <value>External Processor Reference</value>
+    <value>External Processor Ref</value>
   </data>
   <data name="Label" xml:space="preserve">
     <value>Label</value>
@@ -131,6 +134,9 @@
   </data>
   <data name="MerchantID" xml:space="preserve">
     <value>Merchant ID</value>
+  </data>
+  <data name="ProcessorTerminalReference" xml:space="preserve">
+    <value>Processor Ref</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>Status</value>

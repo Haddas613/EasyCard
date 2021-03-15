@@ -117,13 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="InitialDeal" xml:space="preserve">
-    <value>Initial deal</value>
-  </data>
-  <data name="Refund" xml:space="preserve">
-    <value>Refund</value>
-  </data>
-  <data name="RegularDeal" xml:space="preserve">
-    <value>Regular deal</value>
-  </data>
 </root>

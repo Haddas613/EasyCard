@@ -1,7 +1,10 @@
 ﻿using Merchants.Business.Entities.Billing;
 using Merchants.Business.Entities.Merchant;
+using Merchants.Business.Entities.System;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Entities.User;
+using Merchants.Shared.Enums;
+using Merchants.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -11,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Debug;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Shared.Business.Extensions;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
 using System;
@@ -42,13 +46,28 @@ namespace Merchants.Business.Data
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
             c => (IEnumerable<string>)c.ToHashSet());
 
+        private static readonly ValueConverter FeatureEnumArrayConverter = new ValueConverter<ICollection<FeatureEnum>, string>(
+            v => string.Join(",", v.Select(e => ((short)e).ToString())),
+            v => v != null ? v.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries).Select(s => (FeatureEnum)short.Parse(s)).ToHashSet() : null);
+
+        private static readonly ValueComparer FeatureEnumArrayComparer = new ValueComparer<ICollection<FeatureEnum>>(
+            (c1, c2) => c1.SequenceEqual(c2),
+            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+            c => (ICollection<FeatureEnum>)c.ToHashSet());
+
         public DbSet<Merchant> Merchants { get; set; }
 
         public DbSet<Feature> Features { get; set; }
 
+        public DbSet<Plan> Plans { get; set; }
+
         public DbSet<Terminal> Terminals { get; set; }
 
+        public DbSet<TerminalTemplate> TerminalTemplates { get; set; }
+
         public DbSet<TerminalExternalSystem> TerminalExternalSystems { get; set; }
+
+        public DbSet<TerminalTemplateExternalSystem> TerminalTemplateExternalSystems { get; set; }
 
         public DbSet<UserTerminalMapping> UserTerminalMappings { get; set; }
 
@@ -57,6 +76,12 @@ namespace Merchants.Business.Data
         public DbSet<Item> Items { get; set; }
 
         public DbSet<Consumer> Consumers { get; set; }
+
+        public DbSet<CurrencyRate> CurrencyRates { get; set; }
+
+        public DbSet<SystemSettings> SystemSettings { get; set; }
+
+        public DbSet<Impersonation> Impersonations { get; set; }
 
         private readonly ClaimsPrincipal user;
 
@@ -75,31 +100,19 @@ namespace Merchants.Business.Data
         {
             modelBuilder.ApplyConfiguration(new MerchantConfiguration());
             modelBuilder.ApplyConfiguration(new TerminalConfiguration());
+            modelBuilder.ApplyConfiguration(new TerminalTemplateConfiguration());
             modelBuilder.ApplyConfiguration(new FeatureConfiguration());
             modelBuilder.ApplyConfiguration(new TerminalExternalSystemConfiguration());
+            modelBuilder.ApplyConfiguration(new TerminalTemplateExternalSystemConfiguration());
             modelBuilder.ApplyConfiguration(new UserTerminalMappingConfiguration());
             modelBuilder.ApplyConfiguration(new MerchantHistoryConfiguration());
 
             modelBuilder.ApplyConfiguration(new ItemConfiguration());
             modelBuilder.ApplyConfiguration(new ConsumerConfiguration());
+            modelBuilder.ApplyConfiguration(new CurrencyRateConfiguration());
 
-            // security filters
-
-            modelBuilder.Entity<Merchant>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
-
-            modelBuilder.Entity<MerchantHistory>().HasQueryFilter(p => this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID());
-
-            modelBuilder.Entity<Terminal>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.MerchantID == user.GetMerchantID()));
-
-            modelBuilder.Entity<TerminalExternalSystem>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.Terminal.MerchantID == user.GetMerchantID()));
-
-            modelBuilder.Entity<UserTerminalMapping>().HasQueryFilter(p => this.user.IsAdmin() || ((user.IsTerminal() && user.GetTerminalID() == p.TerminalID) || p.Terminal.MerchantID == user.GetMerchantID()));
-
-            modelBuilder.Entity<Item>()
-                .HasQueryFilter(p => p.Active && (this.user.IsAdmin() || p.Merchant.MerchantID == this.user.GetMerchantID()));
-
-            modelBuilder.Entity<Consumer>()
-                .HasQueryFilter(p => p.Active && (this.user.IsAdmin() || p.MerchantID == this.user.GetMerchantID()));
+            modelBuilder.ApplyConfiguration(new SystemSettingsConfiguration());
+            modelBuilder.ApplyConfiguration(new ImpersonationConfiguration());
 
             var cascadeFKs = modelBuilder.Model.GetEntityTypes()
                 .SelectMany(t => t.GetForeignKeys())
@@ -144,22 +157,52 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.Label).IsRequired(true).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.ActivityStartDate).IsRequired(false);
 
-                builder.OwnsOne(b => b.Settings, s =>
-                {
-                    s.Property(p => p.CvvRequired).HasColumnName("CvvRequired").HasDefaultValue(false);
-                    s.Property(p => p.J5Allowed).HasColumnName("J5Allowed").HasDefaultValue(false);
-                    s.Property(p => p.J2Allowed).HasColumnName("J2Allowed").HasDefaultValue(false);
-                    s.Property(p => p.CvvRequired).HasColumnName("CvvRequired").HasDefaultValue(false);
-                    s.Property(p => p.EnableDeletionOfUntransmittedTransactions).HasColumnName("EnableDeletionOfUntransmittedTransactions").HasDefaultValue(false);
-                    s.Property(p => p.NationalIDRequired).HasColumnName("NationalIDRequired").HasDefaultValue(false);
-                    s.Property(p => p.PaymentButtonSettings).HasColumnName("PaymentButtonSettings").IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
-                    s.Property(p => p.RedirectPageSettings).HasColumnName("RedirectPageSettings").IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
-                });
+                builder.Property(p => p.Settings).HasColumnName("Settings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
 
-                builder.OwnsOne(b => b.BillingSettings, s =>
-                {
-                    s.Property(p => p.BillingNotificationsEmails).HasColumnName("BillingNotificationsEmails").IsRequired(false);
-                });
+                builder.Property(p => p.BillingSettings).HasColumnName("BillingSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.CheckoutSettings).HasColumnName("CheckoutSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.PaymentRequestSettings).HasColumnName("PaymentRequestSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(b => b.EnabledFeatures).IsRequired(false).IsUnicode(false).HasConversion(FeatureEnumArrayConverter)
+                    .Metadata.SetValueComparer(FeatureEnumArrayComparer);
+
+                builder.Property(b => b.AggregatorTerminalReference).HasMaxLength(50).IsRequired(false).IsUnicode(false);
+
+                builder.Property(b => b.ProcessorTerminalReference).HasMaxLength(50).IsRequired(false).IsUnicode(false);
+
+                builder.Property(b => b.SharedApiKey).IsRequired(false).HasMaxLength(64);
+            }
+        }
+
+        internal class TerminalTemplateConfiguration : IEntityTypeConfiguration<TerminalTemplate>
+        {
+            public void Configure(EntityTypeBuilder<TerminalTemplate> builder)
+            {
+                builder.ToTable("TerminalTemplate");
+
+                builder.HasKey(b => b.TerminalTemplateID);
+                builder.Property(b => b.TerminalTemplateID).ValueGeneratedOnAdd();
+
+                builder.Property(p => p.UpdateTimestamp).IsRowVersion();
+
+                builder.Property(b => b.Label).IsRequired(true).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(p => p.Settings).HasColumnName("Settings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.BillingSettings).HasColumnName("BillingSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.CheckoutSettings).HasColumnName("CheckoutSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.PaymentRequestSettings).HasColumnName("PaymentRequestSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(b => b.EnabledFeatures).IsRequired(false).IsUnicode(false).HasConversion(FeatureEnumArrayConverter)
+                    .Metadata.SetValueComparer(FeatureEnumArrayComparer);
             }
         }
 
@@ -170,15 +213,45 @@ namespace Merchants.Business.Data
                 builder.ToTable("Feature");
 
                 builder.HasKey(b => b.FeatureID);
-                builder.Property(b => b.FeatureID).ValueGeneratedOnAdd();
+                builder.Property(b => b.FeatureID).ValueGeneratedNever();
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
-
-                builder.Property(b => b.FeatureCode).IsRequired(true).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.NameEN).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.NameHE).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.Price).HasColumnType("decimal(19,4)").HasDefaultValue(decimal.Zero).IsRequired(false);
+            }
+        }
+
+        internal class PlansConfiguration : IEntityTypeConfiguration<Plan>
+        {
+            public void Configure(EntityTypeBuilder<Plan> builder)
+            {
+                builder.ToTable("Plan");
+
+                builder.HasKey(b => b.PlanID);
+                builder.Property(b => b.PlanID).ValueGeneratedOnAdd();
+
+                builder.Property(p => p.UpdateTimestamp).IsRowVersion();
+                builder.Property(b => b.Title).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                builder.Property(b => b.Description).IsRequired(false).IsUnicode(true);
+
+                builder.Property(b => b.Price).HasColumnType("decimal(19,4)").HasDefaultValue(decimal.Zero).IsRequired(false);
+            }
+        }
+
+        internal class TerminalTemplateExternalSystemConfiguration : IEntityTypeConfiguration<TerminalTemplateExternalSystem>
+        {
+            public void Configure(EntityTypeBuilder<TerminalTemplateExternalSystem> builder)
+            {
+                builder.ToTable("TerminalTemplateExternalSystem");
+
+                builder.HasKey(b => b.TerminalTemplateExternalSystemID);
+                builder.Property(b => b.TerminalTemplateExternalSystemID).ValueGeneratedOnAdd();
+
+                builder.Property(p => p.UpdateTimestamp).IsRowVersion();
+
+                builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
             }
         }
 
@@ -193,7 +266,6 @@ namespace Merchants.Business.Data
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
-                builder.Property(b => b.ExternalProcessorReference).IsRequired(false).HasMaxLength(50).IsUnicode(false);
                 builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
             }
         }
@@ -211,7 +283,7 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
                 builder.Property(b => b.UserID).IsRequired(true);
 
-                builder.HasIndex(idx => new { idx.UserID, idx.TerminalID }).IsUnique(true);
+               // builder.HasIndex(idx => new { idx.UserID, idx.TerminalID }).IsUnique(true);
 
                 builder.Property(b => b.Roles).IsRequired(false).IsUnicode(false).HasConversion(StringArrayConverter)
                     .Metadata.SetValueComparer(StringArrayComparer);
@@ -306,6 +378,54 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.ConsumerAddress).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+            }
+        }
+
+        internal class CurrencyRateConfiguration : IEntityTypeConfiguration<CurrencyRate>
+        {
+            public void Configure(EntityTypeBuilder<CurrencyRate> builder)
+            {
+                builder.ToTable("CurrencyRate");
+
+                builder.HasKey(b => b.CurrencyRateID);
+                builder.Property(b => b.CurrencyRateID).ValueGeneratedOnAdd();
+
+                builder.Property(b => b.Date).IsRequired(false).HasColumnType("date");
+
+                builder.Property(b => b.Rate).HasColumnType("decimal(19,4)").IsRequired(false);
+            }
+        }
+
+        internal class SystemSettingsConfiguration : IEntityTypeConfiguration<SystemSettings>
+        {
+            public void Configure(EntityTypeBuilder<SystemSettings> builder)
+            {
+                builder.ToTable("SystemSettings");
+
+                builder.HasKey(b => b.SystemSettingsID);
+                builder.Property(b => b.SystemSettingsID).ValueGeneratedNever();
+
+                builder.Property(p => p.UpdateTimestamp).IsRowVersion();
+
+                builder.Property(p => p.Settings).HasColumnName("Settings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.BillingSettings).HasColumnName("BillingSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.CheckoutSettings).HasColumnName("CheckoutSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.PaymentRequestSettings).HasColumnName("PaymentRequestSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
+                builder.Property(p => p.InvoiceSettings).HasColumnName("InvoiceSettings").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+            }
+        }
+
+        internal class ImpersonationConfiguration : IEntityTypeConfiguration<Impersonation>
+        {
+            public void Configure(EntityTypeBuilder<Impersonation> builder)
+            {
+                builder.ToTable("Impersonation");
+
+                builder.HasKey(b => b.UserId);
             }
         }
     }

@@ -9,6 +9,7 @@ using IdentityServer.Data;
 using IdentityServer.Helpers;
 using IdentityServer.Models;
 using IdentityServerClient;
+using Merchants.Api.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -33,6 +34,7 @@ namespace IdentityServer.Controllers
         private readonly IEmailSender emailSender;
         private readonly ICryptoService cryptoService;
         private readonly ApplicationSettings configuration;
+        private readonly IMerchantsApiClient merchantsApiClient;
 
         public UserManagementApiController(
             UserManager<ApplicationUser> userManager,
@@ -41,7 +43,8 @@ namespace IdentityServer.Controllers
             ILogger<UserManagementApiController> logger,
             IEmailSender emailSender,
             ICryptoService cryptoService,
-            IOptions<ApplicationSettings> configuration
+            IOptions<ApplicationSettings> configuration,
+            IMerchantsApiClient merchantsApiClient
             )
         {
             this.userManager = userManager;
@@ -51,6 +54,7 @@ namespace IdentityServer.Controllers
             this.emailSender = emailSender;
             this.cryptoService = cryptoService;
             this.configuration = configuration?.Value;
+            this.merchantsApiClient = merchantsApiClient;
         }
 
         /// <summary>
@@ -110,23 +114,22 @@ namespace IdentityServer.Controllers
                     return new BadRequestResult();
                 }
 
+                var allClaims = await userManager.GetClaimsAsync(user);
+
+                await userManager.AddClaim(allClaims, user, Claims.MerchantIDClaim, model.MerchantID);
+                await userManager.AddToRoleAsync(user, "Merchant");
+
                 logger.LogInformation("User created a new account");
             }
 
             //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ConfirmationEmailExpirationInHours));
 
-            var callbackUrl = Url.EmailConfirmationLink(code, Request.Scheme);
+            var callbackUrl = Url.EmailConfirmationLink(code, Request?.Scheme ?? "https");
             await emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-
-            var allClaims = await userManager.GetClaimsAsync(user);
-
-            await userManager.AddClaim(allClaims, user, "extension_MerchantID", model.MerchantID);
 
             //await _userManager.AddClaim(allClaims, user, "extension_FirstName", model.FirstName);
             //await _userManager.AddClaim(allClaims, user, "extension_LastName", model.LastName);
-
-            await userManager.AddToRoleAsync(user, "Merchant");
 
             var operationResult = new UserOperationResponse
             {
@@ -151,15 +154,45 @@ namespace IdentityServer.Controllers
                 return NotFound(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserNotFound });
             }
 
-            if (user.PasswordHash != null)
+            if (await userManager.IsLockedOutAsync(user))
             {
-                return Conflict(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserAlreadyExists, Message = "User has already set password" });
+                var unlockRes = await userManager.SetLockoutEndDateAsync(user, null);
+
+                if (!unlockRes.Succeeded)
+                {
+                    return BadRequest(new UserOperationResponse
+                    {
+                        UserID = new Guid(user.Id),
+                        ResponseCode = UserOperationResponseCodeEnum.UnknwnError,
+                        Message = unlockRes.Errors.FirstOrDefault()?.Description
+                    });
+                }
             }
 
-            var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ConfirmationEmailExpirationInHours));
+            if (user.PasswordHash != null)
+            {
+                //TODO: send new merchant available email
+                //return Conflict(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserAlreadyExists, Message = "User has already set password" });
+            }
+            else
+            {
+                var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ConfirmationEmailExpirationInHours));
 
-            var callbackUrl = Url.EmailConfirmationLink(code, Request.Scheme);
-            await emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+                var callbackUrl = Url.EmailConfirmationLink(code, Request.Scheme);
+                await emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+            }
+
+            if (!string.IsNullOrEmpty(model.MerchantID))
+            {
+                var allClaims = await userManager.GetClaimsAsync(user);
+
+                var merchantClaim = allClaims.FirstOrDefault(c => c.Type == Claims.MerchantIDClaim && c.Value == model.MerchantID);
+
+                if (merchantClaim == null)
+                {
+                    await userManager.AddClaim(allClaims, user, Claims.MerchantIDClaim, model.MerchantID);
+                }
+            }
 
             var operationResult = new UserOperationResponse
             {
@@ -278,6 +311,14 @@ namespace IdentityServer.Controllers
                 });
             }
 
+            await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+            {
+                UserActivity = Merchants.Shared.Enums.UserActivityEnum.Locked,
+                UserID = user.Id,
+                DisplayName = user.UserName,
+                Email = user.Email
+            });
+
             res = await userManager.SetLockoutEndDateAsync(user, DateTime.UtcNow.AddYears(100));
 
             if (!res.Succeeded)
@@ -321,11 +362,63 @@ namespace IdentityServer.Controllers
                 });
             }
 
+            await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+            {
+                UserActivity = Merchants.Shared.Enums.UserActivityEnum.Unlocked,
+                UserID = user.Id,
+                DisplayName = user.UserName,
+                Email = user.Email
+            });
+
             return Ok(new UserOperationResponse
             {
                 UserID = new Guid(user.Id),
                 ResponseCode = UserOperationResponseCodeEnum.UserUnlocked,
                 Message = "User account unlocked"
+            });
+        }
+
+        [HttpPost]
+        [Route("user/{userId}/unlink/{merchantId}")]
+        public async Task<IActionResult> Unlink([FromRoute]string userId, [FromRoute]string merchantId)
+        {
+            var user = userManager.Users.FirstOrDefault(x => x.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound($"User {userId} does not exist");
+            }
+
+            var allClaims = await userManager.GetClaimsAsync(user);
+
+            var merchantClaim = allClaims.FirstOrDefault(c => c.Type == Claims.MerchantIDClaim && c.Value == merchantId);
+
+            if (merchantClaim == null)
+            {
+                return Ok(new UserOperationResponse
+                {
+                    UserID = new Guid(user.Id),
+                    ResponseCode = UserOperationResponseCodeEnum.UserUnlinkedFromMerchant,
+                    Message = "User is not linked to merchant"
+                });
+            }
+
+            await userManager.RemoveClaimAsync(user, merchantClaim);
+
+            // check if user has any merchant claims left, if not we block him
+            allClaims = (await userManager.GetClaimsAsync(user)).Where(c => c.Type == Claims.MerchantIDClaim).ToList();
+
+            if (allClaims.Count == 0)
+            {
+                await userManager.SetLockoutEnabledAsync(user, true);
+                await userManager.SetLockoutEndDateAsync(user, DateTime.UtcNow.AddYears(100));
+            }
+
+            return Ok(new UserOperationResponse
+            {
+                UserID = new Guid(user.Id),
+                ResponseCode = UserOperationResponseCodeEnum.UserUnlinkedFromMerchant,
+                Message = "User unlinked from merchant"
             });
         }
 

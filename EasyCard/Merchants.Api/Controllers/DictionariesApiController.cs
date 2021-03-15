@@ -4,6 +4,7 @@ using Merchants.Api.Models.Terminal;
 using Merchants.Api.Services;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
 using Shared.Api.Models;
@@ -29,10 +30,16 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
+        [ResponseCache(VaryByQueryKeys = new string[] { "showForTemplatesOnly" })]
         [Route("externalsystems")]
-        public async Task<ActionResult<SummariesResponse<ExternalSystemSummary>>> GetExternalSystems()
+        public async Task<ActionResult<SummariesResponse<ExternalSystemSummary>>> GetExternalSystems(bool showForTemplatesOnly = false)
         {
             var exSystems = externalSystemsService.GetExternalSystems();
+
+            if (showForTemplatesOnly)
+            {
+                exSystems = exSystems.Where(s => s.CanBeUsedInTerminalTemplate);
+            }
 
             var response = new SummariesResponse<ExternalSystemSummary> { NumberOfRecords = exSystems.Count(), Data = mapper.Map<IEnumerable<ExternalSystemSummary>>(exSystems) };
 
@@ -40,9 +47,14 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<MerchantsDictionaries>> GetMerchants([FromQuery]string language)
+        [Route("merchant")]
+        [ResponseCache(VaryByHeader = "User-Agent", Duration = 3600)]
+        public async Task<ActionResult<MerchantsDictionaries>> GetDictionaries()
         {
-            var dictionaries = DictionariesService.GetDictionaries(language);
+            var rqf = Request.HttpContext.Features.Get<IRequestCultureFeature>();
+            var culture = rqf.RequestCulture?.Culture;
+
+            var dictionaries = DictionariesService.GetDictionaries(culture);
 
             return Ok(dictionaries);
         }

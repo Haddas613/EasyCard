@@ -1,15 +1,18 @@
 ﻿using Shared.Business;
+using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Transactions.Shared.Enums;
 using Transactions.Shared.Models;
 
 namespace Transactions.Business.Entities
 {
-    public class BillingDeal : IEntityBase<Guid>, IAuditEntity
+    public class BillingDeal : IEntityBase<Guid>, IAuditEntity, IFinancialItem, ITerminalEntity, IMerchantEntity
     {
         public BillingDeal()
         {
@@ -37,37 +40,12 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Terminal
         /// </summary>
-        public Guid? TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
 
         /// <summary>
         /// Merchant
         /// </summary>
-        public Guid? MerchantID { get; set; }
-
-        /// <summary>
-        /// Shva or other processor
-        /// </summary>
-        public long? ProcessorID { get; set; }
-
-        /// <summary>
-        /// Clearing House or Upay
-        /// </summary>
-        public long? AggregatorID { get; set; }
-
-        /// <summary>
-        /// EasyInvoice or RapidOne
-        /// </summary>
-        public long? InvoicingID { get; set; }
-
-        /// <summary>
-        /// Marketer ID
-        /// </summary>
-        public long? MarketerID { get; set; }
-
-        /// <summary>
-        /// Processing status
-        /// </summary>
-        public BillingDealStatusEnum Status { get; set; }
+        public Guid MerchantID { get; set; }
 
         /// <summary>
         /// Currency
@@ -75,22 +53,26 @@ namespace Transactions.Business.Entities
         public CurrencyEnum Currency { get; set; }
 
         /// <summary>
-        /// Number Of payments (cannot be more than 999)
-        /// </summary>
-        public int NumberOfPayments { get; set; }
-
-        /// <summary>
-        /// This transaction amount
+        /// Single transaction amount
         /// </summary>
         public decimal TransactionAmount { get; set; }
 
+        [NotMapped]
+        public decimal Amount { get => TransactionAmount; set => TransactionAmount = value; }
+
+        public decimal VATRate { get; set; }
+
+        public decimal VATTotal { get; set; }
+
+        public decimal NetTotal { get; set; }
+
         /// <summary>
-        /// TotalAmount = TransactionAmount * NumberOfPayments
+        /// Amount of transactions processed so far
         /// </summary>
         public decimal TotalAmount { get; set; }
 
         /// <summary>
-        /// Current deal (billing)
+        /// Current deal number
         /// </summary>
         public int? CurrentDeal { get; set; }
 
@@ -98,6 +80,11 @@ namespace Transactions.Business.Entities
         /// Date-time when last created initially in UTC
         /// </summary>
         public DateTime? CurrentTransactionTimestamp { get; set; }
+
+        /// <summary>
+        /// Date-time when next transaction should be generated
+        /// </summary>
+        public DateTime? NextScheduledTransaction { get; set; }
 
         /// <summary>
         /// Reference to last deal
@@ -125,6 +112,16 @@ namespace Transactions.Business.Entities
         public BillingSchedule BillingSchedule { get; set; }
 
         /// <summary>
+        /// Invoice details
+        /// </summary>
+        public InvoiceDetails InvoiceDetails { get; set; }
+
+        /// <summary>
+        /// Create document for transaction
+        /// </summary>
+        public bool IssueInvoice { get; set; }
+
+        /// <summary>
         /// Date-time when transaction status updated
         /// </summary>
         public DateTime? UpdatedDate { get; set; }
@@ -148,5 +145,9 @@ namespace Transactions.Business.Entities
         public string SourceIP { get; set; }
 
         public bool Active { get; set; }
+
+        public DocumentOriginEnum DocumentOrigin { get; set; }
+
+        // TODO: recalculate items and fill default SKU
     }
 }

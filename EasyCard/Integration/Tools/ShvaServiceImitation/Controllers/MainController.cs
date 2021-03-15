@@ -30,6 +30,7 @@ namespace ShvaServiceImitation.Controllers
                 AshStartRequestBody ashStartRequest => new ObjectResult(await AshStart(ashStartRequest)),
                 AshAuthRequestBody ashAuthRequest => new ObjectResult(await AshAuth(ashAuthRequest)),
                 AshEndRequestBody ashEndRequest => new ObjectResult(await AshEnd(ashEndRequest)),
+                TransEMVRequestBody transEMVRequest => new ObjectResult(await TransEMV(transEMVRequest)),
                 _ => StatusCode(400, "unknown envelope")
             };
 
@@ -100,6 +101,21 @@ namespace ShvaServiceImitation.Controllers
                 }
             };
             response.AshEndResult = 777;
+
+            return await Task.FromResult(new Envelope
+            {
+                Body = new Body
+                {
+                    Content = response
+                }
+            });
+        }
+
+        private async Task<Envelope> TransEMV(TransEMVRequestBody body)
+        {
+            var response = new TransEMVResponseBody();
+
+            response.RefNumber = Guid.NewGuid().ToString().Substring(0, 6);
 
             return await Task.FromResult(new Envelope
             {

@@ -1,4 +1,8 @@
 ﻿using Merchants.Business.Entities.Merchant;
+using Merchants.Business.Entities.User;
+using Merchants.Business.Models.Merchant;
+using Merchants.Shared.Enums;
+using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
 using System;
 using System.Collections.Generic;
@@ -13,5 +17,15 @@ namespace Merchants.Business.Services
         IQueryable<Merchant> GetMerchants();
 
         IQueryable<MerchantHistory> GetMerchantHistories();
+
+        IQueryable<UserTerminalMapping> GetMerchantUsers();
+
+        IQueryable<UserInfo> GetMerchantUsers(Guid merchantID);
+
+        Task LinkUserToMerchant(UserInfo userID, Guid merchantID, IDbContextTransaction dbTransaction = null);
+
+        Task UnLinkUserFromMerchant(Guid userID, Guid merchantID, IDbContextTransaction dbTransaction = null);
+
+        Task UpdateUserStatus(UpdateUserStatusData data, IDbContextTransaction dbTransaction = null);
     }
 }

@@ -88,6 +88,15 @@ namespace IdentityServer.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Link with instructions has been sent to that email.
+        /// </summary>
+        public static string ForgotPasswordSuccess {
+            get {
+                return ResourceManager.GetString("ForgotPasswordSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please set new password.
         /// </summary>
         public static string ResetPassword {

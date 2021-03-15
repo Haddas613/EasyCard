@@ -12,7 +12,7 @@ namespace Shared.Helpers.Templating
 
             foreach (var s in substitutions)
             {
-                sb.Replace($"{{{s.Substitution}}}", s.Value);
+                sb.Replace("{{" + s.Substitution + "}}", s.Value);
             }
 
             return sb.ToString();

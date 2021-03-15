@@ -8,9 +8,6 @@ namespace Transactions.Api.Models.Transactions.Enums
 {
     public enum QuickStatusFilterTypeEnum : short
     {
-        [EnumMember(Value = "None")]
-        None = 0,
-
         [EnumMember(Value = "Pending")]
         Pending = 1,
 
@@ -19,5 +16,11 @@ namespace Transactions.Api.Models.Transactions.Enums
 
         [EnumMember(Value = "Failed")]
         Failed = 3,
+
+        [EnumMember(Value = "Canceled")]
+        Canceled = 4,
+
+        [EnumMember(Value = "AwaitingForTransmission")]
+        AwaitingForTransmission = 5,
     }
 }
