@@ -37,6 +37,7 @@ using Shared.Helpers.Security;
 using AutoMapper;
 using SharedApi = Shared.Api;
 using Shared.Api.Configuration;
+using IdentityServer4.Extensions;
 
 namespace IdentityServer
 {
@@ -128,6 +129,7 @@ namespace IdentityServer
 
             var builder = services.AddIdentityServer(options =>
             {
+                options.IssuerUri = identity.Authority;
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
@@ -262,6 +264,8 @@ namespace IdentityServer
 
             var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
 
+            //app.UseCookiePolicy();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -273,6 +277,14 @@ namespace IdentityServer
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
+            var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>().Value;
+
+            app.Use((context, next) =>
+            {
+                context.SetIdentityServerOrigin(cfg.Authority);
+                return next();
             });
 
             app.UseRouting();
