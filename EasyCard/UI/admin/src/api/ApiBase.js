@@ -216,21 +216,21 @@ class ApiBase {
     }
 
     async _checkAppVersion(responseHeaders) {
-        if (this.lastCheckTimestamp && this.lastCheckTimestamp.getTime() > (new Date()).setMinutes(-5)) {
-            return;
-        }
+        // if (this.lastCheckTimestamp && this.lastCheckTimestamp.getTime() > (new Date()).setMinutes(-5)) {
+        //     return;
+        // }
 
-        let responseHeaderVal = responseHeaders.get('x-version');
-        if(!responseHeaderVal){
-            return;
-        }
+        // let responseHeaderVal = responseHeaders.get('x-version');
+        // if(!responseHeaderVal){
+        //     return;
+        // }
 
-        if (responseHeaderVal.toLowerCase().trim() != this.cfg.VUE_APP_VERSION.toLowerCase().trim()) {
-            store.commit("ui/setVersionMismatch", true);
-        }else{
-            store.commit("ui/setVersionMismatch", false);
-        }
-        this.lastCheckTimestamp = new Date();
+        // if (responseHeaderVal.toLowerCase().trim() != this.cfg.VUE_APP_VERSION.toLowerCase().trim()) {
+        //     store.commit("ui/setVersionMismatch", true);
+        // }else{
+        //     store.commit("ui/setVersionMismatch", false);
+        // }
+        // this.lastCheckTimestamp = new Date();
     }
 
     format(d, headers, dictionaries) {

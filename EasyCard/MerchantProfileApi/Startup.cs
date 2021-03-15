@@ -273,18 +273,18 @@ namespace ProfileApi
 
             var apiSettings = Configuration.GetSection("API")?.Get<ApiSettings>();
 
-            if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
-            {
-                app.Use(async (context, next) =>
-                {
-                    context.Response.Headers.Add("X-Version", apiSettings.Version);
-                    await next.Invoke();
-                });
-            }
-            else
-            {
-                logger.LogError("Missing API.Version in appsettings.json");
-            }
+            //if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
+            //{
+            //    app.Use(async (context, next) =>
+            //    {
+            //        context.Response.Headers.Add("X-Version", apiSettings.Version);
+            //        await next.Invoke();
+            //    });
+            //}
+            //else
+            //{
+            //    logger.LogError("Missing API.Version in appsettings.json");
+            //}
 
             app.UseRequestLocalization(options =>
             {
@@ -321,15 +321,16 @@ namespace ProfileApi
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Home");
             });
 
-            app.UseSpa(spa =>
-            {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
+            //app.UseSpa(spa =>
+            //{
+            //    // To learn more about options for serving an Angular SPA from ASP.NET Core,
+            //    // see https://go.microsoft.com/fwlink/?linkid=864501
 
-                spa.Options.SourcePath = "wwwroot";
-            });
+            //    spa.Options.SourcePath = "wwwroot";
+            //});
 
             loggerFactory.CreateLogger("MerchantProfile.Startup").LogInformation("Started");
         }

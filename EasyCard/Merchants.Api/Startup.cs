@@ -242,18 +242,18 @@ namespace Merchants.Api
 
             var apiSettings = Configuration.GetSection("API")?.Get<ApiSettings>();
 
-            if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
-            {
-                app.Use(async (context, next) =>
-                {
-                    context.Response.Headers.Add("X-Version", apiSettings.Version);
-                    await next.Invoke();
-                });
-            }
-            else
-            {
-                logger.LogError("Missing API.Version in appsettings.json");
-            }
+            //if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
+            //{
+            //    app.Use(async (context, next) =>
+            //    {
+            //        context.Response.Headers.Add("X-Version", apiSettings.Version);
+            //        await next.Invoke();
+            //    });
+            //}
+            //else
+            //{
+            //    logger.LogError("Missing API.Version in appsettings.json");
+            //}
 
             app.UseRequestLocalization(options =>
             {
@@ -292,22 +292,16 @@ namespace Merchants.Api
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Home");
             });
 
-            //app.UseEndpoints(endpoints =>
+            //app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
             //{
-            //    endpoints.MapControllerRoute(
-            //        name: "default",
-            //        pattern: "{controller=Home}/{action=Index}/{id?}");
+            //    builder.UseSpa(spa =>
+            //    {
+            //        spa.Options.DefaultPage = "/";
+            //    });
             //});
-
-            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
-            {
-                builder.UseSpa(spa =>
-                {
-                    spa.Options.SourcePath = "wwwroot";
-                });
-            });
 
             var config = serviceProvider.GetRequiredService<IConfiguration>();
             var connectionString = config.GetConnectionString("DefaultConnection");
