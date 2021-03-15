@@ -87,8 +87,8 @@ namespace Transactions.Api
                                             apiConfig.MerchantsManagementApiAddress
                                             )
                         .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .WithExposedHeaders("X-Version");
+                        .AllowAnyMethod();
+                        //.WithExposedHeaders("X-Version");
                     });
             });
 
@@ -373,18 +373,18 @@ namespace Transactions.Api
 
             var apiSettings = serviceProvider.GetRequiredService<IOptions<ApiSettings>>().Value;
 
-            if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
-            {
-                app.Use(async (context, next) =>
-                {
-                    context.Response.Headers.Add("X-Version", apiSettings.Version);
-                    await next.Invoke();
-                });
-            }
-            else
-            {
-                logger.LogError("Missing API.Version in appsettings.json");
-            }
+            //if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
+            //{
+            //    app.Use(async (context, next) =>
+            //    {
+            //        context.Response.Headers.Add("X-Version", apiSettings.Version);
+            //        await next.Invoke();
+            //    });
+            //}
+            //else
+            //{
+            //    logger.LogError("Missing API.Version in appsettings.json");
+            //}
 
             app.UseRequestLocalization(options =>
             {

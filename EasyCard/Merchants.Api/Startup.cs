@@ -61,8 +61,8 @@ namespace Merchants.Api
                             "http://localhost:8081",
                             "http://ecng-merchants.azurewebsites.net")
                         .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .WithExposedHeaders("X-Version");
+                        .AllowAnyMethod();
+                        //.WithExposedHeaders("X-Version");
                     });
             });
 
@@ -92,6 +92,7 @@ namespace Merchants.Api
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
+                    options.ClaimsIssuer = identity.Authority;
                     options.Authority = identity.Authority;
                     options.RequireHttpsMetadata = true;
                     options.RoleClaimType = "role";

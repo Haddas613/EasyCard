@@ -70,8 +70,8 @@ namespace ProfileApi
                             "http://localhost:4200",
                             "http://localhost:8080")
                         .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .WithExposedHeaders("X-Version");
+                        .AllowAnyMethod();
+                        //.WithExposedHeaders("X-Version");
                     });
             });
 
@@ -83,6 +83,7 @@ namespace ProfileApi
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
+                    options.ClaimsIssuer = identity.Authority;
                     options.Authority = identity.Authority;
                     options.RequireHttpsMetadata = true;
                     options.RoleClaimType = "role";

@@ -58,6 +58,7 @@ namespace Reporting.Api
             });
 
             var appConfig = Configuration.GetSection("AppConfig").Get<ApplicationSettings>();
+            var apiConfig = Configuration.GetSection("API").Get<ApiSettings>();
 
             services.AddCors(options =>
             {
@@ -68,10 +69,12 @@ namespace Reporting.Api
                                             "http://localhost:8080",
                                             "http://localhost:8081",
                                             "https://ecng-profile.azurewebsites.net",
-                                            "https://ecng-merchants.azurewebsites.net")
+                                            "https://ecng-merchants.azurewebsites.net",
+                                            apiConfig.MerchantProfileURL,
+                                            apiConfig.MerchantsManagementApiAddress)
                         .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .WithExposedHeaders("X-Version");
+                        .AllowAnyMethod();
+                        //.WithExposedHeaders("X-Version");
                     });
             });
 
@@ -83,6 +86,7 @@ namespace Reporting.Api
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
+                    options.ClaimsIssuer = identity.Authority;
                     options.Authority = identity.Authority;
                     options.RequireHttpsMetadata = true;
                     options.RoleClaimType = "role";
@@ -258,18 +262,18 @@ namespace Reporting.Api
 
             var apiSettings = Configuration.GetSection("API")?.Get<ApiSettings>();
 
-            if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
-            {
-                app.Use(async (context, next) =>
-                {
-                    context.Response.Headers.Add("X-Version", apiSettings.Version);
-                    await next.Invoke();
-                });
-            }
-            else
-            {
-                logger.LogError("Missing API.Version in appsettings.json");
-            }
+            //if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
+            //{
+            //    app.Use(async (context, next) =>
+            //    {
+            //        context.Response.Headers.Add("X-Version", apiSettings.Version);
+            //        await next.Invoke();
+            //    });
+            //}
+            //else
+            //{
+            //    logger.LogError("Missing API.Version in appsettings.json");
+            //}
 
             app.UseRequestLocalization(options =>
             {
