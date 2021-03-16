@@ -61,8 +61,9 @@ namespace Merchants.Api
                             "http://localhost:8081",
                             "http://ecng-merchants.azurewebsites.net")
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
-                        //.WithExposedHeaders("X-Version");
+                        .AllowAnyMethod()
+                        .WithExposedHeaders(Headers.API_VERSION_HEADER)
+                        .WithExposedHeaders(Headers.UI_VERSION_HEADER);
                     });
             });
 
@@ -76,17 +77,6 @@ namespace Merchants.Api
             var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
 
             services.AddDistributedMemoryCache();
-
-            //services.AddAuthentication() // TODO: bearer
-            //    .AddIdentityServerAuthentication("token", options =>
-            //    {
-            //        options.Authority = identity.Authority;
-            //        options.RequireHttpsMetadata = true;
-            //        options.RoleClaimType = "role";
-            //        options.NameClaimType = "name";
-            //        options.ApiName = "management_api"; // TODO
-            //        options.EnableCaching = true;
-            //    });
 
             //TODO
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
@@ -243,18 +233,19 @@ namespace Merchants.Api
 
             var apiSettings = Configuration.GetSection("API")?.Get<ApiSettings>();
 
-            //if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
-            //{
-            //    app.Use(async (context, next) =>
-            //    {
-            //        context.Response.Headers.Add("X-Version", apiSettings.Version);
-            //        await next.Invoke();
-            //    });
-            //}
-            //else
-            //{
-            //    logger.LogError("Missing API.Version in appsettings.json");
-            //}
+            if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
+            {
+                app.Use(async (context, next) =>
+                {
+                    context.Response.Headers.Add(Headers.API_VERSION_HEADER, apiSettings.Version);
+                    context.Response.Headers.Add(Headers.UI_VERSION_HEADER, apiSettings.Version);
+                    await next.Invoke();
+                });
+            }
+            else
+            {
+                logger.LogError("Missing API.Version in appsettings.json");
+            }
 
             app.UseRequestLocalization(options =>
             {

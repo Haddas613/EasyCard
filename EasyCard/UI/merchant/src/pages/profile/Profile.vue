@@ -67,6 +67,7 @@
 
 <script>
 import { mapState } from "vuex";
+import appConstants from "../../helpers/app-constants";
 export default {
   components: {
     LangSwitcher: () => import("../../components/LanguageSwitcher"),
@@ -79,10 +80,14 @@ export default {
       currencies: [],
       terminalSettingsFormValid: true,
       terminalRefreshed: false,
-      appVersion: this.$cfg.VUE_APP_VERSION
+      appVersion: ''
     };
   },
   async mounted() {
+    if(this.$cfg.VUE_APP_VERSION != appConstants.misc.uiDefaultVersion){
+      this.appVersion = this.$cfg.VUE_APP_VERSION;
+    }
+
     let terminals = await this.$api.terminals.getTerminals();
     this.terminals = terminals ? terminals.data : [];
     let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
