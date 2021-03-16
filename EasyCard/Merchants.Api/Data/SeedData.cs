@@ -28,10 +28,9 @@ namespace Merchants.Api.Data
                 using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     var context = scope.ServiceProvider.GetService<MerchantsContext>();
-                    var systemSettingsService = scope.ServiceProvider.GetService<ISystemSettingsService>();
 
                     // System settings
-                    var systemSettings = systemSettingsService.GetSystemSettings().Result;
+                    var systemSettings = context.SystemSettings.AsNoTracking().FirstOrDefault();
                     if (systemSettings == null)
                     {
                         systemSettings = new Business.Entities.System.SystemSettings
@@ -72,7 +71,8 @@ namespace Merchants.Api.Data
                             }
                         };
 
-                        systemSettingsService.UpdateSystemSettings(systemSettings).Wait();
+                        context.SystemSettings.Add(systemSettings);
+                        context.SaveChangesAsync().Wait();
                     }
 
                     SeedFeaturesData(context);

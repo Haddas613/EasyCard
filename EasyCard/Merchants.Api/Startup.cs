@@ -313,7 +313,7 @@ namespace Merchants.Api
             }
             catch (Exception ex)
             {
-                logger.LogError(ex.Message);
+                logger.LogError(ex, $"Failed to Seed data {ex.Message}");
             }
 
             loggerFactory.CreateLogger("AdminApi.Startup").LogInformation("Started");

@@ -21,7 +21,7 @@
     },
     "resourceName": {
       "type": "string",
-      "defaultValue": "stage",
+      "defaultValue": "ecng-live-merchants-stage",
       "metadata": {
         "description": "Name of the main resource to be created by this template."
       }
