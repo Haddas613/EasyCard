@@ -25,5 +25,7 @@ namespace IdentityServer.Security.Auditing
         Task RegisterConfirmEmail(ApplicationUser user, string fullName);
 
         Task RegisterTwoFactorCompleted(ApplicationUser user);
+
+        Task RegisterAction(ApplicationUser user, AuditingTypeEnum type);
     }
 }

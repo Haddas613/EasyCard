@@ -143,10 +143,49 @@ namespace IdentityServer.Controllers
 
             if (ModelState.IsValid)
             {
+                var user = await userManager.FindByNameAsync(model.Username);
+
+                if (user == null)
+                {
+                    return View("Error");
+                }
+
+                /**
+                 
+                 var twfEnabled = await userManager.GetTwoFactorEnabledAsync(user);
+
+                    if (!twfEnabled)
+                    {
+                        //Force enable 2fa for user
+                        var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProvider);
+                        await this.emailSender.Send2faEmailAsync(user.Email, code);
+
+                        return RedirectToAction(nameof(LoginWith2fa));
+                    }
+
+                 */
+
                 var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
+
                 if (result.Succeeded)
                 {
-                    var user = await userManager.FindByNameAsync(model.Username);
+                    var isAdmin = await userManager.IsInRoleAsync(user, Roles.BillingAdministrator) || await userManager.IsInRoleAsync(user, Roles.BusinessAdministrator);
+
+                    if (!isAdmin)
+                    {
+                        var twfEnabled = await userManager.GetTwoFactorEnabledAsync(user);
+
+                        if (!twfEnabled)
+                        {
+                            //Force enable 2fa for user
+                            await userManager.SetTwoFactorEnabledAsync(user, true);
+                            var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProvider);
+                            await this.emailSender.Send2faEmailAsync(user.Email, code);
+
+                            return RedirectToAction(nameof(LoginWith2fa));
+                        }
+                    }
+
                     await events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client?.ClientId));
                     await auditLogger.RegisterLogin(user);
 
@@ -179,12 +218,53 @@ namespace IdentityServer.Controllers
                     }
                 }
 
+                if (result.RequiresTwoFactor)
+                {
+                    var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProvider);
+
+                    if (string.IsNullOrWhiteSpace(code))
+                    {
+                        return View("Error");
+                    }
+
+                    var messageId = Guid.NewGuid().ToString();
+                    await this.emailSender.Send2faEmailAsync(user.Email, code);
+
+                    //try
+                    //{
+                    //    if (string.IsNullOrWhiteSpace(phoneNumber))
+                    //    {
+                    //        response = await this._emailSender.Send2faEmailAsync(user.Email, code);
+                    //    }
+                    //    else
+                    //    {
+                    //        response = await this._smsService.Send(new ClearingHouse.Shared.Services.SmsMessage
+                    //        {
+                    //            MerchantID = null,
+                    //            MessageId = messageId,
+                    //            Body = message,
+                    //            From = _configuration.SmsFromDetails,
+                    //            To = phoneNumber
+                    //        });
+                    //    }
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    logger.LogError($"Invalid send 2fa code operation - email: {user.Email}, user: {model.Username}", ex);
+                    //    return View("Error");
+                    //}
+
+                    //if (response?.Status == StatusEnum.Error)
+                    //{
+                    //    logger.LogError($"Invalid send 2fa code operation - email: {user.Email}, user: {model.Username}, response: {response?.Message}");
+                    //    return View("Error");
+                    //}
+
+                    return RedirectToAction(nameof(LoginWith2fa), new { model.ReturnUrl, model.RememberLogin });
+                }
+
                 if (result.IsLockedOut)
                 {
-                    //logger.LogWarning("User account locked out.");
-
-                    //await _managementApiClient.RegisterLocked(model.Email);
-
                     return RedirectToAction(nameof(Lockout));
                 }
 
@@ -195,6 +275,65 @@ namespace IdentityServer.Controllers
             // something went wrong, show form with error
             var vm = await BuildLoginViewModelAsync(model);
             return View(vm);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> LoginWith2fa(bool rememberLogin, string returnUrl = null)
+        {
+            // Ensure the user has gone through the username & password screen first
+            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            if (user == null)
+            {
+                return View("Error");
+            }
+
+            var model = new LoginWith2faViewModel { RememberLogin = rememberLogin };
+            ViewData["ReturnUrl"] = returnUrl;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LoginWith2fa(LoginWith2faViewModel model, bool rememberLogin, string returnUrl = null)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
+            }
+
+            var authenticatorCode = model.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+            var result = await signInManager.TwoFactorSignInAsync(TwoFactorAuthProvider, authenticatorCode, rememberLogin, model.RememberMachine);
+
+            if (result.Succeeded)
+            {
+                logger.LogInformation("User with ID {UserId} logged in with 2fa.", user.Id);
+
+                await auditLogger.RegisterLogin(user);
+
+                return RedirectToLocal(returnUrl);
+            }
+            else if (result.IsLockedOut)
+            {
+                logger.LogWarning("User with ID {UserId} account locked out.", user.Id);
+                return RedirectToAction(nameof(Lockout));
+            }
+            else
+            {
+                logger.LogWarning("Invalid authenticator code entered for user with ID {UserId}.", user.Id);
+                ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
+                return View();
+            }
         }
 
         [HttpGet]
@@ -336,6 +475,9 @@ namespace IdentityServer.Controllers
                 await auditLogger.RegisterConfirmEmail(user, $"{model.FirstName} {model.LastName}".Trim());
 
                 var allClaims = await userManager.GetClaimsAsync(user);
+
+                user.EmailConfirmed = true;
+                await userManager.UpdateAsync(user);
 
                 await userManager.AddClaim(allClaims, user, Claims.FirstNameClaim, model.FirstName);
                 await userManager.AddClaim(allClaims, user, Claims.LastNameClaim, model.LastName);
@@ -574,6 +716,50 @@ namespace IdentityServer.Controllers
         }
 
         [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> TwoFactorAuthSettings()
+        {
+            var user = await userManager.FindByIdAsync(User.GetDoneByID().Value.ToString());
+            var model = new TwoFactorAuthSettingsViewModel();
+
+            user.EmailConfirmed = true;
+            await userManager.UpdateAsync(user);
+
+            model.Enabled = await userManager.GetTwoFactorEnabledAsync(user);
+            model.UserInfo = user;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TwoFactorAuthSettings(TwoFactorAuthSettingsViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await userManager.FindByIdAsync(User.GetDoneByID().Value.ToString());
+
+            var result = await userManager.SetTwoFactorEnabledAsync(user, model.Enabled);
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("General", "Something went wrong. Try again later or contact administrator");
+            }
+            else
+            {
+                await auditLogger.RegisterAction(user, model.Enabled ? AuditingTypeEnum.UserEnabledTwoFactor : AuditingTypeEnum.UserDisabledTwoFactor);
+            }
+
+            model.UserInfo = user;
+
+            return View(model);
+        }
+
+        [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPasswordConfirmation()
         {
@@ -741,7 +927,7 @@ namespace IdentityServer.Controllers
 
             if (user.TwoFactorEnabled)
             {
-                return RedirectToAction(nameof(TwoFactorAuthentication));
+                return RedirectToAction(nameof(LoginWith2fa));
             }
 
             var model = new EnableAuthenticatorViewModel
@@ -764,7 +950,7 @@ namespace IdentityServer.Controllers
 
             if (user.TwoFactorEnabled)
             {
-                return RedirectToAction(nameof(TwoFactorAuthentication));
+                return RedirectToAction(nameof(LoginWith2fa));
             }
 
             if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
@@ -812,87 +998,7 @@ namespace IdentityServer.Controllers
                 await this.emailSender.Send2faEmailAsync(user.Email, code);
             }
 
-            return RedirectToAction(nameof(VerifyAuthentificatorCode));
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> VerifyAuthentificatorCode()
-        {
-            var user = await userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
-            }
-
-            if (user.TwoFactorEnabled)
-            {
-                return RedirectToAction(nameof(TwoFactorAuthentication));
-            }
-
-            return View(new VerifyAuthentificatorCodeViewModel { PhoneNumber = user.PhoneNumber });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> VerifyAuthentificatorCode(VerifyAuthentificatorCodeViewModel model)
-        {
-            var user = await userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
-            }
-
-            if (user.TwoFactorEnabled)
-            {
-                return RedirectToAction(nameof(TwoFactorAuthentication));
-            }
-
-            if (!ModelState.IsValid)
-            {
-                model.PhoneNumber = user.PhoneNumber;
-                return View(model);
-            }
-
-            //Strip spaces and hypens
-            var verificationCode = model.Code.Replace(" ", string.Empty).Replace("-", string.Empty);
-
-            var is2faTokenValid = await userManager.VerifyTwoFactorTokenAsync(user, TwoFactorAuthProvider, verificationCode);
-
-            if (!is2faTokenValid)
-            {
-                model.PhoneNumber = user.PhoneNumber;
-                ModelState.AddModelError("Code", "Verification code is invalid.");
-                return View(model);
-            }
-
-            await userManager.SetTwoFactorEnabledAsync(user, true);
-            await userManager.ResetAuthenticatorKeyAsync(user);
-            logger.LogInformation($"User with ID {user.Id} has confirmed 2FA with mobile phone number {user.PhoneNumber}", user.Id);
-
-            var allClaims = await userManager.GetClaimsAsync(user);
-            await auditLogger.RegisterTwoFactorCompleted(user);
-
-            // TODO: from query string
-            return Redirect(apiConfiguration.MerchantProfileURL);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> TwoFactorAuthentication()
-        {
-            var user = await userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
-            }
-
-            var model = new TwoFactorAuthenticationViewModel
-            {
-                HasAuthenticator = await userManager.GetAuthenticatorKeyAsync(user) != null,
-                Is2faEnabled = user.TwoFactorEnabled,
-                RecoveryCodesLeft = await userManager.CountRecoveryCodesAsync(user),
-            };
-
-            return View(model);
+            return RedirectToAction(nameof(LoginWith2fa));
         }
 
         /*****************************************/
