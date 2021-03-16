@@ -9,6 +9,9 @@ const appConstants = {
         defaultDashboardAltQuickDateType: 'lastMonth',
         defaultDashboardAltGranularity: 'week',
         defaultDashboardAltQuickDateFilterAltEnum: 'noComparison',
+    },
+    misc: {
+        uiDefaultVersion: "#{versionNumber}#"
     }
 };
 

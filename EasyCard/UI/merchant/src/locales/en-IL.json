@@ -61,6 +61,10 @@
   "UpdateAvailable": "Update Available",
   "Reference": "Reference",
   "Selection": "Selection",
+  "AverageSpend": "Average Spend",
+  "TotalCustomers": "Total Customers",
+  "NewCustomers": "New Customers",
+  "RepeatingCustomers": "Repeating Customers",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -251,6 +255,7 @@
   "ResetPrivateKey": "Reset Private Key",
   "ResetSharedKey": "Reset Shared Key",
   "ShowSharedKey": "Show Shared Key",
+  "IdentitySettings": "Identity Settings",
 
   "--AUTH--": null,
   "Login": "Login",

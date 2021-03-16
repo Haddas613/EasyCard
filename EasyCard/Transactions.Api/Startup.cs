@@ -159,18 +159,6 @@ namespace Transactions.Api
                    policy.RequireAssertion(context => context.User.IsAdmin()));
             });
 
-            //services.Configure<RequestLocalizationOptions>(options =>
-            //{
-            //    var supportedCultures = new List<CultureInfo>
-            //    {
-            //        new CultureInfo("en"),
-            //        new CultureInfo("he")
-            //    };
-            //    options.DefaultRequestCulture = new RequestCulture("en");
-            //    options.SupportedCultures = supportedCultures;
-            //    options.SupportedUICultures = supportedCultures;
-            //});
-
             DefaultContractResolver contractResolver = new DefaultContractResolver
             {
                 NamingStrategy = new CamelCaseNamingStrategy
@@ -373,18 +361,18 @@ namespace Transactions.Api
 
             var apiSettings = serviceProvider.GetRequiredService<IOptions<ApiSettings>>().Value;
 
-            //if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
-            //{
-            //    app.Use(async (context, next) =>
-            //    {
-            //        context.Response.Headers.Add("X-Version", apiSettings.Version);
-            //        await next.Invoke();
-            //    });
-            //}
-            //else
-            //{
-            //    logger.LogError("Missing API.Version in appsettings.json");
-            //}
+            if (apiSettings != null && !string.IsNullOrEmpty(apiSettings.Version))
+            {
+                app.Use(async (context, next) =>
+                {
+                    context.Response.Headers.Add(Headers.API_VERSION_HEADER, apiSettings.Version);
+                    await next.Invoke();
+                });
+            }
+            else
+            {
+                logger.LogError("Missing API.Version in appsettings.json");
+            }
 
             app.UseRequestLocalization(options =>
             {

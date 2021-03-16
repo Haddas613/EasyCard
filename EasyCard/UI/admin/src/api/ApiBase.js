@@ -18,6 +18,7 @@ import EasyInvoiceApi from './modules/integrations/EasyInvoiceApi';
 import ClearingHouseApi from './modules/integrations/ClearingHouseApi';
 import TransmissionApi from './modules/transactions/TransmissionsApi'
 import cfg from "../app.config";
+import appConstants from "../helpers/app-constants";
 
 class ApiBase {
     constructor() {
@@ -216,21 +217,22 @@ class ApiBase {
     }
 
     async _checkAppVersion(responseHeaders) {
-        // if (this.lastCheckTimestamp && this.lastCheckTimestamp.getTime() > (new Date()).setMinutes(-5)) {
-        //     return;
-        // }
+        if ((cfg.VUE_APP_VERSION == appConstants.misc.uiDefaultVersion) || this.lastCheckTimestamp && this.lastCheckTimestamp.getTime() > (new Date()).setMinutes(-5)) {
+            return;
+        }
 
-        // let responseHeaderVal = responseHeaders.get('x-version');
-        // if(!responseHeaderVal){
-        //     return;
-        // }
+        let responseHeaderVal = responseHeaders.get('x-ui-version');
 
-        // if (responseHeaderVal.toLowerCase().trim() != this.cfg.VUE_APP_VERSION.toLowerCase().trim()) {
-        //     store.commit("ui/setVersionMismatch", true);
-        // }else{
-        //     store.commit("ui/setVersionMismatch", false);
-        // }
-        // this.lastCheckTimestamp = new Date();
+        if(!responseHeaderVal || responseHeaderVal == appConstants.misc.uiDefaultVersion){
+            return;
+        }
+
+        if (responseHeaderVal.toLowerCase().trim() != this.cfg.VUE_APP_VERSION.toLowerCase().trim()) {
+            store.commit("ui/setVersionMismatch", true);
+        }else{
+            store.commit("ui/setVersionMismatch", false);
+        }
+        this.lastCheckTimestamp = new Date();
     }
 
     format(d, headers, dictionaries) {
