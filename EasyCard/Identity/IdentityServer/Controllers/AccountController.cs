@@ -722,10 +722,6 @@ namespace IdentityServer.Controllers
             var user = await userManager.FindByIdAsync(User.GetDoneByID().Value.ToString());
             var model = new TwoFactorAuthSettingsViewModel();
 
-            user.EmailConfirmed = true;
-            await userManager.UpdateAsync(user);
-
-            model.Enabled = await userManager.GetTwoFactorEnabledAsync(user);
             model.UserInfo = user;
 
             return View(model);
@@ -743,16 +739,16 @@ namespace IdentityServer.Controllers
 
             var user = await userManager.FindByIdAsync(User.GetDoneByID().Value.ToString());
 
-            var result = await userManager.SetTwoFactorEnabledAsync(user, model.Enabled);
+            //var result = await userManager.SetTwoFactorEnabledAsync(user, model.Enabled);
 
-            if (!result.Succeeded)
-            {
-                ModelState.AddModelError("General", "Something went wrong. Try again later or contact administrator");
-            }
-            else
-            {
-                await auditLogger.RegisterAction(user, model.Enabled ? AuditingTypeEnum.UserEnabledTwoFactor : AuditingTypeEnum.UserDisabledTwoFactor);
-            }
+            //if (!result.Succeeded)
+            //{
+            //    ModelState.AddModelError("General", "Something went wrong. Try again later or contact administrator");
+            //}
+            //else
+            //{
+            //    await auditLogger.RegisterAction(user, model.Enabled ? AuditingTypeEnum.UserEnabledTwoFactor : AuditingTypeEnum.UserDisabledTwoFactor);
+            //}
 
             model.UserInfo = user;
 

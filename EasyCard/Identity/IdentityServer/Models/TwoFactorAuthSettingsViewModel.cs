@@ -7,7 +7,6 @@ namespace IdentityServer.Models
 {
     public class TwoFactorAuthSettingsViewModel
     {
-        public bool Enabled { get; set; }
 
         public string Type { get; set; }
 
