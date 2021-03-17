@@ -63,7 +63,6 @@ namespace CheckoutPortal.Models
 
         [Required]
         [StringLength(19, MinimumLength = 9)]
-        [RegularExpression("^[0-9]*$")]
         [CreditCardPlus]
         public string CardNumber { get; set; }
 
