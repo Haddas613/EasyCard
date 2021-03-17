@@ -81,6 +81,9 @@ namespace Transactions.Api.Mapping
             CreateMap<InvoicingCreateDocumentResponse, Invoice>()
                  .ForMember(m => m.InvoiceNumber, s => s.MapFrom(src => src.DocumentNumber));
 
+            CreateMap<SharedIntegration.ExternalSystems.NullAggregatorSettings, PaymentTransaction>()
+                .ForAllMembers(d => d.Ignore());
+
         }
     }
 }
