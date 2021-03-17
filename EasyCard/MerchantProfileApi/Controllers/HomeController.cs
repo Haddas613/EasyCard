@@ -20,13 +20,20 @@ namespace MerchantProfileApi.Controllers
         private readonly ApiSettings apiSettings;
         private readonly IdentityServerClientSettings identityConfig;
         private readonly ApplicationInsightsSettings appInsightsSettings;
+        private readonly UISettings uISettings;
 
-        public HomeController(IHostEnvironment environment, IOptions<ApiSettings> apiSettings, IOptions<IdentityServerClientSettings> identityConfig, IOptions<ApplicationInsightsSettings> appInsightsSettings)
+        public HomeController(
+            IHostEnvironment environment,
+            IOptions<ApiSettings> apiSettings,
+            IOptions<IdentityServerClientSettings> identityConfig,
+            IOptions<ApplicationInsightsSettings> appInsightsSettings,
+            IOptions<UISettings> uISettings)
         {
             this.hostingEnvironment = environment;
             this.apiSettings = apiSettings.Value;
             this.identityConfig = identityConfig.Value;
             this.appInsightsSettings = appInsightsSettings.Value;
+            this.uISettings = uISettings.Value;
         }
 
         [HttpGet]
@@ -38,7 +45,8 @@ namespace MerchantProfileApi.Controllers
                 VUE_APP_PROFILE_API_BASE_ADDRESS = apiSettings.MerchantProfileURL,
                 VUE_APP_REPORT_API_BASE_ADDRESS = apiSettings.ReportingApiAddress,
                 VUE_APP_AUTHORITY = identityConfig.Authority,
-                VUE_APP_APPLICATION_INSIGHTS_KEY = appInsightsSettings.InstrumentationKey
+                VUE_APP_APPLICATION_INSIGHTS_KEY = appInsightsSettings.InstrumentationKey,
+                VUE_APP_SUPPORT_EMAIL = uISettings.SupportEmail
             };
 
             var str = JsonConvert.SerializeObject(config, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver() });
