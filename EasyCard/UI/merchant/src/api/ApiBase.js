@@ -149,7 +149,6 @@ class ApiBase {
         try {
             store.commit("ui/requestsCountIncrement");
             request = await request;
-
             if (request.ok) {
                 let result = await request.json();
                 if (result.status === "warning") {
@@ -173,7 +172,17 @@ class ApiBase {
                     Vue.toasted.show(i18n.t('NotFound'), { type: 'error' });
                     return null;
                 } else {
-                    appInsights.trackException({exception: new Error(`ApiError`), properties: request});
+                    let correlationId = null;
+                    try{
+                        let result = await request.json();
+                        correlationId = result.correlationId;
+                    }catch{}
+                    
+                    if(correlationId){
+                        appInsights.trackException({id: correlationId, exception: new Error(`UIApiError: ${correlationId}`)});
+                    }else{
+                        appInsights.trackException({exception: new Error(`UIApiError`)});
+                    }
                     Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error' });
                     return null;
                 }

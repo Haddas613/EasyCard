@@ -36,7 +36,7 @@ namespace MerchantProfileApi.Controllers
                 VUE_APP_PROFILE_API_BASE_ADDRESS = apiSettings.MerchantProfileURL,
                 VUE_APP_REPORT_API_BASE_ADDRESS = apiSettings.ReportingApiAddress,
                 VUE_APP_AUTHORITY = identityConfig.Authority,
-                VUE_APP_APPLICATION_INSIGHTS_KEY = "354136c0-2043-4c78-a7b7-a372cb59c8f3" // TODO
+                VUE_APP_APPLICATION_INSIGHTS_KEY = apiSettings.ApplicationInsightsKey,
             };
 
             var str = JsonConvert.SerializeObject(config, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver() });
