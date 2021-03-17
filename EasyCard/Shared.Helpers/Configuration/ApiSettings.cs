@@ -23,7 +23,5 @@ namespace Shared.Api.Configuration
         public string ReportingApiAddress { get; set; }
 
         public string CheckoutPortalUrl { get; set; }
-
-        public string ApplicationInsightsKey { get; set; }
     }
 }
