@@ -17,6 +17,7 @@ using Merchants.Shared.Enums;
 using Merchants.Shared.Models;
 using System;
 using System.Collections.Generic;
+using SharedIntegrations = Shared.Integration;
 
 namespace Merchants.Api.Mapping
 {
@@ -145,6 +146,9 @@ namespace Merchants.Api.Mapping
                .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<EasyInvoice.EasyInvoiceTerminalSettings, Terminal>()
+               .ForAllMembers(d => d.Ignore());
+
+            CreateMap<SharedIntegrations.ExternalSystems.NullAggregatorSettings, Terminal>()
                .ForAllMembers(d => d.Ignore());
         }
     }

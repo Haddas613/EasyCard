@@ -193,5 +193,12 @@ namespace IdentityServer.Security.Auditing
 
             await SaveAudit(audit);
         }
+
+        public async Task RegisterAction(ApplicationUser user, AuditingTypeEnum type)
+        {
+            var audit = await GetAudit(user, type);
+
+            await SaveAudit(audit);
+        }
     }
 }

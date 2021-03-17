@@ -201,6 +201,8 @@ namespace ProfileApi
             // DI: basics
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
             services.Configure<ApiSettings>(Configuration.GetSection("API"));
+            services.Configure<ApplicationInsightsSettings>(Configuration.GetSection("ApplicationInsights"));
+            services.Configure<UISettings>(Configuration.GetSection("UI"));
 
             services.AddHttpContextAccessor();
 

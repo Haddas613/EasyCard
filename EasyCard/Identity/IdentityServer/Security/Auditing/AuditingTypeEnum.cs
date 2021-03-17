@@ -22,5 +22,6 @@ namespace IdentityServer.Security.Auditing
 
         UserEnabledTwoFactor,
         PasswordChanged,
+        UserDisabledTwoFactor
     }
 }

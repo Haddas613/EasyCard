@@ -24,5 +24,8 @@ namespace MerchantProfileApi
 
         [JsonProperty("VUE_APP_APPLICATION_INSIGHTS_KEY")]
         public string VUE_APP_APPLICATION_INSIGHTS_KEY { get; set; }
+
+        [JsonProperty("VUE_APP_SUPPORT_EMAIL")]
+        public string VUE_APP_SUPPORT_EMAIL { get; set; }
     }
 }

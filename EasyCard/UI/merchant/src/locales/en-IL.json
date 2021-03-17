@@ -255,7 +255,7 @@
   "ResetPrivateKey": "Reset Private Key",
   "ResetSharedKey": "Reset Shared Key",
   "ShowSharedKey": "Show Shared Key",
-  "IdentitySettings": "Identity Settings",
+  "AccountSettings": "Account Settings",
 
   "--AUTH--": null,
   "Login": "Login",

@@ -149,7 +149,6 @@ class ApiBase {
         try {
             store.commit("ui/requestsCountIncrement");
             request = await request;
-
             if (request.ok) {
                 let result = await request.json();
                 if (result.status === "warning") {
@@ -173,8 +172,32 @@ class ApiBase {
                     Vue.toasted.show(i18n.t('NotFound'), { type: 'error' });
                     return null;
                 } else {
-                    appInsights.trackException({exception: new Error(`ApiError`), properties: request});
-                    Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error' });
+                    let correlationId = null;
+                    try{
+                        let result = await request.json();
+                        correlationId = result.correlationId;
+                    }catch{}
+
+                    if(correlationId){
+                        appInsights.trackException({id: correlationId, exception: new Error(`UIApiError: ${correlationId}`)});
+                    }else{
+                        appInsights.trackException({exception: new Error(`UIApiError`)});
+                    }
+                    Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error', action : [
+                        {
+                            icon : 'email',
+                            onClick : (e, toastObject) => {
+                                window.open(`mailto:${cfg.VUE_APP_SUPPORT_EMAIL}?body=Issue%20ID:${correlationId}`);
+                                toastObject.goAway(0);
+                            }
+                        },
+                        {
+                            icon : 'close',
+                            onClick : (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }
+                    ]});
                     return null;
                 }
             }

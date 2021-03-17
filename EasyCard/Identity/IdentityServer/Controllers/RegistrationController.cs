@@ -111,6 +111,10 @@ namespace IdentityServer.Controllers
 
             var user = await userManager.FindByEmailAsync(model.Email);
 
+            //TODO: Confirm email before setting this to true
+            user.EmailConfirmed = true;
+            await userManager.UpdateAsync(user);
+
             //set user password
             user.PasswordHash = userManager.PasswordHasher.HashPassword(user, model.Password);
             await userManager.UpdateAsync(user);

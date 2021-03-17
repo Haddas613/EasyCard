@@ -9,9 +9,9 @@
             </span>
           </v-col>
           <v-col cols="6" class="text-end mb-4">
-            <v-btn color="secondary" target="_blank" link :href="$cfg.VUE_APP_AUTHORITY + '/Home/ManageAccount'">
+            <v-btn class="mx-1" color="secondary" target="_blank" link :href="$cfg.VUE_APP_AUTHORITY + '/Home/ManageAccount'">
               <v-icon left>mdi-account</v-icon>
-              {{$t("IdentitySettings")}}
+              {{$t("AccountSettings")}}
             </v-btn>
             <v-btn @click="$oidc.signOut()">
               <v-icon left>mdi-logout</v-icon>
