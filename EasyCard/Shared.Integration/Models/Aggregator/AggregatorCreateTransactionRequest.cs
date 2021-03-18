@@ -98,5 +98,10 @@ namespace Shared.Integration.Models
         /// Special transaction type
         /// </summary>
         public SpecialTransactionTypeEnum SpecialTransactionType { get; set; }
+
+        /// <summary>
+        /// IsPinPad transaction
+        /// </summary>
+        public bool IsPinPad { get; set; }
     }
 }
