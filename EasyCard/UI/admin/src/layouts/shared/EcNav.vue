@@ -121,6 +121,11 @@ export default {
               to: "/admin/users/list"
             },
             {
+              icon: "mdi-credit-card-settings",
+              text: "CreditCardTokens",
+              to: "/admin/card-tokens/list"
+            },
+            {
               icon: "mdi-plus",
               text: "CreateMerchant",
               to: "/admin/merchants/create"

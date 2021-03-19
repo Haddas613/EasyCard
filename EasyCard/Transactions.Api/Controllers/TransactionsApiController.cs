@@ -238,6 +238,7 @@ namespace Transactions.Api.Controllers
                         .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
                         .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
 
+                    //TODO: Merchant name instead of BusinessName
                     summary.ForEach(s =>
                     {
                         if (terminals.ContainsKey(s.TerminalID))

@@ -79,6 +79,8 @@
   "CreateNewCustomer": "Create new Customer",
   "MerchantInfo": "Merchant Info",
   "UpdateAvailable": "Update Available",
+  "CreditCardTokens": "Credit Card Tokens",
+  "CardTokens": "Card tokens",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -267,6 +269,7 @@
   "TerminalName": "Terminal Name",
   "NewPassword": "New Password",
   "SHVATerminalName": "SHVA Terminal Name",
+  "ConsumerEmail": "Consumer Email",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

@@ -19,6 +19,7 @@ import ClearingHouseApi from './modules/integrations/ClearingHouseApi';
 import TransmissionApi from './modules/transactions/TransmissionsApi'
 import cfg from "../app.config";
 import appConstants from "../helpers/app-constants";
+import CardTokensApi from './modules/transactions/CardTokensApi';
 
 class ApiBase {
     constructor() {
@@ -39,6 +40,7 @@ class ApiBase {
         this.system = new SystemApi(this);
         this.audit = new AuditApi(this);
         this.transmissions = new TransmissionApi(this);
+        this.cardTokens = new CardTokensApi(this);
         this.integrations = {
             shva: new ShvaApi(this),
             easyInvoice: new EasyInvoiceApi(this),
