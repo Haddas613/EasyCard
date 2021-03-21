@@ -99,6 +99,12 @@ const routes = [
         component: () => import('../pages/audit/AuditList.vue'),
       },
       {
+        name: 'CardTokens',
+        path: 'card-tokens/list',
+        props: true,
+        component: () => import('../pages/ctokens/CreditCardTokensList.vue'),
+      },
+      {
         name: 'MyProfile',
         path: 'profile',
         component: () =>

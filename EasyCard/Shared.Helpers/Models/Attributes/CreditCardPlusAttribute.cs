@@ -22,7 +22,7 @@ namespace Shared.Helpers.Models.Attributes
                 return !Required;
             }
 
-            if (!string.IsNullOrWhiteSpace(val))
+            if (string.IsNullOrWhiteSpace(val))
             {
                 return false;
             }

@@ -179,5 +179,10 @@
             e.preventDefault();
             $('#cancel-form').submit();
         });
+
+        $("#checkout-form").on("submit", function (e) {
+            let ccvaltrim = $("#cc-number").val().replace(/ /g, '');
+            $("#cc-number").val(ccvaltrim);
+        })
     </script>
 }

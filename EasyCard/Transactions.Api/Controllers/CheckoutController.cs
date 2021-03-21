@@ -104,11 +104,14 @@ namespace Transactions.Api.Controllers
                     response.Consumer = new ConsumerInfo();
                     mapper.Map(consumer, response.Consumer);
 
-                    var tokens = await creditCardTokenService.GetTokens()
-                        .Where(d => d.CardExpiration.Expired == false)
+                    var tokensRaw = await creditCardTokenService.GetTokens()
                         .Where(d => d.ConsumerID == consumer.ConsumerID)
-                        .Select(d => new TokenInfo { CardNumber = d.CardNumber, CardExpiration = d.CardExpiration.ToString(), CardVendor = d.CardVendor, CreditCardTokenID = d.CreditCardTokenID })
                         .ToListAsync();
+
+                    //TODO: no in memory filtering
+                    var tokens = tokensRaw.Where(t => t.CardExpiration.Expired == false)
+                        .Select(d => new TokenInfo { CardNumber = d.CardNumber, CardExpiration = d.CardExpiration.ToString(), CardVendor = d.CardVendor, CreditCardTokenID = d.CreditCardTokenID })
+                        .ToList();
 
                     if (tokens.Count > 0)
                     {

@@ -14,7 +14,7 @@
         var mgr = new Oidc.UserManager({
             userStore: new Oidc.WebStorageStateStore()
         }).signinSilentCallback().then(function(user) {
-            console.log("silent renew response success", user);
+            //console.log("silent renew response success", user);
         }).catch(function(err) {
             console.log(err);
         });

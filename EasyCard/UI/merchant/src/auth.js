@@ -29,6 +29,7 @@ class AuthService {
         this.billingAdminRole = "BillingAdministrator";
         this.businessAdminRole = "BusinessAdministrator";
         this.merchantRole = "Merchant";
+        this._accessTokenLockPromise = null;
     }
 
     getUser() {
@@ -57,10 +58,30 @@ class AuthService {
         return this.userManager.signoutRedirect();
     }
 
-    getAccessToken() {
-        return this.userManager.getUser().then((data) => {
-            return !!data ? data.access_token : null;
-        });
+    async getAccessToken() {
+        if(this._accessTokenLockPromise){
+            return await this._accessTokenLockPromise;
+        }else{
+            return await (this._accessTokenLockPromise = this.__getAccessTokenInternal());
+        }
+    }
+
+    async __getAccessTokenInternal(){
+        let userData = await this.userManager.getUser();
+
+        if(userData && userData.expired){
+            try{
+                userData = await this.userManager.signinSilent();
+            }catch{}
+        }
+        this._accessTokenLockPromise = null;
+        return !!userData ? userData.access_token : null;
+    }
+
+    toDateTime(secs) {
+        var t = new Date(Date.UTC(1970, 0, 1)); // Epoch
+        t.setUTCSeconds(secs);
+        return t;
     }
 
     async getUserDisplayName() {

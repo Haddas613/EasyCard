@@ -30,6 +30,9 @@ namespace Transactions.Api.Mapping
             CreateMap<CreditCardTokenDetails, CreditCardTokenSummary>()
                 .ForMember(d => d.Expired, o => o.MapFrom(d => d.CardExpiration.Expired));
 
+            CreateMap<CreditCardTokenDetails, CreditCardTokenSummaryAdmin>()
+               .ForMember(d => d.Expired, o => o.MapFrom(d => d.CardExpiration.Expired));
+
             CreateMap<CreateTransactionRequest, TokenRequest>()
                 .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
                 .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID))
