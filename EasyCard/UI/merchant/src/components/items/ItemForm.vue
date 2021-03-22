@@ -4,8 +4,8 @@
       <v-col cols="12">
         <v-text-field
           v-model="model.itemName"
-          :counter="50"
-          :rules="[vr.primitives.required, vr.primitives.maxLength(50)]"
+          :counter="80"
+          :rules="[vr.primitives.required, vr.primitives.maxLength(80)]"
           :label="$t('Name')"
           class="px-1"
           outlined
