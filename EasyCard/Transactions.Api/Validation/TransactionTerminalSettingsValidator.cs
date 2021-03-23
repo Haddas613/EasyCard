@@ -53,16 +53,18 @@ namespace Transactions.Api.Validation
             }
             else
             {
-                if (model.CreditCardSecureDetails == null)
+                if (!(model.PinPad??false))
                 {
-                    throw new BusinessException(Messages.CreditCardSecureDetailsRequired);
-                }
+                    if (model.CreditCardSecureDetails == null)
+                    {
+                        throw new BusinessException(Messages.CreditCardSecureDetailsRequired);
+                    }
 
-                if (terminalSettings.CvvRequired == true && string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.Cvv))
-                {
-                    errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.Cvv)}", Messages.CvvRequired));
+                    if (terminalSettings.CvvRequired == true && string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.Cvv))
+                    {
+                        errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.Cvv)}", Messages.CvvRequired));
+                    }
                 }
-
                 if (terminalSettings.NationalIDRequired == true && string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID))
                 {
                     errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.CardOwnerNationalID)}", Messages.CardOwnerNationalIDRequired));
