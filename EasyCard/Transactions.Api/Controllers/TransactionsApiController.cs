@@ -771,8 +771,15 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                //If aggregator is not required transaction is eligible for transmission
-                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
+               if (jDealType != JDealTypeEnum.J4)
+               {
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed);
+               }
+               else
+               {
+                    //If aggregator is not required transaction is eligible for transmission
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
+               }
             }
 
             var endResponse = new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);
