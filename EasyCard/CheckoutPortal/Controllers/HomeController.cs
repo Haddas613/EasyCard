@@ -91,7 +91,7 @@ namespace CheckoutPortal.Controllers
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
             // If token is present and correct, credit card validation is removed from model state
-            if (request.CreditCardToken.HasValue && request.CreditCardToken.Value != Guid.Empty)
+            if (request.CreditCardToken.HasValue)
             {
                 if(!request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
                 {
@@ -131,6 +131,7 @@ namespace CheckoutPortal.Controllers
                 {
                     mdel.CreditCardSecureDetails = null;
                 }
+
 
                 result = await transactionsApiClient.CreateTransactionPR(mdel);
 
@@ -221,28 +222,28 @@ namespace CheckoutPortal.Controllers
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> PaymentResult()
+        public IActionResult PaymentResult()
         {
             return View();
         }
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> PaymentCanceled()
+        public IActionResult PaymentCanceled()
         {
             return View();
         }
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> VueTest()
+        public IActionResult VueTest()
         {
             return View(new ChargeViewModel { CardNumber = "1234" });
         }
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> PaymentError()
+        public IActionResult PaymentError()
         {
             return View();
         }

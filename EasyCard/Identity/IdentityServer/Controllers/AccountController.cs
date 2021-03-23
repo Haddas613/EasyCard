@@ -150,8 +150,7 @@ namespace IdentityServer.Controllers
                     return View("Error");
                 }
 
-                /**
-                 
+                /*
                  var twfEnabled = await userManager.GetTwoFactorEnabledAsync(user);
 
                     if (!twfEnabled)
@@ -842,7 +841,10 @@ namespace IdentityServer.Controllers
 
             var justName = tempUser.Principal.FindFirstValue("name");
 
-            if (string.IsNullOrWhiteSpace(firstName) && string.IsNullOrWhiteSpace(lastName)) firstName = justName;
+            if (string.IsNullOrWhiteSpace(firstName) && string.IsNullOrWhiteSpace(lastName))
+            {
+                firstName = justName;
+            }
 
             // TODO: get roles
             var roles = claims.FindAll(x => x.Type == "groups");

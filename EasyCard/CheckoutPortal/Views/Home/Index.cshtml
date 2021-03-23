@@ -68,7 +68,7 @@
                                             {
                                                 <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@savedToken.Key" />@savedToken.Value<br />
                                             }
-                                            <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@Guid.Empty" checked />Enter new card<br />
+                                            <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@(null)" checked />Enter new card<br />
                                         </div>
 
                                     </div>
