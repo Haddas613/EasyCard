@@ -82,7 +82,7 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetNotTransmittedTransactions([FromQuery] TransmissionFilter filter)
         {
-            var query = transactionsService.GetTransactions().AsNoTracking().Filter(filter).Where(d => d.Status == TransactionStatusEnum.CommitedByAggregator);
+            var query = transactionsService.GetTransactions().AsNoTracking().Filter(filter).Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission);
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
@@ -103,7 +103,7 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<IEnumerable<Guid>>> GetNonTransmittedTransactionsTerminals()
         {
             //TODO: Check with terminal settings
-            var query = transactionsService.GetTransactions().AsNoTracking().Where(d => d.Status == TransactionStatusEnum.CommitedByAggregator).Select(t => t.TerminalID).Distinct();
+            var query = transactionsService.GetTransactions().AsNoTracking().Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission).Select(t => t.TerminalID).Distinct();
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
@@ -211,7 +211,7 @@ namespace Transactions.Api.Controllers
 
                         // TODO: Transmission ID from Shva
                         transaction.ShvaTransactionDetails.ShvaTransmissionNumber = processorResponse.TransmissionReference;
-                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.TransmittedByProcessor);
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed);
                     }
                 }
             }
@@ -240,7 +240,7 @@ namespace Transactions.Api.Controllers
                 transaction = EnsureExists(await transactionsService.GetTransactions()
                  .FirstOrDefaultAsync(m => m.PaymentTransactionID == cancelTransmissionRequest.PaymentTransactionID && m.TerminalID == cancelTransmissionRequest.TerminalID));
 
-                if (transaction.Status != TransactionStatusEnum.CommitedByAggregator || transaction.InvoiceID.HasValue)
+                if (transaction.Status != TransactionStatusEnum.AwaitingForTransmission || transaction.InvoiceID.HasValue)
                 {
                     return BadRequest(new OperationResponse(Messages.TransactionStatusIsNotValid, StatusEnum.Error));
                 }

@@ -40,13 +40,13 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.MerchantID, o => o.MapFrom(d => d.MerchantID));
 
             CreateMap<PaymentTransaction, TransactionResponse>()
-                .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator))
-                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator && !src.InvoiceID.HasValue))
+                .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
+                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue))
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)));
 
             CreateMap<PaymentTransaction, TransactionResponseAdmin>()
-                .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator))
-                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator && !src.InvoiceID.HasValue))
+                .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
+                .ForMember(d => d.AllowTransmissionCancellation, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission && !src.InvoiceID.HasValue))
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)));
 
             CreateMap<PaymentTransaction, TransactionSummary>()

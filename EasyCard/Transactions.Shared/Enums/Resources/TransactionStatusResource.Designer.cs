@@ -61,6 +61,15 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Awaiting for Transmission.
+        /// </summary>
+        public static string AwaitingForTransmission {
+            get {
+                return ResourceManager.GetString("AwaitingForTransmission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancelled by merchant.
         /// </summary>
         public static string CancelledByMerchant {
@@ -84,6 +93,15 @@ namespace Transactions.Shared.Enums.Resources {
         public static string CommitedToAggregator {
             get {
                 return ResourceManager.GetString("CommitedToAggregator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Completed.
+        /// </summary>
+        public static string Completed {
+            get {
+                return ResourceManager.GetString("Completed", resourceCulture);
             }
         }
         
