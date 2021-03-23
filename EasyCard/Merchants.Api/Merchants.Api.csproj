@@ -103,6 +103,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TerminalStatusEnumResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Models\Terminal\TerminalTransmissionScheduleResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TerminalTransmissionScheduleResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Models\User\UserEnumsResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -151,6 +156,10 @@
     <EmbeddedResource Update="Models\Terminal\TerminalStatusEnumResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>TerminalStatusEnumResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Terminal\TerminalTransmissionScheduleResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TerminalTransmissionScheduleResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Models\User\UserEnumsResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

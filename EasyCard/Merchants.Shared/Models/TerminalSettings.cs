@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Merchants.Shared.Enums;
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -56,5 +57,7 @@ namespace Merchants.Shared.Models
         public decimal VATRateGlobal { get; set; }
 
         public bool VATExempt { get; set; }
+
+        public TerminalTransmissionScheduleEnum? TransmissionSchedule { get; set; }
     }
 }

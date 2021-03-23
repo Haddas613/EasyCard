@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Azure.Security.KeyVault.Secrets;
 using Merchants.Business.Services;
+using Merchants.Shared.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -102,13 +103,36 @@ namespace Transactions.Api.Controllers
         [Route("nontransmittedtransactionterminals")]
         public async Task<ActionResult<IEnumerable<Guid>>> GetNonTransmittedTransactionsTerminals()
         {
-            //TODO: Check with terminal settings
-            var query = transactionsService.GetTransactions().AsNoTracking().Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission).Select(t => t.TerminalID).Distinct();
-
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = await query.ToListAsync();
-                return Ok(response);
+                //TODO: Check with terminal settings
+                var allTransactions = await transactionsService.GetTransactions().AsNoTracking().Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission)
+                    .Select(t => t.TerminalID).Distinct().ToListAsync();
+
+                if (allTransactions.Count == 0)
+                {
+                    return Ok(allTransactions);
+                }
+
+                var terminalSettings = await terminalsService.GetTerminals().Where(t => allTransactions.Contains(t.TerminalID)).ToDictionaryAsync(k => k.TerminalID, v => v.Settings);
+
+                var filteredTransactions = new List<Guid>();
+                var now = DateTime.Now;
+
+                foreach (var t in allTransactions)
+                {
+                    if (terminalSettings.ContainsKey(t))
+                    {
+                        var schedule = terminalSettings[t].TransmissionSchedule;
+                        if (schedule == default || schedule.Value.ScheduleApply(now))
+                        {
+                            filteredTransactions.Add(t);
+                        }
+
+                    }
+                }
+
+                return Ok(filteredTransactions);
             }
         }
 

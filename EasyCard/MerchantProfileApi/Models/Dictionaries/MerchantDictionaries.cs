@@ -8,5 +8,7 @@ namespace MerchantProfileApi.Models.Dictionaries
     public class MerchantDictionaries
     {
         public Dictionary<string, string> TerminalStatusEnum { get; set; }
+
+        public Dictionary<string, string> TerminalTransmissionScheduleEnum { get; set; }
     }
 }

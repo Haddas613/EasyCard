@@ -83,7 +83,6 @@ class AuthService {
         if(userData && userData.expired){
             try{
                 userData = await this.userManager.signinSilent();
-                console.log("get token silent")
             }catch{}
         }
         this._accessTokenLockPromise = null;
