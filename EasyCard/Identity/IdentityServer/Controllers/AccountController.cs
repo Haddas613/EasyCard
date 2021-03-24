@@ -264,6 +264,7 @@ namespace IdentityServer.Controllers
 
                 if (result.IsLockedOut)
                 {
+                    await auditLogger.RegisterLockout(user);
                     return RedirectToAction(nameof(Lockout));
                 }
 

@@ -79,6 +79,28 @@ namespace IdentityServer.Security.Auditing
             }
         }
 
+        public async Task RegisterLockout(ApplicationUser user)
+        {
+            var audit = await GetAudit(user, AuditingTypeEnum.LoggedIn);
+
+            await SaveAudit(audit);
+
+            try
+            {
+                await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+                {
+                    UserActivity = Merchants.Shared.Enums.UserActivityEnum.Locked,
+                    UserID = user.Id,
+                    DisplayName = user.UserName,
+                    Email = user.Email
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Failed to register user action audit", ex);
+            }
+        }
+
         public async Task RegisterLogout(ApplicationUser user)
         {
             var audit = await GetAudit(user, AuditingTypeEnum.LoggedOut);

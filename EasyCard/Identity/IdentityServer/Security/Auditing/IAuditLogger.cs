@@ -20,6 +20,8 @@ namespace IdentityServer.Security.Auditing
 
         Task RegisterLogin(ApplicationUser user);
 
+        Task RegisterLockout(ApplicationUser user);
+
         Task RegisterLogout(ApplicationUser user);
 
         Task RegisterConfirmEmail(ApplicationUser user, string fullName);

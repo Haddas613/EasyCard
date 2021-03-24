@@ -261,6 +261,31 @@ namespace Merchants.Business.Services
                     {
                         entity.Email = data.Email;
                     }
+
+                    OperationCodesEnum operationCode = default;
+
+                    switch (data.Status)
+                    {
+                        case UserStatusEnum.Active: operationCode = OperationCodesEnum.LoggedIn;
+                            break;
+
+                        case UserStatusEnum.Locked: operationCode = OperationCodesEnum.AccountLocked;
+                            break;
+
+                        case UserStatusEnum.Invited: operationCode = OperationCodesEnum.InvitationSent;
+                            break;
+                    }
+
+                    var history = new MerchantHistory
+                    {
+                        OperationCode = operationCode,
+                        OperationDate = DateTime.UtcNow,
+                        OperationDoneBy = data.DisplayName ?? data.Email,
+                        OperationDoneByID = data.UserID,
+                        MerchantID = entity.MerchantID,
+                        SourceIP = httpContextAccessor.GetIP()
+                    };
+                    context.MerchantHistories.Add(history);
                 }
 
                 if (dbTransaction != null)
