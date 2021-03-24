@@ -39,6 +39,10 @@ namespace Shared.Integration
 
         private string correlationId;
 
+        public Guid? MerchantID { get; set; }
+
+        public Guid? TerminalID { get; set; }
+
         public string CorrelationId
         {
             get => correlationId;

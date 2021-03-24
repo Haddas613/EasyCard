@@ -19,8 +19,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shared.Api.Configuration;
 using Shared.Api.Security;
+using Shared.Helpers;
 using Shared.Helpers.Email;
 using Shared.Helpers.Security;
+using Shared.Helpers.Sms;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -33,7 +35,8 @@ namespace IdentityServer.Controllers
     public class AccountController : Controller
     {
         private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
-        private const string TwoFactorAuthProvider = "Phone";
+        private const string TwoFactorAuthProviderPhone = "Phone";
+        private const string TwoFactorAuthProviderEmail = "Email";
 
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
@@ -41,6 +44,7 @@ namespace IdentityServer.Controllers
         private readonly IClientStore clientStore;
         private readonly IAuthenticationSchemeProvider schemeProvider;
         private readonly IEventService events;
+        private readonly ISmsService smsService;
 
         private readonly IEmailSender emailSender;
         private readonly ILogger logger;
@@ -66,7 +70,8 @@ namespace IdentityServer.Controllers
             IOptions<ApplicationSettings> configuration,
             IAuditLogger auditLogger,
             IOptions<AzureADSettings> azureADConfig,
-            IOptions<ApiSettings> apiConfiguration)
+            IOptions<ApiSettings> apiConfiguration,
+            ISmsService smsService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -83,6 +88,7 @@ namespace IdentityServer.Controllers
 
             this.azureADConfig = azureADConfig.Value;
             this.apiConfiguration = apiConfiguration.Value;
+            this.smsService = smsService;
         }
 
         /// <summary>
@@ -178,10 +184,8 @@ namespace IdentityServer.Controllers
                         {
                             //Force enable 2fa for user
                             await userManager.SetTwoFactorEnabledAsync(user, true);
-                            var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProvider);
-                            await this.emailSender.Send2faEmailAsync(user.Email, code);
 
-                            return RedirectToAction(nameof(LoginWith2fa));
+                            return RedirectToAction(nameof(LoginWith2faChooseType));
                         }
                     }
 
@@ -219,47 +223,17 @@ namespace IdentityServer.Controllers
 
                 if (result.RequiresTwoFactor)
                 {
-                    var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProvider);
+                    //var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProviderPhone);
 
-                    if (string.IsNullOrWhiteSpace(code))
-                    {
-                        return View("Error");
-                    }
-
-                    var messageId = Guid.NewGuid().ToString();
-                    await this.emailSender.Send2faEmailAsync(user.Email, code);
-
-                    //try
+                    //if (string.IsNullOrWhiteSpace(code))
                     //{
-                    //    if (string.IsNullOrWhiteSpace(phoneNumber))
-                    //    {
-                    //        response = await this._emailSender.Send2faEmailAsync(user.Email, code);
-                    //    }
-                    //    else
-                    //    {
-                    //        response = await this._smsService.Send(new ClearingHouse.Shared.Services.SmsMessage
-                    //        {
-                    //            MerchantID = null,
-                    //            MessageId = messageId,
-                    //            Body = message,
-                    //            From = _configuration.SmsFromDetails,
-                    //            To = phoneNumber
-                    //        });
-                    //    }
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    logger.LogError($"Invalid send 2fa code operation - email: {user.Email}, user: {model.Username}", ex);
                     //    return View("Error");
                     //}
 
-                    //if (response?.Status == StatusEnum.Error)
-                    //{
-                    //    logger.LogError($"Invalid send 2fa code operation - email: {user.Email}, user: {model.Username}, response: {response?.Message}");
-                    //    return View("Error");
-                    //}
+                    //var messageId = Guid.NewGuid().ToString();
+                    //await this.emailSender.Send2faEmailAsync(user.Email, code);
 
-                    return RedirectToAction(nameof(LoginWith2fa), new { model.ReturnUrl, model.RememberLogin });
+                    return RedirectToAction(nameof(LoginWith2faChooseType));
                 }
 
                 if (result.IsLockedOut)
@@ -275,6 +249,65 @@ namespace IdentityServer.Controllers
             // something went wrong, show form with error
             var vm = await BuildLoginViewModelAsync(model);
             return View(vm);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> LoginWith2faChooseType()
+        {
+            // Ensure the user has gone through the username & password screen first
+            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            if (user == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public async Task<IActionResult> LoginWith2faChooseType(LoginWith2faTypeModel request)
+        {
+            // Ensure the user has gone through the username & password screen first
+            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            if (user == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            var phoneNumber = await userManager.GetPhoneNumberAsync(user);
+
+            if (request.LoginType == Models.Enums.TwoFactorAuthTypeEnum.SMS && !string.IsNullOrWhiteSpace(phoneNumber))
+            {
+                var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProviderPhone);
+                var messageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+                var response = await smsService.Send(new SmsMessage
+                {
+                    MerchantID = null,
+                    MessageId = messageId,
+                    Body = code,
+                    From = configuration.SmsFrom,
+                    To = phoneNumber
+                });
+
+                if (response.Status == Shared.Api.Models.Enums.StatusEnum.Error)
+                {
+                    ViewBag.Error = "Could not send SMS. Try again later or use Email authentication.";
+                    return View();
+                }
+            }
+            else
+            {
+                var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProviderEmail);
+                await emailSender.Send2faEmailAsync(user.Email, code);
+            }
+
+            return RedirectToAction(nameof(LoginWith2fa));
         }
 
         [HttpGet]
@@ -313,7 +346,7 @@ namespace IdentityServer.Controllers
 
             var authenticatorCode = model.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
-            var result = await signInManager.TwoFactorSignInAsync(TwoFactorAuthProvider, authenticatorCode, rememberLogin, model.RememberMachine);
+            var result = await signInManager.TwoFactorSignInAsync(TwoFactorAuthProviderPhone, authenticatorCode, rememberLogin, model.RememberMachine);
 
             if (result.Succeeded)
             {
@@ -739,15 +772,13 @@ namespace IdentityServer.Controllers
 
             var user = await userManager.FindByIdAsync(User.GetDoneByID().Value.ToString());
 
-            //var result = await userManager.SetTwoFactorEnabledAsync(user, model.Enabled);
-
             //if (!result.Succeeded)
             //{
             //    ModelState.AddModelError("General", "Something went wrong. Try again later or contact administrator");
             //}
             //else
             //{
-            //    await auditLogger.RegisterAction(user, model.Enabled ? AuditingTypeEnum.UserEnabledTwoFactor : AuditingTypeEnum.UserDisabledTwoFactor);
+            //    //await auditLogger.RegisterAction(user, model.Enabled ? AuditingTypeEnum.UserEnabledTwoFactor : AuditingTypeEnum.UserDisabledTwoFactor);
             //}
 
             model.UserInfo = user;
@@ -961,7 +992,7 @@ namespace IdentityServer.Controllers
                 }
             }
 
-            var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProvider);
+            var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProviderPhone);
             if (string.IsNullOrWhiteSpace(code))
             {
                 return View("Error");

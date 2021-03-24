@@ -38,6 +38,10 @@ using AutoMapper;
 using SharedApi = Shared.Api;
 using Shared.Api.Configuration;
 using IdentityServer4.Extensions;
+using Shared.Helpers.Sms;
+using InforU;
+using Shared.Integration;
+using Shared.Business.Security;
 
 namespace IdentityServer
 {
@@ -115,6 +119,10 @@ namespace IdentityServer
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
             services.Configure<ApiSettings>(Configuration.GetSection("API"));
             services.Configure<CryptoSettings>(Configuration.GetSection("CryptoConfig"));
+
+            services.AddHttpContextAccessor();
+
+            services.AddScoped<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -224,7 +232,6 @@ namespace IdentityServer
             });
 
             services.AddScoped<IAuditLogger, AuditLogger>();
-            services.AddScoped<ITerminalApiKeyService, TerminalApiKeyService>();
             services.AddScoped<UserManageService, UserManageService>();
 
             // DI: request logging
@@ -233,6 +240,22 @@ namespace IdentityServer
             {
                 options.RequestsLogStorageTable = config.RequestsLogStorageTable;
                 options.StorageConnectionString = config.DefaultStorageConnectionString;
+            });
+
+            services.AddTransient<ISmsService, InforUMobileSmsService>(serviceProvider => {
+
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.SmsTableName, cfg.SmsTableName);
+                var inforUMobileSmsSettings = Configuration.GetSection("InforUMobileSmsSettings")?.Get<InforUMobileSmsSettings>();
+
+                var webApiClient = new WebApiClient();
+
+                var logger = serviceProvider.GetRequiredService<ILogger<InforUMobileSmsService>>();
+                var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessorWrapper>();
+
+                var doNotSendSms = cfg.TwoFactorAuthenticationDoNotSendSms;
+
+                return new InforUMobileSmsService(webApiClient, inforUMobileSmsSettings, logger, httpContextAccessor, storageService, doNotSendSms);
             });
 
             services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();

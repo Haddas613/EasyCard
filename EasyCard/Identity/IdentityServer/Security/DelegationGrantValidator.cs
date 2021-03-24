@@ -16,16 +16,14 @@ namespace IdentityServer.Security
     public class DelegationGrantValidator : IExtensionGrantValidator
     {
         private readonly ITokenValidator validator;
-        private readonly ITerminalApiKeyService terminalApiKeyService;
         private readonly ICryptoService cryptoService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
 
-        public DelegationGrantValidator(ITokenValidator validator, ITerminalApiKeyService terminalApiKeyService,
+        public DelegationGrantValidator(ITokenValidator validator,
             ICryptoService cryptoService, UserManager<ApplicationUser> userManager, ICryptoServiceCompact cryptoServiceCompact)
         {
             this.validator = validator;
-            this.terminalApiKeyService = terminalApiKeyService;
             this.cryptoService = cryptoService;
             this.userManager = userManager;
             this.cryptoServiceCompact = cryptoServiceCompact;

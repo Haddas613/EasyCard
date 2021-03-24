@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace IdentityServer.Models
 {
-    public class TwoFactorAuthSettingsViewModel
+    public class LoginWith2faTypeModel
     {
-
-        public TwoFactorAuthTypeEnum TwoFactorAuthType { get; set; }
-
-        public ApplicationUser UserInfo { get; set; }
+        public TwoFactorAuthTypeEnum LoginType { get; set; }
     }
 }
