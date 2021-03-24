@@ -21,7 +21,17 @@
                         <div class="form-group">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" asp-for="LoginType" value="@TwoFactorAuthTypeEnum.Email" checked />Email<br />
-                                <input class="form-check-input" type="radio" asp-for="LoginType" value="@TwoFactorAuthTypeEnum.SMS" />SMS<br />
+                                @if (ViewBag.HasPhone)
+                                {
+                                    <input class="form-check-input" type="radio" asp-for="LoginType" value="@TwoFactorAuthTypeEnum.SMS" /> @("SMS") <br />
+                                }
+                                else
+                                {
+                                    <input class="form-check-input" type="radio" asp-for="LoginType" value="@TwoFactorAuthTypeEnum.SMS" disabled /> @("SMS")
+                                    <p class="text-muted">
+                                        <small>You currently don't have phone linked to this account</small>
+                                    </p>
+                                }
                             </div>
                             <span asp-validation-for="LoginType" class="text-danger"></span>
                         </div>

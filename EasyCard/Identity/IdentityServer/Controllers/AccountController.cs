@@ -263,6 +263,10 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
+            var phoneNumber = await userManager.GetPhoneNumberAsync(user);
+
+            ViewBag.HasPhone = !string.IsNullOrWhiteSpace(phoneNumber);
+
             return View();
         }
 
@@ -280,6 +284,8 @@ namespace IdentityServer.Controllers
             }
 
             var phoneNumber = await userManager.GetPhoneNumberAsync(user);
+
+            ViewBag.HasPhone = !string.IsNullOrWhiteSpace(phoneNumber);
 
             if (request.LoginType == Models.Enums.TwoFactorAuthTypeEnum.SMS && !string.IsNullOrWhiteSpace(phoneNumber))
             {
