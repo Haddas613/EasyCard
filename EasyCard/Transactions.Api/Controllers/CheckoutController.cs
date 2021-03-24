@@ -92,6 +92,11 @@ namespace Transactions.Api.Controllers
                     }
                 }
 
+                if (paymentRequest.Status == Shared.Enums.PaymentRequestStatusEnum.Sent || paymentRequest.Status == Shared.Enums.PaymentRequestStatusEnum.Initial)
+                {
+                    await paymentRequestsService.UpdateEntityWithStatus(paymentRequest, Shared.Enums.PaymentRequestStatusEnum.Viewed);
+                }
+
                 response.PaymentRequest = mapper.Map<PaymentRequestInfo>(paymentRequest);
             }
 

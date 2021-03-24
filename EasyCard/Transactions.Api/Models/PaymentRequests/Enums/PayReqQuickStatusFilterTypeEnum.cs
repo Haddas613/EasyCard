@@ -22,5 +22,8 @@ namespace Transactions.Api.Models.PaymentRequests.Enums
 
         [EnumMember(Value = "overdue")]
         Overdue = 5,
+
+        [EnumMember(Value = "viewed")]
+        Viewed = 6,
     }
 }
