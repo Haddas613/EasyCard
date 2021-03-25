@@ -2,6 +2,7 @@
 using IdentityServer.Helpers;
 using IdentityServer.Messages;
 using IdentityServer.Models;
+using IdentityServer.Models.Enums;
 using IdentityServer.Security;
 using IdentityServer.Security.Auditing;
 using IdentityServer4.Events;
@@ -170,7 +171,7 @@ namespace IdentityServer.Controllers
 
                  */
 
-                var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
+                var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, isPersistent: false, lockoutOnFailure: true);
 
                 if (result.Succeeded)
                 {
@@ -313,12 +314,12 @@ namespace IdentityServer.Controllers
                 await emailSender.Send2faEmailAsync(user.Email, code);
             }
 
-            return RedirectToAction(nameof(LoginWith2fa));
+            return RedirectToAction(nameof(LoginWith2fa), new { authType = request.LoginType });
         }
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> LoginWith2fa(bool rememberLogin, string returnUrl = null)
+        public async Task<IActionResult> LoginWith2fa(TwoFactorAuthTypeEnum authType, string returnUrl = null)
         {
             // Ensure the user has gone through the username & password screen first
             var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
@@ -328,7 +329,7 @@ namespace IdentityServer.Controllers
                 return View("Error");
             }
 
-            var model = new LoginWith2faViewModel { RememberLogin = rememberLogin };
+            var model = new LoginWith2faViewModel { LoginType = authType };
             ViewData["ReturnUrl"] = returnUrl;
 
             return View(model);
@@ -337,7 +338,7 @@ namespace IdentityServer.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> LoginWith2fa(LoginWith2faViewModel model, bool rememberLogin, string returnUrl = null)
+        public async Task<IActionResult> LoginWith2fa(LoginWith2faViewModel model, string returnUrl = null)
         {
             if (!ModelState.IsValid)
             {
@@ -352,7 +353,9 @@ namespace IdentityServer.Controllers
 
             var authenticatorCode = model.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
 
-            var result = await signInManager.TwoFactorSignInAsync(TwoFactorAuthProviderPhone, authenticatorCode, rememberLogin, model.RememberMachine);
+            var authProvider = model.LoginType == TwoFactorAuthTypeEnum.SMS ? TwoFactorAuthProviderPhone : TwoFactorAuthProviderEmail;
+
+            var result = await signInManager.TwoFactorSignInAsync(authProvider, authenticatorCode, isPersistent: false, rememberClient: false);
 
             if (result.Succeeded)
             {
@@ -1134,7 +1137,6 @@ namespace IdentityServer.Controllers
         {
             var vm = await BuildLoginViewModelAsync(model.ReturnUrl);
             vm.Username = model.Username;
-            vm.RememberLogin = model.RememberLogin;
             return vm;
         }
 

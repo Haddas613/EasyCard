@@ -8,11 +8,11 @@
         <div class="panel panel-default panel-ecng">
             <div class="panel-header text-center">
                 <h2>@ViewData["Title"]</h2>
-                <p>Your login is protected with an authenticator app. Enter your authenticator code below.</p>
+                <p>Enter your authenticator code below.</p>
             </div>
             <div class="panel-body">
                 <form method="post" asp-route-returnUrl="@ViewData["ReturnUrl"]">
-                    <input asp-for="RememberLogin" type="hidden" />
+                    <input asp-for="LoginType" type="hidden" />
                     @if (!ViewData.ModelState.IsValid)
                     {
                         <div asp-validation-summary="All" class="text-danger"></div>
@@ -21,14 +21,6 @@
                         <label asp-for="TwoFactorCode"></label>
                         <input asp-for="TwoFactorCode" class="form-control" autocomplete="off" />
                         <span asp-validation-for="TwoFactorCode" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label asp-for="RememberMachine">
-                                <input asp-for="RememberMachine" />
-                                @Html.DisplayNameFor(m => m.RememberMachine)
-                            </label>
-                        </div>
                     </div>
                     <div class="form-group text-end">
                         <button type="submit" class="btn btn-primary">Log in</button>

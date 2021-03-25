@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IdentityServer.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,9 +15,6 @@ namespace IdentityServer.Models
         [Display(Name = "Authenticator code")]
         public string TwoFactorCode { get; set; }
 
-        [Display(Name = "Remember this machine")]
-        public bool RememberMachine { get; set; }
-
-        public bool RememberLogin { get; set; }
+        public TwoFactorAuthTypeEnum LoginType { get; set; }
     }
 }
