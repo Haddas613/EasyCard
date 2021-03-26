@@ -67,8 +67,19 @@ namespace ClearingHouse
             }
             catch (WebApiClientErrorException clientError)
             {
-                logger.LogError(clientError.Message);
-                var result = clientError.TryConvert(new Models.OperationResponse { Message = clientError.Message });
+                logger.LogError($"{clientError.Message}: {clientError.Response}");
+
+                OperationResponse result;
+
+                if (clientError.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    result = clientError.TryConvert(new Models.OperationResponse { Message = clientError.Message });
+                }
+                else
+                {
+                    result = new OperationResponse { Message = clientError.Response };
+                }
+
                 return result.GetAggregatorCreateTransactionResponse();
             }
         }
