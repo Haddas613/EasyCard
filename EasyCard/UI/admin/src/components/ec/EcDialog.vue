@@ -19,7 +19,7 @@
       <v-divider></v-divider>
       <v-card-text class="px-0">
         <!-- <v-main class="py-2"> -->
-          <v-container fluid ma-0 pa-0 center>
+          <v-container fluid ma-0 pt-2 center>
             <v-row no-gutters class="pt-4">
               <v-col cols="3" class="hidden-sm-and-down">
                 <v-spacer></v-spacer>

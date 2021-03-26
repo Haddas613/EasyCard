@@ -39,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BasicServices\BasicServices.csproj" />
     <ProjectReference Include="..\Identity\IdentityServerClient\IdentityServerClient.csproj" />
     <ProjectReference Include="..\Integration\ClearingHouse\ClearingHouse.csproj" />
     <ProjectReference Include="..\Integration\EasyInvoice\EasyInvoice.csproj" />

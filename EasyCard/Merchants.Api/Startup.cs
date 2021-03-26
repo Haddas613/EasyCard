@@ -1,4 +1,5 @@
 using AutoMapper;
+using BasicServices;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServerClient;
 using Merchants.Api.Data;
@@ -166,6 +167,7 @@ namespace Merchants.Api
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
             services.Configure<ApiSettings>(Configuration.GetSection("API"));
             services.Configure<ApplicationInsightsSettings>(Configuration.GetSection("ApplicationInsights"));
+            services.Configure<ClearingHouse.ClearingHouseGlobalSettings>(Configuration.GetSection("ClearingHouseGlobalSettings"));
 
             services.AddHttpContextAccessor();
 
@@ -202,6 +204,18 @@ namespace Merchants.Api
                 var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
 
                 return new UserManagementClient(webApiClient, logger, cfg, tokenService);
+            });
+
+            services.AddSingleton<ClearingHouse.ClearingHouseAggregator, ClearingHouse.ClearingHouseAggregator>(serviceProvider =>
+            {
+                var chCfg = serviceProvider.GetRequiredService<IOptions<ClearingHouse.ClearingHouseGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<ClearingHouse.ClearingHouseAggregator>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.ClearingHouseRequestsLogStorageTable, cfg.ClearingHouseRequestsLogStorageTable);
+                var tokenSvc = new WebApiClientTokenService(webApiClient.HttpClient, chCfg);
+
+                return new ClearingHouse.ClearingHouseAggregator(webApiClient, logger, chCfg, tokenSvc, storageService);
             });
 
             // DI: request logging
