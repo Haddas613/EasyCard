@@ -14,6 +14,6 @@ namespace IdentityServerClient
 
         public string CellPhone { get; set; }
 
-        public IEnumerable<string> Roles { get; set; }
+        public ICollection<string> Roles { get; set; }
     }
 }

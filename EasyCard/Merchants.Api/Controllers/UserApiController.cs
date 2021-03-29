@@ -23,6 +23,7 @@ using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Business.Extensions;
+using Shared.Helpers.Security;
 using Z.EntityFramework.Plus;
 
 namespace Merchants.Api.Controllers

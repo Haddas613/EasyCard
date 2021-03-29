@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using IdentityServer.Data;
 using IdentityServer.Helpers;
 using IdentityServer.Models;
+using IdentityServer.Services;
 using IdentityServerClient;
 using Merchants.Api.Client;
 using Microsoft.AspNetCore.Authorization;
@@ -35,6 +36,7 @@ namespace IdentityServer.Controllers
         private readonly ICryptoService cryptoService;
         private readonly ApplicationSettings configuration;
         private readonly IMerchantsApiClient merchantsApiClient;
+        private readonly UserManageService userManageService;
 
         public UserManagementApiController(
             UserManager<ApplicationUser> userManager,
@@ -44,7 +46,8 @@ namespace IdentityServer.Controllers
             IEmailSender emailSender,
             ICryptoService cryptoService,
             IOptions<ApplicationSettings> configuration,
-            IMerchantsApiClient merchantsApiClient
+            IMerchantsApiClient merchantsApiClient,
+            UserManageService userManageService
             )
         {
             this.userManager = userManager;
@@ -55,6 +58,7 @@ namespace IdentityServer.Controllers
             this.cryptoService = cryptoService;
             this.configuration = configuration?.Value;
             this.merchantsApiClient = merchantsApiClient;
+            this.userManageService = userManageService;
         }
 
         /// <summary>
@@ -117,7 +121,21 @@ namespace IdentityServer.Controllers
                 var allClaims = await userManager.GetClaimsAsync(user);
 
                 await userManager.AddClaim(allClaims, user, Claims.MerchantIDClaim, model.MerchantID);
-                await userManager.AddToRoleAsync(user, "Merchant");
+
+                if (model.Roles == null)
+                {
+                    model.Roles = new List<string>();
+                }
+
+                if (!model.Roles.Any(r => r != Roles.Merchant))
+                {
+                    model.Roles.Add(Roles.Merchant);
+                }
+
+                foreach (var role in model.Roles.Distinct())
+                {
+                    await userManager.AddToRoleAsync(user, role);
+                }
 
                 logger.LogInformation("User created a new account");
             }
@@ -139,6 +157,42 @@ namespace IdentityServer.Controllers
 
             // TODO: config
             // await userManager.SetTwoFactorEnabledAsync(user, true);
+
+            return new ObjectResult(operationResult);
+        }
+
+        /// <summary>
+        /// Update user
+        /// </summary>
+        /// <param name="model">Update User Request</param>
+        /// <returns>Operation Response</returns>
+        [HttpPut]
+        [Route("user")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<UserOperationResponse>> UpdateUser([FromBody]UpdateUserRequestModel model)
+        {
+            var user = await userManager.FindByIdAsync(model.UserID);
+
+            if (user == null)
+            {
+                return NotFound(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserNotFound });
+            }
+
+            var result = await userManageService.UpdateUser(model);
+
+            if (!result)
+            {
+                logger.LogInformation("User is not upated");
+
+                // TODO: error details
+                return new BadRequestResult();
+            }
+
+            var operationResult = new UserOperationResponse
+            {
+                UserID = new Guid(user.Id),
+                ResponseCode = result ? UserOperationResponseCodeEnum.UserUpdated : UserOperationResponseCodeEnum.UnknwnError
+            };
 
             return new ObjectResult(operationResult);
         }
