@@ -142,12 +142,12 @@ namespace Transactions.Api.Controllers
         {
             if (transmitTransactionsRequest.PaymentTransactionIDs == null || transmitTransactionsRequest.PaymentTransactionIDs.Count() == 0)
             {
-                return BadRequest(new OperationResponse(Messages.TransactionsForTransmissionRequired, null, HttpContext.TraceIdentifier, nameof(transmitTransactionsRequest.PaymentTransactionIDs), Messages.TransactionsForTransmissionRequired));
+                return BadRequest(new OperationResponse(Messages.TransactionsForTransmissionRequired, null, httpContextAccessor.TraceIdentifier, nameof(transmitTransactionsRequest.PaymentTransactionIDs), Messages.TransactionsForTransmissionRequired));
             }
 
             if (transmitTransactionsRequest.PaymentTransactionIDs.Count() > appSettings.TransmissionMaxBatchSize)
             {
-                return BadRequest(new OperationResponse(string.Format(Messages.TransmissionLimit, appSettings.TransmissionMaxBatchSize), null, HttpContext.TraceIdentifier, nameof(transmitTransactionsRequest.PaymentTransactionIDs), string.Format(Messages.TransmissionLimit, appSettings.TransmissionMaxBatchSize)));
+                return BadRequest(new OperationResponse(string.Format(Messages.TransmissionLimit, appSettings.TransmissionMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(transmitTransactionsRequest.PaymentTransactionIDs), string.Format(Messages.TransmissionLimit, appSettings.TransmissionMaxBatchSize)));
             }
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(transmitTransactionsRequest.TerminalID));
@@ -324,7 +324,7 @@ namespace Transactions.Api.Controllers
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
-            var actionResult = await GetNotTransmittedTransactions(new TransmissionFilter { TerminalID = terminalID });
+            var actionResult = await GetNotTransmittedTransactions(new TransmissionFilter { TerminalID = terminalID, Take = appSettings.TransmissionMaxBatchSize });
 
             var response = actionResult.Result as ObjectResult;
             var nonTransmittedTransactions = response.Value as SummariesResponse<TransactionSummary>;
