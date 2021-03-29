@@ -1,4 +1,4 @@
-﻿create procedure PR_Transactions_ETL as BEGIN
+﻿CREATE procedure [dbo].[PR_Transactions_ETL] as BEGIN
 
 declare @LastUpdated datetime2(7), @NewLastUpdated datetime2(7) 
 
@@ -7,7 +7,7 @@ set @NewLastUpdated = GETUTCDATE()
 --DELETE FROM [dbo].[Watermark] where [TableName] = 'PaymentTransaction'
 --TRUNCATE TABLE [dbo].[PaymentTransactionItem]
 
-select top (1) @LastUpdated = LastUpdated from [dbo].[Watermark] where [TableName] = 'PaymentTransaction'
+select top (1) @LastUpdated = ISNULL(LastUpdated, '2020-01-01') from [dbo].[Watermark] where [TableName] = 'PaymentTransaction'
 set @LastUpdated = DATEADD(ss, -10, @LastUpdated)
 
 
