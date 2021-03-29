@@ -45,4 +45,8 @@ export default class UsersApi {
     async unlinkUserFromMerchant(userID, merchantID){
         return this.base.delete(this.usersUrl + `/${userID}/unlinkFromMerchant/${merchantID}`);
     }
+
+    async updateRoles(data){
+        return this.base.put(this.usersUrl + `/update-roles`, data);
+    }
 }

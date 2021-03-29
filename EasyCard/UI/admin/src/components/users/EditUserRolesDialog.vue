@@ -1,27 +1,26 @@
 <template>
   <ec-dialog :dialog.sync="visible">
-    <template v-slot:title>{{$t('CreateTerminal')}}</template>
+    <template v-slot:title>{{$t('UserRoles')}}</template>
     <template>
       <v-form class="pt-2" ref="form" v-model="valid" lazy-validation>
         <v-row>
           <v-col cols="12" class="py-0">
             <v-text-field
-              v-model="model.label"
+              v-model="model.email"
               :counter="50"
-              :rules="[vr.primitives.required, vr.primitives.stringLength(6, 50)]"
-              :label="$t('BusinessName')"
+              :rules="[vr.primitives.required, vr.primitives.email]"
+              :label="$t('Email')"
               outlined
             ></v-text-field>
           </v-col>
           <v-col cols="12" class="py-0">
-            <v-select
-              :items="terminalTemplates"
-              item-text="label"
-              item-value="terminalTemplateID"
-              v-model="model.terminalTemplateID"
-              :label="$t('TerminalTemplate')"
+            <v-textarea
+              v-model="model.inviteMessage"
+              :counter="512"
+              :rules="[vr.primitives.maxLength(512)]"
+              :label="$t('InviteMessage')"
               outlined
-            ></v-select>
+            ></v-textarea>
           </v-col>
         </v-row>
       </v-form>
@@ -30,6 +29,7 @@
           color="primary"
           class="white--text"
           :block="$vuetify.breakpoint.smAndDown"
+          :loading="loading"
           @click="ok()"
         >{{$t("OK")}}</v-btn>
       </div>
@@ -41,8 +41,9 @@
 import ValidationRules from "../../helpers/validation-rules";
 export default {
   props: {
-    merchantId: {
-      type: String,
+    user: {
+      type: Object,
+      default: null,
       required: true
     },
     show: {
@@ -56,17 +57,10 @@ export default {
   },
   data() {
     return {
-      model: {
-        label: null,
-        merchantID: this.merchantId,
-        terminalTemplateID: null
-      },
+      model: { ...this.user },
+      loading: false,
       valid: true,
       vr: ValidationRules,
-      terminalTemplates: [],
-      terminalTemplatesFilter:{
-        active: true
-      }
     };
   },
   computed: {
@@ -79,24 +73,20 @@ export default {
       }
     }
   },
-  async mounted () {
-    let templates = (await this.$api.terminalTemplates.get(this.terminalTemplatesFilter)).data || [];
-
-    if(templates && templates.length > 0){
-      this.terminalTemplates = templates;
-      this.model.terminalTemplateID = templates[0].terminalTemplateID;
-    }
-  },
   methods: {
     async ok() {
       if (!this.$refs.form.validate()) {
         return;
       }
-      let operationResult = await this.$api.terminals.createTerminal(this.model);
+      this.loading = true;
+      let operationResult = await this.$api.users.updateUserRoles(this.model);
       if (operationResult.status === "success") {
-        this.visible = false;
+        this.model.email = null;
+        this.model.inviteMessage = null;
         this.$emit("ok");
       }
+      this.visible = false;
+      this.loading = false;
     }
   }
 };

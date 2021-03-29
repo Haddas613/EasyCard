@@ -128,15 +128,37 @@ namespace Merchants.Api.Controllers
                 }
             }
 
-            var userInfo = new UserInfo
-            {
-                DisplayName = user.DisplayName,
-                Email = user.Email,
-                Roles = request.Roles,
-                UserID = user.UserID
-            };
+            //var userInfo = new UserInfo
+            //{
+            //    DisplayName = user.DisplayName,
+            //    Email = user.Email,
+            //    Roles = request.Roles,
+            //    UserID = user.UserID
+            //};
 
             return CreatedAtAction(nameof(GetUser), new { userID = user.UserID }, new OperationResponse(Messages.UserInvited, StatusEnum.Success, user.UserID, correlationId: GetCorrelationID()));
+        }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
+        [Route("update-roles")]
+        public async Task<ActionResult<OperationResponse>> UpdateRoles([FromBody]UpdateUserRolesRequest request)
+        {
+            var user = await userManagementClient.GetUserByID(request.UserID);
+
+            if (user == null)
+            {
+                return NotFound(Messages.UserNotFound);
+            }
+
+            var updateUserResponse = await userManagementClient.UpdateUser(mapper.Map<UpdateUserRequestModel>(request));
+
+            if (updateUserResponse.ResponseCode != UserOperationResponseCodeEnum.UserUpdated)
+            {
+                return BadRequest(new OperationResponse(updateUserResponse.Message, StatusEnum.Error, user.UserID, correlationId: GetCorrelationID()));
+            }
+
+            return Ok(new OperationResponse(Messages.UserCreated, StatusEnum.Success, user.UserID, correlationId: GetCorrelationID()));
         }
 
         [HttpPost]

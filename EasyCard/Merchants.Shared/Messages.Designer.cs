@@ -187,6 +187,15 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User not found.
+        /// </summary>
+        public static string UserNotFound {
+            get {
+                return ResourceManager.GetString("UserNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User Operation Failed.
         /// </summary>
         public static string UserOperationFailed {
@@ -201,6 +210,15 @@ namespace Merchants.Shared {
         public static string UserOperationSuccess {
             get {
                 return ResourceManager.GetString("UserOperationSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User roles updated successfully.
+        /// </summary>
+        public static string UserRolesUpdated {
+            get {
+                return ResourceManager.GetString("UserRolesUpdated", resourceCulture);
             }
         }
         
