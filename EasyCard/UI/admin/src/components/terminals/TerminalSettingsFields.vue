@@ -338,6 +338,27 @@
         </v-row>
       </v-card-text>
     </v-card>
+
+    <v-card outlined class="mb-2">
+      <v-card-title class="pb-0 mb-0 subtitle-2 black--text">{{$t("Transmission")}}</v-card-title>
+      <v-card-text>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-divider class="py-2"></v-divider>
+          </v-col>
+          <v-col cols="12" md="7">
+            <v-select
+              :items="merchantDictionaries.terminalTransmissionScheduleEnum"
+              item-text="description"
+              item-value="code"
+              v-model="model.settings.transmissionSchedule"
+              :label="$t('TransmissionTime')"
+              outlined
+            ></v-select>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 

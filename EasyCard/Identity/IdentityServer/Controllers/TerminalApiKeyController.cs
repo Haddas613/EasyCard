@@ -37,7 +37,6 @@ namespace IdentityServer.Controllers
     {
         private readonly ILogger logger;
         private readonly ICryptoService cryptoService;
-        private readonly ITerminalApiKeyService terminalApiKeyService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly IMerchantsApiClient merchantsApiClient;
@@ -45,14 +44,12 @@ namespace IdentityServer.Controllers
         public TerminalApiKeyController(
             ILogger<UserManagementApiController> logger,
             ICryptoService cryptoService,
-            ITerminalApiKeyService terminalApiKeyService,
             UserManager<ApplicationUser> userManager,
             ICryptoServiceCompact cryptoServiceCompact,
             IMerchantsApiClient merchantsApiClient)
         {
             this.logger = logger;
             this.cryptoService = cryptoService;
-            this.terminalApiKeyService = terminalApiKeyService;
             this.userManager = userManager;
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.merchantsApiClient = merchantsApiClient;

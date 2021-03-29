@@ -25,8 +25,8 @@ namespace Transactions.Shared.Enums
         /// <summary>
         /// Transaction commited to Clearing House
         /// </summary>
-        [EnumMember(Value = "commitedByAggregator")]
-        CommitedByAggregator = 30,
+        [EnumMember(Value = "awaitingForTransmission")]
+        AwaitingForTransmission = 30,
 
         /// <summary>
         /// Shva transmision in progress
@@ -43,8 +43,8 @@ namespace Transactions.Shared.Enums
         /// <summary>
         /// Shva transmision is done
         /// </summary>
-        [EnumMember(Value = "transmittedByProcessor")]
-        TransmittedByProcessor = 40,
+        [EnumMember(Value = "completed")]
+        Completed = 40,
 
         /// <summary>
         /// Transaction is rejeced by Clearing House

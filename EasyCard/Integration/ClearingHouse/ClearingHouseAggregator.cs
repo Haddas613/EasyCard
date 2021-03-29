@@ -1,4 +1,5 @@
 ﻿using ClearingHouse.Converters;
+using ClearingHouse.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shared.Helpers;
@@ -21,6 +22,7 @@ namespace ClearingHouse
         private const string CreateTransactionRequest = "api/transaction";
         private const string CommitTransactionRequest = "api/transaction/{0}";
         private const string GetTransactionRequest = "api/transaction/{0}";
+        private const string GetMerchantsRequest = "api/merchant";
         private const string CancelTransactionRequest = "api/transaction/{0}/reject";
 
         private readonly IWebApiClient webApiClient;
@@ -65,8 +67,19 @@ namespace ClearingHouse
             }
             catch (WebApiClientErrorException clientError)
             {
-                logger.LogError(clientError.Message);
-                var result = clientError.TryConvert(new Models.OperationResponse { Message = clientError.Message });
+                logger.LogError($"{clientError.Message}: {clientError.Response}");
+
+                OperationResponse result;
+
+                if (clientError.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    result = clientError.TryConvert(new Models.OperationResponse { Message = clientError.Message });
+                }
+                else
+                {
+                    result = new OperationResponse { Message = clientError.Response };
+                }
+
                 return result.GetAggregatorCreateTransactionResponse();
             }
         }
@@ -135,7 +148,22 @@ namespace ClearingHouse
             }
         }
 
-        public bool ShouldBeProcessedByAggregator(TransactionTypeEnum transactionType, SpecialTransactionTypeEnum specialTransactionType, JDealTypeEnum jDealType)
+        public async Task<MerchantsSummariesResponse> GetMerchants(GetMerchantsQuery filter)
+        {
+            try
+            {
+                var result = await webApiClient.Get<MerchantsSummariesResponse>(configuration.ApiBaseAddress, GetMerchantsRequest, filter, BuildHeaders);
+
+                return result;
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                return new MerchantsSummariesResponse();
+            }
+        }
+
+        public bool ShouldBeProcessedByAggregator(Shared.Integration.Models.TransactionTypeEnum transactionType, SpecialTransactionTypeEnum specialTransactionType, JDealTypeEnum jDealType)
         {
             return jDealType == JDealTypeEnum.J4 && (specialTransactionType == SpecialTransactionTypeEnum.RegularDeal || specialTransactionType == SpecialTransactionTypeEnum.Refund || specialTransactionType == SpecialTransactionTypeEnum.InitialDeal);
         }

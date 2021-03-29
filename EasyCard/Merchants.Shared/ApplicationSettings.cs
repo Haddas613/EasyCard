@@ -8,6 +8,8 @@ namespace Merchants.Shared
     {
         public string DefaultStorageConnectionString { get; set; }
 
+        public string ClearingHouseRequestsLogStorageTable { get; set; }
+
         public string RequestsLogStorageTable { get; set; }
 
         public string EncrKeyForSharedApiKey { get; set; }

@@ -70,6 +70,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Awaiting for Transmission.
+        /// </summary>
+        public static string AwaitingForTransmission {
+            get {
+                return ResourceManager.GetString("AwaitingForTransmission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Billing Deal Created.
         /// </summary>
         public static string BillingDealCreated {
@@ -165,6 +174,15 @@ namespace Transactions.Shared {
         public static string CommitedByAggregator {
             get {
                 return ResourceManager.GetString("CommitedByAggregator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Completed.
+        /// </summary>
+        public static string Completed {
+            get {
+                return ResourceManager.GetString("Completed", resourceCulture);
             }
         }
         

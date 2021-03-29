@@ -49,7 +49,7 @@ namespace Transactions.Api.Extensions.Filtering
             // TODO: we can try to transmit transactions which are failed to transmit
             if (filter.NotTransmitted)
             {
-                src = src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator);
+                src = src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission);
             }
             else if (filter.QuickStatusFilter != null)
             {
@@ -199,9 +199,10 @@ namespace Transactions.Api.Extensions.Filtering
             => typeEnum switch
             {
                 QuickStatusFilterTypeEnum.Pending => src.Where(t => (int)t.Status > 0 && (int)t.Status < 40),
-                QuickStatusFilterTypeEnum.Completed => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.TransmittedByProcessor),
+                QuickStatusFilterTypeEnum.Completed => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.Completed),
+                QuickStatusFilterTypeEnum.Canceled => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.CancelledByMerchant),
                 QuickStatusFilterTypeEnum.Failed => src.Where(t => (int)t.Status < 0),
-                QuickStatusFilterTypeEnum.AwaitingForTransmission => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator),
+                QuickStatusFilterTypeEnum.AwaitingForTransmission => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission),
                 _ => src,
             };
     }

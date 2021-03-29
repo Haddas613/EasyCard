@@ -50,6 +50,8 @@ namespace Merchants.Api.Services
 
             var operationCodesType = typeof(OperationCodesEnum);
 
+            var terminalTransmissionScheduleEnum = typeof(TerminalTransmissionScheduleEnum);
+
             var termStatuses = Enum.GetValues(transactionStatusEnumType).Cast<TerminalStatusEnum>()
                 .ToDictionary(m => transactionStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => TerminalStatusEnumResource.ResourceManager.GetString(m.ToString(), culture) );
 
@@ -62,10 +64,14 @@ namespace Merchants.Api.Services
             var operationCodes = Enum.GetValues(operationCodesType).Cast<OperationCodesEnum>()
                 .ToDictionary(m => operationCodesType.GetDataContractAttrForEnum(m.ToString()), m => m.ToString());
 
+            var terminalTransmissionSchedules = Enum.GetValues(terminalTransmissionScheduleEnum).Cast<TerminalTransmissionScheduleEnum>()
+                .ToDictionary(m => terminalTransmissionScheduleEnum.GetDataContractAttrForEnum(m.ToString()), m => TerminalTransmissionScheduleResource.ResourceManager.GetString(m.ToString(), culture));
+
             response.TerminalStatusEnum = termStatuses;
             response.UserStatusEnum = userStatuses;
             response.LogLevelsEnum = logLevels;
             response.OperationCodesEnum = operationCodes;
+            response.TerminalTransmissionScheduleEnum = terminalTransmissionSchedules;
 
             return response;
         }

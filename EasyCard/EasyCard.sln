@@ -106,6 +106,8 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Identity.Database", "Data\I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionsCompositionApp", "Functions\FunctionsCompositionApp\FunctionsCompositionApp.csproj", "{11E3FC60-00CE-4BB5-82EF-15066836B3F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InforU", "Integration\InforU\InforU.csproj", "{4DFEE74E-E961-4840-8955-BA060235F329}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -270,6 +272,10 @@ Global
 		{11E3FC60-00CE-4BB5-82EF-15066836B3F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11E3FC60-00CE-4BB5-82EF-15066836B3F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11E3FC60-00CE-4BB5-82EF-15066836B3F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DFEE74E-E961-4840-8955-BA060235F329}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DFEE74E-E961-4840-8955-BA060235F329}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DFEE74E-E961-4840-8955-BA060235F329}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DFEE74E-E961-4840-8955-BA060235F329}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -312,6 +318,7 @@ Global
 		{01FF3EB4-F0AD-4DC9-A59B-FD14C52DBD55} = {9B8C2352-522A-4F75-A1AA-F5E4226EEB83}
 		{8F52C6B7-2123-4973-A908-5A45518098AA} = {9B8C2352-522A-4F75-A1AA-F5E4226EEB83}
 		{11E3FC60-00CE-4BB5-82EF-15066836B3F3} = {EAE60B00-9D03-4A75-894F-2543F59E523C}
+		{4DFEE74E-E961-4840-8955-BA060235F329} = {68126764-B9A1-45D9-9C33-E84873A9124E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB40244C-6EBC-4B97-8F95-FB108B33F76E}

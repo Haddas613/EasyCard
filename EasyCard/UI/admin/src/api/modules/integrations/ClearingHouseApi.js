@@ -5,7 +5,7 @@ export default class ClearingHouseApi {
         this.clearingHouseIntegrationUrl = this.baseUrl + '/api/integrations/clearing-house';
     }
     
-    async getCustomerData(customerID){
-        return this.base.get(this.clearingHouseIntegrationUrl + `/get-customer/${customerID}`);
+    async getCustomerData(params){
+        return this.base.get(this.clearingHouseIntegrationUrl + `/merchants`, params);
     }
 }

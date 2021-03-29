@@ -351,6 +351,22 @@
         </ec-list>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12" class="subtitle-2 black--text pb-3">
+        {{$t("Transmission")}}
+        <v-divider class="pt-1"></v-divider>
+      </v-col>
+      <v-col cols="12" md="7">
+        <v-select
+          :items="merchantDictionaries.terminalTransmissionScheduleEnum"
+          item-text="description"
+          item-value="code"
+          v-model="model.settings.transmissionSchedule"
+          :label="$t('TransmissionTime')"
+          outlined
+        ></v-select>
+      </v-col>
+    </v-row>
   </div>
 </template>
 

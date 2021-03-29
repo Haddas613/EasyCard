@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Azure.Security.KeyVault.Secrets;
 using Merchants.Business.Services;
+using Merchants.Shared.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -82,7 +83,7 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetNotTransmittedTransactions([FromQuery] TransmissionFilter filter)
         {
-            var query = transactionsService.GetTransactions().AsNoTracking().Filter(filter).Where(d => d.Status == TransactionStatusEnum.CommitedByAggregator);
+            var query = transactionsService.GetTransactions().AsNoTracking().Filter(filter).Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission);
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
@@ -102,13 +103,36 @@ namespace Transactions.Api.Controllers
         [Route("nontransmittedtransactionterminals")]
         public async Task<ActionResult<IEnumerable<Guid>>> GetNonTransmittedTransactionsTerminals()
         {
-            //TODO: Check with terminal settings
-            var query = transactionsService.GetTransactions().AsNoTracking().Where(d => d.Status == TransactionStatusEnum.CommitedByAggregator).Select(t => t.TerminalID).Distinct();
-
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = await query.ToListAsync();
-                return Ok(response);
+                //TODO: Check with terminal settings
+                var allTransactions = await transactionsService.GetTransactions().AsNoTracking().Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission)
+                    .Select(t => t.TerminalID).Distinct().ToListAsync();
+
+                if (allTransactions.Count == 0)
+                {
+                    return Ok(allTransactions);
+                }
+
+                var terminalSettings = await terminalsService.GetTerminals().Where(t => allTransactions.Contains(t.TerminalID)).ToDictionaryAsync(k => k.TerminalID, v => v.Settings);
+
+                var filteredTransactions = new List<Guid>();
+                var now = DateTime.Now;
+
+                foreach (var t in allTransactions)
+                {
+                    if (terminalSettings.ContainsKey(t))
+                    {
+                        var schedule = terminalSettings[t].TransmissionSchedule;
+                        if (schedule == default || schedule.Value.ScheduleApply(now))
+                        {
+                            filteredTransactions.Add(t);
+                        }
+
+                    }
+                }
+
+                return Ok(filteredTransactions);
             }
         }
 
@@ -118,12 +142,12 @@ namespace Transactions.Api.Controllers
         {
             if (transmitTransactionsRequest.PaymentTransactionIDs == null || transmitTransactionsRequest.PaymentTransactionIDs.Count() == 0)
             {
-                return BadRequest(new OperationResponse(Messages.TransactionsForTransmissionRequired, null, HttpContext.TraceIdentifier, nameof(transmitTransactionsRequest.PaymentTransactionIDs), Messages.TransactionsForTransmissionRequired));
+                return BadRequest(new OperationResponse(Messages.TransactionsForTransmissionRequired, null, httpContextAccessor.TraceIdentifier, nameof(transmitTransactionsRequest.PaymentTransactionIDs), Messages.TransactionsForTransmissionRequired));
             }
 
             if (transmitTransactionsRequest.PaymentTransactionIDs.Count() > appSettings.TransmissionMaxBatchSize)
             {
-                return BadRequest(new OperationResponse(string.Format(Messages.TransmissionLimit, appSettings.TransmissionMaxBatchSize), null, HttpContext.TraceIdentifier, nameof(transmitTransactionsRequest.PaymentTransactionIDs), string.Format(Messages.TransmissionLimit, appSettings.TransmissionMaxBatchSize)));
+                return BadRequest(new OperationResponse(string.Format(Messages.TransmissionLimit, appSettings.TransmissionMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(transmitTransactionsRequest.PaymentTransactionIDs), string.Format(Messages.TransmissionLimit, appSettings.TransmissionMaxBatchSize)));
             }
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(transmitTransactionsRequest.TerminalID));
@@ -211,7 +235,7 @@ namespace Transactions.Api.Controllers
 
                         // TODO: Transmission ID from Shva
                         transaction.ShvaTransactionDetails.ShvaTransmissionNumber = processorResponse.TransmissionReference;
-                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.TransmittedByProcessor);
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed);
                     }
                 }
             }
@@ -240,7 +264,7 @@ namespace Transactions.Api.Controllers
                 transaction = EnsureExists(await transactionsService.GetTransactions()
                  .FirstOrDefaultAsync(m => m.PaymentTransactionID == cancelTransmissionRequest.PaymentTransactionID && m.TerminalID == cancelTransmissionRequest.TerminalID));
 
-                if (transaction.Status != TransactionStatusEnum.CommitedByAggregator || transaction.InvoiceID.HasValue)
+                if (transaction.Status != TransactionStatusEnum.AwaitingForTransmission || transaction.InvoiceID.HasValue)
                 {
                     return BadRequest(new OperationResponse(Messages.TransactionStatusIsNotValid, StatusEnum.Error));
                 }
@@ -300,7 +324,7 @@ namespace Transactions.Api.Controllers
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
-            var actionResult = await GetNotTransmittedTransactions(new TransmissionFilter { TerminalID = terminalID });
+            var actionResult = await GetNotTransmittedTransactions(new TransmissionFilter { TerminalID = terminalID, Take = appSettings.TransmissionMaxBatchSize });
 
             var response = actionResult.Result as ObjectResult;
             var nonTransmittedTransactions = response.Value as SummariesResponse<TransactionSummary>;

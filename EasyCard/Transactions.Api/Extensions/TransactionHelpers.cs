@@ -17,15 +17,9 @@ namespace Transactions.Api.Extensions
                 return QuickStatusFilterTypeEnum.Canceled;
             }
 
-            if (@enum == Shared.Enums.TransactionStatusEnum.CommitedByAggregator)
+            if (@enum == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission)
             {
                 return QuickStatusFilterTypeEnum.AwaitingForTransmission;
-            }
-
-            //j2, j5
-            if (@enum == Shared.Enums.TransactionStatusEnum.ConfirmedByProcessor && jDealType != JDealTypeEnum.J4)
-            {
-                return QuickStatusFilterTypeEnum.Completed;
             }
 
             if ((int)@enum > 0 && (int)@enum < 40)
@@ -33,7 +27,7 @@ namespace Transactions.Api.Extensions
                 return QuickStatusFilterTypeEnum.Pending;
             }
 
-            if (@enum == Shared.Enums.TransactionStatusEnum.TransmittedByProcessor)
+            if (@enum == Shared.Enums.TransactionStatusEnum.Completed)
             {
                 return QuickStatusFilterTypeEnum.Completed;
             }

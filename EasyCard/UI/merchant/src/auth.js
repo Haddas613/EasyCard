@@ -78,12 +78,6 @@ class AuthService {
         return !!userData ? userData.access_token : null;
     }
 
-    toDateTime(secs) {
-        var t = new Date(Date.UTC(1970, 0, 1)); // Epoch
-        t.setUTCSeconds(secs);
-        return t;
-    }
-
     async getUserDisplayName() {
         if(!!this.userDisplayName){
             return this.userDisplayName;

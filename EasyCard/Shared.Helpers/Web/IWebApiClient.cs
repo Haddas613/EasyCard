@@ -31,9 +31,12 @@ namespace Shared.Helpers
             ProcessRequest onRequest = null, ProcessResponse onResponse = null
             );
 
+        Task<string> PostRawForm(string enpoint, string actionPath, IDictionary<string, string> payload, Func<Task<NameValueCollection>> getHeaders = null);
+
         Task<RawRequestResult> PostRawWithHeaders(string enpoint, string actionPath, string payload, string contentType, Func<Task<NameValueCollection>> getHeaders = null,
             ProcessRequest onRequest = null, ProcessResponse onResponse = null
             );
+
     }
 
     public delegate void ProcessRequest(string url, string request);

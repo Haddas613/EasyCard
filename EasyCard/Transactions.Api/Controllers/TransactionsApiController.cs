@@ -752,7 +752,7 @@ namespace Transactions.Api.Controllers
                         }
                         else
                         {
-                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.CommitedByAggregator);
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
                         }
                     }
                     catch (Exception ex)
@@ -768,6 +768,18 @@ namespace Transactions.Api.Controllers
             else if (processorFailedRsponse != null)
             {
                 return processorFailedRsponse;
+            }
+            else
+            {
+               if (jDealType != JDealTypeEnum.J4)
+               {
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed);
+               }
+               else
+               {
+                    //If aggregator is not required transaction is eligible for transmission
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
+               }
             }
 
             var endResponse = new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);

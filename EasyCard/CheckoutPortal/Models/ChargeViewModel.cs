@@ -73,7 +73,7 @@ namespace CheckoutPortal.Models
 
         [Required]
         [StringLength(4, MinimumLength = 3)]
-        [RegularExpression("^[0-4]*$")]
+        [RegularExpression("^[0-9]{3,4}$")]
         public string Cvv { get; set; }
 
         /// <summary>
