@@ -50,6 +50,7 @@ using Shared.Helpers.Templating;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
 using Shared.Api.Configuration;
+using Merchants.Business.Entities.Terminal;
 
 namespace Transactions.Api.Controllers
 {
@@ -598,6 +599,15 @@ namespace Transactions.Api.Controllers
                 terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
                 Messages.ProcessorNotDefined);
 
+            TerminalExternalSystem terminalPinpadProcessor = null;
+            bool pinpadDeal = model.PinPad ?? false;
+            if (pinpadDeal)
+            {
+                terminalPinpadProcessor = ValidateExists(
+                terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.PinpadProcessor),
+                Messages.ProcessorNotDefined);
+            }
+
             transaction.AggregatorID = terminalAggregator.ExternalSystemID;
             transaction.ProcessorID = terminalProcessor.ExternalSystemID;
 
@@ -609,6 +619,12 @@ namespace Transactions.Api.Controllers
 
             var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
             mapper.Map(processorSettings, transaction);
+
+            if (pinpadDeal)
+            {
+                var pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
+                mapper.Map(pinpadProcessorSettings, transaction);
+            }
 
             await transactionsService.CreateEntity(transaction);
 

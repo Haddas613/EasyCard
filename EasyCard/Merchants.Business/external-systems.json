@@ -37,6 +37,16 @@
     "Active": true
   },
   {
+    "ExternalSystemID": 50,
+    "Type": "pinpadProcessor",
+    "InstanceTypeFullName": "Nayax.NayaxProcessor, Nayax",
+    "SettingsTypeFullName": "Nayax.NayaxTerminalSettings, Nayax",
+    "Name": "Nayax",
+    "Key": "nayax",
+    "Active": true,
+    "CanBeUsedInTerminalTemplate": true
+  },
+  {
     "ExternalSystemID": 1,
     "Type": "aggregator",
     "InstanceTypeFullName": "Shared.Integration.ExternalSystems.NullAggregator, Shared.Integration",

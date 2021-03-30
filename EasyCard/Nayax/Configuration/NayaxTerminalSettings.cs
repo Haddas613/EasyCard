@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Nayax.Configuration
+namespace Nayax
 {
    public  class NayaxTerminalSettings
     {
