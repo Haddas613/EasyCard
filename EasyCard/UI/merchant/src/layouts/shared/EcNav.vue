@@ -76,6 +76,7 @@
 <script>
 import { mapState } from "vuex";
 import Avatar from "vue-avatar";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -89,7 +90,8 @@ export default {
         {
           icon: "mdi-view-dashboard",
           text: "Dashboard",
-          to: "/admin/dashboard"
+          to: { name: "Dashboard" },
+          forbiddenFor: [appConstants.users.roles.manager]
         },
         {
           icon: "mdi-cash-minus",
@@ -180,6 +182,7 @@ export default {
           icon: "mdi-rotate-right",
           "icon-alt": "mdi-rotate-right",
           text: "BillingDeals",
+          forbiddenFor: [appConstants.users.roles.manager],
           expanded: false,
           children: [
             {
@@ -200,6 +203,15 @@ export default {
   },
   async mounted() {
     this.userName = !!this.$oidc ? (await this.$oidc.getUserDisplayName()) : null;
+    const self = this;
+    let items = [];
+    
+    for(var i of this.items){
+      if(!i.forbiddenFor || (i.forbiddenFor && !(await this.$oidc.isInRole(i.forbiddenFor)))){
+        items.push(i);
+      }
+    }
+    this.items = items;
   },
   computed: {
     drawerObj: {

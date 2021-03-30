@@ -12,7 +12,7 @@
         </v-card-text>
       </v-card>
     </v-footer>
-    <v-row no-gutters align-content="center" v-if="!footer">
+    <v-row no-gutters justify="end" v-if="!footer">
       <v-col cols="4" v-for="item in items" :key="item.text">
         <v-btn
           class="px-2 text-none body-2 font-weight-medium"
@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import appConstants from "../../helpers/app-constants";
+
 export default {
   props: {
     footer: {
@@ -76,10 +78,22 @@ export default {
           icon: "mdi-chevron-up-box-outline",
           to: "/wizard/transactions/refund",
           css: "primary--text",
-          text: "Refund"
+          text: "Refund",
+          forbiddenFor: [appConstants.users.roles.manager]
         }
       ]
     };
-  }
+  },
+  async mounted() {
+    const self = this;
+    let items = [];
+    
+    for(var i of this.items){
+      if(!i.forbiddenFor || (i.forbiddenFor && !(await this.$oidc.isInRole(i.forbiddenFor)))){
+        items.push(i);
+      }
+    }
+    this.items = items;
+  },
 };
 </script>

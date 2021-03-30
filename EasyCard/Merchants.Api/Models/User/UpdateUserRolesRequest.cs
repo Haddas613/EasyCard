@@ -9,6 +9,6 @@ namespace Merchants.Api.Models.User
     {
         public Guid UserID { get; set; }
 
-        public ICollection<string> Roles { get; set; }
+        public HashSet<string> Roles { get; set; }
     }
 }

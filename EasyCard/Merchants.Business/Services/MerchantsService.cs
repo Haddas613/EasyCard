@@ -300,5 +300,14 @@ namespace Merchants.Business.Services
                 }
             }
         }
+
+        public async Task UpdateUserRoles(Guid userID, ICollection<string> roles)
+        {
+            var user = await context.UserTerminalMappings.FirstAsync(u => u.UserID == userID);
+
+            user.Roles = roles;
+
+            await context.SaveChangesAsync();
+        }
     }
 }

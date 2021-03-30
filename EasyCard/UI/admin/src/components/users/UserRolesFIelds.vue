@@ -1,6 +1,5 @@
 <template>
   <div>
-    <p>{{ model.roles }}</p>
     <v-checkbox
       v-model="model.roles"
       :label="appConstants.users.roles.merchant"

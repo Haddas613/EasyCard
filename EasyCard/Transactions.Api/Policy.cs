@@ -9,6 +9,7 @@ namespace Transactions.Api
     {
         public const string Terminal = "terminal_rest_api";
         public const string TerminalOrMerchantFrontendOrAdmin = "terminal_or_merchant_frontend_or_admin";
+        public const string TerminalOrMerchantFrontendOrAdminNotManager = "terminal_or_merchant_frontend_or_admin_not_manager";
         public const string MerchantFrontend = "merchant_frontend";
         public const string AnyAdmin = "admin";
         public const string CheckoutPortal = "checkout_portal";

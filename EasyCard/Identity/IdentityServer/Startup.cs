@@ -326,7 +326,7 @@ namespace IdentityServer
 
             try
             {
-                foreach (var role in new[] { Roles.Merchant, Roles.BusinessAdministrator, Roles.BillingAdministrator })
+                foreach (var role in new[] { Roles.Merchant, Roles.BusinessAdministrator, Roles.BillingAdministrator, Roles.Manager })
                 {
                     if (!roleManager.RoleExistsAsync(role).Result)
                     {

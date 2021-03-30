@@ -24,7 +24,7 @@ export default {
       if (!result) return;
 
       if (result.status === "success") {
-        this.$router.push("/admin/merchants/list");
+        this.$router.push({name: 'Merchant', params: {id: this.model.$merchantID || this.model.merchantID}});
       } else {
         this.$toasted.show(result.message, { type: "error" });
       }

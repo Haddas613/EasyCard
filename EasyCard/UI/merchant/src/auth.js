@@ -1,5 +1,6 @@
 import { UserManager, WebStorageStateStore, User } from 'oidc-client';
 import cfg from "./app.config";
+import appConstants from "./helpers/app-constants";
 
 class AuthService {
     constructor() {
@@ -28,7 +29,6 @@ class AuthService {
 
         this.billingAdminRole = "BillingAdministrator";
         this.businessAdminRole = "BusinessAdministrator";
-        this.merchantRole = "Merchant";
         this._accessTokenLockPromise = null;
     }
 
@@ -98,23 +98,43 @@ class AuthService {
     }
 
     async isMerchant(){
-        return this.isInRole(this.merchantRole);
+        return this.isInRole(appConstants.users.roles.merchant);
     }
 
-    async isInRole(role){
+    async isManager(){
+        return this.isInRole(appConstants.users.roles.manager);
+    }
+
+    async isInRole(roles){
         if(!this.roles){
             this.roles = {};
         }
 
-        if(typeof(this.roles[role]) === "undefined"){
-            const user = await this.userManager.getUser();
-            if(!user || !user.profile){
-                return false;
+        if(Array.isArray(roles)){
+            for(var role of roles){
+                if(typeof(this.roles[role]) === "undefined"){
+                    const user = await this.userManager.getUser();
+                    if(!user || !user.profile){
+                        return false;
+                    }
+                    this.roles[role] = (user.profile.role && user.profile.role.indexOf(role) > -1);
+                    
+                    if(this.roles[role]){
+                        return true;
+                    }
+                }
             }
-            this.roles[role] = (user.profile.role && user.profile.role.indexOf(role) > -1);
+        }else{
+            if(typeof(this.roles[roles]) === "undefined"){
+                const user = await this.userManager.getUser();
+                if(!user || !user.profile){
+                    return false;
+                }
+                this.roles[roles] = (user.profile.role && user.profile.role.indexOf(roles) > -1);
+            }
         }
 
-        return this.roles[role];
+        return this.roles[roles];
     }
 
     async isBillingAdmin(){

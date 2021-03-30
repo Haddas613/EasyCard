@@ -81,6 +81,7 @@
   "UpdateAvailable": "Update Available",
   "CreditCardTokens": "Credit Card Tokens",
   "CardTokens": "Card tokens",
+  "Roles": "Roles",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -306,6 +307,7 @@
   "SetNewPassword": "Set new password",
   "TestConnection": "Test connection",
   "LoadMerchantData": "Load merchant data",
+  "EditRoles": "Edit roles",
 
   "--AUTH--": null,
   "Login": "Login",

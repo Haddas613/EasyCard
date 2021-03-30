@@ -153,6 +153,8 @@ namespace Transactions.Api
                     policy.RequireAssertion(context => context.User.IsTerminal()));
                 options.AddPolicy(Policy.TerminalOrMerchantFrontendOrAdmin, policy =>
                     policy.RequireAssertion(context => context.User.IsTerminal() || context.User.IsMerchantFrontend() || context.User.IsAdmin()));
+                options.AddPolicy(Policy.TerminalOrMerchantFrontendOrAdminNotManager, policy =>
+                    policy.RequireAssertion(context => (!context.User.IsManager() && (context.User.IsTerminal() || context.User.IsMerchantFrontend())) || context.User.IsAdmin()));
                 options.AddPolicy(Policy.MerchantFrontend, policy =>
                    policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
                 options.AddPolicy(Policy.AnyAdmin, policy =>

@@ -27,5 +27,7 @@ namespace Merchants.Business.Services
         Task UnLinkUserFromMerchant(Guid userID, Guid merchantID, IDbContextTransaction dbTransaction = null);
 
         Task UpdateUserStatus(UpdateUserStatusData data, IDbContextTransaction dbTransaction = null);
+
+        Task UpdateUserRoles(Guid userID, ICollection<string> roles);
     }
 }

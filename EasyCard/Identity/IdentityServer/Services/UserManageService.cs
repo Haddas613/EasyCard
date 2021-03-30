@@ -69,7 +69,7 @@ namespace IdentityServer.Services
 
             if (model.Roles == null)
             {
-                model.Roles = new List<string>();
+                model.Roles = new HashSet<string>();
             }
 
             if (!model.Roles.Any(r => r != Roles.Merchant))

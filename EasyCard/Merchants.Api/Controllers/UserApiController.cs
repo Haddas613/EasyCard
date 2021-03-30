@@ -151,12 +151,24 @@ namespace Merchants.Api.Controllers
                 return NotFound(Messages.UserNotFound);
             }
 
+            if (request.Roles == null)
+            {
+                request.Roles = new HashSet<string>();
+            }
+
+            if (!request.Roles.Any(r => r != Roles.Merchant))
+            {
+                request.Roles.Add(Roles.Merchant);
+            }
+
             var updateUserResponse = await userManagementClient.UpdateUser(mapper.Map<UpdateUserRequestModel>(request));
 
             if (updateUserResponse.ResponseCode != UserOperationResponseCodeEnum.UserUpdated)
             {
                 return BadRequest(new OperationResponse(updateUserResponse.Message, StatusEnum.Error, user.UserID, correlationId: GetCorrelationID()));
             }
+
+            await merchantsService.UpdateUserRoles(request.UserID, request.Roles);
 
             return Ok(new OperationResponse(Messages.UserCreated, StatusEnum.Success, user.UserID, correlationId: GetCorrelationID()));
         }

@@ -4,24 +4,7 @@
     <template>
       <v-form class="pt-2" ref="form" v-model="valid" lazy-validation>
         <v-row>
-          <v-col cols="12" class="py-0">
-            <v-text-field
-              v-model="model.email"
-              :counter="50"
-              :rules="[vr.primitives.required, vr.primitives.email]"
-              :label="$t('Email')"
-              outlined
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" class="py-0">
-            <v-textarea
-              v-model="model.inviteMessage"
-              :counter="512"
-              :rules="[vr.primitives.maxLength(512)]"
-              :label="$t('InviteMessage')"
-              outlined
-            ></v-textarea>
-          </v-col>
+          <user-roles-fields :user="user" ref="userRolesRef"></user-roles-fields>
         </v-row>
       </v-form>
       <div class="d-flex px-2 pt-4 justify-end">
@@ -53,7 +36,8 @@ export default {
     }
   },
   components: {
-    EcDialog: () => import("../../components/ec/EcDialog")
+    EcDialog: () => import("../../components/ec/EcDialog"),
+    UserRolesFields: () => import("./UserRolesFIelds")
   },
   data() {
     return {
@@ -78,11 +62,14 @@ export default {
       if (!this.$refs.form.validate()) {
         return;
       }
-      this.loading = true;
-      let operationResult = await this.$api.users.updateUserRoles(this.model);
+      // this.loading = true;
+      let payload = {
+        userID: this.model.$userID || this.model.userID,
+        roles: this.$refs.userRolesRef.getData().roles
+      }
+
+      let operationResult = await this.$api.users.updateUserRoles(payload);
       if (operationResult.status === "success") {
-        this.model.email = null;
-        this.model.inviteMessage = null;
         this.$emit("ok");
       }
       this.visible = false;

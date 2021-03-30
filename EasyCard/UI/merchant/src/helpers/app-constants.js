@@ -12,6 +12,12 @@ const appConstants = {
     },
     misc: {
         uiDefaultVersion: "#{versionNumber}#"
+    },
+    users: {
+        roles: {
+            merchant: "Merchant",
+            manager: "Manager"
+        }
     }
 };
 
