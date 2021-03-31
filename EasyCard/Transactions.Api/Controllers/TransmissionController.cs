@@ -123,8 +123,8 @@ namespace Transactions.Api.Controllers
                 {
                     if (terminalSettings.ContainsKey(t))
                     {
-                        var schedule = terminalSettings[t].TransmissionSchedule;
-                        if (schedule == default || schedule.Value.ScheduleApply(now))
+                        var schedule = terminalSettings[t]?.TransmissionSchedule;
+                        if (schedule == null || schedule.Value.ScheduleApply(now))
                         {
                             filteredTransactions.Add(t);
                         }
