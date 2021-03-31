@@ -285,7 +285,6 @@ export default {
     },
     async showEditRolesDialog(user){
       this.selectedUser = user;
-      console.log(user)
       this.editRolesDialog = true;
     },
     async closeEditRolesDialog(){
