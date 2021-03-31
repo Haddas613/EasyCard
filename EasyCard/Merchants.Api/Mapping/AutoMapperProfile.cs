@@ -127,6 +127,8 @@ namespace Merchants.Api.Mapping
             CreateMap<Business.Entities.User.UserInfo, UserSummary>();
             CreateMap<UserProfileDataResponse, Business.Entities.User.UserInfo>();
             CreateMap<LinkUserToMerchantRequest, Business.Entities.User.UserInfo>();
+            CreateMap<UpdateUserRolesRequest, UpdateUserRequestModel>()
+                .ForMember(d => d.UserID, o => o.MapFrom(src => src.UserID.ToString()));
         }
 
         private void RegisterSystemSettingsMappings()

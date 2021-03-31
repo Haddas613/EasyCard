@@ -52,6 +52,11 @@ namespace Shared.Helpers.Security
             return user?.IsInRole(Roles.Merchant) == true;
         }
 
+        public static bool IsManager(this ClaimsPrincipal user)
+        {
+            return user?.IsInRole(Roles.Manager) == true;
+        }
+
         /// <summary>
         /// Non-interactive api access
         /// </summary>

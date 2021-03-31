@@ -98,7 +98,7 @@ namespace IdentityServer.Controllers
             {
                 Email = model.Email,
                 MerchantID = merchantResult.EntityReference,
-                Roles = new List<string>(),
+                Roles = new List<string> { Roles.Merchant, Roles.Manager },
                 CellPhone = model.PhoneNumber
             };
 

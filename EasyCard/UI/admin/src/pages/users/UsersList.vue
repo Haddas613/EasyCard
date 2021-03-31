@@ -1,5 +1,6 @@
 <template>
   <v-card class="mx-auto" outlined>
+    <edit-user-roles-dialog v-if="selectedUser" :show.sync="editRolesDialog" :user="selectedUser" v-on:ok="closeEditRolesDialog()"></edit-user-roles-dialog>
     <v-expansion-panels :flat="true">
       <v-expansion-panel>
         <v-expansion-panel-header>{{$t('Filters')}}</v-expansion-panel-header>
@@ -46,6 +47,9 @@
           <v-btn class="mx-1" color="deep-purple" outlined link small :title="$t('SeeHistory')" :to="{name:'Audits',params:{filters:{userID: item.$userID}}}">
             <v-icon small>mdi-book-account</v-icon>
           </v-btn>
+          <v-btn class="mx-1" color="secondary" outlined link small :title="$t('EditRoles')" @click="showEditRolesDialog(item)">
+            <v-icon small>mdi-card-account-details-outline</v-icon>
+          </v-btn>
         </template>
       </v-data-table>
     </div>
@@ -56,6 +60,7 @@
 export default {
   components: {
     UsersFilter: () => import("../../components/users/UsersFilter"),
+    EditUserRolesDialog: () => import("../../components/users/EditUserRolesDialog")
   },
   data() {
     return {
@@ -72,6 +77,8 @@ export default {
         active: "success--text",
         locked: "error--text",
       },
+      editRolesDialog: false,
+      selectedUser: null
     };
   },
   watch: {
@@ -144,6 +151,14 @@ export default {
       this.actionInProgress = true;
       let operation = await this.$api.users.resetUserPassword(userID);
       this.actionInProgress = false;
+    },
+    async showEditRolesDialog(user){
+      this.selectedUser = user;
+      this.editRolesDialog = true;
+    },
+    async closeEditRolesDialog(){
+      this.editRolesDialog = false;
+      await this.getDataFromApi();
     }
   }
 };

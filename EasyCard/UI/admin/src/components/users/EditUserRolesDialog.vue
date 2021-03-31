@@ -1,29 +1,10 @@
 <template>
   <ec-dialog :dialog.sync="visible">
-    <template v-slot:title>{{$t('CreateUser')}}</template>
+    <template v-slot:title>{{$t('UserRoles')}}</template>
     <template>
       <v-form class="pt-2" ref="form" v-model="valid" lazy-validation>
         <v-row>
-          <v-col cols="12" class="py-0">
-            <v-text-field
-              v-model="model.email"
-              :counter="50"
-              :rules="[vr.primitives.required, vr.primitives.email]"
-              :label="$t('Email')"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" class="py-0">
-            <v-textarea
-              v-model="model.inviteMessage"
-              :counter="512"
-              :rules="[vr.primitives.maxLength(512)]"
-              :label="$t('InviteMessage')"
-            ></v-textarea>
-          </v-col>
-          <v-col cols="12" class="py-0">
-            <p class="subtitle-1">{{$t("Roles")}}</p>
-            <user-roles-fields :user="model" ref="userRolesRef"></user-roles-fields>
-          </v-col>
+          <user-roles-fields :user="user" ref="userRolesRef"></user-roles-fields>
         </v-row>
       </v-form>
       <div class="d-flex px-2 pt-4 justify-end">
@@ -41,12 +22,11 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
-import appConstants from "../../helpers/app-constants";
-
 export default {
   props: {
-    merchantId: {
-      type: String,
+    user: {
+      type: Object,
+      default: null,
       required: true
     },
     show: {
@@ -61,12 +41,7 @@ export default {
   },
   data() {
     return {
-      model: {
-        email: null,
-        merchantID: this.merchantId,
-        inviteMessage: null,
-        roles: [appConstants.users.roles.merchant]
-      },
+      model: { ...this.user },
       loading: false,
       valid: true,
       vr: ValidationRules,
@@ -87,14 +62,14 @@ export default {
       if (!this.$refs.form.validate()) {
         return;
       }
+      // this.loading = true;
+      let payload = {
+        userID: this.model.$userID || this.model.userID,
+        roles: this.$refs.userRolesRef.getData().roles
+      }
 
-      this.model.roles = this.$refs.userRolesRef.getData().roles;
-
-      this.loading = true;
-      let operationResult = await this.$api.users.inviteUser(this.model);
+      let operationResult = await this.$api.users.updateUserRoles(payload);
       if (operationResult.status === "success") {
-        this.model.email = null;
-        this.model.inviteMessage = null;
         this.$emit("ok");
       }
       this.visible = false;

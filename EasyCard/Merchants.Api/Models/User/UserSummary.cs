@@ -25,7 +25,6 @@ namespace Merchants.Api.Models.User
         [JsonConverter(typeof(StringEnumConverter))]
         public UserStatusEnum Status { get; set; }
 
-        [MetadataOptions(Hidden = true)]
         public IEnumerable<string> Roles { get; set; }
     }
 }

@@ -39,6 +39,19 @@ namespace IdentityServerClient
             }
         }
 
+        public async Task<UserOperationResponse> UpdateUser(UpdateUserRequestModel model)
+        {
+            try
+            {
+                return await webApiClient.Put<UserOperationResponse>(configuration.Authority, "api/userManagement/user", model, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                return clientError.TryConvert(new UserOperationResponse { Message = clientError.Message });
+            }
+        }
+
         public async Task<UserOperationResponse> ResendInvitation(ResendInvitationRequestModel model)
         {
             try

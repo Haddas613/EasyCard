@@ -23,6 +23,7 @@ using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Business.Extensions;
+using Shared.Helpers.Security;
 using Z.EntityFramework.Plus;
 
 namespace Merchants.Api.Controllers
@@ -127,15 +128,49 @@ namespace Merchants.Api.Controllers
                 }
             }
 
-            var userInfo = new UserInfo
-            {
-                DisplayName = user.DisplayName,
-                Email = user.Email,
-                Roles = request.Roles,
-                UserID = user.UserID
-            };
+            //var userInfo = new UserInfo
+            //{
+            //    DisplayName = user.DisplayName,
+            //    Email = user.Email,
+            //    Roles = request.Roles,
+            //    UserID = user.UserID
+            //};
 
             return CreatedAtAction(nameof(GetUser), new { userID = user.UserID }, new OperationResponse(Messages.UserInvited, StatusEnum.Success, user.UserID, correlationId: GetCorrelationID()));
+        }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
+        [Route("update-roles")]
+        public async Task<ActionResult<OperationResponse>> UpdateRoles([FromBody]UpdateUserRolesRequest request)
+        {
+            var user = await userManagementClient.GetUserByID(request.UserID);
+
+            if (user == null)
+            {
+                return NotFound(Messages.UserNotFound);
+            }
+
+            if (request.Roles == null)
+            {
+                request.Roles = new HashSet<string>();
+            }
+
+            if (!request.Roles.Any(r => r != Roles.Merchant))
+            {
+                request.Roles.Add(Roles.Merchant);
+            }
+
+            var updateUserResponse = await userManagementClient.UpdateUser(mapper.Map<UpdateUserRequestModel>(request));
+
+            if (updateUserResponse.ResponseCode != UserOperationResponseCodeEnum.UserUpdated)
+            {
+                return BadRequest(new OperationResponse(updateUserResponse.Message, StatusEnum.Error, user.UserID, correlationId: GetCorrelationID()));
+            }
+
+            await merchantsService.UpdateUserRoles(request.UserID, request.Roles);
+
+            return Ok(new OperationResponse(Messages.UserCreated, StatusEnum.Success, user.UserID, correlationId: GetCorrelationID()));
         }
 
         [HttpPost]

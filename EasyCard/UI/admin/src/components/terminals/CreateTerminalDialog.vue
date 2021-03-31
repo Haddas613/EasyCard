@@ -89,7 +89,7 @@ export default {
   },
   methods: {
     async ok() {
-      if (!this.valid) {
+      if (!this.$refs.form.validate()) {
         return;
       }
       let operationResult = await this.$api.terminals.createTerminal(this.model);
