@@ -175,7 +175,7 @@ namespace ClearingHouse
                     TransactionIDs = clearingHouseTransactionIds.ToArray(),
                     TransmissionDate = transmissionDate
                 };
-                var result = await webApiClient.Post<OperationResponse>(configuration.ApiBaseAddress, GetMerchantsRequest, request, BuildHeaders);
+                var result = await webApiClient.Post<OperationResponse>(configuration.ApiBaseAddress, UpdateTransmissionRequest, request, BuildHeaders);
 
                 return result;
             }
