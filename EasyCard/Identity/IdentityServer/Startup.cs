@@ -242,10 +242,10 @@ namespace IdentityServer
                 options.StorageConnectionString = config.DefaultStorageConnectionString;
             });
 
-            services.AddTransient<ISmsService, InforUMobileSmsService>(serviceProvider => {
+            services.AddSingleton<ISmsService, InforUMobileSmsService>(serviceProvider => {
 
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
-                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.SmsTableName, cfg.SmsTableName);
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.SmsTableName, null);
                 var inforUMobileSmsSettings = Configuration.GetSection("InforUMobileSmsSettings")?.Get<InforUMobileSmsSettings>();
 
                 var webApiClient = new WebApiClient();
