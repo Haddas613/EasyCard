@@ -11,6 +11,7 @@ using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace ClearingHouse
         private const string GetTransactionRequest = "api/transaction/{0}";
         private const string GetMerchantsRequest = "api/merchant";
         private const string CancelTransactionRequest = "api/transaction/{0}/reject";
+        private const string UpdateTransmissionRequest = "api/transaction/transmission";
 
         private readonly IWebApiClient webApiClient;
         private readonly ClearingHouseGlobalSettings configuration;
@@ -160,6 +162,27 @@ namespace ClearingHouse
             {
                 logger.LogError(clientError.Message);
                 return new MerchantsSummariesResponse();
+            }
+        }
+
+        public async Task<OperationResponse> UpdateTransmission(DateTime transmissionDate, IEnumerable<long> clearingHouseTransactionIds)
+        {
+            try
+            {
+                var request = new TransmissionTransactionRequest
+                {
+                    PaymentGatewayID = configuration.PaymentGatewayID,
+                    TransactionIDs = clearingHouseTransactionIds.ToArray(),
+                    TransmissionDate = transmissionDate
+                };
+                var result = await webApiClient.Post<OperationResponse>(configuration.ApiBaseAddress, GetMerchantsRequest, request, BuildHeaders);
+
+                return result;
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                return new OperationResponse { Status = StatusEnum.Error, Message = clientError.Message };
             }
         }
 

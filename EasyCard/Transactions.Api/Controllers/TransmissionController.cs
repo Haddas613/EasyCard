@@ -236,8 +236,40 @@ namespace Transactions.Api.Controllers
                         // TODO: Transmission ID from Shva
                         transaction.ShvaTransactionDetails.ShvaTransmissionNumber = processorResponse.TransmissionReference;
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed);
+
                     }
                 }
+            }
+
+            try
+            {
+                ClearingHouse.ClearingHouseAggregator clearingHouseAggregator = null;
+
+                var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
+
+                if (terminalAggregator != null && terminalAggregator.ExternalSystemID == 10) //TODO: constants?
+                {
+                    clearingHouseAggregator = aggregatorResolver.GetAggregator(terminalAggregator) as ClearingHouse.ClearingHouseAggregator;
+                }
+
+                //Notify ClearingHouse about successfully transmitted transactions
+                if (clearingHouseAggregator != null)
+                {
+                    var transmittedTransactionsId = transactionsResponse.Where(t => t.TransmissionStatus == TransmissionStatusEnum.Transmitted).Select(t => t.PaymentTransactionID).ToList();
+                    var transmittedCHTransactions = transactions
+                        .Where(t => t.ClearingHouseTransactionDetails?.ClearingHouseTransactionID.HasValue == true && transmittedTransactionsId.Contains(t.PaymentTransactionID))
+                        .Select(t => t.ClearingHouseTransactionDetails.ClearingHouseTransactionID.Value)
+                        .ToList();
+
+                    if (transmittedCHTransactions.Count > 0)
+                    {
+                        await clearingHouseAggregator.UpdateTransmission(transmissionDate, transmittedCHTransactions);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, $"ClearingHouseTransmit: Error {e.Message}");
             }
 
             return Ok(response);
