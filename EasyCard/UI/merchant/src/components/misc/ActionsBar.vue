@@ -79,7 +79,7 @@ export default {
           to: "/wizard/transactions/refund",
           css: "primary--text",
           text: "Refund",
-          forbiddenFor: [appConstants.users.roles.manager]
+          allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin]
         }
       ]
     };
@@ -89,8 +89,10 @@ export default {
     let items = [];
     
     for(var i of this.items){
-      if(!i.forbiddenFor || (i.forbiddenFor && !(await this.$oidc.isInRole(i.forbiddenFor)))){
+      if(!i.allowedFor){
         items.push(i);
+      }else if(await this.$oidc.isInRole(i.allowedFor)){
+          items.push(i);
       }
     }
     this.items = items;

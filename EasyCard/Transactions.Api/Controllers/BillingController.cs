@@ -42,7 +42,7 @@ namespace Transactions.Api.Controllers
     [Route("api/billing")]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdminNotManager)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrManagerOrAdmin)]
     [ApiController]
     public class BillingController : ApiControllerBase
     {

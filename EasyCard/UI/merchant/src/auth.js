@@ -102,7 +102,7 @@ class AuthService {
     }
 
     async isManager(){
-        return this.isInRole(appConstants.users.roles.manager);
+        return this.isInRole([appConstants.users.roles.manager, appConstants.users.roles.billingAdmin]);
     }
 
     async isInRole(roles){
@@ -122,8 +122,11 @@ class AuthService {
                     if(this.roles[role]){
                         return true;
                     }
+                }else if(this.roles[role]){
+                    return true;
                 }
             }
+            return false;
         }else{
             if(typeof(this.roles[roles]) === "undefined"){
                 const user = await this.userManager.getUser();
@@ -133,8 +136,7 @@ class AuthService {
                 this.roles[roles] = (user.profile.role && user.profile.role.indexOf(roles) > -1);
             }
         }
-
-        return this.roles[roles];
+        return this.roles[roles] === true;
     }
 
     async isBillingAdmin(){

@@ -433,7 +433,7 @@ namespace Transactions.Api.Controllers
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdminNotManager)]
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrManagerOrAdmin)]
         [Route("refund")]
         [ValidateModelState]
         public async Task<ActionResult<OperationResponse>> Refund([FromBody] RefundRequest model)

@@ -1,6 +1,6 @@
 <template>
   <v-card class="mx-auto" outlined>
-    <edit-user-roles-dialog v-if="selectedUser" :show.sync="editRolesDialog" :user="selectedUser" v-on:ok="closeEditRolesDialog()"></edit-user-roles-dialog>
+    <edit-user-roles-dialog v-if="selectedUser" :show.sync="editRolesDialog" :key="selectedUser.userID" :user="selectedUser" v-on:ok="closeEditRolesDialog()"></edit-user-roles-dialog>
     <v-expansion-panels :flat="true">
       <v-expansion-panel>
         <v-expansion-panel-header>{{$t('Filters')}}</v-expansion-panel-header>

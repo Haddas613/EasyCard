@@ -16,7 +16,7 @@ namespace Reporting.Api.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Route("api/dashboard")]
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.MerchantFrontendOrAdminNotManager)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrManagerOrAdmin)]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]
     public class DashboardController : ApiControllerBase

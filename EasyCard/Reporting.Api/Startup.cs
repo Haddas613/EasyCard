@@ -110,7 +110,8 @@ namespace Reporting.Api
                                         var impersonationIdentity = new ClaimsIdentity(new[]
                                         {
                                             new Claim(Claims.MerchantIDClaim, merchantID.ToString()),
-                                            new Claim(ClaimTypes.Role, Roles.Merchant)
+                                            new Claim(ClaimTypes.Role, Roles.Merchant),
+                                            new Claim(ClaimTypes.Role, Roles.Manager)
                                         });
                                         context.Principal?.AddIdentity(impersonationIdentity);
                                     }
@@ -149,8 +150,8 @@ namespace Reporting.Api
                     policy.RequireAssertion(context => context.User.IsTerminal()));
                 options.AddPolicy(Policy.TerminalOrMerchantFrontend, policy =>
                     policy.RequireAssertion(context => context.User.IsTerminal() || context.User.IsMerchantFrontend()));
-                options.AddPolicy(Policy.MerchantFrontendOrAdminNotManager, policy =>
-                   policy.RequireAssertion(context => (!context.User.IsManager() && context.User.IsMerchantFrontend()) || context.User.IsAdmin()));
+                options.AddPolicy(Policy.TerminalOrManagerOrAdmin, policy =>
+                    policy.RequireAssertion(context => context.User.IsManager() || context.User.IsTerminal() || context.User.IsAdmin()));
                 options.AddPolicy(Policy.MerchantFrontend, policy =>
                    policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
             });

@@ -91,7 +91,7 @@ export default {
           icon: "mdi-view-dashboard",
           text: "Dashboard",
           to: { name: "Dashboard" },
-          forbiddenFor: [appConstants.users.roles.manager]
+          allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin]
         },
         {
           icon: "mdi-cash-minus",
@@ -182,7 +182,7 @@ export default {
           icon: "mdi-rotate-right",
           "icon-alt": "mdi-rotate-right",
           text: "BillingDeals",
-          forbiddenFor: [appConstants.users.roles.manager],
+          allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin],
           expanded: false,
           children: [
             {
@@ -202,12 +202,14 @@ export default {
     };
   },
   async mounted() {
-    this.userName = !!this.$oidc ? (await this.$oidc.getUserDisplayName()) : null;
+    this.userName = !!this.$oidc ? await this.$oidc.getUserDisplayName() : null;
     const self = this;
     let items = [];
     
     for(var i of this.items){
-      if(!i.forbiddenFor || (i.forbiddenFor && !(await this.$oidc.isInRole(i.forbiddenFor)))){
+      if(!i.allowedFor){
+        items.push(i);
+      }else if(await this.$oidc.isInRole(i.allowedFor)){
         items.push(i);
       }
     }

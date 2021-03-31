@@ -1,5 +1,6 @@
 <template>
   <v-flex>
+    <edit-user-roles-dialog v-if="selectedUser" :show.sync="editRolesDialog" :key="selectedUser.userID" :user="selectedUser" v-on:ok="closeEditRolesDialog()"></edit-user-roles-dialog>
     <v-card class="mx-2 my-2">
       <v-card-title class="py-2">
         <v-row no-gutters class="py-0">
@@ -169,6 +170,9 @@
             <v-btn icon @click="unlinkFromMerchant(item.userID)" :loading="actionInProgress">
               <v-icon color="error">mdi-delete</v-icon>
             </v-btn>
+            <v-btn class="mx-1" color="secondary" icon link :title="$t('EditRoles')" @click="showEditRolesDialog(item)">
+            <v-icon small>mdi-card-account-details-outline</v-icon>
+          </v-btn>
           </template>
         </ec-list>
         <p
@@ -188,7 +192,8 @@ export default {
     EcList: () => import("../../components/ec/EcList"),
     CreateTerminalDialog: () =>
       import("../../components/terminals/CreateTerminalDialog"),
-    CreateUserDialog: () => import("../../components/users/CreateUserDialog")
+    CreateUserDialog: () => import("../../components/users/CreateUserDialog"),
+    EditUserRolesDialog: () => import("../../components/users/EditUserRolesDialog")
   },
   props: {
     data: {
@@ -204,7 +209,9 @@ export default {
       showCreateTerminalDialog: false,
       showCreateUserDialog: false,
       actionInProgress: false,
-      loginAsMerchantURL: null
+      loginAsMerchantURL: null,
+      editRolesDialog: false,
+      selectedUser: null
     };
   },
   methods: {
@@ -275,6 +282,15 @@ export default {
         this.loginAsMerchantURL = operation.message;
         window.open(operation.message, "_blank");
       }
+    },
+    async showEditRolesDialog(user){
+      this.selectedUser = user;
+      console.log(user)
+      this.editRolesDialog = true;
+    },
+    async closeEditRolesDialog(){
+      this.editRolesDialog = false;
+      await this.getMerchant();
     }
   },
   async mounted() {

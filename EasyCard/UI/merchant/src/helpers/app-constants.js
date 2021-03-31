@@ -16,7 +16,9 @@ const appConstants = {
     users: {
         roles: {
             merchant: "Merchant",
-            manager: "Manager"
+            manager: "Manager",
+            billingAdmin: "BillingAdministrator",
+            businessAdmin: "BusinessAdministrator",
         }
     }
 };

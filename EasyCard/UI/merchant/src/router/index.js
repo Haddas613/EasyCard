@@ -9,24 +9,20 @@ import appConstants from "../helpers/app-constants";
 Vue.use(VueRouter)
 
 /**
- * Authorization is **inverted**. All merchants have Merchant Role. But some also have Manager roles. Those merchants
- * have **limited** access as opposed to usual auth approach. This guard must be applied to route with roles which
- * you want to forbid from accessing this route.
- * E.g. User with Merchant and Manager role has **less** access than User with just Merchant role.
  * @param {roles} roles array: string | string 
  */
-const ForbiddenForGuard = function(roles, defaultRoute = { name: "Transactions" }){
+const AllowedForGuard = function(roles, defaultRoute = { name: "Transactions" }){
     this.defaultRoute = defaultRoute;
     this.challenge = async function(oidc){
         if(await oidc.isInRole(roles)){
-            return false;
+            return true;
         }
         
-        return true;
+        return false;
     }
 };
 
-const forbiddenForManagerGuard = new ForbiddenForGuard([appConstants.users.roles.manager]);
+const allowedForManagerOrAdminGuard = new AllowedForGuard([appConstants.users.roles.manager, appConstants.users.roles.billingAdmin]);
 
 /**
  * MainLayout components may contain next meta:
@@ -63,7 +59,7 @@ const routes = [{
                 path: 'dashboard',
                 meta: {
                     altDisplay: true,
-                    guard: forbiddenForManagerGuard
+                    guard: allowedForManagerOrAdminGuard
                 },
                 alias: '',
                 component: () =>
@@ -183,7 +179,7 @@ const routes = [{
                 path: 'billing-deals/list',
                 props: true,
                 meta: {
-                    guard: forbiddenForManagerGuard
+                    guard: allowedForManagerOrAdminGuard
                 },
                 component: () =>
                     import ('../pages/billing-deals/BillingDealsList.vue'),
@@ -192,7 +188,7 @@ const routes = [{
                 name: 'BillingDeal',
                 meta: {
                     backBtn: true,
-                    guard: forbiddenForManagerGuard
+                    guard: allowedForManagerOrAdminGuard
                 },
                 path: 'billing-deals/view/:id',
                 component: () =>
@@ -202,7 +198,7 @@ const routes = [{
                 name: 'EditBillingDeal',
                 meta: {
                     backBtn: 'BillingDeals',
-                    guard: forbiddenForManagerGuard
+                    guard: allowedForManagerOrAdminGuard
                 },
                 path: 'billing-deals/edit/:id',
                 component: () =>
@@ -211,7 +207,7 @@ const routes = [{
             {
                 name: 'CreateBillingDeal',
                 path: 'billing-deals/create',
-                guard: forbiddenForManagerGuard,
+                guard: allowedForManagerOrAdminGuard,
                 component: () =>
                     import ('../pages/billing-deals/CreateBillingDeal.vue'),
             },
@@ -333,8 +329,13 @@ router.afterEach((to, from) => {
 router.beforeEach(async(to, from, next) => {
     const oidc = Vue.prototype.$oidc;
     if (await oidc.isAuthenticated()) {
-        if(to.meta && to.meta.guard && !(await to.meta.guard.challenge(oidc))){
-            next(to.meta.guard.defaultRoute);
+        if(to.meta && to.meta.guard){
+            let challenge = await to.meta.guard.challenge(oidc);
+            if(challenge){
+                next();
+            }else{
+                next(to.meta.guard.defaultRoute);
+            }
         }else{
             // we can pass through merchants and admins
             next();

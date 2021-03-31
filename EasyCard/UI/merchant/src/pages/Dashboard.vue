@@ -58,7 +58,7 @@ export default {
   },
   async mounted(){
     this.userName = !!this.$oidc ? (await this.$oidc.getUserDisplayName()) : null;
-    this.canSeeReports = !(await this.$oidc.isManager());
+    this.canSeeReports = await this.$oidc.isManager();
   }
 };
 </script>
