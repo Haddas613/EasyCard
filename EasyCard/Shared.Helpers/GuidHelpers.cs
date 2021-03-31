@@ -64,5 +64,17 @@ namespace Shared.Helpers
         {
             return $"{dateTime.ToString("yyyyMMdd-HHmmss-fff")}-{guid.ToString().Replace("-", string.Empty).Substring(0, 16)}";
         }
+
+        public static Guid? TryParseGuid(this string str)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                return default;
+            }
+
+            Guid.TryParse(str, out var guid);
+
+            return guid;
+        }
     }
 }
