@@ -25,7 +25,7 @@ namespace InforU
 
         private readonly bool doNotSend;
 
-        public InforUMobileSmsService(IWebApiClient apiClient, InforUMobileSmsSettings configuration, ILogger<InforUMobileSmsService> logger, IHttpContextAccessorWrapper httpContextAccessor, IIntegrationRequestLogStorageService storageService, bool doNotSend = false)
+        public InforUMobileSmsService(IWebApiClient apiClient, InforUMobileSmsSettings configuration, ILogger<InforUMobileSmsService> logger,  IIntegrationRequestLogStorageService storageService, bool doNotSend = false)
         {
             this.configuration = configuration;
 
@@ -43,7 +43,7 @@ namespace InforU
         public async Task<OperationResponse> Send(SmsMessage message)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
-            var correlationId = httpContextAccessor?.GetCorrelationId();
+            var correlationId = message.CorrelationId;
             IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.Now, integrationMessageId, correlationId);
 
             integrationMessage.MessageId = message.MessageId;

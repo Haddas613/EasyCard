@@ -111,6 +111,11 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         public InvoiceDetails InvoiceDetails { get; set; }
 
+        /// <summary>
+        /// Create Pinpad Transaction
+        /// </summary>
+        public bool? PinPad { get; set; }
+
         public void Calculate()
         {
             if (NetTotal == 0)

@@ -20,6 +20,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shared.Api.Configuration;
 using Shared.Api.Security;
+using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Email;
 using Shared.Helpers.Security;
@@ -57,6 +58,7 @@ namespace IdentityServer.Controllers
         private readonly IAuditLogger auditLogger;
         private readonly AzureADSettings azureADConfig;
         private readonly ApiSettings apiConfiguration;
+        private readonly IHttpContextAccessorWrapper httpContextAccessor;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -72,7 +74,8 @@ namespace IdentityServer.Controllers
             IAuditLogger auditLogger,
             IOptions<AzureADSettings> azureADConfig,
             IOptions<ApiSettings> apiConfiguration,
-            ISmsService smsService)
+            ISmsService smsService,
+            IHttpContextAccessorWrapper httpContextAccessor)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -90,6 +93,7 @@ namespace IdentityServer.Controllers
             this.azureADConfig = azureADConfig.Value;
             this.apiConfiguration = apiConfiguration.Value;
             this.smsService = smsService;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -299,7 +303,8 @@ namespace IdentityServer.Controllers
                     MessageId = messageId,
                     Body = code,
                     From = configuration.SmsFrom,
-                    To = phoneNumber
+                    To = phoneNumber,
+                    CorrelationId = httpContextAccessor.GetCorrelationId()
                 });
 
                 if (response.Status == Shared.Api.Models.Enums.StatusEnum.Error)

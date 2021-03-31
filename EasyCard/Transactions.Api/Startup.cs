@@ -273,6 +273,7 @@ namespace Transactions.Api
 
             // integration
             services.Configure<Shva.ShvaGlobalSettings>(Configuration.GetSection("ShvaGlobalSettings"));
+            services.Configure<Nayax.NayaxProcessor>(Configuration.GetSection("NayaxGlobalSettings"));
             services.Configure<ClearingHouse.ClearingHouseGlobalSettings>(Configuration.GetSection("ClearingHouseGlobalSettings"));
             services.Configure<EasyInvoice.EasyInvoiceGlobalSettings>(Configuration.GetSection("EasyInvoiceGlobalSettings"));
 
@@ -289,6 +290,17 @@ namespace Transactions.Api
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.ShvaRequestsLogStorageTable, cfg.ShvaRequestsLogStorageTable);
 
                 return new Shva.ShvaProcessor(webApiClient, shvaCfg, logger, storageService);
+            });
+
+            services.AddSingleton<Nayax.NayaxProcessor, Nayax.NayaxProcessor>(serviceProvider =>
+            {
+                var nayaxCfg = serviceProvider.GetRequiredService<IOptions<Nayax.Configuration.NayaxGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<Nayax.NayaxProcessor>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.NayaxRequestsLogStorageTable, cfg.NayaxRequestsLogStorageTable);
+
+                return new Nayax.NayaxProcessor(webApiClient, nayaxCfg, logger, storageService);
             });
 
             services.AddSingleton<ClearingHouse.ClearingHouseAggregator, ClearingHouse.ClearingHouseAggregator>(serviceProvider =>

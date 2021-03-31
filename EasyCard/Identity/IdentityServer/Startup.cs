@@ -242,8 +242,8 @@ namespace IdentityServer
                 options.StorageConnectionString = config.DefaultStorageConnectionString;
             });
 
-            services.AddSingleton<ISmsService, InforUMobileSmsService>(serviceProvider => {
-
+            services.AddSingleton<ISmsService, InforUMobileSmsService>(serviceProvider =>
+            {
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.SmsTableName, null);
                 var inforUMobileSmsSettings = Configuration.GetSection("InforUMobileSmsSettings")?.Get<InforUMobileSmsSettings>();
@@ -251,11 +251,10 @@ namespace IdentityServer
                 var webApiClient = new WebApiClient();
 
                 var logger = serviceProvider.GetRequiredService<ILogger<InforUMobileSmsService>>();
-                var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessorWrapper>();
 
                 var doNotSendSms = cfg.TwoFactorAuthenticationDoNotSendSms;
 
-                return new InforUMobileSmsService(webApiClient, inforUMobileSmsSettings, logger, httpContextAccessor, storageService, doNotSendSms);
+                return new InforUMobileSmsService(webApiClient, inforUMobileSmsSettings, logger, storageService, doNotSendSms);
             });
 
             services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();

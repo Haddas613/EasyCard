@@ -21,7 +21,19 @@ namespace Shared.Helpers.Sms
 
         private DateTime messageDate = DateTime.UtcNow;
 
-        public DateTime MessageDate { get { return this.messageDate; } set { this.messageDate = value; this.PartitionKey = this.messageDate.ToString("yy-MM-dd"); } }
+        public DateTime MessageDate
+        {
+            get
+            {
+                return this.messageDate;
+            }
+
+            set
+            {
+                this.messageDate = value;
+                this.PartitionKey = this.messageDate.ToString("yy-MM-dd");
+            }
+        }
 
         public string Body { get; set; }
 
@@ -35,5 +47,7 @@ namespace Shared.Helpers.Sms
 
         [IgnoreProperty]
         public string MessageId { get { return this.RowKey; } set { this.RowKey = value; } }
+
+        public string CorrelationId { get; set; }
     }
 }

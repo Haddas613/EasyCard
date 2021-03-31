@@ -10,6 +10,8 @@ namespace Transactions.Shared
 
         public string ShvaRequestsLogStorageTable { get; set; }
 
+        public string NayaxRequestsLogStorageTable { get; set; }
+
         public string ClearingHouseRequestsLogStorageTable { get; set; }
 
         public string EasyInvoiceRequestsLogStorageTable { get; set; }
