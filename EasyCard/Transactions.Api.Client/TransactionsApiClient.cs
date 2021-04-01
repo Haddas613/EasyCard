@@ -83,16 +83,16 @@ namespace Transactions.Api.Client
             }
         }
 
-        public async Task<OperationResponse> TransmitTerminalTransactions(Guid? terminalID)
+        public async Task<SummariesResponse<TransmitTransactionResponse>> TransmitTerminalTransactions(Guid? terminalID)
         {
             try
             {
-                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/transmission/transmitByTerminal/{terminalID}", null, BuildHeaders);
+                return await webApiClient.Post<SummariesResponse<TransmitTransactionResponse>>(apiConfiguration.TransactionsApiAddress, $"api/transmission/transmitByTerminal/{terminalID}", null, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
                 //logger.LogError(clientError.Message);
-                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+                return clientError.TryConvert(new SummariesResponse<TransmitTransactionResponse> { });
             }
         }
 

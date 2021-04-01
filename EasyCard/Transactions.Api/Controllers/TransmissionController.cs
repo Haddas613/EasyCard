@@ -106,20 +106,20 @@ namespace Transactions.Api.Controllers
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
                 //TODO: Check with terminal settings
-                var allTransactions = await transactionsService.GetTransactions().AsNoTracking().Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission)
+                var allTerminals = await transactionsService.GetTransactions().AsNoTracking().Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission)
                     .Select(t => t.TerminalID).Distinct().ToListAsync();
 
-                if (allTransactions.Count == 0)
+                if (allTerminals.Count == 0)
                 {
-                    return Ok(allTransactions);
+                    return Ok(allTerminals);
                 }
 
-                var terminalSettings = await terminalsService.GetTerminals().Where(t => allTransactions.Contains(t.TerminalID)).ToDictionaryAsync(k => k.TerminalID, v => v.Settings);
+                var terminalSettings = await terminalsService.GetTerminals().Where(t => allTerminals.Contains(t.TerminalID)).ToDictionaryAsync(k => k.TerminalID, v => v.Settings);
 
                 var filteredTransactions = new List<Guid>();
                 var now = DateTime.Now;
 
-                foreach (var t in allTransactions)
+                foreach (var t in allTerminals)
                 {
                     if (terminalSettings.ContainsKey(t))
                     {
@@ -193,15 +193,18 @@ namespace Transactions.Api.Controllers
                     if (failedTransaction != null)
                     {
                         transactionsResponse.Add(new TransmitTransactionResponse { TransmissionStatus = TransmissionStatusEnum.TransmissionFailed, PaymentTransactionID = transactionID });
+                        logger.LogError($"TransmissionFailed for transaction: {transactionID}");
                     }
                     else
                     {
                         transactionsResponse.Add(new TransmitTransactionResponse { TransmissionStatus = TransmissionStatusEnum.Transmitted, PaymentTransactionID = transactionID });
+                        logger.LogInformation($"Transaction Transmitted: {transactionID}");
                     }
                 }
                 else
                 {
                     transactionsResponse.Add(new TransmitTransactionResponse { TransmissionStatus = TransmissionStatusEnum.NotFoundOrInvalidStatus, PaymentTransactionID = transactionID });
+                    logger.LogError($"NotFoundOrInvalidStatus for transaction: {transactionID}");
                 }
             }
 
@@ -352,7 +355,7 @@ namespace Transactions.Api.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Route("transmitByTerminal/{terminalID:guid}")]
-        public async Task<ActionResult<OperationResponse>> TransmitByTerminal([FromRoute]Guid terminalID)
+        public async Task<ActionResult<SummariesResponse<TransmitTransactionResponse>>> TransmitByTerminal([FromRoute]Guid terminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
@@ -363,16 +366,16 @@ namespace Transactions.Api.Controllers
 
             if (nonTransmittedTransactions == null || nonTransmittedTransactions.NumberOfRecords == 0)
             {
-                return new OperationResponse(Messages.NothingToTransmit, StatusEnum.Success);
+                return new SummariesResponse<TransmitTransactionResponse> { Data = new List<TransmitTransactionResponse>(), NumberOfRecords = 0 };
             }
 
-            await TransmitTransactions(new TransmitTransactionsRequest
+            var result = await TransmitTransactions(new TransmitTransactionsRequest
             {
                 TerminalID = terminalID,
                 PaymentTransactionIDs = nonTransmittedTransactions.Data.Select(t => t.PaymentTransactionID)
             });
 
-            return new OperationResponse(Messages.TransactionsTransmitted, StatusEnum.Success);
+            return result;
         }
     }
 }
