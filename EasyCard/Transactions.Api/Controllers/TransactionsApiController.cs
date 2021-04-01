@@ -191,7 +191,7 @@ namespace Transactions.Api.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         [Route("{transactionID}/history")]
         [Authorize(Policy = Policy.AnyAdmin)]
-        public async Task<ActionResult<TransactionResponse>> GetTransactionHistory([FromRoute] Guid transactionID)
+        public async Task<ActionResult<SummariesResponse<Models.Transactions.TransactionHistory>>> GetTransactionHistory([FromRoute] Guid transactionID)
         {
             var transaction = EnsureExists(await transactionsService.GetTransactions()
                 .Where(m => m.PaymentTransactionID == transactionID).Select(d => d.PaymentTransactionID).FirstOrDefaultAsync());
@@ -202,7 +202,7 @@ namespace Transactions.Api.Controllers
             {
                 var response = new SummariesResponse<Models.Transactions.TransactionHistory> { NumberOfRecords = await query.CountAsync() };
 
-                response.Data = await mapper.ProjectTo<Models.Transactions.TransactionHistory>(query).ToListAsync();
+                response.Data = await mapper.ProjectTo<Models.Transactions.TransactionHistory>(query.OrderByDescending(t => t.OperationDate)).ToListAsync();
 
                 return Ok(response);
             }
