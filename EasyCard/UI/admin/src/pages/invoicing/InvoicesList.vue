@@ -26,7 +26,7 @@
             <input type="checkbox" v-model="item.selected">
           </template>
           <template v-slot:item.invoiceAmount="{ item }">
-            <b>{{item.invoiceAmount | currency(item.$currency)}}</b>
+            <b>{{item.invoiceAmount | currency(item.currency)}}</b>
           </template>
           <template v-slot:item.actions="{ item }">
             <!-- <v-btn color="primary" outlined small link :to="{name: 'Invoice', params: {id: item.$invoiceID}}">
