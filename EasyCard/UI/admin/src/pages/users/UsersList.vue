@@ -106,7 +106,7 @@ export default {
       if (!this.headers || this.headers.length === 0) {
         this.headers = [
           ...data.headers,
-          { value: "actions", text: this.$t("Actions") }
+          { value: "actions", text: this.$t("Actions"), sortable: false  }
         ];
       }
     },

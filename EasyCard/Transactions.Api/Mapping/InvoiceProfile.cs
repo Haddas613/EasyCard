@@ -25,6 +25,11 @@ namespace Transactions.Api.Mapping
             CreateMap<TransactionsApi.Models.Transactions.CreditCardDetails, Transactions.Business.Entities.CreditCardDetails>();
 
             CreateMap<Invoice, InvoiceSummary>()
+                  .ForMember(d => d.InvoiceType, o => o.MapFrom(d => d.InvoiceDetails.InvoiceType))
+                  .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID));
+
+            CreateMap<Invoice, InvoiceSummaryAdmin>()
+                  .ForMember(d => d.InvoiceType, o => o.MapFrom(d => d.InvoiceDetails.InvoiceType))
                   .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID));
 
             CreateMap<Invoice, InvoiceResponse>();

@@ -429,6 +429,11 @@
             Currency
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryAdmin.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Invoicing.InvoiceSummaryResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

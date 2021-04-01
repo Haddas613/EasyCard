@@ -4,7 +4,7 @@ export default function (value, currency) {
     if(!value || !currency){
         return value;
     }
-
+    
     value = parseFloat(value);
     if (typeof value !== "number") {
         return value;
