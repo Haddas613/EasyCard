@@ -21,6 +21,7 @@ using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Validation;
 using Shared.Business.Security;
+using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Helpers.Security;
 using Shared.Integration.ExternalSystems;
@@ -117,7 +118,7 @@ namespace Transactions.Api.Controllers
                 var terminalSettings = await terminalsService.GetTerminals().Where(t => allTerminals.Contains(t.TerminalID)).ToDictionaryAsync(k => k.TerminalID, v => v.Settings);
 
                 var filteredTransactions = new List<Guid>();
-                var now = DateTime.Now;
+                var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.Now, UserCultureInfo.TimeZone);
 
                 foreach (var t in allTerminals)
                 {
