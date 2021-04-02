@@ -230,6 +230,41 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpPost]
+        [Route("resend-admin")]
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
+        public async Task<ActionResult<OperationResponse>> TransmitTransactionsAdmin(ResendInvoiceRequest resendInvoiceRequest)
+        {
+            if (resendInvoiceRequest.InvoicesIDs == null || resendInvoiceRequest.InvoicesIDs.Count() == 0)
+            {
+                return BadRequest(new OperationResponse(Messages.TransactionsForTransmissionRequired, null, httpContextAccessor.TraceIdentifier, nameof(resendInvoiceRequest.InvoicesIDs), Messages.TransactionsForTransmissionRequired));
+            }
+
+            if (resendInvoiceRequest.InvoicesIDs.Count() > appSettings.TransmissionMaxBatchSize)
+            {
+                return BadRequest(new OperationResponse(string.Format(Messages.TransmissionLimit, appSettings.TransmissionMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(resendInvoiceRequest.InvoicesIDs), string.Format(Messages.TransmissionLimit, appSettings.TransmissionMaxBatchSize)));
+            }
+
+            var transactionTerminals = (await invoiceService.GetInvoices()
+                .Where(t => resendInvoiceRequest.InvoicesIDs.Contains(t.InvoiceID))
+                .ToListAsync())
+                .GroupBy(k => k.TerminalID, v => v.InvoiceID)
+                .ToDictionary(k => k.Key, v => v.ToList());
+
+            var response = new OperationResponse
+            {
+                Status = StatusEnum.Success,
+                Message = Messages.InvoicesQueuedForResend
+            };
+
+            foreach (var batch in transactionTerminals)
+            {
+                await Resend(new ResendInvoiceRequest { TerminalID = batch.Key, InvoicesIDs = batch.Value });
+            }
+
+            return Ok(response);
+        }
+
+        [HttpPost]
         [Route("resend")]
         public async Task<ActionResult<OperationResponse>> Resend(ResendInvoiceRequest request)
         {

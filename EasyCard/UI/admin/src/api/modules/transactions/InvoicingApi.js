@@ -38,9 +38,8 @@ export default class InvoicingApi {
       return invoice;
     }
 
-    async resend(terminalId, invoicesIDs){
-        return await this.base.post(this.invoicingUrl + '/resend', {
-            terminalID: terminalId,
+    async resend(invoicesIDs){
+        return await this.base.post(this.invoicingUrl + '/resend-admin', {
             invoicesIDs: invoicesIDs
         });
     }
