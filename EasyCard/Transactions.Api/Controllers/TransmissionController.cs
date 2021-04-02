@@ -239,8 +239,7 @@ namespace Transactions.Api.Controllers
 
                         // TODO: Transmission ID from Shva
                         transaction.ShvaTransactionDetails.ShvaTransmissionNumber = processorResponse.TransmissionReference;
-                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed);
-
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed, transactionOperationCode: TransactionOperationCodesEnum.TransmittedByProcessor);
                     }
                 }
             }

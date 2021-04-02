@@ -753,7 +753,7 @@ namespace Transactions.Api.Controllers
                         }
                         else
                         {
-                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
+                            await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission, transactionOperationCode: TransactionOperationCodesEnum.CommitedByAggregator);
                         }
                     }
                     catch (Exception ex)
