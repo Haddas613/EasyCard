@@ -82,6 +82,7 @@
   "CreditCardTokens": "Credit Card Tokens",
   "CardTokens": "Card tokens",
   "Roles": "Roles",
+  "Info": "Info",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -271,6 +272,9 @@
   "NewPassword": "New Password",
   "SHVATerminalName": "SHVA Terminal Name",
   "ConsumerEmail": "Consumer Email",
+  "DoneBy": "Done By",
+  "Description": "Description",
+  "Message": "Message",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

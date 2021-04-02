@@ -89,10 +89,8 @@ namespace Transactions.Api.Controllers
         {
             return new TableMeta
             {
-                Columns = typeof(InvoiceSummary)
-                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
-                    .Select(d => d.GetColMeta(InvoiceSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
-                    .ToDictionary(d => d.Key)
+                Columns = (httpContextAccessor.GetUser().IsAdmin() ? typeof(InvoiceSummaryAdmin) : typeof(InvoiceSummary))
+                    .GetObjectMeta(InvoiceSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
             };
         }
 
@@ -104,12 +102,22 @@ namespace Transactions.Api.Controllers
 
             using (var dbTransaction = invoiceService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<InvoiceSummary>();
+                if (httpContextAccessor.GetUser().IsAdmin())
+                {
+                    var response = new SummariesResponse<InvoiceSummaryAdmin>();
 
-                response.Data = await mapper.ProjectTo<InvoiceSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceID), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
-                response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    response.Data = await mapper.ProjectTo<InvoiceSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceID), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
+                    response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = new SummariesResponse<InvoiceSummary>();
 
-                return Ok(response);
+                    response.Data = await mapper.ProjectTo<InvoiceSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceID), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
+                    response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    return Ok(response);
+                }
             }
         }
 

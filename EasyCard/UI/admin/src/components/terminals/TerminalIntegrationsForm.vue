@@ -51,29 +51,31 @@
         no-gutters
         class="mb-4"
       >
-        <v-card-title class="subtitle-2">
-          <v-row no-gutters>
-            <v-col cols="9" class="pt-2">
-              {{int.externalSystem.name}}
-            </v-col>
-            <v-col cols="3" class="d-flex justify-end">
-              <v-btn x-small fab outlined color="red" @click="deleteIntegration(int.externalSystemID)">
-                <v-icon>mdi-delete</v-icon>
-              </v-btn> 
-            </v-col>
-          </v-row>
-        </v-card-title>
-        <v-divider></v-divider>
-        <v-card-text>
-          <component
-            v-bind:is="getIntegrationComponentName(int.externalSystem.key)"
-            v-bind="{data: int, terminalId: terminal[idKey], apiName: apiName}"
-            v-if="$options.components[getIntegrationComponentName(int.externalSystem.key)]"
-          ></component>
-          <p v-else>
-            {{$t("NotSupportedContactAdministration")}}
-          </p>
-        </v-card-text>
+        <template v-if="int.externalSystem">
+          <v-card-title class="subtitle-2" >
+            <v-row no-gutters>
+              <v-col cols="9" class="pt-2">
+                {{int.externalSystem.name}}
+              </v-col>
+              <v-col cols="3" class="d-flex justify-end">
+                <v-btn x-small fab outlined color="red" @click="deleteIntegration(int.externalSystemID)">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn> 
+              </v-col>
+            </v-row>
+          </v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <component
+              v-bind:is="getIntegrationComponentName(int.externalSystem.key)"
+              v-bind="{data: int, terminalId: terminal[idKey], apiName: apiName}"
+              v-if="$options.components[getIntegrationComponentName(int.externalSystem.key)]"
+            ></component>
+            <p v-else>
+              {{$t("NotSupportedContactAdministration")}}
+            </p>
+          </v-card-text>
+        </template>
       </v-card>
     </div>
   </div>

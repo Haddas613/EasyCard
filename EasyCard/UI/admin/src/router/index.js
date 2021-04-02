@@ -105,6 +105,12 @@ const routes = [
         component: () => import('../pages/ctokens/CreditCardTokensList.vue'),
       },
       {
+        name: 'Invoicing',
+        path: 'invoicing/list',
+        props: true,
+        component: () => import('../pages/invoicing/InvoicesList.vue'),
+      },
+      {
         name: 'MyProfile',
         path: 'profile',
         component: () =>

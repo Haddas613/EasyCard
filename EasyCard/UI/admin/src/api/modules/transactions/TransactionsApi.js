@@ -63,4 +63,8 @@ export default class TransactionsApi {
 
       return data;
   }
+
+  async getHistory(transactionId){
+    return await this.base.get(this.transactionsUrl + `/${transactionId}/history`);
+  }
 }

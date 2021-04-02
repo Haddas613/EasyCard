@@ -21,9 +21,7 @@ export default class InvoicingApi {
         let dictionaries = await this.base.dictionaries.$getTransactionDictionaries();
         
         data.data = data.data.map(d => this.base.format(d, this.$headers, dictionaries))
-
         data.headers = this.headers;
-
         return data;
     }
 

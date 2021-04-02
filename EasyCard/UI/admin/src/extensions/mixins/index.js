@@ -1,3 +1,5 @@
+import moment from "moment";
+
 const mixins = {
     methods: {
         $copyToClipboard: function (text, showToasted = true) {
