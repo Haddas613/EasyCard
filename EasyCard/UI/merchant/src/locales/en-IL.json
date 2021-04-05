@@ -293,6 +293,7 @@
   "Create": "Create",
   "Charge": "Charge",
   "Add": "Add",
+  "Request": "Request",
 
   "--AUTH--": null,
   "Login": "Login",

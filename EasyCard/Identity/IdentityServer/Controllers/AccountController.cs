@@ -158,42 +158,29 @@ namespace IdentityServer.Controllers
 
                 if (user == null)
                 {
-                    return View("Error");
+                    ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
+                    return View(await BuildLoginViewModelAsync(model));
                 }
 
-                /*
-                 var twfEnabled = await userManager.GetTwoFactorEnabledAsync(user);
+                var isAdmin = await userManager.IsInRoleAsync(user, Roles.BillingAdministrator) || await userManager.IsInRoleAsync(user, Roles.BusinessAdministrator);
+
+                if (!isAdmin)
+                {
+                    var twfEnabled = await userManager.GetTwoFactorEnabledAsync(user);
 
                     if (!twfEnabled)
                     {
                         //Force enable 2fa for user
-                        var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProvider);
-                        await this.emailSender.Send2faEmailAsync(user.Email, code);
+                        await userManager.SetTwoFactorEnabledAsync(user, true);
 
-                        return RedirectToAction(nameof(LoginWith2fa));
+                        return RedirectToAction(nameof(LoginWith2faChooseType));
                     }
-
-                 */
+                }
 
                 var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, isPersistent: false, lockoutOnFailure: true);
 
                 if (result.Succeeded)
                 {
-                    var isAdmin = await userManager.IsInRoleAsync(user, Roles.BillingAdministrator) || await userManager.IsInRoleAsync(user, Roles.BusinessAdministrator);
-
-                    if (!isAdmin)
-                    {
-                        var twfEnabled = await userManager.GetTwoFactorEnabledAsync(user);
-
-                        if (!twfEnabled)
-                        {
-                            //Force enable 2fa for user
-                            await userManager.SetTwoFactorEnabledAsync(user, true);
-
-                            return RedirectToAction(nameof(LoginWith2faChooseType));
-                        }
-                    }
-
                     await events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client?.ClientId));
                     await auditLogger.RegisterLogin(user);
 
