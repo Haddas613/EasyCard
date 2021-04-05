@@ -80,6 +80,7 @@ namespace Transactions.Api.Controllers
         private readonly IMerchantsService merchantsService;
         private readonly IQueue invoiceQueue;
         private readonly IEmailSender emailSender;
+        private readonly IMetricsService metrics;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -101,7 +102,8 @@ namespace Transactions.Api.Controllers
             IMerchantsService merchantsService,
             IQueueResolver queueResolver,
             IEmailSender emailSender,
-            IOptions<ApiSettings> apiSettings)
+            IOptions<ApiSettings> apiSettings,
+            IMetricsService metrics)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -123,6 +125,7 @@ namespace Transactions.Api.Controllers
             this.merchantsService = merchantsService;
             this.invoiceQueue = queueResolver.GetQueue(QueueResolver.InvoiceQueue);
             this.emailSender = emailSender;
+            this.metrics = metrics;
         }
 
         [HttpGet]
@@ -622,6 +625,7 @@ namespace Transactions.Api.Controllers
             mapper.Map(processorSettings, transaction);
 
             await transactionsService.CreateEntity(transaction);
+            metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
 
             // create transaction in aggregator (Clearing House)
             if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
