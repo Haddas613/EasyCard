@@ -23,7 +23,7 @@
             <span v-bind:class="statusColors[item.$status]">{{$t(item.status || 'None')}}</span>
           </template>
           <template v-slot:item.select="{ item }">
-            <input type="checkbox" v-model="item.selected" :disabled="item.$status != 'initial' && item.$status != 'sent'">
+            <input type="checkbox" v-model="item.selected" :disabled="item.$status == 'sending'">
           </template>
           <template v-slot:item.invoiceAmount="{ item }">
             <b>{{item.invoiceAmount | currency(item.currency)}}</b>
@@ -123,7 +123,7 @@ export default {
     async resendSelectedInvoices() {
       let invoices = this.lodash.filter(
         this.invoices,
-        i => i.selected && (i.$status == "initial" || i.$status == "sent")
+        i => i.selected && (i.$status != 'sending')
       );
       if (invoices.length === 0) {
         return this.$toasted.show(this.$t("SelectInvoicesFirst"), {

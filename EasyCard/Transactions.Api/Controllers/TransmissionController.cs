@@ -118,7 +118,7 @@ namespace Transactions.Api.Controllers
                 var terminalSettings = await terminalsService.GetTerminals().Where(t => allTerminals.Contains(t.TerminalID)).ToDictionaryAsync(k => k.TerminalID, v => v.Settings);
 
                 var filteredTransactions = new List<Guid>();
-                var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.Now, UserCultureInfo.TimeZone);
+                var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone);
 
                 foreach (var t in allTerminals)
                 {
