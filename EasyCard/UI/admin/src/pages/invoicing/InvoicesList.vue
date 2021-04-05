@@ -29,11 +29,11 @@
             <b>{{item.invoiceAmount | currency(item.currency)}}</b>
           </template>
           <template v-slot:item.actions="{ item }">
-            <!-- <v-btn color="primary" outlined small link :to="{name: 'Invoice', params: {id: item.$invoiceID}}">
-              <re-icon small>mdi-arrow-right</re-icon>
-            </v-btn> -->
-            <v-btn outlined color="success" small v-if="item.$status == 'sent'" :title="$t('ClickToDownload')" @click="downloadInvoicePDF(item.$invoiceID)">
+            <v-btn outlined color="success" small :disabled="item.$status != 'sent'" :title="$t('ClickToDownload')" @click="downloadInvoicePDF(item.$invoiceID)">
               <v-icon color="red" size="1.25rem">mdi-file-pdf-outline</v-icon>
+            </v-btn>
+            <v-btn color="primary" outlined small link :to="{name: 'Invoice', params: {id: item.$invoiceID}}">
+              <re-icon small>mdi-arrow-right</re-icon>
             </v-btn>
           </template>
         </v-data-table>

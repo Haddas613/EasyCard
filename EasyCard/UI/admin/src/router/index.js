@@ -111,6 +111,15 @@ const routes = [
         component: () => import('../pages/invoicing/InvoicesList.vue'),
       },
       {
+          name: 'Invoice',
+          meta: {
+              backBtn: 'Invoices'
+          },
+          path: 'invoicing/view/:id',
+          component: () =>
+              import ('../pages/invoicing/InvoiceInfo.vue'),
+      },
+      {
         name: 'MyProfile',
         path: 'profile',
         component: () =>
