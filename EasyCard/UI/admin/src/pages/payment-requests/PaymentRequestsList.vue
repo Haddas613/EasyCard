@@ -1,86 +1,55 @@
 <template>
   <v-flex>
-    <payment-requests-filter-dialog
-      :show.sync="showDialog"
-      :filter="paymentRequestsFilter"
-      v-on:ok="applyFilters($event)"
-    ></payment-requests-filter-dialog>
     <v-card class="my-2" width="100%" flat>
-      <v-card-title class="pb-0">
-        <v-row class="py-0" no-gutters>
-          <v-col cols="8">{{$t("Overview")}}</v-col>
-          <v-col cols="3" class="text-end">
-            <v-btn
-              class="button"
-              color="primary"
-              outlined
-              @click="showDialog = true;"
-            >{{$t('Filter')}}</v-btn>
-          </v-col>
-          <v-col cols="1" class="text-end">
-            <v-btn icon @click="refresh()" :loading="loading">
-              <v-icon color="primary">mdi-refresh</v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-card-title>
-      <v-card-text class="body-2">
-        <v-row no-gutters class="py-1">
-          <v-col cols="12" md="3" lg="3" xl="3">
-            <v-row no-gutters>
-              <v-col cols="12">{{$t("PeriodShown")}}:</v-col>
-              <v-col cols="12" class="font-weight-bold">
-                <span dir="ltr">{{datePeriod || '-'}}</span>
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col cols="12" md="3" lg="3" xl="3">
-            <v-row no-gutters>
-              <v-col cols="12">{{$t("OperationsCountTotal")}}:</v-col>
-              <v-col cols="12" class="font-weight-bold">{{numberOfRecords || '-'}}</v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-    <v-card width="100%" flat :loading="!paymentRequests">
+      <v-expansion-panels :flat="true">
+        <v-expansion-panel>
+          <v-expansion-panel-header >{{$t('Filters')}}</v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <payment-requests-filter :filter-data="paymentRequestsFilter" v-on:apply="applyFilter($event)"></payment-requests-filter>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+      <v-divider></v-divider>
       <v-card-text class="px-0">
-        <ec-list :items="paymentRequests" v-if="paymentRequests">
-          <template v-slot:left="{ item }">
-            <v-col cols="12" md="6" lg="6" class="pt-1 caption ecgray--text">{{item.$paymentRequestTimestamp | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
-            <v-col cols="12" md="6" lg="6">{{item.cardOwnerName || (item.consumerEmail || '-')}}</v-col>
+        <v-data-table
+          :headers="headers"
+          :items="paymentRequests"
+          :options.sync="options"
+          :server-items-length="totalAmount"
+          :loading="loading"
+          :header-props="{ sortIcon: null }"
+          class="elevation-1"
+        >
+          <template v-slot:item.merchantName="{ item }">
+            <router-link class="text-decoration-none" link :to="{name: 'Merchant', params: {id: item.merchantID}}">
+              {{item.merchantName || item.merchantID}}
+            </router-link>
+          </template>    
+          <template v-slot:item.terminalName="{ item }">
+            <router-link class="text-decoration-none" link :to="{name: 'EditTerminal', params: {id: item.terminalID}}">
+              {{item.terminalName || item.terminalID}}
+            </router-link>
+          </template> 
+          <template v-slot:item.status="{ item }">
+            <span v-bind:class="statusColors[item.$status]">{{$t(item.status || 'None')}}</span>
           </template>
-
-          <template v-slot:right="{ item }">
-            <v-col
-              cols="12"
-              md="6"
-              lg="6"
-              class="text-end body-2"
-              v-bind:class="quickStatusColors[item.quickStatus]"
-            >{{$t(item.quickStatus || 'None')}}</v-col>
-            <v-col
-              cols="12"
-              md="6"
-              lg="6"
-              class="text-end font-weight-bold button"
-            >{{item.paymentRequestAmount | currency(item.$currency)}}</v-col>
+          <template v-slot:item.select="{ item }">
+            <input type="checkbox" v-model="item.selected" :disabled="item.$status == 'sending'">
           </template>
-
-          <template v-slot:append="{ item }">
-            <v-btn icon :to="{ name: 'PaymentRequest', params: { id: item.$paymentRequestID } }">
-              <re-icon>mdi-chevron-right</re-icon>
+          <template v-slot:item.paymentRequestAmount="{ item }">
+            <b>{{item.paymentRequestAmount | currency(item.currency)}}</b>
+          </template>
+          <template v-slot:item.paymentTransactionID="{ item }">
+            <router-link v-if="item.paymentTransactionID" class="text-decoration-none" link :to="{name: 'Transaction', params: {id: item.$paymentTransactionID}}">
+              {{item.paymentTransactionID | guid}}
+            </router-link>
+          </template> 
+          <!-- <template v-slot:item.actions="{ item }">
+            <v-btn color="primary" outlined small link :to="{name: 'paymentRequest', params: {id: item.$paymentRequestID}}">
+              <re-icon small>mdi-arrow-right</re-icon>
             </v-btn>
-          </template>
-        </ec-list>
-        <p
-          class="ecgray--text text-center"
-          v-if="paymentRequests && paymentRequests.length === 0"
-        >{{$t("NothingToShow")}}</p>
-
-        <v-flex class="text-center" v-if="canLoadMore">
-          <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
-        </v-flex>
+          </template> -->
+        </v-data-table>
       </v-card-text>
     </v-card>
   </v-flex>
@@ -93,9 +62,7 @@ export default {
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
-    PaymentRequestsFilterDialog: () =>
-      import("../../components/payment-requests/PaymentRequestsFilterDialog"),
-    EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker")
+    PaymentRequestsFilter: () => import("../../components/payment-requests/PaymentRequestsFilter")
   },
   props: {
     filters: {
@@ -109,16 +76,18 @@ export default {
   },
   data() {
     return {
-      paymentRequests: null,
-      quickStatusColors: {
-        Pending: "ecgray--text",
-        None: "",
-        Completed: "success--text",
-        Failed: "error--text",
-        Canceled: "accent--text",
-        Overdue: "secondary--text"
+      paymentRequests: [],
+      statusColors: {
+        initial: "gray--text",
+        sending: "gray--text",
+        none: "",
+        sent: "primary--text",
+        viewed: "teal--text",
+        canceled: "amber--text",
+        rejected: "accent--text",
+        paymentFailed: "error--text",
+        payed: "success--text",
       },
-      customerInfo: null,
       moment: moment,
       loading: false,
       paymentRequestsFilter: {
@@ -126,36 +95,38 @@ export default {
         skip: 0,
         ...this.filters
       },
-      showDialog: this.showFiltersDialog,
-      datePeriod: null,
-      numberOfRecords: 0
+      options: {},
+      headers: [],
+      totalAmount: 0,
+      selectAll: false,
     };
   },
+  watch: {
+    options: {
+      handler: async function() {
+        await this.getDataFromApi();
+      },
+      deep: true
+    }
+  },
   methods: {
-    async getDataFromApi(extendData) {
+    async getDataFromApi() {
       this.loading = true;
       let data = await this.$api.paymentRequests.get({
-        ...this.paymentRequestsFilter
+        ...this.paymentRequestsFilter,
+        ...this.options
       });
-      if (data) {
-        let paymentRequests = data.data || [];
-        this.paymentRequests = extendData ? [...this.paymentRequests, ...paymentRequests] : paymentRequests;
-        this.numberOfRecords = data.numberOfRecords || 0;
-
-        if (paymentRequests.length > 0) {
-          let newest = this.paymentRequests[0].$paymentRequestTimestamp;
-          let oldest = this.paymentRequests[this.paymentRequests.length - 1]
-            .$paymentRequestTimestamp;
-          this.datePeriod =
-            this.$options.filters.ecdate(oldest, "L") +
-            ` - ${this.$options.filters.ecdate(newest, "L")}`;
-        } else {
-          this.datePeriod = null;
-        }
-      }
+      
+      this.paymentRequests = data.data;
+      this.totalAmount = data.numberOfRecords;
       this.loading = false;
+
+      if (!this.headers || this.headers.length === 0) {
+        this.headers = [{ value: "select", text: "", sortable: false }, ...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false }];
+      }
     },
-    async applyFilters(data) {
+    async applyFilter(data) {
+      this.options.page = 1;
       this.paymentRequestsFilter = {
         ...data,
         skip: 0,
@@ -163,39 +134,7 @@ export default {
       };
       await this.getDataFromApi();
     },
-    async refresh() {
-      this.paymentRequestsFilter.skip = 0;
-      await this.getDataFromApi();
-    },
-    async loadMore() {
-      this.paymentRequestsFilter.skip += this.paymentRequestsFilter.take;
-      await this.getDataFromApi(true);
-    }
   },
-  computed: {
-    canLoadMore() {
-      return (
-        this.numberOfRecords > 0 &&
-        this.paymentRequestsFilter.take + this.paymentRequestsFilter.skip <
-          this.numberOfRecords
-      );
-    }
-  },
-  async mounted() {
-    await this.getDataFromApi();
-
-    this.$store.commit("ui/changeHeader", {
-      value: {
-        threeDotMenu: [
-          {
-            text: this.$t("Create"),
-            fn: () => {
-              this.$router.push({ name: "CreatePaymentRequest" });
-            }
-          }
-        ]
-      }
-    });
-  }
+  async mounted() {}
 };
 </script>

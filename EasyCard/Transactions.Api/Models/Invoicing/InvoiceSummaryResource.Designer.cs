@@ -142,11 +142,29 @@ namespace Transactions.Api.Models.Invoicing {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Merchant.
+        /// </summary>
+        public static string MerchantName {
+            get {
+                return ResourceManager.GetString("MerchantName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terminal ID.
         /// </summary>
         public static string TerminalID {
             get {
                 return ResourceManager.GetString("TerminalID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal.
+        /// </summary>
+        public static string TerminalName {
+            get {
+                return ResourceManager.GetString("TerminalName", resourceCulture);
             }
         }
     }

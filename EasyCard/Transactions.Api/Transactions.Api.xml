@@ -505,9 +505,19 @@
               Looks up a localized string similar to Invoice Type.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.TerminalID">
             <summary>
               Looks up a localized string similar to Terminal ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.ResendInvoiceRequest.TerminalID">
@@ -630,6 +640,11 @@
             Currency
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryAdmin.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -648,7 +663,12 @@
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.CardOwnerName">
             <summary>
-              Looks up a localized string similar to Card Owner Name.
+              Looks up a localized string similar to Card Owner.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.ConsumerEmail">
+            <summary>
+              Looks up a localized string similar to Email.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.ConsumerID">
@@ -666,34 +686,44 @@
               Looks up a localized string similar to Due Date.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestAmount">
             <summary>
-              Looks up a localized string similar to Payment Request Amount.
+              Looks up a localized string similar to Amount.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestDate">
             <summary>
-              Looks up a localized string similar to Payment Request Date.
+              Looks up a localized string similar to Date.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestID">
             <summary>
-              Looks up a localized string similar to Payment Request ID.
+              Looks up a localized string similar to ID.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestNumber">
             <summary>
-              Looks up a localized string similar to Payment Request Number.
+              Looks up a localized string similar to Number.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestTimestamp">
             <summary>
-              Looks up a localized string similar to Payment RequestTimestamp.
+              Looks up a localized string similar to Date.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestType">
             <summary>
-              Looks up a localized string similar to Payment Request Type.
+              Looks up a localized string similar to Type.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentTransactionID">
+            <summary>
+              Looks up a localized string similar to Transaction ID.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.QuickStatus">
@@ -709,6 +739,11 @@
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.TerminalID">
             <summary>
               Looks up a localized string similar to Terminal ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Tokens.CreditCardSummaryResource">

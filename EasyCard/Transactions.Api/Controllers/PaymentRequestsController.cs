@@ -87,10 +87,8 @@ namespace Transactions.Api.Controllers
         {
             return new TableMeta
             {
-                Columns = typeof(PaymentRequestSummary)
-                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
-                    .Select(d => d.GetColMeta(InvoiceSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
-                    .ToDictionary(d => d.Key)
+                Columns = (httpContextAccessor.GetUser().IsAdmin() ? typeof(PaymentRequestSummaryAdmin) : typeof(PaymentRequestSummary))
+                    .GetObjectMeta(PaymentRequestSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
             };
         }
 
@@ -102,11 +100,44 @@ namespace Transactions.Api.Controllers
 
             using (var dbTransaction = paymentRequestsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<PaymentRequestSummary>();
+                if (httpContextAccessor.GetUser().IsAdmin())
+                {
+                    var response = new SummariesResponse<PaymentRequestSummaryAdmin>();
 
-                response.Data = await mapper.ProjectTo<PaymentRequestSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(PaymentRequest.PaymentRequestTimestamp), filter.SortDesc).ApplyPagination(filter)).ToListAsync();
-                response.NumberOfRecords = numberOfRecordsFuture.Value;
-                return Ok(response);
+                    var summary = await mapper.ProjectTo<PaymentRequestSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(PaymentRequest.PaymentRequestTimestamp), filter.SortDesc)
+                        .ApplyPagination(filter)).ToListAsync();
+
+                    var terminalsId = summary.Select(t => t.TerminalID).Distinct();
+
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
+
+                    //TODO: Merchant name instead of BusinessName
+                    summary.ForEach(s =>
+                    {
+                        if (s.TerminalID.HasValue && terminals.ContainsKey(s.TerminalID.Value))
+                        {
+                            s.TerminalName = terminals[s.TerminalID.Value].Label;
+                            s.MerchantName = terminals[s.TerminalID.Value].BusinessName;
+                        }
+                    });
+
+                    response.Data = summary;
+                    response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = new SummariesResponse<PaymentRequestSummary>();
+
+                    response.Data = await mapper.ProjectTo<PaymentRequestSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(PaymentRequest.PaymentRequestTimestamp), filter.SortDesc)
+                        .ApplyPagination(filter)).ToListAsync();
+                    response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    return Ok(response);
+                }
             }
         }
 

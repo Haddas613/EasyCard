@@ -120,6 +120,22 @@ const routes = [
               import ('../pages/invoicing/InvoiceInfo.vue'),
       },
       {
+          name: 'PaymentRequests',
+          path: 'payment-requests/list',
+          props: true,
+          component: () =>
+              import ('../pages/payment-requests/PaymentRequestsList.vue'),
+      },
+      // {
+      //     name: 'PaymentRequest',
+      //     meta: {
+      //         backBtn: 'PaymentRequests'
+      //     },
+      //     path: 'payment-requests/view/:id',
+      //     component: () =>
+      //         import ('../pages/payment-requests/PaymentRequestInfo.vue'),
+      // },
+      {
         name: 'MyProfile',
         path: 'profile',
         component: () =>

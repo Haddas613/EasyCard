@@ -17,8 +17,19 @@
           :options.sync="options"
           :server-items-length="totalAmount"
           :loading="loading"
+          :header-props="{ sortIcon: null }"
           class="elevation-1"
         >
+          <template v-slot:item.merchantName="{ item }">
+            <router-link class="text-decoration-none" link :to="{name: 'Merchant', params: {id: item.merchantID}}">
+              {{item.merchantName || item.merchantID}}
+            </router-link>
+          </template>    
+          <template v-slot:item.terminalName="{ item }">
+            <router-link class="text-decoration-none" link :to="{name: 'EditTerminal', params: {id: item.terminalID}}">
+              {{item.terminalName || item.terminalID}}
+            </router-link>
+          </template> 
           <template v-slot:item.status="{ item }">
             <span v-bind:class="statusColors[item.$status]">{{$t(item.status || 'None')}}</span>
           </template>
@@ -49,9 +60,6 @@ export default {
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
-    InvoicesFilterDialog: () =>
-      import("../../components/invoicing/InvoicesFilterDialog"),
-    EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
     InvoicesFilter: () => import("../../components/invoicing/InvoicesFilter")
   },
   props: {
@@ -157,13 +165,7 @@ export default {
             fn: async () => {
               await vm.resendSelectedInvoices();
             }
-          },
-          // {
-          //   text: this.$t("SelectAll"),
-          //   fn: () => {
-          //     vm.switchSelectAll();
-          //   }
-          // }
+          }
         ]
       }
     });

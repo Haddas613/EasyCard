@@ -44,6 +44,7 @@
         :options.sync="options"
         :server-items-length="totalAmount"
         :loading="loading"
+        :header-props="{ sortIcon: null }"
         class="elevation-1"
       >
       <template v-slot:item.timestamp="{ item }">

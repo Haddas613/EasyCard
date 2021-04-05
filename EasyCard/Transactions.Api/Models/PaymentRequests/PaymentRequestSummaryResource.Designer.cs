@@ -61,11 +61,20 @@ namespace Transactions.Api.Models.PaymentRequests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Card Owner Name.
+        ///   Looks up a localized string similar to Card Owner.
         /// </summary>
         public static string CardOwnerName {
             get {
                 return ResourceManager.GetString("CardOwnerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string ConsumerEmail {
+            get {
+                return ResourceManager.GetString("ConsumerEmail", resourceCulture);
             }
         }
         
@@ -97,7 +106,16 @@ namespace Transactions.Api.Models.PaymentRequests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Payment Request Amount.
+        ///   Looks up a localized string similar to Merchant.
+        /// </summary>
+        public static string MerchantName {
+            get {
+                return ResourceManager.GetString("MerchantName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount.
         /// </summary>
         public static string PaymentRequestAmount {
             get {
@@ -106,7 +124,7 @@ namespace Transactions.Api.Models.PaymentRequests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Payment Request Date.
+        ///   Looks up a localized string similar to Date.
         /// </summary>
         public static string PaymentRequestDate {
             get {
@@ -115,7 +133,7 @@ namespace Transactions.Api.Models.PaymentRequests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Payment Request ID.
+        ///   Looks up a localized string similar to ID.
         /// </summary>
         public static string PaymentRequestID {
             get {
@@ -124,7 +142,7 @@ namespace Transactions.Api.Models.PaymentRequests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Payment Request Number.
+        ///   Looks up a localized string similar to Number.
         /// </summary>
         public static string PaymentRequestNumber {
             get {
@@ -133,7 +151,7 @@ namespace Transactions.Api.Models.PaymentRequests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Payment RequestTimestamp.
+        ///   Looks up a localized string similar to Date.
         /// </summary>
         public static string PaymentRequestTimestamp {
             get {
@@ -142,11 +160,20 @@ namespace Transactions.Api.Models.PaymentRequests {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Payment Request Type.
+        ///   Looks up a localized string similar to Type.
         /// </summary>
         public static string PaymentRequestType {
             get {
                 return ResourceManager.GetString("PaymentRequestType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction ID.
+        /// </summary>
+        public static string PaymentTransactionID {
+            get {
+                return ResourceManager.GetString("PaymentTransactionID", resourceCulture);
             }
         }
         
@@ -174,6 +201,15 @@ namespace Transactions.Api.Models.PaymentRequests {
         public static string TerminalID {
             get {
                 return ResourceManager.GetString("TerminalID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal.
+        /// </summary>
+        public static string TerminalName {
+            get {
+                return ResourceManager.GetString("TerminalName", resourceCulture);
             }
         }
     }

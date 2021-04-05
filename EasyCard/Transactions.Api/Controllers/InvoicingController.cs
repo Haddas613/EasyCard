@@ -106,7 +106,27 @@ namespace Transactions.Api.Controllers
                 {
                     var response = new SummariesResponse<InvoiceSummaryAdmin>();
 
-                    response.Data = await mapper.ProjectTo<InvoiceSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceID), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
+                    var summary = await mapper.ProjectTo<InvoiceSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceID), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
+
+                    var terminalsId = summary.Select(t => t.TerminalID).Distinct();
+
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
+
+                    //TODO: Merchant name instead of BusinessName
+                    summary.ForEach(s =>
+                    {
+                        if (s.TerminalID.HasValue && terminals.ContainsKey(s.TerminalID.Value))
+                        {
+                            s.TerminalName = terminals[s.TerminalID.Value].Label;
+                            s.MerchantName = terminals[s.TerminalID.Value].BusinessName;
+                        }
+                    });
+
+                    response.Data = summary;
                     response.NumberOfRecords = numberOfRecordsFuture.Value;
                     return Ok(response);
                 }
