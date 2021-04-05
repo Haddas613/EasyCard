@@ -172,8 +172,6 @@ namespace IdentityServer.Controllers
                     {
                         //Force enable 2fa for user
                         await userManager.SetTwoFactorEnabledAsync(user, true);
-
-                        return RedirectToAction(nameof(LoginWith2faChooseType));
                     }
                 }
 
