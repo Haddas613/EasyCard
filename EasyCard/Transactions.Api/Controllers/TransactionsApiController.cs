@@ -175,6 +175,10 @@ namespace Transactions.Api.Controllers
 
                 //TODO: cache
                 var merchantName = await merchantsService.GetMerchants().Where(m => m.MerchantID == transaction.MerchantID).Select(m => m.BusinessName).FirstOrDefaultAsync();
+                if (transaction.TerminalID.HasValue)
+                {
+                    transaction.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == transaction.TerminalID.Value).Select(t => t.Label).FirstOrDefaultAsync();
+                }
                 transaction.MerchantName = merchantName;
                 return Ok(transaction);
             }
@@ -182,6 +186,11 @@ namespace Transactions.Api.Controllers
             {
                 var transaction = mapper.Map<TransactionResponse>(EnsureExists(
                     await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
+
+                if (transaction.TerminalID.HasValue)
+                {
+                    transaction.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == transaction.TerminalID.Value).Select(t => t.Label).FirstOrDefaultAsync();
+                }
 
                 return Ok(transaction);
             }

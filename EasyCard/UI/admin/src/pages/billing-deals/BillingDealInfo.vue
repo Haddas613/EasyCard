@@ -27,7 +27,7 @@
                 </v-col>
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
-                  <p>{{terminalName}}</p>
+                  <p>{{model.terminalName}}</p>
                 </v-col>
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('Created')}}</p>
@@ -122,7 +122,6 @@ export default {
   data() {
     return {
       model: null,
-      terminalName: "-",
       transactions: null,
       transactionsFilter: {
         take: 100,
@@ -158,15 +157,6 @@ export default {
     this.numberOfRecords = data.numberOfRecords || 0;
 
     let terminals = (await this.$api.terminals.getTerminals()).data;
-    let usedTerminal = this.lodash.find(
-      terminals,
-      t => t.terminalID == this.model.$terminalID
-    );
-    if (usedTerminal) {
-      this.terminalName = usedTerminal.label;
-    } else {
-      this.terminalName = this.$t("NotAccessible");
-    }
 
     if (
       this.model.invoiceDetails &&

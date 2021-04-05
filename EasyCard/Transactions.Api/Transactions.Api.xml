@@ -93,6 +93,11 @@
             Terminal
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.TerminalName">
+            <summary>
+            EasyCard terminal name
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.MerchantID">
             <summary>
             Merchant
@@ -369,6 +374,11 @@
             EasyCard terminal reference
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.TerminalName">
+            <summary>
+            EasyCard terminal name
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.Currency">
             <summary>
             Currency
@@ -588,6 +598,11 @@
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.TerminalID">
             <summary>
             Terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.TerminalName">
+            <summary>
+            EasyCard terminal name
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummary.PaymentRequestID">
@@ -1130,6 +1145,11 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TerminalID">
             <summary>
             Terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TerminalName">
+            <summary>
+            EasyCard terminal name
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.MerchantID">

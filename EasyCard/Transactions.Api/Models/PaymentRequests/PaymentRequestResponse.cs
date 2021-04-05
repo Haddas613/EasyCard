@@ -20,6 +20,11 @@ namespace Transactions.Api.Models.PaymentRequests
         /// </summary>
         public Guid? TerminalID { get; set; }
 
+        /// <summary>
+        /// EasyCard terminal name
+        /// </summary>
+        public string TerminalName { get; set; }
+
         public Guid? ConsumerID { get; set; }
 
         public Guid? PaymentTransactionID { get; set; }

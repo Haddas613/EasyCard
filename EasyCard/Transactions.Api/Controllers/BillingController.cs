@@ -127,6 +127,11 @@ namespace Transactions.Api.Controllers
 
                 var billingDeal = mapper.Map<BillingDealResponse>(dbBillingDeal);
 
+                if (billingDeal.TerminalID.HasValue)
+                {
+                    billingDeal.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == billingDeal.TerminalID.Value).Select(t => t.Label).FirstOrDefaultAsync();
+                }
+
                 return Ok(billingDeal);
             }
         }

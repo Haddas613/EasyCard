@@ -126,6 +126,8 @@ namespace Transactions.Api.Controllers
 
                 paymentRequest.History = await mapper.ProjectTo<PaymentRequestHistorySummary>(paymentRequestsService.GetPaymentRequestHistory(dbPaymentRequest.PaymentRequestID).OrderByDescending(d => d.PaymentRequestHistoryID)).ToListAsync();
 
+                paymentRequest.TerminalName = terminal.Label;
+
                 return Ok(paymentRequest);
             }
         }

@@ -131,6 +131,8 @@ namespace Transactions.Api.Controllers
 
                 var invoice = mapper.Map<InvoiceResponse>(dbInvoice);
 
+                invoice.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == invoice.TerminalID).Select(t => t.Label).FirstOrDefaultAsync();
+
                 return Ok(invoice);
             }
         }

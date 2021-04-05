@@ -55,6 +55,11 @@ namespace Transactions.Api.Models.Invoicing
         public Guid TerminalID { get; set; }
 
         /// <summary>
+        /// EasyCard terminal name
+        /// </summary>
+        public string TerminalName { get; set; }
+
+        /// <summary>
         /// Currency
         /// </summary>
         [EnumDataType(typeof(CurrencyEnum))]
