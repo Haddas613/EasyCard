@@ -41,6 +41,17 @@ namespace ShvaServiceImitation
                 app.UseDeveloperExceptionPage();
             }
 
+            app.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404)
+                {
+                    context.Request.Path = "/";
+                    context.Response.StatusCode = 200;
+                    await next();
+                }
+            });
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

@@ -87,8 +87,8 @@ namespace Transactions.Api
                                             apiConfig.MerchantsManagementApiAddress
                                             )
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
-                        //.WithExposedHeaders("X-Version");
+                        .AllowAnyMethod()
+                        .WithExposedHeaders("X-Version");
                     });
             });
 
@@ -357,6 +357,19 @@ namespace Transactions.Api
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
                 var invoiceQueue = new AzureQueue(cfg.DefaultStorageConnectionString, cfg.InvoiceQueueName);
                 return new QueueResolver(invoiceQueue);
+            });
+
+            var appInsightsConfig = Configuration.GetSection("ApplicationInsights").Get<ApplicationInsightsSettings>();
+
+            var appInsightsConfiguration = new Microsoft.ApplicationInsights.Extensibility.TelemetryConfiguration
+            {
+                InstrumentationKey = appInsightsConfig.InstrumentationKey
+            };
+            var telemetry = new Microsoft.ApplicationInsights.TelemetryClient(appInsightsConfiguration);
+
+            services.AddSingleton<IMetricsService, MetricsService>(serviceProvider =>
+            {
+                return new MetricsService(telemetry);
             });
         }
 

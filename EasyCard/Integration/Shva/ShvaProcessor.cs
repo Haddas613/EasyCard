@@ -219,9 +219,11 @@ namespace Shva
 
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
+            var actionPath = configuration.BaseUrl.EndsWith(".asmx") ? string.Empty : $"{soapAction}";
+
             try
             {
-                svcRes = await this.apiClient.PostXml<Envelope>(configuration.BaseUrl, string.Empty, soap, () => BuildHeaders(soapAction),
+                svcRes = await this.apiClient.PostXml<Envelope>(configuration.BaseUrl, actionPath, soap, () => BuildHeaders(soapAction),
                     (url, request) =>
                     {
                         requestStr = request;
