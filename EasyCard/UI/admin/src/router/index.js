@@ -136,6 +136,22 @@ const routes = [
               import ('../pages/payment-requests/PaymentRequestInfo.vue'),
       },
       {
+        name: 'BillingDeals',
+        path: 'billing-deals/list',
+        props: true,
+        component: () =>
+            import ('../pages/billing-deals/BillingDealsList.vue'),
+      },
+      // {
+      //     name: 'BillingDeal',
+      //     meta: {
+      //         backBtn: true,
+      //     },
+      //     path: 'billing-deals/view/:id',
+      //     component: () =>
+      //         import ('../pages/billing-deals/BillingDealInfo.vue'),
+      // },
+      {
         name: 'MyProfile',
         path: 'profile',
         component: () =>

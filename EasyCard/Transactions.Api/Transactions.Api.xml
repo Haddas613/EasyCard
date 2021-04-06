@@ -193,6 +193,11 @@
             Billing Schedule
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryAdmin.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Billing.BillingDealSummaryResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -209,19 +214,29 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Active">
+            <summary>
+              Looks up a localized string similar to Active.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.BillingDealID">
             <summary>
-              Looks up a localized string similar to Billing Deal ID.
+              Looks up a localized string similar to ID.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.BillingDealTimestamp">
             <summary>
-              Looks up a localized string similar to Billing Deal Timestamp.
+              Looks up a localized string similar to Date.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.BillingSchedule">
             <summary>
-              Looks up a localized string similar to Billing Schedule.
+              Looks up a localized string similar to Schedule.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CardExpired">
+            <summary>
+              Looks up a localized string similar to Card Expired.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CardNumber">
@@ -231,7 +246,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CardOwnerName">
             <summary>
-              Looks up a localized string similar to Card Owner Name.
+              Looks up a localized string similar to Card Owner.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Currency">
@@ -244,9 +259,19 @@
               Looks up a localized string similar to Merchant ID.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.NumberOfPayments">
             <summary>
-              Looks up a localized string similar to Number of Payments.
+              Looks up a localized string similar to Num. of payments.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Schedule">
+            <summary>
+              Looks up a localized string similar to Schedule.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Status">
@@ -259,14 +284,19 @@
               Looks up a localized string similar to Terminal ID.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.TotalAmount">
             <summary>
-              Looks up a localized string similar to Total Amount.
+              Looks up a localized string similar to Total.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.TransactionAmount">
             <summary>
-              Looks up a localized string similar to Transaction Amount.
+              Looks up a localized string similar to Amount.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.Currency">

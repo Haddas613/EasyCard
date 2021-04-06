@@ -92,10 +92,8 @@ namespace Transactions.Api.Controllers
         {
             return new TableMeta
             {
-                Columns = typeof(BillingDealSummary)
-                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
-                    .Select(d => d.GetColMeta(BillingDealSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
-                    .ToDictionary(d => d.Key)
+                Columns = (httpContextAccessor.GetUser().IsAdmin() ? typeof(BillingDealSummaryAdmin) : typeof(BillingDealSummary))
+                    .GetObjectMeta(BillingDealSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
             };
         }
 
@@ -107,13 +105,45 @@ namespace Transactions.Api.Controllers
 
             using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<BillingDealSummary>();
+                if (httpContextAccessor.GetUser().IsAdmin())
+                {
+                    var response = new SummariesResponse<BillingDealSummaryAdmin>();
 
-                //TODO: ordering
-                response.Data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
-                response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    var summary = await mapper.ProjectTo<BillingDealSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(PaymentRequest.PaymentRequestTimestamp), filter.SortDesc)
+                        .ApplyPagination(filter)).ToListAsync();
 
-                return Ok(response);
+                    var terminalsId = summary.Select(t => t.TerminalID).Distinct();
+
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
+
+                    //TODO: Merchant name instead of BusinessName
+                    summary.ForEach(s =>
+                    {
+                        if (terminals.ContainsKey(s.TerminalID))
+                        {
+                            s.TerminalName = terminals[s.TerminalID].Label;
+                            s.MerchantName = terminals[s.TerminalID].BusinessName;
+                        }
+                    });
+
+                    response.Data = summary;
+                    response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = new SummariesResponse<BillingDealSummary>();
+
+                    //TODO: ordering
+                    response.Data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
+                    response.NumberOfRecords = numberOfRecordsFuture.Value;
+
+                    return Ok(response);
+                }
             }
         }
 
@@ -207,6 +237,41 @@ namespace Transactions.Api.Controllers
                 Status = StatusEnum.Success,
                 Message = Messages.TransactionsQueued
             };
+
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
+        [Route("create-transactions-admin")]
+        public async Task<ActionResult<OperationResponse>> CreateTransactionsFromBillingDealsAdmin(CreateTransactionFromBillingDealsRequest request)
+        {
+            if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
+            {
+                return BadRequest(new OperationResponse(Messages.BillingDealsRequired, null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), Messages.BillingDealsRequired));
+            }
+
+            if (request.BillingDealsID.Count() > appSettings.BillingDealsMaxBatchSize)
+            {
+                return BadRequest(new OperationResponse(string.Format(Messages.BillingDealsMaxBatchSize, appSettings.BillingDealsMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), string.Format(Messages.TransmissionLimit, appSettings.BillingDealsMaxBatchSize)));
+            }
+
+            var transactionTerminals = (await billingDealService.GetBillingDeals()
+                .Where(t => request.BillingDealsID.Contains(t.BillingDealID))
+                .ToListAsync())
+                .GroupBy(k => k.TerminalID, v => v.BillingDealID)
+                .ToDictionary(k => k.Key, v => v.ToList());
+
+            var response = new OperationResponse
+            {
+                Status = StatusEnum.Success,
+                Message = Messages.TransactionsQueued
+            };
+
+            foreach (var batch in transactionTerminals)
+            {
+                await CreateTransactionsFromBillingDeals(new CreateTransactionFromBillingDealsRequest { TerminalID = batch.Key, BillingDealsID = batch.Value });
+            }
 
             return Ok(response);
         }

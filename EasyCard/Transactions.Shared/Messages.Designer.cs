@@ -106,6 +106,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of billing deals for transaction batch is limited to {0}.
+        /// </summary>
+        public static string BillingDealsMaxBatchSize {
+            get {
+                return ResourceManager.GetString("BillingDealsMaxBatchSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Billing Deals required.
         /// </summary>
         public static string BillingDealsRequired {
