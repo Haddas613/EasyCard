@@ -44,11 +44,11 @@
               {{item.paymentTransactionID | guid}}
             </router-link>
           </template> 
-          <!-- <template v-slot:item.actions="{ item }">
-            <v-btn color="primary" outlined small link :to="{name: 'paymentRequest', params: {id: item.$paymentRequestID}}">
+          <template v-slot:item.actions="{ item }">
+            <v-btn color="primary" outlined small link :to="{name: 'PaymentRequest', params: {id: item.$paymentRequestID}}">
               <re-icon small>mdi-arrow-right</re-icon>
             </v-btn>
-          </template> -->
+          </template>
         </v-data-table>
       </v-card-text>
     </v-card>

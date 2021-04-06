@@ -34,7 +34,7 @@ export default {
     let result = await this.$api.merchants.getMerchant(this.$route.params.id);
 
     if (!result) {
-      this.$router.push("/admin/merchants/list");
+      this.$router.push({name: "Merchants"});
     }
 
     this.model = result;

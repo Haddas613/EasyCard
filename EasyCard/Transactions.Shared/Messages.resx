@@ -256,7 +256,7 @@
     <value>Payment request payment failed</value>
   </data>
   <data name="PaymentRequestPaymentSuccessed" xml:space="preserve">
-    <value>Payment request payed</value>
+    <value>Payment Request payed</value>
   </data>
   <data name="PaymentRequestStatusIsClosed" xml:space="preserve">
     <value>Payment Request Is Closed</value>
@@ -332,6 +332,9 @@
   </data>
   <data name="TransmittedByProcessor" xml:space="preserve">
     <value>Transmitted By Processor</value>
+  </data>
+  <data name="Viewed" xml:space="preserve">
+    <value>Payment Request Viewed</value>
   </data>
   <data name="WhenSpecifiedTokenCCDetailsShouldBeOmitted" xml:space="preserve">
     <value>When saved credit card token specified, credit card details should be omitted</value>

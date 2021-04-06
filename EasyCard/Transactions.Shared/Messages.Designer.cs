@@ -475,7 +475,7 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Payment request payed.
+        ///   Looks up a localized string similar to Payment Request payed.
         /// </summary>
         public static string PaymentRequestPaymentSuccessed {
             get {
@@ -705,6 +705,15 @@ namespace Transactions.Shared {
         public static string TransmittedByProcessor {
             get {
                 return ResourceManager.GetString("TransmittedByProcessor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment Request Viewed.
+        /// </summary>
+        public static string Viewed {
+            get {
+                return ResourceManager.GetString("Viewed", resourceCulture);
             }
         }
         

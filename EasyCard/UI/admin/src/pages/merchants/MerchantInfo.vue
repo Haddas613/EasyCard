@@ -226,7 +226,7 @@ export default {
       );
 
       if (!merchant) {
-        return this.$router.push("/admin/merchants/list");
+        return this.$router.push({name: "Merchants"});
       }
       this.model = merchant;
     },

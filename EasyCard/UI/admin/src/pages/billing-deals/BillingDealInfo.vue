@@ -148,7 +148,7 @@ export default {
     );
 
     if (!this.model) {
-      return this.$router.push("/admin/billing-deals/list");
+      return this.$router.push({name: "BillingDeals"});
     }
 
     let data =
