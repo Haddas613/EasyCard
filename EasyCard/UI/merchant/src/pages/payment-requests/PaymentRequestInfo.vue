@@ -90,7 +90,7 @@ export default {
     );
 
     if (!this.model) {
-      return this.$router.push("/admin/payment-requests/list");
+      return this.$router.push({ name: "PaymentRequests" });
     }
   }
 };

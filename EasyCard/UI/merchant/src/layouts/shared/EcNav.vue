@@ -102,7 +102,7 @@ export default {
             {
               icon: "mdi-cash-multiple",
               text: "TransactionsList",
-              to: "/admin/transactions/list"
+              to: { name: "Transactions" }
             }
           ]
         },
@@ -115,12 +115,12 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "CustomersList",
-              to: "/admin/customers/list"
+              to: { name: "Customers" }
             },
             {
               icon: "mdi-plus",
               text: "CreateCustomer",
-              to: "/admin/customers/create"
+              to: { name: "CreateCustomer" }
             }
           ]
         },
@@ -133,12 +133,12 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "ItemsList",
-              to: "/admin/items/list"
+              to: { name: "Items" }
             },
             {
               icon: "mdi-plus",
               text: "CreateItem",
-              to: "/admin/items/create"
+              to: { name: "CreateItem" }
             }
           ]
         },
@@ -151,12 +151,12 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "InvoicesList",
-              to: "/admin/invoicing/list"
+              to: { name: "Invoicing" }
             },
             {
               icon: "mdi-plus",
               text: "CreateInvoice",
-              to: "/wizard/invoicing/create"
+              to: { name: "CreateInvoice" }
             }
           ]
         },
@@ -169,12 +169,12 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "PaymentRequestsList",
-              to: "/admin/payment-requests/list"
+              to: { name: "PaymentRequests" }
             },
             {
               icon: "mdi-plus",
               text: "CreatePaymentRequest",
-              to: "/wizard/payment-requests/create"
+              to: { name: "CreatePaymentRequest" }
             }
           ]
         },
@@ -188,12 +188,12 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "BillingDealsList",
-              to: "/admin/billing-deals/list"
+              to: { name: "BillingDeals" }
             },
             {
               icon: "mdi-plus",
               text: "CreateBillingDeal",
-              to: "/admin/billing-deals/create"
+              to: { name: "CreateBillingDeal" }
             }
           ]
         }

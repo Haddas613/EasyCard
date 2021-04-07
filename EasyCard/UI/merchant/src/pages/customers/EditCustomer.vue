@@ -27,7 +27,7 @@ export default {
       if (!result) return;
 
       if (result.status === "success") {
-        this.$router.push("/admin/customers/list");
+        this.$router.push({ name: "Customers" });
       } else {
         this.$toasted.show(result.message, { type: "error" });
       }
@@ -37,7 +37,7 @@ export default {
     let result = await this.$api.consumers.getConsumer(this.$route.params.id);
 
     if (!result) {
-      this.$router.push("/admin/customers/list");
+      this.$router.push({ name: "Customers" });
     }
 
     this.model = result;

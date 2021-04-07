@@ -150,7 +150,7 @@ export default {
   },
   methods: {
     goBack() {
-      if (this.step === 1) this.$router.push("/admin/dashboard");
+      if (this.step === 1) this.$router.push({ name: "Dashboard" });
       else this.step--;
     },
     terminalChanged() {

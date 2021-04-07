@@ -43,12 +43,6 @@ const routes = [{
         redirect: '/admin'
     },
     {
-        path: '/guest',
-        name: 'Guest',
-        component: () =>
-            import ('../pages/Guest.vue')
-    },
-    {
         path: '/admin',
         component: MainLayout,
         meta: {

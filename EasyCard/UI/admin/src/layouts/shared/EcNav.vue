@@ -89,7 +89,7 @@ export default {
         {
           icon: "mdi-view-dashboard",
           text: "Dashboard",
-          to: "/admin/dashboard"
+          to: { name: "Dashboard" }
         },
         {
           icon: "mdi-cash-minus",
@@ -100,7 +100,7 @@ export default {
             {
               icon: "mdi-cash-multiple",
               text: "TransactionsList",
-              to: "/admin/transactions/list"
+              to: { name: "Transactions" }
             }
           ]
         },
@@ -113,22 +113,22 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "MerchantsList",
-              to: "/admin/merchants/list"
+              to: { name: "Merchants" }
             },
             {
               icon: "mdi-account-network",
               text: "UsersList",
-              to: "/admin/users/list"
+              to: { name: "Users" }
             },
             {
               icon: "mdi-credit-card-settings",
               text: "CreditCardTokens",
-              to: "/admin/card-tokens/list"
+              to: { name: "CardTokens" }
             },
             {
               icon: "mdi-plus",
               text: "CreateMerchant",
-              to: "/admin/merchants/create"
+              to: { name: "CreateMerchant" }
             }
           ]
         },
@@ -141,12 +141,12 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "TerminalsList",
-              to: "/admin/terminals/list"
+              to: { name: "Terminals" }
             },
             {
               icon: "mdi-format-list-bulleted-type",
               text: "TerminalTemplates",
-              to: "/admin/terminal-templates/list"
+              to: { name: "TerminalTemplates" }
             }
           ]
         },
@@ -159,7 +159,7 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "InvoicesList",
-              to: "/admin/invoicing/list"
+              to: { name: "Invoicing" }
             }
           ]
         },
@@ -172,7 +172,7 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "PaymentRequestsList",
-              to: "/admin/payment-requests/list"
+              to: { name: "PaymentRequests" }
             }
           ]
         },
@@ -185,7 +185,7 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "BillingDealsList",
-              to: "/admin/billing-deals/list"
+              to: { name: "BillingDeals" }
             }
           ]
         },
@@ -198,12 +198,12 @@ export default {
             {
               icon: "mdi-history",
               text: "SystemLogs",
-              to: "/admin/system-logs/list"
+              to: { name: "SystemLogs" }
             },
             {
               icon: "mdi-book-account",
               text: "Audits",
-              to: "/admin/audit/list"
+              to: { name: "Audits" }
             }
           ]
         },
