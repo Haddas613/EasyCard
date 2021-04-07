@@ -10,11 +10,6 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Entry',
-    redirect: '/admin'
-  },
-  {
-    path: '/admin',
     component: MainLayout,
     children: [
       {

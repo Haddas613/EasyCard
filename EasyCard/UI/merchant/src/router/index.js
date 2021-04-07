@@ -34,16 +34,9 @@ const allowedForManagerOrAdminGuard = new AllowedForGuard([appConstants.users.ro
  * 3. closeBtn: string:(route-name) | boolean - when present with positive value, the close button will appear on mobile 
  * layout instead of burger menu. Either route or goBack(-1) will be used if route name is supplied or not respectively.
  */
-const routes = [{
-        path: '/',
-        name: 'Entry',
-        meta: {
-            //authName: mainAuth.authName
-        },
-        redirect: '/admin'
-    },
+const routes = [
     {
-        path: '/admin',
+        path: '/',
         component: MainLayout,
         meta: {
             //authName: mainAuth.authName
