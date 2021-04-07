@@ -57,11 +57,11 @@
           <template v-slot:item.active="{ item }">
             {{item.active ? $t("Yes") : $t("No")}}
           </template>
-          <!-- <template v-slot:item.actions="{ item }">
+          <template v-slot:item.actions="{ item }">
             <v-btn color="primary" outlined small link :to="{name: 'BillingDeal', params: {id: item.$billingDealID}}">
               <re-icon small>mdi-arrow-right</re-icon>
             </v-btn>
-          </template> -->
+          </template>
         </v-data-table>
       </v-card-text>
     </v-card>

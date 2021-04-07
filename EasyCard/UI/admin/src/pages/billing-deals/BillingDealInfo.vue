@@ -175,28 +175,11 @@ export default {
         $dictionaries.invoiceTypeEnum[this.model.invoiceDetails.invoiceType];
     }
 
-    let newHeader = {
-      threeDotMenu: [
-      {
-        text: this.$t("Edit"),
-        fn: () => {
-          this.$router.push({
-            name: "EditBillingDeal",
-            id: this.$route.params.id
-          });
-        }
-      }
-    ]};
 
-    if (this.model.active) {
-      newHeader.threeDotMenu.push({
-        text: this.$t("Delete"),
-        fn: () => { this.deleteDialog = true; }
-      });
-    }else{
-      newHeader.text = { translate: true, value: 'BillingDeal(Deleted)' };
+    if (!this.model.active) {
+      var newHeader = { text: { translate: true, value: 'BillingDeal(Deleted)' } };
+      this.$store.commit("ui/changeHeader", { value: newHeader});
     }
-    this.$store.commit("ui/changeHeader", { value: newHeader});
   }
 };
 </script>

@@ -142,15 +142,15 @@ const routes = [
         component: () =>
             import ('../pages/billing-deals/BillingDealsList.vue'),
       },
-      // {
-      //     name: 'BillingDeal',
-      //     meta: {
-      //         backBtn: true,
-      //     },
-      //     path: 'billing-deals/view/:id',
-      //     component: () =>
-      //         import ('../pages/billing-deals/BillingDealInfo.vue'),
-      // },
+      {
+          name: 'BillingDeal',
+          meta: {
+              backBtn: true,
+          },
+          path: 'billing-deals/view/:id',
+          component: () =>
+              import ('../pages/billing-deals/BillingDealInfo.vue'),
+      },
       {
         name: 'MyProfile',
         path: 'profile',
