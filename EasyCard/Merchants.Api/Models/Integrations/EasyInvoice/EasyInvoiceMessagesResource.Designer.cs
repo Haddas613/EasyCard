@@ -61,6 +61,15 @@ namespace Merchants.Api.Models.Integrations.EasyInvoice {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Customer already exists.
+        /// </summary>
+        public static string CustomerAlreadyExists {
+            get {
+                return ResourceManager.GetString("CustomerAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Customer created successfully.
         /// </summary>
         public static string CustomerCreatedSuccessfully {
