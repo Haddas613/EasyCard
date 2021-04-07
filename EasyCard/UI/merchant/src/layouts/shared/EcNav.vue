@@ -151,7 +151,7 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "InvoicesList",
-              to: { name: "Invoicing" }
+              to: { name: "Invoices" }
             },
             {
               icon: "mdi-plus",
