@@ -64,19 +64,19 @@ export default {
       items: [
         {
           icon: "mdi-chevron-down-box-outline",
-          to: "/wizard/transactions/charge",
+          to: { name: "Charge" },
           css: "deep-purple--text",
           text: "Charge"
         },
         {
           icon: "mdi-chevron-left-box-outline",
-          to: "/wizard/payment-requests/create",
+          to: { name: "CreatePaymentRequest" },
           css: "orange--text",
           text: "Request"
         },
         {
           icon: "mdi-chevron-up-box-outline",
-          to: "/wizard/transactions/refund",
+          to: { name: "Refund" },
           css: "primary--text",
           text: "Refund",
           allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin]

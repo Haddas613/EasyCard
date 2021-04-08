@@ -36,6 +36,42 @@ const allowedForManagerOrAdminGuard = new AllowedForGuard([appConstants.users.ro
  */
 const routes = [
     {
+        path: '/wizard',
+        component: WizardLayout,
+        meta: {
+            //authName: mainAuth.authName
+        },
+        children: [{
+                name: 'Charge',
+                path: 'transactions/charge',
+                component: () =>
+                    import ('../wizards/transactions/CreateCharge.vue'),
+                props: true
+            },
+            {
+                name: 'Refund',
+                path: 'transactions/refund',
+                component: () =>
+                    import ('../wizards/transactions/CreateRefund.vue'),
+                props: true
+            },
+            {
+                name: 'CreateInvoice',
+                path: 'invoicing/create',
+                component: () =>
+                    import ('../wizards/invoicing/CreateInvoice.vue'),
+                props: true
+            },
+            {
+                name: 'CreatePaymentRequest',
+                path: 'payment-requests/create',
+                component: () =>
+                    import ('../wizards/payment-requests/CreatePaymentRequest.vue'),
+                props: true
+            }
+        ]
+    },
+    {
         path: '/',
         component: MainLayout,
         meta: {
@@ -244,42 +280,6 @@ const routes = [
                 path: '*',
                 component: () =>
                     import ('../views/NotFound.vue'),
-            }
-        ]
-    },
-    {
-        path: '/wizard',
-        component: WizardLayout,
-        meta: {
-            //authName: mainAuth.authName
-        },
-        children: [{
-                name: 'Charge',
-                path: 'transactions/charge',
-                component: () =>
-                    import ('../wizards/transactions/CreateCharge.vue'),
-                props: true
-            },
-            {
-                name: 'Refund',
-                path: 'transactions/refund',
-                component: () =>
-                    import ('../wizards/transactions/CreateRefund.vue'),
-                props: true
-            },
-            {
-                name: 'CreateInvoice',
-                path: 'invoicing/create',
-                component: () =>
-                    import ('../wizards/invoicing/CreateInvoice.vue'),
-                props: true
-            },
-            {
-                name: 'CreatePaymentRequest',
-                path: 'payment-requests/create',
-                component: () =>
-                    import ('../wizards/payment-requests/CreatePaymentRequest.vue'),
-                props: true
             }
         ]
     },
