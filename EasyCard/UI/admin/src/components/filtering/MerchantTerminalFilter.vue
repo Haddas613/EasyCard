@@ -1,6 +1,6 @@
 <template>
   <v-row class="px-3">
-    <v-col cols="12" md="6" sm="3">
+    <v-col cols="12" md="6">
       <v-autocomplete
         :items="merchants"
         item-text="businessName"
@@ -12,7 +12,7 @@
         clearable
       ></v-autocomplete>
     </v-col>
-    <v-col cols="12" md="6" sm="3">
+    <v-col cols="12" md="6">
       <v-autocomplete
         :items="terminals"
         item-text="label"

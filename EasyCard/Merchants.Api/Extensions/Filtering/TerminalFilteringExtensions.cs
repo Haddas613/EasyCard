@@ -18,6 +18,11 @@ namespace Merchants.Api.Extensions.Filtering
                 return src.Where(t => t.TerminalID == filter.TerminalID.Value);
             }
 
+            if (filter.TerminalTemplateID.HasValue)
+            {
+                src = src.Where(t => t.TerminalTemplateID.Value == filter.TerminalTemplateID.Value);
+            }
+
             if (filter.MerchantID.HasValue)
             {
                 src = src.Where(t => t.MerchantID == filter.MerchantID.Value);

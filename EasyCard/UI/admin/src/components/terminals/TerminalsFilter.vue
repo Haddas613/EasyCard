@@ -3,6 +3,7 @@
     <v-form ref="form" v-model="formIsValid">
       <v-row>
         <merchant-terminal-filter class="pt-3" v-model="model"></merchant-terminal-filter>
+        <terminal-template-filter class="pt-3" v-model="model"></terminal-template-filter>
         <v-col cols="12" md="4" class="pb-0">
           <v-select
             :items="dictionaries.terminalStatusEnum"
@@ -12,19 +13,6 @@
             :label="$t('Status')"
             clearable
           ></v-select>
-        </v-col>
-        <v-col cols="12" md="4" class="pb-0">
-          <v-text-field
-            v-model="model.label"
-            :label="$t('Label')"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="4" class="pb-0">
-          <v-text-field
-            v-model="model.merchantID"
-            :label="$t('MerchantID')"
-            :rules="[vr.primitives.guid]"
-          ></v-text-field>
         </v-col>
         <v-col cols="12" md="4" class="pb-0">
           <v-text-field
@@ -55,6 +43,7 @@ export default {
   name: "TerminalsFilter",
   components: {
     MerchantTerminalFilter: () => import("../filtering/MerchantTerminalFilter"),
+    TerminalTemplateFilter: () => import("../filtering/TerminalTemplateFilter"),
   },
   data() {
     return {

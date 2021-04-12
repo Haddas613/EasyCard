@@ -70,6 +70,8 @@ namespace Merchants.Business.Entities.Terminal
         /// </summary>
         public string AggregatorTerminalReference { get; set; }
 
+        public long? TerminalTemplateID { get; set; }
+
         public Guid GetID()
         {
             return TerminalID;

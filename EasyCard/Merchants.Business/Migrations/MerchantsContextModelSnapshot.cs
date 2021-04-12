@@ -462,6 +462,9 @@ namespace Merchants.Business.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<long?>("TerminalTemplateID")
+                        .HasColumnType("bigint");
+
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()

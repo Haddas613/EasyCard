@@ -23,6 +23,10 @@ export default class TerminalsApi {
         return data;
     }
 
+    async getTerminalTemplatesRaw(params) {
+        return this.base.get(this.templatesUrl, params);
+    }
+
     async getTerminalTemplate(terminalTemplateID) {
         return this.base.get(this.templatesUrl + '/' + terminalTemplateID);
     }

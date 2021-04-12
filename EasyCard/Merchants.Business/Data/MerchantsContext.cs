@@ -175,6 +175,8 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.ProcessorTerminalReference).HasMaxLength(50).IsRequired(false).IsUnicode(false);
 
                 builder.Property(b => b.SharedApiKey).IsRequired(false).HasMaxLength(64);
+
+                builder.Property(b => b.TerminalTemplateID).IsRequired(false);
             }
         }
 
