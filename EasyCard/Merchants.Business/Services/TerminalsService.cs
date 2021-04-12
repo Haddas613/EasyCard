@@ -219,6 +219,8 @@ namespace Merchants.Business.Services
             };
             context.MerchantHistories.Add(history);
 
+            entity.Updated = DateTime.UtcNow;
+
             if (dbTransaction != null)
             {
                 await base.UpdateEntity(entity, dbTransaction);

@@ -470,6 +470,9 @@ namespace Merchants.Business.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
+                    b.Property<DateTime?>("Updated")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("TerminalID");
 
                     b.HasIndex("MerchantID");

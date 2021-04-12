@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-form ref="form" v-model="formIsValid">
       <v-row>
-        <merchant-terminal-filter class="pt-3" v-model="model"></merchant-terminal-filter>
+        <merchant-terminal-filter v-model="model"></merchant-terminal-filter>
         <v-col cols="12" md="4" class="py-0">
             <v-text-field
               v-model="model.billingDealID"
@@ -49,46 +49,7 @@
             clearable
           ></v-select>
         </v-col>
-        <v-col cols="12" md="4" class="py-0">
-          <v-menu
-            ref="dateFromMenu"
-            v-model="dateFromMenu"
-            :close-on-content-click="false"
-            :return-value.sync="model.dateFrom"
-            offset-y
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field v-model="model.dateFrom" :label="$t('DateFrom')" readonly v-on="on" clearable></v-text-field>
-            </template>
-            <v-date-picker v-model="model.dateFrom" no-title scrollable>
-              <v-spacer></v-spacer>
-              <v-btn
-                text
-                color="primary"
-                @click="$refs.dateFromMenu.save(model.dateFrom)"
-              >{{$t("Ok")}}</v-btn>
-            </v-date-picker>
-          </v-menu>
-        </v-col>
-        <v-col cols="12" md="4" class="py-0">
-          <v-menu
-            ref="dateToMenu"
-            v-model="dateToMenu"
-            :close-on-content-click="false"
-            :return-value.sync="model.dateTo"
-            offset-y
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field v-model="model.dateTo" :label="$t('DateTo')" readonly v-on="on"  clearable></v-text-field>
-            </template>
-            <v-date-picker v-model="model.dateTo" no-title scrollable>
-              <v-spacer></v-spacer>
-              <v-btn text color="primary" @click="$refs.dateToMenu.save(model.dateTo)">{{$t("Ok")}}</v-btn>
-            </v-date-picker>
-          </v-menu>
-        </v-col>
+        <date-from-to-filter v-model="model"></date-from-to-filter>
       </v-row>
       <v-row>
         <v-col cols="12" class="d-flex justify-end">
@@ -110,7 +71,8 @@ import ValidationRules from "../../helpers/validation-rules";
 export default {
   name: "MerchantsFilter",
   components: {
-    MerchantTerminalFilter: () => import("../filtering/MerchantTerminalFilter")
+    MerchantTerminalFilter: () => import("../filtering/MerchantTerminalFilter"),
+    DateFromToFilter: () => import("../filtering/DateFromToFilter"),
   },
   data() {
     return {
@@ -118,8 +80,6 @@ export default {
       dictionaries: {},
       vr: ValidationRules,
       formIsValid: true,
-      dateFromMenu: false,
-      dateToMenu: false,
     };
   },
   async mounted() {
@@ -137,8 +97,6 @@ export default {
       }
       this.$emit("apply", {
         ...this.model,
-        dateFrom: this.$formatDate(this.model.dateFrom),
-        dateTo: this.$formatDate(this.model.dateTo)
       });
     }
   }

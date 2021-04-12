@@ -33,6 +33,8 @@ namespace Merchants.Api.Models.Terminal
 
         public DateTime? Created { get; set; }
 
+        public DateTime? Updated { get; set; }
+
         public MerchantSummary Merchant { get; set; }
 
         public IEnumerable<UserSummary> Users { get; set; }

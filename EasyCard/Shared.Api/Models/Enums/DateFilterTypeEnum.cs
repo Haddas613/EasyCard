@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace Transactions.Api.Models.Transactions.Enums
+namespace Shared.Api.Models.Enums
 {
     public enum DateFilterTypeEnum : short
     {

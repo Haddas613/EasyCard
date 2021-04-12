@@ -14,6 +14,8 @@ using Merchants.Api.Models.Terminal;
 using Merchants.Api.Models.User;
 using Microsoft.Extensions.Logging;
 using Merchants.Api.Models.System;
+using Shared.Api.Models.Enums;
+using Shared.Integration.Resources;
 
 namespace Merchants.Api.Services
 {
@@ -52,6 +54,8 @@ namespace Merchants.Api.Services
 
             var terminalTransmissionScheduleEnum = typeof(TerminalTransmissionScheduleEnum);
 
+            var filterDateEnumType = typeof(DateFilterTypeEnum);
+
             var termStatuses = Enum.GetValues(transactionStatusEnumType).Cast<TerminalStatusEnum>()
                 .ToDictionary(m => transactionStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => TerminalStatusEnumResource.ResourceManager.GetString(m.ToString(), culture) );
 
@@ -67,11 +71,15 @@ namespace Merchants.Api.Services
             var terminalTransmissionSchedules = Enum.GetValues(terminalTransmissionScheduleEnum).Cast<TerminalTransmissionScheduleEnum>()
                 .ToDictionary(m => terminalTransmissionScheduleEnum.GetDataContractAttrForEnum(m.ToString()), m => TerminalTransmissionScheduleResource.ResourceManager.GetString(m.ToString(), culture));
 
+            var filterDateTypes = Enum.GetValues(filterDateEnumType).Cast<DateFilterTypeEnum>()
+                .ToDictionary(m => filterDateEnumType.GetDataContractAttrForEnum(m.ToString()), m => FilterEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
             response.TerminalStatusEnum = termStatuses;
             response.UserStatusEnum = userStatuses;
             response.LogLevelsEnum = logLevels;
             response.OperationCodesEnum = operationCodes;
             response.TerminalTransmissionScheduleEnum = terminalTransmissionSchedules;
+            response.DateFilterTypeEnum = filterDateTypes;
 
             return response;
         }

@@ -26,6 +26,17 @@
             :label="$t('ProcessorTerminalReference')"
           ></v-text-field>
         </v-col>
+        <v-col cols="12" md="4" class="pb-0">
+          <v-select
+            :items="dictionaries.dateFilterTypeEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.dateType"
+            :label="$t('DateType')"
+            clearable
+          ></v-select>
+        </v-col>
+        <date-from-to-filter class="pt-3" v-model="model"></date-from-to-filter>
       </v-row>
       <v-row>
         <v-col cols="12" class="d-flex justify-end">
@@ -44,6 +55,7 @@ export default {
   components: {
     MerchantTerminalFilter: () => import("../filtering/MerchantTerminalFilter"),
     TerminalTemplateFilter: () => import("../filtering/TerminalTemplateFilter"),
+    DateFromToFilter: () => import("../filtering/DateFromToFilter"),
   },
   data() {
     return {

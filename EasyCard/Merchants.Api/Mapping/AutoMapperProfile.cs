@@ -37,7 +37,8 @@ namespace Merchants.Api.Mapping
         private void RegisterTerminalMappings()
         {
             CreateMap<TerminalRequest, Terminal>()
-                .ForMember(m => m.Created, o => o.MapFrom((src, tgt) => tgt.Created = DateTime.UtcNow));
+                .ForMember(m => m.Created, o => o.MapFrom((src, tgt) => tgt.Created = DateTime.UtcNow))
+                .ForMember(m => m.Updated, o => o.MapFrom(src => DateTime.UtcNow));
             CreateMap<UpdateTerminalRequest, Terminal>();
 
             CreateMap<Terminal, TerminalResponse>();
