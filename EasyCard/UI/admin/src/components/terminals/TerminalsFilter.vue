@@ -2,14 +2,7 @@
   <v-container fluid>
     <v-form ref="form" v-model="formIsValid">
       <v-row>
-        <!-- <merchant-terminal-filter v-model="model"></merchant-terminal-filter> -->
-        <v-col cols="12" md="4" class="pb-0">
-          <v-text-field
-            v-model="model.terminalID"
-            :label="$t('TerminalID')"
-            :rules="[vr.primitives.guid]"
-          ></v-text-field>
-        </v-col>
+        <merchant-terminal-filter class="pt-3" v-model="model"></merchant-terminal-filter>
         <v-col cols="12" md="4" class="pb-0">
           <v-select
             :items="dictionaries.terminalStatusEnum"

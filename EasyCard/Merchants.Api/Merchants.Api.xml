@@ -101,6 +101,11 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.CustomerAlreadyExists">
+            <summary>
+              Looks up a localized string similar to Customer already exists.
+            </summary>
+        </member>
         <member name="P:Merchants.Api.Models.Integrations.EasyInvoice.EasyInvoiceMessagesResource.CustomerCreatedSuccessfully">
             <summary>
               Looks up a localized string similar to Customer created successfully.

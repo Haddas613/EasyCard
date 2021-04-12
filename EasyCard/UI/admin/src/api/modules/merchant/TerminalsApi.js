@@ -23,6 +23,10 @@ export default class TerminalsApi {
         return data;
     }
 
+    async getTerminalsRaw(params) {
+        return await this.base.get(this.terminalsUrl, params);
+    }
+
     async getTerminals(params, refreshCache = false) {
         if(!refreshCache && this.$terminals){
             return this.$terminals;

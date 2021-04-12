@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-form ref="form" v-model="formIsValid">
       <v-row>
-        <merchant-terminal-filter class="py-0" v-model="model"></merchant-terminal-filter>
+        <merchant-terminal-filter class="pt-3" v-model="model"></merchant-terminal-filter>
         <v-col cols="12" md="4" class="py-0">
             <v-text-field
               v-model="model.billingDealID"
