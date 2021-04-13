@@ -236,6 +236,8 @@ namespace Transactions.Business.Entities
 
         public DocumentOriginEnum DocumentOrigin { get; set; }
 
+        public long? TerminalTemplateID { get; set; }
+
         // TODO: calculate items, VAT
         [Obsolete]
         public void Calculate()

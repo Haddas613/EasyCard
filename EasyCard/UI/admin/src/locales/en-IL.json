@@ -94,6 +94,8 @@
   "Filters": "Filters",
   "Integrations": "Integrations",
   "Terminals": "Terminals",
+  "Origin": "Origin",
+  "FinalizationStatus": "Finalization Status",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -169,6 +171,7 @@
   "TransactionTime": "Transaction Time",
   "TransactionID": "Transaction ID",
   "TransmissionTime": "Transmission Time",
+  "TransmissionDate": "Transmission Date",
   "CardOwnerName": "Card Owner Name",
   "InvoiceNumber": "Invoice Number",
   "InvoiceSubject": "Invoice Subject",
@@ -312,6 +315,10 @@
   "URL": "URL",
   "ApiKey": "ApiKey",
   "Level": "Level",
+  "CustomerID": "Customer ID",
+  "VoucherNumber": "Voucher Number",
+  "AggregatorReference": "Aggregator Reference",
+  "ProcessorReference": "Processor Reference",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

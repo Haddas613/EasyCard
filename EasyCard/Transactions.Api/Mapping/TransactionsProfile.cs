@@ -37,6 +37,7 @@ namespace Transactions.Api.Mapping
             // NOTE: this is security assignment
             CreateMap<Merchants.Business.Entities.Terminal.Terminal, PaymentTransaction>()
                 .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
+                .ForMember(d => d.TerminalTemplateID, o => o.MapFrom(d => d.TerminalTemplateID))
                 .ForMember(d => d.MerchantID, o => o.MapFrom(d => d.MerchantID));
 
             CreateMap<PaymentTransaction, TransactionResponse>()

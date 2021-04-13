@@ -9,6 +9,7 @@
         :search-input.sync="searchMerchants"
         return-object
         :label="$t('Merchant')"
+        hide-details
         clearable
       ></v-autocomplete>
     </v-col>
@@ -21,6 +22,7 @@
         :search-input.sync="searchTerminals"
         return-object
         :label="$t('Terminal')"
+        hide-details
         clearable
       ></v-autocomplete>
     </v-col>
@@ -89,6 +91,7 @@ export default {
         this.data.terminalID = null;
         return;
       }
+      this.data.merchantID = val.merchantID;
 
       if (this.selectedTerminal) {
         if(this.selectedTerminal.merchantID != val.merchantID){
@@ -104,8 +107,7 @@ export default {
         }
         this.getTerminals();
       }
-
-      this.data.merchantID = val.merchantID;
+     
       this.$emit("change", this.data);
     },
     selectedTerminal: async function(val) {

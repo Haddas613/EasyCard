@@ -1,5 +1,5 @@
 <template>
-    <v-col cols="12" md="4" sm="6">
+    <v-col cols="12" md="3" sm="6">
       <v-autocomplete
         :items="templates"
         item-text="label"
@@ -7,6 +7,7 @@
         v-model="data.terminalTemplateID"
         :search-input.sync="searchTemplates"
         :label="$t('TerminalTemplate')"
+        hide-details
         clearable
       ></v-autocomplete>
     </v-col>

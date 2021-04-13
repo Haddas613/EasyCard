@@ -94,6 +94,8 @@
   "Filters": "מסננים",
   "Integrations": "אינטגרציות",
   "Terminals": "מסופים",
+  "Origin": "מקור",
+  "FinalizationStatus": "סטטוס עסקה במאגד",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -173,6 +175,7 @@
   "TransactionTime": "שעת עסקה",
   "TransactionID": "מזהה עסקה",
   "TransmissionTime": "שעת שידור",
+  "TransmissionDate": "תאריך שידור",
   "CardOwnerName": "שם בעל הכרטיס",
   "InvoiceNumber": "מספר חשבונית",
   "InvoiceSubject": "נושא חשבונית",
@@ -316,6 +319,10 @@
   "URL": "URL",
   "ApiKey": "מפתח API",
   "Level": "רמה",
+  "CustomerID": "מזהה לקוח",
+  "VoucherNumber": "מספר שובר",
+  "AggregatorReference": "אסמכתת מאגד",
+  "ProcessorReference": "אסמכתת שבא",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

@@ -1,4 +1,5 @@
-﻿using Shared.Api.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Api.Swagger;
 using Shared.Helpers;
@@ -30,6 +31,8 @@ namespace Transactions.Api.Models.Transactions
         public CurrencyEnum? Currency { get; set; }
 
         public QuickDateFilterTypeEnum? QuickDateFilter { get; set; }
+
+        public QuickDateFilterTypeEnum? TransmissionQuickDateFilter { get; set; }
 
         public QuickStatusFilterTypeEnum? QuickStatusFilter { get; set; }
 
@@ -89,5 +92,14 @@ namespace Transactions.Api.Models.Transactions
         public SpecialTransactionTypeEnum? SpecialTransactionType { get; set; }
 
         public bool NotTransmitted { get; set; }
+
+        [SwaggerExclude]
+        public long? TerminalTemplateID { get; set; }
+
+        [SwaggerExclude]
+        public TransactionFinalizationStatusEnum? FinalizationStatus { get; set; }
+
+        [SwaggerExclude]
+        public DocumentOriginEnum? DocumentOrigin { get; set; }
     }
 }

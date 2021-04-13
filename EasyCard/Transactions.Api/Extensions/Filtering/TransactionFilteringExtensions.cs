@@ -157,6 +157,21 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.CreditCardDetails.CardVendor == filter.CreditCardVendor);
             }
 
+            if (filter.TerminalTemplateID.HasValue)
+            {
+                src = src.Where(t => t.TerminalTemplateID == filter.TerminalTemplateID.Value);
+            }
+
+            if (filter.FinalizationStatus.HasValue)
+            {
+                src = src.Where(t => t.FinalizationStatus == filter.FinalizationStatus);
+            }
+
+            if (filter.DocumentOrigin.HasValue)
+            {
+                src = src.Where(t => t.DocumentOrigin == filter.DocumentOrigin);
+            }
+
             return src;
         }
 
@@ -172,8 +187,13 @@ namespace Transactions.Api.Extensions.Filtering
 
         private static IQueryable<PaymentTransaction> HandleDateFiltering(IQueryable<PaymentTransaction> src, TransactionsFilter filter)
         {
-            //TODO: Quick time filters using SequentialGuid https://stackoverflow.com/questions/54920200/entity-framework-core-guid-greater-than-for-paging
-            if (filter.QuickDateFilter != null)
+            if (filter.TransmissionQuickDateFilter != null)
+            {
+                var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(filter.TransmissionQuickDateFilter.Value);
+
+                src = src.Where(t => t.ShvaTransactionDetails.TransmissionDate >= dateRange.DateFrom && t.ShvaTransactionDetails.TransmissionDate <= dateRange.DateTo);
+            }
+            else if (filter.QuickDateFilter != null) //TODO: Quick time filters using SequentialGuid https://stackoverflow.com/questions/54920200/entity-framework-core-guid-greater-than-for-paging
             {
                 var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(filter.QuickDateFilter.Value);
 

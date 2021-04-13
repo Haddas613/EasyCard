@@ -1448,6 +1448,11 @@
               Looks up a localized string similar to Currency.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.DocumentOrigin">
+            <summary>
+              Looks up a localized string similar to Origin.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.JDealType">
             <summary>
               Looks up a localized string similar to JDeal type.
