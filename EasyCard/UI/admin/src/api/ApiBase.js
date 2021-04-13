@@ -155,8 +155,13 @@ class ApiBase {
     }
 
     async _handleRequest(request, showSuccessToastr = false) {
+        let requestIncrementTimeout = null;
+        let storeDispatched = false;
         try {
-            store.commit("ui/requestsCountIncrement");
+            requestIncrementTimeout = setTimeout(() => {
+                store.commit("ui/requestsCountIncrement");
+                storeDispatched = true;
+            }, 1500);
             request = await request;
 
             if (request.ok) {
@@ -191,7 +196,12 @@ class ApiBase {
         } catch (err) {
             Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error' });
         } finally {
-            store.commit("ui/requestsCountDecrement");
+            if(requestIncrementTimeout){
+                clearTimeout(requestIncrementTimeout);
+            }
+            if(storeDispatched){
+                store.commit("ui/requestsCountDecrement");
+            }
         }
         return null;
     }

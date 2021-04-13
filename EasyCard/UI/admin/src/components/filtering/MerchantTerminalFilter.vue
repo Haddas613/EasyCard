@@ -89,6 +89,8 @@ export default {
     selectedMerchant: async function(val) {
       if (!val) {
         this.data.terminalID = null;
+        this.data.merchantID = null;
+        this.getTerminals();
         return;
       }
       this.data.merchantID = val.merchantID;
