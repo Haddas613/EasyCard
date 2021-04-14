@@ -2,7 +2,7 @@
   <v-card width="100%" flat color="ecbg">
     <v-card-title class="hidden-sm-and-down">{{$t("EditItem")}}</v-card-title>
     <v-card-text>
-      <item-form :data="model" v-on:ok="updateItem($event)" class="px-4" v-if="model"></item-form>
+      <item-form :data="model" v-on:ok="updateItem($event)" v-if="model"></item-form>
     </v-card-text>
   </v-card>
 </template>

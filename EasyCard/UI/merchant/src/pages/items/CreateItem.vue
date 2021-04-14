@@ -2,7 +2,7 @@
   <v-card flat color="ecbg">
     <v-card-title class="hidden-sm-and-down">{{$t("CreateItem")}}</v-card-title>
     <v-card-text>
-      <item-form :data="model" v-on:ok="createItem($event)" class="px-4"></item-form>
+      <item-form :data="model" v-on:ok="createItem($event)"></item-form>
     </v-card-text>
   </v-card>
 </template>
