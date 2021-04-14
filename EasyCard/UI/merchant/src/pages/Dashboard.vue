@@ -82,7 +82,7 @@ export default {
     margin-top: 170px;
   }
   div{
-    padding: 0 4px;
+    padding: 0 6px;
   }
   .dashboard-tile-item{
     display: flex;

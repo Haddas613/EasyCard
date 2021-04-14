@@ -9,11 +9,11 @@ export default {
       APP_ID: "pb65ta0u"
     };
   },
-  mounted() {
-    //this.initIntercom();
+  async mounted() {
+    this.initIntercom();
   },
   methods: {
-    initIntercom() {
+    async initIntercom() {
       const APP_ID = this.APP_ID;
       var w = window;
       var ic = w.Intercom;
@@ -47,14 +47,15 @@ export default {
         }
       }
 
+      let user = await this.$oidc.getUserProfile();
+
       window.Intercom("boot", {
         app_id: APP_ID,
-        user_id: "632eb049-8562-411d-ab9f-ab92007f0293", // user_id
-        name: "Bob", // Full name
-        email: "kanivetsig@mydigicode.com", // Email address
-        created_at: "1617881513" // Signup date as a Unix timestamp
+        user_id: user.sub, // user_id
+        name: `${user.extension_FirstName} ${user.extension_LastName}`, // Full name
+        email: user.name, // Email address
+        //created_at: "1617881513" // Signup date as a Unix timestamp
       });
-      window.Intercom("show")
     }
   }
 };

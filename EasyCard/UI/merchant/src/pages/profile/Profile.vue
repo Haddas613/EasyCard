@@ -3,17 +3,17 @@
     <v-card flat color="ecbg">
       <v-card-text>
         <v-row no-gutters>
-          <v-col cols="6" class="text-start d-flex align-center">
+          <v-col cols="12" md="6" class="text-start d-flex align-center">
             <span>
               {{$t("@AppVersion").replace("@version", appVersion)}}
             </span>
           </v-col>
-          <v-col cols="6" class="text-end mb-4">
-            <v-btn class="mx-1" color="secondary" target="_blank" link :href="$cfg.VUE_APP_AUTHORITY + '/Home/ManageAccount'">
+          <v-col cols="12" md="6" class="text-end mb-4">
+            <v-btn color="secondary" target="_blank" link :href="$cfg.VUE_APP_AUTHORITY + '/Home/ManageAccount'">
               <v-icon left>mdi-account</v-icon>
               {{$t("AccountSettings")}}
             </v-btn>
-            <v-btn @click="$oidc.signOut()">
+            <v-btn class="mx-1" @click="$oidc.signOut()">
               <v-icon left>mdi-logout</v-icon>
               {{$t("SignOut")}}
             </v-btn>

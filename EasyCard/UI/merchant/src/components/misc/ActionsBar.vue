@@ -1,13 +1,17 @@
 <template>
   <v-flex>
-    <v-footer :fixed="true" :padless="true" v-if="footer" height="100">
+    <v-footer :fixed="true" :padless="true" v-if="footer" height="90">
       <v-card flat tile width="100%" class="text-center" dark color="grey darken-3">
-        <v-card-text class="d-flex justify-space-between pb-0">
-          <div v-for="item in items" class="py-0" :key="item.text">
-            <v-btn class="white mx-6" icon link :to="item.to">
+        <v-card-text class="d-flex justify-space-between pb-0 mt-3 py-0" dir="ltr">
+          <div v-for="item in items" class="pt-1" :key="item.text">
+            <v-btn class="white mx-3" icon link :to="item.to">
               <v-icon :class="item.css">{{ item.icon }}</v-icon>
             </v-btn>
             <p class="pt-1">{{$t(item.text)}}</p>
+          </div>
+          <div class="py-0">
+            <div class="mx-8">
+            </div>
           </div>
         </v-card-text>
       </v-card>
