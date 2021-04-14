@@ -6,6 +6,17 @@
         <terminal-template-filter class="pt-3" v-model="model"></terminal-template-filter>
         <v-col cols="12" md="3" sm="6">
           <v-select
+            hide-details="true"
+            :items="dictionaries.transactionTypeEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.transactionType"
+            :label="$t('TransactionType')"
+            clearable
+          ></v-select>
+        </v-col>
+        <v-col cols="12" md="3" sm="6">
+          <v-select
             :items="dictionaries.quickDateFilterTypeEnum"
             item-text="description"
             item-value="code"
@@ -17,7 +28,7 @@
         </v-col>
         <v-col cols="12" md="3" sm="6">
           <v-select
-            :items="dictionaries.transmissionQuickDateFilterTypeEnum"
+            :items="dictionaries.quickDateFilterTypeEnum"
             item-text="description"
             item-value="code"
             v-model="model.transmissionQuickDate"
@@ -26,17 +37,7 @@
             clearable
           ></v-select>
         </v-col>
-        <v-col cols="12" md="3" sm="6">
-          <v-select
-            hide-details="true"
-            :items="dictionaries.transactionTypeEnum"
-            item-text="description"
-            item-value="code"
-            v-model="model.transactionType"
-            :label="$t('TransactionType')"
-            clearable
-          ></v-select>
-        </v-col>
+        <date-from-to-filter class="pt-3" v-model="model"></date-from-to-filter>
         <v-col cols="12" md="3" sm="6">
           <v-select
             :items="dictionaries.quickStatusFilterTypeEnum"
@@ -119,7 +120,7 @@
             clearable
           ></v-select>
         </v-col>
-        <v-col cols="12" md="3" sm="6">
+        <v-col cols="12" md="6" sm="6">
           <v-select
             :items="dictionaries.rejectionReasonEnum"
             item-text="description"
@@ -130,7 +131,7 @@
             clearable
           ></v-select>
         </v-col>
-        <v-col cols="12" md="3" sm="6">
+        <v-col cols="12" md="6" sm="6">
           <v-select
             :items="dictionaries.documentOriginEnum"
             item-text="description"
@@ -174,6 +175,7 @@ export default {
     TerminalTemplateFilter: () => import("../filtering/TerminalTemplateFilter"),
     ConsumerFilter: () => import("../filtering/ConsumerFilter"),
     IntegrationsFilter: () => import("../filtering/IntegrationsFilter"),
+    DateFromToFilter: () => import("../filtering/DateFromToFilter"),
   },
   data() {
     return {
