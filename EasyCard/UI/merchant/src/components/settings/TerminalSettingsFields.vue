@@ -33,6 +33,15 @@
         ></v-select>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12" class="subtitle-2 black--text pb-3">
+        {{$t("Features")}}
+        <v-divider class="pt-1"></v-divider>
+      </v-col>
+      <v-col cols="12">
+        <terminal-features-form :terminal="data"></terminal-features-form>
+      </v-col>
+    </v-row>
     <v-row no-gutters>
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("General")}}
@@ -377,6 +386,7 @@ import appConstants from "../../helpers/app-constants";
 export default {
   components: {
     EcList: () => import("../ec/EcList"),
+    TerminalFeaturesForm: () => import("../settings/TerminalFeaturesForm")
   },
   props: {
     data: {

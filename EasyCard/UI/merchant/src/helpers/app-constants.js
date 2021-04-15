@@ -20,6 +20,13 @@ const appConstants = {
             billingAdmin: "BillingAdministrator",
             businessAdmin: "BusinessAdministrator",
         }
+    },
+    terminal:{
+        features: {
+            PreventDoubleTansactions: 'PreventDoubleTansactions',
+            RecurrentPayments: 'RecurrentPayments',
+            SmsNotification: 'SmsNotification'
+        }
     }
 };
 

@@ -8,6 +8,7 @@ using Merchants.Business.Models.Audit;
 using Merchants.Business.Models.Integration;
 using Merchants.Business.Services;
 using Merchants.Shared;
+using Merchants.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -246,6 +247,31 @@ namespace Merchants.Api.Controllers
             await terminalsService.RemoveTerminalExternalSystem(terminalID, externalSystemID);
             await terminalsService.UpdateEntity(terminal);
             return Ok(new OperationResponse(Messages.ExternalSystemRemoved, StatusEnum.Success, terminalID));
+        }
+
+        [HttpPut]
+        [Route("{terminalID}/switchfeature/{featureID}")]
+        public async Task<ActionResult<OperationResponse>> SwitchTerminalFeature([FromRoute]Guid terminalID, [FromRoute]FeatureEnum featureID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+            var feature = EnsureExists(await featuresService.GetQuery().FirstOrDefaultAsync(f => f.FeatureID == featureID), "Feature");
+
+            if (terminal.EnabledFeatures != null && terminal.EnabledFeatures.Any(f => f == feature.FeatureID))
+            {
+                terminal.EnabledFeatures.Remove(featureID);
+            }
+            else
+            {
+                if (terminal.EnabledFeatures == null)
+                {
+                    terminal.EnabledFeatures = new List<FeatureEnum>();
+                }
+
+                terminal.EnabledFeatures.Add(featureID);
+            }
+
+            await terminalsService.UpdateEntity(terminal);
+            return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID));
         }
 
         [HttpPost]

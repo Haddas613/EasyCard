@@ -216,6 +216,7 @@ namespace ProfileApi
             services.AddScoped<ICurrencyRateService, CurrencyRateService>();
             services.AddScoped<ISystemSettingsService, SystemSettingsService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
+            services.AddScoped<IFeaturesService, FeaturesService>();
 
             services.AddAutoMapper(typeof(Startup));
 

@@ -96,6 +96,7 @@
   "Terminals": "מסופים",
   "Origin": "מקור",
   "FinalizationStatus": "סטטוס עסקה במאגד",
+  "Features": "תכונות",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",

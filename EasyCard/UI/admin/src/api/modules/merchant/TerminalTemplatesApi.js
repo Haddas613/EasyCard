@@ -54,4 +54,8 @@ export default class TerminalsApi {
     async disapprove(terminalTemplateID){
         return this.base.post(this.templatesUrl + `/${terminalTemplateID}/disapprove`);
     }
+
+    async switchTerminalFeature(terminalTemplateID, featureID){
+        return this.base.put(this.templatesUrl + `/${terminalTemplateID}/switch/${featureID}`);
+    }
 }

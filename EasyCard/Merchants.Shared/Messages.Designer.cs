@@ -151,6 +151,15 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Terminal Template Updated.
+        /// </summary>
+        public static string TerminalTemplateUpdated {
+            get {
+                return ResourceManager.GetString("TerminalTemplateUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terminal Updated.
         /// </summary>
         public static string TerminalUpdated {

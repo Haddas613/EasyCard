@@ -1,7 +1,7 @@
 import store from '../../store/index';
 
 export default function (value, currency) {
-    if(!value || !currency){
+    if(( value !== 0 && !value) || !currency){
         return value;
     }
     

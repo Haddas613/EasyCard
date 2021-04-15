@@ -34,8 +34,16 @@ namespace MerchantProfileApi.Controllers
         private readonly IUserManagementClient userManagementClient;
         private readonly ISystemSettingsService systemSettingsService;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
+        private readonly IFeaturesService featuresService;
 
-        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper, IUserManagementClient userManagementClient, ISystemSettingsService systemSettingsService, ICryptoServiceCompact cryptoServiceCompact)
+        public TerminalsApiController(
+            IMerchantsService merchantsService,
+            ITerminalsService terminalsService,
+            IMapper mapper,
+            IUserManagementClient userManagementClient,
+            ISystemSettingsService systemSettingsService,
+            ICryptoServiceCompact cryptoServiceCompact,
+            IFeaturesService featuresService)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
@@ -43,6 +51,7 @@ namespace MerchantProfileApi.Controllers
             this.userManagementClient = userManagementClient;
             this.systemSettingsService = systemSettingsService;
             this.cryptoServiceCompact = cryptoServiceCompact;
+            this.featuresService = featuresService;
         }
 
         [HttpGet]
@@ -114,6 +123,15 @@ namespace MerchantProfileApi.Controllers
             await terminalsService.UpdateEntity(terminal);
 
             return Ok(new OperationResponse(Messages.SharedKeyUpdated, StatusEnum.Success, sharedApiKey));
+        }
+
+        [HttpGet]
+        [Route("available-features")]
+        public async Task<ActionResult<FeatureSummary>> GetAvailableFeatures()
+        {
+            var features = await mapper.ProjectTo<FeatureSummary>(featuresService.GetQuery()).ToListAsync();
+
+            return Ok(features);
         }
     }
 }

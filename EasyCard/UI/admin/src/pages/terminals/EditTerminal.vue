@@ -3,6 +3,7 @@
     <v-tabs grow color="primary" v-model="tab">
       <v-tab key="settings">{{$t("TerminalSettings")}}</v-tab>
       <v-tab key="integrations">{{$t("Integrations")}}</v-tab>
+      <v-tab key="features">{{$t("Features")}}</v-tab>
     </v-tabs>
     <v-card-text>
       <v-tabs-items v-model="tab" class="bg-ecbg">
@@ -60,6 +61,9 @@
         <v-tab-item key="integrations">
           <terminal-integrations-form :terminal="terminal" v-if="terminal"></terminal-integrations-form>
         </v-tab-item>
+        <v-tab-item key="features">
+          <terminal-features-form :terminal="terminal" v-if="terminal"></terminal-features-form>
+        </v-tab-item>
       </v-tabs-items>
     </v-card-text>
   </v-card>
@@ -71,7 +75,9 @@ export default {
     TerminalSettingsFields: () =>
       import("../../components/terminals/TerminalSettingsFields"),
     TerminalIntegrationsForm: () =>
-      import("../../components/terminals/TerminalIntegrationsForm")
+      import("../../components/terminals/TerminalIntegrationsForm"),
+    TerminalFeaturesForm: () =>
+      import("../../components/terminals/TerminalFeaturesForm")
   },
   data() {
     return {

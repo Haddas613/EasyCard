@@ -147,6 +147,9 @@
   <data name="TerminalTemplateDisabled" xml:space="preserve">
     <value>Terminal template disabled</value>
   </data>
+  <data name="TerminalTemplateUpdated" xml:space="preserve">
+    <value>Terminal Template Updated</value>
+  </data>
   <data name="TerminalUpdated" xml:space="preserve">
     <value>Terminal Updated</value>
   </data>

@@ -96,6 +96,7 @@
   "Terminals": "Terminals",
   "Origin": "Origin",
   "FinalizationStatus": "Finalization Status",
+  "Features": "Features",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

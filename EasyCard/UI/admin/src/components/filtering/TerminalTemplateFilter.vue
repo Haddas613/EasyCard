@@ -1,5 +1,5 @@
 <template>
-    <v-col cols="12" md="3" sm="6">
+    <v-col cols="12" :md="md" sm="6">
       <v-autocomplete
         :items="templates"
         item-text="label"
@@ -26,6 +26,10 @@ export default {
       type: Object,
       default: null,
       required: true
+    },
+    md: {
+      type: String,
+      default: "3"
     }
   },
   data() {
