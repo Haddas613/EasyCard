@@ -6,7 +6,7 @@
           <span class="body-1">{{item.nameHE}}</span>
         </v-col>
         <v-col cols="12" md="6" class="text-align-initial font-weight-bold subtitle-2">
-          <span class="px-2">{{item.price | currency('ILS')}}</span>
+          <span>{{item.price | currency('ILS')}}</span>
         </v-col>
       </template>
       <template v-slot:append="{ item }">
