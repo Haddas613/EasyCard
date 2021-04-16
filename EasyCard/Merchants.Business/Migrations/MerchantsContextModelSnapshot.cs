@@ -185,6 +185,16 @@ namespace Merchants.Business.Migrations
                     b.Property<short>("FeatureID")
                         .HasColumnType("smallint");
 
+                    b.Property<string>("DescriptionEN")
+                        .HasMaxLength(1024)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<string>("DescriptionHE")
+                        .HasMaxLength(1024)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(1024)");
+
                     b.Property<string>("NameEN")
                         .HasMaxLength(50)
                         .IsUnicode(true)

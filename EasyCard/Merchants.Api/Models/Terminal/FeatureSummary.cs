@@ -14,6 +14,10 @@ namespace Merchants.Api.Models.Terminal
 
         public string NameHE { get; set; }
 
+        public string DescriptionEN { get; set; }
+
+        public string DescriptionHE { get; set; }
+
         public decimal? Price { get; set; }
 
         public byte[] UpdateTimestamp { get; set; }

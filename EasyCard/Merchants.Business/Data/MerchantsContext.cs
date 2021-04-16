@@ -220,6 +220,8 @@ namespace Merchants.Business.Data
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
                 builder.Property(b => b.NameEN).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.NameHE).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                builder.Property(b => b.DescriptionEN).IsRequired(false).HasMaxLength(1024).IsUnicode(true);
+                builder.Property(b => b.DescriptionHE).IsRequired(false).HasMaxLength(1024).IsUnicode(true);
 
                 builder.Property(b => b.Price).HasColumnType("decimal(19,4)").HasDefaultValue(decimal.Zero).IsRequired(false);
             }

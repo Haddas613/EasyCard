@@ -75,6 +75,11 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Messages.ApiFeatureMustBeEnabled">
+            <summary>
+              Looks up a localized string similar to Api Feature must be enabled first.
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Messages.ConsumerCreated">
             <summary>
               Looks up a localized string similar to Consumer Created.

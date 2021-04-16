@@ -6,6 +6,7 @@ using AutoMapper;
 using IdentityServerClient;
 using MerchantProfileApi.Extensions;
 using MerchantProfileApi.Models.Terminal;
+using Merchants.Business.Extensions;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -103,6 +104,11 @@ namespace MerchantProfileApi.Controllers
         public async Task<ActionResult<OperationResponse>> CreateTerminalApiKey([FromRoute] Guid terminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+
+            if (!terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.Api))
+            {
+                return BadRequest(new OperationResponse(Messages.ApiFeatureMustBeEnabled, StatusEnum.Error));
+            }
 
             var opResult = await userManagementClient.CreateTerminalApiKey(new CreateTerminalApiKeyRequest { TerminalID = terminal.TerminalID, MerchantID = terminal.MerchantID });
 

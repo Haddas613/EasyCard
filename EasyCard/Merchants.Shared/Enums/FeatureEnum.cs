@@ -8,6 +8,8 @@ namespace Merchants.Shared.Enums
     {
         PreventDoubleTansactions = 1,
         RecurrentPayments = 2,
-        SmsNotification = 3
+        SmsNotification = 3,
+        Checkout = 4,
+        Api = 5
     }
 }

@@ -3,6 +3,7 @@ using IdentityServerClient;
 using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.Terminal;
 using Merchants.Api.Models.User;
+using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Models.Audit;
 using Merchants.Business.Models.Integration;
@@ -256,9 +257,22 @@ namespace Merchants.Api.Controllers
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
             var feature = EnsureExists(await featuresService.GetQuery().FirstOrDefaultAsync(f => f.FeatureID == featureID), "Feature");
 
+            await ProcessFeatureInternal(terminal, feature);
+
+            await terminalsService.UpdateEntity(terminal);
+            return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID));
+        }
+
+        private async Task ProcessFeatureInternal(Terminal terminal, Feature feature)
+        {
             if (terminal.EnabledFeatures != null && terminal.EnabledFeatures.Any(f => f == feature.FeatureID))
             {
-                terminal.EnabledFeatures.Remove(featureID);
+                terminal.EnabledFeatures.Remove(feature.FeatureID);
+
+                if (feature.FeatureID == FeatureEnum.Api)
+                {
+                    var opResult = await userManagementClient.DeleteTerminalApiKey(terminal.TerminalID);
+                }
             }
             else
             {
@@ -267,11 +281,8 @@ namespace Merchants.Api.Controllers
                     terminal.EnabledFeatures = new List<FeatureEnum>();
                 }
 
-                terminal.EnabledFeatures.Add(featureID);
+                terminal.EnabledFeatures.Add(feature.FeatureID);
             }
-
-            await terminalsService.UpdateEntity(terminal);
-            return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID));
         }
 
         [HttpPost]

@@ -188,7 +188,7 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Api)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("PrivateApiKey")}}
         <v-divider class="pt-1"></v-divider>
@@ -402,7 +402,8 @@ export default {
       dictionaries: {},
       merchantDictionaries: {},
       privateApiKey: null,
-      showSharedApiKey: false
+      showSharedApiKey: false,
+      appConstants: appConstants
     };
   },
   async mounted() {
@@ -468,6 +469,8 @@ export default {
 
       if (operation.status === "success") {
         this.privateApiKey = operation.entityReference;
+      }else{
+        this.$toasted.show(operation.message, { type: 'error' });
       }
     },
     async resetSharedKey() {

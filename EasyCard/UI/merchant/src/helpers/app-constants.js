@@ -25,7 +25,9 @@ const appConstants = {
         features: {
             PreventDoubleTansactions: 'PreventDoubleTansactions',
             RecurrentPayments: 'RecurrentPayments',
-            SmsNotification: 'SmsNotification'
+            SmsNotification: 'SmsNotification',
+            Checkout: 'Checkout',
+            Api: 'Api'
         }
     }
 };
