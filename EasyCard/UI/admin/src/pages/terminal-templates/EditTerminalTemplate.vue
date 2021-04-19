@@ -11,6 +11,7 @@
           <v-form ref="terminalSettingsForm" v-model="terminalSettingsFormValid" lazy-validation>
             <terminal-settings-fields
               v-if="terminalTemplate"
+              :key="terminalTemplate.updated"
               :data="terminalTemplate"
               class="pt-1"
               ref="terminalSettingsRef"
@@ -33,7 +34,7 @@
           <terminal-integrations-form :terminal="terminalTemplate" v-if="terminalTemplate" is-template></terminal-integrations-form>
         </v-tab-item>
         <v-tab-item key="features">
-          <terminal-features-form :terminal="terminalTemplate" v-if="terminalTemplate" is-template></terminal-features-form>
+          <terminal-features-form :terminal="terminalTemplate" v-if="terminalTemplate" is-template @update="getTerminalTemplate()"></terminal-features-form>
         </v-tab-item>
       </v-tabs-items>
     </v-card-text>
@@ -58,12 +59,7 @@ export default {
     };
   },
   async mounted() {
-    let terminalTemplate = await this.$api.terminalTemplates.getTerminalTemplate(this.$route.params.id);
-    if (!terminalTemplate) {
-      return this.$router.push({ name: "TerminalTemplates" });
-    }
-
-    this.terminalTemplate = terminalTemplate;
+    await this.getTerminalTemplate();
   },
   methods: {
     async saveTerminalSettings() {
@@ -75,6 +71,14 @@ export default {
       if (operaionResult.status === "success") {
         return this.$router.push({ name: "TerminalTemplates" });
       }
+    },
+    async getTerminalTemplate(){
+      let terminalTemplate = await this.$api.terminalTemplates.getTerminalTemplate(this.$route.params.id);
+      if (!terminalTemplate) {
+        return this.$router.push({ name: "TerminalTemplates" });
+      }
+
+      this.terminalTemplate = terminalTemplate;
     }
   }
 };

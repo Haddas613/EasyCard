@@ -173,6 +173,11 @@ namespace Transactions.Api.Controllers
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
+            if (terminal.EnabledFeatures == null || !terminal.EnabledFeatures.Any(f => f == Merchants.Shared.Enums.FeatureEnum.Checkout))
+            {
+                return BadRequest(new OperationResponse(Messages.CheckoutFeatureMustBeEnabled, StatusEnum.Error));
+            }
+
             // TODO: caching
             var systemSettings = await systemSettingsService.GetSystemSettings();
 

@@ -12,6 +12,15 @@ const appConstants = {
             merchant: "Merchant",
             manager: "Manager"
         }
+    },
+    terminal:{
+        features: {
+            PreventDoubleTansactions: 'PreventDoubleTansactions',
+            RecurrentPayments: 'RecurrentPayments',
+            SmsNotification: 'SmsNotification',
+            Checkout: 'Checkout',
+            Api: 'Api'
+        }
     }
 };
 

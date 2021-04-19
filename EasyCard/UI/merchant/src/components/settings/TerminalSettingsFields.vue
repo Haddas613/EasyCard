@@ -164,7 +164,7 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("SharedApiKey")}}
         <v-divider class="pt-1"></v-divider>
@@ -310,7 +310,7 @@
         ></v-switch>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("Checkout")}}
         <v-divider class="pt-1"></v-divider>
@@ -326,7 +326,7 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-col cols="12" class="subtitle-2 black--text">
         {{$t("CheckoutRedirectUrls")}}
         <v-divider class="pt-1"></v-divider>

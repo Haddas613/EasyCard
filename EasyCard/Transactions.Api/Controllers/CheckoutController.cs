@@ -66,6 +66,11 @@ namespace Transactions.Api.Controllers
 
             var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.SharedApiKey == apiKeyB).FirstOrDefaultAsync());
 
+            if (terminal.EnabledFeatures == null || !terminal.EnabledFeatures.Any(f => f == Merchants.Shared.Enums.FeatureEnum.Checkout))
+            {
+                return Unauthorized($"Checkout feature is not enabled.");
+            }
+
             // TODO: caching
             var systemSettings = await systemSettingsService.GetSystemSettings();
 

@@ -64,7 +64,7 @@ namespace Transactions.Api.Client
             }
             catch (WebApiClientErrorException clientError)
             {
-                var response = clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+                //var response = clientError.TryConvert(new OperationResponse { Message = clientError.Message });
                 //logger.LogError($"Failed to get checkout data: {response?.Message}, correlationID: {response?.CorrelationId}");
                 throw;
             }

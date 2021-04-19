@@ -156,6 +156,9 @@
   <data name="CardReaderInputRequired" xml:space="preserve">
     <value>Card Reader Input Required</value>
   </data>
+  <data name="CheckoutFeatureMustBeEnabled" xml:space="preserve">
+    <value>Checkout Feature must be enabled</value>
+  </data>
   <data name="CommitedByAggregator" xml:space="preserve">
     <value>Commited By Aggregator</value>
   </data>

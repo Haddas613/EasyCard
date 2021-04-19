@@ -279,7 +279,7 @@
       </v-card-text>
     </v-card>
 
-    <v-card outlined class="mb-2">
+    <v-card outlined class="mb-2" v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-card-title class="pb-0 mb-0 subtitle-2 black--text">{{$t("Checkout")}}</v-card-title>
       <v-card-text>
         <v-row no-gutters>
@@ -299,7 +299,7 @@
       </v-card-text>
     </v-card>
 
-    <v-card outlined class="mb-2">
+    <v-card outlined class="mb-2" v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-card-title class="pb-0 mb-0 subtitle-2 black--text">{{$t("CheckoutRedirectUrls")}}</v-card-title>
       <v-card-text>
         <v-row no-gutters>
@@ -384,7 +384,8 @@ export default {
       dictionaries: {},
       merchantDictionaries: {},
       privateApiKey: null,
-      showSharedApiKey: false
+      showSharedApiKey: false,
+      appConstants: appConstants
     };
   },
   async mounted() {

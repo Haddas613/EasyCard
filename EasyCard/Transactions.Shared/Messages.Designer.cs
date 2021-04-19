@@ -178,6 +178,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Checkout Feature must be enabled.
+        /// </summary>
+        public static string CheckoutFeatureMustBeEnabled {
+            get {
+                return ResourceManager.GetString("CheckoutFeatureMustBeEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Commited By Aggregator.
         /// </summary>
         public static string CommitedByAggregator {

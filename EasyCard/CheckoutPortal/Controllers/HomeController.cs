@@ -285,7 +285,15 @@ namespace CheckoutPortal.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Failed to get payment request data");
+                if(ex is WebApiClientErrorException webEx)
+                {
+                    logger.LogError(ex, $"Failed to get payment request data. Reason: {webEx.Response}");
+                }
+                else
+                {
+                    logger.LogError(ex, $"Failed to get payment request data. Reason: {ex.Message}");
+                }
+                
                 throw new BusinessException(Messages.InvalidCheckoutData);
             }
 

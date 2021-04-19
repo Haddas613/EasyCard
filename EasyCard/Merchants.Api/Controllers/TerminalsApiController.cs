@@ -281,6 +281,15 @@ namespace Merchants.Api.Controllers
                     terminal.EnabledFeatures = new List<FeatureEnum>();
                 }
 
+                if (feature.FeatureID == FeatureEnum.Checkout)
+                {
+                    //Api must be automatically enabled for checkout
+                    if (!terminal.EnabledFeatures.Any(f => f == FeatureEnum.Api))
+                    {
+                        terminal.EnabledFeatures.Add(FeatureEnum.Api);
+                    }
+                }
+
                 terminal.EnabledFeatures.Add(feature.FeatureID);
             }
         }
