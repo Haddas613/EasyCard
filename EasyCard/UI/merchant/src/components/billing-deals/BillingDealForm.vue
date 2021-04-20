@@ -60,18 +60,6 @@
         <ec-dialog :dialog.sync="tokensDialog">
           <template v-slot:title>{{$t('SavedTokens')}}</template>
           <template>
-            <div class="d-flex px-2 justify-end">
-              <v-btn
-                color="red"
-                class="white--text"
-                :disabled="selectedToken == null"
-                :block="$vuetify.breakpoint.smAndDown"
-                @click="resetToken()"
-              >
-                <v-icon left>mdi-delete</v-icon>
-                {{$t("CancelSelection")}}
-              </v-btn>
-            </div>
             <ec-radio-group
               :data="customerTokens"
               valuekey="creditCardTokenID"
@@ -136,6 +124,7 @@
           <template v-slot:left>
             <billing-schedule-string
               :schedule="model.billingSchedule"
+              :key="billingScheduleJSON"
               replacement-text="SelectSchedule"
             ></billing-schedule-string>
           </template>
@@ -273,7 +262,8 @@ export default {
       selectedToken: null,
       scheduleDialog: false,
       ctokenDialog: false,
-      switchIssueDocument: false
+      switchIssueDocument: false,
+      billingScheduleJSON: JSON.stringify(this.data.billingSchedule)
     };
   },
   computed: {
@@ -344,6 +334,7 @@ export default {
       }
       this.scheduleDialog = false;
       this.model.billingSchedule = this.$refs.billingScheduleRef.model;
+      this.billingScheduleJSON = JSON.stringify(this.model.billingSchedule);
     },
     async createCardToken(data) {
       this.ctokenDialog = false;
@@ -369,7 +360,7 @@ export default {
           )
         ).data || [];
 
-      this.selectedToken = this.customerTokens.length === 1 ? this.customerTokens[0] : null;
+      this.token = this.customerTokens.length === 1 ? this.customerTokens[0] : null;
     },
     calculateTotal(){
       itemPricingService.total.calculateWithoutItems(this.model, 'transactionAmount', { vatRate: this.terminalStore.settings.vatRate });

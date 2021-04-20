@@ -1,7 +1,7 @@
 <template>
   <v-form ref="scheduleFormRef" v-model="valid" lazy-validation>
     <v-row no-gutters>
-      <v-col cols="12" md="6" class="px-1">
+      <v-col cols="12" md="12" class="px-1">
         <v-select
           :items="dictionaries.repeatPeriodTypeEnum"
           item-text="description"
@@ -11,16 +11,6 @@
           :label="$t('RepeatPeriodType')"
           :rules="[vr.primitives.required]"
         ></v-select>
-      </v-col>
-      <v-col cols="12" md="6" class="px-1">
-        <v-text-field
-          v-model.number="model.repeatPeriod"
-          :label="$t('RepeatPeriod')"
-          :rules="[vr.primitives.requiredDepends(model.repeatPeriodType), vr.primitives.positiveOnly]"
-          type="number"
-          :disabled="!model.repeatPeriodType"
-          outlined
-        ></v-text-field>
       </v-col>
 
       <v-col cols="12" md="6" class="px-1">
@@ -40,7 +30,7 @@
           v-model="startAtMenu"
           :close-on-content-click="false"
           :return-value.sync="model.startAt"
-          v-if="model.startAtType == 'SpecifiedDate'"
+          v-if="model.startAtType == 'specifiedDate'"
           offset-y
           min-width="290px"
         >
@@ -77,7 +67,7 @@
           v-model="endAtMenu"
           :close-on-content-click="false"
           :return-value.sync="model.endAt"
-          v-if="model.endAtType == 'SpecifiedDate'"
+          v-if="model.endAtType == 'specifiedDate'"
           offset-y
           min-width="290px"
         >
@@ -96,7 +86,7 @@
           </v-date-picker>
         </v-menu>
         <v-text-field
-          v-else-if="model.endAtType == 'AfterNumberOfPayments'"
+          v-else-if="model.endAtType == 'afterNumberOfPayments'"
           v-model.number="model.endAtNumberOfPayments"
           :label="$t('EndAtNumberOfPayments')"
           type="number"
