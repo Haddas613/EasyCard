@@ -43,7 +43,7 @@
         </v-row>
         <v-row no-gutters class="px-1 body-2">
           <v-switch
-            v-model="billingDealsFilter.onlyActive"
+            v-model="billingDealsFilter.onlyActual"
             @change="getDataFromApi(false)"
             :hint="$t('WhileEnabledYouCanManuallyTriggerTheTransaction')"
             :persistent-hint="true"
@@ -58,7 +58,7 @@
     <v-card width="100%" flat :loading="!billingDeals">
       <v-card-text class="px-0 pt-0">
         <ec-list :items="billingDeals" v-if="billingDeals" :dense="true">
-          <template v-slot:prepend="{ item }" v-if="billingDealsFilter.onlyActive">
+          <template v-slot:prepend="{ item }" v-if="billingDealsFilter.onlyActual">
             <div class="px-1">
               <v-checkbox v-model="item.selected" v-if="!item.processed"></v-checkbox>
               <v-icon v-else color="success">mdi-check-circle</v-icon>
@@ -94,7 +94,13 @@
               md="6"
               lg="6"
               class="pt-1 caption ecgray--text"
-            >{{item.$billingDealTimestamp | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
+            >
+            <span v-if="item.$nextScheduledTransaction" 
+              v-bind:class="{'error--text': (item.$nextScheduledTransaction > now)}">
+              {{item.$nextScheduledTransaction | ecdate('DD/MM/YYYY HH:mm')}}
+            </span>
+            <span v-else>-</span>
+            </v-col>
             <v-col cols="12" md="6" lg="6">{{item.cardOwnerName || '-'}}</v-col>
           </template>
 
@@ -186,13 +192,14 @@ export default {
       billingDealsFilter: {
         take: 100,
         skip: 0,
-        onlyActive: null,
+        onlyActual: null,
         ...this.filters
       },
       showDialog: this.showFiltersDialog,
       datePeriod: null,
       numberOfRecords: 0,
-      selectAll: false
+      selectAll: false,
+      now: new Date()
     };
   },
   methods: {
@@ -237,7 +244,7 @@ export default {
       await this.getDataFromApi(true);
     },
     async createTransactions() {
-      if (!this.billingDealsFilter.onlyActive) {
+      if (!this.billingDealsFilter.onlyActual) {
         return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), {
           type: "error"
         });
@@ -263,7 +270,7 @@ export default {
       }
     },
     switchSelectAll() {
-      if (!this.billingDealsFilter.onlyActive) {
+      if (!this.billingDealsFilter.onlyActual) {
         return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), {
           type: "error"
         });
