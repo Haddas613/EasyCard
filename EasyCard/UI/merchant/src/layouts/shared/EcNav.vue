@@ -86,7 +86,8 @@ export default {
   props: ["drawer"],
   data() {
     return {
-      items: [
+      items: null,
+      allItems: [
         {
           icon: "mdi-view-dashboard",
           text: "Dashboard",
@@ -183,6 +184,7 @@ export default {
           "icon-alt": "mdi-rotate-right",
           text: "BillingDeals",
           allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin],
+          requiredFeature: appConstants.terminal.features.Billing,
           expanded: false,
           children: [
             {
@@ -203,17 +205,22 @@ export default {
   },
   async mounted() {
     this.userName = !!this.$oidc ? await this.$oidc.getUserDisplayName() : null;
-    const self = this;
-    let items = [];
-    
-    for(var i of this.items){
-      if(!i.allowedFor){
-        items.push(i);
-      }else if(await this.$oidc.isInRole(i.allowedFor)){
+    await this.initMenuItems();
+  },
+  methods: {
+    async initMenuItems() {
+      let items = [];
+      for(var i of this.allItems){
+        if(i.allowedFor && !(await this.$oidc.isInRole(i.allowedFor))){
+          continue;
+        }
+        if(i.requiredFeature && !(this.$featureEnabled(this.terminalStore, i.requiredFeature))){
+          continue;
+        }
         items.push(i);
       }
+      this.items = items;
     }
-    this.items = items;
   },
   computed: {
     drawerObj: {
@@ -230,6 +237,14 @@ export default {
         return this.$vuetify.rtl === true;
       }
     },
-  }
+    ...mapState({
+      terminalStore: state => state.settings.terminal
+    })
+  },
+  watch: {
+    'terminalStore': async function(newValue, oldValue) {
+      await this.initMenuItems();
+    }
+  },
 };
 </script>

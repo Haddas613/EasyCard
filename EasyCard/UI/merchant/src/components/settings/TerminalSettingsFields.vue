@@ -284,7 +284,7 @@
         <img class="mt-1" v-if="model.paymentRequestSettings.merchantLogo" v-bind:src="model.paymentRequestSettings.merchantLogo" height="48">
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Billing)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("Billing")}}
         <v-divider class="pt-1"></v-divider>

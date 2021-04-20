@@ -19,7 +19,8 @@ const appConstants = {
             RecurrentPayments: 'RecurrentPayments',
             SmsNotification: 'SmsNotification',
             Checkout: 'Checkout',
-            Api: 'Api'
+            Api: 'Api',
+            Billing: 'Billing'
         }
     }
 };

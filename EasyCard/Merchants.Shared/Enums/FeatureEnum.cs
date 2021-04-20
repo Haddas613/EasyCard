@@ -10,6 +10,7 @@ namespace Merchants.Shared.Enums
         RecurrentPayments = 2,
         SmsNotification = 3,
         Checkout = 4,
-        Api = 5
+        Api = 5,
+        Billing = 6
     }
 }

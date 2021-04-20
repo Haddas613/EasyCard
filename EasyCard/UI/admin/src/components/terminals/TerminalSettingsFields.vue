@@ -249,7 +249,7 @@
       </v-card-text>
     </v-card>
 
-    <v-card outlined class="mb-2">
+    <v-card outlined class="mb-2" v-if="$featureEnabled(model, appConstants.terminal.features.Billing)">
       <v-card-title class="pb-0 mb-0 subtitle-2 black--text">{{$t("Billing")}}</v-card-title>
       <v-card-text>
         <v-row no-gutters>
