@@ -180,6 +180,26 @@ namespace Merchants.Business.Migrations
                     b.ToTable("Item");
                 });
 
+            modelBuilder.Entity("Merchants.Business.Entities.Integration.ShvaTerminal", b =>
+                {
+                    b.Property<string>("MerchantNumber")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("Password")
+                        .HasMaxLength(64)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.HasKey("MerchantNumber");
+
+                    b.ToTable("ShvaTerminal");
+                });
+
             modelBuilder.Entity("Merchants.Business.Entities.Merchant.Feature", b =>
                 {
                     b.Property<short>("FeatureID")

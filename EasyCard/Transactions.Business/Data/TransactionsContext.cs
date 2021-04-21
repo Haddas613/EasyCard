@@ -153,11 +153,12 @@ where r <= @pageSize
             string query = @"
 DECLARE @OutputTransactionIDs table(
     [PaymentTransactionID] [uniqueidentifier] NULL,
-    [ShvaDealID] [varchar](50) NULL
+    [ShvaDealID] [varchar](50) NULL,
+    [ShvaTerminalID] [varchar](20) NULL,
 );
 
 UPDATE [dbo].[PaymentTransaction] SET [Status]=@NewStatus, [UpdatedDate]=@UpdatedDate 
-OUTPUT inserted.PaymentTransactionID, inserted.ShvaDealID INTO @OutputTransactionIDs
+OUTPUT inserted.PaymentTransactionID, inserted.ShvaDealID, inserted.ShvaTerminalID INTO @OutputTransactionIDs
 WHERE [PaymentTransactionID] in @TransactionIDs AND [TerminalID] = @TerminalID AND [Status]=@OldStatus";
 
             // security check
@@ -182,8 +183,7 @@ WHERE [PaymentTransactionID] in @TransactionIDs AND [TerminalID] = @TerminalID A
                 throw new SecurityException("User has no access to requested data");
             }
 
-            query += @"
-SELECT PaymentTransactionID, ShvaDealID from @OutputTransactionIDs as a";
+            query += @" SELECT PaymentTransactionID, ShvaDealID, ShvaTerminalID from @OutputTransactionIDs as a";
 
             var connection = this.Database.GetDbConnection();
             bool existingConnection = true;

@@ -184,6 +184,7 @@ namespace Merchants.Api
             services.AddScoped<IFeaturesService, FeaturesService>();
             services.AddScoped<IPlansService, PlansService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
+            services.AddScoped<IShvaTerminalsService, ShvaTerminalService>();
 
             services.AddAutoMapper(typeof(Startup));
 

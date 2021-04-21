@@ -441,7 +441,7 @@
   "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?",
   "NotSupportedContactAdministration": "Not supported. Contact administration",
   "TerminalTemplateSaveInfoMessage": "Changes made to Terminal Template will only be reflected on terminals created after that.",
-  "ShvaNewPasswordInfoMessage": "By doing this all Terminals who use that User with old Password will no longer function. Make sure to change password for all SHVA integrations on all Terminals with that user if required.",
+  "ShvaNewPasswordInfoMessage": "By doing this all Terminals who use that User will be automatically updated with the same values.",
   "NullAggregatorConnectedMessage": "NULL Aggregator connected.",
   "NewAppVersionAvailableClickToRefreshThePage": "New App Version Available. Click to refresh the page."
 }

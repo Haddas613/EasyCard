@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
 using Shared.Business.Audit;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ namespace Merchants.Business.Services
 
         public Task<Terminal> GetTerminal(Guid terminalID);
 
-        public IQueryable<TerminalExternalSystem> GetTerminalExternalSystems();
+        public Task<IEnumerable<TerminalExternalSystem>> GetTerminalExternalSystems(Guid terminalID);
 
         public Task SaveTerminalExternalSystem(TerminalExternalSystem entity);
 

@@ -1,4 +1,5 @@
 ﻿using Merchants.Business.Entities.Billing;
+using Merchants.Business.Entities.Integration;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.System;
 using Merchants.Business.Entities.Terminal;
@@ -83,6 +84,8 @@ namespace Merchants.Business.Data
 
         public DbSet<Impersonation> Impersonations { get; set; }
 
+        public DbSet<ShvaTerminal> ShvaTerminals { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         public MerchantsContext(DbContextOptions<MerchantsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
@@ -113,6 +116,7 @@ namespace Merchants.Business.Data
 
             modelBuilder.ApplyConfiguration(new SystemSettingsConfiguration());
             modelBuilder.ApplyConfiguration(new ImpersonationConfiguration());
+            modelBuilder.ApplyConfiguration(new ShvaTerminalConfiguration());
 
             var cascadeFKs = modelBuilder.Model.GetEntityTypes()
                 .SelectMany(t => t.GetForeignKeys())
@@ -430,6 +434,19 @@ namespace Merchants.Business.Data
                 builder.ToTable("Impersonation");
 
                 builder.HasKey(b => b.UserId);
+            }
+        }
+
+        internal class ShvaTerminalConfiguration : IEntityTypeConfiguration<ShvaTerminal>
+        {
+            public void Configure(EntityTypeBuilder<ShvaTerminal> builder)
+            {
+                builder.ToTable("ShvaTerminal");
+
+                builder.HasKey(b => b.MerchantNumber);
+                builder.Property(b => b.MerchantNumber).HasMaxLength(64).ValueGeneratedNever();
+                builder.Property(b => b.UserName).HasMaxLength(64);
+                builder.Property(b => b.Password).IsUnicode(true).HasMaxLength(64);
             }
         }
     }

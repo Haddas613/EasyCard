@@ -242,6 +242,7 @@ namespace Transactions.Api
             services.AddScoped<IConsumersService, ConsumersService>();
             services.AddScoped<IItemsService, ItemsService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
+            services.AddScoped<IShvaTerminalsService, ShvaTerminalService>();
             services.AddTransient<CardTokenController, CardTokenController>();
             services.AddTransient<InvoicingController, InvoicingController>();
             services.AddTransient<PaymentRequestsController, PaymentRequestsController>();

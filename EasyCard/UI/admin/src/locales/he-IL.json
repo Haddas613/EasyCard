@@ -446,7 +446,7 @@
   "AreYouSureYouWantToDeleteBillingDeal": "האם אתה בטוח שאתה מעוניין למחוק עסקה מחזורית?",
   "NotSupportedContactAdministration": "לא נתמך. נא לפנות לשירות לקוחות",
   "TerminalTemplateSaveInfoMessage": "שינויים בתבנית מסוף ישפיעו רק על מסופים חדשים שנוצרים ממנה",
-  "ShvaNewPasswordInfoMessage": "בשינוי סיסמה למשתמש שבא יש לעדכן את כל המסופים הנוספים שמקושרים לאותו משתמש שבא",
+  "ShvaNewPasswordInfoMessage": "בביצוע הפעולה יתעדכנו כל המסופים שמקושרים למשתמש זה באותם הערכים",
   "NullAggregatorConnectedMessage": "NULL מאגד מחובר.",
   "NewAppVersionAvailableClickToRefreshThePage": "קיימת גירסה חדשה. לחץ כאן לעדכון הדף"
 }
