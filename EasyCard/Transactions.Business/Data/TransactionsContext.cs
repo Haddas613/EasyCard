@@ -154,7 +154,7 @@ where r <= @pageSize
 DECLARE @OutputTransactionIDs table(
     [PaymentTransactionID] [uniqueidentifier] NULL,
     [ShvaDealID] [varchar](50) NULL,
-    [ShvaTerminalID] [varchar](20) NULL,
+    [ShvaTerminalID] [varchar](20) NULL
 );
 
 UPDATE [dbo].[PaymentTransaction] SET [Status]=@NewStatus, [UpdatedDate]=@UpdatedDate 
