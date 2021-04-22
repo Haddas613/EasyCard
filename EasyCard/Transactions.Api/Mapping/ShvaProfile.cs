@@ -39,8 +39,10 @@ namespace Transactions.Api.Mapping
             CreateMap<Shva.ShvaTerminalSettings, ShvaTransactionDetails>()
                  .ForMember(m => m.ShvaTerminalID, s => s.MapFrom(src => src.MerchantNumber));
 
-            //CreateMap<Nayax.NayaxTerminalSettings, ShvaTransactionDetails>()
-              //   .ForMember(m => m. s => s.MapFrom(src => src.TerminalID));
+
+
+            CreateMap<Nayax.NayaxTerminalSettings, ShvaTransactionDetails>()
+                 .ForAllOtherMembers(d => d.Ignore());
 
 
             CreateMap<Shva.ShvaCreateTransactionResponse, CreditCardDetails>()

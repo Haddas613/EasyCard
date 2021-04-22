@@ -20,6 +20,11 @@ namespace Shared.Integration.Models
         public object ProcessorSettings { get; set; }
 
         /// <summary>
+        /// Nayax terminal settings
+        /// </summary>
+        public object PinPadProcessorSettings { get; set; }
+
+        /// <summary>
         /// Unique transaction ID
         /// </summary>
         public string TransactionID { get; set; }

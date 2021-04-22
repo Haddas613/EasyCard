@@ -599,6 +599,10 @@ namespace Transactions.Api.Controllers
                 terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
                 Messages.ProcessorNotDefined);
 
+            var terminalPinPadProcessor = ValidateExists(
+               terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.PinpadProcessor),
+               Messages.ProcessorNotDefined);
+
             TerminalExternalSystem terminalPinpadProcessor = null;
             bool pinpadDeal = model.PinPad ?? false;
             if (pinpadDeal)
@@ -613,16 +617,17 @@ namespace Transactions.Api.Controllers
 
             var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
             var processor = processorResolver.GetProcessor(terminalProcessor);
+            var pinpadProcessor = processorResolver.GetProcessor(terminalPinPadProcessor);
 
             var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
             mapper.Map(aggregatorSettings, transaction);
 
             var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
             mapper.Map(processorSettings, transaction);
-
+            Object pinpadProcessorSettings = null;
             if (pinpadDeal)
             {
-                var pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
+                pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
                 mapper.Map(pinpadProcessorSettings, transaction);
             }
 
@@ -679,7 +684,15 @@ namespace Transactions.Api.Controllers
 
                 processorRequest.ProcessorSettings = processorSettings;
 
-                var processorResponse = await processor.CreateTransaction(processorRequest);
+
+                if (pinpadDeal)
+                {
+                    processorRequest.PinPadProcessorSettings = pinpadProcessorSettings;
+                }
+
+                    var processorResponse = pinpadDeal ? await pinpadProcessor.CreateTransaction(processorRequest) : await processor.CreateTransaction(processorRequest);
+
+
                 mapper.Map(processorResponse, transaction);
 
                 if (!processorResponse.Success)

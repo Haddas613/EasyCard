@@ -90,7 +90,7 @@ namespace Nayax
 
         public async Task<ProcessorCreateTransactionResponse> CreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
         {
-            NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.ProcessorSettings as NayaxTerminalSettings;
+            NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
 
             if (nayaxParameters == null)
             {
