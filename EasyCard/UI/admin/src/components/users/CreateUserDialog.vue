@@ -95,8 +95,10 @@ export default {
       if (operationResult.status === "success") {
         this.model.email = null;
         this.model.inviteMessage = null;
-        this.$emit("ok");
+      }else {
+        this.$toasted.show(operationResult.message, { type: "error" });
       }
+      this.$emit("ok");
       this.visible = false;
       this.loading = false;
     }

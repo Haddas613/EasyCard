@@ -111,6 +111,13 @@ namespace Merchants.Api.Controllers
             }
             else
             {
+                var resendInvitationResponse = await userManagementClient.ResendInvitation(new ResendInvitationRequestModel { Email = user.Email, MerchantID = request.MerchantID.ToString() });
+
+                if (resendInvitationResponse.ResponseCode != UserOperationResponseCodeEnum.InvitationResent)
+                {
+                    return BadRequest(resendInvitationResponse.Convert(correlationID: GetCorrelationID()));
+                }
+
                 var userIsLinkedToMerchant = (await merchantsService.GetMerchantUsers(merchant.MerchantID).CountAsync(u => u.UserID == user.UserID)) > 0;
 
                 if (!userIsLinkedToMerchant)
@@ -118,13 +125,6 @@ namespace Merchants.Api.Controllers
                     var userToMerchantInfo = mapper.Map<UserInfo>(user);
 
                     await merchantsService.LinkUserToMerchant(userToMerchantInfo, request.MerchantID);
-                }
-
-                var resendInvitationResponse = await userManagementClient.ResendInvitation(new ResendInvitationRequestModel { Email = user.Email, MerchantID = request.MerchantID.ToString() });
-
-                if (resendInvitationResponse.ResponseCode != UserOperationResponseCodeEnum.InvitationResent)
-                {
-                    return BadRequest(resendInvitationResponse.Convert(correlationID: GetCorrelationID()));
                 }
             }
 

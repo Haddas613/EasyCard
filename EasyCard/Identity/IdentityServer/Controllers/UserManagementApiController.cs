@@ -208,6 +208,13 @@ namespace IdentityServer.Controllers
                 return NotFound(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserNotFound });
             }
 
+            var isAdmin = await userManager.IsInRoleAsync(user, Roles.BillingAdministrator) || await userManager.IsInRoleAsync(user, Roles.BusinessAdministrator);
+
+            if (isAdmin)
+            {
+                return Conflict(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserAlreadyExists, Message = "User with the same email is already registered" });
+            }
+
             if (await userManager.IsLockedOutAsync(user))
             {
                 var unlockRes = await userManager.SetLockoutEndDateAsync(user, null);
@@ -226,7 +233,7 @@ namespace IdentityServer.Controllers
             if (user.PasswordHash != null)
             {
                 //TODO: send new merchant available email
-                //return Conflict(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserAlreadyExists, Message = "User has already set password" });
+                return Conflict(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserAlreadyExists, Message = "User with the same email is already registered" });
             }
             else
             {
