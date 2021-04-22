@@ -295,6 +295,7 @@
   "Charge": "Charge",
   "Add": "Add",
   "Request": "Request",
+  "Print": "Print",
 
   "--AUTH--": null,
   "Login": "Login",

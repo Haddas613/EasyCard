@@ -1,6 +1,7 @@
 <template>
   <v-flex>
     <div v-if="model">
+      <transaction-printout ref="printout" :transaction="model"></transaction-printout>
       <v-card flat class="mb-2">
         <v-card-title class="py-3 ecdgray--text subtitle-2 text-uppercase">{{$t('GeneralInfo')}}</v-card-title>
         <v-divider></v-divider>
@@ -134,7 +135,9 @@ export default {
     ShvaTransactionDetails: () =>
       import("../../components/details/ShvaTransactionDetails"),
     InstallmentDetails: () =>
-      import("../../components/details/InstallmentDetails")
+      import("../../components/details/InstallmentDetails"),
+    TransactionPrintout: () =>
+      import("../../components/printouts/TransactionPrintout")
   },
   data() {
     return {
@@ -156,6 +159,18 @@ export default {
     if (!this.model) {
       return this.$router.push({ name: "Transactions" });
     }
+    this.$store.commit("ui/changeHeader", {
+      value: {
+        threeDotMenu: [
+          {
+            text: this.$t("Print"),
+            fn: () => {
+              this.$refs.printout.print();
+            }
+          }
+        ]
+      }
+    });
   },
   methods: {
     async transmit() {
