@@ -253,6 +253,9 @@
   "Custom": "Custom",
   "Active": "Active",
   "Merchant": "Merchant",
+  "Origin": "Origin",
+  "HasInvoice": "Has Invoice",
+  "IsPaymentRequest": "Is Payment Request",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

@@ -172,6 +172,16 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.DocumentOrigin == filter.DocumentOrigin);
             }
 
+            if (filter.HasInvoice.GetValueOrDefault())
+            {
+                src = src.Where(t => t.InvoiceID != null);
+            }
+
+            if (filter.IsPaymentRequest.GetValueOrDefault())
+            {
+                src = src.Where(t => t.PaymentRequestID != null);
+            }
+
             return src;
         }
 

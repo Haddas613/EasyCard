@@ -346,6 +346,7 @@ namespace Transactions.Api.Controllers
 
             mapper.Map(dbPaymentRequest, model);
             mapper.Map(prmodel, model);
+            model.PaymentRequestID = prmodel.PaymentRequestID; //Remove, redundant?
 
             if (model.SaveCreditCard == true)
             {

@@ -97,7 +97,9 @@
   "Origin": "Origin",
   "FinalizationStatus": "Finalization Status",
   "Features": "Features",
-
+  "HasInvoice": "Has Invoice",
+  "IsPaymentRequest": "Is Payment Request",
+  
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
   "Invalid": "Invalid",

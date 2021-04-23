@@ -97,7 +97,9 @@
   "Origin": "מקור",
   "FinalizationStatus": "סטטוס עסקה במאגד",
   "Features": "תכונות",
-
+  "HasInvoice": "קיימת חשבונית",
+  "IsPaymentRequest": "בקשת תשלום",
+  
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
   "Invalid": "לא תקף",

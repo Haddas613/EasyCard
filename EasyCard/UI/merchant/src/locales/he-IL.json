@@ -253,6 +253,9 @@
   "Custom": "לפי בחירה",
   "Active": "פעיל",
   "Merchant": "בית עסק",
+  "Origin": "מקור",
+  "HasInvoice": "קיימת חשבונית",
+  "IsPaymentRequest": "בקשת תשלום",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

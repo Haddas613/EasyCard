@@ -101,5 +101,9 @@ namespace Transactions.Api.Models.Transactions
 
         [SwaggerExclude]
         public DocumentOriginEnum? DocumentOrigin { get; set; }
+
+        public bool? HasInvoice { get; set; }
+
+        public bool? IsPaymentRequest { get; set; }
     }
 }
