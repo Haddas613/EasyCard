@@ -466,6 +466,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only successful transactions are allowed.
+        /// </summary>
+        public static string OnlySuccessfulTransactionsAreAllowed {
+            get {
+                return ResourceManager.GetString("OnlySuccessfulTransactionsAreAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment Request canceled.
         /// </summary>
         public static string PaymentRequestCanceled {
@@ -606,6 +615,15 @@ namespace Transactions.Shared {
         public static string TotalAmountIsInvalid {
             get {
                 return ResourceManager.GetString("TotalAmountIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction already has invoice.
+        /// </summary>
+        public static string TransactionAlreadyHasInvoice {
+            get {
+                return ResourceManager.GetString("TransactionAlreadyHasInvoice", resourceCulture);
             }
         }
         

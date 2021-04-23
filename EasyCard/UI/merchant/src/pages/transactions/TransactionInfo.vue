@@ -38,15 +38,19 @@
                 <span v-if="!model.shvaTransactionDetails.transmissionDate">-</span>
               </p>
             </v-col>
-            <v-col cols="12" md="4" class="info-block" v-if="model.invoiceID">
+            <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('InvoiceID')}}</p>
               <router-link
                 class="primary--text"
                 link
                 :to="{name: 'Invoice', params: {id: model.invoiceID}}"
+                 v-if="model.invoiceID"
               >
                 <small>{{(model.invoiceID || '-') | guid}}</small>
               </router-link>
+              <v-btn x-small color="primary" v-else @click="createInvoice()" :loading="loading">
+                {{$t("CreateInvoice")}}
+              </v-btn>
             </v-col>
           </v-row>
         </v-card-text>
@@ -142,6 +146,7 @@ export default {
   data() {
     return {
       model: null,
+      loading: false,
       quickStatusesColors: {
         Pending: "primary--text",
         None: "ecgray--text",
@@ -212,6 +217,15 @@ export default {
         this.model.quickStatus = tr.quickStatus;
         this.model.allowTransmission = false;
       }
+    },
+    async createInvoice(){
+      this.loading = true;
+      let operation = await this.$api.invoicing.createForTransaction(this.model.$paymentTransactionID);
+
+      if(operation.status == "success" && operation.entityReference){
+        this.$set(this.model, 'invoiceID', operation.entityReference);
+      }
+      this.loading = false;
     }
   },
   computed: {

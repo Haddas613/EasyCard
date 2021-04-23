@@ -33,6 +33,11 @@ namespace Transactions.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
+        public Task<PaymentTransaction> GetTransaction(System.Linq.Expressions.Expression<Func<PaymentTransaction, bool>> predicate)
+        {
+            return context.PaymentTransactions.FirstOrDefaultAsync(predicate);
+        }
+
         public IQueryable<CreditCardTokenDetails> GetTokens()
         {
             if (user.IsAdmin())

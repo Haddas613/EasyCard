@@ -33,6 +33,8 @@ using Shared.Helpers.Templating;
 using Z.EntityFramework.Plus;
 using Merchants.Business.Entities.Terminal;
 using SharedIntegration = Shared.Integration;
+using Transactions.Shared.Enums;
+using Transactions.Api.Extensions;
 
 namespace Transactions.Api.Controllers
 {
@@ -54,6 +56,7 @@ namespace Transactions.Api.Controllers
         private readonly ApplicationSettings appSettings;
         private readonly IQueue queue;
         private readonly IEmailSender emailSender;
+        private readonly ITransactionsService transactionsService;
 
         public InvoicingController(
                     IInvoiceService invoiceService,
@@ -66,7 +69,8 @@ namespace Transactions.Api.Controllers
                     IInvoicingResolver invoicingResolver,
                     IOptions<ApplicationSettings> appSettings,
                     IQueueResolver queueResolver,
-                    IEmailSender emailSender)
+                    IEmailSender emailSender,
+                    ITransactionsService transactionsService)
         {
             this.invoiceService = invoiceService;
             this.mapper = mapper;
@@ -80,6 +84,7 @@ namespace Transactions.Api.Controllers
             this.queue = queueResolver.GetQueue(QueueResolver.InvoiceQueue);
             this.emailSender = emailSender;
             this.invoicingResolver = invoicingResolver;
+            this.transactionsService = transactionsService;
         }
 
         [HttpGet]
@@ -249,6 +254,83 @@ namespace Transactions.Api.Controllers
             }
 
             return new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID);
+        }
+
+        [HttpPost("transaction/{transactionID:guid}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<OperationResponse>> CreateInvoiceForTransaction([FromRoute]Guid transactionID)
+        {
+            var merchantID = User.GetMerchantID();
+            var userIsTerminal = User.IsTerminal();
+
+            var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == transactionID));
+
+            if (transaction.InvoiceID != null)
+            {
+                return BadRequest(Messages.TransactionAlreadyHasInvoice);
+            }
+
+            if (transaction.Status != TransactionStatusEnum.Completed)
+            {
+                return BadRequest(Messages.OnlySuccessfulTransactionsAreAllowed);
+            }
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
+
+            // TODO: caching
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            // merge system settings with terminal settings
+            mapper.Map(systemSettings, terminal);
+
+            var endResponse = new OperationResponse();
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+            {
+                try
+                {
+                    Invoice invoiceRequest = new Invoice();
+                    mapper.Map(transaction, invoiceRequest);
+
+                    //TODO: Handle refund & credit default invoice types
+                    InvoiceDetails invoiceDetails = new InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
+                    invoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings);
+
+                    invoiceRequest.InvoiceDetails = invoiceDetails;
+
+                    invoiceRequest.MerchantID = terminal.MerchantID;
+
+                    invoiceRequest.ApplyAuditInfo(httpContextAccessor);
+
+                    await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
+
+                    endResponse = new OperationResponse(Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
+
+                    transaction.InvoiceID = invoiceRequest.InvoiceID;
+
+                    await transactionsService.UpdateEntity(transaction, Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
+
+                    var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
+
+                    // TODO: validate, rollback
+                    if (invoicesToResend.Count() > 0)
+                    {
+                        await queue.PushToQueue(invoicesToResend.First());
+                    }
+
+                    await dbTransaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
+
+                    endResponse = new OperationResponse($"{Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
+
+                    await dbTransaction.RollbackAsync();
+                }
+            }
+
+            return endResponse;
         }
 
         [HttpPost]

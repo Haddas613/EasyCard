@@ -4,6 +4,7 @@ using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Transactions.Business.Entities;
@@ -14,6 +15,8 @@ namespace Transactions.Business.Services
     public interface ITransactionsService : IServiceBase<PaymentTransaction, Guid>
     {
         IQueryable<PaymentTransaction> GetTransactions();
+
+        Task<PaymentTransaction> GetTransaction(Expression<Func<PaymentTransaction, bool>> predicate);
 
         IQueryable<TransactionHistory> GetTransactionHistory(Guid transactionID);
 
