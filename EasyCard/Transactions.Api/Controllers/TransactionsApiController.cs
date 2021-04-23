@@ -50,6 +50,7 @@ using Shared.Helpers.Templating;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
 using Shared.Api.Configuration;
+using Microsoft.AspNetCore.Localization;
 
 namespace Transactions.Api.Controllers
 {
@@ -346,7 +347,6 @@ namespace Transactions.Api.Controllers
 
             mapper.Map(dbPaymentRequest, model);
             mapper.Map(prmodel, model);
-            model.PaymentRequestID = prmodel.PaymentRequestID; //Remove, redundant?
 
             if (model.SaveCreditCard == true)
             {
@@ -381,11 +381,11 @@ namespace Transactions.Api.Controllers
                 }
 
                 var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
-                createResult = await ProcessTransaction(model, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
+                createResult = await ProcessTransaction(model, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, paymentRequestID: prmodel.PaymentRequestID);
             }
             else
             {
-                createResult = await ProcessTransaction(model, null);
+                createResult = await ProcessTransaction(model, null, paymentRequestID: prmodel.PaymentRequestID);
             }
 
             var opResult = createResult.GetOperationResponse();
@@ -504,7 +504,7 @@ namespace Transactions.Api.Controllers
             return await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDealID: billingDeal.BillingDealID);
         }
 
-        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialTransactionID = null, Guid? billingDealID = null)
+        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialTransactionID = null, Guid? billingDealID = null, Guid? paymentRequestID = null)
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
@@ -527,6 +527,7 @@ namespace Transactions.Api.Controllers
             transaction.BillingDealID = billingDealID;
             transaction.InitialTransactionID = initialTransactionID;
             transaction.DocumentOrigin = GetDocumentOrigin(billingDealID);
+            transaction.PaymentRequestID = paymentRequestID;
 
             if (transaction.DealDetails == null)
             {
@@ -893,8 +894,34 @@ namespace Transactions.Api.Controllers
 
             substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));
             substitutions.Add(new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName));
-            substitutions.Add(new TextSubstitution(nameof(transaction.TransactionDate), transaction.TransactionDate.GetValueOrDefault().ToString("d"))); // TODO: locale
+            substitutions.Add(new TextSubstitution(nameof(transaction.TransactionDate), TimeZoneInfo.ConvertTimeFromUtc(transaction.TransactionDate.GetValueOrDefault(), UserCultureInfo.TimeZone).ToString("d"))); // TODO: locale
             substitutions.Add(new TextSubstitution(nameof(transaction.TransactionAmount), $"{transaction.TotalAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"));
+
+            substitutions.Add(new TextSubstitution(nameof(transaction.ShvaTransactionDetails.ShvaTerminalID), transaction.ShvaTransactionDetails?.ShvaTerminalID ?? string.Empty));
+            substitutions.Add(new TextSubstitution(nameof(transaction.ShvaTransactionDetails.ShvaShovarNumber), transaction.ShvaTransactionDetails?.ShvaShovarNumber ?? string.Empty));
+
+            substitutions.Add(new TextSubstitution(nameof(transaction.CreditCardDetails.CardNumber), transaction.CreditCardDetails?.CardNumber ?? string.Empty));
+            substitutions.Add(new TextSubstitution(nameof(transaction.CreditCardDetails.CardOwnerName), transaction.CreditCardDetails?.CardOwnerName ?? string.Empty));
+
+            substitutions.Add(new TextSubstitution(nameof(transaction.CardPresence), transaction.CardPresence.ToString()));
+
+            substitutions.Add(new TextSubstitution(nameof(transaction.DealDetails.DealDescription), transaction.CardPresence.ToString()));
+
+            string transactionTypeStr = string.Empty;
+
+            //TODO: temporary
+            var rqf = Request.HttpContext.Features.Get<IRequestCultureFeature>();
+            var culture = rqf.RequestCulture?.Culture;
+            var dictionaries = DictionariesService.GetDictionaries(culture);
+
+            var key = char.ToLowerInvariant(transaction.TransactionType.ToString()[0]) + transaction.TransactionType.ToString().Substring(1);
+
+            if (dictionaries.TransactionTypeEnum.ContainsKey(key))
+            {
+                transactionTypeStr = dictionaries.TransactionTypeEnum[key];
+            }
+
+            substitutions.Add(new TextSubstitution(nameof(transaction.TransactionType), transactionTypeStr));
 
             if (transaction.DealDetails?.ConsumerEmail == null)
             {

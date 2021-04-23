@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Shared.Api.Swagger;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
@@ -118,8 +116,6 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         public bool? PinPad { get; set; }
 
-        [SwaggerExclude]
-        [BindNever]
         public Guid? PaymentRequestID { get; set; }
 
         public void Calculate()
