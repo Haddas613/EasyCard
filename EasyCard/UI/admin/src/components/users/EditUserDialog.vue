@@ -24,7 +24,7 @@
             <v-text-field
               v-model="model.phoneNumber"
               :counter="50"
-              :rules="[vr.primitives.required, vr.primitives.stringLength(3, 50)]"
+              :rules="[vr.primitives.stringLength(3, 50)]"
               :label="$t('Phone')"
               type="number"
             ></v-text-field>
