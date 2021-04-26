@@ -62,7 +62,7 @@ namespace Merchants.Business.Services
 
         public async Task<IEnumerable<TerminalTemplateExternalSystem>> GetTerminalTemplateExternalSystems(long terminalTemplateID)
         {
-            var externalSystems = await context.TerminalTemplateExternalSystems.Where(t => t.TerminalTemplateExternalSystemID == terminalTemplateID).ToListAsync();
+            var externalSystems = await context.TerminalTemplateExternalSystems.Where(t => t.TerminalTemplateID == terminalTemplateID).ToListAsync();
 
             var shvaIntegration = externalSystems.FirstOrDefault(e => e.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID);
 

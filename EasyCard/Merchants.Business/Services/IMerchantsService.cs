@@ -29,5 +29,7 @@ namespace Merchants.Business.Services
         Task UpdateUserStatus(UpdateUserStatusData data, IDbContextTransaction dbTransaction = null);
 
         Task UpdateUserRoles(Guid userID, ICollection<string> roles);
+
+        Task UpdateUser(UserTerminalMapping data);
     }
 }

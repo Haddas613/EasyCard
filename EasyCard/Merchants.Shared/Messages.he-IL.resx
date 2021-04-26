@@ -177,4 +177,7 @@
   <data name="UserUnlinkedFromMerchant" xml:space="preserve">
     <value>משתמש נותק מבית העסק</value>
   </data>
+  <data name="UserUpdated" xml:space="preserve">
+    <value>משתמש עודכן</value>
+  </data>
 </root>

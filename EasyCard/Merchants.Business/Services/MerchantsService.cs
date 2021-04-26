@@ -309,5 +309,27 @@ namespace Merchants.Business.Services
 
             await context.SaveChangesAsync();
         }
+
+        public async Task UpdateUser(UserTerminalMapping data)
+        {
+            var user = await context.UserTerminalMappings.FirstAsync(u => u.UserID == data.UserID);
+
+            if (user != null)
+            {
+                if (!string.IsNullOrWhiteSpace(data.DisplayName))
+                {
+                    user.DisplayName = data.DisplayName;
+                }
+
+                if (!string.IsNullOrWhiteSpace(data.Email))
+                {
+                    user.Email = data.Email;
+                }
+
+                user.Roles = data.Roles;
+
+                await context.SaveChangesAsync();
+            }
+        }
     }
 }

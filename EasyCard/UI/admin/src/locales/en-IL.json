@@ -322,6 +322,8 @@
   "VoucherNumber": "Voucher Number",
   "AggregatorReference": "Aggregator Reference",
   "ProcessorReference": "Processor Reference",
+  "FirstName": "First Name",
+  "LastName": "Last Name",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -373,6 +375,7 @@
   "Skip": "Skip",
   "Create": "Create",
   "Add": "Add",
+  "EditUser": "Edit User",
 
   "--AUTH--": null,
   "Login": "Login",

@@ -131,6 +131,14 @@ namespace Merchants.Api.Mapping
             CreateMap<LinkUserToMerchantRequest, Business.Entities.User.UserInfo>();
             CreateMap<UpdateUserRolesRequest, UpdateUserRequestModel>()
                 .ForMember(d => d.UserID, o => o.MapFrom(src => src.UserID.ToString()));
+            CreateMap<UpdateUserRequest, UpdateUserRequestModel>()
+                .ForMember(d => d.UserID, o => o.MapFrom(src => src.UserID.ToString()));
+
+            CreateMap<UserProfileDataResponse, UserTerminalMapping>()
+                .ForMember(src => src.DisplayName, o => o.MapFrom(d => d.DisplayName))
+                .ForMember(src => src.Email, o => o.MapFrom(d => d.Email))
+                .ForMember(src => src.Roles, o => o.MapFrom(d => d.Roles))
+                .ForAllOtherMembers(o => o.Ignore());
         }
 
         private void RegisterSystemSettingsMappings()

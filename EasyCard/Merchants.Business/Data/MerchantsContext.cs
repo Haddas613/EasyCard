@@ -38,6 +38,11 @@ namespace Merchants.Business.Data
            v => v.ToString(Formatting.None),
            v => JObject.Parse(v));
 
+        private static readonly ValueComparer SettingsJObjectComparer = new ValueComparer<JObject>(
+           (s1, s2) => s1.ToString(Formatting.None).GetHashCode() == s2.ToString(Formatting.None).GetHashCode(),
+           v => v.ToString(Formatting.None).GetHashCode(),
+           v => JObject.Parse(v.ToString(Formatting.None)));
+
         private static readonly ValueConverter StringArrayConverter = new ValueConverter<IEnumerable<string>, string>(
             v => string.Join(",", v),
             v => v != null ? v.Split(new string[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries) : null);
@@ -259,7 +264,8 @@ namespace Merchants.Business.Data
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
-                builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
+                builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
+                    .Metadata.SetValueComparer(SettingsJObjectComparer);
             }
         }
 
@@ -274,7 +280,8 @@ namespace Merchants.Business.Data
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
-                builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
+                builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
+                    .Metadata.SetValueComparer(SettingsJObjectComparer);
             }
         }
 

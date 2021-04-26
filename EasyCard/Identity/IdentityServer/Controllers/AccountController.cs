@@ -59,6 +59,7 @@ namespace IdentityServer.Controllers
         private readonly AzureADSettings azureADConfig;
         private readonly ApiSettings apiConfiguration;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
+        private readonly UserHelpers userHelpers;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -75,7 +76,8 @@ namespace IdentityServer.Controllers
             IOptions<AzureADSettings> azureADConfig,
             IOptions<ApiSettings> apiConfiguration,
             ISmsService smsService,
-            IHttpContextAccessorWrapper httpContextAccessor)
+            IHttpContextAccessorWrapper httpContextAccessor,
+            UserHelpers userHelpers)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -94,6 +96,7 @@ namespace IdentityServer.Controllers
             this.apiConfiguration = apiConfiguration.Value;
             this.smsService = smsService;
             this.httpContextAccessor = httpContextAccessor;
+            this.userHelpers = userHelpers;
         }
 
         /// <summary>
@@ -180,7 +183,7 @@ namespace IdentityServer.Controllers
                 if (result.Succeeded)
                 {
                     await events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client?.ClientId));
-                    await auditLogger.RegisterLogin(user);
+                    await auditLogger.RegisterLogin(user, await userHelpers.GetUserFullname(user));
 
                     if (context != null)
                     {
@@ -351,7 +354,7 @@ namespace IdentityServer.Controllers
             {
                 logger.LogInformation("User with ID {UserId} logged in with 2fa.", user.Id);
 
-                await auditLogger.RegisterLogin(user);
+                await auditLogger.RegisterLogin(user, await userHelpers.GetUserFullname(user));
 
                 return RedirectToLocal(returnUrl);
             }

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace IdentityServerClient
+namespace Merchants.Api.Models.User
 {
-    public class UpdateUserRequestModel
+    public class UpdateUserRequest
     {
-        public string UserID { get; set; }
+        public Guid UserID { get; set; }
 
         [StringLength(50, MinimumLength = 3)]
         public string FirstName { get; set; }
@@ -18,6 +19,6 @@ namespace IdentityServerClient
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
 
-        public ICollection<string> Roles { get; set; }
+        public HashSet<string> Roles { get; set; }
     }
 }

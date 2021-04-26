@@ -58,7 +58,7 @@ namespace IdentityServer.Security.Auditing
             await SaveAudit(audit);
         }
 
-        public async Task RegisterLogin(ApplicationUser user)
+        public async Task RegisterLogin(ApplicationUser user, string fullName)
         {
             var audit = await GetAudit(user, AuditingTypeEnum.LoggedIn);
 
@@ -70,7 +70,8 @@ namespace IdentityServer.Security.Auditing
                 {
                     UserActivity = Merchants.Shared.Enums.UserActivityEnum.LoggedIn,
                     UserID = user.Id,
-                    Email = user.Email
+                    Email = user.Email,
+                    DisplayName = fullName
                 });
             }
             catch (Exception ex)
@@ -81,7 +82,7 @@ namespace IdentityServer.Security.Auditing
 
         public async Task RegisterLockout(ApplicationUser user)
         {
-            var audit = await GetAudit(user, AuditingTypeEnum.LoggedIn);
+            var audit = await GetAudit(user, AuditingTypeEnum.LockedOut);
 
             await SaveAudit(audit);
 
@@ -91,7 +92,6 @@ namespace IdentityServer.Security.Auditing
                 {
                     UserActivity = Merchants.Shared.Enums.UserActivityEnum.Locked,
                     UserID = user.Id,
-                    DisplayName = user.UserName,
                     Email = user.Email
                 });
             }

@@ -31,15 +31,20 @@ namespace IdentityServer.Controllers
         private readonly IMapper mapper;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly UserManageService userManageService;
+        private readonly UserHelpers userHelpers;
 
-        public RegistrationController(IMerchantsApiClient merchantsApiClient, IMapper mapper,
+        public RegistrationController(
+            IMerchantsApiClient merchantsApiClient, 
+            IMapper mapper,
             UserManager<ApplicationUser> userManager,
-            UserManageService userManageService)
+            UserManageService userManageService,
+            UserHelpers userHelpers)
         {
             this.merchantsApiClient = merchantsApiClient;
             this.mapper = mapper;
             this.userManager = userManager;
             this.userManageService = userManageService;
+            this.userHelpers = userHelpers;
         }
 
         public async Task<IActionResult> Index()
@@ -127,7 +132,7 @@ namespace IdentityServer.Controllers
             var merchantLinkRequest = new LinkUserToMerchantRequest
             {
                 Email = model.Email,
-                DisplayName = $"{model.FirstName} {model.LastName}".Trim(),
+                DisplayName = userHelpers.GetUserFullName(model.FirstName, model.LastName),
                 UserID = Guid.Parse(user.Id),
                 MerchantID = merchantResult.EntityUID.Value,
                 Roles = new List<string>(),

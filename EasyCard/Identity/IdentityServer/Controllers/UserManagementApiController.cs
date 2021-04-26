@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoMapper;
 using IdentityServer.Data;
 using IdentityServer.Helpers;
 using IdentityServer.Models;
@@ -37,6 +38,8 @@ namespace IdentityServer.Controllers
         private readonly ApplicationSettings configuration;
         private readonly IMerchantsApiClient merchantsApiClient;
         private readonly UserManageService userManageService;
+        private readonly IMapper mapper;
+        private readonly UserHelpers userHelpers;
 
         public UserManagementApiController(
             UserManager<ApplicationUser> userManager,
@@ -47,7 +50,9 @@ namespace IdentityServer.Controllers
             ICryptoService cryptoService,
             IOptions<ApplicationSettings> configuration,
             IMerchantsApiClient merchantsApiClient,
-            UserManageService userManageService
+            UserManageService userManageService,
+            IMapper mapper,
+            UserHelpers userHelpers
             )
         {
             this.userManager = userManager;
@@ -59,6 +64,8 @@ namespace IdentityServer.Controllers
             this.configuration = configuration?.Value;
             this.merchantsApiClient = merchantsApiClient;
             this.userManageService = userManageService;
+            this.mapper = mapper;
+            this.userHelpers = userHelpers;
         }
 
         /// <summary>
@@ -176,6 +183,11 @@ namespace IdentityServer.Controllers
             if (user == null)
             {
                 return NotFound(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserNotFound });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             var result = await userManageService.UpdateUser(model);
@@ -495,10 +507,17 @@ namespace IdentityServer.Controllers
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 UserID = new Guid(user.Id),
-                Roles = await userManager.GetRolesAsync(user)
+                Roles = await userManager.GetRolesAsync(user),
             };
 
-            var allClaims = await userManager.GetClaimsAsync(user);
+            result.Roles = await userManager.GetRolesAsync(user);
+
+            var claims = await userManager.GetClaimsAsync(user);
+
+            result.FirstName = claims.FirstOrDefault(c => c.Type == Claims.FirstNameClaim)?.Value;
+            result.LastName = claims.FirstOrDefault(c => c.Type == Claims.LastNameClaim)?.Value;
+
+            result.DisplayName = userHelpers.GetUserFullName(result.FirstName, result.LastName);
 
             return Ok(result);
         }

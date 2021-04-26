@@ -270,7 +270,7 @@
   "Password": "סיסמה",
   "MerchantNumber": "מספר בית עסק",
   "MerchantReference": "אסמכתת בית עסק",
-  "ShvaTerminalReference": "אסמכתת שבא",
+  "ShvaTerminalReference": "מספר מסוף בשבא",
   "KeyStorePassword": "סיסמת Keystore",
   "IntegrationType": "סוג אינטגרציה",
   "IntegrationName": "שם אינטגרציה",
@@ -326,6 +326,8 @@
   "VoucherNumber": "מספר שובר",
   "AggregatorReference": "אסמכתת מאגד",
   "ProcessorReference": "אסמכתת שבא",
+  "FirstName": "שם פרטי",
+  "LastName": "שם משפחה",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -377,6 +379,7 @@
   "Skip": "דלג",
   "Create": "צור",
   "Add": "הוסף",
+  "EditUser": "ערוך משתמש",
 
   "--AUTH--": null,
   "Login": "כניסה",

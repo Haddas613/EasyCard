@@ -141,14 +141,18 @@ namespace Merchants.Api.Controllers
 
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OperationResponse))]
-        [Route("update-roles")]
-        public async Task<ActionResult<OperationResponse>> UpdateRoles([FromBody]UpdateUserRolesRequest request)
+        public async Task<ActionResult<OperationResponse>> UpdateUser([FromBody]UpdateUserRequest request)
         {
             var user = await userManagementClient.GetUserByID(request.UserID);
 
             if (user == null)
             {
                 return NotFound(Messages.UserNotFound);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             if (request.Roles == null)
@@ -168,9 +172,15 @@ namespace Merchants.Api.Controllers
                 return BadRequest(new OperationResponse(updateUserResponse.Message, StatusEnum.Error, user.UserID, correlationId: GetCorrelationID()));
             }
 
-            await merchantsService.UpdateUserRoles(request.UserID, request.Roles);
+            // Update user with latest info
+            user = await userManagementClient.GetUserByID(request.UserID);
+            var dbUser = await merchantsService.GetMerchantUsers().FirstAsync(u => u.UserID == request.UserID);
 
-            return Ok(new OperationResponse(Messages.UserCreated, StatusEnum.Success, user.UserID, correlationId: GetCorrelationID()));
+            mapper.Map(user, dbUser);
+
+            await merchantsService.UpdateUser(dbUser);
+
+            return Ok(new OperationResponse(Messages.UserUpdated, StatusEnum.Success, user.UserID, correlationId: GetCorrelationID()));
         }
 
         [HttpPost]

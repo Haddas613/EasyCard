@@ -42,6 +42,7 @@ using Shared.Helpers.Sms;
 using InforU;
 using Shared.Integration;
 using Shared.Business.Security;
+using IdentityServer.Helpers;
 
 namespace IdentityServer
 {
@@ -233,6 +234,7 @@ namespace IdentityServer
 
             services.AddScoped<IAuditLogger, AuditLogger>();
             services.AddScoped<UserManageService, UserManageService>();
+            services.AddScoped<UserHelpers, UserHelpers>();
 
             // DI: request logging
 

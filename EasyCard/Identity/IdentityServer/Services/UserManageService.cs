@@ -7,6 +7,7 @@ using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace IdentityServer.Services
@@ -72,6 +73,44 @@ namespace IdentityServer.Services
                 model.Roles = new HashSet<string>();
             }
 
+            if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
+            {
+                user.PhoneNumber = model.PhoneNumber;
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.FirstName) || !string.IsNullOrWhiteSpace(model.LastName))
+            {
+                var claims = await userManager.GetClaimsAsync(user);
+
+                if (!string.IsNullOrWhiteSpace(model.FirstName))
+                {
+                    var fnClaim = claims.FirstOrDefault(c => c.Type == Claims.FirstNameClaim);
+
+                    if (fnClaim != null)
+                    {
+                        await userManager.ReplaceClaimAsync(user, fnClaim, new Claim(Claims.FirstNameClaim, model.FirstName));
+                    }
+                    else
+                    {
+                        await userManager.AddClaim(claims, user, Claims.FirstNameClaim, model.FirstName);
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(model.LastName))
+                {
+                    var lnClaim = claims.FirstOrDefault(c => c.Type == Claims.LastNameClaim);
+
+                    if (lnClaim != null)
+                    {
+                        await userManager.ReplaceClaimAsync(user, lnClaim, new Claim(Claims.LastNameClaim, model.LastName));
+                    }
+                    else
+                    {
+                        await userManager.AddClaim(claims, user, Claims.LastNameClaim, model.LastName);
+                    }
+                }
+            }
+
             if (!model.Roles.Any(r => r != Roles.Merchant))
             {
                 model.Roles.Add(Roles.Merchant);
@@ -81,6 +120,8 @@ namespace IdentityServer.Services
             {
                 await userManager.AddToRoleAsync(user, role);
             }
+
+            await userManager.UpdateAsync(user);
 
             return true;
         }

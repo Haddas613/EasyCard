@@ -239,5 +239,14 @@ namespace Merchants.Shared {
                 return ResourceManager.GetString("UserUnlinkedFromMerchant", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Updated.
+        /// </summary>
+        public static string UserUpdated {
+            get {
+                return ResourceManager.GetString("UserUpdated", resourceCulture);
+            }
+        }
     }
 }

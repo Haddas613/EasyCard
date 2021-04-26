@@ -177,4 +177,7 @@
   <data name="UserUnlinkedFromMerchant" xml:space="preserve">
     <value>User unlinked from Merchant</value>
   </data>
+  <data name="UserUpdated" xml:space="preserve">
+    <value>User Updated</value>
+  </data>
 </root>
