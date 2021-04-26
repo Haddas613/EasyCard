@@ -1,0 +1,351 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AggregatorNotDefined" xml:space="preserve">
+    <value>לא הוגדר מאגד</value>
+  </data>
+  <data name="AwaitingForTransmission" xml:space="preserve">
+    <value>ממתין לשידור</value>
+  </data>
+  <data name="BillingDealCreated" xml:space="preserve">
+    <value>נוצר עסקה מחזורית</value>
+  </data>
+  <data name="BillingDealDeleted" xml:space="preserve">
+    <value>נמחקה עסקה מחזורית</value>
+  </data>
+  <data name="BillingDealIsClosed" xml:space="preserve">
+    <value>העסקה המחזורית נסגרה</value>
+  </data>
+  <data name="BillingDealsMaxBatchSize" xml:space="preserve">
+    <value>מספר העסקאות במחזור עסקאות מוגבל ל {0}</value>
+  </data>
+  <data name="BillingDealsRequired" xml:space="preserve">
+    <value>נדרשות עסקאות מחזוריות</value>
+  </data>
+  <data name="BillingDealUpdated" xml:space="preserve">
+    <value>עסקה מחזורית עודכנה</value>
+  </data>
+  <data name="CanceledByAggregator" xml:space="preserve">
+    <value>בוטל ע"י המאגד</value>
+  </data>
+  <data name="CancelledByMerchant" xml:space="preserve">
+    <value>בוטל ע"י בית העסק</value>
+  </data>
+  <data name="CardOwnerNationalIDRequired" xml:space="preserve">
+    <value>נדרשת ת.ז בעל הכרטיס</value>
+  </data>
+  <data name="CardOwnerNationalIDRequiredButNotPresentInToken" xml:space="preserve">
+    <value>נדרשת ת.ז בעל הכרטיס, אך היא לא שמורה בטוקן</value>
+  </data>
+  <data name="CardReaderInputRequired" xml:space="preserve">
+    <value>נדרש שימוש בקורא כרטיסים</value>
+  </data>
+  <data name="CheckoutFeatureMustBeEnabled" xml:space="preserve">
+    <value>נדרש להפעיל את תכונת דף Checkout</value>
+  </data>
+  <data name="CommitedByAggregator" xml:space="preserve">
+    <value>הופקד ע"י המאגד</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>הושלם</value>
+  </data>
+  <data name="ConfirmedByAggregator" xml:space="preserve">
+    <value>אושר ע"י המאגד</value>
+  </data>
+  <data name="ConfirmedByProcessor" xml:space="preserve">
+    <value>אושר ע"י המעבד</value>
+  </data>
+  <data name="ConsumerNatIdIsNotEqTranNatId" xml:space="preserve">
+    <value>ת.ז לקוח לא תואמת לת.ז בעל הכרטיס</value>
+  </data>
+  <data name="CreateRequestSentToAggregator" xml:space="preserve">
+    <value>בקשה ליצירת עסקה נשלחה ל {0}</value>
+  </data>
+  <data name="CvvRequired" xml:space="preserve">
+    <value>נדרש להזין CVV</value>
+  </data>
+  <data name="CvvRequiredButStoredTokenCannotUseCvv" xml:space="preserve">
+    <value>נדרש להזין CVV, אך הטוקן לא מאפשר שימוש ב-CVV</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>נדרשת כתובת מייל</value>
+  </data>
+  <data name="FailedToCancelByAggregator" xml:space="preserve">
+    <value>נכשל ביטול ע"י המאגד</value>
+  </data>
+  <data name="FailedToCommitByAggregator" xml:space="preserve">
+    <value>נכשלה הפקדה ע"י המאגד</value>
+  </data>
+  <data name="FailedToConfirmByAggregator" xml:space="preserve">
+    <value>נכשל אישור ע"י המאגד</value>
+  </data>
+  <data name="FailedToConfirmByProcesor" xml:space="preserve">
+    <value>נכשל אישור ע"י המעבד</value>
+  </data>
+  <data name="FailedToCreateCCToken" xml:space="preserve">
+    <value>נכשלה יצירת הטוקן</value>
+  </data>
+  <data name="FailedToCreateInvoice" xml:space="preserve">
+    <value>נכשלה הפקת החשבונית</value>
+  </data>
+  <data name="FailedToProcessTransaction" xml:space="preserve">
+    <value>נכשל עיבוד העסקה</value>
+  </data>
+  <data name="InstallmentDetailsRequired" xml:space="preserve">
+    <value>נדרשים פרטי תשלומים</value>
+  </data>
+  <data name="InvoiceCreated" xml:space="preserve">
+    <value>חשבונית נוצרה</value>
+  </data>
+  <data name="InvoiceGenerated" xml:space="preserve">
+    <value>חשבונית הופקה</value>
+  </data>
+  <data name="InvoiceGenerationFailed" xml:space="preserve">
+    <value>נכשלה הפקת החשבונית</value>
+  </data>
+  <data name="InvoicesForResendRequired" xml:space="preserve">
+    <value>נדרשות חשבוניות</value>
+  </data>
+  <data name="InvoicesQueuedForResend" xml:space="preserve">
+    <value>החשבוניות בתור לשליחה חוזרת</value>
+  </data>
+  <data name="InvoiceStateIsNotValid" xml:space="preserve">
+    <value>סטטוס החשבונית אינו תקין</value>
+  </data>
+  <data name="InvoicingNotDefined" xml:space="preserve">
+    <value>לא הוגדרה מערכת חשבוניות</value>
+  </data>
+  <data name="J2NotAllowed" xml:space="preserve">
+    <value>לא מורשה לעסקאות J2</value>
+  </data>
+  <data name="J5NotAllowed" xml:space="preserve">
+    <value>לא מורשה לעסקאות J5</value>
+  </data>
+  <data name="NothingToTransmit" xml:space="preserve">
+    <value>אין נתונים לשידור</value>
+  </data>
+  <data name="NumberOfPaymentsShouldBeGreaterThan" xml:space="preserve">
+    <value>מספר התשלומים צריך להיות גדול או שווה ל {0}</value>
+  </data>
+  <data name="NumberOfPaymentsShouldBeLessThan" xml:space="preserve">
+    <value>מספר התשלומים צריך להיות קטן או שווה ל {0}</value>
+  </data>
+  <data name="OnlySuccessfulTransactionsAreAllowed" xml:space="preserve">
+    <value>רק עסקאות מוצלחות מורשות</value>
+  </data>
+  <data name="PaymentRequestCanceled" xml:space="preserve">
+    <value>בקשת תשלום בוטלה</value>
+  </data>
+  <data name="PaymentRequestCreated" xml:space="preserve">
+    <value>בקשת תשלום נוצרה</value>
+  </data>
+  <data name="PaymentRequestPaymentFailed" xml:space="preserve">
+    <value>תשלום בקשת התשלום נכשל</value>
+  </data>
+  <data name="PaymentRequestPaymentSuccessed" xml:space="preserve">
+    <value>בקשת התשלום שולמה</value>
+  </data>
+  <data name="PaymentRequestStatusIsClosed" xml:space="preserve">
+    <value>בקשת התשלום נסגרה</value>
+  </data>
+  <data name="PaymentRequestUpdated" xml:space="preserve">
+    <value>בקשת התשלום עודכנה</value>
+  </data>
+  <data name="PleaseCheckValues" xml:space="preserve">
+    <value>נא לבדוק את הערכים שצויינו</value>
+  </data>
+  <data name="ProcesingItemsLimit" xml:space="preserve">
+    <value>מספר עסקאות מחזוריות למחזור עיבוד מוגבל ל-{0}</value>
+  </data>
+  <data name="ProcessorNotDefined" xml:space="preserve">
+    <value>לא הוגדר מעבד</value>
+  </data>
+  <data name="RejectedByAggregator" xml:space="preserve">
+    <value>עסקה נדחתה ע"י המאגד</value>
+  </data>
+  <data name="RejectedByProcessor" xml:space="preserve">
+    <value>עסקה נדחתה ע"י המעבד</value>
+  </data>
+  <data name="ThereAreNoInvoicesToResend" xml:space="preserve">
+    <value>אין חשבוניות למשלוח חוזר</value>
+  </data>
+  <data name="ThereAreNoTransactionsToTransmit" xml:space="preserve">
+    <value>אין עסקאות לשידור</value>
+  </data>
+  <data name="TokenCreated" xml:space="preserve">
+    <value>טוקן נוצר</value>
+  </data>
+  <data name="TokenDeleted" xml:space="preserve">
+    <value>טוקן נמחק</value>
+  </data>
+  <data name="TotalAmountIsInvalid" xml:space="preserve">
+    <value>סה"כ סכום תשלומים לא תקין</value>
+  </data>
+  <data name="TransactionAlreadyHasInvoice" xml:space="preserve">
+    <value>קיימת כבר חשבונית לעסקה</value>
+  </data>
+  <data name="TransactionCanceled" xml:space="preserve">
+    <value>עסקה בוטלה</value>
+  </data>
+  <data name="TransactionCreated" xml:space="preserve">
+    <value>עסקה נוצרה</value>
+  </data>
+  <data name="TransactionsForTransmissionRequired" xml:space="preserve">
+    <value>נדרשת רשימת עסקאות לשידור</value>
+  </data>
+  <data name="TransactionsQueued" xml:space="preserve">
+    <value>עסקאות בתור</value>
+  </data>
+  <data name="TransactionStatusIsNotValid" xml:space="preserve">
+    <value>סטטוס עסקה לא תואם לפעולה</value>
+  </data>
+  <data name="TransactionsTransmissionFailed" xml:space="preserve">
+    <value>נכשל שידור העסקאות</value>
+  </data>
+  <data name="TransactionsTransmitted" xml:space="preserve">
+    <value>העסקאות שודרו</value>
+  </data>
+  <data name="TransactionUpdated" xml:space="preserve">
+    <value>עסקה עודכנה</value>
+  </data>
+  <data name="TransmissionCancelingInProgress" xml:space="preserve">
+    <value>ביטול השידור בתהליך</value>
+  </data>
+  <data name="TransmissionInProgress" xml:space="preserve">
+    <value>שידור בתהליך</value>
+  </data>
+  <data name="TransmissionLimit" xml:space="preserve">
+    <value>מספר העסקאות לתהליך שידור מוגבל ל-{0}</value>
+  </data>
+  <data name="TransmissionToProcessorFailed" xml:space="preserve">
+    <value>שידור למעבד נכשל</value>
+  </data>
+  <data name="TransmittedByProcessor" xml:space="preserve">
+    <value>שודר ע"י המעבד</value>
+  </data>
+  <data name="Viewed" xml:space="preserve">
+    <value>בקשת התשלום נצפתה</value>
+  </data>
+  <data name="WhenSpecifiedTokenCCDetailsShouldBeOmitted" xml:space="preserve">
+    <value>בשימוש בטוקן, יש להשמיט את פרטי האשראי</value>
+  </data>
+  <data name="WhenSpecifiedTokenCCDIsNotValid" xml:space="preserve">
+    <value>בשימוש בטוקן, לחצן שמירת פרטי כרטיס אינו זמין</value>
+  </data>
+</root>

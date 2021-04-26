@@ -117,19 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Conflict" xml:space="preserve">
-    <value>קונפליקט</value>
+  <data name="Critical" xml:space="preserve">
+    <value>קריטי</value>
   </data>
-  <data name="EntityNotFound" xml:space="preserve">
-    <value>יישות לא נמצאה</value>
+  <data name="Debug" xml:space="preserve">
+    <value>מערכת</value>
   </data>
-  <data name="RecordChangedSinceLastRead" xml:space="preserve">
-    <value>הרשומה השתנתה מקריאה אחרונה</value>
+  <data name="Error" xml:space="preserve">
+    <value>שגיאה</value>
   </data>
-  <data name="ValidationErrors" xml:space="preserve">
-    <value>שגיאות אימות</value>
+  <data name="Information" xml:space="preserve">
+    <value>מידע</value>
   </data>
-  <data name="YouHaveNoAccess" xml:space="preserve">
-    <value>אין לך גישה למידע המבוקש</value>
+  <data name="None" xml:space="preserve">
+    <value>ללא</value>
+  </data>
+  <data name="Trace" xml:space="preserve">
+    <value>עקבות</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>אזהרה</value>
   </data>
 </root>

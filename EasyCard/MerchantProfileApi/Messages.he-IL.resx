@@ -117,19 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Conflict" xml:space="preserve">
-    <value>קונפליקט</value>
+  <data name="ApiFeatureMustBeEnabled" xml:space="preserve">
+    <value>יש להפעיל את תכונת ה-API קודם כל</value>
   </data>
-  <data name="EntityNotFound" xml:space="preserve">
-    <value>יישות לא נמצאה</value>
+  <data name="ConsumerCreated" xml:space="preserve">
+    <value>לקוח נוצר</value>
   </data>
-  <data name="RecordChangedSinceLastRead" xml:space="preserve">
-    <value>הרשומה השתנתה מקריאה אחרונה</value>
+  <data name="ConsumerDeleted" xml:space="preserve">
+    <value>לקוח בוטל</value>
   </data>
-  <data name="ValidationErrors" xml:space="preserve">
-    <value>שגיאות אימות</value>
+  <data name="ConsumersDeletedCnt" xml:space="preserve">
+    <value>{count} לקוחות נמחקו</value>
   </data>
-  <data name="YouHaveNoAccess" xml:space="preserve">
-    <value>אין לך גישה למידע המבוקש</value>
+  <data name="ConsumerUpdated" xml:space="preserve">
+    <value>לקוח עודכן</value>
+  </data>
+  <data name="ItemCreated" xml:space="preserve">
+    <value>פריט נוצר</value>
+  </data>
+  <data name="ItemDeleted" xml:space="preserve">
+    <value>פריט נמחק</value>
+  </data>
+  <data name="ItemsDeletedCnt" xml:space="preserve">
+    <value>{count} פריטים נמחקו</value>
+  </data>
+  <data name="ItemUpdated" xml:space="preserve">
+    <value>פריט עודכן</value>
+  </data>
+  <data name="PrivateKeyUpdated" xml:space="preserve">
+    <value>מפתח פרטי עודכן</value>
+  </data>
+  <data name="SharedKeyUpdated" xml:space="preserve">
+    <value>מפתח ציבורי עודכן</value>
+  </data>
+  <data name="TerminalUpdated" xml:space="preserve">
+    <value>מסוף עודכן</value>
   </data>
 </root>

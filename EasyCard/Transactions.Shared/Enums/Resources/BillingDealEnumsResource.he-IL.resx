@@ -117,19 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Conflict" xml:space="preserve">
-    <value>קונפליקט</value>
+  <data name="AfterNumberOfPayments" xml:space="preserve">
+    <value>לאחר מספר תשלומים</value>
   </data>
-  <data name="EntityNotFound" xml:space="preserve">
-    <value>יישות לא נמצאה</value>
+  <data name="BiMontly" xml:space="preserve">
+    <value>דו-חודשי</value>
   </data>
-  <data name="RecordChangedSinceLastRead" xml:space="preserve">
-    <value>הרשומה השתנתה מקריאה אחרונה</value>
+  <data name="Day" xml:space="preserve">
+    <value>יום</value>
   </data>
-  <data name="ValidationErrors" xml:space="preserve">
-    <value>שגיאות אימות</value>
+  <data name="Month" xml:space="preserve">
+    <value>חודש</value>
   </data>
-  <data name="YouHaveNoAccess" xml:space="preserve">
-    <value>אין לך גישה למידע המבוקש</value>
+  <data name="Montly" xml:space="preserve">
+    <value>חודשי</value>
+  </data>
+  <data name="Never" xml:space="preserve">
+    <value>לעולם לא</value>
+  </data>
+  <data name="OneTime" xml:space="preserve">
+    <value>חד פעמי</value>
+  </data>
+  <data name="Quarter" xml:space="preserve">
+    <value>רבעוני</value>
+  </data>
+  <data name="SpecifiedDate" xml:space="preserve">
+    <value>בתאריך מסוים</value>
+  </data>
+  <data name="Test" xml:space="preserve">
+    <value>טסט</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>היום</value>
+  </data>
+  <data name="Week" xml:space="preserve">
+    <value>שבוע</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>שנה</value>
   </data>
 </root>

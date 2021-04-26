@@ -117,19 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Conflict" xml:space="preserve">
-    <value>קונפליקט</value>
+  <data name="CreditNote" xml:space="preserve">
+    <value>הערת אשראי</value>
   </data>
-  <data name="EntityNotFound" xml:space="preserve">
-    <value>יישות לא נמצאה</value>
+  <data name="Initial" xml:space="preserve">
+    <value>ממתין</value>
   </data>
-  <data name="RecordChangedSinceLastRead" xml:space="preserve">
-    <value>הרשומה השתנתה מקריאה אחרונה</value>
+  <data name="Invoice" xml:space="preserve">
+    <value>חשבונית מס/קבלה</value>
   </data>
-  <data name="ValidationErrors" xml:space="preserve">
-    <value>שגיאות אימות</value>
+  <data name="InvoiceWithPaymentInfo" xml:space="preserve">
+    <value>חשבונית מס/קבלה</value>
   </data>
-  <data name="YouHaveNoAccess" xml:space="preserve">
-    <value>אין לך גישה למידע המבוקש</value>
+  <data name="PaymentInfo" xml:space="preserve">
+    <value>קבלה</value>
+  </data>
+  <data name="RefundInvoice" xml:space="preserve">
+    <value>חשבונית זיכוי</value>
+  </data>
+  <data name="Sending" xml:space="preserve">
+    <value>שולח</value>
+  </data>
+  <data name="SendingFailed" xml:space="preserve">
+    <value>שליחה נכשלה</value>
+  </data>
+  <data name="Sent" xml:space="preserve">
+    <value>נשלח</value>
   </data>
 </root>

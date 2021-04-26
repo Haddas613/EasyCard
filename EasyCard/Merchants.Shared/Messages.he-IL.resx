@@ -117,19 +117,64 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Conflict" xml:space="preserve">
-    <value>קונפליקט</value>
+  <data name="ExternalSystemRemoved" xml:space="preserve">
+    <value>מערכת חיצונית הוסרה</value>
   </data>
-  <data name="EntityNotFound" xml:space="preserve">
-    <value>יישות לא נמצאה</value>
+  <data name="ExternalSystemSaved" xml:space="preserve">
+    <value>מערכת חיצונית נשמרה</value>
   </data>
-  <data name="RecordChangedSinceLastRead" xml:space="preserve">
-    <value>הרשומה השתנתה מקריאה אחרונה</value>
+  <data name="MerchantCreated" xml:space="preserve">
+    <value>בית עסק נוצר</value>
   </data>
-  <data name="ValidationErrors" xml:space="preserve">
-    <value>שגיאות אימות</value>
+  <data name="MerchantUpdated" xml:space="preserve">
+    <value>בית עסק עודכן</value>
   </data>
-  <data name="YouHaveNoAccess" xml:space="preserve">
-    <value>אין לך גישה למידע המבוקש</value>
+  <data name="TerminalCreated" xml:space="preserve">
+    <value>מסוף נוצר</value>
+  </data>
+  <data name="TerminalDisabled" xml:space="preserve">
+    <value>מסוף נחסם</value>
+  </data>
+  <data name="TerminalEnabled" xml:space="preserve">
+    <value>מסוף הופעל</value>
+  </data>
+  <data name="TerminalTemplateApproved" xml:space="preserve">
+    <value>תבנית מסוף אושרה</value>
+  </data>
+  <data name="TerminalTemplateCreated" xml:space="preserve">
+    <value>תבנית מסוף נוצרה</value>
+  </data>
+  <data name="TerminalTemplateDisabled" xml:space="preserve">
+    <value>תבנית מסוף נחסמה</value>
+  </data>
+  <data name="TerminalTemplateUpdated" xml:space="preserve">
+    <value>תבנית מסוף עודכנה</value>
+  </data>
+  <data name="TerminalUpdated" xml:space="preserve">
+    <value>מסוף עודכן</value>
+  </data>
+  <data name="UserCreated" xml:space="preserve">
+    <value>משתמש נוצר</value>
+  </data>
+  <data name="UserInvited" xml:space="preserve">
+    <value>משתמש הוזמן</value>
+  </data>
+  <data name="UserLinkedToMerchant" xml:space="preserve">
+    <value>משתמש קושר לבית העסק</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>לא נמצא משתמש</value>
+  </data>
+  <data name="UserOperationFailed" xml:space="preserve">
+    <value>פעולת משתמש נכשלה</value>
+  </data>
+  <data name="UserOperationSuccess" xml:space="preserve">
+    <value>פעולת משתמש הצליחה</value>
+  </data>
+  <data name="UserRolesUpdated" xml:space="preserve">
+    <value>תפקידי משתמש עודכנו בהצלחה</value>
+  </data>
+  <data name="UserUnlinkedFromMerchant" xml:space="preserve">
+    <value>משתמש נותק מבית העסק</value>
   </data>
 </root>

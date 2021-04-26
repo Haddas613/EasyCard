@@ -117,19 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Conflict" xml:space="preserve">
-    <value>קונפליקט</value>
-  </data>
   <data name="EntityNotFound" xml:space="preserve">
     <value>יישות לא נמצאה</value>
   </data>
-  <data name="RecordChangedSinceLastRead" xml:space="preserve">
-    <value>הרשומה השתנתה מקריאה אחרונה</value>
+  <data name="TerminalApiKeyCreated" xml:space="preserve">
+    <value>מפתח API למסוף נוצר</value>
   </data>
-  <data name="ValidationErrors" xml:space="preserve">
-    <value>שגיאות אימות</value>
+  <data name="TerminalApiKeyRemoved" xml:space="preserve">
+    <value>מפתח API למסוף הוסר</value>
   </data>
-  <data name="YouHaveNoAccess" xml:space="preserve">
-    <value>אין לך גישה למידע המבוקש</value>
+  <data name="TerminalApiKeyReseted" xml:space="preserve">
+    <value>מפתח API למסוף אופס</value>
   </data>
 </root>

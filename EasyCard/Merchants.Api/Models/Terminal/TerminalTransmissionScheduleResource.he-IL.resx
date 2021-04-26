@@ -117,19 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Conflict" xml:space="preserve">
-    <value>קונפליקט</value>
+  <data name="From12amTo3am" xml:space="preserve">
+    <value>12:00am - 03:00am</value>
   </data>
-  <data name="EntityNotFound" xml:space="preserve">
-    <value>יישות לא נמצאה</value>
+  <data name="From12pmTo3pm" xml:space="preserve">
+    <value>12:00pm - 03:00pm</value>
   </data>
-  <data name="RecordChangedSinceLastRead" xml:space="preserve">
-    <value>הרשומה השתנתה מקריאה אחרונה</value>
+  <data name="From3amTo6am" xml:space="preserve">
+    <value>03:00am - 06:00am</value>
   </data>
-  <data name="ValidationErrors" xml:space="preserve">
-    <value>שגיאות אימות</value>
+  <data name="From3pmTo6pm" xml:space="preserve">
+    <value>03:00pm - 06:00pm</value>
   </data>
-  <data name="YouHaveNoAccess" xml:space="preserve">
-    <value>אין לך גישה למידע המבוקש</value>
+  <data name="From6amTo9am" xml:space="preserve">
+    <value>06:00am - 09:00am</value>
+  </data>
+  <data name="From6pmTo9pm" xml:space="preserve">
+    <value>06:00pm - 09:00pm</value>
+  </data>
+  <data name="From9amTo12pm" xml:space="preserve">
+    <value>09:00am - 12:00pm</value>
+  </data>
+  <data name="From9pmTo12am" xml:space="preserve">
+    <value>09:00pm - 12:00am</value>
+  </data>
+  <data name="NotSpecified" xml:space="preserve">
+    <value>לא צוין</value>
   </data>
 </root>

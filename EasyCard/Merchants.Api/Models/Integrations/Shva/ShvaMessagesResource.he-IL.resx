@@ -117,19 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Conflict" xml:space="preserve">
-    <value>קונפליקט</value>
+  <data name="ConnectionSuccess" xml:space="preserve">
+    <value>חיבור נוצר בהצלחה</value>
   </data>
-  <data name="EntityNotFound" xml:space="preserve">
-    <value>יישות לא נמצאה</value>
+  <data name="EitherTerminalOrTerminalTemplateIDMustBeSpecified" xml:space="preserve">
+    <value>חובה לציין מספר מסוף או מספר תבנית מסוף</value>
   </data>
-  <data name="RecordChangedSinceLastRead" xml:space="preserve">
-    <value>הרשומה השתנתה מקריאה אחרונה</value>
-  </data>
-  <data name="ValidationErrors" xml:space="preserve">
-    <value>שגיאות אימות</value>
-  </data>
-  <data name="YouHaveNoAccess" xml:space="preserve">
-    <value>אין לך גישה למידע המבוקש</value>
+  <data name="NewPasswordSetSuccessfully" xml:space="preserve">
+    <value>הסיסמה החדשה נקבעה בהצלחה</value>
   </data>
 </root>

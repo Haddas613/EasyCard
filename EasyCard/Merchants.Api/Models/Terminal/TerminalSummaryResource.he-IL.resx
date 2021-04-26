@@ -117,19 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Conflict" xml:space="preserve">
-    <value>קונפליקט</value>
+  <data name="ActivityStartDate" xml:space="preserve">
+    <value>תאריך תחילת פעילות</value>
   </data>
-  <data name="EntityNotFound" xml:space="preserve">
-    <value>יישות לא נמצאה</value>
+  <data name="AggregatorTerminalReference" xml:space="preserve">
+    <value>אסמכתת מאגד</value>
   </data>
-  <data name="RecordChangedSinceLastRead" xml:space="preserve">
-    <value>הרשומה השתנתה מקריאה אחרונה</value>
+  <data name="ExternalProcessorReference" xml:space="preserve">
+    <value>אסמכתת מעבד חיצוני</value>
   </data>
-  <data name="ValidationErrors" xml:space="preserve">
-    <value>שגיאות אימות</value>
+  <data name="Label" xml:space="preserve">
+    <value>תווית</value>
   </data>
-  <data name="YouHaveNoAccess" xml:space="preserve">
-    <value>אין לך גישה למידע המבוקש</value>
+  <data name="MerchantBusinessName" xml:space="preserve">
+    <value>בית עסק</value>
+  </data>
+  <data name="MerchantID" xml:space="preserve">
+    <value>מזהה בית עסק</value>
+  </data>
+  <data name="ProcessorTerminalReference" xml:space="preserve">
+    <value>אסמכתת מעבד</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>סטטוס</value>
+  </data>
+  <data name="TerminalID" xml:space="preserve">
+    <value>מזהה מסוף</value>
   </data>
 </root>

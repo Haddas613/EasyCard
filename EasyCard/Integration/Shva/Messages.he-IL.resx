@@ -117,19 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Conflict" xml:space="preserve">
-    <value>קונפליקט</value>
+  <data name="CannotGetErrorCodeFromResponse" xml:space="preserve">
+    <value>לא ניתן לקבל את פרטי השגיאה מהתשובה</value>
   </data>
-  <data name="EntityNotFound" xml:space="preserve">
-    <value>יישות לא נמצאה</value>
+  <data name="EmptyResponse" xml:space="preserve">
+    <value>תשובה ריקה</value>
   </data>
-  <data name="RecordChangedSinceLastRead" xml:space="preserve">
-    <value>הרשומה השתנתה מקריאה אחרונה</value>
+  <data name="Failed" xml:space="preserve">
+    <value>העסקה נכשלה</value>
   </data>
-  <data name="ValidationErrors" xml:space="preserve">
-    <value>שגיאות אימות</value>
-  </data>
-  <data name="YouHaveNoAccess" xml:space="preserve">
-    <value>אין לך גישה למידע המבוקש</value>
+  <data name="ResponseCannotBeParsed" xml:space="preserve">
+    <value>פענוח התשובה נכשל</value>
   </data>
 </root>

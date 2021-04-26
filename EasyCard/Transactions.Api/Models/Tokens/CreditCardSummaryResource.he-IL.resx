@@ -117,19 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Conflict" xml:space="preserve">
-    <value>קונפליקט</value>
+  <data name="CardExpiration" xml:space="preserve">
+    <value>תוקף</value>
   </data>
-  <data name="EntityNotFound" xml:space="preserve">
-    <value>יישות לא נמצאה</value>
+  <data name="CardNumber" xml:space="preserve">
+    <value>מספר</value>
   </data>
-  <data name="RecordChangedSinceLastRead" xml:space="preserve">
-    <value>הרשומה השתנתה מקריאה אחרונה</value>
+  <data name="CardOwnerName" xml:space="preserve">
+    <value>שם בעל הכרטיס</value>
   </data>
-  <data name="ValidationErrors" xml:space="preserve">
-    <value>שגיאות אימות</value>
+  <data name="CardVendor" xml:space="preserve">
+    <value>מנפיק הכרטיס</value>
   </data>
-  <data name="YouHaveNoAccess" xml:space="preserve">
-    <value>אין לך גישה למידע המבוקש</value>
+  <data name="ConsumerEmail" xml:space="preserve">
+    <value>מייל</value>
+  </data>
+  <data name="ConsumerID" xml:space="preserve">
+    <value>מזהה לקוח</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>נוצר</value>
+  </data>
+  <data name="CreditCardTokenID" xml:space="preserve">
+    <value>מזהה</value>
+  </data>
+  <data name="Expired" xml:space="preserve">
+    <value>תוקף</value>
+  </data>
+  <data name="MerchantID" xml:space="preserve">
+    <value>מזהה בית עסק</value>
+  </data>
+  <data name="MerchantName" xml:space="preserve">
+    <value>בית עסק</value>
+  </data>
+  <data name="TerminalID" xml:space="preserve">
+    <value>מזהה מסוף</value>
+  </data>
+  <data name="TerminalName" xml:space="preserve">
+    <value>מסוף</value>
   </data>
 </root>
