@@ -195,7 +195,14 @@ namespace IdentityServer.Controllers
                         }
 
                         // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                        return Redirect(model.ReturnUrl);
+                        if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
+                        {
+                            return Redirect(model.ReturnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToLocal(isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL);
+                        }
                     }
 
                     // request for a local page
@@ -205,7 +212,7 @@ namespace IdentityServer.Controllers
                     }
                     else if (string.IsNullOrEmpty(model.ReturnUrl))
                     {
-                        return Redirect("~/");
+                        return RedirectToLocal(isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL);
                     }
                     else
                     {
@@ -350,13 +357,22 @@ namespace IdentityServer.Controllers
 
             var result = await signInManager.TwoFactorSignInAsync(authProvider, authenticatorCode, isPersistent: false, rememberClient: false);
 
+            var isAdmin = (User?.IsAdmin()).Value;
+
             if (result.Succeeded)
             {
                 logger.LogInformation("User with ID {UserId} logged in with 2fa.", user.Id);
 
                 await auditLogger.RegisterLogin(user, await userHelpers.GetUserFullname(user));
 
-                return RedirectToLocal(returnUrl);
+                if (!string.IsNullOrWhiteSpace(returnUrl))
+                {
+                    return RedirectToLocal(returnUrl);
+                }
+                else
+                {
+                    return RedirectToLocal(isAdmin ? apiConfiguration.MerchantsManagementApiAddress : apiConfiguration.MerchantProfileURL);
+                }
             }
             else if (result.IsLockedOut)
             {
@@ -504,6 +520,11 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             var addPasswordResult = await userManager.AddPasswordAsync(user, model.Password);
             if (addPasswordResult.Succeeded)
             {
@@ -516,6 +537,9 @@ namespace IdentityServer.Controllers
 
                 await userManager.AddClaim(allClaims, user, Claims.FirstNameClaim, model.FirstName);
                 await userManager.AddClaim(allClaims, user, Claims.LastNameClaim, model.LastName);
+
+                var phoneToken = await userManager.GenerateChangePhoneNumberTokenAsync(user, model.PhoneNumber);
+                await userManager.ChangePhoneNumberAsync(user, model.PhoneNumber, phoneToken);
 
                 if (await userManager.IsInRoleAsync(user, Roles.Merchant))
                 {

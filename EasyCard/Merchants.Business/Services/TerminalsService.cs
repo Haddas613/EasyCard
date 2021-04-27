@@ -42,23 +42,28 @@ namespace Merchants.Business.Services
 
         public IQueryable<Terminal> GetTerminals()
         {
+            return GetTerminalsInternal().AsNoTracking();
+        }
+
+        private IQueryable<Terminal> GetTerminalsInternal()
+        {
             if (user.IsAdmin())
             {
-                return context.Terminals.AsNoTracking();
+                return context.Terminals;
             }
             else if (user.IsTerminal())
             {
-                return context.Terminals.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
+                return context.Terminals.Where(t => t.TerminalID == user.GetTerminalID());
             }
             else
             {
-                return context.Terminals.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+                return context.Terminals.Where(t => t.MerchantID == user.GetMerchantID());
             }
         }
 
         public async Task<Terminal> GetTerminal(Guid terminalID)
         {
-            var terminalQuery = GetTerminals()
+            var terminalQuery = GetTerminalsInternal()
                     .Include(t => t.Merchant)
                     .Where(m => m.TerminalID == terminalID);
 

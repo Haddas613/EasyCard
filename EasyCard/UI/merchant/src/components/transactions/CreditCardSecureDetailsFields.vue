@@ -40,6 +40,8 @@
                 placeholder="XXXX XXXX XXXX XXXX"
                 @keydown.enter="parseCardReader()"
                 @input="checkIfCardReader($event)"
+                v-bind:class="{'text-end': $vuetify.rtl}"
+                dir="ltr"
               />
             </v-col>
           </v-row>
@@ -64,6 +66,8 @@
                 ref="expiryInp"
                 placeholder="MM/YY"
                 v-cardformat:formatCardExpiry
+                dir="ltr"
+                v-bind:class="{'text-end': $vuetify.rtl}"
               />
             </v-col>
           </v-row>
