@@ -103,4 +103,11 @@ export default class TransactionsApi {
         //refund no jdeal type
         return await this.base.post(this.transactionsUrl + '/refund', data);
     }
+
+    async triggerBillingDeals(terminalID, billingDealsID) {
+      return await this.base.post(this.transactionsUrl + '/trigger-billing-deals', {
+          terminalID,
+          billingDealsID
+      });
+  } 
 }

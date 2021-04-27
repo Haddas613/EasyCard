@@ -41,11 +41,5 @@ export default class BillingDealsApi {
         }
         billingDeal = this.base.format(billingDeal, this.$headers, dictionaries)
         return billingDeal;
-    }
-
-    async createTransactionsAdmin(billingDealsID) {
-        return await this.base.post(this.billingUrl + '/create-transactions-admin', {
-            billingDealsID
-        });
     } 
 }

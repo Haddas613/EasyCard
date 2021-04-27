@@ -145,7 +145,7 @@ export default {
         });
       }
 
-      let opResult = await this.$api.billingDeals.createTransactionsAdmin(
+      let opResult = await this.$api.transactions.triggerBillingDealAdmin(
         this.lodash.map(billings, i => i.$billingDealID)
       );
 

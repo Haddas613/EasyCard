@@ -31,11 +31,6 @@
             Refund request
             </summary>
         </member>
-        <member name="M:Transactions.Api.Controllers.TransactionsApiController.NextBillingDeal(Transactions.Api.Models.Transactions.NextBillingDealRequest)">
-            <summary>
-            Billing deal
-            </summary>
-        </member>
         <member name="M:Transactions.Api.Controllers.TransmissionController.GetNotTransmittedTransactions(Transactions.Api.Models.Transactions.TransmissionFilter)">
             <summary>
             Get transactions which are not transmitted yet

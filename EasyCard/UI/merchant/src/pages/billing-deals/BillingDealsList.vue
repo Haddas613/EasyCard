@@ -257,7 +257,7 @@ export default {
         });
       }
 
-      let opResult = await this.$api.billingDeals.createTransactions(
+      let opResult = await this.$api.transactions.triggerBillingDeals(
         this.terminalStore.terminalID,
         this.lodash.map(billings, i => i.$billingDealID)
       );

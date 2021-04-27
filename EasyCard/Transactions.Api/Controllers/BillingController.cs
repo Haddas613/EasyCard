@@ -222,58 +222,5 @@ namespace Transactions.Api.Controllers
 
             return Ok(new OperationResponse(Messages.BillingDealDeleted, StatusEnum.Success, billingDealID));
         }
-
-        [HttpPost]
-        [Route("create-transactions")]
-        public async Task<ActionResult<OperationResponse>> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request)
-        {
-            if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
-            {
-                return BadRequest(new OperationResponse(Messages.BillingDealsRequired, null, HttpContext.TraceIdentifier, nameof(request.BillingDealsID), Messages.BillingDealsRequired));
-            }
-
-            var response = new OperationResponse
-            {
-                Status = StatusEnum.Success,
-                Message = Messages.TransactionsQueued
-            };
-
-            return Ok(response);
-        }
-
-        [HttpPost]
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
-        [Route("create-transactions-admin")]
-        public async Task<ActionResult<OperationResponse>> CreateTransactionsFromBillingDealsAdmin(CreateTransactionFromBillingDealsRequest request)
-        {
-            if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
-            {
-                return BadRequest(new OperationResponse(Messages.BillingDealsRequired, null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), Messages.BillingDealsRequired));
-            }
-
-            if (request.BillingDealsID.Count() > appSettings.BillingDealsMaxBatchSize)
-            {
-                return BadRequest(new OperationResponse(string.Format(Messages.BillingDealsMaxBatchSize, appSettings.BillingDealsMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), string.Format(Messages.TransmissionLimit, appSettings.BillingDealsMaxBatchSize)));
-            }
-
-            var transactionTerminals = (await billingDealService.GetBillingDeals()
-                .Where(t => request.BillingDealsID.Contains(t.BillingDealID))
-                .ToListAsync())
-                .GroupBy(k => k.TerminalID, v => v.BillingDealID)
-                .ToDictionary(k => k.Key, v => v.ToList());
-
-            var response = new OperationResponse
-            {
-                Status = StatusEnum.Success,
-                Message = Messages.TransactionsQueued
-            };
-
-            foreach (var batch in transactionTerminals)
-            {
-                await CreateTransactionsFromBillingDeals(new CreateTransactionFromBillingDealsRequest { TerminalID = batch.Key, BillingDealsID = batch.Value });
-            }
-
-            return Ok(response);
-        }
     }
 }
