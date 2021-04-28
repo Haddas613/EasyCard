@@ -30,7 +30,7 @@ export default {
         return;
 
       if(result.status === "success"){
-        this.$router.push('/admin/items/list')
+        this.$router.push({ name: "Items"})
       }else{
         this.$toasted.show(result.message, { type: 'error' });
       }
