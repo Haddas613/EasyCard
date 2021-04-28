@@ -10,9 +10,9 @@ namespace Nayax.Converters
 {
     internal static class EMVDealHelper
     {
-        public static Phase1RequestBody GetPhase1RequestBody(this NayaxTerminalSettings nayaxParameters, NayaxGlobalSettings conf)
+        public static Phase1RequestBody GetPhase1RequestBody(this NayaxTerminalSettings nayaxParameters, NayaxGlobalSettings conf,string ECterminalID)
         {
-            var phase1Req = new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID, nayaxParameters.TerminalID/*todo add clientid_  before terminalid for posid*/);
+            var phase1Req = new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,String.Format("{0}_{1}",ECterminalID, nayaxParameters.TerminalID));
             return phase1Req;
         }
 
@@ -94,6 +94,7 @@ namespace Nayax.Converters
             inputObj.currency = currency.GetNayaxCurrencyStr();
 
             inputObj.amount = req.TransactionAmount.ToNayaxDecimal();
+            inputObj.vuid =String.Format("{0}_{1}", ((NayaxTerminalSettings)req.PinPadProcessorSettings).TerminalID,Guid.NewGuid().ToString());
             inputObj.tranCode = 1;
             // TODO: national ID
             if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))

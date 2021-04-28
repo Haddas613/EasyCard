@@ -1,4 +1,5 @@
 ﻿using Nayax.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -31,6 +32,7 @@ namespace Nayax
         //   ]
         //}
         #endregion
+        [JsonProperty("params")]
         public Object[] paramss { get; set; }
 
         public Phase1RequestBody()

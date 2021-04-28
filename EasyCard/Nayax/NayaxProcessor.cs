@@ -42,20 +42,20 @@ namespace Nayax
         /// <returns></returns>
         public async Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
         {
-            NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.ProcessorSettings as NayaxTerminalSettings;
+            NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
 
             if (nayaxParameters == null)
             {
                 throw new ArgumentNullException("NayaxTerminalSettings (at paymentTransactionRequest.ProcessorSettings) is required");
             }
 
-            var phas1Req = nayaxParameters.GetPhase1RequestBody(configuration);
+            var phas1Req = nayaxParameters.GetPhase1RequestBody(configuration,paymentTransactionRequest.EasyCardTerminalID);
 
             ObjectInPhase1RequestParams params2 = paymentTransactionRequest.GetObjectInPhase1RequestParams();
 
             phas1Req.paramss[1] = params2;
             //client.Timeout = TimeSpan.FromSeconds(30); TODO timeout for 30 minutes
-            var phase1ReqResult = await this.apiClient.Post<Models.Phase1ResponseBody>(configuration.BaseUrl, Phase1Url, phas1Req);//this.DoRequest(phas1Req, Phase1Url, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
+            var phase1ReqResult = await this.apiClient.Post<Models.Phase1ResponseBody>(configuration.BaseUrl, Phase1Url, phas1Req, BuildHeaders);//this.DoRequest(phas1Req, Phase1Url, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
 
             var phase1ResultBody = phase1ReqResult as Phase1ResponseBody;
 
@@ -239,9 +239,20 @@ namespace Nayax
         //    return await Task.FromResult(headers);
         //}
 
+        
         private async Task HandleIntegrationMessage(IntegrationMessage msg)
         {
             await integrationRequestLogStorageService.Save(msg);
+        }
+
+        private async Task<NameValueCollection> BuildHeaders()
+        {
+            NameValueCollection headers = new NameValueCollection();
+            if (configuration != null)
+            {
+                headers.Add("x-api-key",  configuration.APIKey);
+            }
+            return headers;
         }
     }
 }

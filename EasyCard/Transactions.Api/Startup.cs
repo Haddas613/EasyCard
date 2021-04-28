@@ -277,7 +277,7 @@ namespace Transactions.Api
 
             // integration
             services.Configure<Shva.ShvaGlobalSettings>(Configuration.GetSection("ShvaGlobalSettings"));
-            services.Configure<Nayax.NayaxProcessor>(Configuration.GetSection("NayaxGlobalSettings"));
+            services.Configure<Nayax.Configuration.NayaxGlobalSettings>(Configuration.GetSection("NayaxGlobalSettings"));
             services.Configure<ClearingHouse.ClearingHouseGlobalSettings>(Configuration.GetSection("ClearingHouseGlobalSettings"));
             services.Configure<EasyInvoice.EasyInvoiceGlobalSettings>(Configuration.GetSection("EasyInvoiceGlobalSettings"));
 
