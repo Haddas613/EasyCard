@@ -256,7 +256,8 @@
   "Origin": "מקור",
   "HasInvoice": "קיימת חשבונית",
   "IsPaymentRequest": "בקשת תשלום",
-  
+  "SendTransactionSlipEmailToMerchant": "שלח שובר במייל לבית העסק",
+
   "--BUTTONS--": null,
   "Cancel": "בטל",
   "Ok": "אשר",

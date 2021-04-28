@@ -123,6 +123,11 @@
           hide-details
           disabled
         ></v-switch>
+        <v-switch
+          v-model="model.settings.sendTransactionSlipEmailToMerchant"
+          :label="$t('SendTransactionSlipEmailToMerchant')"
+          hide-details
+        ></v-switch>
       </v-col>
       <v-col cols="12">
         <v-spacer class="py-4"></v-spacer>

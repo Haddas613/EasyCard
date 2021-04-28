@@ -324,6 +324,7 @@
   "ProcessorReference": "Processor Reference",
   "FirstName": "First Name",
   "LastName": "Last Name",
+  "SendTransactionSlipEmailToMerchant": "Send transaction slip email to merchant",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

@@ -39,5 +39,7 @@ namespace MerchantProfileApi.Models.Terminal
         public string DefaultSKU { get; set; }
 
         public bool VATExempt { get; set; }
+
+        public bool? SendTransactionSlipEmailToMerchant { get; set; }
     }
 }

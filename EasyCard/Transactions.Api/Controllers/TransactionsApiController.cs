@@ -884,8 +884,7 @@ namespace Transactions.Api.Controllers
 
             try
             {
-                var email = BuildTransactionSuccessEmail(transaction, terminal);
-                await emailSender.SendEmail(email);
+                await SendTransactionSuccessEmails(transaction, terminal);
             }
             catch (Exception e)
             {
@@ -922,7 +921,7 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        private Email BuildTransactionSuccessEmail(PaymentTransaction transaction, Merchants.Business.Entities.Terminal.Terminal terminal)
+        private async Task SendTransactionSuccessEmails(PaymentTransaction transaction, Merchants.Business.Entities.Terminal.Terminal terminal)
         {
             var settings = terminal.PaymentRequestSettings;
 
@@ -974,7 +973,25 @@ namespace Transactions.Api.Controllers
                 Substitutions = substitutions.ToArray()
             };
 
-            return email;
+            await emailSender.SendEmail(email);
+
+            if (terminal.Settings.SendTransactionSlipEmailToMerchant == true && terminal.BillingSettings.BillingNotificationsEmails?.Count() > 0)
+            {
+                var merchantEmailTemplateCode = nameof(PaymentTransaction) + "Merchant";
+
+                foreach (var notificationEmail in terminal.BillingSettings.BillingNotificationsEmails)
+                {
+                    var emailToMerchant = new Email
+                    {
+                        EmailTo = notificationEmail,
+                        Subject = emailSubject,
+                        TemplateCode = merchantEmailTemplateCode,
+                        Substitutions = substitutions.ToArray()
+                    };
+
+                    await emailSender.SendEmail(emailToMerchant);
+                }
+            }
         }
 
         private async Task<OperationResponse> NextBillingDeal(BillingDeal billingDeal)
