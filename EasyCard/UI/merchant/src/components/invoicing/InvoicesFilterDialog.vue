@@ -81,62 +81,7 @@
                 clearable
               ></v-select>
             </v-col>
-            <v-col cols="12" md="6" class="py-0">
-              <v-menu
-                ref="dateFromMenu"
-                v-model="dateFromMenu"
-                :close-on-content-click="false"
-                :return-value.sync="model.dateFrom"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    v-model="model.dateFrom"
-                    :label="$t('DateFrom')"
-                    readonly
-                    outlined
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker v-model="model.dateFrom" no-title scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.dateFromMenu.save(model.dateFrom)"
-                  >{{$t("Ok")}}</v-btn>
-                </v-date-picker>
-              </v-menu>
-            </v-col>
-            <v-col cols="12" md="6" class="py-0">
-              <v-menu
-                ref="dateToMenu"
-                v-model="dateToMenu"
-                :close-on-content-click="false"
-                :return-value.sync="model.dateTo"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    v-model="model.dateTo"
-                    :label="$t('DateTo')"
-                    readonly
-                    outlined
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker v-model="model.dateTo" no-title scrollable>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.dateToMenu.save(model.dateTo)"
-                  >{{$t("Ok")}}</v-btn>
-                </v-date-picker>
-              </v-menu>
-            </v-col>
+           <date-from-to-filter class="px-3" v-model="model"></date-from-to-filter>
           </v-row>
         </v-form>
       </div>
@@ -149,7 +94,8 @@ import ValidationRules from "../../helpers/validation-rules";
 
 export default {
   components: {
-    EcDialog: () => import("../../components/ec/EcDialog")
+    EcDialog: () => import("../ec/EcDialog"),
+    DateFromToFilter: () => import("../filtering/DateFromToFilter"),
   },
   props: {
     show: {
@@ -168,8 +114,6 @@ export default {
       model: { ...this.filter },
       dictionaries: {},
       terminals: [],
-      dateFromMenu: false,
-      dateToMenu: false,
       formIsValid: true,
       vr: ValidationRules
     };

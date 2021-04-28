@@ -80,6 +80,7 @@
                 clearable
               ></v-select>
             </v-col>
+            <date-from-to-filter class="px-3" v-model="model"></date-from-to-filter>
             <v-col cols="12" md="6" class="py-0">
               <v-select
                 :items="dictionaries.quickStatusFilterTypeEnum"
@@ -202,7 +203,8 @@ export default {
   components: {
     EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
     EcDialog: () => import("../../components/ec/EcDialog"),
-    CustomerDialogInvoker: () => import("../../components/dialog-invokers/CustomerDialogInvoker")
+    CustomerDialogInvoker: () => import("../../components/dialog-invokers/CustomerDialogInvoker"),
+    DateFromToFilter: () => import("../filtering/DateFromToFilter"),
   },
   props: {
     show: {
