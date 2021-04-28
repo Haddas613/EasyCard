@@ -270,7 +270,7 @@ namespace Transactions.Api.Controllers
                 return BadRequest(Messages.TransactionAlreadyHasInvoice);
             }
 
-            if (transaction.Status != TransactionStatusEnum.Completed)
+            if ((int)transaction.Status < 0)
             {
                 return BadRequest(Messages.OnlySuccessfulTransactionsAreAllowed);
             }

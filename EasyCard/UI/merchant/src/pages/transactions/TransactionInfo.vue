@@ -48,9 +48,10 @@
               >
                 <small>{{(model.invoiceID || '-') | guid}}</small>
               </router-link>
-              <v-btn x-small color="primary" v-else @click="createInvoice()" :loading="loading">
+              <v-btn x-small color="primary" v-else-if="(model.quickStatus != 'Failed' && model.quickStatus != 'Canceled')" @click="createInvoice()" :loading="loading">
                 {{$t("CreateInvoice")}}
               </v-btn>
+              <span v-else>-</span>
             </v-col>
           </v-row>
         </v-card-text>
