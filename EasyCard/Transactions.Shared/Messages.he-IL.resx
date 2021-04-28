@@ -348,4 +348,10 @@
   <data name="WhenSpecifiedTokenCCDIsNotValid" xml:space="preserve">
     <value>בשימוש בטוקן, לחצן שמירת פרטי כרטיס אינו זמין</value>
   </data>
+  <data name="CreditCardSecureDetailsRequired" xml:space="preserve">
+    <value>CreditCardSecureDetails חובה</value>
+  </data>
+  <data name="CreditCardSecureDetailsShouldBeOmitted" xml:space="preserve">
+    <value>צריך להשמיט CreditCardSecureDetails במידה ועושים שימוש בטוקן</value>
+  </data>
 </root>

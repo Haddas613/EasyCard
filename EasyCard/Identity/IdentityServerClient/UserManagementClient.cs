@@ -140,6 +140,7 @@ namespace IdentityServerClient
             {
                 logger.LogError($"Cannot delete terminal api key. Terminal api key for {terminalID} does not exist");
                 return new ApiKeyOperationResponse() { Message = "Terminal Api Key does not exist" };
+
                 //throw new EntityNotFoundException($"Terminal api key for {terminalID} does not exist", "TerminalApiKey", terminalID.ToString());
             }
             catch (WebApiClientErrorException clientError)

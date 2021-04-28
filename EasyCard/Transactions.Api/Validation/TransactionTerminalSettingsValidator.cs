@@ -53,7 +53,7 @@ namespace Transactions.Api.Validation
             }
             else
             {
-                if (!(model.PinPad??false))
+                if (!(model.PinPad ?? false))
                 {
                     if (model.CreditCardSecureDetails == null)
                     {
@@ -65,6 +65,7 @@ namespace Transactions.Api.Validation
                         errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.Cvv)}", Messages.CvvRequired));
                     }
                 }
+
                 if (terminalSettings.NationalIDRequired == true && string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID))
                 {
                     errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.CardOwnerNationalID)}", Messages.CardOwnerNationalIDRequired));

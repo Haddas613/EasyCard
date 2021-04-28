@@ -32,9 +32,9 @@ using Merchants.Shared.Models;
 using Shared.Helpers.Templating;
 using Z.EntityFramework.Plus;
 using Merchants.Business.Entities.Terminal;
-using SharedIntegration = Shared.Integration;
 using Transactions.Shared.Enums;
 using Transactions.Api.Extensions;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
@@ -170,7 +170,7 @@ namespace Transactions.Api.Controllers
             {
                 var downloadUrl = EnsureExists(await invoiceService.GetInvoices().Where(m => m.InvoiceID == invoiceID).Select(i => i.DownloadUrl).FirstOrDefaultAsync());
 
-                return new OperationResponse {Status = StatusEnum.Success, EntityUID = invoiceID, EntityReference = downloadUrl };
+                return new OperationResponse { Status = StatusEnum.Success, EntityUID = invoiceID, EntityReference = downloadUrl };
             }
         }
 

@@ -176,6 +176,7 @@ namespace Transactions.Api.Models.Transactions
         public byte[] UpdateTimestamp { get; set; }
 
         public bool AllowTransmission { get; set; }
+
         public bool AllowTransmissionCancellation { get; set; }
 
         /// <summary>
