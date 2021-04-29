@@ -96,7 +96,7 @@ namespace ShvaServiceImitation.Controllers
                 {
                     voucherNumber = new RField
                     {
-                        valueTag = random.Next(1000000, 9000000).ToString()
+                        valueTag = random.Next(10000000, 90000000).ToString()
                     }
                 }
             };
