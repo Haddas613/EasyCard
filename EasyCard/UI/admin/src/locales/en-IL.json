@@ -325,6 +325,7 @@
   "FirstName": "First Name",
   "LastName": "Last Name",
   "SendTransactionSlipEmailToMerchant": "Send transaction slip email to merchant",
+  "IssueInvoice": "Issue Invoice",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

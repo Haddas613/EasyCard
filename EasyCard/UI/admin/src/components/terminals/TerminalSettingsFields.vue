@@ -300,6 +300,14 @@
               persistent-hint
             ></v-text-field>
           </v-col>
+          <v-col cols="12" md="5">
+            <v-switch
+              class="pt-0"
+              v-model="model.checkoutSettings.issueInvoice"
+              :label="$t('IssueInvoice')"
+              hide-details
+            ></v-switch>
+          </v-col>
         </v-row>
       </v-card-text>
     </v-card>

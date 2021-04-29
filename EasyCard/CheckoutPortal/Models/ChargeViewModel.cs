@@ -94,5 +94,7 @@ namespace CheckoutPortal.Models
 
         [BindNever]
         public IEnumerable<KeyValuePair<Guid, string>> SavedTokens { get; set; }
+
+        public bool? IssueInvoice { get; set; }
     }
 }

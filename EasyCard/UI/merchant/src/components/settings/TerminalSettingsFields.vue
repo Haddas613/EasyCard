@@ -330,6 +330,14 @@
           persistent-hint
         ></v-text-field>
       </v-col>
+      <v-col cols="12" md="5">
+        <v-switch
+          class="pt-0"
+          v-model="model.checkoutSettings.issueInvoice"
+          :label="$t('IssueInvoice')"
+          hide-details
+        ></v-switch>
+      </v-col>
     </v-row>
     <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-col cols="12" class="subtitle-2 black--text">

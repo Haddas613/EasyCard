@@ -102,7 +102,7 @@ namespace Transactions.Api.Client
             {
                 return await webApiClient.Get<IEnumerable<Guid>>(apiConfiguration.TransactionsApiAddress, $"api/transmission/nontransmittedtransactionterminals", null, BuildHeaders);
             }
-            catch (WebApiClientErrorException clientError)
+            catch (WebApiClientErrorException)
             {
                 throw;
             }

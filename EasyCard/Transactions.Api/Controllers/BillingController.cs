@@ -199,6 +199,11 @@ namespace Transactions.Api.Controllers
         {
             var billingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
 
+            if (model.IssueInvoice != true)
+            {
+                model.InvoiceDetails = null;
+            }
+
             mapper.Map(model, billingDeal);
 
             billingDeal.ApplyAuditInfo(httpContextAccessor);

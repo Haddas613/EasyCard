@@ -257,6 +257,7 @@
   "HasInvoice": "קיימת חשבונית",
   "IsPaymentRequest": "בקשת תשלום",
   "SendTransactionSlipEmailToMerchant": "שלח שובר במייל לבית העסק",
+  "IssueInvoice": "הפק חשבונית",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
