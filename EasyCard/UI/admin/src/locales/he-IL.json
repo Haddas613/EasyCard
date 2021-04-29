@@ -328,6 +328,8 @@
   "ProcessorReference": "אסמכתת שבא",
   "FirstName": "שם פרטי",
   "LastName": "שם משפחה",
+  "SendTransactionSlipEmailToMerchant": "שלח שובר במייל לבית העסק",
+  "IssueInvoice": "הפק חשבונית",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

@@ -62,7 +62,7 @@ namespace Transactions.Api.Client
             {
                 return await webApiClient.Get<CheckoutData>(apiConfiguration.TransactionsApiAddress, "api/checkout", new { paymentRequestID, apiKey, consumerID }, BuildHeaders);
             }
-            catch (WebApiClientErrorException clientError)
+            catch (WebApiClientErrorException)
             {
                 //var response = clientError.TryConvert(new OperationResponse { Message = clientError.Message });
                 //logger.LogError($"Failed to get checkout data: {response?.Message}, correlationID: {response?.CorrelationId}");
@@ -102,7 +102,7 @@ namespace Transactions.Api.Client
             {
                 return await webApiClient.Get<IEnumerable<Guid>>(apiConfiguration.TransactionsApiAddress, $"api/transmission/nontransmittedtransactionterminals", null, BuildHeaders);
             }
-            catch (WebApiClientErrorException clientError)
+            catch (WebApiClientErrorException)
             {
                 throw;
             }

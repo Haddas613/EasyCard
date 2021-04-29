@@ -10,12 +10,14 @@ using Azure.Security.KeyVault.Secrets;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Shared.Api;
+using Shared.Api.Configuration;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
@@ -25,13 +27,18 @@ using Shared.Api.Validation;
 using Shared.Business.Extensions;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.Email;
 using Shared.Helpers.KeyValueStorage;
+using Shared.Helpers.Queue;
 using Shared.Helpers.Security;
+using Shared.Helpers.Templating;
 using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Transactions.Api.Extensions;
 using Transactions.Api.Extensions.Filtering;
+using Transactions.Api.Models.Billing;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Services;
@@ -42,16 +49,9 @@ using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
-using Transactions.Api.Extensions;
-using Shared.Helpers.Queue;
 using Z.EntityFramework.Plus;
-using Shared.Helpers.Email;
-using Shared.Helpers.Templating;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
-using Shared.Api.Configuration;
-using Microsoft.AspNetCore.Localization;
-using Transactions.Api.Models.Billing;
 
 namespace Transactions.Api.Controllers
 {
@@ -184,6 +184,7 @@ namespace Transactions.Api.Controllers
                 {
                     transaction.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == transaction.TerminalID.Value).Select(t => t.Label).FirstOrDefaultAsync();
                 }
+
                 transaction.MerchantName = merchantName;
                 return Ok(transaction);
             }
@@ -884,8 +885,7 @@ namespace Transactions.Api.Controllers
 
             try
             {
-                var email = BuildTransactionSuccessEmail(transaction, terminal);
-                await emailSender.SendEmail(email);
+                await SendTransactionSuccessEmails(transaction, terminal);
             }
             catch (Exception e)
             {
@@ -904,7 +904,6 @@ namespace Transactions.Api.Controllers
             else if (User.IsTerminal())
             {
                 return DocumentOriginEnum.API;
-
             }
             else if (User.IsMerchant())
             {
@@ -922,28 +921,29 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        private Email BuildTransactionSuccessEmail(PaymentTransaction transaction, Merchants.Business.Entities.Terminal.Terminal terminal)
+        private async Task SendTransactionSuccessEmails(PaymentTransaction transaction, Merchants.Business.Entities.Terminal.Terminal terminal)
         {
             var settings = terminal.PaymentRequestSettings;
 
             var emailSubject = "Payment Success";
             var emailTemplateCode = nameof(PaymentTransaction);
-            var substitutions = new List<TextSubstitution>();
+            var substitutions = new List<TextSubstitution>
+            {
+                new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo),
+                new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName),
+                new TextSubstitution(nameof(transaction.TransactionDate), TimeZoneInfo.ConvertTimeFromUtc(transaction.TransactionDate.GetValueOrDefault(), UserCultureInfo.TimeZone).ToString("d")), // TODO: locale
+                new TextSubstitution(nameof(transaction.TransactionAmount), $"{transaction.TotalAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"),
 
-            substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));
-            substitutions.Add(new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName));
-            substitutions.Add(new TextSubstitution(nameof(transaction.TransactionDate), TimeZoneInfo.ConvertTimeFromUtc(transaction.TransactionDate.GetValueOrDefault(), UserCultureInfo.TimeZone).ToString("d"))); // TODO: locale
-            substitutions.Add(new TextSubstitution(nameof(transaction.TransactionAmount), $"{transaction.TotalAmount.ToString("F2")}{transaction.Currency.GetCurrencySymbol()}"));
+                new TextSubstitution(nameof(transaction.ShvaTransactionDetails.ShvaTerminalID), transaction.ShvaTransactionDetails?.ShvaTerminalID ?? string.Empty),
+                new TextSubstitution(nameof(transaction.ShvaTransactionDetails.ShvaShovarNumber), transaction.ShvaTransactionDetails?.ShvaShovarNumber ?? string.Empty),
 
-            substitutions.Add(new TextSubstitution(nameof(transaction.ShvaTransactionDetails.ShvaTerminalID), transaction.ShvaTransactionDetails?.ShvaTerminalID ?? string.Empty));
-            substitutions.Add(new TextSubstitution(nameof(transaction.ShvaTransactionDetails.ShvaShovarNumber), transaction.ShvaTransactionDetails?.ShvaShovarNumber ?? string.Empty));
+                new TextSubstitution(nameof(transaction.CreditCardDetails.CardNumber), transaction.CreditCardDetails?.CardNumber ?? string.Empty),
+                new TextSubstitution(nameof(transaction.CreditCardDetails.CardOwnerName), transaction.CreditCardDetails?.CardOwnerName ?? string.Empty),
 
-            substitutions.Add(new TextSubstitution(nameof(transaction.CreditCardDetails.CardNumber), transaction.CreditCardDetails?.CardNumber ?? string.Empty));
-            substitutions.Add(new TextSubstitution(nameof(transaction.CreditCardDetails.CardOwnerName), transaction.CreditCardDetails?.CardOwnerName ?? string.Empty));
+                new TextSubstitution(nameof(transaction.CardPresence), transaction.CardPresence.ToString()),
 
-            substitutions.Add(new TextSubstitution(nameof(transaction.CardPresence), transaction.CardPresence.ToString()));
-
-            substitutions.Add(new TextSubstitution(nameof(transaction.DealDetails.DealDescription), transaction.CardPresence.ToString()));
+                new TextSubstitution(nameof(transaction.DealDetails.DealDescription), transaction.CardPresence.ToString())
+            };
 
             string transactionTypeStr = string.Empty;
 
@@ -974,7 +974,25 @@ namespace Transactions.Api.Controllers
                 Substitutions = substitutions.ToArray()
             };
 
-            return email;
+            await emailSender.SendEmail(email);
+
+            if (terminal.Settings.SendTransactionSlipEmailToMerchant == true && terminal.BillingSettings.BillingNotificationsEmails?.Count() > 0)
+            {
+                var merchantEmailTemplateCode = nameof(PaymentTransaction) + "Merchant";
+
+                foreach (var notificationEmail in terminal.BillingSettings.BillingNotificationsEmails)
+                {
+                    var emailToMerchant = new Email
+                    {
+                        EmailTo = notificationEmail,
+                        Subject = emailSubject,
+                        TemplateCode = merchantEmailTemplateCode,
+                        Substitutions = substitutions.ToArray()
+                    };
+
+                    await emailSender.SendEmail(emailToMerchant);
+                }
+            }
         }
 
         private async Task<OperationResponse> NextBillingDeal(BillingDeal billingDeal)

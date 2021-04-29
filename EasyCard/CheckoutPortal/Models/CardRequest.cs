@@ -42,5 +42,7 @@ namespace CheckoutPortal.Models
         /// Payment request ID
         /// </summary>
         public string PaymentRequest { get; set; }
+
+        public bool? IssueInvoice { get; set; }
     }
 }

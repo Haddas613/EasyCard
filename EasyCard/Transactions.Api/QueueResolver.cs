@@ -12,7 +12,7 @@ namespace Transactions.Api
 
         private Dictionary<string, IQueue> queues = new Dictionary<string, IQueue>();
 
-        public QueueResolver (IQueue invoiceQueue)
+        public QueueResolver(IQueue invoiceQueue)
         {
             queues.Add(InvoiceQueue, invoiceQueue);
         }

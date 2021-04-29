@@ -117,6 +117,11 @@ namespace CheckoutPortal.Controllers
 
             Shared.Api.Models.OperationResponse result = null;
 
+            if (!request.IssueInvoice.HasValue && checkoutConfig.Settings.IssueInvoice != null)
+            {
+                request.IssueInvoice = checkoutConfig.Settings.IssueInvoice;
+            }
+
             if (checkoutConfig.PaymentRequest != null)
             {
                 var mdel = new Transactions.Api.Models.Transactions.PRCreateTransactionRequest() { CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails() };

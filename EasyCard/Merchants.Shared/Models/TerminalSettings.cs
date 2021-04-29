@@ -33,6 +33,8 @@ namespace Merchants.Shared.Models
 
         public bool? J5Allowed { get; set; }
 
+        public bool? SendTransactionSlipEmailToMerchant { get; set; }
+
         [StringLength(250)]
         public string DefaultChargeDescription { get; set; }
 

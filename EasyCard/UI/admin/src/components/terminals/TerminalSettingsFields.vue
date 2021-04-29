@@ -116,6 +116,11 @@
               :label="$t('NationalIDRequired')"
               hide-details
             ></v-switch>
+            <v-switch
+              v-model="model.settings.sendTransactionSlipEmailToMerchant"
+              :label="$t('SendTransactionSlipEmailToMerchant')"
+              hide-details
+            ></v-switch>
           </v-col>
           <v-col cols="12">
             <v-spacer class="py-4"></v-spacer>
@@ -294,6 +299,14 @@
               :label="$t('CustomCSSURL')"
               persistent-hint
             ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="5">
+            <v-switch
+              class="pt-0"
+              v-model="model.checkoutSettings.issueInvoice"
+              :label="$t('IssueInvoice')"
+              hide-details
+            ></v-switch>
           </v-col>
         </v-row>
       </v-card-text>

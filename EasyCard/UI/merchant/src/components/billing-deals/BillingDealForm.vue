@@ -203,8 +203,8 @@
         :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
       ></deal-details>
       <v-col cols="12">
-        <v-switch v-model="switchIssueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
-        <div v-if="switchIssueDocument">
+        <v-switch v-model="model.issueInvoice" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
+        <div v-if="model.issueInvoice">
           <invoice-details-fields ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
         </div>
       </v-col>
@@ -262,7 +262,6 @@ export default {
       selectedToken: null,
       scheduleDialog: false,
       ctokenDialog: false,
-      switchIssueDocument: false,
       billingScheduleJSON: JSON.stringify(this.data.billingSchedule)
     };
   },
@@ -300,8 +299,16 @@ export default {
     ok() {
       if (!this.$refs.form.validate()) return;
       let result = { ...this.model };
+      
       result.dealDetails = { ...this.$refs.dealDetails.getData() };
       result.dealDetails.items = this.model.dealDetails.items;
+      
+      if (result.issueInvoice) {
+        result.invoiceDetails = this.$refs.invoiceDetails.getData();
+      } else {
+        result.invoiceDetails = null;
+      }
+
       //if this is edit and billing schedule has not been clicked, no need to validate
       if (!this.$refs.billingScheduleRef && this.model.billingDealID) {
         return this.$emit("ok", result);
@@ -313,12 +320,6 @@ export default {
         this.scheduleDialog = true;
         this.$toasted.show(this.$t("CheckScheduleSettings"), { type: "error" });
         return;
-      }
-
-      if (this.switchIssueDocument) {
-        result.invoiceDetails = this.$refs.invoiceDetails.getData();
-      } else {
-        result.invoiceDetails = null;
       }
 
       if(!this.model.transactionAmount){

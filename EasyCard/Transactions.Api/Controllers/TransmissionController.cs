@@ -132,7 +132,6 @@ namespace Transactions.Api.Controllers
                         {
                             filteredTransactions.Add(t);
                         }
-
                     }
                 }
 

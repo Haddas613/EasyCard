@@ -39,6 +39,7 @@
                     <input type="hidden" asp-for="Currency" />
                     <input type="hidden" asp-for="Description" />
                     <input type="hidden" asp-for="ConsumerID" />
+                    <input type="hidden" asp-for="IssueInvoice" />
                     @if (Model.Amount.GetValueOrDefault() > 0)
                     {
                         <input type="hidden" asp-for="Amount" />

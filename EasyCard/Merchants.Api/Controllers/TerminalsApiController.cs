@@ -262,37 +262,6 @@ namespace Merchants.Api.Controllers
             return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID));
         }
 
-        private async Task ProcessFeatureInternal(Terminal terminal, Feature feature)
-        {
-            if (terminal.EnabledFeatures != null && terminal.EnabledFeatures.Any(f => f == feature.FeatureID))
-            {
-                terminal.EnabledFeatures.Remove(feature.FeatureID);
-
-                if (feature.FeatureID == FeatureEnum.Api)
-                {
-                    var opResult = await userManagementClient.DeleteTerminalApiKey(terminal.TerminalID);
-                }
-            }
-            else
-            {
-                if (terminal.EnabledFeatures == null)
-                {
-                    terminal.EnabledFeatures = new List<FeatureEnum>();
-                }
-
-                if (feature.FeatureID == FeatureEnum.Checkout)
-                {
-                    //Api must be automatically enabled for checkout
-                    if (!terminal.EnabledFeatures.Any(f => f == FeatureEnum.Api))
-                    {
-                        terminal.EnabledFeatures.Add(FeatureEnum.Api);
-                    }
-                }
-
-                terminal.EnabledFeatures.Add(feature.FeatureID);
-            }
-        }
-
         [HttpPost]
         [Route("{terminalID}/resetApiKey")]
         public async Task<ActionResult<OperationResponse>> CreateTerminalApiKey([FromRoute] Guid terminalID)
@@ -349,6 +318,37 @@ namespace Merchants.Api.Controllers
             await terminalsService.AddAuditEntry(auditEntry);
 
             return Ok(new OperationResponse { Status = StatusEnum.Success });
+        }
+
+        private async Task ProcessFeatureInternal(Terminal terminal, Feature feature)
+        {
+            if (terminal.EnabledFeatures != null && terminal.EnabledFeatures.Any(f => f == feature.FeatureID))
+            {
+                terminal.EnabledFeatures.Remove(feature.FeatureID);
+
+                if (feature.FeatureID == FeatureEnum.Api)
+                {
+                    var opResult = await userManagementClient.DeleteTerminalApiKey(terminal.TerminalID);
+                }
+            }
+            else
+            {
+                if (terminal.EnabledFeatures == null)
+                {
+                    terminal.EnabledFeatures = new List<FeatureEnum>();
+                }
+
+                if (feature.FeatureID == FeatureEnum.Checkout)
+                {
+                    //Api must be automatically enabled for checkout
+                    if (!terminal.EnabledFeatures.Any(f => f == FeatureEnum.Api))
+                    {
+                        terminal.EnabledFeatures.Add(FeatureEnum.Api);
+                    }
+                }
+
+                terminal.EnabledFeatures.Add(feature.FeatureID);
+            }
         }
     }
 }

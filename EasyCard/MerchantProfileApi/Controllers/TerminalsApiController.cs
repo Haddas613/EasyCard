@@ -113,7 +113,7 @@ namespace MerchantProfileApi.Controllers
             var opResult = await userManagementClient.CreateTerminalApiKey(new CreateTerminalApiKeyRequest { TerminalID = terminal.TerminalID, MerchantID = terminal.MerchantID });
 
             // TODO: CreateTerminalApiKey failed case
-            return Ok(new OperationResponse (Messages.PrivateKeyUpdated, StatusEnum.Success, opResult.ApiKey));
+            return Ok(new OperationResponse(Messages.PrivateKeyUpdated, StatusEnum.Success, opResult.ApiKey));
         }
 
         // TODO: concurrency check, handle exceptions

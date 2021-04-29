@@ -70,7 +70,7 @@ namespace MerchantProfileApi.Controllers
 
             using (var dbTransaction = itemsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<ItemSummary> ();
+                var response = new SummariesResponse<ItemSummary>();
 
                 if (filter.Currency == null)
                 {

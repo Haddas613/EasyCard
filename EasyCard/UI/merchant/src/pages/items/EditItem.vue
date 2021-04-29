@@ -26,7 +26,7 @@ export default {
         return;
 
       if(result.status === "success"){
-        this.$router.push('/admin/items/list')
+        this.$router.push({ name: "Items"})
       }else{
         this.$toasted.show(result.message, { type: 'error' });
       }
@@ -36,7 +36,7 @@ export default {
     let result = await this.$api.items.getItem(this.$route.params.id);
 
     if(!result){
-      this.$router.push('/admin/items/list')
+      this.$router.push({ name: "Items"})
     }
     
     this.model = result;

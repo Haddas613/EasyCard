@@ -256,7 +256,9 @@
   "Origin": "Origin",
   "HasInvoice": "Has Invoice",
   "IsPaymentRequest": "Is Payment Request",
-  
+  "SendTransactionSlipEmailToMerchant": "Send transaction slip email to merchant",
+  "IssueInvoice": "Issue Invoice",
+
   "--BUTTONS--": null,
   "Cancel": "Cancel",
   "Ok": "Ok",

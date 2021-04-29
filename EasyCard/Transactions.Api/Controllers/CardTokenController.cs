@@ -124,7 +124,6 @@ namespace Transactions.Api.Controllers
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-
                 query = query.OrderByDynamic(filter.SortBy ?? nameof(CreditCardTokenDetails.CreditCardTokenID), filter.SortDesc);
 
                 if (httpContextAccessor.GetUser().IsAdmin())
@@ -156,9 +155,11 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
-                    var response = new SummariesResponse<CreditCardTokenSummary>();
-                    response.Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
-                    response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    var response = new SummariesResponse<CreditCardTokenSummary>
+                    {
+                        Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).Future().ToListAsync(),
+                        NumberOfRecords = numberOfRecordsFuture.Value
+                    };
 
                     return Ok(response);
                 }
