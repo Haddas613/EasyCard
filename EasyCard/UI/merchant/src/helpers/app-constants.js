@@ -3,6 +3,13 @@ const appConstants = {
         defaultInvoiceType: 'invoiceWithPaymentInfo',
         defaultRefundInvoiceType: 'refundInvoice',
         defaultCreditInvoiceType: 'creditNote',
+        types: {
+            creditNote: 'creditNote',
+            invoice: 'invoice',
+            invoiceWithPaymentInfo: 'invoiceWithPaymentInfo',
+            paymentInfo: 'paymentInfo',
+            refundInvoice : 'refundInvoice'
+        }
     },
     filtering:{
         defaultDashboardQuickDateType: 'today',
@@ -11,14 +18,14 @@ const appConstants = {
         defaultDashboardAltQuickDateFilterAltEnum: 'noComparison',
     },
     misc: {
-        uiDefaultVersion: "#{versionNumber}#"
+        uiDefaultVersion: '#{versionNumber}#'
     },
     users: {
         roles: {
-            merchant: "Merchant",
-            manager: "Manager",
-            billingAdmin: "BillingAdministrator",
-            businessAdmin: "BusinessAdministrator",
+            merchant: 'Merchant',
+            manager: 'Manager',
+            billingAdmin: 'BillingAdministrator',
+            businessAdmin: 'BusinessAdministrator',
         }
     },
     terminal:{

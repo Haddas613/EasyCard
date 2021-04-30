@@ -108,6 +108,7 @@
   "MustBeValidID": "Must be valid ID",
   "@AppVersion": "App Version: @version",
   "CreditCardExpired": "Credit Card has expired",
+  "@StringLengthExact": "Must be exactly @val characters",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -258,6 +259,7 @@
   "IsPaymentRequest": "Is Payment Request",
   "SendTransactionSlipEmailToMerchant": "Send transaction slip email to merchant",
   "IssueInvoice": "Issue Invoice",
+  "CreditCardLast4Numbers": "Credit Card last 4 numbers",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

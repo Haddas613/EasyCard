@@ -11,7 +11,10 @@ const primitives = {
     requiredDependsOnFalsy: (d) => (v) => (!!v || (!!d)) || i18n.t('Required'),
 
     maxLength: (max) => (v) => (!v || v.length <= max) || i18n.t('@MaxLength').replace("@max", max),
-    stringLength: (min, max) => (v) => (!v || (v.length >= min && v.length <= max)) || i18n.t('@StringLength').replace("@min", min).replace("@max", max),
+    stringLength: (min, max) => (v) => (!v || (v.length >= min && v.length <= max)) || (
+        min == max ? i18n.t('@StringLengthExact').replace("@val", min)
+        : i18n.t('@StringLength').replace("@min", min).replace("@max", max)
+    ),
 
     inRange: (min, max) => (v) => (v >= min && v <= max) || i18n.t('@InRange').replace("@min", min).replace("@max", max),
     inRangeFlat: (min, max) => (v) => (v >= min && v <= max) || `${min}-${max}`,

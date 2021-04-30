@@ -185,6 +185,8 @@ namespace Transactions.Api.Controllers
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
+            // TODO: validate Invoice with Payment Info, do not send to EInvoice if no payment info present
+
             // TODO: caching
             var systemSettings = await systemSettingsService.GetSystemSettings();
 

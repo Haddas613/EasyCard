@@ -84,9 +84,9 @@ namespace EasyInvoice.Converters
 
             var res = new ECInvoiceCustomerAddress
             {
-                City = "",
+                City = string.Empty,
                 Street = message,
-                PostalCode = "",
+                PostalCode = string.Empty,
             };
 
             return res;
