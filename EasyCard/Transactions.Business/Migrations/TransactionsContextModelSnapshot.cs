@@ -302,6 +302,9 @@ namespace Transactions.Business.Migrations
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(19,4)");
 
+                    b.Property<decimal>("TotalDiscount")
+                        .HasColumnType("decimal(19,4)");
+
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -599,6 +602,9 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<decimal>("TotalDiscount")
                         .HasColumnType("decimal(19,4)");
 
                     b.Property<decimal>("TransactionAmount")

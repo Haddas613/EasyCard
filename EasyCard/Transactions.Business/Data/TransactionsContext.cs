@@ -356,6 +356,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.VATRate).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.VATTotal).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.NetTotal).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.TotalDiscount).HasColumnType("decimal(19,4)").IsRequired();
 
                 builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
@@ -567,6 +568,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.InstallmentPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.InitialPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(b => b.TotalDiscount).HasColumnType("decimal(19,4)").IsRequired();
             }
         }
 

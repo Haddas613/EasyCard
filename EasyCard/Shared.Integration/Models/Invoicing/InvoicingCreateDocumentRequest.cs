@@ -61,6 +61,8 @@ namespace Shared.Integration.Models.Invoicing
 
         public decimal NetTotal { get; set; }
 
+        public decimal? TotalDiscount { get; set; }
+
         public string ConsumerName { get; set; }
 
         public string ConsumerNationalID { get; set; }

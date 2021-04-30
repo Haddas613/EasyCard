@@ -5,6 +5,7 @@ using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Text;
 using Transactions.Shared.Enums;
 
@@ -163,6 +164,11 @@ namespace Transactions.Business.Entities
         public decimal TotalAmount { get; set; }
 
         /// <summary>
+        /// Total discount from all items
+        /// </summary>
+        public decimal TotalDiscount { get; set; }
+
+        /// <summary>
         /// Amount of one instalment payment
         /// </summary>
         public decimal InstallmentPaymentAmount { get; set; }
@@ -250,6 +256,11 @@ namespace Transactions.Business.Entities
             if (InitialPaymentAmount == 0)
             {
                 InitialPaymentAmount = TransactionAmount;
+            }
+
+            if (DealDetails?.Items?.Count() > 0)
+            {
+                TotalDiscount = DealDetails.Items.Sum(e => e.Discount.GetValueOrDefault(0));
             }
 
             TotalAmount = InitialPaymentAmount + (InstallmentPaymentAmount * (NumberOfPayments - 1));

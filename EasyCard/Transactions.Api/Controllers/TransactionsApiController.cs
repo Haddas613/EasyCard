@@ -854,6 +854,8 @@ namespace Transactions.Api.Controllers
 
                         invoiceRequest.ApplyAuditInfo(httpContextAccessor);
 
+                        invoiceRequest.Calculate();
+
                         await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
 
                         endResponse.InnerResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
