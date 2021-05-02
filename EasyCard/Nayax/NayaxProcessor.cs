@@ -11,6 +11,7 @@ using Shared.Integration.Models;
 using System;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
+using Transactions.Business.Services;
 
 namespace Nayax
 {
@@ -40,7 +41,7 @@ namespace Nayax
         /// </summary>
         /// <param name="paymentTransactionRequest"></param>
         /// <returns></returns>
-        public async Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
+        public async Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest, string lastDealNumber)
         {
             NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
 
@@ -50,9 +51,8 @@ namespace Nayax
             }
 
             var phas1Req = nayaxParameters.GetPhase1RequestBody(configuration,paymentTransactionRequest.EasyCardTerminalID);
-
-            ObjectInPhase1RequestParams params2 = paymentTransactionRequest.GetObjectInPhase1RequestParams();
-
+             ObjectInPhase1RequestParams params2 = paymentTransactionRequest.GetObjectInPhase1RequestParams(lastDealNumber);
+           
             phas1Req.paramss[1] = params2;
             //client.Timeout = TimeSpan.FromSeconds(30); TODO timeout for 30 minutes
             var phase1ReqResult = await this.apiClient.Post<Models.Phase1ResponseBody>(configuration.BaseUrl, Phase1Url, phas1Req, BuildHeaders);//this.DoRequest(phas1Req, Phase1Url, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);

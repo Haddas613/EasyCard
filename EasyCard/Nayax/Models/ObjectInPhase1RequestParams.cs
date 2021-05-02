@@ -49,5 +49,7 @@ namespace Nayax.Models
         /// 53 refund
         /// </summary>
         public int tranType { get; set; }
+
+        public string sysTraceNumber { get; set; }
     }
 }

@@ -15,6 +15,8 @@ namespace Transactions.Business.Services
     {
         IQueryable<PaymentTransaction> GetTransactions();
 
+        IQueryable<PaymentTransaction> GetTransactionsForUpdate();
+
         IQueryable<TransactionHistory> GetTransactionHistory(Guid transactionID);
 
         Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum? transactionStatus = null, TransactionFinalizationStatusEnum? finalizationStatus = null, RejectionReasonEnum? rejectionReason = null, string rejectionMessage = null, IDbContextTransaction dbTransaction = null);

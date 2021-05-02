@@ -689,7 +689,10 @@ namespace Transactions.Api.Controllers
                 if (pinpadDeal)
                 {
                     processorRequest.PinPadProcessorSettings = pinpadProcessorSettings;
-                    pinpadPreCreateResult = await ((NayaxProcessor)pinpadProcessor).PreCreateTransaction(processorRequest);
+                  //  var transactions = await transactionsService.GetTransactions().Where(d => d.PaymentTransactionID!=null)).ToListAsync();
+                    var lastDealNumber =await this.transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID!=null && x.ShvaTransactionDetails.ShvaShovarNumber!=null/*== "0887021011"*/).OrderByDescending(d => d.TransactionDate).Select(d => d).FirstOrDefaultAsync();//TODO SAME CLIENTCODE IN SHVA 
+
+                    pinpadPreCreateResult = await ((NayaxProcessor)pinpadProcessor).PreCreateTransaction(processorRequest, lastDealNumber.ToString());
                 }
 
                     var processorResponse = pinpadDeal ? await pinpadProcessor.CreateTransaction(processorRequest) : await processor.CreateTransaction(processorRequest);

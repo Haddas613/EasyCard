@@ -5,6 +5,7 @@ using System.Text;
 using Nayax.Converters;
 using Nayax.Models;
 using Shared.Integration.Models;
+using Transactions.Business.Services;
 
 namespace Nayax.Converters
 {
@@ -81,7 +82,7 @@ namespace Nayax.Converters
             };
         }
         */
-        public static ObjectInPhase1RequestParams GetObjectInPhase1RequestParams(this ProcessorCreateTransactionRequest req)
+        public static ObjectInPhase1RequestParams GetObjectInPhase1RequestParams(this ProcessorCreateTransactionRequest req, string lastDealNumber )
         {
             ObjectInPhase1RequestParams inputObj = new ObjectInPhase1RequestParams();
             // InitDealResultModel initialDealData = req.InitialDeal as InitDealResultModel;
@@ -96,6 +97,7 @@ namespace Nayax.Converters
             inputObj.amount = req.TransactionAmount.ToNayaxDecimal();
             inputObj.vuid =String.Format("{0}_{1}", ((NayaxTerminalSettings)req.PinPadProcessorSettings).TerminalID,Guid.NewGuid().ToString());
             inputObj.tranCode = 1;
+                //inputObj.sysTraceNumber =
             // TODO: national ID
             if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
             {
