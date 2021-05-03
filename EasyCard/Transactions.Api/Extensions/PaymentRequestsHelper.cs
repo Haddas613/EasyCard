@@ -11,6 +11,11 @@ namespace Transactions.Api.Extensions
     {
         public static PayReqQuickStatusFilterTypeEnum GetQuickStatus(this PaymentRequestStatusEnum @enum, DateTime? dueDate)
         {
+            if (@enum == PaymentRequestStatusEnum.Viewed)
+            {
+                return PayReqQuickStatusFilterTypeEnum.Viewed;
+            }
+
             if ((int)@enum >= 1 && (int)@enum < 4)
             {
                 return PayReqQuickStatusFilterTypeEnum.Pending;

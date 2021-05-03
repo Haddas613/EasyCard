@@ -1,4 +1,5 @@
 ﻿using Merchants.Business.Data;
+using Merchants.Business.Entities.Integration;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Entities.User;
@@ -6,12 +7,14 @@ using Merchants.Business.Models.Audit;
 using Merchants.Business.Models.Integration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Newtonsoft.Json.Linq;
 using Shared.Business;
 using Shared.Business.Audit;
 using Shared.Business.AutoHistory;
 using Shared.Business.Messages;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
+using Shared.Integration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,27 +42,32 @@ namespace Merchants.Business.Services
 
         public IQueryable<Terminal> GetTerminals()
         {
+            return GetTerminalsInternal().AsNoTracking();
+        }
+
+        private IQueryable<Terminal> GetTerminalsInternal()
+        {
             if (user.IsAdmin())
             {
-                return context.Terminals.AsNoTracking();
+                return context.Terminals;
             }
             else if (user.IsTerminal())
             {
-                return context.Terminals.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
+                return context.Terminals.Where(t => t.TerminalID == user.GetTerminalID());
             }
             else
             {
-                return context.Terminals.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
+                return context.Terminals.Where(t => t.MerchantID == user.GetMerchantID());
             }
         }
 
         public async Task<Terminal> GetTerminal(Guid terminalID)
         {
-            var terminalQuery = GetTerminals()
+            var terminalQuery = GetTerminalsInternal()
                     .Include(t => t.Merchant)
-                    .Where(m => m.TerminalID == terminalID).Future();
+                    .Where(m => m.TerminalID == terminalID);
 
-            var integrationsQuery = GetTerminalExternalSystems().Where(m => m.TerminalID == terminalID).Future();
+            var integrationsQuery = await GetTerminalExternalSystems(terminalID);
 
             var terminal = (await terminalQuery.ToListAsync()).FirstOrDefault();
 
@@ -73,20 +81,44 @@ namespace Merchants.Business.Services
         }
 
         //TODO: Add AsNoTracking, but make sure that saving works
-        public IQueryable<TerminalExternalSystem> GetTerminalExternalSystems()
+        public async Task<IEnumerable<TerminalExternalSystem>> GetTerminalExternalSystems(Guid terminalID)
         {
+            IQueryable<TerminalExternalSystem> query;
+
             if (user.IsAdmin())
             {
-                return context.TerminalExternalSystems;
+                query = context.TerminalExternalSystems;
             }
             else if (user.IsTerminal())
             {
-                return context.TerminalExternalSystems.Where(t => t.TerminalID == user.GetTerminalID());
+                query = context.TerminalExternalSystems.Where(t => t.TerminalID == user.GetTerminalID());
             }
             else
             {
-                return context.TerminalExternalSystems.Where(t => t.Terminal.MerchantID == user.GetMerchantID());
+                query = context.TerminalExternalSystems.Where(t => t.Terminal.MerchantID == user.GetMerchantID());
             }
+
+            var externalSystems = await query.Where(t => t.TerminalID == terminalID).ToListAsync();
+
+            var shvaIntegration = externalSystems.FirstOrDefault(e => e.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID);
+
+            if (shvaIntegration != null)
+            {
+                var settingsAsShvaTerminal = shvaIntegration.Settings.ToObject<ShvaTerminal>();
+
+                if (settingsAsShvaTerminal != null && !string.IsNullOrWhiteSpace(settingsAsShvaTerminal.MerchantNumber)
+                    && !string.IsNullOrWhiteSpace(settingsAsShvaTerminal.Password) && !string.IsNullOrWhiteSpace(settingsAsShvaTerminal.UserName))
+                {
+                    var shvaTerminal = await context.ShvaTerminals.FirstOrDefaultAsync(t => t.MerchantNumber == settingsAsShvaTerminal.MerchantNumber);
+
+                    if (shvaTerminal != null)
+                    {
+                        shvaIntegration.Settings = JObject.FromObject(shvaTerminal);
+                    }
+                }
+            }
+
+            return externalSystems;
         }
 
         // TODO: security
@@ -219,6 +251,8 @@ namespace Merchants.Business.Services
             };
             context.MerchantHistories.Add(history);
 
+            entity.Updated = DateTime.UtcNow;
+
             if (dbTransaction != null)
             {
                 await base.UpdateEntity(entity, dbTransaction);
@@ -270,7 +304,32 @@ namespace Merchants.Business.Services
                 throw new SecurityException("Method acces is not allowed");
             }
 
-            var dbEntity = await GetTerminalExternalSystems().FirstOrDefaultAsync(es => es.ExternalSystemID == entity.ExternalSystemID && es.TerminalID == entity.TerminalID);
+            if (entity.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID)
+            {
+                var settingsAsShvaTerminal = entity.Settings.ToObject<ShvaTerminal>();
+
+                if (settingsAsShvaTerminal != null && !string.IsNullOrWhiteSpace(settingsAsShvaTerminal.MerchantNumber)
+                    && !string.IsNullOrWhiteSpace(settingsAsShvaTerminal.Password) && !string.IsNullOrWhiteSpace(settingsAsShvaTerminal.UserName))
+                {
+                    var shvaTerminal = await context.ShvaTerminals.FirstOrDefaultAsync(t => t.MerchantNumber == settingsAsShvaTerminal.MerchantNumber);
+                    if (shvaTerminal != null)
+                    {
+                        shvaTerminal.UserName = settingsAsShvaTerminal.UserName;
+                        shvaTerminal.Password = settingsAsShvaTerminal.Password;
+                    }
+                    else
+                    {
+                        context.ShvaTerminals.Add(new ShvaTerminal
+                        {
+                            MerchantNumber = settingsAsShvaTerminal.MerchantNumber,
+                            Password = settingsAsShvaTerminal.Password,
+                            UserName = settingsAsShvaTerminal.UserName
+                        });
+                    }
+                }
+            }
+
+            var dbEntity = (await GetTerminalExternalSystems(entity.TerminalID)).FirstOrDefault(es => es.ExternalSystemID == entity.ExternalSystemID);
 
             if (dbEntity == null)
             {
@@ -294,7 +353,7 @@ namespace Merchants.Business.Services
                 throw new SecurityException("Method acces is not allowed");
             }
 
-            var dbEntity = await GetTerminalExternalSystems().FirstOrDefaultAsync(es => es.ExternalSystemID == externalSystemID && es.TerminalID == terminalID);
+            var dbEntity = (await GetTerminalExternalSystems(terminalID)).FirstOrDefault(es => es.ExternalSystemID == externalSystemID);
 
             if (dbEntity != null)
             {

@@ -1,6 +1,7 @@
 <template>
   <v-flex>
     <div v-if="model">
+      <transaction-printout ref="printout" :transaction="model"></transaction-printout>
       <v-card flat class="mb-2">
         <v-card-title class="py-3 ecdgray--text subtitle-2 text-uppercase">{{$t('GeneralInfo')}}</v-card-title>
         <v-divider></v-divider>
@@ -12,7 +13,7 @@
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
-              <p>{{terminalName}}</p>
+              <p>{{model.terminalName}}</p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('TransactionType')}}</p>
@@ -37,15 +38,20 @@
                 <span v-if="!model.shvaTransactionDetails.transmissionDate">-</span>
               </p>
             </v-col>
-            <v-col cols="12" md="4" class="info-block" v-if="model.invoiceID">
+            <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('InvoiceID')}}</p>
               <router-link
                 class="primary--text"
                 link
                 :to="{name: 'Invoice', params: {id: model.invoiceID}}"
+                 v-if="model.invoiceID"
               >
                 <small>{{(model.invoiceID || '-') | guid}}</small>
               </router-link>
+              <v-btn x-small color="primary" v-else-if="(model.quickStatus != 'Failed' && model.quickStatus != 'Canceled')" @click="createInvoice()" :loading="loading">
+                {{$t("CreateInvoice")}}
+              </v-btn>
+              <span v-else>-</span>
             </v-col>
           </v-row>
         </v-card-text>
@@ -134,12 +140,14 @@ export default {
     ShvaTransactionDetails: () =>
       import("../../components/details/ShvaTransactionDetails"),
     InstallmentDetails: () =>
-      import("../../components/details/InstallmentDetails")
+      import("../../components/details/InstallmentDetails"),
+    TransactionPrintout: () =>
+      import("../../components/printouts/TransactionPrintout")
   },
   data() {
     return {
       model: null,
-      terminalName: "-",
+      loading: false,
       quickStatusesColors: {
         Pending: "primary--text",
         None: "ecgray--text",
@@ -157,17 +165,18 @@ export default {
     if (!this.model) {
       return this.$router.push({ name: "Transactions" });
     }
-
-    let terminals = (await this.$api.terminals.getTerminals()).data;
-    let usedTerminal = this.lodash.find(
-      terminals,
-      t => t.terminalID == this.model.$terminalID
-    );
-    if (usedTerminal) {
-      this.terminalName = usedTerminal.label;
-    } else {
-      this.terminalName = this.$t("NotAccessible");
-    }
+    this.$store.commit("ui/changeHeader", {
+      value: {
+        threeDotMenu: [
+          {
+            text: this.$t("Print"),
+            fn: () => {
+              this.$refs.printout.print();
+            }
+          }
+        ]
+      }
+    });
   },
   methods: {
     async transmit() {
@@ -209,6 +218,15 @@ export default {
         this.model.quickStatus = tr.quickStatus;
         this.model.allowTransmission = false;
       }
+    },
+    async createInvoice(){
+      this.loading = true;
+      let operation = await this.$api.invoicing.createForTransaction(this.model.$paymentTransactionID);
+
+      if(operation.status == "success" && operation.entityReference){
+        this.$set(this.model, 'invoiceID', operation.entityReference);
+      }
+      this.loading = false;
     }
   },
   computed: {

@@ -39,6 +39,7 @@
                     <input type="hidden" asp-for="Currency" />
                     <input type="hidden" asp-for="Description" />
                     <input type="hidden" asp-for="ConsumerID" />
+                    <input type="hidden" asp-for="IssueInvoice" />
                     @if (Model.Amount.GetValueOrDefault() > 0)
                     {
                         <input type="hidden" asp-for="Amount" />
@@ -68,7 +69,7 @@
                                             {
                                                 <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@savedToken.Key" />@savedToken.Value<br />
                                             }
-                                            <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@Guid.Empty" checked />Enter new card<br />
+                                            <input class="form-check-input" type="radio" asp-for="CreditCardToken" value="@(null)" checked />Enter new card<br />
                                         </div>
 
                                     </div>
@@ -179,5 +180,10 @@
             e.preventDefault();
             $('#cancel-form').submit();
         });
+
+        $("#checkout-form").on("submit", function (e) {
+            let ccvaltrim = $("#cc-number").val().replace(/ /g, '');
+            $("#cc-number").val(ccvaltrim);
+        })
     </script>
 }

@@ -23,6 +23,20 @@
               :customer-id="model.consumerID"
               @update="processCustomer($event)"></customer-dialog-invoker>
             </v-col>
+            <v-col cols="12" md="6" class="pt-0 pb-3">
+               <v-switch v-model="model.hasInvoice" hide-details>
+                <template v-slot:label>
+                  <small>{{$t('HasInvoice')}}</small>
+                </template>
+              </v-switch>
+            </v-col>
+            <v-col cols="12" md="6" class="pt-0 pb-3">
+               <v-switch v-model="model.isPaymentRequest" hide-details>
+                <template v-slot:label>
+                  <small>{{$t('IsPaymentRequest')}}</small>
+                </template>
+              </v-switch>
+            </v-col>
             <v-col cols="12" md="6" class="py-0">
               <v-text-field
                 v-model="model.paymentTransactionID"
@@ -66,6 +80,7 @@
                 clearable
               ></v-select>
             </v-col>
+            <date-from-to-filter class="px-3" v-model="model"></date-from-to-filter>
             <v-col cols="12" md="6" class="py-0">
               <v-select
                 :items="dictionaries.quickStatusFilterTypeEnum"
@@ -157,12 +172,23 @@
                 clearable
               ></v-select>
             </v-col>
-            <v-col cols="12" md="12" class="py-0">
+            <v-col cols="12" md="6" class="py-0">
               <v-text-field
                 v-model="model.cardNumber"
                 :label="$t('CardNumber')"
                 outlined
               ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6" class="py-0">
+              <v-select
+                :items="dictionaries.documentOriginEnum"
+                item-text="description"
+                item-value="code"
+                v-model="model.documentOrigin"
+                :label="$t('Origin')"
+                outlined
+                clearable
+              ></v-select>
             </v-col>
           </v-row>
         </v-form>
@@ -177,7 +203,8 @@ export default {
   components: {
     EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
     EcDialog: () => import("../../components/ec/EcDialog"),
-    CustomerDialogInvoker: () => import("../../components/dialog-invokers/CustomerDialogInvoker")
+    CustomerDialogInvoker: () => import("../../components/dialog-invokers/CustomerDialogInvoker"),
+    DateFromToFilter: () => import("../filtering/DateFromToFilter"),
   },
   props: {
     show: {

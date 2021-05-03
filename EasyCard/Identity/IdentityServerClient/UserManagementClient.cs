@@ -39,6 +39,19 @@ namespace IdentityServerClient
             }
         }
 
+        public async Task<UserOperationResponse> UpdateUser(UpdateUserRequestModel model)
+        {
+            try
+            {
+                return await webApiClient.Put<UserOperationResponse>(configuration.Authority, "api/userManagement/user", model, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                return clientError.TryConvert(new UserOperationResponse { Message = clientError.Message });
+            }
+        }
+
         public async Task<UserOperationResponse> ResendInvitation(ResendInvitationRequestModel model)
         {
             try
@@ -126,7 +139,9 @@ namespace IdentityServerClient
             catch (WebApiClientErrorException clientError) when (clientError.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 logger.LogError($"Cannot delete terminal api key. Terminal api key for {terminalID} does not exist");
-                throw new EntityNotFoundException($"Terminal api key for {terminalID} does not exist", "TerminalApiKey", terminalID.ToString());
+                return new ApiKeyOperationResponse() { Message = "Terminal Api Key does not exist" };
+
+                //throw new EntityNotFoundException($"Terminal api key for {terminalID} does not exist", "TerminalApiKey", terminalID.ToString());
             }
             catch (WebApiClientErrorException clientError)
             {

@@ -261,6 +261,31 @@ namespace Merchants.Business.Services
                     {
                         entity.Email = data.Email;
                     }
+
+                    OperationCodesEnum operationCode = default;
+
+                    switch (data.Status)
+                    {
+                        case UserStatusEnum.Active: operationCode = OperationCodesEnum.LoggedIn;
+                            break;
+
+                        case UserStatusEnum.Locked: operationCode = OperationCodesEnum.AccountLocked;
+                            break;
+
+                        case UserStatusEnum.Invited: operationCode = OperationCodesEnum.InvitationSent;
+                            break;
+                    }
+
+                    var history = new MerchantHistory
+                    {
+                        OperationCode = operationCode,
+                        OperationDate = DateTime.UtcNow,
+                        OperationDoneBy = data.DisplayName ?? data.Email,
+                        OperationDoneByID = data.UserID,
+                        MerchantID = entity.MerchantID,
+                        SourceIP = httpContextAccessor.GetIP()
+                    };
+                    context.MerchantHistories.Add(history);
                 }
 
                 if (dbTransaction != null)
@@ -273,6 +298,37 @@ namespace Merchants.Business.Services
                     await context.SaveChangesAsync();
                     await transaction.CommitAsync();
                 }
+            }
+        }
+
+        public async Task UpdateUserRoles(Guid userID, ICollection<string> roles)
+        {
+            var user = await context.UserTerminalMappings.FirstAsync(u => u.UserID == userID);
+
+            user.Roles = roles;
+
+            await context.SaveChangesAsync();
+        }
+
+        public async Task UpdateUser(UserTerminalMapping data)
+        {
+            var user = await context.UserTerminalMappings.FirstAsync(u => u.UserID == data.UserID);
+
+            if (user != null)
+            {
+                if (!string.IsNullOrWhiteSpace(data.DisplayName))
+                {
+                    user.DisplayName = data.DisplayName;
+                }
+
+                if (!string.IsNullOrWhiteSpace(data.Email))
+                {
+                    user.Email = data.Email;
+                }
+
+                user.Roles = data.Roles;
+
+                await context.SaveChangesAsync();
             }
         }
     }

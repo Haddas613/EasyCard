@@ -161,6 +161,11 @@ namespace Shva
             // TODO: validate response and return error is required response
         }
 
+        public Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest, string lastDealNumber)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ProcessorTransmitTransactionsResponse> TransmitTransactions(ProcessorTransmitTransactionsRequest transmitTransactionsRequest)
         {
             ShvaTerminalSettings shvaParameters = transmitTransactionsRequest.ProcessorSettings as ShvaTerminalSettings;
@@ -219,9 +224,11 @@ namespace Shva
 
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
+            var actionPath = configuration.BaseUrl.EndsWith(".asmx") ? string.Empty : $"{soapAction}";
+
             try
             {
-                svcRes = await this.apiClient.PostXml<Envelope>(configuration.BaseUrl, string.Empty, soap, () => BuildHeaders(soapAction),
+                svcRes = await this.apiClient.PostXml<Envelope>(configuration.BaseUrl, actionPath, soap, () => BuildHeaders(soapAction),
                     (url, request) =>
                     {
                         requestStr = request;

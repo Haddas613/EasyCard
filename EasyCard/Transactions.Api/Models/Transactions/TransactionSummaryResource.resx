@@ -129,6 +129,9 @@
   <data name="Currency" xml:space="preserve">
     <value>Currency</value>
   </data>
+  <data name="DocumentOrigin" xml:space="preserve">
+    <value>Origin</value>
+  </data>
   <data name="JDealType" xml:space="preserve">
     <value>JDeal type</value>
   </data>

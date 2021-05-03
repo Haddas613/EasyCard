@@ -1,5 +1,6 @@
 ﻿using Merchants.Business.Data;
 using Merchants.Business.Entities.Merchant;
+using Merchants.Business.Entities.Terminal;
 using Merchants.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;

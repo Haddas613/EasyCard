@@ -20,6 +20,10 @@ namespace IdentityServer.Security.Auditing
         LoggedIn,
         LoggedOut,
 
-        UserEnabledTwoFactor
+        UserEnabledTwoFactor,
+        PasswordChanged,
+        UserDisabledTwoFactor,
+
+        LockedOut
     }
 }

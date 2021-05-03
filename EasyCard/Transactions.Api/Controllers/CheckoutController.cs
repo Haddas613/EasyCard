@@ -66,6 +66,11 @@ namespace Transactions.Api.Controllers
 
             var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.SharedApiKey == apiKeyB).FirstOrDefaultAsync());
 
+            if (terminal.EnabledFeatures == null || !terminal.EnabledFeatures.Any(f => f == Merchants.Shared.Enums.FeatureEnum.Checkout))
+            {
+                return Unauthorized($"Checkout feature is not enabled.");
+            }
+
             // TODO: caching
             var systemSettings = await systemSettingsService.GetSystemSettings();
 
@@ -92,6 +97,11 @@ namespace Transactions.Api.Controllers
                     }
                 }
 
+                if (paymentRequest.Status == Shared.Enums.PaymentRequestStatusEnum.Sent || paymentRequest.Status == Shared.Enums.PaymentRequestStatusEnum.Initial)
+                {
+                    await paymentRequestsService.UpdateEntityWithStatus(paymentRequest, Shared.Enums.PaymentRequestStatusEnum.Viewed);
+                }
+
                 response.PaymentRequest = mapper.Map<PaymentRequestInfo>(paymentRequest);
             }
 
@@ -104,7 +114,14 @@ namespace Transactions.Api.Controllers
                     response.Consumer = new ConsumerInfo();
                     mapper.Map(consumer, response.Consumer);
 
-                    var tokens = await creditCardTokenService.GetTokens().Where(d => d.ConsumerID == consumer.ConsumerID).Select(d => new TokenInfo { CardNumber = d.CardNumber, CardExpiration = d.CardExpiration.ToString(), CardVendor = d.CardVendor, CreditCardTokenID = d.CreditCardTokenID }).ToListAsync();
+                    var tokensRaw = await creditCardTokenService.GetTokens()
+                        .Where(d => d.ConsumerID == consumer.ConsumerID)
+                        .ToListAsync();
+
+                    //TODO: no in memory filtering
+                    var tokens = tokensRaw.Where(t => t.CardExpiration.Expired == false)
+                        .Select(d => new TokenInfo { CardNumber = d.CardNumber, CardExpiration = d.CardExpiration.ToString(), CardVendor = d.CardVendor, CreditCardTokenID = d.CreditCardTokenID })
+                        .ToList();
 
                     if (tokens.Count > 0)
                     {

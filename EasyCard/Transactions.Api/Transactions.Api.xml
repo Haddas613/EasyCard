@@ -31,11 +31,6 @@
             Refund request
             </summary>
         </member>
-        <member name="M:Transactions.Api.Controllers.TransactionsApiController.NextBillingDeal(Transactions.Api.Models.Transactions.NextBillingDealRequest)">
-            <summary>
-            Billing deal
-            </summary>
-        </member>
         <member name="M:Transactions.Api.Controllers.TransmissionController.GetNotTransmittedTransactions(Transactions.Api.Models.Transactions.TransmissionFilter)">
             <summary>
             Get transactions which are not transmitted yet
@@ -91,6 +86,11 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.TerminalID">
             <summary>
             Terminal
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.TerminalName">
+            <summary>
+            EasyCard terminal name
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.MerchantID">
@@ -188,6 +188,11 @@
             Billing Schedule
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryAdmin.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Billing.BillingDealSummaryResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -204,19 +209,29 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Active">
+            <summary>
+              Looks up a localized string similar to Active.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.BillingDealID">
             <summary>
-              Looks up a localized string similar to Billing Deal ID.
+              Looks up a localized string similar to ID.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.BillingDealTimestamp">
             <summary>
-              Looks up a localized string similar to Billing Deal Timestamp.
+              Looks up a localized string similar to Date.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.BillingSchedule">
             <summary>
-              Looks up a localized string similar to Billing Schedule.
+              Looks up a localized string similar to Schedule.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CardExpired">
+            <summary>
+              Looks up a localized string similar to Card Expired.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CardNumber">
@@ -226,7 +241,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CardOwnerName">
             <summary>
-              Looks up a localized string similar to Card Owner Name.
+              Looks up a localized string similar to Card Owner.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Currency">
@@ -239,9 +254,19 @@
               Looks up a localized string similar to Merchant ID.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.NumberOfPayments">
             <summary>
-              Looks up a localized string similar to Number of Payments.
+              Looks up a localized string similar to Num. of payments.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Schedule">
+            <summary>
+              Looks up a localized string similar to Schedule.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.Status">
@@ -254,14 +279,19 @@
               Looks up a localized string similar to Terminal ID.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.TotalAmount">
             <summary>
-              Looks up a localized string similar to Total Amount.
+              Looks up a localized string similar to Total.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.TransactionAmount">
             <summary>
-              Looks up a localized string similar to Transaction Amount.
+              Looks up a localized string similar to Amount.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.Currency">
@@ -369,6 +399,11 @@
             EasyCard terminal reference
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.TerminalName">
+            <summary>
+            EasyCard terminal name
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.Currency">
             <summary>
             Currency
@@ -425,6 +460,11 @@
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummary.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryAdmin.Currency">
             <summary>
             Currency
             </summary>
@@ -490,9 +530,19 @@
               Looks up a localized string similar to Invoice Type.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.TerminalID">
             <summary>
               Looks up a localized string similar to Terminal ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.ResendInvoiceRequest.TerminalID">
@@ -585,6 +635,11 @@
             Terminal
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.TerminalName">
+            <summary>
+            EasyCard terminal name
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummary.PaymentRequestID">
             <summary>
             Primary reference
@@ -610,6 +665,11 @@
             Currency
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryAdmin.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -628,7 +688,12 @@
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.CardOwnerName">
             <summary>
-              Looks up a localized string similar to Card Owner Name.
+              Looks up a localized string similar to Card Owner.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.ConsumerEmail">
+            <summary>
+              Looks up a localized string similar to Email.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.ConsumerID">
@@ -646,34 +711,44 @@
               Looks up a localized string similar to Due Date.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestAmount">
             <summary>
-              Looks up a localized string similar to Payment Request Amount.
+              Looks up a localized string similar to Amount.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestDate">
             <summary>
-              Looks up a localized string similar to Payment Request Date.
+              Looks up a localized string similar to Date.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestID">
             <summary>
-              Looks up a localized string similar to Payment Request ID.
+              Looks up a localized string similar to ID.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestNumber">
             <summary>
-              Looks up a localized string similar to Payment Request Number.
+              Looks up a localized string similar to Number.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestTimestamp">
             <summary>
-              Looks up a localized string similar to Payment RequestTimestamp.
+              Looks up a localized string similar to Date.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentRequestType">
             <summary>
-              Looks up a localized string similar to Payment Request Type.
+              Looks up a localized string similar to Type.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.PaymentTransactionID">
+            <summary>
+              Looks up a localized string similar to Transaction ID.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.QuickStatus">
@@ -689,6 +764,92 @@
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.TerminalID">
             <summary>
               Looks up a localized string similar to Terminal ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestSummaryResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Tokens.CreditCardSummaryResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.CardExpiration">
+            <summary>
+              Looks up a localized string similar to Expiry.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.CardNumber">
+            <summary>
+              Looks up a localized string similar to Number.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.CardOwnerName">
+            <summary>
+              Looks up a localized string similar to Owner name.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.CardVendor">
+            <summary>
+              Looks up a localized string similar to Vendor.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.ConsumerEmail">
+            <summary>
+              Looks up a localized string similar to Email.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.ConsumerID">
+            <summary>
+              Looks up a localized string similar to ConsumerID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.Created">
+            <summary>
+              Looks up a localized string similar to Created.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.CreditCardTokenID">
+            <summary>
+              Looks up a localized string similar to ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.Expired">
+            <summary>
+              Looks up a localized string similar to Expired.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.MerchantID">
+            <summary>
+              Looks up a localized string similar to Merchant ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.TerminalID">
+            <summary>
+              Looks up a localized string similar to Terminal ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardSummaryResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenFilter.ConsumerEmail">
@@ -1046,6 +1207,11 @@
             Terminal
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TerminalName">
+            <summary>
+            EasyCard terminal name
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.MerchantID">
             <summary>
             Merchant
@@ -1275,6 +1441,11 @@
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.Currency">
             <summary>
               Looks up a localized string similar to Currency.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.DocumentOrigin">
+            <summary>
+              Looks up a localized string similar to Origin.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.JDealType">

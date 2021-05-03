@@ -24,13 +24,12 @@ export default {
   },
   methods: {
     async createCustomer(data) {
-        
       let result = await this.$api.consumers.createConsumer(data);
       //server errors will be displayed automatically
       if (!result) return;
-
+      
       if (result.status === "success") {
-        this.$router.push("/admin/customers/list");
+        this.$router.push({ name: "Customer", params: { id: result.entityReference } });
       } else {
         this.$toasted.show(result.message, { type: "error" });
       }
@@ -38,6 +37,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

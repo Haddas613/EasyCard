@@ -18,6 +18,8 @@ import EasyInvoiceApi from './modules/integrations/EasyInvoiceApi';
 import ClearingHouseApi from './modules/integrations/ClearingHouseApi';
 import TransmissionApi from './modules/transactions/TransmissionsApi'
 import cfg from "../app.config";
+import appConstants from "../helpers/app-constants";
+import CardTokensApi from './modules/transactions/CardTokensApi';
 
 class ApiBase {
     constructor() {
@@ -38,6 +40,7 @@ class ApiBase {
         this.system = new SystemApi(this);
         this.audit = new AuditApi(this);
         this.transmissions = new TransmissionApi(this);
+        this.cardTokens = new CardTokensApi(this);
         this.integrations = {
             shva: new ShvaApi(this),
             easyInvoice: new EasyInvoiceApi(this),
@@ -152,8 +155,13 @@ class ApiBase {
     }
 
     async _handleRequest(request, showSuccessToastr = false) {
+        let requestIncrementTimeout = null;
+        let storeDispatched = false;
         try {
-            store.commit("ui/requestsCountIncrement");
+            requestIncrementTimeout = setTimeout(() => {
+                store.commit("ui/requestsCountIncrement");
+                storeDispatched = true;
+            }, 1500);
             request = await request;
 
             if (request.ok) {
@@ -188,7 +196,12 @@ class ApiBase {
         } catch (err) {
             Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error' });
         } finally {
-            store.commit("ui/requestsCountDecrement");
+            if(requestIncrementTimeout){
+                clearTimeout(requestIncrementTimeout);
+            }
+            if(storeDispatched){
+                store.commit("ui/requestsCountDecrement");
+            }
         }
         return null;
     }
@@ -216,12 +229,13 @@ class ApiBase {
     }
 
     async _checkAppVersion(responseHeaders) {
-        if (this.lastCheckTimestamp && this.lastCheckTimestamp.getTime() > (new Date()).setMinutes(-5)) {
+        if ((cfg.VUE_APP_VERSION == appConstants.misc.uiDefaultVersion) || this.lastCheckTimestamp && this.lastCheckTimestamp.getTime() > (new Date()).setMinutes(-5)) {
             return;
         }
 
-        let responseHeaderVal = responseHeaders.get('x-version');
-        if(!responseHeaderVal){
+        let responseHeaderVal = responseHeaders.get('x-ui-version');
+
+        if(!responseHeaderVal || responseHeaderVal == appConstants.misc.uiDefaultVersion){
             return;
         }
 

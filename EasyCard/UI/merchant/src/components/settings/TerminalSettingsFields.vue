@@ -33,6 +33,15 @@
         ></v-select>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12" class="subtitle-2 black--text pb-3">
+        {{$t("Features")}}
+        <v-divider class="pt-1"></v-divider>
+      </v-col>
+      <v-col cols="12">
+        <terminal-features-form :terminal="data"></terminal-features-form>
+      </v-col>
+    </v-row>
     <v-row no-gutters>
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("General")}}
@@ -114,6 +123,11 @@
           hide-details
           disabled
         ></v-switch>
+        <v-switch
+          v-model="model.settings.sendTransactionSlipEmailToMerchant"
+          :label="$t('SendTransactionSlipEmailToMerchant')"
+          hide-details
+        ></v-switch>
       </v-col>
       <v-col cols="12">
         <v-spacer class="py-4"></v-spacer>
@@ -155,7 +169,7 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("SharedApiKey")}}
         <v-divider class="pt-1"></v-divider>
@@ -179,7 +193,7 @@
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Api)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("PrivateApiKey")}}
         <v-divider class="pt-1"></v-divider>
@@ -275,7 +289,7 @@
         <img class="mt-1" v-if="model.paymentRequestSettings.merchantLogo" v-bind:src="model.paymentRequestSettings.merchantLogo" height="48">
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Billing)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("Billing")}}
         <v-divider class="pt-1"></v-divider>
@@ -301,7 +315,7 @@
         ></v-switch>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("Checkout")}}
         <v-divider class="pt-1"></v-divider>
@@ -316,8 +330,16 @@
           persistent-hint
         ></v-text-field>
       </v-col>
+      <v-col cols="12" md="5">
+        <v-switch
+          class="pt-0"
+          v-model="model.checkoutSettings.issueInvoice"
+          :label="$t('IssueInvoice')"
+          hide-details
+        ></v-switch>
+      </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-col cols="12" class="subtitle-2 black--text">
         {{$t("CheckoutRedirectUrls")}}
         <v-divider class="pt-1"></v-divider>
@@ -351,6 +373,22 @@
         </ec-list>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12" class="subtitle-2 black--text pb-3">
+        {{$t("Transmission")}}
+        <v-divider class="pt-1"></v-divider>
+      </v-col>
+      <v-col cols="12" md="7">
+        <v-select
+          :items="merchantDictionaries.terminalTransmissionScheduleEnum"
+          item-text="description"
+          item-value="code"
+          v-model="model.settings.transmissionSchedule"
+          :label="$t('TransmissionTime')"
+          outlined
+        ></v-select>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -361,6 +399,7 @@ import appConstants from "../../helpers/app-constants";
 export default {
   components: {
     EcList: () => import("../ec/EcList"),
+    TerminalFeaturesForm: () => import("../settings/TerminalFeaturesForm")
   },
   props: {
     data: {
@@ -376,7 +415,8 @@ export default {
       dictionaries: {},
       merchantDictionaries: {},
       privateApiKey: null,
-      showSharedApiKey: false
+      showSharedApiKey: false,
+      appConstants: appConstants
     };
   },
   async mounted() {
@@ -442,6 +482,8 @@ export default {
 
       if (operation.status === "success") {
         this.privateApiKey = operation.entityReference;
+      }else{
+        this.$toasted.show(operation.message, { type: 'error' });
       }
     },
     async resetSharedKey() {

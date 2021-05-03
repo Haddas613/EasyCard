@@ -1,6 +1,8 @@
 <template>
   <v-app id="inspire" v-bind:dir="$vuetify.rtl ? 'rtl' : 'ltr'">
 
+    <intercom></intercom>
+
     <app-version-overlay></app-version-overlay>
 
     <main-app-bar :drawer.sync="drawer"/>
@@ -22,6 +24,7 @@
       MainContent: () => import('./Content.vue'),
       MainFooter: () => import('./Footer.vue'),
       AppVersionOverlay: () => import("../../components/misc/AppVersionOverlay"),
+      Intercom: () => import("../../components/misc/Intercom")
     },
 
     data: () => ({

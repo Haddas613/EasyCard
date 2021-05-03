@@ -22,12 +22,11 @@ namespace Merchants.Business.Services
         {
             this.context = context;
             this.httpContextAccessor = httpContextAccessor;
-            this.user = httpContextAccessor.GetUser();
         }
 
         public async Task UpdateSystemSettings(SystemSettings entity)
         {
-            if (!user.IsAdmin())
+            if (!httpContextAccessor.GetUser().IsAdmin())
             {
                 throw new SecurityException("Method acces is not allowed");
             }

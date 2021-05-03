@@ -62,9 +62,9 @@ namespace Transactions.Api.Client
             {
                 return await webApiClient.Get<CheckoutData>(apiConfiguration.TransactionsApiAddress, "api/checkout", new { paymentRequestID, apiKey, consumerID }, BuildHeaders);
             }
-            catch (WebApiClientErrorException clientError)
+            catch (WebApiClientErrorException)
             {
-                var response = clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+                //var response = clientError.TryConvert(new OperationResponse { Message = clientError.Message });
                 //logger.LogError($"Failed to get checkout data: {response?.Message}, correlationID: {response?.CorrelationId}");
                 throw;
             }
@@ -83,16 +83,16 @@ namespace Transactions.Api.Client
             }
         }
 
-        public async Task<OperationResponse> TransmitTerminalTransactions(Guid? terminalID)
+        public async Task<SummariesResponse<TransmitTransactionResponse>> TransmitTerminalTransactions(Guid? terminalID)
         {
             try
             {
-                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/transmission/transmitByTerminal/{terminalID}", null, BuildHeaders);
+                return await webApiClient.Post<SummariesResponse<TransmitTransactionResponse>>(apiConfiguration.TransactionsApiAddress, $"api/transmission/transmitByTerminal/{terminalID}", null, BuildHeaders);
             }
             catch (WebApiClientErrorException clientError)
             {
                 //logger.LogError(clientError.Message);
-                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+                return clientError.TryConvert(new SummariesResponse<TransmitTransactionResponse> { });
             }
         }
 
@@ -102,7 +102,7 @@ namespace Transactions.Api.Client
             {
                 return await webApiClient.Get<IEnumerable<Guid>>(apiConfiguration.TransactionsApiAddress, $"api/transmission/nontransmittedtransactionterminals", null, BuildHeaders);
             }
-            catch (WebApiClientErrorException clientError)
+            catch (WebApiClientErrorException)
             {
                 throw;
             }

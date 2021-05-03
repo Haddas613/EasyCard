@@ -1,15 +1,18 @@
 ﻿using Merchants.Business.Data;
+using Merchants.Business.Entities.Integration;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Entities.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Newtonsoft.Json.Linq;
 using Shared.Business;
 using Shared.Business.Audit;
 using Shared.Business.AutoHistory;
 using Shared.Business.Messages;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
+using Shared.Integration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,26 +46,43 @@ namespace Merchants.Business.Services
         public async Task<TerminalTemplate> GetTerminalTemplate(long terminalTemplateID)
         {
             var templateQuery = context.TerminalTemplates
-                    .Where(m => m.TerminalTemplateID == terminalTemplateID)
-                    .Future();
+                    .Where(m => m.TerminalTemplateID == terminalTemplateID);
 
-            var integrationsQuery = GetTerminalTemplateExternalSystems().Where(m => m.TerminalTemplateID == terminalTemplateID).Future();
+            var integrationsQuery = await GetTerminalTemplateExternalSystems(terminalTemplateID);
 
             var template = (await templateQuery.ToListAsync()).FirstOrDefault();
 
             if (template != null)
             {
-                // futureStates is already resolved and contains the result
                 template.Integrations = integrationsQuery.ToList();
             }
 
             return template;
         }
 
-        //TODO: Add AsNoTracking, but make sure that saving works
-        public IQueryable<TerminalTemplateExternalSystem> GetTerminalTemplateExternalSystems()
+        public async Task<IEnumerable<TerminalTemplateExternalSystem>> GetTerminalTemplateExternalSystems(long terminalTemplateID)
         {
-            return context.TerminalTemplateExternalSystems;
+            var externalSystems = await context.TerminalTemplateExternalSystems.Where(t => t.TerminalTemplateID == terminalTemplateID).ToListAsync();
+
+            var shvaIntegration = externalSystems.FirstOrDefault(e => e.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID);
+
+            if (shvaIntegration != null)
+            {
+                var settingsAsShvaTerminal = shvaIntegration.Settings.ToObject<ShvaTerminal>();
+
+                if (settingsAsShvaTerminal != null && !string.IsNullOrWhiteSpace(settingsAsShvaTerminal.MerchantNumber)
+                    && !string.IsNullOrWhiteSpace(settingsAsShvaTerminal.Password) && !string.IsNullOrWhiteSpace(settingsAsShvaTerminal.UserName))
+                {
+                    var shvaTerminal = await context.ShvaTerminals.FirstOrDefaultAsync(t => t.MerchantNumber == settingsAsShvaTerminal.MerchantNumber);
+
+                    if (shvaTerminal != null)
+                    {
+                        shvaIntegration.Settings = JObject.FromObject(shvaTerminal);
+                    }
+                }
+            }
+
+            return externalSystems;
         }
 
         public async Task RemoveTerminalTemplateExternalSystem(long terminalTemplateID, long externalSystemID)
@@ -72,7 +92,7 @@ namespace Merchants.Business.Services
                 throw new SecurityException("Method acces is not allowed");
             }
 
-            var dbEntity = await GetTerminalTemplateExternalSystems().FirstOrDefaultAsync(es => es.ExternalSystemID == externalSystemID && es.TerminalTemplateID == terminalTemplateID);
+            var dbEntity = (await GetTerminalTemplateExternalSystems(terminalTemplateID)).FirstOrDefault(es => es.ExternalSystemID == externalSystemID);
 
             if (dbEntity != null)
             {
@@ -89,7 +109,32 @@ namespace Merchants.Business.Services
                 throw new SecurityException("Method acces is not allowed");
             }
 
-            var dbEntity = await GetTerminalTemplateExternalSystems().FirstOrDefaultAsync(es => es.ExternalSystemID == entity.ExternalSystemID && es.TerminalTemplateID == entity.TerminalTemplateID);
+            if (entity.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID)
+            {
+                var settingsAsShvaTerminal = entity.Settings.ToObject<ShvaTerminal>();
+
+                if (settingsAsShvaTerminal != null && !string.IsNullOrWhiteSpace(settingsAsShvaTerminal.MerchantNumber)
+                    && !string.IsNullOrWhiteSpace(settingsAsShvaTerminal.Password) && !string.IsNullOrWhiteSpace(settingsAsShvaTerminal.UserName))
+                {
+                    var shvaTerminal = await context.ShvaTerminals.FirstOrDefaultAsync(t => t.MerchantNumber == settingsAsShvaTerminal.MerchantNumber);
+                    if (shvaTerminal != null)
+                    {
+                        shvaTerminal.UserName = settingsAsShvaTerminal.UserName;
+                        shvaTerminal.Password = settingsAsShvaTerminal.Password;
+                    }
+                    else
+                    {
+                        context.ShvaTerminals.Add(new ShvaTerminal
+                        {
+                            MerchantNumber = settingsAsShvaTerminal.MerchantNumber,
+                            Password = settingsAsShvaTerminal.Password,
+                            UserName = settingsAsShvaTerminal.UserName
+                        });
+                    }
+                }
+            }
+
+            var dbEntity = (await GetTerminalTemplateExternalSystems(entity.TerminalTemplateID)).FirstOrDefault(es => es.ExternalSystemID == entity.TerminalTemplateExternalSystemID);
 
             if (dbEntity == null)
             {

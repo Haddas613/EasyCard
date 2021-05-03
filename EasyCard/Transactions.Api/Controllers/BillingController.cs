@@ -42,7 +42,7 @@ namespace Transactions.Api.Controllers
     [Route("api/billing")]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrManagerOrAdmin)]
     [ApiController]
     public class BillingController : ApiControllerBase
     {
@@ -92,10 +92,8 @@ namespace Transactions.Api.Controllers
         {
             return new TableMeta
             {
-                Columns = typeof(BillingDealSummary)
-                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
-                    .Select(d => d.GetColMeta(BillingDealSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
-                    .ToDictionary(d => d.Key)
+                Columns = (httpContextAccessor.GetUser().IsAdmin() ? typeof(BillingDealSummaryAdmin) : typeof(BillingDealSummary))
+                    .GetObjectMeta(BillingDealSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
             };
         }
 
@@ -107,13 +105,45 @@ namespace Transactions.Api.Controllers
 
             using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<BillingDealSummary>();
+                if (httpContextAccessor.GetUser().IsAdmin())
+                {
+                    var response = new SummariesResponse<BillingDealSummaryAdmin>();
 
-                //TODO: ordering
-                response.Data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
-                response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    var summary = await mapper.ProjectTo<BillingDealSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(PaymentRequest.PaymentRequestTimestamp), filter.SortDesc)
+                        .ApplyPagination(filter)).ToListAsync();
 
-                return Ok(response);
+                    var terminalsId = summary.Select(t => t.TerminalID).Distinct();
+
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
+
+                    //TODO: Merchant name instead of BusinessName
+                    summary.ForEach(s =>
+                    {
+                        if (terminals.ContainsKey(s.TerminalID))
+                        {
+                            s.TerminalName = terminals[s.TerminalID].Label;
+                            s.MerchantName = terminals[s.TerminalID].BusinessName;
+                        }
+                    });
+
+                    response.Data = summary;
+                    response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = new SummariesResponse<BillingDealSummary>();
+
+                    //TODO: ordering
+                    response.Data = await mapper.ProjectTo<BillingDealSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
+                    response.NumberOfRecords = numberOfRecordsFuture.Value;
+
+                    return Ok(response);
+                }
             }
         }
 
@@ -126,6 +156,11 @@ namespace Transactions.Api.Controllers
                 var dbBillingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
 
                 var billingDeal = mapper.Map<BillingDealResponse>(dbBillingDeal);
+
+                if (billingDeal.TerminalID.HasValue)
+                {
+                    billingDeal.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == billingDeal.TerminalID.Value).Select(t => t.Label).FirstOrDefaultAsync();
+                }
 
                 return Ok(billingDeal);
             }
@@ -164,6 +199,11 @@ namespace Transactions.Api.Controllers
         {
             var billingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
 
+            if (model.IssueInvoice != true)
+            {
+                model.InvoiceDetails = null;
+            }
+
             mapper.Map(model, billingDeal);
 
             billingDeal.ApplyAuditInfo(httpContextAccessor);
@@ -186,24 +226,6 @@ namespace Transactions.Api.Controllers
             await billingDealService.UpdateEntity(billingDeal);
 
             return Ok(new OperationResponse(Messages.BillingDealDeleted, StatusEnum.Success, billingDealID));
-        }
-
-        [HttpPost]
-        [Route("create-transactions")]
-        public async Task<ActionResult<OperationResponse>> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request)
-        {
-            if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
-            {
-                return BadRequest(new OperationResponse(Messages.BillingDealsRequired, null, HttpContext.TraceIdentifier, nameof(request.BillingDealsID), Messages.BillingDealsRequired));
-            }
-
-            var response = new OperationResponse
-            {
-                Status = StatusEnum.Success,
-                Message = Messages.TransactionsQueued
-            };
-
-            return Ok(response);
         }
     }
 }

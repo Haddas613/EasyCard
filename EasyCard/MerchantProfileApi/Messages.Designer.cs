@@ -61,6 +61,15 @@ namespace MerchantProfileApi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Api Feature must be enabled first.
+        /// </summary>
+        public static string ApiFeatureMustBeEnabled {
+            get {
+                return ResourceManager.GetString("ApiFeatureMustBeEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Consumer Created.
         /// </summary>
         public static string ConsumerCreated {

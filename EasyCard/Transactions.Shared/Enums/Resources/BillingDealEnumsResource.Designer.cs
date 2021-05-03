@@ -70,6 +70,15 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bi montly.
+        /// </summary>
+        public static string BiMontly {
+            get {
+                return ResourceManager.GetString("BiMontly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Day.
         /// </summary>
         public static string Day {
@@ -88,11 +97,38 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Montly.
+        /// </summary>
+        public static string Montly {
+            get {
+                return ResourceManager.GetString("Montly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Never.
         /// </summary>
         public static string Never {
             get {
                 return ResourceManager.GetString("Never", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One time.
+        /// </summary>
+        public static string OneTime {
+            get {
+                return ResourceManager.GetString("OneTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quarter.
+        /// </summary>
+        public static string Quarter {
+            get {
+                return ResourceManager.GetString("Quarter", resourceCulture);
             }
         }
         

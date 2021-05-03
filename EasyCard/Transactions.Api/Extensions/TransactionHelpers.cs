@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Integration.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,14 +10,14 @@ namespace Transactions.Api.Extensions
 {
     public static class TransactionHelpers
     {
-        public static QuickStatusFilterTypeEnum GetQuickStatus(this TransactionStatusEnum @enum)
+        public static QuickStatusFilterTypeEnum GetQuickStatus(this TransactionStatusEnum @enum, JDealTypeEnum jDealType)
         {
             if (@enum == Shared.Enums.TransactionStatusEnum.CancelledByMerchant)
             {
                 return QuickStatusFilterTypeEnum.Canceled;
             }
 
-            if (@enum == Shared.Enums.TransactionStatusEnum.CommitedByAggregator)
+            if (@enum == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission)
             {
                 return QuickStatusFilterTypeEnum.AwaitingForTransmission;
             }
@@ -26,7 +27,7 @@ namespace Transactions.Api.Extensions
                 return QuickStatusFilterTypeEnum.Pending;
             }
 
-            if (@enum == Shared.Enums.TransactionStatusEnum.TransmittedByProcessor)
+            if (@enum == Shared.Enums.TransactionStatusEnum.Completed)
             {
                 return QuickStatusFilterTypeEnum.Completed;
             }

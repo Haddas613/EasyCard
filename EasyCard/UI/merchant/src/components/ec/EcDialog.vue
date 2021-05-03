@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" fullscreen>
+  <v-dialog v-model="dialog" fullscreen persistent>
     <v-card flat :color="color">
       <v-card-title class="headline py-0 white">
         <v-row :align="'center'">

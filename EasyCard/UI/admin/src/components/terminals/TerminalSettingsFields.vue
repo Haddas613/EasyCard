@@ -116,6 +116,11 @@
               :label="$t('NationalIDRequired')"
               hide-details
             ></v-switch>
+            <v-switch
+              v-model="model.settings.sendTransactionSlipEmailToMerchant"
+              :label="$t('SendTransactionSlipEmailToMerchant')"
+              hide-details
+            ></v-switch>
           </v-col>
           <v-col cols="12">
             <v-spacer class="py-4"></v-spacer>
@@ -249,7 +254,7 @@
       </v-card-text>
     </v-card>
 
-    <v-card outlined class="mb-2">
+    <v-card outlined class="mb-2" v-if="$featureEnabled(model, appConstants.terminal.features.Billing)">
       <v-card-title class="pb-0 mb-0 subtitle-2 black--text">{{$t("Billing")}}</v-card-title>
       <v-card-text>
         <v-row no-gutters>
@@ -279,7 +284,7 @@
       </v-card-text>
     </v-card>
 
-    <v-card outlined class="mb-2">
+    <v-card outlined class="mb-2" v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-card-title class="pb-0 mb-0 subtitle-2 black--text">{{$t("Checkout")}}</v-card-title>
       <v-card-text>
         <v-row no-gutters>
@@ -295,11 +300,19 @@
               persistent-hint
             ></v-text-field>
           </v-col>
+          <v-col cols="12" md="5">
+            <v-switch
+              class="pt-0"
+              v-model="model.checkoutSettings.issueInvoice"
+              :label="$t('IssueInvoice')"
+              hide-details
+            ></v-switch>
+          </v-col>
         </v-row>
       </v-card-text>
     </v-card>
 
-    <v-card outlined class="mb-2">
+    <v-card outlined class="mb-2" v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-card-title class="pb-0 mb-0 subtitle-2 black--text">{{$t("CheckoutRedirectUrls")}}</v-card-title>
       <v-card-text>
         <v-row no-gutters>
@@ -338,6 +351,27 @@
         </v-row>
       </v-card-text>
     </v-card>
+
+    <v-card outlined class="mb-2">
+      <v-card-title class="pb-0 mb-0 subtitle-2 black--text">{{$t("Transmission")}}</v-card-title>
+      <v-card-text>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-divider class="py-2"></v-divider>
+          </v-col>
+          <v-col cols="12" md="7">
+            <v-select
+              :items="merchantDictionaries.terminalTransmissionScheduleEnum"
+              item-text="description"
+              item-value="code"
+              v-model="model.settings.transmissionSchedule"
+              :label="$t('TransmissionTime')"
+              outlined
+            ></v-select>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
@@ -363,7 +397,8 @@ export default {
       dictionaries: {},
       merchantDictionaries: {},
       privateApiKey: null,
-      showSharedApiKey: false
+      showSharedApiKey: false,
+      appConstants: appConstants
     };
   },
   async mounted() {

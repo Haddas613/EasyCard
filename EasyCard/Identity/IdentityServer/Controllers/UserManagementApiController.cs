@@ -5,9 +5,11 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AutoMapper;
 using IdentityServer.Data;
 using IdentityServer.Helpers;
 using IdentityServer.Models;
+using IdentityServer.Services;
 using IdentityServerClient;
 using Merchants.Api.Client;
 using Microsoft.AspNetCore.Authorization;
@@ -35,6 +37,9 @@ namespace IdentityServer.Controllers
         private readonly ICryptoService cryptoService;
         private readonly ApplicationSettings configuration;
         private readonly IMerchantsApiClient merchantsApiClient;
+        private readonly UserManageService userManageService;
+        private readonly IMapper mapper;
+        private readonly UserHelpers userHelpers;
 
         public UserManagementApiController(
             UserManager<ApplicationUser> userManager,
@@ -44,7 +49,10 @@ namespace IdentityServer.Controllers
             IEmailSender emailSender,
             ICryptoService cryptoService,
             IOptions<ApplicationSettings> configuration,
-            IMerchantsApiClient merchantsApiClient
+            IMerchantsApiClient merchantsApiClient,
+            UserManageService userManageService,
+            IMapper mapper,
+            UserHelpers userHelpers
             )
         {
             this.userManager = userManager;
@@ -55,6 +63,9 @@ namespace IdentityServer.Controllers
             this.cryptoService = cryptoService;
             this.configuration = configuration?.Value;
             this.merchantsApiClient = merchantsApiClient;
+            this.userManageService = userManageService;
+            this.mapper = mapper;
+            this.userHelpers = userHelpers;
         }
 
         /// <summary>
@@ -117,7 +128,21 @@ namespace IdentityServer.Controllers
                 var allClaims = await userManager.GetClaimsAsync(user);
 
                 await userManager.AddClaim(allClaims, user, Claims.MerchantIDClaim, model.MerchantID);
-                await userManager.AddToRoleAsync(user, "Merchant");
+
+                if (model.Roles == null)
+                {
+                    model.Roles = new List<string>();
+                }
+
+                if (!model.Roles.Any(r => r != Roles.Merchant))
+                {
+                    model.Roles.Add(Roles.Merchant);
+                }
+
+                foreach (var role in model.Roles.Distinct())
+                {
+                    await userManager.AddToRoleAsync(user, role);
+                }
 
                 logger.LogInformation("User created a new account");
             }
@@ -143,6 +168,47 @@ namespace IdentityServer.Controllers
             return new ObjectResult(operationResult);
         }
 
+        /// <summary>
+        /// Update user
+        /// </summary>
+        /// <param name="model">Update User Request</param>
+        /// <returns>Operation Response</returns>
+        [HttpPut]
+        [Route("user")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<UserOperationResponse>> UpdateUser([FromBody]UpdateUserRequestModel model)
+        {
+            var user = await userManager.FindByIdAsync(model.UserID);
+
+            if (user == null)
+            {
+                return NotFound(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserNotFound });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await userManageService.UpdateUser(model);
+
+            if (!result)
+            {
+                logger.LogInformation("User is not upated");
+
+                // TODO: error details
+                return new BadRequestResult();
+            }
+
+            var operationResult = new UserOperationResponse
+            {
+                UserID = new Guid(user.Id),
+                ResponseCode = result ? UserOperationResponseCodeEnum.UserUpdated : UserOperationResponseCodeEnum.UnknwnError
+            };
+
+            return new ObjectResult(operationResult);
+        }
+
         [HttpPost]
         [Route("resendInvitation")]
         public async Task<ActionResult<UserOperationResponse>> ResendInvitation([FromBody]ResendInvitationRequestModel model)
@@ -152,6 +218,13 @@ namespace IdentityServer.Controllers
             if (user == null)
             {
                 return NotFound(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserNotFound });
+            }
+
+            var isAdmin = await userManager.IsInRoleAsync(user, Roles.BillingAdministrator) || await userManager.IsInRoleAsync(user, Roles.BusinessAdministrator);
+
+            if (isAdmin)
+            {
+                return Conflict(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserAlreadyExists, Message = "User with the same email is already registered" });
             }
 
             if (await userManager.IsLockedOutAsync(user))
@@ -172,7 +245,7 @@ namespace IdentityServer.Controllers
             if (user.PasswordHash != null)
             {
                 //TODO: send new merchant available email
-                //return Conflict(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserAlreadyExists, Message = "User has already set password" });
+                return Conflict(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserAlreadyExists, Message = "User with the same email is already registered" });
             }
             else
             {
@@ -434,10 +507,17 @@ namespace IdentityServer.Controllers
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 UserID = new Guid(user.Id),
-                Roles = await userManager.GetRolesAsync(user)
+                Roles = await userManager.GetRolesAsync(user),
             };
 
-            var allClaims = await userManager.GetClaimsAsync(user);
+            result.Roles = await userManager.GetRolesAsync(user);
+
+            var claims = await userManager.GetClaimsAsync(user);
+
+            result.FirstName = claims.FirstOrDefault(c => c.Type == Claims.FirstNameClaim)?.Value;
+            result.LastName = claims.FirstOrDefault(c => c.Type == Claims.LastNameClaim)?.Value;
+
+            result.DisplayName = userHelpers.GetUserFullName(result.FirstName, result.LastName);
 
             return Ok(result);
         }

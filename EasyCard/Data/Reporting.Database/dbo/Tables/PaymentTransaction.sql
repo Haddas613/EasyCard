@@ -36,8 +36,11 @@
     [PaymentTypeEnum]          SMALLINT         NULL,
     [PaymentRequestID]         UNIQUEIDENTIFIER NULL,
     [DocumentOrigin]           SMALLINT         NULL,
-    [ConsumerRef]              NVARCHAR (100)   NULL
+    [ConsumerRef]              NVARCHAR (100)   NULL,
+    [QuickType]                AS               (case when [JDealType]=(0) AND [Status]>=(30) then [SpecialTransactionType] else (1) end)
 );
+
+
 
 
 
@@ -230,4 +233,9 @@ CREATE NONCLUSTERED INDEX [IX_PaymentTransactionID]
 GO
 CREATE NONCLUSTERED INDEX [IX_ConsumerRef]
     ON [dbo].[PaymentTransaction]([ConsumerRef] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_QuickType]
+    ON [dbo].[PaymentTransaction]([QuickType] ASC);
 

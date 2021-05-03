@@ -10,7 +10,6 @@
               :counter="50"
               :rules="[vr.primitives.required, vr.primitives.email]"
               :label="$t('Email')"
-              outlined
             ></v-text-field>
           </v-col>
           <v-col cols="12" class="py-0">
@@ -19,8 +18,11 @@
               :counter="512"
               :rules="[vr.primitives.maxLength(512)]"
               :label="$t('InviteMessage')"
-              outlined
             ></v-textarea>
+          </v-col>
+          <v-col cols="12" class="py-0">
+            <p class="subtitle-1">{{$t("Roles")}}</p>
+            <user-roles-fields :user="model" ref="userRolesRef"></user-roles-fields>
           </v-col>
         </v-row>
       </v-form>
@@ -39,6 +41,8 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import appConstants from "../../helpers/app-constants";
+
 export default {
   props: {
     merchantId: {
@@ -52,14 +56,16 @@ export default {
     }
   },
   components: {
-    EcDialog: () => import("../../components/ec/EcDialog")
+    EcDialog: () => import("../../components/ec/EcDialog"),
+    UserRolesFields: () => import("./UserRolesFIelds")
   },
   data() {
     return {
       model: {
         email: null,
         merchantID: this.merchantId,
-        inviteMessage: null
+        inviteMessage: null,
+        roles: [appConstants.users.roles.merchant]
       },
       loading: false,
       valid: true,
@@ -81,13 +87,18 @@ export default {
       if (!this.$refs.form.validate()) {
         return;
       }
+
+      this.model.roles = this.$refs.userRolesRef.getData().roles;
+
       this.loading = true;
       let operationResult = await this.$api.users.inviteUser(this.model);
       if (operationResult.status === "success") {
         this.model.email = null;
         this.model.inviteMessage = null;
-        this.$emit("ok");
+      }else {
+        this.$toasted.show(operationResult.message, { type: "error" });
       }
+      this.$emit("ok");
       this.visible = false;
       this.loading = false;
     }

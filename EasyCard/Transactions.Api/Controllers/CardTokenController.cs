@@ -17,10 +17,13 @@ using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Api.Models.Metadata;
+using Shared.Api.UI;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
+using Shared.Helpers.Security;
 using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
@@ -82,6 +85,18 @@ namespace Transactions.Api.Controllers
             this.systemSettingsService = systemSettingsService;
         }
 
+        [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("$meta")]
+        public TableMeta GetMetadata()
+        {
+            return new TableMeta
+            {
+                Columns = (httpContextAccessor.GetUser().IsAdmin() ? typeof(CreditCardTokenSummaryAdmin) : typeof(CreditCardTokenSummary))
+                    .GetObjectMeta(CreditCardSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
+            };
+        }
+
         [HttpPost]
         [ValidateModelState]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
@@ -109,14 +124,45 @@ namespace Transactions.Api.Controllers
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<CreditCardTokenSummary>();
+                query = query.OrderByDynamic(filter.SortBy ?? nameof(CreditCardTokenDetails.CreditCardTokenID), filter.SortDesc);
 
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(CreditCardTokenDetails.CreditCardTokenID), filter.SortDesc).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
+                if (httpContextAccessor.GetUser().IsAdmin())
+                {
+                    var response = new SummariesResponse<CreditCardTokenSummaryAdmin>();
+                    var summary = await mapper.ProjectTo<CreditCardTokenSummaryAdmin>(query.ApplyPagination(filter)).Future().ToListAsync();
 
-                response.Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
-                response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    var terminalsId = summary.Where(t => t.TerminalID != null).Select(t => t.TerminalID).Distinct();
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
 
-                return Ok(response);
+                    //TODO: Merchant name instead of BusinessName
+                    summary.ForEach(s =>
+                    {
+                        if (s.TerminalID.HasValue && terminals.ContainsKey(s.TerminalID.Value))
+                        {
+                            s.TerminalName = terminals[s.TerminalID.Value].Label;
+                            s.MerchantName = terminals[s.TerminalID.Value].BusinessName;
+                        }
+                    });
+
+                    response.Data = summary;
+                    response.NumberOfRecords = numberOfRecordsFuture.Value;
+
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = new SummariesResponse<CreditCardTokenSummary>
+                    {
+                        Data = await mapper.ProjectTo<CreditCardTokenSummary>(query.ApplyPagination(filter)).Future().ToListAsync(),
+                        NumberOfRecords = numberOfRecordsFuture.Value
+                    };
+
+                    return Ok(response);
+                }
             }
         }
 

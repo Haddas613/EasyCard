@@ -10,8 +10,6 @@ namespace Transactions.Shared.Models
     {
         public RepeatPeriodTypeEnum RepeatPeriodType { get; set; }
 
-        public int? RepeatPeriod { get; set; }
-
         public StartAtTypeEnum StartAtType { get; set; }
 
         public DateTime? StartAt { get; set; }

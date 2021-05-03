@@ -1,0 +1,111 @@
+<template>
+  <v-container fluid>
+    <v-form ref="form" v-model="formIsValid">
+      <v-row>
+        <merchant-terminal-filter class="py-0" v-model="model"></merchant-terminal-filter>
+        <v-col cols="12" md="4" class="py-0">
+          <v-text-field
+            v-model="model.paymentRequestID"
+            :label="$t('PaymentRequestID')"
+            :rules="[vr.primitives.guid]"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="4" class="py-0">
+          <v-select
+            :items="dictionaries.paymentRequestStatusEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.status"
+            :label="$t('Status')"
+            clearable
+          ></v-select>
+        </v-col>
+        <v-col cols="12" md="4" class="py-0">
+          <v-select
+            :items="dictionaries.currencyEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.currency"
+            :label="$t('Currency')"
+            clearable
+          ></v-select>
+        </v-col>
+        <v-col cols="12" md="4" class="py-0">
+          <v-text-field
+            v-model="model.paymentRequestAmount"
+            :label="$t('Amount')"
+            type="number"
+            min="0"
+            step="0.01"
+            clearable
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" md="4" class="py-0">
+          <v-select
+            :items="dictionaries.quickDateFilterTypeEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.quickDateFilter"
+            :label="$t('QuickDate')"
+            clearable
+          ></v-select>
+        </v-col>
+        <date-from-to-filter v-model="model"></date-from-to-filter>
+      </v-row>
+      <v-row>
+        <v-col cols="12" class="d-flex justify-end">
+          <v-btn
+            color="success"
+            class="mr-4"
+            @click="apply()"
+            :disabled="!formIsValid"
+          >{{$t('Apply')}}</v-btn>
+        </v-col>
+      </v-row>
+    </v-form>
+  </v-container>
+</template>
+
+<script>
+import ValidationRules from "../../helpers/validation-rules";
+
+export default {
+  name: "MerchantsFilter",
+  components: {
+    MerchantTerminalFilter: () => import("../filtering/MerchantTerminalFilter"),
+    DateFromToFilter: () => import("../filtering/DateFromToFilter"),
+  },
+  data() {
+    return {
+      model: { ...this.filterData },
+      dictionaries: {},
+      vr: ValidationRules,
+      formIsValid: true,
+      dateFromMenu: false,
+      dateToMenu: false,
+    };
+  },
+  async mounted() {
+    this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+  },
+  props: {
+    filterData: {
+      type: Object
+    }
+  },
+  methods: {
+    apply() {
+      if (!this.$refs.form.validate()) {
+        return;
+      }
+      this.$emit("apply", {
+        ...this.model,
+        dateFrom: this.$formatDate(this.model.dateFrom),
+        dateTo: this.$formatDate(this.model.dateTo)
+      });
+    }
+  }
+};
+</script>

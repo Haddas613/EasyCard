@@ -37,5 +37,7 @@ namespace TestWebStore.Models
         /// Key for merchant's system - to have ability to validate redirect
         /// </summary>
         public string ApiKey { get; set; }
+
+        public bool IssueInvoice { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace Transactions.Api.Mapping
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<ClearingHouse.ClearingHouseTerminalSettings, ClearingHouseTransactionDetails>()
-               .ForMember(m => m.MerchantReference, s => s.MapFrom(src => src.MerchantReference));
+               .ForMember(m => m.MerchantReference, s => s.MapFrom(src => src.MerchantReference.TryParseGuid()));
 
             CreateMap<ShvaTransactionDetails, ClearingHouse.Models.PaymentGatewayAdditionalDetails>()
                  .ForMember(m => m.ShvaShovarData, src => src.MapFrom(f => f.ShvaDealID))

@@ -3,6 +3,18 @@
     <v-form v-model="formIsValid" ref="form">
       <v-row>
         <merchant-terminal-filter class="pt-3" v-model="model"></merchant-terminal-filter>
+        <terminal-template-filter class="pt-3" v-model="model"></terminal-template-filter>
+        <v-col cols="12" md="3" sm="6">
+          <v-select
+            hide-details="true"
+            :items="dictionaries.transactionTypeEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.transactionType"
+            :label="$t('TransactionType')"
+            clearable
+          ></v-select>
+        </v-col>
         <v-col cols="12" md="3" sm="6">
           <v-select
             :items="dictionaries.quickDateFilterTypeEnum"
@@ -16,15 +28,16 @@
         </v-col>
         <v-col cols="12" md="3" sm="6">
           <v-select
-            hide-details="true"
-            :items="dictionaries.transactionTypeEnum"
+            :items="dictionaries.quickDateFilterTypeEnum"
             item-text="description"
             item-value="code"
-            v-model="model.transactionType"
-            :label="$t('TransactionType')"
+            v-model="model.transmissionQuickDate"
+            :label="$t('TransmissionDate')"
+            hide-details="true"
             clearable
           ></v-select>
         </v-col>
+        <date-from-to-filter class="pt-3" v-model="model"></date-from-to-filter>
         <v-col cols="12" md="3" sm="6">
           <v-select
             :items="dictionaries.quickStatusFilterTypeEnum"
@@ -46,6 +59,13 @@
             hide-details="true"
             clearable
           ></v-select>
+        </v-col>
+        <v-col cols="12" md="3" sm="6">
+          <v-text-field
+            v-model="model.cardNumber"
+            :label="$t('CardNumber')"
+            hide-details="true"
+          ></v-text-field>
         </v-col>
         <v-col cols="12" md="3" sm="6">
           <v-text-field
@@ -111,7 +131,51 @@
             clearable
           ></v-select>
         </v-col>
+        <v-col cols="12" md="3" sm="6">
+          <v-select
+            :items="dictionaries.documentOriginEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.documentOrigin"
+            :label="$t('Origin')"
+            hide-details="true"
+            clearable
+          ></v-select>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-row class="pt-3">
+            <v-col cols="12" md="6">
+                <v-switch v-model="model.hasInvoice" hide-details>
+                <template v-slot:label>
+                  <small>{{$t('HasInvoice')}}</small>
+                </template>
+              </v-switch>
+            </v-col>
+            <v-col cols="12" md="6">
+                <v-switch v-model="model.isPaymentRequest" hide-details>
+                <template v-slot:label>
+                  <small>{{$t('IsPaymentRequest')}}</small>
+                </template>
+              </v-switch>
+            </v-col>
+          </v-row>
+        </v-col>
+        <v-col cols="12" md="9">
+          <integrations-filter v-model="model" md="4"></integrations-filter>
+        </v-col>
+        <v-col cols="12" md="3" sm="6">
+          <v-select
+            :items="dictionaries.transactionFinalizationStatusEnum"
+            item-text="description"
+            item-value="code"
+            v-model="model.finalizationStatus"
+            :label="$t('FinalizationStatus')"
+            hide-details="true"
+            clearable
+          ></v-select>
+        </v-col>
       </v-row>
+      <consumer-filter v-model="model"></consumer-filter>
       <v-row>
         <v-col cols="12" class="d-flex justify-end">
           <v-btn color="success" class="mr-4" @click="apply()" :disabled="!formIsValid">{{$t('Apply')}}</v-btn>
@@ -126,6 +190,10 @@ export default {
   name: "TransactionsFilter",
   components: {
     MerchantTerminalFilter: () => import("../filtering/MerchantTerminalFilter"),
+    TerminalTemplateFilter: () => import("../filtering/TerminalTemplateFilter"),
+    ConsumerFilter: () => import("../filtering/ConsumerFilter"),
+    IntegrationsFilter: () => import("../filtering/IntegrationsFilter"),
+    DateFromToFilter: () => import("../filtering/DateFromToFilter"),
   },
   data() {
     return {

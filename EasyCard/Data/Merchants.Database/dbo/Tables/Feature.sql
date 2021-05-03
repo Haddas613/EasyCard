@@ -4,8 +4,12 @@
     [Price]           DECIMAL (19, 4) DEFAULT ((0.0)) NULL,
     [UpdateTimestamp] ROWVERSION      NULL,
     [FeatureID]       SMALLINT        DEFAULT (CONVERT([smallint],(0))) NOT NULL,
+    [DescriptionEN]   NVARCHAR (1024) NULL,
+    [DescriptionHE]   NVARCHAR (1024) NULL,
     CONSTRAINT [PK_Feature] PRIMARY KEY CLUSTERED ([FeatureID] ASC)
 );
+
+
 
 
 

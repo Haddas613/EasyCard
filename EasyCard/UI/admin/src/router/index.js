@@ -10,16 +10,6 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Entry',
-    redirect: '/admin'
-  },
-  {
-    path: '/guest',
-    name: 'Guest',
-    component: () => import('../pages/Guest.vue')
-  },
-  {
-    path: '/admin',
     component: MainLayout,
     children: [
       {
@@ -97,6 +87,59 @@ const routes = [
         path: 'audit/list',
         props: true,
         component: () => import('../pages/audit/AuditList.vue'),
+      },
+      {
+        name: 'CardTokens',
+        path: 'card-tokens/list',
+        props: true,
+        component: () => import('../pages/ctokens/CreditCardTokensList.vue'),
+      },
+      {
+        name: 'Invoicing',
+        path: 'invoicing/list',
+        props: true,
+        component: () => import('../pages/invoicing/InvoicesList.vue'),
+      },
+      {
+          name: 'Invoice',
+          meta: {
+              backBtn: 'Invoices'
+          },
+          path: 'invoicing/view/:id',
+          component: () =>
+              import ('../pages/invoicing/InvoiceInfo.vue'),
+      },
+      {
+          name: 'PaymentRequests',
+          path: 'payment-requests/list',
+          props: true,
+          component: () =>
+              import ('../pages/payment-requests/PaymentRequestsList.vue'),
+      },
+      {
+          name: 'PaymentRequest',
+          meta: {
+              backBtn: 'PaymentRequests'
+          },
+          path: 'payment-requests/view/:id',
+          component: () =>
+              import ('../pages/payment-requests/PaymentRequestInfo.vue'),
+      },
+      {
+        name: 'BillingDeals',
+        path: 'billing-deals/list',
+        props: true,
+        component: () =>
+            import ('../pages/billing-deals/BillingDealsList.vue'),
+      },
+      {
+          name: 'BillingDeal',
+          meta: {
+              backBtn: true,
+          },
+          path: 'billing-deals/view/:id',
+          component: () =>
+              import ('../pages/billing-deals/BillingDealInfo.vue'),
       },
       {
         name: 'MyProfile',

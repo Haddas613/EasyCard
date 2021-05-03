@@ -34,9 +34,10 @@ const actions = {
     else {
       let exists = lodash.some(terminals, t => t.terminalID === state.terminal.terminalID);
       if (!exists){
-        let terminals = (await api.terminals.getTerminals());
-        terminals = terminals ? terminals.data : [];
         await store.dispatch('changeTerminal', {api, newTerminal: terminals[0].terminalID});
+      }else{
+        //refresh terminal data
+        await store.dispatch('changeTerminal', {api, newTerminal: state.terminal.terminalID});
       }
     }
     return state.terminal;

@@ -16,12 +16,18 @@ namespace IdentityServer.Security.Auditing
 
         Task RegisterResetPassword(ApplicationUser user);
 
-        Task RegisterLogin(ApplicationUser user);
+        Task RegisterChangePassword(ApplicationUser user);
+
+        Task RegisterLogin(ApplicationUser user, string fullName);
+
+        Task RegisterLockout(ApplicationUser user);
 
         Task RegisterLogout(ApplicationUser user);
 
         Task RegisterConfirmEmail(ApplicationUser user, string fullName);
 
         Task RegisterTwoFactorCompleted(ApplicationUser user);
+
+        Task RegisterAction(ApplicationUser user, AuditingTypeEnum type);
     }
 }

@@ -17,6 +17,7 @@ using Merchants.Shared.Enums;
 using Merchants.Shared.Models;
 using System;
 using System.Collections.Generic;
+using SharedIntegrations = Shared.Integration;
 
 namespace Merchants.Api.Mapping
 {
@@ -36,7 +37,8 @@ namespace Merchants.Api.Mapping
         private void RegisterTerminalMappings()
         {
             CreateMap<TerminalRequest, Terminal>()
-                .ForMember(m => m.Created, o => o.MapFrom((src, tgt) => tgt.Created = DateTime.UtcNow));
+                .ForMember(m => m.Created, o => o.MapFrom((src, tgt) => tgt.Created = DateTime.UtcNow))
+                .ForMember(m => m.Updated, o => o.MapFrom(src => DateTime.UtcNow));
             CreateMap<UpdateTerminalRequest, Terminal>();
 
             CreateMap<Terminal, TerminalResponse>();
@@ -74,6 +76,7 @@ namespace Merchants.Api.Mapping
               .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
 
             CreateMap<TerminalTemplate, Terminal>()
+                .ForMember(d => d.TerminalTemplateID, o => o.MapFrom(src => src.TerminalTemplateID))
                 .ForMember(d => d.Created, o => o.Ignore())
                 .ForMember(d => d.Label, o => o.Ignore());
             CreateMap<TerminalTemplate, TerminalTemplateSummary>();
@@ -127,6 +130,16 @@ namespace Merchants.Api.Mapping
             CreateMap<Business.Entities.User.UserInfo, UserSummary>();
             CreateMap<UserProfileDataResponse, Business.Entities.User.UserInfo>();
             CreateMap<LinkUserToMerchantRequest, Business.Entities.User.UserInfo>();
+            CreateMap<UpdateUserRolesRequest, UpdateUserRequestModel>()
+                .ForMember(d => d.UserID, o => o.MapFrom(src => src.UserID.ToString()));
+            CreateMap<UpdateUserRequest, UpdateUserRequestModel>()
+                .ForMember(d => d.UserID, o => o.MapFrom(src => src.UserID.ToString()));
+
+            CreateMap<UserProfileDataResponse, UserTerminalMapping>()
+                .ForMember(src => src.DisplayName, o => o.MapFrom(d => d.DisplayName))
+                .ForMember(src => src.Email, o => o.MapFrom(d => d.Email))
+                .ForMember(src => src.Roles, o => o.MapFrom(d => d.Roles))
+                .ForAllOtherMembers(o => o.Ignore());
         }
 
         private void RegisterSystemSettingsMappings()
@@ -150,6 +163,9 @@ namespace Merchants.Api.Mapping
                .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<EasyInvoice.EasyInvoiceTerminalSettings, Terminal>()
+               .ForAllMembers(d => d.Ignore());
+
+            CreateMap<SharedIntegrations.ExternalSystems.NullAggregatorSettings, Terminal>()
                .ForAllMembers(d => d.Ignore());
         }
     }

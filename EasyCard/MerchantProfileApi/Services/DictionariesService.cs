@@ -42,11 +42,16 @@ namespace MerchantProfileApi.Services
             var response = new MerchantDictionaries();
 
             var terminalStatusEnum = typeof(TerminalStatusEnum);
+            var terminalTransmissionScheduleEnum = typeof(TerminalTransmissionScheduleEnum);
 
             var terminalStatuses = Enum.GetValues(terminalStatusEnum).Cast<TerminalStatusEnum>()
                 .ToDictionary(m => terminalStatusEnum.GetDataContractAttrForEnum(m.ToString()), m => TerminalEnumsResource.ResourceManager.GetString(m.ToString(), culture) );
 
+            var terminalTransmissionSchedules = Enum.GetValues(terminalTransmissionScheduleEnum).Cast<TerminalTransmissionScheduleEnum>()
+                .ToDictionary(m => terminalTransmissionScheduleEnum.GetDataContractAttrForEnum(m.ToString()), m => TerminalTransmissionScheduleResource.ResourceManager.GetString(m.ToString(), culture));
+
             response.TerminalStatusEnum = terminalStatuses;
+            response.TerminalTransmissionScheduleEnum = terminalTransmissionSchedules;
 
             return response;
         }

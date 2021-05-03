@@ -1,7 +1,7 @@
 <template>
   <v-card class="ec-card d-flex flex-column">
     <v-card-text class="py-2">
-      <v-form class="ec-form" ref="form" lazy-validation>
+      <v-form class="ec-form" ref="form">
         <v-text-field
           v-model="model.cardOwnerName"
           :counter="50"
@@ -35,7 +35,7 @@
           :data="model.dealDetails"
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
         ></deal-details>
-
+        <invoice-credit-card-details-fields :data="model" v-on:ok="processCreditCard($event)" ref="ccDetails" :required="paymentInfoRequired" :key="paymentInfoRequired"></invoice-credit-card-details-fields>
         <invoice-details-fields ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
       </v-form>
     </v-card-text>
@@ -48,6 +48,7 @@
 <script>
 import ValidationRules from "../../helpers/validation-rules";
 import { mapState } from "vuex";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -57,14 +58,14 @@ export default {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     EcDialog: () => import("../../components/ec/EcDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
-    EcRadioGroup: () => import("../../components/inputs/EcRadioGroup")
+    EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
+    InvoiceCreditCardDetailsFields: () => import("../../components/invoicing/InvoiceCreditCardDetailsFields"),
   },
   props: {
     data: {
       type: Object,
       default: null,
       required: true,
-      vr: ValidationRules
     }
   },
   data() {
@@ -76,7 +77,8 @@ export default {
       },
       vr: ValidationRules,
       messageDialog: false,
-      isInstallmentTransaction: false
+      isInstallmentTransaction: false,
+      paymentInfoRequired: false
     };
   },
   computed: {
@@ -88,7 +90,6 @@ export default {
     let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
     if (dictionaries) {
       this.dictionaries = dictionaries;
-
       if (!this.model.currency) {
         this.model.currency =
           this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
@@ -98,8 +99,6 @@ export default {
   },
   methods: {
     ok() {
-      if (!this.$refs.form.validate()) return;
-
       let result = { ...this.model };
       if (this.$refs.instDetails) {
         result.installmentDetails = this.$refs.instDetails.getData();
@@ -109,6 +108,19 @@ export default {
 
       result.invoiceDetails = this.$refs.invoiceDetails.getData();
       result.dealDetails = this.$refs.dealDetails.getData();
+
+      this.paymentInfoRequired = (result.invoiceDetails.invoiceType == appConstants.invoicing.types.invoiceWithPaymentInfo
+        || result.invoiceDetails.invoiceType == appConstants.invoicing.types.invoiceWithPaymentInfo);
+
+      if (!this.$refs.form.validate()) {
+        const self = this;
+        this.$nextTick(function(){
+          self.$refs.form.validate();
+        });
+        return;
+      }
+
+      result.creditCardDetails = this.$refs.ccDetails.getData();
       if (result.invoiceDetails) this.$emit("ok", result);
     }
   }

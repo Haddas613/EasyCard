@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using FunctionsCompositionApp.Shared;
 using Microsoft.Azure.WebJobs;
@@ -10,6 +11,7 @@ using Shared.Helpers;
 using Shared.Helpers.Security;
 using Transactions.Api.Client;
 using SharedApi = Shared.Api;
+using SharedIntegration = Shared.Integration;
 
 namespace FunctionsCompositionApp.Invoicing
 {
@@ -32,13 +34,16 @@ namespace FunctionsCompositionApp.Invoicing
 
             var response = await transactionsApiClient.TransmitTerminalTransactions(terminalID);
 
-            if (response.Status == SharedApi.Models.Enums.StatusEnum.Error)
+            var totalCount = response.Data.Count();
+            var failedCount = response.Data.Where(t => t.TransmissionStatus != SharedIntegration.Models.TransmissionStatusEnum.Transmitted).Count();
+
+            if (failedCount > 0)
             {
-                log.LogError($"{response.Message}; terminalID {messageBody}; CorrelationID: {response.CorrelationId}");
+                log.LogError($"Failed Transactions: {failedCount}; Successful Transactions: {totalCount - failedCount}; terminalID {messageBody};");
             }
             else
             {
-                log.LogInformation(response.Message);
+                log.LogInformation($"Successful Transactions: {totalCount}; terminalID {messageBody};");
             }
         }
     }

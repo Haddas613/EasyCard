@@ -3,11 +3,13 @@ using IdentityServerClient;
 using Merchants.Api.Extensions.Filtering;
 using Merchants.Api.Models.Terminal;
 using Merchants.Api.Models.User;
+using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Models.Audit;
 using Merchants.Business.Models.Integration;
 using Merchants.Business.Services;
 using Merchants.Shared;
+using Merchants.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -186,10 +188,9 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}")]
         public async Task<ActionResult<OperationResponse>> UpdateTerminal([FromRoute]Guid terminalID, [FromBody]UpdateTerminalRequest model)
         {
-            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(d => d.TerminalID == terminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
             mapper.Map(model, terminal);
-
             await terminalsService.UpdateEntity(terminal);
 
             return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID));
@@ -248,6 +249,19 @@ namespace Merchants.Api.Controllers
             return Ok(new OperationResponse(Messages.ExternalSystemRemoved, StatusEnum.Success, terminalID));
         }
 
+        [HttpPut]
+        [Route("{terminalID}/switchfeature/{featureID}")]
+        public async Task<ActionResult<OperationResponse>> SwitchTerminalFeature([FromRoute]Guid terminalID, [FromRoute]FeatureEnum featureID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+            var feature = EnsureExists(await featuresService.GetQuery().FirstOrDefaultAsync(f => f.FeatureID == featureID), "Feature");
+
+            await ProcessFeatureInternal(terminal, feature);
+
+            await terminalsService.UpdateEntity(terminal);
+            return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID));
+        }
+
         [HttpPost]
         [Route("{terminalID}/resetApiKey")]
         public async Task<ActionResult<OperationResponse>> CreateTerminalApiKey([FromRoute] Guid terminalID)
@@ -304,6 +318,37 @@ namespace Merchants.Api.Controllers
             await terminalsService.AddAuditEntry(auditEntry);
 
             return Ok(new OperationResponse { Status = StatusEnum.Success });
+        }
+
+        private async Task ProcessFeatureInternal(Terminal terminal, Feature feature)
+        {
+            if (terminal.EnabledFeatures != null && terminal.EnabledFeatures.Any(f => f == feature.FeatureID))
+            {
+                terminal.EnabledFeatures.Remove(feature.FeatureID);
+
+                if (feature.FeatureID == FeatureEnum.Api)
+                {
+                    var opResult = await userManagementClient.DeleteTerminalApiKey(terminal.TerminalID);
+                }
+            }
+            else
+            {
+                if (terminal.EnabledFeatures == null)
+                {
+                    terminal.EnabledFeatures = new List<FeatureEnum>();
+                }
+
+                if (feature.FeatureID == FeatureEnum.Checkout)
+                {
+                    //Api must be automatically enabled for checkout
+                    if (!terminal.EnabledFeatures.Any(f => f == FeatureEnum.Api))
+                    {
+                        terminal.EnabledFeatures.Add(FeatureEnum.Api);
+                    }
+                }
+
+                terminal.EnabledFeatures.Add(feature.FeatureID);
+            }
         }
     }
 }

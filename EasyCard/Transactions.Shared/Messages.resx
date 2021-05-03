@@ -120,6 +120,9 @@
   <data name="AggregatorNotDefined" xml:space="preserve">
     <value>Aggregator is not defined</value>
   </data>
+  <data name="AwaitingForTransmission" xml:space="preserve">
+    <value>Awaiting for Transmission</value>
+  </data>
   <data name="BillingDealCreated" xml:space="preserve">
     <value>Billing Deal Created</value>
   </data>
@@ -128,6 +131,9 @@
   </data>
   <data name="BillingDealIsClosed" xml:space="preserve">
     <value>Billing deal is closed</value>
+  </data>
+  <data name="BillingDealsMaxBatchSize" xml:space="preserve">
+    <value>The number of billing deals for transaction batch is limited to {0}</value>
   </data>
   <data name="BillingDealsRequired" xml:space="preserve">
     <value>Billing Deals required</value>
@@ -150,8 +156,14 @@
   <data name="CardReaderInputRequired" xml:space="preserve">
     <value>Card Reader Input Required</value>
   </data>
+  <data name="CheckoutFeatureMustBeEnabled" xml:space="preserve">
+    <value>Checkout Feature must be enabled</value>
+  </data>
   <data name="CommitedByAggregator" xml:space="preserve">
     <value>Commited By Aggregator</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Completed</value>
   </data>
   <data name="ConfirmedByAggregator" xml:space="preserve">
     <value>Confirmed By Aggregator</value>
@@ -240,6 +252,9 @@
   <data name="NumberOfPaymentsShouldBeLessThan" xml:space="preserve">
     <value>NumberOfPayments should be less than or equal {0}</value>
   </data>
+  <data name="OnlySuccessfulTransactionsAreAllowed" xml:space="preserve">
+    <value>Only successful transactions are allowed</value>
+  </data>
   <data name="PaymentRequestCanceled" xml:space="preserve">
     <value>Payment Request canceled</value>
   </data>
@@ -250,7 +265,7 @@
     <value>Payment request payment failed</value>
   </data>
   <data name="PaymentRequestPaymentSuccessed" xml:space="preserve">
-    <value>Payment request payed</value>
+    <value>Payment Request payed</value>
   </data>
   <data name="PaymentRequestStatusIsClosed" xml:space="preserve">
     <value>Payment Request Is Closed</value>
@@ -287,6 +302,9 @@
   </data>
   <data name="TotalAmountIsInvalid" xml:space="preserve">
     <value>TotalAmount of installment payments is invalid</value>
+  </data>
+  <data name="TransactionAlreadyHasInvoice" xml:space="preserve">
+    <value>Transaction already has invoice</value>
   </data>
   <data name="TransactionCanceled" xml:space="preserve">
     <value>Transaction Canceled</value>
@@ -326,6 +344,9 @@
   </data>
   <data name="TransmittedByProcessor" xml:space="preserve">
     <value>Transmitted By Processor</value>
+  </data>
+  <data name="Viewed" xml:space="preserve">
+    <value>Payment Request Viewed</value>
   </data>
   <data name="WhenSpecifiedTokenCCDetailsShouldBeOmitted" xml:space="preserve">
     <value>When saved credit card token specified, credit card details should be omitted</value>

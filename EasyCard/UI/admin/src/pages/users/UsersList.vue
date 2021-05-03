@@ -1,5 +1,6 @@
 <template>
   <v-card class="mx-auto" outlined>
+    <edit-user-dialog v-if="selectedUser" :show.sync="editUserDialog" :key="selectedUser.userID" :user="selectedUser" v-on:ok="closeEditRolesDialog()"></edit-user-dialog>
     <v-expansion-panels :flat="true">
       <v-expansion-panel>
         <v-expansion-panel-header>{{$t('Filters')}}</v-expansion-panel-header>
@@ -16,6 +17,7 @@
         :options.sync="options"
         :server-items-length="totalAmount"
         :loading="loading"
+        :header-props="{ sortIcon: null }"
         class="elevation-1"
       >
         <template v-slot:item.merchantID="{ item }">
@@ -46,6 +48,9 @@
           <v-btn class="mx-1" color="deep-purple" outlined link small :title="$t('SeeHistory')" :to="{name:'Audits',params:{filters:{userID: item.$userID}}}">
             <v-icon small>mdi-book-account</v-icon>
           </v-btn>
+          <v-btn class="mx-1" color="secondary" outlined link small :title="$t('EditUser')" @click="showEditUserDialog(item)" v-on:ok="getDataFromApi()">
+            <v-icon small>mdi-card-account-details-outline</v-icon>
+          </v-btn>
         </template>
       </v-data-table>
     </div>
@@ -56,6 +61,7 @@
 export default {
   components: {
     UsersFilter: () => import("../../components/users/UsersFilter"),
+    EditUserDialog: () => import("../../components/users/EditUserDialog")
   },
   data() {
     return {
@@ -72,6 +78,8 @@ export default {
         active: "success--text",
         locked: "error--text",
       },
+      editUserDialog: false,
+      selectedUser: null
     };
   },
   watch: {
@@ -99,7 +107,7 @@ export default {
       if (!this.headers || this.headers.length === 0) {
         this.headers = [
           ...data.headers,
-          { value: "actions", text: this.$t("Actions") }
+          { value: "actions", text: this.$t("Actions"), sortable: false  }
         ];
       }
     },
@@ -144,6 +152,14 @@ export default {
       this.actionInProgress = true;
       let operation = await this.$api.users.resetUserPassword(userID);
       this.actionInProgress = false;
+    },
+    async showEditUserDialog(user){
+      this.selectedUser = user;
+      this.editUserDialog = true;
+    },
+    async closeEditRolesDialog(){
+      this.editUserDialog = false;
+      await this.getDataFromApi();
     }
   }
 };

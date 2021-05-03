@@ -4,6 +4,7 @@ using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using Transactions.Business.Entities;
@@ -15,11 +16,11 @@ namespace Transactions.Business.Services
     {
         IQueryable<PaymentTransaction> GetTransactions();
 
-        IQueryable<PaymentTransaction> GetTransactionsForUpdate();
+        Task<PaymentTransaction> GetTransaction(Expression<Func<PaymentTransaction, bool>> predicate);
 
         IQueryable<TransactionHistory> GetTransactionHistory(Guid transactionID);
 
-        Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum? transactionStatus = null, TransactionFinalizationStatusEnum? finalizationStatus = null, RejectionReasonEnum? rejectionReason = null, string rejectionMessage = null, IDbContextTransaction dbTransaction = null);
+        Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum? transactionStatus = null, TransactionFinalizationStatusEnum? finalizationStatus = null, RejectionReasonEnum? rejectionReason = null, string rejectionMessage = null, IDbContextTransaction dbTransaction = null, TransactionOperationCodesEnum? transactionOperationCode = null);
 
         Task UpdateEntity(PaymentTransaction entity, string historyMessage, TransactionOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null);
 

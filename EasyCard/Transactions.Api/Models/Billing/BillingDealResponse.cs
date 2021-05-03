@@ -34,6 +34,11 @@ namespace Transactions.Api.Models.Billing
         public Guid? TerminalID { get; set; }
 
         /// <summary>
+        /// EasyCard terminal name
+        /// </summary>
+        public string TerminalName { get; set; }
+
+        /// <summary>
         /// Merchant
         /// </summary>
         public Guid? MerchantID { get; set; }

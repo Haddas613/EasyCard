@@ -61,7 +61,16 @@ namespace Transactions.Api.Models.Billing {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Billing Deal ID.
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string Active {
+            get {
+                return ResourceManager.GetString("Active", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ID.
         /// </summary>
         public static string BillingDealID {
             get {
@@ -70,7 +79,7 @@ namespace Transactions.Api.Models.Billing {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Billing Deal Timestamp.
+        ///   Looks up a localized string similar to Date.
         /// </summary>
         public static string BillingDealTimestamp {
             get {
@@ -79,11 +88,20 @@ namespace Transactions.Api.Models.Billing {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Billing Schedule.
+        ///   Looks up a localized string similar to Schedule.
         /// </summary>
         public static string BillingSchedule {
             get {
                 return ResourceManager.GetString("BillingSchedule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Card Expired.
+        /// </summary>
+        public static string CardExpired {
+            get {
+                return ResourceManager.GetString("CardExpired", resourceCulture);
             }
         }
         
@@ -97,7 +115,7 @@ namespace Transactions.Api.Models.Billing {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Card Owner Name.
+        ///   Looks up a localized string similar to Card Owner.
         /// </summary>
         public static string CardOwnerName {
             get {
@@ -124,11 +142,29 @@ namespace Transactions.Api.Models.Billing {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of Payments.
+        ///   Looks up a localized string similar to Merchant.
+        /// </summary>
+        public static string MerchantName {
+            get {
+                return ResourceManager.GetString("MerchantName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Num. of payments.
         /// </summary>
         public static string NumberOfPayments {
             get {
                 return ResourceManager.GetString("NumberOfPayments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Schedule.
+        /// </summary>
+        public static string Schedule {
+            get {
+                return ResourceManager.GetString("Schedule", resourceCulture);
             }
         }
         
@@ -151,7 +187,16 @@ namespace Transactions.Api.Models.Billing {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Total Amount.
+        ///   Looks up a localized string similar to Terminal.
+        /// </summary>
+        public static string TerminalName {
+            get {
+                return ResourceManager.GetString("TerminalName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total.
         /// </summary>
         public static string TotalAmount {
             get {
@@ -160,7 +205,7 @@ namespace Transactions.Api.Models.Billing {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction Amount.
+        ///   Looks up a localized string similar to Amount.
         /// </summary>
         public static string TransactionAmount {
             get {

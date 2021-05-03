@@ -32,6 +32,8 @@ using Merchants.Shared.Models;
 using Shared.Helpers.Templating;
 using Z.EntityFramework.Plus;
 using Merchants.Business.Entities.Terminal;
+using Transactions.Shared.Enums;
+using Transactions.Api.Extensions;
 using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
@@ -54,6 +56,7 @@ namespace Transactions.Api.Controllers
         private readonly ApplicationSettings appSettings;
         private readonly IQueue queue;
         private readonly IEmailSender emailSender;
+        private readonly ITransactionsService transactionsService;
 
         public InvoicingController(
                     IInvoiceService invoiceService,
@@ -66,7 +69,8 @@ namespace Transactions.Api.Controllers
                     IInvoicingResolver invoicingResolver,
                     IOptions<ApplicationSettings> appSettings,
                     IQueueResolver queueResolver,
-                    IEmailSender emailSender)
+                    IEmailSender emailSender,
+                    ITransactionsService transactionsService)
         {
             this.invoiceService = invoiceService;
             this.mapper = mapper;
@@ -80,6 +84,7 @@ namespace Transactions.Api.Controllers
             this.queue = queueResolver.GetQueue(QueueResolver.InvoiceQueue);
             this.emailSender = emailSender;
             this.invoicingResolver = invoicingResolver;
+            this.transactionsService = transactionsService;
         }
 
         [HttpGet]
@@ -89,10 +94,8 @@ namespace Transactions.Api.Controllers
         {
             return new TableMeta
             {
-                Columns = typeof(InvoiceSummary)
-                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
-                    .Select(d => d.GetColMeta(InvoiceSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
-                    .ToDictionary(d => d.Key)
+                Columns = (httpContextAccessor.GetUser().IsAdmin() ? typeof(InvoiceSummaryAdmin) : typeof(InvoiceSummary))
+                    .GetObjectMeta(InvoiceSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
             };
         }
 
@@ -104,12 +107,42 @@ namespace Transactions.Api.Controllers
 
             using (var dbTransaction = invoiceService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<InvoiceSummary>();
+                if (httpContextAccessor.GetUser().IsAdmin())
+                {
+                    var response = new SummariesResponse<InvoiceSummaryAdmin>();
 
-                response.Data = await mapper.ProjectTo<InvoiceSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceID), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
-                response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    var summary = await mapper.ProjectTo<InvoiceSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceID), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
 
-                return Ok(response);
+                    var terminalsId = summary.Select(t => t.TerminalID).Distinct();
+
+                    var terminals = await terminalsService.GetTerminals()
+                        .Include(t => t.Merchant)
+                        .Where(t => terminalsId.Contains(t.TerminalID))
+                        .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                        .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
+
+                    //TODO: Merchant name instead of BusinessName
+                    summary.ForEach(s =>
+                    {
+                        if (s.TerminalID.HasValue && terminals.ContainsKey(s.TerminalID.Value))
+                        {
+                            s.TerminalName = terminals[s.TerminalID.Value].Label;
+                            s.MerchantName = terminals[s.TerminalID.Value].BusinessName;
+                        }
+                    });
+
+                    response.Data = summary;
+                    response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    return Ok(response);
+                }
+                else
+                {
+                    var response = new SummariesResponse<InvoiceSummary>();
+
+                    response.Data = await mapper.ProjectTo<InvoiceSummary>(query.OrderByDynamic(filter.SortBy ?? nameof(Invoice.InvoiceID), filter.SortDesc).ApplyPagination(filter)).Future().ToListAsync();
+                    response.NumberOfRecords = numberOfRecordsFuture.Value;
+                    return Ok(response);
+                }
             }
         }
 
@@ -123,6 +156,8 @@ namespace Transactions.Api.Controllers
 
                 var invoice = mapper.Map<InvoiceResponse>(dbInvoice);
 
+                invoice.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == invoice.TerminalID).Select(t => t.Label).FirstOrDefaultAsync();
+
                 return Ok(invoice);
             }
         }
@@ -135,7 +170,7 @@ namespace Transactions.Api.Controllers
             {
                 var downloadUrl = EnsureExists(await invoiceService.GetInvoices().Where(m => m.InvoiceID == invoiceID).Select(i => i.DownloadUrl).FirstOrDefaultAsync());
 
-                return new OperationResponse {Status = StatusEnum.Success, EntityUID = invoiceID, EntityReference = downloadUrl };
+                return new OperationResponse { Status = StatusEnum.Success, EntityUID = invoiceID, EntityReference = downloadUrl };
             }
         }
 
@@ -149,6 +184,8 @@ namespace Transactions.Api.Controllers
 
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+
+            // TODO: validate Invoice with Payment Info, do not send to EInvoice if no payment info present
 
             // TODO: caching
             var systemSettings = await systemSettingsService.GetSystemSettings();
@@ -219,6 +256,118 @@ namespace Transactions.Api.Controllers
             }
 
             return new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, newInvoice.InvoiceID);
+        }
+
+        [HttpPost("transaction/{transactionID:guid}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<OperationResponse>> CreateInvoiceForTransaction([FromRoute]Guid transactionID)
+        {
+            var merchantID = User.GetMerchantID();
+            var userIsTerminal = User.IsTerminal();
+
+            var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == transactionID));
+
+            if (transaction.InvoiceID != null)
+            {
+                return BadRequest(Messages.TransactionAlreadyHasInvoice);
+            }
+
+            if ((int)transaction.Status < 0)
+            {
+                return BadRequest(Messages.OnlySuccessfulTransactionsAreAllowed);
+            }
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
+
+            // TODO: caching
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            // merge system settings with terminal settings
+            mapper.Map(systemSettings, terminal);
+
+            var endResponse = new OperationResponse();
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+            {
+                try
+                {
+                    Invoice invoiceRequest = new Invoice();
+                    mapper.Map(transaction, invoiceRequest);
+
+                    //TODO: Handle refund & credit default invoice types
+                    InvoiceDetails invoiceDetails = new InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
+                    invoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings);
+
+                    invoiceRequest.InvoiceDetails = invoiceDetails;
+
+                    invoiceRequest.MerchantID = terminal.MerchantID;
+
+                    invoiceRequest.ApplyAuditInfo(httpContextAccessor);
+
+                    await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
+
+                    endResponse = new OperationResponse(Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
+
+                    transaction.InvoiceID = invoiceRequest.InvoiceID;
+
+                    await transactionsService.UpdateEntity(transaction, Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
+
+                    var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
+
+                    // TODO: validate, rollback
+                    if (invoicesToResend.Count() > 0)
+                    {
+                        await queue.PushToQueue(invoicesToResend.First());
+                    }
+
+                    await dbTransaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
+
+                    endResponse = new OperationResponse($"{Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
+
+                    await dbTransaction.RollbackAsync();
+                }
+            }
+
+            return endResponse;
+        }
+
+        [HttpPost]
+        [Route("resend-admin")]
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
+        public async Task<ActionResult<OperationResponse>> TransmitTransactionsAdmin(ResendInvoiceRequest resendInvoiceRequest)
+        {
+            if (resendInvoiceRequest.InvoicesIDs == null || resendInvoiceRequest.InvoicesIDs.Count() == 0)
+            {
+                return BadRequest(new OperationResponse(Messages.TransactionsForTransmissionRequired, null, httpContextAccessor.TraceIdentifier, nameof(resendInvoiceRequest.InvoicesIDs), Messages.TransactionsForTransmissionRequired));
+            }
+
+            if (resendInvoiceRequest.InvoicesIDs.Count() > appSettings.TransmissionMaxBatchSize)
+            {
+                return BadRequest(new OperationResponse(string.Format(Messages.TransmissionLimit, appSettings.TransmissionMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(resendInvoiceRequest.InvoicesIDs), string.Format(Messages.TransmissionLimit, appSettings.TransmissionMaxBatchSize)));
+            }
+
+            var transactionTerminals = (await invoiceService.GetInvoices()
+                .Where(t => resendInvoiceRequest.InvoicesIDs.Contains(t.InvoiceID))
+                .ToListAsync())
+                .GroupBy(k => k.TerminalID, v => v.InvoiceID)
+                .ToDictionary(k => k.Key, v => v.ToList());
+
+            var response = new OperationResponse
+            {
+                Status = StatusEnum.Success,
+                Message = Messages.InvoicesQueuedForResend
+            };
+
+            foreach (var batch in transactionTerminals)
+            {
+                await Resend(new ResendInvoiceRequest { TerminalID = batch.Key, InvoicesIDs = batch.Value });
+            }
+
+            return Ok(response);
         }
 
         [HttpPost]

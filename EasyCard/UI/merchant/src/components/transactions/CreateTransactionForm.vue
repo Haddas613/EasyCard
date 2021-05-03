@@ -220,7 +220,7 @@ export default {
         this.successSnack.showSnackbar = true;
         this.successSnack.snackbarMsg = result.message || null;
         setTimeout(() => {
-          this.$router.push("/admin/transactions/list");
+          this.$router.push({ name: "Transactions" });
         }, 3000);
       }
     },

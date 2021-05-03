@@ -71,6 +71,9 @@ namespace Transactions.Api.Services
             var reportGranularityTypeEnum = typeof(ReportGranularityEnum);
             var quickDateFilterAltTypeEnum = typeof(QuickDateFilterAltEnum);
 
+            var documentOriginEnumType = typeof(DocumentOriginEnum);
+            var finalizationStatusEnumType = typeof(TransactionFinalizationStatusEnum);
+
             var tranStatuses = Enum.GetValues(transactionStatusEnumType).Cast<TransactionStatusEnum>()
                 .ToDictionary(m => transactionStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => TransactionStatusResource.ResourceManager.GetString(m.ToString(), culture) );
 
@@ -134,6 +137,12 @@ namespace Transactions.Api.Services
             var quickDateFilterAltTypes = Enum.GetValues(quickDateFilterAltTypeEnum).Cast<QuickDateFilterAltEnum>()
                 .ToDictionary(m => quickDateFilterAltTypeEnum.GetDataContractAttrForEnum(m.ToString()), m => ReportEnumsResource.ResourceManager.GetString(m.ToString(), culture));
 
+            var documentOriginTypes = Enum.GetValues(documentOriginEnumType).Cast<DocumentOriginEnum>()
+                .ToDictionary(m => documentOriginEnumType.GetDataContractAttrForEnum(m.ToString()), m => TransactionEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
+            var finalizationStatusTypes = Enum.GetValues(finalizationStatusEnumType).Cast<TransactionFinalizationStatusEnum>()
+                .ToDictionary(m => finalizationStatusEnumType.GetDataContractAttrForEnum(m.ToString()), m => TransactionEnumsResource.ResourceManager.GetString(m.ToString(), culture));
+
             response.TransactionStatusEnum = tranStatuses;
             response.TransactionTypeEnum = tranTypes;
             response.SpecialTransactionTypeEnum = spTranTypes;
@@ -155,6 +164,8 @@ namespace Transactions.Api.Services
             response.PaymentTypeEnum = paymentTypes;
             response.ReportGranularityEnum = reportGranularityTypes;
             response.QuickDateFilterAltEnum = quickDateFilterAltTypes;
+            response.DocumentOriginEnum = documentOriginTypes;
+            response.TransactionFinalizationStatusEnum = finalizationStatusTypes;
 
             return response;
         }

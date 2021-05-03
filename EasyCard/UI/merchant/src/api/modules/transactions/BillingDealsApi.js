@@ -54,11 +54,4 @@ export default class BillingDealsApi {
     async deleteBillingDeal(id, data) {
         return await this.base.delete(this.billingUrl + `/${id}`, data);
     }
-
-    async createTransactions(terminalID, billingDealsID) {
-        return await this.base.post(this.billingUrl + '/create-transactions', {
-            terminalID,
-            billingDealsID
-        });
-    } 
 }

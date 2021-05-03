@@ -42,6 +42,8 @@ namespace Merchants.Business.Entities.Terminal
 
         public DateTime? Created { get; set; }
 
+        public DateTime? Updated { get; set; }
+
         public TerminalSettings Settings { get; set; }
 
         public TerminalBillingSettings BillingSettings { get; set; }
@@ -69,6 +71,8 @@ namespace Merchants.Business.Entities.Terminal
         /// For search purposes.
         /// </summary>
         public string AggregatorTerminalReference { get; set; }
+
+        public long? TerminalTemplateID { get; set; }
 
         public Guid GetID()
         {

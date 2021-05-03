@@ -49,7 +49,7 @@ namespace Transactions.Api.Extensions.Filtering
             // TODO: we can try to transmit transactions which are failed to transmit
             if (filter.NotTransmitted)
             {
-                src = src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator);
+                src = src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission);
             }
             else if (filter.QuickStatusFilter != null)
             {
@@ -157,6 +157,31 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.CreditCardDetails.CardVendor == filter.CreditCardVendor);
             }
 
+            if (filter.TerminalTemplateID.HasValue)
+            {
+                src = src.Where(t => t.TerminalTemplateID == filter.TerminalTemplateID.Value);
+            }
+
+            if (filter.FinalizationStatus.HasValue)
+            {
+                src = src.Where(t => t.FinalizationStatus == filter.FinalizationStatus);
+            }
+
+            if (filter.DocumentOrigin.HasValue)
+            {
+                src = src.Where(t => t.DocumentOrigin == filter.DocumentOrigin);
+            }
+
+            if (filter.HasInvoice.GetValueOrDefault())
+            {
+                src = src.Where(t => t.InvoiceID != null);
+            }
+
+            if (filter.IsPaymentRequest.GetValueOrDefault())
+            {
+                src = src.Where(t => t.PaymentRequestID != null);
+            }
+
             return src;
         }
 
@@ -172,8 +197,13 @@ namespace Transactions.Api.Extensions.Filtering
 
         private static IQueryable<PaymentTransaction> HandleDateFiltering(IQueryable<PaymentTransaction> src, TransactionsFilter filter)
         {
-            //TODO: Quick time filters using SequentialGuid https://stackoverflow.com/questions/54920200/entity-framework-core-guid-greater-than-for-paging
-            if (filter.QuickDateFilter != null)
+            if (filter.TransmissionQuickDateFilter != null)
+            {
+                var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(filter.TransmissionQuickDateFilter.Value);
+
+                src = src.Where(t => t.ShvaTransactionDetails.TransmissionDate >= dateRange.DateFrom && t.ShvaTransactionDetails.TransmissionDate <= dateRange.DateTo);
+            }
+            else if (filter.QuickDateFilter != null) //TODO: Quick time filters using SequentialGuid https://stackoverflow.com/questions/54920200/entity-framework-core-guid-greater-than-for-paging
             {
                 var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(filter.QuickDateFilter.Value);
 
@@ -199,9 +229,10 @@ namespace Transactions.Api.Extensions.Filtering
             => typeEnum switch
             {
                 QuickStatusFilterTypeEnum.Pending => src.Where(t => (int)t.Status > 0 && (int)t.Status < 40),
-                QuickStatusFilterTypeEnum.Completed => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.TransmittedByProcessor),
+                QuickStatusFilterTypeEnum.Completed => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.Completed),
+                QuickStatusFilterTypeEnum.Canceled => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.CancelledByMerchant),
                 QuickStatusFilterTypeEnum.Failed => src.Where(t => (int)t.Status < 0),
-                QuickStatusFilterTypeEnum.AwaitingForTransmission => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.CommitedByAggregator),
+                QuickStatusFilterTypeEnum.AwaitingForTransmission => src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission),
                 _ => src,
             };
     }

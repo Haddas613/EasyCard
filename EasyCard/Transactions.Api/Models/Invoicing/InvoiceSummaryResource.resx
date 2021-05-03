@@ -144,7 +144,13 @@
   <data name="InvoiceType" xml:space="preserve">
     <value>Invoice Type</value>
   </data>
+  <data name="MerchantName" xml:space="preserve">
+    <value>Merchant</value>
+  </data>
   <data name="TerminalID" xml:space="preserve">
     <value>Terminal ID</value>
+  </data>
+  <data name="TerminalName" xml:space="preserve">
+    <value>Terminal</value>
   </data>
 </root>

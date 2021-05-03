@@ -27,6 +27,11 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.DueDate)))
                 .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID));
 
+            CreateMap<PaymentRequest, PaymentRequestSummaryAdmin>()
+                .ForMember(d => d.ConsumerEmail, o => o.MapFrom(d => d.DealDetails.ConsumerEmail))
+                .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.DueDate)))
+                .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID));
+
             CreateMap<PaymentRequest, PaymentRequestResponse>()
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.DueDate)));
 

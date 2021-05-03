@@ -3,6 +3,7 @@ using Merchants.Business.Entities.User;
 using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace Merchants.Business.Services
 
         public Task<TerminalTemplate> GetTerminalTemplate(long terminalTemplateID);
 
-        public IQueryable<TerminalTemplateExternalSystem> GetTerminalTemplateExternalSystems();
+        public Task<IEnumerable<TerminalTemplateExternalSystem>> GetTerminalTemplateExternalSystems(long terminalTemplateID);
 
         public Task SaveTerminalTemplateExternalSystem(TerminalTemplateExternalSystem entity);
 

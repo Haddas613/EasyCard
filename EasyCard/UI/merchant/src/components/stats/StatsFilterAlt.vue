@@ -39,64 +39,7 @@
               <v-switch v-model="model.customDate" :label="$t('Custom')"></v-switch>
             </v-col>
             <template v-if="model.customDate">
-              <v-col cols="12" md="6" class="py-0 px-6">
-                <v-menu
-                  ref="dateFromMenu"
-                  v-model="dateFromMenu"
-                  :close-on-content-click="false"
-                  :return-value.sync="model.dateFrom"
-                  offset-y
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-text-field
-                      v-model="model.dateFrom"
-                      :label="$t('DateFrom')"
-                      readonly
-                      :rules="[vr.primitives.requiredDependsOnFalsy(model.dateTo)]"
-                      outlined
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker v-model="model.dateFrom" no-title scrollable>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="$refs.dateFromMenu.save(model.dateFrom)"
-                    >{{$t("Ok")}}</v-btn>
-                  </v-date-picker>
-                </v-menu>
-              </v-col>
-              <v-col cols="12" md="6" class="py-0 px-6">
-                <v-menu
-                  ref="dateToMenu"
-                  v-model="dateToMenu"
-                  :close-on-content-click="false"
-                  :return-value.sync="model.dateTo"
-                  offset-y
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-text-field
-                      v-model="model.dateTo"
-                      :label="$t('DateTo')"
-                      readonly
-                      :rules="[vr.primitives.requiredDependsOnFalsy(model.dateFrom)]"
-                      outlined
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker v-model="model.dateTo" :min="model.dateFrom" no-title scrollable>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="$refs.dateToMenu.save(model.dateTo)"
-                    >{{$t("Ok")}}</v-btn>
-                  </v-date-picker>
-                </v-menu>
-              </v-col>
+              <date-from-to-filter class="px-6" v-model="model"></date-from-to-filter>
             </template>
             <v-col cols="12" class="py-0" v-else>
               <ec-radio-group
@@ -123,6 +66,7 @@ export default {
   components: {
     EcDialog: () => import("../ec/EcDialog"),
     EcRadioGroup: () => import("../inputs/EcRadioGroup"),
+    DateFromToFilter: () => import("../filtering/DateFromToFilter"),
   },
   data() {
     return {
@@ -132,8 +76,6 @@ export default {
       model: {
         ...this.storeDateFilter
       },
-      dateFromMenu: null,
-      dateToMenu: null,
       formIsValid: true,
       vr: ValidationRules
     };

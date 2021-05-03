@@ -97,6 +97,15 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Origin.
+        /// </summary>
+        internal static string DocumentOrigin {
+            get {
+                return ResourceManager.GetString("DocumentOrigin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to JDeal type.
         /// </summary>
         internal static string JDealType {

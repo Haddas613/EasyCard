@@ -6,6 +6,7 @@ using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Text;
 using Transactions.Shared.Enums;
 using Transactions.Shared.Models;
@@ -104,6 +105,8 @@ namespace Transactions.Business.Entities
 
         public decimal NetTotal { get; set; }
 
+        public decimal TotalDiscount { get; set; }
+
         public string CardOwnerName { get; set; }
 
         public string CardOwnerNationalID { get; set; }
@@ -153,6 +156,10 @@ namespace Transactions.Business.Entities
         [Obsolete]
         public void Calculate()
         {
+            if (DealDetails?.Items?.Count() > 0)
+            {
+                TotalDiscount = DealDetails.Items.Sum(e => e.Discount.GetValueOrDefault(0));
+            }
         }
     }
 }

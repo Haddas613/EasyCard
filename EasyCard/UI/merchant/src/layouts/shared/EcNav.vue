@@ -76,6 +76,7 @@
 <script>
 import { mapState } from "vuex";
 import Avatar from "vue-avatar";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -85,11 +86,13 @@ export default {
   props: ["drawer"],
   data() {
     return {
-      items: [
+      items: null,
+      allItems: [
         {
           icon: "mdi-view-dashboard",
           text: "Dashboard",
-          to: "/admin/dashboard"
+          to: { name: "Dashboard" },
+          allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin]
         },
         {
           icon: "mdi-cash-minus",
@@ -100,7 +103,7 @@ export default {
             {
               icon: "mdi-cash-multiple",
               text: "TransactionsList",
-              to: "/admin/transactions/list"
+              to: { name: "Transactions" }
             }
           ]
         },
@@ -113,12 +116,12 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "CustomersList",
-              to: "/admin/customers/list"
+              to: { name: "Customers" }
             },
             {
               icon: "mdi-plus",
               text: "CreateCustomer",
-              to: "/admin/customers/create"
+              to: { name: "CreateCustomer" }
             }
           ]
         },
@@ -131,12 +134,12 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "ItemsList",
-              to: "/admin/items/list"
+              to: { name: "Items" }
             },
             {
               icon: "mdi-plus",
               text: "CreateItem",
-              to: "/admin/items/create"
+              to: { name: "CreateItem" }
             }
           ]
         },
@@ -149,12 +152,12 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "InvoicesList",
-              to: "/admin/invoicing/list"
+              to: { name: "Invoices" }
             },
             {
               icon: "mdi-plus",
               text: "CreateInvoice",
-              to: "/wizard/invoicing/create"
+              to: { name: "CreateInvoice" }
             }
           ]
         },
@@ -167,12 +170,12 @@ export default {
             {
               icon: "mdi-format-list-bulleted",
               text: "PaymentRequestsList",
-              to: "/admin/payment-requests/list"
+              to: { name: "PaymentRequests" }
             },
             {
               icon: "mdi-plus",
               text: "CreatePaymentRequest",
-              to: "/wizard/payment-requests/create"
+              to: { name: "CreatePaymentRequest" }
             }
           ]
         },
@@ -180,17 +183,19 @@ export default {
           icon: "mdi-rotate-right",
           "icon-alt": "mdi-rotate-right",
           text: "BillingDeals",
+          allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin],
+          requiredFeature: appConstants.terminal.features.Billing,
           expanded: false,
           children: [
             {
               icon: "mdi-format-list-bulleted",
               text: "BillingDealsList",
-              to: "/admin/billing-deals/list"
+              to: { name: "BillingDeals" }
             },
             {
               icon: "mdi-plus",
               text: "CreateBillingDeal",
-              to: "/admin/billing-deals/create"
+              to: { name: "CreateBillingDeal" }
             }
           ]
         }
@@ -199,7 +204,23 @@ export default {
     };
   },
   async mounted() {
-    this.userName = !!this.$oidc ? (await this.$oidc.getUserDisplayName()) : null;
+    this.userName = !!this.$oidc ? await this.$oidc.getUserDisplayName() : null;
+    await this.initMenuItems();
+  },
+  methods: {
+    async initMenuItems() {
+      let items = [];
+      for(var i of this.allItems){
+        if(i.allowedFor && !(await this.$oidc.isInRole(i.allowedFor))){
+          continue;
+        }
+        if(i.requiredFeature && !(this.$featureEnabled(this.terminalStore, i.requiredFeature))){
+          continue;
+        }
+        items.push(i);
+      }
+      this.items = items;
+    }
   },
   computed: {
     drawerObj: {
@@ -216,6 +237,14 @@ export default {
         return this.$vuetify.rtl === true;
       }
     },
-  }
+    ...mapState({
+      terminalStore: state => state.settings.terminal
+    })
+  },
+  watch: {
+    'terminalStore': async function(newValue, oldValue) {
+      await this.initMenuItems();
+    }
+  },
 };
 </script>

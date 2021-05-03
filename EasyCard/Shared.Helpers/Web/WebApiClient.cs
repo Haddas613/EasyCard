@@ -271,9 +271,7 @@ namespace Shared.Helpers
             }
         }
 
-        public async Task<string> PostRawForm(string enpoint, string actionPath, IDictionary<string, string> payload, Func<Task<NameValueCollection>> getHeaders = null,
-            ProcessRequest onRequest = null, ProcessResponse onResponse = null
-            )
+        public async Task<string> PostRawForm(string enpoint, string actionPath, IDictionary<string, string> payload, Func<Task<NameValueCollection>> getHeaders = null)
         {
             var url = UrlHelper.BuildUrl(enpoint, actionPath);
 
@@ -290,13 +288,9 @@ namespace Shared.Helpers
 
             request.Content = new FormUrlEncodedContent(payload);
 
-            onRequest?.Invoke(url, JsonConvert.SerializeObject(payload));
-
             HttpResponseMessage response = await HttpClient.SendAsync(request);
 
             var res = await response.Content.ReadAsStringAsync();
-
-            onResponse?.Invoke(res, response.StatusCode, response.Headers);
 
             if (response.IsSuccessStatusCode)
             {

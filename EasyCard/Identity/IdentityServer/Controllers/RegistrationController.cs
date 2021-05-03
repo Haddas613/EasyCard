@@ -31,15 +31,20 @@ namespace IdentityServer.Controllers
         private readonly IMapper mapper;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly UserManageService userManageService;
+        private readonly UserHelpers userHelpers;
 
-        public RegistrationController(IMerchantsApiClient merchantsApiClient, IMapper mapper,
+        public RegistrationController(
+            IMerchantsApiClient merchantsApiClient, 
+            IMapper mapper,
             UserManager<ApplicationUser> userManager,
-            UserManageService userManageService)
+            UserManageService userManageService,
+            UserHelpers userHelpers)
         {
             this.merchantsApiClient = merchantsApiClient;
             this.mapper = mapper;
             this.userManager = userManager;
             this.userManageService = userManageService;
+            this.userHelpers = userHelpers;
         }
 
         public async Task<IActionResult> Index()
@@ -98,7 +103,7 @@ namespace IdentityServer.Controllers
             {
                 Email = model.Email,
                 MerchantID = merchantResult.EntityReference,
-                Roles = new List<string>(),
+                Roles = new List<string> { Roles.Merchant, Roles.Manager },
                 CellPhone = model.PhoneNumber
             };
 
@@ -110,6 +115,10 @@ namespace IdentityServer.Controllers
             }
 
             var user = await userManager.FindByEmailAsync(model.Email);
+
+            //TODO: Confirm email before setting this to true
+            user.EmailConfirmed = true;
+            await userManager.UpdateAsync(user);
 
             //set user password
             user.PasswordHash = userManager.PasswordHasher.HashPassword(user, model.Password);
@@ -123,7 +132,7 @@ namespace IdentityServer.Controllers
             var merchantLinkRequest = new LinkUserToMerchantRequest
             {
                 Email = model.Email,
-                DisplayName = $"{model.FirstName} {model.LastName}".Trim(),
+                DisplayName = userHelpers.GetUserFullName(model.FirstName, model.LastName),
                 UserID = Guid.Parse(user.Id),
                 MerchantID = merchantResult.EntityUID.Value,
                 Roles = new List<string>(),

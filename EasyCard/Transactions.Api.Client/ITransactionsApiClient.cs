@@ -18,7 +18,7 @@ namespace Transactions.Api.Client
 
         Task<OperationResponse> GenerateInvoice(Guid? invoiceID);
 
-        Task<OperationResponse> TransmitTerminalTransactions(Guid? terminalID);
+        Task<SummariesResponse<TransmitTransactionResponse>> TransmitTerminalTransactions(Guid? terminalID);
 
         Task<IEnumerable<Guid>> GetNonTransmittedTransactionsTerminals();
 

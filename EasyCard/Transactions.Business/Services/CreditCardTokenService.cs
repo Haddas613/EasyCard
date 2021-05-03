@@ -39,15 +39,15 @@ namespace Transactions.Business.Services
         {
             if (user.IsAdmin())
             {
-                return context.CreditCardTokenDetails;
+                return context.CreditCardTokenDetails.Where(t => t.Active);
             }
             else if (user.IsTerminal())
             {
-                return context.CreditCardTokenDetails.Where(t => t.TerminalID == user.GetTerminalID());
+                return context.CreditCardTokenDetails.Where(t => t.Active && t.TerminalID == user.GetTerminalID());
             }
             else
             {
-                return context.CreditCardTokenDetails.Where(t => t.MerchantID == user.GetMerchantID());
+                return context.CreditCardTokenDetails.Where(t => t.Active && t.MerchantID == user.GetMerchantID());
             }
         }
 

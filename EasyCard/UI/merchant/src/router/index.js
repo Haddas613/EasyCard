@@ -4,8 +4,25 @@ import MainLayout from '../layouts/main/Index.vue'
 import WizardLayout from '../layouts/wizard/Index.vue'
 import store from '../store/index';
 import cfg from "../app.config";
+import appConstants from "../helpers/app-constants";
 
 Vue.use(VueRouter)
+
+/**
+ * @param {roles} roles array: string | string 
+ */
+const AllowedForGuard = function(roles, defaultRoute = { name: "Transactions" }){
+    this.defaultRoute = defaultRoute;
+    this.challenge = async function(oidc){
+        if(await oidc.isInRole(roles)){
+            return true;
+        }
+        
+        return false;
+    }
+};
+
+const allowedForManagerOrAdminGuard = new AllowedForGuard([appConstants.users.roles.manager, appConstants.users.roles.billingAdmin]);
 
 /**
  * MainLayout components may contain next meta:
@@ -17,22 +34,45 @@ Vue.use(VueRouter)
  * 3. closeBtn: string:(route-name) | boolean - when present with positive value, the close button will appear on mobile 
  * layout instead of burger menu. Either route or goBack(-1) will be used if route name is supplied or not respectively.
  */
-const routes = [{
-        path: '/',
-        name: 'Entry',
+const routes = [
+    {
+        path: '/wizard',
+        component: WizardLayout,
         meta: {
             //authName: mainAuth.authName
         },
-        redirect: '/admin'
+        children: [{
+                name: 'Charge',
+                path: 'transactions/charge',
+                component: () =>
+                    import ('../wizards/transactions/CreateCharge.vue'),
+                props: true
+            },
+            {
+                name: 'Refund',
+                path: 'transactions/refund',
+                component: () =>
+                    import ('../wizards/transactions/CreateRefund.vue'),
+                props: true
+            },
+            {
+                name: 'CreateInvoice',
+                path: 'invoicing/create',
+                component: () =>
+                    import ('../wizards/invoicing/CreateInvoice.vue'),
+                props: true
+            },
+            {
+                name: 'CreatePaymentRequest',
+                path: 'payment-requests/create',
+                component: () =>
+                    import ('../wizards/payment-requests/CreatePaymentRequest.vue'),
+                props: true
+            }
+        ]
     },
     {
-        path: '/guest',
-        name: 'Guest',
-        component: () =>
-            import ('../pages/Guest.vue')
-    },
-    {
-        path: '/admin',
+        path: '/',
         component: MainLayout,
         meta: {
             //authName: mainAuth.authName
@@ -42,6 +82,7 @@ const routes = [{
                 path: 'dashboard',
                 meta: {
                     altDisplay: true,
+                    guard: allowedForManagerOrAdminGuard
                 },
                 alias: '',
                 component: () =>
@@ -160,13 +201,17 @@ const routes = [{
                 name: 'BillingDeals',
                 path: 'billing-deals/list',
                 props: true,
+                meta: {
+                    guard: allowedForManagerOrAdminGuard
+                },
                 component: () =>
                     import ('../pages/billing-deals/BillingDealsList.vue'),
             },
             {
                 name: 'BillingDeal',
                 meta: {
-                    backBtn: true
+                    backBtn: true,
+                    guard: allowedForManagerOrAdminGuard
                 },
                 path: 'billing-deals/view/:id',
                 component: () =>
@@ -175,7 +220,8 @@ const routes = [{
             {
                 name: 'EditBillingDeal',
                 meta: {
-                    backBtn: 'BillingDeals'
+                    backBtn: 'BillingDeals',
+                    guard: allowedForManagerOrAdminGuard
                 },
                 path: 'billing-deals/edit/:id',
                 component: () =>
@@ -184,6 +230,7 @@ const routes = [{
             {
                 name: 'CreateBillingDeal',
                 path: 'billing-deals/create',
+                guard: allowedForManagerOrAdminGuard,
                 component: () =>
                     import ('../pages/billing-deals/CreateBillingDeal.vue'),
             },
@@ -237,42 +284,6 @@ const routes = [{
         ]
     },
     {
-        path: '/wizard',
-        component: WizardLayout,
-        meta: {
-            //authName: mainAuth.authName
-        },
-        children: [{
-                name: 'Charge',
-                path: 'transactions/charge',
-                component: () =>
-                    import ('../wizards/transactions/CreateCharge.vue'),
-                props: true
-            },
-            {
-                name: 'Refund',
-                path: 'transactions/refund',
-                component: () =>
-                    import ('../wizards/transactions/CreateRefund.vue'),
-                props: true
-            },
-            {
-                name: 'CreateInvoice',
-                path: 'invoicing/create',
-                component: () =>
-                    import ('../wizards/invoicing/CreateInvoice.vue'),
-                props: true
-            },
-            {
-                name: 'CreatePaymentRequest',
-                path: 'payment-requests/create',
-                component: () =>
-                    import ('../wizards/payment-requests/CreatePaymentRequest.vue'),
-                props: true
-            }
-        ]
-    },
-    {
         path: '*',
         component: () =>
             import ('../views/NotFound.vue'),
@@ -305,8 +316,17 @@ router.afterEach((to, from) => {
 router.beforeEach(async(to, from, next) => {
     const oidc = Vue.prototype.$oidc;
     if (await oidc.isAuthenticated()) {
-        // we can pass through merchants and admins
-        next();
+        if(to.meta && to.meta.guard){
+            let challenge = await to.meta.guard.challenge(oidc);
+            if(challenge){
+                next();
+            }else{
+                next(to.meta.guard.defaultRoute);
+            }
+        }else{
+            // we can pass through merchants and admins
+            next();
+        }
           
     } else {
         oidc.signinRedirect(to)

@@ -19,6 +19,12 @@ namespace ClearingHouse.Models
         public long? MerchantID { get; set; }
 
         /// <summary>
+        /// Initial record
+        /// </summary>
+        [DataMember(Name = "parentMerchantID")]
+        public long? ParentMerchantID { get; set; }
+
+        /// <summary>
         /// Gets or Sets MerchantName
         /// </summary>
         [DataMember(Name = "merchantName")]
@@ -56,6 +62,12 @@ namespace ClearingHouse.Models
         public string Phone { get; set; }
 
         /// <summary>
+        /// Gets or Sets email
+        /// </summary>
+        [DataMember(Name = "email")]
+        public string Email { get; set; }
+
+        /// <summary>
         /// Gets or Sets Business Id
         /// </summary>
         [DataMember(Name = "businessId")]
@@ -66,5 +78,35 @@ namespace ClearingHouse.Models
         /// </summary>
         [DataMember(Name = "activityStartDate")]
         public DateTime? ActivityStartDate { get; set; }
+
+        /// <summary>
+        /// Credit card company
+        /// </summary>
+        [DataMember(Name = "clearingCompany")]
+        public string ClearingCompany { get; set; }
+
+        /// <summary>
+        /// Visa Id
+        /// </summary>
+        [DataMember(Name = "clearingCompanyReference")]
+        public string ClearingCompanyReference { get; set; }
+
+        /// <summary>
+        /// Discount of installments
+        /// </summary>
+        [DataMember(Name = "nikionEnabled")]
+        public bool NikionEnabled { get; set; }
+
+        /// <summary>
+        /// Block any transaction
+        /// </summary>
+        [DataMember(Name = "blockTransactions")]
+        public bool BlockTransactions { get; set; }
+
+        [DataMember(Name = "ravMotav")]
+        public bool RavMotav { get; set; }
+
+        [DataMember(Name = "isDisable")]
+        public bool IsDisable { get; set; }
     }
 }

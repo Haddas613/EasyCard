@@ -11,6 +11,7 @@ using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Models.Integration;
 using Merchants.Business.Services;
 using Merchants.Shared;
+using Merchants.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -36,13 +37,20 @@ namespace Merchants.Api.Controllers
         private readonly IMapper mapper;
         private readonly ISystemSettingsService systemSettingsService;
         private readonly IExternalSystemsService externalSystemsService;
+        private readonly IFeaturesService featuresService;
 
-        public TerminalTemplatesApiController(ITerminalTemplatesService terminalTemplatesService, IMapper mapper, ISystemSettingsService systemSettingsService, IExternalSystemsService externalSystemsService)
+        public TerminalTemplatesApiController(
+            ITerminalTemplatesService terminalTemplatesService,
+            IMapper mapper,
+            ISystemSettingsService systemSettingsService,
+            IExternalSystemsService externalSystemsService,
+            IFeaturesService featuresService)
         {
             this.terminalTemplatesService = terminalTemplatesService;
             this.mapper = mapper;
             this.systemSettingsService = systemSettingsService;
             this.externalSystemsService = externalSystemsService;
+            this.featuresService = featuresService;
         }
 
         [HttpGet]
@@ -158,6 +166,31 @@ namespace Merchants.Api.Controllers
             await terminalTemplatesService.RemoveTerminalTemplateExternalSystem(terminalTemplateID, externalSystemID);
 
             return Ok(new OperationResponse(Messages.ExternalSystemRemoved, StatusEnum.Success, terminalTemplateID.ToString()));
+        }
+
+        [HttpPut]
+        [Route("{terminalTemplateID}/switchfeature/{featureID}")]
+        public async Task<ActionResult<OperationResponse>> SwitchTerminalFeature([FromRoute]long terminalTemplateID, [FromRoute]FeatureEnum featureID)
+        {
+            var template = EnsureExists(await terminalTemplatesService.GetTerminalTemplate(terminalTemplateID));
+            var feature = EnsureExists(await featuresService.GetQuery().FirstOrDefaultAsync(f => f.FeatureID == featureID), "Feature");
+
+            if (template.EnabledFeatures != null && template.EnabledFeatures.Any(f => f == feature.FeatureID))
+            {
+                template.EnabledFeatures.Remove(featureID);
+            }
+            else
+            {
+                if (template.EnabledFeatures == null)
+                {
+                    template.EnabledFeatures = new List<FeatureEnum>();
+                }
+
+                template.EnabledFeatures.Add(featureID);
+            }
+
+            await terminalTemplatesService.UpdateEntity(template);
+            return Ok(new OperationResponse(Messages.TerminalTemplateUpdated, StatusEnum.Success) { EntityID = terminalTemplateID });
         }
 
         [HttpPost]

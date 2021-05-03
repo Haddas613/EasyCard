@@ -63,7 +63,6 @@ namespace CheckoutPortal.Models
 
         [Required]
         [StringLength(19, MinimumLength = 9)]
-        [RegularExpression("^[0-9]*$")]
         [CreditCardPlus]
         public string CardNumber { get; set; }
 
@@ -74,7 +73,7 @@ namespace CheckoutPortal.Models
 
         [Required]
         [StringLength(4, MinimumLength = 3)]
-        [RegularExpression("^[0-4]*$")]
+        [RegularExpression("^[0-9]{3,4}$")]
         public string Cvv { get; set; }
 
         /// <summary>
@@ -95,5 +94,7 @@ namespace CheckoutPortal.Models
 
         [BindNever]
         public IEnumerable<KeyValuePair<Guid, string>> SavedTokens { get; set; }
+
+        public bool? IssueInvoice { get; set; }
     }
 }
