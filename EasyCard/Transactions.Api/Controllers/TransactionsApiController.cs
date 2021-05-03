@@ -52,6 +52,7 @@ using SharedIntegration = Shared.Integration;
 using Shared.Api.Configuration;
 using Merchants.Business.Entities.Terminal;
 using Nayax;
+using Shva;
 
 namespace Transactions.Api.Controllers
 {
@@ -689,10 +690,37 @@ namespace Transactions.Api.Controllers
                 if (pinpadDeal)
                 {
                     processorRequest.PinPadProcessorSettings = pinpadProcessorSettings;
-                  //  var transactions = await transactionsService.GetTransactions().Where(d => d.PaymentTransactionID!=null)).ToListAsync();
-                    var lastDealNumber =await this.transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID!=null && x.ShvaTransactionDetails.ShvaShovarNumber!=null/*== "0887021011"*/).OrderByDescending(d => d.TransactionDate).Select(d => d).FirstOrDefaultAsync();//TODO SAME CLIENTCODE IN SHVA 
+                
+                    var Shva = await this.terminalsService.GetTerminal(model.TerminalID);
+                   //var ShvaSettings =  Shva.Integrations.Where(x => x.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor).Select(y=>y.Settings.ToString()).FirstOrDefault();
+      
+                    ShvaTerminalSettings  shvaSettings = JsonConvert.DeserializeObject<ShvaTerminalSettings>(Shva.Integrations.Where(x => x.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor).Select(y => y.Settings.ToString()).FirstOrDefault());
+                    //  var transactions = await transactionsService.GetTransactions().Where(d => d.PaymentTransactionID!=null)).ToListAsync();
+                    var lastDealNumber = await this.transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == shvaSettings.MerchantNumber).OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync();
+                    string dealnumber = lastDealNumber.ShvaShovarNumber;
+                    int fileNo = -1;
+                    int.TryParse(dealnumber.Substring(0, 2),  out fileNo);
+                    int seqNo = -1;
+                    int.TryParse(dealnumber.Substring(5, 3), out seqNo);
+                    bool lastDealWasTransmit = lastDealNumber.TransmissionDate != null;
+                    if (lastDealWasTransmit)
+                    {
+                        seqNo = 1;
+                        fileNo++;
+                    }
 
-                    pinpadPreCreateResult = await ((NayaxProcessor)pinpadProcessor).PreCreateTransaction(processorRequest, lastDealNumber.ToString());
+                    if (seqNo > 999)
+                    {
+                        seqNo = 1;
+                        fileNo++;
+                    }
+                    else
+                    {
+                        seqNo++;
+                    }
+
+                    string sysTraceNum = string.Format("{0};{1}", fileNo, seqNo);
+                    pinpadPreCreateResult = await ((NayaxProcessor)pinpadProcessor).PreCreateTransaction(processorRequest, sysTraceNum);
                 }
 
                     var processorResponse = pinpadDeal ? await pinpadProcessor.CreateTransaction(processorRequest) : await processor.CreateTransaction(processorRequest);

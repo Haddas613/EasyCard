@@ -82,7 +82,7 @@ namespace Nayax.Converters
             };
         }
         */
-        public static ObjectInPhase1RequestParams GetObjectInPhase1RequestParams(this ProcessorCreateTransactionRequest req, string lastDealNumber )
+        public static ObjectInPhase1RequestParams GetObjectInPhase1RequestParams(this ProcessorCreateTransactionRequest req, string sysTraceNum )
         {
             ObjectInPhase1RequestParams inputObj = new ObjectInPhase1RequestParams();
             // InitDealResultModel initialDealData = req.InitialDeal as InitDealResultModel;
@@ -97,7 +97,7 @@ namespace Nayax.Converters
             inputObj.amount = req.TransactionAmount.ToNayaxDecimal();
             inputObj.vuid =String.Format("{0}_{1}", ((NayaxTerminalSettings)req.PinPadProcessorSettings).TerminalID,Guid.NewGuid().ToString());
             inputObj.tranCode = 1;
-                //inputObj.sysTraceNumber =
+            inputObj.sysTraceNumber = sysTraceNum;
             // TODO: national ID
             if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
             {

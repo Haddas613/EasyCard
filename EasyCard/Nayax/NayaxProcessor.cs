@@ -41,7 +41,7 @@ namespace Nayax
         /// </summary>
         /// <param name="paymentTransactionRequest"></param>
         /// <returns></returns>
-        public async Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest, string lastDealNumber)
+        public async Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest, string sysTraceNum)
         {
             NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
 
@@ -51,7 +51,7 @@ namespace Nayax
             }
 
             var phas1Req = nayaxParameters.GetPhase1RequestBody(configuration,paymentTransactionRequest.EasyCardTerminalID);
-             ObjectInPhase1RequestParams params2 = paymentTransactionRequest.GetObjectInPhase1RequestParams(lastDealNumber);
+             ObjectInPhase1RequestParams params2 = paymentTransactionRequest.GetObjectInPhase1RequestParams(sysTraceNum);
            
             phas1Req.paramss[1] = params2;
             //client.Timeout = TimeSpan.FromSeconds(30); TODO timeout for 30 minutes
