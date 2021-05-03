@@ -116,6 +116,8 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         public bool? PinPad { get; set; }
 
+        public Guid? PaymentRequestID { get; set; }
+
         public void Calculate()
         {
             if (NetTotal == 0)

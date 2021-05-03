@@ -57,7 +57,7 @@
               md="6"
               lg="6"
               class="text-end body-2"
-              v-bind:class="quickStatusColors[item.quickStatus]"
+              v-bind:class="quickStatusColors[item.$quickStatus]"
             >{{$t(item.quickStatus || 'None')}}</v-col>
             <v-col
               cols="12"
@@ -111,12 +111,13 @@ export default {
     return {
       paymentRequests: null,
       quickStatusColors: {
-        Pending: "ecgray--text",
-        None: "",
-        Completed: "success--text",
-        Failed: "error--text",
-        Canceled: "accent--text",
-        Overdue: "secondary--text"
+        pending: "ecgray--text",
+        none: "",
+        completed: "success--text",
+        failed: "error--text",
+        canceled: "accent--text",
+        overdue: "secondary--text",
+        viewed: "teal--text",
       },
       customerInfo: null,
       moment: moment,

@@ -32,6 +32,6 @@ namespace Merchants.Api.Models.Terminal
         [Required]
         public TerminalCheckoutSettings CheckoutSettings { get; set; }
 
-        public IEnumerable<FeatureEnum> EnabledFeatures { get; set; }
+        //public IEnumerable<FeatureEnum> EnabledFeatures { get; set; }
     }
 }

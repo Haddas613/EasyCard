@@ -24,5 +24,11 @@ namespace IdentityServer.Models
         public string DefaultStorageConnectionString { get; set; }
 
         public string RequestsLogStorageTable { get; set; }
+
+        public string SmsTableName { get; set; }
+
+        public string SmsFrom { get; set; }
+
+        public bool TwoFactorAuthenticationDoNotSendSms { get; set; }
     }
 }

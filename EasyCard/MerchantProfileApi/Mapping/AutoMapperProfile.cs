@@ -33,7 +33,7 @@ namespace MerchantProfileApi.Mapping
             CreateMap<Terminal, TerminalResponse>();
             CreateMap<Terminal, TerminalSummary>();
             CreateMap<ExternalSystem, ExternalSystemSummary>();
-            CreateMap<Feature, FeatureResponse>();
+            CreateMap<Feature, FeatureSummary>();
 
             CreateMap<TerminalExternalSystem, TerminalExternalSystemDetails>();
             CreateMap<ExternalSystemRequest, TerminalExternalSystem>();

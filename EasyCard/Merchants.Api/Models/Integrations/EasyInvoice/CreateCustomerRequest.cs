@@ -12,11 +12,15 @@ namespace Merchants.Api.Models.Integrations.EasyInvoice
         public Guid TerminalID { get; set; }
 
         [Required(AllowEmptyStrings = false)]
-        [StringLength(64, MinimumLength = 3)]
+        [EmailAddress]
         public string UserName { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [StringLength(64, MinimumLength = 6)]
         public string Password { get; set; }
+
+        [Required(AllowEmptyStrings = false)]
+        [StringLength(10, MinimumLength = 6)]
+        public string BusinessID { get; set; }
     }
 }

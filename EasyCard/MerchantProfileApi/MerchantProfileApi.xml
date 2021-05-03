@@ -75,6 +75,11 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Messages.ApiFeatureMustBeEnabled">
+            <summary>
+              Looks up a localized string similar to Api Feature must be enabled first.
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Messages.ConsumerCreated">
             <summary>
               Looks up a localized string similar to Consumer Created.
@@ -305,6 +310,67 @@
         <member name="P:MerchantProfileApi.Models.Terminal.TerminalSummary.ExternalProcessorReference">
             <summary>
             SHVA or other system terminal ID
+            </summary>
+        </member>
+        <member name="T:MerchantProfileApi.Models.Terminal.TerminalTransmissionScheduleResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalTransmissionScheduleResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalTransmissionScheduleResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalTransmissionScheduleResource.From12amTo3am">
+            <summary>
+              Looks up a localized string similar to 12:00am - 03:00am.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalTransmissionScheduleResource.From12pmTo3pm">
+            <summary>
+              Looks up a localized string similar to 12:00pm - 03:00pm.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalTransmissionScheduleResource.From3amTo6am">
+            <summary>
+              Looks up a localized string similar to 03:00am - 06:00am.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalTransmissionScheduleResource.From3pmTo6pm">
+            <summary>
+              Looks up a localized string similar to 03:00pm - 06:00pm.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalTransmissionScheduleResource.From6amTo9am">
+            <summary>
+              Looks up a localized string similar to 06:00am - 09:00am.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalTransmissionScheduleResource.From6pmTo9pm">
+            <summary>
+              Looks up a localized string similar to 06:00pm - 09:00pm.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalTransmissionScheduleResource.From9amTo12pm">
+            <summary>
+              Looks up a localized string similar to 09:00am - 12:00pm.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalTransmissionScheduleResource.From9pmTo12am">
+            <summary>
+              Looks up a localized string similar to 09:00pm - 12:00am.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Terminal.TerminalTransmissionScheduleResource.NotSpecified">
+            <summary>
+              Looks up a localized string similar to Not Specified.
             </summary>
         </member>
         <member name="F:ProfileApi.Policy.Terminal">

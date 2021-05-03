@@ -2,8 +2,11 @@
     [Date]  DATE NULL,
     [Year]  INT  NULL,
     [Month] INT  NULL,
-    [Day]   INT  NULL
+    [Day]   INT  NULL,
+    [Week]  INT  NULL
 );
+
+
 
 
 GO
@@ -24,4 +27,9 @@ CREATE NONCLUSTERED INDEX [IX_Day]
 GO
 CREATE NONCLUSTERED INDEX [IX_Date]
     ON [dbo].[Timeline]([Date] DESC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Week]
+    ON [dbo].[Timeline]([Week] DESC);
 

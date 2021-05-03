@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Transactions.Enums;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Models.Invoicing
 {
@@ -22,6 +23,8 @@ namespace Transactions.Api.Models.Invoicing
         public CurrencyEnum? Currency { get; set; }
 
         public QuickDateFilterTypeEnum? QuickDateFilter { get; set; }
+
+        public InvoiceStatusEnum? Status { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? DateFrom { get; set; }
@@ -39,6 +42,5 @@ namespace Transactions.Api.Models.Invoicing
         public string ConsumerEmail { get; set; }
 
         public decimal InvoiceAmount { get; set; }
-
     }
 }

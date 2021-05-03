@@ -147,6 +147,9 @@
   <data name="TerminalTemplateDisabled" xml:space="preserve">
     <value>Terminal template disabled</value>
   </data>
+  <data name="TerminalTemplateUpdated" xml:space="preserve">
+    <value>Terminal Template Updated</value>
+  </data>
   <data name="TerminalUpdated" xml:space="preserve">
     <value>Terminal Updated</value>
   </data>
@@ -159,13 +162,22 @@
   <data name="UserLinkedToMerchant" xml:space="preserve">
     <value>User linked to Merchant</value>
   </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>User not found</value>
+  </data>
   <data name="UserOperationFailed" xml:space="preserve">
     <value>User Operation Failed</value>
   </data>
   <data name="UserOperationSuccess" xml:space="preserve">
     <value>User Operation Success</value>
   </data>
+  <data name="UserRolesUpdated" xml:space="preserve">
+    <value>User roles updated successfully</value>
+  </data>
   <data name="UserUnlinkedFromMerchant" xml:space="preserve">
     <value>User unlinked from Merchant</value>
+  </data>
+  <data name="UserUpdated" xml:space="preserve">
+    <value>User Updated</value>
   </data>
 </root>

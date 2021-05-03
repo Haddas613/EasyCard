@@ -3,6 +3,7 @@ using EasyInvoice.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Shared.Api.Models;
 using Shared.Helpers;
 using Shared.Integration;
 using Shared.Integration.Exceptions;
@@ -46,26 +47,9 @@ namespace EasyInvoice
             var json = ECInvoiceConverter.GetInvoiceCreateDocumentRequest(documentCreationRequest);
             json.KeyStorePassword = terminal.KeyStorePassword;
 
-            NameValueCollection headers = new NameValueCollection();
-
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            try
-            {
-                var loginRequest = new { email = terminal.UserName, password = terminal.Password };
-
-                var loginres = apiClient.PostRawWithHeaders(this.configuration.BaseUrl, "/api/v1/login", JsonConvert.SerializeObject(loginRequest), "application/json").Result;
-
-                var authToken = loginres.ResponseHeaders.AllKeys.Any(k => k == ResponseTokenHeader) ? loginres.ResponseHeaders[ResponseTokenHeader] : null;
-
-                headers.Add(ResponseTokenHeader, authToken);
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, $"EasyInvoice integration request failed: failed to get token: {ex.Message} ({integrationMessageId}). CorrelationId: {documentCreationRequest.CorrelationId}");
-
-                throw new IntegrationException("EasyInvoice integration request failed: failed to get token", integrationMessageId);
-            }
+            NameValueCollection headers = GetAuthorizedHeaders(terminal.UserName, terminal.Password, integrationMessageId, documentCreationRequest.CorrelationId);
 
             ECInvoiceDocumentResponse svcRes = null;
             string requestUrl = null;
@@ -122,6 +106,72 @@ namespace EasyInvoice
             }
 
             return response;
+        }
+
+        public async Task<OperationResponse> CreateCustomer(ECCreateCustomerRequest request)
+        {
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+            var headers = GetAuthorizedHeaders(configuration.AdminUserName, configuration.AdminPassword, integrationMessageId, null);
+
+            try
+            {
+                headers.Add("Accept-language", "he"); // TODO: get language from options
+
+                /*
+                 * Response body: empty
+                 * Possible errors:
+                    * HTTP 409 (conflict) - user already exists
+                 */
+                var result = await this.apiClient.Post<object>(this.configuration.BaseUrl, "/api/v1/admin/user", request, () => Task.FromResult(headers));
+
+                return new OperationResponse
+                {
+                    Status = Shared.Api.Models.Enums.StatusEnum.Success,
+                    Message = "User created"
+                };
+            }
+            catch (Exception ex)
+            {
+                if (ex is WebApiClientErrorException wacEx)
+                {
+                    if (wacEx.StatusCode == System.Net.HttpStatusCode.Conflict)
+                    {
+                        return new OperationResponse
+                        {
+                            Status = Shared.Api.Models.Enums.StatusEnum.Error,
+                            Message = "User Already Exists"
+                        };
+                    }
+                }
+
+                this.logger.LogError(ex, $"EasyInvoice CreateCustomer request failed. {ex.Message} ({integrationMessageId}).");
+
+                throw new IntegrationException("EasyInvoice CreateCustomer request failed", integrationMessageId);
+            }
+        }
+
+        private NameValueCollection GetAuthorizedHeaders(string username, string password, string integrationMessageId, string correlationId)
+        {
+            try
+            {
+                var loginRequest = new { email = username, password = password };
+
+                var loginres = apiClient.PostRawWithHeaders(this.configuration.BaseUrl, "/api/v1/login", JsonConvert.SerializeObject(loginRequest), "application/json").Result;
+
+                var authToken = loginres.ResponseHeaders.AllKeys.Any(k => k == ResponseTokenHeader) ? loginres.ResponseHeaders[ResponseTokenHeader] : null;
+
+                NameValueCollection headers = new NameValueCollection();
+                headers.Add(ResponseTokenHeader, authToken);
+
+                return headers;
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"EasyInvoice integration request failed: failed to get token: {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
+
+                throw new IntegrationException("EasyInvoice integration request failed: failed to get token", integrationMessageId);
+            }
         }
     }
 }

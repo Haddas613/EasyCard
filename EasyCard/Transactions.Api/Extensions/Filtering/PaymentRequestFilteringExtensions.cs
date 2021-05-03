@@ -51,11 +51,11 @@ namespace Transactions.Api.Extensions.Filtering
                 }
             }
 
-            //if (filter.Status != null)
-            //{
-            //    src = src.Where(t => t.Status == filter.Status);
-            //}
-            if (filter.QuickStatus != null)
+            if (filter.Status != null)
+            {
+                src = src.Where(t => t.Status == filter.Status);
+            }
+            else if (filter.QuickStatus != null)
             {
                 src = FilterByQuickStatus(src, filter.QuickStatus.Value);
             }

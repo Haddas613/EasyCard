@@ -118,21 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Last15Minutes" xml:space="preserve">
-    <value>Last 15 minutes</value>
+    <value>15 דקות אחרונות</value>
   </data>
   <data name="Last24Hours" xml:space="preserve">
-    <value>Last 24 hours</value>
+    <value>24 שעות אחרונות</value>
   </data>
   <data name="Last30Minutes" xml:space="preserve">
-    <value>Last 30 minutes</value>
+    <value>30 דקות אחרונות</value>
   </data>
   <data name="Last5Minutes" xml:space="preserve">
-    <value>Last 5 minutes</value>
+    <value>5 דקות אחרונות</value>
   </data>
   <data name="LastHour" xml:space="preserve">
-    <value>Last hour</value>
+    <value>שעה אחרונה</value>
   </data>
   <data name="None" xml:space="preserve">
-    <value>None</value>
+    <value>ללא</value>
   </data>
 </root>

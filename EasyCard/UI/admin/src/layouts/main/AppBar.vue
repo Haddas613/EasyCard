@@ -36,6 +36,7 @@
 import ActionsBar from "../../components/misc/ActionsBar";
 import { mapState } from "vuex";
 import EcHeaderContent from "../../layouts/shared/EcHeaderContent";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   name: "AppBar",
@@ -47,7 +48,12 @@ export default {
   },
   data() {
     return {
-      appVersion: this.$cfg.VUE_APP_VERSION
+      appVersion: ''
+    }
+  },
+  mounted () {
+    if(this.$cfg.VUE_APP_VERSION != appConstants.misc.uiDefaultVersion){
+      this.appVersion = this.$cfg.VUE_APP_VERSION;
     }
   },
   components: { ActionsBar, EcHeaderContent },

@@ -3,13 +3,17 @@
     <v-card flat color="ecbg">
       <v-card-text>
         <v-row no-gutters>
-          <v-col cols="6" class="text-start d-flex align-center">
+          <v-col cols="12" md="6" class="text-start d-flex align-center">
             <span>
               {{$t("@AppVersion").replace("@version", appVersion)}}
             </span>
           </v-col>
-          <v-col cols="6" class="text-end">
-            <v-btn class="mb-1" @click="$oidc.signOut()">
+          <v-col cols="12" md="6" class="text-end mb-4">
+            <v-btn color="secondary" target="_blank" link :href="$cfg.VUE_APP_AUTHORITY + '/Home/ManageAccount'">
+              <v-icon left>mdi-account</v-icon>
+              {{$t("AccountSettings")}}
+            </v-btn>
+            <v-btn class="mx-1" @click="$oidc.signOut()">
               <v-icon left>mdi-logout</v-icon>
               {{$t("SignOut")}}
             </v-btn>
@@ -67,6 +71,7 @@
 
 <script>
 import { mapState } from "vuex";
+import appConstants from "../../helpers/app-constants";
 export default {
   components: {
     LangSwitcher: () => import("../../components/LanguageSwitcher"),
@@ -79,10 +84,14 @@ export default {
       currencies: [],
       terminalSettingsFormValid: true,
       terminalRefreshed: false,
-      appVersion: this.$cfg.VUE_APP_VERSION
+      appVersion: ''
     };
   },
   async mounted() {
+    if(this.$cfg.VUE_APP_VERSION != appConstants.misc.uiDefaultVersion){
+      this.appVersion = this.$cfg.VUE_APP_VERSION;
+    }
+
     let terminals = await this.$api.terminals.getTerminals();
     this.terminals = terminals ? terminals.data : [];
     let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();

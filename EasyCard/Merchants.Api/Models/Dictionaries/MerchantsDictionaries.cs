@@ -14,5 +14,9 @@ namespace Merchants.Api.Models.Dictionaries
         public Dictionary<string, string> LogLevelsEnum { get; set; }
 
         public Dictionary<string, string> OperationCodesEnum { get; set; }
+
+        public Dictionary<string, string> TerminalTransmissionScheduleEnum { get; set; }
+
+        public Dictionary<string, string> DateFilterTypeEnum { get; set; }
     }
 }

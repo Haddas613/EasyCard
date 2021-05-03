@@ -8,6 +8,8 @@ namespace Transactions.Business.Entities
     {
         public Guid PaymentTransactionID { get; set; }
 
-        public string ShvaTranRecord { get; set; }
+        public string ShvaDealID { get; set; }
+
+        public string ShvaTerminalID { get; set; }
     }
 }

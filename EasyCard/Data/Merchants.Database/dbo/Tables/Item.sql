@@ -3,7 +3,7 @@
     [MerchantID]        UNIQUEIDENTIFIER NOT NULL,
     [Active]            BIT              DEFAULT (CONVERT([bit],(1))) NOT NULL,
     [UpdateTimestamp]   ROWVERSION       NULL,
-    [ItemName]          NVARCHAR (50)    NOT NULL,
+    [ItemName]          NVARCHAR (128)   NOT NULL,
     [Price]             DECIMAL (19, 4)  NOT NULL,
     [Currency]          SMALLINT         NOT NULL,
     [Created]           DATETIME2 (7)    NULL,
@@ -14,6 +14,8 @@
     CONSTRAINT [PK_Item] PRIMARY KEY CLUSTERED ([ItemID] ASC),
     CONSTRAINT [FK_Item_Merchant_MerchantID] FOREIGN KEY ([MerchantID]) REFERENCES [dbo].[Merchant] ([MerchantID])
 );
+
+
 
 
 

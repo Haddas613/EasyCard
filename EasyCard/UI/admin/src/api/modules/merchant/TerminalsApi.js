@@ -23,6 +23,10 @@ export default class TerminalsApi {
         return data;
     }
 
+    async getTerminalsRaw(params) {
+        return await this.base.get(this.terminalsUrl, params);
+    }
+
     async getTerminals(params, refreshCache = false) {
         if(!refreshCache && this.$terminals){
             return this.$terminals;
@@ -67,11 +71,15 @@ export default class TerminalsApi {
         return this.base.delete(this.terminalsUrl + `/${terminalID}/externalsystem/${externalSystemID}`);
     }
 
-    async enableTerminal(terminalTemplateID){
-        return this.base.put(this.terminalsUrl + `/${terminalTemplateID}/enable`);
+    async enableTerminal(terminalID){
+        return this.base.put(this.terminalsUrl + `/${terminalID}/enable`);
     }
 
-    async disableTerminal(terminalTemplateID){
-        return this.base.put(this.terminalsUrl + `/${terminalTemplateID}/disable`);
+    async disableTerminal(terminalID){
+        return this.base.put(this.terminalsUrl + `/${terminalID}/disable`);
+    }
+
+    async switchTerminalFeature(terminalID, featureID){
+        return this.base.put(this.terminalsUrl + `/${terminalID}/switchfeature/${featureID}`);
     }
 }

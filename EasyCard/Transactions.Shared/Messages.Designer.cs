@@ -70,6 +70,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Awaiting for Transmission.
+        /// </summary>
+        public static string AwaitingForTransmission {
+            get {
+                return ResourceManager.GetString("AwaitingForTransmission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Billing Deal Created.
         /// </summary>
         public static string BillingDealCreated {
@@ -93,6 +102,15 @@ namespace Transactions.Shared {
         public static string BillingDealIsClosed {
             get {
                 return ResourceManager.GetString("BillingDealIsClosed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of billing deals for transaction batch is limited to {0}.
+        /// </summary>
+        public static string BillingDealsMaxBatchSize {
+            get {
+                return ResourceManager.GetString("BillingDealsMaxBatchSize", resourceCulture);
             }
         }
         
@@ -160,11 +178,29 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Checkout Feature must be enabled.
+        /// </summary>
+        public static string CheckoutFeatureMustBeEnabled {
+            get {
+                return ResourceManager.GetString("CheckoutFeatureMustBeEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Commited By Aggregator.
         /// </summary>
         public static string CommitedByAggregator {
             get {
                 return ResourceManager.GetString("CommitedByAggregator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Completed.
+        /// </summary>
+        public static string Completed {
+            get {
+                return ResourceManager.GetString("Completed", resourceCulture);
             }
         }
         
@@ -430,6 +466,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only successful transactions are allowed.
+        /// </summary>
+        public static string OnlySuccessfulTransactionsAreAllowed {
+            get {
+                return ResourceManager.GetString("OnlySuccessfulTransactionsAreAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment Request canceled.
         /// </summary>
         public static string PaymentRequestCanceled {
@@ -457,7 +502,7 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Payment request payed.
+        ///   Looks up a localized string similar to Payment Request payed.
         /// </summary>
         public static string PaymentRequestPaymentSuccessed {
             get {
@@ -570,6 +615,15 @@ namespace Transactions.Shared {
         public static string TotalAmountIsInvalid {
             get {
                 return ResourceManager.GetString("TotalAmountIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction already has invoice.
+        /// </summary>
+        public static string TransactionAlreadyHasInvoice {
+            get {
+                return ResourceManager.GetString("TransactionAlreadyHasInvoice", resourceCulture);
             }
         }
         
@@ -687,6 +741,15 @@ namespace Transactions.Shared {
         public static string TransmittedByProcessor {
             get {
                 return ResourceManager.GetString("TransmittedByProcessor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment Request Viewed.
+        /// </summary>
+        public static string Viewed {
+            get {
+                return ResourceManager.GetString("Viewed", resourceCulture);
             }
         }
         

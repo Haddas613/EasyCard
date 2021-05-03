@@ -23,6 +23,10 @@ export default class MerchantsApi {
         return data;
     }
 
+    async getMerchantsRaw(params) {
+        return await this.base.get(this.merchantsUrl, params);
+    }
+
     async getMerchants(params, refreshCache = false) {
         if(!refreshCache && this.$merchants){
             return this.$merchants;

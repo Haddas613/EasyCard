@@ -118,45 +118,63 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CancelledByMerchant" xml:space="preserve">
-    <value>Cancelled by merchant</value>
+    <value>בוטל ע"י בית העסק</value>
   </data>
   <data name="CommitedToAggregator" xml:space="preserve">
-    <value>Commited to aggregator</value>
+    <value>הופקד במאגד</value>
   </data>
   <data name="ConfirmedByAggregator" xml:space="preserve">
-    <value>Confirmed by aggregator</value>
+    <value>אושר ע"י המאגד</value>
   </data>
   <data name="ConfirmedByProcessor" xml:space="preserve">
-    <value>Confirmed by processor</value>
+    <value>אושר ע"י המעבד</value>
   </data>
   <data name="FailedToCancelToAggregator" xml:space="preserve">
-    <value>Failed to cancel to aggregator</value>
+    <value>הביטול במאגד נכשל</value>
   </data>
   <data name="FailedToCommitByAggregator" xml:space="preserve">
-    <value>Failed to commit by aggregator</value>
+    <value>ההפקדה במאגד נכשלה</value>
   </data>
   <data name="FailedToConfirmByAggregator" xml:space="preserve">
-    <value>Failed to confirm by aggregator</value>
+    <value>האישור במאגד נכשל</value>
   </data>
   <data name="FailedToConfirmByProcesor" xml:space="preserve">
-    <value>Failed to confirm by procesor</value>
+    <value>האישור במעבד נכשל</value>
   </data>
   <data name="Initial" xml:space="preserve">
-    <value>Initial</value>
+    <value>ראשוני</value>
   </data>
   <data name="RejectedByAggregator" xml:space="preserve">
-    <value>Rejected by aggregator</value>
+    <value>נדחה ע"י המאגד</value>
   </data>
   <data name="RejectedByProcessor" xml:space="preserve">
-    <value>Rejected by processor</value>
+    <value>נדחה ע"י המעבד</value>
   </data>
   <data name="RejectedToAggregator" xml:space="preserve">
-    <value>Rejected to aggregator</value>
+    <value>נדחה למאגד</value>
   </data>
   <data name="TransmissionToProcessorFailed" xml:space="preserve">
-    <value>Transmission to processor failed</value>
+    <value>שידור למעבד נכשל</value>
   </data>
   <data name="TransmittedToProcessor" xml:space="preserve">
-    <value>Transmitted to processor</value>
+    <value>שודר למעבד</value>
+  </data>
+  <data name="AwaitingForTransmission" xml:space="preserve">
+    <value>ממתין לשידור</value>
+  </data>
+  <data name="CommitedByAggregator" xml:space="preserve">
+    <value>הופקד ע"י המאגד</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>הושלם</value>
+  </data>
+  <data name="TransmissionCancelingInProgress" xml:space="preserve">
+    <value>ביטול תקשורת בתהליך</value>
+  </data>
+  <data name="TransmissionInProgress" xml:space="preserve">
+    <value>תקשורת בתהליך</value>
+  </data>
+  <data name="TransmittedByProcessor" xml:space="preserve">
+    <value>שודר ע"י המעבד</value>
   </data>
 </root>

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Billing;
+using Transactions.Api.Models.Transactions;
 using Transactions.Business.Entities;
 using SharedIntegration = Shared.Integration;
 
@@ -29,9 +30,16 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.CardExpired, o => o
                     .MapFrom(d => d.CreditCardDetails.CardExpiration.Expired));
 
+            CreateMap<BillingDeal, BillingDealSummaryAdmin>()
+                .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerName))
+                .ForMember(d => d.CardExpired, o => o
+                    .MapFrom(d => d.CreditCardDetails.CardExpiration.Expired));
+
             CreateMap<BillingDeal, BillingDealResponse>()
                 .ForMember(d => d.CardExpired, o => o
                     .MapFrom(d => (d.CreditCardDetails != null && d.CreditCardDetails.CardExpiration != null) ? d.CreditCardDetails.CardExpiration.Expired : default));
+
+            CreateMap<BillingDeal, CreateTransactionRequest>();
         }
     }
 }

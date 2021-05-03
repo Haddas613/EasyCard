@@ -1,7 +1,7 @@
 <template>
-  <v-dialog v-model="dialog" fullscreen>
+  <v-dialog v-model="dialog" fullscreen persistent>
     <v-card flat :color="color">
-      <v-card-title class="headline py-0 white">
+      <v-card-title class="headline white">
         <v-row :align="'center'">
           <v-col class="d-flex justify-start px-1" cols="2">
             <v-icon @click="$emit('update:dialog', false)" class="px-2">mdi-arrow-left</v-icon>
@@ -19,8 +19,8 @@
       <v-divider></v-divider>
       <v-card-text class="px-0">
         <!-- <v-main class="py-2"> -->
-          <v-container fluid ma-0 pa-0 center>
-            <v-row no-gutters v-bind:class="{'pt-2': $vuetify.breakpoint.lgAndUp}">
+          <v-container fluid ma-0 pt-2 center>
+            <v-row no-gutters class="pt-4">
               <v-col cols="3" class="hidden-sm-and-down">
                 <v-spacer></v-spacer>
               </v-col>

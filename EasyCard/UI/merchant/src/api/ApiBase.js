@@ -15,6 +15,7 @@ import PaymentRequestsApi from './modules/transactions/PaymentRequestsApi';
 import DashboardReportingApi from './modules/reporting/DashboardReportingApi';
 import appInsights from "../plugins/app-insights";
 import cfg from "../app.config";
+import appConstants from "../helpers/app-constants";
 
 class ApiBase {
     constructor() {
@@ -148,7 +149,6 @@ class ApiBase {
         try {
             store.commit("ui/requestsCountIncrement");
             request = await request;
-
             if (request.ok) {
                 let result = await request.json();
                 if (result.status === "warning") {
@@ -172,8 +172,32 @@ class ApiBase {
                     Vue.toasted.show(i18n.t('NotFound'), { type: 'error' });
                     return null;
                 } else {
-                    appInsights.trackException({exception: new Error(`ApiError`), properties: request});
-                    Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error' });
+                    let correlationId = null;
+                    try{
+                        let result = await request.json();
+                        correlationId = result.correlationId;
+                    }catch{}
+
+                    if(correlationId){
+                        appInsights.trackException({id: correlationId, exception: new Error(`UIApiError: ${correlationId}`)});
+                    }else{
+                        appInsights.trackException({exception: new Error(`UIApiError`)});
+                    }
+                    Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error', action : [
+                        {
+                            icon : 'email',
+                            onClick : (e, toastObject) => {
+                                window.open(`mailto:${cfg.VUE_APP_SUPPORT_EMAIL}?body=Issue%20ID:${correlationId}`);
+                                toastObject.goAway(0);
+                            }
+                        },
+                        {
+                            icon : 'close',
+                            onClick : (e, toastObject) => {
+                                toastObject.goAway(0);
+                            }
+                        }
+                    ]});
                     return null;
                 }
             }
@@ -209,12 +233,12 @@ class ApiBase {
     }
 
     async _checkAppVersion(responseHeaders) {
-        if (this.lastCheckTimestamp && this.lastCheckTimestamp.getTime() > (new Date()).setMinutes(-5)) {
+        if ((cfg.VUE_APP_VERSION == appConstants.misc.uiDefaultVersion) || this.lastCheckTimestamp && this.lastCheckTimestamp.getTime() > (new Date()).setMinutes(-5)) {
             return;
         }
 
-        let responseHeaderVal = responseHeaders.get('x-version');
-        if(!responseHeaderVal){
+        let responseHeaderVal = responseHeaders.get('x-ui-version');
+        if(!responseHeaderVal || responseHeaderVal == appConstants.misc.uiDefaultVersion){
             return;
         }
 

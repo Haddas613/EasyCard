@@ -27,6 +27,8 @@ namespace Transactions.Api.Models.Billing
 
         public DateTime? BillingDealTimestamp { get; set; }
 
+        public DateTime? NextScheduledTransaction { get; set; }
+
         public string CardOwnerName { get; set; }
 
         /// <summary>

@@ -58,6 +58,7 @@ namespace Reporting.Api
             });
 
             var appConfig = Configuration.GetSection("AppConfig").Get<ApplicationSettings>();
+            var apiConfig = Configuration.GetSection("API").Get<ApiSettings>();
 
             services.AddCors(options =>
             {
@@ -68,10 +69,12 @@ namespace Reporting.Api
                                             "http://localhost:8080",
                                             "http://localhost:8081",
                                             "https://ecng-profile.azurewebsites.net",
-                                            "https://ecng-merchants.azurewebsites.net")
+                                            "https://ecng-merchants.azurewebsites.net",
+                                            apiConfig.MerchantProfileURL,
+                                            apiConfig.MerchantsManagementApiAddress)
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .WithExposedHeaders("X-Version");
+                        .WithExposedHeaders(Headers.API_VERSION_HEADER);
                     });
             });
 
@@ -83,6 +86,7 @@ namespace Reporting.Api
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
+                    options.ClaimsIssuer = identity.Authority;
                     options.Authority = identity.Authority;
                     options.RequireHttpsMetadata = true;
                     options.RoleClaimType = "role";
@@ -106,7 +110,8 @@ namespace Reporting.Api
                                         var impersonationIdentity = new ClaimsIdentity(new[]
                                         {
                                             new Claim(Claims.MerchantIDClaim, merchantID.ToString()),
-                                            new Claim(ClaimTypes.Role, Roles.Merchant)
+                                            new Claim(ClaimTypes.Role, Roles.Merchant),
+                                            new Claim(ClaimTypes.Role, Roles.Manager)
                                         });
                                         context.Principal?.AddIdentity(impersonationIdentity);
                                     }
@@ -145,6 +150,8 @@ namespace Reporting.Api
                     policy.RequireAssertion(context => context.User.IsTerminal()));
                 options.AddPolicy(Policy.TerminalOrMerchantFrontend, policy =>
                     policy.RequireAssertion(context => context.User.IsTerminal() || context.User.IsMerchantFrontend()));
+                options.AddPolicy(Policy.TerminalOrManagerOrAdmin, policy =>
+                    policy.RequireAssertion(context => context.User.IsManager() || context.User.IsTerminal() || context.User.IsAdmin()));
                 options.AddPolicy(Policy.MerchantFrontend, policy =>
                    policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
             });
@@ -262,7 +269,7 @@ namespace Reporting.Api
             {
                 app.Use(async (context, next) =>
                 {
-                    context.Response.Headers.Add("X-Version", apiSettings.Version);
+                    context.Response.Headers.Add(Headers.API_VERSION_HEADER, apiSettings.Version);
                     await next.Invoke();
                 });
             }

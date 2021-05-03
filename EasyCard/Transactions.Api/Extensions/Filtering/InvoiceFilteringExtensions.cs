@@ -51,6 +51,11 @@ namespace Transactions.Api.Extensions.Filtering
                 }
             }
 
+            if (filter.Status != null)
+            {
+                src = src.Where(t => t.Status == filter.Status.Value);
+            }
+
             if (filter.InvoiceType != null)
             {
                 src = src.Where(t => t.InvoiceDetails.InvoiceType == filter.InvoiceType);

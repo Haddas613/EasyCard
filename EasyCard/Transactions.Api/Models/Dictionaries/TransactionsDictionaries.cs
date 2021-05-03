@@ -50,5 +50,8 @@ namespace Transactions.Api.Models.Dictionaries
 
         public Dictionary<string, string> QuickDateFilterAltEnum { get; set; }
 
+        public Dictionary<string, string> DocumentOriginEnum { get; set; }
+
+        public Dictionary<string, string> TransactionFinalizationStatusEnum { get; set; }
     }
 }

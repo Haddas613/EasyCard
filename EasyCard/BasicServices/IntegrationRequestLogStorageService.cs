@@ -36,9 +36,12 @@ namespace BasicServices
 
             _containerName = containerName;
 
-            _client = new BlobContainerClient(storageConnectionString, _containerName);
+            if (_containerName != null)
+            {
+                _client = new BlobContainerClient(storageConnectionString, _containerName);
 
-            _client.CreateIfNotExists();
+                _client.CreateIfNotExists();
+            }
 
         }
 

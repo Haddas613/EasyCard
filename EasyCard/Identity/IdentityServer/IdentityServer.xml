@@ -44,6 +44,13 @@
             <param name="model">Create User Request</param>
             <returns>Operation Response</returns>
         </member>
+        <member name="M:IdentityServer.Controllers.UserManagementApiController.UpdateUser(IdentityServerClient.UpdateUserRequestModel)">
+            <summary>
+            Update user
+            </summary>
+            <param name="model">Update User Request</param>
+            <returns>Operation Response</returns>
+        </member>
         <member name="M:IdentityServer.Helpers.Extensions.IsPkceClientAsync(IdentityServer4.Stores.IClientStore,System.String)">
             <summary>
             Determines whether the client is configured to use PKCE.

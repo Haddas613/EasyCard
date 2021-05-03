@@ -25,7 +25,7 @@ namespace EasyInvoice.Converters
                 SendEmail = true,
                 TotalAmount = message.InvoiceAmount,
 
-                DiscountAmount = 0, // TODO: discount
+                DiscountAmount = message.TotalDiscount.GetValueOrDefault(0),
                 TaxAmount = message.VATTotal,
                 TaxPercentage = message.VATRate,
                 TotalAmountBeforeDiscount = message.InvoiceAmount,
@@ -84,9 +84,9 @@ namespace EasyInvoice.Converters
 
             var res = new ECInvoiceCustomerAddress
             {
-                City = "",
+                City = string.Empty,
                 Street = message,
-                PostalCode = "",
+                PostalCode = string.Empty,
             };
 
             return res;

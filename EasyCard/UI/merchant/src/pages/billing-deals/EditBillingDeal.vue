@@ -25,7 +25,7 @@ export default {
         return;
         
       if(result.status === "success"){
-        this.$router.push('/admin/billing-deals/list')
+        this.$router.push({ name: "BillingDeal", params: { id: this.$route.params.id } })
       }else{
         this.$toasted.show(result.message, { type: 'error' });
       }
@@ -35,7 +35,7 @@ export default {
     let result = await this.$api.billingDeals.getBillingDeal(this.$route.params.id, true);
 
     if(!result){
-      this.$router.push('/admin/billing-deals/list')
+      this.$router.push({ name: "BillingDeals" })
     }
     
     this.model = result;

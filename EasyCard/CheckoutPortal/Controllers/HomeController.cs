@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using System.IO;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Transactions.Api.Models.Checkout;
 
 namespace CheckoutPortal.Controllers
 {
@@ -38,6 +39,12 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Index([FromQuery]CardRequest request)
         {
+
+            if (request == null || !Request.QueryString.HasValue)
+            {
+                return View("PaymentImpossible");
+            }
+
             var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.RedirectUrl, request.ConsumerID);
 
             // TODO: add merchant site origin instead of unsafe-inline
@@ -84,7 +91,7 @@ namespace CheckoutPortal.Controllers
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
             // If token is present and correct, credit card validation is removed from model state
-            if (request.CreditCardToken.HasValue && request.CreditCardToken.Value != Guid.Empty)
+            if (request.CreditCardToken.HasValue)
             {
                 if(!request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
                 {
@@ -110,6 +117,11 @@ namespace CheckoutPortal.Controllers
 
             Shared.Api.Models.OperationResponse result = null;
 
+            if (!request.IssueInvoice.HasValue && checkoutConfig.Settings.IssueInvoice != null)
+            {
+                request.IssueInvoice = checkoutConfig.Settings.IssueInvoice;
+            }
+
             if (checkoutConfig.PaymentRequest != null)
             {
                 var mdel = new Transactions.Api.Models.Transactions.PRCreateTransactionRequest() { CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails() };
@@ -124,6 +136,7 @@ namespace CheckoutPortal.Controllers
                 {
                     mdel.CreditCardSecureDetails = null;
                 }
+
 
                 result = await transactionsApiClient.CreateTransactionPR(mdel);
 
@@ -214,28 +227,28 @@ namespace CheckoutPortal.Controllers
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> PaymentResult()
+        public IActionResult PaymentResult()
         {
             return View();
         }
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> PaymentCanceled()
+        public IActionResult PaymentCanceled()
         {
             return View();
         }
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> VueTest()
+        public IActionResult VueTest()
         {
             return View(new ChargeViewModel { CardNumber = "1234" });
         }
 
         [HttpGet]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> PaymentError()
+        public IActionResult PaymentError()
         {
             return View();
         }
@@ -277,7 +290,15 @@ namespace CheckoutPortal.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Failed to get payment request data");
+                if(ex is WebApiClientErrorException webEx)
+                {
+                    logger.LogError(ex, $"Failed to get payment request data. Reason: {webEx.Response}");
+                }
+                else
+                {
+                    logger.LogError(ex, $"Failed to get payment request data. Reason: {ex.Message}");
+                }
+                
                 throw new BusinessException(Messages.InvalidCheckoutData);
             }
 

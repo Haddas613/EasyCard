@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -7,12 +7,14 @@
   <ItemGroup>
     <Compile Include="..\Transactions.Api\Models\Checkout\CheckoutData.cs" Link="Models\CheckoutData.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\ConsumerInfo.cs" Link="Models\ConsumerInfo.cs" />
+    <Compile Include="..\Transactions.Api\Models\Checkout\TokenInfo.cs" Link="Models\TokenInfo.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\TerminalCheckoutCombinedSettings.cs" Link="Models\TerminalCheckoutCombinedSettings.cs" />
     <Compile Include="..\Transactions.Api\Models\PaymentRequests\Enums\PayReqQuickStatusFilterTypeEnum.cs" Link="Models\PayReqQuickStatusFilterTypeEnum.cs" />
     <Compile Include="..\Transactions.Api\Models\PaymentRequests\PaymentRequestInfo.cs" Link="Models\PaymentRequestInfo.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\CreateTransactionRequest.cs" Link="Models\CreateTransactionRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\PRCreateTransactionRequest.cs" Link="Models\PRCreateTransactionRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\Transactions\TransactionRequestBase.cs" Link="Models\TransactionRequestBase.cs" />
+    <Compile Include="..\Transactions.Api\Models\Transactions\TransmitTransactionResponse.cs" Link="Models\TransmitTransactionResponse.cs" />
   </ItemGroup>
 
   <ItemGroup>

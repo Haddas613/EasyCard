@@ -61,8 +61,11 @@
     [PaymentTypeEnum]                SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     [PaymentRequestID]               UNIQUEIDENTIFIER NULL,
     [DocumentOrigin]                 SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
+    [TerminalTemplateID]             BIGINT           NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

@@ -13,7 +13,11 @@
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
-              <p>{{terminalName}}</p>
+              <p class="error--text">
+                <router-link link :to="{name: 'EditTerminal', params: {id: model.$terminalID || model.terminalID}}">
+                  {{model.terminalName}}
+                </router-link>
+              </p>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('TransactionID')}}</p>
@@ -81,7 +85,6 @@ export default {
   data() {
     return {
       model: null,
-      terminalName: "-",
       numberOfRecords: 0
     };
   },
@@ -91,18 +94,7 @@ export default {
     );
 
     if (!this.model) {
-      return this.$router.push("/admin/payment-requests/list");
-    }
-
-    let terminals = (await this.$api.terminals.getTerminals()).data;
-    let usedTerminal = this.lodash.find(
-      terminals,
-      t => t.terminalID == this.model.$terminalID
-    );
-    if (usedTerminal) {
-      this.terminalName = usedTerminal.label;
-    } else {
-      this.terminalName = this.$t("NotAccessible");
+      return this.$router.push({name: "PaymentRequests"});
     }
   }
 };

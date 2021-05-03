@@ -50,6 +50,8 @@ namespace Transactions.Api.Models.Billing
         /// </summary>
         public BillingSchedule BillingSchedule { get; set; }
 
+        public bool? IssueInvoice { get; set; }
+
         /// <summary>
         /// Invoice details
         /// </summary>

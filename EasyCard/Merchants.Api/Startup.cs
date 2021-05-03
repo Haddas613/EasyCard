@@ -1,4 +1,5 @@
 using AutoMapper;
+using BasicServices;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServerClient;
 using Merchants.Api.Data;
@@ -62,7 +63,8 @@ namespace Merchants.Api
                             "http://ecng-merchants.azurewebsites.net")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .WithExposedHeaders("X-Version");
+                        .WithExposedHeaders(Headers.API_VERSION_HEADER)
+                        .WithExposedHeaders(Headers.UI_VERSION_HEADER);
                     });
             });
 
@@ -77,21 +79,11 @@ namespace Merchants.Api
 
             services.AddDistributedMemoryCache();
 
-            //services.AddAuthentication() // TODO: bearer
-            //    .AddIdentityServerAuthentication("token", options =>
-            //    {
-            //        options.Authority = identity.Authority;
-            //        options.RequireHttpsMetadata = true;
-            //        options.RoleClaimType = "role";
-            //        options.NameClaimType = "name";
-            //        options.ApiName = "management_api"; // TODO
-            //        options.EnableCaching = true;
-            //    });
-
             //TODO
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
+                    options.ClaimsIssuer = identity.Authority;
                     options.Authority = identity.Authority;
                     options.RequireHttpsMetadata = true;
                     options.RoleClaimType = "role";
@@ -174,6 +166,8 @@ namespace Merchants.Api
             // DI: basics
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
             services.Configure<ApiSettings>(Configuration.GetSection("API"));
+            services.Configure<ApplicationInsightsSettings>(Configuration.GetSection("ApplicationInsights"));
+            services.Configure<ClearingHouse.ClearingHouseGlobalSettings>(Configuration.GetSection("ClearingHouseGlobalSettings"));
 
             services.AddHttpContextAccessor();
 
@@ -190,6 +184,7 @@ namespace Merchants.Api
             services.AddScoped<IFeaturesService, FeaturesService>();
             services.AddScoped<IPlansService, PlansService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
+            services.AddScoped<IShvaTerminalsService, ShvaTerminalService>();
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -210,6 +205,29 @@ namespace Merchants.Api
                 var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
 
                 return new UserManagementClient(webApiClient, logger, cfg, tokenService);
+            });
+
+            services.AddSingleton<ClearingHouse.ClearingHouseAggregator, ClearingHouse.ClearingHouseAggregator>(serviceProvider =>
+            {
+                var chCfg = serviceProvider.GetRequiredService<IOptions<ClearingHouse.ClearingHouseGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<ClearingHouse.ClearingHouseAggregator>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.ClearingHouseRequestsLogStorageTable, cfg.ClearingHouseRequestsLogStorageTable);
+                var tokenSvc = new WebApiClientTokenService(webApiClient.HttpClient, chCfg);
+
+                return new ClearingHouse.ClearingHouseAggregator(webApiClient, logger, chCfg, tokenSvc, storageService);
+            });
+
+            services.AddSingleton<EasyInvoice.ECInvoiceInvoicing, EasyInvoice.ECInvoiceInvoicing>(serviceProvider =>
+            {
+                var chCfg = serviceProvider.GetRequiredService<IOptions<EasyInvoice.EasyInvoiceGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<EasyInvoice.ECInvoiceInvoicing>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.EasyInvoiceRequestsLogStorageTable, cfg.EasyInvoiceRequestsLogStorageTable);
+
+                return new EasyInvoice.ECInvoiceInvoicing(webApiClient, chCfg, logger, storageService);
             });
 
             // DI: request logging
@@ -246,7 +264,8 @@ namespace Merchants.Api
             {
                 app.Use(async (context, next) =>
                 {
-                    context.Response.Headers.Add("X-Version", apiSettings.Version);
+                    context.Response.Headers.Add(Headers.API_VERSION_HEADER, apiSettings.Version);
+                    context.Response.Headers.Add(Headers.UI_VERSION_HEADER, apiSettings.Version);
                     await next.Invoke();
                 });
             }
@@ -292,22 +311,16 @@ namespace Merchants.Api
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Home");
             });
 
-            //app.UseEndpoints(endpoints =>
+            //app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
             //{
-            //    endpoints.MapControllerRoute(
-            //        name: "default",
-            //        pattern: "{controller=Home}/{action=Index}/{id?}");
+            //    builder.UseSpa(spa =>
+            //    {
+            //        spa.Options.DefaultPage = "/";
+            //    });
             //});
-
-            app.MapWhen(x => !x.Request.Path.Value.StartsWith("/api"), builder =>
-            {
-                builder.UseSpa(spa =>
-                {
-                    spa.Options.SourcePath = "wwwroot";
-                });
-            });
 
             var config = serviceProvider.GetRequiredService<IConfiguration>();
             var connectionString = config.GetConnectionString("DefaultConnection");
@@ -318,7 +331,7 @@ namespace Merchants.Api
             }
             catch (Exception ex)
             {
-                logger.LogError(ex.Message);
+                logger.LogError(ex, $"Failed to Seed data {ex.Message}");
             }
 
             loggerFactory.CreateLogger("AdminApi.Startup").LogInformation("Started");

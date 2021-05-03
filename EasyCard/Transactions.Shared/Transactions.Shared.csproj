@@ -24,6 +24,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>PaymentTypeResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Enums\Resources\TransactionEnumsResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TransactionEnumsResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Enums\Resources\TransactionStatusResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -44,6 +49,10 @@
     <EmbeddedResource Update="Enums\Resources\PaymentRequestEnumsResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>PaymentRequestEnumsResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Enums\Resources\TransactionEnumsResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TransactionEnumsResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Enums\Resources\PaymentTypeResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

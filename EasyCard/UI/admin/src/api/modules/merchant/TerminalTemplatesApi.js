@@ -23,6 +23,10 @@ export default class TerminalsApi {
         return data;
     }
 
+    async getTerminalTemplatesRaw(params) {
+        return this.base.get(this.templatesUrl, params);
+    }
+
     async getTerminalTemplate(terminalTemplateID) {
         return this.base.get(this.templatesUrl + '/' + terminalTemplateID);
     }
@@ -49,5 +53,9 @@ export default class TerminalsApi {
 
     async disapprove(terminalTemplateID){
         return this.base.post(this.templatesUrl + `/${terminalTemplateID}/disapprove`);
+    }
+
+    async switchTerminalFeature(terminalTemplateID, featureID){
+        return this.base.put(this.templatesUrl + `/${terminalTemplateID}/switch/${featureID}`);
     }
 }

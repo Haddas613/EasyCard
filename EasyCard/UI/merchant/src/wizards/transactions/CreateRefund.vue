@@ -2,7 +2,7 @@
   <v-flex fluid fill-height>
     <navbar
       v-on:back="goBack()"
-      v-on:close="$router.push('/admin/dashboard')"
+      v-on:close="$router.push({name: 'Dashboard'})"
       v-on:skip="step = step + 1"
       v-on:terminal-changed="terminalChanged()"
       :skippable="steps[step].skippable"
@@ -195,7 +195,7 @@ export default {
   },
   methods: {
     goBack() {
-      if (this.step === 1) this.$router.push("/admin/dashboard");
+      if (this.step === 1) this.$router.push({ name: "Dashboard" });
       else this.step--;
     },
     terminalChanged() {

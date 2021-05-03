@@ -151,6 +151,15 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Terminal Template Updated.
+        /// </summary>
+        public static string TerminalTemplateUpdated {
+            get {
+                return ResourceManager.GetString("TerminalTemplateUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terminal Updated.
         /// </summary>
         public static string TerminalUpdated {
@@ -187,6 +196,15 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User not found.
+        /// </summary>
+        public static string UserNotFound {
+            get {
+                return ResourceManager.GetString("UserNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User Operation Failed.
         /// </summary>
         public static string UserOperationFailed {
@@ -205,11 +223,29 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User roles updated successfully.
+        /// </summary>
+        public static string UserRolesUpdated {
+            get {
+                return ResourceManager.GetString("UserRolesUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User unlinked from Merchant.
         /// </summary>
         public static string UserUnlinkedFromMerchant {
             get {
                 return ResourceManager.GetString("UserUnlinkedFromMerchant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Updated.
+        /// </summary>
+        public static string UserUpdated {
+            get {
+                return ResourceManager.GetString("UserUpdated", resourceCulture);
             }
         }
     }

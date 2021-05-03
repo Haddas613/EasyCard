@@ -60,18 +60,6 @@
         <ec-dialog :dialog.sync="tokensDialog">
           <template v-slot:title>{{$t('SavedTokens')}}</template>
           <template>
-            <div class="d-flex px-2 justify-end">
-              <v-btn
-                color="red"
-                class="white--text"
-                :disabled="selectedToken == null"
-                :block="$vuetify.breakpoint.smAndDown"
-                @click="resetToken()"
-              >
-                <v-icon left>mdi-delete</v-icon>
-                {{$t("CancelSelection")}}
-              </v-btn>
-            </div>
             <ec-radio-group
               :data="customerTokens"
               valuekey="creditCardTokenID"
@@ -136,6 +124,7 @@
           <template v-slot:left>
             <billing-schedule-string
               :schedule="model.billingSchedule"
+              :key="billingScheduleJSON"
               replacement-text="SelectSchedule"
             ></billing-schedule-string>
           </template>
@@ -214,8 +203,8 @@
         :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
       ></deal-details>
       <v-col cols="12">
-        <v-switch v-model="switchIssueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
-        <div v-if="switchIssueDocument">
+        <v-switch v-model="model.issueInvoice" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
+        <div v-if="model.issueInvoice">
           <invoice-details-fields ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
         </div>
       </v-col>
@@ -273,7 +262,7 @@ export default {
       selectedToken: null,
       scheduleDialog: false,
       ctokenDialog: false,
-      switchIssueDocument: false
+      billingScheduleJSON: JSON.stringify(this.data.billingSchedule)
     };
   },
   computed: {
@@ -310,8 +299,16 @@ export default {
     ok() {
       if (!this.$refs.form.validate()) return;
       let result = { ...this.model };
+      
       result.dealDetails = { ...this.$refs.dealDetails.getData() };
       result.dealDetails.items = this.model.dealDetails.items;
+      
+      if (result.issueInvoice) {
+        result.invoiceDetails = this.$refs.invoiceDetails.getData();
+      } else {
+        result.invoiceDetails = null;
+      }
+
       //if this is edit and billing schedule has not been clicked, no need to validate
       if (!this.$refs.billingScheduleRef && this.model.billingDealID) {
         return this.$emit("ok", result);
@@ -323,12 +320,6 @@ export default {
         this.scheduleDialog = true;
         this.$toasted.show(this.$t("CheckScheduleSettings"), { type: "error" });
         return;
-      }
-
-      if (this.switchIssueDocument) {
-        result.invoiceDetails = this.$refs.invoiceDetails.getData();
-      } else {
-        result.invoiceDetails = null;
       }
 
       if(!this.model.transactionAmount){
@@ -344,6 +335,7 @@ export default {
       }
       this.scheduleDialog = false;
       this.model.billingSchedule = this.$refs.billingScheduleRef.model;
+      this.billingScheduleJSON = JSON.stringify(this.model.billingSchedule);
     },
     async createCardToken(data) {
       this.ctokenDialog = false;
@@ -369,7 +361,7 @@ export default {
           )
         ).data || [];
 
-      this.selectedToken = this.customerTokens.length === 1 ? this.customerTokens[0] : null;
+      this.token = this.customerTokens.length === 1 ? this.customerTokens[0] : null;
     },
     calculateTotal(){
       itemPricingService.total.calculateWithoutItems(this.model, 'transactionAmount', { vatRate: this.terminalStore.settings.vatRate });

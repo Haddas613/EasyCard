@@ -11,8 +11,11 @@ const mixins = {
                 console.log(`Error while copying to clipboard: ${e}`);
             });
         },
-        $formatDate: function(date){
+        $formatDate: function (date) {
             return date ? moment(date).format("YYYY-MM-DD") : null;
+        },
+        $featureEnabled: function (terminal, feature) {
+            return terminal && terminal.enabledFeatures.indexOf(feature) > -1;
         }
     }
 };

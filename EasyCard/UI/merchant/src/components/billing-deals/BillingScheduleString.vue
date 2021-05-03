@@ -6,26 +6,18 @@
           dark
           color="primary"
           class="caption mx-1 mt-1"
-        >{{$t("Repeat")}}/{{$t(obj.repeat.text)}} : {{obj.repeat.val}}</v-chip>
+        >{{$t("Repeat")}}/{{repeatDictionary[obj.repeat.text]}}</v-chip>
         
         <v-chip dark color="secondary" class="caption mx-1 mt-1" v-if="obj.start">
-          {{$t("Start")}}/{{$t(obj.start.text)}}
-          <span v-if="obj.start.text != 'Today'">: {{obj.start.val | ecdate("L")}}</span>
+          {{$t("Start")}}/{{startAtTypeDictionary[obj.start.text]}}
+          <span v-if="obj.start.text != 'today'">: {{obj.start.val | ecdate("L")}}</span>
         </v-chip>
 
-        <v-chip dark color="teal darken-3" class="caption mx-1 mt-1" v-if="obj.end">
-          {{$t("End")}}/{{$t(obj.end.text)}}
-          <span
-            v-if="obj.end.text != 'Never'"
-          >: {{obj.end.val | ecdate("L")}}</span>
+        <v-chip dark color="teal darken-1" class="caption mx-1 mt-1" v-if="obj.end">
+          {{$t("End")}}/{{endAtTypeDictionary[obj.end.text]}}
+          <span v-if="obj.numOfPayments">: {{obj.numOfPayments.val}}</span>
+          <span v-else-if="obj.end.text != 'never'">: {{obj.end.val | ecdate("L")}}</span>
         </v-chip>
-
-        <v-chip
-          dark
-          color="teal darken-4"
-          class="caption mx-1 mt-1"
-          v-if="obj.numOfPayments"
-        >{{$t(obj.numOfPayments.text)}} : {{obj.numOfPayments.val}}</v-chip>
       </span>
     </template>
     <template v-else>
@@ -50,8 +42,17 @@ export default {
   },
   data() {
     return {
-      obj: null
+      obj: null,
+      repeatDictionary: {},
+      startAtTypeDictionary: {},
+      endAtTypeDictionary: {},
     };
+  },
+  async mounted () {
+    var $d = await this.$api.dictionaries.$getTransactionDictionaries();
+    this.repeatDictionary = $d['repeatPeriodTypeEnum'];
+    this.startAtTypeDictionary = $d['startAtTypeEnum'];
+    this.endAtTypeDictionary = $d['endAtTypeEnum'];
   },
   computed: {
     deconstructed() {

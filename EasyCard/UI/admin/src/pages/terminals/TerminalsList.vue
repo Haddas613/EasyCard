@@ -16,6 +16,7 @@
         :options.sync="options"
         :server-items-length="totalAmount"
         :loading="loading"
+        :header-props="{ sortIcon: null }"
         class="elevation-1"
       >
         <template v-slot:item.merchantBusinessName="{ item }">
@@ -80,7 +81,7 @@ export default {
       this.loading = false;
 
       if (!this.headers || this.headers.length === 0) {
-        this.headers = [...data.headers, { value: "actions", text: this.$t("Actions") }];
+        this.headers = [...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false  }];
       }
     },
     async applyFilter(filter) {

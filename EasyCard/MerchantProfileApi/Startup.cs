@@ -71,7 +71,8 @@ namespace ProfileApi
                             "http://localhost:8080")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .WithExposedHeaders("X-Version");
+                        .WithExposedHeaders(Headers.API_VERSION_HEADER)
+                        .WithExposedHeaders(Headers.UI_VERSION_HEADER);
                     });
             });
 
@@ -83,6 +84,7 @@ namespace ProfileApi
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
                 {
+                    options.ClaimsIssuer = identity.Authority;
                     options.Authority = identity.Authority;
                     options.RequireHttpsMetadata = true;
                     options.RoleClaimType = "role";
@@ -199,6 +201,8 @@ namespace ProfileApi
             // DI: basics
             services.Configure<ApplicationSettings>(Configuration.GetSection("AppConfig"));
             services.Configure<ApiSettings>(Configuration.GetSection("API"));
+            services.Configure<ApplicationInsightsSettings>(Configuration.GetSection("ApplicationInsights"));
+            services.Configure<UISettings>(Configuration.GetSection("UI"));
 
             services.AddHttpContextAccessor();
 
@@ -212,6 +216,7 @@ namespace ProfileApi
             services.AddScoped<ICurrencyRateService, CurrencyRateService>();
             services.AddScoped<ISystemSettingsService, SystemSettingsService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
+            services.AddScoped<IFeaturesService, FeaturesService>();
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -277,7 +282,8 @@ namespace ProfileApi
             {
                 app.Use(async (context, next) =>
                 {
-                    context.Response.Headers.Add("X-Version", apiSettings.Version);
+                    context.Response.Headers.Add(Headers.API_VERSION_HEADER, apiSettings.Version);
+                    context.Response.Headers.Add(Headers.UI_VERSION_HEADER, apiSettings.Version);
                     await next.Invoke();
                 });
             }
@@ -321,15 +327,16 @@ namespace ProfileApi
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Home");
             });
 
-            app.UseSpa(spa =>
-            {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
+            //app.UseSpa(spa =>
+            //{
+            //    // To learn more about options for serving an Angular SPA from ASP.NET Core,
+            //    // see https://go.microsoft.com/fwlink/?linkid=864501
 
-                spa.Options.SourcePath = "wwwroot";
-            });
+            //    spa.Options.SourcePath = "wwwroot";
+            //});
 
             loggerFactory.CreateLogger("MerchantProfile.Startup").LogInformation("Started");
         }

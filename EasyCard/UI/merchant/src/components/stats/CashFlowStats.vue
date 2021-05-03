@@ -10,10 +10,10 @@
     </v-card-title>
     <v-divider></v-divider>
     <v-card-text class="px-0">
-      <v-row class="px-2 black--text body-2">
+      <v-row class="px-2 black--text body-2" v-if="report">
         <v-col cols="6" md="6" class="pb-0">
           <span class="main-line-color">{{$t("Selection")}}</span>
-          <div v-if="report">
+          <div>
             <div>
               <small>{{givenPeriodDate}}</small>
             </div>
@@ -30,7 +30,7 @@
         </v-col> -->
         <v-col cols="6" md="6" class="pb-0 justify-end">
           <span class="ref-line-color">{{$t("Reference")}}</span>
-          <div v-if="report">
+          <div>
             <div>
               <small>{{altPeriodDate}}</small>
             </div>

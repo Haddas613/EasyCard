@@ -1,0 +1,20 @@
+﻿using IdentityServer.Models.Enums;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace IdentityServer.Models
+{
+    public class LoginWith2faViewModel
+    {
+        [Required]
+        [StringLength(8, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [DataType(DataType.Text)]
+        [Display(Name = "Authenticator code")]
+        public string TwoFactorCode { get; set; }
+
+        public TwoFactorAuthTypeEnum LoginType { get; set; }
+    }
+}

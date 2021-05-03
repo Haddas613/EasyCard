@@ -7,6 +7,7 @@ using IdentityServer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Helpers.Security;
 
 namespace IdentityServer
 {
@@ -28,16 +29,17 @@ namespace IdentityServer
                 using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
                     var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-                    context.Database.Migrate();
+
+                    // context.Database.Migrate();
 
                     var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-                    var alice = userMgr.FindByNameAsync("alice").Result;
+                    var alice = userMgr.FindByNameAsync("ecng-admin@e-c.co.il").Result;
                     if (alice == null)
                     {
                         alice = new ApplicationUser
                         {
-                            UserName = "alice",
-                            Email = "AliceSmith@email.com"
+                            UserName = "ecng-admin@e-c.co.il",
+                            Email = "ecng-admin@e-c.co.il"
                         };
                         var result = userMgr.CreateAsync(alice, "Pass123$").Result;
                         if (!result.Succeeded)
@@ -47,13 +49,8 @@ namespace IdentityServer
 
                         var aliceClaims = new Claim[]
                             {
-                                new Claim(JwtClaimTypes.Name, "Alice Smith"),
-                                new Claim(JwtClaimTypes.GivenName, "Alice"),
-                                new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                                new Claim(JwtClaimTypes.Email, "AliceSmith@email.com"),
-                                new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
-                                new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
-                                new Claim(JwtClaimTypes.Address, @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }", IdentityServer4.IdentityServerConstants.ClaimValueTypes.Json)
+                                new Claim(JwtClaimTypes.GivenName, "Admin"),
+                                new Claim(JwtClaimTypes.FamilyName, "Temporary"),
                             };
 
                         result = userMgr.AddClaimsAsync(alice, aliceClaims).Result;
@@ -62,50 +59,11 @@ namespace IdentityServer
                             throw new Exception(result.Errors.First().Description);
                         }
 
-                        //Log.Debug("alice created");
+                        userMgr.AddToRoleAsync(alice, Roles.BusinessAdministrator);
+                        userMgr.AddToRoleAsync(alice, Roles.BillingAdministrator);
                     }
                     else
                     {
-                        //Log.Debug("alice already exists");
-                    }
-
-                    var bob = userMgr.FindByNameAsync("bob").Result;
-                    if (bob == null)
-                    {
-                        bob = new ApplicationUser
-                        {
-                            UserName = "bob",
-                            Email = "BobSmith@email.com"
-                        };
-                        var result = userMgr.CreateAsync(bob, "Pass123$").Result;
-                        if (!result.Succeeded)
-                        {
-                            throw new Exception(result.Errors.First().Description);
-                        }
-
-                        var bobClaims = new Claim[]
-                        {
-                            new Claim(JwtClaimTypes.Name, "Bob Smith"),
-                            new Claim(JwtClaimTypes.GivenName, "Bob"),
-                            new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                            new Claim(JwtClaimTypes.Email, "BobSmith@email.com"),
-                            new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
-                            new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
-                            new Claim(JwtClaimTypes.Address, @"{ 'street_address': 'One Hacker Way', 'locality': 'Heidelberg', 'postal_code': 69118, 'country': 'Germany' }", IdentityServer4.IdentityServerConstants.ClaimValueTypes.Json),
-                            new Claim("location", "somewhere")
-                        };
-
-                        result = userMgr.AddClaimsAsync(bob, bobClaims).Result;
-                        if (!result.Succeeded)
-                        {
-                            throw new Exception(result.Errors.First().Description);
-                        }
-
-                        //Log.Debug("bob created");
-                    }
-                    else
-                    {
-                        //Log.Debug("bob already exists");
                     }
                 }
             }

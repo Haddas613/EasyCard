@@ -61,4 +61,8 @@ export default class InvoicingApi {
     async downloadPDF(invoiceID){
         return await this.base.get(this.invoicingUrl + `/${invoiceID}/download`);
     }
+
+    async createForTransaction(paymentTransactionID){
+        return await this.base.post(this.invoicingUrl + `/transaction/${paymentTransactionID}`);
+    }
 }

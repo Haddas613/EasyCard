@@ -6,6 +6,7 @@ using AutoMapper;
 using IdentityServerClient;
 using MerchantProfileApi.Extensions;
 using MerchantProfileApi.Models.Terminal;
+using Merchants.Business.Extensions;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,8 +35,16 @@ namespace MerchantProfileApi.Controllers
         private readonly IUserManagementClient userManagementClient;
         private readonly ISystemSettingsService systemSettingsService;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
+        private readonly IFeaturesService featuresService;
 
-        public TerminalsApiController(IMerchantsService merchantsService, ITerminalsService terminalsService, IMapper mapper, IUserManagementClient userManagementClient, ISystemSettingsService systemSettingsService, ICryptoServiceCompact cryptoServiceCompact)
+        public TerminalsApiController(
+            IMerchantsService merchantsService,
+            ITerminalsService terminalsService,
+            IMapper mapper,
+            IUserManagementClient userManagementClient,
+            ISystemSettingsService systemSettingsService,
+            ICryptoServiceCompact cryptoServiceCompact,
+            IFeaturesService featuresService)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
@@ -43,6 +52,7 @@ namespace MerchantProfileApi.Controllers
             this.userManagementClient = userManagementClient;
             this.systemSettingsService = systemSettingsService;
             this.cryptoServiceCompact = cryptoServiceCompact;
+            this.featuresService = featuresService;
         }
 
         [HttpGet]
@@ -80,7 +90,7 @@ namespace MerchantProfileApi.Controllers
         [Route("{terminalID}")]
         public async Task<ActionResult<OperationResponse>> UpdateTerminal([FromRoute]Guid terminalID, [FromBody]UpdateTerminalRequest model)
         {
-            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
             mapper.Map(model, terminal);
 
@@ -95,10 +105,15 @@ namespace MerchantProfileApi.Controllers
         {
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
 
+            if (!terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.Api))
+            {
+                return BadRequest(new OperationResponse(Messages.ApiFeatureMustBeEnabled, StatusEnum.Error));
+            }
+
             var opResult = await userManagementClient.CreateTerminalApiKey(new CreateTerminalApiKeyRequest { TerminalID = terminal.TerminalID, MerchantID = terminal.MerchantID });
 
             // TODO: CreateTerminalApiKey failed case
-            return Ok(new OperationResponse (Messages.PrivateKeyUpdated, StatusEnum.Success, opResult.ApiKey));
+            return Ok(new OperationResponse(Messages.PrivateKeyUpdated, StatusEnum.Success, opResult.ApiKey));
         }
 
         // TODO: concurrency check, handle exceptions
@@ -114,6 +129,15 @@ namespace MerchantProfileApi.Controllers
             await terminalsService.UpdateEntity(terminal);
 
             return Ok(new OperationResponse(Messages.SharedKeyUpdated, StatusEnum.Success, sharedApiKey));
+        }
+
+        [HttpGet]
+        [Route("available-features")]
+        public async Task<ActionResult<FeatureSummary>> GetAvailableFeatures()
+        {
+            var features = await mapper.ProjectTo<FeatureSummary>(featuresService.GetQuery()).ToListAsync();
+
+            return Ok(features);
         }
     }
 }

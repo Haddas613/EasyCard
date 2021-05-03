@@ -40,7 +40,7 @@ export default {
       if (!result) return;
 
       if (result.status === "success") {
-        this.$router.push("/admin/billing-deals/list");
+        this.$router.push({ name: "BillingDeals" });
       } else {
         this.$toasted.show(result.message, { type: "error" });
       }

@@ -27,6 +27,7 @@ class AuthService {
         this.userManager = new UserManager(settings);
         this.billingAdminRole = "BillingAdministrator";
         this.businessAdminRole = "BusinessAdministrator";
+        this._accessTokenLockPromise = null;
     }
 
     getUser() {
@@ -69,8 +70,23 @@ class AuthService {
             return null;
         }
        
-        const user = await this.userManager.getUser();
-        return user ? user.access_token : null; 
+        if(this._accessTokenLockPromise){
+            return await this._accessTokenLockPromise;
+        }else{
+            return await (this._accessTokenLockPromise = this.__getAccessTokenInternal());
+        }
+    }
+
+    async __getAccessTokenInternal(){
+        let userData = await this.userManager.getUser();
+
+        if(userData && userData.expired){
+            try{
+                userData = await this.userManager.signinSilent();
+            }catch{}
+        }
+        this._accessTokenLockPromise = null;
+        return !!userData ? userData.access_token : null;
     }
 
     async isInRole(role){

@@ -37,6 +37,12 @@ using Shared.Helpers.Security;
 using AutoMapper;
 using SharedApi = Shared.Api;
 using Shared.Api.Configuration;
+using IdentityServer4.Extensions;
+using Shared.Helpers.Sms;
+using InforU;
+using Shared.Integration;
+using Shared.Business.Security;
+using IdentityServer.Helpers;
 
 namespace IdentityServer
 {
@@ -115,6 +121,10 @@ namespace IdentityServer
             services.Configure<ApiSettings>(Configuration.GetSection("API"));
             services.Configure<CryptoSettings>(Configuration.GetSection("CryptoConfig"));
 
+            services.AddHttpContextAccessor();
+
+            services.AddScoped<IHttpContextAccessorWrapper, HttpContextAccessorWrapper>();
+
             services.AddAutoMapper(typeof(Startup));
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -128,6 +138,7 @@ namespace IdentityServer
 
             var builder = services.AddIdentityServer(options =>
             {
+                options.IssuerUri = identity.Authority;
                 options.Events.RaiseErrorEvents = true;
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
@@ -222,8 +233,8 @@ namespace IdentityServer
             });
 
             services.AddScoped<IAuditLogger, AuditLogger>();
-            services.AddScoped<ITerminalApiKeyService, TerminalApiKeyService>();
             services.AddScoped<UserManageService, UserManageService>();
+            services.AddScoped<UserHelpers, UserHelpers>();
 
             // DI: request logging
 
@@ -231,6 +242,21 @@ namespace IdentityServer
             {
                 options.RequestsLogStorageTable = config.RequestsLogStorageTable;
                 options.StorageConnectionString = config.DefaultStorageConnectionString;
+            });
+
+            services.AddSingleton<ISmsService, InforUMobileSmsService>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.SmsTableName, null);
+                var inforUMobileSmsSettings = Configuration.GetSection("InforUMobileSmsSettings")?.Get<InforUMobileSmsSettings>();
+
+                var webApiClient = new WebApiClient();
+
+                var logger = serviceProvider.GetRequiredService<ILogger<InforUMobileSmsService>>();
+
+                var doNotSendSms = cfg.TwoFactorAuthenticationDoNotSendSms;
+
+                return new InforUMobileSmsService(webApiClient, inforUMobileSmsSettings, logger, storageService, doNotSendSms);
             });
 
             services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();
@@ -262,6 +288,8 @@ namespace IdentityServer
 
             var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
 
+            //app.UseCookiePolicy();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -273,6 +301,14 @@ namespace IdentityServer
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
+            var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>().Value;
+
+            app.Use((context, next) =>
+            {
+                context.SetIdentityServerOrigin(cfg.Authority);
+                return next();
             });
 
             app.UseRouting();
@@ -291,7 +327,7 @@ namespace IdentityServer
 
             try
             {
-                foreach (var role in new[] { Roles.Merchant, Roles.BusinessAdministrator, Roles.BillingAdministrator })
+                foreach (var role in new[] { Roles.Merchant, Roles.BusinessAdministrator, Roles.BillingAdministrator, Roles.Manager })
                 {
                     if (!roleManager.RoleExistsAsync(role).Result)
                     {

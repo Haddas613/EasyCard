@@ -13,17 +13,20 @@ namespace Merchants.Api.Models.User
 
         public string DisplayName { get; set; }
 
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
         public string Email { get; set; }
 
         public string PhoneNumber { get; set; }
-
-        public bool IsManager { get; set; }
 
         public IEnumerable<string> Roles { get; set; }
 
         // TODO: enable it when user-terminal mappings will be enabled
         //public IEnumerable<TerminalSummary> Terminals { get; set; }
 
-        public JObject Settings { get; set; }
+        // TODO: remove?
+        //public JObject Settings { get; set; }
     }
 }

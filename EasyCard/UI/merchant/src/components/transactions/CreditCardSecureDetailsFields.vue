@@ -40,14 +40,16 @@
                 placeholder="XXXX XXXX XXXX XXXX"
                 @keydown.enter="parseCardReader()"
                 @input="checkIfCardReader($event)"
+                v-bind:class="{'text-end': $vuetify.rtl}"
+                dir="ltr"
               />
             </v-col>
           </v-row>
         </v-col>
         <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
         <v-col cols="1" class="centered">
-          <v-btn icon @click="clearProp('cardNumber')">
-            <v-icon class="error--text" v-if="errors['cardNumber']">mdi-close</v-icon>
+          <v-btn icon @click="clearProp('cardNumber')" v-if="errors['cardNumber']">
+            <v-icon class="error--text">mdi-close</v-icon>
           </v-btn>
         </v-col>
       </v-row>
@@ -64,14 +66,16 @@
                 ref="expiryInp"
                 placeholder="MM/YY"
                 v-cardformat:formatCardExpiry
+                dir="ltr"
+                v-bind:class="{'text-end': $vuetify.rtl}"
               />
             </v-col>
           </v-row>
         </v-col>
         <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
         <v-col cols="1" class="centered">
-          <v-btn icon @click="clearProp('expiry')">
-            <v-icon class="error--text" v-if="errors['expiry']">mdi-close</v-icon>
+          <v-btn icon @click="clearProp('expiry')" v-if="errors['expiry']">
+            <v-icon class="error--text">mdi-close</v-icon>
           </v-btn>
         </v-col>
       </v-row>
@@ -95,8 +99,8 @@
         </v-col>
         <v-spacer v-if="$vuetify.breakpoint.mdAndUp"></v-spacer>
         <v-col cols="1" class="centered">
-          <v-btn icon @click="clearProp('cvv')">
-            <v-icon class="error--text" v-if="errors['cvv']">mdi-close</v-icon>
+          <v-btn icon @click="clearProp('cvv')" v-if="errors['cvv']">
+            <v-icon class="error--text">mdi-close</v-icon>
           </v-btn>
         </v-col>
       </v-row>

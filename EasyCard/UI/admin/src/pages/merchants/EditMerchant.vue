@@ -24,7 +24,7 @@ export default {
       if (!result) return;
 
       if (result.status === "success") {
-        this.$router.push("/admin/merchants/list");
+        this.$router.push({name: 'Merchant', params: {id: this.model.$merchantID || this.model.merchantID}});
       } else {
         this.$toasted.show(result.message, { type: "error" });
       }
@@ -34,7 +34,7 @@ export default {
     let result = await this.$api.merchants.getMerchant(this.$route.params.id);
 
     if (!result) {
-      this.$router.push("/admin/merchants/list");
+      this.$router.push({name: "Merchants"});
     }
 
     this.model = result;

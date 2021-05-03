@@ -1,3 +1,5 @@
+import moment from "moment";
+
 const mixins = {
     methods: {
         $copyToClipboard: function (text, showToasted = true) {
@@ -11,6 +13,9 @@ const mixins = {
         },
         $formatDate: function(date){
             return date ? moment(date).format("YYYY-MM-DD") : null;
+        },
+        $featureEnabled: function (terminal, feature) {
+            return terminal && terminal.enabledFeatures.indexOf(feature) > -1;
         }
     }
 };

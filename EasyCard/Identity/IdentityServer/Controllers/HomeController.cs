@@ -28,6 +28,11 @@ namespace IdentityServer.Controllers
             return View(model);
         }
 
+        public IActionResult ManageAccount()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

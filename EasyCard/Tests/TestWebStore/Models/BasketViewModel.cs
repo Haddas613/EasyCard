@@ -34,5 +34,7 @@ namespace TestWebStore.Models
         public string InternalOrderID { get; set; }
 
         public Guid? ConsumerID { get; set; }
+
+        public bool IssueInvoice { get; set; }
     }
 }

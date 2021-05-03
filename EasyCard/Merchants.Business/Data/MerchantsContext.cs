@@ -1,4 +1,5 @@
 ﻿using Merchants.Business.Entities.Billing;
+using Merchants.Business.Entities.Integration;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.System;
 using Merchants.Business.Entities.Terminal;
@@ -36,6 +37,11 @@ namespace Merchants.Business.Data
         private static readonly ValueConverter SettingsJObjectConverter = new ValueConverter<JObject, string>(
            v => v.ToString(Formatting.None),
            v => JObject.Parse(v));
+
+        private static readonly ValueComparer SettingsJObjectComparer = new ValueComparer<JObject>(
+           (s1, s2) => s1.ToString(Formatting.None).GetHashCode() == s2.ToString(Formatting.None).GetHashCode(),
+           v => v.ToString(Formatting.None).GetHashCode(),
+           v => JObject.Parse(v.ToString(Formatting.None)));
 
         private static readonly ValueConverter StringArrayConverter = new ValueConverter<IEnumerable<string>, string>(
             v => string.Join(",", v),
@@ -83,6 +89,8 @@ namespace Merchants.Business.Data
 
         public DbSet<Impersonation> Impersonations { get; set; }
 
+        public DbSet<ShvaTerminal> ShvaTerminals { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         public MerchantsContext(DbContextOptions<MerchantsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
@@ -113,6 +121,7 @@ namespace Merchants.Business.Data
 
             modelBuilder.ApplyConfiguration(new SystemSettingsConfiguration());
             modelBuilder.ApplyConfiguration(new ImpersonationConfiguration());
+            modelBuilder.ApplyConfiguration(new ShvaTerminalConfiguration());
 
             var cascadeFKs = modelBuilder.Model.GetEntityTypes()
                 .SelectMany(t => t.GetForeignKeys())
@@ -175,6 +184,8 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.ProcessorTerminalReference).HasMaxLength(50).IsRequired(false).IsUnicode(false);
 
                 builder.Property(b => b.SharedApiKey).IsRequired(false).HasMaxLength(64);
+
+                builder.Property(b => b.TerminalTemplateID).IsRequired(false);
             }
         }
 
@@ -218,6 +229,8 @@ namespace Merchants.Business.Data
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
                 builder.Property(b => b.NameEN).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.NameHE).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                builder.Property(b => b.DescriptionEN).IsRequired(false).HasMaxLength(1024).IsUnicode(true);
+                builder.Property(b => b.DescriptionHE).IsRequired(false).HasMaxLength(1024).IsUnicode(true);
 
                 builder.Property(b => b.Price).HasColumnType("decimal(19,4)").HasDefaultValue(decimal.Zero).IsRequired(false);
             }
@@ -251,7 +264,8 @@ namespace Merchants.Business.Data
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
-                builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
+                builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
+                    .Metadata.SetValueComparer(SettingsJObjectComparer);
             }
         }
 
@@ -266,7 +280,8 @@ namespace Merchants.Business.Data
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
-                builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter);
+                builder.Property(b => b.Settings).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
+                    .Metadata.SetValueComparer(SettingsJObjectComparer);
             }
         }
 
@@ -335,7 +350,7 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.Active).HasDefaultValue(true);
 
-                builder.Property(b => b.ItemName).IsRequired(true).HasMaxLength(50).IsUnicode(true);
+                builder.Property(b => b.ItemName).IsRequired(true).HasMaxLength(128).IsUnicode(true);
                 builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
@@ -426,6 +441,19 @@ namespace Merchants.Business.Data
                 builder.ToTable("Impersonation");
 
                 builder.HasKey(b => b.UserId);
+            }
+        }
+
+        internal class ShvaTerminalConfiguration : IEntityTypeConfiguration<ShvaTerminal>
+        {
+            public void Configure(EntityTypeBuilder<ShvaTerminal> builder)
+            {
+                builder.ToTable("ShvaTerminal");
+
+                builder.HasKey(b => b.MerchantNumber);
+                builder.Property(b => b.MerchantNumber).HasMaxLength(64).ValueGeneratedNever();
+                builder.Property(b => b.UserName).HasMaxLength(64);
+                builder.Property(b => b.Password).IsUnicode(true).HasMaxLength(64);
             }
         }
     }

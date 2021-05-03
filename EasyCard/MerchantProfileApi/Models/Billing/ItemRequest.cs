@@ -13,7 +13,7 @@ namespace MerchantProfileApi.Models.Billing
     {
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [Required(AllowEmptyStrings = false)]
-        [StringLength(50, MinimumLength = 3)]
+        [StringLength(80, MinimumLength = 3)]
         public string ItemName { get; set; }
 
         public decimal Price { get; set; }

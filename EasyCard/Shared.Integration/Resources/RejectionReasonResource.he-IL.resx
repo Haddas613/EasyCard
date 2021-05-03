@@ -118,30 +118,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CardOwnerNationalIdRequired" xml:space="preserve">
-    <value>Card owner national id required</value>
+    <value>חובה לרשום ת.ז בעל הכרטיס</value>
   </data>
   <data name="CreditCardDailyUsageExceeded" xml:space="preserve">
-    <value>Credit card daily usage exceeded</value>
+    <value>סף שימוש יומי בכרטיס נחצה</value>
   </data>
   <data name="CreditCardIsMerchantsCard" xml:space="preserve">
-    <value>Credit card is merchants card</value>
+    <value>כרטיס שייך לבית העסק</value>
   </data>
   <data name="DailyAmountExceeded" xml:space="preserve">
-    <value>Daily amount exceeded</value>
+    <value>סף סכום שימוש יומי נחצה</value>
   </data>
   <data name="NationalIdIsMerchantsId" xml:space="preserve">
-    <value>National id is merchants id</value>
+    <value>ת.ז שייך לבעל העסק</value>
   </data>
   <data name="RefundExceededCollateral" xml:space="preserve">
-    <value>Refund exceeded collateral</value>
+    <value>זיכוי גבוה מסכום הערבון</value>
   </data>
   <data name="RefundNotMatchRegularAmount" xml:space="preserve">
-    <value>Refund not match regular amount</value>
+    <value>זיכוי אינו תואם לחיוב המקורי</value>
   </data>
   <data name="SingleTransactionAmountExceeded" xml:space="preserve">
-    <value>Single transaction amount exceeded</value>
+    <value>נחצתה מגבלת סכום עסקה בודדת</value>
   </data>
   <data name="Unknown" xml:space="preserve">
-    <value>Unknown</value>
+    <value>לא ידוע</value>
   </data>
 </root>

@@ -3,6 +3,7 @@
     <v-tabs grow color="primary" v-model="tab">
       <v-tab key="settings">{{$t("TerminalSettings")}}</v-tab>
       <v-tab key="integrations">{{$t("Integrations")}}</v-tab>
+      <v-tab key="features">{{$t("Features")}}</v-tab>
     </v-tabs>
     <v-card-text>
       <v-tabs-items v-model="tab" class="bg-ecbg">
@@ -42,6 +43,7 @@
           <v-form ref="terminalSettingsForm" v-model="terminalSettingsFormValid" lazy-validation>
             <terminal-settings-fields
               v-if="terminal"
+              :key="terminal.updated"
               :data="terminal"
               class="pt-1"
               ref="terminalSettingsRef"
@@ -60,6 +62,9 @@
         <v-tab-item key="integrations">
           <terminal-integrations-form :terminal="terminal" v-if="terminal"></terminal-integrations-form>
         </v-tab-item>
+        <v-tab-item key="features">
+          <terminal-features-form :terminal="terminal" v-if="terminal" @update="refreshTerminal()"></terminal-features-form>
+        </v-tab-item>
       </v-tabs-items>
     </v-card-text>
   </v-card>
@@ -71,7 +76,9 @@ export default {
     TerminalSettingsFields: () =>
       import("../../components/terminals/TerminalSettingsFields"),
     TerminalIntegrationsForm: () =>
-      import("../../components/terminals/TerminalIntegrationsForm")
+      import("../../components/terminals/TerminalIntegrationsForm"),
+    TerminalFeaturesForm: () =>
+      import("../../components/terminals/TerminalFeaturesForm")
   },
   data() {
     return {
@@ -81,12 +88,7 @@ export default {
     };
   },
   async mounted() {
-    let terminal = await this.$api.terminals.getTerminal(this.$route.params.id);
-    if (!terminal) {
-      return this.$router.push({ name: "Terminals" });
-    }
-
-    this.terminal = terminal;
+    await this.refreshTerminal();
 
     this.$store.commit("ui/changeHeader", {
       value: {
@@ -133,9 +135,12 @@ export default {
       }
     },
     async refreshTerminal() {
-      await this.$store.dispatch("settings/refreshTerminal", {
-        api: this.$api
-      });
+      let terminal = await this.$api.terminals.getTerminal(this.$route.params.id);
+      if (!terminal) {
+        return this.$router.push({ name: "Terminals" });
+      }
+
+      this.terminal = terminal;
     }
   }
 };

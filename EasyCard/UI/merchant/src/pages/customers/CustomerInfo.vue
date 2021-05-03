@@ -150,7 +150,7 @@ export default {
     let customer = await this.$api.consumers.getConsumer(this.$route.params.id);
 
     if (!customer) {
-      return this.$router.push("/admin/customers/list");
+      return this.$router.push({ name: "Customers" });
     }
     this.model = customer;
 

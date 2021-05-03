@@ -14,11 +14,11 @@
   },
   "extensions": {
     "queues": {
-      "maxPollingInterval": 2000,
+      "maxPollingInterval": "00:00:10",
       "visibilityTimeout": "00:00:30",
-      "batchSize": 1,
+      "batchSize": 2,
       "maxDequeueCount": 5,
-      "newBatchThreshold": 8
+      "newBatchThreshold": 1
     }
   },
   "IdentityServerClient": {

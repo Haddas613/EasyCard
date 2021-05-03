@@ -51,6 +51,11 @@ namespace Transactions.Api.Models.Transactions
         public Guid? TerminalID { get; set; }
 
         /// <summary>
+        /// EasyCard terminal name
+        /// </summary>
+        public string TerminalName { get; set; }
+
+        /// <summary>
         /// Merchant
         /// </summary>
         public Guid? MerchantID { get; set; }
@@ -171,6 +176,7 @@ namespace Transactions.Api.Models.Transactions
         public byte[] UpdateTimestamp { get; set; }
 
         public bool AllowTransmission { get; set; }
+
         public bool AllowTransmissionCancellation { get; set; }
 
         /// <summary>

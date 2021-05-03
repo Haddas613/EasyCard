@@ -21,9 +21,7 @@ export default class InvoicingApi {
         let dictionaries = await this.base.dictionaries.$getTransactionDictionaries();
         
         data.data = data.data.map(d => this.base.format(d, this.$headers, dictionaries))
-
         data.headers = this.headers;
-
         return data;
     }
 
@@ -40,9 +38,8 @@ export default class InvoicingApi {
       return invoice;
     }
 
-    async resend(terminalId, invoicesIDs){
-        return await this.base.post(this.invoicingUrl + '/resend', {
-            terminalID: terminalId,
+    async resend(invoicesIDs){
+        return await this.base.post(this.invoicingUrl + '/resend-admin', {
             invoicesIDs: invoicesIDs
         });
     }

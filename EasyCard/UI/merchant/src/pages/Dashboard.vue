@@ -16,7 +16,7 @@
         </v-list>
       </v-card-text>
     </v-card>
-    <v-row no-gutters class="stats-area d-flex" v-bind:class="{'mobile': $vuetify.breakpoint.xs}">
+    <v-row no-gutters class="stats-area d-flex" v-bind:class="{'mobile': $vuetify.breakpoint.xs}" v-if="canSeeReports">
       <v-col cols="12" md="4" class="dashboard-tile-item">
         <sales-stats></sales-stats>
       </v-col>
@@ -52,11 +52,13 @@ export default {
   data() {
     return {
       userName: null,
-      publicPath: this.$cfg.BASE_URL
+      publicPath: this.$cfg.BASE_URL,
+      canSeeReports: null
     }
   },
   async mounted(){
     this.userName = !!this.$oidc ? (await this.$oidc.getUserDisplayName()) : null;
+    this.canSeeReports = await this.$oidc.isManager();
   }
 };
 </script>
@@ -80,7 +82,7 @@ export default {
     margin-top: 170px;
   }
   div{
-    padding: 0 4px;
+    padding: 0 6px;
   }
   .dashboard-tile-item{
     display: flex;

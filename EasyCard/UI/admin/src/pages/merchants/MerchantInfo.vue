@@ -1,5 +1,12 @@
 <template>
   <v-flex>
+    <edit-user-dialog
+      v-if="selectedUser"
+      :show.sync="editUserDialog"
+      :key="selectedUser.userID"
+      :user="selectedUser"
+      v-on:ok="closeEditRolesDialog()"
+    ></edit-user-dialog>
     <v-card class="mx-2 my-2">
       <v-card-title class="py-2">
         <v-row no-gutters class="py-0">
@@ -12,7 +19,11 @@
               {{$t("LoginAsMerchant")}}
             </v-btn>
             <v-btn color="secondary" v-show="loginAsMerchantURL" ref="loginAsMerchantBtn">
-              <a class="white--text text-decoration-none" :href="loginAsMerchantURL" target="_blank">
+              <a
+                class="white--text text-decoration-none"
+                :href="loginAsMerchantURL"
+                target="_blank"
+              >
                 <v-icon left class="body-1">mdi-account-convert</v-icon>
                 {{$t("LoginAsMerchant")}}
               </a>
@@ -118,57 +129,82 @@
             <v-col cols="12" md="6" lg="6" class="caption ecgray--text">{{item.userID | guid}}</v-col>
             <v-col cols="12" md="6" lg="6">{{item.email}}</v-col>
           </template>
+          <template v-slot:right="{ item }">
+            <v-col cols="12" class="text-end">
+              <span v-bind:class="userStatusColors[item.status]">{{userStatuses[item.status]}}</span>
+            </v-col>
+          </template>
 
           <template v-slot:append="{ item }">
-            <v-btn
-              class="mx-1"
-              color="primary"
-              icon
-              :title="$t('Invite')"
-              :loading="actionInProgress"
-              @click="inviteUser(item)"
-              v-if="item.status == 'invited'"
-            >
-              <v-icon>mdi-email</v-icon>
-            </v-btn>
-            <v-btn
-              class="mx-1"
-              color="error"
-              icon
-              :title="$t('Lock')"
-              :loading="actionInProgress"
-              @click="lockUser(item)"
-              v-if="item.status == 'active'"
-            >
-              <v-icon>mdi-lock</v-icon>
-            </v-btn>
-            <v-btn
-              class="mx-1"
-              color="success"
-              icon
-              :title="$t('Unlock')"
-              :loading="actionInProgress"
-              @click="unlockUser(item)"
-              v-if="item.status == 'locked'"
-            >
-              <v-icon>mdi-lock-open</v-icon>
-            </v-btn>
-            <v-btn
-              class="mx-1"
-              color="orange darken-3"
-              icon
-              :title="$t('ResetPassword')"
-              :loading="actionInProgress"
-              @click="resetUserPassword(item.userID)"
-            >
-              <v-icon>mdi-lock-reset</v-icon>
-            </v-btn>
-            <v-btn class="mx-1" color="deep-purple" icon link :title="$t('SeeHistory')" :to="{name:'Audits',params:{filters:{userID: item.userID}}}">
-              <v-icon>mdi-book-account</v-icon>
-            </v-btn>
-            <v-btn icon @click="unlinkFromMerchant(item.userID)" :loading="actionInProgress">
-              <v-icon color="error">mdi-delete</v-icon>
-            </v-btn>
+            <div>
+              <v-btn
+                class="mx-1"
+                color="primary"
+                icon
+                :title="$t('Invite')"
+                :loading="actionInProgress"
+                @click="inviteUser(item)"
+                v-if="item.status == 'invited'"
+              >
+                <v-icon>mdi-email</v-icon>
+              </v-btn>
+              <v-btn
+                class="mx-1"
+                color="error"
+                icon
+                :title="$t('Lock')"
+                :loading="actionInProgress"
+                @click="lockUser(item)"
+                v-if="item.status == 'active'"
+              >
+                <v-icon>mdi-lock</v-icon>
+              </v-btn>
+              <v-btn
+                class="mx-1"
+                color="success"
+                icon
+                :title="$t('Unlock')"
+                :loading="actionInProgress"
+                @click="unlockUser(item)"
+                v-if="item.status == 'locked'"
+              >
+                <v-icon>mdi-lock-open</v-icon>
+              </v-btn>
+              <v-btn
+                class="mx-1"
+                color="orange darken-3"
+                icon
+                :title="$t('ResetPassword')"
+                :loading="actionInProgress"
+                @click="resetUserPassword(item.userID)"
+              >
+                <v-icon>mdi-lock-reset</v-icon>
+              </v-btn>
+              <v-btn
+                class="mx-1"
+                color="deep-purple"
+                icon
+                link
+                :title="$t('SeeHistory')"
+                :to="{name:'Audits',params:{filters:{userID: item.userID}}}"
+              >
+                <v-icon>mdi-book-account</v-icon>
+              </v-btn>
+              <v-btn icon @click="unlinkFromMerchant(item.userID)" :loading="actionInProgress">
+                <v-icon color="error">mdi-delete</v-icon>
+              </v-btn>
+              <v-btn
+                class="mx-1"
+                color="secondary"
+                icon
+                link
+                :title="$t('EditUser')"
+                @click="showEditRolesDialog(item)"
+                v-on:ok="getMerchant()"
+              >
+                <v-icon small>mdi-card-account-details-outline</v-icon>
+              </v-btn>
+            </div>
           </template>
         </ec-list>
         <p
@@ -188,7 +224,9 @@ export default {
     EcList: () => import("../../components/ec/EcList"),
     CreateTerminalDialog: () =>
       import("../../components/terminals/CreateTerminalDialog"),
-    CreateUserDialog: () => import("../../components/users/CreateUserDialog")
+    CreateUserDialog: () => import("../../components/users/CreateUserDialog"),
+    EditUserDialog: () =>
+      import("../../components/users/EditUserDialog")
   },
   props: {
     data: {
@@ -204,7 +242,15 @@ export default {
       showCreateTerminalDialog: false,
       showCreateUserDialog: false,
       actionInProgress: false,
-      loginAsMerchantURL: null
+      loginAsMerchantURL: null,
+      editUserDialog: false,
+      selectedUser: null,
+      userStatusColors: {
+        invited: "primary--text",
+        active: "success--text",
+        locked: "error--text"
+      },
+      userStatuses: {}
     };
   },
   methods: {
@@ -219,7 +265,7 @@ export default {
       );
 
       if (!merchant) {
-        return this.$router.push("/admin/merchants/list");
+        return this.$router.push({ name: "Merchants" });
       }
       this.model = merchant;
     },
@@ -269,15 +315,28 @@ export default {
       let operation = await this.$api.users.resetUserPassword(userID);
       this.actionInProgress = false;
     },
-    async loginAsMerchant(){
-      let operation = await this.$api.merchants.loginAsMerchant(this.$route.params.id);
-      if(operation.status === "success" && operation.message){
+    async loginAsMerchant() {
+      let operation = await this.$api.merchants.loginAsMerchant(
+        this.$route.params.id
+      );
+      if (operation.status === "success" && operation.message) {
         this.loginAsMerchantURL = operation.message;
         window.open(operation.message, "_blank");
       }
+    },
+    async showEditRolesDialog(user) {
+      this.selectedUser = user;
+      this.editUserDialog = true;
+    },
+    async closeEditRolesDialog() {
+      this.editUserDialog = false;
+      await this.getMerchant();
     }
   },
   async mounted() {
+    let $dictionaries = await this.$api.dictionaries.$getMerchantDictionaries();
+    this.userStatuses = $dictionaries["userStatusEnum"];
+
     if (this.data) {
       this.model = this.data;
       return;

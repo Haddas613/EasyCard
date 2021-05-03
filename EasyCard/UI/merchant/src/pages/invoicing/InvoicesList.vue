@@ -67,7 +67,7 @@
                 <v-icon right color="red" size="1rem">mdi-file-pdf-outline</v-icon>
               </v-btn>
               <span
-                v-bind:class="statusColors[item.status]"
+                v-bind:class="statusColors[item.$status]"
                 v-else
               >{{$t(item.status || 'None')}}</span>
             </v-col>
@@ -124,11 +124,11 @@ export default {
     return {
       invoices: null,
       statusColors: {
-        Pending: "gray--text",
-        None: "",
-        Sent: "success--text",
-        Sending: "primary--text",
-        SendingFailed: "error--text"
+        pending: "gray--text",
+        none: "",
+        sent: "success--text",
+        sending: "primary--text",
+        sendingFailed: "error--text"
       },
       customerInfo: null,
       moment: moment,

@@ -5,11 +5,14 @@
       <template>
         <v-form ref="newCustomerFormRef" lazy-validation>
           <v-row>
-          <v-col cols="12" md="6" class="py-0">
-            <v-text-field v-model="newCustomerModel.userName" :rules="[vr.primitives.required, vr.primitives.stringLength(3, 64)]" :label="$t('UserName')" outlined></v-text-field>
+          <v-col cols="12" md="4" class="py-0">
+            <v-text-field v-model="newCustomerModel.userName" :rules="[vr.primitives.required, vr.primitives.email]" :label="$t('Email')" outlined></v-text-field>
           </v-col>
-          <v-col cols="12" md="6" class="py-0">
+          <v-col cols="12" md="4" class="py-0">
             <v-text-field v-model="newCustomerModel.password" :rules="[vr.primitives.required, vr.primitives.stringLength(6, 64)]" :label="$t('Password')" outlined></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4" class="py-0">
+            <v-text-field v-model="newCustomerModel.businessID" :rules="[vr.primitives.required, vr.primitives.stringLength(6, 64)]" :label="$t('BusinessID')" outlined></v-text-field>
           </v-col>
         </v-row>
         </v-form>
@@ -100,8 +103,7 @@ export default {
       this.loading = true;
       let payload = {
         terminalID: this.terminalId,
-        userName: this.newCustomerModel.userName,
-        password: this.newCustomerModel.password
+        ...this.newCustomerModel
       }
       let operation = await this.$api.integrations.easyInvoice.createCustomer(payload);
 

@@ -33,6 +33,11 @@ namespace Transactions.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
+        public Task<PaymentTransaction> GetTransaction(System.Linq.Expressions.Expression<Func<PaymentTransaction, bool>> predicate)
+        {
+            return context.PaymentTransactions.FirstOrDefaultAsync(predicate);
+        }
+
         public IQueryable<CreditCardTokenDetails> GetTokens()
         {
             if (user.IsAdmin())
@@ -125,7 +130,7 @@ namespace Transactions.Business.Services
         public async override Task UpdateEntity(PaymentTransaction entity, IDbContextTransaction dbTransaction = null)
             => await UpdateEntity(entity, Messages.TransactionUpdated, TransactionOperationCodesEnum.TransactionUpdated, dbTransaction: dbTransaction);
 
-        public async Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum? transactionStatus = null, TransactionFinalizationStatusEnum? finalizationStatus = null, RejectionReasonEnum? rejectionReason = null, string rejectionMessage = null, IDbContextTransaction dbTransaction = null)
+        public async Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum? transactionStatus = null, TransactionFinalizationStatusEnum? finalizationStatus = null, RejectionReasonEnum? rejectionReason = null, string rejectionMessage = null, IDbContextTransaction dbTransaction = null, TransactionOperationCodesEnum? transactionOperationCode = null)
         {
             entity.Status = transactionStatus ?? entity.Status;
             entity.FinalizationStatus = finalizationStatus ?? entity.FinalizationStatus;
@@ -145,17 +150,27 @@ namespace Transactions.Business.Services
 
             entity.UpdatedDate = DateTime.UtcNow;
 
-            TransactionOperationCodesEnum operationCode = TransactionOperationCodesEnum.TransactionUpdated;
+            TransactionOperationCodesEnum operationCode = transactionOperationCode ?? TransactionOperationCodesEnum.TransactionUpdated;
             var historyMessage = Messages.TransactionUpdated;
 
-            if (finalizationStatus != null)
+            if (transactionOperationCode == null)
             {
-                Enum.TryParse(finalizationStatus.ToString(), true, out operationCode);
-            }
+                TransactionOperationCodesEnum operationCodeParsed;
+                if (finalizationStatus != null)
+                {
+                    if (Enum.TryParse(finalizationStatus.ToString(), true, out operationCodeParsed))
+                    {
+                        operationCode = operationCodeParsed;
+                    }
+                }
 
-            if (transactionStatus != null) // Transaction status is more important for log than finalization status
-            {
-                var parsedRes = Enum.TryParse(transactionStatus?.ToString(), true, out operationCode);
+                if (transactionStatus != null) // Transaction status is more important for log than finalization status
+                {
+                    if (Enum.TryParse(transactionStatus?.ToString(), true, out operationCodeParsed))
+                    {
+                        operationCode = operationCodeParsed;
+                    }
+                }
             }
 
             historyMessage = rejectionMessage ?? (Messages.ResourceManager.GetString(operationCode.ToString()) ?? historyMessage);
