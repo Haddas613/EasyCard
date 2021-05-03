@@ -70,22 +70,6 @@ namespace Transactions.Business.Services
             }
         }
 
-        public IQueryable<PaymentTransaction> GetTransactionsForUpdate()
-        {
-            if (user.IsAdmin())
-            {
-                return context.PaymentTransactions;
-            }
-            else if (user.IsTerminal())
-            {
-                return context.PaymentTransactions.Where(t => t.TerminalID == user.GetTerminalID());
-            }
-            else
-            {
-                return context.PaymentTransactions.Where(t => t.MerchantID == user.GetMerchantID());
-            }
-        }
-
         public IQueryable<TransactionHistory> GetTransactionHistories()
         {
             if (user.IsAdmin())

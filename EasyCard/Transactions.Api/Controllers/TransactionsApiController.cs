@@ -50,11 +50,9 @@ using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
 using Z.EntityFramework.Plus;
+using Merchants.Business.Entities.Terminal;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
-using Shared.Api.Configuration;
-using Merchants.Business.Entities.Terminal;
-using Nayax;
 
 namespace Transactions.Api.Controllers
 {
@@ -681,7 +679,8 @@ namespace Transactions.Api.Controllers
 
             var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
             mapper.Map(processorSettings, transaction);
-            Object pinpadProcessorSettings = null;
+
+            object pinpadProcessorSettings = null;
             if (pinpadDeal)
             {
                 pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
@@ -746,14 +745,15 @@ namespace Transactions.Api.Controllers
                 if (pinpadDeal)
                 {
                     processorRequest.PinPadProcessorSettings = pinpadProcessorSettings;
-                  //  var transactions = await transactionsService.GetTransactions().Where(d => d.PaymentTransactionID!=null)).ToListAsync();
-                    var lastDealNumber =await this.transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID!=null && x.ShvaTransactionDetails.ShvaShovarNumber!=null/*== "0887021011"*/).OrderByDescending(d => d.TransactionDate).Select(d => d).FirstOrDefaultAsync();//TODO SAME CLIENTCODE IN SHVA 
 
-                    pinpadPreCreateResult = await ((NayaxProcessor)pinpadProcessor).PreCreateTransaction(processorRequest, lastDealNumber.ToString());
+                    var lastDealNumber = await this.transactionsService.GetTransactions()
+                        .Where(x => x.ShvaTransactionDetails.ShvaTerminalID != null && x.ShvaTransactionDetails.ShvaShovarNumber != null)
+                        .OrderByDescending(d => d.PaymentTransactionID).Select(d => d).FirstOrDefaultAsync();
+
+                    pinpadPreCreateResult = await pinpadProcessor.PreCreateTransaction(processorRequest, lastDealNumber.ToString());
                 }
 
-                    var processorResponse = pinpadDeal ? await pinpadProcessor.CreateTransaction(processorRequest) : await processor.CreateTransaction(processorRequest);
-
+                var processorResponse = pinpadDeal ? await pinpadProcessor.CreateTransaction(processorRequest) : await processor.CreateTransaction(processorRequest);
 
                 mapper.Map(processorResponse, transaction);
 

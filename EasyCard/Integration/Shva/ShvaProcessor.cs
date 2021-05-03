@@ -161,6 +161,11 @@ namespace Shva
             // TODO: validate response and return error is required response
         }
 
+        public Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest, string lastDealNumber)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ProcessorTransmitTransactionsResponse> TransmitTransactions(ProcessorTransmitTransactionsRequest transmitTransactionsRequest)
         {
             ShvaTerminalSettings shvaParameters = transmitTransactionsRequest.ProcessorSettings as ShvaTerminalSettings;
