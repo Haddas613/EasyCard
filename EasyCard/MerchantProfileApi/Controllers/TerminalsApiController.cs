@@ -78,6 +78,10 @@ namespace MerchantProfileApi.Controllers
         {
             var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID)));
 
+            var merchant = EnsureExists(await merchantsService.GetMerchants().FirstOrDefaultAsync(m => m.MerchantID == terminal.MerchantID));
+
+            terminal.MerchantName = merchant.BusinessName;
+
             var systemSettings = await systemSettingsService.GetSystemSettings();
 
             mapper.Map(systemSettings, terminal);
