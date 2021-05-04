@@ -22,6 +22,9 @@ namespace Transactions.Shared.Enums
         Billing = 3,
 
         [EnumMember(Value = "device")]
-        Device = 4
+        Device = 4,
+
+        [EnumMember(Value = "paymentRequest")]
+        PaymentRequest = 5
     }
 }

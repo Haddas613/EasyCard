@@ -565,7 +565,7 @@ namespace Transactions.Api.Controllers
             transaction.JDealType = jDealType;
             transaction.BillingDealID = billingDealID;
             transaction.InitialTransactionID = initialTransactionID;
-            transaction.DocumentOrigin = GetDocumentOrigin(billingDealID);
+            transaction.DocumentOrigin = GetDocumentOrigin(billingDealID, paymentRequestID);
             transaction.PaymentRequestID = paymentRequestID;
 
             if (transaction.DealDetails == null)
@@ -897,7 +897,7 @@ namespace Transactions.Api.Controllers
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
         }
 
-        private DocumentOriginEnum GetDocumentOrigin(Guid? billingDealID)
+        private DocumentOriginEnum GetDocumentOrigin(Guid? billingDealID, Guid? paymentRequestID)
         {
             if (billingDealID.HasValue)
             {
@@ -910,6 +910,10 @@ namespace Transactions.Api.Controllers
             else if (User.IsMerchant())
             {
                 return DocumentOriginEnum.UI;
+            }
+            else if (paymentRequestID.HasValue)
+            {
+                return DocumentOriginEnum.Checkout;
             }
             else if (User.IsAdmin())
             {
