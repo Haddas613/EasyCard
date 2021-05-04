@@ -64,6 +64,11 @@ namespace Transactions.Api.Validation
                     {
                         errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.Cvv)}", Messages.CvvRequired));
                     }
+
+                    if (model.CardPresence == CardPresenceEnum.Regular && string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardReaderInput))
+                    {
+                        errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.CardReaderInput)}", Messages.CardReaderInputRequired));
+                    }
                 }
 
                 if (terminalSettings.NationalIDRequired == true && string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID))
@@ -71,10 +76,6 @@ namespace Transactions.Api.Validation
                     errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.CardOwnerNationalID)}", Messages.CardOwnerNationalIDRequired));
                 }
 
-                if (model.CardPresence == CardPresenceEnum.Regular && string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardReaderInput))
-                {
-                    errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.CardReaderInput)}", Messages.CardReaderInputRequired));
-                }
             }
 
             if (model.TransactionType == TransactionTypeEnum.Credit || model.TransactionType == TransactionTypeEnum.Installments)

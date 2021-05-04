@@ -109,5 +109,6 @@ namespace Shared.Integration.Models
         /// For billing deal
         /// </summary>
         public object InitialDeal { get; set; }
+        public string AdditionalDataForProcessor { get; set; }
     }
 }

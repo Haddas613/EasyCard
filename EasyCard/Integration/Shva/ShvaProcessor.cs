@@ -161,7 +161,7 @@ namespace Shva
             // TODO: validate response and return error is required response
         }
 
-        public Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest, string lastDealNumber)
+        public Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
         {
             throw new NotImplementedException();
         }

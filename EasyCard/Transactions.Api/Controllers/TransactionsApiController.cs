@@ -489,7 +489,7 @@ namespace Transactions.Api.Controllers
         {
             if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
             {
-                return BadRequest(new OperationResponse(Messages.BillingDealsRequired, null, HttpContext.TraceIdentifier, nameof(request.BillingDealsID), Messages.BillingDealsRequired));
+                return BadRequest(new OperationResponse(Transactions.Shared.Messages.BillingDealsRequired, null, HttpContext.TraceIdentifier, nameof(request.BillingDealsID), Transactions.Shared.Messages.BillingDealsRequired));
             }
 
             foreach (var billingId in request.BillingDealsID)
@@ -498,7 +498,7 @@ namespace Transactions.Api.Controllers
 
                 if (!billingDeal.Active)
                 {
-                    return BadRequest(new OperationResponse($"{Messages.BillingDealIsClosed}", StatusEnum.Error, billingDeal.BillingDealID, httpContextAccessor.TraceIdentifier));
+                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.BillingDealIsClosed}", StatusEnum.Error, billingDeal.BillingDealID, httpContextAccessor.TraceIdentifier));
                 }
 
                 await NextBillingDeal(billingDeal);
@@ -507,7 +507,7 @@ namespace Transactions.Api.Controllers
             var response = new OperationResponse
             {
                 Status = StatusEnum.Success,
-                Message = Messages.TransactionsQueued
+                Message = Transactions.Shared.Messages.TransactionsQueued
             };
 
             return Ok(response);
@@ -520,12 +520,12 @@ namespace Transactions.Api.Controllers
         {
             if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
             {
-                return BadRequest(new OperationResponse(Messages.BillingDealsRequired, null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), Messages.BillingDealsRequired));
+                return BadRequest(new OperationResponse(Transactions.Shared.Messages.BillingDealsRequired, null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), Transactions.Shared.Messages.BillingDealsRequired));
             }
 
             if (request.BillingDealsID.Count() > appSettings.BillingDealsMaxBatchSize)
             {
-                return BadRequest(new OperationResponse(string.Format(Messages.BillingDealsMaxBatchSize, appSettings.BillingDealsMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), string.Format(Messages.TransmissionLimit, appSettings.BillingDealsMaxBatchSize)));
+                return BadRequest(new OperationResponse(string.Format(Transactions.Shared.Messages.BillingDealsMaxBatchSize, appSettings.BillingDealsMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), string.Format(Transactions.Shared.Messages.TransmissionLimit, appSettings.BillingDealsMaxBatchSize)));
             }
 
             var transactionTerminals = (await billingDealService.GetBillingDeals()
@@ -537,7 +537,7 @@ namespace Transactions.Api.Controllers
             var response = new OperationResponse
             {
                 Status = StatusEnum.Success,
-                Message = Messages.TransactionsQueued
+                Message = Transactions.Shared.Messages.TransactionsQueued
             };
 
             foreach (var batch in transactionTerminals)
@@ -694,6 +694,32 @@ namespace Transactions.Api.Controllers
             await transactionsService.CreateEntity(transaction);
             metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
 
+            ProcessorPreCreateTransactionResponse pinpadPreCreateResult = null;
+            var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
+            if (pinpadDeal)
+            {
+                processorRequest.PinPadProcessorSettings = pinpadProcessorSettings;
+                processorRequest.TransactionID = String.Format("{0}_{1}", ((NayaxTerminalSettings)processorRequest.PinPadProcessorSettings).TerminalID, Guid.NewGuid().ToString());
+                Terminal shva = await this.terminalsService.GetTerminal(model.TerminalID);
+                ShvaTerminalSettings shvaSettings = JsonConvert.DeserializeObject<ShvaTerminalSettings>(shva.Integrations.Where(x => x.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor).Select(y => y.Settings.ToString()).FirstOrDefault());
+                var lastDeal = await this.transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == shvaSettings.MerchantNumber).OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync();
+                int fileNo, seqNo;
+                CalculateFilNSeq(lastDeal, out fileNo, out seqNo);
+
+                processorRequest.AdditionalDataForProcessor = string.Format("{0};{1}", fileNo, seqNo);
+                pinpadPreCreateResult = await ((NayaxProcessor)pinpadProcessor).PreCreateTransaction(processorRequest);
+                if (!pinpadPreCreateResult.Success)
+                {
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: pinpadPreCreateResult.ErrorMessage);
+
+                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByProcessor}: {pinpadPreCreateResult.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, pinpadPreCreateResult.Errors));
+                }
+
+                transaction.CreditCardDetails.CardBin = pinpadPreCreateResult.CardNumber.Substring(0, 6);
+                transaction.CreditCardDetails.CardNumber = pinpadPreCreateResult.CardNumber.Substring(pinpadPreCreateResult.CardNumber.Length - 4, 4);
+
+            }
+
             // create transaction in aggregator (Clearing House)
             if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
             {
@@ -731,8 +757,6 @@ namespace Transactions.Api.Controllers
             // create transaction in processor (Shva)
             try
             {
-                var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
-
                 if (token != null)
                 {
                     mapper.Map(token, processorRequest.CreditCardToken);
@@ -744,17 +768,6 @@ namespace Transactions.Api.Controllers
                 }
 
                 processorRequest.ProcessorSettings = processorSettings;
-
-                ProcessorPreCreateTransactionResponse pinpadPreCreateResult = null;
-                if (pinpadDeal)
-                {
-                    processorRequest.PinPadProcessorSettings = pinpadProcessorSettings;
-                  //  var transactions = await transactionsService.GetTransactions().Where(d => d.PaymentTransactionID!=null)).ToListAsync();
-                    var lastDealNumber =await this.transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID!=null && x.ShvaTransactionDetails.ShvaShovarNumber!=null/*== "0887021011"*/).OrderByDescending(d => d.TransactionDate).Select(d => d).FirstOrDefaultAsync();//TODO SAME CLIENTCODE IN SHVA 
-
-                    pinpadPreCreateResult = await ((NayaxProcessor)pinpadProcessor).PreCreateTransaction(processorRequest, lastDealNumber.ToString());
-                }
-
                 var processorResponse = pinpadDeal ? await pinpadProcessor.CreateTransaction(processorRequest) : await processor.CreateTransaction(processorRequest);
 
                 mapper.Map(processorResponse, transaction);
@@ -863,15 +876,15 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-               if (jDealType != JDealTypeEnum.J4)
-               {
+                if (jDealType != JDealTypeEnum.J4)
+                {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed);
-               }
-               else
-               {
+                }
+                else
+                {
                     //If aggregator is not required transaction is eligible for transmission
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
-               }
+                }
             }
 
             var endResponse = new OperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);
@@ -932,6 +945,31 @@ namespace Transactions.Api.Controllers
             }
 
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
+        }
+
+        private static void CalculateFilNSeq(ShvaTransactionDetails lastDeal, out int fileNo, out int seqNo)
+        {
+            string dealnumber = lastDeal.ShvaShovarNumber;
+            fileNo = -1;
+            int.TryParse(dealnumber.Substring(0, 2), out fileNo);
+            seqNo = -1;
+            int.TryParse(dealnumber.Substring(5, 3), out seqNo);
+            bool lastDealWasTransmit = lastDeal.TransmissionDate != null;
+            if (lastDealWasTransmit)
+            {
+                seqNo = 1;
+                fileNo++;
+            }
+
+            if (seqNo > 999)
+            {
+                seqNo = 1;
+                fileNo++;
+            }
+            else
+            {
+                seqNo++;
+            }
         }
 
         private DocumentOriginEnum GetDocumentOrigin(Guid? billingDealID)

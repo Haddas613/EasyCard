@@ -13,7 +13,7 @@ namespace Nayax.Converters
     {
         public static Phase1RequestBody GetPhase1RequestBody(this NayaxTerminalSettings nayaxParameters, NayaxGlobalSettings conf,string ECterminalID)
         {
-            var phase1Req = new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,String.Format("{0}_{1}",ECterminalID, nayaxParameters.TerminalID));
+            var phase1Req = new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,  nayaxParameters.TerminalID);// new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,String.Format("{0}_{1}",ECterminalID, nayaxParameters.TerminalID));
             return phase1Req;
         }
 
@@ -82,7 +82,7 @@ namespace Nayax.Converters
             };
         }
         */
-        public static ObjectInPhase1RequestParams GetObjectInPhase1RequestParams(this ProcessorCreateTransactionRequest req, string sysTraceNum )
+        public static ObjectInPhase1RequestParams GetObjectInPhase1RequestParams(this ProcessorCreateTransactionRequest req )
         {
             ObjectInPhase1RequestParams inputObj = new ObjectInPhase1RequestParams();
             // InitDealResultModel initialDealData = req.InitialDeal as InitDealResultModel;
@@ -95,9 +95,9 @@ namespace Nayax.Converters
             inputObj.currency = currency.GetNayaxCurrencyStr();
 
             inputObj.amount = req.TransactionAmount.ToNayaxDecimal();
-            inputObj.vuid =String.Format("{0}_{1}", ((NayaxTerminalSettings)req.PinPadProcessorSettings).TerminalID,Guid.NewGuid().ToString());
+            inputObj.vuid = req.TransactionID;
             inputObj.tranCode = 1;
-            inputObj.sysTraceNumber = sysTraceNum;
+            inputObj.sysTraceNumber = req.AdditionalDataForProcessor;
             // TODO: national ID
             if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
             {
@@ -152,7 +152,7 @@ namespace Nayax.Converters
             {
                    UID = resultPhase1Body.uid,
                 CardNumber = resultPhase1Body.cardNumber,
-                  Success = resultPhase1Body.statusCode=="0",
+                  Success = resultPhase1Body.IsSuccessful(),
                    ErrorMessage = resultPhase1Body.statusMessage,
                    
             };

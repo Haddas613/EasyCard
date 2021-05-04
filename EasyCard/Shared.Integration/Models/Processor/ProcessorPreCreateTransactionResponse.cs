@@ -55,5 +55,7 @@ namespace Shared.Integration.Models
         public int? OriginalHttpResponseCode { get; set; }
 
         public RejectionReasonEnum RejectReasonCode { get; set; }
+        public string CardNumber { get; set; }
+    
     }
 }

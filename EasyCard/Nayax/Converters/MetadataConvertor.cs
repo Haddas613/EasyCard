@@ -69,5 +69,10 @@ namespace Nayax.Converters
         {
             return phaseResult ==  PhaseResultEnum.Success;
         }
+
+        public static bool IsSuccessful(this Phase1ResponseBody phase1Result)
+        {
+            return ((PhaseResultEnum)Convert.ToInt32(phase1Result.statusCode) == PhaseResultEnum.Success || (phase1Result.statusCode == "-999" && phase1Result.statusMessage.Equals("עסקה בתהליך")));
+        }
     }
 }

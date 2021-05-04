@@ -41,7 +41,7 @@ namespace Nayax
         /// </summary>
         /// <param name="paymentTransactionRequest"></param>
         /// <returns></returns>
-        public async Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest, string sysTraceNum)
+        public async Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
         {
             NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
 
@@ -51,7 +51,7 @@ namespace Nayax
             }
 
             var phas1Req = nayaxParameters.GetPhase1RequestBody(configuration,paymentTransactionRequest.EasyCardTerminalID);
-             ObjectInPhase1RequestParams params2 = paymentTransactionRequest.GetObjectInPhase1RequestParams(sysTraceNum);
+             ObjectInPhase1RequestParams params2 = paymentTransactionRequest.GetObjectInPhase1RequestParams();
            
             phas1Req.paramss[1] = params2;
             //client.Timeout = TimeSpan.FromSeconds(30); TODO timeout for 30 minutes
@@ -61,7 +61,6 @@ namespace Nayax
 
             if (phase1ResultBody == null)
             {
-                // return failed response
                 return new ProcessorPreCreateTransactionResponse(" ", RejectionReasonEnum.Unknown, string.Empty);
             }
             int statusPreCreate;
@@ -73,7 +72,7 @@ namespace Nayax
             // end request
 
 
-            if (((PhaseResultEnum)Convert.ToInt32(phase1ResultBody.statusCode)).IsSuccessful())
+            if (phase1ResultBody.IsSuccessful())
             {
                 return phase1ResultBody.GetProcessorPreTransactionResponse();
             }
@@ -100,11 +99,10 @@ namespace Nayax
             var phase2Req = nayaxParameters.GetPhase2RequestBody(configuration);
 
             ObjectInPhase2RequestParams params2 = paymentTransactionRequest.GetObjectInPhase2RequestParams();
-
             phase2Req.paramss[1] = params2;
 
 
-            var phase2ReqResult = await this.apiClient.Post<Models.Phase2ResponseBody>(configuration.BaseUrl, Phase2Url, phase2Req);//this.DoRequest(phas1Req, Phase1Url, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
+            var phase2ReqResult = await this.apiClient.Post<Models.Phase2ResponseBody>(configuration.BaseUrl, Phase2Url, phase2Req, BuildHeaders);//this.DoRequest(phas1Req, Phase1Url, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
 
             var phase2ResultBody = phase2ReqResult as Phase2ResponseBody;
 
