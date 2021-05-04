@@ -121,6 +121,14 @@ namespace Transactions.Business.Services
             entity.RejectionReason = rejectionReason ?? entity.RejectionReason;
             entity.RejectionMessage = rejectionMessage ?? entity.RejectionMessage;
 
+            var exist = this.context.PaymentTransactions.Find(entity.GetID());
+
+            this.context.Entry(exist).CurrentValues.SetValues(entity);
+            this.context.Entry(exist.ShvaTransactionDetails).CurrentValues.SetValues(entity.ShvaTransactionDetails);
+            this.context.Entry(exist.DealDetails).CurrentValues.SetValues(entity.DealDetails);
+            this.context.Entry(exist.CreditCardDetails).CurrentValues.SetValues(entity.CreditCardDetails);
+            this.context.Entry(exist.ClearingHouseTransactionDetails).CurrentValues.SetValues(entity.ClearingHouseTransactionDetails);
+
             List<string> changes = new List<string>();
 
             // Must ToArray() here for excluding the AutoHistory model.
@@ -185,6 +193,10 @@ namespace Transactions.Business.Services
 
         public async Task UpdateEntity(PaymentTransaction entity, string historyMessage, TransactionOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null)
         {
+            var exist = this.context.PaymentTransactions.Find(entity.GetID());
+
+            this.context.Entry(exist).CurrentValues.SetValues(entity);
+
             List<string> changes = new List<string>();
 
             // Must ToArray() here for excluding the AutoHistory model.

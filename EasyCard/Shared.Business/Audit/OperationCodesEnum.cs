@@ -8,44 +8,57 @@ namespace Shared.Business.Audit
     public enum OperationCodesEnum : short
     {
         [EnumMember(Value = "merchantUpdated")]
-        MerchantUpdated,
+        MerchantUpdated = 0,
+
         [EnumMember(Value = "merchantCreated")]
-        MerchantCreated,
+        MerchantCreated = 1,
+
         [EnumMember(Value = "loggedIn")]
-        LoggedIn,
+        LoggedIn = 2,
+
         [EnumMember(Value = "loggedOut")]
-        LoggedOut,
+        LoggedOut = 3,
+
         [EnumMember(Value = "loginCreated")]
-        LoginCreated,
+        LoginCreated = 4,
+
         [EnumMember(Value = "invitationSent")]
-        InvitationSent,
+        InvitationSent = 5,
+
         [EnumMember(Value = "adminResetedPassword")]
-        AdminResetedPassword,
+        AdminResetedPassword = 6,
 
         [EnumMember(Value = "userResetedPassword")]
-        UserResetedPassword,
+        UserResetedPassword = 7,
+
         [EnumMember(Value = "userSetNewPassword")]
-        UserSetNewPassword,
+        UserSetNewPassword = 8,
+
         [EnumMember(Value = "userEnabledTwoFactor")]
-        UserEnabledTwoFactor,
+        UserEnabledTwoFactor = 9,
+
         [EnumMember(Value = "userDisabledTwoFactor")]
-        UserDisabledTwoFactor,
+        UserDisabledTwoFactor = 10,
 
         [EnumMember(Value = "accountLocked")]
-        AccountLocked,
+        AccountLocked = 11,
+
         [EnumMember(Value = "accountUnlocked")]
-        AccountUnlocked,
+        AccountUnlocked = 12,
 
         [EnumMember(Value = "terminalCreated")]
-        TerminalCreated,
+        TerminalCreated = 13,
+
         [EnumMember(Value = "terminalUpdated")]
-        TerminalUpdated,
+        TerminalUpdated = 14,
 
         [EnumMember(Value = "userTerminalLinkAdded")]
-        UserTerminalLinkAdded,
+        UserTerminalLinkAdded = 15,
+
         [EnumMember(Value = "userTerminalLinkRemoved")]
-        UserTerminalLinkRemoved,
+        UserTerminalLinkRemoved = 16,
+
         [EnumMember(Value = "terminalApiKeyChanged")]
-        TerminalApiKeyChanged
+        TerminalApiKeyChanged = 17
     }
 }

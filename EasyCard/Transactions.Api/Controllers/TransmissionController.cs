@@ -87,7 +87,7 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetNotTransmittedTransactions([FromQuery] TransmissionFilter filter)
         {
-            var query = transactionsService.GetTransactions().AsNoTracking().Filter(filter).Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission);
+            var query = transactionsService.GetTransactions().Filter(filter).Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission);
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
@@ -110,7 +110,7 @@ namespace Transactions.Api.Controllers
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
                 //TODO: Check with terminal settings
-                var allTerminals = await transactionsService.GetTransactions().AsNoTracking().Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission)
+                var allTerminals = await transactionsService.GetTransactions().Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission)
                     .Select(t => t.TerminalID).Distinct().ToListAsync();
 
                 if (allTerminals.Count == 0)
@@ -244,9 +244,8 @@ namespace Transactions.Api.Controllers
                         {
                             transaction.ShvaTransactionDetails.TransmissionDate = transmissionDate;
                             transaction.ShvaTransactionDetails.ManuallyTransmitted = httpContextAccessor.GetUser().IsMerchant();
-
-                            // TODO: Transmission ID from Shva
                             transaction.ShvaTransactionDetails.ShvaTransmissionNumber = processorResponse.TransmissionReference;
+
                             await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed, transactionOperationCode: TransactionOperationCodesEnum.TransmittedByProcessor);
                         }
                     }
