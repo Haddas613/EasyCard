@@ -70,6 +70,24 @@ namespace Transactions.Business.Services
             }
         }
 
+        // this is temporary implementation
+        [Obsolete]
+        public IQueryable<PaymentTransaction> GetTransactionsForUpdate()
+        {
+            if (user.IsAdmin())
+            {
+                return context.PaymentTransactions;
+            }
+            else if (user.IsTerminal())
+            {
+                return context.PaymentTransactions.Where(t => t.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.PaymentTransactions.Where(t => t.MerchantID == user.GetMerchantID());
+            }
+        }
+
         public IQueryable<TransactionHistory> GetTransactionHistories()
         {
             if (user.IsAdmin())
@@ -120,14 +138,6 @@ namespace Transactions.Business.Services
             entity.FinalizationStatus = finalizationStatus ?? entity.FinalizationStatus;
             entity.RejectionReason = rejectionReason ?? entity.RejectionReason;
             entity.RejectionMessage = rejectionMessage ?? entity.RejectionMessage;
-
-            var exist = this.context.PaymentTransactions.Find(entity.GetID());
-
-            this.context.Entry(exist).CurrentValues.SetValues(entity);
-            this.context.Entry(exist.ShvaTransactionDetails).CurrentValues.SetValues(entity.ShvaTransactionDetails);
-            this.context.Entry(exist.DealDetails).CurrentValues.SetValues(entity.DealDetails);
-            this.context.Entry(exist.CreditCardDetails).CurrentValues.SetValues(entity.CreditCardDetails);
-            this.context.Entry(exist.ClearingHouseTransactionDetails).CurrentValues.SetValues(entity.ClearingHouseTransactionDetails);
 
             List<string> changes = new List<string>();
 
