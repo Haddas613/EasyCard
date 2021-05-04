@@ -124,13 +124,6 @@ namespace Merchants.Business.Services
             }
         }
 
-        public IQueryable<UserInfo> GetMerchantUsers(Guid merchantID)
-        {
-            return context.UserTerminalMappings
-                .Where(d => d.MerchantID == merchantID)
-                .Select(d => new UserInfo { DisplayName = d.DisplayName, Email = d.Email, UserID = d.UserID, Roles = d.Roles, MerchantID = d.MerchantID });
-        }
-
         public async Task LinkUserToMerchant(UserInfo userInfo, Guid merchantID, IDbContextTransaction dbTransaction = null)
         {
             string changesStr = null;
