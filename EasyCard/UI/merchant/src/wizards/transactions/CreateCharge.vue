@@ -18,7 +18,7 @@
         </v-btn>
       </template>
     </navbar>
-    <v-stepper class="ec-stepper" v-model="step">
+    <v-stepper class="ec-stepper" v-model="step" :key="terminal.terminalID">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
           <numpad v-if="step === 1" btn-text="Charge" v-on:ok="processAmount($event, true);" ref="numpadRef" :items="model.dealDetails.items"></numpad>
