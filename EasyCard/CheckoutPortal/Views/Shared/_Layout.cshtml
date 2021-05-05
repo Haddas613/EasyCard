@@ -1,5 +1,6 @@
 ﻿@{
     var viewModel = ViewBag.MainLayoutViewModel as Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings;
+    var currentUICulture = CultureInfo.CurrentCulture;
 }
 
 <!DOCTYPE html>
@@ -16,7 +17,7 @@
         <link rel="stylesheet" href="@viewModel?.CustomCssReference" />
     }
 </head>
-<body>
+<body dir="@(currentUICulture.Name == "he" ? "rtl" : "ltr")" class="@(currentUICulture.Name == "he" ? "rtl" : "ltr")">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3">
             <div class="container">
@@ -32,6 +33,7 @@
                     <span>@viewModel?.MarketingName</span>
                 </a>
             </div>
+            <vc:culture-switcher />
         </nav>
     </header>
     <div class="container">
@@ -42,7 +44,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container text-center">
-            &copy; 2020 - EasyCard
+            &copy; @DateTime.Today.Year - EasyCard
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

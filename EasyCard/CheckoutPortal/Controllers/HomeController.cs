@@ -40,7 +40,7 @@ namespace CheckoutPortal.Controllers
         public async Task<IActionResult> Index([FromQuery]CardRequest request)
         {
 
-            if (request == null || !Request.QueryString.HasValue)
+            if (request == null || !Request.QueryString.HasValue || (Request.Query.Keys.Count == 1 && Request.Query.ContainsKey("culture")))
             {
                 return View("PaymentImpossible");
             }

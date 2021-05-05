@@ -1,8 +1,9 @@
-﻿
+﻿@inject CommonLocalizationService localizer
+
 @{
     ViewData["Title"] = "PaymentResult";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1 class="text-center">Payment canceled</h1>
+<h1 class="text-center">@localizer.Get("PaymentCanceled")</h1>
 
