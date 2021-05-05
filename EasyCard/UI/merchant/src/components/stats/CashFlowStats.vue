@@ -15,7 +15,7 @@
           <span class="main-line-color">{{$t("Selection")}}</span>
           <div>
             <div>
-              <small>{{givenPeriodDate}}</small>
+              <small dir="ltr">{{givenPeriodDate}}</small>
             </div>
             <div class="pt-2">
               <div>{{$t("Total")}}</div>
