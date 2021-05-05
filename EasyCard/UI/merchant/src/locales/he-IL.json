@@ -260,6 +260,7 @@
   "SendTransactionSlipEmailToMerchant": "שלח שובר במייל לבית העסק",
   "IssueInvoice": "הפק חשבונית",
   "CreditCardLast4Numbers": "4 ספרות אחרונות של כ.א",
+  "Inactive": "לא פעיל",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

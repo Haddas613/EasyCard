@@ -260,6 +260,7 @@
   "SendTransactionSlipEmailToMerchant": "Send transaction slip email to merchant",
   "IssueInvoice": "Issue Invoice",
   "CreditCardLast4Numbers": "Credit Card last 4 numbers",
+  "Inactive": "Inactive",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

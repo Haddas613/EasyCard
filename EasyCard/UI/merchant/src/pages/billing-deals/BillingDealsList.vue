@@ -86,6 +86,22 @@
               </template>
               {{$t('CreditCardHasExpired')}}
             </v-tooltip>
+            <v-tooltip top v-else-if="item.active">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn color="success" dark icon v-bind="attrs" v-on="on">
+                  <v-icon :title="$t('Active')">mdi-check</v-icon>
+                </v-btn>
+              </template>
+              {{$t('Active')}}
+            </v-tooltip>
+            <v-tooltip top v-else-if="!item.active">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn color="ecgray" dark icon v-bind="attrs" v-on="on">
+                  <v-icon :title="$t('Inactive')">mdi-check</v-icon>
+                </v-btn>
+              </template>
+              {{$t('Inactive')}}
+            </v-tooltip>
           </template>
 
           <template v-slot:left="{ item }">
