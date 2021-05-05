@@ -62,13 +62,6 @@
         </v-col>
         <v-col cols="12" md="3" sm="6">
           <v-text-field
-            v-model="model.cardNumber"
-            :label="$t('CardNumber')"
-            hide-details="true"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="3" sm="6">
-          <v-text-field
             v-model="model.amountFrom"
             :label="$t('AmountFrom')"
             type="number"
