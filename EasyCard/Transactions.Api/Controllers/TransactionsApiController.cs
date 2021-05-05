@@ -913,7 +913,7 @@ namespace Transactions.Api.Controllers
             }
             else if (paymentRequestID.HasValue)
             {
-                return DocumentOriginEnum.Checkout;
+                return DocumentOriginEnum.PaymentRequest;
             }
             else if (User.IsAdmin())
             {
