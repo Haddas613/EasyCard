@@ -11,7 +11,12 @@ namespace Nayax.Converters
 {
     internal static class EMVDealHelper
     {
-        public static Phase1RequestBody GetPhase1RequestBody(this NayaxTerminalSettings nayaxParameters, NayaxGlobalSettings conf,string ECterminalID)
+        public static PairRequestBody GetPairRequestBody( NayaxGlobalSettings conf, string posName,string TerminalIDDevice)
+        {
+            var phase1Req = new PairRequestBody(posName,conf.ClientID,TerminalIDDevice, TerminalIDDevice);// new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,String.Format("{0}_{1}",ECterminalID, nayaxParameters.TerminalID));
+            return phase1Req;
+        }
+        public static Phase1RequestBody GetPhase1RequestBody(this NayaxTerminalSettings nayaxParameters, NayaxGlobalSettings conf)
         {
             var phase1Req = new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,  nayaxParameters.TerminalID);// new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,String.Format("{0}_{1}",ECterminalID, nayaxParameters.TerminalID));
             return phase1Req;

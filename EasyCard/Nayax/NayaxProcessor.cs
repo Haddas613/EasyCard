@@ -19,7 +19,6 @@ namespace Nayax
     {
         private const string Phase1Url = "doTransactionPhase1";
         private const string Phase2Url = "doTransactionPhase2";
-
         private readonly IWebApiClient apiClient;
         private readonly NayaxGlobalSettings configuration;
         private readonly ILogger logger;
@@ -50,7 +49,7 @@ namespace Nayax
                 throw new ArgumentNullException("NayaxTerminalSettings (at paymentTransactionRequest.ProcessorSettings) is required");
             }
 
-            var phas1Req = nayaxParameters.GetPhase1RequestBody(configuration,paymentTransactionRequest.EasyCardTerminalID);
+            var phas1Req = nayaxParameters.GetPhase1RequestBody(configuration);
              ObjectInPhase1RequestParams params2 = paymentTransactionRequest.GetObjectInPhase1RequestParams();
            
             phas1Req.paramss[1] = params2;
@@ -237,7 +236,51 @@ namespace Nayax
         //    return await Task.FromResult(headers);
         //}
 
-        
+
+        public async Task<bool> PairDevice(PairRequestBody request,string posName,string TerminalIDDevice )
+        {
+            //pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
+            //NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
+
+            if (request == null)
+            {
+                throw new ArgumentNullException("PairDevice request is required");
+            }
+
+            var pairReq = EMVDealHelper.GetPairRequestBody(configuration,posName, TerminalIDDevice);
+            var pairReqResult = await this.apiClient.Post<Models.PairResponseBody>(configuration.BaseUrl, Phase1Url, pairReq, BuildHeaders);
+
+            var pairResultBody = pairReqResult as PairResponseBody;
+
+            if (pairResultBody == null)
+            {
+                return false;
+            }
+            int statusPreCreate;
+            if (!Int32.TryParse(pairResultBody.statusCode, out statusPreCreate))
+            {
+                return false;
+            }
+            
+
+
+            if (pairResultBody.IsSuccessful())
+            {
+                return true;
+            }
+            return false;
+            //////////////////TODO
+           //else if (!String.IsNullOrEmpty(pairResultBody?.statusCode) && !String.IsNullOrEmpty(pairResultBody?.statusMessage))
+           //{
+           //    return new ProcessorPreCreateTransactionResponse(pairResultBody?.statusMessage, pairResultBody?.statusCode);
+           //}
+           //else
+           //{
+           //    return new ProcessorPreCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, phase1ResultBody.statusCode);
+           //}
+
+        }
+
         private async Task HandleIntegrationMessage(IntegrationMessage msg)
         {
             await integrationRequestLogStorageService.Save(msg);
