@@ -79,5 +79,10 @@ namespace Nayax.Converters
         {
             return (PairResultEnum)Convert.ToInt32(pairResult.statusCode) == PairResultEnum.Success;
         }
+
+        public static bool IsSuccessful(this AuthResponseBody pairResult)
+        {
+            return (PairResultEnum)Convert.ToInt32(pairResult.statusCode) == PairResultEnum.Success;
+        }
     }
 }

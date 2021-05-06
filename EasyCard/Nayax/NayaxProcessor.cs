@@ -19,6 +19,7 @@ namespace Nayax
     {
         private const string Phase1Url = "doTransactionPhase1";
         private const string Phase2Url = "doTransactionPhase2";
+        private const string Pair = "pair";
         private readonly IWebApiClient apiClient;
         private readonly NayaxGlobalSettings configuration;
         private readonly ILogger logger;
@@ -237,48 +238,85 @@ namespace Nayax
         //}
 
 
-        public async Task<bool> PairDevice(PairRequestBody request,string posName,string TerminalIDDevice )
+        public async Task<PairResponse> PairDevice(PairRequest pairRequest )
         {
             //pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
             //NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
 
-            if (request == null)
+            if (pairRequest == null)
             {
                 throw new ArgumentNullException("PairDevice request is required");
             }
 
-            var pairReq = EMVDealHelper.GetPairRequestBody(configuration,posName, TerminalIDDevice);
-            var pairReqResult = await this.apiClient.Post<Models.PairResponseBody>(configuration.BaseUrl, Phase1Url, pairReq, BuildHeaders);
+            var pairReq = EMVDealHelper.GetPairRequestBody(configuration, pairRequest.posName, pairRequest.terminalID);
+            var pairReqResult = await this.apiClient.Post<Models.PairResponseBody>(configuration.BaseUrl, Pair, pairReq, BuildHeaders);
 
             var pairResultBody = pairReqResult as PairResponseBody;
 
             if (pairResultBody == null)
             {
-                return false;
+                return new PairResponse(Messages.EmptyResponse, string.Empty);
             }
-            int statusPreCreate;
-            if (!Int32.TryParse(pairResultBody.statusCode, out statusPreCreate))
+            int statusPair;
+            if (!Int32.TryParse(pairResultBody.statusCode, out statusPair))
             {
-                return false;
+                return new PairResponse(Messages.StatusCodeIsNotValid, pairResultBody.statusCode);
             }
             
 
 
             if (pairResultBody.IsSuccessful())
             {
-                return true;
+                return new PairResponse();
             }
-            return false;
-            //////////////////TODO
-           //else if (!String.IsNullOrEmpty(pairResultBody?.statusCode) && !String.IsNullOrEmpty(pairResultBody?.statusMessage))
-           //{
-           //    return new ProcessorPreCreateTransactionResponse(pairResultBody?.statusMessage, pairResultBody?.statusCode);
-           //}
-           //else
-           //{
-           //    return new ProcessorPreCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, phase1ResultBody.statusCode);
-           //}
+            else if (!String.IsNullOrEmpty(pairResultBody?.statusCode) && !String.IsNullOrEmpty(pairResultBody?.statusMessage))
+            {
+                return new PairResponse(pairResultBody?.statusMessage, pairResultBody?.statusCode);
+            }
+            else
+            {
+                return new PairResponse(Messages.CannotGetErrorCodeFromResponse, pairResultBody.statusCode);
+            }
+        }
 
+        public async Task<PairResponse> AuthenticateDevice(AuthenticateRequest authRequest)
+        {
+            //pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
+            //NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
+
+            if (authRequest == null)
+            {
+                throw new ArgumentNullException("AuthenticaterDevice request is required");
+            }
+
+            var authReq = EMVDealHelper.GetAuthRequestBody(configuration, authRequest.OTP, authRequest.terminalID);
+            var authReqResult = await this.apiClient.Post<Models.AuthResponseBody>(configuration.BaseUrl, Pair, authReq, BuildHeaders);
+
+            var authResultBody = authReqResult as AuthResponseBody;
+
+            if (authResultBody == null)
+            {
+                return new PairResponse(Messages.EmptyResponse, string.Empty);
+            }
+            int statusPair;
+            if (!Int32.TryParse(authResultBody.statusCode, out statusPair))
+            {
+                return new PairResponse(Messages.StatusCodeIsNotValid, authResultBody.statusCode);
+            }
+
+
+            if (authResultBody.IsSuccessful())
+            {
+                return new PairResponse();
+            }
+            else if (!String.IsNullOrEmpty(authResultBody?.statusCode) && !String.IsNullOrEmpty(authResultBody?.statusMessage))
+            {
+                return new PairResponse(authResultBody?.statusMessage, authResultBody?.statusCode);
+            }
+            else
+            {
+                return new PairResponse(Messages.CannotGetErrorCodeFromResponse, authResultBody.statusCode);
+            }
         }
 
         private async Task HandleIntegrationMessage(IntegrationMessage msg)

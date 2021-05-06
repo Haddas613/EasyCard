@@ -4,6 +4,7 @@ using Nayax;
 using Nayax.Models;
 using Shared.Api;
 using Shared.Api.Models;
+using Shared.Api.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,19 +33,14 @@ namespace Merchants.Api.Controllers.Integrations
             }
 
             //get settings
-            //var pairResult = await nayaxProcessor.PairDevice( request);
+            var pairResult = await nayaxProcessor.PairDevice(request);
 
 
-            //  var response = new OperationResponse(EasyInvoiceMessagesResource.CustomerCreatedSuccessfully, StatusEnum.Success);
-            //
-            //  // Currently only possible if 409 (user already exists)
-            //  if (createUserResult.Status != StatusEnum.Success)
-            //  {
-            //      response.Status = StatusEnum.Error;
-            //      response.Message = EasyInvoiceMessagesResource.CustomerAlreadyExists;
-            //  }
+            var response = new OperationResponse("Paired Successfully"/*NayaxMessagesResource.PairedSuccessfully*/, StatusEnum.Success);//TODO
+                                                                                                                                        //
+                                                                                                                                        //  }
 
-            return null;// Ok(response);TODO!!!!!
+            return response;// Ok(response);TODO!!!!!
         }
 
     }
