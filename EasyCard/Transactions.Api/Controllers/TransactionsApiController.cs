@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Security;
@@ -946,26 +947,21 @@ namespace Transactions.Api.Controllers
                 new TextSubstitution(nameof(transaction.CreditCardDetails.CardNumber), transaction.CreditCardDetails?.CardNumber ?? string.Empty),
                 new TextSubstitution(nameof(transaction.CreditCardDetails.CardOwnerName), transaction.CreditCardDetails?.CardOwnerName ?? string.Empty),
 
-                new TextSubstitution(nameof(transaction.CardPresence), transaction.CardPresence.ToString()),
-
-                new TextSubstitution(nameof(transaction.DealDetails.DealDescription), transaction.CardPresence.ToString())
+                new TextSubstitution(nameof(transaction.DealDetails.DealDescription), transaction.DealDetails?.DealDescription ?? string.Empty)
             };
 
-            string transactionTypeStr = string.Empty;
-
             //TODO: temporary
-            var rqf = Request.HttpContext.Features.Get<IRequestCultureFeature>();
-            var culture = rqf.RequestCulture?.Culture;
+            var culture = new CultureInfo("he-IL");
             var dictionaries = DictionariesService.GetDictionaries(culture);
 
-            var key = char.ToLowerInvariant(transaction.TransactionType.ToString()[0]) + transaction.TransactionType.ToString().Substring(1);
+            var transactionTypeKey = typeof(TransactionTypeEnum).GetDataContractAttrForEnum(transaction.TransactionType.ToString());
+            var cardPresenceKey = typeof(CardPresenceEnum).GetDataContractAttrForEnum(transaction.CardPresence.ToString());
 
-            if (dictionaries.TransactionTypeEnum.ContainsKey(key))
-            {
-                transactionTypeStr = dictionaries.TransactionTypeEnum[key];
-            }
+            var transactionTypeStr = dictionaries.TransactionTypeEnum[transactionTypeKey];
+            var cardPresenceTypeStr = dictionaries.CardPresenceEnum[cardPresenceKey];
 
             substitutions.Add(new TextSubstitution(nameof(transaction.TransactionType), transactionTypeStr));
+            substitutions.Add(new TextSubstitution(nameof(transaction.CardPresence), cardPresenceTypeStr));
 
             if (transaction.DealDetails?.ConsumerEmail == null)
             {

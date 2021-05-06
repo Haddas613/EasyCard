@@ -410,7 +410,7 @@ namespace Transactions.Api
                     new CultureInfo("en-IL"),
                     new CultureInfo("he-IL")
                 };
-                options.DefaultRequestCulture = new RequestCulture("en-IL");
+                options.DefaultRequestCulture = new RequestCulture("he-IL");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
