@@ -188,6 +188,8 @@ namespace Transactions.Api.Controllers
 
             newBillingDeal.ApplyAuditInfo(httpContextAccessor);
 
+            newBillingDeal.NextScheduledTransaction = newBillingDeal.BillingSchedule.GetInitialScheduleDate();
+
             await billingDealService.CreateEntity(newBillingDeal);
 
             return CreatedAtAction(nameof(GetBillingDeal), new { BillingDealID = newBillingDeal.BillingDealID }, new OperationResponse(Messages.BillingDealCreated, StatusEnum.Success, newBillingDeal.BillingDealID));

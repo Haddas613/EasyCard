@@ -490,7 +490,7 @@ namespace Transactions.Api.Controllers
 
             foreach (var billingId in request.BillingDealsID)
             {
-                var billingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(d => d.BillingDealID == billingId));
+                var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(d => d.BillingDealID == billingId));
 
                 if (!billingDeal.Active)
                 {
@@ -544,7 +544,7 @@ namespace Transactions.Api.Controllers
             return Ok(response);
         }
 
-        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialTransactionID = null, Guid? billingDealID = null, Guid? paymentRequestID = null)
+        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialTransactionID = null, BillingDeal billingDeal = null, Guid? paymentRequestID = null)
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
@@ -564,9 +564,9 @@ namespace Transactions.Api.Controllers
 
             transaction.SpecialTransactionType = specialTransactionType;
             transaction.JDealType = jDealType;
-            transaction.BillingDealID = billingDealID;
+            transaction.BillingDealID = billingDeal?.BillingDealID;
             transaction.InitialTransactionID = initialTransactionID;
-            transaction.DocumentOrigin = GetDocumentOrigin(billingDealID, paymentRequestID);
+            transaction.DocumentOrigin = GetDocumentOrigin(billingDeal?.BillingDealID, paymentRequestID);
             transaction.PaymentRequestID = paymentRequestID;
 
             if (transaction.DealDetails == null)
@@ -835,7 +835,15 @@ namespace Transactions.Api.Controllers
                {
                     //If aggregator is not required transaction is eligible for transmission
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
-               }
+
+                    if (billingDeal != null)
+                    {
+                        var totalTransactionsOfThisBillingCount = await transactionsService.GetTransactions().CountAsync(t => t.BillingDealID == billingDeal.BillingDealID);
+
+                        billingDeal.NextScheduledTransaction = billingDeal.BillingSchedule?.GetNextScheduledDate(transaction.TransactionDate.Value, totalTransactionsOfThisBillingCount);
+                        await billingDealService.UpdateEntity(billingDeal);
+                    }
+                }
             }
 
             var endResponse = new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);
@@ -1006,7 +1014,7 @@ namespace Transactions.Api.Controllers
             transaction.CardPresence = CardPresenceEnum.CardNotPresent;
             transaction.TransactionType = TransactionTypeEnum.RegularDeal;
 
-            var actionResult = await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDealID: billingDeal.BillingDealID);
+            var actionResult = await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDeal: billingDeal);
 
             var response = actionResult.Result as ObjectResult;
             return response.Value as OperationResponse;
