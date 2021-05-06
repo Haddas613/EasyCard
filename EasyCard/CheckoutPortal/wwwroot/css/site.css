@@ -121,3 +121,8 @@ input[type="checkbox"].input-validation-error {
 .rtl  .form-check{
     text-align: right;
 }
+
+.rtl input {
+    direction: ltr;
+    text-align: right;
+}
