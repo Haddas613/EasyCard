@@ -481,42 +481,11 @@ namespace Transactions.Api.Controllers
 
         [HttpPost]
         [Route("trigger-billing-deals")]
-        public async Task<ActionResult<OperationResponse>> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request)
+        public async Task<ActionResult<CreateTransactionFromBillingDealsResponse>> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request)
         {
             if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
             {
                 return BadRequest(new OperationResponse(Messages.BillingDealsRequired, null, HttpContext.TraceIdentifier, nameof(request.BillingDealsID), Messages.BillingDealsRequired));
-            }
-
-            foreach (var billingId in request.BillingDealsID)
-            {
-                var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(d => d.BillingDealID == billingId));
-
-                if (!billingDeal.Active)
-                {
-                    return BadRequest(new OperationResponse($"{Messages.BillingDealIsClosed}", StatusEnum.Error, billingDeal.BillingDealID, httpContextAccessor.TraceIdentifier));
-                }
-
-                await NextBillingDeal(billingDeal);
-            }
-
-            var response = new OperationResponse
-            {
-                Status = StatusEnum.Success,
-                Message = Messages.TransactionsQueued
-            };
-
-            return Ok(response);
-        }
-
-        [HttpPost]
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
-        [Route("trigger-billing-deals-admin")]
-        public async Task<ActionResult<OperationResponse>> CreateTransactionsFromBillingDealsAdmin(CreateTransactionFromBillingDealsRequest request)
-        {
-            if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
-            {
-                return BadRequest(new OperationResponse(Messages.BillingDealsRequired, null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), Messages.BillingDealsRequired));
             }
 
             if (request.BillingDealsID.Count() > appSettings.BillingDealsMaxBatchSize)
@@ -524,21 +493,44 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse(string.Format(Messages.BillingDealsMaxBatchSize, appSettings.BillingDealsMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), string.Format(Messages.TransmissionLimit, appSettings.BillingDealsMaxBatchSize)));
             }
 
-            var transactionTerminals = (await billingDealService.GetBillingDeals()
-                .Where(t => request.BillingDealsID.Contains(t.BillingDealID))
-                .ToListAsync())
-                .GroupBy(k => k.TerminalID, v => v.BillingDealID)
-                .ToDictionary(k => k.Key, v => v.ToList());
-
-            var response = new OperationResponse
+            var response = new CreateTransactionFromBillingDealsResponse
             {
                 Status = StatusEnum.Success,
-                Message = Messages.TransactionsQueued
+                Message = Messages.TransactionsQueued,
+                SuccessfulCount = 0,
+                FailedCount = 0
             };
 
-            foreach (var batch in transactionTerminals)
+            foreach (var billingId in request.BillingDealsID)
             {
-                await CreateTransactionsFromBillingDeals(new CreateTransactionFromBillingDealsRequest { TerminalID = batch.Key, BillingDealsID = batch.Value });
+                var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(d => d.BillingDealID == billingId));
+
+                if (!billingDeal.Active)
+                {
+                    logger.LogError($"Billing deal is closed: {billingDeal.BillingDealID}");
+                    response.FailedCount++;
+                    continue;
+                }
+
+                var operationResult = await NextBillingDeal(billingDeal);
+
+                if (operationResult.Status == StatusEnum.Success)
+                {
+                    response.SuccessfulCount++;
+                }
+                else
+                {
+                    response.FailedCount++;
+                }
+            }
+
+            if (response.FailedCount > 0 && response.SuccessfulCount == 0)
+            {
+                response.Status = StatusEnum.Error;
+            }
+            else if (response.FailedCount > 0)
+            {
+                response.Status = StatusEnum.Warning;
             }
 
             return Ok(response);

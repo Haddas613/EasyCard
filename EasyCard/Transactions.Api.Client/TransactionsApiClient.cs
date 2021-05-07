@@ -12,6 +12,7 @@ using Transactions.Api.Models.Transactions;
 using Shared.Api.Models;
 using Transactions.Api.Models.Checkout;
 using Shared.Api.Configuration;
+using Transactions.Api.Models.Billing;
 
 namespace Transactions.Api.Client
 {
@@ -96,11 +97,36 @@ namespace Transactions.Api.Client
             }
         }
 
+        public async Task<CreateTransactionFromBillingDealsResponse> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request)
+        {
+            try
+            {
+                return await webApiClient.Post<CreateTransactionFromBillingDealsResponse>(apiConfiguration.TransactionsApiAddress, $"api/billing/trigger-billing-deals", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new CreateTransactionFromBillingDealsResponse());
+            }
+        }
+
         public async Task<IEnumerable<Guid>> GetNonTransmittedTransactionsTerminals()
         {
             try
             {
                 return await webApiClient.Get<IEnumerable<Guid>>(apiConfiguration.TransactionsApiAddress, $"api/transmission/nontransmittedtransactionterminals", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException)
+            {
+                throw;
+            }
+        }
+
+        public async Task<SendBillingDealsToQueueResponse> SendBillingDealsToQueue()
+        {
+            try
+            {
+                return await webApiClient.Post<SendBillingDealsToQueueResponse>(apiConfiguration.TransactionsApiAddress, $"api/billing/due-billings", null, BuildHeaders);
             }
             catch (WebApiClientErrorException)
             {

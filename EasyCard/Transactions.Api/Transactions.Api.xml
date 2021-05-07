@@ -319,11 +319,6 @@
             Invoice details
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Billing.CreateTransactionFromBillingDealsRequest.TerminalID">
-            <summary>
-            EasyCard terminal reference
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Checkout.ConsumerInfo.ConsumerEmail">
             <summary>
             End-customer Email

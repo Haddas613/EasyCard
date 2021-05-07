@@ -22,7 +22,7 @@ namespace Transactions.Api.Extensions.Filtering
 
             if (filter.OnlyActual)
             {
-                src = src.Where(t => t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= DateTime.Today);
+                src = src.Where(t => t.Active && t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= DateTime.Today);
             }
             else
             {

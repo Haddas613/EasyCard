@@ -9,6 +9,7 @@ namespace Transactions.Api
     public class QueueResolver : IQueueResolver
     {
         public const string InvoiceQueue = "invoice";
+        public const string BillingDealsQueue = "billingdeals";
 
         private Dictionary<string, IQueue> queues = new Dictionary<string, IQueue>();
 

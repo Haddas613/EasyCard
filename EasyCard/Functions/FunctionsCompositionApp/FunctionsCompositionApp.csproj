@@ -22,7 +22,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Billing\" />
     <Folder Include="Monitoring\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Properties\ServiceDependencies\" />
