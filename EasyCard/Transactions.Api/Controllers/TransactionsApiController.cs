@@ -827,14 +827,14 @@ namespace Transactions.Api.Controllers
                {
                     //If aggregator is not required transaction is eligible for transmission
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
-
-                    if (billingDeal != null)
-                    {
-                        billingDeal.CurrentDeal = billingDeal.CurrentDeal.HasValue ? billingDeal.CurrentDeal.Value + 1 : 1;
-                        billingDeal.NextScheduledTransaction = billingDeal.BillingSchedule?.GetNextScheduledDate(transaction.TransactionDate.Value, billingDeal.CurrentDeal.Value);
-                        await billingDealService.UpdateEntity(billingDeal);
-                    }
                 }
+            }
+
+            if (billingDeal != null && jDealType == JDealTypeEnum.J4)
+            {
+                billingDeal.CurrentDeal = billingDeal.CurrentDeal.HasValue ? billingDeal.CurrentDeal.Value + 1 : 1;
+                billingDeal.NextScheduledTransaction = billingDeal.BillingSchedule?.GetNextScheduledDate(transaction.TransactionDate.Value, billingDeal.CurrentDeal.Value);
+                await billingDealService.UpdateEntity(billingDeal);
             }
 
             var endResponse = new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);

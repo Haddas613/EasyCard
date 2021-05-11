@@ -38,12 +38,12 @@ namespace Transactions.Shared.Models
 
             if (EndAtType == EndAtTypeEnum.SpecifiedDate && EndAt.HasValue)
             {
-                return EndAt.Value > date ? null : date;
+                return date > EndAt.Value ? null : date;
             }
 
             if (EndAtType == EndAtTypeEnum.AfterNumberOfPayments && EndAtNumberOfPayments.HasValue && numberOfPaymentsCompleted > 0)
             {
-                return EndAtNumberOfPayments.Value > numberOfPaymentsCompleted ? null : date;
+                return numberOfPaymentsCompleted > EndAtNumberOfPayments.Value ? null : date;
             }
 
             return date;

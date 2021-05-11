@@ -17,7 +17,7 @@ namespace FunctionsCompositionApp.Billing
         [FunctionName("TriggerBillingDeals")]
         public static async Task Run([QueueTrigger("billingdeals")] string messageBody, ILogger log, ExecutionContext context)
         {
-            log.LogInformation($"Trigger Billing Deals");
+            log.LogInformation($"Trigger Billing Deals: {messageBody}");
 
             var config = new ConfigurationBuilder()
                 .SetBasePath(context.FunctionAppDirectory)
@@ -27,16 +27,30 @@ namespace FunctionsCompositionApp.Billing
 
             var billingDealIDs = JsonConvert.DeserializeObject<IEnumerable<Guid>>(messageBody);
 
-            var transactionsApiClient = TransactionsApiClientHelper.GetTransactionsApiClient(log, config);
-
-            var request = new TransactionsApi.Models.Billing.CreateTransactionFromBillingDealsRequest
+            if (billingDealIDs?.Count() > 0)
             {
-                BillingDealsID = billingDealIDs
-            };
+                var transactionsApiClient = TransactionsApiClientHelper.GetTransactionsApiClient(log, config);
 
-            var response = await transactionsApiClient.CreateTransactionsFromBillingDeals(request);
+                var request = new TransactionsApi.Models.Billing.CreateTransactionFromBillingDealsRequest
+                {
+                    BillingDealsID = billingDealIDs
+                };
 
-            log.LogInformation($"Trigger Billing Deals Completed. Success:{response.SuccessfulCount}; Failed: {response.FailedCount}; Response {response.Message};");
+                var response = await transactionsApiClient.CreateTransactionsFromBillingDeals(request);
+
+                if(response.FailedCount > 0)
+                {
+                    log.LogError($"Trigger Billing Deals Completed. Success:{response.SuccessfulCount}; Failed: {response.FailedCount}; Response {response.Message};");
+                }
+                else
+                {
+                    log.LogInformation($"Trigger Billing Deals Completed. Success:{response.SuccessfulCount}; Failed: 0; Response {response.Message};");
+                }
+            }
+            else
+            {
+                log.LogInformation("Trigger Billing Deals Completed. Nothing to process");
+            }
         }
     }
 }

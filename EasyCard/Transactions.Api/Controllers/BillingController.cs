@@ -214,6 +214,9 @@ namespace Transactions.Api.Controllers
 
             billingDeal.ApplyAuditInfo(httpContextAccessor);
 
+            //TODO: reschedule only on demand ?
+            //billingDeal.NextScheduledTransaction = billingDeal.BillingSchedule.GetInitialScheduleDate();
+
             await billingDealService.UpdateEntity(billingDeal);
 
             return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
