@@ -955,12 +955,15 @@ namespace Transactions.Api.Controllers
 
             var transactionTypeKey = typeof(TransactionTypeEnum).GetDataContractAttrForEnum(transaction.TransactionType.ToString());
             var cardPresenceKey = typeof(CardPresenceEnum).GetDataContractAttrForEnum(transaction.CardPresence.ToString());
+            var originKey = typeof(DocumentOriginEnum).GetDataContractAttrForEnum(transaction.DocumentOrigin.ToString());
 
             var transactionTypeStr = dictionaries.TransactionTypeEnum[transactionTypeKey];
             var cardPresenceTypeStr = dictionaries.CardPresenceEnum[cardPresenceKey];
+            var originStr = dictionaries.DocumentOriginEnum[originKey];
 
             substitutions.Add(new TextSubstitution(nameof(transaction.TransactionType), transactionTypeStr));
             substitutions.Add(new TextSubstitution(nameof(transaction.CardPresence), cardPresenceTypeStr));
+            substitutions.Add(new TextSubstitution(nameof(transaction.DocumentOrigin), originStr));
 
             if (transaction.DealDetails?.ConsumerEmail == null)
             {
