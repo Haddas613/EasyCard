@@ -830,9 +830,8 @@ namespace Transactions.Api.Controllers
 
                     if (billingDeal != null)
                     {
-                        var totalTransactionsOfThisBillingCount = await transactionsService.GetTransactions().CountAsync(t => t.BillingDealID == billingDeal.BillingDealID);
-
-                        billingDeal.NextScheduledTransaction = billingDeal.BillingSchedule?.GetNextScheduledDate(transaction.TransactionDate.Value, totalTransactionsOfThisBillingCount);
+                        billingDeal.CurrentDeal = billingDeal.CurrentDeal.HasValue ? billingDeal.CurrentDeal.Value + 1 : 1;
+                        billingDeal.NextScheduledTransaction = billingDeal.BillingSchedule?.GetNextScheduledDate(transaction.TransactionDate.Value, billingDeal.CurrentDeal.Value);
                         await billingDealService.UpdateEntity(billingDeal);
                     }
                 }

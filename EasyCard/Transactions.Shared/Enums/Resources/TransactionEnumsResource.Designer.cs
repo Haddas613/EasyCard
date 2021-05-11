@@ -124,6 +124,15 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment Request.
+        /// </summary>
+        public static string PaymentRequest {
+            get {
+                return ResourceManager.GetString("PaymentRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to UI.
         /// </summary>
         public static string UI {

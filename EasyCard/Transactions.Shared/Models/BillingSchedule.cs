@@ -25,7 +25,7 @@ namespace Transactions.Shared.Models
             return base.ToString();
         }
 
-        public DateTime? GetNextScheduledDate(DateTime fromDate, int numberOfPaymentsCompleted = 0)
+        public DateTime? GetNextScheduledDate(DateTime fromDate, int numberOfPaymentsCompleted)
         {
             DateTime? date = RepeatPeriodType switch
             {
