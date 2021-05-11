@@ -31,5 +31,7 @@ namespace Transactions.Shared
         public string EmailQueueName { get; set; }
 
         public string InvoiceQueueName { get; set; }
+
+        public string BillingDealsQueueName { get; set; }
     }
 }
