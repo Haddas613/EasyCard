@@ -8,7 +8,9 @@
           <v-row class="info-container body-1 black--text">
             <v-col cols="6" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('CardNumber')}}</p>
-              <p>{{model.cardNumber || '-'}}</p>
+              <p>
+                <span dir="ltr">{{model.cardNumber || '-'}}</span>
+              </p>
             </v-col>
             <v-col cols="6" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('CardExpiration')}}</p>
