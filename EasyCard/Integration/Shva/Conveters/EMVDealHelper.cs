@@ -11,6 +11,16 @@ namespace Shva.Conveters
 {
     internal static class EMVDealHelper
     {
+        public static ChangePasswordRequestBody GetChangePasswordRequestBody(this ShvaTerminalSettings shvaParameters,string newPassword)
+        {
+            var changePasswordReq = new ChangePasswordRequestBody();
+
+            changePasswordReq.UserName = shvaParameters.UserName;
+            changePasswordReq.Password = shvaParameters.Password;
+            changePasswordReq.MerchantNumber = shvaParameters.MerchantNumber;
+            changePasswordReq.NewPassword = newPassword;
+            return changePasswordReq;
+        }
         public static AshStartRequestBody GetAshStartRequestBody(this ShvaTerminalSettings shvaParameters)
         {
             var ashStartReq = new AshStartRequestBody();
@@ -78,6 +88,14 @@ namespace Shva.Conveters
                 Solek = (SolekEnum)Convert.ToInt32(resultAshStartBody.globalObj?.outputObj?.solek?.valueTag),
                 CreditCardVendor = (CardVendorEnum)Convert.ToInt32(resultAshStartBody.globalObj?.outputObj?.manpik?.valueTag), // TODO
                 ShvaTransactionDate = resultAshStartBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime()
+            };
+        }
+
+        public static ProcessorChangePasswordResponse GetProcessorChangePasswordResponse(this ChangePasswordResponseBody changePasswordBody)
+        {
+            return new ProcessorChangePasswordResponse()
+            {
+                 Success = changePasswordBody.ChangePasswordResult == (int)ChangePasswordResultEnum.Success
             };
         }
 
