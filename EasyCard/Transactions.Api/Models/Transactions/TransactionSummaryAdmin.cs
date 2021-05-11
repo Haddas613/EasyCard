@@ -29,6 +29,8 @@ namespace Transactions.Api.Models.Transactions
         [MetadataOptions(Hidden = true)]
         public new CurrencyEnum Currency { get; set; }
 
-        public DocumentOriginEnum? DocumentOrigin { get; set; }
+        [EnumDataType(typeof(DocumentOriginEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public DocumentOriginEnum DocumentOrigin { get; set; }
     }
 }
