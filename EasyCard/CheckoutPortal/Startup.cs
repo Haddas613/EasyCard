@@ -20,7 +20,10 @@ using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Security;
 using Transactions.Api.Client;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 using SharedApi = Shared.Api;
+using CheckoutPortal.Services;
 
 namespace CheckoutPortal
 {
@@ -94,7 +97,22 @@ namespace CheckoutPortal
                 return new AesGcmCryptoServiceCompact(cryptoCfg.EncrKeyForSharedApiKey);
             });
 
-            
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                 {
+                    new CultureInfo("en"),
+                    new CultureInfo("he"),
+                };
+                options.DefaultRequestCulture = new RequestCulture("he");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+                options.RequestCultureProviders = new List<IRequestCultureProvider> { new QueryStringRequestCultureProvider() };
+            });
+
+            services.AddMvc().AddViewLocalization();
+            services.AddSingleton<CommonLocalizationService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -114,6 +132,9 @@ namespace CheckoutPortal
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            var localizationOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>().Value;
+            app.UseRequestLocalization(localizationOptions);
 
             app.UseAuthorization();
 

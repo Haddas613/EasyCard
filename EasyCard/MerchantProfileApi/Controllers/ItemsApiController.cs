@@ -74,14 +74,14 @@ namespace MerchantProfileApi.Controllers
 
                 if (filter.Currency == null)
                 {
-                    response.Data = await mapper.ProjectTo<ItemSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
+                    response.Data = await mapper.ProjectTo<ItemSummary>(query.OrderByDescending(i => i.Created).ApplyPagination(filter)).Future().ToListAsync();
                 }
                 else
                 {
                     var rates = await currencyRateService.GetLatestRates(); // TODO: caching
                     var currency = filter.Currency.GetValueOrDefault(CurrencyEnum.ILS);
 
-                    var data = await query.ApplyPagination(filter).Future().ToListAsync();
+                    var data = await query.OrderByDescending(i => i.Created).ApplyPagination(filter).Future().ToListAsync();
 
                     response.Data = data.Select(d => new ItemSummary
                     {

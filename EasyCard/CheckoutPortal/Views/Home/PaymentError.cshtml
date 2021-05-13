@@ -1,11 +1,12 @@
 ﻿@model CheckoutPortal.Models.PaymentErrorViewModel
+@inject CommonLocalizationService localizer
 
 @{
     ViewData["Title"] = "Payment Error";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h4 class="text-danger">Payment Error.</h4>
+<h4 class="text-danger">@localizer.Get("PaymentError")</h4>
 <h2 class="text-danger">@Model.ErrorMessage</h2>
 
 <center>
@@ -15,7 +16,7 @@
 @if (Model.ShowRequestId)
 {
     <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+        <strong>@localizer.Get("RequestID"):</strong> <code>@Model.RequestId</code>
     </p>
 }
 

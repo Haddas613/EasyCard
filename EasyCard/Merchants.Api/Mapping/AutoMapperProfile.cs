@@ -108,15 +108,8 @@ namespace Merchants.Api.Mapping
             CreateMap<UpdateMerchantRequest, Merchant>();
             CreateMap<UserActivityRequest, UpdateUserStatusData>()
                 .ForMember(d => d.UserID, o => o.MapFrom(src => Guid.Parse(src.UserID)))
-                .ForMember(d => d.Status, o => o.MapFrom((src, d) =>
-                    {
-                        return src.UserActivity switch
-                        {
-                            UserActivityEnum.Locked => UserStatusEnum.Locked,
-                            _ => UserStatusEnum.Active
-                        };
-                    }
-                ));
+                .ForMember(d => d.Status, o => o.MapFrom(src => src.UserActivity == UserActivityEnum.Locked ? UserStatusEnum.Locked : UserStatusEnum.Active));
+
             CreateMap<MerchantHistory, AuditEntryResponse>()
                 .ForMember(d => d.TerminalName, o => o.MapFrom(src => src.Terminal.Label))
                 .ForMember(d => d.MerchantName, o => o.MapFrom(src => src.Merchant.BusinessName));

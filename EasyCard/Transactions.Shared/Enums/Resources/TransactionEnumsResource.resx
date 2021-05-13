@@ -138,6 +138,9 @@
   <data name="Initial" xml:space="preserve">
     <value>Initial</value>
   </data>
+  <data name="PaymentRequest" xml:space="preserve">
+    <value>Payment Request</value>
+  </data>
   <data name="UI" xml:space="preserve">
     <value>UI</value>
   </data>

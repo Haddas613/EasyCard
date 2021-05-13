@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Transactions.Api.Models.Billing;
 using Transactions.Api.Models.Checkout;
 using Transactions.Api.Models.Transactions;
 
@@ -20,7 +21,11 @@ namespace Transactions.Api.Client
 
         Task<SummariesResponse<TransmitTransactionResponse>> TransmitTerminalTransactions(Guid? terminalID);
 
+        Task<CreateTransactionFromBillingDealsResponse> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request);
+
         Task<IEnumerable<Guid>> GetNonTransmittedTransactionsTerminals();
+
+        Task<SendBillingDealsToQueueResponse> SendBillingDealsToQueue();
 
         Task<OperationResponse> CancelPaymentRequest(Guid paymentRequestID);
 

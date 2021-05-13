@@ -118,7 +118,7 @@ namespace Merchants.Api.Controllers
                     return BadRequest(resendInvitationResponse.Convert(correlationID: GetCorrelationID()));
                 }
 
-                var userIsLinkedToMerchant = (await merchantsService.GetMerchantUsers(merchant.MerchantID).CountAsync(u => u.UserID == user.UserID)) > 0;
+                var userIsLinkedToMerchant = (await merchantsService.GetMerchantUsers().Where(m => m.MerchantID == merchant.MerchantID).CountAsync(u => u.UserID == user.UserID)) > 0;
 
                 if (!userIsLinkedToMerchant)
                 {

@@ -20,7 +20,7 @@ namespace Merchants.Business.Services
 
         public Task<IEnumerable<TerminalExternalSystem>> GetTerminalExternalSystems(Guid terminalID);
 
-        public Task SaveTerminalExternalSystem(TerminalExternalSystem entity);
+        public Task SaveTerminalExternalSystem(TerminalExternalSystem entity, Terminal terminal, IDbContextTransaction dbTransaction = null);
 
         public Task RemoveTerminalExternalSystem(Guid terminalID, long externalSystemID);
 

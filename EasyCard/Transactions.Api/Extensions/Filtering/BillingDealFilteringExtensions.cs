@@ -20,7 +20,14 @@ namespace Transactions.Api.Extensions.Filtering
                 return src;
             }
 
-            src = src.Where(t => t.Active == !filter.ShowOnlyDeleted);
+            if (filter.OnlyActual)
+            {
+                src = src.Where(t => t.Active && t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= DateTime.Today);
+            }
+            else
+            {
+                src = src.Where(t => t.Active == !filter.ShowOnlyDeleted);
+            }
 
             if (filter.TerminalID != null)
             {

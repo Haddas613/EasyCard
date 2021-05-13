@@ -20,8 +20,6 @@ namespace Merchants.Business.Services
 
         IQueryable<UserTerminalMapping> GetMerchantUsers();
 
-        IQueryable<UserInfo> GetMerchantUsers(Guid merchantID);
-
         Task LinkUserToMerchant(UserInfo userID, Guid merchantID, IDbContextTransaction dbTransaction = null);
 
         Task UnLinkUserFromMerchant(Guid userID, Guid merchantID, IDbContextTransaction dbTransaction = null);

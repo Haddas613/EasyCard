@@ -1,6 +1,6 @@
 <template>
   <div v-bind:class="{'error--text': token.expired}">
-    {{token.cardNumber}}
+    <span dir="ltr">{{token.cardNumber}}</span>
     <p>
       <small>{{token.cardExpiration}}</small>
     </p>

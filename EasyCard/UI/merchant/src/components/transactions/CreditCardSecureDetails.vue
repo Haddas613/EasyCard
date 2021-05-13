@@ -46,7 +46,7 @@
           </div>
           <div v-if="token">
             <span class="primary--text">
-              {{token.cardNumber}}
+               <card-token-string :token="token"></card-token-string>
             </span>
           </div>
         </template>

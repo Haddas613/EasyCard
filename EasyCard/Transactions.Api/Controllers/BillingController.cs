@@ -21,6 +21,7 @@ using Shared.Api.UI;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers.KeyValueStorage;
+using Shared.Helpers.Queue;
 using Shared.Helpers.Security;
 using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
@@ -57,6 +58,7 @@ namespace Transactions.Api.Controllers
         private readonly IConsumersService consumersService;
         private readonly ITerminalsService terminalsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
+        private readonly IQueue billingDealsQueue;
 
         public BillingController(
             ITransactionsService transactionsService,
@@ -69,7 +71,8 @@ namespace Transactions.Api.Controllers
             IProcessorResolver processorResolver,
             IBillingDealService billingDealService,
             IHttpContextAccessorWrapper httpContextAccessor,
-            IConsumersService consumersService)
+            IConsumersService consumersService,
+            IQueueResolver queueResolver)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -83,6 +86,7 @@ namespace Transactions.Api.Controllers
             this.billingDealService = billingDealService;
             this.httpContextAccessor = httpContextAccessor;
             this.consumersService = consumersService;
+            this.billingDealsQueue = queueResolver.GetQueue(QueueResolver.BillingDealsQueue);
         }
 
         [HttpGet]
@@ -188,6 +192,8 @@ namespace Transactions.Api.Controllers
 
             newBillingDeal.ApplyAuditInfo(httpContextAccessor);
 
+            newBillingDeal.NextScheduledTransaction = newBillingDeal.BillingSchedule.GetInitialScheduleDate();
+
             await billingDealService.CreateEntity(newBillingDeal);
 
             return CreatedAtAction(nameof(GetBillingDeal), new { BillingDealID = newBillingDeal.BillingDealID }, new OperationResponse(Messages.BillingDealCreated, StatusEnum.Success, newBillingDeal.BillingDealID));
@@ -208,6 +214,9 @@ namespace Transactions.Api.Controllers
 
             billingDeal.ApplyAuditInfo(httpContextAccessor);
 
+            //TODO: reschedule only on demand ?
+            //billingDeal.NextScheduledTransaction = billingDeal.BillingSchedule.GetInitialScheduleDate();
+
             await billingDealService.UpdateEntity(billingDeal);
 
             return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
@@ -226,6 +235,60 @@ namespace Transactions.Api.Controllers
             await billingDealService.UpdateEntity(billingDeal);
 
             return Ok(new OperationResponse(Messages.BillingDealDeleted, StatusEnum.Success, billingDealID));
+        }
+
+        [HttpPost]
+        [Route("due-billings")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<SendBillingDealsToQueueResponse>> SendDueBillingDeals()
+        {
+            var filter = new BillingDealsFilter
+            {
+                OnlyActual = true
+            };
+
+            var query = billingDealService.GetBillingDeals().Filter(filter);
+            var numberOfRecords = 0;
+
+            using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var response = new SummariesResponse<Guid>();
+
+                var billings = await query.OrderBy(b => b.NextScheduledTransaction)
+                    .Filter(filter)
+                    .Select(b => new { b.BillingDealID, b.TerminalID })
+                    .ToListAsync();
+
+                var allTerminalsID = billings.Select(b => b.TerminalID).Distinct();
+
+                var terminals = (await terminalsService.GetTerminals().Where(t => allTerminalsID.Contains(t.TerminalID)).ToListAsync())
+                    .Where(t => t.EnabledFeatures?.Contains(Merchants.Shared.Enums.FeatureEnum.Billing) == true)
+                    .Where(t => t.BillingSettings.CreateRecurrentPaymentsAutomatically == true)
+                    .Select(t => t.TerminalID)
+                    .ToHashSet();
+
+                var processableBillings = billings.Where(b => terminals.Contains(b.TerminalID)).Select(b => b.BillingDealID);
+
+                numberOfRecords = processableBillings.Count();
+                var batch = new List<Guid>(appSettings.BillingDealsMaxBatchSize);
+                foreach (var id in processableBillings)
+                {
+                    if (batch.Count == appSettings.BillingDealsMaxBatchSize)
+                    {
+                        await billingDealsQueue.PushToQueue<IEnumerable<Guid>>(batch);
+                        batch.Clear();
+                    }
+
+                    batch.Add(id);
+                }
+
+                if (batch.Count > 0)
+                {
+                    await billingDealsQueue.PushToQueue<IEnumerable<Guid>>(batch);
+                }
+            }
+
+            return new SendBillingDealsToQueueResponse { Status = StatusEnum.Success, Message = Messages.TransactionsQueued, Count = numberOfRecords };
         }
     }
 }

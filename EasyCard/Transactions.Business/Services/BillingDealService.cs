@@ -51,6 +51,22 @@ namespace Transactions.Business.Services
             }
         }
 
+        public IQueryable<BillingDeal> GetBillingDealsForUpdate()
+        {
+            if (user.IsAdmin())
+            {
+                return context.BillingDeals;
+            }
+            else if (user.IsTerminal())
+            {
+                return context.BillingDeals.Where(t => t.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.BillingDeals.Where(t => t.MerchantID == user.GetMerchantID());
+            }
+        }
+
         public async override Task UpdateEntity(BillingDeal entity, IDbContextTransaction dbTransaction = null)
         {
             //TODO: audit

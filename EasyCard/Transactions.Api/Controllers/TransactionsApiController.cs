@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Security;
@@ -485,70 +486,62 @@ namespace Transactions.Api.Controllers
 
         [HttpPost]
         [Route("trigger-billing-deals")]
-        public async Task<ActionResult<OperationResponse>> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request)
+        public async Task<ActionResult<CreateTransactionFromBillingDealsResponse>> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request)
         {
             if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
             {
                 return BadRequest(new OperationResponse(Transactions.Shared.Messages.BillingDealsRequired, null, HttpContext.TraceIdentifier, nameof(request.BillingDealsID), Transactions.Shared.Messages.BillingDealsRequired));
             }
 
+            if (request.BillingDealsID.Count() > appSettings.BillingDealsMaxBatchSize)
+            {
+                return BadRequest(new OperationResponse(string.Format(Messages.BillingDealsMaxBatchSize, appSettings.BillingDealsMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), string.Format(Messages.TransmissionLimit, appSettings.BillingDealsMaxBatchSize)));
+            }
+
+            var response = new CreateTransactionFromBillingDealsResponse
+            {
+                Status = StatusEnum.Success,
+                Message = Messages.TransactionsQueued,
+                SuccessfulCount = 0,
+                FailedCount = 0
+            };
+
             foreach (var billingId in request.BillingDealsID)
             {
-                var billingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(d => d.BillingDealID == billingId));
+                var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(d => d.BillingDealID == billingId));
 
                 if (!billingDeal.Active)
                 {
-                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.BillingDealIsClosed}", StatusEnum.Error, billingDeal.BillingDealID, httpContextAccessor.TraceIdentifier));
+                    logger.LogError($"Billing deal is closed: {billingDeal.BillingDealID}");
+                    response.FailedCount++;
+                    continue;
                 }
 
-                await NextBillingDeal(billingDeal);
+                var operationResult = await NextBillingDeal(billingDeal);
+
+                if (operationResult.Status == StatusEnum.Success)
+                {
+                    response.SuccessfulCount++;
+                }
+                else
+                {
+                    response.FailedCount++;
+                }
             }
 
-            var response = new OperationResponse
+            if (response.FailedCount > 0 && response.SuccessfulCount == 0)
             {
-                Status = StatusEnum.Success,
-                Message = Transactions.Shared.Messages.TransactionsQueued
-            };
-
-            return Ok(response);
-        }
-
-        [HttpPost]
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
-        [Route("trigger-billing-deals-admin")]
-        public async Task<ActionResult<OperationResponse>> CreateTransactionsFromBillingDealsAdmin(CreateTransactionFromBillingDealsRequest request)
-        {
-            if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
-            {
-                return BadRequest(new OperationResponse(Transactions.Shared.Messages.BillingDealsRequired, null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), Transactions.Shared.Messages.BillingDealsRequired));
+                response.Status = StatusEnum.Error;
             }
-
-            if (request.BillingDealsID.Count() > appSettings.BillingDealsMaxBatchSize)
+            else if (response.FailedCount > 0)
             {
-                return BadRequest(new OperationResponse(string.Format(Transactions.Shared.Messages.BillingDealsMaxBatchSize, appSettings.BillingDealsMaxBatchSize), null, httpContextAccessor.TraceIdentifier, nameof(request.BillingDealsID), string.Format(Transactions.Shared.Messages.TransmissionLimit, appSettings.BillingDealsMaxBatchSize)));
-            }
-
-            var transactionTerminals = (await billingDealService.GetBillingDeals()
-                .Where(t => request.BillingDealsID.Contains(t.BillingDealID))
-                .ToListAsync())
-                .GroupBy(k => k.TerminalID, v => v.BillingDealID)
-                .ToDictionary(k => k.Key, v => v.ToList());
-
-            var response = new OperationResponse
-            {
-                Status = StatusEnum.Success,
-                Message = Transactions.Shared.Messages.TransactionsQueued
-            };
-
-            foreach (var batch in transactionTerminals)
-            {
-                await CreateTransactionsFromBillingDeals(new CreateTransactionFromBillingDealsRequest { TerminalID = batch.Key, BillingDealsID = batch.Value });
+                response.Status = StatusEnum.Warning;
             }
 
             return Ok(response);
         }
 
-        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialTransactionID = null, Guid? billingDealID = null, Guid? paymentRequestID = null)
+        private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialTransactionID = null, BillingDeal billingDeal = null, Guid? paymentRequestID = null)
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
@@ -568,9 +561,9 @@ namespace Transactions.Api.Controllers
 
             transaction.SpecialTransactionType = specialTransactionType;
             transaction.JDealType = jDealType;
-            transaction.BillingDealID = billingDealID;
+            transaction.BillingDealID = billingDeal?.BillingDealID;
             transaction.InitialTransactionID = initialTransactionID;
-            transaction.DocumentOrigin = GetDocumentOrigin(billingDealID);
+            transaction.DocumentOrigin = GetDocumentOrigin(billingDeal?.BillingDealID, paymentRequestID);
             transaction.PaymentRequestID = paymentRequestID;
 
             if (transaction.DealDetails == null)
@@ -887,6 +880,13 @@ namespace Transactions.Api.Controllers
                 }
             }
 
+            if (billingDeal != null && jDealType == JDealTypeEnum.J4)
+            {
+                billingDeal.CurrentDeal = billingDeal.CurrentDeal.HasValue ? billingDeal.CurrentDeal.Value + 1 : 1;
+                billingDeal.NextScheduledTransaction = billingDeal.BillingSchedule?.GetNextScheduledDate(transaction.TransactionDate.Value, billingDeal.CurrentDeal.Value);
+                await billingDealService.UpdateEntity(billingDeal);
+            }
+
             var endResponse = new OperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);
 
             // TODO: validate InvoiceDetails
@@ -973,6 +973,7 @@ namespace Transactions.Api.Controllers
         }
 
         private DocumentOriginEnum GetDocumentOrigin(Guid? billingDealID)
+        private DocumentOriginEnum GetDocumentOrigin(Guid? billingDealID, Guid? paymentRequestID)
         {
             if (billingDealID.HasValue)
             {
@@ -985,6 +986,10 @@ namespace Transactions.Api.Controllers
             else if (User.IsMerchant())
             {
                 return DocumentOriginEnum.UI;
+            }
+            else if (paymentRequestID.HasValue)
+            {
+                return DocumentOriginEnum.PaymentRequest;
             }
             else if (User.IsAdmin())
             {
@@ -1017,26 +1022,24 @@ namespace Transactions.Api.Controllers
                 new TextSubstitution(nameof(transaction.CreditCardDetails.CardNumber), transaction.CreditCardDetails?.CardNumber ?? string.Empty),
                 new TextSubstitution(nameof(transaction.CreditCardDetails.CardOwnerName), transaction.CreditCardDetails?.CardOwnerName ?? string.Empty),
 
-                new TextSubstitution(nameof(transaction.CardPresence), transaction.CardPresence.ToString()),
-
-                new TextSubstitution(nameof(transaction.DealDetails.DealDescription), transaction.CardPresence.ToString())
+                new TextSubstitution(nameof(transaction.DealDetails.DealDescription), transaction.DealDetails?.DealDescription ?? string.Empty)
             };
 
-            string transactionTypeStr = string.Empty;
-
             //TODO: temporary
-            var rqf = Request.HttpContext.Features.Get<IRequestCultureFeature>();
-            var culture = rqf.RequestCulture?.Culture;
+            var culture = new CultureInfo("he-IL");
             var dictionaries = DictionariesService.GetDictionaries(culture);
 
-            var key = char.ToLowerInvariant(transaction.TransactionType.ToString()[0]) + transaction.TransactionType.ToString().Substring(1);
+            var transactionTypeKey = typeof(TransactionTypeEnum).GetDataContractAttrForEnum(transaction.TransactionType.ToString());
+            var cardPresenceKey = typeof(CardPresenceEnum).GetDataContractAttrForEnum(transaction.CardPresence.ToString());
+            var originKey = typeof(DocumentOriginEnum).GetDataContractAttrForEnum(transaction.DocumentOrigin.ToString());
 
-            if (dictionaries.TransactionTypeEnum.ContainsKey(key))
-            {
-                transactionTypeStr = dictionaries.TransactionTypeEnum[key];
-            }
+            var transactionTypeStr = dictionaries.TransactionTypeEnum[transactionTypeKey];
+            var cardPresenceTypeStr = dictionaries.CardPresenceEnum[cardPresenceKey];
+            var originStr = dictionaries.DocumentOriginEnum[originKey];
 
             substitutions.Add(new TextSubstitution(nameof(transaction.TransactionType), transactionTypeStr));
+            substitutions.Add(new TextSubstitution(nameof(transaction.CardPresence), cardPresenceTypeStr));
+            substitutions.Add(new TextSubstitution(nameof(transaction.DocumentOrigin), originStr));
 
             if (transaction.DealDetails?.ConsumerEmail == null)
             {
@@ -1081,7 +1084,7 @@ namespace Transactions.Api.Controllers
             transaction.CardPresence = CardPresenceEnum.CardNotPresent;
             transaction.TransactionType = TransactionTypeEnum.RegularDeal;
 
-            var actionResult = await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDealID: billingDeal.BillingDealID);
+            var actionResult = await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDeal: billingDeal);
 
             var response = actionResult.Result as ObjectResult;
             return response.Value as OperationResponse;

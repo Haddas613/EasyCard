@@ -144,6 +144,7 @@ export default {
         this.customer = data;
         this.model.dealDetails.consumerEmail = data.consumerEmail;
         this.model.dealDetails.consumerPhone = data.consumerPhone;
+        this.model.dealDetails.consumerAddress = data.consumerAddress;
         this.model.dealDetails.consumerID = data.consumerID;
       }
     }
@@ -158,6 +159,7 @@ export default {
       this.customer = null;
       this.model.dealDetails.consumerEmail = null;
       this.model.dealDetails.consumerPhone = null;
+      this.model.dealDetails.consumerAddress = null;
       this.model.dealDetails.consumerID = null;
     },
     processCustomer(data) {
@@ -168,6 +170,7 @@ export default {
       this.customer = data;
       this.model.dealDetails.consumerEmail = data.consumerEmail;
       this.model.dealDetails.consumerPhone = data.consumerPhone;
+      this.model.dealDetails.consumerAddress = data.consumerAddress;
       this.model.dealDetails.consumerID = data.consumerID;
       this.model.cardOwnerName = data.consumerName;
       this.model.cardOwnerNationalID = data.consumerNationalID;

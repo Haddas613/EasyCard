@@ -10,5 +10,7 @@ namespace Transactions.Business.Services
     public interface IBillingDealService : IServiceBase<BillingDeal, Guid>
     {
         IQueryable<BillingDeal> GetBillingDeals();
+
+        IQueryable<BillingDeal> GetBillingDealsForUpdate();
     }
 }

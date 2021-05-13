@@ -16,6 +16,8 @@ namespace Transactions.Business.Services
     {
         IQueryable<PaymentTransaction> GetTransactions();
 
+        IQueryable<PaymentTransaction> GetTransactionsForUpdate();
+
         Task<PaymentTransaction> GetTransaction(Expression<Func<PaymentTransaction, bool>> predicate);
 
         IQueryable<TransactionHistory> GetTransactionHistory(Guid transactionID);

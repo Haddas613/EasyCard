@@ -42,28 +42,23 @@ namespace Merchants.Business.Services
 
         public IQueryable<Terminal> GetTerminals()
         {
-            return GetTerminalsInternal().AsNoTracking();
-        }
-
-        private IQueryable<Terminal> GetTerminalsInternal()
-        {
             if (user.IsAdmin())
             {
-                return context.Terminals;
+                return context.Terminals.AsNoTracking();
             }
             else if (user.IsTerminal())
             {
-                return context.Terminals.Where(t => t.TerminalID == user.GetTerminalID());
+                return context.Terminals.Where(t => t.TerminalID == user.GetTerminalID()).AsNoTracking();
             }
             else
             {
-                return context.Terminals.Where(t => t.MerchantID == user.GetMerchantID());
+                return context.Terminals.Where(t => t.MerchantID == user.GetMerchantID()).AsNoTracking();
             }
         }
 
         public async Task<Terminal> GetTerminal(Guid terminalID)
         {
-            var terminalQuery = GetTerminalsInternal()
+            var terminalQuery = GetTerminals()
                     .Include(t => t.Merchant)
                     .Where(m => m.TerminalID == terminalID);
 
@@ -73,29 +68,27 @@ namespace Merchants.Business.Services
 
             if (terminal != null)
             {
-                // futureStates is already resolved and contains the result
                 terminal.Integrations = integrationsQuery.ToList();
             }
 
             return terminal;
         }
 
-        //TODO: Add AsNoTracking, but make sure that saving works
         public async Task<IEnumerable<TerminalExternalSystem>> GetTerminalExternalSystems(Guid terminalID)
         {
             IQueryable<TerminalExternalSystem> query;
 
             if (user.IsAdmin())
             {
-                query = context.TerminalExternalSystems;
+                query = context.TerminalExternalSystems.AsNoTracking();
             }
             else if (user.IsTerminal())
             {
-                query = context.TerminalExternalSystems.Where(t => t.TerminalID == user.GetTerminalID());
+                query = context.TerminalExternalSystems.Where(t => t.TerminalID == user.GetTerminalID()).AsNoTracking();
             }
             else
             {
-                query = context.TerminalExternalSystems.Where(t => t.Terminal.MerchantID == user.GetMerchantID());
+                query = context.TerminalExternalSystems.Where(t => t.Terminal.MerchantID == user.GetMerchantID()).AsNoTracking();
             }
 
             var externalSystems = await query.Where(t => t.TerminalID == terminalID).ToListAsync();
@@ -166,13 +159,13 @@ namespace Merchants.Business.Services
             {
                 OperationCode = OperationCodesEnum.UserTerminalLinkAdded,
                 OperationDate = DateTime.UtcNow,
-                OperationDoneBy = user?.GetDoneBy(),
-                OperationDoneByID = user?.GetDoneByID(),
                 TerminalID = terminal.TerminalID,
                 MerchantID = terminal.MerchantID,
                 OperationDescription = changesStr,
-                SourceIP = httpContextAccessor.GetIP()
             };
+
+            history.ApplyAuditInfo(httpContextAccessor);
+
             context.MerchantHistories.Add(history);
 
             if (dbTransaction != null)
@@ -190,8 +183,6 @@ namespace Merchants.Business.Services
         // TODO: security
         public async Task UnLinkUserFromTerminal(Guid userID, Guid terminalID, IDbContextTransaction dbTransaction = null)
         {
-            // TODO: history
-
             var terminal = await context.Terminals.FirstOrDefaultAsync(t => t.TerminalID == terminalID);
 
             var entity = await context.UserTerminalMappings.FirstOrDefaultAsync(m => m.TerminalID == terminalID && m.UserID == userID);
@@ -204,12 +195,12 @@ namespace Merchants.Business.Services
                 {
                     OperationCode = OperationCodesEnum.UserTerminalLinkRemoved,
                     OperationDate = DateTime.UtcNow,
-                    OperationDoneBy = user?.GetDoneBy(),
-                    OperationDoneByID = user?.GetDoneByID(),
                     TerminalID = terminalID,
                     MerchantID = terminal.MerchantID,
-                    SourceIP = httpContextAccessor.GetIP()
                 };
+
+                history.ApplyAuditInfo(httpContextAccessor);
+
                 context.MerchantHistories.Add(history);
 
                 if (dbTransaction != null)
@@ -227,6 +218,10 @@ namespace Merchants.Business.Services
 
         public async override Task UpdateEntity(Terminal entity, IDbContextTransaction dbTransaction = null)
         {
+            var exist = this.context.Terminals.Find(entity.GetID());
+
+            this.context.Entry(exist).CurrentValues.SetValues(entity);
+
             List<string> changes = new List<string>();
 
             // Must ToArray() here for excluding the AutoHistory model.
@@ -242,26 +237,24 @@ namespace Merchants.Business.Services
             {
                 OperationCode = OperationCodesEnum.TerminalUpdated,
                 OperationDate = DateTime.UtcNow,
-                OperationDoneBy = user?.GetDoneBy(),
-                OperationDoneByID = user?.GetDoneByID(),
                 TerminalID = entity.TerminalID,
                 MerchantID = entity.MerchantID,
                 OperationDescription = changesStr,
-                SourceIP = httpContextAccessor.GetIP()
             };
+
+            history.ApplyAuditInfo(httpContextAccessor);
+
             context.MerchantHistories.Add(history);
 
             entity.Updated = DateTime.UtcNow;
 
             if (dbTransaction != null)
             {
-                await base.UpdateEntity(entity, dbTransaction);
                 await context.SaveChangesAsync();
             }
             else
             {
                 using var transaction = BeginDbTransaction();
-                await base.UpdateEntity(entity, transaction);
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -273,11 +266,10 @@ namespace Merchants.Business.Services
             {
                 OperationCode = OperationCodesEnum.TerminalCreated,
                 OperationDate = DateTime.UtcNow,
-                OperationDoneBy = user?.GetDoneBy(),
-                OperationDoneByID = user?.GetDoneByID(),
                 MerchantID = entity.MerchantID,
-                SourceIP = httpContextAccessor.GetIP()
             };
+
+            history.ApplyAuditInfo(httpContextAccessor);
 
             if (dbTransaction != null)
             {
@@ -297,7 +289,7 @@ namespace Merchants.Business.Services
             }
         }
 
-        public async Task SaveTerminalExternalSystem(TerminalExternalSystem entity)
+        public async Task SaveTerminalExternalSystem(TerminalExternalSystem entity, Terminal terminal, IDbContextTransaction dbTransaction = null)
         {
             if (!user.IsAdmin())
             {
@@ -329,9 +321,42 @@ namespace Merchants.Business.Services
                 }
             }
 
-            var dbEntity = (await GetTerminalExternalSystems(entity.TerminalID)).FirstOrDefault(es => es.ExternalSystemID == entity.ExternalSystemID);
+            var exist = this.context.TerminalExternalSystems.Find(entity.GetID());
 
-            if (dbEntity == null)
+            string changesStr = null;
+
+            if (exist != null)
+            {
+                this.context.Entry(exist).CurrentValues.SetValues(entity);
+
+                List<string> changes = new List<string>();
+
+                // Must ToArray() here for excluding the AutoHistory model.
+                var entries = this.context.ChangeTracker.Entries().Where(e => e.State == EntityState.Modified || e.State == EntityState.Deleted || e.State == EntityState.Added).ToArray();
+                foreach (var entry in entries)
+                {
+                    changes.Add(entry.AutoHistory().Changed);
+                }
+
+                changesStr = string.Concat("[", string.Join(",", changes), "]");
+            }
+
+            var history = new MerchantHistory
+            {
+                OperationCode = OperationCodesEnum.TerminalUpdated,
+                OperationDate = DateTime.UtcNow,
+                TerminalID = entity.TerminalID,
+                MerchantID = terminal.MerchantID,
+                OperationDescription = changesStr,
+            };
+
+            history.ApplyAuditInfo(httpContextAccessor);
+
+            context.MerchantHistories.Add(history);
+
+            terminal.Updated = DateTime.UtcNow;
+
+            if (exist == null)
             {
                 entity.Created = DateTime.UtcNow;
                 context.TerminalExternalSystems.Add(entity);
@@ -339,9 +364,7 @@ namespace Merchants.Business.Services
             }
             else
             {
-                dbEntity.UpdateTimestamp = entity.UpdateTimestamp;
-                dbEntity.Settings = entity.Settings;
-                dbEntity.Type = entity.Type;
+                entity.UpdateTimestamp = entity.UpdateTimestamp;
                 await context.SaveChangesAsync();
             }
         }

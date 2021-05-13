@@ -99,10 +99,6 @@ input[type="checkbox"].input-validation-error {
     display: none;
 }
 
-
-
-
-
 .has-error input {
     border-width: 2px;
 }
@@ -113,4 +109,20 @@ input[type="checkbox"].input-validation-error {
 
 .validation.text-success:after {
     content: 'Validation passed';
+}
+
+.form-check-input {
+    position: initial !important;
+    margin: 0 3px;
+}
+.form-check{
+    padding-left: 0;
+}
+.rtl  .form-check{
+    text-align: right;
+}
+
+.rtl input {
+    direction: ltr;
+    text-align: right;
 }

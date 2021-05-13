@@ -104,7 +104,7 @@ namespace Merchants.Api.Controllers
                 var merchant = mapper.Map<MerchantResponse>(dbMerchant);
 
                 merchant.Terminals = await mapper.ProjectTo<Models.Terminal.TerminalSummary>(terminalsService.GetTerminals().Where(d => d.MerchantID == dbMerchant.MerchantID)).ToListAsync();
-                merchant.Users = await mapper.ProjectTo<UserSummary>(merchantsService.GetMerchantUsers(merchant.MerchantID)).ToListAsync();
+                merchant.Users = await mapper.ProjectTo<UserSummary>(merchantsService.GetMerchantUsers().Where(m => m.MerchantID == merchant.MerchantID)).ToListAsync();
 
                 return Ok(merchant);
             }

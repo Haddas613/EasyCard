@@ -57,7 +57,7 @@
     </v-card>
     <v-card width="100%" flat :loading="!billingDeals">
       <v-card-text class="px-0 pt-0">
-        <ec-list :items="billingDeals" v-if="billingDeals" :dense="true">
+        <ec-list :items="billingDeals" v-if="billingDeals">
           <template v-slot:prepend="{ item }" v-if="billingDealsFilter.onlyActual">
             <div class="px-1">
               <v-checkbox v-model="item.selected" v-if="!item.processed"></v-checkbox>
@@ -86,6 +86,22 @@
               </template>
               {{$t('CreditCardHasExpired')}}
             </v-tooltip>
+            <v-tooltip top v-else-if="item.active">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn color="success" dark icon v-bind="attrs" v-on="on">
+                  <v-icon :title="$t('Active')">mdi-check</v-icon>
+                </v-btn>
+              </template>
+              {{$t('Active')}}
+            </v-tooltip>
+            <v-tooltip top v-else-if="!item.active">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn color="ecgray" dark icon v-bind="attrs" v-on="on">
+                  <v-icon :title="$t('Inactive')">mdi-check</v-icon>
+                </v-btn>
+              </template>
+              {{$t('Inactive')}}
+            </v-tooltip>
           </template>
 
           <template v-slot:left="{ item }">
@@ -95,10 +111,10 @@
               lg="6"
               class="pt-1 caption ecgray--text"
             >
-            <span v-if="item.$nextScheduledTransaction" 
+            <b v-if="item.$nextScheduledTransaction" 
               v-bind:class="{'error--text': (item.$nextScheduledTransaction > now)}">
-              {{item.$nextScheduledTransaction | ecdate('DD/MM/YYYY HH:mm')}}
-            </span>
+              {{item.$nextScheduledTransaction | ecdate('DD/MM/YYYY')}}
+            </b>
             <span v-else>-</span>
             </v-col>
             <v-col cols="12" md="6" lg="6">{{item.cardOwnerName || '-'}}</v-col>
@@ -258,7 +274,6 @@ export default {
       }
 
       let opResult = await this.$api.transactions.triggerBillingDeals(
-        this.terminalStore.terminalID,
         this.lodash.map(billings, i => i.$billingDealID)
       );
 

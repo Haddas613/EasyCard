@@ -54,18 +54,18 @@ namespace Merchants.Api.Data
                             },
                             Settings = new Shared.Models.SystemGlobalSettings
                             {
-                                CvvRequired = true,
+                                CvvRequired = false,
                                 DefaultChargeDescription = "Goods and services from ECNG",
                                 DefaultItemName = "Custom Item",
                                 DefaultRefundDescription = "Refund from ECNG",
-                                EnableCancellationOfUntransmittedTransactions = true,
-                                J2Allowed = true,
-                                J5Allowed = true,
+                                EnableCancellationOfUntransmittedTransactions = false,
+                                J2Allowed = false,
+                                J5Allowed = false,
                                 MaxCreditInstallments = 12,
                                 MaxInstallments = 12,
                                 MinCreditInstallments = 2,
                                 MinInstallments = 2,
-                                NationalIDRequired = true,
+                                NationalIDRequired = false,
                                 VATRate = 0.17m,
                                 DefaultSKU = "_"
                             }

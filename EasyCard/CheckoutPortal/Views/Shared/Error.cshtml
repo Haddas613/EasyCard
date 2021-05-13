@@ -1,9 +1,11 @@
 ﻿@model ErrorViewModel
+@inject CommonLocalizationService localizer
+
 @{
     ViewData["Title"] = "Error";
 }
 
-<h4 class="text-danger">An error occurred while processing your request.</h4>
+<h4 class="text-danger">@localizer.Get("ErrorGeneral")</h4>
 <h2 class="text-danger">@Model.ExceptionMessage</h2>
 
 @if (Model.ShowRequestId)
