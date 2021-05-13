@@ -42,6 +42,7 @@ namespace Merchants.Api.Controllers.Integrations
             this.systemSettingsService = systemSettingsService;
             this.externalSystemsService = externalSystemsService;
         }
+
         [HttpPost]
         [Route("change-password")]
         public async Task<ActionResult<OperationResponse>> ChangePassword(ChangePasswordRequest request)
@@ -55,14 +56,15 @@ namespace Merchants.Api.Controllers.Integrations
             var processor = processorResolver.GetProcessor(terminalProcessor);
 
             var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
+
             //mapper.Map(processorSettings, request.ExternalSystem);
 
             var processorRequest = mapper.Map<ProcessorChangePasswordRequest>(request); //TODO!!!
             processorRequest.ProcessorSettings = processorSettings;
             var processorResponse = await ((Shva.ShvaProcessor)processor).ChangePassword(processorRequest);
-           
-           var existProcessorSettings = terminal.Integrations.First(x => x.Type == Shared.Enums.ExternalSystemTypeEnum.Processor);
-          
+
+            var existProcessorSettings = terminal.Integrations.First(x => x.Type == Shared.Enums.ExternalSystemTypeEnum.Processor);
+
             //var externalSystems = externalSystemsService.GetExternalSystems().ToDictionary(d => d.ExternalSystemID);
             //var texternalSystem = new TerminalExternalSystem();
             //mapper.Map(request, externalSystems);//AutoMapperProfile:41
@@ -79,10 +81,9 @@ namespace Merchants.Api.Controllers.Integrations
                 ShvaTerminalSettings terminalSettings = existProcessorSettings.Settings.ToObject<ShvaTerminalSettings>();
                 terminalSettings.Password = request.NewPassword;
                 existProcessorSettings.Settings = JObject.FromObject(terminalSettings);
-                await terminalsService.SaveTerminalExternalSystem(existProcessorSettings);
+                await terminalsService.SaveTerminalExternalSystem(existProcessorSettings, terminal);
             }
 
-            
             return Ok(new OperationResponse(ShvaMessagesResource.ChangePasswordSetSuccessfully, StatusEnum.Success));
         }
 

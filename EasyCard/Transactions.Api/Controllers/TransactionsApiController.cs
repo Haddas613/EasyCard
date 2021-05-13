@@ -3,15 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Security;
 using System.Threading.Tasks;
 using AutoMapper;
-using Azure.Security.KeyVault.Secrets;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -25,7 +21,6 @@ using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Api.Validation;
-using Shared.Business.Extensions;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Email;
@@ -34,7 +29,6 @@ using Shared.Helpers.Queue;
 using Shared.Helpers.Security;
 using Shared.Helpers.Templating;
 using Shared.Integration.Exceptions;
-using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Transactions.Api.Extensions;
@@ -54,10 +48,6 @@ using Z.EntityFramework.Plus;
 using Merchants.Business.Entities.Terminal;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
-using Shared.Api.Configuration;
-using Merchants.Business.Entities.Terminal;
-using Nayax;
-using Shva;
 
 namespace Transactions.Api.Controllers
 {
@@ -692,15 +682,10 @@ namespace Transactions.Api.Controllers
             if (pinpadDeal)
             {
                 processorRequest.PinPadProcessorSettings = pinpadProcessorSettings;
-                processorRequest.TransactionID = String.Format("{0}_{1}", ((NayaxTerminalSettings)processorRequest.PinPadProcessorSettings).TerminalID, Guid.NewGuid().ToString());
-                Terminal shva = await this.terminalsService.GetTerminal(model.TerminalID);
-                ShvaTerminalSettings shvaSettings = JsonConvert.DeserializeObject<ShvaTerminalSettings>(shva.Integrations.Where(x => x.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor).Select(y => y.Settings.ToString()).FirstOrDefault());
-                var lastDeal = await this.transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == shvaSettings.MerchantNumber).OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync();
-                int fileNo, seqNo;
-                CalculateFilNSeq(lastDeal, out fileNo, out seqNo);
+                var lastDeal = await GetLastShvaTransactionDetails(transaction.ShvaTransactionDetails.ShvaTerminalID);
+                mapper.Map(lastDeal, processorRequest); // Map details of prev shva transaction
 
-                processorRequest.AdditionalDataForProcessor = string.Format("{0};{1}", fileNo, seqNo);
-                pinpadPreCreateResult = await ((NayaxProcessor)pinpadProcessor).PreCreateTransaction(processorRequest);
+                pinpadPreCreateResult = await pinpadProcessor.PreCreateTransaction(processorRequest);
                 if (!pinpadPreCreateResult.Success)
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: pinpadPreCreateResult.ErrorMessage);
@@ -708,9 +693,7 @@ namespace Transactions.Api.Controllers
                     return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByProcessor}: {pinpadPreCreateResult.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, pinpadPreCreateResult.Errors));
                 }
 
-                transaction.CreditCardDetails.CardBin = pinpadPreCreateResult.CardNumber.Substring(0, 6);
-                transaction.CreditCardDetails.CardNumber = pinpadPreCreateResult.CardNumber.Substring(pinpadPreCreateResult.CardNumber.Length - 4, 4);
-
+                mapper.Map(pinpadPreCreateResult, transaction);
             }
 
             // create transaction in aggregator (Clearing House)
@@ -750,6 +733,8 @@ namespace Transactions.Api.Controllers
             // create transaction in processor (Shva)
             try
             {
+                mapper.Map(transaction, processorRequest);
+
                 if (token != null)
                 {
                     mapper.Map(token, processorRequest.CreditCardToken);
@@ -947,32 +932,12 @@ namespace Transactions.Api.Controllers
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
         }
 
-        private static void CalculateFilNSeq(ShvaTransactionDetails lastDeal, out int fileNo, out int seqNo)
+        private async Task<ShvaTransactionDetails> GetLastShvaTransactionDetails(string shvaTerminalNumber)
         {
-            string dealnumber = lastDeal.ShvaShovarNumber;
-            fileNo = -1;
-            int.TryParse(dealnumber.Substring(0, 2), out fileNo);
-            seqNo = -1;
-            int.TryParse(dealnumber.Substring(5, 3), out seqNo);
-            bool lastDealWasTransmit = lastDeal.TransmissionDate != null;
-            if (lastDealWasTransmit)
-            {
-                seqNo = 1;
-                fileNo++;
-            }
-
-            if (seqNo > 999)
-            {
-                seqNo = 1;
-                fileNo++;
-            }
-            else
-            {
-                seqNo++;
-            }
+            return await this.transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == shvaTerminalNumber)
+                .OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync();
         }
 
-        private DocumentOriginEnum GetDocumentOrigin(Guid? billingDealID)
         private DocumentOriginEnum GetDocumentOrigin(Guid? billingDealID, Guid? paymentRequestID)
         {
             if (billingDealID.HasValue)

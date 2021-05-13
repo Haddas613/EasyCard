@@ -5,7 +5,6 @@ using System.Text;
 using Nayax.Converters;
 using Nayax.Models;
 using Shared.Integration.Models;
-using Transactions.Business.Services;
 
 namespace Nayax.Converters
 {
@@ -16,14 +15,14 @@ namespace Nayax.Converters
             var authReq = new AuthenticateRequestBody(otp, conf.ClientID, TerminalIDDevice, TerminalIDDevice);// new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,String.Format("{0}_{1}",ECterminalID, nayaxParameters.TerminalID));
             return authReq;
         }
-        public static PairRequestBody GetPairRequestBody( NayaxGlobalSettings conf, string posName,string TerminalIDDevice)
+        public static PairRequestBody GetPairRequestBody(NayaxGlobalSettings conf, string posName, string TerminalIDDevice)
         {
-            var phase1Req = new PairRequestBody(posName,conf.ClientID,TerminalIDDevice, TerminalIDDevice);// new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,String.Format("{0}_{1}",ECterminalID, nayaxParameters.TerminalID));
+            var phase1Req = new PairRequestBody(posName, conf.ClientID, TerminalIDDevice, TerminalIDDevice);// new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,String.Format("{0}_{1}",ECterminalID, nayaxParameters.TerminalID));
             return phase1Req;
         }
         public static Phase1RequestBody GetPhase1RequestBody(this NayaxTerminalSettings nayaxParameters, NayaxGlobalSettings conf)
         {
-            var phase1Req = new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,  nayaxParameters.TerminalID);// new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,String.Format("{0}_{1}",ECterminalID, nayaxParameters.TerminalID));
+            var phase1Req = new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID, nayaxParameters.TerminalID);// new Phase1RequestBody(conf.ClientID, nayaxParameters.TerminalID,String.Format("{0}_{1}",ECterminalID, nayaxParameters.TerminalID));
             return phase1Req;
         }
 
@@ -92,7 +91,7 @@ namespace Nayax.Converters
             };
         }
         */
-        public static ObjectInPhase1RequestParams GetObjectInPhase1RequestParams(this ProcessorCreateTransactionRequest req )
+        public static ObjectInPhase1RequestParams GetObjectInPhase1RequestParams(this ProcessorCreateTransactionRequest req)
         {
             ObjectInPhase1RequestParams inputObj = new ObjectInPhase1RequestParams();
             // InitDealResultModel initialDealData = req.InitialDeal as InitDealResultModel;
@@ -105,9 +104,9 @@ namespace Nayax.Converters
             inputObj.currency = currency.GetNayaxCurrencyStr();
 
             inputObj.amount = req.TransactionAmount.ToNayaxDecimal();
-            inputObj.vuid = req.TransactionID;
+            inputObj.vuid = GetPinPadTransactionID(req.PinPadProcessorSettings as NayaxTerminalSettings);
             inputObj.tranCode = 1;
-            inputObj.sysTraceNumber = req.AdditionalDataForProcessor;
+            inputObj.sysTraceNumber = GetFilNSeq(req.LastDealShvaDetails);
             // TODO: national ID
             if (!string.IsNullOrWhiteSpace(req.CreditCardToken.CardOwnerNationalID))
             {
@@ -137,7 +136,7 @@ namespace Nayax.Converters
             var creditTerms = req.TransactionType.GetNayaxCreditTerms();
             var currency = req.Currency.GetNayaxCurrency();
 
-            inputObj.vuid = req.TransactionID;
+            inputObj.vuid = req.PinPadTransactionID;
             inputObj.creditTerms = creditTerms.GetNayaxCreditTerms();
 
 
@@ -160,11 +159,11 @@ namespace Nayax.Converters
         {
             return new NayaxPreCreateTransactionResponse()
             {
-                   UID = resultPhase1Body.uid,
+                UID = resultPhase1Body.uid,
                 CardNumber = resultPhase1Body.cardNumber,
-                  Success = resultPhase1Body.IsSuccessful(),
-                   ErrorMessage = resultPhase1Body.statusMessage,
-                   
+                Success = resultPhase1Body.IsSuccessful(),
+                ErrorMessage = resultPhase1Body.statusMessage,
+                PinPadTransactionID = resultPhase1Body.uid
             };
         }
 
@@ -177,8 +176,8 @@ namespace Nayax.Converters
                 AuthNum = resultPhase2Body.manpik.ToString(),
                 Solek = (SolekEnum)resultPhase2Body.solek,
                 ShvaShovarNumber = resultPhase2Body.sysTraceNumber,
-                CreditCardVendor  = (CardVendorEnum)resultPhase2Body.manpik,
-                 Success = ((PhaseResultEnum)Convert.ToInt32(resultPhase2Body.statusCode)).IsSuccessful(),
+                CreditCardVendor = (CardVendorEnum)resultPhase2Body.manpik,
+                Success = ((PhaseResultEnum)Convert.ToInt32(resultPhase2Body.statusCode)).IsSuccessful(),
                 /*
                 public string statusCode { get; set; }
         public string statusMessage { get; set; }
@@ -210,6 +209,38 @@ namespace Nayax.Converters
 
                 //ShvaTransactionDate = resultAshEndBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime()
             };
+        }
+
+        private static string GetFilNSeq(Shared.Integration.Models.Processor.ShvaTransactionDetails lastDeal)
+        {
+            string dealnumber = lastDeal.ShvaShovarNumber;
+            int fileNo = -1;
+            int.TryParse(dealnumber.Substring(0, 2), out fileNo);
+            int seqNo = -1;
+            int.TryParse(dealnumber.Substring(5, 3), out seqNo);
+            bool lastDealWasTransmit = lastDeal.TransmissionDate != null;
+            if (lastDealWasTransmit)
+            {
+                seqNo = 1;
+                fileNo++;
+            }
+
+            if (seqNo > 999)
+            {
+                seqNo = 1;
+                fileNo++;
+            }
+            else
+            {
+                seqNo++;
+            }
+
+            return string.Format("{0};{1}", fileNo, seqNo);
+        }
+
+        private static string GetPinPadTransactionID(NayaxTerminalSettings settings)
+        {
+            return string.Format("{0}_{1}", settings?.TerminalID, Guid.NewGuid().ToString());
         }
     }
 }
