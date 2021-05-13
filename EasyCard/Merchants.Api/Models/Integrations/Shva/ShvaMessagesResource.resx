@@ -126,4 +126,7 @@
   <data name="NewPasswordSetSuccessfully" xml:space="preserve">
     <value>New password set successfully</value>
   </data>
+  <data name="ChangePasswordSetSuccessfully" xml:space="preserve">
+    <value>New password set successfully</value>
+  </data>
 </root>

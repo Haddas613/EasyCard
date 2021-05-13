@@ -47,6 +47,7 @@
     <ProjectReference Include="..\Merchants.Business\Merchants.Business.csproj" />
     <ProjectReference Include="..\Nayax\Nayax.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
+    <ProjectReference Include="..\Transactions.Api\Transactions.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>
