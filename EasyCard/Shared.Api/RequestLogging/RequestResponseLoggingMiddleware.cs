@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Shared.Api
@@ -94,28 +95,30 @@ namespace Shared.Api
                 {
                     string requestLog = null;
 
-                    if (!IsCreditCardRequest(context.Request.Method, context.Request.Path))
+                    try
                     {
-                        try
+                        using (var bodyReader = new StreamReader(context.Request.Body))
                         {
-                            using (var bodyReader = new StreamReader(context.Request.Body))
+                            var bodyAsText = await bodyReader.ReadToEndAsync();
+                            if (string.IsNullOrWhiteSpace(bodyAsText) == false)
                             {
-                                var bodyAsText = await bodyReader.ReadToEndAsync();
-                                if (string.IsNullOrWhiteSpace(bodyAsText) == false)
-                                {
-                                    requestLog = bodyAsText;
-                                }
-
-                                var bytesToWrite = Encoding.UTF8.GetBytes(bodyAsText);
-                                await injectedRequestStream.WriteAsync(bytesToWrite, 0, bytesToWrite.Length);
-                                injectedRequestStream.Seek(0, SeekOrigin.Begin);
-                                context.Request.Body = injectedRequestStream;
+                                requestLog = bodyAsText;
                             }
+
+                            var bytesToWrite = Encoding.UTF8.GetBytes(bodyAsText);
+                            await injectedRequestStream.WriteAsync(bytesToWrite, 0, bytesToWrite.Length);
+                            injectedRequestStream.Seek(0, SeekOrigin.Begin);
+                            context.Request.Body = injectedRequestStream;
                         }
-                        catch (Exception ex)
-                        {
-                            logger.LogWarning("Cannot log request", ex);
-                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogWarning("Cannot log request", ex);
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(requestLog))
+                    {
+                        requestLog = Regex.Replace(requestLog, "\"\\d{9,16}\"", "\"****\"");
                     }
 
                     log.RequestBody = requestLog;
@@ -170,7 +173,8 @@ namespace Shared.Api
             }
         }
 
-        // TODO: implement condition which will indicate how we can log request with cc details
+        // TODO: Remove. Credit card is replaced with regex
+        [Obsolete("credit card is replaced with regex")]
         private bool IsCreditCardRequest(string requestMethod, string requestUrl)
         {
             return requestUrl?.StartsWith("/api/merchant/", StringComparison.InvariantCultureIgnoreCase) == true && requestUrl?.EndsWith("/addCreditCard", StringComparison.InvariantCultureIgnoreCase) == true && requestMethod == HttpMethods.Post;
