@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Azure.Security.KeyVault.Secrets;
+using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -254,10 +255,12 @@ namespace Transactions.Api.Controllers
             {
                 var response = new SummariesResponse<Guid>();
 
-                var billings = await query.OrderBy(b => b.NextScheduledTransaction)
-                    .Filter(filter)
-                    .Select(b => new { b.BillingDealID, b.TerminalID })
-                    .ToListAsync();
+                var billings = await GetFilteredQueueBillingDeals();
+
+                //var billings = await query.OrderBy(b => b.NextScheduledTransaction)
+                //    .Filter(filter)
+                //    .Join(creditCardTokenService.GetTokens(), o => o.CreditCardToken, i => i.CreditCardTokenID, (l, r) => new { l.BillingDealID, l.TerminalID, r.CardExpiration })
+                //    .ToListAsync();
 
                 var allTerminalsID = billings.Select(b => b.TerminalID).Distinct();
 
@@ -289,6 +292,51 @@ namespace Transactions.Api.Controllers
             }
 
             return new SendBillingDealsToQueueResponse { Status = StatusEnum.Success, Message = Messages.TransactionsQueued, Count = numberOfRecords };
+        }
+
+        private async Task<IEnumerable<BillingDealQueueEntry>> GetFilteredQueueBillingDeals()
+        {
+            var filter = new BillingDealsFilter
+            {
+                OnlyActual = true
+            };
+
+            var query = billingDealService.GetBillingDeals().Filter(filter);
+
+            var allBillings = await query.OrderBy(b => b.NextScheduledTransaction)
+                    .Filter(filter)
+                    .Join(creditCardTokenService.GetTokens(), o => o.CreditCardToken, i => i.CreditCardTokenID, (l, r) => new { l.BillingDealID, l.TerminalID, r.CardExpiration })
+                    .ToListAsync();
+
+            var response = new List<BillingDealQueueEntry>();
+
+            foreach (var billing in allBillings)
+            {
+                if (billing.CardExpiration?.Expired == true)
+                {
+                    var dealEntity = await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(b => b.BillingDealID == billing.BillingDealID);
+
+                    if (dealEntity != null)
+                    {
+                        dealEntity.Active = false;
+                        await billingDealService.UpdateEntity(dealEntity);
+
+                        //TODO: send email
+                    }
+                }
+                else
+                {
+                    response.Add(new BillingDealQueueEntry { BillingDealID = billing.BillingDealID, TerminalID = billing.TerminalID });
+                }
+            }
+
+            return response;
+        }
+
+        //TODO: implement
+        private async Task SendBillingDealCreditCardTokenExpiredEmail(BillingDeal billingDeal)
+        {
+
         }
     }
 }

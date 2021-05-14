@@ -241,6 +241,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Credit Card expired.
+        /// </summary>
+        public static string CreditCardExpired {
+            get {
+                return ResourceManager.GetString("CreditCardExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CreditCardSecureDetails required.
         /// </summary>
         public static string CreditCardSecureDetailsRequired {
