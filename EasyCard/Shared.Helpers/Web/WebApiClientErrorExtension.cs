@@ -23,5 +23,22 @@ namespace Shared.Helpers
                 return defaultValue;
             }
         }
+
+        public static T TryConvert<T>(this WebApiClientErrorException webApiClientErrorEx)
+        {
+            if (string.IsNullOrEmpty(webApiClientErrorEx.Response))
+            {
+                throw webApiClientErrorEx;
+            }
+
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(webApiClientErrorEx.Response);
+            }
+            catch (Exception)
+            {
+                throw webApiClientErrorEx;
+            }
+        }
     }
 }
