@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Shared.Api;
+using Shared.Api.Configuration;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
@@ -21,9 +22,12 @@ using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Api.Validation;
 using Shared.Business.Security;
+using Shared.Helpers;
+using Shared.Helpers.Email;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Helpers.Queue;
 using Shared.Helpers.Security;
+using Shared.Helpers.Templating;
 using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
@@ -60,6 +64,8 @@ namespace Transactions.Api.Controllers
         private readonly ITerminalsService terminalsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly IQueue billingDealsQueue;
+        private readonly ApiSettings apiSettings;
+        private readonly IEmailSender emailSender;
 
         public BillingController(
             ITransactionsService transactionsService,
@@ -73,7 +79,9 @@ namespace Transactions.Api.Controllers
             IBillingDealService billingDealService,
             IHttpContextAccessorWrapper httpContextAccessor,
             IConsumersService consumersService,
-            IQueueResolver queueResolver)
+            IQueueResolver queueResolver,
+            ApiSettings apiSettings,
+            IEmailSender emailSender)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -88,6 +96,8 @@ namespace Transactions.Api.Controllers
             this.httpContextAccessor = httpContextAccessor;
             this.consumersService = consumersService;
             this.billingDealsQueue = queueResolver.GetQueue(QueueResolver.BillingDealsQueue);
+            this.apiSettings = apiSettings;
+            this.emailSender = emailSender;
         }
 
         [HttpGet]
@@ -294,6 +304,10 @@ namespace Transactions.Api.Controllers
             return new SendBillingDealsToQueueResponse { Status = StatusEnum.Success, Message = Messages.TransactionsQueued, Count = numberOfRecords };
         }
 
+        /// <summary>
+        /// Retrieves billing deals for queue and sends credit card expired emails to customers if required.
+        /// </summary>
+        /// <returns></returns>
         private async Task<IEnumerable<BillingDealQueueEntry>> GetFilteredQueueBillingDeals()
         {
             var filter = new BillingDealsFilter
@@ -310,18 +324,35 @@ namespace Transactions.Api.Controllers
 
             var response = new List<BillingDealQueueEntry>();
 
+            var requiredTerminals = allBillings.Where(b => b.CardExpiration?.Expired == true).Select(t => t.TerminalID).Distinct();
+            var terminals = new Dictionary<Guid, Terminal>();
+
+            if (requiredTerminals.Count() > 0)
+            {
+                terminals = await terminalsService.GetTerminals().Include(t => t.Merchant).Where(t => requiredTerminals.Contains(t.TerminalID)).ToDictionaryAsync(k => k.TerminalID, v => v);
+            }
+
             foreach (var billing in allBillings)
             {
                 if (billing.CardExpiration?.Expired == true)
                 {
                     var dealEntity = await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(b => b.BillingDealID == billing.BillingDealID);
 
+                    logger.LogInformation($"Billing Deal {dealEntity?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity?.CreditCardDetails.CardNumber)} has expired ({dealEntity?.CreditCardDetails.CardExpiration}). Setting it as inactive.");
+
                     if (dealEntity != null)
                     {
                         dealEntity.Active = false;
                         await billingDealService.UpdateEntity(dealEntity);
 
-                        //TODO: send email
+                        if (terminals.ContainsKey(billing.TerminalID))
+                        {
+                            await SendBillingDealCreditCardTokenExpiredEmail(dealEntity, terminals[billing.TerminalID]);
+                        }
+                        else
+                        {
+                            logger.LogError($"Could not send {nameof(SendBillingDealCreditCardTokenExpiredEmail)}. Terminal {billing.TerminalID} was not present in dictionary.");
+                        }
                     }
                 }
                 else
@@ -333,10 +364,56 @@ namespace Transactions.Api.Controllers
             return response;
         }
 
-        //TODO: implement
-        private async Task SendBillingDealCreditCardTokenExpiredEmail(BillingDeal billingDeal)
+        private async Task SendBillingDealCreditCardTokenExpiredEmail(BillingDeal billingDeal, Terminal terminal)
         {
+            var settings = terminal.PaymentRequestSettings;
 
+            //TODO: resources?
+            var emailSubject = $"{terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName}: - פג תוקף כרטיס אשראי המשמש לעסקה מחזורית";
+            var emailTemplateCode = "BillingDealCardExpired";
+            var substitutions = new List<TextSubstitution>
+            {
+                new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo),
+                new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName),
+
+                new TextSubstitution(nameof(billingDeal.DealDetails.DealDescription), billingDeal.DealDetails?.DealDescription ?? string.Empty),
+
+                new TextSubstitution(nameof(billingDeal.CreditCardDetails.CardNumber), billingDeal.CreditCardDetails?.CardNumber ?? string.Empty),
+                new TextSubstitution(nameof(billingDeal.CreditCardDetails.CardOwnerName), billingDeal.CreditCardDetails?.CardOwnerName ?? string.Empty),
+                new TextSubstitution(nameof(billingDeal.DealDetails.ConsumerID), billingDeal.DealDetails.ConsumerID?.ToString() ?? string.Empty),
+                new TextSubstitution(nameof(billingDeal.BillingDealID), billingDeal.BillingDealID.ToString()),
+            };
+
+            if (!string.IsNullOrWhiteSpace(billingDeal.DealDetails?.ConsumerEmail))
+            {
+                var email = new Email
+                {
+                    EmailTo = billingDeal.DealDetails.ConsumerEmail,
+                    Subject = emailSubject,
+                    TemplateCode = emailTemplateCode,
+                    Substitutions = substitutions.ToArray()
+                };
+
+                await emailSender.SendEmail(email);
+            }
+
+            if (terminal.BillingSettings.BillingNotificationsEmails?.Count() > 0)
+            {
+                var merchantEmailTemplateCode = "BillingDealCardExpiredMerchant";
+
+                foreach (var notificationEmail in terminal.BillingSettings.BillingNotificationsEmails)
+                {
+                    var emailToMerchant = new Email
+                    {
+                        EmailTo = notificationEmail,
+                        Subject = emailSubject,
+                        TemplateCode = merchantEmailTemplateCode,
+                        Substitutions = substitutions.ToArray()
+                    };
+
+                    await emailSender.SendEmail(emailToMerchant);
+                }
+            }
         }
     }
 }
