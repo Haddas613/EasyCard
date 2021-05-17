@@ -340,7 +340,7 @@ namespace Transactions.Api.Controllers
                 {
                     var terminal = terminals[billing.TerminalID];
 
-                    if (terminal.BillingSettings.CreateRecurrentPaymentsAutomatically == false)
+                    if (terminal.BillingSettings.CreateRecurrentPaymentsAutomatically.GetValueOrDefault(false) == false)
                     {
                         continue;
                     }
