@@ -261,44 +261,36 @@ namespace Transactions.Api.Controllers
             var query = billingDealService.GetBillingDeals().Filter(filter);
             var numberOfRecords = 0;
 
-            using (var dbTransaction = billingDealService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            var response = new SummariesResponse<Guid>();
+
+            var billings = await GetFilteredQueueBillingDeals();
+
+            var allTerminalsID = billings.Select(b => b.TerminalID).Distinct();
+
+            var terminals = (await terminalsService.GetTerminals().Where(t => allTerminalsID.Contains(t.TerminalID)).ToListAsync())
+                .Where(t => t.EnabledFeatures?.Contains(Merchants.Shared.Enums.FeatureEnum.Billing) == true)
+                .Where(t => t.BillingSettings.CreateRecurrentPaymentsAutomatically == true)
+                .Select(t => t.TerminalID)
+                .ToHashSet();
+
+            var processableBillings = billings.Where(b => terminals.Contains(b.TerminalID)).Select(b => b.BillingDealID);
+
+            numberOfRecords = processableBillings.Count();
+            var batch = new List<Guid>(appSettings.BillingDealsMaxBatchSize);
+            foreach (var id in processableBillings)
             {
-                var response = new SummariesResponse<Guid>();
-
-                var billings = await GetFilteredQueueBillingDeals();
-
-                //var billings = await query.OrderBy(b => b.NextScheduledTransaction)
-                //    .Filter(filter)
-                //    .Join(creditCardTokenService.GetTokens(), o => o.CreditCardToken, i => i.CreditCardTokenID, (l, r) => new { l.BillingDealID, l.TerminalID, r.CardExpiration })
-                //    .ToListAsync();
-
-                var allTerminalsID = billings.Select(b => b.TerminalID).Distinct();
-
-                var terminals = (await terminalsService.GetTerminals().Where(t => allTerminalsID.Contains(t.TerminalID)).ToListAsync())
-                    .Where(t => t.EnabledFeatures?.Contains(Merchants.Shared.Enums.FeatureEnum.Billing) == true)
-                    .Where(t => t.BillingSettings.CreateRecurrentPaymentsAutomatically == true)
-                    .Select(t => t.TerminalID)
-                    .ToHashSet();
-
-                var processableBillings = billings.Where(b => terminals.Contains(b.TerminalID)).Select(b => b.BillingDealID);
-
-                numberOfRecords = processableBillings.Count();
-                var batch = new List<Guid>(appSettings.BillingDealsMaxBatchSize);
-                foreach (var id in processableBillings)
-                {
-                    if (batch.Count == appSettings.BillingDealsMaxBatchSize)
-                    {
-                        await billingDealsQueue.PushToQueue<IEnumerable<Guid>>(batch);
-                        batch.Clear();
-                    }
-
-                    batch.Add(id);
-                }
-
-                if (batch.Count > 0)
+                if (batch.Count == appSettings.BillingDealsMaxBatchSize)
                 {
                     await billingDealsQueue.PushToQueue<IEnumerable<Guid>>(batch);
+                    batch.Clear();
                 }
+
+                batch.Add(id);
+            }
+
+            if (batch.Count > 0)
+            {
+                await billingDealsQueue.PushToQueue<IEnumerable<Guid>>(batch);
             }
 
             return new SendBillingDealsToQueueResponse { Status = StatusEnum.Success, Message = Messages.TransactionsQueued, Count = numberOfRecords };
@@ -315,10 +307,7 @@ namespace Transactions.Api.Controllers
                 OnlyActual = true
             };
 
-            var query = billingDealService.GetBillingDeals().Filter(filter);
-
-            var allBillings = await query.OrderBy(b => b.NextScheduledTransaction)
-                    .Filter(filter)
+            var allBillings = await billingDealService.GetBillingDeals().Filter(filter).OrderBy(b => b.NextScheduledTransaction)
                     .Join(creditCardTokenService.GetTokens(), o => o.CreditCardToken, i => i.CreditCardTokenID, (l, r) => new { l.BillingDealID, l.TerminalID, r.CardExpiration })
                     .ToListAsync();
 
@@ -336,14 +325,9 @@ namespace Transactions.Api.Controllers
 
             foreach (var billing in allBillings)
             {
-                if (terminals.ContainsKey(billing.TerminalID))
+                if (terminals.ContainsKey(billing.TerminalID) && terminals[billing.TerminalID].BillingSettings.CreateRecurrentPaymentsAutomatically.GetValueOrDefault(false) == false)
                 {
-                    var terminal = terminals[billing.TerminalID];
-
-                    if (terminal.BillingSettings.CreateRecurrentPaymentsAutomatically.GetValueOrDefault(false) == false)
-                    {
-                        continue;
-                    }
+                    continue;
                 }
 
                 if (billing.CardExpiration?.Expired == true)
