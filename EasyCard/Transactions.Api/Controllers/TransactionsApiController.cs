@@ -1015,10 +1015,17 @@ namespace Transactions.Api.Controllers
             transaction.CardPresence = CardPresenceEnum.CardNotPresent;
             transaction.TransactionType = TransactionTypeEnum.RegularDeal;
 
-            var actionResult = await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDeal: billingDeal);
+            try
+            {
+                var actionResult = await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDeal: billingDeal);
 
-            var response = actionResult.Result as ObjectResult;
-            return response.Value as OperationResponse;
+                var response = actionResult.Result as ObjectResult;
+                return response.Value as OperationResponse;
+            }
+            catch (BusinessException businessEx)
+            {
+                return new OperationResponse { Message = businessEx.Message, Status = StatusEnum.Error, Errors = businessEx.Errors };
+            }
         }
     }
 }
