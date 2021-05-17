@@ -44,7 +44,7 @@ namespace FunctionsCompositionApp.Billing
                 }
                 else if (response.Errors?.Count() > 0)
                 {
-                    log.LogError($"Trigger Billing Deals Completed with Errors. Success:{response.SuccessfulCount}; Failed: {response.FailedCount}; Response {response.Message}; Errors: {string.Join("; ", response.Errors)}");
+                    log.LogError($"Trigger Billing Deals Completed with Errors. Success:{response.SuccessfulCount}; Failed: {response.FailedCount}; Response {response.Message}; Errors: {string.Join("; ", response.Errors.SelectMany(e => $"{e.Code}:{e.Description}"))}");
                 }
                 else
                 {
