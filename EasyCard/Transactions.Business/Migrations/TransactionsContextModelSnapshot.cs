@@ -25,7 +25,9 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Active")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime?>("BillingDealTimestamp")
                         .HasColumnType("datetime2");
@@ -1165,6 +1167,11 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("PaymentTransactionID")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<string>("ConsumerAddress")
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("CustomerAddress");
+
                             b1.Property<string>("ConsumerEmail")
                                 .HasMaxLength(50)
                                 .IsUnicode(false)
@@ -1180,11 +1187,6 @@ namespace Transactions.Business.Migrations
                                 .IsUnicode(false)
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("ConsumerPhone");
-
-                            b1.Property<string>("CustomerAddress")
-                                .IsUnicode(true)
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("CustomerAddress");
 
                             b1.Property<string>("DealDescription")
                                 .HasMaxLength(500)

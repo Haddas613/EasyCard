@@ -1024,6 +1024,7 @@ namespace Transactions.Api.Controllers
             }
             catch (BusinessException businessEx)
             {
+                logger.LogError($"{nameof(NextBillingDeal)}: {billingDeal.BillingDealID}, Error: {string.Join("; ", businessEx.Errors?.Select(b => $"{b.Code}:{b.Description}"))}");
                 return new OperationResponse { Message = businessEx.Message, Status = StatusEnum.Error, Errors = businessEx.Errors };
             }
         }
