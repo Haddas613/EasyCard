@@ -80,7 +80,7 @@ namespace Transactions.Api.Controllers
             IHttpContextAccessorWrapper httpContextAccessor,
             IConsumersService consumersService,
             IQueueResolver queueResolver,
-            ApiSettings apiSettings,
+            IOptions<ApiSettings> apiSettings,
             IEmailSender emailSender)
         {
             this.transactionsService = transactionsService;
@@ -96,7 +96,7 @@ namespace Transactions.Api.Controllers
             this.httpContextAccessor = httpContextAccessor;
             this.consumersService = consumersService;
             this.billingDealsQueue = queueResolver.GetQueue(QueueResolver.BillingDealsQueue);
-            this.apiSettings = apiSettings;
+            this.apiSettings = apiSettings.Value;
             this.emailSender = emailSender;
         }
 
