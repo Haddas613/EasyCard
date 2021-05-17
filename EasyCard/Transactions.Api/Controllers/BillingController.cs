@@ -334,6 +334,16 @@ namespace Transactions.Api.Controllers
 
             foreach (var billing in allBillings)
             {
+                if (terminals.ContainsKey(billing.TerminalID))
+                {
+                    var terminal = terminals[billing.TerminalID];
+
+                    if (terminal.BillingSettings.CreateRecurrentPaymentsAutomatically == false)
+                    {
+                        continue;
+                    }
+                }
+
                 if (billing.CardExpiration?.Expired == true)
                 {
                     var dealEntity = await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(b => b.BillingDealID == billing.BillingDealID);
