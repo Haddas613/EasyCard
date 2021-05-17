@@ -324,13 +324,15 @@ namespace Transactions.Api.Controllers
 
             var response = new List<BillingDealQueueEntry>();
 
-            var requiredTerminals = allBillings.Where(b => b.CardExpiration?.Expired == true).Select(t => t.TerminalID).Distinct();
-            var terminals = new Dictionary<Guid, Terminal>();
-
-            if (requiredTerminals.Count() > 0)
+            if (allBillings.Count == 0)
             {
-                terminals = await terminalsService.GetTerminals().Include(t => t.Merchant).Where(t => requiredTerminals.Contains(t.TerminalID)).ToDictionaryAsync(k => k.TerminalID, v => v);
+                return response;
             }
+
+            var allTerminalsID = allBillings.Select(t => t.TerminalID).Distinct();
+
+            //TODO: optimize
+            var terminals = await terminalsService.GetTerminals().Include(t => t.Merchant).Where(t => allTerminalsID.Contains(t.TerminalID)).ToDictionaryAsync(k => k.TerminalID, v => v);
 
             foreach (var billing in allBillings)
             {
