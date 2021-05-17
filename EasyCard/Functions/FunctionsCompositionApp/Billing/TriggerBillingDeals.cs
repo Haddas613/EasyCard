@@ -42,6 +42,10 @@ namespace FunctionsCompositionApp.Billing
                 {
                     log.LogError($"Trigger Billing Deals Completed. Success:{response.SuccessfulCount}; Failed: {response.FailedCount}; Response {response.Message};");
                 }
+                else if (response.Errors?.Count() > 0)
+                {
+                    log.LogError($"Trigger Billing Deals Completed with Errors. Success:{response.SuccessfulCount}; Failed: {response.FailedCount}; Response {response.Message}; Errors: {string.Join("; ", response.Errors)}");
+                }
                 else
                 {
                     log.LogInformation($"Trigger Billing Deals Completed. Success:{response.SuccessfulCount}; Failed: 0; Response {response.Message};");
