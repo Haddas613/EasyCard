@@ -86,6 +86,7 @@ namespace Merchants.Api.Data
             var enumFeatures = Enum.GetValues(typeof(FeatureEnum)).Cast<FeatureEnum>();
 
             var addingFeatures = new List<Business.Entities.Merchant.Feature>();
+            var removingFeatures = new List<Business.Entities.Merchant.Feature>();
 
             foreach (var @enum in enumFeatures)
             {
@@ -102,13 +103,32 @@ namespace Merchants.Api.Data
                 }
             }
 
-            if (addingFeatures.Count == 0)
+            foreach (var dbFeature in dbFeatures)
             {
-                return;
+                if (!enumFeatures.Any(f => f == dbFeature.Key))
+                {
+                    removingFeatures.Add(dbFeature.Value);
+                }
             }
 
-            context.AddRange(addingFeatures);
-            context.SaveChanges();
+            bool changed = false;
+
+            if (addingFeatures.Count >= 0)
+            {
+                context.AddRange(addingFeatures);
+                changed = true;
+            }
+
+            if (removingFeatures.Count > 0)
+            {
+                context.RemoveRange(removingFeatures);
+                changed = true;
+            }
+
+            if (changed)
+            {
+                context.SaveChanges();
+            }
         }
     }
 }
