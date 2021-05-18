@@ -15,6 +15,7 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import appConfig from "../../helpers/app-constants.js";
 
 export default {
   model: {
@@ -53,7 +54,7 @@ export default {
 
       this.searchTemplatesTimeout = setTimeout(
         () => this.getTemplates(!val || val.length < 3 ? null : val),
-        1500
+        appConfig.config.ui.typeaheadTimeout
       );
     }
   },
