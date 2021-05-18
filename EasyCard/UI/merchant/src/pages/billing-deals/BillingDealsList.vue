@@ -128,18 +128,7 @@
               class="text-end body-2"
               v-bind:class="{'ecred--text': item.cardExpired}"
             >
-              <v-chip small :color="item.cardExpired ? 'ecred': 'primary'" text-color="white">
-                <v-avatar
-                  left
-                  :color="item.cardExpired ? 'ecred': 'primary'"
-                  class="darken-2"
-                >{{item.numberOfPayments || '∞'}}</v-avatar>
-                {{item.currency}}{{item.transactionAmount}}
-              </v-chip>
-              <!-- <v-badge
-                :color="item.cardExpired ? 'ecred': 'primary'"
-                :content="item.numberOfPayments || '...'"
-              >{{item.currency}}{{item.transactionAmount}}</v-badge>-->
+              {{item.currentDeal || '-'}}
             </v-col>
             <v-col
               cols="12"
