@@ -54,5 +54,7 @@ namespace Transactions.Api.Models.Billing
         /// Billing deals that can be manually triggered
         /// </summary>
         public bool OnlyActual { get; set; }
+
+        public bool FinishedOnly { get; set; }
     }
 }

@@ -14,6 +14,12 @@
       <div class="px-4 py-2">
         <v-form ref="form" v-model="formIsValid">
           <v-row>
+            <v-col cols="12" md="12" class="py-0">
+              <v-switch
+                v-model="model.finishedOnly"
+                :label="$t('Finished')"
+              ></v-switch>
+            </v-col>
             <v-col cols="12" md="6" class="py-0">
               <v-text-field
                 v-model="model.billingDealID"

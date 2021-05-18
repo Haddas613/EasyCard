@@ -124,7 +124,7 @@ namespace Transactions.Api.Controllers
                 {
                     var response = new SummariesResponse<BillingDealSummaryAdmin>();
 
-                    var summary = await mapper.ProjectTo<BillingDealSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(PaymentRequest.PaymentRequestTimestamp), filter.SortDesc)
+                    var summary = await mapper.ProjectTo<BillingDealSummaryAdmin>(query.OrderByDynamic(filter.SortBy ?? nameof(BillingDeal.BillingDealTimestamp), filter.SortDesc)
                         .ApplyPagination(filter)).ToListAsync();
 
                     var terminalsId = summary.Select(t => t.TerminalID).Distinct();
