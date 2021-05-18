@@ -1,6 +1,6 @@
 <template>
   <v-flex>
-    <v-dialog v-model="deleteDialog" width="500">
+    <!-- <v-dialog v-model="deleteDialog" width="500">
       <v-card>
         <v-card-title>{{$t("Confirmation")}}</v-card-title>
         <v-divider></v-divider>
@@ -11,7 +11,7 @@
           <v-btn color="primary" @click="deleteBillingDeal()">{{$t("OK")}}</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
     <v-tabs grow>
       <v-tab key="info">{{$t("GeneralInfo")}}</v-tab>
       <v-tab-item key="info">
@@ -133,12 +133,12 @@ export default {
     };
   },
   methods: {
-    async deleteBillingDeal() {
-      let opResult = await this.$api.billingDeals.deleteBillingDeal(
+    async switchBillingDeal() {
+      let opResult = await this.$api.billingDeals.switchBillingDeal(
         this.$route.params.id
       );
       if (opResult.status === "success") {
-        this.$router.push({ name: "BillingDeals" });
+        this.model.active = !this.model.active;
       }
     }
   },
@@ -186,14 +186,10 @@ export default {
       }
     ]};
 
-    if (this.model.active) {
-      newHeader.threeDotMenu.push({
-        text: this.$t("Delete"),
-        fn: () => { this.deleteDialog = true; }
-      });
-    }else{
-      newHeader.text = { translate: true, value: 'BillingDeal(Deleted)' };
-    }
+    newHeader.threeDotMenu.push({
+      text: this.model.active ? this.$t("Deactivate") : this.$t("Activate"),
+      fn: () => { this.switchBillingDeal() }
+    });
     this.$store.commit("ui/changeHeader", { value: newHeader});
   }
 };

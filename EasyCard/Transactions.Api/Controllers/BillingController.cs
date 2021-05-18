@@ -233,19 +233,19 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
         }
 
-        [HttpDelete]
-        [Route("{BillingDealID}")]
-        public async Task<ActionResult<OperationResponse>> DeleteBillingDeal([FromRoute] Guid billingDealID)
+        [HttpPost]
+        [Route("switch/{BillingDealID}")]
+        public async Task<ActionResult<OperationResponse>> SwitchBillingDeal([FromRoute] Guid billingDealID)
         {
             var billingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
 
-            billingDeal.Active = false;
+            billingDeal.Active = !billingDeal.Active;
 
             billingDeal.ApplyAuditInfo(httpContextAccessor);
 
             await billingDealService.UpdateEntity(billingDeal);
 
-            return Ok(new OperationResponse(Messages.BillingDealDeleted, StatusEnum.Success, billingDealID));
+            return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
         }
 
         [HttpPost]
