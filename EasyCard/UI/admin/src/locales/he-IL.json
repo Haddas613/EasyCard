@@ -331,6 +331,7 @@
   "SendTransactionSlipEmailToMerchant": "שלח שובר במייל לבית העסק",
   "IssueInvoice": "הפק חשבונית",
   "CustomerAddress": "כתובת לקוח",
+  "ShowInactive": "הצג לא פעילים",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",
