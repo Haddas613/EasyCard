@@ -214,7 +214,7 @@ namespace Transactions.Api.Controllers
         [Route("{BillingDealID}")]
         public async Task<ActionResult<OperationResponse>> UpdateBillingDeal([FromRoute] Guid billingDealID, [FromBody] BillingDealUpdateRequest model)
         {
-            var billingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+            var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
 
             if (model.IssueInvoice != true)
             {
@@ -224,9 +224,6 @@ namespace Transactions.Api.Controllers
             mapper.Map(model, billingDeal);
 
             billingDeal.ApplyAuditInfo(httpContextAccessor);
-
-            //TODO: reschedule only on demand ?
-            //billingDeal.NextScheduledTransaction = billingDeal.BillingSchedule.GetInitialScheduleDate();
 
             await billingDealService.UpdateEntity(billingDeal);
 
@@ -294,6 +291,30 @@ namespace Transactions.Api.Controllers
             }
 
             return new SendBillingDealsToQueueResponse { Status = StatusEnum.Success, Message = Messages.TransactionsQueued, Count = numberOfRecords };
+        }
+
+        [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("{billingDealID}/history")]
+        [Authorize(Policy = Policy.AnyAdmin)]
+        public async Task<ActionResult<SummariesResponse<BillingDealHistoryResponse>>> GetTransactionHistory([FromRoute] Guid billingDealID)
+        {
+            EnsureExists(await billingDealService.GetBillingDeals()
+                .Where(m => m.BillingDealID == billingDealID).Select(d => d.BillingDealID).FirstOrDefaultAsync());
+
+            var query = billingDealService.GetBillingDealHistory(billingDealID);
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var numberOfRecords = query.DeferredCount().FutureValue();
+
+                var response = new SummariesResponse<BillingDealHistoryResponse>();
+
+                response.Data = await mapper.ProjectTo<BillingDealHistoryResponse>(query.OrderByDescending(t => t.OperationDate)).Future().ToListAsync();
+                response.NumberOfRecords = numberOfRecords.Value;
+
+                return Ok(response);
+            }
         }
 
         /// <summary>

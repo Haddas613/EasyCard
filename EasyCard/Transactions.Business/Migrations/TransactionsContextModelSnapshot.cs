@@ -120,6 +120,62 @@ namespace Transactions.Business.Migrations
                     b.ToTable("BillingDeal");
                 });
 
+            modelBuilder.Entity("Transactions.Business.Entities.BillingDealHistory", b =>
+                {
+                    b.Property<Guid>("BillingDealHistoryID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("BillingDealID")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CorrelationId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<short>("OperationCode")
+                        .HasMaxLength(30)
+                        .IsUnicode(false)
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("OperationDate")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OperationDescription")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OperationDoneBy")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid?>("OperationDoneByID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("OperationMessage")
+                        .HasMaxLength(250)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("SourceIP")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("BillingDealHistoryID");
+
+                    b.HasIndex("BillingDealID");
+
+                    b.ToTable("BillingDealHistory");
+                });
+
             modelBuilder.Entity("Transactions.Business.Entities.CreditCardTokenDetails", b =>
                 {
                     b.Property<Guid>("CreditCardTokenID")
@@ -827,6 +883,17 @@ namespace Transactions.Business.Migrations
                     b.Navigation("DealDetails");
 
                     b.Navigation("InvoiceDetails");
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.BillingDealHistory", b =>
+                {
+                    b.HasOne("Transactions.Business.Entities.BillingDeal", "BillingDeal")
+                        .WithMany()
+                        .HasForeignKey("BillingDealID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BillingDeal");
                 });
 
             modelBuilder.Entity("Transactions.Business.Entities.CreditCardTokenDetails", b =>

@@ -40,6 +40,8 @@ namespace Transactions.Api.Mapping
                     .MapFrom(d => (d.CreditCardDetails != null && d.CreditCardDetails.CardExpiration != null) ? d.CreditCardDetails.CardExpiration.Expired : default));
 
             CreateMap<BillingDeal, CreateTransactionRequest>();
+
+            CreateMap<BillingDealHistory, BillingDealHistoryResponse>();
         }
     }
 }

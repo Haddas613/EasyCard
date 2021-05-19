@@ -101,6 +101,11 @@
       <v-tab-item key="transactions">
         <transactions-list v-if="transactions" :transactions="transactions" class="pt-4 pb-2"></transactions-list>
       </v-tab-item>
+
+      <v-tab key="history">{{$t("History")}}</v-tab>
+      <v-tab-item key="history">
+        <billing-deal-history v-if="model" :billing-deal-id="model.$billingDealID"></billing-deal-history>
+      </v-tab-item>
     </v-tabs>
   </v-flex>
 </template>
@@ -110,6 +115,8 @@ export default {
   components: {
     BillingScheduleString: () =>
       import("../../components/billing-deals/BillingScheduleString"),
+    BillingDealHistory: () =>
+      import("../../components/billing-deals/BillingDealHistory"),
     TransactionsList: () =>
       import("../../components/transactions/TransactionsList"),
     TransactionItemsList: () =>

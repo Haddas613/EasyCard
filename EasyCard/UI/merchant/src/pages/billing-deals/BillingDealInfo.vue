@@ -11,7 +11,7 @@
           <v-btn color="primary" @click="deleteBillingDeal()">{{$t("OK")}}</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog> -->
+    </v-dialog>-->
     <v-tabs grow>
       <v-tab key="info">{{$t("GeneralInfo")}}</v-tab>
       <v-tab-item key="info">
@@ -139,7 +139,31 @@ export default {
       );
       if (opResult.status === "success") {
         this.model.active = !this.model.active;
+        await this.initThreeDotMenu();
       }
+    },
+    async initThreeDotMenu() {
+      let newHeader = {
+        threeDotMenu: [
+          {
+            text: this.$t("Edit"),
+            fn: () => {
+              this.$router.push({
+                name: "EditBillingDeal",
+                id: this.$route.params.id
+              });
+            }
+          }
+        ]
+      };
+
+      newHeader.threeDotMenu.push({
+        text: this.model.active ? this.$t("Deactivate") : this.$t("Activate"),
+        fn: () => {
+          this.switchBillingDeal();
+        }
+      });
+      this.$store.commit("ui/changeHeader", { value: newHeader });
     }
   },
   async mounted() {
@@ -173,24 +197,7 @@ export default {
         $dictionaries.invoiceTypeEnum[this.model.invoiceDetails.invoiceType];
     }
 
-    let newHeader = {
-      threeDotMenu: [
-      {
-        text: this.$t("Edit"),
-        fn: () => {
-          this.$router.push({
-            name: "EditBillingDeal",
-            id: this.$route.params.id
-          });
-        }
-      }
-    ]};
-
-    newHeader.threeDotMenu.push({
-      text: this.model.active ? this.$t("Deactivate") : this.$t("Activate"),
-      fn: () => { this.switchBillingDeal() }
-    });
-    this.$store.commit("ui/changeHeader", { value: newHeader});
+    await this.initThreeDotMenu();
   }
 };
 </script>
