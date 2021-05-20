@@ -79,6 +79,15 @@ namespace Merchants.Api.Models.Integrations.Shva {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not send new password.
+        /// </summary>
+        public static string CouldNotSetNewPassword {
+            get {
+                return ResourceManager.GetString("CouldNotSetNewPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Either Terminal or Terminal Template ID must be specified.
         /// </summary>
         public static string EitherTerminalOrTerminalTemplateIDMustBeSpecified {

@@ -9,9 +9,9 @@ namespace Merchants.Api.Models.Integrations.Shva
 {
     public class ChangePasswordRequest
     {
-        public Guid TerminalID { get; set; }
+        public Guid? TerminalID { get; set; }
 
-        public Guid? TerminalTemplateID { get; set; }
+        public long? TerminalTemplateID { get; set; }
 
         public string NewPassword { get; set; }
     }

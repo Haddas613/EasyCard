@@ -134,7 +134,7 @@ namespace Merchants.Business.Services
                 }
             }
 
-            var dbEntity = (await GetTerminalTemplateExternalSystems(entity.TerminalTemplateID)).FirstOrDefault(es => es.ExternalSystemID == entity.TerminalTemplateExternalSystemID);
+            var dbEntity = (await GetTerminalTemplateExternalSystems(entity.TerminalTemplateID)).FirstOrDefault(es => es.ExternalSystemID == entity.ExternalSystemID);
 
             if (dbEntity == null)
             {

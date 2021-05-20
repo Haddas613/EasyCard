@@ -35,6 +35,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using Transactions.Api.Services;
 using SharedApi = Shared.Api;
 
 namespace Merchants.Api
@@ -185,12 +186,14 @@ namespace Merchants.Api
             services.AddScoped<IPlansService, PlansService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
             services.AddScoped<IShvaTerminalsService, ShvaTerminalService>();
+            services.AddSingleton<IProcessorResolver, ProcessorResolver>();
 
             services.AddAutoMapper(typeof(Startup));
 
             // DI: identity client
 
             services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
+            services.Configure<Shva.ShvaGlobalSettings>(Configuration.GetSection("ShvaGlobalSettings"));
 
             services.AddSingleton<IExternalSystemsService, ExternalSystemService>(serviceProvider =>
             {
@@ -228,6 +231,17 @@ namespace Merchants.Api
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.EasyInvoiceRequestsLogStorageTable, cfg.EasyInvoiceRequestsLogStorageTable);
 
                 return new EasyInvoice.ECInvoiceInvoicing(webApiClient, chCfg, logger, storageService);
+            });
+
+            services.AddSingleton<Shva.ShvaProcessor, Shva.ShvaProcessor>(serviceProvider =>
+            {
+                var shvaCfg = serviceProvider.GetRequiredService<IOptions<Shva.ShvaGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<Shva.ShvaProcessor>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.ShvaRequestsLogStorageTable, cfg.ShvaRequestsLogStorageTable);
+
+                return new Shva.ShvaProcessor(webApiClient, shvaCfg, logger, storageService);
             });
 
             // DI: request logging

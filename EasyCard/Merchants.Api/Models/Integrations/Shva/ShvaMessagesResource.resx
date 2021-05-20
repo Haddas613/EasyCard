@@ -129,4 +129,7 @@
   <data name="ChangePasswordSetSuccessfully" xml:space="preserve">
     <value>New password set successfully</value>
   </data>
+  <data name="CouldNotSetNewPassword" xml:space="preserve">
+    <value>Could not send new password</value>
+  </data>
 </root>
