@@ -634,7 +634,7 @@ namespace Transactions.Api.Controllers
             transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction);
             if (model.IssueInvoice.GetValueOrDefault())
             {
-                model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings);
+                model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings, transaction);
             }
 
             transaction.Calculate();
