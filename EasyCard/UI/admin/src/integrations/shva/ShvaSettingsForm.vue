@@ -119,7 +119,7 @@ export default {
       }
       let operation = await this.$api.integrations.shva.setNewPassword(payload);
 
-      if(operation.status == "success"){
+      if(operation && operation.status == "success"){
         this.model.settings.password = this.newPasswordModel;
         this.newPasswordDialog = false;
       }

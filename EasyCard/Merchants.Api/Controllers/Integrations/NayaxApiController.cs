@@ -25,6 +25,7 @@ namespace Merchants.Api.Controllers.Integrations
             this.nayaxProcessor = nayaxProcessor;
         }
 
+        [HttpPost]
         public async Task<ActionResult<OperationResponse>> PairDevice(PairRequest request)
         {
             if (!ModelState.IsValid)

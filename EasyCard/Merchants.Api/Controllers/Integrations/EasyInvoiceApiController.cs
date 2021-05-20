@@ -4,12 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using EasyInvoice;
 using Merchants.Api.Models.Integrations.EasyInvoice;
+using Merchants.Business.Entities.Terminal;
+using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using Shared.Api;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Integration;
 
 namespace Merchants.Api.Controllers.Integrations
 {
@@ -20,10 +24,17 @@ namespace Merchants.Api.Controllers.Integrations
     public class EasyInvoiceApiController : ApiControllerBase
     {
         private readonly ECInvoiceInvoicing eCInvoicing;
+        private readonly ITerminalsService terminalsService;
+        private readonly ITerminalTemplatesService terminalTemplatesService;
 
-        public EasyInvoiceApiController(ECInvoiceInvoicing eCInvoicing)
+        public EasyInvoiceApiController(
+            ECInvoiceInvoicing eCInvoicing,
+            ITerminalsService terminalsService,
+            ITerminalTemplatesService terminalTemplatesService)
         {
             this.eCInvoicing = eCInvoicing;
+            this.terminalsService = terminalsService;
+            this.terminalTemplatesService = terminalTemplatesService;
         }
 
         [HttpPost]
@@ -34,6 +45,9 @@ namespace Merchants.Api.Controllers.Integrations
             {
                 return BadRequest(ModelState);
             }
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
+            var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
 
             var createUserResult = await eCInvoicing.CreateCustomer(new EasyInvoice.Models.ECCreateCustomerRequest
             {
@@ -50,6 +64,12 @@ namespace Merchants.Api.Controllers.Integrations
                 response.Status = StatusEnum.Error;
                 response.Message = EasyInvoiceMessagesResource.CustomerAlreadyExists;
             }
+
+            EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+            terminalSettings.Password = request.Password;
+            terminalSettings.UserName = request.UserName;
+            easyInvoiceIntegration.Settings = JObject.FromObject(terminalSettings);
+            await terminalsService.SaveTerminalExternalSystem(easyInvoiceIntegration, terminal);
 
             return Ok(response);
         }

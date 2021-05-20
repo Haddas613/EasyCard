@@ -131,6 +131,7 @@
   "@RedirectURLNumber": "Redirect URL #@number",
   "MustBeValidGUID": "Must be valid GUID",
   "CreditCardExpired": "Credit Card has expired",
+  "InvalidCredentials": "Invalid credentials",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",

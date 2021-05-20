@@ -107,13 +107,15 @@ export default {
       }
       let operation = await this.$api.integrations.easyInvoice.createCustomer(payload);
 
-      //TODO: TEMPORARY (save on server side)
-      if(operation.status == "success"){
+      if(!operation){
+        this.$toasted.show(this.$t("InvalidCredentials"), { type: "error" });
+      }
+
+      if(operation && operation.status == "success"){
         this.model.settings.userName = this.newCustomerModel.userName;
         this.model.settings.password = this.newCustomerModel.password;
         this.newCustomerModel.userName = null;
         this.newCustomerModel.password = null;
-        this.$api[this.apiName].saveExternalSystem(this.terminalId, this.model);
         this.newCustomerDialog = false;
       }
       this.loading = false;

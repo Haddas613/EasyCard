@@ -134,6 +134,7 @@
   "@AppVersion": "מספר גירסה: @version",
   "MustBeValidGUID": "חייב להיות GUID תקין",
   "CreditCardExpired": "פג תוקף כרטיס האשראי",
+  "InvalidCredentials": "משתמש או סיסמא שגויים",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ת.ז.",
