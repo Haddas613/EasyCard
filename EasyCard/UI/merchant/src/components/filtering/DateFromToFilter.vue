@@ -12,7 +12,7 @@
         <template v-slot:activator="{ on }">
           <v-text-field v-model="dateFromRaw" :label="$t('DateFrom')" readonly v-on="on" clearable outlined></v-text-field>
         </template>
-        <v-date-picker v-model="dateFromRaw" no-title scrollable>
+        <v-date-picker v-model="dateFromRaw" no-title scrollable color="primary">
           <v-spacer></v-spacer>
           <v-btn text color="primary" @click="$refs.dateFromMenu.save(dateFromRaw)">{{$t("Ok")}}</v-btn>
         </v-date-picker>
@@ -30,7 +30,7 @@
         <template v-slot:activator="{ on }">
           <v-text-field v-model="dateToRaw" :label="$t('DateTo')" readonly v-on="on" clearable outlined></v-text-field>
         </template>
-        <v-date-picker v-model="dateToRaw" no-title scrollable>
+        <v-date-picker v-model="dateToRaw" no-title scrollable color="primary">
           <v-spacer></v-spacer>
           <v-btn text color="primary" @click="$refs.dateToMenu.save(dateToRaw)">{{$t("Ok")}}</v-btn>
         </v-date-picker>

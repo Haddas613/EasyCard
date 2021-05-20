@@ -43,7 +43,7 @@
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="model.startAt" :min="minDate" no-title scrollable>
+          <v-date-picker v-model="model.startAt" :min="minDate" no-title scrollable color="primary">
             <v-spacer></v-spacer>
             <v-btn text color="primary" @click="$refs.startAtMenu.save(model.startAt)">{{$t("Ok")}}</v-btn>
           </v-date-picker>
@@ -80,7 +80,7 @@
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="model.endAt" :min="model.startAt || minDate" no-title scrollable>
+          <v-date-picker v-model="model.endAt" :min="model.startAt || minDate" no-title scrollable color="primary">
             <v-spacer></v-spacer>
             <v-btn text color="primary" @click="$refs.endAtMenu.save(model.endAt)">{{$t("Ok")}}</v-btn>
           </v-date-picker>
@@ -109,6 +109,8 @@ export default {
   data() {
     return {
       model: {
+        startAt:null,
+        endAt: null,
         ...this.data
       },
       valid: true,

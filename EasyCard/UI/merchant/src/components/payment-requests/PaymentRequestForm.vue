@@ -20,7 +20,7 @@
               v-on="on"
             ></v-text-field>
           </template>
-          <v-date-picker v-model="model.dueDate" :min="minDate" no-title scrollable>
+          <v-date-picker v-model="model.dueDate" :min="minDate" no-title scrollable color="primary">
             <v-spacer></v-spacer>
             <v-btn text color="primary" @click="$refs.dueDateMenu.save(model.dueDate)">{{$t("Ok")}}</v-btn>
           </v-date-picker>
