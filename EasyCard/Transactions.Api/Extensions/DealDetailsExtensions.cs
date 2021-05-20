@@ -61,7 +61,7 @@ namespace Transactions.Api.Extensions
             }
         }
 
-        public static void UpdateInvoiceDetails(this SharedIntegration.Models.Invoicing.InvoiceDetails invoiceDetails, TerminalInvoiceSettings terminalSettings)
+        public static void UpdateInvoiceDetails(this SharedIntegration.Models.Invoicing.InvoiceDetails invoiceDetails, TerminalInvoiceSettings terminalSettings, PaymentTransaction transaction = null)
         {
             if (string.IsNullOrWhiteSpace(invoiceDetails.InvoiceSubject))
             {
@@ -71,6 +71,11 @@ namespace Transactions.Api.Extensions
             if (!(invoiceDetails.SendCCTo?.Count() > 0))
             {
                 invoiceDetails.SendCCTo = terminalSettings.SendCCTo;
+            }
+
+            if (invoiceDetails.InvoiceType == SharedIntegration.Models.Invoicing.InvoiceTypeEnum.InvoiceWithPaymentInfo && transaction != null && transaction.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund)
+            {
+                invoiceDetails.InvoiceType = SharedIntegration.Models.Invoicing.InvoiceTypeEnum.RefundInvoice;
             }
         }
     }

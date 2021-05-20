@@ -42,6 +42,7 @@ namespace Merchants.Api.Controllers.Integrations
             this.systemSettingsService = systemSettingsService;
             this.externalSystemsService = externalSystemsService;
         }
+
         [HttpPost]
         [Route("change-password")]
         public async Task<ActionResult<OperationResponse>> ChangePassword(ChangePasswordRequest request)

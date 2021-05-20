@@ -296,7 +296,7 @@ namespace Transactions.Api.Controllers
 
                     //TODO: Handle refund & credit default invoice types
                     InvoiceDetails invoiceDetails = new InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
-                    invoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings);
+                    invoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings, transaction);
 
                     invoiceRequest.InvoiceDetails = invoiceDetails;
 

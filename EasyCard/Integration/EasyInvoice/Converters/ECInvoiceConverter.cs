@@ -150,8 +150,7 @@ namespace EasyInvoice.Converters
                 InvoiceTypeEnum.Invoice => ECInvoiceDocumentType.INVOICE,
                 InvoiceTypeEnum.InvoiceWithPaymentInfo => ECInvoiceDocumentType.INVOICE_WITH_PAYMENT_INFO,
                 InvoiceTypeEnum.PaymentInfo => ECInvoiceDocumentType.PAYMENT_INFO,
-                InvoiceTypeEnum.RefundInvoice => ECInvoiceDocumentType.REFUND_INVOICE,
-                _ => ECInvoiceDocumentType.INVOICE_WITH_PAYMENT_INFO,
+                InvoiceTypeEnum.RefundInvoice => ECInvoiceDocumentType.REFUND_INVOICE_WITH_PAYMENT_INFO,
             };
         }
     }
