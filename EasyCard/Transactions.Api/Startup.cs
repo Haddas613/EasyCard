@@ -356,8 +356,10 @@ namespace Transactions.Api
             services.AddSingleton<IQueueResolver, QueueResolver>(serviceProvider =>
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
-                var invoiceQueue = new AzureQueue(cfg.DefaultStorageConnectionString, cfg.InvoiceQueueName);
-                return new QueueResolver(invoiceQueue);
+
+                return new QueueResolver()
+                    .AddQueue(cfg.InvoiceQueueName, new AzureQueue(cfg.DefaultStorageConnectionString, cfg.InvoiceQueueName))
+                    .AddQueue(cfg.BillingDealsQueueName, new AzureQueue(cfg.DefaultStorageConnectionString, cfg.BillingDealsQueueName));
             });
 
             var appInsightsConfig = Configuration.GetSection("ApplicationInsights").Get<ApplicationInsightsSettings>();
@@ -410,7 +412,7 @@ namespace Transactions.Api
                     new CultureInfo("en-IL"),
                     new CultureInfo("he-IL")
                 };
-                options.DefaultRequestCulture = new RequestCulture("en-IL");
+                options.DefaultRequestCulture = new RequestCulture("he-IL");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });

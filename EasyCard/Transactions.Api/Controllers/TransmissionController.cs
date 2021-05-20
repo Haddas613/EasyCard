@@ -87,7 +87,7 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetNotTransmittedTransactions([FromQuery] TransmissionFilter filter)
         {
-            var query = transactionsService.GetTransactions().AsNoTracking().Filter(filter).Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission);
+            var query = transactionsService.GetTransactions().Filter(filter).Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission);
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
@@ -110,7 +110,7 @@ namespace Transactions.Api.Controllers
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
                 //TODO: Check with terminal settings
-                var allTerminals = await transactionsService.GetTransactions().AsNoTracking().Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission)
+                var allTerminals = await transactionsService.GetTransactions().Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission)
                     .Select(t => t.TerminalID).Distinct().ToListAsync();
 
                 if (allTerminals.Count == 0)
@@ -224,7 +224,7 @@ namespace Transactions.Api.Controllers
 
                 // TODO: use with batch or with queue
                 var transactionIDs = transactionsResponse.Where(d => d.TransmissionStatus == TransmissionStatusEnum.TransmissionFailed || d.TransmissionStatus == TransmissionStatusEnum.Transmitted).Select(d => d.PaymentTransactionID).ToList();
-                var transactions = await transactionsService.GetTransactions().Where(d => transactionIDs.Contains(d.PaymentTransactionID)).ToListAsync();
+                var transactions = await transactionsService.GetTransactionsForUpdate().Where(d => transactionIDs.Contains(d.PaymentTransactionID)).ToListAsync();
 
                 foreach (var transaction in transactions)
                 {
@@ -244,9 +244,8 @@ namespace Transactions.Api.Controllers
                         {
                             transaction.ShvaTransactionDetails.TransmissionDate = transmissionDate;
                             transaction.ShvaTransactionDetails.ManuallyTransmitted = httpContextAccessor.GetUser().IsMerchant();
-
-                            // TODO: Transmission ID from Shva
                             transaction.ShvaTransactionDetails.ShvaTransmissionNumber = processorResponse.TransmissionReference;
+
                             await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed, transactionOperationCode: TransactionOperationCodesEnum.TransmittedByProcessor);
                         }
                     }
@@ -305,7 +304,7 @@ namespace Transactions.Api.Controllers
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
             {
-                transaction = EnsureExists(await transactionsService.GetTransactions()
+                transaction = EnsureExists(await transactionsService.GetTransactionsForUpdate()
                  .FirstOrDefaultAsync(m => m.PaymentTransactionID == cancelTransmissionRequest.PaymentTransactionID && m.TerminalID == cancelTransmissionRequest.TerminalID));
 
                 if (transaction.Status != TransactionStatusEnum.AwaitingForTransmission || transaction.InvoiceID.HasValue)

@@ -54,18 +54,18 @@ namespace Merchants.Api.Data
                             },
                             Settings = new Shared.Models.SystemGlobalSettings
                             {
-                                CvvRequired = true,
+                                CvvRequired = false,
                                 DefaultChargeDescription = "Goods and services from ECNG",
                                 DefaultItemName = "Custom Item",
                                 DefaultRefundDescription = "Refund from ECNG",
-                                EnableCancellationOfUntransmittedTransactions = true,
-                                J2Allowed = true,
-                                J5Allowed = true,
+                                EnableCancellationOfUntransmittedTransactions = false,
+                                J2Allowed = false,
+                                J5Allowed = false,
                                 MaxCreditInstallments = 12,
                                 MaxInstallments = 12,
                                 MinCreditInstallments = 2,
                                 MinInstallments = 2,
-                                NationalIDRequired = true,
+                                NationalIDRequired = false,
                                 VATRate = 0.17m,
                                 DefaultSKU = "_"
                             }
@@ -86,6 +86,7 @@ namespace Merchants.Api.Data
             var enumFeatures = Enum.GetValues(typeof(FeatureEnum)).Cast<FeatureEnum>();
 
             var addingFeatures = new List<Business.Entities.Merchant.Feature>();
+            var removingFeatures = new List<Business.Entities.Merchant.Feature>();
 
             foreach (var @enum in enumFeatures)
             {
@@ -102,13 +103,32 @@ namespace Merchants.Api.Data
                 }
             }
 
-            if (addingFeatures.Count == 0)
+            foreach (var dbFeature in dbFeatures)
             {
-                return;
+                if (!enumFeatures.Any(f => f == dbFeature.Key))
+                {
+                    removingFeatures.Add(dbFeature.Value);
+                }
             }
 
-            context.AddRange(addingFeatures);
-            context.SaveChanges();
+            bool changed = false;
+
+            if (addingFeatures.Count >= 0)
+            {
+                context.AddRange(addingFeatures);
+                changed = true;
+            }
+
+            if (removingFeatures.Count > 0)
+            {
+                context.RemoveRange(removingFeatures);
+                changed = true;
+            }
+
+            if (changed)
+            {
+                context.SaveChanges();
+            }
         }
     }
 }

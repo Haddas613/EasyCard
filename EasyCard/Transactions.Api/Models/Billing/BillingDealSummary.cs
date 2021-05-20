@@ -41,5 +41,7 @@ namespace Transactions.Api.Models.Billing
         public bool? CardExpired { get; set; }
 
         public bool Active { get; set; }
+
+        public int? CurrentDeal { get; set; }
     }
 }

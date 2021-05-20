@@ -1,6 +1,6 @@
 <template>
   <v-flex>
-    <v-dialog v-model="deleteDialog" width="500">
+    <!-- <v-dialog v-model="deleteDialog" width="500">
       <v-card>
         <v-card-title>{{$t("Confirmation")}}</v-card-title>
         <v-divider></v-divider>
@@ -11,7 +11,7 @@
           <v-btn color="primary" @click="deleteBillingDeal()">{{$t("OK")}}</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog>-->
     <v-tabs grow>
       <v-tab key="info">{{$t("GeneralInfo")}}</v-tab>
       <v-tab-item key="info">
@@ -133,13 +133,37 @@ export default {
     };
   },
   methods: {
-    async deleteBillingDeal() {
-      let opResult = await this.$api.billingDeals.deleteBillingDeal(
+    async switchBillingDeal() {
+      let opResult = await this.$api.billingDeals.switchBillingDeal(
         this.$route.params.id
       );
       if (opResult.status === "success") {
-        this.$router.push({ name: "BillingDeals" });
+        this.model.active = !this.model.active;
+        await this.initThreeDotMenu();
       }
+    },
+    async initThreeDotMenu() {
+      let newHeader = {
+        threeDotMenu: [
+          {
+            text: this.$t("Edit"),
+            fn: () => {
+              this.$router.push({
+                name: "EditBillingDeal",
+                id: this.$route.params.id
+              });
+            }
+          }
+        ]
+      };
+
+      newHeader.threeDotMenu.push({
+        text: this.model.active ? this.$t("Deactivate") : this.$t("Activate"),
+        fn: () => {
+          this.switchBillingDeal();
+        }
+      });
+      this.$store.commit("ui/changeHeader", { value: newHeader });
     }
   },
   async mounted() {
@@ -173,28 +197,7 @@ export default {
         $dictionaries.invoiceTypeEnum[this.model.invoiceDetails.invoiceType];
     }
 
-    let newHeader = {
-      threeDotMenu: [
-      {
-        text: this.$t("Edit"),
-        fn: () => {
-          this.$router.push({
-            name: "EditBillingDeal",
-            id: this.$route.params.id
-          });
-        }
-      }
-    ]};
-
-    if (this.model.active) {
-      newHeader.threeDotMenu.push({
-        text: this.$t("Delete"),
-        fn: () => { this.deleteDialog = true; }
-      });
-    }else{
-      newHeader.text = { translate: true, value: 'BillingDeal(Deleted)' };
-    }
-    this.$store.commit("ui/changeHeader", { value: newHeader});
+    await this.initThreeDotMenu();
   }
 };
 </script>

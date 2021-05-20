@@ -42,4 +42,8 @@ export default class BillingDealsApi {
         billingDeal = this.base.format(billingDeal, this.$headers, dictionaries)
         return billingDeal;
     } 
+
+    async getHistory(billingDealId){
+        return await this.base.get(this.billingUrl + `/${billingDealId}/history`);
+      }
 }

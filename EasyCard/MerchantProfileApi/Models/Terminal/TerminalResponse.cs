@@ -20,6 +20,8 @@ namespace MerchantProfileApi.Models.Terminal
 
         public string Label { get; set; }
 
+        public string MerchantName { get; set; }
+
         public TerminalStatusEnum Status { get; set; }
 
         public DateTime? ActivityStartDate { get; set; }

@@ -60,6 +60,10 @@ namespace Merchants.Business.Services
 
         public async override Task UpdateEntity(Merchant entity, IDbContextTransaction dbTransaction = null)
         {
+            var exist = this.context.Merchants.Find(entity.GetID());
+
+            this.context.Entry(exist).CurrentValues.SetValues(entity);
+
             List<string> changes = new List<string>();
 
             // Must ToArray() here for excluding the AutoHistory model.
@@ -71,37 +75,24 @@ namespace Merchants.Business.Services
 
             var changesStr = string.Concat("[", string.Join(",", changes), "]");
 
+            var history = new MerchantHistory
+            {
+                OperationCode = OperationCodesEnum.MerchantUpdated,
+                MerchantID = entity.MerchantID,
+                OperationDescription = changesStr,
+            };
+
+            history.ApplyAuditInfo(httpContextAccessor);
+
+            context.MerchantHistories.Add(history);
+
             if (dbTransaction != null)
             {
-                await base.UpdateEntity(entity, dbTransaction);
-
-                var history = new MerchantHistory
-                {
-                    OperationCode = OperationCodesEnum.MerchantUpdated,
-                    MerchantID = entity.MerchantID,
-                    OperationDescription = changesStr,
-                };
-
-                history.ApplyAuditInfo(httpContextAccessor);
-
-                context.MerchantHistories.Add(history);
                 await context.SaveChangesAsync();
             }
             else
             {
                 using var transaction = BeginDbTransaction();
-                await base.UpdateEntity(entity, transaction);
-
-                var history = new MerchantHistory
-                {
-                    OperationCode = OperationCodesEnum.MerchantUpdated,
-                    MerchantID = entity.MerchantID,
-                    OperationDescription = changesStr,
-                };
-
-                history.ApplyAuditInfo(httpContextAccessor);
-
-                context.MerchantHistories.Add(history);
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
@@ -131,13 +122,6 @@ namespace Merchants.Business.Services
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
             }
-        }
-
-        public IQueryable<UserInfo> GetMerchantUsers(Guid merchantID)
-        {
-            return context.UserTerminalMappings
-                .Where(d => d.MerchantID == merchantID)
-                .Select(d => new UserInfo { DisplayName = d.DisplayName, Email = d.Email, UserID = d.UserID, Roles = d.Roles, MerchantID = d.MerchantID });
         }
 
         public async Task LinkUserToMerchant(UserInfo userInfo, Guid merchantID, IDbContextTransaction dbTransaction = null)

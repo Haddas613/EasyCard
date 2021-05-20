@@ -38,11 +38,12 @@ namespace MerchantProfileApi.Mapping
 
             CreateMap<TerminalExternalSystem, TerminalExternalSystemDetails>();
             CreateMap<ExternalSystemRequest, TerminalExternalSystem>();
-            CreateMap<ChangePasswordRequest, ExternalSystem>()
-                .ForMember(d => d.Settings, o => o.MapFrom(d => d.ExternalSystem.Settings));
-            CreateMap<TerminalExternalSystem, ExternalSystem>()
-               .ForMember(d => d.Settings, o => o.MapFrom(d => d.Settings));
-            
+
+            //CreateMap<ChangePasswordRequest, ExternalSystem>()
+            //    .ForMember(d => d.Settings, o => o.MapFrom(d => d.ExternalSystem.Settings));
+            //CreateMap<TerminalExternalSystem, ExternalSystem>()
+            //   .ForMember(d => d.Settings, o => o.MapFrom(d => d.Settings));
+
             // Mappings for settings (override terminal settings from system settings if null)
 
             CreateMap<SystemSettings, TerminalResponse>()

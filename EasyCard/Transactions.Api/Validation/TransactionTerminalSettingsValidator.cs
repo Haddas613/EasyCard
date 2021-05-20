@@ -16,6 +16,7 @@ namespace Transactions.Api.Validation
 {
     public class TransactionTerminalSettingsValidator
     {
+        //TODO: validate credit card expiration
         public static void Validate(TerminalSettings terminalSettings, CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialDealID = null)
         {
             if (terminalSettings == null)

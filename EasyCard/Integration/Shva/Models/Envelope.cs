@@ -35,6 +35,8 @@ namespace Shva.Models
         [XmlElement("AshAuth", Type = typeof(AshAuthRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         [XmlElement("TransEMV", Type = typeof(TransEMVRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         [XmlElement("TransEMVResponse", Type = typeof(TransEMVResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        [XmlElement("ChangePassword", Type = typeof(ChangePasswordRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        [XmlElement("ChangePasswordResponse", Type = typeof(ChangePasswordResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         public object Content { get; set; }
     }
 

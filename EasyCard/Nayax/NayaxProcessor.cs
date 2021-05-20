@@ -11,7 +11,6 @@ using Shared.Integration.Models;
 using System;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
-using Transactions.Business.Services;
 
 namespace Nayax
 {

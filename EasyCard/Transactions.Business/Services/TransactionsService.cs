@@ -70,6 +70,24 @@ namespace Transactions.Business.Services
             }
         }
 
+        // this is temporary implementation
+        [Obsolete]
+        public IQueryable<PaymentTransaction> GetTransactionsForUpdate()
+        {
+            if (user.IsAdmin())
+            {
+                return context.PaymentTransactions;
+            }
+            else if (user.IsTerminal())
+            {
+                return context.PaymentTransactions.Where(t => t.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.PaymentTransactions.Where(t => t.MerchantID == user.GetMerchantID());
+            }
+        }
+
         public IQueryable<TransactionHistory> GetTransactionHistories()
         {
             if (user.IsAdmin())
@@ -185,6 +203,10 @@ namespace Transactions.Business.Services
 
         public async Task UpdateEntity(PaymentTransaction entity, string historyMessage, TransactionOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null)
         {
+            var exist = this.context.PaymentTransactions.Find(entity.GetID());
+
+            this.context.Entry(exist).CurrentValues.SetValues(entity);
+
             List<string> changes = new List<string>();
 
             // Must ToArray() here for excluding the AutoHistory model.

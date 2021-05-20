@@ -21,6 +21,7 @@ namespace Shva.Conveters
             changePasswordReq.NewPassword = newPassword;
             return changePasswordReq;
         }
+
         public static AshStartRequestBody GetAshStartRequestBody(this ShvaTerminalSettings shvaParameters)
         {
             var ashStartReq = new AshStartRequestBody();

@@ -104,9 +104,8 @@ export default class TransactionsApi {
         return await this.base.post(this.transactionsUrl + '/refund', data);
     }
 
-    async triggerBillingDeals(terminalID, billingDealsID) {
+    async triggerBillingDeals(billingDealsID) {
       return await this.base.post(this.transactionsUrl + '/trigger-billing-deals', {
-          terminalID,
           billingDealsID
       });
   } 

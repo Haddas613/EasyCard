@@ -8,12 +8,6 @@ namespace Transactions.Api.Models.Billing
 {
     public class CreateTransactionFromBillingDealsRequest
     {
-        /// <summary>
-        /// EasyCard terminal reference
-        /// </summary>
-        [Required(AllowEmptyStrings = false)]
-        public Guid TerminalID { get; set; }
-
         public IEnumerable<Guid> BillingDealsID { get; set; }
     }
 }

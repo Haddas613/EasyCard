@@ -138,6 +138,9 @@
   <data name="Initial" xml:space="preserve">
     <value>ללא</value>
   </data>
+  <data name="PaymentRequest" xml:space="preserve">
+    <value>דרישת תשלום</value>
+  </data>
   <data name="UI" xml:space="preserve">
     <value>UI</value>
   </data>

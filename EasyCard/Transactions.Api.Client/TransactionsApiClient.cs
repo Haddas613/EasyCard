@@ -12,6 +12,8 @@ using Transactions.Api.Models.Transactions;
 using Shared.Api.Models;
 using Transactions.Api.Models.Checkout;
 using Shared.Api.Configuration;
+using Transactions.Api.Models.Billing;
+using SharedApi = Shared.Api;
 
 namespace Transactions.Api.Client
 {
@@ -39,7 +41,7 @@ namespace Transactions.Api.Client
             catch (WebApiClientErrorException clientError)
             {
                 //logger.LogError(clientError.Message);
-                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
             }
         }
 
@@ -52,7 +54,7 @@ namespace Transactions.Api.Client
             catch (WebApiClientErrorException clientError)
             {
                 //logger.LogError(clientError.Message);
-                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
             }
         }
 
@@ -79,7 +81,7 @@ namespace Transactions.Api.Client
             catch (WebApiClientErrorException clientError)
             {
                 //logger.LogError(clientError.Message);
-                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
             }
         }
 
@@ -92,7 +94,20 @@ namespace Transactions.Api.Client
             catch (WebApiClientErrorException clientError)
             {
                 //logger.LogError(clientError.Message);
-                return clientError.TryConvert(new SummariesResponse<TransmitTransactionResponse> { });
+                return clientError.TryConvert<SummariesResponse<TransmitTransactionResponse>>();
+            }
+        }
+
+        public async Task<CreateTransactionFromBillingDealsResponse> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request)
+        {
+            try
+            {
+                return await webApiClient.Post<CreateTransactionFromBillingDealsResponse>(apiConfiguration.TransactionsApiAddress, $"api/transactions/trigger-billing-deals", request, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger.LogError(clientError.Message);
+                return clientError.TryConvert(new CreateTransactionFromBillingDealsResponse { FailedCount = 1, Status = SharedApi.Models.Enums.StatusEnum.Error, Message = clientError.Message });
             }
         }
 
@@ -101,6 +116,18 @@ namespace Transactions.Api.Client
             try
             {
                 return await webApiClient.Get<IEnumerable<Guid>>(apiConfiguration.TransactionsApiAddress, $"api/transmission/nontransmittedtransactionterminals", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException)
+            {
+                throw;
+            }
+        }
+
+        public async Task<SendBillingDealsToQueueResponse> SendBillingDealsToQueue()
+        {
+            try
+            {
+                return await webApiClient.Post<SendBillingDealsToQueueResponse>(apiConfiguration.TransactionsApiAddress, $"api/billing/due-billings", null, BuildHeaders);
             }
             catch (WebApiClientErrorException)
             {
@@ -117,7 +144,7 @@ namespace Transactions.Api.Client
             catch (WebApiClientErrorException clientError)
             {
                 //logger.LogError(clientError.Message);
-                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
             }
         }
 
@@ -130,7 +157,7 @@ namespace Transactions.Api.Client
             catch (WebApiClientErrorException clientError)
             {
                 //logger.LogError(clientError.Message);
-                return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
             }
         }
 

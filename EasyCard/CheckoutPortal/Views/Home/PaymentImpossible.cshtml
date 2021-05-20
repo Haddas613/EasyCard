@@ -1,10 +1,10 @@
-﻿
+﻿@inject CommonLocalizationService localizer
 @{
     ViewData["Title"] = "Welcome";
 }
 
 <div class="text-center">
-    <h2 class="pb-4">Welcome to the checkout portal</h2>
-    <p>To make a payment please use link provided by merchant.</p>
+    <h2 class="pb-4">@localizer.Get("WelcomeTextTop")</h2>
+    <p>@localizer.Get("WelcomeTextBottom")</p>
 </div>
 

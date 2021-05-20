@@ -1,12 +1,13 @@
-﻿
+﻿@inject CommonLocalizationService localizer
+
 @{
     ViewData["Title"] = "PaymentResult";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-    <h1 class="text-center">Payment successful</h1>
+<h1 class="text-center">@localizer.Get("PaymentSuccessful")</h1>
 
-    <center>
-        <img src="~/img/check-circle-outline.png" />
-    </center>
+<center>
+    <img src="~/img/check-circle-outline.png" />
+</center>
 

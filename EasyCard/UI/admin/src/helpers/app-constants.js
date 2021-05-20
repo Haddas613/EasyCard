@@ -22,6 +22,11 @@ const appConstants = {
             Api: 'Api',
             Billing: 'Billing'
         }
+    },
+    config:{
+        ui: {
+            typeaheadTimeout: 1000
+        }
     }
 };
 

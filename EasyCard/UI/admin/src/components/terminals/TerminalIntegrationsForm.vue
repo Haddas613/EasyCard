@@ -120,7 +120,7 @@ export default {
     this.integrationTypes = Object.keys(integrations).map(e => {
       return {
         name: e,
-        disabled: this.lodash.some(this.model.integrations, i => i.externalSystem.type == e)
+        disabled: this.lodash.some(this.model.integrations, i => i.externalSystem && i.externalSystem.type == e)
       }
     });
     this.integrations = integrations;

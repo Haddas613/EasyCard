@@ -51,7 +51,7 @@ export default class BillingDealsApi {
         return await this.base.put(this.billingUrl + `/${id}`, data);
     }
 
-    async deleteBillingDeal(id, data) {
-        return await this.base.delete(this.billingUrl + `/${id}`, data);
+    async switchBillingDeal(id, data) {
+        return await this.base.post(this.billingUrl + `/switch/${id}`, data);
     }
 }

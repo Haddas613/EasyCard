@@ -3,7 +3,7 @@
     <v-card-text class="py-2">
       <v-form class="ec-form" ref="form" lazy-validation>
         <v-select
-          :items="dictionaries.jDealTypeEnum"
+          :items="jDealTypes"
           item-text="description"
           item-value="code"
           v-model="model.jDealType"
@@ -82,7 +82,8 @@ export default {
       vr: ValidationRules,
       switchIssueDocument: this.issueDocument,
       messageDialog: false,
-      invoiceTypeUpd: this.invoiceType
+      invoiceTypeUpd: this.invoiceType,
+      jDealTypes: []
     };
   },
   computed: {
@@ -109,6 +110,21 @@ export default {
       }
 
       this.model.jDealType = this.dictionaries.jDealTypeEnum[0].code;
+      let filteredJDealTypes = [];
+      for (var jDeal of dictionaries.jDealTypeEnum){
+        if(jDeal.code == "J4"){
+          filteredJDealTypes.push(jDeal);
+        }else if(jDeal.code == "J5"){
+          if(this.terminal.settings.j5Allowed){
+            filteredJDealTypes.push(jDeal);
+          }
+        }else if(jDeal.code == "J2"){
+          if(this.terminal.settings.j2Allowed){
+            filteredJDealTypes.push(jDeal);
+          }
+        }
+      }
+      this.jDealTypes = filteredJDealTypes;
       // this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
     }
   },

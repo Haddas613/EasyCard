@@ -24,5 +24,41 @@ namespace Transactions.Shared.Models
         {
             return base.ToString();
         }
+
+        public DateTime? GetNextScheduledDate(DateTime fromDate, int numberOfPaymentsCompleted)
+        {
+            DateTime? date = RepeatPeriodType switch
+            {
+                RepeatPeriodTypeEnum.Montly => fromDate.AddMonths(1),
+                RepeatPeriodTypeEnum.BiMontly => fromDate.AddMonths(2),
+                RepeatPeriodTypeEnum.Quarter => fromDate.AddMonths(3),
+                RepeatPeriodTypeEnum.Year => fromDate.AddYears(1),
+                _ => null
+            };
+
+            if (EndAtType == EndAtTypeEnum.SpecifiedDate && EndAt.HasValue)
+            {
+                return date > EndAt.Value ? null : date;
+            }
+
+            if (EndAtType == EndAtTypeEnum.AfterNumberOfPayments && EndAtNumberOfPayments.HasValue && numberOfPaymentsCompleted > 0)
+            {
+                return numberOfPaymentsCompleted > EndAtNumberOfPayments.Value ? null : date;
+            }
+
+            return date;
+        }
+
+        public DateTime GetInitialScheduleDate()
+        {
+            DateTime date = DateTime.UtcNow;
+
+            if (StartAtType == StartAtTypeEnum.SpecifiedDate && StartAt.HasValue)
+            {
+                date = StartAt.Value;
+            }
+
+            return date;
+        }
     }
 }

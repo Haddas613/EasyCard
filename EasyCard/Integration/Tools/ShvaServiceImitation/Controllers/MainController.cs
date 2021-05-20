@@ -31,6 +31,7 @@ namespace ShvaServiceImitation.Controllers
                 AshAuthRequestBody ashAuthRequest => new ObjectResult(await AshAuth(ashAuthRequest)),
                 AshEndRequestBody ashEndRequest => new ObjectResult(await AshEnd(ashEndRequest)),
                 TransEMVRequestBody transEMVRequest => new ObjectResult(await TransEMV(transEMVRequest)),
+                ChangePasswordRequestBody changePasswordRequest => new ObjectResult(await ChangePassword(changePasswordRequest)),
                 _ => StatusCode(400, "unknown envelope")
             };
 
@@ -118,6 +119,22 @@ namespace ShvaServiceImitation.Controllers
             response.RefNumber = Guid.NewGuid().ToString().Substring(0, 6);
 
             return await Task.FromResult(new Envelope
+            {
+                Body = new Body
+                {
+                    Content = response
+                }
+            });
+        }
+
+        private async Task<Envelope> ChangePassword(ChangePasswordRequestBody body)
+        {
+            var response = new ChangePasswordResponseBody
+            {
+                ChangePasswordResult = (int)ChangePasswordResultEnum.Success
+            };
+
+            return await Task.FromResult(new Envelope 
             {
                 Body = new Body
                 {

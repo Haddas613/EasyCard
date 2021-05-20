@@ -31,6 +31,7 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import appConfig from "../../helpers/app-constants.js";
 
 export default {
   model: {
@@ -69,7 +70,7 @@ export default {
 
       this.searchTerminalsTimeout = setTimeout(
         () => this.getTerminals(!val || val.length < 3 ? null : val),
-        1500
+        appConfig.config.ui.typeaheadTimeout
       );
     },
     async searchMerchants(val) {
@@ -83,7 +84,7 @@ export default {
 
       this.searchMerchantsTimeout = setTimeout(
         () => this.getMerchants(!val || val.length < 3 ? null : val),
-        1500
+        appConfig.config.ui.typeaheadTimeout
       );
     },
     selectedMerchant: async function(val) {

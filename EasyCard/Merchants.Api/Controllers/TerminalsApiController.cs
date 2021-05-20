@@ -200,30 +200,41 @@ namespace Merchants.Api.Controllers
         [Route("{terminalID}/externalsystem")]
         public async Task<ActionResult<OperationResponse>> SaveTerminalExternalSystem([FromRoute]Guid terminalID, [FromBody]ExternalSystemRequest model)
         {
-            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
-            var externalSystem = EnsureExists(externalSystemsService.GetExternalSystem(model.ExternalSystemID), nameof(ExternalSystem));
-
-            var texternalSystem = new TerminalExternalSystem();
-
-            mapper.Map(model, texternalSystem);
-            texternalSystem.TerminalID = terminalID;
-            texternalSystem.Type = externalSystem.Type;
-
-            if (externalSystem.SettingsTypeFullName != null)
+            using (var dbTransaction = terminalsService.BeginDbTransaction())
             {
-                var settingsType = Type.GetType(externalSystem.SettingsTypeFullName);
+                var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
-                if (settingsType == null)
+                var externalSystem = EnsureExists(externalSystemsService.GetExternalSystem(model.ExternalSystemID), nameof(ExternalSystem));
+
+                TerminalExternalSystem texternalSystem = (await terminalsService.GetTerminalExternalSystems(terminalID)).FirstOrDefault(es => es.ExternalSystemID == model.ExternalSystemID);
+
+                if (texternalSystem == null)
                 {
-                    throw new ApplicationException($"Could not create instance of {externalSystem.SettingsTypeFullName}");
+                    texternalSystem = new TerminalExternalSystem();
                 }
 
-                var settings = texternalSystem.Settings.ToObject(settingsType);
-                mapper.Map(settings, terminal);
-                await terminalsService.UpdateEntity(terminal);
-            }
+                mapper.Map(model, texternalSystem);
+                texternalSystem.TerminalID = terminalID;
+                texternalSystem.Type = externalSystem.Type;
 
-            await terminalsService.SaveTerminalExternalSystem(texternalSystem);
+                if (externalSystem.SettingsTypeFullName != null)
+                {
+                    var settingsType = Type.GetType(externalSystem.SettingsTypeFullName);
+
+                    if (settingsType == null)
+                    {
+                        throw new ApplicationException($"Could not create instance of {externalSystem.SettingsTypeFullName}");
+                    }
+
+                    var settings = texternalSystem.Settings.ToObject(settingsType);
+                    mapper.Map(settings, terminal);
+                    await terminalsService.UpdateEntity(terminal, dbTransaction);
+                }
+
+                await terminalsService.SaveTerminalExternalSystem(texternalSystem, terminal, dbTransaction);
+
+                await dbTransaction.CommitAsync();
+            }
 
             return Ok(new OperationResponse(Messages.ExternalSystemSaved, StatusEnum.Success, terminalID));
         }

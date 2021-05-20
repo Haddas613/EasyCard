@@ -137,6 +137,11 @@
               Looks up a localized string similar to Connection success.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.CouldNotSetNewPassword">
+            <summary>
+              Looks up a localized string similar to Could not send new password.
+            </summary>
+        </member>
         <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.EitherTerminalOrTerminalTemplateIDMustBeSpecified">
             <summary>
               Looks up a localized string similar to Either Terminal or Terminal Template ID must be specified.

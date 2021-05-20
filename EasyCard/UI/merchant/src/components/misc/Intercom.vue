@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {
@@ -11,6 +13,16 @@ export default {
   },
   async mounted() {
     this.initIntercom();
+  },
+  computed: {
+    ...mapState({
+      terminalStore: state => state.settings.terminal
+    })
+  },
+  watch: {
+    async 'terminalStore' (newValue, oldValue) {
+      await this.initIntercom();
+    }
   },
   methods: {
     async initIntercom() {
@@ -48,11 +60,11 @@ export default {
       }
 
       let user = await this.$oidc.getUserProfile();
-
+      
       window.Intercom("boot", {
         app_id: APP_ID,
         user_id: user.sub, // user_id
-        name: `${user.extension_FirstName} ${user.extension_LastName}`, // Full name
+        name: `${user.extension_FirstName} ${user.extension_LastName} | ${this.terminalStore.merchantName} | ${this.terminalStore.label}`, // Full name
         email: user.name, // Email address
         //created_at: "1617881513" // Signup date as a Unix timestamp
       });

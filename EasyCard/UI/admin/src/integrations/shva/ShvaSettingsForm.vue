@@ -113,16 +113,14 @@ export default {
       }
       this.loading = true;
       let payload = {
-        ...this.model,
+        newPassword: this.newPasswordModel,
         terminalID: this.apiName == 'terminals' ? this.terminalId : null,
         terminalTemplateID: this.apiName == 'terminalTemplates' ? this.terminalId : null
       }
       let operation = await this.$api.integrations.shva.setNewPassword(payload);
 
-      //TODO: TEMPORARY (save on server side)
       if(operation.status == "success"){
         this.model.settings.password = this.newPasswordModel;
-        this.$api[this.apiName].saveExternalSystem(this.terminalId, this.model);
         this.newPasswordDialog = false;
       }
       this.loading = false;

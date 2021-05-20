@@ -183,6 +183,7 @@ export default {
         this.customer = data;
         this.model.dealDetails.consumerEmail = data.consumerEmail;
         this.model.dealDetails.consumerPhone = data.consumerPhone;
+        this.model.dealDetails.consumerAddress = data.consumerAddress;
         this.model.dealDetails.consumerID = data.consumerID;
         this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState =
           data.consumerName;
@@ -203,6 +204,7 @@ export default {
       this.customer = null;
       this.model.dealDetails.consumerEmail = null;
       this.model.dealDetails.consumerPhone = null;
+      this.model.dealDetails.consumerAddress = null;
       this.model.dealDetails.consumerID = null;
       this.creditCardRefreshState = null;
       if (this.model.creditCardSecureDetails) {
@@ -221,6 +223,7 @@ export default {
       this.customer = data;
       this.model.dealDetails.consumerEmail = data.consumerEmail;
       this.model.dealDetails.consumerPhone = data.consumerPhone;
+      this.model.dealDetails.consumerAddress = data.consumerAddress;
       this.model.dealDetails.consumerID = data.consumerID;
       if (!this.model.creditCardSecureDetails) {
         this.$set(this.model, "creditCardSecureDetails", {

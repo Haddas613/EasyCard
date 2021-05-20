@@ -55,7 +55,9 @@
             <span v-else>{{$t("No")}}</span>
           </template>
           <template v-slot:item.active="{ item }">
-            {{item.active ? $t("Yes") : $t("No")}}
+            <span v-bind:class="{'success--text': item.active, 'error--text': !item.active}">
+              {{item.active ? $t("Yes") : $t("No")}}
+            </span>
           </template>
           <template v-slot:item.actions="{ item }">
             <v-btn color="primary" outlined small link :to="{name: 'BillingDeal', params: {id: item.$billingDealID}}">
@@ -145,7 +147,7 @@ export default {
         });
       }
 
-      let opResult = await this.$api.transactions.triggerBillingDealAdmin(
+      let opResult = await this.$api.transactions.triggerBillingDeals(
         this.lodash.map(billings, i => i.$billingDealID)
       );
 
