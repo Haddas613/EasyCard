@@ -183,10 +183,10 @@ export default {
     }
 
 
-    if (!this.model.active) {
-      var newHeader = { text: { translate: true, value: 'BillingDeal(Deleted)' } };
-      this.$store.commit("ui/changeHeader", { value: newHeader});
-    }
+    // if (!this.model.active) {
+    //   var newHeader = { text: { translate: true, value: 'BillingDeal(Deleted)' } };
+    //   this.$store.commit("ui/changeHeader", { value: newHeader});
+    // }
   }
 };
 </script>

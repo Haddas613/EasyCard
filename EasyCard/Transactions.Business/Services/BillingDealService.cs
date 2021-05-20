@@ -107,7 +107,7 @@ namespace Transactions.Business.Services
             }
         }
 
-        public IQueryable<BillingDealHistory> GetBillingDealHistory(Guid billingDealID) => 
+        public IQueryable<BillingDealHistory> GetBillingDealHistory(Guid billingDealID) =>
             context.BillingDealHistories.Where(h => h.BillingDealID == billingDealID).AsNoTracking();
 
         private async Task AddHistory(Guid billingDealID, string opDescription, string message, BillingDealOperationCodesEnum operationCode)
