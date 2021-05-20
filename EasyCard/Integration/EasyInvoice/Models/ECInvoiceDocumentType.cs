@@ -8,8 +8,8 @@ namespace EasyInvoice.Models
     {
         INVOICE,
         INVOICE_WITH_PAYMENT_INFO,
-        CREDIT_NOTE,
+        CREDIT_NOTE,// REFUND_INVOICE // TODO: check if it is supported by ECInvoice
         PAYMENT_INFO,
-        REFUND_INVOICE // TODO: check if it is supported by ECInvoice
+        REFUND_INVOICE_WITH_PAYMENT_INFO
     }
 }
