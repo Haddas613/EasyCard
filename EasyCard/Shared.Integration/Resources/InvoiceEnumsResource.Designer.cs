@@ -106,7 +106,7 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Refund Invoice.
+        ///   Looks up a localized string similar to Refund Invoice with Payment Info.
         /// </summary>
         public static string RefundInvoice {
             get {

@@ -133,7 +133,7 @@
     <value>Payment Info</value>
   </data>
   <data name="RefundInvoice" xml:space="preserve">
-    <value>Refund Invoice</value>
+    <value>Refund Invoice with Payment Info</value>
   </data>
   <data name="Sending" xml:space="preserve">
     <value>Sending</value>
