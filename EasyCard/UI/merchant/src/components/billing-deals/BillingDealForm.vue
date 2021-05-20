@@ -291,6 +291,7 @@ export default {
       this.model.dealDetails.consumerEmail = data.consumerEmail;
       this.model.dealDetails.consumerPhone = data.consumerPhone;
       this.model.dealDetails.consumerID = data.consumerID;
+      this.model.dealDetails.consumerAddress = data.consumerAddress;
       await this.getCustomerTokens();
     },
     handleClick() {

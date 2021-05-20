@@ -471,6 +471,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
+                    s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
@@ -558,6 +559,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
+                    s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>
@@ -629,6 +631,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
+                    s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
                 });
 
                 builder.OwnsOne(b => b.InvoiceDetails, s =>

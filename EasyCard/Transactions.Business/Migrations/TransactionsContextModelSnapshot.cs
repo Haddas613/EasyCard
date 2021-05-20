@@ -837,6 +837,11 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("BillingDealID")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<string>("ConsumerAddress")
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("CustomerAddress");
+
                             b1.Property<string>("ConsumerEmail")
                                 .HasMaxLength(50)
                                 .IsUnicode(false)
@@ -1016,6 +1021,11 @@ namespace Transactions.Business.Migrations
                             b1.Property<Guid>("InvoiceID")
                                 .HasColumnType("uniqueidentifier");
 
+                            b1.Property<string>("ConsumerAddress")
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("CustomerAddress");
+
                             b1.Property<string>("ConsumerEmail")
                                 .HasMaxLength(50)
                                 .IsUnicode(false)
@@ -1098,6 +1108,11 @@ namespace Transactions.Business.Migrations
                         {
                             b1.Property<Guid>("PaymentRequestID")
                                 .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("ConsumerAddress")
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("CustomerAddress");
 
                             b1.Property<string>("ConsumerEmail")
                                 .HasMaxLength(50)
