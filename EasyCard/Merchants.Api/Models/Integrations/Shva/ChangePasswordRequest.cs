@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 
 namespace Merchants.Api.Models.Integrations.Shva
 {
-    //TODO: Model validation
-    public class NewPasswordRequest
+    public class ChangePasswordRequest
     {
         public Guid? TerminalID { get; set; }
 
-        public Guid? TerminalTemplateID { get; set; }
+        public long? TerminalTemplateID { get; set; }
 
-        public ExternalSystemRequest ExternalSystem { get; set; }
+        public string NewPassword { get; set; }
     }
 }

@@ -10,6 +10,7 @@ namespace Shva
 
         public string Password { get; set; }
 
+        // TODO: rename to ShvaTerminalID
         public string MerchantNumber { get; set; }
     }
 }

@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Nayax.Models
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class ObjectInPhase1RequestParams
     {
         /// <summary>
@@ -21,14 +23,15 @@ namespace Nayax.Models
         /// 6 credit
         /// 8 payments
         /// </summary>
-        public int creditTerms { get; set; }
+        public int? creditTerms { get; set; }
         /// <summary>
         /// number of credit payments
         /// </summary>
-        public int creditPayments { get; set; }
-        public int payments { get; set; }
-        public int firstPaymentAmount { get; set; }
-        public int otherPaymentAmount { get; set; }
+       
+        public int? creditPayments { get; set; }
+        public int? payments { get; set; }
+        public int? firstPaymentAmount { get; set; }
+        public int? otherPaymentAmount { get; set; }
         public string cardHolderID { get; set; }
         /// <summary>
         /// 1 - Normal
@@ -46,5 +49,7 @@ namespace Nayax.Models
         /// 53 refund
         /// </summary>
         public int tranType { get; set; }
+
+        public string sysTraceNumber { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace Nayax
     {
         private const string Phase1Url = "doTransactionPhase1";
         private const string Phase2Url = "doTransactionPhase2";
-
+        private const string Pair = "pair";
         private readonly IWebApiClient apiClient;
         private readonly NayaxGlobalSettings configuration;
         private readonly ILogger logger;
@@ -42,7 +42,7 @@ namespace Nayax
         /// <returns></returns>
         public async Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
         {
-            NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.ProcessorSettings as NayaxTerminalSettings;
+            NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
 
             if (nayaxParameters == null)
             {
@@ -50,18 +50,16 @@ namespace Nayax
             }
 
             var phas1Req = nayaxParameters.GetPhase1RequestBody(configuration);
-
-            ObjectInPhase1RequestParams params2 = paymentTransactionRequest.GetObjectInPhase1RequestParams();
-
+             ObjectInPhase1RequestParams params2 = paymentTransactionRequest.GetObjectInPhase1RequestParams();
+           
             phas1Req.paramss[1] = params2;
             //client.Timeout = TimeSpan.FromSeconds(30); TODO timeout for 30 minutes
-            var phase1ReqResult = await this.apiClient.Post<Models.Phase1ResponseBody>(configuration.BaseUrl, Phase1Url, phas1Req);//this.DoRequest(phas1Req, Phase1Url, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
+            var phase1ReqResult = await this.apiClient.Post<Models.Phase1ResponseBody>(configuration.BaseUrl, Phase1Url, phas1Req, BuildHeaders);//this.DoRequest(phas1Req, Phase1Url, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
 
             var phase1ResultBody = phase1ReqResult as Phase1ResponseBody;
 
             if (phase1ResultBody == null)
             {
-                // return failed response
                 return new ProcessorPreCreateTransactionResponse(" ", RejectionReasonEnum.Unknown, string.Empty);
             }
             int statusPreCreate;
@@ -73,7 +71,7 @@ namespace Nayax
             // end request
 
 
-            if (((PhaseResultEnum)Convert.ToInt32(phase1ResultBody.statusCode)).IsSuccessful())
+            if (phase1ResultBody.IsSuccessful())
             {
                 return phase1ResultBody.GetProcessorPreTransactionResponse();
             }
@@ -90,7 +88,7 @@ namespace Nayax
 
         public async Task<ProcessorCreateTransactionResponse> CreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
         {
-            NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.ProcessorSettings as NayaxTerminalSettings;
+            NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
 
             if (nayaxParameters == null)
             {
@@ -100,11 +98,10 @@ namespace Nayax
             var phase2Req = nayaxParameters.GetPhase2RequestBody(configuration);
 
             ObjectInPhase2RequestParams params2 = paymentTransactionRequest.GetObjectInPhase2RequestParams();
-
             phase2Req.paramss[1] = params2;
 
 
-            var phase2ReqResult = await this.apiClient.Post<Models.Phase2ResponseBody>(configuration.BaseUrl, Phase2Url, phase2Req);//this.DoRequest(phas1Req, Phase1Url, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
+            var phase2ReqResult = await this.apiClient.Post<Models.Phase2ResponseBody>(configuration.BaseUrl, Phase2Url, phase2Req, BuildHeaders);//this.DoRequest(phas1Req, Phase1Url, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
 
             var phase2ResultBody = phase2ReqResult as Phase2ResponseBody;
 
@@ -239,9 +236,101 @@ namespace Nayax
         //    return await Task.FromResult(headers);
         //}
 
+
+        public async Task<PairResponse> PairDevice(PairRequest pairRequest )
+        {
+            //pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
+            //NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
+
+            if (pairRequest == null)
+            {
+                throw new ArgumentNullException("PairDevice request is required");
+            }
+
+            var pairReq = EMVDealHelper.GetPairRequestBody(configuration, pairRequest.posName, pairRequest.terminalID);
+            var pairReqResult = await this.apiClient.Post<Models.PairResponseBody>(configuration.BaseUrl, Pair, pairReq, BuildHeaders);
+
+            var pairResultBody = pairReqResult as PairResponseBody;
+
+            if (pairResultBody == null)
+            {
+                return new PairResponse(Messages.EmptyResponse, string.Empty);
+            }
+            int statusPair;
+            if (!Int32.TryParse(pairResultBody.statusCode, out statusPair))
+            {
+                return new PairResponse(Messages.StatusCodeIsNotValid, pairResultBody.statusCode);
+            }
+            
+
+
+            if (pairResultBody.IsSuccessful())
+            {
+                return new PairResponse();
+            }
+            else if (!String.IsNullOrEmpty(pairResultBody?.statusCode) && !String.IsNullOrEmpty(pairResultBody?.statusMessage))
+            {
+                return new PairResponse(pairResultBody?.statusMessage, pairResultBody?.statusCode);
+            }
+            else
+            {
+                return new PairResponse(Messages.CannotGetErrorCodeFromResponse, pairResultBody.statusCode);
+            }
+        }
+
+        public async Task<PairResponse> AuthenticateDevice(AuthenticateRequest authRequest)
+        {
+            //pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
+            //NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
+
+            if (authRequest == null)
+            {
+                throw new ArgumentNullException("AuthenticaterDevice request is required");
+            }
+
+            var authReq = EMVDealHelper.GetAuthRequestBody(configuration, authRequest.OTP, authRequest.terminalID);
+            var authReqResult = await this.apiClient.Post<Models.AuthResponseBody>(configuration.BaseUrl, Pair, authReq, BuildHeaders);
+
+            var authResultBody = authReqResult as AuthResponseBody;
+
+            if (authResultBody == null)
+            {
+                return new PairResponse(Messages.EmptyResponse, string.Empty);
+            }
+            int statusPair;
+            if (!Int32.TryParse(authResultBody.statusCode, out statusPair))
+            {
+                return new PairResponse(Messages.StatusCodeIsNotValid, authResultBody.statusCode);
+            }
+
+
+            if (authResultBody.IsSuccessful())
+            {
+                return new PairResponse();
+            }
+            else if (!String.IsNullOrEmpty(authResultBody?.statusCode) && !String.IsNullOrEmpty(authResultBody?.statusMessage))
+            {
+                return new PairResponse(authResultBody?.statusMessage, authResultBody?.statusCode);
+            }
+            else
+            {
+                return new PairResponse(Messages.CannotGetErrorCodeFromResponse, authResultBody.statusCode);
+            }
+        }
+
         private async Task HandleIntegrationMessage(IntegrationMessage msg)
         {
             await integrationRequestLogStorageService.Save(msg);
+        }
+
+        private async Task<NameValueCollection> BuildHeaders()
+        {
+            NameValueCollection headers = new NameValueCollection();
+            if (configuration != null)
+            {
+                headers.Add("x-api-key",  configuration.APIKey);
+            }
+            return headers;
         }
     }
 }

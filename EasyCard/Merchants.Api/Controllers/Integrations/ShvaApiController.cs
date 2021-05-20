@@ -2,14 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Merchants.Api.Models.Integrations.Shva;
 using Merchants.Api.Models.Terminal;
+using Merchants.Business.Entities.System;
+using Merchants.Business.Entities.Terminal;
+using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using Shared.Api;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
+using Shared.Integration;
+using Shared.Integration.Models;
+using Shva;
+using Transactions.Api.Services;
 
 namespace Merchants.Api.Controllers.Integrations
 {
@@ -19,31 +28,110 @@ namespace Merchants.Api.Controllers.Integrations
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
     public class ShvaApiController : ApiControllerBase
     {
-        [HttpPost]
-        [Route("new-password")]
-        public async Task<ActionResult<OperationResponse>> NewPassword(NewPasswordRequest request)
-        {
-            if (request.TerminalID.HasValue)
-            {
-                //TODO process terminal
-            }
-            else if (request.TerminalTemplateID.HasValue)
-            {
-                //TODO process terminal template
-            }
-            else
-            {
-                return BadRequest(ShvaMessagesResource.EitherTerminalOrTerminalTemplateIDMustBeSpecified);
-            }
+        private readonly ITerminalsService terminalsService;
+        private readonly IProcessorResolver processorResolver;
+        private readonly IMapper mapper;
+        private readonly ISystemSettingsService systemSettingsService;
+        private readonly IExternalSystemsService externalSystemsService;
+        private readonly ITerminalTemplatesService terminalTemplatesService;
 
-            return Ok(new OperationResponse(ShvaMessagesResource.NewPasswordSetSuccessfully, StatusEnum.Success));
+        public ShvaApiController(
+            ITerminalsService terminalsService,
+            IProcessorResolver processorResolver,
+            IMapper mapper,
+            ISystemSettingsService systemSettingsService,
+            IExternalSystemsService externalSystemsService,
+            ITerminalTemplatesService terminalTemplatesService)
+        {
+            this.mapper = mapper;
+            this.processorResolver = processorResolver;
+            this.terminalsService = terminalsService;
+            this.systemSettingsService = systemSettingsService;
+            this.externalSystemsService = externalSystemsService;
+            this.terminalTemplatesService = terminalTemplatesService;
         }
 
         [HttpPost]
         [Route("test-connection")]
         public async Task<ActionResult<OperationResponse>> TestConnection(ExternalSystemRequest request)
         {
+            //TODO: implement
             return Ok(new OperationResponse(ShvaMessagesResource.ConnectionSuccess, StatusEnum.Success));
+        }
+
+        [HttpPost]
+        [Route("new-password")]
+        public async Task<ActionResult<OperationResponse>> SetNewPassword(ChangePasswordRequest request)
+        {
+            if (request.TerminalTemplateID.HasValue)
+            {
+                return await SetNewPasswordForTerminalTemplate(request.TerminalTemplateID.Value, request.NewPassword);
+            }
+            else
+            {
+                return await SetNewPasswordForTerminal(request.TerminalID.Value, request.NewPassword);
+            }
+        }
+
+        private async Task<OperationResponse> SetNewPasswordForTerminal(Guid terminalID, string newPassword)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+            var terminalProcessor = ValidateExists(
+               terminal.Integrations.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID),
+               Transactions.Shared.Messages.ProcessorNotDefined);
+
+            var processorResponse = await ShvaChangePassword(terminalProcessor, newPassword);
+
+            if (!processorResponse.Success)
+            {
+                return new OperationResponse(ShvaMessagesResource.CouldNotSetNewPassword, StatusEnum.Error);
+            }
+            else
+            {
+                ShvaTerminalSettings terminalSettings = terminalProcessor.Settings.ToObject<ShvaTerminalSettings>();
+                terminalSettings.Password = newPassword;
+                terminalProcessor.Settings = JObject.FromObject(terminalSettings);
+                await terminalsService.SaveTerminalExternalSystem(terminalProcessor, terminal);
+            }
+
+            return new OperationResponse(ShvaMessagesResource.NewPasswordSetSuccessfully, StatusEnum.Success);
+        }
+
+        private async Task<OperationResponse> SetNewPasswordForTerminalTemplate(long terminalTemplate, string newPassword)
+        {
+            var terminal = EnsureExists(await terminalTemplatesService.GetTerminalTemplate(terminalTemplate));
+            var terminalTemplateExternalSystem = ValidateExists(
+               terminal.Integrations.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID),
+               Transactions.Shared.Messages.ProcessorNotDefined);
+
+            var terminalProcessor = mapper.Map<TerminalExternalSystem>(terminalTemplateExternalSystem);
+
+            var processorResponse = await ShvaChangePassword(terminalProcessor, newPassword);
+
+            if (!processorResponse.Success)
+            {
+                return new OperationResponse(ShvaMessagesResource.CouldNotSetNewPassword, StatusEnum.Error);
+            }
+            else
+            {
+                ShvaTerminalSettings terminalSettings = terminalTemplateExternalSystem.Settings.ToObject<ShvaTerminalSettings>();
+                terminalSettings.Password = newPassword;
+                terminalTemplateExternalSystem.Settings = JObject.FromObject(terminalSettings);
+                await terminalTemplatesService.SaveTerminalTemplateExternalSystem(terminalTemplateExternalSystem);
+            }
+
+            return new OperationResponse(ShvaMessagesResource.NewPasswordSetSuccessfully, StatusEnum.Success);
+        }
+
+        private async Task<ProcessorChangePasswordResponse> ShvaChangePassword(TerminalExternalSystem externalSystem, string newPassword)
+        {
+            var processor = processorResolver.GetProcessor(externalSystem);
+
+            var processorSettings = processorResolver.GetProcessorTerminalSettings(externalSystem, externalSystem.Settings);
+
+            var processorRequest = new ProcessorChangePasswordRequest { NewPassword = newPassword };
+            processorRequest.ProcessorSettings = processorSettings;
+            return await ((ShvaProcessor)processor).ChangePassword(processorRequest);
         }
     }
 }

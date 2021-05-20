@@ -95,6 +95,7 @@ namespace Merchants.Api.Mapping
             CreateMap<TerminalTemplateExternalSystem, TerminalExternalSystemDetails>();
             CreateMap<TerminalTemplateExternalSystem, TerminalExternalSystem>();
             CreateMap<ExternalSystemRequest, TerminalTemplateExternalSystem>();
+            CreateMap<ExternalSystemRequest, TerminalExternalSystem>();
             CreateMap<Feature, FeatureSummary>();
             CreateMap<Plan, PlanSummary>();
         }
@@ -145,6 +146,10 @@ namespace Merchants.Api.Mapping
             CreateMap<Shva.ShvaTerminalSettings, Terminal>()
                .ForMember(m => m.ProcessorTerminalReference, s => s.MapFrom(src => src.MerchantNumber))
                .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<Nayax.NayaxTerminalSettings, Terminal>()
+             .ForMember(m => m.ProcessorTerminalReference, s => s.MapFrom(src => src.TerminalID))
+             .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<ClearingHouse.ClearingHouseTerminalSettings, Terminal>()
                .ForMember(m => m.AggregatorTerminalReference, s => s.MapFrom(src => src.MerchantReference))

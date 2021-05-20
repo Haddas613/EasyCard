@@ -126,4 +126,10 @@
   <data name="NewPasswordSetSuccessfully" xml:space="preserve">
     <value>הסיסמה החדשה נקבעה בהצלחה</value>
   </data>
+  <data name="ChangePasswordSetSuccessfully" xml:space="preserve">
+    <value>הסיסמה עודכנה בהצלחה</value>
+  </data>
+  <data name="CouldNotSetNewPassword" xml:space="preserve">
+    <value>נכשלה שליחת סיסמא חדשה</value>
+  </data>
 </root>

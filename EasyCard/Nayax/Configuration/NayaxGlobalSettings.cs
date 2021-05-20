@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Helpers.Security;
+using System;
 using System.Collections.Generic;
 using System.Text;
 

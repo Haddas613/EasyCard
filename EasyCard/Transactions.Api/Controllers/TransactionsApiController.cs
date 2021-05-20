@@ -3,15 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Security;
 using System.Threading.Tasks;
 using AutoMapper;
-using Azure.Security.KeyVault.Secrets;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -25,7 +21,6 @@ using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Api.Validation;
-using Shared.Business.Extensions;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.Email;
@@ -34,7 +29,6 @@ using Shared.Helpers.Queue;
 using Shared.Helpers.Security;
 using Shared.Helpers.Templating;
 using Shared.Integration.Exceptions;
-using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Transactions.Api.Extensions;
@@ -51,6 +45,7 @@ using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
 using Z.EntityFramework.Plus;
+using Merchants.Business.Entities.Terminal;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
 
@@ -298,7 +293,7 @@ namespace Transactions.Api.Controllers
             {
                 if (model.CreditCardToken != null)
                 {
-                    throw new BusinessException(Messages.WhenSpecifiedTokenCCDIsNotValid);
+                    throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDIsNotValid);
                 }
 
                 var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
@@ -321,7 +316,7 @@ namespace Transactions.Api.Controllers
             {
                 if (model.CreditCardSecureDetails != null)
                 {
-                    throw new BusinessException(Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
+                    throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
                 }
 
                 var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
@@ -345,7 +340,7 @@ namespace Transactions.Api.Controllers
 
             if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
             {
-                return BadRequest(new OperationResponse($"{Messages.PaymentRequestStatusIsClosed}", StatusEnum.Error, dbPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+                return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.PaymentRequestStatusIsClosed}", StatusEnum.Error, dbPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
             }
 
             CreateTransactionRequest model = new CreateTransactionRequest();
@@ -357,7 +352,7 @@ namespace Transactions.Api.Controllers
             {
                 if (model.CreditCardToken != null)
                 {
-                    throw new BusinessException(Messages.WhenSpecifiedTokenCCDIsNotValid);
+                    throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDIsNotValid);
                 }
 
                 var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
@@ -382,7 +377,7 @@ namespace Transactions.Api.Controllers
             {
                 if (model.CreditCardSecureDetails != null)
                 {
-                    throw new BusinessException(Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
+                    throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDetailsShouldBeOmitted);
                 }
 
                 var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
@@ -402,7 +397,7 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: opResult?.EntityUID, message: Messages.PaymentRequestPaymentSuccessed);
+                await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: opResult?.EntityUID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
             }
 
             return createResult;
@@ -487,7 +482,7 @@ namespace Transactions.Api.Controllers
         {
             if (request.BillingDealsID == null || request.BillingDealsID.Count() == 0)
             {
-                return BadRequest(new OperationResponse(Messages.BillingDealsRequired, null, HttpContext.TraceIdentifier, nameof(request.BillingDealsID), Messages.BillingDealsRequired));
+                return BadRequest(new OperationResponse(Transactions.Shared.Messages.BillingDealsRequired, null, HttpContext.TraceIdentifier, nameof(request.BillingDealsID), Transactions.Shared.Messages.BillingDealsRequired));
             }
 
             if (request.BillingDealsID.Count() > appSettings.BillingDealsMaxBatchSize)
@@ -623,14 +618,14 @@ namespace Transactions.Api.Controllers
 
                     if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(dbToken.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(dbToken.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        throw new EntityConflictException(Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
+                        throw new EntityConflictException(Transactions.Shared.Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
                     }
                 }
                 else
                 {
                     if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && model.CreditCardSecureDetails != null && !string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(model.CreditCardSecureDetails.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        throw new EntityConflictException(Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
+                        throw new EntityConflictException(Transactions.Shared.Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
                     }
                 }
             }
@@ -649,17 +644,31 @@ namespace Transactions.Api.Controllers
 
             var terminalAggregator = ValidateExists(
                 terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator),
-                Messages.AggregatorNotDefined);
+                Transactions.Shared.Messages.AggregatorNotDefined);
 
             var terminalProcessor = ValidateExists(
                 terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
-                Messages.ProcessorNotDefined);
+                Transactions.Shared.Messages.ProcessorNotDefined);
+
+            var terminalPinPadProcessor = ValidateExists(
+               terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.PinpadProcessor),
+               Transactions.Shared.Messages.ProcessorNotDefined);
+
+            TerminalExternalSystem terminalPinpadProcessor = null;
+            bool pinpadDeal = model.PinPad ?? false;
+            if (pinpadDeal)
+            {
+                terminalPinpadProcessor = ValidateExists(
+                terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.PinpadProcessor),
+                Transactions.Shared.Messages.ProcessorNotDefined);
+            }
 
             transaction.AggregatorID = terminalAggregator.ExternalSystemID;
             transaction.ProcessorID = terminalProcessor.ExternalSystemID;
 
             var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
             var processor = processorResolver.GetProcessor(terminalProcessor);
+            var pinpadProcessor = processorResolver.GetProcessor(terminalPinPadProcessor);
 
             var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
             mapper.Map(aggregatorSettings, transaction);
@@ -667,8 +676,34 @@ namespace Transactions.Api.Controllers
             var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
             mapper.Map(processorSettings, transaction);
 
+            object pinpadProcessorSettings = null;
+            if (pinpadDeal)
+            {
+                pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
+                mapper.Map(pinpadProcessorSettings, transaction);
+            }
+
             await transactionsService.CreateEntity(transaction);
             metrics.TrackTransactionEvent(transaction, TransactionOperationCodesEnum.TransactionCreated);
+
+            ProcessorPreCreateTransactionResponse pinpadPreCreateResult = null;
+            var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
+            if (pinpadDeal)
+            {
+                processorRequest.PinPadProcessorSettings = pinpadProcessorSettings;
+                var lastDeal = await GetLastShvaTransactionDetails(transaction.ShvaTransactionDetails.ShvaTerminalID);
+                mapper.Map(lastDeal, processorRequest); // Map details of prev shva transaction
+
+                pinpadPreCreateResult = await pinpadProcessor.PreCreateTransaction(processorRequest);
+                if (!pinpadPreCreateResult.Success)
+                {
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: pinpadPreCreateResult.ErrorMessage);
+
+                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByProcessor}: {pinpadPreCreateResult.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, pinpadPreCreateResult.Errors));
+                }
+
+                mapper.Map(pinpadPreCreateResult, transaction);
+            }
 
             // create transaction in aggregator (Clearing House)
             if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
@@ -685,7 +720,7 @@ namespace Transactions.Api.Controllers
                     {
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByAggregator, rejectionMessage: aggregatorResponse.ErrorMessage, rejectionReason: aggregatorResponse.RejectReasonCode);
 
-                        return BadRequest(new OperationResponse($"{Messages.RejectedByAggregator}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, aggregatorResponse.Errors));
+                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByAggregator}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, aggregatorResponse.Errors));
                     }
                     else
                     {
@@ -698,7 +733,7 @@ namespace Transactions.Api.Controllers
 
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByAggregator, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
 
-                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByAggregator.ToString(), (ex as IntegrationException)?.Message));
+                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByAggregator.ToString(), (ex as IntegrationException)?.Message));
                 }
             }
 
@@ -707,7 +742,7 @@ namespace Transactions.Api.Controllers
             // create transaction in processor (Shva)
             try
             {
-                var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
+                mapper.Map(transaction, processorRequest);
 
                 if (token != null)
                 {
@@ -720,15 +755,15 @@ namespace Transactions.Api.Controllers
                 }
 
                 processorRequest.ProcessorSettings = processorSettings;
+                var processorResponse = pinpadDeal ? await pinpadProcessor.CreateTransaction(processorRequest) : await processor.CreateTransaction(processorRequest);
 
-                var processorResponse = await processor.CreateTransaction(processorRequest);
                 mapper.Map(processorResponse, transaction);
 
                 if (!processorResponse.Success)
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);
 
-                    processorFailedRsponse = BadRequest(new OperationResponse($"{Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, processorResponse.Errors));
+                    processorFailedRsponse = BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, processorResponse.Errors));
                 }
                 else
                 {
@@ -741,7 +776,7 @@ namespace Transactions.Api.Controllers
 
                 await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, TransactionFinalizationStatusEnum.Initial, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
 
-                processorFailedRsponse = BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByProcesor.ToString(), (ex as IntegrationException)?.Message));
+                processorFailedRsponse = BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByProcesor.ToString(), (ex as IntegrationException)?.Message));
             }
 
             if (aggregator.ShouldBeProcessedByAggregator(transaction.TransactionType, transaction.SpecialTransactionType, transaction.JDealType))
@@ -764,7 +799,7 @@ namespace Transactions.Api.Controllers
 
                             await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
 
-                            return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
+                            return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}: {aggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
                         }
                         else
                         {
@@ -779,7 +814,7 @@ namespace Transactions.Api.Controllers
 
                         await transactionsService.UpdateEntityWithStatus(transaction, finalizationStatus: TransactionFinalizationStatusEnum.FailedToCancelByAggregator);
 
-                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), (ex as IntegrationException)?.Message));
+                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionFinalizationStatusEnum.FailedToCancelByAggregator.ToString(), (ex as IntegrationException)?.Message));
                     }
                 }
 
@@ -805,7 +840,7 @@ namespace Transactions.Api.Controllers
 
                             await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionMessage: commitAggregatorResponse.ErrorMessage, rejectionReason: commitAggregatorResponse.RejectReasonCode);
 
-                            return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, commitAggregatorResponse.Errors));
+                            return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}: {commitAggregatorResponse.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, commitAggregatorResponse.Errors));
                         }
                         else
                         {
@@ -818,7 +853,7 @@ namespace Transactions.Api.Controllers
 
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToCommitByAggregator, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
 
-                        return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToCommitByAggregator.ToString(), (ex as IntegrationException)?.Message));
+                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToCommitByAggregator.ToString(), (ex as IntegrationException)?.Message));
                     }
                 }
             }
@@ -828,12 +863,12 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-               if (jDealType != JDealTypeEnum.J4)
-               {
+                if (jDealType != JDealTypeEnum.J4)
+                {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed);
-               }
-               else
-               {
+                }
+                else
+                {
                     //If aggregator is not required transaction is eligible for transmission
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
                 }
@@ -846,7 +881,7 @@ namespace Transactions.Api.Controllers
                 await billingDealService.UpdateEntity(billingDeal);
             }
 
-            var endResponse = new OperationResponse(Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);
+            var endResponse = new OperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);
 
             // TODO: validate InvoiceDetails
             if (model.IssueInvoice == true)
@@ -871,7 +906,7 @@ namespace Transactions.Api.Controllers
 
                         transaction.InvoiceID = invoiceRequest.InvoiceID;
 
-                        await transactionsService.UpdateEntity(transaction, Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
+                        await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
 
                         var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
 
@@ -887,7 +922,7 @@ namespace Transactions.Api.Controllers
                     {
                         logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
 
-                        endResponse.InnerResponse = new OperationResponse($"{Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
+                        endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
 
                         await dbTransaction.RollbackAsync();
                     }
@@ -904,6 +939,12 @@ namespace Transactions.Api.Controllers
             }
 
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
+        }
+
+        private async Task<ShvaTransactionDetails> GetLastShvaTransactionDetails(string shvaTerminalNumber)
+        {
+            return await this.transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == shvaTerminalNumber)
+                .OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync();
         }
 
         private DocumentOriginEnum GetDocumentOrigin(Guid? billingDealID, Guid? paymentRequestID)

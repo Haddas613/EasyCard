@@ -22,6 +22,7 @@ namespace Nayax.Models
         public int creditTerms { get; set; }
         public string cardName { get; set; }
         public string uid { get; set; }
+        public string sysTraceNumber { get; set; }
     }
 
 }

@@ -24,6 +24,7 @@ namespace Shva
         private const string AshAuthUrl = "AshAuth";
         private const string AshEndUrl = "AshEnd";
         private const string GetTerminalDataUrl = "GetTerminalData";
+        private const string ChangePasswordUrl = "ChangePassword";
         private const string TransEMVUrl = "TransEMV";
 
         private readonly IWebApiClient apiClient;
@@ -161,6 +162,11 @@ namespace Shva
             // TODO: validate response and return error is required response
         }
 
+        public Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ProcessorTransmitTransactionsResponse> TransmitTransactions(ProcessorTransmitTransactionsRequest transmitTransactionsRequest)
         {
             ShvaTerminalSettings shvaParameters = transmitTransactionsRequest.ProcessorSettings as ShvaTerminalSettings;
@@ -198,6 +204,38 @@ namespace Shva
             // TODO: failed case (?)
 
             return res;
+        }
+
+        public async Task<ProcessorChangePasswordResponse> ChangePassword(ProcessorChangePasswordRequest changePasswordRequest)
+        {
+            ShvaTerminalSettings shvaParameters = changePasswordRequest.ProcessorSettings as ShvaTerminalSettings;
+
+            if (shvaParameters == null)
+            {
+                throw new ArgumentNullException("ShvaTerminalSettings (at ProcessorChangePasswordRequest.ProcessorSettings) is required");
+            }
+
+            var changePasswordReq = shvaParameters.GetChangePasswordRequestBody(changePasswordRequest.NewPassword);
+
+            var changePasswordReqResult = await this.DoRequest(changePasswordReq, ChangePasswordUrl, changePasswordRequest.CorrelationId, HandleIntegrationMessage);
+
+            var changePasswordResultBody = changePasswordReqResult?.Body?.Content as ChangePasswordResponseBody;
+
+            if (changePasswordResultBody == null)
+            {
+                // return failed response
+                return new ProcessorChangePasswordResponse(Messages.EmptyResponse, RejectionReasonEnum.Unknown, string.Empty);
+            }
+
+            // Success situation
+            if (((ChangePasswordResultEnum)changePasswordResultBody.ChangePasswordResult).IsSuccessful())
+            {
+                return changePasswordResultBody.GetProcessorChangePasswordResponse();
+            }
+            else
+            {
+                return new ProcessorChangePasswordResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, changePasswordResultBody.ChangePasswordResult.ToString());
+            }
         }
 
         protected async Task<Envelope> DoRequest(object request, string soapAction, string correlationId, Func<IntegrationMessage, Task> handleIntegrationMessage = null)

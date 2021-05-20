@@ -20,9 +20,14 @@ namespace Shared.Integration.Models
         public object ProcessorSettings { get; set; }
 
         /// <summary>
+        /// Nayax terminal settings
+        /// </summary>
+        public object PinPadProcessorSettings { get; set; }
+
+        /// <summary>
         /// Unique transaction ID
         /// </summary>
-        public string TransactionID { get; set; }
+        public string PinPadTransactionID { get; set; }
 
         /// <summary>
         /// Request ID
@@ -104,5 +109,7 @@ namespace Shared.Integration.Models
         /// For billing deal
         /// </summary>
         public object InitialDeal { get; set; }
+
+        public Processor.ShvaTransactionDetails LastDealShvaDetails { get; set; }
     }
 }

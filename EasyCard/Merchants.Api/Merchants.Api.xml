@@ -127,9 +127,19 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.ChangePasswordSetSuccessfully">
+            <summary>
+              Looks up a localized string similar to New password set successfully.
+            </summary>
+        </member>
         <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.ConnectionSuccess">
             <summary>
               Looks up a localized string similar to Connection success.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.CouldNotSetNewPassword">
+            <summary>
+              Looks up a localized string similar to Could not send new password.
             </summary>
         </member>
         <member name="P:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource.EitherTerminalOrTerminalTemplateIDMustBeSpecified">

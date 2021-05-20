@@ -363,7 +363,7 @@ namespace Transactions.Api.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [Route("transmitByTerminal/{terminalID:guid}")]
-        public async Task<ActionResult<SummariesResponse<TransmitTransactionResponse>>> TransmitByTerminal([FromRoute]Guid terminalID)
+        public async Task<ActionResult<SummariesResponse<TransmitTransactionResponse>>> TransmitByTerminal([FromRoute] Guid terminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 

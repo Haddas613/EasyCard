@@ -24,13 +24,21 @@ namespace Transactions.Api.Mapping
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Shva.ShvaCreateTransactionResponse, ShvaTransactionDetails>();
+            CreateMap<Nayax.NayaxCreateTransactionResponse, ShvaTransactionDetails>();
 
             CreateMap<Shva.ShvaTerminalSettings, PaymentTransaction>()
                 .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))
                 .ForAllOtherMembers(d => d.Ignore());
 
+            CreateMap<Nayax.NayaxTerminalSettings, PaymentTransaction>()
+               .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))
+               .ForAllOtherMembers(d => d.Ignore());
+
             CreateMap<Shva.ShvaTerminalSettings, ShvaTransactionDetails>()
                  .ForMember(m => m.ShvaTerminalID, s => s.MapFrom(src => src.MerchantNumber));
+
+            CreateMap<Nayax.NayaxTerminalSettings, ShvaTransactionDetails>()
+                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Shva.ShvaCreateTransactionResponse, CreditCardDetails>()
                  .ForMember(m => m.CardVendor, s => s.MapFrom(src => src.CreditCardVendor));

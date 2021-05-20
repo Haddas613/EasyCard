@@ -5,24 +5,24 @@ using System.Text;
 
 namespace Shared.Integration.Models
 {
-    public class ProcessorPreCreateTransactionResponse
+    public class ProcessorChangePasswordResponse
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProcessorPreCreateTransactionResponse"/> class.
+        /// Initializes a new instance of the <see cref="ProcessorChangePasswordResponse"/> class.
         /// Use in case of success
         /// </summary>
-        public ProcessorPreCreateTransactionResponse()
+        public ProcessorChangePasswordResponse()
         {
             Success = true;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProcessorPreCreateTransactionResponse"/> class.
+        /// Initializes a new instance of the <see cref="ProcessorChangePasswordResponse"/> class.
         /// Use this in case of error response
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <param name="rejectionReasonEnum"></param>
-        public ProcessorPreCreateTransactionResponse(string errorMessage, RejectionReasonEnum errorCode, string errorCodeStr)
+        public ProcessorChangePasswordResponse(string errorMessage, RejectionReasonEnum errorCode, string errorCodeStr)
         {
             Success = false;
             ErrorMessage = errorMessage;
@@ -31,12 +31,12 @@ namespace Shared.Integration.Models
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProcessorPreCreateTransactionResponse"/> class.
+        /// Initializes a new instance of the <see cref="ProcessorChangePasswordResponse"/> class.
         /// Use this in case of error response
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <param name="errorCode"></param>
-        public ProcessorPreCreateTransactionResponse(string errorMessage, string errorCodeStr)
+        public ProcessorChangePasswordResponse(string errorMessage, string errorCodeStr)
         {
             Success = false;
             ErrorMessage = errorMessage;
@@ -55,9 +55,5 @@ namespace Shared.Integration.Models
         public int? OriginalHttpResponseCode { get; set; }
 
         public RejectionReasonEnum RejectReasonCode { get; set; }
-
-        public string CardNumber { get; set; }
-
-        public string PinPadTransactionID { get; set; }
     }
 }

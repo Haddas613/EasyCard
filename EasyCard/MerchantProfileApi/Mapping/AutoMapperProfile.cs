@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MerchantProfileApi.Models.Terminal;
+using Merchants.Api.Models.Integrations.Shva;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.System;
 using Merchants.Business.Entities.Terminal;
@@ -37,6 +38,11 @@ namespace MerchantProfileApi.Mapping
 
             CreateMap<TerminalExternalSystem, TerminalExternalSystemDetails>();
             CreateMap<ExternalSystemRequest, TerminalExternalSystem>();
+
+            //CreateMap<ChangePasswordRequest, ExternalSystem>()
+            //    .ForMember(d => d.Settings, o => o.MapFrom(d => d.ExternalSystem.Settings));
+            //CreateMap<TerminalExternalSystem, ExternalSystem>()
+            //   .ForMember(d => d.Settings, o => o.MapFrom(d => d.Settings));
 
             // Mappings for settings (override terminal settings from system settings if null)
 
