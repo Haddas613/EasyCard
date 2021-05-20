@@ -42,16 +42,25 @@
           </v-col>
         </v-row>
         <v-row no-gutters class="px-1 body-2">
-          <v-switch
-            v-model="billingDealsFilter.onlyActual"
-            @change="getDataFromApi(false)"
-            :hint="$t('WhileEnabledYouCanManuallyTriggerTheTransaction')"
-            :persistent-hint="true"
-          >
-            <template v-slot:label>
-              <small>{{$t('OnlyActual')}}</small>
-            </template>
-          </v-switch>
+          <v-col cols="6">
+            <v-switch
+              v-model="billingDealsFilter.onlyActual"
+              @change="getDataFromApi(false)"
+              :hint="$t('WhileEnabledYouCanManuallyTriggerTheTransaction')"
+              :persistent-hint="true"
+            >
+              <template v-slot:label>
+                <small>{{$t('OnlyActual')}}</small>
+              </template>
+            </v-switch>
+          </v-col>
+          <v-col cols="6">
+            <v-switch v-model="billingDealsFilter.showDeleted" @change="getDataFromApi(false)">
+              <template v-slot:label>
+                <small>{{$t('ShowInactive')}}</small>
+              </template>
+            </v-switch>
+          </v-col>
         </v-row>
       </v-card-text>
     </v-card>
@@ -96,8 +105,8 @@
             </v-tooltip>
             <v-tooltip top v-else-if="!item.active">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn color="ecgray" dark icon v-bind="attrs" v-on="on">
-                  <v-icon :title="$t('Inactive')">mdi-check</v-icon>
+                <v-btn color="ecred" dark icon v-bind="attrs" v-on="on">
+                  <v-icon :title="$t('Inactive')">mdi-close</v-icon>
                 </v-btn>
               </template>
               {{$t('Inactive')}}
@@ -128,25 +137,14 @@
               class="text-end body-2"
               v-bind:class="{'ecred--text': item.cardExpired}"
             >
-              <v-chip small :color="item.cardExpired ? 'ecred': 'primary'" text-color="white">
-                <v-avatar
-                  left
-                  :color="item.cardExpired ? 'ecred': 'primary'"
-                  class="darken-2"
-                >{{item.numberOfPayments || '∞'}}</v-avatar>
-                {{item.currency}}{{item.transactionAmount}}
-              </v-chip>
-              <!-- <v-badge
-                :color="item.cardExpired ? 'ecred': 'primary'"
-                :content="item.numberOfPayments || '...'"
-              >{{item.currency}}{{item.transactionAmount}}</v-badge>-->
+              {{item.currentDeal || '-'}}
             </v-col>
             <v-col
               cols="12"
               md="6"
               lg="6"
               class="text-end font-weight-bold button"
-              v-bind:class="{'ecred--text': item.cardExpired}"
+              v-bind:class="{'ecred--text': item.cardExpired, 'ecgray--text': !item.active}"
             >{{item.transactionAmount | currency(item.$currency)}}</v-col>
           </template>
 

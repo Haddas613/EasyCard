@@ -16,6 +16,12 @@ namespace Shared.Helpers
         public static string GetCardDigits(string cardNumber)
         {
             cardNumber = cardNumber?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(cardNumber))
+            {
+                return null;
+            }
+
             if (cardNumber.Length < 6)
             {
                 cardNumber = cardNumber.PadRight(6, '0');

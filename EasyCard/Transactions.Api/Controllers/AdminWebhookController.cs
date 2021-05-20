@@ -76,7 +76,8 @@ namespace Transactions.Api.Controllers
 
             foreach (var billingId in activeBillings)
             {
-                var actionResult = await billingController.DeleteBillingDeal(billingId);
+                //Since it's active only, switch is guaranteed to mark them as inactive
+                var actionResult = await billingController.SwitchBillingDeal(billingId);
                 var response = actionResult.Result as ObjectResult;
                 var responseData = response.Value as OperationResponse;
 

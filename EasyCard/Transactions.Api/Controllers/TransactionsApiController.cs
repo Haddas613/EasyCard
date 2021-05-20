@@ -211,9 +211,11 @@ namespace Transactions.Api.Controllers
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var response = new SummariesResponse<Models.Transactions.TransactionHistory> { NumberOfRecords = await query.CountAsync() };
+                var numberOfRecords = query.DeferredCount().FutureValue();
+                var response = new SummariesResponse<Models.Transactions.TransactionHistory> ();
 
-                response.Data = await mapper.ProjectTo<Models.Transactions.TransactionHistory>(query.OrderByDescending(t => t.OperationDate)).ToListAsync();
+                response.Data = await mapper.ProjectTo<Models.Transactions.TransactionHistory>(query.OrderByDescending(t => t.OperationDate)).Future().ToListAsync();
+                response.NumberOfRecords = numberOfRecords.Value;
 
                 return Ok(response);
             }
@@ -569,11 +571,18 @@ namespace Transactions.Api.Controllers
 
             // Update card information based on token
             CreditCardTokenDetails dbToken = null;
+
+            //TODO: check token expiration
             if (token != null)
             {
                 if (token.TerminalID != terminal.TerminalID)
                 {
                     throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
+                }
+
+                if (token.CardExpiration?.Expired == true)
+                {
+                    return BadRequest(new OperationResponse($"{Messages.CreditCardExpired}", StatusEnum.Error, model.CreditCardToken));
                 }
 
                 mapper.Map(token, transaction.CreditCardDetails);
@@ -1049,10 +1058,18 @@ namespace Transactions.Api.Controllers
             transaction.CardPresence = CardPresenceEnum.CardNotPresent;
             transaction.TransactionType = TransactionTypeEnum.RegularDeal;
 
-            var actionResult = await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDeal: billingDeal);
+            try
+            {
+                var actionResult = await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDeal: billingDeal);
 
-            var response = actionResult.Result as ObjectResult;
-            return response.Value as OperationResponse;
+                var response = actionResult.Result as ObjectResult;
+                return response.Value as OperationResponse;
+            }
+            catch (BusinessException businessEx)
+            {
+                logger.LogError($"{nameof(NextBillingDeal)}: {billingDeal.BillingDealID}, Error: {string.Join("; ", businessEx.Errors?.Select(b => $"{b.Code}:{b.Description}"))}");
+                return new OperationResponse { Message = businessEx.Message, Status = StatusEnum.Error, Errors = businessEx.Errors };
+            }
         }
     }
 }

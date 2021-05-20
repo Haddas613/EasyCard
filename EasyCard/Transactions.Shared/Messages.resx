@@ -177,6 +177,9 @@
   <data name="CreateRequestSentToAggregator" xml:space="preserve">
     <value>Create transaction request sent to {0}</value>
   </data>
+  <data name="CreditCardExpired" xml:space="preserve">
+    <value>Credit Card expired</value>
+  </data>
   <data name="CreditCardSecureDetailsRequired" xml:space="preserve">
     <value>CreditCardSecureDetails required</value>
   </data>

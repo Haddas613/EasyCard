@@ -46,6 +46,6 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// End-customer Address
         /// </summary>
-        public Address CustomerAddress { get; set; }
+        public Address ConsumerAddress { get; set; }
     }
 }

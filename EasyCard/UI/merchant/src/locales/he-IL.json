@@ -261,6 +261,8 @@
   "IssueInvoice": "הפק חשבונית",
   "CreditCardLast4Numbers": "4 ספרות אחרונות של כ.א",
   "Inactive": "לא פעיל",
+  "ShowInactive": "הצג לא פעילים",
+  "Finished": "הסתיים",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -304,6 +306,8 @@
   "Add": "הוסף",
   "Request": "בקשה",
   "Print": "הדפס",
+  "Activate": "הפעל",
+  "Deactivate": "בטל",
 
   "--AUTH--": null,
   "Login": "כניסה",

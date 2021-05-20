@@ -354,4 +354,7 @@
   <data name="CreditCardSecureDetailsShouldBeOmitted" xml:space="preserve">
     <value>צריך להשמיט CreditCardSecureDetails במידה ועושים שימוש בטוקן</value>
   </data>
+  <data name="CreditCardExpired" xml:space="preserve">
+    <value>פג תוקף כרטיס האשראי</value>
+  </data>
 </root>

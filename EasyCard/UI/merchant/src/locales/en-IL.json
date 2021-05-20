@@ -261,6 +261,8 @@
   "IssueInvoice": "Issue Invoice",
   "CreditCardLast4Numbers": "Credit Card last 4 numbers",
   "Inactive": "Inactive",
+  "ShowInactive": "Show inactive",
+  "Finished": "Finished",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -304,6 +306,8 @@
   "Add": "Add",
   "Request": "Request",
   "Print": "Print",
+  "Activate": "Activate",
+  "Deactivate": "Deactivate",
 
   "--AUTH--": null,
   "Login": "Login",

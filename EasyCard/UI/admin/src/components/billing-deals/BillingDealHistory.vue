@@ -1,7 +1,7 @@
 <template>
   <v-flex fill-height>
     <ec-dialog :dialog.sync="showDetailsDialog">
-      <template v-slot:title>{{$t('Transaction')}}</template>
+      <template v-slot:title>{{$t('BillingDeal')}}</template>
       <template>
         <div v-if="selectedHistory" class="body-1 black--text">
           <h3>
@@ -54,7 +54,7 @@ export default {
     EcDialog: () => import("../ec/EcDialog"),
   },
   props: {
-    transactionId: {
+    billingDealId: {
       type: String,
       required: true
     }
@@ -68,7 +68,7 @@ export default {
       }
   },
   async mounted(){
-      let history = await this.$api.transactions.getHistory(this.transactionId);
+      let history = await this.$api.billingDeals.getHistory(this.billingDealId);
       if (history && history.numberOfRecords > 0){
           this.items = history.data;
       }

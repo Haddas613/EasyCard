@@ -12,5 +12,7 @@ namespace Transactions.Business.Services
         IQueryable<BillingDeal> GetBillingDeals();
 
         IQueryable<BillingDeal> GetBillingDealsForUpdate();
+
+        IQueryable<BillingDealHistory> GetBillingDealHistory(Guid billingDealID);
     }
 }

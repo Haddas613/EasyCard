@@ -27,16 +27,13 @@
               :label="$t('CustomerEmail')"
             ></v-text-field>
           </v-col>
-          <!-- <v-col cols="12" md="4" class="py-0">
-            <v-select
-              :items="dictionaries.currencyEnum"
-              item-text="description"
-              item-value="code"
-              v-model="model.currency"
-              :label="$t('Currency')"
-              clearable
-            ></v-select>
-          </v-col> -->
+          <v-col cols="12" md="4" class="pt-4 pb-0">
+            <v-switch v-model="model.showDeleted">
+              <template v-slot:label>
+                <small>{{$t('ShowInactive')}}</small>
+              </template>
+            </v-switch>
+          </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" md="4" class="py-0">

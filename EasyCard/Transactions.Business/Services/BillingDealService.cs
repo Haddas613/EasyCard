@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
+using Shared.Business.AutoHistory;
 using Shared.Business.Security;
 using Shared.Helpers.Security;
 using System;
@@ -11,6 +12,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Transactions.Business.Data;
 using Transactions.Business.Entities;
+using Transactions.Shared;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Services
 {
@@ -33,6 +36,8 @@ namespace Transactions.Business.Services
             entity.ApplyAuditInfo(httpContextAccessor);
 
             await base.CreateEntity(entity, dbTransaction);
+
+            await AddHistory(entity.BillingDealID, string.Empty, Messages.BillingDealCreated, BillingDealOperationCodesEnum.Created);
         }
 
         public IQueryable<BillingDeal> GetBillingDeals()
@@ -69,8 +74,56 @@ namespace Transactions.Business.Services
 
         public async override Task UpdateEntity(BillingDeal entity, IDbContextTransaction dbTransaction = null)
         {
-            //TODO: audit
-            await base.UpdateEntity(entity, dbTransaction);
+            var exist = this.context.BillingDeals.Find(entity.GetID());
+
+            this.context.Entry(exist).CurrentValues.SetValues(entity);
+
+            List<string> changes = new List<string>();
+
+            // Must ToArray() here for excluding the AutoHistory model.
+            var entries = context.ChangeTracker.Entries().Where(e => e.State == EntityState.Modified || e.State == EntityState.Deleted || e.State == EntityState.Added).ToArray();
+            foreach (var entry in entries)
+            {
+                changes.Add(entry.AutoHistory().Changed);
+            }
+
+            var changesStr = string.Concat("[", string.Join(",", changes), "]");
+
+            entity.UpdatedDate = DateTime.UtcNow;
+
+            //await base.UpdateEntity(entity, dbTransaction);
+
+            if (dbTransaction != null)
+            {
+                await context.SaveChangesAsync();
+                await AddHistory(entity.BillingDealID, changesStr, Messages.BillingDealUpdated, BillingDealOperationCodesEnum.Updated);
+            }
+            else
+            {
+                using var transaction = BeginDbTransaction();
+                await context.SaveChangesAsync();
+                await AddHistory(entity.BillingDealID, changesStr, Messages.BillingDealUpdated, BillingDealOperationCodesEnum.Updated);
+                await transaction.CommitAsync();
+            }
+        }
+
+        public IQueryable<BillingDealHistory> GetBillingDealHistory(Guid billingDealID) =>
+            context.BillingDealHistories.Where(h => h.BillingDealID == billingDealID).AsNoTracking();
+
+        private async Task AddHistory(Guid billingDealID, string opDescription, string message, BillingDealOperationCodesEnum operationCode)
+        {
+            var historyRecord = new BillingDealHistory
+            {
+                BillingDealID = billingDealID,
+                OperationCode = operationCode,
+                OperationDescription = opDescription,
+                OperationMessage = message
+            };
+
+            historyRecord.ApplyAuditInfo(httpContextAccessor);
+
+            context.BillingDealHistories.Add(historyRecord);
+            await context.SaveChangesAsync();
         }
     }
 }

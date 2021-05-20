@@ -24,9 +24,13 @@ namespace Transactions.Api.Extensions.Filtering
             {
                 src = src.Where(t => t.Active && t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= DateTime.Today);
             }
-            else
+            else if (filter.FinishedOnly == true)
             {
-                src = src.Where(t => t.Active == !filter.ShowOnlyDeleted);
+                src = src.Where(t => t.NextScheduledTransaction == null);
+            }
+            else if (filter.ShowDeleted == false)
+            {
+                src = src.Where(t => t.Active == true);
             }
 
             if (filter.TerminalID != null)

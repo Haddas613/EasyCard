@@ -360,8 +360,9 @@ export default {
             this.model.dealDetails.consumerID
           )
         ).data || [];
-
-      this.token = this.customerTokens.length === 1 ? this.customerTokens[0] : null;
+      if(this.customerTokens.length === 1){
+        this.token = this.customerTokens[0];
+      }
     },
     calculateTotal(){
       itemPricingService.total.calculateWithoutItems(this.model, 'transactionAmount', { vatRate: this.terminalStore.settings.vatRate });
@@ -395,12 +396,12 @@ export default {
             this.model.dealDetails.consumerID
           )
         ).data || [];
-
       if (this.model.creditCardToken) {
         this.selectedToken = this.lodash.find(
           this.customerTokens,
           t => t.creditCardTokenID === this.model.creditCardToken
         );
+        
       }
     }
     this.calculateTotal();
