@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MerchantProfileApi.Models.Terminal;
-using Merchants.Api.Models.Integrations.Shva;
 using Merchants.Business.Entities.Merchant;
 using Merchants.Business.Entities.System;
 using Merchants.Business.Entities.Terminal;
