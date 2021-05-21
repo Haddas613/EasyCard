@@ -26,7 +26,7 @@
           <b>{{model.$transactionTimestamp | ecdate('LLLL')}}</b>
         </div>
       </div>
-      <div class="print-entity">
+      <!-- <div class="print-entity">
         <div>{{$t('VAT')}}</div>
         <div>
           <b>{{(model.vatRate * 100).toFixed(0)}}%</b>
@@ -43,7 +43,7 @@
         <div>
           <b>{{model.netTotal | currency(model.$currency)}}</b>
         </div>
-      </div>
+      </div> -->
       <div class="print-entity">
         <div>{{$t('Amount')}}</div>
         <div>
@@ -71,7 +71,7 @@
       <div class="print-entity">
         <div>{{$t('CardNumber')}}</div>
         <div>
-          <b>{{model.creditCardDetails.cardNumber}}</b>
+          <b dir="ltr">{{model.creditCardDetails.cardNumber}}</b>
         </div>
       </div>
       <div class="print-entity">
