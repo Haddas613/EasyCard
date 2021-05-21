@@ -198,7 +198,7 @@ class ApiBase {
                             }
                         }
                     ]});
-                    return null;
+                    return { status: "error", message: i18n.t('ServerErrorTryAgainLater') };
                 }
             }
 
