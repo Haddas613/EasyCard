@@ -14,8 +14,11 @@
 
 <script>
     document.getElementById("culture-options").addEventListener("change", () => {
-        //document.getElementById("culture-switcher").submit();
-        let url = window.location.toString().replace(/\&culture=[a-z]*/, "");
-        window.location = url + "&culture=" + document.getElementById("culture-options").value;
+        if (window.location.search != "") {
+            let url = window.location.toString().replace(/\&culture=[a-z]*/, "");
+            window.location = url + "&culture=" + document.getElementById("culture-options").value;
+        } else {
+            window.location.search = "?culture=" + document.getElementById("culture-options").value;
+        }
     });
 </script>
