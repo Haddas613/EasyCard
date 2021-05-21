@@ -263,6 +263,7 @@
   "Inactive": "Inactive",
   "ShowInactive": "Show inactive",
   "Finished": "Finished",
+  "SendTransactionSlipEmail": "Send Transaction slip email",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

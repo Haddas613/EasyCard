@@ -122,6 +122,8 @@ export default {
       if(operation && operation.status == "success"){
         this.model.settings.password = this.newPasswordModel;
         this.newPasswordDialog = false;
+      }else if(operation && operation.message){
+        this.$toasted.show(operation.message, { type: 'error' });
       }
       this.loading = false;
     },

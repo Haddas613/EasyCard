@@ -533,6 +533,39 @@ namespace Transactions.Api.Controllers
             return Ok(response);
         }
 
+        [HttpPost]
+        [Route("send-transaction-slip-email")]
+        public async Task<ActionResult<OperationResponse>> CreateTransactionsFromBillingDeals(SendTransactionSlipEmailRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == request.TransactionID));
+
+            if (transaction.Status != TransactionStatusEnum.Completed)
+            {
+                return BadRequest(Messages.TransactionMustBeCompleted);
+            }
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
+
+            var response = new OperationResponse
+            {
+                Status = StatusEnum.Success,
+                Message = Messages.EmailSent
+            };
+
+            // replace the data with required parameters for one time use, do not save
+            transaction.DealDetails.ConsumerEmail = request.Email;
+            terminal.Settings.SendTransactionSlipEmailToMerchant = false;
+
+            await SendTransactionSuccessEmails(transaction, terminal);
+
+            return Ok(response);
+        }
+
         private async Task<ActionResult<OperationResponse>> ProcessTransaction(CreateTransactionRequest model, CreditCardTokenKeyVault token, JDealTypeEnum jDealType = JDealTypeEnum.J4, SpecialTransactionTypeEnum specialTransactionType = SpecialTransactionTypeEnum.RegularDeal, Guid? initialTransactionID = null, BillingDeal billingDeal = null, Guid? paymentRequestID = null)
         {
             // TODO: caching
@@ -977,7 +1010,7 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        private async Task SendTransactionSuccessEmails(PaymentTransaction transaction, Merchants.Business.Entities.Terminal.Terminal terminal)
+        private async Task SendTransactionSuccessEmails(PaymentTransaction transaction, Merchants.Business.Entities.Terminal.Terminal terminal, string emailTo = null)
         {
             var settings = terminal.PaymentRequestSettings;
 

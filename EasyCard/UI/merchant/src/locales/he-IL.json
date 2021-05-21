@@ -263,6 +263,7 @@
   "Inactive": "לא פעיל",
   "ShowInactive": "הצג לא פעילים",
   "Finished": "הסתיים",
+  "SendTransactionSlipEmail": "שלח שובר במייל",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
