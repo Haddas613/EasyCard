@@ -294,6 +294,24 @@ namespace IdentityServer
 
             //app.UseCookiePolicy();
 
+            app.UseXXssProtection(options => options.EnabledWithBlockMode());
+            //app.UseXfo(options => options.SameOrigin());
+            app.UseReferrerPolicy(opts => opts.NoReferrerWhenDowngrade());
+
+            app.UseCsp(options => options
+                .DefaultSources(s => s.Self()
+                    .CustomSources("data:")
+                    .CustomSources("https:"))
+                .StyleSources(s => s.Self()
+                    .CustomSources("ecngpublic.blob.core.windows.net")
+                )
+                .ScriptSources(s => s.Self()
+                    .CustomSources("az416426.vo.msecnd.net")
+                )
+                .FrameAncestors(s => s.Self())
+                .FormActions(s => s.Self())
+            );
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
