@@ -48,6 +48,7 @@ using Z.EntityFramework.Plus;
 using Merchants.Business.Entities.Terminal;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
+using Shared.Integration.ExternalSystems;
 
 namespace Transactions.Api.Controllers
 {
@@ -212,7 +213,7 @@ namespace Transactions.Api.Controllers
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
                 var numberOfRecords = query.DeferredCount().FutureValue();
-                var response = new SummariesResponse<Models.Transactions.TransactionHistory> ();
+                var response = new SummariesResponse<Models.Transactions.TransactionHistory>();
 
                 response.Data = await mapper.ProjectTo<Models.Transactions.TransactionHistory>(query.OrderByDescending(t => t.OperationDate)).Future().ToListAsync();
                 response.NumberOfRecords = numberOfRecords.Value;
@@ -682,11 +683,7 @@ namespace Transactions.Api.Controllers
             var terminalProcessor = ValidateExists(
                 terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
                 Transactions.Shared.Messages.ProcessorNotDefined);
-
-            var terminalPinPadProcessor = ValidateExists(
-               terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.PinpadProcessor),
-               Transactions.Shared.Messages.ProcessorNotDefined);
-
+          
             TerminalExternalSystem terminalPinpadProcessor = null;
             bool pinpadDeal = model.PinPad ?? false;
             if (pinpadDeal)
@@ -701,7 +698,11 @@ namespace Transactions.Api.Controllers
 
             var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
             var processor = processorResolver.GetProcessor(terminalProcessor);
-            var pinpadProcessor = processorResolver.GetProcessor(terminalPinPadProcessor);
+            IProcessor pinpadProcessor = null;
+            if (pinpadDeal)
+            {
+                pinpadProcessor = processorResolver.GetProcessor(terminalPinpadProcessor);
+            }
 
             var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
             mapper.Map(aggregatorSettings, transaction);
