@@ -172,9 +172,12 @@ namespace CheckoutPortal.Controllers
                     logger.LogError($"{nameof(Charge)}.{nameof(transactionsApiClient.CreateTransaction)}: {result.Message}");
 
                     ModelState.AddModelError("Charge", result.Message);
-                    foreach (var err in result.Errors)
+                    if (result.Errors?.Count() > 0)
                     {
-                        ModelState.AddModelError(err.Code, err.Description);
+                        foreach (var err in result.Errors)
+                        {
+                            ModelState.AddModelError(err.Code, err.Description);
+                        }
                     }
 
                     return View("Index", request);
