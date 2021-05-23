@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Shva
@@ -284,6 +285,10 @@ namespace Shva
                 if (handleIntegrationMessage != null)
                 {
                     IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, correlationId);
+
+                    //Do not expose credit card and cvv numbers in log
+                    requestStr = Regex.Replace(requestStr, "\"\\d{9,16}\"", "\"****\"");
+                    requestStr = Regex.Replace(requestStr, "\"\\d{3,4}\"", "\"***\"");
 
                     integrationMessage.Request = requestStr;
                     integrationMessage.Response = responseStr;

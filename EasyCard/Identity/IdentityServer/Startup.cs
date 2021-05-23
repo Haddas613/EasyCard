@@ -75,6 +75,11 @@ namespace IdentityServer
                 logging.AddAzureWebAppDiagnostics();
             });
 
+            services.AddAntiforgery(options =>
+            {
+                options.SuppressXFrameOptionsHeader = true;
+            });
+
             services.AddControllersWithViews()
                  .AddNewtonsoftJson(options =>
                  {
@@ -93,7 +98,6 @@ namespace IdentityServer
                 options.Password.RequireLowercase = false;
                 options.Password.RequireDigit = true;
                 options.Password.RequireNonAlphanumeric = true;
-                //options.Password.RequiredUniqueChars = 5;
             });
 
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention

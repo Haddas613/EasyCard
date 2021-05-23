@@ -73,7 +73,7 @@ namespace CheckoutPortal.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Charge(ChargeViewModel request)
         {
@@ -172,9 +172,12 @@ namespace CheckoutPortal.Controllers
                     logger.LogError($"{nameof(Charge)}.{nameof(transactionsApiClient.CreateTransaction)}: {result.Message}");
 
                     ModelState.AddModelError("Charge", result.Message);
-                    foreach (var err in result.Errors)
+                    if (result.Errors?.Count() > 0)
                     {
-                        ModelState.AddModelError(err.Code, err.Description);
+                        foreach (var err in result.Errors)
+                        {
+                            ModelState.AddModelError(err.Code, err.Description);
+                        }
                     }
 
                     return View("Index", request);
@@ -196,6 +199,7 @@ namespace CheckoutPortal.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> CancelPayment(ChargeViewModel request)
         {
