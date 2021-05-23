@@ -5,6 +5,7 @@
 @model ChargeViewModel
 @inject CommonLocalizationService localizer
 
+
 <form asp-action="CancelPayment" method="post" hidden id="cancel-form">
     <input type="hidden" asp-for="RedirectUrl" />
     <input type="hidden" asp-for="PaymentRequest" />
@@ -170,7 +171,7 @@
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
-    <script>
+    <script nws-csp-add-nonce="true">
         $('input[name="CreditCardToken"]').on('change', function (e) {
             if (e.target.value == "@(Guid.Empty)") {
                 $("#card-info-group-area").attr("hidden", false);

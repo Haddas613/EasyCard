@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Shared.Api.Configuration;
+using Shared.Helpers;
 using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
@@ -51,15 +52,38 @@ namespace MerchantProfileApi.Controllers
 
             var str = JsonConvert.SerializeObject(config, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver() });
 
+            str = "window.config=" + str;
+            var hash = str.ComputeSha256Hash();
+
             StringBuilder builder = new StringBuilder();
-            builder.AppendLine("<script id=\"cfginject\">window.config = ");
-            builder.AppendLine(str);
+            builder.Append($"<script id=\"cfginject\" src=\"config\" integrity=\"sha256-{hash}\">");
             builder.AppendLine("</script>");
 
             var path = Path.Combine(hostingEnvironment.ContentRootPath, "wwwroot\\index.html");
             string data = System.IO.File.ReadAllText(path)
                 .Replace("<script id=\"cfginject\"></script>", builder.ToString());
             var response = File(Encoding.UTF8.GetBytes(data), "text/html"); // FileStreamResult
+            return response;
+        }
+
+        [HttpGet("config")]
+        public async Task<IActionResult> Config()
+        {
+            var config = new UI_CONFIG
+            {
+                VUE_APP_TRANSACTIONS_API_BASE_ADDRESS = apiSettings.TransactionsApiAddress,
+                VUE_APP_PROFILE_API_BASE_ADDRESS = apiSettings.MerchantProfileURL,
+                VUE_APP_REPORT_API_BASE_ADDRESS = apiSettings.ReportingApiAddress,
+                VUE_APP_AUTHORITY = identityConfig.Authority,
+                VUE_APP_APPLICATION_INSIGHTS_KEY = appInsightsSettings.InstrumentationKey,
+                VUE_APP_SUPPORT_EMAIL = uISettings.SupportEmail
+            };
+
+            var str = JsonConvert.SerializeObject(config, new JsonSerializerSettings { ContractResolver = new DefaultContractResolver() });
+
+            str = "window.config=" + str;
+
+            var response = File(Encoding.UTF8.GetBytes(str), "application/javascript"); // FileStreamResult
             return response;
         }
     }

@@ -24,16 +24,16 @@
                 <a class="navbar-brand">
                     @if (viewModel?.MerchantLogo != null)
                     {
-                        <img src="@viewModel?.MerchantLogo" alt="EasyCard" style="" />
+                        <img src="@viewModel?.MerchantLogo" alt="EasyCard" />
                     }
                     else
                     {
-                        <img src="~/img/logo.png" alt="EasyCard" style="" />
+                        <img src="~/img/logo.png" alt="EasyCard" />
                     }
                     <span>@viewModel?.MarketingName</span>
                 </a>
+                <vc:culture-switcher />
             </div>
-            <vc:culture-switcher />
         </nav>
     </header>
     <div class="container">

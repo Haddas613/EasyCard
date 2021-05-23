@@ -31,6 +31,8 @@ namespace TestWebStore.Models
         /// </summary>
         public string ApiKey { get; set; }
 
+        public string CheckoutBaseUrl { get; set; }
+
         public string InternalOrderID { get; set; }
 
         public Guid? ConsumerID { get; set; }

@@ -333,6 +333,8 @@
   "IssueInvoice": "הפק חשבונית",
   "CustomerAddress": "כתובת לקוח",
   "ShowInactive": "הצג לא פעילים",
+  "Finished": "הסתיים",
+  "SendTransactionSlipEmail": "שלח שובר במייל",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -385,6 +387,10 @@
   "Create": "צור",
   "Add": "הוסף",
   "EditUser": "ערוך משתמש",
+  "Request": "בקשה",
+  "Print": "הדפס",
+  "Activate": "הפעל",
+  "Deactivate": "בטל",
 
   "--AUTH--": null,
   "Login": "כניסה",

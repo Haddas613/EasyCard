@@ -195,6 +195,9 @@
   <data name="EmailRequired" xml:space="preserve">
     <value>EmailAddressRequired</value>
   </data>
+  <data name="EmailSent" xml:space="preserve">
+    <value>Email sent</value>
+  </data>
   <data name="FailedToCancelByAggregator" xml:space="preserve">
     <value>Failed To Cancel By Aggregator</value>
   </data>
@@ -314,6 +317,9 @@
   </data>
   <data name="TransactionCreated" xml:space="preserve">
     <value>Transaction Created</value>
+  </data>
+  <data name="TransactionMustBeCompleted" xml:space="preserve">
+    <value>Transaction must be completed</value>
   </data>
   <data name="TransactionsForTransmissionRequired" xml:space="preserve">
     <value>Transactions list for transmission is required</value>

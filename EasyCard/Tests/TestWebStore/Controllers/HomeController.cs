@@ -41,7 +41,7 @@ namespace TestWebStore.Controllers
 
         private string BuildRedirectUrl(BasketViewModel model)
         {
-            var ecUrl = "https://ecng-checkout.azurewebsites.net";
+            var ecUrl = model.CheckoutBaseUrl ?? "https://ecng-checkout.azurewebsites.net";
             var webStoreUrl = "https://ecng-testwebstore.azurewebsites.net";
 
             var redirectUrl = UrlHelper.BuildUrl(webStoreUrl, "PaymentResult", new { model.InternalOrderID });

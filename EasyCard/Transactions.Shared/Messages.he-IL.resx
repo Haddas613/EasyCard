@@ -357,4 +357,10 @@
   <data name="CreditCardExpired" xml:space="preserve">
     <value>פג תוקף כרטיס האשראי</value>
   </data>
+  <data name="EmailSent" xml:space="preserve">
+    <value>המייל נשלח</value>
+  </data>
+  <data name="TransactionMustBeCompleted" xml:space="preserve">
+    <value>חובה להשלים את העסקה</value>
+  </data>
 </root>
