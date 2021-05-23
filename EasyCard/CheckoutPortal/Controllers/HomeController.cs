@@ -73,7 +73,7 @@ namespace CheckoutPortal.Controllers
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Charge(ChargeViewModel request)
         {
@@ -196,6 +196,7 @@ namespace CheckoutPortal.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> CancelPayment(ChargeViewModel request)
         {

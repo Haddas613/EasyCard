@@ -1,18 +1,19 @@
 ﻿@model CultureSwitcherModel
 
+
 <div>
     <form id="culture-switcher">
         <select name="culture" id="culture-options" class="form-control">
             @foreach (var culture in Model.SupportedCultures)
             {
-                <option value="@culture.Name" selected="@(Model.CurrentUICulture.Name == culture.Name)">@culture.DisplayName</option>
+            <option value="@culture.Name" selected="@(Model.CurrentUICulture.Name == culture.Name)">@culture.DisplayName</option>
             }
         </select>
     </form>
 </div>
 
 
-<script>
+<script nws-csp-add-nonce="true">
     document.getElementById("culture-options").addEventListener("change", () => {
         if (window.location.search != "") {
             let url = window.location.toString().replace(/\&culture=[a-z]*/, "");
