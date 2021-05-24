@@ -213,28 +213,44 @@ namespace Nayax.Converters
 
         private static string GetFilNSeq(Shared.Integration.Models.Processor.ShvaTransactionDetails lastDeal)
         {
-            string dealnumber = lastDeal.ShvaShovarNumber;
             int fileNo = -1;
-            int.TryParse(dealnumber.Substring(0, 2), out fileNo);
             int seqNo = -1;
-            int.TryParse(dealnumber.Substring(5, 3), out seqNo);
-            bool lastDealWasTransmit = lastDeal.TransmissionDate != null;
-            if (lastDealWasTransmit)
+            bool firstDeal = lastDeal == null || String.IsNullOrEmpty(lastDeal.ShvaShovarNumber);
+            if (firstDeal)
             {
-                seqNo = 1;
-                fileNo++;
-            }
-
-            if (seqNo > 999)
-            {
-                seqNo = 1;
-                fileNo++;
+                fileNo = seqNo = 1;
+                
             }
             else
             {
-                seqNo++;
-            }
+                string dealnumber = lastDeal.ShvaShovarNumber;
 
+                int.TryParse(dealnumber.Substring(0, 2), out fileNo);
+
+                int.TryParse(dealnumber.Substring(5, 3), out seqNo);
+                bool lastDealWasTransmit = lastDeal.TransmissionDate != null;
+                if (lastDealWasTransmit)
+                {
+                    seqNo = 1;
+                    fileNo++;
+                }
+
+                if (seqNo > 999)
+                {
+                    seqNo = 1;
+                    fileNo++;
+                }
+                else
+                {
+                    seqNo++;
+                }
+
+                if (fileNo == 100)
+                {
+                    fileNo = seqNo = 1;
+                }
+            }
+            
             return string.Format("{0};{1}", fileNo, seqNo);
         }
 

@@ -650,7 +650,7 @@ namespace Transactions.Api.Controllers
             var terminalProcessor = ValidateExists(
                 terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
                 Transactions.Shared.Messages.ProcessorNotDefined);
-          
+
             TerminalExternalSystem terminalPinpadProcessor = null;
             bool pinpadDeal = model.PinPad ?? false;
             if (pinpadDeal)
@@ -703,7 +703,8 @@ namespace Transactions.Api.Controllers
                     return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByProcessor}: {pinpadPreCreateResult.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, pinpadPreCreateResult.Errors));
                 }
 
-                mapper.Map(pinpadPreCreateResult, transaction);
+                //mapper.Map(pinpadPreCreateResult, transaction);
+                mapper.Map(pinpadPreCreateResult, processorRequest);
             }
 
             // create transaction in aggregator (Clearing House)
@@ -744,18 +745,21 @@ namespace Transactions.Api.Controllers
             try
             {
                 mapper.Map(transaction, processorRequest);
-
-                if (token != null)
+                if (!pinpadDeal)
                 {
-                    mapper.Map(token, processorRequest.CreditCardToken);
-                    mapper.Map(dbToken.ShvaInitialTransactionDetails, processorRequest.InitialDeal, typeof(ShvaInitialTransactionDetails), typeof(Shva.Models.InitDealResultModel)); // TODO: remove direct Shva reference
-                }
-                else
-                {
-                    mapper.Map(model.CreditCardSecureDetails, processorRequest.CreditCardToken);
+                    if (token != null)
+                    {
+                        mapper.Map(token, processorRequest.CreditCardToken);
+                        mapper.Map(dbToken.ShvaInitialTransactionDetails, processorRequest.InitialDeal, typeof(ShvaInitialTransactionDetails), typeof(Shva.Models.InitDealResultModel)); // TODO: remove direct Shva reference
+                    }
+                    else
+                    {
+                        mapper.Map(model.CreditCardSecureDetails, processorRequest.CreditCardToken);
+                    }
                 }
 
                 processorRequest.ProcessorSettings = processorSettings;
+                //pinpadtransactionid = uid
                 var processorResponse = pinpadDeal ? await pinpadProcessor.CreateTransaction(processorRequest) : await processor.CreateTransaction(processorRequest);
 
                 mapper.Map(processorResponse, transaction);

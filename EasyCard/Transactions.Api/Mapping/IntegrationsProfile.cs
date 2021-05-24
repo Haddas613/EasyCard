@@ -49,9 +49,15 @@ namespace Transactions.Api.Mapping
 
             CreateMap<PaymentTransaction, ProcessorCreateTransactionRequest>()
                 .ForMember(m => m.CreditCardToken, s => s.Ignore())
-                .ForMember(m => m.EasyCardTerminalID, s => s.MapFrom(src => src.TerminalID));
+                .ForMember(m => m.EasyCardTerminalID, s => s.MapFrom(src => src.TerminalID))
+                .ForMember(m => m.PinPadTransactionID, s => s.Ignore());
 
             CreateMap<ProcessorCreateTransactionResponse, PaymentTransaction>();
+
+            CreateMap<ProcessorPreCreateTransactionResponse, ProcessorCreateTransactionRequest>()
+                .ForMember(m => m.PinPadTransactionID, s => s.MapFrom(src=> src.PinPadTransactionID))
+                ;
+
             CreateMap<ProcessorCreateTransactionResponse, CreditCardTokenDetails>();
 
             CreateMap<PaymentTransaction, AggregatorCommitTransactionRequest>()
