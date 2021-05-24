@@ -139,8 +139,8 @@ namespace CheckoutPortal
                 .ScriptSources(s => s.Self()
                     .CustomSources("az416426.vo.msecnd.net")
                 )
-                .FrameAncestors(s => s.Self())
-                .FormActions(s => s.Self())
+                //.FrameAncestors(s => s.Self())
+                //.FormActions(s => s.Self())
             );
 
             app.UseHttpsRedirection();

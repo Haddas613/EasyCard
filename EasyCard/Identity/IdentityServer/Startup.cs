@@ -59,13 +59,15 @@ namespace IdentityServer
 
         private IWebHostEnvironment environment;
 
+        private ApiSettings apiConfig;
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             var config = Configuration.GetSection("AppConfig")?.Get<ApplicationSettings>();
             var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
             var azureADConfig = Configuration.GetSection("AzureADConfig")?.Get<AzureADSettings>();
-            var apiConfig = Configuration.GetSection("API")?.Get<ApiSettings>();
+            apiConfig = Configuration.GetSection("API")?.Get<ApiSettings>();
 
             services.AddLogging(logging =>
             {
@@ -309,7 +311,9 @@ namespace IdentityServer
                     .CustomSources("az416426.vo.msecnd.net")
                 )
                 .FrameAncestors(s => s.Self())
-                .FormActions(s => s.Self())
+                .FormActions(s => s.Self()
+                    .CustomSources(apiConfig.MerchantProfileURL, apiConfig.MerchantsManagementApiAddress, "http://localhost:8080/", "http://localhost:8081/")
+                )
             );
 
             app.UseHttpsRedirection();
