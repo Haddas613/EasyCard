@@ -129,7 +129,7 @@ namespace Merchants.Api.Controllers.Integrations
 
             var processorSettings = processorResolver.GetProcessorTerminalSettings(externalSystem, externalSystem.Settings);
 
-            var processorRequest = new ProcessorChangePasswordRequest { NewPassword = newPassword };
+            var processorRequest = new ProcessorChangePasswordRequest { NewPassword = newPassword, CorrelationId = GetCorrelationID() };
             processorRequest.ProcessorSettings = processorSettings;
             return await ((ShvaProcessor)processor).ChangePassword(processorRequest);
         }
