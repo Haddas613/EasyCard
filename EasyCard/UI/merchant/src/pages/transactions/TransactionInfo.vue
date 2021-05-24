@@ -199,6 +199,14 @@ export default {
         paymentTransactionIDs: [this.model.$paymentTransactionID]
       });
 
+      //400
+      if(operation && operation.status == "error"){
+        this.$toasted.show(operation.message || this.$t("SomethingWentWrong"), {
+          type: "error"
+        });
+        return;
+      }
+      
       if (!operation || operation.numberOfRecords !== 1) return;
       let opResult = operation.data[0];
 
@@ -218,6 +226,14 @@ export default {
         terminalID: this.model.$terminalID,
         paymentTransactionID: this.model.$paymentTransactionID
       });
+
+      //400
+      if(operation && operation.status == "error"){
+        this.$toasted.show(operation.message || this.$t("SomethingWentWrong"), {
+          type: "error"
+        });
+        return;
+      }
 
       if (!operation || operation.numberOfRecords !== 1) return;
       let opResult = operation.data[0];
