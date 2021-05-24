@@ -11,5 +11,7 @@ namespace Transactions.Business.Entities
         public string ShvaDealID { get; set; }
 
         public string ShvaTerminalID { get; set; }
+
+        public string TranRecord { get; set; }
     }
 }

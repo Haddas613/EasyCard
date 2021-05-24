@@ -51,5 +51,10 @@ namespace Shva
         public SolekEnum Solek { get; set; }
 
         public CardVendorEnum CreditCardVendor { get; set; }
+
+        /// <summary>
+        /// Binary reference
+        /// </summary>
+        public string TranRecord { get; set; }
     }
 }

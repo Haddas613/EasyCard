@@ -71,7 +71,8 @@ namespace Shva.Conveters
 
                 Solek = (SolekEnum)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.solek?.valueTag),
                 CreditCardVendor = (CardVendorEnum)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.manpik?.valueTag), // TODO
-                ShvaTransactionDate = resultAshEndBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime()
+                ShvaTransactionDate = resultAshEndBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime(),
+                TranRecord = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag
             };
         }
 

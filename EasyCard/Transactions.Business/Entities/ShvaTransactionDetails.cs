@@ -41,5 +41,10 @@ namespace Transactions.Business.Entities
         /// Solek
         /// </summary>
         public SolekEnum? Solek { get; set; }
+
+        /// <summary>
+        /// Binary reference
+        /// </summary>
+        public string TranRecord { get; set; }
     }
 }

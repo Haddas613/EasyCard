@@ -163,7 +163,7 @@ namespace Transactions.Api.Controllers
                 await dbTransaction.CommitAsync();
             }
 
-            var processorIds = transactionsToTransmit.Select(d => d.ShvaDealID).ToList();
+            var processorIds = transactionsToTransmit.Select(d => d.TranRecord).ToList();
 
             if (processorIds.Count == 0)
             {

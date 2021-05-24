@@ -156,11 +156,12 @@ where r <= @pageSize
 DECLARE @OutputTransactionIDs table(
     [PaymentTransactionID] [uniqueidentifier] NULL,
     [ShvaDealID] [varchar](50) NULL,
-    [ShvaTerminalID] [varchar](20) NULL
+    [ShvaTerminalID] [varchar](20) NULL,
+    [ShvaTranRecord] [varchar](255) NULL
 );
 
 UPDATE [dbo].[PaymentTransaction] SET [Status]=@NewStatus, [UpdatedDate]=@UpdatedDate 
-OUTPUT inserted.PaymentTransactionID, inserted.ShvaDealID, inserted.ShvaTerminalID INTO @OutputTransactionIDs
+OUTPUT inserted.PaymentTransactionID, inserted.ShvaDealID, inserted.ShvaTerminalID, inserted.ShvaTranRecord INTO @OutputTransactionIDs
 WHERE [PaymentTransactionID] in @TransactionIDs AND [TerminalID] = @TerminalID AND [Status]=@OldStatus";
 
             // security check
@@ -185,7 +186,7 @@ WHERE [PaymentTransactionID] in @TransactionIDs AND [TerminalID] = @TerminalID A
                 throw new SecurityException("User has no access to requested data");
             }
 
-            query += @" SELECT PaymentTransactionID, ShvaDealID, ShvaTerminalID from @OutputTransactionIDs as a";
+            query += @" SELECT PaymentTransactionID, ShvaDealID, ShvaTerminalID, ShvaTranRecord as TranRecord from @OutputTransactionIDs as a";
 
             var connection = this.Database.GetDbConnection();
             bool existingConnection = true;
@@ -334,6 +335,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.ShvaTransmissionNumber).HasColumnName("ShvaTransmissionNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.TransmissionDate).HasColumnName("ShvaTransmissionDate").IsRequired(false);
                     s.Property(p => p.Solek).HasColumnName("Solek").IsRequired(false);
+                    s.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(255).IsUnicode(false).IsRequired(false);
                 });
 
                 builder.OwnsOne(b => b.DealDetails, s =>

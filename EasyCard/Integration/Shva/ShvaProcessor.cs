@@ -287,8 +287,8 @@ namespace Shva
                     IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, correlationId);
 
                     //Do not expose credit card and cvv numbers in log
-                    requestStr = Regex.Replace(requestStr, "\"\\d{9,16}\"", "\"****\"");
-                    requestStr = Regex.Replace(requestStr, "\"\\d{3,4}\"", "\"***\"");
+                    requestStr = Regex.Replace(requestStr, "\\<clientInputPan\\>\\d{9,16}\\</clientInputPan\\>", "<clientInputPan>****************</clientInputPan>");
+                    requestStr = Regex.Replace(requestStr, "\\<cvv2\\>\\d{3,4}\\</cvv2\\>", "<cvv2>***</cvv2>");
 
                     integrationMessage.Request = requestStr;
                     integrationMessage.Response = responseStr;

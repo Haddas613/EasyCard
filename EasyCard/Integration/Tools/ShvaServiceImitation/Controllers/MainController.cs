@@ -91,6 +91,10 @@ namespace ShvaServiceImitation.Controllers
                     solek = new OField
                     {
                         valueTag = "2"
+                    },
+                    tranRecord = new OField
+                    {
+                        valueTag = Guid.NewGuid().ToString()
                     }
                 },
                 receiptObj = new clsReceipt()
@@ -134,7 +138,7 @@ namespace ShvaServiceImitation.Controllers
                 ChangePasswordResult = (int)ChangePasswordResultEnum.Success
             };
 
-            return await Task.FromResult(new Envelope 
+            return await Task.FromResult(new Envelope
             {
                 Body = new Body
                 {
