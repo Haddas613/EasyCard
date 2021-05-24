@@ -226,7 +226,7 @@ namespace Merchants.Business.Services
 
         public IQueryable<UserTerminalMapping> GetMerchantUsers() => context.UserTerminalMappings;
 
-        public async Task UpdateUserStatus(UpdateUserStatusData data, IDbContextTransaction dbTransaction = null)
+        public async Task UpdateUserStatus(UpdateUserStatusData data,  IDbContextTransaction dbTransaction = null)
         {
             var entities = await context.UserTerminalMappings.Where(m => m.UserID == data.UserID).ToListAsync();
 
@@ -248,15 +248,21 @@ namespace Merchants.Business.Services
 
                     OperationCodesEnum operationCode = default;
 
-                    switch (data.Status)
+                    switch (data.UserActivity)
                     {
-                        case UserStatusEnum.Active: operationCode = OperationCodesEnum.LoggedIn;
+                        case UserActivityEnum.LoggedIn: operationCode = OperationCodesEnum.LoggedIn;
                             break;
 
-                        case UserStatusEnum.Locked: operationCode = OperationCodesEnum.AccountLocked;
+                        case UserActivityEnum.Locked: operationCode = OperationCodesEnum.AccountLocked;
                             break;
 
-                        case UserStatusEnum.Invited: operationCode = OperationCodesEnum.InvitationSent;
+                        case UserActivityEnum.LoggedOut: operationCode = OperationCodesEnum.LoggedOut;
+                            break;
+
+                        case UserActivityEnum.ResetPassword: operationCode = OperationCodesEnum.UserResetedPassword;
+                            break;
+
+                        case UserActivityEnum.PhoneNumberChanged: operationCode = OperationCodesEnum.PhoneNumberChanged;
                             break;
                     }
 
@@ -313,6 +319,31 @@ namespace Merchants.Business.Services
                 user.Roles = data.Roles;
 
                 await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task AddHistoryEntry(OperationCodesEnum operationCode, Guid merchantID, IDbContextTransaction dbTransaction = null)
+        {
+            var history = new MerchantHistory
+            {
+                OperationCode = operationCode,
+                OperationDate = DateTime.UtcNow,
+                OperationDoneBy = user?.GetDoneBy(),
+                OperationDoneByID = user?.GetDoneByID(),
+                MerchantID = merchantID,
+                SourceIP = httpContextAccessor.GetIP()
+            };
+            context.MerchantHistories.Add(history);
+
+            if (dbTransaction != null)
+            {
+                await context.SaveChangesAsync();
+            }
+            else
+            {
+                using var transaction = BeginDbTransaction();
+                await context.SaveChangesAsync();
+                await transaction.CommitAsync();
             }
         }
     }

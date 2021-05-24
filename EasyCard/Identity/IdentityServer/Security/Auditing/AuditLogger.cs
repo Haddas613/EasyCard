@@ -105,6 +105,14 @@ namespace IdentityServer.Security.Auditing
         {
             var audit = await GetAudit(user, AuditingTypeEnum.LoggedOut);
 
+            await merchantsApiClient.LogUserActivity(new Merchants.Api.Client.Models.UserActivityRequest
+            {
+                UserActivity = Merchants.Shared.Enums.UserActivityEnum.LoggedOut,
+                UserID = user.Id,
+                DisplayName = user.UserName,
+                Email = user.Email
+            });
+
             await SaveAudit(audit);
         }
 

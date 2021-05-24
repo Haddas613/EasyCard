@@ -15,6 +15,7 @@ using Merchants.Business.Models.Integration;
 using Merchants.Business.Models.Merchant;
 using Merchants.Shared.Enums;
 using Merchants.Shared.Models;
+using Shared.Business.Audit;
 using System;
 using System.Collections.Generic;
 using SharedIntegrations = Shared.Integration;

@@ -14,5 +14,7 @@ namespace Merchants.Business.Models.Merchant
         public string Email { get; set; }
 
         public UserStatusEnum Status { get; set; }
+
+        public UserActivityEnum UserActivity { get; set; }
     }
 }
