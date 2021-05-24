@@ -95,6 +95,7 @@ export default {
       if (operationResult.status === "success") {
         this.model.email = null;
         this.model.inviteMessage = null;
+        this.model.roles = [appConstants.users.roles.merchant];
       }else {
         this.$toasted.show(operationResult.message, { type: "error" });
       }

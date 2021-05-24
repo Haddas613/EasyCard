@@ -11,16 +11,17 @@ namespace CheckoutPortal.ViewComponents
 {
     public class CultureSwitcherViewComponent : ViewComponent
     {
-        private readonly IOptions<RequestLocalizationOptions> localizationOptions;
+        private readonly RequestLocalizationOptions localizationOptions;
         public CultureSwitcherViewComponent(IOptions<RequestLocalizationOptions> localizationOptions) =>
-            this.localizationOptions = localizationOptions;
+            this.localizationOptions = localizationOptions.Value;
 
         public IViewComponentResult Invoke()
         {
             var cultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+
             var model = new CultureSwitcherModel
             {
-                SupportedCultures = localizationOptions.Value.SupportedUICultures.ToList(),
+                SupportedCultures = localizationOptions.SupportedUICultures.ToList(),
                 CurrentUICulture = cultureFeature.RequestCulture.UICulture
             };
 

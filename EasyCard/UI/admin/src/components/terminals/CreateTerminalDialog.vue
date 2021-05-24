@@ -95,6 +95,7 @@ export default {
       let operationResult = await this.$api.terminals.createTerminal(this.model);
       if (operationResult.status === "success") {
         this.visible = false;
+        this.model.label = null;
         this.$emit("ok");
       }
     }

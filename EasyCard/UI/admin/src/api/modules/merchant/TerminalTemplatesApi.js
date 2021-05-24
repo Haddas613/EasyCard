@@ -56,6 +56,6 @@ export default class TerminalsApi {
     }
 
     async switchTerminalFeature(terminalTemplateID, featureID){
-        return this.base.put(this.templatesUrl + `/${terminalTemplateID}/switch/${featureID}`);
+        return this.base.put(this.templatesUrl + `/${terminalTemplateID}/switchfeature/${featureID}`);
     }
 }

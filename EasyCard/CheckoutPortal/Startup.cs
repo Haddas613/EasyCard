@@ -107,7 +107,7 @@ namespace CheckoutPortal
                 options.DefaultRequestCulture = new RequestCulture("he");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
-                options.RequestCultureProviders = new List<IRequestCultureProvider> { new QueryStringRequestCultureProvider() };
+                options.RequestCultureProviders = new List<IRequestCultureProvider> { new CookieRequestCultureProvider() };
             });
 
             services.AddMvc().AddViewLocalization();
