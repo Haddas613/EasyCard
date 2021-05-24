@@ -12,6 +12,7 @@
     </v-expansion-panels>
     <v-divider></v-divider>
     <div>
+      <transaction-slip-dialog v-if="selectedTransaction" :key="selectedTransaction.$paymentTransactionID" ref="slipDialog" :transaction="selectedTransaction" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
       <v-data-table 
           :headers="headers"
           :items="transactions"
@@ -39,8 +40,11 @@
           <span v-bind:class="quickStatusesColors[item.quickStatus]">{{item.quickStatus}}</span>
         </template> 
         <template v-slot:item.actions="{ item }">
-          <v-btn color="primary" outlined small link :to="{name: 'Transaction', params: {id: item.$paymentTransactionID}}">
+          <v-btn class="mx-1" color="primary" outlined small link :to="{name: 'Transaction', params: {id: item.$paymentTransactionID}}">
             <re-icon small>mdi-arrow-right</re-icon>
+          </v-btn>
+          <v-btn v-if="item.$status == 'completed'" color="orange" class="mx-1" outlined small @click="showSlipDialog(item)">
+            <v-icon small>mdi-checkbook</v-icon>
           </v-btn>
         </template>    
         <template v-slot:item.cardPresence="{ item }">
@@ -66,7 +70,9 @@ export default {
   name: "TransactionsList",
   components: { 
     TransactionsFilter : () => import("../../components/transactions/TransactionsFilter"), 
-    ReIcon: () => import("../../components/misc/ResponsiveIcon") 
+    ReIcon: () => import("../../components/misc/ResponsiveIcon"),
+    TransactionSlipDialog: () =>
+      import("../../components/transactions/TransactionSlipDialog")
   },
   props: {
     filters: {
@@ -92,7 +98,10 @@ export default {
         Completed: "success--text",
         Failed: "error--text",
         Canceled: "accent--text"
-      }
+      },
+      selectedTransaction: null,
+      transactionSlipDialog: false,
+      loadingTransaction: false,
     }
   },
   watch: {
@@ -117,6 +126,17 @@ export default {
       this.options.page = 1;
       this.transactionsFilter = filter;
       await this.getDataFromApi();
+    },
+    async showSlipDialog(transaction){
+      if(this.loadingTransaction){
+        return;
+      }
+      this.loadingTransaction = true;
+      this.selectedTransaction = await this.$api.transactions.getTransaction(
+        transaction.$paymentTransactionID
+      );
+      this.loadingTransaction = false;
+      this.transactionSlipDialog = true;
     }
   }
 };

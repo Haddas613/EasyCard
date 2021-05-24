@@ -118,8 +118,9 @@ namespace Shared.Api
 
                     if (!string.IsNullOrWhiteSpace(requestLog))
                     {
-                        //Do not expose credit card numbers in log
+                        //Do not expose credit card and cvv numbers in log
                         requestLog = Regex.Replace(requestLog, "\"\\d{9,16}\"", "\"****\"");
+                        requestLog = Regex.Replace(requestLog, "\"\\d{3,4}\"", "\"***\"");
                     }
 
                     log.RequestBody = requestLog;

@@ -189,7 +189,7 @@ class ApiBase {
                     return null;
                 } else {
                     Vue.toasted.show(i18n.t('ServerErrorTryAgainLater'), { type: 'error' });
-                    return null;
+                    return { status: "error", message: i18n.t('ServerErrorTryAgainLater') };
                 }
             }
 

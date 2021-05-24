@@ -53,5 +53,15 @@ namespace Shared.Helpers
         {
             return char.ToLowerInvariant(value[0]) + value.Substring(1);
         }
+
+        public static string ComputeSha256Hash(this string rawData)
+        {
+            using (System.Security.Cryptography.SHA256 sha256Hash = System.Security.Cryptography.SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+
+                return Convert.ToBase64String(bytes);
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@
   <v-flex>
     <div v-if="model">
       <transaction-printout ref="printout" :transaction="model"></transaction-printout>
+      <transaction-slip-dialog ref="slipDialog" :transaction="model" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
       <v-card flat class="mb-2">
         <v-card-title class="py-3 ecdgray--text subtitle-2 text-uppercase">{{$t('GeneralInfo')}}</v-card-title>
         <v-divider></v-divider>
@@ -142,7 +143,9 @@ export default {
     InstallmentDetails: () =>
       import("../../components/details/InstallmentDetails"),
     TransactionPrintout: () =>
-      import("../../components/printouts/TransactionPrintout")
+      import("../../components/printouts/TransactionPrintout"),
+    TransactionSlipDialog: () =>
+      import("../../components/transactions/TransactionSlipDialog")
   },
   data() {
     return {
@@ -154,7 +157,8 @@ export default {
         Completed: "success--text",
         Failed: "error--text",
         Canceled: "accent--text"
-      }
+      },
+      transactionSlipDialog: false
     };
   },
   async mounted() {
@@ -165,16 +169,26 @@ export default {
     if (!this.model) {
       return this.$router.push({ name: "Transactions" });
     }
+    var threeDotMenu = [{
+        text: this.$t("Print"),
+        fn: () => {
+          this.$refs.printout.print();
+        }
+      }
+    ];
+
+    if(this.model.$status == 'completed'){
+      threeDotMenu.push({
+        text: this.$t("SendTransactionSlipEmail"),
+        fn: () => {
+          this.transactionSlipDialog = true;
+        }
+      });
+    }
+
     this.$store.commit("ui/changeHeader", {
       value: {
-        threeDotMenu: [
-          {
-            text: this.$t("Print"),
-            fn: () => {
-              this.$refs.printout.print();
-            }
-          }
-        ]
+        threeDotMenu: threeDotMenu
       }
     });
   },

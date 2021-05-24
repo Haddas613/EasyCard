@@ -18,6 +18,8 @@
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.5" />
     <PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="3.1.5" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="3.0.0" />
+    <PackageReference Include="NWebsec.AspNetCore.Mvc.TagHelpers" Version="3.0.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -38,7 +40,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Identity\IdentityServerClient\IdentityServerClient.csproj" />
-    <ProjectReference Include="..\Merchants.Api\Merchants.Api.csproj" />
     <ProjectReference Include="..\Merchants.Business\Merchants.Business.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
     <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />

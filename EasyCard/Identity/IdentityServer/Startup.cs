@@ -75,6 +75,11 @@ namespace IdentityServer
                 logging.AddAzureWebAppDiagnostics();
             });
 
+            services.AddAntiforgery(options =>
+            {
+                options.SuppressXFrameOptionsHeader = true;
+            });
+
             services.AddControllersWithViews()
                  .AddNewtonsoftJson(options =>
                  {
@@ -93,7 +98,6 @@ namespace IdentityServer
                 options.Password.RequireLowercase = false;
                 options.Password.RequireDigit = true;
                 options.Password.RequireNonAlphanumeric = true;
-                //options.Password.RequiredUniqueChars = 5;
             });
 
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
@@ -289,6 +293,24 @@ namespace IdentityServer
             var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
 
             //app.UseCookiePolicy();
+
+            app.UseXXssProtection(options => options.EnabledWithBlockMode());
+            //app.UseXfo(options => options.SameOrigin());
+            app.UseReferrerPolicy(opts => opts.NoReferrerWhenDowngrade());
+
+            //app.UseCsp(options => options
+            //    .DefaultSources(s => s.Self()
+            //        .CustomSources("data:")
+            //        .CustomSources("https:"))
+            //    .StyleSources(s => s.Self()
+            //        .CustomSources("ecngpublic.blob.core.windows.net")
+            //    )
+            //    .ScriptSources(s => s.Self()
+            //        .CustomSources("az416426.vo.msecnd.net")
+            //    )
+            //    .FrameAncestors(s => s.Self())
+            //    .FormActions(s => s.Self())
+            //);
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

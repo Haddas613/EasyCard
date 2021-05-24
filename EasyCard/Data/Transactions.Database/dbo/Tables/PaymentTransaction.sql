@@ -62,8 +62,11 @@
     [PaymentRequestID]               UNIQUEIDENTIFIER NULL,
     [DocumentOrigin]                 SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     [TerminalTemplateID]             BIGINT           NULL,
+    [TotalDiscount]                  DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

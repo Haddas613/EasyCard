@@ -73,4 +73,8 @@ export default class TransactionsApi {
         billingDealsID
     });
   }
+
+  async sendTransactionSlipEmail(data) {
+    return await this.base.post(this.transactionsUrl + '/send-transaction-slip-email', data);
+  }
 }

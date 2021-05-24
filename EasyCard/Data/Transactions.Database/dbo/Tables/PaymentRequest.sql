@@ -36,8 +36,11 @@
     [InstallmentPaymentAmount] DECIMAL (19, 4)  NOT NULL,
     [TotalAmount]              DECIMAL (19, 4)  NOT NULL,
     [DocumentOrigin]           SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
+    [CustomerAddress]          NVARCHAR (MAX)   NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
 
 
 

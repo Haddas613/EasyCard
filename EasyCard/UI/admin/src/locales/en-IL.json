@@ -329,6 +329,8 @@
   "IssueInvoice": "Issue Invoice",
   "CustomerAddress": "Customer Address",
   "ShowInactive": "Show inactive",
+  "Finished": "Finished",
+  "SendTransactionSlipEmail": "Send Transaction slip email",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -381,6 +383,10 @@
   "Create": "Create",
   "Add": "Add",
   "EditUser": "Edit User",
+  "Request": "Request",
+  "Print": "Print",
+  "Activate": "Activate",
+  "Deactivate": "Deactivate",
 
   "--AUTH--": null,
   "Login": "Login",

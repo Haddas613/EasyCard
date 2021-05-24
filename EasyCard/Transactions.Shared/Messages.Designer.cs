@@ -295,6 +295,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email sent.
+        /// </summary>
+        public static string EmailSent {
+            get {
+                return ResourceManager.GetString("EmailSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed To Cancel By Aggregator.
         /// </summary>
         public static string FailedToCancelByAggregator {
@@ -651,6 +660,15 @@ namespace Transactions.Shared {
         public static string TransactionCreated {
             get {
                 return ResourceManager.GetString("TransactionCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction must be completed.
+        /// </summary>
+        public static string TransactionMustBeCompleted {
+            get {
+                return ResourceManager.GetString("TransactionMustBeCompleted", resourceCulture);
             }
         }
         

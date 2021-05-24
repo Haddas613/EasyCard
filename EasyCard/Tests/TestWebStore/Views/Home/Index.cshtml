@@ -73,6 +73,13 @@
                         <hr />
 
                         <div class="form-group">
+                            <label asp-for="CheckoutBaseUrl">Checkout Base Url</label>
+                            <input class="form-control" asp-for="CheckoutBaseUrl">
+                            <span asp-validation-for="CheckoutBaseUrl"></span>
+                            <span class="control-validation"></span>
+                        </div>
+
+                        <div class="form-group">
                             <label asp-for="ApiKey">ApiKey</label>
                             <input class="form-control" asp-for="ApiKey">
                             <span asp-validation-for="ApiKey"></span>
