@@ -25,6 +25,7 @@ using Shared.Api.UI;
 using Shared.Business.Extensions;
 using Shared.Helpers.Security;
 using Z.EntityFramework.Plus;
+using SharedBusiness = Shared.Business;
 
 namespace Merchants.Api.Controllers
 {
@@ -127,6 +128,8 @@ namespace Merchants.Api.Controllers
                     await merchantsService.LinkUserToMerchant(userToMerchantInfo, request.MerchantID);
                 }
             }
+
+            await merchantsService.AddHistoryEntry(SharedBusiness.Audit.OperationCodesEnum.InvitationSent, merchant.MerchantID);
 
             //var userInfo = new UserInfo
             //{

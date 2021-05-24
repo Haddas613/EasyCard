@@ -325,20 +325,22 @@ namespace ProfileApi
             app.UseReferrerPolicy(opts => opts.NoReferrerWhenDowngrade());
 
             // TODO: enable CSP
-            //app.UseCsp(options => options
-            //    .DefaultSources(s => s.Self()
-            //        .CustomSources("data:")
-            //        .CustomSources("https:"))
-            //    .StyleSources(s => s.Self()
-            //        .CustomSources("ecngpublic.blob.core.windows.net", "fonts.googleapis.com", "use.fontawesome.com")
-            //    )
-            //    .ScriptSources(s => s.Self()
-            //        .CustomSources("az416426.vo.msecnd.net")
-            //        .UnsafeEval()
-            //    )
-            //    .FrameAncestors(s => s.Self())
-            //    .FormActions(s => s.Self())
-            //);
+            app.UseCsp(options => options
+                .DefaultSources(s => s.Self()
+                    .CustomSources("data:")
+                    .CustomSources("https:")
+                    )
+                .StyleSources(s => s.Self()
+                    .CustomSources("ecngpublic.blob.core.windows.net", "fonts.googleapis.com", "use.fontawesome.com")
+                    .UnsafeInline()
+                )
+                .ScriptSources(s => s.Self()
+                    .CustomSources("az416426.vo.msecnd.net", "widget.intercom.io", "js.intercomcdn.com")
+                    .UnsafeEval()
+                )
+                .FrameAncestors(s => s.Self())
+                .FormActions(s => s.Self())
+            );
 
             app.UseHttpsRedirection();
 
@@ -352,16 +354,16 @@ namespace ProfileApi
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
-                endpoints.MapFallbackToController("Index", "Home");
+                //endpoints.MapFallbackToController("Index", "Home");
             });
 
-            //app.UseSpa(spa =>
-            //{
-            //    // To learn more about options for serving an Angular SPA from ASP.NET Core,
-            //    // see https://go.microsoft.com/fwlink/?linkid=864501
+            app.UseSpa(spa =>
+            {
+                // To learn more about options for serving an Angular SPA from ASP.NET Core,
+                // see https://go.microsoft.com/fwlink/?linkid=864501
 
-            //    spa.Options.SourcePath = "wwwroot";
-            //});
+                spa.Options.SourcePath = "wwwroot";
+            });
 
             loggerFactory.CreateLogger("MerchantProfile.Startup").LogInformation("Started");
         }

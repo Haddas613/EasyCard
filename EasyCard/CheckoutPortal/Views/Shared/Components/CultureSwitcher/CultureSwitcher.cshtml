@@ -15,11 +15,11 @@
 
 <script nws-csp-add-nonce="true">
     document.getElementById("culture-options").addEventListener("change", () => {
-        if (window.location.search != "") {
-            let url = window.location.toString().replace(/\&culture=[a-z]*/, "");
-            window.location = url + "&culture=" + document.getElementById("culture-options").value;
-        } else {
-            window.location.search = "?culture=" + document.getElementById("culture-options").value;
-        }
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ChangeLocalization", "Home")",
+            data: { culture: document.getElementById("culture-options").value },
+            success: function () { window.location.reload(); },
+        });
     });
 </script>

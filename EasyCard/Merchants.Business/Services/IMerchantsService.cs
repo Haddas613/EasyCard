@@ -4,6 +4,7 @@ using Merchants.Business.Models.Merchant;
 using Merchants.Shared.Enums;
 using Microsoft.EntityFrameworkCore.Storage;
 using Shared.Business;
+using Shared.Business.Audit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,5 +30,7 @@ namespace Merchants.Business.Services
         Task UpdateUserRoles(Guid userID, ICollection<string> roles);
 
         Task UpdateUser(UserTerminalMapping data);
+
+        Task AddHistoryEntry(OperationCodesEnum operationCode, Guid merchantID, IDbContextTransaction dbTransaction = null);
     }
 }

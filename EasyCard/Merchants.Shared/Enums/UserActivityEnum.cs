@@ -12,6 +12,7 @@ namespace Merchants.Shared.Enums
         ResetPassword,
         SetTwoFactorAuth,
         PhoneNumberChanged,
-        EmailConfirmed
+        EmailConfirmed,
+        LoggedOut
     }
 }

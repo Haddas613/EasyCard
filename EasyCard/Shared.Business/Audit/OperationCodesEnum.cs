@@ -59,6 +59,9 @@ namespace Shared.Business.Audit
         UserTerminalLinkRemoved = 16,
 
         [EnumMember(Value = "terminalApiKeyChanged")]
-        TerminalApiKeyChanged = 17
+        TerminalApiKeyChanged = 17,
+
+        [EnumMember(Value = "phoneNumberChanged")]
+        PhoneNumberChanged = 18
     }
 }

@@ -80,15 +80,28 @@ namespace CheckoutPortal
 
             services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
 
-            services.AddSingleton<ITransactionsApiClient, TransactionsApiClient>(serviceProvider =>
+            services.AddSingleton<IWebApiClient, WebApiClient>();
+            services.AddSingleton<IWebApiClientTokenService, WebApiClientTokenService>(serviceProvider =>
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
-                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
-                var webApiClient = new WebApiClient();
-                var logger = serviceProvider.GetRequiredService<ILogger<TransactionsApiClient>>();
-                var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
+                var client = serviceProvider.GetRequiredService<IWebApiClient>();
+                return new WebApiClientTokenService(client.HttpClient, cfg);
+            });
 
-                return new TransactionsApiClient(webApiClient, /*logger,*/ tokenService, apiCfg);
+            services.AddScoped<ITransactionsApiClient, TransactionsApiClient>((serviceProvider) =>
+            {
+                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
+                var logger = serviceProvider.GetRequiredService<ILogger<TransactionsApiClient>>();
+                var weApiClient = serviceProvider.GetRequiredService<IWebApiClient>();
+                var tokenService = serviceProvider.GetRequiredService<IWebApiClientTokenService>();
+
+                var context = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+                var cultureFeature = context.HttpContext.Features.Get<IRequestCultureFeature>();
+
+                var transactionApiClient = new TransactionsApiClient(weApiClient, /*logger,*/ tokenService, apiCfg);
+                transactionApiClient.Headers.Add("Accept-Language", cultureFeature.RequestCulture.Culture.Name);
+
+                return transactionApiClient;
             });
 
             services.AddSingleton<ICryptoServiceCompact, AesGcmCryptoServiceCompact>(serviceProvider =>
@@ -107,7 +120,7 @@ namespace CheckoutPortal
                 options.DefaultRequestCulture = new RequestCulture("he");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
-                options.RequestCultureProviders = new List<IRequestCultureProvider> { new QueryStringRequestCultureProvider() };
+                options.RequestCultureProviders = new List<IRequestCultureProvider> { new CookieRequestCultureProvider() };
             });
 
             services.AddMvc().AddViewLocalization();
@@ -129,19 +142,19 @@ namespace CheckoutPortal
             //app.UseXfo(options => options.SameOrigin());
             app.UseReferrerPolicy(opts => opts.NoReferrerWhenDowngrade());
 
-            //app.UseCsp(options => options
-            //    .DefaultSources(s => s.Self()
-            //        .CustomSources("data:")
-            //        .CustomSources("https:"))
-            //    .StyleSources(s => s.Self()
-            //        .CustomSources("ecngpublic.blob.core.windows.net")
-            //    )
-            //    .ScriptSources(s => s.Self()
-            //        .CustomSources("az416426.vo.msecnd.net")
-            //    )
-            //    .FrameAncestors(s => s.Self())
-            //    .FormActions(s => s.Self())
-            //);
+            app.UseCsp(options => options
+                .DefaultSources(s => s.Self()
+                    .CustomSources("data:")
+                    .CustomSources("https:"))
+                .StyleSources(s => s.Self()
+                    .CustomSources("ecngpublic.blob.core.windows.net")
+                )
+                .ScriptSources(s => s.Self()
+                    .CustomSources("az416426.vo.msecnd.net")
+                )
+                //.FrameAncestors(s => s.Self())
+                //.FormActions(s => s.Self())
+            );
 
             app.UseHttpsRedirection();
 
