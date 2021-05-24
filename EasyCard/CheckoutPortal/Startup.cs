@@ -80,15 +80,28 @@ namespace CheckoutPortal
 
             services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
 
-            services.AddSingleton<ITransactionsApiClient, TransactionsApiClient>(serviceProvider =>
+            services.AddSingleton<IWebApiClient, WebApiClient>();
+            services.AddSingleton<IWebApiClientTokenService, WebApiClientTokenService>(serviceProvider =>
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
-                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
-                var webApiClient = new WebApiClient();
-                var logger = serviceProvider.GetRequiredService<ILogger<TransactionsApiClient>>();
-                var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
+                var client = serviceProvider.GetRequiredService<IWebApiClient>();
+                return new WebApiClientTokenService(client.HttpClient, cfg);
+            });
 
-                return new TransactionsApiClient(webApiClient, /*logger,*/ tokenService, apiCfg);
+            services.AddScoped<ITransactionsApiClient, TransactionsApiClient>((serviceProvider) =>
+            {
+                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
+                var logger = serviceProvider.GetRequiredService<ILogger<TransactionsApiClient>>();
+                var weApiClient = serviceProvider.GetRequiredService<IWebApiClient>();
+                var tokenService = serviceProvider.GetRequiredService<IWebApiClientTokenService>();
+
+                var context = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+                var cultureFeature = context.HttpContext.Features.Get<IRequestCultureFeature>();
+
+                var transactionApiClient = new TransactionsApiClient(weApiClient, /*logger,*/ tokenService, apiCfg);
+                transactionApiClient.Headers.Add("Accept-Language", cultureFeature.RequestCulture.Culture.Name);
+
+                return transactionApiClient;
             });
 
             services.AddSingleton<ICryptoServiceCompact, AesGcmCryptoServiceCompact>(serviceProvider =>

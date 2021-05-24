@@ -279,6 +279,7 @@ namespace CheckoutPortal.Controllers
         public IActionResult ChangeLocalization(string culture)
         {
             var cultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+
             if (!string.IsNullOrWhiteSpace(culture))
             {
                 var allowed = localizationOptions.SupportedCultures.Any(c => c.Name == culture);

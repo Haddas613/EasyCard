@@ -23,6 +23,7 @@ namespace Transactions.Api.Client
         private readonly ApiSettings apiConfiguration;
         //private readonly ILogger logger;
         private readonly IWebApiClientTokenService tokenService;
+        private readonly NameValueCollection headers = new NameValueCollection();
 
         public TransactionsApiClient(IWebApiClient webApiClient, /*ILogger logger,*/ IWebApiClientTokenService tokenService, IOptions<ApiSettings> apiConfiguration)
         {
@@ -31,6 +32,8 @@ namespace Transactions.Api.Client
             this.apiConfiguration = apiConfiguration.Value;
             this.tokenService = tokenService;
         }
+
+        public NameValueCollection Headers { get { return headers; } }
 
         public async Task<OperationResponse> CreateTransaction(CreateTransactionRequest model)
         {
@@ -165,7 +168,7 @@ namespace Transactions.Api.Client
         {
             var token = await tokenService.GetToken();
 
-            NameValueCollection headers = new NameValueCollection();
+            NameValueCollection headers = new NameValueCollection(Headers);
 
             if (token != null)
             {
