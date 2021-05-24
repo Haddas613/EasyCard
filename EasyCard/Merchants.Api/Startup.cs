@@ -292,10 +292,10 @@ namespace Merchants.Api
             {
                 var supportedCultures = new List<CultureInfo>
                 {
-                    new CultureInfo("en-IL"),
-                    new CultureInfo("he-IL")
+                    new CultureInfo("en"),
+                    new CultureInfo("he")
                 };
-                options.DefaultRequestCulture = new RequestCulture("en-IL");
+                options.DefaultRequestCulture = new RequestCulture("he");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
