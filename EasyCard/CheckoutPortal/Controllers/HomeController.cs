@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.Diagnostics;
 using System.IO;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Transactions.Api.Models.Checkout;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Options;
 
 namespace CheckoutPortal.Controllers
 {
@@ -25,13 +28,20 @@ namespace CheckoutPortal.Controllers
         private readonly ITransactionsApiClient transactionsApiClient;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly IMapper mapper;
+        private readonly RequestLocalizationOptions localizationOptions;
 
-        public HomeController(ILogger<HomeController> logger, ITransactionsApiClient transactionsApiClient, ICryptoServiceCompact cryptoServiceCompact, IMapper mapper)
+        public HomeController(
+            ILogger<HomeController> logger,
+            ITransactionsApiClient transactionsApiClient,
+            ICryptoServiceCompact cryptoServiceCompact,
+            IMapper mapper,
+            IOptions<RequestLocalizationOptions> localizationOptions)
         {
             this.logger = logger;
             this.transactionsApiClient = transactionsApiClient;
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.mapper = mapper;
+            this.localizationOptions = localizationOptions.Value;
         }
 
         // TODO: preffered language parameter
@@ -264,6 +274,27 @@ namespace CheckoutPortal.Controllers
 
             // TODO: show only business exceptions
             return View(new ErrorViewModel { RequestId = HttpContext.TraceIdentifier, ExceptionMessage = exceptionHandlerPathFeature?.Error?.Message });
+        }
+
+        public IActionResult ChangeLocalization(string culture)
+        {
+            var cultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+            if (!string.IsNullOrWhiteSpace(culture))
+            {
+                var allowed = localizationOptions.SupportedCultures.Any(c => c.Name == culture);
+
+                if (allowed)
+                {
+                    var c = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture));
+                    HttpContext.Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName, c);
+                }
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+            return Ok();
         }
 
         private async Task<Transactions.Api.Models.Checkout.CheckoutData> GetCheckoutData(string apiKey, string paymentRequest, string redirectUrl, Guid? consumerID)
