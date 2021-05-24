@@ -190,7 +190,7 @@ export default {
       }
     ];
 
-    if(this.model.$status == 'completed'){
+    if(this.model.$status == 'completed' && this.model.$jDealType == 'J4'){
       threeDotMenu.push({
         text: this.$t("SendTransactionSlipEmail"),
         fn: () => {
