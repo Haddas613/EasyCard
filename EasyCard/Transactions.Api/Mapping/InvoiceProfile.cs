@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,9 @@ namespace Transactions.Api.Mapping
             CreateMap<InvoiceRequest, Invoice>();
 
             CreateMap<TransactionsApi.Models.Transactions.CreditCardDetails, Transactions.Business.Entities.CreditCardDetails>();
+
+            CreateMap<Transactions.Business.Entities.CreditCardDetails, TransactionsApi.Models.Transactions.CreditCardDetails>()
+                .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardLastFourDigitsWithPrefix(d.CardNumber)));
 
             CreateMap<Invoice, InvoiceSummary>()
                   .ForMember(d => d.InvoiceType, o => o.MapFrom(d => d.InvoiceDetails.InvoiceType))

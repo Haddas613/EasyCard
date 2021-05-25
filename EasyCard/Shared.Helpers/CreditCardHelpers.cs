@@ -53,6 +53,17 @@ namespace Shared.Helpers
             return $"{cardNumber?.Substring(cardNumber.Length - 4, 4)}";
         }
 
+        public static string GetCardLastFourDigitsWithPrefix(string cardNumber)
+        {
+            cardNumber = cardNumber?.Trim() ?? string.Empty;
+            if (cardNumber.Length < 6)
+            {
+                cardNumber = cardNumber.PadRight(6, '0');
+            }
+
+            return $"****{cardNumber?.Substring(cardNumber.Length - 4, 4)}";
+        }
+
         public static string FixdLastFourDigits(string last4digits)
         {
             last4digits = last4digits?.Trim() ?? string.Empty;
