@@ -21,7 +21,7 @@
     <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad v-if="step === 1" btn-text="Invoice" v-on:ok="processAmount($event, true);" ref="numpadRef" :data="model"></numpad>
+          <numpad v-if="step === 1" btn-text="Invoice" v-on:ok="processAmount($event, true);" v-on:update="updateAmount($event)" ref="numpadRef" :data="model"></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
@@ -86,7 +86,8 @@ export default {
           consumerEmail: null,
           consumerPhone: null,
           consumerID: null,
-          dealDescription: null
+          dealDescription: null,
+          items: []
         },
         invoiceDetails: {
           invoiceNumber: null,
@@ -191,7 +192,7 @@ export default {
       this.model.vatTotal = data.vatTotal;
       this.model.vatRate = data.vatRate;
       this.model.note = data.note;
-      this.model.dealDetails.items = data.items;
+      this.model.dealDetails.items = data.dealDetails.items;
     },
     async processInvoice(data) {
       this.model.dealDetails = data.dealDetails;
