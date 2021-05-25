@@ -28,7 +28,7 @@ namespace Transactions.Api.Services
         {
             if (culture == null)
             {
-                culture = new CultureInfo("en-IL");
+                culture = new CultureInfo("he");
             }
 
             if (!allResponses.TryGetValue(culture.Name, out var response))
