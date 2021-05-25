@@ -262,7 +262,7 @@ export default {
         let tr = await this.$api.transactions.getTransaction(
           this.$route.params.id
         );
-        this.model.quickStatus = tr.quickStatus;
+        this.model = tr;
         this.model.allowTransmission = false;
       }
     }

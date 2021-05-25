@@ -331,6 +331,7 @@
   "PaymentRequestSentTo": "דרישת שלום נשלחה ל-",
   "CopiedToClipboard": "הועתק ללוח",
   "CanNotCopyToClipboard": "לא ניתן להעתיק ללוח",
+  "TransactionTransmitted": "עסקה שודרה",
 
   "--MISC--": null,
   "AllCustomers": "כל הלקוחות",

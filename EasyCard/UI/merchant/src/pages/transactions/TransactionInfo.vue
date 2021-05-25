@@ -206,16 +206,21 @@ export default {
         });
         return;
       }
-      let opResult = operation[0];
+      if (!operation || operation.numberOfRecords !== 1) return;
+      let opResult = operation.data[0];
 
       if (
         opResult.paymentTransactionID == this.$route.params.id &&
         opResult.transmissionStatus == "Transmitted"
       ) {
+        this.$toasted.show(this.$t("TransactionTransmitted"), {
+          type: "success",
+          duration: 5000
+        });
         let tr = await this.$api.transactions.getTransaction(
           this.$route.params.id
         );
-        this.model.quickStatus = tr.quickStatus;
+        this.model = tr;
         this.model.allowTransmission = false;
       }
     },
