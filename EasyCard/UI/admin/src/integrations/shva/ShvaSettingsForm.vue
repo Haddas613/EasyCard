@@ -12,15 +12,14 @@
               <v-text-field
                 v-model="model.settings.merchantNumber"
                 :label="$t('ShvaTerminalReference')"
-                outlined
                 disabled
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
-              <v-text-field v-model="model.settings.userName" :rules="[vr.primitives.required, vr.primitives.stringLength(3, 64)]" :label="$t('UserName')" outlined></v-text-field>
+              <v-text-field v-model="model.settings.userName" :rules="[vr.primitives.required, vr.primitives.stringLength(3, 64)]" :label="$t('UserName')"></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
-              <v-text-field v-model="newPasswordModel" :rules="[vr.primitives.required, vr.primitives.stringLength(6, 64)]" :label="$t('NewPassword')" outlined></v-text-field>
+              <v-text-field v-model="newPasswordModel" :rules="[vr.primitives.required, vr.primitives.stringLength(6, 64)]" :label="$t('NewPassword')"></v-text-field>
             </v-col>
           </v-row>
         </v-form>
@@ -37,16 +36,15 @@
           <v-btn small color="secondary" class="mx-1" @click="openNewPasswordDialog()">{{$t("SetNewPassword")}}</v-btn>
         </v-col>
         <v-col cols="12" md="4" class="py-0">
-          <v-text-field v-model="model.settings.userName" :label="$t('SHVATerminalName')" outlined></v-text-field>
+          <v-text-field v-model="model.settings.userName" :label="$t('SHVATerminalName')"></v-text-field>
         </v-col>
         <v-col cols="12" md="4" class="py-0">
-          <v-text-field v-model="model.settings.password" :label="$t('Password')" outlined></v-text-field>
+          <v-text-field v-model="model.settings.password" :label="$t('Password')"></v-text-field>
         </v-col>
         <v-col cols="12" md="4" class="py-0">
           <v-text-field
             v-model="model.settings.merchantNumber"
             :label="$t('ShvaTerminalReference')"
-            outlined
           ></v-text-field>
         </v-col>
       </v-row>

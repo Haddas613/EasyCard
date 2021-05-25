@@ -1,11 +1,8 @@
 <template>
   <v-form v-model="formValid" lazy-validation>
-    <v-row v-if="model.settings">
+    <v-row v-if="model.settings" class="pt-2">
       <v-col cols="12" md="6" class="py-0">
-        <v-text-field v-model="model.settings.url" :label="$t('URL')"></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6" class="py-0">
-        <v-text-field v-model="model.settings.apiKey" :label="$t('ApiKey')"></v-text-field>
+        <v-text-field v-model="model.settings.terminalID" :label="$t('TerminalID')"></v-text-field>
       </v-col>
     </v-row>
     <div class="d-flex justify-end">

@@ -6,13 +6,13 @@
         <v-form ref="newCustomerFormRef" lazy-validation>
           <v-row>
           <v-col cols="12" md="4" class="py-0">
-            <v-text-field v-model="newCustomerModel.userName" :rules="[vr.primitives.required, vr.primitives.email]" :label="$t('Email')" outlined></v-text-field>
+            <v-text-field v-model="newCustomerModel.userName" :rules="[vr.primitives.required, vr.primitives.email]" :label="$t('Email')"></v-text-field>
           </v-col>
           <v-col cols="12" md="4" class="py-0">
-            <v-text-field v-model="newCustomerModel.password" :rules="[vr.primitives.required, vr.primitives.stringLength(6, 64)]" :label="$t('Password')" outlined></v-text-field>
+            <v-text-field v-model="newCustomerModel.password" :rules="[vr.primitives.required, vr.primitives.stringLength(6, 64)]" :label="$t('Password')"></v-text-field>
           </v-col>
           <v-col cols="12" md="4" class="py-0">
-            <v-text-field v-model="newCustomerModel.businessID" :rules="[vr.primitives.required, vr.primitives.stringLength(6, 64)]" :label="$t('BusinessID')" outlined></v-text-field>
+            <v-text-field v-model="newCustomerModel.businessID" :rules="[vr.primitives.required, vr.primitives.stringLength(6, 64)]" :label="$t('BusinessID')"></v-text-field>
           </v-col>
         </v-row>
         </v-form>
@@ -28,13 +28,13 @@
           <v-btn small color="secondary" class="mx-1" @click="openNewCustomerDialog()">{{$t("CreateNewCustomer")}}</v-btn>
         </v-col>
         <v-col cols="12" md="4" class="py-0">
-          <v-text-field v-model="model.settings.keyStorePassword" :label="$t('KeyStorePassword')" outlined></v-text-field>
+          <v-text-field v-model="model.settings.keyStorePassword" :label="$t('KeyStorePassword')"></v-text-field>
         </v-col>
         <v-col cols="12" md="4" class="py-0">
-          <v-text-field v-model="model.settings.userName" :label="$t('UserName')" outlined></v-text-field>
+          <v-text-field v-model="model.settings.userName" :label="$t('UserName')"></v-text-field>
         </v-col>
         <v-col cols="12" md="4" class="py-0">
-          <v-text-field v-model="model.settings.password" :label="$t('Password')" outlined></v-text-field>
+          <v-text-field v-model="model.settings.password" :label="$t('Password')"></v-text-field>
         </v-col>
       </v-row>
       <div class="d-flex justify-end">

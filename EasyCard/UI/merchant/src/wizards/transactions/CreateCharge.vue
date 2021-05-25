@@ -163,7 +163,7 @@ export default {
       success: true,
       errors: [],
       result: {
-        entityReference: 123
+        entityReference: null
       }
     };
   },
