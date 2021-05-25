@@ -136,7 +136,7 @@
       <v-col cols="12" class="pt-0">
         <numpad-dialog-invoker 
           :key="model.dealDetails.items.length + model.transactionAmount" 
-          :data="model.dealDetails.items" 
+          :data="model" 
           @ok="processAmount($event)"></numpad-dialog-invoker>
       </v-col>
       <v-col cols="12" class="pt-0">
@@ -146,7 +146,7 @@
           embed 
           v-on:ok="processAmount($event)" 
           v-on:update="processAmount($event)" 
-          :items="model.dealDetails.items"></basket>
+          :data="model"></basket>
       </v-col>
       <v-row class="px-2" v-if="false">
         <v-col cols="12" md="6">
@@ -374,7 +374,7 @@ export default {
       this.model.vatTotal = data.vatTotal;
       this.model.vatRate = data.vatRate;
       this.model.note = data.note;
-      this.model.dealDetails.items = data.items;
+      this.model.dealDetails.items = data.dealDetails.items;
       // this.itemsRefreshKey = `${data.totalAmount}:${this.lodash.join(this.lodash.map(data.items, i => i.itemName))}`;
       this.calculateTotal();
     },

@@ -7,8 +7,9 @@
           <numpad
             btn-text="OK"
             v-on:ok="processAmount($event);"
+            v-on:update="updateAmount($event);"
             ref="numpadRef"
-            :items="model.items"
+            :data="model"
           ></numpad>
         </v-flex>
       </template>
@@ -34,8 +35,8 @@ import itemPricingService from "../../helpers/item-pricing";
 export default {
   props: {
     data: {
-      type: Array,
-      default: () => []
+      type: Object,
+      required: true
     },
     terminal: {
       default: null
@@ -50,21 +51,21 @@ export default {
   data() {
     return {
       model: {
-        items: [...this.data],
         amount: 0,
         discount: 0,
         netTotal: 0,
         totalAmount: 0,
         vatRate: 0,
-        vatTotal: 0
+        vatTotal: 0,
+        ...this.data
       },
       numpadDialog: false
     };
   },
   async mounted() {
-    itemPricingService.total.calculate(this.model, {
-      vatRate: this.terminalStore.settings.vatRate
-    });
+    // itemPricingService.total.calculate(this.model, {
+    //   vatRate: this.terminalStore.settings.vatRate
+    // });
   },
   computed: {
     ...mapState({
@@ -74,12 +75,15 @@ export default {
   },
   methods: {
     processAmount(data) {
-      this.model = data;
-      itemPricingService.total.calculate(this.model, {
-        vatRate: this.terminalStore.settings.vatRate
-      });
+      this.updateAmount(data);
       this.$emit("ok", data);
       this.numpadDialog = false;
+    },
+    updateAmount(data){
+      this.model = data;
+      itemPricingService.total.calculate(this.model, {
+        vatRate: this.model.vatRate
+      });
     }
   }
 };
