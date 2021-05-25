@@ -211,18 +211,16 @@ export default {
         terminalID: this.model.terminalID,
         paymentTransactionIDs: [this.model.$paymentTransactionID]
       });
-
+      
       //400
-      if(operation && operation.status == "error"){
-        this.$toasted.show(operation.message || this.$t("SomethingWentWrong"), {
+      if(!operation || (operation && operation.status == "error")){
+        this.$toasted.show(operation ? operation.message : this.$t("SomethingWentWrong"), {
           type: "error"
         });
         return;
       }
-
-      if (!operation || operation.numberOfRecords !== 1) return;
-      let opResult = operation.data[0];
-
+      let opResult = operation[0];
+      
       if (
         opResult.paymentTransactionID == this.$route.params.id &&
         opResult.transmissionStatus == "Transmitted"
@@ -245,15 +243,13 @@ export default {
       });
       
       //400
-      if(operation && operation.status == "error"){
-        this.$toasted.show(operation.message || this.$t("SomethingWentWrong"), {
+      if(!operation || (operation && operation.status == "error")){
+        this.$toasted.show(operation ? operation.message : this.$t("SomethingWentWrong"), {
           type: "error"
         });
         return;
       }
-
-      if (!operation || operation.numberOfRecords !== 1) return;
-      let opResult = operation.data[0];
+      let opResult = operation[0];
 
       if (
         opResult.paymentTransactionID == this.$route.params.id &&
