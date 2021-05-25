@@ -2,8 +2,9 @@
   <v-flex fill-height>
     <item-pricing-dialog
       v-if="selectedItem"
-      :key="selectedItem.itemID"
+      :key="model.vatRate + '.' + selectedItem.itemID"
       :item="selectedItem"
+      :basket="model"
       :show.sync="itemPriceDialog"
       v-on:ok="saveItem($event)"
     ></item-pricing-dialog>
@@ -33,9 +34,16 @@
         </v-list-item>
         <v-list-item>
           <v-list-item-content class="text-normal">
-            <v-row no-gutters>
-              <v-col cols="6" class="text-start">{{$t("VAT")}}</v-col>
-              <v-col cols="3" class="text-end">{{(terminalStore.settings.vatRate * 100).toFixed(0)}}%</v-col>
+            <v-row no-gutters align="center">
+              <v-col cols="3" class="text-start">{{$t("VAT")}}</v-col>
+              <v-col cols="3" class="text-initial">
+                <v-switch class="pt-0 mt-0" v-model="vatExempt" dense hide-details>
+                  <template v-slot:label>
+                    <small>{{$t('VATExempt')}}</small>
+                  </template>
+                </v-switch>
+              </v-col>
+              <v-col cols="3" class="text-end">{{(model.vatRate * 100).toFixed(0)}}%</v-col>
               <v-col cols="3" class="text-end">{{model.vatTotal | currency(currencyStore.code)}}</v-col>
             </v-row>
           </v-list-item-content>
@@ -44,14 +52,14 @@
           <v-list-item-content class="text-normal">
             <v-row no-gutters>
               <v-col cols="6" class="text-start">{{$t("Total")}}</v-col>
-              <v-col cols="3" class="text-end">{{model.items.length}}</v-col>
+              <v-col cols="3" class="text-end">{{model.dealDetails.items.length}}</v-col>
               <v-col cols="3" class="text-end">{{model.totalAmount | currency(currencyStore.code)}}</v-col>
             </v-row>
           </v-list-item-content>
         </v-list-item>
       </v-list>
       <v-divider></v-divider>
-      <ec-list v-if="model.items" class="pb-1" :items="model.items" dense :color="embed ? 'ecbg' : null">
+      <ec-list v-if="model.dealDetails.items" class="pb-1" :items="model.dealDetails.items" dense :color="embed ? 'ecbg' : null">
         <template v-slot:prepend="{ item, index }">
           <v-btn icon @click="deleteItem(index)">
             <v-icon>mdi-delete</v-icon>
@@ -103,11 +111,13 @@ export default {
         totalAmount: 0,
         netTotal: 0,
         vatTotal: 0,
-        items: [...this.items]
+        vatRate: 0,
+        ...this.data
       },
       selectedItem: null,
       itemPriceDialog: false,
       search: null,
+      vatExempt: false,
     };
   },
   props: {
@@ -115,8 +125,8 @@ export default {
       type: String,
       default: "OK"
     },
-    items: {
-      type: Array,
+    data: {
+      type: Object,
       required: true
     },
     embed: {
@@ -125,27 +135,34 @@ export default {
     }
   },
   mounted () {
-    itemPricingService.total.calculate(this.model, { vatRate: this.terminalStore.settings.vatRate});
+    this.vatExempt = this.model.vatRate === 0;
+    itemPricingService.total.calculate(this.model, { vatRate: this.model.vatRate});
   },
   computed: {
     totalDiscount() {
-      return this.lodash.sumBy(this.model.items, "discount");
+      return this.lodash.sumBy(this.model.dealDetails.items, "discount");
     },
     ...mapState({
       currencyStore: state => state.settings.currency,
       terminalStore: state => state.settings.terminal
     })
   },
+  watch: {
+    vatExempt(newValue, oldValue) {
+      this.model.vatRate = newValue ?  0 : this.terminalStore.settings.vatRate;
+      this.recalculate();
+    }
+  },
   methods: {
     ok() {
-      itemPricingService.total.calculate(this.model, {vatRate: this.terminalStore.settings.vatRate});
+      itemPricingService.total.calculate(this.model, {vatRate: this.model.vatRate});
       this.$emit("ok", {
         silent: true,
         ...this.model
       });
     },
     editItem(idx) {
-      let entry = this.model.items[idx];
+      let entry = this.model.dealDetails.items[idx];
 
       if (entry) {
         this.selectedItem = { idx: idx, ...entry };
@@ -153,19 +170,22 @@ export default {
       }
     },
     async saveItem(item) {
-      let entry = this.model.items[item.idx];
+      let entry = this.model.dealDetails.items[item.idx];
       if (entry) {
-        this.$set(this.model.items, item.idx, item);
+        this.$set(this.model.dealDetails.items, item.idx, item);
       }
       this.recalculate();
       this.itemPriceDialog = false;
     },
     deleteItem(idx) {
-      if (this.model.items[idx]) this.model.items.splice(idx, 1);
+      if (this.model.dealDetails.items[idx]) this.model.dealDetails.items.splice(idx, 1);
       this.recalculate();
     },
     recalculate(){
-       itemPricingService.total.calculate(this.model, {vatRate: this.terminalStore.settings.vatRate});
+       for(var item of this.model.dealDetails.items){
+         itemPricingService.item.calculate(item, { vatRate: this.model.vatRate });
+       }
+       itemPricingService.total.calculate(this.model, {vatRate: this.model.vatRate});
        this.$emit('update', this.model);
     }
   }

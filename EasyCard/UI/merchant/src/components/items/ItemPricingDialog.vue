@@ -92,7 +92,7 @@
             <v-text-field
               class="mx-2 mt-4"
               v-if="model"
-              :value="`${(terminalStore.settings.vatRate * 100).toFixed(0)}%`"
+              :value="`${(basket.vatRate * 100).toFixed(0)}%`"
               readonly
               disabled
               outlined
@@ -120,6 +120,10 @@ import { mapState } from "vuex";
 export default {
   props: {
     item: {
+      type: Object,
+      required: true
+    },
+    basket:{
       type: Object,
       required: true
     },
@@ -190,7 +194,7 @@ export default {
           : 0;
       }
 
-      itemPricingService.item.calculate(this.model, { vatRate: this.terminalStore.settings.vatRate });
+      itemPricingService.item.calculate(this.model, { vatRate: this.basket.vatRate });
     }
   }
 };

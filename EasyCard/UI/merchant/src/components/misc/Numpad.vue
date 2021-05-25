@@ -111,7 +111,8 @@ export default {
       model: {
         amount: "0",
         discount: "0",
-        items: [...this.items]
+        vatRate: null,
+        ...this.data
       },
       defaultItem: {
         price: 0,
@@ -131,12 +132,9 @@ export default {
       type: String,
       default: "OK"
     },
-    items: {
-      type: Array,
-      required: false,
-      default: () => {
-        return []
-      }
+    data: {
+      type: Object,
+      required: true,
     }
   },
   watch: {
@@ -161,7 +159,7 @@ export default {
     totalAmount() {
       return (
         parseFloat(this.defaultItem.price) +
-        this.lodash.sumBy(this.model.items, "amount")
+        this.lodash.sumBy(this.model.dealDetails.items, "amount")
       );
     },
     ...mapState({
@@ -172,7 +170,11 @@ export default {
   async mounted() {
     this.defaultItem.currency = this.currencyStore.code;
     this.defaultItem.itemName = this.terminalStore.settings.defaultItemName || 'Custom Charge';
+    if(this.model.vatRate === null){
+      this.model.vatRate = this.terminalStore.settings.vatRate
+    }
     await this.getItems();
+    this.$emit('update', this.model);
   },
   methods: {
     addDigit(d) {
@@ -221,14 +223,14 @@ export default {
     },
     getData(){
       this.stash();
-      itemPricingService.total.calculate(this.model, { vatRate: this.terminalStore.settings.vatRate});
+      itemPricingService.total.calculate(this.model, { vatRate: this.model.vatRate});
       return this.model
     },
     stash() {
       if (!this.defaultItem.price || this.defaultItem.price == "0") {
         return;
       }
-      this.model.items.push(this.prepareItem());
+      this.model.dealDetails.items.push(this.prepareItem());
       this.defaultItem.price = "0";
       this.defaultItem.amount = this.defaultItem.discount = "0";
     },
@@ -242,14 +244,14 @@ export default {
       return item;
     },
     calculatePricingForItem(item){
-      itemPricingService.item.calculate(item, { vatRate: this.terminalStore.settings.vatRate});
+      itemPricingService.item.calculate(item, { vatRate: this.model.vatRate});
     },
     reset() {
       this.defaultItem.price = 0;
       this.defaultItem.discount = 0;
     },
     async resetItems() {
-      this.model.items = [];
+      this.model.dealDetails.items = [];
       await this.getItems();
     },
     itemSelected(item) {
@@ -263,7 +265,7 @@ export default {
       };
 
       this.calculatePricingForItem(newItem);
-      this.model.items.push(newItem);
+      this.model.dealDetails.items.push(newItem);
     }
   }
 };

@@ -13,19 +13,19 @@
       :title="navTitle"
     >
       <template v-if="steps[step].showItemsCount" v-slot:title>
-        <v-btn v-if="$refs.numpadRef" :disabled="!$refs.numpadRef.model.items.length" color="ecgray" small @click="processToBasket()">
-          {{$t("@ItemsQuantity").replace("@quantity", $refs.numpadRef.model.items.length)}}
+        <v-btn v-if="$refs.numpadRef" :disabled="!$refs.numpadRef.model.dealDetails.items.length" color="ecgray" small @click="processToBasket()">
+          {{$t("@ItemsQuantity").replace("@quantity", $refs.numpadRef.model.dealDetails.items.length)}}
         </v-btn>
       </template>
     </navbar>
     <v-stepper class="ec-stepper" v-model="step" :key="terminal.terminalID">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad v-if="step === 1" btn-text="Charge" v-on:ok="processAmount($event, true);" ref="numpadRef" :items="model.dealDetails.items"></numpad>
+          <numpad v-if="step === 1" btn-text="Charge" v-on:ok="processAmount($event, true);" v-on:update="updateAmount($event)" ref="numpadRef" :data="model"></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
-          <basket v-if="step === 2" btn-text="Total" v-on:ok="processAmount($event)" v-on:update="updateAmount($event)" :items="model.dealDetails.items"></basket>
+          <basket v-if="step === 2" btn-text="Total" v-on:ok="processAmount($event)" v-on:update="updateAmount($event)" :data="model"></basket>
         </v-stepper-content>
 
         <v-stepper-content step="3" class="py-0 px-0">
@@ -255,7 +255,7 @@ export default {
       this.model.vatTotal = data.vatTotal;
       this.model.vatRate = data.vatRate;
       this.model.note = data.note;
-      this.model.dealDetails.items = data.items;
+      this.model.dealDetails.items = data.dealDetails.items;
     },
     processCreditCard(data) {
       if (data.type === "creditcard") {
