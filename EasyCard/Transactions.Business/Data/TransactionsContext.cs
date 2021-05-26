@@ -504,6 +504,9 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.Active).HasDefaultValue(false);
+
+                builder.Property(b => b.PausedFrom).IsRequired(false);
+                builder.Property(b => b.PausedTo).IsRequired(false);
             }
         }
 

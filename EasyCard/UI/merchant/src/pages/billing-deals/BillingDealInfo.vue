@@ -1,24 +1,11 @@
 <template>
   <v-flex>
-    <!-- <v-dialog v-model="deleteDialog" width="500">
-      <v-card>
-        <v-card-title>{{$t("Confirmation")}}</v-card-title>
-        <v-divider></v-divider>
-        <v-card-text class="pt-2">{{$t("AreYouSureYouWantToDeleteBillingDeal")}}</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="deleteDialog = false;">{{$t("Cancel")}}</v-btn>
-          <v-btn color="primary" @click="deleteBillingDeal()">{{$t("OK")}}</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>-->
     <v-tabs grow>
       <v-tab key="info">{{$t("GeneralInfo")}}</v-tab>
       <v-tab-item key="info">
         <div v-if="model">
+          <billing-deal-pause-dialog :show.sync="pauseDialog" :billing="model" v-on:ok="billingPausedChanged($event, true)"></billing-deal-pause-dialog>
           <v-card flat class="mb-2">
-            <!-- <v-card-title class="py-3 ecdgray--text subtitle-2 text-uppercase">{{$t('GeneralInfo')}}</v-card-title>
-            <v-divider></v-divider>-->
             <v-card-text class="body-1 black--text" v-if="model">
               <v-row class="info-container">
                 <v-col cols="12" md="4" class="info-block">
@@ -36,9 +23,20 @@
 
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('Active')}}</p>
-                  <p v-if="model.active" class="success--text">{{$t("Yes")}}</p>
+                  <p v-if="model.paused" class="accent--text">{{$t("Paused")}}</p>
+                  <p v-else-if="model.active" class="success--text">{{$t("Yes")}}</p>
                   <p v-else class="error--text">{{$t("No")}}</p>
                 </v-col>
+                <template v-if="model.paused">
+                  <v-col cols="12" md="4" class="info-block">
+                    <p class="caption accent--text">{{$t('From')}}</p>
+                    <p>{{model.$pausedFrom | ecdate}}</p>
+                  </v-col>
+                  <v-col cols="12" md="4" class="info-block">
+                    <p class="caption accent--text">{{$t('To')}}</p>
+                    <p>{{model.$pausedTo | ecdate}}</p>
+                  </v-col>
+                </template>
               </v-row>
             </v-card-text>
           </v-card>
@@ -117,7 +115,9 @@ export default {
     DealDetails: () => import("../../components/details/DealDetails"),
     AmountDetails: () => import("../../components/details/AmountDetails"),
     CreditCardDetails: () =>
-      import("../../components/details/CreditCardDetails")
+      import("../../components/details/CreditCardDetails"),
+    BillingDealPauseDialog: () =>
+      import("../../components/billing-deals/BillingDealPauseDialog"),
   },
   data() {
     return {
@@ -129,7 +129,7 @@ export default {
         billingDealID: this.$route.params.id
       },
       numberOfRecords: 0,
-      deleteDialog: false
+      pauseDialog: false
     };
   },
   methods: {
@@ -141,6 +141,14 @@ export default {
         this.model.active = !this.model.active;
         await this.initThreeDotMenu();
       }
+    },
+    async billingPausedChanged($event, paused){
+      if ($event){
+        this.model.pausedFrom = $event.pausedFrom;
+        this.model.pausedTo = $event.pausedTo;
+      }
+      this.model.paused = paused;
+      this.initThreeDotMenu();
     },
     async initThreeDotMenu() {
       let newHeader = {
@@ -163,6 +171,24 @@ export default {
           this.switchBillingDeal();
         }
       });
+
+      if (!this.model.paused){
+        newHeader.threeDotMenu.push({
+          text: this.$t("Pause"),
+          fn: () => {
+            this.pauseDialog = true;
+          }
+        });
+      }else{
+        newHeader.threeDotMenu.push({
+          text: this.$t("Unpause"),
+          fn: async () => {
+            await this.$api.billingDeals.unpauseBillingDeal(this.$route.params.id);
+            this.billingPausedChanged(null, false);
+          }
+        });
+      }
+
       this.$store.commit("ui/changeHeader", { value: newHeader });
     }
   },

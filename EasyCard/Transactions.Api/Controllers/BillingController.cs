@@ -231,7 +231,7 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpPost]
-        [Route("switch/{BillingDealID}")]
+        [Route("{BillingDealID}/switch")]
         public async Task<ActionResult<OperationResponse>> SwitchBillingDeal([FromRoute] Guid billingDealID)
         {
             var billingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
@@ -315,6 +315,49 @@ namespace Transactions.Api.Controllers
 
                 return Ok(response);
             }
+        }
+
+        [HttpPost]
+        [Route("{billingDealID}/pause")]
+        public async Task<ActionResult<OperationResponse>> PauseBilling([FromRoute]Guid billingDealID, [FromBody] PauseBillingDealRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (request.DateTo < request.DateFrom)
+            {
+                ModelState.AddModelError(nameof(request.DateTo), $"Must be less than {nameof(request.DateFrom)}");
+                return BadRequest(ModelState);
+            }
+
+            var billingDeal = await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(b => b.BillingDealID == billingDealID);
+
+            billingDeal.PausedFrom = request.DateFrom.Value;
+            billingDeal.PausedTo = request.DateTo.Value;
+
+            await billingDealService.UpdateEntityWithHistory(billingDeal, string.IsNullOrWhiteSpace(request.Reason) ? Messages.BillingDealPaused : request.Reason, BillingDealOperationCodesEnum.Paused);
+
+            return Ok(new OperationResponse { Status = StatusEnum.Success, Message = Messages.BillingDealPaused, EntityUID = billingDealID });
+        }
+
+        [HttpPost]
+        [Route("{billingDealID}/unpause")]
+        public async Task<ActionResult<OperationResponse>> UnpauseBilling([FromRoute]Guid billingDealID)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var billingDeal = await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(b => b.BillingDealID == billingDealID);
+
+            billingDeal.PausedFrom = billingDeal.PausedTo = null;
+
+            await billingDealService.UpdateEntityWithHistory(billingDeal, Messages.BillingDealUnpaused, BillingDealOperationCodesEnum.Paused);
+
+            return Ok(new OperationResponse { Status = StatusEnum.Success, Message = Messages.BillingDealUnpaused, EntityUID = billingDealID });
         }
 
         /// <summary>

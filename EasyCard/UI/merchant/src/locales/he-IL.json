@@ -73,6 +73,7 @@
   "Delete": "מחיקה",
   "Overview": "סיכום",
   "Features": "תכונות",
+  "PauseBillingDeal": "השהה עסקה מחזורית",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -264,6 +265,8 @@
   "ShowInactive": "הצג לא פעילים",
   "Finished": "הסתיים",
   "SendTransactionSlipEmail": "שלח שובר במייל",
+  "Reason": "סיבה",
+  "Reason(Optional)": "סיבה (אופציונלי)",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

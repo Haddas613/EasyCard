@@ -148,6 +148,31 @@ namespace Transactions.Business.Entities
 
         public DocumentOriginEnum DocumentOrigin { get; set; }
 
+        public DateTime? PausedFrom { get; set; }
+
+        public DateTime? PausedTo { get; set; }
+
+        public bool UnpauseRequired()
+        {
+            if (!Paused())
+            {
+                return false;
+            }
+
+            return PausedTo.Value.Date >= DateTime.UtcNow.Date;
+        }
+
+        public bool Paused()
+        {
+            if (!PausedFrom.HasValue || !PausedTo.HasValue)
+            {
+                return false;
+            }
+
+            var utcNow = DateTime.UtcNow.Date;
+            return (PausedFrom.Value.Date <= utcNow) && (PausedTo.Value.Date >= utcNow);
+        }
+
         // TODO: recalculate items and fill default SKU
     }
 }

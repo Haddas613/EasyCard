@@ -43,5 +43,11 @@ namespace Transactions.Api.Models.Billing
         public bool Active { get; set; }
 
         public int? CurrentDeal { get; set; }
+
+        public DateTime? PausedFrom { get; set; }
+
+        public DateTime? PausedTo { get; set; }
+
+        public bool Paused { get; set; }
     }
 }

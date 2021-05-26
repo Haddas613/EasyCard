@@ -29,16 +29,19 @@ namespace Transactions.Api.Mapping
             CreateMap<BillingDeal, BillingDealSummary>()
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerName))
                 .ForMember(d => d.CardExpired, o => o.MapFrom(d => d.CreditCardDetails.CardExpiration.Expired))
-                .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)));
+                .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)))
+                .ForMember(d => d.Paused, o => o.MapFrom(d => d.Paused()));
 
             CreateMap<BillingDeal, BillingDealSummaryAdmin>()
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerName))
                 .ForMember(d => d.CardExpired, o => o.MapFrom(d => d.CreditCardDetails.CardExpiration.Expired))
-                .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)));
+                .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)))
+                .ForMember(d => d.Paused, o => o.MapFrom(d => d.Paused()));
 
             CreateMap<BillingDeal, BillingDealResponse>()
                 .ForMember(d => d.CardExpired, o => o
-                    .MapFrom(d => (d.CreditCardDetails != null && d.CreditCardDetails.CardExpiration != null) ? d.CreditCardDetails.CardExpiration.Expired : default));
+                    .MapFrom(d => (d.CreditCardDetails != null && d.CreditCardDetails.CardExpiration != null) ? d.CreditCardDetails.CardExpiration.Expired : default))
+                .ForMember(d => d.Paused, o => o.MapFrom(d => d.Paused()));
 
             CreateMap<BillingDeal, CreateTransactionRequest>();
 

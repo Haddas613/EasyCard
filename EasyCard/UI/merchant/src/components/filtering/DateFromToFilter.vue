@@ -10,9 +10,9 @@
         min-width="290px"
       >
         <template v-slot:activator="{ on }">
-          <v-text-field v-model="dateFromRaw" :label="$t('DateFrom')" readonly v-on="on" clearable outlined></v-text-field>
+          <v-text-field v-model="dateFromRaw" :label="$t('DateFrom')" readonly v-on="on" clearable outlined :rules="rules"></v-text-field>
         </template>
-        <v-date-picker v-model="dateFromRaw" no-title scrollable color="primary">
+        <v-date-picker v-model="dateFromRaw" no-title scrollable color="primary" :min="fromToday ? today : false">
           <v-spacer></v-spacer>
           <v-btn text color="primary" @click="$refs.dateFromMenu.save(dateFromRaw)">{{$t("Ok")}}</v-btn>
         </v-date-picker>
@@ -28,9 +28,9 @@
         min-width="290px"
       >
         <template v-slot:activator="{ on }">
-          <v-text-field v-model="dateToRaw" :label="$t('DateTo')" readonly v-on="on" clearable outlined></v-text-field>
+          <v-text-field v-model="dateToRaw" :label="$t('DateTo')" readonly v-on="on" clearable outlined :rules="rules"></v-text-field>
         </template>
-        <v-date-picker v-model="dateToRaw" no-title scrollable color="primary">
+        <v-date-picker v-model="dateToRaw" no-title scrollable color="primary" :min="dateFromRaw ? dateFromRaw : null">
           <v-spacer></v-spacer>
           <v-btn text color="primary" @click="$refs.dateToMenu.save(dateToRaw)">{{$t("Ok")}}</v-btn>
         </v-date-picker>
@@ -56,6 +56,14 @@ export default {
     md: {
       type: String,
       default: "6"
+    },
+    required: {
+      type: Boolean,
+      default: false
+    },
+    fromToday: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -64,8 +72,15 @@ export default {
       dateFromMenu: false,
       dateToMenu: false,
       dateFromRaw: null,
-      dateToRaw: null
+      dateToRaw: null,
+      rules: [],
+      today: new Date().toISOString()
     };
+  },
+  mounted () {
+    if (this.required){
+      this.rules = [this.vr.primitives.required]
+    }
   },
   watch: {
     dateFromRaw: function(val) {

@@ -363,4 +363,10 @@
   <data name="TransactionMustBeCompleted" xml:space="preserve">
     <value>חובה להשלים את העסקה</value>
   </data>
+  <data name="BillingDealPaused" xml:space="preserve">
+    <value>עסקה מחזורית מושהית</value>
+  </data>
+  <data name="BillingDealUnpaused" xml:space="preserve">
+    <value>עסקה מחזורית פעילה</value>
+  </data>
 </root>

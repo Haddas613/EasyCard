@@ -95,6 +95,14 @@
               </template>
               {{$t('CreditCardHasExpired')}}
             </v-tooltip>
+            <v-tooltip top v-else-if="item.paused">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn color="accent" dark icon v-bind="attrs" v-on="on">
+                  <v-icon :title="$t('Paused')">mdi-pause</v-icon>
+                </v-btn>
+              </template>
+              {{$t('Paused')}}
+            </v-tooltip>
             <v-tooltip top v-else-if="item.active">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="success" dark icon v-bind="attrs" v-on="on">

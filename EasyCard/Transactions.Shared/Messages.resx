@@ -132,11 +132,17 @@
   <data name="BillingDealIsClosed" xml:space="preserve">
     <value>Billing deal is closed</value>
   </data>
+  <data name="BillingDealPaused" xml:space="preserve">
+    <value>Billing Deal Paused</value>
+  </data>
   <data name="BillingDealsMaxBatchSize" xml:space="preserve">
     <value>The number of billing deals for transaction batch is limited to {0}</value>
   </data>
   <data name="BillingDealsRequired" xml:space="preserve">
     <value>Billing Deals required</value>
+  </data>
+  <data name="BillingDealUnpaused" xml:space="preserve">
+    <value>Billing Deal Unpaused</value>
   </data>
   <data name="BillingDealUpdated" xml:space="preserve">
     <value>Billing Deal Updated</value>

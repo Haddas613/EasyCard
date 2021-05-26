@@ -87,6 +87,12 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(false)
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("PausedFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("PausedTo")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("SourceIP")
                         .HasMaxLength(50)
                         .IsUnicode(false)

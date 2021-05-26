@@ -73,6 +73,12 @@ namespace Transactions.Business.Services
         }
 
         public async override Task UpdateEntity(BillingDeal entity, IDbContextTransaction dbTransaction = null)
+            => await UpdateEntityWithHistory(entity, Messages.BillingDealUpdated, BillingDealOperationCodesEnum.Updated, dbTransaction);
+
+        public IQueryable<BillingDealHistory> GetBillingDealHistory(Guid billingDealID) =>
+            context.BillingDealHistories.Where(h => h.BillingDealID == billingDealID).AsNoTracking();
+
+        public async Task UpdateEntityWithHistory(BillingDeal entity, string message, BillingDealOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null)
         {
             var exist = this.context.BillingDeals.Find(entity.GetID());
 
@@ -91,24 +97,19 @@ namespace Transactions.Business.Services
 
             entity.UpdatedDate = DateTime.UtcNow;
 
-            //await base.UpdateEntity(entity, dbTransaction);
-
             if (dbTransaction != null)
             {
                 await context.SaveChangesAsync();
-                await AddHistory(entity.BillingDealID, changesStr, Messages.BillingDealUpdated, BillingDealOperationCodesEnum.Updated);
+                await AddHistory(entity.BillingDealID, changesStr, message, operationCode);
             }
             else
             {
                 using var transaction = BeginDbTransaction();
                 await context.SaveChangesAsync();
-                await AddHistory(entity.BillingDealID, changesStr, Messages.BillingDealUpdated, BillingDealOperationCodesEnum.Updated);
+                await AddHistory(entity.BillingDealID, changesStr, message, operationCode);
                 await transaction.CommitAsync();
             }
         }
-
-        public IQueryable<BillingDealHistory> GetBillingDealHistory(Guid billingDealID) =>
-            context.BillingDealHistories.Where(h => h.BillingDealID == billingDealID).AsNoTracking();
 
         private async Task AddHistory(Guid billingDealID, string opDescription, string message, BillingDealOperationCodesEnum operationCode)
         {

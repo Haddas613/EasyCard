@@ -8,5 +8,7 @@ namespace Transactions.Shared.Enums
     {
         Created,
         Updated,
+        Paused,
+        Unpaused
     }
 }

@@ -1,9 +1,12 @@
-﻿using Shared.Business;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using Shared.Business;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Transactions.Business.Entities;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Services
 {
@@ -14,5 +17,7 @@ namespace Transactions.Business.Services
         IQueryable<BillingDeal> GetBillingDealsForUpdate();
 
         IQueryable<BillingDealHistory> GetBillingDealHistory(Guid billingDealID);
+
+        Task UpdateEntityWithHistory(BillingDeal entity, string message, BillingDealOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null);
     }
 }

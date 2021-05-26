@@ -73,6 +73,7 @@
   "Delete": "Delete",
   "Overview": "Overview",
   "Features": "Features",
+  "PauseBillingDeal": "Pause Billing Deal",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -264,6 +265,8 @@
   "ShowInactive": "Show inactive",
   "Finished": "Finished",
   "SendTransactionSlipEmail": "Send Transaction slip email",
+  "Reason": "Reason",
+  "Reason(Optional)": "Reason (optional)",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

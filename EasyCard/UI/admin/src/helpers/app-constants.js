@@ -25,7 +25,7 @@ const appConstants = {
     },
     config:{
         ui: {
-            typeaheadTimeout: 1000
+            typeaheadTimeout: 500
         }
     }
 };

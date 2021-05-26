@@ -137,5 +137,11 @@ namespace Transactions.Api.Models.Billing
         public decimal VATTotal { get; set; }
 
         public decimal NetTotal { get; set; }
+
+        public DateTime? PausedFrom { get; set; }
+
+        public DateTime? PausedTo { get; set; }
+
+        public bool Paused { get; set; }
     }
 }

@@ -106,6 +106,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Billing Deal Paused.
+        /// </summary>
+        public static string BillingDealPaused {
+            get {
+                return ResourceManager.GetString("BillingDealPaused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The number of billing deals for transaction batch is limited to {0}.
         /// </summary>
         public static string BillingDealsMaxBatchSize {
@@ -120,6 +129,15 @@ namespace Transactions.Shared {
         public static string BillingDealsRequired {
             get {
                 return ResourceManager.GetString("BillingDealsRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Billing Deal Unpaused.
+        /// </summary>
+        public static string BillingDealUnpaused {
+            get {
+                return ResourceManager.GetString("BillingDealUnpaused", resourceCulture);
             }
         }
         
