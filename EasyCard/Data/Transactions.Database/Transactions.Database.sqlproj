@@ -72,5 +72,7 @@
     <Build Include="dbo\Tables\PaymentRequest.sql" />
     <Build Include="dbo\Views\vPaymentTransactionItem.sql" />
     <Build Include="dbo\Tables\BillingDealHistory.sql" />
+    <Build Include="dbo\Tables\_numbers.sql" />
+    <Build Include="dbo\Views\vFutureBillings.sql" />
   </ItemGroup>
 </Project>

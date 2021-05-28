@@ -33,11 +33,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>InvoiceEnumsResource.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\JDealTypeResource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>JDealTypeResource.resx</DependentUpon>
-    </Compile>
     <Compile Update="Resources\RejectionReasonResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

@@ -45,6 +45,8 @@ namespace Transactions.Business.Data
 
         public DbSet<PaymentRequestHistory> PaymentRequestHistories { get; set; }
 
+        public DbSet<FutureBilling> FutureBillings { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         private static readonly ValueConverter CardExpirationConverter = new ValueConverter<CardExpiration, string>(
@@ -284,6 +286,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
             modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestHistoryConfiguration());
+            modelBuilder.ApplyConfiguration(new FutureBillingConfiguration());
 
             // NOTE: security filters moved to Get() methods
 
@@ -505,8 +508,9 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
 
                 builder.Property(b => b.Active).HasDefaultValue(false);
 
-                builder.Property(b => b.PausedFrom).IsRequired(false);
-                builder.Property(b => b.PausedTo).IsRequired(false);
+                builder.Property(b => b.NextScheduledTransaction).HasColumnType("date").IsRequired(false);
+                builder.Property(b => b.PausedFrom).HasColumnType("date").IsRequired(false);
+                builder.Property(b => b.PausedTo).HasColumnType("date").IsRequired(false);
             }
         }
 
@@ -699,6 +703,39 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+            }
+        }
+
+        internal class FutureBillingConfiguration : IEntityTypeConfiguration<FutureBilling>
+        {
+            public void Configure(EntityTypeBuilder<FutureBilling> builder)
+            {
+                builder.ToView("vFutureBillings");
+
+                builder.HasNoKey();
+
+                builder.Property(p => p.TerminalID);
+                builder.Property(p => p.MerchantID);
+
+                builder.OwnsOne(b => b.CreditCardDetails, s =>
+                {
+                    s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
+                    s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Ignore(p => p.CardOwnerNationalID);
+                    s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
+                    s.Ignore(p => p.CardBin);
+                    s.Ignore(p => p.CardVendor);
+                    s.Ignore(b => b.CardReaderInput);
+                });
+
+                builder.Property(b => b.TransactionAmount).HasColumnType("decimal(19,4)");
+
+                builder.Property(b => b.Active).HasDefaultValue(false);
+
+                builder.Property(b => b.NextScheduledTransaction).HasColumnType("date").IsRequired(false);
+                builder.Property(b => b.FutureScheduledTransaction).HasColumnType("date").IsRequired(false);
+                builder.Property(b => b.PausedFrom).HasColumnType("date").IsRequired(false);
+                builder.Property(b => b.PausedTo).HasColumnType("date").IsRequired(false);
             }
         }
     }

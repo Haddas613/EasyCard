@@ -17,9 +17,9 @@ namespace Transactions.Shared.Enums
         BiMontly = 2,
 
         [EnumMember(Value = "quarter")]
-        Quarter = 4,
+        Quarter = 3,
 
         [EnumMember(Value = "year")]
-        Year = 5,
+        Year = 12,
     }
 }

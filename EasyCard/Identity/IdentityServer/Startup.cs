@@ -312,7 +312,7 @@ namespace IdentityServer
                 )
                 .FrameAncestors(s => s.Self())
                 .FormActions(s => s.Self()
-                    .CustomSources(apiConfig.MerchantProfileURL, apiConfig.MerchantsManagementApiAddress, "http://localhost:8080/", "http://localhost:8081/")
+                    .CustomSources(apiConfig.MerchantProfileURL, apiConfig.MerchantsManagementApiAddress, "http://localhost:8080/", "http://localhost:8081/", "login.microsoftonline.com")
                 )
             );
 
