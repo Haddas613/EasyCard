@@ -140,6 +140,10 @@ export default {
       if (opResult.status === "success") {
         this.model.active = !this.model.active;
         await this.initThreeDotMenu();
+      }else{
+        this.$toasted.show(opResult ? opResult.message : this.$t("SomethingWentWrong"), {
+          type: "error"
+        });
       }
     },
     async billingPausedChanged($event){
@@ -167,20 +171,20 @@ export default {
         ]
       };
 
-      newHeader.threeDotMenu.push({
-        text: this.model.active ? this.$t("Deactivate") : this.$t("Activate"),
-        fn: () => {
-          this.switchBillingDeal();
-        }
-      });
-
-      newHeader.threeDotMenu.push({
+      if(this.model.$nextScheduledTransaction || this.model.nextScheduledTransaction){
+        newHeader.threeDotMenu.push({
           text: this.$t("Pause"),
           fn: () => {
             this.pauseDialog = true;
           }
-      });
-
+        });
+        newHeader.threeDotMenu.push({
+          text: this.model.active ? this.$t("Deactivate") : this.$t("Activate"),
+          fn: () => {
+            this.switchBillingDeal();
+          }
+        });
+      }
       this.$store.commit("ui/changeHeader", { value: newHeader });
     }
   },

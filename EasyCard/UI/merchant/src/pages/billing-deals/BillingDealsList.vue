@@ -315,12 +315,12 @@ export default {
         this.$set(i, "selected", this.selectAll);
       }
     },
-    switchFilterChanged(type){
+    async switchFilterChanged(type){
       let allTypes = ['showDeleted', 'actual', 'paused', 'finished'].filter(v => v != type);
       for(var t of allTypes){
         this.$set(this.billingDealsFilter, t, false);
       }
-      this.getDataFromApi(false);
+      await this.getDataFromApi(false);
     }
   },
   computed: {

@@ -98,11 +98,19 @@ export default {
       }
     },
     async unpauseBilling(){
-      await this.$api.billingDeals.unpauseBillingDeal(this.billing.$billingDealID || this.billing.billingDealID);
-      this.reset();
-      let $eventData = { ...this.model, paused: false };
-      this.visible = false;
-      this.$emit('ok', $eventData);
+      var operation = await this.$api.billingDeals.unpauseBillingDeal(this.billing.$billingDealID || this.billing.billingDealID);
+      if(operation.status != "success"){
+        this.$toasted.show(operation ? operation.message : this.$t("SomethingWentWrong"), {
+          type: "error"
+        });
+        return;
+      }
+      else{
+        this.reset();
+        let $eventData = { ...this.model, paused: false };
+        this.visible = false;
+        this.$emit('ok', $eventData);
+      }
     },
     cancel() {
       //this.reset();

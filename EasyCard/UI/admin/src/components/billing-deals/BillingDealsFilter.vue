@@ -27,13 +27,6 @@
               :label="$t('CustomerEmail')"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="4" class="pt-4 pb-0">
-            <v-switch v-model="model.showDeleted">
-              <template v-slot:label>
-                <small>{{$t('ShowInactive')}}</small>
-              </template>
-            </v-switch>
-          </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" md="4" class="py-0">
@@ -47,6 +40,29 @@
           ></v-select>
         </v-col>
         <date-from-to-filter v-model="model"></date-from-to-filter>
+      </v-row>
+      <v-row class="d-flex" justify="end">
+        <v-col cols="3" md="2">
+          <v-switch v-model="model.showDeleted" @change="switchFilterChanged('showDeleted')">
+            <template v-slot:label>
+              <small>{{$t('Inactive')}}</small>
+            </template>
+          </v-switch>
+        </v-col>
+        <v-col cols="3" md="2">
+          <v-switch v-model="model.paused" @change="switchFilterChanged('paused')">
+            <template v-slot:label>
+              <small>{{$t('Paused')}}</small>
+            </template>
+          </v-switch>
+        </v-col>
+        <v-col cols="3" md="2">
+          <v-switch v-model="model.finished" @change="switchFilterChanged('finished')">
+            <template v-slot:label>
+              <small>{{$t('Finished')}}</small>
+            </template>
+          </v-switch>
+        </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" class="d-flex justify-end">
@@ -95,6 +111,12 @@ export default {
       this.$emit("apply", {
         ...this.model,
       });
+    },
+    async switchFilterChanged(type){
+      let allTypes = ['showDeleted', 'actual', 'paused', 'finished'].filter(v => v != type);
+      for(var t of allTypes){
+        this.$set(this.model, t, false);
+      }
     }
   }
 };

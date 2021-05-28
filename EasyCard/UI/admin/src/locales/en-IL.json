@@ -331,6 +331,8 @@
   "ShowInactive": "Show inactive",
   "Finished": "Finished",
   "SendTransactionSlipEmail": "Send Transaction slip email",
+  "Paused": "Paused",
+  "Actual": "Actual",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
