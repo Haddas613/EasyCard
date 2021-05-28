@@ -29,6 +29,9 @@
             {{item.terminalName || item.terminalID}}
           </router-link>
         </template> 
+        <template v-slot:item.cardNumber="{ item }">
+          <span dir="ltr">{{item.cardNumber}}</span>
+        </template> 
         <template v-slot:item.actions="{ item }">
           <v-btn class="mx-1" color="error" outlined small @click="deleteToken(item)">
             <v-icon small>mdi-delete</v-icon>
