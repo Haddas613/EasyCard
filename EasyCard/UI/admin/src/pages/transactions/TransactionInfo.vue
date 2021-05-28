@@ -270,7 +270,6 @@ export default {
       });
     }
   },
-  },
   computed: {
     isInstallmentTransaction() {
       return (
