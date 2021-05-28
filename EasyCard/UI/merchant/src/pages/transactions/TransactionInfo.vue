@@ -169,28 +169,7 @@ export default {
     if (!this.model) {
       return this.$router.push({ name: "Transactions" });
     }
-    var threeDotMenu = [{
-        text: this.$t("Print"),
-        fn: () => {
-          this.$refs.printout.print();
-        }
-      }
-    ];
-
-    if(this.model.$status == 'completed' && this.model.$jDealType == 'J4'){
-      threeDotMenu.push({
-        text: this.$t("SendTransactionSlipEmail"),
-        fn: () => {
-          this.transactionSlipDialog = true;
-        }
-      });
-    }
-
-    this.$store.commit("ui/changeHeader", {
-      value: {
-        threeDotMenu: threeDotMenu
-      }
-    });
+    await this.initThreeDotMenu();
   },
   methods: {
     async transmit() {
@@ -222,6 +201,7 @@ export default {
         );
         this.model = tr;
         this.model.allowTransmission = false;
+        await this.initThreeDotMenu();
       }
     },
     async cancelTransmission() {
@@ -258,6 +238,29 @@ export default {
         this.$set(this.model, 'invoiceID', operation.entityReference);
       }
       this.loading = false;
+    },
+    async initThreeDotMenu(){
+      var threeDotMenu = [{
+        text: this.$t("Print"),
+        fn: () => {
+          this.$refs.printout.print();
+        }
+      }];
+
+      if(this.model.$status == 'completed' && this.model.$jDealType == 'J4'){
+        threeDotMenu.push({
+          text: this.$t("SendTransactionSlipEmail"),
+          fn: () => {
+            this.transactionSlipDialog = true;
+          }
+        });
+      }
+
+      this.$store.commit("ui/changeHeader", {
+        value: {
+          threeDotMenu: threeDotMenu
+        }
+      });
     }
   },
   computed: {
