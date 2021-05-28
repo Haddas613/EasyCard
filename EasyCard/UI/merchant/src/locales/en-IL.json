@@ -267,6 +267,10 @@
   "SendTransactionSlipEmail": "Send Transaction slip email",
   "Reason": "Reason",
   "Reason(Optional)": "Reason (optional)",
+  "OnlyInactive": "Only Inactive",
+  "OnlyPaused": "Only Paused",
+  "Paused": "Paused",
+  "Actual": "Actual",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

@@ -45,7 +45,7 @@ namespace Transactions.Business.Data
 
         public DbSet<PaymentRequestHistory> PaymentRequestHistories { get; set; }
 
-        public DbSet<FutureBilling> FutureBillings { get; set; }
+        //public DbSet<FutureBilling> FutureBillings { get; set; }
 
         private readonly ClaimsPrincipal user;
 
@@ -286,7 +286,8 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
             modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestHistoryConfiguration());
-            modelBuilder.ApplyConfiguration(new FutureBillingConfiguration());
+
+            //modelBuilder.ApplyConfiguration(new FutureBillingConfiguration()); 
 
             // NOTE: security filters moved to Get() methods
 

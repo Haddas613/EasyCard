@@ -267,6 +267,10 @@
   "SendTransactionSlipEmail": "שלח שובר במייל",
   "Reason": "סיבה",
   "Reason(Optional)": "סיבה (אופציונלי)",
+  "OnlyInactive": "לא פעילים בלבד",
+  "OnlyPaused": "מושהים בלבד",
+  "Paused": "מושהים",
+  "Actual": "ממשי",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

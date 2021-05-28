@@ -160,6 +160,15 @@ namespace Transactions.Api.Models.Billing {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Paused.
+        /// </summary>
+        public static string Paused {
+            get {
+                return ResourceManager.GetString("Paused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Schedule.
         /// </summary>
         public static string Schedule {

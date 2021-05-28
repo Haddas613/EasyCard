@@ -252,7 +252,7 @@ namespace Transactions.Api.Controllers
         {
             var filter = new BillingDealsFilter
             {
-                OnlyActual = true
+                Actual = true
             };
 
             var query = billingDealService.GetBillingDeals().Filter(filter);
@@ -368,7 +368,7 @@ namespace Transactions.Api.Controllers
         {
             var filter = new BillingDealsFilter
             {
-                OnlyActual = true
+                Actual = true
             };
 
             var allBillings = await billingDealService.GetBillingDeals().Filter(filter).OrderBy(b => b.NextScheduledTransaction)

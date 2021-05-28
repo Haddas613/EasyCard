@@ -81,6 +81,8 @@ export default {
     if (this.required){
       this.rules = [this.vr.primitives.required]
     }
+    this.dateFromRaw = this.data.dateFrom ? this.$formatDate(this.data.dateFrom) : null;
+    this.dateToRaw = this.data.dateTo ? this.$formatDate(this.data.dateTo) : null;
   },
   watch: {
     dateFromRaw: function(val) {

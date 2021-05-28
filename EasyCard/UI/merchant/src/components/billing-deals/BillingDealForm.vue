@@ -303,7 +303,8 @@ export default {
       
       result.dealDetails = { ...this.$refs.dealDetails.getData() };
       result.dealDetails.items = this.model.dealDetails.items;
-      
+      console.log(result);
+      return;
       if (result.issueInvoice) {
         result.invoiceDetails = this.$refs.invoiceDetails.getData();
       } else {

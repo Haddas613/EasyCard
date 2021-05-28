@@ -20,17 +20,25 @@ namespace Transactions.Api.Extensions.Filtering
                 return src;
             }
 
-            if (filter.OnlyActual)
+            if (filter.Actual)
             {
                 src = src
                     .Where(t => t.Active && t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= DateTime.Today)
                     .Where(t => (t.PausedFrom == null || t.PausedFrom > DateTime.Today) && (t.PausedTo == null || t.PausedTo < DateTime.Today));
             }
-            else if (filter.FinishedOnly == true)
+            else if (filter.Finished == true)
             {
                 src = src.Where(t => t.NextScheduledTransaction == null);
             }
-            else if (filter.ShowDeleted == false)
+            else if (filter.ShowDeleted == true)
+            {
+                src = src.Where(t => t.Active == false);
+            }
+            else if (filter.Paused == true)
+            {
+                src = src.Where(t => (t.PausedFrom != null || t.PausedFrom >= DateTime.Today) && (t.PausedTo != null || t.PausedTo >= DateTime.Today));
+            }
+            else
             {
                 src = src.Where(t => t.Active == true);
             }

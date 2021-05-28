@@ -150,6 +150,9 @@
   <data name="NumberOfPayments" xml:space="preserve">
     <value>Num. of payments</value>
   </data>
+  <data name="Paused" xml:space="preserve">
+    <value>Paused</value>
+  </data>
   <data name="Schedule" xml:space="preserve">
     <value>Schedule</value>
   </data>
