@@ -71,7 +71,8 @@ namespace IdentityServer.Controllers
 
             if (!result.Succeeded)
             {
-                return BadRequest("Failed to create terminal Api Key"); // TODO: log details
+                logger.LogError($"Failed to create terminal Api Key, TerminalID: {model.TerminalID}");
+                return BadRequest("Failed to create terminal Api Key");
             }
 
             var allClaims = await userManager.GetClaimsAsync(user);
@@ -93,7 +94,8 @@ namespace IdentityServer.Controllers
 
             if (user == null)
             {
-                return NotFound("Terminal Api Key does not exist"); // TODO: log details
+                logger.LogError($"Terminal Api Key does not exist, TerminalID: {terminalID}");
+                return NotFound("Terminal Api Key does not exist");
             }
 
             await userManager.DeleteAsync(user); // TODO: check success
