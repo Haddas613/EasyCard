@@ -338,7 +338,7 @@ namespace Transactions.Api.Controllers
         [HttpPost]
         [Route("resend-admin")]
         [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
-        public async Task<ActionResult<OperationResponse>> TransmitTransactionsAdmin(ResendInvoiceRequest resendInvoiceRequest)
+        public async Task<ActionResult<OperationResponse>> ResendInvoicesAdmin(ResendInvoiceRequest resendInvoiceRequest)
         {
             if (resendInvoiceRequest.InvoicesIDs == null || resendInvoiceRequest.InvoicesIDs.Count() == 0)
             {
@@ -467,13 +467,15 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                var terminalProcessor = ValidateExists(
-                    terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing),
-                    Messages.InvoicingNotDefined);
+                var terminalInvoicing = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing);
 
-                var terminalInvoicing = ValidateExists(
-                   terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing),
-                   Messages.InvoicingNotDefined);
+                if (terminalInvoicing == null)
+                {
+                    dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.SendingFailed;
+                    await invoiceService.UpdateEntity(dbInvoice);
+
+                    throw new BusinessException(Messages.InvoicingNotDefined);
+                }
 
                 var invoicing = invoicingResolver.GetInvoicing(terminalInvoicing);
 
