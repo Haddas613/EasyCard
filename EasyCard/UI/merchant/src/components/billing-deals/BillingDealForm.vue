@@ -134,8 +134,7 @@
         </ec-dialog-invoker>
       </v-col>
       <v-col cols="12" class="pt-0">
-        <numpad-dialog-invoker 
-          :key="model.dealDetails.items.length + model.transactionAmount" 
+        <numpad-dialog-invoker
           :data="model" 
           @ok="processAmount($event)"></numpad-dialog-invoker>
       </v-col>
