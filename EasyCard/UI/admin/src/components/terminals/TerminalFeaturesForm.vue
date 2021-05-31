@@ -3,10 +3,10 @@
     <ec-list v-if="features && features.length > 0" :items="features" dashed>
       <template v-slot:left="{ item }">
         <v-col cols="12" md="6" class="px-2 text-start text-oneline">
-          <span class="body-1">{{item.nameHE}}</span>
+          <span class="body-1">{{$vuetify.lang.current == 'he' ? item.nameHE : item.nameEN}}</span>
         </v-col>
         <v-col cols="12" md="6" class="text-align-initial font-weight-bold subtitle-2">
-          <span>{{item.descriptionHE}}</span>
+          <small>{{$vuetify.lang.current == 'he' ? item.descriptionHE : item.descriptionEN}}</small>
         </v-col>
       </template>
       <template v-slot:append="{ item }">
