@@ -11,6 +11,11 @@ namespace Transactions.Business.Entities
 {
     public class FutureBilling
     {
+        public FutureBilling()
+        {
+            //CreditCardDetails = new CreditCardDetails();
+        }
+
         public Guid BillingDealID { get; set; }
 
         public Guid TerminalID { get; set; }
@@ -39,9 +44,9 @@ namespace Transactions.Business.Entities
         public string CardNumber { get; set; }
 
         /// <summary>
-        /// Credit card information (just to display)
+        /// Credit card information(just to display)
         /// </summary>
-        public CreditCardDetails CreditCardDetails { get; set; }
+        //public CreditCardDetails CreditCardDetails { get; set; }
 
         public bool Active { get; set; }
 
