@@ -159,7 +159,7 @@ DECLARE @OutputTransactionIDs table(
     [PaymentTransactionID] [uniqueidentifier] NULL,
     [ShvaDealID] [varchar](50) NULL,
     [ShvaTerminalID] [varchar](20) NULL,
-    [ShvaTranRecord] [varchar](255) NULL
+    [ShvaTranRecord] [varchar](500) NULL
 );
 
 UPDATE [dbo].[PaymentTransaction] SET [Status]=@NewStatus, [UpdatedDate]=@UpdatedDate 
