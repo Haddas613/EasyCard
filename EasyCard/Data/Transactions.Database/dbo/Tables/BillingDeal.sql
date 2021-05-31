@@ -37,14 +37,16 @@
     [SendCCTo]                    NVARCHAR (MAX)   NULL,
     [VATRate]                     DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
     [VATTotal]                    DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
-    [NextScheduledTransaction]    DATETIME2 (7)    NULL,
+    [NextScheduledTransaction]    DATE             NULL,
     [IssueInvoice]                BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
     [DocumentOrigin]              SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     [CustomerAddress]             NVARCHAR (MAX)   NULL,
-    [PausedFrom]                  DATETIME2 (7)    NULL,
-    [PausedTo]                    DATETIME2 (7)    NULL,
+    [PausedFrom]                  DATE             NULL,
+    [PausedTo]                    DATE             NULL,
     CONSTRAINT [PK_BillingDeal] PRIMARY KEY CLUSTERED ([BillingDealID] ASC)
 );
+
+
 
 
 
