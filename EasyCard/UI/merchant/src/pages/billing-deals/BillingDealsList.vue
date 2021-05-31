@@ -280,7 +280,7 @@ export default {
       await this.getDataFromApi(true);
     },
     async createTransactions() {
-      if (!this.billingDealsFilter.onlyActual) {
+      if (!this.billingDealsFilter.actual) {
         return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), {
           type: "error"
         });
