@@ -81,7 +81,7 @@
     <v-card width="100%" flat :loading="!billingDeals">
       <v-card-text class="px-0 pt-0">
         <ec-list :items="billingDeals" v-if="billingDeals">
-          <template v-slot:prepend="{ item }" v-if="billingDealsFilter.onlyActual">
+          <template v-slot:prepend="{ item }" v-if="billingDealsFilter.actual">
             <div class="px-1">
               <v-checkbox v-model="item.selected" v-if="!item.processed"></v-checkbox>
               <v-icon v-else color="success">mdi-check-circle</v-icon>
@@ -228,7 +228,7 @@ export default {
       billingDealsFilter: {
         take: 100,
         skip: 0,
-        onlyActual: null,
+        actual: null,
         ...this.filters
       },
       showDialog: this.showFiltersDialog,
@@ -305,7 +305,7 @@ export default {
       }
     },
     switchSelectAll() {
-      if (!this.billingDealsFilter.onlyActual) {
+      if (!this.billingDealsFilter.actual) {
         return this.$toasted.show(this.$t("PleaseEnableManualModeFirst"), {
           type: "error"
         });
