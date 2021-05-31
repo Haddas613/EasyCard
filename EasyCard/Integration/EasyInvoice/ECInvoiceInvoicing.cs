@@ -108,11 +108,11 @@ namespace EasyInvoice
             return response;
         }
 
-        public async Task<OperationResponse> CreateCustomer(ECCreateCustomerRequest request)
+        public async Task<OperationResponse> CreateCustomer(ECCreateCustomerRequest request, string correlationId)
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            var headers = GetAuthorizedHeaders(configuration.AdminUserName, configuration.AdminPassword, integrationMessageId, null);
+            var headers = GetAuthorizedHeaders(configuration.AdminUserName, configuration.AdminPassword, integrationMessageId, correlationId);
 
             try
             {
@@ -145,9 +145,63 @@ namespace EasyInvoice
                     }
                 }
 
-                this.logger.LogError(ex, $"EasyInvoice CreateCustomer request failed. {ex.Message} ({integrationMessageId}).");
+                this.logger.LogError(ex, $"EasyInvoice CreateCustomer request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
 
                 throw new IntegrationException("EasyInvoice CreateCustomer request failed", integrationMessageId);
+            }
+        }
+
+        public async Task<OperationResponse> GenerateCertificate(EasyInvoiceTerminalSettings terminal, string correlationId)
+        {
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+            NameValueCollection headers = GetAuthorizedHeaders(terminal.UserName, terminal.Password, integrationMessageId, correlationId);
+
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
+
+            try
+            {
+                headers.Add("Accept-language", "he"); // TODO: get language from options
+
+                var json = new ECInvoiceGenerateCertificateRequest
+                {
+                    FirstLastName = Guid.NewGuid().ToString() // TODO
+                };
+
+                var svcRes = await this.apiClient.Post<ECInvoiceGenerateCertificateResponse>(this.configuration.BaseUrl, "/api/v1/user/generate-certificate", json, () => Task.FromResult(headers),
+                     (url, request) =>
+                     {
+                         requestStr = request;
+                         requestUrl = url;
+                     },
+                     (response, responseStatus, responseHeaders) =>
+                     {
+                         responseStr = response;
+                         responseStatusStr = responseStatus.ToString();
+                     });
+
+                return new OperationResponse { Status = Shared.Api.Models.Enums.StatusEnum.Success, EntityReference = svcRes.KeyStorePassword };
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"EasyInvoice integration request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
+
+                throw new IntegrationException("EasyInvoice integration request failed", integrationMessageId);
+            }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, correlationId)
+                {
+                    Request = requestStr,
+                    Response = responseStr,
+                    ResponseStatus = responseStatusStr,
+                    Address = requestUrl
+                };
+
+                await storageService.Save(integrationMessage);
             }
         }
 

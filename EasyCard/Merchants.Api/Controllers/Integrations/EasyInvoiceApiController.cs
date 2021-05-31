@@ -49,12 +49,14 @@ namespace Merchants.Api.Controllers.Integrations
             var terminal = EnsureExists(await terminalsService.GetTerminal(request.TerminalID));
             var easyInvoiceIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID));
 
-            var createUserResult = await eCInvoicing.CreateCustomer(new EasyInvoice.Models.ECCreateCustomerRequest
-            {
-                Email = request.UserName,
-                Password = request.Password,
-                TaxID = request.BusinessID
-            });
+            var createUserResult = await eCInvoicing.CreateCustomer(
+                new EasyInvoice.Models.ECCreateCustomerRequest
+                {
+                    Email = request.UserName,
+                    Password = request.Password,
+                    TaxID = request.BusinessID
+                },
+                GetCorrelationID());
 
             var response = new OperationResponse(EasyInvoiceMessagesResource.CustomerCreatedSuccessfully, StatusEnum.Success);
 
@@ -63,11 +65,30 @@ namespace Merchants.Api.Controllers.Integrations
             {
                 response.Status = StatusEnum.Error;
                 response.Message = EasyInvoiceMessagesResource.CustomerAlreadyExists;
+
+                return BadRequest(response);
             }
 
             EasyInvoiceTerminalSettings terminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
             terminalSettings.Password = request.Password;
             terminalSettings.UserName = request.UserName;
+            easyInvoiceIntegration.Settings = JObject.FromObject(terminalSettings);
+            await terminalsService.SaveTerminalExternalSystem(easyInvoiceIntegration, terminal);
+
+            var generateCertificateResult = await eCInvoicing.GenerateCertificate(
+                terminalSettings,
+                GetCorrelationID());
+
+            if (generateCertificateResult.Status != StatusEnum.Success)
+            {
+                response.Status = StatusEnum.Error;
+                response.Message = generateCertificateResult.Message;
+
+                return BadRequest(response);
+            }
+
+            terminalSettings.KeyStorePassword = generateCertificateResult.EntityReference;
+
             easyInvoiceIntegration.Settings = JObject.FromObject(terminalSettings);
             await terminalsService.SaveTerminalExternalSystem(easyInvoiceIntegration, terminal);
 

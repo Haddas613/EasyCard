@@ -169,6 +169,7 @@ namespace Merchants.Api
             services.Configure<ApiSettings>(Configuration.GetSection("API"));
             services.Configure<ApplicationInsightsSettings>(Configuration.GetSection("ApplicationInsights"));
             services.Configure<ClearingHouse.ClearingHouseGlobalSettings>(Configuration.GetSection("ClearingHouseGlobalSettings"));
+            services.Configure<EasyInvoice.EasyInvoiceGlobalSettings>(Configuration.GetSection("EasyInvoiceGlobalSettings"));
 
             services.AddHttpContextAccessor();
 
