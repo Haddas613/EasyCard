@@ -236,6 +236,11 @@ namespace Transactions.Api.Controllers
         {
             var billingDeal = EnsureExists(await billingDealService.GetBillingDeals().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
 
+            if (billingDeal.NextScheduledTransaction == null)
+            {
+                return BadRequest(new OperationResponse(Messages.BillingDealIsClosed, StatusEnum.Error, billingDealID));
+            }
+
             billingDeal.Active = !billingDeal.Active;
 
             billingDeal.ApplyAuditInfo(httpContextAccessor);
@@ -252,7 +257,7 @@ namespace Transactions.Api.Controllers
         {
             var filter = new BillingDealsFilter
             {
-                OnlyActual = true
+                Actual = true
             };
 
             var query = billingDealService.GetBillingDeals().Filter(filter);
@@ -353,6 +358,11 @@ namespace Transactions.Api.Controllers
 
             var billingDeal = await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(b => b.BillingDealID == billingDealID);
 
+            if (billingDeal.NextScheduledTransaction == null)
+            {
+                return BadRequest(new OperationResponse(Messages.BillingDealIsClosed, StatusEnum.Error, billingDealID));
+            }
+
             billingDeal.PausedFrom = billingDeal.PausedTo = null;
 
             await billingDealService.UpdateEntityWithHistory(billingDeal, Messages.BillingDealUnpaused, BillingDealOperationCodesEnum.Paused);
@@ -368,7 +378,7 @@ namespace Transactions.Api.Controllers
         {
             var filter = new BillingDealsFilter
             {
-                OnlyActual = true
+                Actual = true
             };
 
             var allBillings = await billingDealService.GetBillingDeals().Filter(filter).OrderBy(b => b.NextScheduledTransaction)

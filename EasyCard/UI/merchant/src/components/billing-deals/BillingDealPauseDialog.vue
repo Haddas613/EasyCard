@@ -19,10 +19,11 @@
         </v-row>
       </v-form>
       <div class="d-flex justify-end">
-        <v-btn @click="cancel()" :loading="loading">{{$t("Cancel")}}</v-btn>
+        <v-btn @click="cancel()" :loading="loading" class="mx-4">{{$t("Cancel")}}</v-btn>
+        <v-btn @click="unpauseBilling()" :loading="loading" color="primary">{{$t("Unpause")}}</v-btn>
         <v-btn
           class="mx-1"
-          color="primary"
+          color="success"
           @click="pauseBilling()"
           :loading="loading"
         >{{$t("Save")}}</v-btn>
@@ -63,8 +64,8 @@ export default {
   },
   mounted() {
     if (this.billing) {
-      this.dateFrom = this.billing.pausedFrom;
-      this.dateTo = this.billing.pausedTo;
+      this.model.dateFrom = this.billing.$pausedFrom || this.billing.pausedFrom;
+      this.model.dateTo = this.billing.$pausedTo || this.billing.pausedFrom;
     }
   },
   computed: {
@@ -90,14 +91,29 @@ export default {
         });
         return;
       }else{
-        let $eventData = { ...this.model };
+        let $eventData = { ...this.model, paused: true };
+        //this.reset();
+        this.visible = false;
+        this.$emit('ok', $eventData);
+      }
+    },
+    async unpauseBilling(){
+      var operation = await this.$api.billingDeals.unpauseBillingDeal(this.billing.$billingDealID || this.billing.billingDealID);
+      if(operation.status != "success"){
+        this.$toasted.show(operation ? operation.message : this.$t("SomethingWentWrong"), {
+          type: "error"
+        });
+        return;
+      }
+      else{
         this.reset();
+        let $eventData = { ...this.model, paused: false };
         this.visible = false;
         this.$emit('ok', $eventData);
       }
     },
     cancel() {
-      this.reset();
+      //this.reset();
       this.visible = false;
     },
     reset() {

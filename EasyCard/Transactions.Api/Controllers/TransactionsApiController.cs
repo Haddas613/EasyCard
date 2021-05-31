@@ -921,6 +921,8 @@ namespace Transactions.Api.Controllers
             {
                 billingDeal.CurrentDeal = billingDeal.CurrentDeal.HasValue ? billingDeal.CurrentDeal.Value + 1 : 1;
                 billingDeal.NextScheduledTransaction = billingDeal.BillingSchedule?.GetNextScheduledDate(transaction.TransactionDate.Value, billingDeal.CurrentDeal.Value);
+                billingDeal.Active = billingDeal.NextScheduledTransaction != null;
+
                 await billingDealService.UpdateEntity(billingDeal);
             }
 

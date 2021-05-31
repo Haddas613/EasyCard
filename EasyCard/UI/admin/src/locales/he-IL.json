@@ -335,6 +335,8 @@
   "ShowInactive": "הצג לא פעילים",
   "Finished": "הסתיים",
   "SendTransactionSlipEmail": "שלח שובר במייל",
+  "Paused": "מושהים",
+  "Actual": "ממשי",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

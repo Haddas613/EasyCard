@@ -32,5 +32,10 @@ namespace Transactions.Api.Models.Transactions
         [EnumDataType(typeof(DocumentOriginEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public DocumentOriginEnum DocumentOrigin { get; set; }
+
+        [EnumDataType(typeof(QuickStatusFilterTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        [MetadataOptions(Hidden = true)]
+        public new QuickStatusFilterTypeEnum QuickStatus { get; set; }
     }
 }

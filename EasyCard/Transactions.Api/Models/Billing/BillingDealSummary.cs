@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Shared.Api.UI;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;
@@ -44,8 +45,10 @@ namespace Transactions.Api.Models.Billing
 
         public int? CurrentDeal { get; set; }
 
+        [MetadataOptions(Hidden = true)]
         public DateTime? PausedFrom { get; set; }
 
+        [MetadataOptions(Hidden = true)]
         public DateTime? PausedTo { get; set; }
 
         public bool Paused { get; set; }

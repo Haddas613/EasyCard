@@ -41,23 +41,37 @@
             </v-row>
           </v-col>
         </v-row>
-        <v-row no-gutters class="px-1 body-2">
-          <v-col cols="6">
+        <v-row no-gutters class="d-flex px-1 body-2" align-content="center">
+          <v-col cols="3">
             <v-switch
-              v-model="billingDealsFilter.onlyActual"
-              @change="getDataFromApi(false)"
+              v-model="billingDealsFilter.actual"
+              @change="switchFilterChanged('actual')"
               :hint="$t('WhileEnabledYouCanManuallyTriggerTheTransaction')"
               :persistent-hint="true"
             >
               <template v-slot:label>
-                <small>{{$t('OnlyActual')}}</small>
+                <small>{{$t('Actual')}}</small>
               </template>
             </v-switch>
           </v-col>
-          <v-col cols="6">
-            <v-switch v-model="billingDealsFilter.showDeleted" @change="getDataFromApi(false)">
+          <v-col cols="3">
+            <v-switch v-model="billingDealsFilter.showDeleted" @change="switchFilterChanged('showDeleted')">
               <template v-slot:label>
-                <small>{{$t('ShowInactive')}}</small>
+                <small>{{$t('Inactive')}}</small>
+              </template>
+            </v-switch>
+          </v-col>
+          <v-col cols="3">
+            <v-switch v-model="billingDealsFilter.paused" @change="switchFilterChanged('paused')">
+              <template v-slot:label>
+                <small>{{$t('Paused')}}</small>
+              </template>
+            </v-switch>
+          </v-col>
+          <v-col cols="3">
+            <v-switch v-model="billingDealsFilter.finished" @change="switchFilterChanged('finished')">
+              <template v-slot:label>
+                <small>{{$t('Finished')}}</small>
               </template>
             </v-switch>
           </v-col>
@@ -95,6 +109,14 @@
               </template>
               {{$t('CreditCardHasExpired')}}
             </v-tooltip>
+            <v-tooltip top v-else-if="!item.active">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn color="ecred" dark icon v-bind="attrs" v-on="on">
+                  <v-icon :title="$t('Inactive')">mdi-close</v-icon>
+                </v-btn>
+              </template>
+              {{$t('Inactive')}}
+            </v-tooltip>
             <v-tooltip top v-else-if="item.paused">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="accent" dark icon v-bind="attrs" v-on="on">
@@ -110,14 +132,6 @@
                 </v-btn>
               </template>
               {{$t('Active')}}
-            </v-tooltip>
-            <v-tooltip top v-else-if="!item.active">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="ecred" dark icon v-bind="attrs" v-on="on">
-                  <v-icon :title="$t('Inactive')">mdi-close</v-icon>
-                </v-btn>
-              </template>
-              {{$t('Inactive')}}
             </v-tooltip>
           </template>
 
@@ -300,6 +314,13 @@ export default {
       for (var i of this.billingDeals) {
         this.$set(i, "selected", this.selectAll);
       }
+    },
+    async switchFilterChanged(type){
+      let allTypes = ['showDeleted', 'actual', 'paused', 'finished'].filter(v => v != type);
+      for(var t of allTypes){
+        this.$set(this.billingDealsFilter, t, false);
+      }
+      await this.getDataFromApi(false);
     }
   },
   computed: {

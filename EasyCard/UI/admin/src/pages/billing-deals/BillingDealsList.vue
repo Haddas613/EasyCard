@@ -59,6 +59,11 @@
               {{item.active ? $t("Yes") : $t("No")}}
             </span>
           </template>
+          <template v-slot:item.paused="{ item }">
+            <span v-bind:class="{'success--text': !item.paused, 'accent--text': item.paused}">
+              {{item.paused ? $t("Yes") : $t("No")}}
+            </span>
+          </template>
           <template v-slot:item.actions="{ item }">
             <v-btn color="primary" outlined small link :to="{name: 'BillingDeal', params: {id: item.$billingDealID}}">
               <re-icon small>mdi-arrow-right</re-icon>

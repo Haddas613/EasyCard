@@ -148,7 +148,7 @@
     <value>Pay type</value>
   </data>
   <data name="QuickStatus" xml:space="preserve">
-    <value>Status</value>
+    <value>Quick Status</value>
   </data>
   <data name="RejectionReason" xml:space="preserve">
     <value>Rej. Reason</value>

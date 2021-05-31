@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Shared.Api.UI;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using System;

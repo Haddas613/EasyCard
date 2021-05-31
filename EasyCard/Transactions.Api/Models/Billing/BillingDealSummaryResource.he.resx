@@ -150,6 +150,9 @@
   <data name="NumberOfPayments" xml:space="preserve">
     <value>מספר תשלומים</value>
   </data>
+  <data name="Paused" xml:space="preserve">
+    <value>מושהה</value>
+  </data>
   <data name="Schedule" xml:space="preserve">
     <value>תדירות</value>
   </data>

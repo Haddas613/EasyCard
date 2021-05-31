@@ -4,7 +4,7 @@
       <v-tab key="info">{{$t("GeneralInfo")}}</v-tab>
       <v-tab-item key="info">
         <div v-if="model">
-          <billing-deal-pause-dialog :show.sync="pauseDialog" :billing="model" v-on:ok="billingPausedChanged($event, true)"></billing-deal-pause-dialog>
+          <billing-deal-pause-dialog :show.sync="pauseDialog" :billing="model" v-on:ok="billingPausedChanged($event)"></billing-deal-pause-dialog>
           <v-card flat class="mb-2">
             <v-card-text class="body-1 black--text" v-if="model">
               <v-row class="info-container">
@@ -30,11 +30,11 @@
                 <template v-if="model.paused">
                   <v-col cols="12" md="4" class="info-block">
                     <p class="caption accent--text">{{$t('From')}}</p>
-                    <p>{{model.$pausedFrom | ecdate}}</p>
+                    <p>{{model.pausedFrom | ecdate}}</p>
                   </v-col>
                   <v-col cols="12" md="4" class="info-block">
                     <p class="caption accent--text">{{$t('To')}}</p>
-                    <p>{{model.$pausedTo | ecdate}}</p>
+                    <p>{{model.pausedTo | ecdate}}</p>
                   </v-col>
                 </template>
               </v-row>
@@ -140,14 +140,20 @@ export default {
       if (opResult.status === "success") {
         this.model.active = !this.model.active;
         await this.initThreeDotMenu();
+      }else{
+        this.$toasted.show(opResult ? opResult.message : this.$t("SomethingWentWrong"), {
+          type: "error"
+        });
       }
     },
-    async billingPausedChanged($event, paused){
-      if ($event){
-        this.model.pausedFrom = $event.pausedFrom;
-        this.model.pausedTo = $event.pausedTo;
+    async billingPausedChanged($event){
+      if ($event.paused){
+        this.model.pausedFrom = $event.dateFrom;
+        this.model.pausedTo = $event.dateTo;
+      }else{
+        this.model.pausedFrom = this.model.pausedTo = null;
       }
-      this.model.paused = paused;
+      this.model.paused = $event.paused;
       this.initThreeDotMenu();
     },
     async initThreeDotMenu() {
@@ -165,30 +171,20 @@ export default {
         ]
       };
 
-      newHeader.threeDotMenu.push({
-        text: this.model.active ? this.$t("Deactivate") : this.$t("Activate"),
-        fn: () => {
-          this.switchBillingDeal();
-        }
-      });
-
-      if (!this.model.paused){
+      if(this.model.$nextScheduledTransaction || this.model.nextScheduledTransaction){
         newHeader.threeDotMenu.push({
           text: this.$t("Pause"),
           fn: () => {
             this.pauseDialog = true;
           }
         });
-      }else{
         newHeader.threeDotMenu.push({
-          text: this.$t("Unpause"),
-          fn: async () => {
-            await this.$api.billingDeals.unpauseBillingDeal(this.$route.params.id);
-            this.billingPausedChanged(null, false);
+          text: this.model.active ? this.$t("Deactivate") : this.$t("Activate"),
+          fn: () => {
+            this.switchBillingDeal();
           }
         });
       }
-
       this.$store.commit("ui/changeHeader", { value: newHeader });
     }
   },
