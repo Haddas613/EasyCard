@@ -151,7 +151,7 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Status.
+        ///   Looks up a localized string similar to Quick Status.
         /// </summary>
         internal static string QuickStatus {
             get {

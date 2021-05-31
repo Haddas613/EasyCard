@@ -1481,7 +1481,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.QuickStatus">
             <summary>
-              Looks up a localized string similar to Status.
+              Looks up a localized string similar to Quick Status.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.RejectionReason">

@@ -35,10 +35,7 @@
           <p class="text-right">
             <b>{{item.transactionAmount | currency(item.currency)}}</b>
           </p>
-        </template>  
-        <template v-slot:item.quickStatus="{ item }">
-          <span v-bind:class="quickStatusesColors[item.quickStatus]">{{item.quickStatus}}</span>
-        </template> 
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-btn class="mx-1" color="primary" outlined small link :to="{name: 'Transaction', params: {id: item.$paymentTransactionID}}">
             <re-icon small>mdi-arrow-right</re-icon>
