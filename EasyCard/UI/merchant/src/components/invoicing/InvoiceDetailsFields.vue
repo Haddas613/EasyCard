@@ -97,8 +97,9 @@ export default {
       this.model.invoiceSubject = this.terminalStore.invoiceSettings.defaultInvoiceSubject;
     }
 
-    if(!this.model.sendCCToRaw){
-      this.model.sendCCToRaw = this.terminalStore.billingSettings.billingNotificationsEmails;
+    if(!this.model.sendCCToRaw && this.terminalStore.billingSettings.billingNotificationsEmails 
+      && this.terminalStore.billingSettings.billingNotificationsEmails.length > 0){
+      this.model.sendCCToRaw = this.terminalStore.billingSettings.billingNotificationsEmails.join(",");
     }
 
     this.model.invoiceType = this.invoiceType;
