@@ -83,7 +83,7 @@ namespace ClearingHouse.Models
         /// Clearing company
         /// </summary>
         [DataMember(Name = "solek")]
-        public int? Solek { get; set; }
+        public string Solek { get; set; }
 
         /// <summary>
         /// Transaction type (regular, installments, credit)
