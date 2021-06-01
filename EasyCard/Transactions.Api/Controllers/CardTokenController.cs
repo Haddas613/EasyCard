@@ -280,7 +280,7 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed);
                 }
             }
             catch (Exception ex)
