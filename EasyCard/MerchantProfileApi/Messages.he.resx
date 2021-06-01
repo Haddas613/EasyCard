@@ -150,6 +150,9 @@
   <data name="SharedKeyUpdated" xml:space="preserve">
     <value>מפתח ציבורי עודכן</value>
   </data>
+  <data name="TerminalIsDisabled" xml:space="preserve">
+    <value>המסוף לא פעיל</value>
+  </data>
   <data name="TerminalUpdated" xml:space="preserve">
     <value>מסוף עודכן</value>
   </data>

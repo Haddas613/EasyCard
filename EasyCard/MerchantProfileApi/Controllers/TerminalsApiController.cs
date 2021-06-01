@@ -76,6 +76,7 @@ namespace MerchantProfileApi.Controllers
         [Route("{terminalID}")]
         public async Task<ActionResult<TerminalResponse>> GetTerminal([FromRoute]Guid terminalID)
         {
+            //not terminalsService.GetTerminal so it can still be accessed as read only even if it's disabled
             var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID)));
 
             var merchant = EnsureExists(await merchantsService.GetMerchants().FirstOrDefaultAsync(m => m.MerchantID == terminal.MerchantID));
@@ -107,7 +108,7 @@ namespace MerchantProfileApi.Controllers
         [Route("{terminalID}/resetApiKey")]
         public async Task<ActionResult<OperationResponse>> CreateTerminalApiKey([FromRoute] Guid terminalID)
         {
-            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
             if (!terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.Api))
             {
@@ -125,7 +126,7 @@ namespace MerchantProfileApi.Controllers
         [Route("{terminalID}/resetSharedApiKey")]
         public async Task<ActionResult<OperationResponse>> CreateSharedTerminalApiKey([FromRoute] Guid terminalID)
         {
-            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
             var sharedApiKey = cryptoServiceCompact.EncryptCompact(Guid.NewGuid().ToString());
             terminal.SharedApiKey = Convert.FromBase64String(sharedApiKey);

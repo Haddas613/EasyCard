@@ -5,13 +5,18 @@ export default class TerminalsApi {
         this.terminalsUrl = this.baseUrl + '/api/terminals';
     }
 
-    async getTerminals(params, refreshCache = false) {
-        if(!refreshCache && this.$terminals){
-            return this.$terminals;
-        }
+    async getTerminals(params, opts) {
+        opts = {
+            refreshCache: false,
+            showDeleted: false,
+            ...opts
+        };
         
-        this.$terminals = await this.base.get(this.terminalsUrl, params);
-        return this.$terminals;
+        if(opts.refreshCache || !this.$terminals){
+            this.$terminals = (await this.base.get(this.terminalsUrl, params)) || [];
+        }
+        var t = opts.showDeleted ? this.$terminals.data : this.$terminals.data.filter(t => t.status != "disabled");
+        return { numberOfRecords: t.length, data: t};
     }
 
     async getTerminal(terminalID) {

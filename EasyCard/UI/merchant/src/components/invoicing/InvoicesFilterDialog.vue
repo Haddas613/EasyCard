@@ -20,15 +20,7 @@
               <v-text-field v-model="model.invoiceID" :label="$t('InvoiceID')" :rules="[vr.primitives.guid]" outlined></v-text-field>
             </v-col>
             <v-col cols="12" md="6" class="py-0">
-              <v-autocomplete
-                :items="terminals"
-                item-text="label"
-                item-value="terminalID"
-                v-model="model.terminalID"
-                outlined
-                :label="$t('Terminal')"
-                clearable
-              ></v-autocomplete>
+              <terminal-select v-model="model.terminalID" clearable></terminal-select>
             </v-col>
             <v-col cols="12" md="6" class="py-0">
               <v-select
@@ -113,14 +105,12 @@ export default {
     return {
       model: { ...this.filter },
       dictionaries: {},
-      terminals: [],
       formIsValid: true,
       vr: ValidationRules
     };
   },
   async mounted() {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
-    this.terminals = (await this.$api.terminals.getTerminals()).data || [];
   },
   computed: {
     visible: {

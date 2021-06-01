@@ -138,7 +138,7 @@
       <LastGenOutput>EasyInvoiceMessagesResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Models\Integrations\Nayax\NayaxMessagesResource.he.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
+      <Generator></Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Models\Integrations\Nayax\NayaxMessagesResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

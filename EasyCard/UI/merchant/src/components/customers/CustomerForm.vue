@@ -2,17 +2,7 @@
   <v-form class="pt-2" ref="form" v-model="valid" lazy-validation>
     <v-row>
       <v-col cols="12">
-        <v-select
-          :items="terminals"
-          item-text="label"
-          item-value="terminalID"
-          v-model="model.terminalID"
-          outlined
-          class="px-1"
-          :label="$t('Terminal')"
-          required
-          :disabled="model.consumerID != null"
-        ></v-select>
+        <terminal-select class="px-1" v-model="model.terminalID" :disabled="model.consumerID != null" required></terminal-select>
       </v-col>
       <v-col cols="12" class="py-0">
         <v-text-field
