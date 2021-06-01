@@ -92,6 +92,7 @@ namespace Merchants.Api.Controllers.Integrations
             easyInvoiceIntegration.Settings = JObject.FromObject(terminalSettings);
             await terminalsService.SaveTerminalExternalSystem(easyInvoiceIntegration, terminal);
 
+            response.AdditionalData = easyInvoiceIntegration.Settings;
             return Ok(response);
         }
     }

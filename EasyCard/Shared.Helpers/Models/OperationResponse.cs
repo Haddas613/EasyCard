@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using Shared.Api.Models.Enums;
 using Shared.Helpers;
 using System;
@@ -80,5 +81,7 @@ namespace Shared.Api.Models
         public string ConcurrencyToken { get; set; }
 
         public OperationResponse InnerResponse { get; set; }
+
+        public JObject AdditionalData { get; set; }
     }
 }

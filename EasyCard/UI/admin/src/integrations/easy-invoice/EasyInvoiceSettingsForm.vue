@@ -112,8 +112,9 @@ export default {
       }
 
       if(operation && operation.status == "success"){
-        this.model.settings.userName = this.newCustomerModel.userName;
-        this.model.settings.password = this.newCustomerModel.password;
+        this.model.settings.userName = operation.additionalData.userName;
+        this.model.settings.password = operation.additionalData.password;
+        this.model.settings.keyStorePassword = operation.additionalData.keyStorePassword;
         this.newCustomerModel.userName = null;
         this.newCustomerModel.password = null;
         this.newCustomerDialog = false;
