@@ -11,5 +11,6 @@ namespace Shared.Integration
         public const int ShvaExternalSystemID = 20;
         public const int ECInvoiceExternalSystemID = 30;
         public const int RapidOneInvoicingExternalSystemID = 20;
+        public const int NayaxPinpadProcessorExternalSystemID = 50;
     }
 }

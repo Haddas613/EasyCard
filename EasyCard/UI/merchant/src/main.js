@@ -20,6 +20,7 @@ import auth from './auth'
 import VueClipboard from 'vue-clipboard2';
 import mixin from './extensions/mixins';
 import appInsights from "./plugins/app-insights";
+import TerminalSelect from "./components/common/TerminalSelect";
 
 import config from './app.config';
 
@@ -36,6 +37,7 @@ Vue.use(auth);
 Vue.use(Api);
 Vue.use(VueLodash, { lodash: lodash });
 Vue.use(VueCardFormat);
+Vue.component('terminal-select', TerminalSelect);
 Vue.use(vmoney, { precision: 2, decimal: '.', thousands: '' });
 Vue.use(Toasted, {
     iconPack: 'mdi',

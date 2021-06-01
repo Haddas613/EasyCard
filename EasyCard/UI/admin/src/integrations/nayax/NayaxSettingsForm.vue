@@ -1,8 +1,14 @@
 <template>
-  <v-form v-model="formValid" lazy-validation>
+  <v-form v-model="formValid">
     <v-row v-if="model.settings" class="pt-2">
+      <v-col cols="12" class="pt-0 text-end pb-4">
+        <v-btn small color="secondary" class="mx-1" @click="pairDevice()" :disabled="!formValid">{{$t("PairDevice")}}</v-btn>
+      </v-col>
       <v-col cols="12" md="6" class="py-0">
-        <v-text-field v-model="model.settings.terminalID" :label="$t('TerminalID')"></v-text-field>
+        <v-text-field v-model="model.settings.terminalID" :label="$t('TerminalID')" :rules="[vr.primitives.required]"></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6" class="py-0">
+        <v-text-field v-model="model.settings.posName" :label="$t('PaxDeviceLabel')" :rules="[vr.primitives.required]"></v-text-field>
       </v-col>
     </v-row>
     <div class="d-flex justify-end">
@@ -12,6 +18,8 @@
 </template>
 
 <script>
+import ValidationRules from "../../helpers/validation-rules";
+
 export default {
   props: {
     data: {
@@ -31,6 +39,7 @@ export default {
       model: {
         ...this.data
       },
+      vr: ValidationRules,
       formValid: false,
       loading: false
     }
@@ -48,6 +57,21 @@ export default {
       this.loading = true;
       this.$api[this.apiName].saveExternalSystem(this.terminalId, this.model);
       this.loading = false;
+    },
+    async pairDevice(){
+      let payload = {
+        ecTerminalID: this.terminalId,
+        ...this.model.settings
+      };
+      let operation = await this.$api.integrations.nayax.pairDevice(payload);
+
+      if(!operation && operation.status == "error"){
+        this.$toasted.show(operation ? operation.message : this.$t("SomethingWentWrong"), { type: "error" });
+      }
+
+      if(operation && operation.status == "success"){
+        this.$toasted.show(operation.message, { type: "success" });
+      }
     }
   },
 };

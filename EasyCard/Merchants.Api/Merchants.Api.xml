@@ -111,6 +111,32 @@
               Looks up a localized string similar to Customer created successfully.
             </summary>
         </member>
+        <member name="T:Merchants.Api.Models.Integrations.Nayax.NayaxMessagesResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.Nayax.NayaxMessagesResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.Nayax.NayaxMessagesResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.Nayax.NayaxMessagesResource.CouldNotPairTheDevice">
+            <summary>
+              Looks up a localized string similar to Device paired successfully.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.Nayax.NayaxMessagesResource.DevicePairedSuccessfully">
+            <summary>
+              Looks up a localized string similar to Could not pair the device.
+            </summary>
+        </member>
         <member name="T:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

@@ -62,9 +62,14 @@ namespace Merchants.Business.Services
                     .Include(t => t.Merchant)
                     .Where(m => m.TerminalID == terminalID);
 
+            if (!user.IsAdmin())
+            {
+                terminalQuery = terminalQuery.Where(t => t.Status != Shared.Enums.TerminalStatusEnum.Disabled);
+            }
+
             var integrationsQuery = await GetTerminalExternalSystems(terminalID);
 
-            var terminal = (await terminalQuery.ToListAsync()).FirstOrDefault();
+            var terminal = await terminalQuery.FirstOrDefaultAsync();
 
             if (terminal != null)
             {

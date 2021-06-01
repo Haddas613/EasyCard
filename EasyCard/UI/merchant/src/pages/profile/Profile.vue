@@ -135,7 +135,7 @@ export default {
       if(operaionResult.status === "success"){
         this.terminalRefreshed = false;
         await this.refreshTerminal();
-        let terminals = await this.$api.terminals.getTerminals(null, true);
+        let terminals = await this.$api.terminals.getTerminals(null, {refreshCache: true});
         this.terminals = terminals ? terminals.data : [];
         this.terminalRefreshed = true;
       }

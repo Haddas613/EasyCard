@@ -17,5 +17,7 @@ namespace Merchants.Shared
         public string EncrKeyForSharedApiKey { get; set; }
 
         public string ShvaRequestsLogStorageTable { get; set; }
+
+        public string NayaxRequestsLogStorageTable { get; set; }
     }
 }

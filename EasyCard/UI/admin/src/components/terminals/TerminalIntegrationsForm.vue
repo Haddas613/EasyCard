@@ -49,7 +49,7 @@
         v-for="int in model.integrations"
         :key="int.externalSystemID"
         no-gutters
-        class="mb-4"
+        class="mb-4 mx-4"
       >
         <template v-if="int.externalSystem">
           <v-card-title class="subtitle-2" >

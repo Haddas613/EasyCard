@@ -185,7 +185,7 @@ export default {
         });
         return;
       }
-      if (!operation || operation.numberOfRecords !== 1) return;
+      if (operation.numberOfRecords !== 1) return;
       let opResult = operation.data[0];
 
       if (
@@ -217,18 +217,12 @@ export default {
         });
         return;
       }
-      let opResult = operation[0];
-
-      if (
-        opResult.paymentTransactionID == this.$route.params.id &&
-        opResult.transmissionStatus == "Transmitted"
-      ) {
-        let tr = await this.$api.transactions.getTransaction(
+      let tr = await this.$api.transactions.getTransaction(
           this.$route.params.id
         );
-        this.model.quickStatus = tr.quickStatus;
-        this.model.allowTransmission = false;
-      }
+      this.model.quickStatus = tr.quickStatus;
+      this.model = tr;
+      this.model.allowTransmission = false;
     },
     async createInvoice(){
       this.loading = true;

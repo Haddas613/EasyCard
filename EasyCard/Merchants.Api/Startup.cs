@@ -17,6 +17,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Nayax;
+using Nayax.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -195,6 +197,7 @@ namespace Merchants.Api
 
             services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
             services.Configure<Shva.ShvaGlobalSettings>(Configuration.GetSection("ShvaGlobalSettings"));
+            services.Configure<NayaxGlobalSettings>(Configuration.GetSection("NayaxGlobalSettings"));
 
             services.AddSingleton<IExternalSystemsService, ExternalSystemService>(serviceProvider =>
             {
@@ -244,6 +247,17 @@ namespace Merchants.Api
 
                 return new Shva.ShvaProcessor(webApiClient, shvaCfg, logger, storageService);
             });
+
+            services.AddSingleton<NayaxProcessor, NayaxProcessor>(serviceProvider =>
+            {
+                var nayaxCfg = serviceProvider.GetRequiredService<IOptions<NayaxGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<NayaxProcessor>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.NayaxRequestsLogStorageTable, cfg.NayaxRequestsLogStorageTable);
+
+                return new NayaxProcessor(webApiClient, nayaxCfg, logger, storageService);
+            }); 
 
             // DI: request logging
 

@@ -160,6 +160,15 @@ namespace MerchantProfileApi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Terminal is disabled.
+        /// </summary>
+        public static string TerminalIsDisabled {
+            get {
+                return ResourceManager.GetString("TerminalIsDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terminal Updated.
         /// </summary>
         public static string TerminalUpdated {
