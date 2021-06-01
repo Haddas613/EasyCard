@@ -45,7 +45,7 @@ namespace Transactions.Business.Data
 
         public DbSet<PaymentRequestHistory> PaymentRequestHistories { get; set; }
 
-        //public DbSet<FutureBilling> FutureBillings { get; set; }
+        public DbSet<FutureBilling> FutureBillings { get; set; }
 
         private readonly ClaimsPrincipal user;
 
@@ -286,7 +286,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
             modelBuilder.ApplyConfiguration(new InvoiceConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestHistoryConfiguration());
-            //modelBuilder.ApplyConfiguration(new FutureBillingConfiguration());
+            modelBuilder.ApplyConfiguration(new FutureBillingConfiguration());
 
             // NOTE: security filters moved to Get() methods
 
@@ -706,37 +706,37 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
             }
         }
 
-        //internal class FutureBillingConfiguration : IEntityTypeConfiguration<FutureBilling>
-        //{
-        //    public void Configure(EntityTypeBuilder<FutureBilling> builder)
-        //    {
-        //        builder.ToView("vFutureBillings");
+        internal class FutureBillingConfiguration : IEntityTypeConfiguration<FutureBilling>
+        {
+            public void Configure(EntityTypeBuilder<FutureBilling> builder)
+            {
+                builder.ToTable("vFutureBillings", t => t.ExcludeFromMigrations());
 
-        //        builder.HasNoKey();
+                builder.HasKey(b => new { b.BillingDealID, b.CurrentDeal });
 
-        //        builder.Property(p => p.TerminalID);
-        //        builder.Property(p => p.MerchantID);
+                builder.Property(p => p.TerminalID).HasColumnName("TerminalID");
+                builder.Property(p => p.MerchantID).HasColumnName("MerchantID");
 
-        //        //builder.OwnsOne(b => b.CreditCardDetails, s =>
-        //        //{
-        //        //    s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
-        //        //    s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
-        //        //    s.Ignore(p => p.CardOwnerNationalID);
-        //        //    s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
-        //        //    s.Ignore(p => p.CardBin);
-        //        //    s.Ignore(p => p.CardVendor);
-        //        //    s.Ignore(b => b.CardReaderInput);
-        //        //});
+                builder.OwnsOne(b => b.CreditCardDetails, s =>
+                {
+                    s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
+                    s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Ignore(p => p.CardOwnerNationalID);
+                    s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
+                    s.Ignore(p => p.CardBin);
+                    s.Ignore(p => p.CardVendor);
+                    s.Ignore(b => b.CardReaderInput);
+                });
 
-        //        builder.Property(b => b.TransactionAmount).HasColumnType("decimal(19,4)");
+                builder.Property(b => b.TransactionAmount).HasColumnType("decimal(19,4)").HasColumnName("TransactionAmount");
 
-        //        builder.Property(b => b.Active).HasDefaultValue(false);
+                builder.Property(b => b.Active).HasColumnName("Active");
 
-        //        builder.Property(b => b.NextScheduledTransaction).HasColumnType("date").IsRequired(false);
-        //        builder.Property(b => b.FutureScheduledTransaction).HasColumnType("date").IsRequired(false);
-        //        builder.Property(b => b.PausedFrom).HasColumnType("date").IsRequired(false);
-        //        builder.Property(b => b.PausedTo).HasColumnType("date").IsRequired(false);
-        //    }
-        //}
+                builder.Property(b => b.NextScheduledTransaction).HasColumnName("NextScheduledTransaction");
+                builder.Property(b => b.FutureScheduledTransaction).HasColumnName("FutureScheduledTransaction");
+                builder.Property(b => b.PausedFrom).HasColumnName("PausedFrom");
+                builder.Property(b => b.PausedTo).HasColumnName("PausedTo");
+            }
+        }
     }
 }

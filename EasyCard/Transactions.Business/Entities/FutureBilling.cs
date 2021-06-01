@@ -46,7 +46,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Credit card information(just to display)
         /// </summary>
-        //public CreditCardDetails CreditCardDetails { get; set; }
+        public CreditCardDetails CreditCardDetails { get; set; }
 
         public bool Active { get; set; }
 
