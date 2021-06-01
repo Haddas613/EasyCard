@@ -333,6 +333,7 @@
   "SendTransactionSlipEmail": "Send Transaction slip email",
   "Paused": "Paused",
   "Actual": "Actual",
+  "PaxDeviceLabel": "Pax Device label",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -389,6 +390,7 @@
   "Print": "Print",
   "Activate": "Activate",
   "Deactivate": "Deactivate",
+  "PairDevice": "Pair Device",
 
   "--AUTH--": null,
   "Login": "Login",

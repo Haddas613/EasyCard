@@ -71,6 +71,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>EasyInvoiceMessagesResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Models\Integrations\Nayax\NayaxMessagesResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NayaxMessagesResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Models\Integrations\Shva\ShvaMessagesResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -131,6 +136,13 @@
     <EmbeddedResource Update="Models\Integrations\EasyInvoice\EasyInvoiceMessagesResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>EasyInvoiceMessagesResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Integrations\Nayax\NayaxMessagesResource.he.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Integrations\Nayax\NayaxMessagesResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>NayaxMessagesResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Models\Integrations\Shva\ShvaMessagesResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

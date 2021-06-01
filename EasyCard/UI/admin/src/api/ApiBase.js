@@ -20,6 +20,7 @@ import TransmissionApi from './modules/transactions/TransmissionsApi'
 import cfg from "../app.config";
 import appConstants from "../helpers/app-constants";
 import CardTokensApi from './modules/transactions/CardTokensApi';
+import NayaxApi from "./modules/integrations/NayaxApi";
 
 class ApiBase {
     constructor() {
@@ -44,7 +45,8 @@ class ApiBase {
         this.integrations = {
             shva: new ShvaApi(this),
             easyInvoice: new EasyInvoiceApi(this),
-            clearingHouse: new ClearingHouseApi(this)
+            clearingHouse: new ClearingHouseApi(this),
+            nayax: new NayaxApi(this)
         };
     }
 

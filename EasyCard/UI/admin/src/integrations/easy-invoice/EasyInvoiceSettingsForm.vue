@@ -112,6 +112,7 @@ export default {
       }
 
       if(operation && operation.status == "success"){
+        this.$toasted.show(operation.message, { type: "success" });
         this.model.settings.userName = operation.additionalData.userName;
         this.model.settings.password = operation.additionalData.password;
         this.model.settings.keyStorePassword = operation.additionalData.keyStorePassword;

@@ -337,6 +337,7 @@
   "SendTransactionSlipEmail": "שלח שובר במייל",
   "Paused": "מושהים",
   "Actual": "ממשי",
+  "PaxDeviceLabel": "תיאור פינפד PAX",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -393,6 +394,7 @@
   "Print": "הדפס",
   "Activate": "הפעל",
   "Deactivate": "בטל",
+  "PairDevice": "פינפד PAX",
 
   "--AUTH--": null,
   "Login": "כניסה",
