@@ -2,13 +2,13 @@
   <div>
     <v-checkbox
       v-model="model.roles"
-      :label="appConstants.users.roles.merchant"
+      :label="$t(appConstants.users.roles.merchant)"
       :value="appConstants.users.roles.merchant"
       disabled
     ></v-checkbox>
     <v-checkbox
       v-model="model.roles"
-      :label="appConstants.users.roles.manager"
+      :label="$t(appConstants.users.roles.manager)"
       :value="appConstants.users.roles.manager"
     ></v-checkbox>
   </div>

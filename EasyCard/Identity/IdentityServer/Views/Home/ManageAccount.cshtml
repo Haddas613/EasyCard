@@ -1,16 +1,17 @@
-﻿
+﻿@inject CommonLocalizationService localizer
+
 @{
-    ViewData["Title"] = "Manage Account";
+    ViewData["Title"] = localizer.Get("ManageAccount");
 }
 
 <div class="text-center pb-4">
-    <h3 class="font-weight-light">Manage Account</h3>
+    <h3 class="font-weight-light">@ViewData["Title"]</h3>
 </div>
 
 <div>
     <div class="list-group">
-        <a asp-controller="Account" asp-action="ChangePassword" class="list-group-item list-group-item-action">Change Password</a>
-        <a asp-controller="Account" asp-action="TwoFactorAuthSettings" class="list-group-item list-group-item-action">Two Factor Authentication settings</a>
+        <a asp-controller="Account" asp-action="ChangePassword" class="list-group-item list-group-item-action">@localizer.Get("ChangePassword")</a>
+        <a asp-controller="Account" asp-action="TwoFactorAuthSettings" class="list-group-item list-group-item-action">@localizer.Get("TwoFactorAuthSettings")</a>
     </div>
 </div>
 

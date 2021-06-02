@@ -1,6 +1,8 @@
 ﻿@model LogoutViewModel
-@{ 
-    ViewData["Message"] = "Logout";
+@inject CommonLocalizationService localizer
+
+@{
+    ViewData["Message"] = localizer.Get("Logout");
 }
 <div class="row">
     <div class="col-sm-12 d-flex justify-content-center">
@@ -9,13 +11,13 @@
                 <h5 class="panel-title">@ViewData["Message"]</h5>
             </div>
             <div class="panel-body">
-                <p>Would you like to logout of IdentityServer?</p>
+                <p>@localizer.Get("WouldYouLikeToLogout")</p>
                 <form asp-action="Logout">
                     <input type="hidden" name="logoutId" value="@Model.LogoutId" />
                     <fieldset>
                         <div class="form-group text-end">
-                            <a asp-action="Login" class="btn btn-outline-dark">Cancel</a>
-                            <button class="btn btn-primary">Yes</button>
+                            <a asp-action="Login" class="btn btn-outline-dark">@localizer.Get("Cancel")</a>
+                            <button class="btn btn-primary">@localizer.Get("Yes")</button>
                         </div>
                     </fieldset>
                 </form>

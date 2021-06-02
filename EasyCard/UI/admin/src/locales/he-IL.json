@@ -452,6 +452,7 @@
   "Cash": "מזומן",
   "Bitcoin": "ביטקוין",
   "NotSpecified": "לא צוין",
+  "Manager": "מנהל",
 
   "--HINTS--": null,
   "ShowOnlyNotTransmittedTransactions": "הצג עסקאות שלא שודרו",

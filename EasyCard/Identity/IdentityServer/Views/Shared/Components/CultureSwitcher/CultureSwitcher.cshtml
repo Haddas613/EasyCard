@@ -1,0 +1,25 @@
+﻿@model CultureSwitcherModel
+
+
+<div>
+    <form id="culture-switcher">
+        <select name="culture" id="culture-options" class="form-control">
+            @foreach (var culture in Model.SupportedCultures)
+            {
+                <option value="@culture.Name" selected="@(Model.CurrentUICulture.Name == culture.Name)">@culture.DisplayName</option>
+            }
+        </select>
+    </form>
+</div>
+
+
+<script nws-csp-add-nonce="true">
+    document.getElementById("culture-options").addEventListener("change", () => {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("ChangeLocalization", "Home")",
+            data: { culture: document.getElementById("culture-options").value },
+            success: function () { window.location.reload(); },
+        });
+    });
+</script>

@@ -92,13 +92,13 @@ namespace CheckoutPortal
             {
                 var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
                 var logger = serviceProvider.GetRequiredService<ILogger<TransactionsApiClient>>();
-                var weApiClient = serviceProvider.GetRequiredService<IWebApiClient>();
+                var webApiClient = serviceProvider.GetRequiredService<IWebApiClient>();
                 var tokenService = serviceProvider.GetRequiredService<IWebApiClientTokenService>();
 
                 var context = serviceProvider.GetRequiredService<IHttpContextAccessor>();
                 var cultureFeature = context.HttpContext.Features.Get<IRequestCultureFeature>();
 
-                var transactionApiClient = new TransactionsApiClient(weApiClient, /*logger,*/ tokenService, apiCfg);
+                var transactionApiClient = new TransactionsApiClient(webApiClient, /*logger,*/ tokenService, apiCfg);
                 transactionApiClient.Headers.Add("Accept-Language", cultureFeature.RequestCulture.Culture.Name);
 
                 return transactionApiClient;

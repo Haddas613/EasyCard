@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -24,6 +25,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -271,16 +273,47 @@ namespace IdentityServer
             services.Configure<IdentityServerClientSettings>(Configuration.GetSection("IdentityServerClient"));
             services.Configure<AzureADSettings>(Configuration.GetSection("AzureADConfig"));
 
-            services.AddSingleton<IMerchantsApiClient, MerchantsApiClient>(serviceProvider =>
+            services.AddSingleton<IWebApiClient, WebApiClient>();
+            services.AddSingleton<IWebApiClientTokenService, WebApiClientTokenService>(serviceProvider =>
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<IdentityServerClientSettings>>();
-                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
-                var webApiClient = new WebApiClient();
-                var logger = serviceProvider.GetRequiredService<ILogger<MerchantsApiClient>>();
-                var tokenService = new WebApiClientTokenService(webApiClient.HttpClient, cfg);
-
-                return new MerchantsApiClient(webApiClient, logger, tokenService, apiCfg);
+                var client = serviceProvider.GetRequiredService<IWebApiClient>();
+                return new WebApiClientTokenService(client.HttpClient, cfg);
             });
+
+            services.AddScoped<IMerchantsApiClient, MerchantsApiClient>(serviceProvider =>
+            {
+                var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
+                var logger = serviceProvider.GetRequiredService<ILogger<MerchantsApiClient>>();
+
+                var webApiClient = serviceProvider.GetRequiredService<IWebApiClient>();
+                var tokenService = serviceProvider.GetRequiredService<IWebApiClientTokenService>();
+
+                var context = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+                var cultureFeature = context.HttpContext.Features.Get<IRequestCultureFeature>();
+
+                var merchantsApiClient = new MerchantsApiClient(webApiClient, logger, tokenService, apiCfg);
+
+                merchantsApiClient.Headers.Add("Accept-Language", cultureFeature.RequestCulture.Culture.Name);
+
+                return merchantsApiClient;
+            });
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                 {
+                    new CultureInfo("en"),
+                    new CultureInfo("he"),
+                 };
+                options.DefaultRequestCulture = new RequestCulture("he");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+                options.RequestCultureProviders = new List<IRequestCultureProvider> { new CookieRequestCultureProvider() };
+            });
+
+            services.AddMvc().AddViewLocalization();
+            services.AddSingleton<CommonLocalizationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -338,6 +371,9 @@ namespace IdentityServer
             });
 
             app.UseRouting();
+
+            var localizationOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>().Value;
+            app.UseRequestLocalization(localizationOptions);
 
             app.UseIdentityServer();
             app.UseAuthorization();

@@ -33,6 +33,8 @@ namespace Merchants.Api.Client
             this.tokenService = tokenService;
         }
 
+        public NameValueCollection Headers { get; } = new NameValueCollection();
+
         public async Task<OperationResponse> CreateMerchant(MerchantRequest merchantRequest)
         {
             try
@@ -102,7 +104,7 @@ namespace Merchants.Api.Client
         {
             var token = await tokenService.GetToken();
 
-            NameValueCollection headers = new NameValueCollection();
+            NameValueCollection headers = new NameValueCollection(Headers);
 
             if (token != null)
             {

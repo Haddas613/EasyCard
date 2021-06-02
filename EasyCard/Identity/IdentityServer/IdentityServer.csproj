@@ -60,6 +60,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>IdentityMessages.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\CommonResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CommonResources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -70,6 +75,10 @@
     <EmbeddedResource Update="Messages\IdentityMessages.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>IdentityMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\CommonResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CommonResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

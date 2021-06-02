@@ -1,15 +1,16 @@
 ﻿@model LoginViewModel
+@inject CommonLocalizationService localizer
 
 <div class="login-page">
     <div class="page-header text-center">
         @if (Model.IsAuthorized)
         {
-            <h1 class="display-4">Welcome to EasyCard</h1>
-            <p>You are logged in as <b>@Model.UserName</b></p>
+            <h1 class="display-4">@localizer.Get("WelcomeToEasyCard")</h1>
+            <p>@localizer.Get("LoggedAs").Replace("@as", Model.UserName)</p>
         }
         else
         {
-            <h5 class="mb-4">Login to EasyCard</h5>
+    <h5 class="mb-4">@localizer.Get("LoginToEasyCard")</h5>
         }
     </div>
 
@@ -19,13 +20,13 @@
         @if (!Model.IsAuthorized)
         {
 
-                <div class="col-sm-12 d-flex justify-content-center">
-                    @if (Model.EnableLocalLogin)
-                    {
+            <div class="col-sm-12 d-flex justify-content-center">
+                @if (Model.EnableLocalLogin)
+                {
                     <div class="panel panel-default">
                         @*<div class="panel-heading">
-                            <h3 class="panel-title">Local Login</h3>
-                        </div>*@
+                                <h3 class="panel-title">Local Login</h3>
+                            </div>*@
                         <div class="panel-body">
 
                             <form asp-route="Login">
@@ -33,26 +34,26 @@
 
                                 <fieldset>
                                     <div class="form-group">
-                                        <label asp-for="Username">Email</label>
-                                        <input class="form-control" placeholder="Email" asp-for="Username" autofocus>
+                                        <label asp-for="Username">@localizer.Get("Email")</label>
+                                        <input class="form-control" placeholder="@localizer.Get("Email")" asp-for="Username" autofocus>
                                     </div>
                                     <div class="form-group">
-                                        <label asp-for="Password"></label>
-                                        <input type="password" class="form-control" placeholder="Password" asp-for="Password" autocomplete="off">
+                                        <label asp-for="Password">@localizer.Get("Password")</label>
+                                        <input type="password" class="form-control" placeholder="@localizer.Get("Password")" asp-for="Password" autocomplete="off">
                                     </div>
                                     <div>
                                         <p class="text-center">
-                                            <small>Not yet registered? Follow this <a asp-action="Index" asp-controller="Registration">link</a> to join EasyCard</small>
+                                            <small>@Html.Raw(localizer.Get("FollowThisLinkToJoinEasyCard").Replace("@link", Url.Action("Index", "Registration")))</small>
                                         </p>
                                     </div>
                                     <div class="form-group d-flex justify-content-center">
                                         @*<a asp-action="Index" asp-controller="Registration" class="btn btn-outline-info mx-1">Register</a>*@
-                                        <a asp-action="ForgotPassword" asp-controller="Account" class="btn btn-outline-info mx-1">Forgot Password</a>
-                                        <button class="btn btn-primary mx-1" name="button" value="login">Login</button>
+                                        <a asp-action="ForgotPassword" asp-controller="Account" class="btn btn-outline-info mx-1">@localizer.Get("ForgotPassword")</a>
+                                        <button class="btn btn-primary mx-1" name="button" value="login">@localizer.Get("Login")</button>
                                         @*<button class="btn btn-default" name="button" value="cancel">Cancel</button>*@
                                     </div>
 
-                                     
+
 
                                 </fieldset>
                             </form>
@@ -64,13 +65,13 @@
                                     if (loginProviders.Count() > 0)
                                     {
                                         <p class="text-center">
-                                            <small>Or log in by using external providers</small>
+                                            <small>@localizer.Get("OrLoginByUsingExternalProviders")</small>
                                         </p>
                                         <form asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
                                             <div class="text-center">
                                                 @foreach (var provider in loginProviders)
                                                 {
-                                                    <button type="submit" class="btn btn-sm btn-outline-primary" name="provider" value="@provider.AuthenticationScheme" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                                    <button type="submit" class="btn btn-sm btn-outline-primary" name="provider" value="@provider.AuthenticationScheme">@provider.DisplayName</button>
                                                 }
                                             </div>
                                         </form>
@@ -79,20 +80,20 @@
                             </section>
                         </div>
                     </div>
-                    }
-                </div>
-
-                
+                }
+            </div>
 
 
 
-            
+
+
+
 
             @if (!Model.EnableLocalLogin && !Model.VisibleExternalProviders.Any())
             {
                 <div class="alert alert-warning">
                     <strong>Invalid login request</strong>
-                    There are no login schemes configured for this client.
+                    @localizer.Get("ThereAreNoLoginSchemesConfiguredForThisClient")
                 </div>
             }
         }
@@ -101,13 +102,13 @@
             <div class="col-sm-12 d-flex justify-content-center">
                 @if (Model.IsAdmin)
                 {
-                    <a href="@(Model.ClientSystemURL)" class="btn btn-primary text-white">Go to Admin UI</a>
+                    <a href="@(Model.ClientSystemURL)" class="btn btn-primary text-white">@localizer.Get("GoToAdminUI")</a>
                 }
                 else
                 {
-                    <a href="@(Model.ClientSystemURL)" class="btn btn-primary text-white">Go to Merchant UI</a>
+                    <a href="@(Model.ClientSystemURL)" class="btn btn-primary text-white">@localizer.Get("GoToMerchantUI")</a>
                 }
-                <a asp-action="Logout" asp-controller="Account" class="btn btn-outline-dark mx-1">Logout</a>
+                <a asp-action="Logout" asp-controller="Account" class="btn btn-outline-dark mx-1">@localizer.Get("Logout")</a>
             </div>
         }
     </div>

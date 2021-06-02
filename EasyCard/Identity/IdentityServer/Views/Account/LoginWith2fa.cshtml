@@ -1,6 +1,8 @@
 ﻿@model LoginWith2faViewModel
+@inject CommonLocalizationService localizer
+
 @{
-    ViewData["Title"] = "Two-factor authentication";
+    ViewData["Title"] = localizer.Get("TwoFactorAuthentication");
 }
 
 <div class="row">
@@ -8,7 +10,7 @@
         <div class="panel panel-default panel-ecng">
             <div class="panel-header text-center">
                 <h2>@ViewData["Title"]</h2>
-                <p>Enter your authenticator code below.</p>
+                <p>@localizer.Get("EnterYourAuthenticatorCodeBelow")</p>
             </div>
             <div class="panel-body">
                 <form method="post" asp-route-returnUrl="@ViewData["ReturnUrl"]">
@@ -18,12 +20,12 @@
                         <div asp-validation-summary="All" class="text-danger"></div>
                     }
                     <div class="form-group">
-                        <label asp-for="TwoFactorCode"></label>
+                        <label asp-for="TwoFactorCode">@localizer.Get("Code")</label>
                         <input asp-for="TwoFactorCode" class="form-control" autocomplete="off" />
                         <span asp-validation-for="TwoFactorCode" class="text-danger"></span>
                     </div>
                     <div class="form-group text-end">
-                        <button type="submit" class="btn btn-primary">Log in</button>
+                        <button type="submit" class="btn btn-primary">@localizer.Get("Login")</button>
                     </div>
                 </form>
             </div>

@@ -1,6 +1,7 @@
 ﻿@model LoggedOutViewModel
+@inject CommonLocalizationService localizer
 
-@{ 
+@{
     // set this so the layout rendering sees an anonymous user
     ViewData["signed-out"] = true;
 }
@@ -9,16 +10,15 @@
     <div class="col-sm-12 d-flex justify-content-center">
         <div class="panel panel-default">
             <div class="panel-heading text-center">
-                <h5 class="panel-title">Logout</h5>
+                <h5 class="panel-title">@localizer.Get("Logout")</h5>
             </div>
             <div class="panel-body">
-                <p>You are now logged out</p>
+                <p>@localizer.Get("YouAreNowLoggedOut")</p>
 
                 @if (Model.PostLogoutRedirectUri != null)
                 {
                     <div>
-                        Click <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">here</a> to return to the
-                        <span>@Model.ClientName</span> application.
+                        <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">@localizer.Get("ReturnToTheApplication")</a>
                     </div>
                 }
 

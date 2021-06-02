@@ -1,8 +1,10 @@
-﻿@{
+﻿@inject CommonLocalizationService localizer
+
+@{
     ViewData["Title"] = "Locked out";
 }
 
 <header>
     <h2 class="text-danger">@ViewData["Title"]</h2>
-    <p>This account has been locked out, please contact support.</p>
+    <p>@localizer.Get("AccountLockedOutMessage")</p>
 </header>

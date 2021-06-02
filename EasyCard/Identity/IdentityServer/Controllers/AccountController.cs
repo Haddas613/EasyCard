@@ -5,6 +5,7 @@ using IdentityServer.Models;
 using IdentityServer.Models.Enums;
 using IdentityServer.Security;
 using IdentityServer.Security.Auditing;
+using IdentityServer.Services;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
@@ -60,6 +61,7 @@ namespace IdentityServer.Controllers
         private readonly ApiSettings apiConfiguration;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly UserHelpers userHelpers;
+        private readonly CommonLocalizationService localization;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -77,7 +79,8 @@ namespace IdentityServer.Controllers
             IOptions<ApiSettings> apiConfiguration,
             ISmsService smsService,
             IHttpContextAccessorWrapper httpContextAccessor,
-            UserHelpers userHelpers)
+            UserHelpers userHelpers,
+            CommonLocalizationService localization)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -97,6 +100,7 @@ namespace IdentityServer.Controllers
             this.smsService = smsService;
             this.httpContextAccessor = httpContextAccessor;
             this.userHelpers = userHelpers;
+            this.localization = localization;
         }
 
         /// <summary>
@@ -304,7 +308,7 @@ namespace IdentityServer.Controllers
 
                 if (response.Status == Shared.Api.Models.Enums.StatusEnum.Error)
                 {
-                    ViewBag.Error = "Could not send SMS. Try again later or use Email authentication.";
+                    ViewBag.Error = localization.Get("CouldNotSendSMSErrorMessage");
                     return View();
                 }
             }

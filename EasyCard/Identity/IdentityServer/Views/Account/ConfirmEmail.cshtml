@@ -1,4 +1,5 @@
 ﻿@model ConfirmEmailViewModel
+@inject CommonLocalizationService localizer
 
 <div class="login-page">
 
@@ -11,7 +12,7 @@
         <div class="col-sm-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Please confirm registration and set new password</h3>
+                    <h3 class="panel-title">@localizer.Get("ConfirmRegistrationMessage")</h3>
                 </div>
                 <div class="panel-body">
 
@@ -20,37 +21,37 @@
 
                         <fieldset>
                             <div class="form-group">
-                                <label asp-for="FirstName"></label>
-                                <input type="text" class="form-control" placeholder="FirstName" asp-for="FirstName" autocomplete="off">
+                                <label asp-for="FirstName">@localizer.Get("FirstName")</label>
+                                <input type="text" class="form-control" placeholder="@localizer.Get("FirstName")" asp-for="FirstName" autocomplete="off">
                                 <span asp-validation-for="FirstName" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="LastName"></label>
-                                <input type="text" class="form-control" placeholder="LastName" asp-for="LastName" autocomplete="off">
+                                <label asp-for="LastName">@localizer.Get("LastName")</label>
+                                <input type="text" class="form-control" placeholder="@localizer.Get("LastName")" asp-for="LastName" autocomplete="off">
                                 <span asp-validation-for="LastName" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="PhoneNumber">Phone</label>
-                                <input type="tel" class="form-control" placeholder="Phone" asp-for="PhoneNumber" autocomplete="off" pattern="[0-9]{6,50}">
+                                <label asp-for="PhoneNumber">@localizer.Get("Phone")</label>
+                                <input type="tel" class="form-control" placeholder="@localizer.Get("Phone")" asp-for="PhoneNumber" autocomplete="off" pattern="[0-9]{6,50}">
                                 <span asp-validation-for="PhoneNumber"></span>
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="Password"></label>
-                                <input type="password" class="form-control" placeholder="Password" asp-for="Password" autocomplete="chrome-off">
+                                <label asp-for="Password">@localizer.Get("Password")</label>
+                                <input type="password" class="form-control" placeholder="@localizer.Get("Password")" asp-for="Password" autocomplete="chrome-off">
                                 <span asp-validation-for="Password" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
-                                <label asp-for="ConfirmPassword"></label>
+                                <label asp-for="ConfirmPassword">@localizer.Get("ConfirmPassword")</label>
                                 <input asp-for="ConfirmPassword" class="form-control" autocomplete="off" />
                                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
-                                <button class="btn btn-primary" name="button" value="confirm">Confirm</button>
+                                <button class="btn btn-primary" name="button" value="confirm">@localizer.Get("Confirm")</button>
                             </div>
                         </fieldset>
                     </form>

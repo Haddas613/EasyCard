@@ -32,19 +32,22 @@ namespace IdentityServer.Controllers
         private readonly UserManager<ApplicationUser> userManager;
         private readonly UserManageService userManageService;
         private readonly UserHelpers userHelpers;
+        private readonly CommonLocalizationService localization;
 
         public RegistrationController(
-            IMerchantsApiClient merchantsApiClient, 
+            IMerchantsApiClient merchantsApiClient,
             IMapper mapper,
             UserManager<ApplicationUser> userManager,
             UserManageService userManageService,
-            UserHelpers userHelpers)
+            UserHelpers userHelpers,
+            CommonLocalizationService localization)
         {
             this.merchantsApiClient = merchantsApiClient;
             this.mapper = mapper;
             this.userManager = userManager;
             this.userManageService = userManageService;
             this.userHelpers = userHelpers;
+            this.localization = localization;
         }
 
         public async Task<IActionResult> Index()
@@ -71,7 +74,7 @@ namespace IdentityServer.Controllers
 
             if (emailIsTaken)
             {
-                ModelState.AddModelError(nameof(model.Email), "That email is already taken");
+                ModelState.AddModelError(nameof(model.Email), localization.Get("EmailIsAlreadyTaken"));
                 return View(nameof(Index), model);
             }
 

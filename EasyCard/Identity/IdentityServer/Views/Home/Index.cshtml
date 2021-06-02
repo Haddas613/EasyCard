@@ -1,24 +1,26 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@inject CommonLocalizationService localizer
+
+@{
+    ViewData["Title"] = localizer.Get("Home");
 }
 @model HomeIndexViewModel
 
 <div class="text-center">
-    <h1 class="display-4">Welcome to EasyCard</h1>
+    <h1 class="display-4">@localizer.Get("WelcomeToEasyCard")</h1>
     @if (!Model.IsAuthorized)
     {
         <p>
-            <a asp-action="Login" asp-controller="Account" class="btn btn-primary" name="button" value="login">Login</a>
+            <a asp-action="Login" asp-controller="Account" class="btn btn-primary" name="button" value="login">@localizer.Get("Login")</a>
         </p>
         <p>
-            <a asp-action="Index" asp-controller="Registration" class="btn btn-info">Register</a>
+            <a asp-action="Index" asp-controller="Registration" class="btn btn-info">@localizer.Get("Register")</a>
         </p>
     }
     else
     {
-        <p>You are logged in as <b>@Model.UserName</b></p>
+        <p>@localizer.Get("LoggedAs").Replace("@as", @Model.UserName)</p>
         <p>
-            <a asp-action="Logout" asp-controller="Account" class="btn btn-secondary">Logout</a>
+            <a asp-action="Logout" asp-controller="Account" class="btn btn-secondary">@localizer.Get("Logout")</a>
         </p>
     }
 </div>

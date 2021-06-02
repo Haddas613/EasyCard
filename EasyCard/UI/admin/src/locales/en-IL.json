@@ -447,6 +447,7 @@
   "Cash": "Cash",
   "Bitcoin": "Bitcoin",
   "NotSpecified": "Not Specified",
+  "Manager": "Manager",
 
   "--HINTS--": null,
   "ShowOnlyNotTransmittedTransactions": "Show only not transmitted transactions",

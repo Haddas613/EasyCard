@@ -161,5 +161,346 @@
             Marketing name
             </summary>
         </member>
+        <member name="T:IdentityServer.Resources.CommonResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.AccessDenied">
+            <summary>
+              Looks up a localized string similar to Access Denied.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.AccountLockedOutMessage">
+            <summary>
+              Looks up a localized string similar to This account has been locked out, please contact support..
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.BusinessID">
+            <summary>
+              Looks up a localized string similar to Business ID.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.BusinessName">
+            <summary>
+              Looks up a localized string similar to Business name.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Cancel">
+            <summary>
+              Looks up a localized string similar to Cancel.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.ChangePassword">
+            <summary>
+              Looks up a localized string similar to Change password.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.ClickHereToLogIn">
+            <summary>
+              Looks up a localized string similar to Click here to log in.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Code">
+            <summary>
+              Looks up a localized string similar to Code.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Confirm">
+            <summary>
+              Looks up a localized string similar to Confirm.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.ConfirmPassword">
+            <summary>
+              Looks up a localized string similar to Confirm password.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.ConfirmRegistrationMessage">
+            <summary>
+              Looks up a localized string similar to Please confirm registration and set new password.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.CouldNotSendSMSErrorMessage">
+            <summary>
+              Looks up a localized string similar to Could not send SMS. Try again later or use Email authentication..
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Email">
+            <summary>
+              Looks up a localized string similar to Email.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.EmailIsAlreadyTaken">
+            <summary>
+              Looks up a localized string similar to That email is already taken.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.EnterYourAuthenticatorCodeBelow">
+            <summary>
+              Looks up a localized string similar to Enter your authenticator code below.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Error">
+            <summary>
+              Looks up a localized string similar to Error.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.ErrorGeneral">
+            <summary>
+              Looks up a localized string similar to An error occurred while processing your request.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.FirstName">
+            <summary>
+              Looks up a localized string similar to FirstName.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.FollowThisLinkToJoinEasyCard">
+            <summary>
+              Looks up a localized string similar to Not yet registered? Follow this @link to join EasyCard.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.ForgotPassword">
+            <summary>
+              Looks up a localized string similar to Forgot password.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.ForgotPasswordHint">
+            <summary>
+              Looks up a localized string similar to Link with instructions will be sent to that email.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.ForgotPasswordMessage">
+            <summary>
+              Looks up a localized string similar to Please enter the email you used during the registration.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.GoToAdminUI">
+            <summary>
+              Looks up a localized string similar to Go to Admin UI.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.GoToMerchantUI">
+            <summary>
+              Looks up a localized string similar to Go to Merchant UI.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Home">
+            <summary>
+              Looks up a localized string similar to Home.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.JoinEasyCard">
+            <summary>
+              Looks up a localized string similar to Join EasyCard.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.LastName">
+            <summary>
+              Looks up a localized string similar to LastName.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.LockedOut">
+            <summary>
+              Looks up a localized string similar to Locked out.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.LoggedAs">
+            <summary>
+              Looks up a localized string similar to You are logged in @as.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Login">
+            <summary>
+              Looks up a localized string similar to Login.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.LoginToEasyCard">
+            <summary>
+              Looks up a localized string similar to Login to EasyCard.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Logout">
+            <summary>
+              Looks up a localized string similar to Logout.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.ManageAccount">
+            <summary>
+              Looks up a localized string similar to Manage account.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.MarketingName">
+            <summary>
+              Looks up a localized string similar to Marketing name.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.NewPassword">
+            <summary>
+              Looks up a localized string similar to New password.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.OK">
+            <summary>
+              Looks up a localized string similar to OK.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.OldPassword">
+            <summary>
+              Looks up a localized string similar to Old password.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.OrLoginByUsingExternalProviders">
+            <summary>
+              Looks up a localized string similar to Or log in by using external providers.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Password">
+            <summary>
+              Looks up a localized string similar to Password.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.PasswordRepeat">
+            <summary>
+              Looks up a localized string similar to Password repeat.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.PasswordUpdatedSuccesfully">
+            <summary>
+              Looks up a localized string similar to Password updated successfully.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Phone">
+            <summary>
+              Looks up a localized string similar to Phone.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Privacy">
+            <summary>
+              Looks up a localized string similar to Privacy.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.PrivacyPolicy">
+            <summary>
+              Looks up a localized string similar to Privacy policy.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Register">
+            <summary>
+              Looks up a localized string similar to Register.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.RequestID">
+            <summary>
+              Looks up a localized string similar to Request ID.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.ResetPasswordConfimration">
+            <summary>
+              Looks up a localized string similar to Reset password confirmation.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.ReturnToTheApplication">
+            <summary>
+              Looks up a localized string similar to Return to the application.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Save">
+            <summary>
+              Looks up a localized string similar to Save.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.SetNewPassword">
+            <summary>
+              Looks up a localized string similar to Set new password.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.SMS">
+            <summary>
+              Looks up a localized string similar to SMS.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Submit">
+            <summary>
+              Looks up a localized string similar to Submit.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.ThereAreNoLoginSchemesConfiguredForThisClient">
+            <summary>
+              Looks up a localized string similar to There are no login schemes configured for this client..
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.TwoFactorAuthChooseType">
+            <summary>
+              Looks up a localized string similar to Two-factor authentication choose type.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.TwoFactorAuthChooseTypeMessage">
+            <summary>
+              Looks up a localized string similar to Your login is protected with an authenticator app. Please choose type of authentication you want to use.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.TwoFactorAuthentication">
+            <summary>
+              Looks up a localized string similar to Two-factor authentication.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.TwoFactorAuthSettings">
+            <summary>
+              Looks up a localized string similar to Two-factor authentication settings.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.TwoFactorAuthType">
+            <summary>
+              Looks up a localized string similar to Tw-factor authentication type.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.WelcomeToEasyCard">
+            <summary>
+              Looks up a localized string similar to Welcome to EasyCard.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.WouldYouLikeToLogout">
+            <summary>
+              Looks up a localized string similar to Would you like to logout from EasyCard?.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Yes">
+            <summary>
+              Looks up a localized string similar to Yes.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.YouAreNowLoggedOut">
+            <summary>
+              Looks up a localized string similar to You are now logged out.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.YouDontHaveAccessToThatResource">
+            <summary>
+              Looks up a localized string similar to You do not have access to that resource..
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.YouDontHavePhoneLinkedToThisAccount">
+            <summary>
+              Looks up a localized string similar to You currently don&apos;t have phone linked to this account.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.YouPasswordHasBeenReset">
+            <summary>
+              Looks up a localized string similar to Your password has been reset.
+            </summary>
+        </member>
     </members>
 </doc>
