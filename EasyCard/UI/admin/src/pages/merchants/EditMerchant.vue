@@ -19,15 +19,9 @@ export default {
   methods: {
     async updateMerchant(data) {
       let result = await this.$api.merchants.updateMerchant(data);
+      if (!this.$apiSuccess(result)) return;
 
-      //server errors will be displayed automatically
-      if (!result) return;
-
-      if (result.status === "success") {
-        this.$router.push({name: 'Merchant', params: {id: this.model.$merchantID || this.model.merchantID}});
-      } else {
-        this.$toasted.show(result.message, { type: "error" });
-      }
+      this.$router.push({name: 'Merchant', params: {id: this.model.$merchantID || this.model.merchantID}});
     }
   },
   async mounted() {

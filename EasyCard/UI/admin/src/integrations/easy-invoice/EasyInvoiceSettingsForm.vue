@@ -106,20 +106,15 @@ export default {
         ...this.newCustomerModel
       }
       let operation = await this.$api.integrations.easyInvoice.createCustomer(payload);
+      if (!this.$apiSuccess(operation)) return;
 
-      if(!operation){
-        this.$toasted.show(this.$t("InvalidCredentials"), { type: "error" });
-      }
-
-      if(operation && operation.status == "success"){
-        this.$toasted.show(operation.message, { type: "success" });
-        this.model.settings.userName = operation.additionalData.userName;
-        this.model.settings.password = operation.additionalData.password;
-        this.model.settings.keyStorePassword = operation.additionalData.keyStorePassword;
-        this.newCustomerModel.userName = null;
-        this.newCustomerModel.password = null;
-        this.newCustomerDialog = false;
-      }
+      this.$toasted.show(operation.message, { type: "success" });
+      this.model.settings.userName = operation.additionalData.userName;
+      this.model.settings.password = operation.additionalData.password;
+      this.model.settings.keyStorePassword = operation.additionalData.keyStorePassword;
+      this.newCustomerModel.userName = null;
+      this.newCustomerModel.password = null;
+      this.newCustomerDialog = false;
       this.loading = false;
     }
   },

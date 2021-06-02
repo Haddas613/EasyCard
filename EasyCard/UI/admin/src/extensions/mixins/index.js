@@ -16,6 +16,9 @@ const mixins = {
         },
         $featureEnabled: function (terminal, feature) {
             return terminal && terminal.enabledFeatures.indexOf(feature) > -1;
+        },
+        $apiSuccess: function (operation){
+            return operation && operation.status == "success";
         }
     }
 };

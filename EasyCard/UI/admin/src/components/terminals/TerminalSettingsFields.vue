@@ -460,10 +460,9 @@ export default {
       let operation = await this.$api.terminals.resetPrivateApiKey(
         this.model.terminalID
       );
+      if (!this.$apiSuccess(operation)) return;
 
-      if (operation.status === "success") {
-        this.privateApiKey = operation.entityReference;
-      }
+      this.privateApiKey = operation.entityReference;
     },
     async resetSharedKey() {
       if (!this.model.terminalID) {
@@ -472,12 +471,11 @@ export default {
       let operation = await this.$api.terminals.resetSharedApiKey(
         this.model.terminalID
       );
+      if (!this.$apiSuccess(operation)) return;
 
-      if (operation.status === "success") {
-        this.showSharedKey = true;
-        this.model.sharedApiKey = operation.entityReference;
-        this.emitUpdate();
-      }
+      this.showSharedKey = true;
+      this.model.sharedApiKey = operation.entityReference;
+      this.emitUpdate();
     },
     emitUpdate() {
       this.$emit("update", this.model);

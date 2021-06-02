@@ -142,8 +142,8 @@
                 color="primary"
                 icon
                 :title="$t('Invite')"
-                :loading="actionInProgress"
-                @click="inviteUser(item)"
+                :disabled="actionInProgress"
+                @click="invokeAction('inviteUser', item)"
                 v-if="item.status == 'invited'"
               >
                 <v-icon>mdi-email</v-icon>
@@ -153,8 +153,8 @@
                 color="error"
                 icon
                 :title="$t('Lock')"
-                :loading="actionInProgress"
-                @click="lockUser(item)"
+                :disabled="actionInProgress"
+                @click="invokeAction('lockUser',item)"
                 v-if="item.status == 'active'"
               >
                 <v-icon>mdi-lock</v-icon>
@@ -164,8 +164,8 @@
                 color="success"
                 icon
                 :title="$t('Unlock')"
-                :loading="actionInProgress"
-                @click="unlockUser(item)"
+                :disabled="actionInProgress"
+                @click="invokeAction('unlockUser',item)"
                 v-if="item.status == 'locked'"
               >
                 <v-icon>mdi-lock-open</v-icon>
@@ -175,8 +175,8 @@
                 color="orange darken-3"
                 icon
                 :title="$t('ResetPassword')"
-                :loading="actionInProgress"
-                @click="resetUserPassword(item.userID)"
+                :disabled="actionInProgress"
+                @click="invokeAction('resetUserPassword', item)"
               >
                 <v-icon>mdi-lock-reset</v-icon>
               </v-btn>
@@ -190,7 +190,7 @@
               >
                 <v-icon>mdi-book-account</v-icon>
               </v-btn>
-              <v-btn icon @click="unlinkFromMerchant(item.userID)" :loading="actionInProgress">
+              <v-btn icon @click="invokeAction('unlinkFromMerchant', item.userID)" :disabled="actionInProgress">
                 <v-icon color="error">mdi-delete</v-icon>
               </v-btn>
               <v-btn
@@ -269,51 +269,31 @@ export default {
       }
       this.model = merchant;
     },
-    async unlinkFromMerchant(userID) {
-      let operationResult = await this.$api.users.unlinkUserFromMerchant(
-        userID,
-        this.$route.params.id
-      );
-      if (operationResult.status === "success") {
-        await this.getMerchant();
-      }
-    },
-    async inviteUser(user) {
+    async invokeAction(actionName, user){
       this.actionInProgress = true;
-      let operation = await this.$api.users.inviteUser({
-        merchantID: this.$route.params.id,
-        email: user.email
-      });
+      try{
+        var operation = await this[actionName](user);
+        if (!this.$apiSuccess(operation)) return;
 
-      if (operation.status == "success") {
         await this.getMerchant();
-      } else {
-        this.$toasted.show(operation.message, { type: "error" });
+      }finally{
+        this.actionInProgress = false;
       }
-      this.actionInProgress = false;
     },
-    async lockUser(user) {
-      this.actionInProgress = true;
-      let operation = await this.$api.users.lockUser(user.$userID);
-
-      if (operation.status == "success") {
-        await this.getMerchant();
-      }
-      this.actionInProgress = false;
+    unlinkFromMerchant(user) {
+      return this.$api.users.unlinkUserFromMerchant(user.userID, this.$route.params.id);
     },
-    async unlockUser(user) {
-      this.actionInProgress = true;
-      let operation = await this.$api.users.unlockUser(user.$userID);
-
-      if (operation.status == "success") {
-        await this.getMerchant();
-      }
-      this.actionInProgress = false;
+    inviteUser(user) {
+      return this.$api.users.inviteUser({merchantID: this.$route.params.id, email: user.email});
     },
-    async resetUserPassword(userID) {
-      this.actionInProgress = true;
-      let operation = await this.$api.users.resetUserPassword(userID);
-      this.actionInProgress = false;
+    lockUser(user) {
+      return this.$api.users.lockUser(user.userID);
+    },
+    unlockUser(user) {
+      return this.$api.users.unlockUser(user.userID);
+    },
+    resetUserPassword(user) {
+      return this.$api.users.resetUserPassword(user.userID);
     },
     async loginAsMerchant() {
       let operation = await this.$api.merchants.loginAsMerchant(

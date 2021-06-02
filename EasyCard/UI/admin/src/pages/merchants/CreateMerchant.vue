@@ -25,13 +25,9 @@ export default {
     async createMerchant(data) {
       let result = await this.$api.merchants.createMerchant(data);
       //server errors will be displayed automatically
-      if (!result) return;
+      if (!this.$apiSuccess(result)) return;
 
-      if (result.status === "success") {
-        this.$router.push({ name: "Merchant", params: { id: result.entityReference }});
-      } else {
-        this.$toasted.show(result.message, { type: "error" });
-      }
+      this.$router.push({ name: "Merchant", params: { id: result.entityReference }});
     }
   }
 };

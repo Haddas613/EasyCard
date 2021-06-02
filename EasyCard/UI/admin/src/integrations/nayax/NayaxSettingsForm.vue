@@ -64,14 +64,9 @@ export default {
         ...this.model.settings
       };
       let operation = await this.$api.integrations.nayax.pairDevice(payload);
+      if (!this.$apiSuccess(operation)) return;
 
-      if(!operation && operation.status == "error"){
-        this.$toasted.show(operation ? operation.message : this.$t("SomethingWentWrong"), { type: "error" });
-      }
-
-      if(operation && operation.status == "success"){
-        this.$toasted.show(operation.message, { type: "success" });
-      }
+      this.$toasted.show(operation.message, { type: "success" });
     }
   },
 };

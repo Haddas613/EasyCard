@@ -116,13 +116,10 @@ export default {
         terminalTemplateID: this.apiName == 'terminalTemplates' ? this.terminalId : null
       }
       let operation = await this.$api.integrations.shva.setNewPassword(payload);
+      if (!this.$apiSuccess(operation)) return;
 
-      if(operation && operation.status == "success"){
-        this.model.settings.password = this.newPasswordModel;
-        this.newPasswordDialog = false;
-      }else if(operation && operation.message){
-        this.$toasted.show(operation.message, { type: 'error' });
-      }
+      this.model.settings.password = this.newPasswordModel;
+      this.newPasswordDialog = false;
       this.loading = false;
     },
     async testConnection(){
