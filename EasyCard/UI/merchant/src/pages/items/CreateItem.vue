@@ -25,19 +25,10 @@ export default {
     async createItem(data) {
       let result = await this.$api.items.createItem(data);
 
-      //server errors will be displayed automatically
-      if(!result)
-        return;
+      if (!this.$apiSuccess(result)) return;
 
-      if(result.status === "success"){
-        this.$router.push({ name: "Items"})
-      }else{
-        this.$toasted.show(result.message, { type: 'error' });
-      }
+      this.$router.push({ name: "Item",  params: { id: this.$route.params.id}})
     }
   },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

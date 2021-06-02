@@ -127,18 +127,8 @@ export default {
     async deleteCardToken(tokenId) {
       let result = await this.$api.cardTokens.deleteCardToken(tokenId);
 
-      //server errors will be displayed automatically
-      if (!result) return;
-      if (result.status === "success") {
-        this.tokens =
-          (
-            await this.$api.cardTokens.getCustomerCardTokens(
-              this.$route.params.id
-            )
-          ).data || [];
-      } else {
-        this.$toasted.show(result.message, { type: "error" });
-      }
+      if (!this.$apiSuccess(result)) return;
+      this.tokens = (await this.$api.cardTokens.getCustomerCardTokens(this.$route.params.id)).data || [];
     }
   },
   async mounted() {

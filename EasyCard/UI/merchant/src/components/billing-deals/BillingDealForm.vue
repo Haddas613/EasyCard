@@ -331,17 +331,13 @@ export default {
     async createCardToken(data) {
       this.ctokenDialog = false;
       let result = await this.$api.cardTokens.createCardToken(data);
-      //server errors will be displayed automatically
-      if (!result) return;
-      if (result.status === "success") {
-        await this.getCustomerTokens();
-        this.token = this.lodash.find(
-          this.customerTokens,
-          t => t.creditCardTokenID == result.entityReference
-        );
-      } else {
-        this.$toasted.show(result.message, { type: "error" });
-      }
+      
+      if (!this.$apiSuccess(result)) return;
+      await this.getCustomerTokens();
+      this.token = this.lodash.find(
+        this.customerTokens,
+        t => t.creditCardTokenID == result.entityReference
+      );
       this.$refs.ctokenDialogRef.reset();
     },
     async getCustomerTokens() {

@@ -20,15 +20,8 @@ export default {
     async updateBilling(data) {
       let result = await this.$api.billingDeals.updateBillingDeal(this.$route.params.id, data);
 
-      //server errors will be displayed automatically
-      if(!result)
-        return;
-        
-      if(result.status === "success"){
-        this.$router.push({ name: "BillingDeal", params: { id: this.$route.params.id } })
-      }else{
-        this.$toasted.show(result.message, { type: 'error' });
-      }
+      if (!this.$apiSuccess(result)) return;
+      this.$router.push({ name: "BillingDeal", params: { id: this.$route.params.id } })
     }
   },
   async mounted () {

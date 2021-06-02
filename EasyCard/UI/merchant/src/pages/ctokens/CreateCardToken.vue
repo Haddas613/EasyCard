@@ -45,13 +45,9 @@ export default {
   methods: {
     async createToken(data) {
       let result = await this.$api.cardTokens.createCardToken(data);
-      //server errors will be displayed automatically
-      if (!result) return;
-      if (result.status === "success") {
-        this.$router.push({ name: 'Customer', params: {id: this.model.consumerID} });
-      } else {
-        this.$toasted.show(result.message, { type: "error" });
-      }
+      if (!this.$apiSuccess(result)) return;
+
+      this.$router.push({ name: 'Customer', params: {id: this.model.consumerID} });
     }
   }
 };
