@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!-- 
+  <!-- 
 		Microsoft ResX Schema
 
 		Version 1.3
@@ -58,44 +58,238 @@
 			: using a System.ComponentModel.TypeConverter
 			: and then encoded with base64 encoding.
 	-->
-	
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>1.3</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EmailIsAlreadyTaken" xml:space="preserve">
+    <value>כתובת מייל זו כבר בשימוש</value>
+  </data>
+  <data name="FollowThisLinkToJoinEasyCard" xml:space="preserve">
+    <value>עדיין לא רשום ? לחץ על @link כדי להצטרף לאיזיקארד</value>
+  </data>
+  <data name="LoggedAs" xml:space="preserve">
+    <value>משתמש פעיל: @as</value>
+  </data>
+  <data name="AccessDenied" xml:space="preserve">
+    <value>גישה נדחתה</value>
+  </data>
+  <data name="AccountLockedOutMessage" xml:space="preserve">
+    <value>משתמש זה ננעל, נא לפנות לשירות</value>
+  </data>
+  <data name="BusinessID" xml:space="preserve">
+    <value>מזהה עסק</value>
+  </data>
+  <data name="BusinessName" xml:space="preserve">
+    <value>שם עסק</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>ביטול</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>שינוי סיסמה</value>
+  </data>
+  <data name="ClickHereToLogIn" xml:space="preserve">
+    <value>לחץ כאן לכניסה</value>
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value>קוד</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>אימות</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>אימות סיסמה</value>
+  </data>
+  <data name="ConfirmRegistrationMessage" xml:space="preserve">
+    <value>נא לאמת רישום ולהזין סיסמה חדשה</value>
+  </data>
+  <data name="CouldNotSendSMSErrorMessage" xml:space="preserve">
+    <value>נכשל משלוח SMS. נסה שוב או בחר אימות במייל</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>מייל</value>
+  </data>
+  <data name="EnterYourAuthenticatorCodeBelow" xml:space="preserve">
+    <value>הכנס את קוד האימות שלך למטה</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>שגיאה</value>
+  </data>
+  <data name="ErrorGeneral" xml:space="preserve">
+    <value>שגיאה ארעה בעיבוד בקשתך</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>שם פרטי</value>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>שכחתי סיסמה</value>
+  </data>
+  <data name="ForgotPasswordHint" xml:space="preserve">
+    <value>קישור עם הוראות ישלח לכתובת מייל שסופקה</value>
+  </data>
+  <data name="ForgotPasswordMessage" xml:space="preserve">
+    <value>נא להזין את כתובת המייל שסופקה ברישום</value>
+  </data>
+  <data name="GoToAdminUI" xml:space="preserve">
+    <value>עבור לממשק ניהול</value>
+  </data>
+  <data name="GoToMerchantUI" xml:space="preserve">
+    <value>עבור לממש בית העסק</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>בית</value>
+  </data>
+  <data name="JoinEasyCard" xml:space="preserve">
+    <value>הצטרף לאיזיקארד</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>שם משפחה</value>
+  </data>
+  <data name="LockedOut" xml:space="preserve">
+    <value>נעול</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>כניסה</value>
+  </data>
+  <data name="LoginToEasyCard" xml:space="preserve">
+    <value>כניסה לאיזיקארד</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>התנתק</value>
+  </data>
+  <data name="ManageAccount" xml:space="preserve">
+    <value>ניהול חשבון</value>
+  </data>
+  <data name="MarketingName" xml:space="preserve">
+    <value>שם שיווקי</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
+    <value>סיסמה חדשה</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>אישור</value>
+  </data>
+  <data name="OldPassword" xml:space="preserve">
+    <value>סיסמה ישנה</value>
+  </data>
+  <data name="OrLoginByUsingExternalProviders" xml:space="preserve">
+    <value>או התחבר באמצעות זיהוי חיצוני</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>סיסמה</value>
+  </data>
+  <data name="PasswordRepeat" xml:space="preserve">
+    <value>אימות סיסמה</value>
+  </data>
+  <data name="PasswordUpdatedSuccesfully" xml:space="preserve">
+    <value>הסיסמה עודכנה בהצלחה</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>טלפון</value>
+  </data>
+  <data name="Privacy" xml:space="preserve">
+    <value>פרטיות</value>
+  </data>
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value>פוליסת פרטיות</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>רישום</value>
+  </data>
+  <data name="RequestID" xml:space="preserve">
+    <value>מספר בקשה</value>
+  </data>
+  <data name="ResetPasswordConfimration" xml:space="preserve">
+    <value>אישור איפוס סיסמה</value>
+  </data>
+  <data name="ReturnToTheApplication" xml:space="preserve">
+    <value>חזרה למערכת</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>שמור</value>
+  </data>
+  <data name="SetNewPassword" xml:space="preserve">
+    <value>קבע סיסמה חדשה</value>
+  </data>
+  <data name="SMS" xml:space="preserve">
+    <value>SMS</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>שלח</value>
+  </data>
+  <data name="ThereAreNoLoginSchemesConfiguredForThisClient" xml:space="preserve">
+    <value>There are no login schemes configured for this client.</value>
+  </data>
+  <data name="TwoFactorAuthChooseType" xml:space="preserve">
+    <value>בחר שיטת אימות כפול</value>
+  </data>
+  <data name="TwoFactorAuthChooseTypeMessage" xml:space="preserve">
+    <value>חשבונך מוגן על ידי אימות כפול. בחר בשיטת האימות שברצונך להשתמש בה</value>
+  </data>
+  <data name="TwoFactorAuthentication" xml:space="preserve">
+    <value>אימות כפול</value>
+  </data>
+  <data name="TwoFactorAuthSettings" xml:space="preserve">
+    <value>הגדרות אימות כפול</value>
+  </data>
+  <data name="TwoFactorAuthType" xml:space="preserve">
+    <value>שיטת אימות כפול</value>
+  </data>
+  <data name="WelcomeToEasyCard" xml:space="preserve">
+    <value>ברוכים הבאים לאיזיקארד</value>
+  </data>
+  <data name="WouldYouLikeToLogout" xml:space="preserve">
+    <value>רוצה להתנתק מהמערכת?</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>כן</value>
+  </data>
+  <data name="YouAreNowLoggedOut" xml:space="preserve">
+    <value>נותקנת בהצלחה מהמערכת</value>
+  </data>
+  <data name="YouDontHaveAccessToThatResource" xml:space="preserve">
+    <value>אין לך גישה למשאב זה</value>
+  </data>
+  <data name="YouDontHavePhoneLinkedToThisAccount" xml:space="preserve">
+    <value>לא מקושרים מספרי טלפון לחשבון זה</value>
+  </data>
+  <data name="YouPasswordHasBeenReset" xml:space="preserve">
+    <value>סיסמתך אופסה</value>
+  </data>
 </root>
