@@ -30,7 +30,7 @@
   "PaymentInfo": "מידע על תשלום",
   "InvoicesList": "רשימת חשבוניות",
   "Invoices": "חשבוניות",
-  "Invoicing": "הפקת חשבוניות",
+  "Invoicing": "חשבוניות",
   "CreateInvoice": "צור חשבונית",
   "FilterInvoices": "סנן חשבוניות",
   "EditBillingDeal": "ערוך עסקה מחזורית",
@@ -270,6 +270,7 @@
   "Reason(Optional)": "סיבה (אופציונלי)",
   "Paused": "מושהים",
   "Actual": "ממשי",
+  "ItemID": "מזהה פריט",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

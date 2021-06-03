@@ -270,6 +270,7 @@
   "Reason(Optional)": "Reason (optional)",
   "Paused": "Paused",
   "Actual": "Actual",
+  "ItemID": "Item ID",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

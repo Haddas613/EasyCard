@@ -3,7 +3,7 @@
     <printout-stylesheet></printout-stylesheet>
     <div class="printout">
       <div class="print-entity">
-        <div>{{$t('ID')}}</div>
+        <div>{{$t('TransactionID')}}</div>
         <div>
           <b>{{model.$paymentTransactionID}}</b>
         </div>

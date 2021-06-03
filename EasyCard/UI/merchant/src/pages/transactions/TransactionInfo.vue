@@ -9,7 +9,7 @@
         <v-card-text>
           <v-row class="info-container body-1 black--text" v-if="model">
             <v-col cols="12" md="4" class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('ID')}}</p>
+              <p class="caption ecgray--text text--darken-2">{{$t('TransactionID')}}</p>
               <v-chip color="primary" small>{{model.$paymentTransactionID | guid}}</v-chip>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
