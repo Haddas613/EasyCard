@@ -111,6 +111,8 @@
   "@AppVersion": "App Version: @version",
   "CreditCardExpired": "Credit Card has expired",
   "@StringLengthExact": "Must be exactly @val characters",
+  "OnlyImagesAreAllowed": "Only images are allowed",
+  "MaxFileSizeIs1MB": "Max file size is 1MB",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -271,6 +273,7 @@
   "Paused": "Paused",
   "Actual": "Actual",
   "ItemID": "Item ID",
+  "MerchantLogo": "Merchant Logo",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

@@ -111,6 +111,8 @@
   "@AppVersion": "מספר גירסה: @version",
   "CreditCardExpired": "פג תוקף כרטיס האשראי",
   "@StringLengthExact": "חייב להיות בדיוק @val תווים",
+  "OnlyImagesAreAllowed": "ניתן להעלות רק תמונות",
+  "MaxFileSizeIs1MB": "גודל הקובץ המרבי הוא 1MB",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ת.ז.",
@@ -271,6 +273,7 @@
   "Paused": "מושהים",
   "Actual": "ממשי",
   "ItemID": "מזהה פריט",
+  "MerchantLogo": "לוגו בית עסק",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

@@ -132,6 +132,9 @@
   <data name="ConsumerUpdated" xml:space="preserve">
     <value>Consumer Updated</value>
   </data>
+  <data name="FileRequired" xml:space="preserve">
+    <value>File required</value>
+  </data>
   <data name="ItemCreated" xml:space="preserve">
     <value>Item Created</value>
   </data>
@@ -143,6 +146,12 @@
   </data>
   <data name="ItemUpdated" xml:space="preserve">
     <value>Item Updated</value>
+  </data>
+  <data name="MaxFileSizeIs1MB" xml:space="preserve">
+    <value>Max file size is 1MB</value>
+  </data>
+  <data name="OnlyImagesAreAllowed" xml:space="preserve">
+    <value>Only images are allowed</value>
   </data>
   <data name="PrivateKeyUpdated" xml:space="preserve">
     <value>Private Key Updated</value>

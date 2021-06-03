@@ -106,6 +106,15 @@ namespace MerchantProfileApi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File required.
+        /// </summary>
+        public static string FileRequired {
+            get {
+                return ResourceManager.GetString("FileRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Item Created.
         /// </summary>
         public static string ItemCreated {
@@ -138,6 +147,24 @@ namespace MerchantProfileApi {
         public static string ItemUpdated {
             get {
                 return ResourceManager.GetString("ItemUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max file size is 1MB.
+        /// </summary>
+        public static string MaxFileSizeIs1MB {
+            get {
+                return ResourceManager.GetString("MaxFileSizeIs1MB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only images are allowed.
+        /// </summary>
+        public static string OnlyImagesAreAllowed {
+            get {
+                return ResourceManager.GetString("OnlyImagesAreAllowed", resourceCulture);
             }
         }
         

@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using BasicServices.BlobStorage;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServerClient;
 using Merchants.Business.Data;
@@ -222,6 +223,14 @@ namespace ProfileApi
             services.AddScoped<ISystemSettingsService, SystemSettingsService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
             services.AddScoped<IFeaturesService, FeaturesService>();
+            services.AddSingleton<IBlobStorageService, BlobStorageService>(serviceProvider =>
+            {
+                var appCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var logger = serviceProvider.GetRequiredService<ILogger<BlobStorageService>>();
+                var blobStorageService = new BlobStorageService(appCfg.PublicStorageConnectionString, appCfg.PublicBlobStorageTable, appCfg.PublicBlobStorageTable, logger);
+
+                return blobStorageService;
+            });
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -320,27 +329,27 @@ namespace ProfileApi
                 //c.RoutePrefix = string.Empty;
             });
 
-            app.UseXXssProtection(options => options.EnabledWithBlockMode());
-            app.UseXfo(options => options.SameOrigin());
-            app.UseReferrerPolicy(opts => opts.NoReferrerWhenDowngrade());
+            //app.UseXXssProtection(options => options.EnabledWithBlockMode());
+            //app.UseXfo(options => options.SameOrigin());
+            //app.UseReferrerPolicy(opts => opts.NoReferrerWhenDowngrade());
 
-            // TODO: enable CSP
-            app.UseCsp(options => options
-                .DefaultSources(s => s.Self()
-                    .CustomSources("data:")
-                    .CustomSources("https:")
-                    )
-                .StyleSources(s => s.Self()
-                    .CustomSources("ecngpublic.blob.core.windows.net", "fonts.googleapis.com", "use.fontawesome.com")
-                    .UnsafeInline()
-                )
-                .ScriptSources(s => s.Self()
-                    .CustomSources("az416426.vo.msecnd.net", "widget.intercom.io", "js.intercomcdn.com")
-                    .UnsafeEval()
-                )
-                .FrameAncestors(s => s.Self())
-                .FormActions(s => s.Self())
-            );
+            //// TODO: enable CSP
+            //app.UseCsp(options => options
+            //    .DefaultSources(s => s.Self()
+            //        .CustomSources("data:")
+            //        .CustomSources("https:")
+            //        )
+            //    .StyleSources(s => s.Self()
+            //        .CustomSources("ecngpublic.blob.core.windows.net", "fonts.googleapis.com", "use.fontawesome.com")
+            //        .UnsafeInline()
+            //    )
+            //    .ScriptSources(s => s.Self()
+            //        .CustomSources("az416426.vo.msecnd.net", "widget.intercom.io", "js.intercomcdn.com")
+            //        .UnsafeEval()
+            //    )
+            //    .FrameAncestors(s => s.Self())
+            //    .FormActions(s => s.Self())
+            //);
 
             app.UseHttpsRedirection();
 

@@ -38,4 +38,8 @@ export default class TerminalsApi {
     async getAvailableFeatures(){
         return await this.base.get(this.terminalsUrl + '/available-features');
     }
+
+    async uploadMerchantLogo(terminalID, file){
+        return this.base.postFile(this.terminalsUrl + `/${terminalID}/merchantlogo`, file);
+    }
 }

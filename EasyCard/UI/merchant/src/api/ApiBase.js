@@ -104,6 +104,34 @@ class ApiBase {
         return this._handleRequest(request, true);
     }
 
+    async postFile(url, file) {
+        const access_token = await this.oidc.getAccessToken()
+
+        if (!access_token) {
+            Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error' });
+            this.oidc.signOut();
+            return null;
+        }
+
+        let requestUrl = new URL(url);
+        
+        var headers = this._buildRequestHeaders(access_token);
+        delete headers['Content-Type'];
+        
+        const formData = new FormData();
+        formData.append('file', file);
+
+        let request = fetch(requestUrl, {
+            method: 'POST',
+            withCredentials: true,
+            mode: 'cors',
+            headers: headers,
+            body: formData
+        });
+
+        return this._handleRequest(request, true);
+    }
+
     async put(url, payload) {
         const access_token = await this.oidc.getAccessToken()
 

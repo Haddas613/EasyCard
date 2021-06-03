@@ -132,6 +132,9 @@
   <data name="ConsumerUpdated" xml:space="preserve">
     <value>לקוח עודכן</value>
   </data>
+  <data name="FileRequired" xml:space="preserve">
+    <value>נדרש קובץ</value>
+  </data>
   <data name="ItemCreated" xml:space="preserve">
     <value>פריט נוצר</value>
   </data>
@@ -143,6 +146,12 @@
   </data>
   <data name="ItemUpdated" xml:space="preserve">
     <value>פריט עודכן</value>
+  </data>
+  <data name="MaxFileSizeIs1MB" xml:space="preserve">
+    <value>גודל הקובץ המרבי הוא 1MB</value>
+  </data>
+  <data name="OnlyImagesAreAllowed" xml:space="preserve">
+    <value>ניתן להעלות רק תמונות</value>
   </data>
   <data name="PrivateKeyUpdated" xml:space="preserve">
     <value>מפתח פרטי עודכן</value>

@@ -100,6 +100,11 @@
               Looks up a localized string similar to Consumer Updated.
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Messages.FileRequired">
+            <summary>
+              Looks up a localized string similar to File required.
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Messages.ItemCreated">
             <summary>
               Looks up a localized string similar to Item Created.
@@ -118,6 +123,16 @@
         <member name="P:MerchantProfileApi.Messages.ItemUpdated">
             <summary>
               Looks up a localized string similar to Item Updated.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.MaxFileSizeIs1MB">
+            <summary>
+              Looks up a localized string similar to Max file size is 1MB.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.OnlyImagesAreAllowed">
+            <summary>
+              Looks up a localized string similar to Only images are allowed.
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Messages.PrivateKeyUpdated">

@@ -8,6 +8,8 @@ namespace Merchants.Shared
     {
         public string DefaultStorageConnectionString { get; set; }
 
+        public string PublicStorageConnectionString { get; set; }
+
         public string ClearingHouseRequestsLogStorageTable { get; set; }
 
         public string EasyInvoiceRequestsLogStorageTable { get; set; }
@@ -19,5 +21,7 @@ namespace Merchants.Shared
         public string ShvaRequestsLogStorageTable { get; set; }
 
         public string NayaxRequestsLogStorageTable { get; set; }
+
+        public string PublicBlobStorageTable { get; set; }
     }
 }

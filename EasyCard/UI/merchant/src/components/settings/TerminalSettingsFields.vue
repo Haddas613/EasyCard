@@ -279,11 +279,12 @@
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="7">
-        <v-text-field
+        <!-- <v-text-field
           v-model="model.paymentRequestSettings.merchantLogo"
           :label="$t('MerchantLogoURL')"
           outlined
-        ></v-text-field>
+        ></v-text-field> -->
+        <terminal-merchant-logo-input v-model="model"></terminal-merchant-logo-input>
       </v-col>
       <v-col cols="12" md="5">
         <img class="mt-1" v-if="model.paymentRequestSettings.merchantLogo" v-bind:src="model.paymentRequestSettings.merchantLogo" height="48">
@@ -399,7 +400,8 @@ import appConstants from "../../helpers/app-constants";
 export default {
   components: {
     EcList: () => import("../ec/EcList"),
-    TerminalFeaturesForm: () => import("../settings/TerminalFeaturesForm")
+    TerminalFeaturesForm: () => import("../settings/TerminalFeaturesForm"),
+    TerminalMerchantLogoInput: () => import("../settings/TerminalMerchantLogoInput"),
   },
   props: {
     data: {

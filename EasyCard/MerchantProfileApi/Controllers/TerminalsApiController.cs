@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using BasicServices.BlobStorage;
 using IdentityServerClient;
 using MerchantProfileApi.Extensions;
 using MerchantProfileApi.Models.Terminal;
 using Merchants.Business.Extensions;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using ProfileApi;
 using Shared.Api;
 using Shared.Api.Extensions;
@@ -36,6 +40,7 @@ namespace MerchantProfileApi.Controllers
         private readonly ISystemSettingsService systemSettingsService;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly IFeaturesService featuresService;
+        private readonly IBlobStorageService blobStorageService;
 
         public TerminalsApiController(
             IMerchantsService merchantsService,
@@ -44,7 +49,8 @@ namespace MerchantProfileApi.Controllers
             IUserManagementClient userManagementClient,
             ISystemSettingsService systemSettingsService,
             ICryptoServiceCompact cryptoServiceCompact,
-            IFeaturesService featuresService)
+            IFeaturesService featuresService,
+            IBlobStorageService blobStorageService)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
@@ -53,6 +59,7 @@ namespace MerchantProfileApi.Controllers
             this.systemSettingsService = systemSettingsService;
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.featuresService = featuresService;
+            this.blobStorageService = blobStorageService;
         }
 
         [HttpGet]
@@ -102,6 +109,48 @@ namespace MerchantProfileApi.Controllers
             await terminalsService.UpdateEntity(terminal);
 
             return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID));
+        }
+
+        [HttpPost]
+        [Route("{terminalID}/merchantlogo")]
+        [Consumes("multipart/form-data")]
+        //[RequestSizeLimit(1000000)]
+        public async Task<ActionResult<OperationResponse>> UploadMerchantLogo([FromRoute]Guid terminalID, [FromForm]IFormFile file)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+
+            if (file == null || file.Length <= 0)
+            {
+                return BadRequest(new OperationResponse { Message = Messages.FileRequired, Status = StatusEnum.Error });
+            }
+
+            if (file.Length > 1000000)
+            {
+                return BadRequest(new OperationResponse { Message = Messages.MaxFileSizeIs1MB, Status = StatusEnum.Error });
+            }
+
+            //TODO: more strict check?
+            if (!file.ContentType.Contains("image"))
+            {
+                return BadRequest(new OperationResponse { Message = Messages.OnlyImagesAreAllowed, Status = StatusEnum.Error });
+            }
+
+            var response = new OperationResponse { Message = Messages.TerminalUpdated, Status = StatusEnum.Success };
+
+            using (var uploadStream = file.OpenReadStream())
+            {
+                uploadStream.Seek(0, SeekOrigin.Begin);
+
+                var filename = $"merchantdata/{terminal.TerminalID.ToString().Substring(0, 8)}/logo{Path.GetExtension(file.FileName)}";
+
+                var logoUrl = await blobStorageService.Upload(filename, uploadStream);
+
+                terminal.PaymentRequestSettings.MerchantLogo = logoUrl;
+                await terminalsService.UpdateEntity(terminal);
+                response.AdditionalData = JObject.FromObject(new { logoUrl });
+            }
+
+            return Ok(response);
         }
 
         [HttpPost]
