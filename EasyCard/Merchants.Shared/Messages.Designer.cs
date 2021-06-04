@@ -142,6 +142,15 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Shared Key Updated.
+        /// </summary>
+        public static string SharedKeyUpdated {
+            get {
+                return ResourceManager.GetString("SharedKeyUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terminal Created.
         /// </summary>
         public static string TerminalCreated {

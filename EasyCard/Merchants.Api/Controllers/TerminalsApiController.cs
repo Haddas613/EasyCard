@@ -23,6 +23,7 @@ using Shared.Api.Models.Enums;
 using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using Shared.Business.Extensions;
+using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,6 +49,7 @@ namespace Merchants.Api.Controllers
         private readonly ITerminalTemplatesService terminalTemplatesService;
         private readonly IFeaturesService featuresService;
         private readonly IBlobStorageService blobStorageService;
+        private readonly ICryptoServiceCompact cryptoServiceCompact;
 
         public TerminalsApiController(
             IMerchantsService merchantsService,
@@ -58,7 +60,8 @@ namespace Merchants.Api.Controllers
             ISystemSettingsService systemSettingsService,
             ITerminalTemplatesService terminalTemplatesService,
             IFeaturesService featuresService,
-            IBlobStorageService blobStorageService)
+            IBlobStorageService blobStorageService,
+            ICryptoServiceCompact cryptoServiceCompact)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
@@ -69,6 +72,7 @@ namespace Merchants.Api.Controllers
             this.terminalTemplatesService = terminalTemplatesService;
             this.featuresService = featuresService;
             this.blobStorageService = blobStorageService;
+            this.cryptoServiceCompact = cryptoServiceCompact;
         }
 
         [HttpGet]
@@ -289,6 +293,20 @@ namespace Merchants.Api.Controllers
 
             // TODO: failed case
             return Ok(new OperationResponse { EntityReference = opResult.ApiKey });
+        }
+
+        [HttpPost]
+        [Route("{terminalID}/resetSharedApiKey")]
+        public async Task<ActionResult<OperationResponse>> CreateSharedTerminalApiKey([FromRoute] Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+
+            var sharedApiKey = cryptoServiceCompact.EncryptCompact(Guid.NewGuid().ToString());
+            terminal.SharedApiKey = Convert.FromBase64String(sharedApiKey);
+
+            await terminalsService.UpdateEntity(terminal);
+
+            return Ok(new OperationResponse(Messages.SharedKeyUpdated, StatusEnum.Success, sharedApiKey));
         }
 
         [HttpPut]

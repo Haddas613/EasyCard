@@ -52,5 +52,7 @@ namespace Merchants.Api.Models.Terminal
         public TerminalPaymentRequestSettings PaymentRequestSettings { get; set; }
 
         public TerminalCheckoutSettings CheckoutSettings { get; set; }
+
+        public byte[] SharedApiKey { get; set; }
     }
 }
