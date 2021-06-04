@@ -141,6 +141,9 @@
   <data name="OnlyImagesAreAllowed" xml:space="preserve">
     <value>Only images are allowed</value>
   </data>
+  <data name="PasswordReset" xml:space="preserve">
+    <value>Password reset succesfully</value>
+  </data>
   <data name="TerminalCreated" xml:space="preserve">
     <value>Terminal Created</value>
   </data>
@@ -164,6 +167,12 @@
   </data>
   <data name="TerminalUpdated" xml:space="preserve">
     <value>Terminal Updated</value>
+  </data>
+  <data name="UserAccountLocked" xml:space="preserve">
+    <value>User Account locked</value>
+  </data>
+  <data name="UserAccountUnlocked" xml:space="preserve">
+    <value>User Account unlocked</value>
   </data>
   <data name="UserCreated" xml:space="preserve">
     <value>User Created</value>

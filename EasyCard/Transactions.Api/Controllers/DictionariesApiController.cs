@@ -26,10 +26,7 @@ namespace Transactions.Api.Controllers
         [ResponseCache(VaryByHeader = "User-Agent", Duration = 3600)]
         public async Task<ActionResult<TransactionsDictionaries>> GetTransactionDictionaries()
         {
-            var rqf = Request.HttpContext.Features.Get<IRequestCultureFeature>();
-            var culture = rqf.RequestCulture?.Culture;
-
-            var dictionaries = DictionariesService.GetDictionaries(culture);
+            var dictionaries = DictionariesService.GetDictionaries(CurrentCulture);
             return Ok(dictionaries);
         }
     }

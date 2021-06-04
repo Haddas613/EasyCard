@@ -68,9 +68,7 @@ namespace MerchantProfileApi.Controllers
             return new TableMeta
             {
                 Columns = typeof(ConsumerSummary)
-                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
-                    .Select(d => d.GetColMeta(ItemResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
-                    .ToDictionary(d => d.Key)
+                    .GetObjectMeta(ItemResource.ResourceManager, CurrentCulture)
             };
         }
 

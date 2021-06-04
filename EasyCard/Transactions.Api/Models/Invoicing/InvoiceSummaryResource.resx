@@ -147,6 +147,12 @@
   <data name="MerchantName" xml:space="preserve">
     <value>Merchant</value>
   </data>
+  <data name="PaymentTransactionID" xml:space="preserve">
+    <value>Transaction ID</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
   <data name="TerminalID" xml:space="preserve">
     <value>Terminal ID</value>
   </data>

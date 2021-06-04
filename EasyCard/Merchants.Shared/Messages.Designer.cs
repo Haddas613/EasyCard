@@ -133,6 +133,15 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password reset succesfully.
+        /// </summary>
+        public static string PasswordReset {
+            get {
+                return ResourceManager.GetString("PasswordReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terminal Created.
         /// </summary>
         public static string TerminalCreated {
@@ -201,6 +210,24 @@ namespace Merchants.Shared {
         public static string TerminalUpdated {
             get {
                 return ResourceManager.GetString("TerminalUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Account locked.
+        /// </summary>
+        public static string UserAccountLocked {
+            get {
+                return ResourceManager.GetString("UserAccountLocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Account unlocked.
+        /// </summary>
+        public static string UserAccountUnlocked {
+            get {
+                return ResourceManager.GetString("UserAccountUnlocked", resourceCulture);
             }
         }
         

@@ -99,7 +99,9 @@
   "Features": "Features",
   "HasInvoice": "Has Invoice",
   "IsPaymentRequest": "Is Payment Request",
-  
+  "Actions": "Actions",
+  "Audits": "Audits",
+    
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
   "Invalid": "Invalid",

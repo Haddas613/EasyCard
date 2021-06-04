@@ -255,6 +255,11 @@
               Looks up a localized string similar to Currency.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.CurrentDeal">
+            <summary>
+              Looks up a localized string similar to Current deal.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.MerchantID">
             <summary>
               Looks up a localized string similar to Merchant ID.
@@ -263,6 +268,11 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.MerchantName">
             <summary>
               Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.NextScheduledTransaction">
+            <summary>
+              Looks up a localized string similar to Next transaction.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.NumberOfPayments">
@@ -539,6 +549,16 @@
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.MerchantName">
             <summary>
               Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.PaymentTransactionID">
+            <summary>
+              Looks up a localized string similar to Transaction ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.Status">
+            <summary>
+              Looks up a localized string similar to Status.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceSummaryResource.TerminalID">

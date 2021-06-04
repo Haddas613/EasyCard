@@ -99,6 +99,8 @@
   "Features": "תכונות",
   "HasInvoice": "קיימת חשבונית",
   "IsPaymentRequest": "בקשת תשלום",
+  "Actions": "פעולות",
+  "Audits": "בקרה",
   
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",

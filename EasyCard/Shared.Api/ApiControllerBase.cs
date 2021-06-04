@@ -6,11 +6,28 @@ using Shared.Business.Messages;
 using System.Security;
 using Shared.Business;
 using Shared.Helpers;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace Shared.Api
 {
     public class ApiControllerBase : ControllerBase
     {
+        private IRequestCultureFeature requestCultureFeature;
+
+        protected CultureInfo CurrentCulture
+        {
+            get
+            {
+                if (requestCultureFeature == null)
+                {
+                    requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+                }
+
+                return requestCultureFeature.RequestCulture?.Culture ?? CultureInfo.InvariantCulture;
+            }
+        }
+
         [NonAction]
         protected T EnsureExists<T>(T src, string entityName = null)
         {

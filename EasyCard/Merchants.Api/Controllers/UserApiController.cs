@@ -56,7 +56,7 @@ namespace Merchants.Api.Controllers
             return new TableMeta
             {
                 Columns = typeof(UserSummary)
-                    .GetObjectMeta(UserSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
+                    .GetObjectMeta(UserSummaryResource.ResourceManager, CurrentCulture)
             };
         }
 
@@ -197,7 +197,10 @@ namespace Merchants.Api.Controllers
                 return BadRequest(opResult.Convert(correlationID: GetCorrelationID()));
             }
 
-            return Ok(opResult.Convert(correlationID: GetCorrelationID()));
+            var response = opResult.Convert(correlationID: GetCorrelationID());
+
+            response.Message = Messages.UserAccountLocked;
+            return Ok(response);
         }
 
         [HttpPost]
@@ -211,7 +214,10 @@ namespace Merchants.Api.Controllers
                 return BadRequest(opResult.Convert(correlationID: GetCorrelationID()));
             }
 
-            return Ok(opResult.Convert(correlationID: GetCorrelationID()));
+            var response = opResult.Convert(correlationID: GetCorrelationID());
+
+            response.Message = Messages.UserAccountUnlocked;
+            return Ok(response);
         }
 
         [HttpPost]
@@ -225,7 +231,10 @@ namespace Merchants.Api.Controllers
                 return BadRequest(opResult.Convert(correlationID: GetCorrelationID()));
             }
 
-            return Ok(opResult.Convert(correlationID: GetCorrelationID()));
+            var response = opResult.Convert(correlationID: GetCorrelationID());
+
+            response.Message = Messages.PasswordReset;
+            return Ok(response);
         }
 
         [HttpPost]

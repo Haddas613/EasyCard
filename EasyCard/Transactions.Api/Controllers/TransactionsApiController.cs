@@ -132,13 +132,10 @@ namespace Transactions.Api.Controllers
         [Route("$meta")]
         public TableMeta GetMetadata()
         {
-            //TODO
-            //var cultureFeature = HttpContext.Features.Get<Microsoft.AspNetCore.Localization.IRequestCultureFeature>();
-            //cultureFeature.RequestCulture.Culture
             return new TableMeta
             {
                 Columns = (httpContextAccessor.GetUser().IsAdmin() ? typeof(TransactionSummaryAdmin) : typeof(TransactionSummary))
-                    .GetObjectMeta(TransactionSummaryResource.ResourceManager, CultureInfo.InvariantCulture)
+                    .GetObjectMeta(TransactionSummaryResource.ResourceManager, CurrentCulture)
             };
         }
 

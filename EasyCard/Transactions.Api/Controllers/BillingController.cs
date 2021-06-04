@@ -108,7 +108,7 @@ namespace Transactions.Api.Controllers
             return new TableMeta
             {
                 Columns = (httpContextAccessor.GetUser().IsAdmin() ? typeof(BillingDealSummaryAdmin) : typeof(BillingDealSummary))
-                    .GetObjectMeta(BillingDealSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
+                    .GetObjectMeta(BillingDealSummaryResource.ResourceManager, CurrentCulture)
             };
         }
 

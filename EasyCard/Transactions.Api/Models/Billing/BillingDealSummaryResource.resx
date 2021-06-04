@@ -141,11 +141,17 @@
   <data name="Currency" xml:space="preserve">
     <value>Currency</value>
   </data>
+  <data name="CurrentDeal" xml:space="preserve">
+    <value>Current deal</value>
+  </data>
   <data name="MerchantID" xml:space="preserve">
     <value>Merchant ID</value>
   </data>
   <data name="MerchantName" xml:space="preserve">
     <value>Merchant</value>
+  </data>
+  <data name="NextScheduledTransaction" xml:space="preserve">
+    <value>Next transaction</value>
   </data>
   <data name="NumberOfPayments" xml:space="preserve">
     <value>Num. of payments</value>

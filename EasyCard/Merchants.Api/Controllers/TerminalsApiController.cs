@@ -79,7 +79,7 @@ namespace Merchants.Api.Controllers
             return new TableMeta
             {
                 Columns = typeof(TerminalSummary)
-                    .GetObjectMeta(TerminalSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
+                    .GetObjectMeta(TerminalSummaryResource.ResourceManager, CurrentCulture)
             };
         }
 

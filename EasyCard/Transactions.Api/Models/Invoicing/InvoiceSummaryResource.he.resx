@@ -147,6 +147,12 @@
   <data name="MerchantName" xml:space="preserve">
     <value>בית עסק</value>
   </data>
+  <data name="PaymentTransactionID" xml:space="preserve">
+    <value>מזהה עסקת תשלום</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>סטטוס</value>
+  </data>
   <data name="TerminalID" xml:space="preserve">
     <value>מזהה מסוף</value>
   </data>

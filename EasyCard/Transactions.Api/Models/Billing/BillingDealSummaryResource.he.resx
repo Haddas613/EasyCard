@@ -141,11 +141,17 @@
   <data name="Currency" xml:space="preserve">
     <value>מטבע</value>
   </data>
+  <data name="CurrentDeal" xml:space="preserve">
+    <value>עסקה נוכחית</value>
+  </data>
   <data name="MerchantID" xml:space="preserve">
     <value>מזהה בית עסק</value>
   </data>
   <data name="MerchantName" xml:space="preserve">
     <value>שם בית עסק</value>
+  </data>
+  <data name="NextScheduledTransaction" xml:space="preserve">
+    <value>חיוב הבא</value>
   </data>
   <data name="NumberOfPayments" xml:space="preserve">
     <value>מספר תשלומים</value>

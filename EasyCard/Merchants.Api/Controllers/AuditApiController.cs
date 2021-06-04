@@ -42,7 +42,7 @@ namespace Merchants.Api.Controllers
             return new TableMeta
             {
                 Columns = typeof(AuditEntryResponse)
-                    .GetObjectMeta(AuditResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
+                    .GetObjectMeta(AuditResource.ResourceManager, CurrentCulture)
             };
         }
 

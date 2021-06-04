@@ -64,9 +64,7 @@ namespace Merchants.Api.Controllers
             return new TableMeta
             {
                 Columns = typeof(MerchantSummary)
-                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)
-                    .Select(d => d.GetColMeta(MerchantSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture))
-                    .ToDictionary(d => d.Key)
+                    .GetObjectMeta(MerchantSummaryResource.ResourceManager, CurrentCulture)
             };
         }
 

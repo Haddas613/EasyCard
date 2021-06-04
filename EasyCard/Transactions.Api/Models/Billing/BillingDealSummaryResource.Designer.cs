@@ -133,6 +133,15 @@ namespace Transactions.Api.Models.Billing {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Current deal.
+        /// </summary>
+        public static string CurrentDeal {
+            get {
+                return ResourceManager.GetString("CurrentDeal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merchant ID.
         /// </summary>
         public static string MerchantID {
@@ -147,6 +156,15 @@ namespace Transactions.Api.Models.Billing {
         public static string MerchantName {
             get {
                 return ResourceManager.GetString("MerchantName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next transaction.
+        /// </summary>
+        public static string NextScheduledTransaction {
+            get {
+                return ResourceManager.GetString("NextScheduledTransaction", resourceCulture);
             }
         }
         

@@ -93,7 +93,7 @@ namespace Transactions.Api.Controllers
             return new TableMeta
             {
                 Columns = (httpContextAccessor.GetUser().IsAdmin() ? typeof(CreditCardTokenSummaryAdmin) : typeof(CreditCardTokenSummary))
-                    .GetObjectMeta(CreditCardSummaryResource.ResourceManager, System.Globalization.CultureInfo.InvariantCulture)
+                    .GetObjectMeta(CreditCardSummaryResource.ResourceManager, CurrentCulture)
             };
         }
 
