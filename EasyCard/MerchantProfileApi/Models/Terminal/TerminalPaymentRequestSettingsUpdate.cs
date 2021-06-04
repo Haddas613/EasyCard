@@ -16,8 +16,5 @@ namespace MerchantProfileApi.Models.Terminal
 
         [StringLength(50)]
         public string EmailTemplateCode { get; set; }
-
-        [StringLength(250)]
-        public string MerchantLogo { get; set; }
     }
 }

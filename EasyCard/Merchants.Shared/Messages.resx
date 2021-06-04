@@ -123,11 +123,23 @@
   <data name="ExternalSystemSaved" xml:space="preserve">
     <value>External System Saved</value>
   </data>
+  <data name="FileRequired" xml:space="preserve">
+    <value>File required</value>
+  </data>
+  <data name="ImageSaved" xml:space="preserve">
+    <value>Image saved</value>
+  </data>
+  <data name="MaxFileSizeIs1MB" xml:space="preserve">
+    <value>Max file size is 1MB</value>
+  </data>
   <data name="MerchantCreated" xml:space="preserve">
     <value>Merchant Created</value>
   </data>
   <data name="MerchantUpdated" xml:space="preserve">
     <value>Merchant Updated</value>
+  </data>
+  <data name="OnlyImagesAreAllowed" xml:space="preserve">
+    <value>Only images are allowed</value>
   </data>
   <data name="TerminalCreated" xml:space="preserve">
     <value>Terminal Created</value>

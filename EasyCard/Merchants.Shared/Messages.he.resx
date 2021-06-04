@@ -123,11 +123,23 @@
   <data name="ExternalSystemSaved" xml:space="preserve">
     <value>מערכת חיצונית נשמרה</value>
   </data>
+  <data name="FileRequired" xml:space="preserve">
+    <value>נדרש קובץ</value>
+  </data>
+  <data name="ImageSaved" xml:space="preserve">
+    <value>תמונה נשמרה</value>
+  </data>
+  <data name="MaxFileSizeIs1MB" xml:space="preserve">
+    <value>גודל הקובץ המרבי הוא 1MB</value>
+  </data>
   <data name="MerchantCreated" xml:space="preserve">
     <value>בית עסק נוצר</value>
   </data>
   <data name="MerchantUpdated" xml:space="preserve">
     <value>בית עסק עודכן</value>
+  </data>
+  <data name="OnlyImagesAreAllowed" xml:space="preserve">
+    <value>ניתן להעלות רק תמונות</value>
   </data>
   <data name="TerminalCreated" xml:space="preserve">
     <value>מסוף נוצר</value>

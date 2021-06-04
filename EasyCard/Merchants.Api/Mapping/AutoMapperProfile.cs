@@ -96,6 +96,7 @@ namespace Merchants.Api.Mapping
             CreateMap<TerminalTemplateExternalSystem, TerminalExternalSystemDetails>();
             CreateMap<TerminalTemplateExternalSystem, TerminalExternalSystem>();
             CreateMap<ExternalSystemRequest, TerminalTemplateExternalSystem>();
+            CreateMap<TerminalPaymentRequestSettingsUpdate, TerminalPaymentRequestSettings>();
             CreateMap<ExternalSystemRequest, TerminalExternalSystem>();
             CreateMap<Feature, FeatureSummary>();
             CreateMap<Plan, PlanSummary>();

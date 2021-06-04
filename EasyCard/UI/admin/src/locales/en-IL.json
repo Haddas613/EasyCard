@@ -132,6 +132,8 @@
   "MustBeValidGUID": "Must be valid GUID",
   "CreditCardExpired": "Credit Card has expired",
   "InvalidCredentials": "Invalid credentials",
+  "OnlyImagesAreAllowed": "Only images are allowed",
+  "MaxFileSizeIs1MB": "Max file size is 1MB",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -272,7 +274,7 @@
   "IntegrationType": "Integration Type",
   "IntegrationName": "Integration Name",
   "InviteMessage": "Invite Message",
-  "MerchantLogoURL": "Merchant Logo URL",
+  "MerchantLogo": "Merchant Logo",
   "RedirectURL": "Redirect URL",
   "CheckoutRedirectUrls": "Checkout Redirect URLs",
   "CustomCSSURL": "Custom CSS URL",

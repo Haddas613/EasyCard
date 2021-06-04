@@ -135,6 +135,8 @@
   "MustBeValidGUID": "חייב להיות GUID תקין",
   "CreditCardExpired": "פג תוקף כרטיס האשראי",
   "InvalidCredentials": "משתמש או סיסמא שגויים",
+  "OnlyImagesAreAllowed": "ניתן להעלות רק תמונות",
+  "MaxFileSizeIs1MB": "גודל הקובץ המרבי הוא 1MB",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ת.ז.",
@@ -276,7 +278,7 @@
   "IntegrationType": "סוג אינטגרציה",
   "IntegrationName": "שם אינטגרציה",
   "InviteMessage": "הודעת הזמנה",
-  "MerchantLogoURL": "URL לוגו בית עסק",
+  "MerchantLogo": "לוגו בית עסק",
   "RedirectURL": "URL רידיירקט",
   "CheckoutRedirectUrls": "בדוק URL רידיירקט",
   "CustomCSSURL": "URL לCSS בית עסק",

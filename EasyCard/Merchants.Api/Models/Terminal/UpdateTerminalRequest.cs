@@ -27,7 +27,7 @@ namespace Merchants.Api.Models.Terminal
         public TerminalInvoiceSettings InvoiceSettings { get; set; }
 
         [Required]
-        public TerminalPaymentRequestSettings PaymentRequestSettings { get; set; }
+        public TerminalPaymentRequestSettingsUpdate PaymentRequestSettings { get; set; }
 
         [Required]
         public TerminalCheckoutSettings CheckoutSettings { get; set; }

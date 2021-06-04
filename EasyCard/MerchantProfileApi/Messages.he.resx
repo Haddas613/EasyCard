@@ -135,6 +135,9 @@
   <data name="FileRequired" xml:space="preserve">
     <value>נדרש קובץ</value>
   </data>
+  <data name="ImageSaved" xml:space="preserve">
+    <value>תמונה נשמרה</value>
+  </data>
   <data name="ItemCreated" xml:space="preserve">
     <value>פריט נוצר</value>
   </data>

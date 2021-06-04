@@ -79,6 +79,33 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File required.
+        /// </summary>
+        public static string FileRequired {
+            get {
+                return ResourceManager.GetString("FileRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image saved.
+        /// </summary>
+        public static string ImageSaved {
+            get {
+                return ResourceManager.GetString("ImageSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max file size is 1MB.
+        /// </summary>
+        public static string MaxFileSizeIs1MB {
+            get {
+                return ResourceManager.GetString("MaxFileSizeIs1MB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merchant Created.
         /// </summary>
         public static string MerchantCreated {
@@ -93,6 +120,15 @@ namespace Merchants.Shared {
         public static string MerchantUpdated {
             get {
                 return ResourceManager.GetString("MerchantUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only images are allowed.
+        /// </summary>
+        public static string OnlyImagesAreAllowed {
+            get {
+                return ResourceManager.GetString("OnlyImagesAreAllowed", resourceCulture);
             }
         }
         

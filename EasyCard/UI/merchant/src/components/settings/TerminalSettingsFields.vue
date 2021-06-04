@@ -279,11 +279,6 @@
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="7">
-        <!-- <v-text-field
-          v-model="model.paymentRequestSettings.merchantLogo"
-          :label="$t('MerchantLogoURL')"
-          outlined
-        ></v-text-field> -->
         <terminal-merchant-logo-input v-model="model"></terminal-merchant-logo-input>
       </v-col>
       <v-col cols="12" md="5">

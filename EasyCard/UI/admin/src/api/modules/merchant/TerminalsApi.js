@@ -82,4 +82,8 @@ export default class TerminalsApi {
     async switchTerminalFeature(terminalID, featureID){
         return this.base.put(this.terminalsUrl + `/${terminalID}/switchfeature/${featureID}`);
     }
+
+    async uploadMerchantLogo(terminalID, file){
+        return this.base.postFile(this.terminalsUrl + `/${terminalID}/merchantlogo`, file);
+    }
 }

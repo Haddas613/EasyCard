@@ -239,7 +239,6 @@
   "SharedApiKey": "Shared Api Key",
   "PaymentRequestURL": "Payment Request URL",
   "VATExempt": "VAT Exempt",
-  "MerchantLogoURL": "Merchant Logo URL",
   "RedirectURL": "Redirect URL",
   "CheckoutRedirectUrls": "Checkout Redirect URLs",
   "CustomCSSURL": "Custom CSS URL",

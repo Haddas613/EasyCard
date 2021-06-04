@@ -135,6 +135,9 @@
   <data name="FileRequired" xml:space="preserve">
     <value>File required</value>
   </data>
+  <data name="ImageSaved" xml:space="preserve">
+    <value>Image saved</value>
+  </data>
   <data name="ItemCreated" xml:space="preserve">
     <value>Item Created</value>
   </data>

@@ -239,7 +239,6 @@
   "SharedApiKey": "Shared Api Key",
   "PaymentRequestURL": "URL דרישת תשלום",
   "VATExempt": "פטור ממע\"מ",
-  "MerchantLogoURL": "URL לוגו בית עסק",
   "RedirectURL": "URL רידיירקט",
   "CheckoutRedirectUrls": "בדוק URL רידיירקט",
   "CustomCSSURL": "URL לCSS בית עסק",

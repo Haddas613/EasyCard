@@ -1,5 +1,6 @@
 using AutoMapper;
 using BasicServices;
+using BasicServices.BlobStorage;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServerClient;
 using Merchants.Api.Data;
@@ -257,7 +258,16 @@ namespace Merchants.Api
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.NayaxRequestsLogStorageTable, cfg.NayaxRequestsLogStorageTable);
 
                 return new NayaxProcessor(webApiClient, nayaxCfg, logger, storageService);
-            }); 
+            });
+
+            services.AddSingleton<IBlobStorageService, BlobStorageService>(serviceProvider =>
+            {
+                var appCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var logger = serviceProvider.GetRequiredService<ILogger<BlobStorageService>>();
+                var blobStorageService = new BlobStorageService(appCfg.PublicStorageConnectionString, appCfg.PublicBlobStorageTable, appCfg.PublicBlobStorageTable, logger);
+
+                return blobStorageService;
+            });
 
             // DI: request logging
 

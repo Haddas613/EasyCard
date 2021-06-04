@@ -135,7 +135,7 @@ namespace MerchantProfileApi.Controllers
                 return BadRequest(new OperationResponse { Message = Messages.OnlyImagesAreAllowed, Status = StatusEnum.Error });
             }
 
-            var response = new OperationResponse { Message = Messages.TerminalUpdated, Status = StatusEnum.Success };
+            var response = new OperationResponse { Message = Messages.ImageSaved, Status = StatusEnum.Success };
 
             using (var uploadStream = file.OpenReadStream())
             {

@@ -115,6 +115,15 @@ namespace MerchantProfileApi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Image saved.
+        /// </summary>
+        public static string ImageSaved {
+            get {
+                return ResourceManager.GetString("ImageSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Item Created.
         /// </summary>
         public static string ItemCreated {
