@@ -172,7 +172,7 @@
     <value>FirstName</value>
   </data>
   <data name="FollowThisLinkToJoinEasyCard" xml:space="preserve">
-    <value>Not yet registered? Follow this @link to join EasyCard</value>
+    <value>Not yet registered? Follow this link to join EasyCard</value>
   </data>
   <data name="ForgotPassword" xml:space="preserve">
     <value>Forgot password</value>

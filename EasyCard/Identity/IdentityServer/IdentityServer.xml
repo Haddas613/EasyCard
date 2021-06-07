@@ -269,7 +269,7 @@
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.FollowThisLinkToJoinEasyCard">
             <summary>
-              Looks up a localized string similar to Not yet registered? Follow this @link to join EasyCard.
+              Looks up a localized string similar to Not yet registered? Follow this link to join EasyCard.
             </summary>
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.ForgotPassword">

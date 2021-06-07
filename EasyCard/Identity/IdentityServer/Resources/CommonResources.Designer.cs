@@ -223,7 +223,7 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not yet registered? Follow this @link to join EasyCard.
+        ///   Looks up a localized string similar to Not yet registered? Follow this link to join EasyCard.
         /// </summary>
         public static string FollowThisLinkToJoinEasyCard {
             get {
