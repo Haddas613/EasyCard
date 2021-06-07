@@ -85,3 +85,6 @@ body {
 .panel-ecng{
     min-width: 40%;
 }
+.form-check{
+    direction: ltr;
+}

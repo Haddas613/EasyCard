@@ -22,14 +22,19 @@
                 <form method="post">
                     <div class="form-group">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" asp-for="LoginType" value="@TwoFactorAuthTypeEnum.Email" checked />@localizer.Get("Email")<br />
+                            <input class="form-check-input" type="radio" asp-for="LoginType" value="@TwoFactorAuthTypeEnum.Email" checked />
+                            <label class="form-check-label">@localizer.Get("Email")</label>
+                        </div>
+                        <div class="form-check">
                             @if (ViewBag.HasPhone)
                             {
-                                <input class="form-check-input" type="radio" asp-for="LoginType" value="@TwoFactorAuthTypeEnum.SMS" /> @localizer.Get("SMS") <br />
+                                <input class="form-check-input" type="radio" asp-for="LoginType" value="@TwoFactorAuthTypeEnum.SMS" />
+                                <label class="form-check-label">@localizer.Get("SMS")</label>
                             }
                             else
                             {
-                                <input class="form-check-input" type="radio" asp-for="LoginType" value="@TwoFactorAuthTypeEnum.SMS" disabled /> @localizer.Get("SMS")
+                                <input class="form-check-input" type="radio" asp-for="LoginType" value="@TwoFactorAuthTypeEnum.SMS" disabled />
+                                <label class="form-check-label">@localizer.Get("SMS")</label>
                                 <p class="text-muted">
                                     <small>@localizer.Get("YouDontHavePhoneLinkedToThisAccount")</small>
                                 </p>
