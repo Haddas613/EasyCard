@@ -34,16 +34,16 @@
           <v-btn class="mx-1" color="error" outlined small v-if="isBillingAdmin && item.active" @click="disapprove(item)">
             <v-icon small>mdi-cancel</v-icon>
           </v-btn>
-          <template v-slot:item.active="{ item }">
-            <span v-bind:class="{'success--text': item.active, 'error--text': !item.active}">
-              {{item.active ? $t("Yes") : $t("No")}}
-            </span>
-          </template>
           <v-btn class="mx-1" color="success" outlined small v-if="isBillingAdmin && !item.active" @click="approve(item)">
             <v-icon small>mdi-chevron-down-circle</v-icon>
           </v-btn>
           <!-- <v-icon small @click="deleteItem(item)">mdi-delete</v-icon> -->
         </template>
+        <template v-slot:item.active="{ item }">
+            <span v-bind:class="{'success--text': item.active, 'error--text': !item.active}">
+              {{item.active ? $t("Yes") : $t("No")}}
+            </span>
+          </template>
       </v-data-table>
     </div>
   </v-card>
