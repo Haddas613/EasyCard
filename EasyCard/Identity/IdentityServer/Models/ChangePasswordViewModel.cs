@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using IdentityServer.Resources;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,18 +10,16 @@ namespace IdentityServer.Models
 {
     public class ChangePasswordViewModel
     {
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
         [DataType(DataType.Password)]
         public string OldPassword { get; set; }
 
+        [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
         public string NewPassword { get; set; }
 
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("NewPassword", ErrorMessage = "The password and confirmation password do not match.")]
+        [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
+        [Compare("NewPassword", ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "PasswordMatchValidatonMessage")]
         public string ConfirmPassword { get; set; }
 
         [BindNever]

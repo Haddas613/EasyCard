@@ -159,6 +159,9 @@
   <data name="EmailIsAlreadyTaken" xml:space="preserve">
     <value>That email is already taken</value>
   </data>
+  <data name="EmailValidationMessage" xml:space="preserve">
+    <value>Email must be valid</value>
+  </data>
   <data name="EnterYourAuthenticatorCodeBelow" xml:space="preserve">
     <value>Enter your authenticator code below</value>
   </data>
@@ -237,8 +240,14 @@
   <data name="PasswordRepeat" xml:space="preserve">
     <value>Password repeat</value>
   </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>Password is required</value>
+  </data>
   <data name="PasswordUpdatedSuccesfully" xml:space="preserve">
     <value>Password updated successfully</value>
+  </data>
+  <data name="PasswordValidationMessage" xml:space="preserve">
+    <value>Password must have minimum eight characters, at least one letter, one number and one special character</value>
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Phone</value>
@@ -255,6 +264,9 @@
   <data name="RequestID" xml:space="preserve">
     <value>Request ID</value>
   </data>
+  <data name="Required" xml:space="preserve">
+    <value>Required</value>
+  </data>
   <data name="ResetPasswordConfimration" xml:space="preserve">
     <value>Reset password confirmation</value>
   </data>
@@ -269,6 +281,9 @@
   </data>
   <data name="SMS" xml:space="preserve">
     <value>SMS</value>
+  </data>
+  <data name="StringLengthValidationMessage" xml:space="preserve">
+    <value>Must be at least {2} and at max {1} characters long</value>
   </data>
   <data name="Submit" xml:space="preserve">
     <value>Submit</value>
@@ -290,6 +305,9 @@
   </data>
   <data name="TwoFactorAuthType" xml:space="preserve">
     <value>Tw-factor authentication type</value>
+  </data>
+  <data name="UsernameRequired" xml:space="preserve">
+    <value>Username is required</value>
   </data>
   <data name="WelcomeToEasyCard" xml:space="preserve">
     <value>Welcome to EasyCard</value>

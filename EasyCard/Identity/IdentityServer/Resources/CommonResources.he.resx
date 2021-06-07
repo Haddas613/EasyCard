@@ -312,4 +312,25 @@
   <data name="YouPasswordHasBeenReset" xml:space="preserve">
     <value>סיסמתך אופסה</value>
   </data>
+  <data name="EmailValidationMessage" xml:space="preserve">
+    <value>כתובת אימייל אינה תקינה</value>
+  </data>
+  <data name="PasswordMatchValidatonMessage" xml:space="preserve">
+    <value>סיסמה לא עומדת בדרישות מערכת</value>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>סיסמה חובה</value>
+  </data>
+  <data name="PasswordValidationMessage" xml:space="preserve">
+    <value>על הסיסמה להכיל לפחות שמונה תווים, לפחות אות אחת, מספר אחד ותו מיוחד אחד</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>שדה חובה</value>
+  </data>
+  <data name="StringLengthValidationMessage" xml:space="preserve">
+    <value>חייב להיות מינימום {2} תווים ומקסימום {1} תווים</value>
+  </data>
+  <data name="UsernameRequired" xml:space="preserve">
+    <value>שם משתמש חובה</value>
+  </data>
 </root>

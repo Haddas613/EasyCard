@@ -1087,6 +1087,7 @@ namespace IdentityServer.Controllers
 
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
+            var testdelete = ModelState.Values;
             var context = await interaction.GetAuthorizationContextAsync(returnUrl);
             var isAdmin = (User?.IsAdmin()).Value;
 

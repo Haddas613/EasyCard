@@ -187,6 +187,15 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email must be valid.
+        /// </summary>
+        public static string EmailValidationMessage {
+            get {
+                return ResourceManager.GetString("EmailValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter your authenticator code below.
         /// </summary>
         public static string EnterYourAuthenticatorCodeBelow {
@@ -421,11 +430,29 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password is required.
+        /// </summary>
+        public static string PasswordRequired {
+            get {
+                return ResourceManager.GetString("PasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password updated successfully.
         /// </summary>
         public static string PasswordUpdatedSuccesfully {
             get {
                 return ResourceManager.GetString("PasswordUpdatedSuccesfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password must have minimum eight characters, at least one letter, one number and one special character.
+        /// </summary>
+        public static string PasswordValidationMessage {
+            get {
+                return ResourceManager.GetString("PasswordValidationMessage", resourceCulture);
             }
         }
         
@@ -475,6 +502,15 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Required.
+        /// </summary>
+        public static string Required {
+            get {
+                return ResourceManager.GetString("Required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reset password confirmation.
         /// </summary>
         public static string ResetPasswordConfimration {
@@ -516,6 +552,15 @@ namespace IdentityServer.Resources {
         public static string SMS {
             get {
                 return ResourceManager.GetString("SMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must be at least {2} and at max {1} characters long.
+        /// </summary>
+        public static string StringLengthValidationMessage {
+            get {
+                return ResourceManager.GetString("StringLengthValidationMessage", resourceCulture);
             }
         }
         
@@ -579,6 +624,15 @@ namespace IdentityServer.Resources {
         public static string TwoFactorAuthType {
             get {
                 return ResourceManager.GetString("TwoFactorAuthType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username is required.
+        /// </summary>
+        public static string UsernameRequired {
+            get {
+                return ResourceManager.GetString("UsernameRequired", resourceCulture);
             }
         }
         
