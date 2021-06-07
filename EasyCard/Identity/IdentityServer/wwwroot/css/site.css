@@ -85,6 +85,9 @@ body {
 .panel-ecng{
     min-width: 40%;
 }
-.form-check{
-    direction: ltr;
+.rtl .form-check {
+    text-align: right;
+}
+.rtl .form-check-label{
+    margin-right: 20px;
 }
