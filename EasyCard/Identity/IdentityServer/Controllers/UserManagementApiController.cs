@@ -348,7 +348,7 @@ namespace IdentityServer.Controllers
             }
 
             // Unlock user
-            res = await userManager.SetLockoutEnabledAsync(user, false);
+            //res = await userManager.SetLockoutEnabledAsync(user, false);
             res = await userManager.SetLockoutEndDateAsync(user, null);
 
             await emailSender.SendEmailResetPasswordAsync(user.Email, callbackUrl);
