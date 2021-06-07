@@ -190,7 +190,7 @@
               >
                 <v-icon>mdi-book-account</v-icon>
               </v-btn>
-              <v-btn icon @click="invokeAction('unlinkFromMerchant', item.userID)" :disabled="actionInProgress">
+              <v-btn icon @click="invokeAction('unlinkFromMerchant', item)" :disabled="actionInProgress">
                 <v-icon color="error">mdi-delete</v-icon>
               </v-btn>
               <v-btn

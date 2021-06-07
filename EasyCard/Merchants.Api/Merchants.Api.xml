@@ -342,6 +342,11 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.TerminalTemplate.TerminalTemplatesSummaryResource.Active">
+            <summary>
+              Looks up a localized string similar to Active.
+            </summary>
+        </member>
         <member name="P:Merchants.Api.Models.TerminalTemplate.TerminalTemplatesSummaryResource.Created">
             <summary>
               Looks up a localized string similar to Created.
