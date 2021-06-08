@@ -118,9 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CouldNotPairTheDevice" xml:space="preserve">
-    <value>הפינפד קושר בהצלחה</value>
+    <value>נכשל קישור הפינפד</value>
   </data>
   <data name="DevicePairedSuccessfully" xml:space="preserve">
-    <value>נכשל קישור הפינפד</value>
+    <value>הצליח לבצע תחילת צימוד</value>
+  </data>
+  <data name="DeviceAuthenticatedSuccessfully" xml:space="preserve">
+    <value>הצליח לבצע צימוד</value>
   </data>
 </root>

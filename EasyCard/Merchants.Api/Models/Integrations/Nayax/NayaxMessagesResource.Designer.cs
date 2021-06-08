@@ -59,22 +59,33 @@ namespace Merchants.Api.Models.Integrations.Nayax {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Device paired successfully.
+        ///   Looks up a localized string similar to Could not pair the device. 
         /// </summary>
         public static string CouldNotPairTheDevice {
             get {
                 return ResourceManager.GetString("CouldNotPairTheDevice", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Could not pair the device.
+        ///   Looks up a localized string similar to Device paired successfully.
         /// </summary>
         public static string DevicePairedSuccessfully {
             get {
                 return ResourceManager.GetString("DevicePairedSuccessfully", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Device authenticated successfully.
+        /// </summary>
+        public static string DeviceAuthenticatedSuccessfully
+        {
+            get
+            {
+                return ResourceManager.GetString("DeviceAuthenticatedSuccessfully", resourceCulture);
             }
         }
     }

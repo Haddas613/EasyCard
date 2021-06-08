@@ -129,12 +129,17 @@
         </member>
         <member name="P:Merchants.Api.Models.Integrations.Nayax.NayaxMessagesResource.CouldNotPairTheDevice">
             <summary>
-              Looks up a localized string similar to Device paired successfully.
+              Looks up a localized string similar to Could not pair the device. 
             </summary>
         </member>
         <member name="P:Merchants.Api.Models.Integrations.Nayax.NayaxMessagesResource.DevicePairedSuccessfully">
             <summary>
-              Looks up a localized string similar to Could not pair the device.
+              Looks up a localized string similar to Device paired successfully.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.Nayax.NayaxMessagesResource.DeviceAuthenticatedSuccessfully">
+            <summary>
+              Looks up a localized string similar to Device authenticated successfully.
             </summary>
         </member>
         <member name="T:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource">

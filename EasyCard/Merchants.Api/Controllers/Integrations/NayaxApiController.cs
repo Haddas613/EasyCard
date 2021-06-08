@@ -34,6 +34,7 @@ namespace Merchants.Api.Controllers.Integrations
         }
 
         [HttpPost]
+        [Route("pair-device")]
         public async Task<ActionResult<OperationResponse>> PairDevice(PairRequest request)
         {
             if (!ModelState.IsValid)
@@ -57,14 +58,41 @@ namespace Merchants.Api.Controllers.Integrations
                 return BadRequest(response);
             }
 
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("authenticate-device")]
+        public async Task<ActionResult<OperationResponse>> AuthenticateDevice(AuthenticateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var terminal = EnsureExists(await terminalsService.GetTerminal(request.ECTerminalID.Value));
+            var nayaxIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
+
+            //get settings
+            var pairResult = await nayaxProcessor.AuthenticateDevice(request);
+
+            var response = new OperationResponse(NayaxMessagesResource.DeviceAuthenticatedSuccessfully, StatusEnum.Success);
+
+            if (!pairResult.Success)
+            {
+                response.Status = StatusEnum.Error;
+                response.Message = NayaxMessagesResource.CouldNotPairTheDevice;
+
+                return BadRequest(response);
+            }
+
+
             NayaxTerminalSettings terminalSettings = nayaxIntegration.Settings.ToObject<NayaxTerminalSettings>();
             terminalSettings.TerminalID = request.terminalID;
-            terminalSettings.PosName = request.posName;
             nayaxIntegration.Settings = JObject.FromObject(terminalSettings);
             await terminalsService.SaveTerminalExternalSystem(nayaxIntegration, terminal);
 
             return Ok(response);
         }
-
     }
 }

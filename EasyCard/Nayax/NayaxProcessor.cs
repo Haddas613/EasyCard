@@ -19,6 +19,7 @@ namespace Nayax
         private const string Phase1Url = "doTransactionPhase1";
         private const string Phase2Url = "doTransactionPhase2";
         private const string Pair = "pair";
+        private const string Authenticate = "authenticate";
         private readonly IWebApiClient apiClient;
         private readonly NayaxGlobalSettings configuration;
         private readonly ILogger logger;
@@ -249,7 +250,7 @@ namespace Nayax
 
             var pairReq = EMVDealHelper.GetPairRequestBody(configuration, pairRequest.posName, pairRequest.terminalID);
             var pairReqResult = await this.apiClient.Post<Models.PairResponseBody>(configuration.BaseUrl, Pair, pairReq, BuildHeaders);
-
+            //{"statusCode": 0, "statusMessage": "ok"}
             var pairResultBody = pairReqResult as PairResponseBody;
 
             if (pairResultBody == null)
@@ -262,7 +263,6 @@ namespace Nayax
                 return new PairResponse(Messages.StatusCodeIsNotValid, pairResultBody.statusCode);
             }
             
-
 
             if (pairResultBody.IsSuccessful())
             {
@@ -289,7 +289,7 @@ namespace Nayax
             }
 
             var authReq = EMVDealHelper.GetAuthRequestBody(configuration, authRequest.OTP, authRequest.terminalID);
-            var authReqResult = await this.apiClient.Post<Models.AuthResponseBody>(configuration.BaseUrl, Pair, authReq, BuildHeaders);
+            var authReqResult = await this.apiClient.Post<Models.AuthResponseBody>(configuration.BaseUrl, Authenticate, authReq, BuildHeaders);
 
             var authResultBody = authReqResult as AuthResponseBody;
 
