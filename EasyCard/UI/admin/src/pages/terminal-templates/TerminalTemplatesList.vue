@@ -2,7 +2,7 @@
   <v-card class="mx-auto" outlined>
     <v-card-title>
       <v-flex class="d-flex justify-end">
-        <v-btn color="success" @click="showCreateTerminalTemplateDialog = true;">
+        <v-btn small color="success" @click="showCreateTerminalTemplateDialog = true;">
           {{$t("CreateNew")}}
         </v-btn>
       </v-flex>
@@ -78,6 +78,13 @@ export default {
   },
   async mounted () {
     this.isBillingAdmin = await this.$oidc.isBillingAdmin();
+    this.$store.commit("ui/changeHeader", {
+      value: {
+        refresh: async () => {
+          await this.getDataFromApi();
+        }
+      }
+    });
   },
   methods: {
     async getDataFromApi() {

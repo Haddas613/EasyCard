@@ -8,9 +8,12 @@ const state = () => ({
         },
         threeDotMenu: [],
 
-        /** do not display title and switch color to desktop version. 
+        /** When true: do not display title and switch color to desktop version. 
          * This is default behavior for Dashboard page */
-        altDisplay: true
+        altDisplay: true,
+
+        /**When set to function, refresh button will be shown in header */
+        refresh: null
     },
     requestsCount: 0,
     versionMismatch: false

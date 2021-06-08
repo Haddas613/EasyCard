@@ -104,6 +104,15 @@ export default {
       deep: true
     }
   },
+  async mounted () {
+    this.$store.commit("ui/changeHeader", {
+      value: {
+        refresh: async () => {
+          await this.getDataFromApi();
+        }
+      }
+    });
+  },
   methods: {
     async getDataFromApi() {
       this.loading = true;

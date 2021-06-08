@@ -175,7 +175,10 @@ export default {
               await vm.createTransactions();
             }
           }
-        ]
+        ],
+        refresh: async () => {
+          await this.getDataFromApi();
+        }
       }
     });
   }

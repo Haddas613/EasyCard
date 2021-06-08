@@ -135,6 +135,14 @@ export default {
       await this.getDataFromApi();
     },
   },
-  async mounted() {}
+  async mounted () {
+    this.$store.commit("ui/changeHeader", {
+      value: {
+        refresh: async () => {
+          await this.getDataFromApi();
+        }
+      }
+    });
+  }
 };
 </script>
