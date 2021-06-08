@@ -24,8 +24,11 @@ const actions = {
 };
 
 const mutations = {
-    changeHeader(state, { value }) {
+    changeHeader(state, {value}) {
         Object.assign(state.header, value);
+    },
+    setRefreshHandler(state, { value }) {
+        state.header.refresh = value;
     },
     requestsCountIncrement(state) {
         state.requestsCount++;

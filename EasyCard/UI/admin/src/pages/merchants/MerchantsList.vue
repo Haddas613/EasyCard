@@ -61,13 +61,7 @@ export default {
     }
   },
   async mounted () {
-    this.$store.commit("ui/changeHeader", {
-      value: {
-        refresh: async () => {
-          await this.getDataFromApi();
-        }
-      }
-    });
+    this.$store.commit("ui/setRefreshHandler", { value: this.getDataFromApi});
   },
   methods: {
     async getDataFromApi() {

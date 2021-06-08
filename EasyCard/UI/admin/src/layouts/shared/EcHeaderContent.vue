@@ -31,7 +31,7 @@
           </v-list>
         </v-menu>
       </template>
-      <template v-if="refreshStore">
+      <template v-if="headerStore.refresh">
         <v-btn color="primary" icon large @click="invokeRefreshSafe()">
           <v-icon size="1.35rem">mdi-refresh</v-icon>
         </v-btn>
@@ -62,8 +62,7 @@ export default {
   },
   computed: {
     ...mapState({
-      headerStore: state => state.ui.header,
-      refreshStore: state => state.ui.header.refresh,
+      headerStore: state => state.ui.header
     }),
     drawerObj: {
       get: function() {
@@ -109,11 +108,11 @@ export default {
       }
     },
     async invokeRefreshSafe(){
-      if(this.refreshLoading || !this.lodash.isFunction(this.refreshStore)){
+      if(this.refreshLoading || !this.lodash.isFunction(this.headerStore.refresh)){
         return;
       }
       this.refreshLoading = true;
-      await this.refreshStore();
+      await this.headerStore.refresh();
       this.refreshLoading = false;
     }
   }
