@@ -237,6 +237,9 @@
   <data name="Password" xml:space="preserve">
     <value>Password</value>
   </data>
+  <data name="PasswordMatchValidationMessage" xml:space="preserve">
+    <value>Passwords must match</value>
+  </data>
   <data name="PasswordRepeat" xml:space="preserve">
     <value>Password repeat</value>
   </data>

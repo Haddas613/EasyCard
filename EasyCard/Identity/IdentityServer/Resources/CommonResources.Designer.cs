@@ -421,6 +421,15 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Passwords must match.
+        /// </summary>
+        public static string PasswordMatchValidationMessage {
+            get {
+                return ResourceManager.GetString("PasswordMatchValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password repeat.
         /// </summary>
         public static string PasswordRepeat {
