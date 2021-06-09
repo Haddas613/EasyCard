@@ -33,6 +33,7 @@
               :label="$t('Terminal')"
               outlined
               v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+              @change="confirmLeave()"
             ></v-select>
           </v-col>
           <v-col cols="12" md="4">
@@ -98,6 +99,7 @@ export default {
     this.currencies = dictionaries ? dictionaries.currencyEnum : [];
     await this.refreshTerminal();
     this.terminalRefreshed = true;
+    window.addEventListener('beforeunload', this.confirmLeave);
   },
   computed: {
     ...mapState({
@@ -142,7 +144,24 @@ export default {
     },
     async refreshTerminal(){
       await this.$store.dispatch("settings/refreshTerminal", { api: this.$api });
+    },
+    confirmLeave($event){
+      if(this.$refs.terminalSettingsRef.changed && !window.confirm(this.$t("UnsavedChangesWarningMessage"))){
+          if($event){
+            $event.preventDefault();
+          }
+          return false;
+      }
+      return true;
     }
+  },
+  beforeRouteLeave (to, from, next) { 
+    if(this.confirmLeave()){
+      next();
+    }
+  },
+  beforeDestroy() {
+    window.removeEventListener('beforeunload', this.confirmLeave)
   },
 };
 </script>

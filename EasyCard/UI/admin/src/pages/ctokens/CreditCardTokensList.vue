@@ -69,6 +69,7 @@ export default {
   },
   async mounted () {
     this.isBillingAdmin = await this.$oidc.isBillingAdmin();
+    this.$store.commit("ui/setRefreshHandler", { value: this.getDataFromApi});
   },
   methods: {
     async getDataFromApi() {

@@ -92,6 +92,7 @@ export default {
   },
   async mounted () {
     this.$merchantDictionaries = await this.$api.dictionaries.$getMerchantDictionaries();
+    this.$store.commit("ui/setRefreshHandler", { value: this.getDataFromApi});
   },
   methods: {
     async getDataFromApi() {

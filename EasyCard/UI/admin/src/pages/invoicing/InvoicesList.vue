@@ -166,7 +166,10 @@ export default {
               await vm.resendSelectedInvoices();
             }
           }
-        ]
+        ],
+        refresh: async () => {
+          await this.getDataFromApi();
+        }
       }
     });
   }

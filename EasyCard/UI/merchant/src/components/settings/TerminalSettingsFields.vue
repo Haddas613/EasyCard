@@ -413,7 +413,8 @@ export default {
       merchantDictionaries: {},
       privateApiKey: null,
       showSharedApiKey: false,
-      appConstants: appConstants
+      appConstants: appConstants,
+      changed: false,
     };
   },
   async mounted() {
@@ -445,6 +446,7 @@ export default {
         appConstants.invoicing.defaultCreditInvoiceType
       );
     }
+    this.watchModel();
   },
   methods: {
     getData() {
@@ -467,6 +469,7 @@ export default {
         ? (result.settings.vatRatePercent / 100).toFixed(2)
         : 0;
         
+      this.watchModel();
       return result;
     },
     async resetPrivateKey() {
@@ -515,6 +518,13 @@ export default {
       }
 
       this.model.checkoutSettings.redirectUrls.push("");
+    },
+    watchModel(){
+      this.changed = false;
+      let modelWatcher = this.$watch('model', (nv, ov) => {
+        this.changed = true;
+        modelWatcher(); //unwatch
+      }, { deep: true})
     }
   }
 };

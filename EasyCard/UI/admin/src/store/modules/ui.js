@@ -8,9 +8,12 @@ const state = () => ({
         },
         threeDotMenu: [],
 
-        /** do not display title and switch color to desktop version. 
+        /** When true: do not display title and switch color to desktop version. 
          * This is default behavior for Dashboard page */
-        altDisplay: true
+        altDisplay: true,
+
+        /**When set to function, refresh button will be shown in header */
+        refresh: null
     },
     requestsCount: 0,
     versionMismatch: false
@@ -21,8 +24,11 @@ const actions = {
 };
 
 const mutations = {
-    changeHeader(state, { value }) {
+    changeHeader(state, {value}) {
         Object.assign(state.header, value);
+    },
+    setRefreshHandler(state, { value }) {
+        state.header.refresh = value;
     },
     requestsCountIncrement(state) {
         state.requestsCount++;

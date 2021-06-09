@@ -40,7 +40,7 @@
               </v-row>
             </v-card-text>
           </v-card>
-          <v-form ref="terminalSettingsForm" v-model="terminalSettingsFormValid" lazy-validation>
+          <v-form ref="terminalSettingsForm" v-model="terminalSettingsFormValid">
             <terminal-settings-fields
               v-if="terminal"
               :key="terminal.updated"
@@ -122,6 +122,7 @@ export default {
         ]
       }
     });
+    window.addEventListener('beforeunload', this.confirmLeave);
   },
   methods: {
     async saveTerminalSettings() {
@@ -141,8 +142,25 @@ export default {
       }
 
       this.terminal = terminal;
+    },
+    confirmLeave($event){
+      if(this.$refs.terminalSettingsRef.changed && !window.confirm(this.$t("UnsavedChangesWarningMessage"))){
+          if($event){
+            $event.preventDefault();
+          }
+          return false;
+      }
+      return true;
     }
-  }
+  },
+  beforeRouteLeave (to, from, next) { 
+    if(this.confirmLeave()){
+      next();
+    }
+  },
+  beforeDestroy() {
+    window.removeEventListener('beforeunload', this.confirmLeave)
+  },
 };
 </script>
 <style lang="scss" scoped>

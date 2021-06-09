@@ -33,9 +33,22 @@ namespace Transactions.Api.Models.Transactions
         [JsonConverter(typeof(StringEnumConverter))]
         public DocumentOriginEnum DocumentOrigin { get; set; }
 
-        [EnumDataType(typeof(QuickStatusFilterTypeEnum))]
+        /// <summary>
+        /// Processing status
+        /// </summary>
+        [EnumDataType(typeof(TransactionStatusEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         [MetadataOptions(Hidden = true)]
-        public new QuickStatusFilterTypeEnum QuickStatus { get; set; }
+        public new TransactionStatusEnum Status { get; set; }
+
+        /// <summary>
+        /// Rejection Reason
+        /// </summary>
+        [EnumDataType(typeof(RejectionReasonEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        [MetadataOptions(Hidden = true)]
+        public new RejectionReasonEnum? RejectionReason { get; set; }
+
+        public string CardNumber { get; set; }
     }
 }

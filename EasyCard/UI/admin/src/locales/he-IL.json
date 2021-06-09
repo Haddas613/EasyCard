@@ -473,5 +473,6 @@
   "TerminalTemplateSaveInfoMessage": "שינויים בתבנית מסוף ישפיעו רק על מסופים חדשים שנוצרים ממנה",
   "ShvaNewPasswordInfoMessage": "בביצוע הפעולה יתעדכנו כל המסופים שמקושרים למשתמש זה באותם הערכים",
   "NullAggregatorConnectedMessage": "NULL מאגד מחובר.",
-  "NewAppVersionAvailableClickToRefreshThePage": "קיימת גירסה חדשה. לחץ כאן לעדכון הדף"
+  "NewAppVersionAvailableClickToRefreshThePage": "קיימת גירסה חדשה. לחץ כאן לעדכון הדף",
+  "TerminalSettingsSaveMessage": "יש שינויים שלא נשמרו. אתה בטוח שאתה רוצה לעזוב?"
 }

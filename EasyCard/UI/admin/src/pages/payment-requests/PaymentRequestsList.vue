@@ -135,6 +135,8 @@ export default {
       await this.getDataFromApi();
     },
   },
-  async mounted() {}
+  async mounted () {
+    this.$store.commit("ui/setRefreshHandler", { value: this.getDataFromApi});
+  }
 };
 </script>

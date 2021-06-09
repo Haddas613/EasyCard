@@ -31,6 +31,11 @@
           </v-list>
         </v-menu>
       </template>
+      <template v-if="headerStore.refresh">
+        <v-btn color="primary" icon large @click="invokeRefreshSafe()">
+          <v-icon size="1.35rem">mdi-refresh</v-icon>
+        </v-btn>
+      </template>
     </v-col>
   </v-row>
 </template>
@@ -48,6 +53,11 @@ export default {
     drawer: {
       type: Boolean,
       required: true
+    }
+  },
+  data() {
+    return {
+      refreshLoading: false
     }
   },
   computed: {
@@ -96,6 +106,14 @@ export default {
       } else {
         this.$router.go(-1);
       }
+    },
+    async invokeRefreshSafe(){
+      if(this.refreshLoading || !this.lodash.isFunction(this.headerStore.refresh)){
+        return;
+      }
+      this.refreshLoading = true;
+      await this.headerStore.refresh();
+      this.refreshLoading = false;
     }
   }
 };

@@ -175,7 +175,8 @@ router.afterEach((to, from) => {
           },
           threeDotMenu: null,
           altDisplay: to.meta.altDisplay,
-          navBtn: null
+          navBtn: null,
+          refresh: null
       }
   });
 });
