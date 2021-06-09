@@ -172,7 +172,7 @@
     <value>שגיאה</value>
   </data>
   <data name="ErrorGeneral" xml:space="preserve">
-    <value>שגיאה ארעה בעיבוד בקשתך</value>
+    <value>שגיאה בעיבוד בקשתך</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>שם פרטי</value>
@@ -181,16 +181,16 @@
     <value>שכחתי סיסמה</value>
   </data>
   <data name="ForgotPasswordHint" xml:space="preserve">
-    <value>קישור עם הוראות ישלח לכתובת מייל שסופקה</value>
+    <value>קישור עם הוראות ישלח לכתובת המייל שסופקה</value>
   </data>
   <data name="ForgotPasswordMessage" xml:space="preserve">
     <value>נא להזין את כתובת המייל שסופקה ברישום</value>
   </data>
   <data name="GoToAdminUI" xml:space="preserve">
-    <value>עבור לממשק ניהול</value>
+    <value>עבור למערכת הניהול</value>
   </data>
   <data name="GoToMerchantUI" xml:space="preserve">
-    <value>עבור לממש בית העסק</value>
+    <value>עבור לממשק לבית העסק</value>
   </data>
   <data name="Home" xml:space="preserve">
     <value>בית</value>
@@ -214,7 +214,7 @@
     <value>התנתק</value>
   </data>
   <data name="ManageAccount" xml:space="preserve">
-    <value>ניהול חשבון</value>
+    <value>מערכת ניהול</value>
   </data>
   <data name="MarketingName" xml:space="preserve">
     <value>שם שיווקי</value>
@@ -313,10 +313,10 @@
     <value>סיסמתך אופסה</value>
   </data>
   <data name="EmailValidationMessage" xml:space="preserve">
-    <value>כתובת אימייל אינה תקינה</value>
+    <value>כתובת מייל אינה תקינה</value>
   </data>
   <data name="PasswordMatchValidatonMessage" xml:space="preserve">
-    <value>סיסמה לא עומדת בדרישות מערכת</value>
+    <value>סיסמה לא עומדת בדרישות המערכת</value>
   </data>
   <data name="PasswordRequired" xml:space="preserve">
     <value>סיסמה חובה</value>
@@ -332,5 +332,11 @@
   </data>
   <data name="UsernameRequired" xml:space="preserve">
     <value>שם משתמש חובה</value>
+  </data>
+  <data name="Manager" xml:space="preserve">
+    <value>מנהל</value>
+  </data>
+  <data name="Merchant" xml:space="preserve">
+    <value>סוחר</value>
   </data>
 </root>
