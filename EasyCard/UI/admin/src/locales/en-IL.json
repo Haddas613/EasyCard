@@ -101,6 +101,7 @@
   "IsPaymentRequest": "Is Payment Request",
   "Actions": "Actions",
   "Audits": "Audits",
+  "AuthenticateDevice": "Authenticate device",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -338,6 +339,7 @@
   "Paused": "Paused",
   "Actual": "Actual",
   "PaxDeviceLabel": "Pax Device label",
+  "OTP": "OTP",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

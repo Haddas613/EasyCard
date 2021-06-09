@@ -1,5 +1,21 @@
 <template>
   <v-form v-model="formValid">
+    <ec-dialog :dialog.sync="authenticateDeviceDialog" color="ecbg">
+      <template v-slot:title>{{$t('AuthenticateDevice')}}</template>
+      <template>
+        <v-form ref="authenticateDeviceDialogFormRef" v-model="otpFormCorrect">
+          <v-row>
+            <v-col cols="12" class="pt-4 pb-0 mb-0">
+              <v-text-field v-model="authenticateDeviceOTP" :label="$t('OTP')" :rules="[vr.primitives.required]"></v-text-field>
+            </v-col>
+          </v-row>
+        </v-form>
+        <div class="d-flex justify-end">
+          <v-btn @click="authenticateDeviceDialog = false" :loading="loading">{{$t("Cancel")}}</v-btn>
+          <v-btn class="mx-1" color="primary" @click="authenticateDevice()" :loading="loading" :disabled="!otpFormCorrect">{{$t("OK")}}</v-btn>
+        </div>
+      </template>
+    </ec-dialog>
     <v-row v-if="model.settings" class="pt-2">
       <v-col cols="12" class="pt-0 text-end pb-4">
         <v-btn small color="secondary" class="mx-1" @click="pairDevice()" :disabled="!formValid">{{$t("PairDevice")}}</v-btn>
@@ -21,6 +37,9 @@
 import ValidationRules from "../../helpers/validation-rules";
 
 export default {
+  components: {
+    EcDialog: () => import("../../components/ec/EcDialog")
+  },
   props: {
     data: {
       type: Object,
@@ -41,7 +60,10 @@ export default {
       },
       vr: ValidationRules,
       formValid: false,
-      loading: false
+      loading: false,
+      authenticateDeviceOTP: null,
+      authenticateDeviceDialog: false,
+      otpFormCorrect: false
     }
   },
   mounted () {
@@ -66,7 +88,20 @@ export default {
       let operation = await this.$api.integrations.nayax.pairDevice(payload);
       if (!this.$apiSuccess(operation)) return;
 
-      this.$toasted.show(operation.message, { type: "success" });
+      this.authenticateDeviceDialog = true;
+    },
+    async authenticateDevice(){
+      let payload = {
+        ecTerminalID: this.terminalId,
+        ...this.model.settings,
+        OTP: this.authenticateDeviceOTP
+      };
+
+      let operation = await this.$api.integrations.nayax.authenticateDevice(payload);
+      if (!this.$apiSuccess(operation)) return;
+
+      this.authenticateDeviceDialog = false;
+      this.authenticateDeviceOTP = null;
     }
   },
 };

@@ -6,6 +6,10 @@ export default class NayaxApi {
     }
     
     async pairDevice(data){
-        return this.base.post(this.easyInvoiceIntegrationUrl, data);
+        return this.base.post(this.easyInvoiceIntegrationUrl + '/pair-device', data, false);
+    }
+
+    async authenticateDevice(data){
+        return this.base.post(this.easyInvoiceIntegrationUrl + '/authenticate-device', data);
     }
 }
