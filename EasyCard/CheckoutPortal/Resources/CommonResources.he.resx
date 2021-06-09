@@ -139,7 +139,7 @@
     <value>הוסף כרטיס חדש</value>
   </data>
   <data name="ErrorGeneral" xml:space="preserve">
-    <value>ארעה שגיאה בעיבוד הבקשה</value>
+    <value>שגיאה בעיבוד הבקשה</value>
   </data>
   <data name="Expiration" xml:space="preserve">
     <value>תוקף</value>
@@ -151,7 +151,7 @@
     <value>התשלום בוטל</value>
   </data>
   <data name="PaymentError" xml:space="preserve">
-    <value>ארעה שגיאה בתשלום</value>
+    <value>שגיאה בתשלום</value>
   </data>
   <data name="PaymentSuccessful" xml:space="preserve">
     <value>התשלום עבר בהצלחה</value>
