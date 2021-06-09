@@ -101,6 +101,7 @@
   "IsPaymentRequest": "בקשת תשלום",
   "Actions": "פעולות",
   "Audits": "בקרה",
+  "AuthenticateDevice": "אימות מכשיר",
   
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -342,6 +343,7 @@
   "Paused": "מושהים",
   "Actual": "ממשי",
   "PaxDeviceLabel": "תיאור פינפד PAX",
+  "OTP": "סיסמה",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",
