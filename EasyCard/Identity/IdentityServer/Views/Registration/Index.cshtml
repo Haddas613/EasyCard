@@ -76,31 +76,31 @@
 
                             <div class="col-md-6 col-xs-12 form-group">
                                 <label asp-for="BusinessID">@localizer.Get("BusinessID")</label>
-                                <input class="form-control" placeholder="@localizer.Get("BusinessID")" asp-for="BusinessID" autocomplete="off">
+                                <input class="form-control" asp-for="BusinessID" autocomplete="off">
                                 <span asp-validation-for="BusinessID"></span>
                             </div>
 
                             <div class="col-md-6 col-xs-12 form-group">
                                 <label asp-for="PhoneNumber">@localizer.Get("Phone")</label>
-                                <input type="tel" class="form-control" placeholder="@localizer.Get("Phone")" asp-for="PhoneNumber" autocomplete="off">
+                                <input type="tel" class="form-control" asp-for="PhoneNumber" autocomplete="off">
                                 <span asp-validation-for="PhoneNumber"></span>
                             </div>
 
                             <div class="col-md-6 col-xs-12 form-group">
                                 <label asp-for="Email">@localizer.Get("Email")</label>
-                                <input type="email" class="form-control" placeholder="@localizer.Get("Email")" asp-for="Email" autocomplete="email">
+                                <input type="email" class="form-control" asp-for="Email" autocomplete="email">
                                 <span asp-validation-for="Email"></span>
                             </div>
 
                             <div class="col-md-6 col-xs-12 form-group">
                                 <label asp-for="Password">@localizer.Get("Password")</label>
-                                <input type="password" class="form-control" placeholder="@localizer.Get("Password")" asp-for="Password" autocomplete="off">
+                                <input type="password" class="form-control" asp-for="Password" autocomplete="off">
                                 <span asp-validation-for="Password"></span>
                             </div>
 
                             <div class="col-md-6 col-xs-12 form-group">
                                 <label asp-for="PasswordRepeat">@localizer.Get("PasswordRepeat")</label>
-                                <input type="password" class="form-control" placeholder="@localizer.Get("PasswordRepeat")" asp-for="PasswordRepeat" autocomplete="off">
+                                <input type="password" class="form-control" asp-for="PasswordRepeat" autocomplete="off">
                                 <span asp-validation-for="PasswordRepeat"></span>
                             </div>
 
