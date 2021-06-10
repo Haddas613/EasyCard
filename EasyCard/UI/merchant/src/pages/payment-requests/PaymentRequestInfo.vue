@@ -64,7 +64,7 @@
         :model="model.dealDetails"
         :consumer-name="model.creditCardDetails ? model.creditCardDetails.cardOwnerName : null"
       ></deal-details>
-      <installment-details v-if="model.installmentDetails" :model="model"></installment-details>
+      <installment-details v-if="model.numberOfPayments > 1" :model="model"></installment-details>
     </div>
   </v-flex>
 </template>

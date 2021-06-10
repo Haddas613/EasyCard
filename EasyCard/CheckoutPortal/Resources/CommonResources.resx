@@ -144,8 +144,17 @@
   <data name="Expiration" xml:space="preserve">
     <value>Expiration</value>
   </data>
+  <data name="InitialPayment" xml:space="preserve">
+    <value>Initial payment</value>
+  </data>
   <data name="NationalID" xml:space="preserve">
     <value>National ID</value>
+  </data>
+  <data name="NumberOfPayments" xml:space="preserve">
+    <value>Number of payments</value>
+  </data>
+  <data name="PaymentAmount" xml:space="preserve">
+    <value>Payment amount</value>
   </data>
   <data name="PaymentCanceled" xml:space="preserve">
     <value>Payment canceled</value>
@@ -167,6 +176,9 @@
   </data>
   <data name="SaveCard" xml:space="preserve">
     <value>Save Card</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
   </data>
   <data name="UseSavedCard" xml:space="preserve">
     <value>Use saved card</value>

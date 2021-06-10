@@ -26,11 +26,19 @@
           </v-date-picker>
         </v-menu>
         
+        <v-switch 
+          v-model="isInstallmentTransaction" 
+          :label="$t('InstallmentTransaction')" 
+          class="pt-0 mt-0" 
+          v-bind:class="{'pb-2': !isInstallmentTransaction}"
+          hide-details="true"></v-switch>
+
         <installment-details
           ref="instDetails"
           :data="model.installmentDetails"
           v-if="isInstallmentTransaction"
           :total-amount="model.paymentRequestAmount"
+          hide-title
         ></installment-details>
 
         <v-text-field
@@ -89,16 +97,10 @@ export default {
       messageDialog: false,
       dueDateMenu: false,
       minDate: new Date().toISOString(),
+      isInstallmentTransaction: false,
     };
   },
   computed: {
-    isInstallmentTransaction() {
-      return false;//TODO
-      return (
-        this.model.invoiceDetails.invoiceType === "installments" ||
-        this.model.invoiceDetails.invoiceType === "credit"
-      );
-    },
     ...mapState({
       currencyStore: state => state.settings.currency
     })
@@ -120,7 +122,7 @@ export default {
       if (!this.$refs.form.validate()) return;
       
       let result = { ...this.model };
-      if (this.$refs.instDetails) {
+      if (this.isInstallmentTransaction) {
         result.installmentDetails = this.$refs.instDetails.getData();
       }else{
         result.installmentDetails = null;

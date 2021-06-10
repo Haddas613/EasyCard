@@ -177,4 +177,16 @@
   <data name="UseSavedCard" xml:space="preserve">
     <value>השתמש בכרטיס שמור</value>
   </data>
+  <data name="InitialPayment" xml:space="preserve">
+    <value>סכום תשלום ראשון</value>
+  </data>
+  <data name="NumberOfPayments" xml:space="preserve">
+    <value>מספר תשלומים</value>
+  </data>
+  <data name="PaymentAmount" xml:space="preserve">
+    <value>סכום עסקת תשלומים</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>סה\"כ סכום</value>
+  </data>
 </root>
