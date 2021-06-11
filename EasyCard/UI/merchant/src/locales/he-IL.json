@@ -273,6 +273,7 @@
   "Actual": "ממשי",
   "ItemID": "מזהה פריט",
   "MerchantLogo": "לוגו בית עסק",
+  "UsePinPad": "השתמש בפינפד",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

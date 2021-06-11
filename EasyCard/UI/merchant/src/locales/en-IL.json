@@ -273,6 +273,7 @@
   "Actual": "Actual",
   "ItemID": "Item ID",
   "MerchantLogo": "Merchant Logo",
+  "UsePinPad": "Use PinPad",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

@@ -42,6 +42,7 @@
             :key="model.dealDetails.consumerID"
             :data="model"
             v-on:ok="processCreditCard($event)"
+            include-device
             ref="ccSecureDetails"
             btn-text="Charge"
           ></credit-card-secure-details>
@@ -267,6 +268,12 @@ export default {
         this.model.creditCardSecureDetails = null;
         this.model.creditCardToken = data.data;
         this.model.saveCreditCard = false;
+      } 
+      else if (data.type === "device") {
+        this.model.creditCardSecureDetails = null;
+        this.model.creditCardToken = null;
+        this.model.saveCreditCard = false;
+        Object.assign(this.model, data.data);
       }
       this.step++;
     },
