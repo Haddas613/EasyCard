@@ -1463,6 +1463,11 @@
             Rejection Reason
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.PaymentTypeEnum">
+            <summary>
+            Rejection Reason
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.TransactionSummaryResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
