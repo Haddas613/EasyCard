@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using BasicServices;
 using BasicServices.BlobStorage;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServerClient;
@@ -209,6 +210,7 @@ namespace ProfileApi
             services.Configure<ApiSettings>(Configuration.GetSection("API"));
             services.Configure<ApplicationInsightsSettings>(Configuration.GetSection("ApplicationInsights"));
             services.Configure<UISettings>(Configuration.GetSection("UI"));
+            services.Configure<EasyInvoice.EasyInvoiceGlobalSettings>(Configuration.GetSection("EasyInvoiceGlobalSettings"));
 
             services.AddHttpContextAccessor();
 
@@ -268,6 +270,18 @@ namespace ProfileApi
 
                 return new UserManagementClient(webApiClient, logger, cfg, tokenService);
             });
+
+            services.AddSingleton<EasyInvoice.ECInvoiceInvoicing, EasyInvoice.ECInvoiceInvoicing>(serviceProvider =>
+            {
+                var ecCfg = serviceProvider.GetRequiredService<IOptions<EasyInvoice.EasyInvoiceGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<EasyInvoice.ECInvoiceInvoicing>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.EasyInvoiceRequestsLogStorageTable, cfg.EasyInvoiceRequestsLogStorageTable);
+
+                return new EasyInvoice.ECInvoiceInvoicing(webApiClient, ecCfg, logger, storageService);
+            });
+
 
             services.AddSingleton<ICryptoServiceCompact, AesGcmCryptoServiceCompact>(serviceProvider =>
             {

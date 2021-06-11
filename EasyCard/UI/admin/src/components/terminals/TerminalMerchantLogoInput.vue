@@ -35,7 +35,6 @@ export default {
         let operation = await this.$api.terminals.uploadMerchantLogo(this.data.terminalID, file);
         if(!this.$apiSuccess(operation)) return;
 
-        this.$toasted.show(operation.message, { type: 'success' });
         this.data.paymentRequestSettings.merchantLogo = operation.additionalData.logoUrl;
         this.$emit("change", this.data);
     }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BasicServices.BlobStorage;
+using EasyInvoice;
 using IdentityServerClient;
 using MerchantProfileApi.Extensions;
 using MerchantProfileApi.Models.Terminal;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using ProfileApi;
 using Shared.Api;
@@ -21,6 +23,7 @@ using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Helpers.Security;
+using Shared.Integration;
 using Z.EntityFramework.Plus;
 
 namespace MerchantProfileApi.Controllers
@@ -41,6 +44,10 @@ namespace MerchantProfileApi.Controllers
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly IFeaturesService featuresService;
         private readonly IBlobStorageService blobStorageService;
+        private readonly ILogger logger;
+
+        //TODO: temporary, use events to update EC logo
+        private readonly ECInvoiceInvoicing eCInvoiceInvoicing;
 
         public TerminalsApiController(
             IMerchantsService merchantsService,
@@ -50,7 +57,9 @@ namespace MerchantProfileApi.Controllers
             ISystemSettingsService systemSettingsService,
             ICryptoServiceCompact cryptoServiceCompact,
             IFeaturesService featuresService,
-            IBlobStorageService blobStorageService)
+            IBlobStorageService blobStorageService,
+            ILogger<TerminalsApiController> logger,
+            ECInvoiceInvoicing eCInvoiceInvoicing)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
@@ -59,7 +68,9 @@ namespace MerchantProfileApi.Controllers
             this.systemSettingsService = systemSettingsService;
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.featuresService = featuresService;
+            this.logger = logger;
             this.blobStorageService = blobStorageService;
+            this.eCInvoiceInvoicing = eCInvoiceInvoicing;
         }
 
         [HttpGet]
@@ -148,6 +159,30 @@ namespace MerchantProfileApi.Controllers
                 terminal.PaymentRequestSettings.MerchantLogo = logoUrl;
                 await terminalsService.UpdateEntity(terminal);
                 response.AdditionalData = JObject.FromObject(new { logoUrl });
+
+                //TODO: temporary, use events to update EC logo
+                var easyInvoiceIntegration = terminal.Integrations.FirstOrDefault(i => i.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID);
+                if (easyInvoiceIntegration != null)
+                {
+                    using var memoryStream = new MemoryStream();
+
+                    uploadStream.Seek(0, SeekOrigin.Begin);
+                    await uploadStream.CopyToAsync(memoryStream);
+                    var ecTerminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+                    try
+                    {
+                        var uploadOperation = await eCInvoiceInvoicing.UploadUserLogo(ecTerminalSettings, memoryStream, file.FileName, GetCorrelationID());
+
+                        if (uploadOperation.Status != StatusEnum.Success)
+                        {
+                            logger.LogError($"Error while uploading logo to EasyInvoice: {uploadOperation.Message}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError($"Error while uploading logo to EasyInvoice: {ex.Message}");
+                    }
+                }
             }
 
             return Ok(response);
