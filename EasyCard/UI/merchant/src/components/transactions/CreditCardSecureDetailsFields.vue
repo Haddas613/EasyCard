@@ -135,6 +135,7 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import { mapState } from "vuex";
 
 export default {
   props: {

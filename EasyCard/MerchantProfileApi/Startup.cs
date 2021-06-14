@@ -234,6 +234,11 @@ namespace ProfileApi
                 return blobStorageService;
             });
 
+            services.AddSingleton<IExternalSystemsService, ExternalSystemService>(serviceProvider =>
+            {
+                return new ExternalSystemService(Path.Combine(AppContext.BaseDirectory, "external-systems.json"));
+            });
+
             services.AddAutoMapper(typeof(Startup));
 
             // DI: request logging

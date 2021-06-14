@@ -30,7 +30,7 @@
       </template>
     </ec-dialog>
     <v-card-text class="py-2">
-      <v-switch v-if="includeDevice" v-model="model.pinPad" :label="$t('UsePinPad')"></v-switch>
+      <v-switch v-if="includeDevice && $integrationAvailable(terminalStore, appConstants.terminal.integrations.pinpadProcessor)" v-model="model.pinPad" :label="$t('UsePinPad')"></v-switch>
       <template v-if="!model.pinPad">
         <ec-dialog-invoker
           v-on:click="handleClick()"
@@ -74,6 +74,8 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import { mapState } from "vuex";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -107,6 +109,7 @@ export default {
       customerTokens: null,
       selectedToken: null,
       selectedTokenObj: null,
+      appConstants: appConstants
     };
   },
   async mounted() {
@@ -133,7 +136,10 @@ export default {
         this.selectedTokenObj = nv;
         this.tokensDialog = false;
       }
-    }
+    },
+    ...mapState({
+      terminalStore: state => state.settings.terminal
+    })
   },
   methods: {
     ok() {

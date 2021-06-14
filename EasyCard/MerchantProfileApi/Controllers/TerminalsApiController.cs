@@ -45,6 +45,7 @@ namespace MerchantProfileApi.Controllers
         private readonly IFeaturesService featuresService;
         private readonly IBlobStorageService blobStorageService;
         private readonly ILogger logger;
+        private readonly IExternalSystemsService externalSystemsService;
 
         //TODO: temporary, use events to update EC logo
         private readonly ECInvoiceInvoicing eCInvoiceInvoicing;
@@ -58,6 +59,7 @@ namespace MerchantProfileApi.Controllers
             ICryptoServiceCompact cryptoServiceCompact,
             IFeaturesService featuresService,
             IBlobStorageService blobStorageService,
+            IExternalSystemsService externalSystemsService,
             ILogger<TerminalsApiController> logger,
             ECInvoiceInvoicing eCInvoiceInvoicing)
         {
@@ -71,6 +73,7 @@ namespace MerchantProfileApi.Controllers
             this.logger = logger;
             this.blobStorageService = blobStorageService;
             this.eCInvoiceInvoicing = eCInvoiceInvoicing;
+            this.externalSystemsService = externalSystemsService;
         }
 
         [HttpGet]
@@ -94,8 +97,8 @@ namespace MerchantProfileApi.Controllers
         [Route("{terminalID}")]
         public async Task<ActionResult<TerminalResponse>> GetTerminal([FromRoute]Guid terminalID)
         {
-            //not terminalsService.GetTerminal so it can still be accessed as read only even if it's disabled
-            var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID)));
+            var entity = EnsureExists(await terminalsService.GetTerminal(terminalID));
+            var terminal = mapper.Map<TerminalResponse>(entity);
 
             var merchant = EnsureExists(await merchantsService.GetMerchants().FirstOrDefaultAsync(m => m.MerchantID == terminal.MerchantID));
 
@@ -104,6 +107,12 @@ namespace MerchantProfileApi.Controllers
             var systemSettings = await systemSettingsService.GetSystemSettings();
 
             mapper.Map(systemSettings, terminal);
+
+            if (entity.Integrations?.Any() == true)
+            {
+                var externalSystemNames = externalSystemsService.GetExternalSystems().ToDictionary(k => k.ExternalSystemID, v => v.Name);
+                terminal.Integrations = entity.Integrations.ToDictionary(k => k.Type, v => externalSystemNames.ContainsKey(v.ExternalSystemID) ? externalSystemNames[v.ExternalSystemID] : string.Empty);
+            }
 
             return Ok(terminal);
         }

@@ -36,6 +36,13 @@ const appConstants = {
             Checkout: 'Checkout',
             Api: 'Api',
             Billing: 'Billing'
+        },
+        integrations: {
+            processor: "processor",
+            aggregator: "aggregator",
+            invoicing: "invoicing",
+            marketer: "marketer",
+            pinpadProcessor: "pinpadProcessor",
         }
     }
 };
