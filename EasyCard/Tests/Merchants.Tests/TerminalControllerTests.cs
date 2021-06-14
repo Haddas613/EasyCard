@@ -242,7 +242,7 @@ namespace MerchantsApi.Tests
         private TerminalsApiController GetTerminalsApiController()
         {
             // TODO: fixture
-           return new TerminalsApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper, merchantsFixture.ExternalSystemsService, null, null, null, null, null, null);
+           return new TerminalsApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper, merchantsFixture.ExternalSystemsService, null, null, null, null, null, null, null, null);
         }
     }
 }
