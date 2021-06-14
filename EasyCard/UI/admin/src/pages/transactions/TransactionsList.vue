@@ -72,7 +72,7 @@
 
 <script>
 export default {
-  name: "TransactionsList",
+  name: "Transactions",
   components: { 
     TransactionsFilter : () => import("../../components/transactions/TransactionsFilter"), 
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
@@ -115,8 +115,10 @@ export default {
       deep: true
     }
   },
-  async mounted () {
-    this.$store.commit("ui/setRefreshHandler", { value: this.getDataFromApi});
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.$store.commit("ui/setRefreshHandler", { value: vm.getDataFromApi});
+    });
   },
   methods: {
     async getDataFromApi() {

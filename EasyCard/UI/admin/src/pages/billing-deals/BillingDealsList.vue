@@ -79,6 +79,7 @@
 import moment from "moment";
 
 export default {
+  name: "BillingDeals",
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
@@ -164,23 +165,24 @@ export default {
       }
     }
   },
-  async mounted() {
-    const vm = this;
-    this.$store.commit("ui/changeHeader", {
-      value: {
-        threeDotMenu: [
-          {
-            text: this.$t("TriggerTransactions"),
-            fn: async () => {
-              await vm.createTransactions();
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.$store.commit("ui/changeHeader", {
+        value: {
+          threeDotMenu: [
+            {
+              text: vm.$t("TriggerTransactions"),
+              fn: async () => {
+                await vm.createTransactions();
+              }
             }
+          ],
+          refresh: async () => {
+            await vm.getDataFromApi();
           }
-        ],
-        refresh: async () => {
-          await this.getDataFromApi();
         }
-      }
+      });
     });
-  }
+  },
 };
 </script>

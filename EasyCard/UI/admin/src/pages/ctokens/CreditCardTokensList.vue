@@ -44,6 +44,7 @@
 
 <script>
 export default {
+  name: "CardTokens",
   components: {
     TokensFilter: () => import("../../components/ctokens/CardTokensFilter")
   },
@@ -69,7 +70,11 @@ export default {
   },
   async mounted () {
     this.isBillingAdmin = await this.$oidc.isBillingAdmin();
-    this.$store.commit("ui/setRefreshHandler", { value: this.getDataFromApi});
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.$store.commit("ui/setRefreshHandler", { value: vm.getDataFromApi});
+    });
   },
   methods: {
     async getDataFromApi() {

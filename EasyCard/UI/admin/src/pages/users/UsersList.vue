@@ -59,6 +59,7 @@
 
 <script>
 export default {
+  name: "Users",
   components: {
     UsersFilter: () => import("../../components/users/UsersFilter"),
     EditUserDialog: () => import("../../components/users/EditUserDialog")
@@ -92,7 +93,11 @@ export default {
   },
   async mounted () {
     this.$merchantDictionaries = await this.$api.dictionaries.$getMerchantDictionaries();
-    this.$store.commit("ui/setRefreshHandler", { value: this.getDataFromApi});
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.$store.commit("ui/setRefreshHandler", { value: vm.getDataFromApi});
+    });
   },
   methods: {
     async getDataFromApi() {
