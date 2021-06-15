@@ -198,6 +198,7 @@ namespace Transactions.Business.Entities
         /// PayDay details
         /// </summary>
         public ClearingHouseTransactionDetails ClearingHouseTransactionDetails { get; set; }
+
         public UpayTransactionDetails UpayTransactionDetails { get; set; }
 
         /// <summary>

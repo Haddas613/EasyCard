@@ -267,6 +267,65 @@ namespace Transactions.Business.Migrations
                     b.ToTable("CreditCardTokenDetails");
                 });
 
+            modelBuilder.Entity("Transactions.Business.Entities.FutureBilling", b =>
+                {
+                    b.Property<Guid>("BillingDealID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("CurrentDeal")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit")
+                        .HasColumnName("Active");
+
+                    b.Property<DateTime?>("BillingDealTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CardNumber")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("FutureBilling_CardNumber");
+
+                    b.Property<string>("CardOwnerName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("FutureBilling_CardOwnerName");
+
+                    b.Property<short>("Currency")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime?>("FutureScheduledTransaction")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("FutureScheduledTransaction");
+
+                    b.Property<Guid>("MerchantID")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("MerchantID");
+
+                    b.Property<DateTime?>("NextScheduledTransaction")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("NextScheduledTransaction");
+
+                    b.Property<DateTime?>("PausedFrom")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("PausedFrom");
+
+                    b.Property<DateTime?>("PausedTo")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("PausedTo");
+
+                    b.Property<Guid>("TerminalID")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("TerminalID");
+
+                    b.Property<decimal>("TransactionAmount")
+                        .HasColumnType("decimal(19,4)")
+                        .HasColumnName("TransactionAmount");
+
+                    b.HasKey("BillingDealID", "CurrentDeal");
+
+                    b.ToTable("vFutureBillings", t => t.ExcludeFromMigrations());
+                });
+
             modelBuilder.Entity("Transactions.Business.Entities.Invoice", b =>
                 {
                     b.Property<Guid>("InvoiceID")
@@ -947,6 +1006,45 @@ namespace Transactions.Business.Migrations
                     b.Navigation("ShvaInitialTransactionDetails");
                 });
 
+            modelBuilder.Entity("Transactions.Business.Entities.FutureBilling", b =>
+                {
+                    b.OwnsOne("Transactions.Business.Entities.CreditCardDetails", "CreditCardDetails", b1 =>
+                        {
+                            b1.Property<Guid>("FutureBillingBillingDealID")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("FutureBillingCurrentDeal")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("CardExpiration")
+                                .HasMaxLength(5)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(5)")
+                                .HasColumnName("CardExpiration");
+
+                            b1.Property<string>("CardNumber")
+                                .HasMaxLength(20)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("CardNumber");
+
+                            b1.Property<string>("CardOwnerName")
+                                .HasMaxLength(100)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("CardOwnerName");
+
+                            b1.HasKey("FutureBillingBillingDealID", "FutureBillingCurrentDeal");
+
+                            b1.ToTable("vFutureBillings");
+
+                            b1.WithOwner()
+                                .HasForeignKey("FutureBillingBillingDealID", "FutureBillingCurrentDeal");
+                        });
+
+                    b.Navigation("CreditCardDetails");
+                });
+
             modelBuilder.Entity("Transactions.Business.Entities.Invoice", b =>
                 {
                     b.OwnsOne("Shared.Integration.Models.Invoicing.InvoiceDetails", "InvoiceDetails", b1 =>
@@ -1356,6 +1454,54 @@ namespace Transactions.Business.Migrations
                                 .HasForeignKey("PaymentTransactionID");
                         });
 
+                    b.OwnsOne("Transactions.Business.Entities.UpayTransactionDetails", "UpayTransactionDetails", b1 =>
+                        {
+                            b1.Property<Guid>("PaymentTransactionID")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("CashieriD")
+                                .HasMaxLength(64)
+                                .HasColumnType("nvarchar(64)");
+
+                            b1.Property<string>("CreditCardCompanyCode")
+                                .IsRequired()
+                                .HasMaxLength(64)
+                                .HasColumnType("nvarchar(64)");
+
+                            b1.Property<string>("ErrorDescription")
+                                .HasMaxLength(512)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(512)");
+
+                            b1.Property<string>("ErrorMessage")
+                                .HasMaxLength(512)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(512)");
+
+                            b1.Property<string>("MerchantNumber")
+                                .IsRequired()
+                                .HasMaxLength(64)
+                                .HasColumnType("nvarchar(64)");
+
+                            b1.Property<string>("SessionID")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<decimal>("TotalAmount")
+                                .HasColumnType("decimal(19,4)");
+
+                            b1.Property<string>("WebUrl")
+                                .HasMaxLength(512)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(512)");
+
+                            b1.HasKey("PaymentTransactionID");
+
+                            b1.ToTable("PaymentTransaction");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PaymentTransactionID");
+                        });
+
                     b.Navigation("ClearingHouseTransactionDetails");
 
                     b.Navigation("CreditCardDetails");
@@ -1363,6 +1509,8 @@ namespace Transactions.Business.Migrations
                     b.Navigation("DealDetails");
 
                     b.Navigation("ShvaTransactionDetails");
+
+                    b.Navigation("UpayTransactionDetails");
                 });
 
             modelBuilder.Entity("Transactions.Business.Entities.TransactionHistory", b =>

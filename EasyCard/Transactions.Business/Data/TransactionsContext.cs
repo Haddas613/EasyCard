@@ -325,17 +325,21 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.OwnsOne(b => b.ClearingHouseTransactionDetails, s =>
                 {
                     s.Property(p => p.ClearingHouseTransactionID).HasColumnName("ClearingHouseTransactionID");
-                     s.Property(p => p.MerchantReference).HasColumnName("ClearingHouseMerchantReference").IsRequired(false).HasMaxLength(50);
-                     s.Ignore(p => p.ConcurrencyToken); 
-                 });
+                    s.Property(p => p.MerchantReference).HasColumnName("ClearingHouseMerchantReference").IsRequired(false).HasMaxLength(50);
+                    s.Ignore(p => p.ConcurrencyToken); 
+                });
 
-                 builder.OwnsOne(b => b.UpayTransactionDetails, s =>
-                 {
-                     s.Property(p => p.UpayTransactionID).HasColumnName("UpayTransactionID");
-                     /*   s.Property(p => p.MerchantReference).HasColumnName("ClearingHouseMerchantReference").IsRequired(false).HasMaxLength(50);
-                        s.Ignore(p => p.ConcurrencyToken);
-                         TODO!! */
-                 });
+                builder.OwnsOne(b => b.UpayTransactionDetails, s =>
+                {
+                    s.Property(p => p.CashieriD).IsRequired(false).HasMaxLength(64);
+                    s.Property(p => p.CreditCardCompanyCode).IsRequired(true).HasMaxLength(64);
+                    s.Property(p => p.MerchantNumber).IsRequired(true).HasMaxLength(64);
+                    s.Property(p => p.ErrorMessage).IsRequired(false).HasMaxLength(512).IsUnicode(true);
+                    s.Property(p => p.ErrorDescription).IsRequired(false).HasMaxLength(512).IsUnicode(true);
+                    s.Property(p => p.WebUrl).IsRequired(false).HasMaxLength(512).IsUnicode(true);
+
+                    s.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").IsRequired();
+                });
 
                 builder.OwnsOne(b => b.ShvaTransactionDetails, s =>
                 {
