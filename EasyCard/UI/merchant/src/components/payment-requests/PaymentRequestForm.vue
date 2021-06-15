@@ -56,7 +56,7 @@
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
         ></deal-details>
 
-        <invoice-details-fields ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
+        <invoice-details-fields v-if="$integrationAvailable(terminalStore, appConstants.terminal.integrations.invoicing)" ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
       </v-form>
     </v-card-text>
     <v-card-actions class="px-2">
@@ -68,6 +68,7 @@
 <script>
 import ValidationRules from "../../helpers/validation-rules";
 import { mapState } from "vuex";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -98,11 +99,13 @@ export default {
       dueDateMenu: false,
       minDate: new Date().toISOString(),
       isInstallmentTransaction: false,
+      appConstants: appConstants
     };
   },
   computed: {
     ...mapState({
-      currencyStore: state => state.settings.currency
+      currencyStore: state => state.settings.currency,
+      terminalStore: state => state.settings.terminal
     })
   },
   async mounted() {
@@ -128,9 +131,10 @@ export default {
         result.installmentDetails = null;
       }
 
-      result.invoiceDetails = this.$refs.invoiceDetails.getData();
+      result.invoiceDetails = this.$integrationAvailable(this.terminalStore, this.appConstants.terminal.integrations.invoicing) 
+          ? this.$refs.invoiceDetails.getData() : null;
       result.dealDetails = this.$refs.dealDetails.getData();
-      if(result.invoiceDetails) this.$emit("ok", result);
+      this.$emit("ok", result);
     }
   }
 };

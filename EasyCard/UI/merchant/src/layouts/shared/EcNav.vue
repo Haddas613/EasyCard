@@ -23,7 +23,7 @@
 
       <v-divider></v-divider>
 
-      <template v-for="item in items">
+      <template v-for="(item, i) in items">
         <v-list-group
           v-if="item.children"
           :key="item.text"
@@ -38,8 +38,8 @@
             </v-list-item-content>
           </template>
           <v-list-item
-            v-for="(child, i) in item.children"
-            :key="i"
+            v-for="(child, j) in item.children"
+            :key="i + '_' + j"
             link
             :to="child.to"
             class="px-6"
@@ -87,7 +87,8 @@ export default {
   data() {
     return {
       items: null,
-      allItems: [
+      userName: null,
+      allItems: () => [
         {
           icon: "mdi-view-dashboard",
           text: "Dashboard",
@@ -157,7 +158,8 @@ export default {
             {
               icon: "mdi-plus",
               text: "CreateInvoice",
-              to: { name: "CreateInvoice" }
+              to: { name: "CreateInvoice" },
+              requiredIntegration: appConstants.terminal.integrations.invoicing,
             }
           ]
         },
@@ -200,7 +202,6 @@ export default {
           ]
         }
       ],
-      userName: null
     };
   },
   async mounted() {
@@ -209,17 +210,34 @@ export default {
   },
   methods: {
     async initMenuItems() {
-      let items = [];
-      for(var i of this.allItems){
-        if(i.allowedFor && !(await this.$oidc.isInRole(i.allowedFor))){
-          continue;
+      let items = await this.filterMenuItems(this.allItems());
+      for(var i of items){
+        if(i.children && i.children.length > 0){
+          i.children = await this.filterMenuItems(i.children);
         }
-        if(i.requiredFeature && !(this.$featureEnabled(this.terminalStore, i.requiredFeature))){
-          continue;
-        }
-        items.push(i);
       }
       this.items = items;
+    },
+    async filterMenuItems(items){
+      let result = [];
+      const _filterMenuItem = async (i) => {
+        if(i.allowedFor && !(await this.$oidc.isInRole(i.allowedFor))){
+          return false;
+        }
+        if(i.requiredFeature && !(this.$featureEnabled(this.terminalStore, i.requiredFeature))){
+          return false;
+        }
+        if(i.requiredIntegration && !(this.$integrationAvailable(this.terminalStore, i.requiredIntegration))){
+          return false;
+        }
+        return true;
+      };
+      for(var i of items){
+        if(await _filterMenuItem(i)){
+          result.push(i);
+        }
+      }
+      return result;
     }
   },
   computed: {

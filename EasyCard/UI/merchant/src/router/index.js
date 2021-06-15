@@ -230,7 +230,9 @@ const routes = [
             {
                 name: 'CreateBillingDeal',
                 path: 'billing-deals/create',
-                guard: allowedForManagerOrAdminGuard,
+                meta: {
+                    guard: allowedForManagerOrAdminGuard
+                },
                 component: () =>
                     import ('../pages/billing-deals/CreateBillingDeal.vue'),
             },
