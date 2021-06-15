@@ -52,13 +52,13 @@
                         <div class="row">
                             <div class="col-md-3 col-xs-12 form-group">
                                 <label asp-for="FirstName">@localizer.Get("FirstName")</label>
-                                <input id="contact-name" type="text" class="form-control" asp-for="FirstName" autocomplete="off">
+                                <input type="text" class="form-control" asp-for="FirstName" autocomplete="off">
                                 <span asp-validation-for="FirstName"></span>
                             </div>
 
                             <div class="col-md-3 col-xs-12 form-group">
                                 <label asp-for="LastName">@localizer.Get("LastName")</label>
-                                <input id="contact-name" type="text" class="form-control" asp-for="LastName" autocomplete="off">
+                                <input type="text" class="form-control" asp-for="LastName" autocomplete="off">
                                 <span asp-validation-for="LastName"></span>
                             </div>
 
@@ -105,7 +105,7 @@
                             </div>
 
                             <div class="col-md-12 col-xs-12 form-group text-end">
-                                <input type="submit" class="btn btn-primary" name="submit" value="@localizer.Get("Submit")" />
+                                <button id="submit-btn" data-sending="false" class="btn btn-primary">@localizer.Get("Submit")</button>
                             </div>
                         </div>
                     </fieldset>
@@ -122,4 +122,5 @@
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="~/js//safe-form.js"></script>
 }
