@@ -276,6 +276,7 @@ namespace Transactions.Api
             services.Configure<Shva.ShvaGlobalSettings>(Configuration.GetSection("ShvaGlobalSettings"));
             services.Configure<Nayax.Configuration.NayaxGlobalSettings>(Configuration.GetSection("NayaxGlobalSettings"));
             services.Configure<ClearingHouse.ClearingHouseGlobalSettings>(Configuration.GetSection("ClearingHouseGlobalSettings"));
+            services.Configure<Upay.UpayGlobalSettings>(Configuration.GetSection("UpayGlobalSettings"));
             services.Configure<EasyInvoice.EasyInvoiceGlobalSettings>(Configuration.GetSection("EasyInvoiceGlobalSettings"));
 
             services.AddSingleton<IAggregatorResolver, AggregatorResolver>();
@@ -314,6 +315,18 @@ namespace Transactions.Api
                 var tokenSvc = new WebApiClientTokenService(webApiClient.HttpClient, chCfg);
 
                 return new ClearingHouse.ClearingHouseAggregator(webApiClient, logger, chCfg, tokenSvc, storageService);
+            });
+
+            services.AddSingleton<Upay.UpayAggregator, Upay.UpayAggregator>(serviceProvider =>
+            {
+                var chCfg = serviceProvider.GetRequiredService<IOptions<Upay.UpayGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<Upay.UpayAggregator>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.UpayRequestsLogStorageTable, cfg.UpayRequestsLogStorageTable);
+                var tokenSvc = new WebApiClientTokenService(webApiClient.HttpClient, chCfg);
+
+                return new Upay.UpayAggregator(webApiClient, logger, chCfg, tokenSvc, storageService);
             });
 
             services.AddSingleton<NullAggregator, NullAggregator>(serviceProvider =>

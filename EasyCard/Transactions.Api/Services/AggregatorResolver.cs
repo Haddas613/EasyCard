@@ -27,6 +27,7 @@ namespace Transactions.Api.Services
             var aggregator = externalSystemsService.GetExternalSystem(terminalExternalSystem.ExternalSystemID);
 
             // TODO: should be resolved according to integration settings
+            var objectkj = serviceProvider.GetService(Type.GetType(aggregator.InstanceTypeFullName));
             return serviceProvider.GetService(Type.GetType(aggregator.InstanceTypeFullName)) as IAggregator;
         }
 

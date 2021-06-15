@@ -9,6 +9,15 @@
     "Active": true
   },
   {
+    "ExternalSystemID": 60,
+    "Type": "aggregator",
+    "InstanceTypeFullName": "Upay.UpayAggregator, Upay",
+    "SettingsTypeFullName": "Upay.UpayTerminalSettings, Upay",
+    "Name": "PayDay Upay",
+    "Key": "payday-upay",
+    "Active": true
+  },
+  {
     "ExternalSystemID": 20,
     "Type": "processor",
     "InstanceTypeFullName": "Shva.ShvaProcessor, Shva",

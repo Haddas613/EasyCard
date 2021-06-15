@@ -14,6 +14,7 @@ namespace Transactions.Shared
 
         public string ClearingHouseRequestsLogStorageTable { get; set; }
 
+        public string UpayRequestsLogStorageTable { get; set; }
         public string EasyInvoiceRequestsLogStorageTable { get; set; }
 
         public int FiltersGlobalPageSizeLimit { get; set; } = 1000;

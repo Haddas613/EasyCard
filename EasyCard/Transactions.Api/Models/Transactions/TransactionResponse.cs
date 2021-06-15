@@ -164,6 +164,7 @@ namespace Transactions.Api.Models.Transactions
         /// PayDay details
         /// </summary>
         public object ClearingHouseTransactionDetails { get; set; }
+        public object UpayTransactionDetails { get; set; }
 
         /// <summary>
         /// Date-time when transaction status updated

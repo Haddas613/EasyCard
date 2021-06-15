@@ -325,9 +325,17 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.OwnsOne(b => b.ClearingHouseTransactionDetails, s =>
                 {
                     s.Property(p => p.ClearingHouseTransactionID).HasColumnName("ClearingHouseTransactionID");
-                    s.Property(p => p.MerchantReference).HasColumnName("ClearingHouseMerchantReference").IsRequired(false).HasMaxLength(50);
-                    s.Ignore(p => p.ConcurrencyToken);
-                });
+                     s.Property(p => p.MerchantReference).HasColumnName("ClearingHouseMerchantReference").IsRequired(false).HasMaxLength(50);
+                     s.Ignore(p => p.ConcurrencyToken); 
+                 });
+
+                 builder.OwnsOne(b => b.UpayTransactionDetails, s =>
+                 {
+                     s.Property(p => p.UpayTransactionID).HasColumnName("UpayTransactionID");
+                     /*   s.Property(p => p.MerchantReference).HasColumnName("ClearingHouseMerchantReference").IsRequired(false).HasMaxLength(50);
+                        s.Ignore(p => p.ConcurrencyToken);
+                         TODO!! */
+                 });
 
                 builder.OwnsOne(b => b.ShvaTransactionDetails, s =>
                 {

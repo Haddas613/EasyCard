@@ -20,6 +20,7 @@ namespace Transactions.Business.Entities
             PaymentTransactionID = Guid.NewGuid().GetSequentialGuid(TransactionTimestamp.Value);
             CreditCardDetails = new CreditCardDetails();
             ClearingHouseTransactionDetails = new ClearingHouseTransactionDetails();
+            UpayTransactionDetails = new UpayTransactionDetails();
             ShvaTransactionDetails = new ShvaTransactionDetails();
             DealDetails = new DealDetails();
         }
@@ -197,6 +198,7 @@ namespace Transactions.Business.Entities
         /// PayDay details
         /// </summary>
         public ClearingHouseTransactionDetails ClearingHouseTransactionDetails { get; set; }
+        public UpayTransactionDetails UpayTransactionDetails { get; set; }
 
         /// <summary>
         /// Date-time when transaction status updated
