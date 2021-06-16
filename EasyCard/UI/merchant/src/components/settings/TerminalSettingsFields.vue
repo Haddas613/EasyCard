@@ -36,10 +36,19 @@
     <v-row>
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("Features")}}
-        <v-divider class="pt-1"></v-divider>
+        <v-divider></v-divider>
       </v-col>
       <v-col cols="12">
         <terminal-features-form :terminal="data"></terminal-features-form>
+      </v-col>
+    </v-row>
+    <v-row v-if="model.integrations && Object.keys(model.integrations).length > 0" class="pb-2">
+      <v-col cols="12" class="subtitle-2 black--text pb-3">
+        {{$t("Integrations")}}
+        <v-divider></v-divider>
+      </v-col>
+      <v-col cols="12">
+        <terminal-integrations-form :terminal="data"></terminal-integrations-form>
       </v-col>
     </v-row>
     <v-row no-gutters>
@@ -396,6 +405,7 @@ export default {
   components: {
     EcList: () => import("../ec/EcList"),
     TerminalFeaturesForm: () => import("../settings/TerminalFeaturesForm"),
+    TerminalIntegrationsForm: () => import("../settings/TerminalIntegrationsForm"),
     TerminalMerchantLogoInput: () => import("../settings/TerminalMerchantLogoInput"),
   },
   props: {

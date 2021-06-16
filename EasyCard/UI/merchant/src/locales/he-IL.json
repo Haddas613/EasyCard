@@ -75,6 +75,7 @@
   "Features": "תכונות",
   "PauseBillingDeal": "השהה עסקה מחזורית",
   "Basket": "עגלת קניות",
+  "Integrations": "אינטגרציות",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -377,6 +378,10 @@
   "NotSpecified": "לא צוין",
   "Error": "שגיאה",
   "All": "הכל",
+  "processor": "מעבד",
+  "aggregator": "מאגד",
+  "invoicing": "חשבוניות",
+  "pinpadProcessor": "מעבד פינפד",
 
   "--HINTS--": null,
   "ShowOnlyNotTransmittedTransactions": "הצג עסקאות שלא שודרו",

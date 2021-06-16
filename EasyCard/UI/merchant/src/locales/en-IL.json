@@ -75,6 +75,7 @@
   "Features": "Features",
   "PauseBillingDeal": "Pause Billing Deal",
   "Basket": "Basket",
+  "Integrations": "Integrations",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -377,6 +378,10 @@
   "NotSpecified": "Not Specified",
   "Error": "Error",
   "All": "All",
+  "processor": "Processor",
+  "aggregator": "Aggregator",
+  "invoicing": "Invoicing",
+  "pinpadProcessor": "PinPad Processor",
 
   "--HINTS--": null,
   "ShowOnlyNotTransmittedTransactions": "Show only not transmitted transactions",
