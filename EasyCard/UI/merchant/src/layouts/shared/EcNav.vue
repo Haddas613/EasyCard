@@ -194,11 +194,11 @@ export default {
               text: "BillingDealsList",
               to: { name: "BillingDeals" }
             },
-            // {
-            //   icon: "mdi-chart-timeline-variant",
-            //   text: "FutureBillingDeals",
-            //   to: { name: "FutureBillingDeals" }
-            // },
+            {
+              icon: "mdi-chart-timeline-variant",
+              text: "FutureBillingDeals",
+              to: { name: "FutureBillingDeals" }
+            },
             {
               icon: "mdi-plus",
               text: "CreateBillingDeal",

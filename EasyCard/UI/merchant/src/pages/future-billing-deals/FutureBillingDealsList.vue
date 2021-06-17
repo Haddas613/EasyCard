@@ -1,10 +1,10 @@
 <template>
   <v-flex>
-    <billing-deals-filter-dialog
+    <future-billing-deals-filter-dialog
       :show.sync="showDialog"
       :filter="futureBillingDealsFilter"
       v-on:ok="applyFilters($event)"
-    ></billing-deals-filter-dialog>
+    ></future-billing-deals-filter-dialog>
     <v-card class="my-2" width="100%" flat>
       <v-card-title class="pb-0">
         <v-row class="py-0" no-gutters>
@@ -47,51 +47,9 @@
       <v-card-text class="px-0 pt-0">
         <ec-list :items="futureBillingDeals" v-if="futureBillingDeals">
           <template v-slot:prepend="{ item }">
-            <v-tooltip top v-if="item.billingSchedule">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" dark icon v-bind="attrs" v-on="on">
-                  <v-icon>mdi-calendar</v-icon>
-                </v-btn>
-              </template>
-              <billing-schedule-string
-                :schedule="item.billingSchedule"
-                replacement-text="ScheduleIsNotDefined"
-              ></billing-schedule-string>
-            </v-tooltip>
-            <v-icon v-else>mdi-calendar</v-icon>
-
-            <v-tooltip top v-if="item.cardExpired">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="ecred" dark icon v-bind="attrs" v-on="on">
-                  <v-icon :title="$t('CreditCardExpired')">mdi-credit-card</v-icon>
-                </v-btn>
-              </template>
-              {{$t('CreditCardHasExpired')}}
-            </v-tooltip>
-            <v-tooltip top v-else-if="!item.active">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="ecred" dark icon v-bind="attrs" v-on="on">
-                  <v-icon :title="$t('Inactive')">mdi-close</v-icon>
-                </v-btn>
-              </template>
-              {{$t('Inactive')}}
-            </v-tooltip>
-            <v-tooltip top v-else-if="item.paused">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="accent" dark icon v-bind="attrs" v-on="on">
-                  <v-icon :title="$t('Paused')">mdi-pause</v-icon>
-                </v-btn>
-              </template>
-              {{$t('Paused')}}
-            </v-tooltip>
-            <v-tooltip top v-else-if="item.active">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="success" dark icon v-bind="attrs" v-on="on">
-                  <v-icon :title="$t('Active')">mdi-check</v-icon>
-                </v-btn>
-              </template>
-              {{$t('Active')}}
-            </v-tooltip>
+            <small class="secondary--text">
+              <b>{{item.billingDealID}}</b>
+            </small>
           </template>
 
           <template v-slot:left="{ item }">
@@ -101,9 +59,9 @@
               lg="6"
               class="pt-1 caption ecgray--text"
             >
-            <b v-if="item.$nextScheduledTransaction" 
-              v-bind:class="{'error--text': (item.$nextScheduledTransaction > now)}">
-              {{item.$nextScheduledTransaction | ecdate('DD/MM/YYYY')}}
+            <b v-if="item.$futureScheduledTransaction" 
+              v-bind:class="{'error--text': (item.$futureScheduledTransaction > now)}">
+              {{item.$futureScheduledTransaction | ecdate('DD/MM/YYYY')}}
             </b>
             <span v-else>-</span>
             </v-col>
@@ -118,14 +76,13 @@
               class="text-end body-2"
               v-bind:class="{'ecred--text': item.cardExpired}"
             >
-              {{item.currentDeal || '-'}}
+              {{item.futureDeal || '-'}}
             </v-col>
             <v-col
               cols="12"
               md="6"
               lg="6"
               class="text-end font-weight-bold button"
-              v-bind:class="{'ecred--text': item.cardExpired, 'ecgray--text': !item.active}"
             >{{item.transactionAmount | currency(item.$currency)}}</v-col>
           </template>
 
@@ -156,8 +113,8 @@ export default {
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
-    BillingDealsFilterDialog: () =>
-      import("../../components/billing-deals/BillingDealsFilterDialog"),
+    FutureBillingDealsFilterDialog: () =>
+      import("../../components/future-billing-deals/FutureBillingDealsFilterDialog"),
     BillingScheduleString: () =>
       import("../../components/billing-deals/BillingScheduleString"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker")
@@ -187,6 +144,8 @@ export default {
       futureBillingDealsFilter: {
         take: 100,
         skip: 0,
+        dateFrom: this.$formatDate(moment()),
+        dateTo: this.$formatDate(moment().add(1, 'y')),
         ...this.filters
       },
       showDialog: this.showFiltersDialog,
@@ -210,12 +169,12 @@ export default {
         this.numberOfRecords = data.numberOfRecords || 0;
 
         if (futureBillingDeals.length > 0) {
-          let newest = this.futureBillingDeals[0].$billingDealTimestamp;
+          let newest = this.futureBillingDeals[0].$futureScheduledTransaction;
           let oldest = this.futureBillingDeals[this.futureBillingDeals.length - 1]
-            .$billingDealTimestamp;
+            .$futureScheduledTransaction;
           this.datePeriod =
-            this.$options.filters.ecdate(oldest, "L") +
-            ` - ${this.$options.filters.ecdate(newest, "L")}`;
+            this.$options.filters.ecdate(newest, "L") +
+            ` - ${this.$options.filters.ecdate(oldest, "L")}`;
         } else {
           this.datePeriod = null;
         }

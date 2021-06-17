@@ -48,9 +48,11 @@ namespace Transactions.Business.Entities
         /// </summary>
         public CreditCardDetails CreditCardDetails { get; set; }
 
-        public bool Active { get; set; }
+        //public bool Active { get; set; }
 
         public int? CurrentDeal { get; set; }
+
+        public int? FutureDeal { get; set; }
 
         public DateTime? PausedFrom { get; set; }
 

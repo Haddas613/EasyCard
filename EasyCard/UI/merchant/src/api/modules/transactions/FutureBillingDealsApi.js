@@ -2,7 +2,7 @@ export default class FutureBillingDealsApi {
     constructor(base) {
         this.base = base;
         this.baseUrl = this.base.cfg.VUE_APP_TRANSACTIONS_API_BASE_ADDRESS;
-        this.billingUrl = this.baseUrl + '/api/future-billing';
+        this.billingUrl = this.baseUrl + '/api/future-billings';
     }
 
     async get(params) {

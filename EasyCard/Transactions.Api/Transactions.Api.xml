@@ -340,6 +340,16 @@
             Invoice details
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.FutureBillingSummary.CardNumber">
+            <summary>
+            Billing Schedule
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.FutureBillingSummary.CreditCardDetails">
+            <summary>
+            Credit card information(just to display)
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Checkout.ConsumerInfo.ConsumerEmail">
             <summary>
             End-customer Email
