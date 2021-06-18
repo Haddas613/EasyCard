@@ -49,24 +49,40 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <v-card class="mt-2" flat color="ecbg">
-      <v-card-title class="subtitle-1">{{$t("TerminalSettings")}}</v-card-title>
-      <v-divider></v-divider>
-      <v-card-text>
-        <v-form ref="terminalSettingsForm" v-model="terminalSettingsFormValid" lazy-validation>
-          <terminal-settings-fields 
-            v-if="terminalRefreshed"
-            :key="terminalStore ? terminalStore.terminalID : false" 
-            :data="terminalStore" 
-            class="pt-1" 
-            ref="terminalSettingsRef"
-            @update="refreshTerminal()"></terminal-settings-fields>
-          <v-flex class="d-flex justify-end">
-            <v-btn color="primary" :disabled="!terminalSettingsFormValid" :block="$vuetify.breakpoint.smAndDown" @click="saveTerminalSettings()">{{$t('Save')}}</v-btn>
-          </v-flex>
-        </v-form>
-      </v-card-text>
-    </v-card>
+    <v-tabs grow background-color="ecbg">
+      <v-tab key="terminalSettings">{{$t("TerminalSettings")}}</v-tab>
+      <v-tab-item key="terminalSettings">
+        <v-card class="mt-2" flat color="ecbg">
+          <v-card-title class="subtitle-1">{{$t("TerminalSettings")}}</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <v-form ref="terminalSettingsForm" v-model="terminalSettingsFormValid" lazy-validation>
+              <terminal-settings-fields 
+                v-if="terminalRefreshed"
+                :key="terminalStore ? terminalStore.terminalID : false" 
+                :data="terminalStore" 
+                class="pt-1" 
+                ref="terminalSettingsRef"
+                @update="refreshTerminal()"></terminal-settings-fields>
+              <v-flex class="d-flex justify-end">
+                <v-btn color="primary" :disabled="!terminalSettingsFormValid" :block="$vuetify.breakpoint.smAndDown" @click="saveTerminalSettings()">{{$t('Save')}}</v-btn>
+              </v-flex>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-tab-item>
+
+      <v-tab key="ui">{{$t("UI")}}</v-tab>
+      <v-tab-item key="ui">
+        <v-card class="mt-2" flat color="ecbg">
+          <v-card-title class="subtitle-1">{{$t("ChargeWizardSettings")}}</v-card-title>
+          <v-divider></v-divider>
+          <v-card-text>
+            <charge-wizard-settings></charge-wizard-settings>
+          </v-card-text>
+        </v-card>
+      </v-tab-item>
+    </v-tabs>
   </div>
 </template>
 
@@ -77,7 +93,9 @@ export default {
   components: {
     LangSwitcher: () => import("../../components/LanguageSwitcher"),
     TerminalSettingsFields: () =>
-      import("../../components/settings/TerminalSettingsFields")
+      import("../../components/settings/TerminalSettingsFields"),
+    ChargeWizardSettings: () =>
+      import("../../components/settings/ChargeWizardSettings")
   },
   data() {
     return {

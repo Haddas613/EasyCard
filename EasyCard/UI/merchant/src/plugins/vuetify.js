@@ -9,6 +9,9 @@ import en from 'vuetify/es5/locale/en';
 
 Vue.use(Vuetify);
 
+const VBtn = Vue.component('VBtn')
+VBtn.options.props.ripple.default = false
+
 export default new Vuetify({
   theme: {
       options: {

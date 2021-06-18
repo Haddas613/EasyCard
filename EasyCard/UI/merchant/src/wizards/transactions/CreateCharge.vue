@@ -133,32 +133,6 @@ export default {
         }
       },
       step: 1,
-      steps: {
-        1: {
-          title: "Amount",
-          canChangeTerminal: true,
-          showItemsCount: true
-        },
-        2: {
-          title: "Basket",
-        },
-        3: {
-          title: "ChooseCustomer",
-          skippable: true
-        },
-        4: {
-          title: "PaymentInfo"
-          // ,skippable: true
-        },
-        5: {
-          title: "AdditionalSettings"
-        },
-        //Last step may be dynamically altered to represent error if transaction creation has failed.
-        6: {
-          title: "Success",
-          completed: true
-        }
-      },
       threeDotMenuItems: null,
       success: true,
       errors: [],
@@ -172,8 +146,18 @@ export default {
       return this.$t(this.steps[this.step].title);
     },
     ...mapState({
-      terminal: state => state.settings.terminal
+      terminal: state => state.settings.terminal,
+      steps: state => state.ui.chargeWizard.steps
     })
+  },
+  watch: {
+    step(newValue, oldValue) {
+      if(newValue > oldValue && this.steps[newValue].skip){
+        this.step++;
+      }else if(this.steps[newValue].skip){
+        this.step--;
+      }
+    }
   },
   async mounted() {
     if (this.customerid) {

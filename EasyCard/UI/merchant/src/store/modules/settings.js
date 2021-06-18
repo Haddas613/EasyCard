@@ -24,7 +24,7 @@ const actions = {
   },
   async getTerminal(store, { api, lodash }){
     let state = store.state;
-
+    
     let terminals = (await api.terminals.getTerminals());
     terminals = terminals ? terminals.data : [];
 
@@ -51,9 +51,14 @@ const actions = {
 
     commit('setTerminal', terminal);
   },
-  async changeTerminal({ commit }, { api, newTerminal }) {
+  async changeTerminal({ state, commit, dispatch }, { api, newTerminal }) {
     let terminal = await api.terminals
       .getTerminal(typeof (newTerminal) === "string" ? newTerminal : newTerminal.terminalID);
+
+    //TODO: Temporary, remove when wizard settings are finished
+    if(!state.terminal || state.terminal.terminalID != typeof (newTerminal) === "string" ? newTerminal : newTerminal.terminalID){
+      dispatch('ui/refreshWizard', '', { root: true });
+    }
 
     commit('setTerminal', terminal);
   },
