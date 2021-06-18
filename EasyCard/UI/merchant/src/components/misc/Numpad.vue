@@ -175,8 +175,28 @@ export default {
     }
     await this.getItems();
     this.$emit('update', this.model);
+
+    window.addEventListener("keypress", this.handleKeyPress);
+  },
+  destroyed () {
+    window.removeEventListener("keypress", this.handleKeyPress);
   },
   methods: {
+    handleKeyPress($event){
+      if(!isNaN($event.key)){
+        this.addDigit($event.key);
+        return;
+      }
+      switch($event.key){
+        case ".":
+        case ",":
+          this.addDot();
+          break;
+        case "+":
+          this.stash();
+          break;
+      }
+    },
     addDigit(d) {
       if (this.defaultItem.price == "0") this.defaultItem.price = d;
       else if (this.defaultItem.price < 100000) {
