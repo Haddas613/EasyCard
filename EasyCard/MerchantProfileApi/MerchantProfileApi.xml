@@ -100,6 +100,11 @@
               Looks up a localized string similar to Consumer Updated.
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Messages.DeletedSuccessfully">
+            <summary>
+              Looks up a localized string similar to Deleted successfully.
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Messages.FileRequired">
             <summary>
               Looks up a localized string similar to File required.

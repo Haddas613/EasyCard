@@ -90,4 +90,12 @@ export default class TerminalsApi {
     async uploadCustomCSS(terminalID, file){
         return this.base.postFile(this.terminalsUrl + `/${terminalID}/customcss`, file);
     }
+
+    async deleteCustomCSS(terminalID){
+        return this.base.delete(this.terminalsUrl + `/${terminalID}/customcss`);
+    }
+
+    async deleteMerchantLogo(terminalID){
+        return this.base.delete(this.terminalsUrl + `/${terminalID}/merchantlogo`);
+    }
 }

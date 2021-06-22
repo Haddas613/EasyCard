@@ -132,6 +132,9 @@
   <data name="ConsumerUpdated" xml:space="preserve">
     <value>לקוח עודכן</value>
   </data>
+  <data name="DeletedSuccessfully" xml:space="preserve">
+    <value>נמחק בהצלחה</value>
+  </data>
   <data name="FileRequired" xml:space="preserve">
     <value>נדרש קובץ</value>
   </data>

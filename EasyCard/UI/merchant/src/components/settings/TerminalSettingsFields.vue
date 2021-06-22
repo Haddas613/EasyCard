@@ -290,11 +290,13 @@
       <v-col cols="12" md="7">
         <terminal-merchant-logo-input v-model="model"></terminal-merchant-logo-input>
       </v-col>
-      <v-col cols="12" md="5" class="d-flex justify-items-center">
-        <img class="mt-1" v-if="model.paymentRequestSettings.merchantLogo" v-bind:src="model.paymentRequestSettings.merchantLogo" height="48">
-        <!-- <v-btn class="pt-4" icon color="error" @click="deleteMerchantLogo()">
-          <v-icon>mdi-delete</v-icon>
-        </v-btn> -->
+      <v-col cols="12" md="5">
+        <div  class="d-flex justify-items-center" v-if="model.paymentRequestSettings.merchantLogo">
+          <img class="mt-1" v-bind:src="model.paymentRequestSettings.merchantLogo" height="48">
+          <v-btn class="mt-2" icon color="error" @click="deleteMerchantLogo()">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </div>
       </v-col>
     </v-row>
     <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Billing)">
@@ -333,12 +335,12 @@
       </v-col>
       <v-col cols="12" md="5">
         <div v-if="model.checkoutSettings.customCssReference" class="mt-5">
-          <a v-bind:href="model.checkoutSettings.customCssReference">
+          <a class="body-1" v-bind:href="model.checkoutSettings.customCssReference">
             {{$t("LinkToCSS")}}
           </a>
-          <!-- <v-btn icon color="error" @click="deleteCustomCSS()">
+          <v-btn icon color="error" @click="deleteCustomCSS()">
             <v-icon>mdi-delete</v-icon>
-          </v-btn> -->
+          </v-btn>
         </div>
       </v-col>
       <v-col cols="12" md="7">
@@ -496,12 +498,9 @@ export default {
       let operation = await this.$api.terminals.resetPrivateApiKey(
         this.model.terminalID
       );
+      if(!this.$apiSuccess(operation)) return;
 
-      if (operation.status === "success") {
-        this.privateApiKey = operation.entityReference;
-      }else{
-        this.$toasted.show(operation.message, { type: 'error' });
-      }
+      this.privateApiKey = operation.entityReference;
     },
     async resetSharedKey() {
       if (!this.model.terminalID) {
@@ -510,12 +509,11 @@ export default {
       let operation = await this.$api.terminals.resetSharedApiKey(
         this.model.terminalID
       );
+      if(!this.$apiSuccess(operation)) return;
 
-      if (operation.status === "success") {
-        this.showSharedKey = true;
-        this.model.sharedApiKey = operation.entityReference;
-        this.emitUpdate();
-      }
+      this.showSharedKey = true;
+      this.model.sharedApiKey = operation.entityReference;
+      this.emitUpdate();
     },
     emitUpdate() {
       this.$emit("update", this.model);
@@ -542,6 +540,16 @@ export default {
         this.changed = true;
         modelWatcher(); //unwatch
       }, { deep: true})
+    },
+    async deleteCustomCSS(){
+      let operation = await this.$api.terminals.deleteCustomCSS(this.data.terminalID);
+      if(!this.$apiSuccess(operation)) return;
+      this.model.checkoutSettings.customCssReference = null;
+    },
+    async deleteMerchantLogo(){
+      let operation = await this.$api.terminals.deleteMerchantLogo(this.data.terminalID);
+      if(!this.$apiSuccess(operation)) return;
+       this.data.paymentRequestSettings.merchantLogo = null;
     }
   }
 };

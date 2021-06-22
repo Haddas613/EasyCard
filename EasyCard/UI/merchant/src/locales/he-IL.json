@@ -244,7 +244,7 @@
   "VATExempt": "פטור ממע\"מ",
   "RedirectURL": "URL רידיירקט",
   "CheckoutRedirectUrls": "בדוק URL רידיירקט",
-  "CustomCSSURL": "לCSS בית עסק",
+  "CustomCSS": "לCSS בית עסק",
   "LinkToCSS": "קישור ל- CSS",
   "Granularity": "פירוט",
   "Email": "מייל",

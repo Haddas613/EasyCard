@@ -35,7 +35,7 @@ export default {
         let operation = await this.$api.terminals.uploadCustomCSS(this.data.terminalID, file);
         if(!this.$apiSuccess(operation)) return;
 
-        this.data.checkoutSettings.customCssReference = operation.additionalData.logoUrl;
+        this.data.checkoutSettings.customCssReference = operation.additionalData.url;
         this.$emit("change", this.data);
     }
   },

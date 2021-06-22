@@ -398,11 +398,11 @@ namespace Merchants.Api.Controllers
 
                 var filename = $"merchantdata/{terminal.TerminalID.ToString().Substring(0, 8)}/logo{Path.GetExtension(file.FileName)}";
 
-                var logoUrl = await blobStorageService.Upload(filename, uploadStream);
+                var url = await blobStorageService.Upload(filename, uploadStream);
 
-                terminal.PaymentRequestSettings.MerchantLogo = logoUrl;
+                terminal.PaymentRequestSettings.MerchantLogo = url;
                 await terminalsService.UpdateEntity(terminal);
-                response.AdditionalData = JObject.FromObject(new { logoUrl });
+                response.AdditionalData = JObject.FromObject(new { url });
 
                 //TODO: temporary, use events to update EC logo
                 var easyInvoiceIntegration = terminal.Integrations.FirstOrDefault(i => i.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID);
@@ -462,13 +462,41 @@ namespace Merchants.Api.Controllers
 
                 var filename = $"merchantdata/{terminal.TerminalID.ToString().Substring(0, 8)}/style.css";
 
-                var logoUrl = await blobStorageService.Upload(filename, uploadStream);
+                var url = await blobStorageService.Upload(filename, uploadStream);
 
-                terminal.PaymentRequestSettings.MerchantLogo = logoUrl;
+                terminal.CheckoutSettings.CustomCssReference = url;
                 await terminalsService.UpdateEntity(terminal);
-                response.AdditionalData = JObject.FromObject(new { logoUrl });
+                response.AdditionalData = JObject.FromObject(new { url });
             }
 
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        [Route("{terminalID}/customcss")]
+        public async Task<ActionResult<OperationResponse>> DeleteCustomCss([FromRoute]Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+            EnsureExists(terminal.CheckoutSettings?.CustomCssReference);
+
+            terminal.CheckoutSettings.CustomCssReference = null;
+            await terminalsService.UpdateEntity(terminal);
+
+            var response = new OperationResponse { Message = Messages.DeletedSuccessfully, Status = StatusEnum.Success };
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        [Route("{terminalID}/merchantlogo")]
+        public async Task<ActionResult<OperationResponse>> DeleteMerchantLogo([FromRoute]Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+            EnsureExists(terminal.PaymentRequestSettings?.MerchantLogo);
+
+            terminal.PaymentRequestSettings.MerchantLogo = null;
+            await terminalsService.UpdateEntity(terminal);
+
+            var response = new OperationResponse { Message = Messages.DeletedSuccessfully, Status = StatusEnum.Success };
             return Ok(response);
         }
 
