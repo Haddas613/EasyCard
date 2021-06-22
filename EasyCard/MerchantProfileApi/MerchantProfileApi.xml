@@ -135,6 +135,11 @@
               Looks up a localized string similar to Max file size is 1MB.
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Messages.OnlyCSSFilesAreAllowed">
+            <summary>
+              Looks up a localized string similar to Only CSS files are allowed.
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Messages.OnlyImagesAreAllowed">
             <summary>
               Looks up a localized string similar to Only images are allowed.
@@ -143,6 +148,11 @@
         <member name="P:MerchantProfileApi.Messages.PrivateKeyUpdated">
             <summary>
               Looks up a localized string similar to Private Key Updated.
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Messages.Saved">
+            <summary>
+              Looks up a localized string similar to Saved.
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Messages.SharedKeyUpdated">

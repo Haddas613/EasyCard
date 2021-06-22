@@ -138,11 +138,17 @@
   <data name="MerchantUpdated" xml:space="preserve">
     <value>בית עסק עודכן</value>
   </data>
+  <data name="OnlyCSSFilesAreAllowed" xml:space="preserve">
+    <value>רק קבצי CSS מותרים</value>
+  </data>
   <data name="OnlyImagesAreAllowed" xml:space="preserve">
     <value>ניתן להעלות רק תמונות</value>
   </data>
   <data name="PasswordReset" xml:space="preserve">
     <value>סיסמה אופסה בהצלחה</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>שמור</value>
   </data>
   <data name="SharedKeyUpdated" xml:space="preserve">
     <value>מפתח ציבורי עודכן</value>

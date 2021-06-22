@@ -136,6 +136,7 @@
   "CreditCardExpired": "Credit Card has expired",
   "InvalidCredentials": "Invalid credentials",
   "OnlyImagesAreAllowed": "Only images are allowed",
+  "OnlyCSSFilesAreAllowed": "Only CSS files are allowed",
   "MaxFileSizeIs1MB": "Max file size is 1MB",
   
   "--FORM & DATA FIELDS--": null,
@@ -280,7 +281,8 @@
   "MerchantLogo": "Merchant Logo",
   "RedirectURL": "Redirect URL",
   "CheckoutRedirectUrls": "Checkout Redirect URLs",
-  "CustomCSSURL": "Custom CSS URL",
+  "CustomCSS": "Custom CSS",
+  "LinkToCSS": "Link to CSS",
   "OnlyActive": "Only Active",
   "TerminalID": "Terminal ID",
   "CorrelationID": "Correlation ID",

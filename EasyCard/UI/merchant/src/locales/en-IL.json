@@ -114,6 +114,7 @@
   "CreditCardExpired": "Credit Card has expired",
   "@StringLengthExact": "Must be exactly @val characters",
   "OnlyImagesAreAllowed": "Only images are allowed",
+  "OnlyCSSFilesAreAllowed": "Only CSS files are allowed",
   "MaxFileSizeIs1MB": "Max file size is 1MB",
   
   "--FORM & DATA FIELDS--": null,
@@ -243,7 +244,8 @@
   "VATExempt": "VAT Exempt",
   "RedirectURL": "Redirect URL",
   "CheckoutRedirectUrls": "Checkout Redirect URLs",
-  "CustomCSSURL": "Custom CSS URL",
+  "CustomCSS": "Custom CSS",
+  "LinkToCSS": "Link to CSS",
   "Granularity": "Granularity",
   "Email": "Email",
   "Name": "Name",
@@ -383,6 +385,7 @@
   "aggregator": "Aggregator",
   "invoicing": "Invoicing",
   "pinpadProcessor": "PinPad Processor",
+  "Link": "Link",
 
   "--HINTS--": null,
   "ShowOnlyNotTransmittedTransactions": "Show only not transmitted transactions",

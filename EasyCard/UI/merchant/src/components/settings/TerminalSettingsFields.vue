@@ -290,8 +290,11 @@
       <v-col cols="12" md="7">
         <terminal-merchant-logo-input v-model="model"></terminal-merchant-logo-input>
       </v-col>
-      <v-col cols="12" md="5">
+      <v-col cols="12" md="5" class="d-flex justify-items-center">
         <img class="mt-1" v-if="model.paymentRequestSettings.merchantLogo" v-bind:src="model.paymentRequestSettings.merchantLogo" height="48">
+        <!-- <v-btn class="pt-4" icon color="error" @click="deleteMerchantLogo()">
+          <v-icon>mdi-delete</v-icon>
+        </v-btn> -->
       </v-col>
     </v-row>
     <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Billing)">
@@ -326,16 +329,19 @@
         <v-divider class="pt-1"></v-divider>
       </v-col>
       <v-col cols="12" md="7">
-        <v-text-field
-          v-model="model.checkoutSettings.customCssReference"
-          :counter="512"
-          :rules="[vr.primitives.maxLength(512)]"
-          :label="$t('CustomCSSURL')"
-          outlined
-          persistent-hint
-        ></v-text-field>
+        <terminal-merchant-style-input v-model="model"></terminal-merchant-style-input>
       </v-col>
       <v-col cols="12" md="5">
+        <div v-if="model.checkoutSettings.customCssReference" class="mt-5">
+          <a v-bind:href="model.checkoutSettings.customCssReference">
+            {{$t("LinkToCSS")}}
+          </a>
+          <!-- <v-btn icon color="error" @click="deleteCustomCSS()">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn> -->
+        </div>
+      </v-col>
+      <v-col cols="12" md="7">
         <v-switch
           class="pt-0"
           v-model="model.checkoutSettings.issueInvoice"
@@ -372,7 +378,7 @@
           </template>
           <template v-slot:append="{ item }">
             <v-btn class="mb-8" icon @click="deleteRedirectUrl(item)">
-              <v-icon class="red--text">mdi-delete</v-icon>
+              <v-icon color="error">mdi-delete</v-icon>
             </v-btn>
           </template>
         </ec-list>
@@ -407,6 +413,7 @@ export default {
     TerminalFeaturesForm: () => import("../settings/TerminalFeaturesForm"),
     TerminalIntegrationsForm: () => import("../settings/TerminalIntegrationsForm"),
     TerminalMerchantLogoInput: () => import("../settings/TerminalMerchantLogoInput"),
+    TerminalMerchantStyleInput: () => import("../settings/TerminalMerchantStyleInput"),
   },
   props: {
     data: {

@@ -239,13 +239,11 @@
             <terminal-merchant-logo-input v-model="model"></terminal-merchant-logo-input>
           </v-col>
           <v-spacer></v-spacer>
-          <v-col cols="12" md="5">
-            <img
-              class="mt-1"
-              v-if="model.paymentRequestSettings.merchantLogo"
-              v-bind:src="model.paymentRequestSettings.merchantLogo"
-              height="48"
-            />
+          <v-col cols="12" md="5" class="d-flex justify-items-center">
+            <img class="mt-1" v-if="model.paymentRequestSettings.merchantLogo" v-bind:src="model.paymentRequestSettings.merchantLogo" height="48">
+            <!-- <v-btn class="pt-4" icon color="error" @click="deleteMerchantLogo()">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn> -->
           </v-col>
         </v-row>
       </v-card-text>
@@ -313,13 +311,17 @@
             <v-divider class="py-2"></v-divider>
           </v-col>
           <v-col cols="12" md="7">
-            <v-text-field
-              v-model="model.checkoutSettings.customCssReference"
-              :counter="512"
-              :rules="[vr.primitives.maxLength(512)]"
-              :label="$t('CustomCSSURL')"
-              persistent-hint
-            ></v-text-field>
+            <terminal-merchant-style-input v-model="model"></terminal-merchant-style-input>
+          </v-col>
+          <v-col cols="12" md="5">
+            <div v-if="model.checkoutSettings.customCssReference" class="px-4 mt-5">
+              <a v-bind:href="model.checkoutSettings.customCssReference">
+                {{$t("LinkToCSS")}}
+              </a>
+              <!-- <v-btn icon color="error" @click="deleteCustomCSS()">
+                <v-icon>mdi-delete</v-icon>
+              </v-btn> -->
+            </div>
           </v-col>
           <v-col cols="12" md="5">
             <v-switch
@@ -403,7 +405,8 @@ import appConstants from "../../helpers/app-constants";
 export default {
   components: {
     EcList: () => import("../ec/EcList"),
-    TerminalMerchantLogoInput: () => import("./TerminalMerchantLogoInput")
+    TerminalMerchantLogoInput: () => import("./TerminalMerchantLogoInput"),
+    TerminalMerchantStyleInput: () => import("./TerminalMerchantStyleInput"),
   },
   props: {
     data: {

@@ -33,7 +33,7 @@
               :label="$t('Terminal')"
               outlined
               v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
-              @change="confirmLeave()"
+              @change="confirmLeave($event)"
             ></v-select>
           </v-col>
           <v-col cols="12" md="4">

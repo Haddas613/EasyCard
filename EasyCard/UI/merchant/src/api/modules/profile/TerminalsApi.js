@@ -42,4 +42,8 @@ export default class TerminalsApi {
     async uploadMerchantLogo(terminalID, file){
         return this.base.postFile(this.terminalsUrl + `/${terminalID}/merchantlogo`, file);
     }
+
+    async uploadCustomCSS(terminalID, file){
+        return this.base.postFile(this.terminalsUrl + `/${terminalID}/customcss`, file);
+    }
 }

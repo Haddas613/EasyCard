@@ -114,6 +114,7 @@
   "CreditCardExpired": "פג תוקף כרטיס האשראי",
   "@StringLengthExact": "חייב להיות בדיוק @val תווים",
   "OnlyImagesAreAllowed": "ניתן להעלות רק תמונות",
+  "OnlyCSSFilesAreAllowed": "רק קבצי CSS מותרים",
   "MaxFileSizeIs1MB": "גודל הקובץ המרבי הוא 1MB",
   
   "--FORM & DATA FIELDS--": null,
@@ -243,7 +244,8 @@
   "VATExempt": "פטור ממע\"מ",
   "RedirectURL": "URL רידיירקט",
   "CheckoutRedirectUrls": "בדוק URL רידיירקט",
-  "CustomCSSURL": "URL לCSS בית עסק",
+  "CustomCSSURL": "לCSS בית עסק",
+  "LinkToCSS": "קישור ל- CSS",
   "Granularity": "פירוט",
   "Email": "מייל",
   "Name": "שם",
@@ -383,6 +385,7 @@
   "aggregator": "מאגד",
   "invoicing": "חשבוניות",
   "pinpadProcessor": "מעבד פינפד",
+  "Link": "קישור",
 
   "--HINTS--": null,
   "ShowOnlyNotTransmittedTransactions": "הצג עסקאות שלא שודרו",

@@ -176,7 +176,7 @@ namespace MerchantsApi.Tests
                 merchantsFixture.TerminalsService,
                 merchantsFixture.ApplicationSettings,
                 merchantsFixture.ImpersonationService,
-                null);
+                merchantsFixture.ApiSettings);
         }
     }
 }

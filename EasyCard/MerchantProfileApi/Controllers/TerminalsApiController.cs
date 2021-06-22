@@ -198,6 +198,46 @@ namespace MerchantProfileApi.Controllers
         }
 
         [HttpPost]
+        [Route("{terminalID}/customcss")]
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<OperationResponse>> UploadCustomCss([FromRoute]Guid terminalID, [FromForm]IFormFile file)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+
+            if (file == null || file.Length <= 0)
+            {
+                return BadRequest(new OperationResponse { Message = Messages.FileRequired, Status = StatusEnum.Error });
+            }
+
+            if (file.Length > 1000000)
+            {
+                return BadRequest(new OperationResponse { Message = Messages.MaxFileSizeIs1MB, Status = StatusEnum.Error });
+            }
+
+            if (!file.ContentType.Contains("text/css"))
+            {
+                return BadRequest(new OperationResponse { Message = Messages.OnlyCSSFilesAreAllowed, Status = StatusEnum.Error });
+            }
+
+            var response = new OperationResponse { Message = Messages.Saved, Status = StatusEnum.Success };
+
+            using (var uploadStream = file.OpenReadStream())
+            {
+                uploadStream.Seek(0, SeekOrigin.Begin);
+
+                var filename = $"merchantdata/{terminal.TerminalID.ToString().Substring(0, 8)}/style.css";
+
+                var logoUrl = await blobStorageService.Upload(filename, uploadStream);
+
+                terminal.PaymentRequestSettings.MerchantLogo = logoUrl;
+                await terminalsService.UpdateEntity(terminal);
+                response.AdditionalData = JObject.FromObject(new { logoUrl });
+            }
+
+            return Ok(response);
+        }
+
+        [HttpPost]
         [Route("{terminalID}/resetApiKey")]
         public async Task<ActionResult<OperationResponse>> CreateTerminalApiKey([FromRoute] Guid terminalID)
         {
