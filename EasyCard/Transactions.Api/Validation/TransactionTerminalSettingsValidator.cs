@@ -70,13 +70,12 @@ namespace Transactions.Api.Validation
                     {
                         errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.CardReaderInput)}", Messages.CardReaderInputRequired));
                     }
-                }
 
-                if (terminalSettings.NationalIDRequired == true && string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID))
-                {
-                    errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.CardOwnerNationalID)}", Messages.CardOwnerNationalIDRequired));
+                    if (terminalSettings.NationalIDRequired == true && string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID))
+                    {
+                        errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.CardOwnerNationalID)}", Messages.CardOwnerNationalIDRequired));
+                    }
                 }
-
             }
 
             if (model.TransactionType == TransactionTypeEnum.Credit || model.TransactionType == TransactionTypeEnum.Installments)

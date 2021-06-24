@@ -13,18 +13,18 @@ namespace Shared.Api
 {
     public class ApiControllerBase : ControllerBase
     {
-        private IRequestCultureFeature requestCultureFeature;
+        private CultureInfo requestCulture;
 
         protected CultureInfo CurrentCulture
         {
             get
             {
-                if (requestCultureFeature == null)
+                if (requestCulture == null)
                 {
-                    requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+                    requestCulture = HttpContext.Features.Get<IRequestCultureFeature>()?.RequestCulture?.Culture ?? CultureInfo.InvariantCulture;
                 }
 
-                return requestCultureFeature.RequestCulture?.Culture ?? CultureInfo.InvariantCulture;
+                return requestCulture;
             }
         }
 

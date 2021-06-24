@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -329,5 +329,17 @@
   </data>
   <data name="YouPasswordHasBeenReset" xml:space="preserve">
     <value>Your password has been reset</value>
+  </data>
+  <data name="Manager" xml:space="preserve">
+    <value>Manager</value>
+  </data>
+  <data name="Merchant" xml:space="preserve">
+    <value>Merchant</value>
+  </data>
+  <data name="PasswordMatchValidationMessage" xml:space="preserve">
+    <value>Password does not meet system requirements</value>
+  </data>
+  <data name="PasswordMatchValidatonMessage" xml:space="preserve">
+    <value>Password does not meet system requirements </value>
   </data>
 </root>

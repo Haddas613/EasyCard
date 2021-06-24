@@ -57,6 +57,7 @@
 import moment from "moment";
 
 export default {
+  name: "Invoicing",
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
@@ -155,22 +156,23 @@ export default {
       }
     }
   },
-  async mounted() {
-    const vm = this;
-    this.$store.commit("ui/changeHeader", {
-      value: {
-        threeDotMenu: [
-          {
-            text: this.$t("ResendInvoices"),
-            fn: async () => {
-              await vm.resendSelectedInvoices();
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.$store.commit("ui/changeHeader", {
+        value: {
+          threeDotMenu: [
+            {
+              text: vm.$t("ResendInvoices"),
+              fn: async () => {
+                await vm.createTransactions();
+              }
             }
+          ],
+          refresh: async () => {
+            await vm.getDataFromApi();
           }
-        ],
-        refresh: async () => {
-          await this.getDataFromApi();
         }
-      }
+      });
     });
   }
 };

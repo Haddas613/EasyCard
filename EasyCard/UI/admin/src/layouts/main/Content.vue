@@ -6,7 +6,9 @@
           <ec-header-content :drawer.sync="drawerObj"></ec-header-content>
         </v-app-bar>
         <div class="px-1">
-          <router-view />
+          <keep-alive max="1" :include="keepAliveComponentsList">
+            <router-view/>
+          </keep-alive>
         </div>
       </v-flex>
     </v-container>
@@ -21,7 +23,15 @@ export default {
   components: {
     EcHeaderContent
   },
+  data() {
+    return {
+      keepAliveComponentsList: []
+    }
+  },
   props: ["drawer"],
+  mounted () {
+    this.keepAliveComponentsList = this.lodash.filter(this.$router.options.routes[0].children, r => r.keepAlive).map(r => r.name);
+  },
   computed: {
     drawerObj: {
       get: function() {

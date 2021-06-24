@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -338,5 +338,8 @@
   </data>
   <data name="Merchant" xml:space="preserve">
     <value>סוחר</value>
+  </data>
+  <data name="PasswordMatchValidationMessage" xml:space="preserve">
+    <value>סיסמה לא עומדת בדרישות מערכת</value>
   </data>
 </root>

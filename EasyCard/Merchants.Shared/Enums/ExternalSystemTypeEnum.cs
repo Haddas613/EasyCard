@@ -18,7 +18,7 @@ namespace Merchants.Shared.Enums
 
         [EnumMember(Value = "marketer")]
         Marketer = 4,
-       
+
         [EnumMember(Value = "pinpadProcessor")]
         PinpadProcessor = 5
     }

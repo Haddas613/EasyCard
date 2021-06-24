@@ -64,14 +64,7 @@
             <v-icon v-else-if="item.$transactionType == 'installments'" color="accent">mdi-credit-card-check</v-icon>
             <v-icon v-else color="secondary">mdi-credit-card-outline</v-icon>
           </span>
-        </template>
-        <template v-slot:item.paymentTypeEnum="{ item }">
-          <span :title="item.paymentTypeEnum">
-            <v-icon v-if="item.$paymentTypeEnum == 'card'" color="primary">mdi-cash</v-icon>
-            <v-icon v-else-if="item.$paymentTypeEnum == 'check'" color="accent">mdi-credit-card-check</v-icon>
-            <v-icon v-else color="secondary">mdi-credit-card-outline</v-icon>
-          </span>
-        </template>    
+        </template>   
       </v-data-table>
     </div>
   </v-card>
@@ -79,7 +72,7 @@
 
 <script>
 export default {
-  name: "TransactionsList",
+  name: "Transactions",
   components: { 
     TransactionsFilter : () => import("../../components/transactions/TransactionsFilter"), 
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
@@ -122,8 +115,10 @@ export default {
       deep: true
     }
   },
-  async mounted () {
-    this.$store.commit("ui/setRefreshHandler", { value: this.getDataFromApi});
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.$store.commit("ui/setRefreshHandler", { value: vm.getDataFromApi});
+    });
   },
   methods: {
     async getDataFromApi() {

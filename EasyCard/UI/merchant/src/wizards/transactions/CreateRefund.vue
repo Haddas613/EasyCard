@@ -39,7 +39,7 @@
 
         <v-stepper-content step="4" class="py-0 px-0">
           <credit-card-secure-details
-            :key="creditCardRefreshState"
+            :key="model.dealDetails.consumerID"
             :data="model"
             v-on:ok="processCreditCard($event)"
             ref="ccSecureDetails"
@@ -101,7 +101,6 @@ export default {
     return {
       customer: null,
       skipCustomerStep: false,
-      creditCardRefreshState: null,
       invoiceType: null,
       model: {
         terminalID: null,
@@ -185,8 +184,7 @@ export default {
         this.model.dealDetails.consumerPhone = data.consumerPhone;
         this.model.dealDetails.consumerAddress = data.consumerAddress;
         this.model.dealDetails.consumerID = data.consumerID;
-        this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState =
-          data.consumerName;
+        this.model.creditCardSecureDetails.cardOwnerName = data.consumerName;
         this.model.creditCardSecureDetails.cardOwnerNationalID =
           data.consumerNationalID;
       }
@@ -206,7 +204,6 @@ export default {
       this.model.dealDetails.consumerPhone = null;
       this.model.dealDetails.consumerAddress = null;
       this.model.dealDetails.consumerID = null;
-      this.creditCardRefreshState = null;
       if (this.model.creditCardSecureDetails) {
         this.model.creditCardSecureDetails.cardOwnerName = null;
         this.model.creditCardSecureDetails.cardOwnerNationalID = null;
@@ -231,14 +228,12 @@ export default {
           cardOwnerNationalID: data.consumerNationalID
         });
       } else {
-        this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState =
-          data.consumerName;
+        this.model.creditCardSecureDetails.cardOwnerName = data.consumerName;
         this.model.creditCardSecureDetails.cardOwnerNationalID =
           data.consumerNationalID;
       }
       this.model.creditCardToken = null;
       this.$refs.ccSecureDetails.resetToken();
-      this.creditCardRefreshState = data.consumerName;
       this.step++;
     },
     processToBasket(){

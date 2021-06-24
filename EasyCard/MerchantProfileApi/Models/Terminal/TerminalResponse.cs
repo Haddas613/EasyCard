@@ -40,6 +40,8 @@ namespace MerchantProfileApi.Models.Terminal
 
         public TerminalCheckoutSettings CheckoutSettings { get; set; }
 
+        public Dictionary<ExternalSystemTypeEnum, string> Integrations { get; set; }
+
         public byte[] SharedApiKey { get; set; }
     }
 }

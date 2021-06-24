@@ -208,6 +208,16 @@ const routes = [
                     import ('../pages/billing-deals/BillingDealsList.vue'),
             },
             {
+                name: 'FutureBillingDeals',
+                path: 'future-billing-deals/list',
+                props: true,
+                meta: {
+                    guard: allowedForManagerOrAdminGuard
+                },
+                component: () =>
+                    import ('../pages/future-billing-deals/FutureBillingDealsList.vue'),
+            },
+            {
                 name: 'BillingDeal',
                 meta: {
                     backBtn: true,
@@ -230,7 +240,9 @@ const routes = [
             {
                 name: 'CreateBillingDeal',
                 path: 'billing-deals/create',
-                guard: allowedForManagerOrAdminGuard,
+                meta: {
+                    guard: allowedForManagerOrAdminGuard
+                },
                 component: () =>
                     import ('../pages/billing-deals/CreateBillingDeal.vue'),
             },

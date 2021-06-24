@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DeletedSuccessfully" xml:space="preserve">
+    <value>Deleted successfully</value>
+  </data>
   <data name="ExternalSystemRemoved" xml:space="preserve">
     <value>External System Removed</value>
   </data>
@@ -138,11 +141,17 @@
   <data name="MerchantUpdated" xml:space="preserve">
     <value>Merchant Updated</value>
   </data>
+  <data name="OnlyCSSFilesAreAllowed" xml:space="preserve">
+    <value>Only CSS files are allowed</value>
+  </data>
   <data name="OnlyImagesAreAllowed" xml:space="preserve">
     <value>Only images are allowed</value>
   </data>
   <data name="PasswordReset" xml:space="preserve">
     <value>Password reset succesfully</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Saved</value>
   </data>
   <data name="SharedKeyUpdated" xml:space="preserve">
     <value>Shared Key Updated</value>

@@ -44,8 +44,6 @@ namespace Transactions.Api.Models.PaymentRequests
         [JsonConverter(typeof(StringEnumConverter))]
         public PayReqQuickStatusFilterTypeEnum QuickStatus { get; set; }
 
-        public decimal? PaymentRequestAmount { get; set; }
-
         public string CardOwnerName { get; set; }
 
         public string CardOwnerNationalID { get; set; }
@@ -64,6 +62,31 @@ namespace Transactions.Api.Models.PaymentRequests
         /// <summary>
         /// Installment payments details (should be omitted in case of regular deal)
         /// </summary>
-        public IntegrationModels.InstallmentDetails InstallmentDetails { get; set; }
+        //public IntegrationModels.InstallmentDetails InstallmentDetails { get; set; }
+
+        /// <summary>
+        /// Number Of payments (cannot be more than 999)
+        /// </summary>
+        public int NumberOfPayments { get; set; }
+
+        /// <summary>
+        /// Initial installment payment
+        /// </summary>
+        public decimal InitialPaymentAmount { get; set; }
+
+        /// <summary>
+        /// TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+        /// </summary>
+        public decimal TotalAmount { get; set; }
+
+        /// <summary>
+        /// Amount of one instalment payment
+        /// </summary>
+        public decimal InstallmentPaymentAmount { get; set; }
+
+        /// <summary>
+        /// This amount
+        /// </summary>
+        public decimal PaymentRequestAmount { get; set; }
     }
 }

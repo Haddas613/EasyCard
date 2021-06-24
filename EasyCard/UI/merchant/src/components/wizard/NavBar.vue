@@ -134,6 +134,7 @@ export default {
           newTerminal: nv
         });
         this.$emit('terminal-changed', nv);
+        this.terminalDialog = false;
       }
     },
     ...mapState({

@@ -30,38 +30,41 @@
       </template>
     </ec-dialog>
     <v-card-text class="py-2">
-      <ec-dialog-invoker
-        v-on:click="handleClick()"
-        v-if="customerTokens"
-        :clickable="(customerTokens.length > 0)"
-        class="py-2"
-      >
-        <template v-slot:prepend>
-          <v-icon>mdi-credit-card-outline</v-icon>
-        </template>
-        <template v-slot:left >
-          <div v-if="!token">
-            <span v-if="customerTokens.length > 0" >{{$t("@ChooseFromSavedCount").replace("@count", customerTokens.length)}}</span>
-            <span v-if="customerTokens.length === 0">{{$t("NoSavedCards")}}</span>
-          </div>
-          <div v-if="token">
-            <span class="primary--text">
-               <card-token-string :token="token"></card-token-string>
-            </span>
-          </div>
-        </template>
-        <template v-slot:append>
-          <re-icon>mdi-chevron-right</re-icon>
-        </template>
-      </ec-dialog-invoker>
-      <v-form class="ec-form" ref="form" lazy-validation v-if="!token">
-        <credit-card-secure-details-fields
-          :data="model.creditCardSecureDetails"
-          ref="ccsecuredetailsform"
-          :tokens="customerTokens"
-        ></credit-card-secure-details-fields>
-        <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')" :disabled="!model.dealDetails.consumerID"></v-checkbox>
-      </v-form>
+      <v-switch v-if="includeDevice && $integrationAvailable(terminalStore, appConstants.terminal.integrations.pinpadProcessor)" v-model="model.pinPad" :label="$t('UsePinPad')"></v-switch>
+      <template v-if="!model.pinPad">
+        <ec-dialog-invoker
+          v-on:click="handleClick()"
+          v-if="customerTokens"
+          :clickable="(customerTokens.length > 0)"
+          class="py-2"
+        >
+          <template v-slot:prepend>
+            <v-icon>mdi-credit-card-outline</v-icon>
+          </template>
+          <template v-slot:left >
+            <div v-if="!token">
+              <span v-if="customerTokens.length > 0" >{{$t("@ChooseFromSavedCount").replace("@count", customerTokens.length)}}</span>
+              <span v-if="customerTokens.length === 0">{{$t("NoSavedCards")}}</span>
+            </div>
+            <div v-if="token">
+              <span class="primary--text">
+                <card-token-string :token="token"></card-token-string>
+              </span>
+            </div>
+          </template>
+          <template v-slot:append>
+            <re-icon>mdi-chevron-right</re-icon>
+          </template>
+        </ec-dialog-invoker>
+        <v-form class="ec-form" ref="form" lazy-validation v-if="!token">
+          <credit-card-secure-details-fields
+            :data="model.creditCardSecureDetails"
+            ref="ccsecuredetailsform"
+            :tokens="customerTokens"
+          ></credit-card-secure-details-fields>
+          <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')" :disabled="!model.dealDetails.consumerID"></v-checkbox>
+        </v-form>
+      </template>
     </v-card-text>
     <v-card-actions class="px-4">
       <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t(btnText)}}</v-btn>
@@ -71,6 +74,8 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import { mapState } from "vuex";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -91,6 +96,10 @@ export default {
       type: String,
       default: 'OK',
       required: false
+    },
+    includeDevice: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -100,6 +109,7 @@ export default {
       customerTokens: null,
       selectedToken: null,
       selectedTokenObj: null,
+      appConstants: appConstants
     };
   },
   async mounted() {
@@ -126,11 +136,17 @@ export default {
         this.selectedTokenObj = nv;
         this.tokensDialog = false;
       }
-    }
+    },
+    ...mapState({
+      terminalStore: state => state.settings.terminal
+    })
   },
   methods: {
     ok() {
-      if (this.selectedToken) {
+      if (this.model.pinPad) {
+        this.okDevice();
+      } 
+      else if (this.selectedToken) {
         this.okCardToken();
       } else {
         this.okCreditCard();
@@ -138,6 +154,14 @@ export default {
     },
     resetToken() {
       this.token = null;
+    },
+    okDevice(){
+      this.$emit("ok", {
+        type: "device",
+        data: {
+          pinPad: true
+        }
+      });
     },
     okCardToken() {
       if (!this.selectedToken) return;

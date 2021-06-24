@@ -132,6 +132,9 @@
   <data name="ConsumerUpdated" xml:space="preserve">
     <value>לקוח עודכן</value>
   </data>
+  <data name="DeletedSuccessfully" xml:space="preserve">
+    <value>נמחק בהצלחה</value>
+  </data>
   <data name="FileRequired" xml:space="preserve">
     <value>נדרש קובץ</value>
   </data>
@@ -153,11 +156,17 @@
   <data name="MaxFileSizeIs1MB" xml:space="preserve">
     <value>גודל הקובץ המרבי הוא 1MB</value>
   </data>
+  <data name="OnlyCSSFilesAreAllowed" xml:space="preserve">
+    <value>רק קבצי CSS מותרים</value>
+  </data>
   <data name="OnlyImagesAreAllowed" xml:space="preserve">
     <value>ניתן להעלות רק תמונות</value>
   </data>
   <data name="PrivateKeyUpdated" xml:space="preserve">
     <value>מפתח פרטי עודכן</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>שמור</value>
   </data>
   <data name="SharedKeyUpdated" xml:space="preserve">
     <value>מפתח ציבורי עודכן</value>

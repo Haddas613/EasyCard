@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DeletedSuccessfully" xml:space="preserve">
+    <value>נמחק בהצלחה</value>
+  </data>
   <data name="ExternalSystemRemoved" xml:space="preserve">
     <value>מערכת חיצונית הוסרה</value>
   </data>
@@ -138,11 +141,17 @@
   <data name="MerchantUpdated" xml:space="preserve">
     <value>בית עסק עודכן</value>
   </data>
+  <data name="OnlyCSSFilesAreAllowed" xml:space="preserve">
+    <value>רק קבצי CSS מותרים</value>
+  </data>
   <data name="OnlyImagesAreAllowed" xml:space="preserve">
     <value>ניתן להעלות רק תמונות</value>
   </data>
   <data name="PasswordReset" xml:space="preserve">
     <value>סיסמה אופסה בהצלחה</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>שמור</value>
   </data>
   <data name="SharedKeyUpdated" xml:space="preserve">
     <value>מפתח ציבורי עודכן</value>

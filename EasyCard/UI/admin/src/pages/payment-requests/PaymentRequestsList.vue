@@ -59,6 +59,7 @@
 import moment from "moment";
 
 export default {
+  name: "PaymentRequests",
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
@@ -135,8 +136,10 @@ export default {
       await this.getDataFromApi();
     },
   },
-  async mounted () {
-    this.$store.commit("ui/setRefreshHandler", { value: this.getDataFromApi});
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.$store.commit("ui/setRefreshHandler", { value: vm.getDataFromApi});
+    });
   }
 };
 </script>

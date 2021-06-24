@@ -7,6 +7,9 @@ import cfg from "../app.config";
 
 Vue.use(VueRouter)
 
+/**
+ * In order for 'keepAlive: true' to work, route name must match component name.
+ */
 const routes = [
   {
     path: '/',
@@ -23,16 +26,21 @@ const routes = [
       },
       {
         name: 'Terminals',
+        keepAlive: true,
         path: 'terminals/list',
         component: () => import('../pages/terminals/TerminalsList.vue'),
       },
       {
         name: 'EditTerminal',
         path: 'terminals/edit/:id',
+        meta: {
+          backBtn: 'Terminals'
+        },
         component: () => import('../pages/terminals/EditTerminal.vue'),
       },
       {
         name: 'TerminalTemplates',
+        keepAlive: true,
         path: 'terminal-templates/list',
         component: () => import('../pages/terminal-templates/TerminalTemplatesList.vue'),
       },
@@ -53,11 +61,13 @@ const routes = [
       },
       {
         name: 'Merchants',
+        keepAlive: true,
         path: 'merchants/list',
         component: () => import('../pages/merchants/MerchantsList.vue'),
       },
       {
         name: 'Users',
+        keepAlive: true,
         path: 'users/list',
         component: () => import('../pages/users/UsersList.vue'),
       },
@@ -74,6 +84,7 @@ const routes = [
       {
         name: 'Transactions',
         props: true,
+        keepAlive: true,
         path: 'transactions/list',
         component: () => import('../pages/transactions/TransactionsList.vue'),
       },
@@ -91,19 +102,21 @@ const routes = [
       {
         name: 'CardTokens',
         path: 'card-tokens/list',
+        keepAlive: true,
         props: true,
         component: () => import('../pages/ctokens/CreditCardTokensList.vue'),
       },
       {
         name: 'Invoicing',
         path: 'invoicing/list',
+        keepAlive: true,
         props: true,
         component: () => import('../pages/invoicing/InvoicesList.vue'),
       },
       {
           name: 'Invoice',
           meta: {
-              backBtn: 'Invoices'
+              backBtn: 'Invoicing'
           },
           path: 'invoicing/view/:id',
           component: () =>
@@ -112,6 +125,7 @@ const routes = [
       {
           name: 'PaymentRequests',
           path: 'payment-requests/list',
+          keepAlive: true,
           props: true,
           component: () =>
               import ('../pages/payment-requests/PaymentRequestsList.vue'),
@@ -128,6 +142,7 @@ const routes = [
       {
         name: 'BillingDeals',
         path: 'billing-deals/list',
+        keepAlive: true,
         props: true,
         component: () =>
             import ('../pages/billing-deals/BillingDealsList.vue'),

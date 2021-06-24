@@ -39,9 +39,10 @@
 
         <v-stepper-content step="4" class="py-0 px-0">
           <credit-card-secure-details
-            :key="creditCardRefreshState"
+            :key="model.dealDetails.consumerID"
             :data="model"
             v-on:ok="processCreditCard($event)"
+            include-device
             ref="ccSecureDetails"
             btn-text="Charge"
           ></credit-card-secure-details>
@@ -101,7 +102,6 @@ export default {
     return {
       customer: null,
       skipCustomerStep: false,
-      creditCardRefreshState: null,
       model: {
         terminalID: null,
         transactionType: null,
@@ -133,32 +133,6 @@ export default {
         }
       },
       step: 1,
-      steps: {
-        1: {
-          title: "Amount",
-          canChangeTerminal: true,
-          showItemsCount: true
-        },
-        2: {
-          title: "Basket",
-        },
-        3: {
-          title: "ChooseCustomer",
-          skippable: true
-        },
-        4: {
-          title: "PaymentInfo"
-          // ,skippable: true
-        },
-        5: {
-          title: "AdditionalSettings"
-        },
-        //Last step may be dynamically altered to represent error if transaction creation has failed.
-        6: {
-          title: "Success",
-          completed: true
-        }
-      },
       threeDotMenuItems: null,
       success: true,
       errors: [],
@@ -172,8 +146,18 @@ export default {
       return this.$t(this.steps[this.step].title);
     },
     ...mapState({
-      terminal: state => state.settings.terminal
+      terminal: state => state.settings.terminal,
+      steps: state => state.ui.chargeWizard.steps
     })
+  },
+  watch: {
+    step(newValue, oldValue) {
+      if(newValue > oldValue && this.steps[newValue].skip){
+        this.step++;
+      }else if(this.steps[newValue].skip){
+        this.step--;
+      }
+    }
   },
   async mounted() {
     if (this.customerid) {
@@ -185,8 +169,7 @@ export default {
         this.model.dealDetails.consumerPhone = data.consumerPhone;
         this.model.dealDetails.consumerAddress = data.consumerAddress;
         this.model.dealDetails.consumerID = data.consumerID;
-        this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState =
-          data.consumerName;
+        this.model.creditCardSecureDetails.cardOwnerName = data.consumerName;
         this.model.creditCardSecureDetails.cardOwnerNationalID =
           data.consumerNationalID;
       }
@@ -205,7 +188,6 @@ export default {
       this.model.dealDetails.consumerPhone = null;
       this.model.dealDetails.consumerAddress = null;
       this.model.dealDetails.consumerID = null;
-      this.creditCardRefreshState = null;
       if (this.model.creditCardSecureDetails) {
         this.model.creditCardSecureDetails.cardOwnerName = null;
         this.model.creditCardSecureDetails.cardOwnerNationalID = null;
@@ -230,14 +212,12 @@ export default {
           cardOwnerNationalID: data.consumerNationalID
         });
       } else {
-        this.model.creditCardSecureDetails.cardOwnerName = this.creditCardRefreshState =
-          data.consumerName;
+        this.model.creditCardSecureDetails.cardOwnerName = data.consumerName;
         this.model.creditCardSecureDetails.cardOwnerNationalID =
           data.consumerNationalID;
       }
       this.model.creditCardToken = null;
       this.$refs.ccSecureDetails.resetToken();
-      this.creditCardRefreshState = data.consumerName;
       this.step++;
     },
     processToBasket(){
@@ -272,6 +252,12 @@ export default {
         this.model.creditCardSecureDetails = null;
         this.model.creditCardToken = data.data;
         this.model.saveCreditCard = false;
+      } 
+      else if (data.type === "device") {
+        this.model.creditCardSecureDetails = null;
+        this.model.creditCardToken = null;
+        this.model.saveCreditCard = false;
+        Object.assign(this.model, data.data);
       }
       this.step++;
     },

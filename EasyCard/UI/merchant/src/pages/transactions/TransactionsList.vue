@@ -31,9 +31,8 @@
           </v-col>
           <v-col cols="12" md="3" lg="3" xl="3">
             <v-row no-gutters>
-              <v-col cols="12">{{$t("OperationsCountTotal")}}:</v-col>
+              <v-col cols="12">{{$t("OperationsCount")}}:</v-col>
               <v-col cols="12" class="font-weight-bold">
-                {{totalOperationsCount || '-'}}
                 <span
                   v-if="totalOperationsCountShown"
                 >({{$t("@Displayed").replace("@amount", totalOperationsCountShown)}})</span>

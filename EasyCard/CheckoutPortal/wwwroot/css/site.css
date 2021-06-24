@@ -126,3 +126,11 @@ input[type="checkbox"].input-validation-error {
     direction: ltr;
     text-align: right;
 }
+#merchant-logo{
+    max-height: 135px;
+    max-width: 135px;
+}
+.list-group-item {
+    background-color: transparent;
+
+}

@@ -31,7 +31,6 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.NationalID, o => o.MapFrom(d => d.NationalID))
                 .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.ConsumerID))
                 .ForMember(d => d.Phone, o => o.MapFrom(d => d.Phone))
-
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<PaymentRequestInfo, ChargeViewModel>()
@@ -43,6 +42,10 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.NationalID, o => o.MapFrom(d => d.CardOwnerNationalID))
                 .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails == null ? null : d.DealDetails.ConsumerID))
                 .ForMember(d => d.Phone, o => o.MapFrom(d => d.DealDetails == null ? null : d.DealDetails.ConsumerPhone))
+                .ForMember(d => d.NumberOfPayments, o => o.MapFrom(d => d.NumberOfPayments))
+                .ForMember(d => d.InstallmentPaymentAmount, o => o.MapFrom(d => d.InstallmentPaymentAmount))
+                .ForMember(d => d.TotalAmount, o => o.MapFrom(d => d.TotalAmount))
+                .ForMember(d => d.InitialPaymentAmount, o => o.MapFrom(d => d.InitialPaymentAmount))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, ChargeViewModel>()

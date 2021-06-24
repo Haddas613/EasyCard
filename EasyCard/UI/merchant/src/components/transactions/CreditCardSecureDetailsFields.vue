@@ -7,10 +7,13 @@
       background-color="white"
       type="text"
       outlined
+      id="nameoncard"
+      name="nameoncard"
+      autocomplete="cc-name"
     >
-      <template v-slot:append>
+      <!-- <template v-slot:append>
         <v-icon class="orange--text">mdi-camera-outline</v-icon>
-      </template>
+      </template> -->
     </v-text-field>
     <div class="input-special-group">
       <v-alert
@@ -34,6 +37,9 @@
             <v-col cols="12" class="dense">
               <input
                 type="tel"
+                id="ccnumber"
+                name="ccnumber"
+                autocomplete="cc-number"
                 class="dense-input"
                 ref="cardNumberInp"
                 v-cardformat:formatCardNumberOrCardReader
@@ -62,6 +68,9 @@
             </v-col>
             <v-col cols="12" class="dense">
               <input
+                id="cc-exp-date"
+                name="cc-exp-date"
+                autocomplete="cc-exp-date"
                 class="dense-input"
                 ref="expiryInp"
                 placeholder="MM/YY"
@@ -88,6 +97,9 @@
             </v-col>
             <v-col cols="12" class="dense">
               <input
+                id="cvv2"
+                name="cvv2"
+                autocomplete="cc-csc"
                 class="dense-input"
                 type="tel"
                 ref="cvvInp"
@@ -135,6 +147,7 @@
 
 <script>
 import ValidationRules from "../../helpers/validation-rules";
+import { mapState } from "vuex";
 
 export default {
   props: {

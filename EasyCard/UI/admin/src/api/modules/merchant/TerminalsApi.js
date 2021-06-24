@@ -86,4 +86,16 @@ export default class TerminalsApi {
     async uploadMerchantLogo(terminalID, file){
         return this.base.postFile(this.terminalsUrl + `/${terminalID}/merchantlogo`, file);
     }
+
+    async uploadCustomCSS(terminalID, file){
+        return this.base.postFile(this.terminalsUrl + `/${terminalID}/customcss`, file);
+    }
+
+    async deleteCustomCSS(terminalID){
+        return this.base.delete(this.terminalsUrl + `/${terminalID}/customcss`);
+    }
+
+    async deleteMerchantLogo(terminalID){
+        return this.base.delete(this.terminalsUrl + `/${terminalID}/merchantlogo`);
+    }
 }

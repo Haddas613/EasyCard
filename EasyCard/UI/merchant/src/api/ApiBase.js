@@ -1,21 +1,22 @@
 import Vue from 'vue'
+import moment from 'moment'
+import store from '../store/index';
+import i18n from '../i18n'
+import appInsights from "../plugins/app-insights";
+import cfg from "../app.config";
+import appConstants from "../helpers/app-constants";
 import TransactionsApi from './modules/transactions/TransactionsApi';
 import DictionariesApi from './modules/common/DictionariesApi';
 import TerminalsApi from './modules/profile/TerminalsApi';
 import ConsumersApi from './modules/profile/ConsumersApi';
 import ItemsApi from './modules/profile/ItemsApi';
-import moment from 'moment'
-import store from '../store/index';
-import i18n from '../i18n'
 import CardTokensApi from './modules/transactions/CardTokensApi';
 import TransmissionsApi from './modules/transactions/TransmissionsApi';
 import BillingDealsApi from './modules/transactions/BillingDealsApi';
 import InvoicingApi from './modules/transactions/InvoicingApi';
 import PaymentRequestsApi from './modules/transactions/PaymentRequestsApi';
 import DashboardReportingApi from './modules/reporting/DashboardReportingApi';
-import appInsights from "../plugins/app-insights";
-import cfg from "../app.config";
-import appConstants from "../helpers/app-constants";
+import FutureBillingDealsApi from './modules/transactions/FutureBillingDealsApi';
 
 class ApiBase {
     constructor() {
@@ -32,6 +33,7 @@ class ApiBase {
         this.cardTokens = new CardTokensApi(this);
         this.transmissions = new TransmissionsApi(this);
         this.billingDeals = new BillingDealsApi(this);
+        this.futureBillingDeals = new FutureBillingDealsApi(this);
         this.invoicing = new InvoicingApi(this);
         this.paymentRequests = new PaymentRequestsApi(this);
         this.reporting = {

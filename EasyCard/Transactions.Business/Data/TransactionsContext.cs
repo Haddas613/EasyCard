@@ -744,7 +744,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
 
                 builder.Property(b => b.TransactionAmount).HasColumnType("decimal(19,4)").HasColumnName("TransactionAmount");
 
-                builder.Property(b => b.Active).HasColumnName("Active");
+                //builder.Property(b => b.Active).HasColumnName("Active");
 
                 builder.Property(b => b.NextScheduledTransaction).HasColumnName("NextScheduledTransaction");
                 builder.Property(b => b.FutureScheduledTransaction).HasColumnName("FutureScheduledTransaction");

@@ -33,7 +33,7 @@
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
         ></deal-details>
 
-        <v-switch v-model="switchIssueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
+        <v-switch v-if="$integrationAvailable(terminalStore, appConstants.terminal.integrations.invoicing)" v-model="switchIssueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
         <div v-if="switchIssueDocument">
           <invoice-details-fields :key="invoiceTypeUpd" ref="invoiceDetails" :data="model.invoiceDetails" :invoice-type="invoiceTypeUpd"></invoice-details-fields>
         </div>
@@ -83,7 +83,8 @@ export default {
       switchIssueDocument: this.issueDocument,
       messageDialog: false,
       invoiceTypeUpd: this.invoiceType,
-      jDealTypes: []
+      jDealTypes: [],
+      appConstants: appConstants
     };
   },
   computed: {
@@ -95,7 +96,7 @@ export default {
     },
     ...mapState({
       currencyStore: state => state.settings.currency,
-      terminal: state => state.settings.terminal
+      terminalStore: state => state.settings.terminal
     })
   },
   async mounted() {
@@ -115,17 +116,21 @@ export default {
         if(jDeal.code == "J4"){
           filteredJDealTypes.push(jDeal);
         }else if(jDeal.code == "J5"){
-          if(this.terminal.settings.j5Allowed){
+          if(this.terminalStore.settings.j5Allowed){
             filteredJDealTypes.push(jDeal);
           }
         }else if(jDeal.code == "J2"){
-          if(this.terminal.settings.j2Allowed){
+          if(this.terminalStore.settings.j2Allowed){
             filteredJDealTypes.push(jDeal);
           }
         }
       }
       this.jDealTypes = filteredJDealTypes;
       // this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
+    }
+
+    if(this.issueDocument){
+      this.switchIssueDocument = this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing);
     }
   },
   methods: {

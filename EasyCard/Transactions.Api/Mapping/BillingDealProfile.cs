@@ -38,6 +38,10 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)))
                 .ForMember(d => d.Paused, o => o.MapFrom(d => d.Paused()));
 
+            CreateMap<FutureBilling, FutureBillingSummary>()
+                .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerName))
+                .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)));
+
             CreateMap<BillingDeal, BillingDealResponse>()
                 .ForMember(d => d.CardExpired, o => o
                     .MapFrom(d => (d.CreditCardDetails != null && d.CreditCardDetails.CardExpiration != null) ? d.CreditCardDetails.CardExpiration.Expired : default))

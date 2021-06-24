@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -444,6 +445,54 @@ namespace Shared.Helpers
             else
             {
                 throw new ApplicationException($"Failed POST to {url}: {response.StatusCode}");
+            }
+        }
+
+        public async Task<string> PostFile(string enpoint, string actionPath, MemoryStream stream, string fileName, string parameterName = "file", Func<Task<NameValueCollection>> getHeaders = null)
+        {
+            var url = UrlHelper.BuildUrl(enpoint, actionPath);
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+
+            if (getHeaders != null)
+            {
+                var headers = await getHeaders();
+                foreach (var header in headers.AllKeys)
+                {
+                    request.Headers.Add(header, headers.GetValues(header).FirstOrDefault());
+                }
+            }
+
+            //string boundary = "------------------------" + DateTime.Now.Ticks.ToString("x");
+            MultipartFormDataContent form = new MultipartFormDataContent()
+            {
+                { new StreamContent(stream), parameterName, fileName }
+            };
+
+            request.Content = form;
+
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
+
+            var res = await response.Content.ReadAsStringAsync();
+
+            if (response.IsSuccessStatusCode)
+            {
+                return res;
+            }
+            else
+            {
+                if ((int)response.StatusCode >= 500)
+                {
+                    throw new WebApiServerErrorException($"Failed POST from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else if ((int)response.StatusCode >= 400)
+                {
+                    throw new WebApiClientErrorException($"Failed POST from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else
+                {
+                    throw new ApplicationException($"Failed POST from {url}: {response.StatusCode}");
+                }
             }
         }
     }

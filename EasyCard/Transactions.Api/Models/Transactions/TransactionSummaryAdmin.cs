@@ -49,6 +49,12 @@ namespace Transactions.Api.Models.Transactions
         [MetadataOptions(Hidden = true)]
         public new RejectionReasonEnum? RejectionReason { get; set; }
 
+        /// <summary>
+        /// Rejection Reason
+        /// </summary>
+        [MetadataOptions(Hidden = true)]
+        public new PaymentTypeEnum PaymentTypeEnum { get; set; }
+
         public string CardNumber { get; set; }
     }
 }
