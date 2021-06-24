@@ -861,7 +861,7 @@ namespace Transactions.Api.Controllers
                     }
                 }
 
-                // commit transaction in aggregator (Clearing House)
+                // commit transaction in aggregator (Clearing House or upay)
                 else
                 {
                     try
@@ -871,7 +871,10 @@ namespace Transactions.Api.Controllers
                         var commitAggregatorRequest = mapper.Map<AggregatorCommitTransactionRequest>(transaction);
 
                         commitAggregatorRequest.AggregatorSettings = terminalAggregator.Settings;
-
+                      
+                       if(aggregator is Upay.UpayAggregator)
+                            commitAggregatorRequest.ProcessorTransactionDetails = mapper.Map<Upay.Models.PaymentGatewayAdditionalDetails>(commitAggregatorRequest.ProcessorTransactionDetails);
+                        //commitAggregatorRequest.ProcessorTransactionDetails = mapper.Map<ClearingHouse.Models.PaymentGatewayAdditionalDetails>(commitAggregatorRequest.ProcessorTransactionDetails);
                         var commitAggregatorResponse = await aggregator.CommitTransaction(commitAggregatorRequest);
                         mapper.Map(commitAggregatorResponse, transaction);
 

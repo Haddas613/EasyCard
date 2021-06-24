@@ -89,7 +89,6 @@ namespace Shared.Helpers
                     request.Headers.Add(header, headers.GetValues(header).FirstOrDefault());
                 }
             }
-
             var json = JsonConvert.SerializeObject(payload);
 
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -97,6 +96,51 @@ namespace Shared.Helpers
             onRequest?.Invoke(url, json);
 
             HttpResponseMessage response = await HttpClient.SendAsync(request);
+
+            var res = await response.Content.ReadAsStringAsync();
+
+            onResponse?.Invoke(res, response.StatusCode, response.Headers);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<T>(res);
+            }
+            else
+            {
+                if ((int)response.StatusCode >= 500)
+                {
+                    throw new WebApiServerErrorException($"Failed POST from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else if ((int)response.StatusCode >= 400)
+                {
+                    throw new WebApiClientErrorException($"Failed POST from {url}: {response.StatusCode}", response.StatusCode, res);
+                }
+                else
+                {
+                    throw new ApplicationException($"Failed POST from {url}: {response.StatusCode}");
+                }
+            }
+        }
+
+        public async Task<T> PostForm<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
+          ProcessRequest onRequest = null, ProcessResponse onResponse = null, FormUrlEncodedContent values = null
+          )
+        {
+            var url = UrlHelper.BuildUrl(enpoint, actionPath);
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+
+            if (getHeaders != null)
+            {
+                var headers = await getHeaders();
+                foreach (var header in headers.AllKeys)
+                {
+                    request.Headers.Add(header, headers.GetValues(header).FirstOrDefault());
+                }
+            }
+            var credentials = values;
+
+            HttpResponseMessage response = await HttpClient.PostAsync(url, credentials);
 
             var res = await response.Content.ReadAsStringAsync();
 

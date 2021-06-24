@@ -16,6 +16,10 @@ namespace Shared.Helpers
             ProcessRequest onRequest = null, ProcessResponse onResponse = null
             );
 
+        Task<T> PostForm<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
+        ProcessRequest onRequest = null, ProcessResponse onResponse = null, FormUrlEncodedContent values = null
+        );
+
         Task<T> Put<T>(string enpoint, string actionPath, object payload, Func<Task<NameValueCollection>> getHeaders = null,
             ProcessRequest onRequest = null, ProcessResponse onResponse = null
             );

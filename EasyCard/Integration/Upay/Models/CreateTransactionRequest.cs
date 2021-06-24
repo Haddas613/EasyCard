@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Integration.Models;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
@@ -20,5 +21,6 @@ namespace Upay.Models
         public string CommissionReduction { get; set; }// model.CheckUpayCommission? "0" : "1",
         public string AcceptedTransaction { get; set; } //model.CutomerConfirm ? "1" : "0",
         public string Currency { get; set; }
+        public TransactionTypeEnum TransactionType { get; set; }
     }
 }

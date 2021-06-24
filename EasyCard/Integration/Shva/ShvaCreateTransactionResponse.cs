@@ -56,5 +56,7 @@ namespace Shva
         /// Binary reference
         /// </summary>
         public string TranRecord { get; set; }
+
+        public string Brand { get; set; }
     }
 }

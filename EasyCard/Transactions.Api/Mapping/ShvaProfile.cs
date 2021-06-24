@@ -21,6 +21,7 @@ namespace Transactions.Api.Mapping
             CreateMap<Shva.ShvaCreateTransactionResponse, PaymentTransaction>()
                 .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))
                 .ForMember(m => m.CreditCardDetails, s => s.MapFrom(src => src))
+                .ForPath(m => m.ShvaTransactionDetails.ShvaAuthNum, s => s.MapFrom(src => src.AuthNum))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Shva.ShvaCreateTransactionResponse, ShvaTransactionDetails>();
@@ -41,7 +42,8 @@ namespace Transactions.Api.Mapping
                  .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Shva.ShvaCreateTransactionResponse, CreditCardDetails>()
-                 .ForMember(m => m.CardVendor, s => s.MapFrom(src => src.CreditCardVendor));
+                 .ForMember(m => m.CardVendor, s => s.MapFrom(src => src.CreditCardVendor))
+             .ForMember(m => m.CardBrand, s => s.MapFrom(src => src.Brand));
 
             // Token (initial deal)
 

@@ -66,7 +66,15 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.TransactionID, s => s.MapFrom(src => src.PaymentTransactionID.ToString()))
                 .ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.ClearingHouseTransactionDetails.ClearingHouseTransactionID)) // TODO
                 .ForMember(m => m.ConcurrencyToken, s => s.MapFrom(src => src.ClearingHouseTransactionDetails.ConcurrencyToken)) // TODO
-                .ForMember(m => m.ProcessorTransactionDetails, s => s.MapFrom(src => src.ShvaTransactionDetails)); // TODO
+                .ForMember(m => m.ProcessorTransactionDetails, s => s.MapFrom(src => src.ShvaTransactionDetails))
+                 .ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.UpayTransactionDetails.CashieriD))
+                .ForPath(m => m.TransactionDetails.Amount, s => s.MapFrom(src => src.Amount))
+                 .ForPath(m => m.TransactionDetails.ExternalID, s => s.MapFrom(src => src.PaymentTransactionID))
+                ; // TODO
+
+
+
+
 
             CreateMap<PaymentTransaction, AggregatorCancelTransactionRequest>()
                 .ForMember(m => m.TransactionID, s => s.MapFrom(src => src.PaymentTransactionID.ToString()))

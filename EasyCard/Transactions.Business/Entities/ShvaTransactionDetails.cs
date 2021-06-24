@@ -46,5 +46,6 @@ namespace Transactions.Business.Entities
         /// Binary reference
         /// </summary>
         public string TranRecord { get; set; }
+        public string ShvaAuthNum { get; set; }
     }
 }

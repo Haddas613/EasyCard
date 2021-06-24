@@ -7,7 +7,7 @@ namespace Upay
 {
     public class UpayCreateTransactionResponse : AggregatorCreateTransactionResponse
     {
-        public string Cashierid { get; set; }
+        public long Cashierid { get; set; }
 
         public string TotalAmount { get; set; }
         

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Integration.Models.Aggregator;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -28,5 +29,7 @@ namespace Shared.Integration.Models
         public object ProcessorTransactionDetails { get; set; }
 
         public object AggregatorSettings { get; set; }
+
+        public TransactionDetails TransactionDetails { get; set; }
     }
 }

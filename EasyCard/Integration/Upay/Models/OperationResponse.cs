@@ -28,7 +28,7 @@ namespace Upay.Models
         /// Gets or Sets Cashierid
         /// </summary>
         [DataMember(Name = "cashierid")]
-        public string Cashierid { get; set; }
+        public long Cashierid { get; set; }
 
         /// <summary>
         /// Gets or Sets TotalAmount

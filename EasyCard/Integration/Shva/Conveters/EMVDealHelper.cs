@@ -68,7 +68,7 @@ namespace Shva.Conveters
                 ShvaDealID = resultAshEndBody.globalObj?.outputObj?.uid?.valueTag,
                 AuthSolekNum = resultAshEndBody.globalObj?.outputObj?.authSolekNo?.valueTag,
                 AuthNum = resultAshEndBody.globalObj?.outputObj?.authManpikNo?.valueTag,
-
+                Brand = resultAshEndBody.globalObj?.outputObj?.brand?.valueTag,
                 Solek = (SolekEnum)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.solek?.valueTag),
                 CreditCardVendor = (CardVendorEnum)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.manpik?.valueTag), // TODO
                 ShvaTransactionDate = resultAshEndBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime(),
@@ -86,7 +86,7 @@ namespace Shva.Conveters
                 ShvaDealID = resultAshStartBody.globalObj?.outputObj?.uid?.valueTag,
                 AuthSolekNum = resultAshStartBody.globalObj?.outputObj?.authSolekNo?.valueTag,
                 AuthNum = resultAshStartBody.globalObj?.outputObj?.authManpikNo?.valueTag,
-
+                Brand = resultAshStartBody.globalObj?.outputObj?.brand?.valueTag,
                 Solek = (SolekEnum)Convert.ToInt32(resultAshStartBody.globalObj?.outputObj?.solek?.valueTag),
                 CreditCardVendor = (CardVendorEnum)Convert.ToInt32(resultAshStartBody.globalObj?.outputObj?.manpik?.valueTag), // TODO
                 ShvaTransactionDate = resultAshStartBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime()

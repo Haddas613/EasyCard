@@ -26,9 +26,9 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.UpayTransactionDetails, s => s.MapFrom(src => src))
                 .ForAllOtherMembers(d => d.Ignore());
 
-            
+
             CreateMap<Upay.UpayCreateTransactionResponse, UpayTransactionDetails>();
-            
+
             CreateMap<Upay.UpayTransactionResponse, PaymentTransaction>()
                 .ForMember(m => m.UpayTransactionDetails, s => s.MapFrom(src => src))
                 .ForAllOtherMembers(d => d.Ignore());
@@ -42,11 +42,11 @@ namespace Transactions.Api.Mapping
 
             CreateMap<Upay.UpayTerminalSettings, UpayTransactionDetails>();
 
-            /*CreateMap<ShvaTransactionDetails, ClearingHouse.Models.PaymentGatewayAdditionalDetails>()
+            CreateMap<ShvaTransactionDetails, Upay.Models.PaymentGatewayAdditionalDetails>()
                  .ForMember(m => m.ShvaShovarData, src => src.MapFrom(f => f.ShvaDealID))
                  .ForMember(m => m.ShvaShovarNumber, src => src.MapFrom(f => f.ShvaShovarNumber))
+                 .ForMember(m => m.ShvaAuthNum, src => src.MapFrom(f => f.ShvaAuthNum))
                  .ForMember(m => m.ShvaTransmissionNumber, src => src.MapFrom(f => f.ShvaTransmissionNumber));
-                 */
         }
     }
 }

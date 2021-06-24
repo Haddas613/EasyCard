@@ -8,5 +8,6 @@ namespace Upay
     public class UpayGlobalSettings : IdentityServerClientSettings
     {
         public string ApiBaseAddress { get; set; }
+        public string ApiCommitAddress { get; set; }
     }
 }
