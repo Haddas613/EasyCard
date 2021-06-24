@@ -339,4 +339,7 @@
   <data name="Merchant" xml:space="preserve">
     <value>סוחר</value>
   </data>
+  <data name="PasswordMatchValidationMessage" xml:space="preserve">
+    <value>סיסמה לא עומדת בדרישות מערכת</value>
+  </data>
 </root>

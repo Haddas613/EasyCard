@@ -142,11 +142,38 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Initial payment.
+        /// </summary>
+        public static string InitialPayment {
+            get {
+                return ResourceManager.GetString("InitialPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to National ID.
         /// </summary>
         public static string NationalID {
             get {
                 return ResourceManager.GetString("NationalID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of payments.
+        /// </summary>
+        public static string NumberOfPayments {
+            get {
+                return ResourceManager.GetString("NumberOfPayments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment Amount.
+        /// </summary>
+        public static string PaymentAmount {
+            get {
+                return ResourceManager.GetString("PaymentAmount", resourceCulture);
             }
         }
         
@@ -210,6 +237,15 @@ namespace CheckoutPortal.Resources {
         public static string SaveCard {
             get {
                 return ResourceManager.GetString("SaveCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total.
+        /// </summary>
+        public static string Total {
+            get {
+                return ResourceManager.GetString("Total", resourceCulture);
             }
         }
         

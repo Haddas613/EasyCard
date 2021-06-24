@@ -177,4 +177,16 @@
   <data name="WelcomeTextTop" xml:space="preserve">
     <value>Welcome to the checkout portal</value>
   </data>
+  <data name="InitialPayment" xml:space="preserve">
+    <value>Initial payment</value>
+  </data>
+  <data name="NumberOfPayments" xml:space="preserve">
+    <value>Number of payments</value>
+  </data>
+  <data name="PaymentAmount" xml:space="preserve">
+    <value>Payment Amount</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
 </root>
