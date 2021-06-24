@@ -9,37 +9,45 @@ namespace Transactions.Business.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "CreditCardDetails_CardBrand",
                 table: "vFutureBillings",
-                type: "nvarchar(max)",
+                type: "nvarchar(20)",
+                maxLength: 20,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "CreditCardDetails_CardBrand",
+                name: "CardBrand",
                 table: "PaymentTransaction",
-                type: "nvarchar(max)",
+                type: "varchar(20)",
+                unicode: false,
+                maxLength: 20,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "ShvaTransactionDetails_ShvaAuthNum",
+                name: "ShvaAuthNum",
                 table: "PaymentTransaction",
-                type: "nvarchar(max)",
+                type: "varchar(20)",
+                unicode: false,
+                maxLength: 20,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "CreditCardDetails_CardBrand",
                 table: "Invoice",
-                type: "nvarchar(max)",
+                type: "nvarchar(20)",
+                maxLength: 20,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "CardBrand",
                 table: "CreditCardTokenDetails",
-                type: "nvarchar(max)",
+                type: "nvarchar(20)",
+                maxLength: 20,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "CreditCardDetails_CardBrand",
                 table: "BillingDeal",
-                type: "nvarchar(max)",
+                type: "nvarchar(20)",
+                maxLength: 20,
                 nullable: true);
         }
 
@@ -50,11 +58,11 @@ namespace Transactions.Business.Migrations
                 table: "vFutureBillings");
 
             migrationBuilder.DropColumn(
-                name: "CreditCardDetails_CardBrand",
+                name: "CardBrand",
                 table: "PaymentTransaction");
 
             migrationBuilder.DropColumn(
-                name: "ShvaTransactionDetails_ShvaAuthNum",
+                name: "ShvaAuthNum",
                 table: "PaymentTransaction");
 
             migrationBuilder.DropColumn(

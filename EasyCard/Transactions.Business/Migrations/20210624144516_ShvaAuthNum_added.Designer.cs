@@ -10,7 +10,7 @@ using Transactions.Business.Data;
 namespace Transactions.Business.Migrations
 {
     [DbContext(typeof(TransactionsContext))]
-    [Migration("20210624132836_ShvaAuthNum_added")]
+    [Migration("20210624144516_ShvaAuthNum_added")]
     partial class ShvaAuthNum_added
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -193,7 +193,8 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("CardBrand")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("CardExpiration")
                         .HasMaxLength(5)
@@ -865,7 +866,8 @@ namespace Transactions.Business.Migrations
                                 .HasColumnName("CardBin");
 
                             b1.Property<string>("CardBrand")
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(20)
+                                .HasColumnType("nvarchar(20)");
 
                             b1.Property<string>("CardExpiration")
                                 .HasMaxLength(5)
@@ -1025,7 +1027,8 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<string>("CardBrand")
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(20)
+                                .HasColumnType("nvarchar(20)");
 
                             b1.Property<string>("CardExpiration")
                                 .HasMaxLength(5)
@@ -1092,7 +1095,8 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("uniqueidentifier");
 
                             b1.Property<string>("CardBrand")
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(20)
+                                .HasColumnType("nvarchar(20)");
 
                             b1.Property<string>("CardExpiration")
                                 .HasMaxLength(5)
@@ -1325,7 +1329,10 @@ namespace Transactions.Business.Migrations
                                 .HasColumnName("CardBin");
 
                             b1.Property<string>("CardBrand")
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(20)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("CardBrand");
 
                             b1.Property<string>("CardExpiration")
                                 .HasMaxLength(5)
@@ -1426,7 +1433,10 @@ namespace Transactions.Business.Migrations
                                 .HasColumnName("ManuallyTransmitted");
 
                             b1.Property<string>("ShvaAuthNum")
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(20)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("ShvaAuthNum");
 
                             b1.Property<string>("ShvaDealID")
                                 .HasMaxLength(30)

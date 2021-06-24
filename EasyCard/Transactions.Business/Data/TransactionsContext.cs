@@ -319,6 +319,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
                     s.Property(p => p.CardBin).HasColumnName("CardBin").IsRequired(false).HasMaxLength(10).IsUnicode(false);
                     s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.CardBrand).HasColumnName("CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Ignore(b => b.CardReaderInput);
                 });
 
@@ -348,6 +349,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.ManuallyTransmitted).HasColumnName("ManuallyTransmitted");
                     s.Property(p => p.ShvaTerminalID).HasColumnName("ShvaTerminalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.ShvaTransmissionNumber).HasColumnName("ShvaTransmissionNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.ShvaAuthNum).HasColumnName("ShvaAuthNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.TransmissionDate).HasColumnName("ShvaTransmissionDate").IsRequired(false);
                     s.Property(p => p.Solek).HasColumnName("Solek").IsRequired(false);
                     s.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(500).IsUnicode(false).IsRequired(false);
