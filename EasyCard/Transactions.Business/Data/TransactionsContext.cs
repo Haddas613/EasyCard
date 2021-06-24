@@ -478,6 +478,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
                     s.Property(p => p.CardBin).HasColumnName("CardBin").IsRequired(false).HasMaxLength(10).IsUnicode(false);
                     s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.CardBrand).HasColumnName("CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Ignore(b => b.CardReaderInput);
                 });
 
@@ -621,6 +622,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
                     s.Ignore(p => p.CardBin);
                     s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.CardBrand).HasColumnName("CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Ignore(b => b.CardReaderInput);
                 });
 
@@ -740,6 +742,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Ignore(p => p.CardBin);
                     s.Ignore(p => p.CardVendor);
                     s.Ignore(b => b.CardReaderInput);
+                    s.Ignore(b => b.CardBrand);
                 });
 
                 builder.Property(b => b.TransactionAmount).HasColumnType("decimal(19,4)").HasColumnName("TransactionAmount");

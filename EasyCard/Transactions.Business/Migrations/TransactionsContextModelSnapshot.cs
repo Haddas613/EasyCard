@@ -190,10 +190,6 @@ namespace Transactions.Business.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<string>("CardBrand")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
                     b.Property<string>("CardExpiration")
                         .HasMaxLength(5)
                         .IsUnicode(false)
@@ -863,10 +859,6 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(10)")
                                 .HasColumnName("CardBin");
 
-                            b1.Property<string>("CardBrand")
-                                .HasMaxLength(20)
-                                .HasColumnType("nvarchar(20)");
-
                             b1.Property<string>("CardExpiration")
                                 .HasMaxLength(5)
                                 .IsUnicode(false)
@@ -1024,10 +1016,6 @@ namespace Transactions.Business.Migrations
                             b1.Property<int>("FutureBillingCurrentDeal")
                                 .HasColumnType("int");
 
-                            b1.Property<string>("CardBrand")
-                                .HasMaxLength(20)
-                                .HasColumnType("nvarchar(20)");
-
                             b1.Property<string>("CardExpiration")
                                 .HasMaxLength(5)
                                 .IsUnicode(false)
@@ -1091,10 +1079,6 @@ namespace Transactions.Business.Migrations
                         {
                             b1.Property<Guid>("InvoiceID")
                                 .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("CardBrand")
-                                .HasMaxLength(20)
-                                .HasColumnType("nvarchar(20)");
 
                             b1.Property<string>("CardExpiration")
                                 .HasMaxLength(5)
@@ -1326,12 +1310,6 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(10)")
                                 .HasColumnName("CardBin");
 
-                            b1.Property<string>("CardBrand")
-                                .HasMaxLength(20)
-                                .IsUnicode(false)
-                                .HasColumnType("varchar(20)")
-                                .HasColumnName("CardBrand");
-
                             b1.Property<string>("CardExpiration")
                                 .HasMaxLength(5)
                                 .IsUnicode(false)
@@ -1429,12 +1407,6 @@ namespace Transactions.Business.Migrations
                             b1.Property<bool>("ManuallyTransmitted")
                                 .HasColumnType("bit")
                                 .HasColumnName("ManuallyTransmitted");
-
-                            b1.Property<string>("ShvaAuthNum")
-                                .HasMaxLength(20)
-                                .IsUnicode(false)
-                                .HasColumnType("varchar(20)")
-                                .HasColumnName("ShvaAuthNum");
 
                             b1.Property<string>("ShvaDealID")
                                 .HasMaxLength(30)
