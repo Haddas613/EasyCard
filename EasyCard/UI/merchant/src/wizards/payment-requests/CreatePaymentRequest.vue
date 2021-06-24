@@ -220,10 +220,12 @@ export default {
           this.errors = [{ description: result.message }];
         }
       } else {
-        this.$store.commit("payment/addLastChargedCustomer", {
-          customerID: this.customer.consumerID,
-          terminalID: this.model.terminalID
-        });
+        if(this.customer){
+          this.$store.commit("payment/addLastChargedCustomer", {
+            customerID: this.customer.consumerID,
+            terminalID: this.model.terminalID
+          });
+        }
         return this.$router.push({
           name: "PaymentRequest",
           params: { id: result.entityReference }

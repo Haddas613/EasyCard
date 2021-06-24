@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -37,6 +38,8 @@ namespace Shared.Helpers
             );
 
         Task<string> PostRawForm(string enpoint, string actionPath, IDictionary<string, string> payload, Func<Task<NameValueCollection>> getHeaders = null);
+
+        Task<string> PostFile(string enpoint, string actionPath, MemoryStream stream, string fileName, string parameterName = "file", Func<Task<NameValueCollection>> getHeaders = null);
 
         Task<RawRequestResult> PostRawWithHeaders(string enpoint, string actionPath, string payload, string contentType, Func<Task<NameValueCollection>> getHeaders = null,
             ProcessRequest onRequest = null, ProcessResponse onResponse = null

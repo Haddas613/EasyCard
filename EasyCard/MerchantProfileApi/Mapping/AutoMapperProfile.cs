@@ -7,6 +7,7 @@ using Merchants.Business.Models.Integration;
 using Merchants.Shared.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MerchantProfileApi.Mapping
 {
@@ -30,7 +31,8 @@ namespace MerchantProfileApi.Mapping
             CreateMap<TerminalCheckoutSettingsUpdate, Merchants.Shared.Models.TerminalCheckoutSettings>();
             CreateMap<TerminalPaymentRequestSettingsUpdate, Merchants.Shared.Models.TerminalPaymentRequestSettings>();
 
-            CreateMap<Terminal, TerminalResponse>();
+            CreateMap<Terminal, TerminalResponse>()
+                .ForMember(d => d.Integrations, o => o.Ignore());
             CreateMap<Terminal, TerminalSummary>();
             CreateMap<ExternalSystem, ExternalSystemSummary>();
             CreateMap<Feature, FeatureSummary>();

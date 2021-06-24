@@ -340,6 +340,16 @@
             Invoice details
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.FutureBillingSummary.CardNumber">
+            <summary>
+            Billing Schedule
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.FutureBillingSummary.CreditCardDetails">
+            <summary>
+            Credit card information(just to display)
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Checkout.ConsumerInfo.ConsumerEmail">
             <summary>
             End-customer Email
@@ -651,9 +661,29 @@
             Deal information (optional)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.InstallmentDetails">
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.NumberOfPayments">
             <summary>
-            Installment payments details (should be omitted in case of regular deal)
+            Number Of payments (cannot be more than 999)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.InitialPaymentAmount">
+            <summary>
+            Initial installment payment
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.TotalAmount">
+            <summary>
+            TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.InstallmentPaymentAmount">
+            <summary>
+            Amount of one instalment payment
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.PaymentRequestAmount">
+            <summary>
+            This amount
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestResponse.TerminalID">
@@ -1439,6 +1469,11 @@
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.RejectionReason">
+            <summary>
+            Rejection Reason
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryAdmin.PaymentTypeEnum">
             <summary>
             Rejection Reason
             </summary>

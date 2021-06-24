@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Moq;
+using Shared.Api.Configuration;
 using Shared.Tests.Configuration;
 using Shared.Tests.Fixtures;
 using System;
@@ -29,6 +30,8 @@ namespace Merchants.Tests.Fixtures
         public MerchantsContext MerchantsContext { get; private set; }
 
         public IOptions<ApplicationSettings> ApplicationSettings { get; private set; }
+
+        public IOptions<ApiSettings> ApiSettings { get; private set; }
 
         public IMapper Mapper { get; private set; }
 
@@ -71,13 +74,8 @@ namespace Merchants.Tests.Fixtures
             ExternalSystemsService = new ExternalSystemService();
 
             ImpersonationService = new ImpersonationService(MerchantsContext, HttpContextAccessorWrapper, null);
-            var appSettings = new ApplicationSettings
-            {
-                //MerchantProfileURL = "https://example.com"
-            };
-            var appConfigMock = new Mock<IOptions<ApplicationSettings>>();
-            appConfigMock.SetupGet(cfg => cfg.Value).Returns(appSettings);
-            this.ApplicationSettings = appConfigMock.Object;
+            ApplicationSettings = Options.Create(new ApplicationSettings());
+            ApiSettings = Options.Create(new ApiSettings());
 
             var myProfile = new AutoMapperProfile();
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));

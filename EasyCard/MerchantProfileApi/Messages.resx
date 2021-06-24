@@ -132,6 +132,9 @@
   <data name="ConsumerUpdated" xml:space="preserve">
     <value>Consumer Updated</value>
   </data>
+  <data name="DeletedSuccessfully" xml:space="preserve">
+    <value>Deleted successfully</value>
+  </data>
   <data name="FileRequired" xml:space="preserve">
     <value>File required</value>
   </data>
@@ -153,11 +156,17 @@
   <data name="MaxFileSizeIs1MB" xml:space="preserve">
     <value>Max file size is 1MB</value>
   </data>
+  <data name="OnlyCSSFilesAreAllowed" xml:space="preserve">
+    <value>Only CSS files are allowed</value>
+  </data>
   <data name="OnlyImagesAreAllowed" xml:space="preserve">
     <value>Only images are allowed</value>
   </data>
   <data name="PrivateKeyUpdated" xml:space="preserve">
     <value>Private Key Updated</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Saved</value>
   </data>
   <data name="SharedKeyUpdated" xml:space="preserve">
     <value>Shared Key Updated</value>

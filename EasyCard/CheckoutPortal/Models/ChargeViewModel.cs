@@ -45,6 +45,30 @@ namespace CheckoutPortal.Models
         [Range(0.01, 1000000)]
         public decimal? Amount { get; set; }
 
+        /// <summary>
+        /// Number Of Installments
+        /// </summary>
+        [BindNever]
+        public int? NumberOfPayments { get; set; }
+
+        /// <summary>
+        /// Initial installment payment
+        /// </summary>
+        [BindNever]
+        [DataType(DataType.Currency)]
+        public decimal? InitialPaymentAmount { get; set; }
+
+        [BindNever]
+        [DataType(DataType.Currency)]
+        public decimal? TotalAmount { get; set; }
+
+        /// <summary>
+        /// Amount of one instalment payment
+        /// </summary>
+        [BindNever]
+        [DataType(DataType.Currency)]
+        public decimal? InstallmentPaymentAmount { get; set; }
+
         [StringLength(500)]
         public string RedirectUrl { get; set; }
 

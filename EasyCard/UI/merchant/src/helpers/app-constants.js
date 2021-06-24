@@ -1,5 +1,5 @@
 const appConstants = {
-    invoicing:{
+    invoicing: {
         defaultInvoiceType: 'invoiceWithPaymentInfo',
         defaultRefundInvoiceType: 'refundInvoice',
         defaultCreditInvoiceType: 'creditNote',
@@ -8,10 +8,10 @@ const appConstants = {
             invoice: 'invoice',
             invoiceWithPaymentInfo: 'invoiceWithPaymentInfo',
             paymentInfo: 'paymentInfo',
-            refundInvoice : 'refundInvoice'
+            refundInvoice: 'refundInvoice'
         }
     },
-    filtering:{
+    filtering: {
         defaultDashboardQuickDateType: 'today',
         defaultDashboardAltQuickDateType: 'lastMonth',
         defaultDashboardAltGranularity: 'week',
@@ -28,7 +28,7 @@ const appConstants = {
             businessAdmin: 'BusinessAdministrator',
         }
     },
-    terminal:{
+    terminal: {
         features: {
             PreventDoubleTansactions: 'PreventDoubleTansactions',
             RecurrentPayments: 'RecurrentPayments',
@@ -36,6 +36,46 @@ const appConstants = {
             Checkout: 'Checkout',
             Api: 'Api',
             Billing: 'Billing'
+        },
+        integrations: {
+            processor: "processor",
+            aggregator: "aggregator",
+            invoicing: "invoicing",
+            marketer: "marketer",
+            pinpadProcessor: "pinpadProcessor",
+        }
+    },
+    ui: {
+        charge: {
+            steps: () => ({
+                1: {
+                    title: "Amount",
+                    canChangeTerminal: true,
+                    showItemsCount: true,
+                    required: true
+                },
+                2: {
+                    title: "Basket",
+                },
+                3: {
+                    title: "ChooseCustomer",
+                    skippable: true,
+                },
+                4: {
+                    title: "PaymentInfo",
+                    required: true
+                },
+                5: {
+                    title: "AdditionalSettings",
+                    required: true
+                },
+                //Last step may be dynamically altered to represent error if transaction creation has failed.
+                6: {
+                    title: "Success",
+                    completed: true,
+                    required: true
+                }
+            })
         }
     }
 };

@@ -212,6 +212,10 @@ namespace Transactions.Api
                 c.SchemaFilter<EnumSchemaFilter>();
                 c.SchemaFilter<SwaggerExcludeFilter>();
 
+                //Temporary fix for Can't use schemaId .. The same schemaId is already used for type. Exception
+                //TODO: fix types and remove
+                c.CustomSchemaIds(type => type.ToString());
+
                 //c.DocumentFilter<PolymorphismDocumentFilter<Models.Transactions.CreateTransactionRequest>>();
                 //c.SchemaFilter<PolymorphismSchemaFilter<Models.Transactions.CreateTransactionRequest>>();
 
@@ -265,6 +269,7 @@ namespace Transactions.Api
             services.AddScoped<ITransactionsService, TransactionsService>();
             services.AddScoped<ICreditCardTokenService, CreditCardTokenService>();
             services.AddScoped<IBillingDealService, BillingDealService>();
+            services.AddScoped<IFutureBillingsService, BillingDealService>();
             services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddScoped<IPaymentRequestsService, PaymentRequestsService>();
             services.AddScoped<ISystemSettingsService, SystemSettingsService>();

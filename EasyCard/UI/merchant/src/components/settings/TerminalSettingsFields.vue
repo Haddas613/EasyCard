@@ -36,10 +36,19 @@
     <v-row>
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("Features")}}
-        <v-divider class="pt-1"></v-divider>
+        <v-divider></v-divider>
       </v-col>
       <v-col cols="12">
         <terminal-features-form :terminal="data"></terminal-features-form>
+      </v-col>
+    </v-row>
+    <v-row v-if="model.integrations && Object.keys(model.integrations).length > 0" class="pb-2">
+      <v-col cols="12" class="subtitle-2 black--text pb-3">
+        {{$t("Integrations")}}
+        <v-divider></v-divider>
+      </v-col>
+      <v-col cols="12">
+        <terminal-integrations-form :terminal="data"></terminal-integrations-form>
       </v-col>
     </v-row>
     <v-row no-gutters>
@@ -282,7 +291,12 @@
         <terminal-merchant-logo-input v-model="model"></terminal-merchant-logo-input>
       </v-col>
       <v-col cols="12" md="5">
-        <img class="mt-1" v-if="model.paymentRequestSettings.merchantLogo" v-bind:src="model.paymentRequestSettings.merchantLogo" height="48">
+        <div  class="d-flex justify-items-center" v-if="model.paymentRequestSettings.merchantLogo">
+          <img class="mt-1" v-bind:src="model.paymentRequestSettings.merchantLogo" height="48">
+          <v-btn class="mt-2" icon color="error" @click="deleteMerchantLogo()">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </div>
       </v-col>
     </v-row>
     <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Billing)">
@@ -317,16 +331,19 @@
         <v-divider class="pt-1"></v-divider>
       </v-col>
       <v-col cols="12" md="7">
-        <v-text-field
-          v-model="model.checkoutSettings.customCssReference"
-          :counter="512"
-          :rules="[vr.primitives.maxLength(512)]"
-          :label="$t('CustomCSSURL')"
-          outlined
-          persistent-hint
-        ></v-text-field>
+        <terminal-merchant-style-input v-model="model"></terminal-merchant-style-input>
       </v-col>
       <v-col cols="12" md="5">
+        <div v-if="model.checkoutSettings.customCssReference" class="mt-5">
+          <a class="body-1" v-bind:href="model.checkoutSettings.customCssReference">
+            {{$t("LinkToCSS")}}
+          </a>
+          <v-btn icon color="error" @click="deleteCustomCSS()">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </div>
+      </v-col>
+      <v-col cols="12" md="7">
         <v-switch
           class="pt-0"
           v-model="model.checkoutSettings.issueInvoice"
@@ -363,7 +380,7 @@
           </template>
           <template v-slot:append="{ item }">
             <v-btn class="mb-8" icon @click="deleteRedirectUrl(item)">
-              <v-icon class="red--text">mdi-delete</v-icon>
+              <v-icon color="error">mdi-delete</v-icon>
             </v-btn>
           </template>
         </ec-list>
@@ -396,7 +413,9 @@ export default {
   components: {
     EcList: () => import("../ec/EcList"),
     TerminalFeaturesForm: () => import("../settings/TerminalFeaturesForm"),
+    TerminalIntegrationsForm: () => import("../settings/TerminalIntegrationsForm"),
     TerminalMerchantLogoInput: () => import("../settings/TerminalMerchantLogoInput"),
+    TerminalMerchantStyleInput: () => import("../settings/TerminalMerchantStyleInput"),
   },
   props: {
     data: {
@@ -479,12 +498,9 @@ export default {
       let operation = await this.$api.terminals.resetPrivateApiKey(
         this.model.terminalID
       );
+      if(!this.$apiSuccess(operation)) return;
 
-      if (operation.status === "success") {
-        this.privateApiKey = operation.entityReference;
-      }else{
-        this.$toasted.show(operation.message, { type: 'error' });
-      }
+      this.privateApiKey = operation.entityReference;
     },
     async resetSharedKey() {
       if (!this.model.terminalID) {
@@ -493,12 +509,11 @@ export default {
       let operation = await this.$api.terminals.resetSharedApiKey(
         this.model.terminalID
       );
+      if(!this.$apiSuccess(operation)) return;
 
-      if (operation.status === "success") {
-        this.showSharedKey = true;
-        this.model.sharedApiKey = operation.entityReference;
-        this.emitUpdate();
-      }
+      this.showSharedKey = true;
+      this.model.sharedApiKey = operation.entityReference;
+      this.emitUpdate();
     },
     emitUpdate() {
       this.$emit("update", this.model);
@@ -525,6 +540,16 @@ export default {
         this.changed = true;
         modelWatcher(); //unwatch
       }, { deep: true})
+    },
+    async deleteCustomCSS(){
+      let operation = await this.$api.terminals.deleteCustomCSS(this.data.terminalID);
+      if(!this.$apiSuccess(operation)) return;
+      this.model.checkoutSettings.customCssReference = null;
+    },
+    async deleteMerchantLogo(){
+      let operation = await this.$api.terminals.deleteMerchantLogo(this.data.terminalID);
+      if(!this.$apiSuccess(operation)) return;
+       this.data.paymentRequestSettings.merchantLogo = null;
     }
   }
 };

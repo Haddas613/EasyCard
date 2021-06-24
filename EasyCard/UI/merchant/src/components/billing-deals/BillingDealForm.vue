@@ -193,7 +193,7 @@
         :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
       ></deal-details>
       <v-col cols="12">
-        <v-switch v-model="model.issueInvoice" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
+        <v-switch v-if="$integrationAvailable(terminalStore, appConstants.terminal.integrations.invoicing)" v-model="model.issueInvoice" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
         <div v-if="model.issueInvoice">
           <invoice-details-fields ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
         </div>
@@ -215,6 +215,7 @@
 import ValidationRules from "../../helpers/validation-rules";
 import { mapState } from "vuex";
 import itemPricingService from "../../helpers/item-pricing";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -252,7 +253,8 @@ export default {
       selectedToken: null,
       scheduleDialog: false,
       ctokenDialog: false,
-      billingScheduleJSON: JSON.stringify(this.data.billingSchedule)
+      billingScheduleJSON: JSON.stringify(this.data.billingSchedule),
+      appConstants: appConstants
     };
   },
   computed: {
@@ -390,6 +392,9 @@ export default {
         );
         
       }
+    }
+    if (result.issueInvoice) {
+      result.invoiceDetails = this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing);
     }
     this.calculateTotal();
   }

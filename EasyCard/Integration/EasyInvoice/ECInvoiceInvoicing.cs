@@ -10,7 +10,9 @@ using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models.Invoicing;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -202,6 +204,54 @@ namespace EasyInvoice
                 };
 
                 await storageService.Save(integrationMessage);
+            }
+        }
+
+        public async Task<OperationResponse> UploadUserLogo(EasyInvoiceTerminalSettings settings, MemoryStream stream, string fileName, string correlationId)
+        {
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+            var headers = GetAuthorizedHeaders(settings.UserName, settings.Password, integrationMessageId, correlationId);
+
+            var extension = Path.GetExtension(fileName);
+
+            /*
+            * * Accepted file formats: `.png`, `.jpg`, `.jpeg`
+            */
+            var allowedImageTypes = new HashSet<string>(3) { ".jpeg", ".jpg", ".png" };
+            if (!allowedImageTypes.Contains(extension))
+            {
+                return new OperationResponse
+                {
+                    Status = Shared.Api.Models.Enums.StatusEnum.Error,
+                    Message = $"{extension} is not supported"
+                };
+            }
+
+            try
+            {
+                headers.Add("Accept-language", "he"); // TODO: get language from options
+
+                /*
+                 * Example response body:
+                    #!json
+                    {
+                        "logoUrl": "https://s3-eu-west-1.amazonaws.com/invoicesystem-logos-stage/1/customer_logo"
+                    }
+                 */
+                var result = await this.apiClient.PostFile(this.configuration.BaseUrl, "/api/v1/user/logo", stream, fileName, "file", () => Task.FromResult(headers));
+
+                return new OperationResponse
+                {
+                    Status = Shared.Api.Models.Enums.StatusEnum.Success,
+                    Message = "Logo uploaded"
+                };
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"EasyInvoice UploadUserLogo request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
+
+                throw new IntegrationException("EasyInvoice UploadUserLogo request failed", integrationMessageId);
             }
         }
 

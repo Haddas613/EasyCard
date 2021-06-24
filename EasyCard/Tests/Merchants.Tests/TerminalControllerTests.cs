@@ -3,6 +3,7 @@ using Merchants.Api.Models.Merchant;
 using Merchants.Api.Models.Terminal;
 using Merchants.Shared.Models;
 using Merchants.Tests.Fixtures;
+using Merchants.Tests.MockSetups;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using Shared.Api.Models;
@@ -241,8 +242,16 @@ namespace MerchantsApi.Tests
 
         private TerminalsApiController GetTerminalsApiController()
         {
+            var userManagementClientMock = new UserManagementClientMockSetup();
+
             // TODO: fixture
-           return new TerminalsApiController(merchantsFixture.MerchantsService, merchantsFixture.TerminalsService, merchantsFixture.Mapper, merchantsFixture.ExternalSystemsService, null, null, null, null, null, null);
+            return new TerminalsApiController(
+               merchantsFixture.MerchantsService,
+               merchantsFixture.TerminalsService,
+               merchantsFixture.Mapper,
+               merchantsFixture.ExternalSystemsService,
+               userManagementClientMock.MockObj.Object,
+               null, null, null, null, null, null, null);
         }
     }
 }

@@ -106,6 +106,15 @@ namespace MerchantProfileApi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deleted successfully.
+        /// </summary>
+        public static string DeletedSuccessfully {
+            get {
+                return ResourceManager.GetString("DeletedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File required.
         /// </summary>
         public static string FileRequired {
@@ -169,6 +178,15 @@ namespace MerchantProfileApi {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only CSS files are allowed.
+        /// </summary>
+        public static string OnlyCSSFilesAreAllowed {
+            get {
+                return ResourceManager.GetString("OnlyCSSFilesAreAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only images are allowed.
         /// </summary>
         public static string OnlyImagesAreAllowed {
@@ -183,6 +201,15 @@ namespace MerchantProfileApi {
         public static string PrivateKeyUpdated {
             get {
                 return ResourceManager.GetString("PrivateKeyUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved.
+        /// </summary>
+        public static string Saved {
+            get {
+                return ResourceManager.GetString("Saved", resourceCulture);
             }
         }
         

@@ -455,7 +455,7 @@ namespace Transactions.Api.Controllers
                     }
                     else
                     {
-                        await emailSender.SendEmail(BuildInvoiceEmail(dbInvoice, terminal));
+                        await emailSender.SendEmail(BuildInvoiceEmail(dbInvoice.DealDetails?.ConsumerEmail, dbInvoice, terminal));
 
                         dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.Sent;
 
@@ -506,9 +506,15 @@ namespace Transactions.Api.Controllers
 
                         await invoiceService.UpdateEntity(dbInvoice);
 
-                        return new OperationResponse(Messages.InvoiceGenerated, StatusEnum.Success, dbInvoice.InvoiceID);
+                        if (dbInvoice.InvoiceDetails.SendCCTo?.Any() == true)
+                        {
+                            foreach (var cc in dbInvoice.InvoiceDetails.SendCCTo)
+                            {
+                                await emailSender.SendEmail(BuildInvoiceEmail(cc, dbInvoice, terminal));
+                            }
+                        }
 
-                        // TODO: send CC
+                        return new OperationResponse(Messages.InvoiceGenerated, StatusEnum.Success, dbInvoice.InvoiceID);
                     }
                 }
                 catch (Exception ex)
@@ -523,7 +529,7 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        private Email BuildInvoiceEmail(Invoice invoice, Terminal terminal)
+        private Email BuildInvoiceEmail(string emailTo, Invoice invoice, Terminal terminal)
         {
             var settings = terminal.InvoiceSettings;
 
@@ -539,7 +545,7 @@ namespace Transactions.Api.Controllers
 
             var email = new Email
             {
-                EmailTo = invoice.DealDetails?.ConsumerEmail,
+                EmailTo = emailTo,
                 Subject = emailSubject,
                 TemplateCode = emailTemplateCode,
                 Substitutions = substitutions.ToArray()

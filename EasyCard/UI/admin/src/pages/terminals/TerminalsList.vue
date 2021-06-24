@@ -42,6 +42,7 @@
 
 <script>
 export default {
+  name: "Terminals",
   components: {
     TerminalsFilter: () => import("../../components/terminals/TerminalsFilter")
   },
@@ -64,8 +65,10 @@ export default {
       deep: true
     }
   },
-  async mounted () {
-    this.$store.commit("ui/setRefreshHandler", { value: this.getDataFromApi});
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.$store.commit("ui/setRefreshHandler", { value: vm.getDataFromApi});
+    });
   },
   methods: {
     async getDataFromApi() {

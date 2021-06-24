@@ -24,6 +24,7 @@
   "BillingDeals": "עסקאות מחזוריות",
   "BillingDeal": "עסקה מחזורית",
   "BillingDealsList": "רשימת עסקאות מחזוריות",
+  "FutureBillingDeals": "עסקאות חיוב עתידיות",
   "CreateBillingDeal": "צור עסקה מחזורית",
   "FilterBillingDeals": "סנן עסקאות מחזוריות",
   "BillingSchedule": ",מועד עסקה מחזורית",
@@ -75,6 +76,7 @@
   "Features": "תכונות",
   "PauseBillingDeal": "השהה עסקה מחזורית",
   "Basket": "עגלת קניות",
+  "Integrations": "אינטגרציות",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -112,6 +114,7 @@
   "CreditCardExpired": "פג תוקף כרטיס האשראי",
   "@StringLengthExact": "חייב להיות בדיוק @val תווים",
   "OnlyImagesAreAllowed": "ניתן להעלות רק תמונות",
+  "OnlyCSSFilesAreAllowed": "רק קבצי CSS מותרים",
   "MaxFileSizeIs1MB": "גודל הקובץ המרבי הוא 1MB",
   
   "--FORM & DATA FIELDS--": null,
@@ -241,7 +244,8 @@
   "VATExempt": "פטור ממע\"מ",
   "RedirectURL": "URL רידיירקט",
   "CheckoutRedirectUrls": "בדוק URL רידיירקט",
-  "CustomCSSURL": "URL לCSS בית עסק",
+  "CustomCSS": "לCSS בית עסק",
+  "LinkToCSS": "קישור ל- CSS",
   "Granularity": "פירוט",
   "Email": "מייל",
   "Name": "שם",
@@ -273,6 +277,7 @@
   "Actual": "ממשי",
   "ItemID": "מזהה פריט",
   "MerchantLogo": "לוגו בית עסק",
+  "UsePinPad": "השתמש בפינפד",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -376,6 +381,11 @@
   "NotSpecified": "לא צוין",
   "Error": "שגיאה",
   "All": "הכל",
+  "processor": "מעבד",
+  "aggregator": "מאגד",
+  "invoicing": "חשבוניות",
+  "pinpadProcessor": "מעבד פינפד",
+  "Link": "קישור",
 
   "--HINTS--": null,
   "ShowOnlyNotTransmittedTransactions": "הצג עסקאות שלא שודרו",

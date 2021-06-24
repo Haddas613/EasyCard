@@ -240,12 +240,12 @@
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="12" md="5">
-            <img
-              class="mt-1"
-              v-if="model.paymentRequestSettings.merchantLogo"
-              v-bind:src="model.paymentRequestSettings.merchantLogo"
-              height="48"
-            />
+            <div class="d-flex justify-items-center" v-if="model.paymentRequestSettings.merchantLogo">
+              <img class="mt-1"  v-bind:src="model.paymentRequestSettings.merchantLogo" height="48">
+              <v-btn class="mt-2" icon color="error" @click="deleteMerchantLogo()">
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </div>
           </v-col>
         </v-row>
       </v-card-text>
@@ -312,14 +312,19 @@
           <v-col cols="12">
             <v-divider class="py-2"></v-divider>
           </v-col>
-          <v-col cols="12" md="7">
-            <v-text-field
-              v-model="model.checkoutSettings.customCssReference"
-              :counter="512"
-              :rules="[vr.primitives.maxLength(512)]"
-              :label="$t('CustomCSSURL')"
-              persistent-hint
-            ></v-text-field>
+          <v-col cols="12" md="5">
+            <terminal-merchant-style-input v-model="model"></terminal-merchant-style-input>
+          </v-col>
+          <v-spacer></v-spacer>
+          <v-col cols="12" md="5">
+            <div v-if="model.checkoutSettings.customCssReference" class="px-4 mt-5">
+              <a class="body-1" v-bind:href="model.checkoutSettings.customCssReference">
+                {{$t("LinkToCSS")}}
+              </a>
+              <v-btn class="pb-1" icon color="error" @click="deleteCustomCSS()">
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </div>
           </v-col>
           <v-col cols="12" md="5">
             <v-switch
@@ -403,7 +408,8 @@ import appConstants from "../../helpers/app-constants";
 export default {
   components: {
     EcList: () => import("../ec/EcList"),
-    TerminalMerchantLogoInput: () => import("./TerminalMerchantLogoInput")
+    TerminalMerchantLogoInput: () => import("./TerminalMerchantLogoInput"),
+    TerminalMerchantStyleInput: () => import("./TerminalMerchantStyleInput"),
   },
   props: {
     data: {
@@ -535,6 +541,16 @@ export default {
         this.changed = true;
         modelWatcher(); //unwatch
       }, { deep: true})
+    },
+    async deleteCustomCSS(){
+      let operation = await this.$api.terminals.deleteCustomCSS(this.data.terminalID);
+      if(!this.$apiSuccess(operation)) return;
+      this.model.checkoutSettings.customCssReference = null;
+    },
+    async deleteMerchantLogo(){
+      let operation = await this.$api.terminals.deleteMerchantLogo(this.data.terminalID);
+      if(!this.$apiSuccess(operation)) return;
+       this.data.paymentRequestSettings.merchantLogo = null;
     }
   },
 };

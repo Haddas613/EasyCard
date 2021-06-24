@@ -24,6 +24,7 @@
   "BillingDeals": "Billing Deals",
   "BillingDeal": "Billing Deal",
   "BillingDealsList": "Billing Deals List",
+  "FutureBillingDeals": "Future Billing Deals",
   "CreateBillingDeal": "Create Billing Deal",
   "FilterBillingDeals": "Filter Billing Deals",
   "BillingSchedule": "Billing Schedule",
@@ -75,6 +76,7 @@
   "Features": "Features",
   "PauseBillingDeal": "Pause Billing Deal",
   "Basket": "Basket",
+  "Integrations": "Integrations",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -112,6 +114,7 @@
   "CreditCardExpired": "Credit Card has expired",
   "@StringLengthExact": "Must be exactly @val characters",
   "OnlyImagesAreAllowed": "Only images are allowed",
+  "OnlyCSSFilesAreAllowed": "Only CSS files are allowed",
   "MaxFileSizeIs1MB": "Max file size is 1MB",
   
   "--FORM & DATA FIELDS--": null,
@@ -241,7 +244,8 @@
   "VATExempt": "VAT Exempt",
   "RedirectURL": "Redirect URL",
   "CheckoutRedirectUrls": "Checkout Redirect URLs",
-  "CustomCSSURL": "Custom CSS URL",
+  "CustomCSS": "Custom CSS",
+  "LinkToCSS": "Link to CSS",
   "Granularity": "Granularity",
   "Email": "Email",
   "Name": "Name",
@@ -273,6 +277,7 @@
   "Actual": "Actual",
   "ItemID": "Item ID",
   "MerchantLogo": "Merchant Logo",
+  "UsePinPad": "Use PinPad",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -376,6 +381,11 @@
   "NotSpecified": "Not Specified",
   "Error": "Error",
   "All": "All",
+  "processor": "Processor",
+  "aggregator": "Aggregator",
+  "invoicing": "Invoicing",
+  "pinpadProcessor": "PinPad Processor",
+  "Link": "Link",
 
   "--HINTS--": null,
   "ShowOnlyNotTransmittedTransactions": "Show only not transmitted transactions",

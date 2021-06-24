@@ -2,6 +2,7 @@
 using Merchants.Api.Controllers;
 using Merchants.Api.Models.User;
 using Merchants.Business.Entities.User;
+using Merchants.Business.Services;
 using Merchants.Tests.Fixtures;
 using Merchants.Tests.MockSetups;
 using Microsoft.EntityFrameworkCore;

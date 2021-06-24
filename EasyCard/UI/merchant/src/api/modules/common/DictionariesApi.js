@@ -1,3 +1,6 @@
+import store from '../../../store/index';
+import cfg from "../../../app.config";
+
 export default class DictionariesApi {
     constructor(base) {
         this.base = base;
@@ -6,11 +9,15 @@ export default class DictionariesApi {
 
         this.profileBaseUrl = this.base.cfg.VUE_APP_PROFILE_API_BASE_ADDRESS;
         this.profileDictionariesUrl = this.profileBaseUrl + '/api/dictionaries';
+
+        this.locale = (store.state.localization && store.state.localization.currentLocale)
+            ? store.state.localization.currentLocale : cfg.VUE_APP_I18N_LOCALE;
+
     }
 
     async getTransactionDictionaries() {
         if (!this.transactionDictionaries) {
-            let data = await this.base.get(this.transactionDictionariesUrl + '/transaction');
+            let data = await this.base.get(this.transactionDictionariesUrl + `/transaction?lang=${this.locale}`);
             if(!data)
                 return null;
 
@@ -38,7 +45,7 @@ export default class DictionariesApi {
     async getMerchantDictionaries() {
         if (!this.merchantDictionaries) {
 
-            let data = await this.base.get(this.profileDictionariesUrl + '/merchant');
+            let data = await this.base.get(this.profileDictionariesUrl + `/merchant?lang=${this.locale}`);
             if(!data)
                 return null;
 

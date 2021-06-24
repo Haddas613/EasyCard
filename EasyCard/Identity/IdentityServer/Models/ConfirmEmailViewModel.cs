@@ -17,7 +17,7 @@ namespace IdentityServer.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "PasswordMatchValidatonMessage")]
+        [Compare("Password", ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "PasswordMatchValidationMessage")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }

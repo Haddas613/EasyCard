@@ -17,7 +17,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Services
 {
-    public class BillingDealService : ServiceBase<BillingDeal, Guid>, IBillingDealService
+    public class BillingDealService : ServiceBase<BillingDeal, Guid>, IBillingDealService, IFutureBillingsService
     {
         private readonly TransactionsContext context;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
@@ -108,6 +108,22 @@ namespace Transactions.Business.Services
                 await context.SaveChangesAsync();
                 await AddHistory(entity.BillingDealID, changesStr, message, operationCode);
                 await transaction.CommitAsync();
+            }
+        }
+
+        public IQueryable<FutureBilling> GetFutureBillings()
+        {
+            if (user.IsAdmin())
+            {
+                return context.FutureBillings.AsNoTracking();
+            }
+            else if (user.IsTerminal())
+            {
+                return context.FutureBillings.AsNoTracking().Where(t => t.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.FutureBillings.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
             }
         }
 

@@ -61,6 +61,15 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deleted successfully.
+        /// </summary>
+        public static string DeletedSuccessfully {
+            get {
+                return ResourceManager.GetString("DeletedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to External System Removed.
         /// </summary>
         public static string ExternalSystemRemoved {
@@ -124,6 +133,15 @@ namespace Merchants.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Only CSS files are allowed.
+        /// </summary>
+        public static string OnlyCSSFilesAreAllowed {
+            get {
+                return ResourceManager.GetString("OnlyCSSFilesAreAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Only images are allowed.
         /// </summary>
         public static string OnlyImagesAreAllowed {
@@ -138,6 +156,15 @@ namespace Merchants.Shared {
         public static string PasswordReset {
             get {
                 return ResourceManager.GetString("PasswordReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved.
+        /// </summary>
+        public static string Saved {
+            get {
+                return ResourceManager.GetString("Saved", resourceCulture);
             }
         }
         

@@ -19,7 +19,7 @@ namespace IdentityServer.Models
         public string NewPassword { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
-        [Compare("NewPassword", ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "PasswordMatchValidatonMessage")]
+        [Compare("NewPassword", ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "PasswordMatchValidationMessage")]
         public string ConfirmPassword { get; set; }
 
         [BindNever]

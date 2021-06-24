@@ -31,11 +31,9 @@
           </v-list>
         </v-menu>
       </template>
-      <template v-if="headerStore.refresh">
-        <v-btn color="primary" icon large @click="invokeRefreshSafe()">
-          <v-icon size="1.35rem">mdi-refresh</v-icon>
-        </v-btn>
-      </template>
+      <v-btn :key="headerText" v-if="headerStore.refresh" color="primary" icon large @click="invokeRefreshSafe()">
+        <v-icon size="1.35rem">mdi-refresh</v-icon>
+      </v-btn>
     </v-col>
   </v-row>
 </template>
@@ -43,7 +41,7 @@
 <script>
 import LangSwitcher from "../../components/LanguageSwitcher";
 import ActionsBar from "../../components/misc/ActionsBar";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import ReIcon from "../../components/misc/ResponsiveIcon";
 
 export default {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BasicServices.BlobStorage;
+using EasyInvoice;
 using IdentityServerClient;
 using MerchantProfileApi.Extensions;
 using MerchantProfileApi.Models.Terminal;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using ProfileApi;
 using Shared.Api;
@@ -21,6 +23,7 @@ using Shared.Api.Extensions;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Helpers.Security;
+using Shared.Integration;
 using Z.EntityFramework.Plus;
 
 namespace MerchantProfileApi.Controllers
@@ -41,6 +44,11 @@ namespace MerchantProfileApi.Controllers
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly IFeaturesService featuresService;
         private readonly IBlobStorageService blobStorageService;
+        private readonly ILogger logger;
+        private readonly IExternalSystemsService externalSystemsService;
+
+        //TODO: temporary, use events to update EC logo
+        private readonly ECInvoiceInvoicing eCInvoiceInvoicing;
 
         public TerminalsApiController(
             IMerchantsService merchantsService,
@@ -50,7 +58,10 @@ namespace MerchantProfileApi.Controllers
             ISystemSettingsService systemSettingsService,
             ICryptoServiceCompact cryptoServiceCompact,
             IFeaturesService featuresService,
-            IBlobStorageService blobStorageService)
+            IBlobStorageService blobStorageService,
+            IExternalSystemsService externalSystemsService,
+            ILogger<TerminalsApiController> logger,
+            ECInvoiceInvoicing eCInvoiceInvoicing)
         {
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
@@ -59,7 +70,10 @@ namespace MerchantProfileApi.Controllers
             this.systemSettingsService = systemSettingsService;
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.featuresService = featuresService;
+            this.logger = logger;
             this.blobStorageService = blobStorageService;
+            this.eCInvoiceInvoicing = eCInvoiceInvoicing;
+            this.externalSystemsService = externalSystemsService;
         }
 
         [HttpGet]
@@ -83,8 +97,8 @@ namespace MerchantProfileApi.Controllers
         [Route("{terminalID}")]
         public async Task<ActionResult<TerminalResponse>> GetTerminal([FromRoute]Guid terminalID)
         {
-            //not terminalsService.GetTerminal so it can still be accessed as read only even if it's disabled
-            var terminal = mapper.Map<TerminalResponse>(EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID)));
+            var entity = EnsureExists(await terminalsService.GetTerminal(terminalID));
+            var terminal = mapper.Map<TerminalResponse>(entity);
 
             var merchant = EnsureExists(await merchantsService.GetMerchants().FirstOrDefaultAsync(m => m.MerchantID == terminal.MerchantID));
 
@@ -93,6 +107,12 @@ namespace MerchantProfileApi.Controllers
             var systemSettings = await systemSettingsService.GetSystemSettings();
 
             mapper.Map(systemSettings, terminal);
+
+            if (entity.Integrations?.Any() == true)
+            {
+                var externalSystemNames = externalSystemsService.GetExternalSystems().ToDictionary(k => k.ExternalSystemID, v => v.Name);
+                terminal.Integrations = entity.Integrations.ToDictionary(k => k.Type, v => externalSystemNames.ContainsKey(v.ExternalSystemID) ? externalSystemNames[v.ExternalSystemID] : string.Empty);
+            }
 
             return Ok(terminal);
         }
@@ -143,13 +163,105 @@ namespace MerchantProfileApi.Controllers
 
                 var filename = $"merchantdata/{terminal.TerminalID.ToString().Substring(0, 8)}/logo{Path.GetExtension(file.FileName)}";
 
-                var logoUrl = await blobStorageService.Upload(filename, uploadStream);
+                var url = await blobStorageService.Upload(filename, uploadStream);
 
-                terminal.PaymentRequestSettings.MerchantLogo = logoUrl;
+                terminal.PaymentRequestSettings.MerchantLogo = url;
                 await terminalsService.UpdateEntity(terminal);
-                response.AdditionalData = JObject.FromObject(new { logoUrl });
+                response.AdditionalData = JObject.FromObject(new { url });
+
+                //TODO: temporary, use events to update EC logo
+                var easyInvoiceIntegration = terminal.Integrations.FirstOrDefault(i => i.ExternalSystemID == ExternalSystemHelpers.ECInvoiceExternalSystemID);
+                if (easyInvoiceIntegration != null)
+                {
+                    using var memoryStream = new MemoryStream();
+
+                    uploadStream.Seek(0, SeekOrigin.Begin);
+                    await uploadStream.CopyToAsync(memoryStream);
+                    var ecTerminalSettings = easyInvoiceIntegration.Settings.ToObject<EasyInvoiceTerminalSettings>();
+                    try
+                    {
+                        var uploadOperation = await eCInvoiceInvoicing.UploadUserLogo(ecTerminalSettings, memoryStream, file.FileName, GetCorrelationID());
+
+                        if (uploadOperation.Status != StatusEnum.Success)
+                        {
+                            logger.LogError($"Error while uploading logo to EasyInvoice: {uploadOperation.Message}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError($"Error while uploading logo to EasyInvoice: {ex.Message}");
+                    }
+                }
             }
 
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("{terminalID}/customcss")]
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<OperationResponse>> UploadCustomCss([FromRoute]Guid terminalID, [FromForm]IFormFile file)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+
+            if (file == null || file.Length <= 0)
+            {
+                return BadRequest(new OperationResponse { Message = Messages.FileRequired, Status = StatusEnum.Error });
+            }
+
+            if (file.Length > 1000000)
+            {
+                return BadRequest(new OperationResponse { Message = Messages.MaxFileSizeIs1MB, Status = StatusEnum.Error });
+            }
+
+            if (!file.ContentType.Contains("text/css"))
+            {
+                return BadRequest(new OperationResponse { Message = Messages.OnlyCSSFilesAreAllowed, Status = StatusEnum.Error });
+            }
+
+            var response = new OperationResponse { Message = Messages.Saved, Status = StatusEnum.Success };
+
+            using (var uploadStream = file.OpenReadStream())
+            {
+                uploadStream.Seek(0, SeekOrigin.Begin);
+
+                var filename = $"merchantdata/{terminal.TerminalID.ToString().Substring(0, 8)}/style.css";
+
+                var url = await blobStorageService.Upload(filename, uploadStream);
+
+                terminal.CheckoutSettings.CustomCssReference = url;
+                await terminalsService.UpdateEntity(terminal);
+                response.AdditionalData = JObject.FromObject(new { url });
+            }
+
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        [Route("{terminalID}/customcss")]
+        public async Task<ActionResult<OperationResponse>> DeleteCustomCss([FromRoute]Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+            EnsureExists(terminal.CheckoutSettings?.CustomCssReference);
+
+            terminal.CheckoutSettings.CustomCssReference = null;
+            await terminalsService.UpdateEntity(terminal);
+
+            var response = new OperationResponse { Message = Messages.DeletedSuccessfully, Status = StatusEnum.Success };
+            return Ok(response);
+        }
+
+        [HttpDelete]
+        [Route("{terminalID}/merchantlogo")]
+        public async Task<ActionResult<OperationResponse>> DeleteMerchantLogo([FromRoute]Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+            EnsureExists(terminal.PaymentRequestSettings?.MerchantLogo);
+
+            terminal.PaymentRequestSettings.MerchantLogo = null;
+            await terminalsService.UpdateEntity(terminal);
+
+            var response = new OperationResponse { Message = Messages.DeletedSuccessfully, Status = StatusEnum.Success };
             return Ok(response);
         }
 

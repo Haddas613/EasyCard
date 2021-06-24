@@ -377,6 +377,11 @@
               Looks up a localized string similar to Password.
             </summary>
         </member>
+        <member name="P:IdentityServer.Resources.CommonResources.PasswordMatchValidationMessage">
+            <summary>
+              Looks up a localized string similar to Passwords must match.
+            </summary>
+        </member>
         <member name="P:IdentityServer.Resources.CommonResources.PasswordRepeat">
             <summary>
               Looks up a localized string similar to Password repeat.
