@@ -347,9 +347,19 @@
               Looks up a localized string similar to Manage account.
             </summary>
         </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Manager">
+            <summary>
+              Looks up a localized string similar to Manager.
+            </summary>
+        </member>
         <member name="P:IdentityServer.Resources.CommonResources.MarketingName">
             <summary>
               Looks up a localized string similar to Marketing name.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.Merchant">
+            <summary>
+              Looks up a localized string similar to Merchant.
             </summary>
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.NewPassword">
@@ -379,7 +389,12 @@
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.PasswordMatchValidationMessage">
             <summary>
-              Looks up a localized string similar to Passwords must match.
+              Looks up a localized string similar to Password does not meet system requirements.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.PasswordMatchValidatonMessage">
+            <summary>
+              Looks up a localized string similar to Password does not meet system requirements .
             </summary>
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.PasswordRepeat">
