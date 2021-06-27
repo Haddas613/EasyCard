@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Upay.Models
 {
-    public class CreateTranResponseFullModel
+    public class TranResponseFullModel
     {
         /// <summary>
         /// Gets or Sets  Results

@@ -56,7 +56,7 @@ namespace Upay
                 IDictionary<string, string> credentials = new Dictionary<string, string>();
                 credentials.Add("msgs", jsonResult);
                 var result = await webApiClient.PostRawForm(configuration.ApiBaseAddress, "", credentials, null);
-                CreateTranResponseFullModel resultUpay = JsonConvert.DeserializeObject<CreateTranResponseFullModel>(result);
+                TranResponseFullModel resultUpay = JsonConvert.DeserializeObject<TranResponseFullModel>(result);
                 return resultUpay.GetAggregatorCreateTransactionResponse();
             }
             catch (WebApiClientErrorException clientError)
@@ -101,9 +101,23 @@ namespace Upay
         {
             try
             {
-                var request = transactionRequest.GetCommitTransactionRequest(configuration);
-                var result = await webApiClient.PostRawForm(configuration.ApiCommitAddress + UpayHelper.GetUpayComminParameters(request), "",null);
-                return result.GetAggregatorCommitTransactionResponse();
+
+                var upaySettings = transactionRequest.AggregatorSettings as UpayTerminalSettings;
+                var request = transactionRequest.GetCommitTransactionRequest(configuration);//GetCreateTransactionRequest(configuration);
+                var CommitTransactionRequest = UpayHelper.GetCommitTranMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), false/*TODO*/, upaySettings.AuthenticateKey, request);
+                var loginRequest = UpayHelper.GetLoginMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), false/*TODO*/, upaySettings.AuthenticateKey);
+                var Msgs = new MsgModel[2];
+                Msgs[0] = loginRequest;
+                Msgs[1] = CommitTransactionRequest;
+                JavaScriptSerializer serDes = new JavaScriptSerializer();
+               var  SerializerSettings = new JsonSerializerSettings();
+                SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                var jsonResult = serDes.Serialize(Msgs);
+                IDictionary<string, string> credentials = new Dictionary<string, string>();
+                credentials.Add("msgs", jsonResult);
+                var result = await webApiClient.PostRawForm(configuration.ApiBaseAddress, "", credentials, null);
+                TranResponseFullModel resultUpay = JsonConvert.DeserializeObject<TranResponseFullModel>(result);
+                return resultUpay.GetAggregatorCommitTransactionResponse();
             }
             catch (WebApiClientErrorException clientError)
             {
@@ -115,7 +129,7 @@ namespace Upay
 
         public async Task<AggregatorCancelTransactionResponse> CancelTransaction(AggregatorCancelTransactionRequest transactionRequest)
         {
-            return null;//TODO no cancel transaction with upay
+            return new AggregatorCancelTransactionResponse { Success = true };//no cancel transaction with upay
         }
 
         public bool ShouldBeProcessedByAggregator(Shared.Integration.Models.TransactionTypeEnum transactionType, SpecialTransactionTypeEnum specialTransactionType, JDealTypeEnum jDealType)

@@ -7,6 +7,5 @@ namespace Upay
 {
     class UpayCommitTransactionResponse : AggregatorCommitTransactionResponse
     {
-            public bool Success { get; set; }
     }
 }

@@ -37,25 +37,25 @@ namespace Upay.Converters
         {
             var upayRequest = new Models.CommitTransactionRequest();
 
-            upayRequest.Amount = commitTransactionRequest.TransactionDetails.Amount;
-            upayRequest.Cardcompany = GetUpayCardType(commitTransactionRequest.CreditCardDetails.CardVendor);// commitTransactionRequest.TransactionDetails.CardCompany;
-            upayRequest.Cardnumber = commitTransactionRequest.CreditCardDetails.CardLastFourDigits;
-            upayRequest.Cardexpdate = getUpayExpDateFormat(commitTransactionRequest.CreditCardDetails.CardExpiration);
-            upayRequest.Cardtype = GetUpayCardType(commitTransactionRequest.CreditCardDetails.CardBrand);
+            //upayRequest.Amount = commitTransactionRequest.TransactionDetails.Amount;
+            //upayRequest.Cardcompany = GetUpayCardType(commitTransactionRequest.CreditCardDetails.CardVendor);// commitTransactionRequest.TransactionDetails.CardCompany;
+          //  upayRequest.Cardnumber = commitTransactionRequest.CreditCardDetails.CardLastFourDigits;
+           // upayRequest.Cardexpdate = getUpayExpDateFormat(commitTransactionRequest.CreditCardDetails.CardExpiration);
+            //upayRequest.Cardtype = GetUpayCardType(commitTransactionRequest.CreditCardDetails.CardBrand);
             upayRequest.Cashierid = commitTransactionRequest.AggregatorTransactionID;
-            upayRequest.Cellphonenotify = commitTransactionRequest.TransactionDetails.OwnerPhoneNumber;
-            upayRequest.Code = "000";//TODO CONST FOR SUCCESS
+           // upayRequest.Cellphonenotify = commitTransactionRequest.TransactionDetails.OwnerPhoneNumber;
+            //upayRequest.Code = "000";//TODO CONST FOR SUCCESS
 
             var shvaDetails = commitTransactionRequest.ProcessorTransactionDetails as Upay.Models.PaymentGatewayAdditionalDetails;
-            upayRequest.Dealnumber = shvaDetails.ShvaShovarNumber;// PaymentGatewayAdditionalDetails = shvaDetails;
-            upayRequest.Foreigncard = "False";//TODO
-            upayRequest.Identitynum = commitTransactionRequest.TransactionDetails.OwnerIdentityNumber;
-            upayRequest.Oknumber = shvaDetails.ShvaAuthNum;
-            DateTime? payDate = GetPayDate();
-            upayRequest.Paydate = payDate.HasValue ? payDate.Value.ToString("dd/MM/yyyy") : string.Empty;
-            upayRequest.Payments = commitTransactionRequest.TransactionDetails.PaymentsNumber;
-            upayRequest.Sessionid = commitTransactionRequest.CorrelationId;
-            upayRequest.Sixdigits = commitTransactionRequest.CreditCardDetails.CardBin;
+           // upayRequest.Dealnumber = shvaDetails.ShvaShovarNumber;// PaymentGatewayAdditionalDetails = shvaDetails;
+            //upayRequest.Foreigncard = "False";//TODO
+            //upayRequest.Identitynum = commitTransactionRequest.TransactionDetails.OwnerIdentityNumber;
+            //upayRequest.Oknumber = shvaDetails.ShvaAuthNum;
+            //DateTime? payDate = GetPayDate();
+            //upayRequest.Paydate = payDate.HasValue ? payDate.Value.ToString("dd/MM/yyyy") : string.Empty;
+            //upayRequest.Payments = commitTransactionRequest.TransactionDetails.PaymentsNumber;
+            //upayRequest.Sessionid = commitTransactionRequest.CorrelationId;
+            //upayRequest.Sixdigits = commitTransactionRequest.CreditCardDetails.CardBin;
             upayRequest.Token = commitTransactionRequest.TransactionDetails.ExternalID;// externalID newguid TODO
 
 
@@ -71,7 +71,7 @@ namespace Upay.Converters
             return ((int)vendor).ToString();
         }
 
-        public static Shared.Integration.Models.AggregatorCreateTransactionResponse GetAggregatorCreateTransactionResponse(this Models.CreateTranResponseFullModel operationResponse)
+        public static Shared.Integration.Models.AggregatorCreateTransactionResponse GetAggregatorCreateTransactionResponse(this Models.TranResponseFullModel operationResponse)
         {
             var response = new UpayCreateTransactionResponse();
 
@@ -89,6 +89,27 @@ namespace Upay.Converters
             {
                 response.ErrorMessage = operationResponse.Results[1].Header.Errormessage;
                 response.ErrorDescription = operationResponse.Results[1].Header.Errordescription;
+            }
+            return response;
+        }
+
+        public static Shared.Integration.Models.AggregatorCommitTransactionResponse GetAggregatorCommitTransactionResponse(this Models.TranResponseFullModel operationResponse)
+        {
+            var response = new UpayCommitTransactionResponse();
+
+                //Cashierid = operationResponse.Results[1].Result.Transactions[0].Cashierid;
+
+            //response.CreditcardCompanycode = operationResponse.CreditcardCompanycode;
+
+            //response.SessionId = operationResponse.Results[1].Result.Sessionid;
+           // response.TotalAmount = operationResponse.Results[1].Result.Transactions[0].Totalamount;
+            //response.WebUrl = operationResponse.WebUrl;
+            response.Success = operationResponse.Results[1].Success;
+
+            if (!response.Success)
+            {
+                response.ErrorMessage = operationResponse.Results[1].Header.Errormessage;
+                //response. = operationResponse.Results[1].Header.Errordescription;
             }
             return response;
         }
@@ -129,7 +150,7 @@ namespace Upay.Converters
             return response;
         }
 
-        public static Shared.Integration.Models.AggregatorCommitTransactionResponse GetAggregatorCommitTransactionResponse(this string operationResponse)
+       /* public static Shared.Integration.Models.AggregatorCommitTransactionResponse GetAggregatorCommitTransactionResponse(this string operationResponse)
         {
             var response = new UpayCommitTransactionResponse();
             response.Success = operationResponse.Equals("0");
@@ -141,6 +162,7 @@ namespace Upay.Converters
 
             return response;
         }
+        */
         private static string getUpayExpDateFormat(CardExpiration cardExpiration)
         {
             if (cardExpiration == null)

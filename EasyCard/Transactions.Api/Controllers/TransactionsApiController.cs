@@ -866,11 +866,9 @@ namespace Transactions.Api.Controllers
                 {
                     try
                     {
-                        var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
-
                         var commitAggregatorRequest = mapper.Map<AggregatorCommitTransactionRequest>(transaction);
 
-                        commitAggregatorRequest.AggregatorSettings = terminalAggregator.Settings;
+                        commitAggregatorRequest.AggregatorSettings = aggregatorSettings;
                       
                        if(aggregator is Upay.UpayAggregator)
                             commitAggregatorRequest.ProcessorTransactionDetails = mapper.Map<Upay.Models.PaymentGatewayAdditionalDetails>(commitAggregatorRequest.ProcessorTransactionDetails);
