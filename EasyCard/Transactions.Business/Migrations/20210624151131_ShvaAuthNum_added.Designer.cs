@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transactions.Business.Data;
 
 namespace Transactions.Business.Migrations
 {
     [DbContext(typeof(TransactionsContext))]
-    partial class TransactionsContextModelSnapshot : ModelSnapshot
+    [Migration("20210624151131_ShvaAuthNum_added")]
+    partial class ShvaAuthNum_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1015,6 +1017,45 @@ namespace Transactions.Business.Migrations
                     b.Navigation("ShvaInitialTransactionDetails");
                 });
 
+            modelBuilder.Entity("Transactions.Business.Entities.FutureBilling", b =>
+                {
+                    b.OwnsOne("Transactions.Business.Entities.CreditCardDetails", "CreditCardDetails", b1 =>
+                        {
+                            b1.Property<Guid>("FutureBillingBillingDealID")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("FutureBillingCurrentDeal")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("CardExpiration")
+                                .HasMaxLength(5)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(5)")
+                                .HasColumnName("CardExpiration");
+
+                            b1.Property<string>("CardNumber")
+                                .HasMaxLength(20)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("CardNumber");
+
+                            b1.Property<string>("CardOwnerName")
+                                .HasMaxLength(100)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("CardOwnerName");
+
+                            b1.HasKey("FutureBillingBillingDealID", "FutureBillingCurrentDeal");
+
+                            b1.ToTable("vFutureBillings");
+
+                            b1.WithOwner()
+                                .HasForeignKey("FutureBillingBillingDealID", "FutureBillingCurrentDeal");
+                        });
+
+                    b.Navigation("CreditCardDetails");
+                });
+
             modelBuilder.Entity("Transactions.Business.Entities.Invoice", b =>
                 {
                     b.OwnsOne("Shared.Integration.Models.Invoicing.InvoiceDetails", "InvoiceDetails", b1 =>
@@ -1442,6 +1483,54 @@ namespace Transactions.Business.Migrations
                                 .HasForeignKey("PaymentTransactionID");
                         });
 
+                    b.OwnsOne("Transactions.Business.Entities.UpayTransactionDetails", "UpayTransactionDetails", b1 =>
+                        {
+                            b1.Property<Guid>("PaymentTransactionID")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("CashieriD")
+                                .HasMaxLength(64)
+                                .HasColumnType("nvarchar(64)");
+
+                            b1.Property<string>("CreditCardCompanyCode")
+                                .IsRequired()
+                                .HasMaxLength(64)
+                                .HasColumnType("nvarchar(64)");
+
+                            b1.Property<string>("ErrorDescription")
+                                .HasMaxLength(512)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(512)");
+
+                            b1.Property<string>("ErrorMessage")
+                                .HasMaxLength(512)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(512)");
+
+                            b1.Property<string>("MerchantNumber")
+                                .IsRequired()
+                                .HasMaxLength(64)
+                                .HasColumnType("nvarchar(64)");
+
+                            b1.Property<string>("SessionID")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<decimal>("TotalAmount")
+                                .HasColumnType("decimal(19,4)");
+
+                            b1.Property<string>("WebUrl")
+                                .HasMaxLength(512)
+                                .IsUnicode(true)
+                                .HasColumnType("nvarchar(512)");
+
+                            b1.HasKey("PaymentTransactionID");
+
+                            b1.ToTable("PaymentTransaction");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PaymentTransactionID");
+                        });
+
                     b.Navigation("ClearingHouseTransactionDetails");
 
                     b.Navigation("CreditCardDetails");
@@ -1449,6 +1538,8 @@ namespace Transactions.Business.Migrations
                     b.Navigation("DealDetails");
 
                     b.Navigation("ShvaTransactionDetails");
+
+                    b.Navigation("UpayTransactionDetails");
                 });
 
             modelBuilder.Entity("Transactions.Business.Entities.TransactionHistory", b =>

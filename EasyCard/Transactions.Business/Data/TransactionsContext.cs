@@ -332,14 +332,14 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
 
                 builder.OwnsOne(b => b.UpayTransactionDetails, s =>
                 {
-                    s.Property(p => p.CashieriD).IsRequired(false).HasMaxLength(64);
-                    s.Property(p => p.CreditCardCompanyCode).IsRequired(true).HasMaxLength(64);
-                    s.Property(p => p.MerchantNumber).IsRequired(true).HasMaxLength(64);
-                    s.Property(p => p.ErrorMessage).IsRequired(false).HasMaxLength(512).IsUnicode(true);
-                    s.Property(p => p.ErrorDescription).IsRequired(false).HasMaxLength(512).IsUnicode(true);
-                    s.Property(p => p.WebUrl).IsRequired(false).HasMaxLength(512).IsUnicode(true);
+                    s.Property(p => p.CashieriD).IsRequired(false).HasMaxLength(64).HasColumnName("UpayTransactionID");
+                    s.Property(p => p.CreditCardCompanyCode).IsRequired(true).HasMaxLength(64).HasColumnName("UpayCreditCardCompanyCode");
+                    s.Property(p => p.MerchantNumber).IsRequired(true).HasMaxLength(64).HasColumnName("UpayMerchantNumber");
+                    s.Ignore(p => p.ErrorMessage)/*.IsRequired(false).HasMaxLength(512).IsUnicode(true)*/;
+                    s.Ignore(p => p.ErrorDescription)/*.IsRequired(false).HasMaxLength(512).IsUnicode(true)*/;
+                    s.Property(p => p.WebUrl).IsRequired(false).HasMaxLength(512).IsUnicode(true).HasColumnName("UpayWebUrl");
 
-                    s.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").IsRequired();
+                    s.Ignore(b => b.TotalAmount)/*.HasColumnType("decimal(19,4)").IsRequired()*/;
                 });
 
                 builder.OwnsOne(b => b.ShvaTransactionDetails, s =>
