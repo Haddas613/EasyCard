@@ -338,7 +338,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Ignore(p => p.ErrorMessage)/*.IsRequired(false).HasMaxLength(512).IsUnicode(true)*/;
                     s.Ignore(p => p.ErrorDescription)/*.IsRequired(false).HasMaxLength(512).IsUnicode(true)*/;
                     s.Property(p => p.WebUrl).IsRequired(false).HasMaxLength(512).IsUnicode(true).HasColumnName("UpayWebUrl");
-
+                    s.Ignore(b => b.SessionID);
                     s.Ignore(b => b.TotalAmount)/*.HasColumnType("decimal(19,4)").IsRequired()*/;
                 });
 
