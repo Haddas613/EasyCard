@@ -351,3 +351,5 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/EasyCard/Transactions.Business/Migrations/20210627082730_ShvaAuthNum_N_CardBrand_UpayFields_corrections_added.cs
+/EasyCard/Transactions.Business/Migrations/20210627082730_ShvaAuthNum_N_CardBrand_UpayFields_corrections_added.Designer.cs

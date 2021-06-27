@@ -331,7 +331,8 @@ namespace Shared.Helpers
                 }
             }
 
-            request.Content = new FormUrlEncodedContent(payload);
+            if(payload!=null)
+                 request.Content = new FormUrlEncodedContent(payload);
 
             HttpResponseMessage response = await HttpClient.SendAsync(request);
 

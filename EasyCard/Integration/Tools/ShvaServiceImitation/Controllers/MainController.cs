@@ -92,6 +92,14 @@ namespace ShvaServiceImitation.Controllers
                     {
                         valueTag = "2"
                     },
+                    brand = new OField
+                    {
+                        valueTag = "1"
+                    },
+                    authManpikNo = new OField
+                    {
+                        valueTag = random.Next(100000, 900000).ToString()
+                    },
                     tranRecord = new OField
                     {
                         valueTag = Guid.NewGuid().ToString()
