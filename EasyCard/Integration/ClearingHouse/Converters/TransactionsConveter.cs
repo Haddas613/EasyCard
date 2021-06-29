@@ -67,7 +67,7 @@ namespace ClearingHouse.Converters
             chRequest.CardLastFourDigits = commitTransactionRequest.CreditCardDetails.CardLastFourDigits;
             chRequest.CreditCardVendor = commitTransactionRequest.CreditCardDetails.CardVendor;
             chRequest.DealReference = commitTransactionRequest.TransactionID;
-           
+
             //response.IsTourist TODO:
             //details.Solek TODO:
 

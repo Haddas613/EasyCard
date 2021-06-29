@@ -17,12 +17,7 @@ namespace Upay
 
         public string SessionId { get; set; }
 
-       
-        public string ErrorMessage { get; set; }
-
-       
         public string WebUrl { get; set; }
-
        
         public string ErrorDescription { get; set; }
     }

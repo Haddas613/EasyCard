@@ -26,13 +26,11 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.UpayTransactionDetails, s => s.MapFrom(src => src))
                 .ForAllOtherMembers(d => d.Ignore());
 
-
             CreateMap<Upay.UpayCreateTransactionResponse, UpayTransactionDetails>();
 
             CreateMap<Upay.UpayTransactionResponse, PaymentTransaction>()
                 .ForMember(m => m.UpayTransactionDetails, s => s.MapFrom(src => src))
                 .ForAllOtherMembers(d => d.Ignore());
-
 
             CreateMap<Upay.UpayTransactionResponse, UpayTransactionDetails>();
 

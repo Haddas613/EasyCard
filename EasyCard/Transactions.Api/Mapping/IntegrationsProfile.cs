@@ -47,7 +47,6 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.CreditCardDetails, s => s.MapFrom(src => src.CreditCardDetails))
                 .ForMember(m => m.DealDetails, s => s.MapFrom(src => src.DealDetails));
 
-
             CreateMap<PaymentTransaction, ProcessorCreateTransactionRequest>()
                 .ForMember(m => m.CreditCardToken, s => s.Ignore())
                 .ForMember(m => m.EasyCardTerminalID, s => s.MapFrom(src => src.TerminalID))
@@ -56,7 +55,7 @@ namespace Transactions.Api.Mapping
             CreateMap<ProcessorCreateTransactionResponse, PaymentTransaction>();
 
             CreateMap<ProcessorPreCreateTransactionResponse, ProcessorCreateTransactionRequest>()
-                .ForMember(m => m.PinPadTransactionID, s => s.MapFrom(src=> src.PinPadTransactionID))
+                .ForMember(m => m.PinPadTransactionID, s => s.MapFrom(src => src.PinPadTransactionID))
                 ;
 
             CreateMap<ProcessorCreateTransactionResponse, CreditCardTokenDetails>();
@@ -68,14 +67,8 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.ClearingHouseTransactionDetails.ClearingHouseTransactionID)) // TODO
                 .ForMember(m => m.ConcurrencyToken, s => s.MapFrom(src => src.ClearingHouseTransactionDetails.ConcurrencyToken)) // TODO
                 .ForMember(m => m.ProcessorTransactionDetails, s => s.MapFrom(src => src.ShvaTransactionDetails))
-                 .ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.UpayTransactionDetails.CashieriD))
-                .ForPath(m => m.TransactionDetails.Amount, s => s.MapFrom(src => src.Amount))
-                 .ForPath(m => m.TransactionDetails.ExternalID, s => s.MapFrom(src => src.PaymentTransactionID))
+                .ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.UpayTransactionDetails.CashieriD))
                 ; // TODO
-
-
-
-
 
             CreateMap<PaymentTransaction, AggregatorCancelTransactionRequest>()
                 .ForMember(m => m.TransactionID, s => s.MapFrom(src => src.PaymentTransactionID.ToString()))

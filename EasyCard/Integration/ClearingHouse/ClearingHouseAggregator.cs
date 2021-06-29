@@ -1,4 +1,5 @@
-﻿using ClearingHouse.Converters;
+﻿using AutoMapper;
+using ClearingHouse.Converters;
 using ClearingHouse.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -32,14 +33,16 @@ namespace ClearingHouse
         private readonly ILogger logger;
         private readonly IWebApiClientTokenService tokenService;
         private readonly IIntegrationRequestLogStorageService integrationRequestLogStorageService;
+        private readonly IMapper mapper;
 
-        public ClearingHouseAggregator(IWebApiClient webApiClient, ILogger<ClearingHouseAggregator> logger, IOptions<ClearingHouseGlobalSettings> configuration, IWebApiClientTokenService tokenService, IIntegrationRequestLogStorageService integrationRequestLogStorageService)
+        public ClearingHouseAggregator(IWebApiClient webApiClient, ILogger<ClearingHouseAggregator> logger, IOptions<ClearingHouseGlobalSettings> configuration, IWebApiClientTokenService tokenService, IIntegrationRequestLogStorageService integrationRequestLogStorageService, IMapper mapper)
         {
             this.webApiClient = webApiClient;
             this.logger = logger;
             this.configuration = configuration.Value;
             this.tokenService = tokenService;
             this.integrationRequestLogStorageService = integrationRequestLogStorageService;
+            this.mapper = mapper;
         }
 
         public async Task<AggregatorTransactionResponse> GetTransaction(string aggregatorTransactionID)
@@ -91,6 +94,7 @@ namespace ClearingHouse
             try
             {
                 var request = transactionRequest.GetCommitTransactionRequest(configuration);
+                request.PaymentGatewayAdditionalDetails = mapper.Map<Models.PaymentGatewayAdditionalDetails>(transactionRequest.ProcessorTransactionDetails);
 
                 var result = await webApiClient.Put<Models.OperationResponse>(configuration.ApiBaseAddress, string.Format(CommitTransactionRequest, transactionRequest.AggregatorTransactionID), request, BuildHeaders);
 

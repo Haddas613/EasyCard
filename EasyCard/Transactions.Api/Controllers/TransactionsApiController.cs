@@ -46,9 +46,9 @@ using Transactions.Shared;
 using Transactions.Shared.Enums;
 using Z.EntityFramework.Plus;
 using Merchants.Business.Entities.Terminal;
+using Shared.Integration.ExternalSystems;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
-using Shared.Integration.ExternalSystems;
 
 namespace Transactions.Api.Controllers
 {
@@ -797,6 +797,7 @@ namespace Transactions.Api.Controllers
                 }
 
                 processorRequest.ProcessorSettings = processorSettings;
+
                 //pinpadtransactionid = uid
                 var processorResponse = pinpadDeal ? await pinpadProcessor.CreateTransaction(processorRequest) : await processor.CreateTransaction(processorRequest);
 
@@ -869,10 +870,7 @@ namespace Transactions.Api.Controllers
                         var commitAggregatorRequest = mapper.Map<AggregatorCommitTransactionRequest>(transaction);
 
                         commitAggregatorRequest.AggregatorSettings = aggregatorSettings;
-                      
-                       if(aggregator is Upay.UpayAggregator)
-                            commitAggregatorRequest.ProcessorTransactionDetails = mapper.Map<Upay.Models.PaymentGatewayAdditionalDetails>(commitAggregatorRequest.ProcessorTransactionDetails);
-                        //commitAggregatorRequest.ProcessorTransactionDetails = mapper.Map<ClearingHouse.Models.PaymentGatewayAdditionalDetails>(commitAggregatorRequest.ProcessorTransactionDetails);
+
                         var commitAggregatorResponse = await aggregator.CommitTransaction(commitAggregatorRequest);
                         mapper.Map(commitAggregatorResponse, transaction);
 

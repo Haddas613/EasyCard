@@ -315,11 +315,12 @@ namespace Transactions.Api
                 var chCfg = serviceProvider.GetRequiredService<IOptions<ClearingHouse.ClearingHouseGlobalSettings>>();
                 var webApiClient = new WebApiClient();
                 var logger = serviceProvider.GetRequiredService<ILogger<ClearingHouse.ClearingHouseAggregator>>();
+                var mapper = serviceProvider.GetRequiredService<IMapper>();
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.ClearingHouseRequestsLogStorageTable, cfg.ClearingHouseRequestsLogStorageTable);
                 var tokenSvc = new WebApiClientTokenService(webApiClient.HttpClient, chCfg);
 
-                return new ClearingHouse.ClearingHouseAggregator(webApiClient, logger, chCfg, tokenSvc, storageService);
+                return new ClearingHouse.ClearingHouseAggregator(webApiClient, logger, chCfg, tokenSvc, storageService, mapper);
             });
 
             services.AddSingleton<Upay.UpayAggregator, Upay.UpayAggregator>(serviceProvider =>
@@ -327,11 +328,12 @@ namespace Transactions.Api
                 var chCfg = serviceProvider.GetRequiredService<IOptions<Upay.UpayGlobalSettings>>();
                 var webApiClient = new WebApiClient();
                 var logger = serviceProvider.GetRequiredService<ILogger<Upay.UpayAggregator>>();
+                var mapper = serviceProvider.GetRequiredService<IMapper>();
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.UpayRequestsLogStorageTable, cfg.UpayRequestsLogStorageTable);
                 var tokenSvc = new WebApiClientTokenService(webApiClient.HttpClient, chCfg);
 
-                return new Upay.UpayAggregator(webApiClient, logger, chCfg, tokenSvc, storageService);
+                return new Upay.UpayAggregator(webApiClient, logger, chCfg, tokenSvc, storageService, mapper);
             });
 
             services.AddSingleton<NullAggregator, NullAggregator>(serviceProvider =>

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Nancy.Json;
 using Newtonsoft.Json;
@@ -13,7 +14,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Upay;
-using Upay.Converters;
 using Upay.Models;
 
 namespace Upay
@@ -32,21 +32,24 @@ namespace Upay
         private readonly ILogger logger;
         private readonly IWebApiClientTokenService tokenService;
         private readonly IIntegrationRequestLogStorageService integrationRequestLogStorageService;
-        public UpayAggregator(IWebApiClient webApiClient, ILogger<UpayAggregator> logger, IOptions<UpayGlobalSettings> configuration, IWebApiClientTokenService tokenService, IIntegrationRequestLogStorageService integrationRequestLogStorageService)
+        private readonly IMapper mapper;
+
+        public UpayAggregator(IWebApiClient webApiClient, ILogger<UpayAggregator> logger, IOptions<UpayGlobalSettings> configuration, IWebApiClientTokenService tokenService, IIntegrationRequestLogStorageService integrationRequestLogStorageService, IMapper mapper)
         {
             this.webApiClient = webApiClient;
             this.logger = logger;
             this.configuration = configuration.Value;
             this.tokenService = tokenService;
             this.integrationRequestLogStorageService = integrationRequestLogStorageService;
+            this.mapper = mapper;
         }
         public async Task<AggregatorCreateTransactionResponse> CreateTransaction(AggregatorCreateTransactionRequest transactionRequest)
         {
             try
             {
                 var upaySettings = transactionRequest.AggregatorSettings as UpayTerminalSettings;
-                var request = transactionRequest.GetCreateTransactionRequest(configuration);
-                var CreateTransactionRequest = UpayHelper.GetCreateTranMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), false/*TODO*/, upaySettings.AuthenticateKey, request);
+                
+                var CreateTransactionRequest = UpayHelper.GetCreateTranMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), false/*TODO*/, upaySettings.AuthenticateKey, transactionRequest);
                 var loginRequest = UpayHelper.GetLoginMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), false/*TODO*/, upaySettings.AuthenticateKey);
                 var Msgs = new MsgModel[2];
                 Msgs[0] = loginRequest;
@@ -101,16 +104,17 @@ namespace Upay
         {
             try
             {
+                var shvaDetails = mapper.Map<Upay.Models.PaymentGatewayAdditionalDetails>(transactionRequest.ProcessorTransactionDetails);
 
                 var upaySettings = transactionRequest.AggregatorSettings as UpayTerminalSettings;
-                var request = transactionRequest.GetCommitTransactionRequest(configuration);//GetCreateTransactionRequest(configuration);
-                var CommitTransactionRequest = UpayHelper.GetCommitTranMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), false/*TODO*/, upaySettings.AuthenticateKey, request);
+
+                var CommitTransactionRequest = UpayHelper.GetCommitTranMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), false/*TODO*/, upaySettings.AuthenticateKey, transactionRequest, shvaDetails);
                 var loginRequest = UpayHelper.GetLoginMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), false/*TODO*/, upaySettings.AuthenticateKey);
                 var Msgs = new MsgModel[2];
                 Msgs[0] = loginRequest;
                 Msgs[1] = CommitTransactionRequest;
                 JavaScriptSerializer serDes = new JavaScriptSerializer();
-               var  SerializerSettings = new JsonSerializerSettings();
+                var SerializerSettings = new JsonSerializerSettings();
                 SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 var jsonResult = serDes.Serialize(Msgs);
                 IDictionary<string, string> credentials = new Dictionary<string, string>();
@@ -122,7 +126,7 @@ namespace Upay
             catch (WebApiClientErrorException clientError)
             {
                 logger.LogError(clientError.Message);
-                var result = clientError.TryConvert(new Models.OperationResponse {  ErrorMessage = clientError.Message, ErrorDescription = clientError.Message });
+                var result = clientError.TryConvert(new Models.OperationResponse { ErrorMessage = clientError.Message, ErrorDescription = clientError.Message });
                 return result.GetAggregatorCommitTransactionResponse();
             }
         }

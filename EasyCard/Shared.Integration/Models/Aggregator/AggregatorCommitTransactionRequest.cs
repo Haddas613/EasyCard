@@ -30,6 +30,16 @@ namespace Shared.Integration.Models
 
         public object AggregatorSettings { get; set; }
 
-        public TransactionDetails TransactionDetails { get; set; }
+        //public TransactionDetails TransactionDetails { get; set; }
+
+        /// <summary>
+        /// This transaction amount
+        /// </summary>
+        public decimal TransactionAmount { get; set; }
+
+        /// <summary>
+        /// Number Of Installments
+        /// </summary>
+        public int NumberOfInstallments { get; set; }
     }
 }
