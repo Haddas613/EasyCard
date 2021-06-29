@@ -189,4 +189,7 @@
   <data name="Total" xml:space="preserve">
     <value>Total</value>
   </data>
+  <data name="MakePinPadDeal" xml:space="preserve">
+    <value>Make Pinpad Deal</value>
+  </data>
 </root>

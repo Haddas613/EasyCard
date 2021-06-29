@@ -66,7 +66,6 @@ namespace CheckoutPortal.Controllers
             mapper.Map(request, model);
             mapper.Map(checkoutConfig.PaymentRequest, model);
             mapper.Map(checkoutConfig.Settings, model);
-
             if (checkoutConfig.Consumer != null)
             {
                 mapper.Map(checkoutConfig.Consumer, model);
@@ -78,7 +77,7 @@ namespace CheckoutPortal.Controllers
             }
 
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
-
+            
             return View(model);
         }
 

@@ -113,6 +113,18 @@
                             }
                         </fieldset>
                     }
+                    @if (Model.AllowPinPad ?? false)
+                    {
+                        <fieldset class="border rounded p-2 m-2">
+                            <div class="form-group row">
+                                <label asp-for="PinPadDeal" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("MakePinPadDeal")</label>
+                                <input type="checkbox" class="form-control" asp-for="PinPadDeal">
+                                <span asp-validation-for="PinPadDeal"></span>
+                                <span class="control-validation"></span>
+                            </div>
+                        </fieldset>
+
+                    }
                     <fieldset class="border rounded p-2 m-2" id="card-info-group-area">
                         <div class="form-group row">
                             <label asp-for="CardNumber" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("CardNumber")</label>

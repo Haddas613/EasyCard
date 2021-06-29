@@ -55,6 +55,8 @@ namespace Transactions.Business.Entities
         /// </summary>
         public bool IssueInvoice { get; set; }
 
+        public bool AllowPinPad { get; set; }
+
         /// <summary>
         /// Processing status
         /// </summary>

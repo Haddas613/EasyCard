@@ -92,6 +92,7 @@ namespace Transactions.Api.Extensions
             {
                 pinpadDetails.TerminalID = terminalSettings.Settings.ToObject<NayaxTerminalSettings>().TerminalID;
             }
+
             return pinpadDetails;
         }
 

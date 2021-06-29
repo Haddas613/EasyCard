@@ -188,10 +188,6 @@ namespace Transactions.Api.Controllers
             // Check consumer
             var consumer = model.DealDetails.ConsumerID != null ? EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
 
-            var newPaymentRequest = mapper.Map<PaymentRequest>(model);
-
-            // Update details if needed
-            newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest);
             if (model.IssueInvoice.GetValueOrDefault())
             {
                 model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings);
@@ -202,6 +198,9 @@ namespace Transactions.Api.Controllers
                 model.PinPadDetails = model.PinPadDetails.UpdatePinPadDetails(terminal.Integrations.FirstOrDefault(i => i.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
             }
 
+            var newPaymentRequest = mapper.Map<PaymentRequest>(model);
+            // Update details if needed
+            newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest);
             if (consumer != null)
             {
                 newPaymentRequest.CardOwnerName = consumer.ConsumerName;
@@ -241,7 +240,7 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse($"{Messages.PaymentRequestStatusIsClosed}", StatusEnum.Error, dbPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
             }
 
-            await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Canceled,  message: Messages.PaymentRequestCanceled);
+            await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Canceled, message: Messages.PaymentRequestCanceled);
 
             return Ok(new OperationResponse { EntityUID = paymentRequestID, Status = StatusEnum.Success, Message = Messages.PaymentRequestCanceled });
         }

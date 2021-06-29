@@ -189,4 +189,7 @@
   <data name="Total" xml:space="preserve">
     <value>סה\"כ סכום</value>
   </data>
+  <data name="MakePinPadDeal" xml:space="preserve">
+    <value>בצע עסקת פינפד</value>
+  </data>
 </root>
