@@ -58,7 +58,8 @@ namespace TestWebStore.Controllers
                 Phone = model.Phone,
                 RedirectUrl = redirectUrl,
                 Description = $"Goods and services from Test Wen Store: {model.ProductName}",
-                IssueInvoice = model.IssueInvoice
+                IssueInvoice = model.IssueInvoice,
+                AllowPinPad = model.AllowPinPad
             };
 
             var res = UrlHelper.BuildUrl(ecUrl, null, request);

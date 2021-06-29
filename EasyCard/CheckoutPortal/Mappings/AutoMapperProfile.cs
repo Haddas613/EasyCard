@@ -49,6 +49,7 @@ namespace CheckoutPortal.Mappings
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, ChargeViewModel>()
+                 .ForMember(d => d.AllowPinPad, o => o.MapFrom(d => d.AllowPinPad))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.ConsumerInfo, ChargeViewModel>()

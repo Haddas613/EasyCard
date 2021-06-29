@@ -88,6 +88,7 @@ namespace Transactions.Api.Controllers
             if (paymentRequestID.HasValue)
             {
                 var paymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().Where(d => d.PaymentRequestID == paymentRequestID && d.TerminalID == terminal.TerminalID).FirstOrDefaultAsync());
+                response.Settings.AllowPinPad = paymentRequest.AllowPinPad || (response.Settings.AllowPinPad ?? false);
 
                 if (consumerID.HasValue)
                 {

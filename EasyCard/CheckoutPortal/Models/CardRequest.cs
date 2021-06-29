@@ -44,5 +44,7 @@ namespace CheckoutPortal.Models
         public string PaymentRequest { get; set; }
 
         public bool? IssueInvoice { get; set; }
+
+        public bool? AllowPinPad { get; set; }
     }
 }

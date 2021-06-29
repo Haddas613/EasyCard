@@ -3,6 +3,7 @@ using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Integration.Models.Invoicing;
+using Shared.Integration.Models.Processor;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -47,11 +48,14 @@ namespace Transactions.Business.Entities
         public Guid? MerchantID { get; set; }
 
         public InvoiceDetails InvoiceDetails { get; set; }
+        public PinPadDetails PinPadDetails { get; set; }
 
         /// <summary>
         /// Create document for transaction
         /// </summary>
         public bool IssueInvoice { get; set; }
+
+        public bool AllowPinPad { get; set; }
 
         /// <summary>
         /// Processing status

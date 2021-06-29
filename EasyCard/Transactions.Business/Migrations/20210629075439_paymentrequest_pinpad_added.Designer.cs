@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transactions.Business.Data;
 
 namespace Transactions.Business.Migrations
 {
     [DbContext(typeof(TransactionsContext))]
-    partial class TransactionsContextModelSnapshot : ModelSnapshot
+    [Migration("20210629075439_paymentrequest_pinpad_added")]
+    partial class paymentrequest_pinpad_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -454,9 +456,6 @@ namespace Transactions.Business.Migrations
                 {
                     b.Property<Guid>("PaymentRequestID")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("AllowPinPad")
-                        .HasColumnType("bit");
 
                     b.Property<string>("CardOwnerName")
                         .HasMaxLength(100)

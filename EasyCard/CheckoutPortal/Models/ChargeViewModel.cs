@@ -120,5 +120,9 @@ namespace CheckoutPortal.Models
         public IEnumerable<KeyValuePair<Guid, string>> SavedTokens { get; set; }
 
         public bool? IssueInvoice { get; set; }
+
+        public bool? AllowPinPad { get; set; }
+
+        public bool PinPadDeal { get; set; }
     }
 }
