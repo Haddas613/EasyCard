@@ -97,6 +97,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Credit.
+        /// </summary>
+        public static string Credit {
+            get {
+                return ResourceManager.GetString("Credit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CVV.
         /// </summary>
         public static string CVV {
@@ -151,6 +160,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Installment.
+        /// </summary>
+        public static string Installments {
+            get {
+                return ResourceManager.GetString("Installments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to National ID.
         /// </summary>
         public static string NationalID {
@@ -165,6 +183,15 @@ namespace CheckoutPortal.Resources {
         public static string NumberOfPayments {
             get {
                 return ResourceManager.GetString("NumberOfPayments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of payments must be less than @min.
+        /// </summary>
+        public static string NumberOfPaymentsMustBeLessThan {
+            get {
+                return ResourceManager.GetString("NumberOfPaymentsMustBeLessThan", resourceCulture);
             }
         }
         
@@ -223,6 +250,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Regular Deal.
+        /// </summary>
+        public static string RegularDeal {
+            get {
+                return ResourceManager.GetString("RegularDeal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request ID.
         /// </summary>
         public static string RequestID {
@@ -246,6 +282,15 @@ namespace CheckoutPortal.Resources {
         public static string Total {
             get {
                 return ResourceManager.GetString("Total", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction type.
+        /// </summary>
+        public static string TransactionType {
+            get {
+                return ResourceManager.GetString("TransactionType", resourceCulture);
             }
         }
         

@@ -129,6 +129,9 @@
   <data name="CardOwnerName" xml:space="preserve">
     <value>Card Owner Name</value>
   </data>
+  <data name="Credit" xml:space="preserve">
+    <value>Credit</value>
+  </data>
   <data name="CVV" xml:space="preserve">
     <value>CVV</value>
   </data>
@@ -147,11 +150,17 @@
   <data name="InitialPayment" xml:space="preserve">
     <value>Initial payment</value>
   </data>
+  <data name="Installments" xml:space="preserve">
+    <value>Installment</value>
+  </data>
   <data name="NationalID" xml:space="preserve">
     <value>National ID</value>
   </data>
   <data name="NumberOfPayments" xml:space="preserve">
     <value>Number of payments</value>
+  </data>
+  <data name="NumberOfPaymentsMustBeLessThan" xml:space="preserve">
+    <value>Number of payments must be less than @min</value>
   </data>
   <data name="PaymentAmount" xml:space="preserve">
     <value>Payment amount</value>
@@ -171,6 +180,9 @@
   <data name="Phone" xml:space="preserve">
     <value>Phone</value>
   </data>
+  <data name="RegularDeal" xml:space="preserve">
+    <value>Regular Deal</value>
+  </data>
   <data name="RequestID" xml:space="preserve">
     <value>Request ID</value>
   </data>
@@ -179,6 +191,9 @@
   </data>
   <data name="Total" xml:space="preserve">
     <value>Total</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Transaction type</value>
   </data>
   <data name="UseSavedCard" xml:space="preserve">
     <value>Use saved card</value>

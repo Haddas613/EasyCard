@@ -61,5 +61,7 @@ namespace Transactions.Api.Models.Transactions
         public Guid? PaymentRequestID { get; set; }
 
         public bool? IssueInvoice { get; set; }
+
+        public InstallmentDetails InstallmentDetails { get; set; }
     }
 }

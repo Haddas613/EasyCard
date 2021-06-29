@@ -189,4 +189,19 @@
   <data name="Total" xml:space="preserve">
     <value>סה\"כ סכום</value>
   </data>
+  <data name="NumberOfPaymentsMustBeLessThan" xml:space="preserve">
+    <value>@min - מספר התשלומים חייב להיות פחות מ</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>סוג עסקה</value>
+  </data>
+  <data name="Credit" xml:space="preserve">
+    <value>קרדיט</value>
+  </data>
+  <data name="Installments" xml:space="preserve">
+    <value>תשלומים</value>
+  </data>
+  <data name="RegularDeal" xml:space="preserve">
+    <value>עסקה רגילה</value>
+  </data>
 </root>

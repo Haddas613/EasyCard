@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Shared.Helpers;
 using Shared.Helpers.Models.Attributes;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -48,7 +49,7 @@ namespace CheckoutPortal.Models
         /// <summary>
         /// Number Of Installments
         /// </summary>
-        [BindNever]
+        [Range(1, 12)]
         public int? NumberOfPayments { get; set; }
 
         /// <summary>
@@ -120,5 +121,22 @@ namespace CheckoutPortal.Models
         public IEnumerable<KeyValuePair<Guid, string>> SavedTokens { get; set; }
 
         public bool? IssueInvoice { get; set; }
+
+        [BindNever]
+        public int? MinCreditInstallments { get; set; }
+
+        [BindNever]
+        public int? MaxCreditInstallments { get; set; }
+
+        [BindNever]
+        public int? MinInstallments { get; set; }
+
+        [BindNever]
+        public int? MaxInstallments { get; set; }
+
+        public TransactionTypeEnum TransactionType { get; set; }
+
+        [BindNever]
+        public IEnumerable<TransactionTypeEnum> TransactionTypes { get; set; }
     }
 }

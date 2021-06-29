@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CheckoutPortal.Models;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using Transactions.Api.Models.PaymentRequests;
@@ -46,9 +47,15 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.InstallmentPaymentAmount, o => o.MapFrom(d => d.InstallmentPaymentAmount))
                 .ForMember(d => d.TotalAmount, o => o.MapFrom(d => d.TotalAmount))
                 .ForMember(d => d.InitialPaymentAmount, o => o.MapFrom(d => d.InitialPaymentAmount))
+                .ForMember(d => d.TransactionType, o => o.MapFrom(d => d.NumberOfPayments > 1 ? TransactionTypeEnum.Installments : TransactionTypeEnum.RegularDeal))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, ChargeViewModel>()
+                .ForMember(d => d.MaxInstallments, o => o.MapFrom(src => src.MaxInstallments))
+                .ForMember(d => d.MinInstallments, o => o.MapFrom(src => src.MinInstallments))
+                .ForMember(d => d.MaxCreditInstallments, o => o.MapFrom(src => src.MaxCreditInstallments))
+                .ForMember(d => d.MinCreditInstallments, o => o.MapFrom(src => src.MinCreditInstallments))
+                .ForMember(d => d.TransactionTypes, o => o.MapFrom(src => src.TransactionTypes))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.ConsumerInfo, ChargeViewModel>()
