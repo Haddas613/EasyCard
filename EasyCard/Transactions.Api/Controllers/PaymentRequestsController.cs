@@ -32,6 +32,7 @@ using Shared.Helpers;
 using Z.EntityFramework.Plus;
 using Shared.Api.Configuration;
 using Transactions.Shared.Enums;
+using Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
@@ -194,6 +195,11 @@ namespace Transactions.Api.Controllers
             if (model.IssueInvoice.GetValueOrDefault())
             {
                 model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings);
+            }
+
+            if (model.AllowPinPad.GetValueOrDefault())
+            {
+                model.PinPadDetails = model.PinPadDetails.UpdatePinPadDetails(terminal.Integrations.FirstOrDefault(i => i.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
             }
 
             if (consumer != null)

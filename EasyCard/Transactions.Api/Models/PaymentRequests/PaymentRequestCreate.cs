@@ -4,6 +4,7 @@ using Shared.Api.Models.Binding;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
+using Shared.Integration.Models.Processor;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -52,9 +53,19 @@ namespace Transactions.Api.Models.PaymentRequests
         public InvoiceDetails InvoiceDetails { get; set; }
 
         /// <summary>
+        /// pinpad details
+        /// </summary>
+        public PinPadDetails PinPadDetails { get; set; }
+
+        /// <summary>
         /// Create document
         /// </summary>
         public bool? IssueInvoice { get; set; }
+
+        /// <summary>
+        /// Allow PinPad Deal
+        /// </summary>
+        public bool? AllowPinPad { get; set; }
 
         [Range(0, 1)]
         [DataType(DataType.Currency)]

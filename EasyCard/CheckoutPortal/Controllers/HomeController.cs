@@ -132,6 +132,13 @@ namespace CheckoutPortal.Controllers
                 request.IssueInvoice = checkoutConfig.Settings.IssueInvoice;
             }
 
+            if (!request.AllowPinPad.HasValue && checkoutConfig.Settings.AllowPinPad != null)
+            {
+                request.AllowPinPad = checkoutConfig.Settings.AllowPinPad;
+            }
+
+
+
             if (checkoutConfig.PaymentRequest != null)
             {
                 var mdel = new Transactions.Api.Models.Transactions.PRCreateTransactionRequest() { CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails() };

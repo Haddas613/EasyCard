@@ -667,6 +667,11 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                         .Metadata.SetValueComparer(StringArrayComparer);
                 });
 
+                builder.OwnsOne(b => b.PinPadDetails, s =>
+                {
+                    s.Property(p => p.TerminalID).HasColumnName("PinPadTerminalID").IsRequired(false).IsUnicode(false).HasMaxLength(16);
+                });
+
                 builder.Property(b => b.PaymentRequestAmount).HasColumnType("decimal(19,4)").IsRequired();
 
                 builder.Property(b => b.VATRate).HasColumnType("decimal(19,4)").IsRequired();

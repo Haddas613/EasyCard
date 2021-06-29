@@ -39,5 +39,7 @@ namespace TestWebStore.Models
         public string ApiKey { get; set; }
 
         public bool IssueInvoice { get; set; }
+
+        public bool AllowPinPad { get; set; }
     }
 }

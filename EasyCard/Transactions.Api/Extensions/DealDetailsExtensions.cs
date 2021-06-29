@@ -1,6 +1,9 @@
 ﻿using Merchants.Business.Entities.Billing;
+using Merchants.Business.Entities.Terminal;
 using Merchants.Shared.Models;
+using Nayax;
 using Shared.Business.Financial;
+using Shared.Integration.Models.Processor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,5 +81,20 @@ namespace Transactions.Api.Extensions
                 invoiceDetails.InvoiceType = SharedIntegration.Models.Invoicing.InvoiceTypeEnum.RefundInvoice;
             }
         }
+        public static PinPadDetails UpdatePinPadDetails(this SharedIntegration.Models.Processor.PinPadDetails pinpadDetails, TerminalExternalSystem terminalSettings, PaymentTransaction transaction = null)
+        {
+            if (pinpadDetails == null)
+            {
+                pinpadDetails = new SharedIntegration.Models.Processor.PinPadDetails();
+            }
+            
+            if (string.IsNullOrWhiteSpace(pinpadDetails.TerminalID))
+            {
+                pinpadDetails.TerminalID = terminalSettings.Settings.ToObject<NayaxTerminalSettings>().TerminalID;
+            }
+            return pinpadDetails;
+        }
+
     }
+
 }
