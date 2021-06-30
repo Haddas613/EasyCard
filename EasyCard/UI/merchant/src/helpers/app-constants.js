@@ -52,7 +52,6 @@ const appConstants = {
                     title: "Amount",
                     canChangeTerminal: true,
                     showItemsCount: true,
-                    required: true
                 },
                 2: {
                     title: "Basket",
@@ -63,17 +62,14 @@ const appConstants = {
                 },
                 4: {
                     title: "PaymentInfo",
-                    required: true
                 },
                 5: {
                     title: "AdditionalSettings",
-                    required: true
                 },
                 //Last step may be dynamically altered to represent error if transaction creation has failed.
                 6: {
                     title: "Success",
                     completed: true,
-                    required: true
                 }
             })
         }
