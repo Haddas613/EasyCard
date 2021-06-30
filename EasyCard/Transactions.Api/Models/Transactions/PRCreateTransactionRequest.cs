@@ -63,5 +63,12 @@ namespace Transactions.Api.Models.Transactions
         public bool? IssueInvoice { get; set; }
 
         public InstallmentDetails InstallmentDetails { get; set; }
+
+        /// <summary>
+        /// Generic transaction type
+        /// </summary>
+        [EnumDataType(typeof(TransactionTypeEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public TransactionTypeEnum TransactionType { get; set; }
     }
 }

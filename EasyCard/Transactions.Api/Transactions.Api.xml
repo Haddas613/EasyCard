@@ -1178,6 +1178,11 @@
             Primary reference
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.TransactionType">
+            <summary>
+            Generic transaction type
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.RefundRequest">
             <summary>
             Refund request

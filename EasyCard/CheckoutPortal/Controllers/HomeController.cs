@@ -148,7 +148,17 @@ namespace CheckoutPortal.Controllers
                             NumberOfPayments = checkoutConfig.PaymentRequest.NumberOfPayments,
                             InitialPaymentAmount = checkoutConfig.PaymentRequest.InitialPaymentAmount,
                             InstallmentPaymentAmount = checkoutConfig.PaymentRequest.InstallmentPaymentAmount,
-                            TotalAmount = request.TotalAmount.Value
+                            TotalAmount = checkoutConfig.PaymentRequest.TotalAmount
+                        };
+                    }
+                    else
+                    {
+                        installmentDetails = new InstallmentDetails
+                        {
+                            NumberOfPayments = request.NumberOfPayments.Value,
+                            InitialPaymentAmount = request.Amount.Value / request.NumberOfPayments.Value,
+                            InstallmentPaymentAmount = request.Amount.Value / request.NumberOfPayments.Value,
+                            TotalAmount = request.Amount.Value
                         };
                     }
                 }
@@ -173,7 +183,8 @@ namespace CheckoutPortal.Controllers
                 var mdel = new Transactions.Api.Models.Transactions.PRCreateTransactionRequest()
                 {
                     CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails(),
-                    InstallmentDetails = installmentDetails
+                    InstallmentDetails = installmentDetails,
+                    TransactionType = request.TransactionType
                 };
 
                 // TODO: consumer IP
@@ -202,7 +213,9 @@ namespace CheckoutPortal.Controllers
                 {
                     CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails(),
                     DealDetails = new Shared.Integration.Models.DealDetails(),
-                    CreditCardToken = request.CreditCardToken
+                    CreditCardToken = request.CreditCardToken,
+                    InstallmentDetails = installmentDetails,
+                    TransactionType = request.TransactionType
                 }; 
                 mapper.Map(request, mdel);
                 mapper.Map(request, mdel.CreditCardSecureDetails);
