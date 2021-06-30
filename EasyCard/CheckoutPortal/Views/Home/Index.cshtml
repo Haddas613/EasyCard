@@ -7,12 +7,12 @@
 
 
 <form asp-action="CancelPayment" method="post" hidden id="cancel-form">
-    <input type="hidden" asp-for="RedirectUrl" />
-    <input type="hidden" asp-for="PaymentRequest" />
-    <input type="hidden" asp-for="ApiKey" />
-    <input type="hidden" asp-for="Currency" />
-    <input type="hidden" asp-for="Description" />
-    <input type="hidden" asp-for="ConsumerID" />
+    <input type="hidden" asp-for="RedirectUrl" id="RedirectUrlHidden" />
+    <input type="hidden" asp-for="PaymentRequest" id="PaymentRequestHidden" />
+    <input type="hidden" asp-for="ApiKey" id="ApiKeyHidden" />
+    <input type="hidden" asp-for="Currency" id="CurrencyHidden" />
+    <input type="hidden" asp-for="Description" id="DescriptionHidden" />
+    <input type="hidden" asp-for="ConsumerID" id="ConsumerIDHidden" />
 </form>
 
 
@@ -24,43 +24,36 @@
 
             <div class="panel-heading">
                 <p class="px-2">@Model.Description</p>
-                @if (Model.NumberOfPayments > 1)
-                {
-                    <ul class="list-group px-2">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            @localizer.Get("NumberOfPayments")
-                            <span class="text-end">
-                                <b>@Model.NumberOfPayments</b>
-                            </span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            @localizer.Get("InitialPayment")
-                            <span class="text-end">
-                                <b>@Model.InitialPaymentAmount?.ToString("N")@Model.Currency.GetCurrencySymbol()</b>
-                            </span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            @localizer.Get("PaymentAmount")
-                            <span class="text-end">
-                                <b>@Model.InstallmentPaymentAmount?.ToString("N")@Model.Currency.GetCurrencySymbol()</b>
-                            </span>
-                            <span class="badge badge-primary badge-pill"></span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            @localizer.Get("Total")
-                            <span class="text-end">
-                                <b>@Model.TotalAmount?.ToString("N")@Model.Currency.GetCurrencySymbol()</b>
-                            </span>
-                        </li>
-                    </ul>
-                }
-                else
-                {
-                    @if (Model.Amount.GetValueOrDefault() > 0)
-                    {
-                        <h3 class="panel-title text-center">@localizer.Get("Amount"): @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()</h3>
-                    }
-                }
+                @*@if (Model.NumberOfPayments > 1)
+        {
+            <ul class="list-group px-2">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @localizer.Get("NumberOfPayments")
+                    <span class="text-end">
+                        <b>@Model.NumberOfPayments</b>
+                    </span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @localizer.Get("InitialPayment")
+                    <span class="text-end">
+                        <b>@Model.InitialPaymentAmount?.ToString("N")@Model.Currency.GetCurrencySymbol()</b>
+                    </span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @localizer.Get("PaymentAmount")
+                    <span class="text-end">
+                        <b>@Model.InstallmentPaymentAmount?.ToString("N")@Model.Currency.GetCurrencySymbol()</b>
+                    </span>
+                    <span class="badge badge-primary badge-pill"></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @localizer.Get("Total")
+                    <span class="text-end">
+                        <b>@Model.TotalAmount?.ToString("N")@Model.Currency.GetCurrencySymbol()</b>
+                    </span>
+                </li>
+            </ul>
+        }*@
             </div>
 
 
@@ -77,6 +70,53 @@
                     @if (Model.Amount.GetValueOrDefault() > 0)
                     {
                         <input type="hidden" asp-for="Amount" />
+                    }
+
+                    @if (Model.TransactionTypes.Count() > 1)
+                    {
+                        <div class="form-group">
+                            <label for="number-of-payments">@localizer.Get("TransactionType")</label>
+                            <select class="form-control" id="ttype" asp-for="TransactionType">
+                                @foreach (var t in Model.TransactionTypes)
+                                {
+                                    <option selected="@(Model.TransactionType == t)" value="@t">@localizer.Get(t.ToString())</option>
+                                }
+                            </select>
+                            <span asp-validation-for="TransactionType"></span>
+                        </div>
+                        <ul class="list-group px-2" id="installments-area" hidden="@(Model.TransactionType == Shared.Integration.Models.TransactionTypeEnum.RegularDeal)">
+                            <li class="list-group-item">
+                                <div class="form-group">
+                                    <label for="number-of-payments">@localizer.Get("NumberOfPayments")</label>
+                                    <select class="form-control" id="number-of-payments" asp-for="NumberOfPayments">
+                                        @for (var i = Model.MinInstallments; i <= Model.MaxCreditInstallments; i++)
+                                        {
+                                            <option selected="@(i == Model.NumberOfPayments)" value="@i">@i</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="NumberOfPayments"></span>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @localizer.Get("PaymentAmount")
+                                <span class="text-end">
+                                    <b id="payment-amount">@Model.InstallmentPaymentAmount?.ToString("N")@Model.Currency.GetCurrencySymbol()</b>
+                                </span>
+                                <span class="badge badge-primary badge-pill"></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @localizer.Get("Total")
+                                <span class="text-end">
+                                    <b>@(Model.TotalAmount?.ToString("N") ?? Model.Amount?.ToString("N"))@Model.Currency.GetCurrencySymbol()</b>
+                                </span>
+                            </li>
+                        </ul>
+                    }
+                    @if (Model.Amount.GetValueOrDefault() > 0)
+                    {
+                        <h3 id="total-amount-display" hidden="@(Model.TransactionType != Shared.Integration.Models.TransactionTypeEnum.RegularDeal)" class="panel-title text-center">
+                            @localizer.Get("Amount"): @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()
+                        </h3>
                     }
 
                     @if (!(Model.Amount.GetValueOrDefault() > 0) || Model.SavedTokens?.Count() > 0)
@@ -212,26 +252,59 @@
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
     <script nws-csp-add-nonce="true">
-        $('input[name="CreditCardToken"]').on('change', function (e) {
+        $(document).ready(function () {
+            $('input[name="CreditCardToken"]').on('change', function (e) {
             if (e.target.value == "@(Guid.Empty)") {
                 $("#card-info-group-area").attr("hidden", false);
             } else {
                 $("#card-info-group-area").attr("hidden", true);
             }
-        });
+            });
 
-        $("#cancel-btn").on('click', function (e) {
-            e.preventDefault();
-            $('#cancel-form').submit();
-        });
+            $("#cancel-btn").on('click', function (e) {
+                e.preventDefault();
+                $('#cancel-form').submit();
+            });
 
-        $("#checkout-form").on("submit", function (e) {
-            let ccvaltrim = $("#cc-number").val().replace(/ /g, '');
-            $("#cc-number").val(ccvaltrim);
-        })
+            $("#checkout-form").on("submit", function (e) {
+                let ccvaltrim = $("#cc-number").val().replace(/ /g, '');
+                $("#cc-number").val(ccvaltrim);
+                if (document.getElementById("ttype").value == "@Shared.Integration.Models.TransactionTypeEnum.RegularDeal.ToString()") {
+                    $("#installments-area").remove();
+                }
+            })
 
-        $(document).ready(function () {
-            $("#checkout-form").attr("action");
+            $("#number-of-payments").on("change", function (e) {
+                let newAmount = (@(Model.TotalAmount ?? Model.Amount) / e.target.value).toFixed(2);
+                $("#payment-amount").text(newAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())");
+            });
+
+            $("#ttype").on("change", function (e) {
+                let value = e.target.value;
+                let min = 0; let max = 0;
+
+                if (value == "@Shared.Integration.Models.TransactionTypeEnum.RegularDeal.ToString()") {
+                    document.getElementById("installments-area").hidden = true;
+                    document.getElementById("total-amount-display").hidden = false;
+                    return;
+                }
+                else if (value == "@Shared.Integration.Models.TransactionTypeEnum.Credit.ToString()") {
+                    min = @(Model.MinInstallments ?? 0);
+                    max = @(Model.MaxInstallments ?? 12);
+                } else {
+                    min = @(Model.MinCreditInstallments ?? 0);
+                    max = @(Model.MaxCreditInstallments ?? 12);
+                }
+                
+                var select = document.getElementById("number-of-payments");
+                select.length = 0;
+                for (var i = min; i <= max; i++) {
+                    select.options.add(new Option(i, i))
+                }
+                $("#number-of-payments").trigger("change");
+                document.getElementById("total-amount-display").hidden = true;
+                document.getElementById("installments-area").hidden = false;
+            })
         })
     </script>
 }

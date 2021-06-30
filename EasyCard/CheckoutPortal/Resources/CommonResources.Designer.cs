@@ -178,7 +178,16 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Payment Amount.
+        ///   Looks up a localized string similar to Number of payments must be less than @min.
+        /// </summary>
+        public static string NumberOfPaymentsMustBeLessThan {
+            get {
+                return ResourceManager.GetString("NumberOfPaymentsMustBeLessThan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment amount.
         /// </summary>
         public static string PaymentAmount {
             get {
@@ -232,6 +241,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Regular Deal.
+        /// </summary>
+        public static string RegularDeal {
+            get {
+                return ResourceManager.GetString("RegularDeal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Request ID.
         /// </summary>
         public static string RequestID {
@@ -255,6 +273,15 @@ namespace CheckoutPortal.Resources {
         public static string Total {
             get {
                 return ResourceManager.GetString("Total", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction type.
+        /// </summary>
+        public static string TransactionType {
+            get {
+                return ResourceManager.GetString("TransactionType", resourceCulture);
             }
         }
         

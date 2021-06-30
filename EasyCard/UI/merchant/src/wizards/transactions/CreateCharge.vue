@@ -138,6 +138,31 @@ export default {
       errors: [],
       result: {
         entityReference: null
+      },
+      steps: {
+        1: {
+            title: "Amount",
+            canChangeTerminal: true,
+            showItemsCount: true,
+        },
+        2: {
+            title: "Basket",
+        },
+        3: {
+            title: "ChooseCustomer",
+            skippable: true,
+        },
+        4: {
+            title: "PaymentInfo",
+        },
+        5: {
+            title: "AdditionalSettings",
+        },
+        //Last step may be dynamically altered to represent error if transaction creation has failed.
+        6: {
+            title: "Success",
+            completed: true,
+        }
       }
     };
   },
@@ -146,8 +171,7 @@ export default {
       return this.$t(this.steps[this.step].title);
     },
     ...mapState({
-      terminal: state => state.settings.terminal,
-      steps: state => state.ui.chargeWizard.steps
+      terminal: state => state.settings.terminal
     })
   },
   watch: {

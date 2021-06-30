@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Integration.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -28,5 +29,15 @@ namespace Transactions.Api.Models.Checkout
 
         // TODO: validation
         public IEnumerable<string> RedirectUrls { get; set; }
+
+        public int? MinCreditInstallments { get; set; }
+
+        public int? MaxCreditInstallments { get; set; }
+
+        public int? MinInstallments { get; set; }
+
+        public int? MaxInstallments { get; set; }
+
+        public IEnumerable<TransactionTypeEnum> TransactionTypes { get; set; }
     }
 }

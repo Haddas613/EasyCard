@@ -30,20 +30,11 @@ const state = () => ({
         customDate: false,
         dateFrom: null,
         dateTo: null
-    },
-    chargeWizard: {
-        steps: appConstants.ui.charge.steps()
     }
 });
 
 const getters = {};
-const actions = {
-    async refreshWizard(state){
-        state.commit('setChargeWizard', {
-            steps: appConstants.ui.charge.steps()
-        })
-    }
-};
+const actions = {};
 
 const mutations = {
     changeHeader(state, { value }) {
@@ -63,9 +54,6 @@ const mutations = {
     },
     setDashboardDateFilterAlt(state, value){
         state.dashboardDateFilterAlt = value;
-    },
-    setChargeWizard(state, value){
-        Object.assign(state.chargeWizard, value);
     }
 }
 

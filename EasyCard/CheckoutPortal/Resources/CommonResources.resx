@@ -192,4 +192,49 @@
   <data name="MakePinPadDeal" xml:space="preserve">
     <value>Make Pinpad Deal</value>
   </data>
+  <data name="NumberOfPaymentsMustBeLessThan" xml:space="preserve">
+    <value>Number of payments must be less than @min</value>
+  </data>
+  <data name="PaymentAmount" xml:space="preserve">
+    <value>Payment amount</value>
+  </data>
+  <data name="PaymentCanceled" xml:space="preserve">
+    <value>Payment canceled</value>
+  </data>
+  <data name="PaymentError" xml:space="preserve">
+    <value>Payment Error</value>
+  </data>
+  <data name="PaymentSuccessful" xml:space="preserve">
+    <value>Payment successful</value>
+  </data>
+  <data name="PayWithEasyCard" xml:space="preserve">
+    <value>Pay with EasyCard</value>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="RegularDeal" xml:space="preserve">
+    <value>Regular Deal</value>
+  </data>
+  <data name="RequestID" xml:space="preserve">
+    <value>Request ID</value>
+  </data>
+  <data name="SaveCard" xml:space="preserve">
+    <value>Save Card</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="TransactionType" xml:space="preserve">
+    <value>Transaction type</value>
+  </data>
+  <data name="UseSavedCard" xml:space="preserve">
+    <value>Use saved card</value>
+  </data>
+  <data name="WelcomeTextBottom" xml:space="preserve">
+    <value>To make a payment please use link provided by merchant.</value>
+  </data>
+  <data name="WelcomeTextTop" xml:space="preserve">
+    <value>Welcome to the checkout portal</value>
+  </data>
 </root>

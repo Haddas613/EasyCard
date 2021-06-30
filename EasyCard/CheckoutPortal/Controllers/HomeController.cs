@@ -18,6 +18,7 @@ using Transactions.Api.Models.Checkout;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
+using Shared.Integration.Models;
 
 namespace CheckoutPortal.Controllers
 {
@@ -117,6 +118,51 @@ namespace CheckoutPortal.Controllers
                 ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
             }
 
+            InstallmentDetails installmentDetails = null;
+
+            if (!checkoutConfig.Settings.TransactionTypes.Any(t => t == request.TransactionType))
+            {
+                ModelState.AddModelError(nameof(request.TransactionType), $"{request.TransactionType} is not allowed for this transaction");
+                return View("Index", request);
+            }
+
+            if (request.TransactionType != TransactionTypeEnum.RegularDeal && request.NumberOfPayments.HasValue 
+                && request.NumberOfPayments.Value != checkoutConfig.PaymentRequest?.NumberOfPayments)
+            {
+                if (request.NumberOfPayments > (request.TransactionType == TransactionTypeEnum.Credit ? checkoutConfig.Settings.MaxCreditInstallments : checkoutConfig.Settings.MaxInstallments))
+                {
+                    ModelState.AddModelError(nameof(request.NumberOfPayments),
+                       Resources.CommonResources.NumberOfPaymentsMustBeLessThan.Replace("@min", checkoutConfig.Settings.MaxCreditInstallments.Value.ToString()));
+                } 
+                else
+                {
+                    if (checkoutConfig.PaymentRequest != null)
+                    {
+                        checkoutConfig.PaymentRequest.NumberOfPayments = request.NumberOfPayments.Value;
+                        checkoutConfig.PaymentRequest.InitialPaymentAmount =
+                            checkoutConfig.PaymentRequest.InstallmentPaymentAmount = checkoutConfig.PaymentRequest.TotalAmount / checkoutConfig.PaymentRequest.NumberOfPayments;
+
+                        installmentDetails = new InstallmentDetails
+                        {
+                            NumberOfPayments = checkoutConfig.PaymentRequest.NumberOfPayments,
+                            InitialPaymentAmount = checkoutConfig.PaymentRequest.InitialPaymentAmount,
+                            InstallmentPaymentAmount = checkoutConfig.PaymentRequest.InstallmentPaymentAmount,
+                            TotalAmount = checkoutConfig.PaymentRequest.TotalAmount
+                        };
+                    }
+                    else
+                    {
+                        installmentDetails = new InstallmentDetails
+                        {
+                            NumberOfPayments = request.NumberOfPayments.Value,
+                            InitialPaymentAmount = request.Amount.Value / request.NumberOfPayments.Value,
+                            InstallmentPaymentAmount = request.Amount.Value / request.NumberOfPayments.Value,
+                            TotalAmount = request.Amount.Value
+                        };
+                    }
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 return View("Index", request);
@@ -140,7 +186,12 @@ namespace CheckoutPortal.Controllers
 
             if (checkoutConfig.PaymentRequest != null)
             {
-                var mdel = new Transactions.Api.Models.Transactions.PRCreateTransactionRequest() { CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails() };
+                var mdel = new Transactions.Api.Models.Transactions.PRCreateTransactionRequest()
+                {
+                    CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails(),
+                    InstallmentDetails = installmentDetails,
+                    TransactionType = request.TransactionType
+                };
 
                 // TODO: consumer IP
                 mapper.Map(request, mdel);
@@ -168,7 +219,9 @@ namespace CheckoutPortal.Controllers
                 {
                     CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails(),
                     DealDetails = new Shared.Integration.Models.DealDetails(),
-                    CreditCardToken = request.CreditCardToken
+                    CreditCardToken = request.CreditCardToken,
+                    InstallmentDetails = installmentDetails,
+                    TransactionType = request.TransactionType
                 }; 
                 mapper.Map(request, mdel);
                 mapper.Map(request, mdel.CreditCardSecureDetails);
@@ -368,6 +421,23 @@ namespace CheckoutPortal.Controllers
                 logger.LogError(ex, $"Invalid redirect url");
                 throw new BusinessException(Messages.InvalidCheckoutData);
             }
+
+            var transactionTypes = new List<TransactionTypeEnum> { TransactionTypeEnum.RegularDeal };
+
+            if (paymentRequestID.HasValue)
+            {
+                if (checkoutConfig.Settings.MaxInstallments > 1)
+                {
+                    transactionTypes.Add(TransactionTypeEnum.Installments);
+                }
+            }
+            else
+            {
+                transactionTypes.Add(TransactionTypeEnum.Installments);
+                transactionTypes.Add(TransactionTypeEnum.Credit);
+            }
+
+            checkoutConfig.Settings.TransactionTypes = transactionTypes;
 
             return checkoutConfig;
         }

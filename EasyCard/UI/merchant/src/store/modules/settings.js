@@ -55,11 +55,6 @@ const actions = {
     let terminal = await api.terminals
       .getTerminal(typeof (newTerminal) === "string" ? newTerminal : newTerminal.terminalID);
 
-    //TODO: Temporary, remove when wizard settings are finished
-    if(!state.terminal || state.terminal.terminalID != typeof (newTerminal) === "string" ? newTerminal : newTerminal.terminalID){
-      dispatch('ui/refreshWizard', '', { root: true });
-    }
-
     commit('setTerminal', terminal);
   },
   async changeCurrency({ commit }, { api, newCurrency }) {
