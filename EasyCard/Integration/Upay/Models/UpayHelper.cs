@@ -220,13 +220,11 @@ namespace Upay.Models
             //response.TotalAmount = operationResponse.Results[1].Result.Transactions[0].Totalamount;
             //response.WebUrl = operationResponse.WebUrl;
 
-            response.Success = operationResponse.Results[1].Success;
+            response.Success = operationResponse.Results[1].Header.Errorcode.EndsWith("00") && operationResponse.Results[1].Header.Errormessage.EndsWith("_OK");
 
             if (!response.Success)
             {
-                response.ErrorMessage = operationResponse.Results[1].Header.Errormessage;
-
-                //response. = operationResponse.Results[1].Header.Errordescription;
+                response.ErrorMessage = String.Format("{0} {1} {2}", operationResponse.Results[1].Header.Errorcode, operationResponse.Results[1].Header.Errormessage, operationResponse.Results[1].Header.Errordescription);
             }
             return response;
         }
