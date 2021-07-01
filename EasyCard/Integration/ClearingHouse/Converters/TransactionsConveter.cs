@@ -76,7 +76,7 @@ namespace ClearingHouse.Converters
             chRequest.PaymentGatewayAdditionalDetails = mapper.Map<Models.PaymentGatewayAdditionalDetails>(commitTransactionRequest.ProcessorTransactionDetails);
             //Solek = (SolekEnum)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.solek?.valueTag),
             chRequest.Solek = (int)chRequest.PaymentGatewayAdditionalDetails.Solek;
-
+            chRequest.IsTourist = commitTransactionRequest.CreditCardDetails.CardVendor == Shared.Integration.Models.CardVendorEnum.UNKNOWN.ToString();
             return chRequest;
         }
 

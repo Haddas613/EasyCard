@@ -32,5 +32,11 @@ namespace ClearingHouse.Models
         /// </summary>
         [DataMember(Name = "solek")]
         public SolekEnum Solek { get; set; }
+
+        /// <summary>
+        ///  vendor
+        /// </summary>
+        [DataMember(Name = "vendor")]
+        public CardVendorEnum Vendor { get; set; }
     }
 }
