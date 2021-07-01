@@ -49,8 +49,8 @@ namespace Upay
             {
                 var upaySettings = transactionRequest.AggregatorSettings as UpayTerminalSettings;
                 
-                var CreateTransactionRequest = UpayHelper.GetCreateTranMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), false/*TODO*/, upaySettings.AuthenticateKey, transactionRequest);
-                var loginRequest = UpayHelper.GetLoginMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), false/*TODO*/, upaySettings.AuthenticateKey);
+                var CreateTransactionRequest = UpayHelper.GetCreateTranMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), !configuration.LiveSystem , upaySettings.AuthenticateKey, transactionRequest);
+                var loginRequest = UpayHelper.GetLoginMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), !configuration.LiveSystem, upaySettings.AuthenticateKey);
                 var Msgs = new MsgModel[2];
                 Msgs[0] = loginRequest;
                 Msgs[1] = CreateTransactionRequest;
@@ -108,8 +108,8 @@ namespace Upay
 
                 var upaySettings = transactionRequest.AggregatorSettings as UpayTerminalSettings;
 
-                var CommitTransactionRequest = UpayHelper.GetCommitTranMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), false/*TODO*/, upaySettings.AuthenticateKey, transactionRequest, shvaDetails);
-                var loginRequest = UpayHelper.GetLoginMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), false/*TODO*/, upaySettings.AuthenticateKey);
+                var CommitTransactionRequest = UpayHelper.GetCommitTranMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), !configuration.LiveSystem, upaySettings.AuthenticateKey, transactionRequest, shvaDetails);
+                var loginRequest = UpayHelper.GetLoginMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), !configuration.LiveSystem, upaySettings.AuthenticateKey);
                 var Msgs = new MsgModel[2];
                 Msgs[0] = loginRequest;
                 Msgs[1] = CommitTransactionRequest;

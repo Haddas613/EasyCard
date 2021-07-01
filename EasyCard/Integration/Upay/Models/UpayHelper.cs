@@ -116,7 +116,7 @@ namespace Upay.Models
                     Passwordmd5 = passMd5,
                     Key = keyAuthnticate,
                     //cardreader = (Convert.ToInt32(model.DealType)) == 0 ? "1" : "0", /// קורא כרטיס
-                    Providername =/* isBitDeal ? "bit" : */"easycard",
+                    Providername =/* isBitDeal ? "bit" : */"easycardng",
                 };
 
                 msgModel.Request = request;
