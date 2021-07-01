@@ -9,5 +9,6 @@ namespace Upay
     {
         public string ApiBaseAddress { get; set; }
         public string ApiCommitAddress { get; set; }
+        public string ApiKey { get; set; }
     }
 }
