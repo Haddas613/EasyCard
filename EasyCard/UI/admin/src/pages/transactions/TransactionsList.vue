@@ -42,7 +42,7 @@
           </p>
         </template>
         <template v-slot:item.quickStatus="{ item }">
-          <span v-bind:class="quickStatusesColors[item.quickStatus]">{{$t(item.quickStatus || 'None')}}</span>
+          <span v-bind:class="quickStatusesColors[item.$quickStatus]">{{$t(item.quickStatus || 'None')}}</span>
         </template>
         <template v-slot:item.actions="{ item }">
           <v-btn class="mx-1" color="primary" outlined small link :to="{name: 'Transaction', params: {id: item.$paymentTransactionID}}">
