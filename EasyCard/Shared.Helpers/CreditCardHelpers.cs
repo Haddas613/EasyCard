@@ -108,6 +108,17 @@ namespace Shared.Helpers
             return new CardExpiration() { Year = year, Month = month };
         }
 
+        public static string ParseCardExpiration(CardExpiration cardExp)
+        {
+            if (cardExp == null)
+            {
+                return string.Empty;
+            }
+
+            DateTime expirationDate = new DateTime(cardExp.Year ?? 1999, cardExp.Month ?? 0, 1);
+            return expirationDate.ToString("MM'/'yy");
+        }
+
         public static string FormatCardExpiration(DateTime? expirationDate)
         {
             if (expirationDate == null)
