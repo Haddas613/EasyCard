@@ -1,6 +1,6 @@
 ﻿@using Shared.Helpers
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "EasyCard";
 }
 @model ChargeViewModel
 @inject CommonLocalizationService localizer
@@ -153,56 +153,58 @@
                             }
                         </fieldset>
                     }
-                    @if (Model.AllowPinPad ?? false)
-                    {
-                        <fieldset class="border rounded p-2 m-2">
-                            <div class="form-group row">
-                                <label asp-for="PinPadDeal" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("MakePinPadDeal")</label>
-                                <input type="checkbox" class="form-control" asp-for="PinPadDeal">
-                                <span asp-validation-for="PinPadDeal"></span>
-                                <span class="control-validation"></span>
-                            </div>
-                        </fieldset>
-
-                    }
                     <fieldset class="border rounded p-2 m-2" id="card-info-group-area">
-                        <div class="form-group row">
-                            <label asp-for="CardNumber" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("CardNumber")</label>
-                            <div class="col-sm-9">
-                                <input id="cc-number" type="tel" class="form-control cc-number form-control-sm" asp-for="CardNumber" autofocus autocomplete="cc-number" placeholder="•••• •••• •••• ••••">
-                                <span asp-validation-for="CardNumber"></span>
-                                <span class="control-validation"></span>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label asp-for="CardExpiration" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("Expiration")</label>
-                            <div class="col-sm-9">
-                                <input id="cc-exp" type="tel" class="form-control cc-exp form-control-sm" placeholder="••/••" asp-for="CardExpiration" autocomplete="cc-exp">
-                                <span asp-validation-for="CardExpiration"></span>
-                                <span class="control-validation"></span>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label asp-for="Cvv" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("CVV")</label>
-                            <div class="col-sm-9">
-                                <input type="tel" class="form-control cc-cvc form-control-sm" placeholder="•••" asp-for="Cvv" autocomplete="off">
-                                <span asp-validation-for="Cvv"></span>
-                                <span class="control-validation"></span>
-                            </div>
-                        </div>
-
-                        @if (Model.ConsumerID.HasValue)
+                        @if (Model.AllowPinPad ?? false)
                         {
                             <div class="form-group row">
-                                <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="SaveCreditCard">@localizer.Get("SaveCard")</label>
+                                <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="PinPadDeal">@localizer.Get("MakePinPadDeal")</label>
                                 <div class="col-sm-9">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" asp-for="SaveCreditCard">
+                                        <input id="pin-pad-deal" type="checkbox" class="form-check-input" asp-for="PinPadDeal">
+                                        <span asp-validation-for="PinPadDeal"></span>
                                     </div>
                                 </div>
                             </div>
                         }
+                        <div id="credit-card-info-area">
+                            <div class="form-group row">
+                                <label asp-for="CardNumber" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("CardNumber")</label>
+                                <div class="col-sm-9">
+                                    <input id="cc-number" type="tel" class="form-control cc-number form-control-sm" asp-for="CardNumber" autofocus autocomplete="cc-number" placeholder="•••• •••• •••• ••••">
+                                    <span asp-validation-for="CardNumber"></span>
+                                    <span class="control-validation"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label asp-for="CardExpiration" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("Expiration")</label>
+                                <div class="col-sm-9">
+                                    <input id="cc-exp" type="tel" class="form-control cc-exp form-control-sm" placeholder="••/••" asp-for="CardExpiration" autocomplete="cc-exp">
+                                    <span asp-validation-for="CardExpiration"></span>
+                                    <span class="control-validation"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label asp-for="Cvv" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("CVV")</label>
+                                <div class="col-sm-9">
+                                    <input type="tel" class="form-control cc-cvc form-control-sm" placeholder="•••" asp-for="Cvv" autocomplete="off">
+                                    <span asp-validation-for="Cvv"></span>
+                                    <span class="control-validation"></span>
+                                </div>
+                            </div>
+
+                            @if (Model.ConsumerID.HasValue)
+                            {
+                                <div class="form-group row">
+                                    <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="SaveCreditCard">@localizer.Get("SaveCard")</label>
+                                    <div class="col-sm-9">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" asp-for="SaveCreditCard">
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
                     </fieldset>
                     <fieldset class="border rounded p-2 m-2">
                         <div class="form-group row">
@@ -272,6 +274,9 @@
                 if (document.getElementById("ttype").value == "@Shared.Integration.Models.TransactionTypeEnum.RegularDeal.ToString()") {
                     $("#installments-area").remove();
                 }
+                if (document.getElementById("pin-pad-deal").checked == true) {
+                    $("#credit-card-info-area").remove();
+                }
             })
 
             $("#number-of-payments").on("change", function (e) {
@@ -304,6 +309,10 @@
                 $("#number-of-payments").trigger("change");
                 document.getElementById("total-amount-display").hidden = true;
                 document.getElementById("installments-area").hidden = false;
+            })
+
+            $("#pin-pad-deal").on("change", function (e) {
+                document.getElementById("credit-card-info-area").hidden = e.target.checked;
             })
         })
     </script>

@@ -97,6 +97,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Credit.
+        /// </summary>
+        public static string Credit {
+            get {
+                return ResourceManager.GetString("Credit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CVV.
         /// </summary>
         public static string CVV {
@@ -147,6 +156,15 @@ namespace CheckoutPortal.Resources {
         public static string InitialPayment {
             get {
                 return ResourceManager.GetString("InitialPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installment.
+        /// </summary>
+        public static string Installments {
+            get {
+                return ResourceManager.GetString("Installments", resourceCulture);
             }
         }
         
