@@ -331,7 +331,6 @@ export default {
         let result = await this.$api.transactions.processTransaction(this.model);
         this.result = result;
 
-        //assuming current step is one before the last
         let lastStepKey = Object.keys(this.steps).reduce((l,r) => l > r ? l : r, 0);
         let lastStep = this.steps[lastStepKey];
 

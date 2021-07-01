@@ -162,7 +162,8 @@ export default {
       threeDotMenuItems: null,
       success: true,
       errors: [],
-      result: null
+      result: null,
+      loading: false
     };
   },
   computed: {
@@ -281,37 +282,47 @@ export default {
       this.model.invoiceDetails = data.invoiceDetails;
       this.model.issueInvoice = !!this.model.invoiceDetails;
 
-      let result = await this.$api.transactions.refund(this.model);
-      this.result = result;
+      await this.createRefund();
+    },
 
-      //assuming current step is one before the last
-      let lastStep = this.steps[this.step + 1];
+    async createRefund(){
+      if (this.loading) return;
+      try{
+        this.loading = true;
+        let result = await this.$api.transactions.refund(this.model);
+        this.result = result;
 
-      if (!result || result.status === "error") {
-        this.success = false;
-        lastStep.title = "Error";
-        lastStep.completed = false;
-        lastStep.closeable = true;
-        if (result && result.errors && result.errors.length > 0) {
-          this.errors = result.errors;
+        let lastStepKey = Object.keys(this.steps).reduce((l,r) => l > r ? l : r, 0);
+        let lastStep = this.steps[lastStepKey];
+
+        if (!result || result.status === "error") {
+          this.success = false;
+          lastStep.title = "Error";
+          lastStep.completed = false;
+          lastStep.closeable = true;
+          if (result && result.errors && result.errors.length > 0) {
+            this.errors = result.errors;
+          } else {
+            this.errors = [{ description: result.message }];
+          }
         } else {
-          this.errors = [{ description: result.message }];
+          this.success = true;
+          lastStep.title = "Success";
+          lastStep.completed = true;
+          lastStep.closeable = false;
+          this.errors = [];
         }
-      } else {
-        this.success = true;
-        lastStep.title = "Success";
-        lastStep.completed = true;
-        lastStep.closeable = false;
-        this.errors = [];
-      }
-      if (this.customer) {
-        this.$store.commit("payment/addLastChargedCustomer", {
-          customerID: this.customer.consumerID,
-          terminalID: this.model.terminalID
-        });
-      }
+        if (this.customer) {
+          this.$store.commit("payment/addLastChargedCustomer", {
+            customerID: this.customer.consumerID,
+            terminalID: this.model.terminalID
+          });
+        }
 
-      this.step++;
+        this.step = lastStepKey;
+      }finally{
+        this.loading = false;  
+      }
     }
   }
 };
