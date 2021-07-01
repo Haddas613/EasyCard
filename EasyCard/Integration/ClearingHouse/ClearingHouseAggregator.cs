@@ -93,9 +93,8 @@ namespace ClearingHouse
         {
             try
             {
-                var request = transactionRequest.GetCommitTransactionRequest(configuration);
-                request.PaymentGatewayAdditionalDetails = mapper.Map<Models.PaymentGatewayAdditionalDetails>(transactionRequest.ProcessorTransactionDetails);
-
+                var request = transactionRequest.GetCommitTransactionRequest(configuration,mapper);
+               
                 var result = await webApiClient.Put<Models.OperationResponse>(configuration.ApiBaseAddress, string.Format(CommitTransactionRequest, transactionRequest.AggregatorTransactionID), request, BuildHeaders);
 
                 return result.GetAggregatorCommitTransactionResponse();

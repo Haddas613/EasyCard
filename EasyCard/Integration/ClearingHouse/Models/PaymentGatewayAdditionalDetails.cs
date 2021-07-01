@@ -1,3 +1,4 @@
+using Shared.Integration.Models;
 using System.Runtime.Serialization;
 
 namespace ClearingHouse.Models
@@ -25,5 +26,11 @@ namespace ClearingHouse.Models
         /// </summary>
         [DataMember(Name = "shvaTransmissionNumber")]
         public string ShvaTransmissionNumber { get; set; }
+
+        /// <summary>
+        ///  solek
+        /// </summary>
+        [DataMember(Name = "solek")]
+        public SolekEnum Solek { get; set; }
     }
 }

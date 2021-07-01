@@ -1,4 +1,5 @@
-﻿using Shared.Helpers;
+﻿using AutoMapper;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace ClearingHouse.Converters
             return chRequest;
         }
 
-        public static Models.CommitTransactionRequest GetCommitTransactionRequest(this Shared.Integration.Models.AggregatorCommitTransactionRequest commitTransactionRequest, ClearingHouseGlobalSettings configuration)
+        public static Models.CommitTransactionRequest GetCommitTransactionRequest(this Shared.Integration.Models.AggregatorCommitTransactionRequest commitTransactionRequest, ClearingHouseGlobalSettings configuration, IMapper mapper)
         {
             var chRequest = new Models.CommitTransactionRequest();
 
@@ -72,10 +73,9 @@ namespace ClearingHouse.Converters
             //details.Solek TODO:
 
             chRequest.PaymentGatewayID = configuration.PaymentGatewayID;
-
-            var shvaDetails = commitTransactionRequest.ProcessorTransactionDetails as Models.PaymentGatewayAdditionalDetails;
-
-            chRequest.PaymentGatewayAdditionalDetails = shvaDetails;
+            chRequest.PaymentGatewayAdditionalDetails = mapper.Map<Models.PaymentGatewayAdditionalDetails>(commitTransactionRequest.ProcessorTransactionDetails);
+            //Solek = (SolekEnum)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.solek?.valueTag),
+            chRequest.Solek = (int)chRequest.PaymentGatewayAdditionalDetails.Solek;
 
             return chRequest;
         }

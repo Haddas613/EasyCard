@@ -44,7 +44,9 @@ namespace Transactions.Api.Mapping
             CreateMap<ShvaTransactionDetails, ClearingHouse.Models.PaymentGatewayAdditionalDetails>()
                  .ForMember(m => m.ShvaShovarData, src => src.MapFrom(f => f.ShvaDealID))
                  .ForMember(m => m.ShvaShovarNumber, src => src.MapFrom(f => f.ShvaShovarNumber))
-                 .ForMember(m => m.ShvaTransmissionNumber, src => src.MapFrom(f => f.ShvaTransmissionNumber));
+                 .ForMember(m => m.ShvaTransmissionNumber, src => src.MapFrom(f => f.ShvaTransmissionNumber))
+                 .ForMember(m => m.Solek, src => src.MapFrom(f => f.Solek))
+                 ;
         }
     }
 }
