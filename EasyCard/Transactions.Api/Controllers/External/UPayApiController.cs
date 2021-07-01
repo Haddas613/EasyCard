@@ -21,15 +21,16 @@ namespace Transactions.Api.Controllers.External
     [Produces("application/json")]
     [Consumes("application/json")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class UPayApiController : ApiControllerBase
     {
-        private readonly ITransactionsService transactionsService;
+        private readonly ITransactionsDirectAccessService transactionsService;
         private readonly IMapper mapper;
         private readonly ILogger logger;
         private readonly UpayGlobalSettings configuration;
 
         public UPayApiController(
-             ITransactionsService transactionsService,
+             ITransactionsDirectAccessService transactionsService,
              IMapper mapper,
              ILogger<TransactionsApiController> logger,
              IOptions<UpayGlobalSettings> configuration)

@@ -267,6 +267,7 @@ namespace Transactions.Api
 
             services.AddDbContext<TransactionsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<ITransactionsService, TransactionsService>();
+            services.AddScoped<ITransactionsDirectAccessService, TransactionsService>();
             services.AddScoped<ICreditCardTokenService, CreditCardTokenService>();
             services.AddScoped<IBillingDealService, BillingDealService>();
             services.AddScoped<IFutureBillingsService, BillingDealService>();

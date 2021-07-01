@@ -19,7 +19,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Services
 {
-    public class TransactionsService : ServiceBase<PaymentTransaction, Guid>, ITransactionsService
+    public class TransactionsService : ServiceBase<PaymentTransaction, Guid>, ITransactionsService, ITransactionsDirectAccessService
     {
         private readonly TransactionsContext context;
         private readonly ClaimsPrincipal user;
@@ -232,6 +232,11 @@ namespace Transactions.Business.Services
                 await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
                 await transaction.CommitAsync();
             }
+        }
+
+        IQueryable<PaymentTransaction> ITransactionsDirectAccessService.GetTransactions()
+        {
+            return context.PaymentTransactions.AsNoTracking();
         }
 
         private async Task AddHistory(Guid transactionID, string opDescription, string message, TransactionOperationCodesEnum operationCode)
