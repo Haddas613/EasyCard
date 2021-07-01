@@ -17,6 +17,10 @@ namespace Transactions.Api.Controllers.External
 {
 
     [AllowAnonymous]
+    [Route("api/external/upay")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    [ApiController]
     public class UPayApiController : ApiControllerBase
     {
         private readonly ITransactionsService transactionsService;
@@ -37,7 +41,8 @@ namespace Transactions.Api.Controllers.External
         }
 
         [HttpGet]
-        public async Task<ActionResult<string>> ValidateDeal(Guid? token)
+        [Route("v1/validate-deal/{token:guid}")]
+        public async Task<ActionResult<UpayValidateDealResult>> ValidateDeal([FromRoute] Guid? token)
         {
             if (Request.Headers.ContainsKey("API-key") && !string.IsNullOrEmpty(Request.Headers["API-key"]))
             {
@@ -52,9 +57,14 @@ namespace Transactions.Api.Controllers.External
                 return Unauthorized($"Request is not authorized. There is no API-Key.");
             }
 
+            if (!token.HasValue)
+            {
+                return NotFound();
+            }
+
             var transaction = mapper.Map<UpayValidateDealResult>(EnsureExists(
-                await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
-            return transaction.ToString();
+                await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == token.Value)));
+            return transaction;
         }
     }
 }
