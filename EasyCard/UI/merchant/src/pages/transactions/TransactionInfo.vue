@@ -49,8 +49,10 @@
               >
                 <small>{{(model.invoiceID || '-') | guid}}</small>
               </router-link>
-              <v-btn x-small color="primary" v-else-if="(model.quickStatus != 'Failed' && model.quickStatus != 'Canceled')" @click="createInvoice()" :loading="loading">
-                {{$t("CreateInvoice")}}
+              <v-btn x-small color="primary" 
+                v-else-if="( $integrationAvailable(terminalStore, appConstants.terminal.integrations.invoicing) && model.quickStatus != 'Failed' && model.quickStatus != 'Canceled')"
+                @click="createInvoice()" :loading="loading">
+                  {{$t("CreateInvoice")}}
               </v-btn>
               <span v-else>-</span>
             </v-col>
@@ -130,6 +132,9 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import appConstants from "../../helpers/app-constants";
+
 export default {
   components: {
     TransactionItemsList: () =>
@@ -158,7 +163,8 @@ export default {
         Failed: "error--text",
         Canceled: "accent--text"
       },
-      transactionSlipDialog: false
+      transactionSlipDialog: false,
+      appConstants: appConstants
     };
   },
   async mounted() {
@@ -263,7 +269,10 @@ export default {
         this.model.$transactionType === "installments" ||
         this.model.$transactionType === "credit"
       );
-    }
+    },
+    ...mapState({
+      terminalStore: state => state.settings.terminal
+    })
   }
 };
 </script>
