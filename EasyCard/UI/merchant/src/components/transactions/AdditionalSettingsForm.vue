@@ -135,7 +135,7 @@ export default {
   },
   methods: {
     ok() {
-      if (!this.$refs.form.validate()) return;
+      if (!this.$refs.form.validate()) return false;
 
       let result = { ...this.model };
       if (this.$refs.instDetails) {
@@ -151,6 +151,7 @@ export default {
       }
       result.dealDetails = this.$refs.dealDetails.getData();
       this.$emit("ok", result);
+      return result;
     },
     updateTransactionType(){
       if(this.model.transactionType === "credit"){
@@ -162,6 +163,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

@@ -126,7 +126,8 @@ export default {
       },
       threeDotMenuItems: null,
       success: true,
-      errors: []
+      errors: [],
+      loading: false
     };
   },
   computed: {
@@ -203,40 +204,50 @@ export default {
       this.model.dueDate = data.dueDate;
       this.model.consumerName = data.consumerName;
 
-      let result = await this.$api.paymentRequests.createPaymentRequest(
-        this.model
-      );
+      await this.createPaymentRequest();
+    },
+    async createPaymentRequest(){
+      if(this.loading) return;
 
-      //assuming current step is one before the last
-      let lastStep = this.steps[this.step + 1];
+      try{
+        this.loading = true;
+        let result = await this.$api.paymentRequests.createPaymentRequest(
+          this.model
+        );
 
-      if (!result || result.status === "error") {
-        lastStep.title = "Error";
-        lastStep.completed = false;
-        lastStep.closeable = true;
-        if (result && result.errors && result.errors.length > 0) {
-          this.errors = result.errors;
+        let lastStepKey = Object.keys(this.steps).reduce((l,r) => l > r ? l : r, 0);
+        let lastStep = this.steps[lastStepKey];
+
+        if (!result || result.status === "error") {
+          lastStep.title = "Error";
+          lastStep.completed = false;
+          lastStep.closeable = true;
+          if (result && result.errors && result.errors.length > 0) {
+            this.errors = result.errors;
+          } else {
+            this.errors = [{ description: result.message }];
+          }
         } else {
-          this.errors = [{ description: result.message }];
-        }
-      } else {
-        if(this.customer){
-          this.$store.commit("payment/addLastChargedCustomer", {
-            customerID: this.customer.consumerID,
-            terminalID: this.model.terminalID
+          if(this.customer){
+            this.$store.commit("payment/addLastChargedCustomer", {
+              customerID: this.customer.consumerID,
+              terminalID: this.model.terminalID
+            });
+          }
+          return this.$router.push({
+            name: "PaymentRequest",
+            params: { id: result.entityReference }
           });
+          lastStep.title = "Success";
+          lastStep.completed = true;
+          lastStep.closeable = false;
+          this.errors = [];
         }
-        return this.$router.push({
-          name: "PaymentRequest",
-          params: { id: result.entityReference }
-        });
-        lastStep.title = "Success";
-        lastStep.completed = true;
-        lastStep.closeable = false;
-        this.errors = [];
+        this.step = lastStepKey;
+        
+      }finally{
+        this.loading = false;
       }
-
-      this.step++;
     }
   }
 };

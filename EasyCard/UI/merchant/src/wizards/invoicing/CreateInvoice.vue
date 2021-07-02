@@ -125,7 +125,8 @@ export default {
       },
       threeDotMenuItems: null,
       success: true,
-      errors: []
+      errors: [],
+      loading: false
     };
   },
   computed: {
@@ -204,32 +205,37 @@ export default {
       this.model.cardOwnerNationalID = data.cardOwnerNationalID;
       this.model.creditCardDetails = data.creditCardDetails;
 
-      let result = await this.$api.invoicing.createInvoice(this.model);
+      await this.createInvoice();
+    },
+    async createInvoice(){
+      if(this.loading) return;
+      try{
+        this.loading = true;
+        let result = await this.$api.invoicing.createInvoice(this.model);
 
-      //assuming current step is one before the last
-      let lastStep = this.steps[this.step + 1];
+        let lastStepKey = Object.keys(this.steps).reduce((l,r) => l > r ? l : r, 0);
+        let lastStep = this.steps[lastStepKey];
 
-      if (!result || result.status === "error") {
-        lastStep.title = "Error";
-        lastStep.completed = false;
-        lastStep.closeable = true;
-        if (result && result.errors && result.errors.length > 0) {
-          this.errors = result.errors;
+        if (!result || result.status === "error") {
+          lastStep.title = "Error";
+          lastStep.completed = false;
+          lastStep.closeable = true;
+          if (result && result.errors && result.errors.length > 0) {
+            this.errors = result.errors;
+          } else {
+            this.errors = [{ description: result.message }];
+          }
         } else {
-          this.errors = [{ description: result.message }];
+          return this.$router.push({
+            name: "Invoice",
+            params: { id: result.entityReference }
+          });
         }
-      } else {
-        return this.$router.push({
-          name: "Invoice",
-          params: { id: result.entityReference }
-        });
-        // lastStep.title = "Success";
-        // lastStep.completed = true;
-        // lastStep.closeable = false;
-        // this.errors = [];
-      }
+        this.step = lastStepKey;
 
-      this.step++;
+      }finally{
+        this.loading = false;
+      }
     }
   }
 };

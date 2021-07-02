@@ -16,7 +16,7 @@
         <v-text-field
           v-model="model.consumerEmail"
           :label="$t('CustomerEmail')"
-          :rules="[vr.primitives.required, vr.primitives.email]"
+          :rules="[vr.primitives.email]"
           outlined
           @keydown.native.space.prevent
         ></v-text-field>

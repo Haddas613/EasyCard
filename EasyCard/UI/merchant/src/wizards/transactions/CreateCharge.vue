@@ -21,7 +21,15 @@
     <v-stepper class="ec-stepper" v-model="step" :key="terminal.terminalID">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad v-if="step === 1" btn-text="Charge" v-on:ok="processAmount($event, true);" v-on:update="updateAmount($event)" ref="numpadRef" :data="model"></numpad>
+          <numpad 
+            v-if="step === 1" 
+            btn-text="Charge" 
+            v-on:ok="processAmount($event, true);"
+            v-on:update="updateAmount($event)"
+            ref="numpadRef" 
+            :data="model"
+            support-quick-charge
+          ></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
@@ -49,7 +57,13 @@
         </v-stepper-content>
 
         <v-stepper-content step="5" class="py-0 px-0">
-          <additional-settings-form :key="model.transactionAmount" :data="model" :issue-document="true" v-on:ok="processAdditionalSettings($event)"></additional-settings-form>
+          <additional-settings-form 
+            :key="model.transactionAmount"
+            :data="model"
+            :issue-document="true"
+            v-on:ok="processAdditionalSettings($event)"
+            ref="additionalSettingsForm"
+          ></additional-settings-form>
         </v-stepper-content>
 
         <v-stepper-content step="6" class="py-0 px-0">
@@ -134,8 +148,10 @@ export default {
       },
       step: 1,
       threeDotMenuItems: null,
+      quickChargeMode: false,
       success: true,
       errors: [],
+      loading: false,
       result: {
         entityReference: null
       },
@@ -250,6 +266,11 @@ export default {
     },
     processAmount(data, skipBasket = false) {
       this.updateAmount(data);
+      this.quickChargeMode = data.quickCharge;
+      if (data.quickCharge){
+        this.step = 4;
+        return;
+      }
       if (skipBasket) {this.step += 2 + (this.skipCustomerStep ? 1 : 0)}
       else this.step++;
     },
@@ -283,6 +304,12 @@ export default {
         this.model.saveCreditCard = false;
         Object.assign(this.model, data.data);
       }
+      if(this.quickChargeMode){
+        if(!this.$refs.additionalSettingsForm.ok()){
+          this.step++;
+        }
+        return;
+      }
       this.step++;
     },
     async processAdditionalSettings(data) {
@@ -295,37 +322,46 @@ export default {
       this.model.invoiceDetails = data.invoiceDetails;
       this.model.issueInvoice = !!this.model.invoiceDetails;
 
-      let result = await this.$api.transactions.processTransaction(this.model);
-      this.result = result;
+      await this.createTransaction();
+    },
+    async createTransaction(){
+      if (this.loading) return;
+      try {
+        this.loading = true;
+        let result = await this.$api.transactions.processTransaction(this.model);
+        this.result = result;
 
-      //assuming current step is one before the last
-      let lastStep = this.steps[this.step + 1];
+        let lastStepKey = Object.keys(this.steps).reduce((l,r) => l > r ? l : r, 0);
+        let lastStep = this.steps[lastStepKey];
 
-      if (!result || result.status === "error") {
-        this.success = false;
-        lastStep.title = "Error";
-        lastStep.completed = false;
-        lastStep.closeable = true;
-        if (result && result.errors && result.errors.length > 0) {
-          this.errors = result.errors;
+        if (!result || result.status === "error") {
+          this.success = false;
+          lastStep.title = "Error";
+          lastStep.completed = false;
+          lastStep.closeable = true;
+          if (result && result.errors && result.errors.length > 0) {
+            this.errors = result.errors;
+          } else {
+            this.errors = [{ description: result.message }];
+          }
         } else {
-          this.errors = [{ description: result.message }];
+          this.success = true;
+          lastStep.title = "Success";
+          lastStep.completed = true;
+          lastStep.closeable = false;
+          this.errors = [];
         }
-      } else {
-        this.success = true;
-        lastStep.title = "Success";
-        lastStep.completed = true;
-        lastStep.closeable = false;
-        this.errors = [];
-      }
-      if (this.customer) {
-        this.$store.commit("payment/addLastChargedCustomer", {
-          customerID: this.customer.consumerID,
-          terminalID: this.model.terminalID
-        });
-      }
+        if (this.customer) {
+          this.$store.commit("payment/addLastChargedCustomer", {
+            customerID: this.customer.consumerID,
+            terminalID: this.model.terminalID
+          });
+        }
 
-      this.step++;
+        this.step = lastStepKey;
+      }finally{
+        this.loading = false;
+      }
     }
   }
 };

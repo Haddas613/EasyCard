@@ -1,18 +1,36 @@
 <template>
   <v-flex fill-height>
-    <v-btn
-      :color="totalAmount > model.discount ? 'primary' : 'error darken-2'"
-      class="text-none complete-btn v-btn--flat"
-      height="48px"
-      @click="ok()"
-      block
-      :disabled="totalAmount == 0 && model.discount == 0"
-      :fixed="$vuetify.breakpoint.smAndDown"
-    >
-      {{$t(btnText)}}
-      <ec-money :amount="totalAmount - model.discount" class="px-1" :currency="currencyStore.code"></ec-money>
-    </v-btn>
-    <v-spacer style="height: 48px" v-if="$vuetify.breakpoint.smAndDown"></v-spacer>
+    <v-row no-gutters>
+      <v-col :cols="supportQuickCharge ? 6 : 12">
+        <v-btn
+          :color="totalAmount > model.discount ? 'primary' : 'error darken-2'"
+          class="text-none complete-btn v-btn--flat"
+          height="48px"
+          @click="ok()"
+          block
+          tile
+          :disabled="totalAmount == 0 && model.discount == 0"
+        >
+          {{$t(btnText)}}
+          <ec-money :amount="totalAmount - model.discount" class="px-1" :currency="currencyStore.code"></ec-money>
+        </v-btn>
+      </v-col>
+      <v-col v-if="supportQuickCharge" cols="6">
+        <v-btn
+          :color="totalAmount > model.discount ? 'secondary' : 'error darken-2'"
+          class="complete-btn text-none v-btn--flat"
+          height="48px"
+          @click="ok(true)"
+          block
+          tile
+          :dark="totalAmount > 0"
+          :disabled="totalAmount == 0 && model.discount == 0"
+        >
+          {{$t(`Quick${btnText}`)}}
+        </v-btn>
+      </v-col>
+    </v-row>
+    <!-- <v-spacer style="height: 48px" v-if="$vuetify.breakpoint.smAndDown"></v-spacer> -->
     <v-flex class="white text-center align-stretch px-3">
       <template v-if="activeArea === 'calc'">
         <v-row dir="ltr" class="text-end">
@@ -104,6 +122,20 @@ export default {
     ReIcon: () => import("../misc/ResponsiveIcon"),
     ItemPricingDialog: () => import("../../components/items/ItemPricingDialog")
   },
+  props: {
+    btnText: {
+      type: String,
+      default: "OK"
+    },
+    data: {
+      type: Object,
+      required: true,
+    },
+    supportQuickCharge: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       total: 0,
@@ -126,16 +158,6 @@ export default {
       search: null,
       searchTimeout: null,
     };
-  },
-  props: {
-    btnText: {
-      type: String,
-      default: "OK"
-    },
-    data: {
-      type: Object,
-      required: true,
-    }
   },
   watch: {
     async search(newValue, oldValue) {
@@ -237,9 +259,12 @@ export default {
         this.apiItems = [];
       }
     },
-    ok() {
+    ok(quickCharge) {
       this.stash();
-      this.$emit("ok", this.getData());
+      this.$emit("ok", {
+        ...this.getData(),
+        quickCharge
+      });
     },
     getData(){
       this.stash();
