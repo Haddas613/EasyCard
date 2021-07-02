@@ -59,6 +59,16 @@
                     <small>{{(model.invoiceID || '-') | guid}}</small>
                   </router-link>
                 </v-col>
+                <v-col cols="12" md="4" class="info-block" v-if="model.paymentRequestID">
+                  <p class="caption ecgray--text text--darken-2">{{$t('PaymentRequest')}}</p>
+                  <router-link
+                    class="primary--text"
+                    link
+                    :to="{name: 'PaymentRequest', params: {id: model.paymentRequestID}}"
+                  >
+                    <small>{{model.paymentRequestID | guid}}</small>
+                  </router-link>
+                </v-col>
               </v-row>
             </v-card-text>
           </v-card>
