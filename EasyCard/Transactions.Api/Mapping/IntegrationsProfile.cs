@@ -56,6 +56,7 @@ namespace Transactions.Api.Mapping
 
             CreateMap<ProcessorPreCreateTransactionResponse, ProcessorCreateTransactionRequest>()
                 .ForMember(m => m.PinPadTransactionID, s => s.MapFrom(src => src.PinPadTransactionID))
+                .ForPath(m => m.CreditCardToken.CardNumber, s => s.MapFrom(src => src.CardNumber))
                 ;
 
             CreateMap<ProcessorCreateTransactionResponse, CreditCardTokenDetails>();
