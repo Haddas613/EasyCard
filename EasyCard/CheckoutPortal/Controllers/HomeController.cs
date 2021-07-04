@@ -101,7 +101,7 @@ namespace CheckoutPortal.Controllers
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
             // If token is present and correct, credit card validation is removed from model state
-            if (request.CreditCardToken.HasValue)
+            if (request.CreditCardToken.HasValue || request.PinPadDeal)
             {
                 if(!request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
                 {
