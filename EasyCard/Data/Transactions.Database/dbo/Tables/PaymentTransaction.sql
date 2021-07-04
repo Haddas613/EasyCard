@@ -64,8 +64,16 @@
     [TerminalTemplateID]             BIGINT           NULL,
     [TotalDiscount]                  DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
     [ShvaTranRecord]                 VARCHAR (500)    NULL,
+    [CardBrand]                      VARCHAR (20)     NULL,
+    [ShvaAuthNum]                    VARCHAR (20)     NULL,
+    [UpayCreditCardCompanyCode]      NVARCHAR (64)    NULL,
+    [UpayMerchantNumber]             NVARCHAR (64)    NULL,
+    [UpayTransactionID]              NVARCHAR (64)    NULL,
+    [UpayWebUrl]                     NVARCHAR (512)   NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

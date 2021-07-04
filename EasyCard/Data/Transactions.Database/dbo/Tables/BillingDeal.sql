@@ -43,8 +43,11 @@
     [CustomerAddress]             NVARCHAR (MAX)   NULL,
     [PausedFrom]                  DATE             NULL,
     [PausedTo]                    DATE             NULL,
+    [CardBrand]                   VARCHAR (20)     NULL,
     CONSTRAINT [PK_BillingDeal] PRIMARY KEY CLUSTERED ([BillingDealID] ASC)
 );
+
+
 
 
 

@@ -42,8 +42,11 @@
     [DocumentOrigin]           SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     [TotalDiscount]            DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
     [CustomerAddress]          NVARCHAR (MAX)   NULL,
+    [CardBrand]                VARCHAR (20)     NULL,
     CONSTRAINT [PK_Invoice] PRIMARY KEY CLUSTERED ([InvoiceID] ASC)
 );
+
+
 
 
 
