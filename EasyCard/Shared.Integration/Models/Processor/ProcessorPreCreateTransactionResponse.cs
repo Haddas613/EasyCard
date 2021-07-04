@@ -58,6 +58,6 @@ namespace Shared.Integration.Models
 
         public string CardNumber { get; set; }
 
-        public string PinPadTransactionID { get; set; }
+       
     }
 }

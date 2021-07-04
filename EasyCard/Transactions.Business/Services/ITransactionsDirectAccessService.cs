@@ -1,8 +1,12 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using Shared.Integration.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Transactions.Business.Entities;
+using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Services
 {
@@ -12,5 +16,8 @@ namespace Transactions.Business.Services
     public interface ITransactionsDirectAccessService
     {
         IQueryable<PaymentTransaction> GetTransactions();
+
+        Task UpdateEntityWithStatus(PaymentTransaction entity, TransactionStatusEnum? transactionStatus = null, TransactionFinalizationStatusEnum? finalizationStatus = null, RejectionReasonEnum? rejectionReason = null, string rejectionMessage = null, IDbContextTransaction dbTransaction = null, TransactionOperationCodesEnum? transactionOperationCode = null);
+
     }
 }

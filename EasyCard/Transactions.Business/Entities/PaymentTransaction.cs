@@ -247,8 +247,6 @@ namespace Transactions.Business.Entities
 
         public long? TerminalTemplateID { get; set; }
 
-        // TODO: do we need to store it in db
-        [NotMapped]
         public string PinPadTransactionID { get; set; }
 
         // TODO: calculate items, VAT

@@ -40,6 +40,8 @@ namespace Transactions.Shared.Enums
 
         CanceledByAggregator,
 
-        InvoiceCreated
+        InvoiceCreated,
+
+        ProcessorPreTransmissionCommited
     }
 }
