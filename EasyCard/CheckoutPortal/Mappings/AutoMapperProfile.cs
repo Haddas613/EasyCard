@@ -66,7 +66,9 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.Name, o => o.MapFrom(d => d.ConsumerName))
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
 
-            CreateMap<ChargeViewModel, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>();
+            CreateMap<ChargeViewModel, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>()
+                   .ForMember(d => d.IsPinPadDeal, o => o.MapFrom(d => d.PinPadDeal));
+
 
             CreateMap<ChargeViewModel, Transactions.Api.Models.Transactions.CreateTransactionRequest>()
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.Amount))
