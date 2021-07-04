@@ -26,8 +26,11 @@ namespace Transactions.Api.Mapping
 
             CreateMap< Nayax.NayaxCreateTransactionResponse, PaymentTransaction>()
                  .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))
-                .ForMember(m => m.CreditCardDetails, s => s.MapFrom(src => src))
+              //  ForMember(m => m.CreditCardDetails, s => s.MapFrom(src => src))
                 .ForPath(m => m.ShvaTransactionDetails.ShvaAuthNum, s => s.MapFrom(src => src.AuthNum))
+                 .ForPath(m => m.CreditCardDetails.CardNumber, s => s.MapFrom(src => src.CardNumber))
+                  .ForPath(m => m.CreditCardDetails.CardVendor, s => s.MapFrom(src => src.CreditCardVendor))
+                 //  .ForPath(m => m.CreditCardDetails.CardBin, s => s.MapFrom(src => src.Solek))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Shva.ShvaCreateTransactionResponse, ShvaTransactionDetails>();
