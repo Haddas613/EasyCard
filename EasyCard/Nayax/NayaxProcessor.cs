@@ -261,7 +261,7 @@ namespace Nayax
             }
             finally
             {
-                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, paymentTransactionRequest.CorrelationId);
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, pairRequest.CorrelationId);
 
                 integrationMessage.Request = requestStr;
                 integrationMessage.Response = responseStr;
