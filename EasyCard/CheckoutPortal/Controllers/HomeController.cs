@@ -179,8 +179,6 @@ namespace CheckoutPortal.Controllers
 
             request.AllowPinPad = request.AllowPinPad == true && checkoutConfig.Settings.AllowPinPad == true;
 
-
-
             if (checkoutConfig.PaymentRequest != null)
             {
                 var mdel = new Transactions.Api.Models.Transactions.PRCreateTransactionRequest()

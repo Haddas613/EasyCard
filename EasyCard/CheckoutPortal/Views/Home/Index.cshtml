@@ -67,6 +67,7 @@
                     <input type="hidden" asp-for="Description" />
                     <input type="hidden" asp-for="ConsumerID" />
                     <input type="hidden" asp-for="IssueInvoice" />
+                    <input type="hidden" asp-for="AllowPinPad" />
                     @if (Model.Amount.GetValueOrDefault() > 0)
                     {
                         <input type="hidden" asp-for="Amount" />

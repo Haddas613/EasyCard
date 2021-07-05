@@ -23,7 +23,6 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.RedirectUrl, o => o.MapFrom(d => d.RedirectUrl))
                 .ForMember(d => d.ApiKey, o => o.MapFrom(d => d.ApiKey))
                 .ForMember(d => d.PaymentRequest, o => o.MapFrom(d => d.PaymentRequest))
-
                 .ForMember(d => d.Amount, o => o.MapFrom(d => d.Amount))
                 .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
                 .ForMember(d => d.Description, o => o.MapFrom(d => d.Description))
@@ -32,6 +31,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.NationalID, o => o.MapFrom(d => d.NationalID))
                 .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.ConsumerID))
                 .ForMember(d => d.Phone, o => o.MapFrom(d => d.Phone))
+                .ForMember(d => d.AllowPinPad, o => o.MapFrom(d => d.AllowPinPad))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<PaymentRequestInfo, ChargeViewModel>()
@@ -51,7 +51,7 @@ namespace CheckoutPortal.Mappings
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, ChargeViewModel>()
-                .ForMember(d => d.AllowPinPad, o => o.MapFrom(d => d.AllowPinPad))
+                .ForMember(d => d.AllowPinPad, o => o.MapFrom((d, s) => s.AllowPinPad.GetValueOrDefault() && d.AllowPinPad.GetValueOrDefault()))
                 .ForMember(d => d.MaxInstallments, o => o.MapFrom(src => src.MaxInstallments))
                 .ForMember(d => d.MinInstallments, o => o.MapFrom(src => src.MinInstallments))
                 .ForMember(d => d.MaxCreditInstallments, o => o.MapFrom(src => src.MaxCreditInstallments))
