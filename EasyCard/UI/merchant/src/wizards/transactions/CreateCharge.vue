@@ -76,6 +76,13 @@
                 <p>{{customer.consumerEmail}} ● <ec-money :amount="model.transactionAmount" bold></ec-money></p>
               </div>
             </template>
+            <template v-else>
+              <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+              <div class="pt-5">
+                <p>{{$t("ChargedCustomer")}}</p>
+                <p><ec-money :amount="model.transactionAmount" bold></ec-money></p>
+              </div>
+            </template>
             <template v-slot:link v-if="result.entityReference">
               <router-link class="primary--text" link
                   :to="{ name: 'Transaction', params: { id: result.entityReference } }"
@@ -319,8 +326,13 @@ export default {
       this.model.jDealType = data.jDealType;
       this.model.installmentDetails = data.installmentDetails;
       this.model.terminalID = this.terminal.terminalID;
-      this.model.invoiceDetails = data.invoiceDetails;
-      this.model.issueInvoice = !!this.model.invoiceDetails;
+      if(!this.quickChargeMode){
+        this.model.invoiceDetails = data.invoiceDetails;
+        this.model.issueInvoice = !!this.model.invoiceDetails;
+      }else{
+        this.model.invoiceDetails = null;
+        this.model.issueInvoice = false;
+      }
 
       await this.createTransaction();
     },

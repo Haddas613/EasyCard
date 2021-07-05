@@ -50,7 +50,7 @@
                 <small>{{(model.invoiceID || '-') | guid}}</small>
               </router-link>
               <v-btn x-small color="primary" 
-                v-else-if="( $integrationAvailable(terminalStore, appConstants.terminal.integrations.invoicing) && model.quickStatus != 'Failed' && model.quickStatus != 'Canceled')"
+                v-else-if="canCreateInvoice()"
                 @click="createInvoice()" :loading="loading">
                   {{$t("CreateInvoice")}}
               </v-btn>
@@ -248,6 +248,11 @@ export default {
         this.$set(this.model, 'invoiceID', operation.entityReference);
       }
       this.loading = false;
+    },
+    canCreateInvoice(){
+      return (this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing) 
+        && this.model.quickStatus != 'Failed' && this.model.quickStatus != 'Canceled'
+        && this.model.dealDetails.consumerEmail)
     },
     async initThreeDotMenu(){
       var threeDotMenu = [{
