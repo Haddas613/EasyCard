@@ -116,7 +116,7 @@ namespace Nayax
 
             if (phase1ResultBody.IsSuccessful())
             {
-                return phase1ResultBody.GetProcessorPreTransactionResponse();
+                return phase1ResultBody.GetProcessorPreTransactionResponse(paymentTransactionRequest.PinPadTransactionID);
             }
             else if (!String.IsNullOrEmpty(phase1ResultBody?.statusCode) && !String.IsNullOrEmpty(phase1ResultBody?.statusMessage))
             {
