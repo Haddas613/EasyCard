@@ -236,7 +236,7 @@ namespace Transactions.Business.Services
 
         IQueryable<PaymentTransaction> ITransactionsDirectAccessService.GetTransactions()
         {
-            return context.PaymentTransactions.AsNoTracking();
+            return context.PaymentTransactions;
         }
 
         private async Task AddHistory(Guid transactionID, string opDescription, string message, TransactionOperationCodesEnum operationCode)

@@ -68,6 +68,11 @@ namespace Transactions.Api.Mapping
                  .ForMember(m => m.OriginalUid, s => s.MapFrom(src => src.ShvaDealID))
                  .ForMember(m => m.OriginalTranDateTime, s => s.MapFrom(src => src.ShvaTransactionDate))
                  .ForAllOtherMembers(d => d.Ignore());
+
+            //CreateMap<Transactions.Api.Models.Transactions.NayaxUpdateTranRecordRequest, PaymentTransaction>()
+            //.ForPath(m => m.ShvaTransactionDetails.TranRecord, s => s.MapFrom(src => src.TranRecord));
         }
+
+        
     }
 }

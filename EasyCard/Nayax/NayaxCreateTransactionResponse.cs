@@ -53,6 +53,7 @@ namespace Nayax
         public CardVendorEnum CreditCardVendor { get; set; }
 
         public string CardNumber { get; set; }
+        public string PinPadTransactionID { get; set; }
 
     }
 }

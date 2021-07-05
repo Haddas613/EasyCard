@@ -163,7 +163,7 @@ namespace Nayax.Converters
                 CardNumber = resultPhase1Body.cardNumber,
                 Success = resultPhase1Body.IsSuccessful(),
                 ErrorMessage = resultPhase1Body.statusMessage,
-                PinPadTransactionID = resultPhase1Body.uid
+                //PinPadTransactionID = resultPhase1Body.uid
             };
         }
 
@@ -178,6 +178,7 @@ namespace Nayax.Converters
                 ShvaShovarNumber = resultPhase2Body.sysTraceNumber,
                 CreditCardVendor = (CardVendorEnum)resultPhase2Body.manpik,
                 Success = ((PhaseResultEnum)Convert.ToInt32(resultPhase2Body.statusCode)).IsSuccessful(),
+                PinPadTransactionID = resultPhase2Body.vuid
                 /*
                 public string statusCode { get; set; }
         public string statusMessage { get; set; }
