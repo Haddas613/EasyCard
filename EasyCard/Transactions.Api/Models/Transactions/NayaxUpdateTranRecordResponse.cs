@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -8,13 +9,13 @@ namespace Transactions.Api.Models.Transactions
 {
     public class NayaxUpdateTranRecordResponse
     {
-        [DataMember(Name = "status_code")]
+        [JsonProperty("status_code")]
         public int StatusCode { get; set; }
 
-        [DataMember(Name = "status")]
+        [JsonProperty("status")]
         public string Status { get; set; }
 
-        [DataMember(Name = "error_msg")]
+        [JsonProperty("error_msg")]
         public string ErrorMsg { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using Shared.Integration.Models;
 using System.Runtime.Serialization;
 
@@ -30,13 +31,7 @@ namespace ClearingHouse.Models
         /// <summary>
         ///  solek
         /// </summary>
-        [DataMember(Name = "solek")]
+        [JsonIgnore]
         public SolekEnum Solek { get; set; }
-
-        /// <summary>
-        ///  vendor
-        /// </summary>
-        [DataMember(Name = "vendor")]
-        public CardVendorEnum Vendor { get; set; }
     }
 }

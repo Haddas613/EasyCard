@@ -1,6 +1,8 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Shared.Integration.Models;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace ClearingHouse.Models
@@ -77,20 +79,27 @@ namespace ClearingHouse.Models
         [DataMember(Name = "cardExpiration")]
         public string CardExpiration { get; set; }
 
-        // TODO: enum
+        /// <summary>
+        /// Credit Card digits (for example 16, 19, 15, 14, 9)
+        /// </summary>
+        [DataMember(Name = "creditCardNumberOfDigits")]
+        public int? CreditCardNumberOfDigits { get; set; }
 
         /// <summary>
         /// Clearing company
         /// </summary>
         [DataMember(Name = "solek")]
-        public string Solek { get; set; }
+        [EnumDataType(typeof(SolekEnum))]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public SolekEnum? Solek { get; set; }
 
         /// <summary>
         /// Transaction type (regular, installments, credit)
         /// </summary>
         [DataMember(Name = "transactionType")]
+        [EnumDataType(typeof(TransactionTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
-        public TransactionTypeEnum TransactionType { get; set; }
+        public TransactionTypeEnum? TransactionType { get; set; }
 
         /// <summary>
         /// Credit Card First Six (eight) Digits
