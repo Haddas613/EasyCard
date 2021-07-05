@@ -19,7 +19,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Business.Services
 {
-    public class TransactionsService : ServiceBase<PaymentTransaction, Guid>, ITransactionsService, ITransactionsDirectAccessService
+    public class TransactionsService : ServiceBase<PaymentTransaction, Guid>, ITransactionsService
     {
         private readonly TransactionsContext context;
         private readonly ClaimsPrincipal user;
@@ -56,7 +56,7 @@ namespace Transactions.Business.Services
 
         public IQueryable<PaymentTransaction> GetTransactions()
         {
-            if (user.IsAdmin())
+            if (user.IsAdmin() || user.IsUpayApi() || user.IsNayaxApi())
             {
                 return context.PaymentTransactions.AsNoTracking();
             }
@@ -74,7 +74,7 @@ namespace Transactions.Business.Services
         [Obsolete]
         public IQueryable<PaymentTransaction> GetTransactionsForUpdate()
         {
-            if (user.IsAdmin())
+            if (user.IsAdmin() || user.IsUpayApi() || user.IsNayaxApi())
             {
                 return context.PaymentTransactions;
             }
@@ -232,11 +232,6 @@ namespace Transactions.Business.Services
                 await AddHistory(entity.PaymentTransactionID, changesStr, historyMessage, operationCode);
                 await transaction.CommitAsync();
             }
-        }
-
-        IQueryable<PaymentTransaction> ITransactionsDirectAccessService.GetTransactions()
-        {
-            return context.PaymentTransactions;
         }
 
         private async Task AddHistory(Guid transactionID, string opDescription, string message, TransactionOperationCodesEnum operationCode)

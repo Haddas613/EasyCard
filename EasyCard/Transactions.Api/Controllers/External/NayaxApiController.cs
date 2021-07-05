@@ -21,7 +21,7 @@ using SharedApi = Shared.Api;
 namespace Transactions.Api.Controllers.External
 {
 
-    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = Extensions.Auth.ApiKeyAuthenticationScheme, Policy = Policy.NayaxAPI)]
     [Route("api/external/nayax")]
     [Produces("application/json")]
     [Consumes("application/json")]
@@ -29,13 +29,13 @@ namespace Transactions.Api.Controllers.External
     [ApiExplorerSettings(IgnoreApi = true)]
     public class NayaxApiController : ApiControllerBase
     {
-        private readonly ITransactionsDirectAccessService transactionsService;
+        private readonly ITransactionsService transactionsService;
         private readonly IMapper mapper;
         private readonly ILogger logger;
         private readonly NayaxGlobalSettings configuration;
 
         public NayaxApiController(
-             ITransactionsDirectAccessService transactionsService,
+             ITransactionsService transactionsService,
              IMapper mapper,
              ILogger<TransactionsApiController> logger,
              IOptions<NayaxGlobalSettings> configuration)
@@ -50,24 +50,6 @@ namespace Transactions.Api.Controllers.External
         [Route("v1/tranRecord")]
         public async Task<ActionResult<OperationResponse>> UpdateTranRecord([FromBody] NayaxUpdateTranRecordRequest model)
         {
-            if (Request.Headers.ContainsKey("API-key") && !string.IsNullOrEmpty(Request.Headers["API-key"]))
-            {
-                string key = Request.Headers["API-key"];
-                if (!key.Equals(configuration.APIKey))
-                {
-                    return Unauthorized($"API-Key value is not authorized");
-                }
-            }
-            else
-            {
-                return Unauthorized($"Request is not authorized. There is no API-Key.");
-            }
-
-            if (string.IsNullOrEmpty(model.Uid) && string.IsNullOrEmpty(model.Vuid))
-            {
-                return NotFound();
-            }
-
             try
             {
                 var transaction =

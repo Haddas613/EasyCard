@@ -13,5 +13,7 @@ namespace Transactions.Api
         public const string MerchantFrontend = "merchant_frontend";
         public const string AnyAdmin = "admin";
         public const string CheckoutPortal = "checkout_portal";
+        public const string UPayAPI = "upay_api";
+        public const string NayaxAPI = "nayax_api";
     }
 }

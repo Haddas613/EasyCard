@@ -10,5 +10,7 @@ namespace Shared.Helpers.Security
         public const string Manager = "Manager";
         public const string BusinessAdministrator = "BusinessAdministrator";
         public const string BillingAdministrator = "BillingAdministrator";
+        public const string UPayAPI = "UPayAPI";
+        public const string NayaxAPI = "NayaxAPI";
     }
 }

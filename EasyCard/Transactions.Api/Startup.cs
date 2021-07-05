@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AspNetCore.Authentication.ApiKey;
 using AutoMapper;
 using BasicServices;
 using BasicServices.KeyValueStorage;
@@ -39,11 +40,13 @@ using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Transactions.Api.Controllers;
+using Transactions.Api.Extensions;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Services;
 using Transactions.Business.Data;
 using Transactions.Business.Services;
 using Transactions.Shared;
+using Upay;
 using SharedApi = Shared.Api;
 using SharedHelpers = Shared.Helpers;
 
@@ -93,6 +96,9 @@ namespace Transactions.Api
             });
 
             services.AddDistributedMemoryCache();
+
+            var upayConfig = Configuration.GetSection("UpayGlobalSettings").Get<UpayGlobalSettings>();
+            var nayaxConfig = Configuration.GetSection("NayaxGlobalSettings").Get<Nayax.Configuration.NayaxGlobalSettings>();
 
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                 .AddIdentityServerAuthentication(options =>
@@ -144,6 +150,38 @@ namespace Transactions.Api
                             }
                         }
                     };
+                })
+                .AddApiKeyInHeader(Auth.ApiKeyAuthenticationScheme, options => {
+                    options.SuppressWWWAuthenticateHeader = true;
+                    options.KeyName = "API-key";
+                    options.Events = new ApiKeyEvents
+                    {
+                        OnValidateKey = async (context) =>
+                        {
+                            if (upayConfig.ApiKey != null && upayConfig.ApiKey.Equals(context.ApiKey, StringComparison.OrdinalIgnoreCase))
+                            {
+                                var claims = new[]
+                                {
+                                    new Claim(ClaimTypes.Role, Roles.UPayAPI)
+                                };
+                                context.Principal = new ClaimsPrincipal(new ClaimsIdentity(claims, context.Scheme.Name));
+                                context.Success();
+                            }
+                            else if (nayaxConfig.APIKey != null && nayaxConfig.APIKey.Equals(context.ApiKey, StringComparison.OrdinalIgnoreCase))
+                            {
+                                var claims = new[]
+                                {
+                                    new Claim(ClaimTypes.Role, Roles.NayaxAPI)
+                                };
+                                context.Principal = new ClaimsPrincipal(new ClaimsIdentity(claims, context.Scheme.Name));
+                                context.Success();
+                            }
+                            else
+                            {
+                                context.NoResult();
+                            }
+                        },
+                    };
                 });
 
             Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;  // TODO: remove for production
@@ -160,6 +198,10 @@ namespace Transactions.Api
                    policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
                 options.AddPolicy(Policy.AnyAdmin, policy =>
                    policy.RequireAssertion(context => context.User.IsAdmin()));
+                options.AddPolicy(Policy.UPayAPI, policy =>
+                   policy.RequireAssertion(context => context.User.IsUpayApi()));
+                options.AddPolicy(Policy.NayaxAPI, policy =>
+                   policy.RequireAssertion(context => context.User.IsNayaxApi()));
             });
 
             DefaultContractResolver contractResolver = new DefaultContractResolver
@@ -267,7 +309,6 @@ namespace Transactions.Api
 
             services.AddDbContext<TransactionsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<ITransactionsService, TransactionsService>();
-            services.AddScoped<ITransactionsDirectAccessService, TransactionsService>();
             services.AddScoped<ICreditCardTokenService, CreditCardTokenService>();
             services.AddScoped<IBillingDealService, BillingDealService>();
             services.AddScoped<IFutureBillingsService, BillingDealService>();
