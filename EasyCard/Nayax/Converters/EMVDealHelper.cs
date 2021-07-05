@@ -104,7 +104,7 @@ namespace Nayax.Converters
             inputObj.currency = currency.GetNayaxCurrencyStr();
 
             inputObj.amount = req.TransactionAmount.ToNayaxDecimal();
-            inputObj.vuid = GetPinPadTransactionID(req.PinPadProcessorSettings as NayaxTerminalSettings);
+            inputObj.vuid = req.PinPadTransactionID = GetPinPadTransactionID(req.PinPadProcessorSettings as NayaxTerminalSettings);
             inputObj.tranCode = 1;
             inputObj.sysTraceNumber = GetFilNSeq(req.LastDealShvaDetails);
             // TODO: national ID
@@ -155,7 +155,7 @@ namespace Nayax.Converters
             return inputObj;
         }
 
-        public static NayaxPreCreateTransactionResponse GetProcessorPreTransactionResponse(this Phase1ResponseBody resultPhase1Body)
+        public static NayaxPreCreateTransactionResponse GetProcessorPreTransactionResponse(this Phase1ResponseBody resultPhase1Body, string PinPadTransactionID)
         {
             return new NayaxPreCreateTransactionResponse()
             {
@@ -163,7 +163,7 @@ namespace Nayax.Converters
                 CardNumber = resultPhase1Body.cardNumber,
                 Success = resultPhase1Body.IsSuccessful(),
                 ErrorMessage = resultPhase1Body.statusMessage,
-                //PinPadTransactionID = resultPhase1Body.uid
+                PinPadTransactionID = PinPadTransactionID
             };
         }
 
