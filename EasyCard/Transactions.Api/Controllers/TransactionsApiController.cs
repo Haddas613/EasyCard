@@ -590,11 +590,13 @@ namespace Transactions.Api.Controllers
             // NOTE: this is security assignment
             mapper.Map(terminal, transaction);
 
+            bool pinpadDeal = model.PinPad ?? false;
+
             transaction.SpecialTransactionType = specialTransactionType;
             transaction.JDealType = jDealType;
             transaction.BillingDealID = billingDeal?.BillingDealID;
             transaction.InitialTransactionID = initialTransactionID;
-            transaction.DocumentOrigin = GetDocumentOrigin(billingDeal?.BillingDealID, paymentRequestID);
+            transaction.DocumentOrigin = GetDocumentOrigin(billingDeal?.BillingDealID, paymentRequestID, pinpadDeal);
             transaction.PaymentRequestID = paymentRequestID;
 
             if (transaction.DealDetails == null)
@@ -690,7 +692,7 @@ namespace Transactions.Api.Controllers
                 Transactions.Shared.Messages.ProcessorNotDefined);
 
             TerminalExternalSystem terminalPinpadProcessor = null;
-            bool pinpadDeal = model.PinPad ?? false;
+
             if (pinpadDeal)
             {
                 terminalPinpadProcessor = ValidateExists(
@@ -991,9 +993,13 @@ namespace Transactions.Api.Controllers
                 .OrderByDescending(d => d.TransactionDate).Select(d => d.ShvaTransactionDetails).FirstOrDefaultAsync();
         }
 
-        private DocumentOriginEnum GetDocumentOrigin(Guid? billingDealID, Guid? paymentRequestID)
+        private DocumentOriginEnum GetDocumentOrigin(Guid? billingDealID, Guid? paymentRequestID, bool pinpad)
         {
-            if (billingDealID.HasValue)
+            if (pinpad)
+            {
+                return DocumentOriginEnum.Device;
+            }
+            else if (billingDealID.HasValue)
             {
                 return DocumentOriginEnum.Billing;
             }
