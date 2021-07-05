@@ -48,7 +48,7 @@ namespace Transactions.Api.Controllers.External
 
         [HttpPost]
         [Route("v1/tranRecord")]
-        public async Task<ActionResult<OperationResponse>> UpdateTranRecord([FromBody] NayaxUpdateTranRecordRequest model)
+        public async Task<ActionResult<NayaxUpdateTranRecordResponse>> UpdateTranRecord([FromBody] NayaxUpdateTranRecordRequest model)
         {
             if (Request.Headers.ContainsKey("API-key") && !string.IsNullOrEmpty(Request.Headers["API-key"]))
             {
@@ -77,20 +77,20 @@ namespace Transactions.Api.Controllers.External
                 transaction.ShvaTransactionDetails.TranRecord = model.TranRecord;
                 //mapper.Map(model, transaction);
                 await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission, transactionOperationCode: TransactionOperationCodesEnum.ProcessorPreTransmissionCommited);
-                return new OperationResponse
+                return new NayaxUpdateTranRecordResponse
                 {
-                    Status = SharedApi.Models.Enums.StatusEnum.Success,
-                    Message = "TransactionUpdated"
+                    Status = "0"
                 };
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, $"Failed to update TransactionRecord for PAX deal. Vuid: {model.Vuid} Uid: {model.Uid} ");
 
-                return new OperationResponse
+                return new NayaxUpdateTranRecordResponse
                 {
-                    Message = string.Format("Failed to update TransactionRecord for PAX deal. Vuid: {0} Uid: {1} ", model.Vuid, model.Uid),
-                    Status = SharedApi.Models.Enums.StatusEnum.Error
+                    StatusCode = 14,
+                    ErrorMsg = string.Format("Failed to update TransactionRecord for PAX deal. Vuid: {0} Uid: {1} ", model.Vuid, model.Uid),
+                    Status = "error"
                 };
             }
         }
