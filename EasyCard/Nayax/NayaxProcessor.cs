@@ -51,25 +51,67 @@ namespace Nayax
             }
 
             var phas1Req = nayaxParameters.GetPhase1RequestBody(configuration);
-             ObjectInPhase1RequestParams params2 = paymentTransactionRequest.GetObjectInPhase1RequestParams();
-           
-            phas1Req.paramss[1] = params2;
-            //client.Timeout = TimeSpan.FromSeconds(30); TODO timeout for 30 minutes
-            var phase1ReqResult = await this.apiClient.Post<Models.Phase1ResponseBody>(configuration.BaseUrl, Phase1Url, phas1Req, BuildHeaders);//this.DoRequest(phas1Req, Phase1Url, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
+            ObjectInPhase1RequestParams params2 = paymentTransactionRequest.GetObjectInPhase1RequestParams();
 
-            var phase1ResultBody = phase1ReqResult as Phase1ResponseBody;
+            phas1Req.paramss[1] = params2;
+
+            Phase1ResponseBody phase1ResultBody = null;
+
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+            try
+            {
+
+                phase1ResultBody = await this.apiClient.Post<Models.Phase1ResponseBody>(configuration.BaseUrl, Phase1Url, phas1Req, BuildHeaders,
+                    (url, request) =>
+                    {
+                        requestStr = request;
+                        requestUrl = url;
+                    },
+                    (response, responseStatus, responseHeaders) =>
+                    {
+                        responseStr = response;
+                        responseStatusStr = responseStatus.ToString();
+                    });
+
+            }
+            catch(Exception ex)
+            {
+                this.logger.LogError(ex, $"Nayax integration request failed ({integrationMessageId}): {ex.Message}");
+
+                throw new IntegrationException("Nayax integration request failed", integrationMessageId);
+            }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, paymentTransactionRequest.CorrelationId);
+
+                //Do not expose credit card and cvv numbers in log
+                //requestStr = Regex.Replace(requestStr, "\\<clientInputPan\\>\\d{9,16}\\</clientInputPan\\>", "<clientInputPan>****************</clientInputPan>");
+                //requestStr = Regex.Replace(requestStr, "\\<cvv2\\>\\d{3,4}\\</cvv2\\>", "<cvv2>***</cvv2>");
+
+                integrationMessage.Request = requestStr;
+                integrationMessage.Response = responseStr;
+                integrationMessage.ResponseStatus = responseStatusStr;
+                integrationMessage.Address = requestUrl;
+
+                await integrationRequestLogStorageService.Save(integrationMessage);
+            }
+            
 
             if (phase1ResultBody == null)
             {
                 return new ProcessorPreCreateTransactionResponse(" ", RejectionReasonEnum.Unknown, string.Empty);
             }
-            int statusPreCreate;
-            if (!Int32.TryParse(phase1ResultBody.statusCode, out statusPreCreate))
+
+            if (!Int32.TryParse(phase1ResultBody.statusCode, out var statusPreCreate))
             {
                 // return failed response
                 return new ProcessorPreCreateTransactionResponse("Status code is not valid", RejectionReasonEnum.Unknown, string.Empty);
             }
-            // end request
 
 
             if (phase1ResultBody.IsSuccessful())
@@ -101,18 +143,58 @@ namespace Nayax
             ObjectInPhase2RequestParams params2 = paymentTransactionRequest.GetObjectInPhase2RequestParams();
             phase2Req.paramss[1] = params2;
 
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            var phase2ReqResult = await this.apiClient.Post<Models.Phase2ResponseBody>(configuration.BaseUrl, Phase2Url, phase2Req, BuildHeaders);//this.DoRequest(phas1Req, Phase1Url, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
+            Phase2ResponseBody phase2ResultBody;
 
-            var phase2ResultBody = phase2ReqResult as Phase2ResponseBody;
+            try
+            {
+
+                phase2ResultBody = await this.apiClient.Post<Models.Phase2ResponseBody>(configuration.BaseUrl, Phase2Url, phase2Req, BuildHeaders,
+                    (url, request) =>
+                    {
+                        requestStr = request;
+                        requestUrl = url;
+                    },
+                    (response, responseStatus, responseHeaders) =>
+                    {
+                        responseStr = response;
+                        responseStatusStr = responseStatus.ToString();
+                    });
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"Nayax integration request failed ({integrationMessageId}): {ex.Message}");
+
+                throw new IntegrationException("Nayax integration request failed", integrationMessageId);
+            }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, paymentTransactionRequest.CorrelationId);
+
+                //Do not expose credit card and cvv numbers in log
+                //requestStr = Regex.Replace(requestStr, "\\<clientInputPan\\>\\d{9,16}\\</clientInputPan\\>", "<clientInputPan>****************</clientInputPan>");
+                //requestStr = Regex.Replace(requestStr, "\\<cvv2\\>\\d{3,4}\\</cvv2\\>", "<cvv2>***</cvv2>");
+
+                integrationMessage.Request = requestStr;
+                integrationMessage.Response = responseStr;
+                integrationMessage.ResponseStatus = responseStatusStr;
+                integrationMessage.Address = requestUrl;
+
+                await integrationRequestLogStorageService.Save(integrationMessage);
+            }
 
             if (phase2ResultBody == null)
             {
                 // return failed response
                 return new ProcessorCreateTransactionResponse(Messages.EmptyResponse, RejectionReasonEnum.Unknown, string.Empty);
             }
-            int statusCreate;
-            if (!Int32.TryParse(phase2ResultBody.statusCode, out statusCreate))
+
+            if (!Int32.TryParse(phase2ResultBody.statusCode, out var statusCreate))
             {
                 // return failed response
                 return new ProcessorCreateTransactionResponse(Messages.StatusCodeIsNotValid, RejectionReasonEnum.Unknown, phase2ResultBody.statusCode);
@@ -134,111 +216,10 @@ namespace Nayax
 
         public async Task<ProcessorTransmitTransactionsResponse> TransmitTransactions(ProcessorTransmitTransactionsRequest transmitTransactionsRequest)
         {
-            ///cal SHVA TRANSNISSION TODO
-            //ShvaTerminalSettings shvaParameters = transmitTransactionsRequest.ProcessorSettings as ShvaTerminalSettings;
-
-            //if (shvaParameters == null)
-            //{
-            //    throw new ArgumentNullException("ShvaTerminalSettings (at transmitTransactionsRequest.ProcessorSettings) is required");
-            //}
-
-            //var res = new ShvaTransmissionResponse();
-
-            //var tranEMV = new TransEMVRequestBody();
-            //tranEMV.UserName = shvaParameters.UserName;
-            //tranEMV.Password = shvaParameters.Password;
-            //tranEMV.MerchantNumber = shvaParameters.MerchantNumber;
-            //tranEMV.DATA = string.Join(";", transmitTransactionsRequest.TransactionIDs);
-
-            //var result = await this.DoRequest(tranEMV, TransEMVUrl, transmitTransactionsRequest.CorrelationId, HandleIntegrationMessage);
-
-            //var transResultBody = (TransEMVResponseBody)result?.Body?.Content;
-
-            //if (transResultBody == null)
-            //{
-            //    throw new IntegrationException("Empty transmission response", null); // TODO: integration message ID
-            //}
-
-            //res.ProcessorCode = transResultBody.TransEMVResult;
-            //res.FailedTransactions = transResultBody.BadTrans?.Split(new string[] { ";", " " }, StringSplitOptions.RemoveEmptyEntries);
-            //res.TransmissionReference = transResultBody.RefNumber;
-            //res.Report = transResultBody.Report;
-            //res.TotalCreditTransSum = transResultBody.TotalCreditTransSum;
-            //res.TotalDebitTransSum = transResultBody.TotalDebitTransSum;
-            //res.TotalXML = transResultBody.TotalXML;
-
-            // TODO: failed case (?)
-
-            return null;
+            throw new NotImplementedException();
         }
 
-        //protected async Task<Envelope> DoRequest(object request, string soapAction, string correlationId, Func<IntegrationMessage, Task> handleIntegrationMessage = null)
-        //{
-        //    var soap = new Envelope
-        //    {
-        //        Body = new Body
-        //        {
-        //            Content = request
-        //        },
-        //    };
-
-        //    Envelope svcRes = null;
-
-        //    string requestUrl = null;
-        //    string requestStr = null;
-        //    string responseStr = null;
-        //    string responseStatusStr = null;
-
-        //    var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
-
-        //    try
-        //    {
-        //        svcRes = await this.apiClient.PostXml<Envelope>(configuration.BaseUrl, string.Empty, soap, () => BuildHeaders(soapAction),
-        //            (url, request) =>
-        //            {
-        //                requestStr = request;
-        //                requestUrl = url;
-        //            },
-        //            (response, responseStatus, responseHeaders) =>
-        //            {
-        //                responseStr = response;
-        //                responseStatusStr = responseStatus.ToString();
-        //            });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        this.logger.LogError(ex, $"Nayax integration request failed ({integrationMessageId}): {ex.Message}");
-
-        //        throw new IntegrationException("Shva integration request failed", integrationMessageId);
-        //    }
-        //    finally
-        //    {
-        //        if (handleIntegrationMessage != null)
-        //        {
-        //            IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, correlationId);
-
-        //            integrationMessage.Request = requestStr;
-        //            integrationMessage.Response = responseStr;
-        //            integrationMessage.ResponseStatus = responseStatusStr;
-        //            integrationMessage.Address = requestUrl;
-        //            integrationMessage.Action = soapAction;
-
-        //            await handleIntegrationMessage?.Invoke(integrationMessage);
-        //        }
-        //    }
-
-        //    return svcRes;
-        //}
-
-        //private async Task<NameValueCollection> BuildHeaders(string soapAction)
-        //{
-        //    NameValueCollection headers = new NameValueCollection();
-
-        //    return await Task.FromResult(headers);
-        //}
-
-
-        public async Task<PairResponse> PairDevice(PairRequest pairRequest )
+        public async Task<PairResponse> PairDevice(PairRequest pairRequest)
         {
             //pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
             //NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
@@ -249,20 +230,57 @@ namespace Nayax
             }
 
             var pairReq = EMVDealHelper.GetPairRequestBody(configuration, pairRequest.posName, pairRequest.terminalID);
-            var pairReqResult = await this.apiClient.Post<Models.PairResponseBody>(configuration.BaseUrl, Pair, pairReq, BuildHeaders);
-            //{"statusCode": 0, "statusMessage": "ok"}
-            var pairResultBody = pairReqResult as PairResponseBody;
+
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+            PairResponseBody pairResultBody = null;
+
+            try
+            {
+                pairResultBody = await this.apiClient.Post<Models.PairResponseBody>(configuration.BaseUrl, Pair, pairReq, BuildHeaders,
+                    (url, request) =>
+                    {
+                        requestStr = request;
+                        requestUrl = url;
+                    },
+                    (response, responseStatus, responseHeaders) =>
+                    {
+                        responseStr = response;
+                        responseStatusStr = responseStatus.ToString();
+                    });
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"Nayax integration request failed ({integrationMessageId}): {ex.Message}");
+
+                throw new IntegrationException("Nayax integration request failed", integrationMessageId);
+            }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, paymentTransactionRequest.CorrelationId);
+
+                integrationMessage.Request = requestStr;
+                integrationMessage.Response = responseStr;
+                integrationMessage.ResponseStatus = responseStatusStr;
+                integrationMessage.Address = requestUrl;
+
+                await integrationRequestLogStorageService.Save(integrationMessage);
+            }
+
 
             if (pairResultBody == null)
             {
                 return new PairResponse(Messages.EmptyResponse, string.Empty);
             }
-            int statusPair;
-            if (!Int32.TryParse(pairResultBody.statusCode, out statusPair))
+
+            if (!Int32.TryParse(pairResultBody.statusCode, out var statusPair))
             {
                 return new PairResponse(Messages.StatusCodeIsNotValid, pairResultBody.statusCode);
             }
-            
 
             if (pairResultBody.IsSuccessful())
             {
@@ -318,17 +336,12 @@ namespace Nayax
             }
         }
 
-        private async Task HandleIntegrationMessage(IntegrationMessage msg)
-        {
-            await integrationRequestLogStorageService.Save(msg);
-        }
-
         private async Task<NameValueCollection> BuildHeaders()
         {
             NameValueCollection headers = new NameValueCollection();
             if (configuration != null)
             {
-                headers.Add("x-api-key",  configuration.APIKey);
+                headers.Add("x-api-key", configuration.APIKey);
             }
             return headers;
         }
