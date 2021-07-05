@@ -67,6 +67,7 @@
                     <input type="hidden" asp-for="Description" />
                     <input type="hidden" asp-for="ConsumerID" />
                     <input type="hidden" asp-for="IssueInvoice" />
+                    <input type="hidden" asp-for="AllowPinPad" />
                     @if (Model.Amount.GetValueOrDefault() > 0)
                     {
                         <input type="hidden" asp-for="Amount" />
@@ -157,11 +158,11 @@
                         @if (Model.AllowPinPad ?? false)
                         {
                             <div class="form-group row">
-                                <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="PinPadDeal">@localizer.Get("MakePinPadDeal")</label>
+                                <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="PinPad">@localizer.Get("MakePinPadDeal")</label>
                                 <div class="col-sm-9">
                                     <div class="form-check">
-                                        <input id="pin-pad-deal" type="checkbox" class="form-check-input" asp-for="PinPadDeal">
-                                        <span asp-validation-for="PinPadDeal"></span>
+                                        <input id="pin-pad-deal" type="checkbox" class="form-check-input" asp-for="PinPad">
+                                        <span asp-validation-for="PinPad"></span>
                                     </div>
                                 </div>
                             </div>

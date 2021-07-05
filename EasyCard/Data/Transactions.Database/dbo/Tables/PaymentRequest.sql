@@ -37,8 +37,12 @@
     [TotalAmount]              DECIMAL (19, 4)  NOT NULL,
     [DocumentOrigin]           SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     [CustomerAddress]          NVARCHAR (MAX)   NULL,
+    [PinPadTerminalID]         VARCHAR (16)     NULL,
+    [AllowPinPad]              BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
 
 
 

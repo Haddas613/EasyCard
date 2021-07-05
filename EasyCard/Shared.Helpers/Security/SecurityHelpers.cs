@@ -57,6 +57,16 @@ namespace Shared.Helpers.Security
             return user?.IsInRole(Roles.Manager) == true;
         }
 
+        public static bool IsUpayApi(this ClaimsPrincipal user)
+        {
+            return user?.IsInRole(Roles.UPayAPI) == true;
+        }
+
+        public static bool IsNayaxApi(this ClaimsPrincipal user)
+        {
+            return user?.IsInRole(Roles.NayaxAPI) == true;
+        }
+
         /// <summary>
         /// Non-interactive api access
         /// </summary>

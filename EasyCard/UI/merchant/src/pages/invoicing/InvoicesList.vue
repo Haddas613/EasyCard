@@ -101,6 +101,7 @@
 <script>
 import moment from "moment";
 import { mapState } from "vuex";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -241,6 +242,8 @@ export default {
   async mounted() {
     await this.getDataFromApi();
     const vm = this;
+    if(!this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing)) return;
+    
     this.$store.commit("ui/changeHeader", {
       value: {
         threeDotMenu: [

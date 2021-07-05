@@ -124,7 +124,7 @@ namespace CheckoutPortal.Models
 
         public bool? AllowPinPad { get; set; }
 
-        public bool PinPadDeal { get; set; }
+        public bool PinPad { get; set; }
 
         [BindNever]
         public int? MinCreditInstallments { get; set; }

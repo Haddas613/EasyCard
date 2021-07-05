@@ -164,6 +164,7 @@ namespace Transactions.Api.Models.Transactions
         /// PayDay details
         /// </summary>
         public object ClearingHouseTransactionDetails { get; set; }
+
         public object UpayTransactionDetails { get; set; }
 
         /// <summary>
@@ -224,5 +225,7 @@ namespace Transactions.Api.Models.Transactions
         [EnumDataType(typeof(DocumentOriginEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public DocumentOriginEnum DocumentOrigin { get; set; }
+
+        public Guid? PaymentRequestID { get; set; }
     }
 }
