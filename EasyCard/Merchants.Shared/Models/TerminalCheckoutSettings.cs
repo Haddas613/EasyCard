@@ -13,7 +13,6 @@ namespace Merchants.Shared.Models
         public string CustomCssReference { get; set; }
 
         public bool? IssueInvoice { get; set; }
-        public bool? AllowPinPad { get; set; }
 
         // TODO: validation
         public IEnumerable<string> RedirectUrls { get; set; }

@@ -101,9 +101,9 @@ namespace CheckoutPortal.Controllers
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
             // If token is present and correct, credit card validation is removed from model state
-            if (request.CreditCardToken.HasValue || request.PinPadDeal)
+            if (request.CreditCardToken.HasValue || request.PinPad)
             {
-                if(!request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
+                if(!request.PinPad && !request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
                 {
                     ModelState.AddModelError(nameof(request.CreditCardToken), "Token is not recognized");
                     logger.LogWarning($"{nameof(Charge)}: unrecognized token from user. Token: {request.CreditCardToken.Value}; PaymentRequestId: {(checkoutConfig.PaymentRequest?.PaymentRequestID.ToString() ?? "-")}");
@@ -177,10 +177,7 @@ namespace CheckoutPortal.Controllers
                 request.IssueInvoice = checkoutConfig.Settings.IssueInvoice;
             }
 
-            if (!request.AllowPinPad.HasValue && checkoutConfig.Settings.AllowPinPad != null)
-            {
-                request.AllowPinPad = checkoutConfig.Settings.AllowPinPad;
-            }
+            request.AllowPinPad = request.AllowPinPad == true && checkoutConfig.Settings.AllowPinPad == true;
 
 
 
@@ -188,7 +185,7 @@ namespace CheckoutPortal.Controllers
             {
                 var mdel = new Transactions.Api.Models.Transactions.PRCreateTransactionRequest()
                 {
-                    CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails(),
+                    CreditCardSecureDetails = new CreditCardSecureDetails(),
                     InstallmentDetails = installmentDetails,
                     TransactionType = request.TransactionType
                 };
@@ -199,7 +196,7 @@ namespace CheckoutPortal.Controllers
                 mapper.Map(checkoutConfig.PaymentRequest, mdel);
                 mapper.Map(checkoutConfig.Settings, mdel);
 
-                if (request.CreditCardToken.HasValue)
+                if (request.CreditCardToken.HasValue || request.PinPad)
                 {
                     mdel.CreditCardSecureDetails = null;
                 }
@@ -217,8 +214,8 @@ namespace CheckoutPortal.Controllers
             {
                 var mdel = new Transactions.Api.Models.Transactions.CreateTransactionRequest()
                 {
-                    CreditCardSecureDetails = new Shared.Integration.Models.CreditCardSecureDetails(),
-                    DealDetails = new Shared.Integration.Models.DealDetails(),
+                    CreditCardSecureDetails = new CreditCardSecureDetails(),
+                    DealDetails = new DealDetails(),
                     CreditCardToken = request.CreditCardToken,
                     InstallmentDetails = installmentDetails,
                     TransactionType = request.TransactionType
@@ -228,7 +225,7 @@ namespace CheckoutPortal.Controllers
                 mapper.Map(request, mdel.DealDetails);
                 mapper.Map(checkoutConfig.Settings, mdel);
 
-                if (request.CreditCardToken.HasValue)
+                if (request.CreditCardToken.HasValue || request.PinPad)
                 {
                     mdel.CreditCardSecureDetails = null;
                 }
@@ -248,6 +245,8 @@ namespace CheckoutPortal.Controllers
                             ModelState.AddModelError(err.Code, err.Description);
                         }
                     }
+
+                    mapper.Map(checkoutConfig.Settings, request);
 
                     return View("Index", request);
 

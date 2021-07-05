@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Merchants.Business.Entities.Terminal;
+using Merchants.Business.Extensions;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Shared.Api;
 using Shared.Business.Security;
+using Shared.Integration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -64,7 +67,8 @@ namespace Transactions.Api.Controllers
 
             var apiKeyB = Convert.FromBase64String(apiKey);
 
-            var terminal = EnsureExists(await terminalsService.GetTerminals().Where(d => d.SharedApiKey == apiKeyB).FirstOrDefaultAsync());
+            var tid = EnsureExists(await terminalsService.GetTerminals().Where(d => d.SharedApiKey == apiKeyB).Select(t => t.TerminalID).FirstOrDefaultAsync(), nameof(Terminal));
+            var terminal = await terminalsService.GetTerminal(tid);
 
             if (terminal.EnabledFeatures == null || !terminal.EnabledFeatures.Any(f => f == Merchants.Shared.Enums.FeatureEnum.Checkout))
             {
@@ -85,10 +89,12 @@ namespace Transactions.Api.Controllers
             mapper.Map(terminal.Merchant, response.Settings);
             mapper.Map(terminal, response.Settings);
 
+            response.Settings.AllowPinPad = terminal.IntegrationEnabled(ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID);
+
             if (paymentRequestID.HasValue)
             {
                 var paymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().Where(d => d.PaymentRequestID == paymentRequestID && d.TerminalID == terminal.TerminalID).FirstOrDefaultAsync());
-                response.Settings.AllowPinPad = paymentRequest.AllowPinPad || (response.Settings.AllowPinPad ?? false);
+                response.Settings.AllowPinPad = paymentRequest.AllowPinPad && response.Settings.AllowPinPad.GetValueOrDefault();
 
                 if (consumerID.HasValue)
                 {
