@@ -141,15 +141,16 @@ namespace Shva
         /// <param name="updateParamRequest"></param>
         /// <param name="correlationId"></param>
         /// <returns></returns>
-        public async Task ParamsUpdateTransaction(ShvaTerminalSettings updateParamRequest, string correlationId)
+        public async Task ParamsUpdateTransaction(ProcessorUpdateParametersRequest updateParamRequest)
         {
             var res = new ProcessorCreateTransactionResponse();
+            ShvaTerminalSettings shvaParameters = updateParamRequest.ProcessorSettings as ShvaTerminalSettings;
             var updateParamsReq = new GetTerminalDataRequestBody();
-            updateParamsReq.UserName = updateParamRequest.UserName;
-            updateParamsReq.Password = updateParamRequest.Password;
-            updateParamsReq.MerchantNumber = updateParamRequest.MerchantNumber;
+            updateParamsReq.UserName = shvaParameters.UserName;
+            updateParamsReq.Password = shvaParameters.Password;
+            updateParamsReq.MerchantNumber = shvaParameters.MerchantNumber;
 
-            var result = await this.DoRequest(updateParamsReq, GetTerminalDataUrl, correlationId, HandleIntegrationMessage);
+            var result = await this.DoRequest(updateParamsReq, GetTerminalDataUrl, updateParamRequest.CorrelationId, HandleIntegrationMessage);
 
             var getTerminalDataResultBody = (GetTerminalDataResponseBody)result?.Body?.Content;
 

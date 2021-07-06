@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Business.Entities;
-
+using integration= Shared.Integration;
 namespace Transactions.Api.Mapping
 {
     public class ShvaProfile : Profile
@@ -69,6 +69,13 @@ namespace Transactions.Api.Mapping
                  .ForMember(m => m.OriginalTranDateTime, s => s.MapFrom(src => src.ShvaTransactionDate))
                  .ForAllOtherMembers(d => d.Ignore());
 
+            //CreateMap<integration.Models.ProcessorUpdateParametersRequest, Shva.ShvaTerminalSettings> ()
+             //  .ForMember(m => m, s => s.MapFrom(src => src.ProcessorSettings))
+              // .ForAllOtherMembers(d => d.Ignore());
+
+//            CreateMap<integration.Models.ProcessorUpdateParametersRequest, Nayax.NayaxTerminalSettings>()
+  //           .ForMember(m => m, s => s.MapFrom(src => src.ProcessorSettings))
+    //         .ForAllOtherMembers(d => d.Ignore());
             //CreateMap<Transactions.Api.Models.Transactions.NayaxUpdateTranRecordRequest, PaymentTransaction>()
             //.ForPath(m => m.ShvaTransactionDetails.TranRecord, s => s.MapFrom(src => src.TranRecord));
         }

@@ -744,7 +744,7 @@ namespace Transactions.Api.Controllers
                 }
 
                 //mapper.Map(pinpadPreCreateResult, transaction);
-                mapper.Map(pinpadPreCreateResult, processorRequest);
+                 mapper.Map(pinpadPreCreateResult, processorRequest);
             }
 
             // create transaction in aggregator (Clearing House)
@@ -785,6 +785,7 @@ namespace Transactions.Api.Controllers
             try
             {
                 mapper.Map(transaction, processorRequest);
+                
                 if (!pinpadDeal)
                 {
                     if (token != null)
@@ -796,6 +797,10 @@ namespace Transactions.Api.Controllers
                     {
                         mapper.Map(model.CreditCardSecureDetails, processorRequest.CreditCardToken);
                     }
+                }
+                else
+                {
+                    transaction.PinPadTransactionID = processorRequest.PinPadTransactionID;
                 }
 
                 processorRequest.ProcessorSettings = processorSettings;

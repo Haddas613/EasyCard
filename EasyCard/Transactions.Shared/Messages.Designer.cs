@@ -610,6 +610,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Terminal for update parameters is required.
+        /// </summary>
+        public static string TerminalForUpdateParametersRequired {
+            get {
+                return ResourceManager.GetString("TerminalForUpdateParametersRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There are no invoices to resend.
         /// </summary>
         public static string ThereAreNoInvoicesToResend {

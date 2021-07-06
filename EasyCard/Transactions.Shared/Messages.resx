@@ -300,6 +300,9 @@
   <data name="RejectedByProcessor" xml:space="preserve">
     <value>Transaction rejected by Processor</value>
   </data>
+  <data name="TerminalForUpdateParametersRequired" xml:space="preserve">
+    <value>Terminal for update parameters is required</value>
+  </data>
   <data name="ThereAreNoInvoicesToResend" xml:space="preserve">
     <value>There are no invoices to resend</value>
   </data>

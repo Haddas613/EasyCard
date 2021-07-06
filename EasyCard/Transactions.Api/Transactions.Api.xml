@@ -1624,6 +1624,11 @@
             IDs of transactions which needs to be transmitted
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.UpdateParametersRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Resources.DateFilterTypeResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

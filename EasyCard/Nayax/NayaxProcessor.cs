@@ -18,6 +18,7 @@ namespace Nayax
     {
         private const string Phase1Url = "doTransactionPhase1";
         private const string Phase2Url = "doTransactionPhase2";
+        private const string DoPeriodic = "doPeriodic";
         private const string Pair = "pair";
         private const string Authenticate = "authenticate";
         private readonly IWebApiClient apiClient;
@@ -335,6 +336,58 @@ namespace Nayax
                 return new PairResponse(Messages.CannotGetErrorCodeFromResponse, authResultBody.statusCode);
             }
         }
+
+        public async Task ParamsUpdateTransaction(ProcessorUpdateParametersRequest updateParamRequest)
+        {
+            var res = new ProcessorCreateTransactionResponse();
+            var nayaxParameters = updateParamRequest.ProcessorSettings as NayaxTerminalSettings;
+            if (updateParamRequest == null)
+            {
+                throw new ArgumentNullException("NayaxTerminalSettings is required");
+            }
+
+            var updateParamsReq = nayaxParameters.GetDoPeriodicRequest(configuration);
+
+            DoPeriodicResultBody updateParamResultBody;
+            string requestUrl = null;
+            string requestStr = null;
+            string responseStr = null;
+            string responseStatusStr = null;
+            var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+            try
+            {
+
+                updateParamResultBody = await this.apiClient.Post<Models.DoPeriodicResultBody>(configuration.BaseUrl, DoPeriodic, updateParamsReq, BuildHeaders,
+                    (url, request) =>
+                    {
+                        requestStr = request;
+                        requestUrl = url;
+                    },
+                    (response, responseStatus, responseHeaders) =>
+                    {
+                        responseStr = response;
+                        responseStatusStr = responseStatus.ToString();
+                    });
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"Nayax integration request failed ({integrationMessageId}): {ex.Message}");
+
+                throw new IntegrationException("Nayax integration request failed", integrationMessageId);
+            }
+            finally
+            {
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, updateParamRequest.CorrelationId);
+
+                integrationMessage.Request = requestStr;
+                integrationMessage.Response = responseStr;
+                integrationMessage.ResponseStatus = responseStatusStr;
+                integrationMessage.Address = requestUrl;
+
+                await integrationRequestLogStorageService.Save(integrationMessage);
+            }
+        }
+
 
         private async Task<NameValueCollection> BuildHeaders()
         {

@@ -37,6 +37,7 @@ namespace Shva.Models
         [XmlElement("TransEMVResponse", Type = typeof(TransEMVResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         [XmlElement("ChangePassword", Type = typeof(ChangePasswordRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         [XmlElement("ChangePasswordResponse", Type = typeof(ChangePasswordResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        [XmlElement("GetTerminalDataRequest", Type = typeof(GetTerminalDataRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         public object Content { get; set; }
     }
 

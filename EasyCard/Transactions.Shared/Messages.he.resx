@@ -369,4 +369,7 @@
   <data name="BillingDealUnpaused" xml:space="preserve">
     <value>עסקה מחזורית פעילה</value>
   </data>
+  <data name="TerminalForUpdateParametersRequired" xml:space="preserve">
+    <value>נדרש נתון לעדכון פרמטרים</value>
+  </data>
 </root>

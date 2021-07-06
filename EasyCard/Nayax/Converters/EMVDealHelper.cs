@@ -31,6 +31,13 @@ namespace Nayax.Converters
             var phase2Req = new Phase2RequestBody(conf.ClientID, nayaxParameters.TerminalID, nayaxParameters.TerminalID/*todo add clientid_  before terminalid for posid*/);
             return phase2Req;
         }
+
+        public static DoPeriodicRequestBody GetDoPeriodicRequest(this NayaxTerminalSettings nayaxParameters, NayaxGlobalSettings conf)
+        {
+            var doPeriodic = new DoPeriodicRequestBody(conf.ClientID, nayaxParameters.TerminalID, nayaxParameters.TerminalID);
+            return doPeriodic;
+        }
+
         /*
         public static AshEndRequestBody GetAshEndRequestBody(this ShvaTerminalSettings shvaParameters)
         {
