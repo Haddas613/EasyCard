@@ -37,7 +37,9 @@ namespace Shared.Helpers
             ProcessRequest onRequest = null, ProcessResponse onResponse = null
             );
 
-        Task<string> PostRawForm(string enpoint, string actionPath, IDictionary<string, string> payload, Func<Task<NameValueCollection>> getHeaders = null);
+        Task<string> PostRawForm(string enpoint, string actionPath, IDictionary<string, string> payload, Func<Task<NameValueCollection>> getHeaders = null,
+            ProcessRequest onRequest = null, ProcessResponse onResponse = null
+            );
 
         Task<string> PostFile(string enpoint, string actionPath, MemoryStream stream, string fileName, string parameterName = "file", Func<Task<NameValueCollection>> getHeaders = null);
 
