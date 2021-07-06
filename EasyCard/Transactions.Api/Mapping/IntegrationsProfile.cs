@@ -70,11 +70,11 @@ namespace Transactions.Api.Mapping
 
                 //.ForMember(m => m.CreditCardDetails.CardVendor, s => s.MapFrom(src => src.CreditCardDetails.CardVendor))
                 .ForMember(m => m.TransactionID, s => s.MapFrom(src => src.PaymentTransactionID.ToString()))
-                .ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.ClearingHouseTransactionDetails.ClearingHouseTransactionID)) // TODO
+                .ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.ClearingHouseTransactionDetails == null || src.ClearingHouseTransactionDetails.ClearingHouseTransactionID == null ? src.UpayTransactionDetails.CashieriD : src.ClearingHouseTransactionDetails.ClearingHouseTransactionID.ToString())) // TODO
                 .ForMember(m => m.ConcurrencyToken, s => s.MapFrom(src => src.ClearingHouseTransactionDetails.ConcurrencyToken)) // TODO
                 .ForMember(m => m.ProcessorTransactionDetails, s => s.MapFrom(src => src.ShvaTransactionDetails))
-                .ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.UpayTransactionDetails.CashieriD))
-                .ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.ClearingHouseTransactionDetails.ClearingHouseTransactionID))
+                //  .ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.UpayTransactionDetails.CashieriD))
+                //.ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.ClearingHouseTransactionDetails.ClearingHouseTransactionID))
                 ; // TODO
 
             CreateMap<PaymentTransaction, AggregatorCancelTransactionRequest>()
