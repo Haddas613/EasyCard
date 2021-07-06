@@ -154,6 +154,18 @@
                             }
                         </fieldset>
                     }
+                    else
+                    {
+                        <fieldset class="border rounded p-2 m-2">
+                            <div class="form-group row">
+                                <label asp-for="Amount" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("Amount") (@Model.Currency.GetCurrencySymbol())</label>
+                                <div class="col-sm-9">
+                                    <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("Amount")" asp-for="Amount" autocomplete="off">
+                                    <span asp-validation-for="Amount"></span>
+                                </div>
+                            </div>
+                        </fieldset>
+                    }
                     <fieldset class="border rounded p-2 m-2" id="card-info-group-area">
                         @if (Model.AllowPinPad ?? false)
                         {
