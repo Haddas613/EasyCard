@@ -81,7 +81,7 @@ namespace MerchantProfileApi.Controllers
         {
             var merchantId = User.GetMerchantID();
 
-            var query = terminalsService.GetTerminals().Where(t => t.Status != Merchants.Shared.Enums.TerminalStatusEnum.Disabled).Filter(filter);
+            var query = terminalsService.GetTerminals().Filter(filter);
 
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
