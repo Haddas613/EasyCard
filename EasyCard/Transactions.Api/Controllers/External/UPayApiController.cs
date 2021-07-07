@@ -17,7 +17,7 @@ namespace Transactions.Api.Controllers.External
 {
 
     [Authorize(AuthenticationSchemes = Extensions.Auth.ApiKeyAuthenticationScheme, Policy = Policy.UPayAPI)]
-    [Route("api/external/upay")]
+    [Route("external/upay")]
     [Produces("application/json")]
     [Consumes("application/json")]
     [ApiController]
