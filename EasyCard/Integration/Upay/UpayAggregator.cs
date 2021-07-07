@@ -58,7 +58,41 @@ namespace Upay
                 var jsonResult = serDes.Serialize(Msgs);
                 IDictionary<string, string> credentials = new Dictionary<string, string>();
                 credentials.Add("msgs", jsonResult);
-                var result = await webApiClient.PostRawForm(configuration.ApiBaseAddress, "", credentials, null);
+
+                string requestUrl = null;
+                string requestStr = null;
+                string responseStr = null;
+                string responseStatusStr = null;
+                var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+                string result = null;
+                try
+                {
+                    result = await webApiClient.PostRawForm(configuration.ApiBaseAddress, "", credentials, null,
+                        (url, request) =>
+                        {
+                            requestStr = request;
+                            requestUrl = url;
+                        },
+                        (response, responseStatus, responseHeaders) =>
+                        {
+                            responseStr = response;
+                            responseStatusStr = responseStatus.ToString();
+                        });
+
+                }
+                finally
+                {
+                    IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, transactionRequest.CorrelationId);
+
+                    integrationMessage.Request = jsonResult;
+                    integrationMessage.Response = responseStr;
+                    integrationMessage.ResponseStatus = responseStatusStr;
+                    integrationMessage.Address = requestUrl;
+
+                    await integrationRequestLogStorageService.Save(integrationMessage);
+                }
+
                 TranResponseFullModel resultUpay = JsonConvert.DeserializeObject<TranResponseFullModel>(result);
                 return resultUpay.GetAggregatorCreateTransactionResponse();
             }
@@ -119,7 +153,41 @@ namespace Upay
                 var jsonResult = serDes.Serialize(Msgs);
                 IDictionary<string, string> credentials = new Dictionary<string, string>();
                 credentials.Add("msgs", jsonResult);
-                var result = await webApiClient.PostRawForm(configuration.ApiBaseAddress, "", credentials, null);
+
+                string requestUrl = null;
+                string requestStr = null;
+                string responseStr = null;
+                string responseStatusStr = null;
+                var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+                string result = null;
+                try
+                {
+                    result = await webApiClient.PostRawForm(configuration.ApiBaseAddress, "", credentials, null,
+                        (url, request) =>
+                        {
+                            requestStr = request;
+                            requestUrl = url;
+                        },
+                        (response, responseStatus, responseHeaders) =>
+                        {
+                            responseStr = response;
+                            responseStatusStr = responseStatus.ToString();
+                        });
+
+                }
+                finally
+                {
+                    IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, transactionRequest.CorrelationId);
+
+                    integrationMessage.Request = jsonResult;
+                    integrationMessage.Response = responseStr;
+                    integrationMessage.ResponseStatus = responseStatusStr;
+                    integrationMessage.Address = requestUrl;
+
+                    await integrationRequestLogStorageService.Save(integrationMessage);
+                }
+
                 TranResponseFullModel resultUpay = JsonConvert.DeserializeObject<TranResponseFullModel>(result);
                 return resultUpay.GetAggregatorCommitTransactionResponse();
             }
