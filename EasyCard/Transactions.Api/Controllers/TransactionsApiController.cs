@@ -598,6 +598,7 @@ namespace Transactions.Api.Controllers
             transaction.InitialTransactionID = initialTransactionID;
             transaction.DocumentOrigin = GetDocumentOrigin(billingDeal?.BillingDealID, paymentRequestID, pinpadDeal);
             transaction.PaymentRequestID = paymentRequestID;
+            transaction.CardPresence = pinpadDeal ? CardPresenceEnum.Regular : model.CardPresence;
 
             if (transaction.DealDetails == null)
             {
@@ -676,6 +677,11 @@ namespace Transactions.Api.Controllers
             if (model.IssueInvoice.GetValueOrDefault())
             {
                 model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings, transaction);
+            }
+
+            if (string.IsNullOrWhiteSpace(transaction.CreditCardDetails.CardOwnerName) && consumer != null)
+            {
+                transaction.CreditCardDetails.CardOwnerName = consumer.ConsumerName;
             }
 
             transaction.Calculate();
@@ -951,7 +957,7 @@ namespace Transactions.Api.Controllers
             var endResponse = new OperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);
 
             // TODO: validate InvoiceDetails
-            if (model.IssueInvoice == true)
+            if (model.IssueInvoice == true && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail))
             {
                 using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
                 {
@@ -960,6 +966,16 @@ namespace Transactions.Api.Controllers
                         Invoice invoiceRequest = new Invoice();
                         mapper.Map(transaction, invoiceRequest);
                         invoiceRequest.InvoiceDetails = model.InvoiceDetails;
+
+                        if (string.IsNullOrWhiteSpace(invoiceRequest.CardOwnerName) && consumer != null)
+                        {
+                            invoiceRequest.CardOwnerName = consumer.ConsumerName;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(invoiceRequest.CardOwnerNationalID) && consumer != null)
+                        {
+                            invoiceRequest.CardOwnerNationalID = consumer.ConsumerNationalID;
+                        }
 
                         invoiceRequest.MerchantID = terminal.MerchantID;
 
