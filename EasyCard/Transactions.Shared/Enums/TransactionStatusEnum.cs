@@ -17,6 +17,12 @@ namespace Transactions.Shared.Enums
         ConfirmedByAggregator = 10,
 
         /// <summary>
+        /// Pinpad preprocessing succesfull
+        /// </summary>
+        [EnumMember(Value = "confirmedByPinpadPreProcessor")]
+        ConfirmedByPinpadPreProcessor = 15,
+
+        /// <summary>
         /// Shva confirmed transaction
         /// </summary>
         [EnumMember(Value = "confirmedByProcessor")]

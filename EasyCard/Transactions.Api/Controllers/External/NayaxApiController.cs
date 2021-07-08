@@ -54,10 +54,9 @@ namespace Transactions.Api.Controllers.External
             {
                 var transaction =
                 EnsureExists(
-                await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.ShvaTransactionDetails.ShvaDealID == model.Uid || m.PinPadTransactionID == model.Vuid));
+                await transactionsService.GetTransactionsForUpdate().FirstOrDefaultAsync(m => m.PinPadTransactionID == model.Vuid));
 
                 transaction.ShvaTransactionDetails.TranRecord = model.TranRecord;
-                //mapper.Map(model, transaction);
                 await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission, transactionOperationCode: TransactionOperationCodesEnum.ProcessorPreTransmissionCommited);
                 return new NayaxUpdateTranRecordResponse
                 {

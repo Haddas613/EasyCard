@@ -731,20 +731,34 @@ namespace Transactions.Api.Controllers
             var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
             if (pinpadDeal)
             {
-                processorRequest.PinPadProcessorSettings = pinpadProcessorSettings;
-                var lastDeal = await GetLastShvaTransactionDetails(transaction.ShvaTransactionDetails.ShvaTerminalID);
-                mapper.Map(lastDeal, processorRequest); // Map details of prev shva transaction
-
-                pinpadPreCreateResult = await pinpadProcessor.PreCreateTransaction(processorRequest);
-                if (!pinpadPreCreateResult.Success)
+                try
                 {
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: pinpadPreCreateResult.ErrorMessage);
+                    processorRequest.PinPadProcessorSettings = pinpadProcessorSettings;
+                    var lastDeal = await GetLastShvaTransactionDetails(transaction.ShvaTransactionDetails.ShvaTerminalID);
+                    mapper.Map(lastDeal, processorRequest); // Map details of prev shva transaction
 
-                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByProcessor}: {pinpadPreCreateResult.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, pinpadPreCreateResult.Errors));
+                    pinpadPreCreateResult = await pinpadProcessor.PreCreateTransaction(processorRequest);
+                    if (!pinpadPreCreateResult.Success)
+                    {
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: pinpadPreCreateResult.ErrorMessage);
+
+                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByProcessor}: {pinpadPreCreateResult.ErrorMessage}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, pinpadPreCreateResult.Errors));
+                    }
+                    else
+                    {
+                        mapper.Map(pinpadPreCreateResult, processorRequest);
+
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByPinpadPreProcessor);
+                    }
                 }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Pinpad Processor PreCreate Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
 
-                //mapper.Map(pinpadPreCreateResult, transaction);
-                 mapper.Map(pinpadPreCreateResult, processorRequest);
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: ex.Message);
+
+                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, pinpadPreCreateResult.Errors));
+                }
             }
 
             // create transaction in aggregator (Clearing House)
@@ -785,7 +799,7 @@ namespace Transactions.Api.Controllers
             try
             {
                 mapper.Map(transaction, processorRequest);
-                
+
                 if (!pinpadDeal)
                 {
                     if (token != null)
