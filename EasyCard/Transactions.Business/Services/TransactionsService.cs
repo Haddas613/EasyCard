@@ -234,6 +234,11 @@ namespace Transactions.Business.Services
             }
         }
 
+        public async Task Refresh(PaymentTransaction transaction)
+        {
+            await context.Entry(transaction).ReloadAsync();
+        }
+
         private async Task AddHistory(Guid transactionID, string opDescription, string message, TransactionOperationCodesEnum operationCode)
         {
             var historyRecord = new TransactionHistory

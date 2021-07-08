@@ -22,7 +22,6 @@ namespace Transactions.Api.Mapping
         private void RegisterTransactionMappings()
         {
             CreateMap<SharedIntegration.Models.ProcessorPreCreateTransactionResponse, PaymentTransaction>()
-              //  .ForMember(m => m.PinPadTransactionID, s => s.MapFrom(src => src.PinPadTransactionID))
                 .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))
                 .ForMember(m => m.CreditCardDetails, s => s.MapFrom(src => src))
                 .ForAllOtherMembers(d => d.Ignore());
@@ -37,7 +36,7 @@ namespace Transactions.Api.Mapping
 
             CreateMap<ShvaTransactionDetails, SharedIntegration.Models.ProcessorCreateTransactionRequest>()
                 .ForMember(m => m.LastDealShvaDetails, s => s.MapFrom(src => src));
-            
+
             CreateMap<ShvaTransactionDetails, SharedIntegration.Models.Processor.ShvaTransactionDetails>();
         }
     }

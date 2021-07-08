@@ -29,5 +29,7 @@ namespace Transactions.Business.Services
         Task<IEnumerable<TransmissionInfo>> StartTransmission(Guid terminalID, IEnumerable<Guid> transactionIDs, IDbContextTransaction dbTransaction = null);
 
         Task<IEnumerable<TransactionSummaryDb>> GetGroupedTransactionSummaries(Guid? terminalID, IDbContextTransaction dbTransaction);
+
+        Task Refresh(PaymentTransaction transaction);
     }
 }
