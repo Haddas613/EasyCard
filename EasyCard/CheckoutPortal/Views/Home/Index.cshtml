@@ -291,7 +291,7 @@
             })
 
             $("#number-of-payments").on("change", function (e) {
-                let newAmount = (@(Model.TotalAmount ?? Model.Amount) / e.target.value).toFixed(2);
+                let newAmount = (@((Model.TotalAmount ?? Model.Amount) ?? 0) / e.target.value).toFixed(2);
                 $("#payment-amount").text(newAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())");
             });
 
