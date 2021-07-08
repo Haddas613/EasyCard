@@ -747,6 +747,7 @@ namespace Transactions.Api.Controllers
                     else
                     {
                         mapper.Map(pinpadPreCreateResult, processorRequest);
+                        transaction.PinPadTransactionID = processorRequest.PinPadTransactionID;
 
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByPinpadPreProcessor);
                     }
@@ -811,10 +812,6 @@ namespace Transactions.Api.Controllers
                     {
                         mapper.Map(model.CreditCardSecureDetails, processorRequest.CreditCardToken);
                     }
-                }
-                else
-                {
-                    transaction.PinPadTransactionID = processorRequest.PinPadTransactionID;
                 }
 
                 processorRequest.ProcessorSettings = processorSettings;
