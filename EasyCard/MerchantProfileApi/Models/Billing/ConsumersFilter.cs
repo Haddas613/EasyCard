@@ -21,5 +21,7 @@ namespace MerchantProfileApi.Models.Billing
         public string Email { get; set; }
 
         public string Phone { get; set; }
+
+        public string ExternalReference { get; set; }
     }
 }

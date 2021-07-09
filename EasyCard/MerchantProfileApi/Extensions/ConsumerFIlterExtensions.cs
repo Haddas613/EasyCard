@@ -77,6 +77,11 @@ namespace MerchantProfileApi.Extensions
                 src = src.Where(c => c.ConsumerNationalID == filter.NationalID);
             }
 
+            if (!string.IsNullOrWhiteSpace(filter.ExternalReference))
+            {
+                src = src.Where(c => c.ExternalReference == filter.ExternalReference);
+            }
+
             return src;
         }
     }

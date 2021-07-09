@@ -14,8 +14,11 @@
     [SourceIP]           VARCHAR (50)     NULL,
     [TerminalID]         UNIQUEIDENTIFIER DEFAULT ('00000000-0000-0000-0000-000000000000') NOT NULL,
     [ConsumerNationalID] NVARCHAR (50)    NULL,
+    [ExternalReference]  NVARCHAR (50)    NULL,
     CONSTRAINT [PK_Consumer] PRIMARY KEY CLUSTERED ([ConsumerID] ASC)
 );
+
+
 
 
 
