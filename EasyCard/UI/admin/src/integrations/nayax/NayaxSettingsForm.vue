@@ -86,7 +86,7 @@ export default {
       this.model.settings = {};
     }
     if(!this.model.settings.devices){
-      this.model.settings.devices = [];
+      this.$set(this.model.settings, 'devices', []);
     }else{
       this.selectedDevice = this.model.settings.devices[0];
     }
