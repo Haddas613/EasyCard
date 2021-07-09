@@ -10,6 +10,7 @@
           <v-row>
             <v-col cols="12" class="pt-4 pb-0 mb-0">
               <v-text-field
+                v-if="model.settings"
                 v-model="model.settings.merchantNumber"
                 :label="$t('ShvaTerminalReference')"
                 disabled

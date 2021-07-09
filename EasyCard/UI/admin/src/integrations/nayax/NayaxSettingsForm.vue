@@ -16,15 +16,29 @@
         </div>
       </template>
     </ec-dialog>
-    <v-row v-if="model.settings" class="pt-2">
-      <v-col cols="12" class="pt-0 text-end pb-4">
-        <v-btn small color="secondary" class="mx-1" @click="pairDevice()" :disabled="!formValid">{{$t("PairDevice")}}</v-btn>
+    <v-row class="pt-2">
+      <v-col cols="6">
+        <v-select :items="model.settings.devices" v-model="selectedDevice" return-object :item-value="deviceValue">
+          <template v-slot:item="{ item }">
+            {{item.terminalID + '-' + item.posName}}
+          </template>
+          <template v-slot:selection="{ item }">
+            {{item.terminalID + '-' + item.posName}}
+          </template>
+        </v-select>
+      </v-col>
+      <v-col cols="6" class="text-end">
+        <v-btn small color="success" class="mx-1" @click="addDevice()" :disabled="selectedDevice && !selectedDevice.terminalID">{{$t("Add")}}</v-btn>
+        <v-btn small color="secondary" class="mx-1" @click="pairDevice()" :disabled="!selectedDevice || !formValid">{{$t("PairDevice")}}</v-btn>
+        <v-btn small color="error" class="mx-1" @click="removeCurrentDevice()" :disabled="!selectedDevice">{{$t("Delete")}}</v-btn>
+      </v-col>
+    </v-row>
+    <v-row v-if="selectedDevice" class="pt-2">
+      <v-col cols="12" md="6" class="py-0">
+        <v-text-field v-model="selectedDevice.terminalID" :label="$t('TerminalID')" :rules="[vr.primitives.required]"></v-text-field>
       </v-col>
       <v-col cols="12" md="6" class="py-0">
-        <v-text-field v-model="model.settings.terminalID" :label="$t('TerminalID')" :rules="[vr.primitives.required]"></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6" class="py-0">
-        <v-text-field v-model="model.settings.posName" :label="$t('PaxDeviceLabel')" :rules="[vr.primitives.required]"></v-text-field>
+        <v-text-field v-model="selectedDevice.posName" :label="$t('PaxDeviceLabel')" :rules="[vr.primitives.required]"></v-text-field>
       </v-col>
     </v-row>
     <div class="d-flex justify-end">
@@ -63,12 +77,18 @@ export default {
       loading: false,
       authenticateDeviceOTP: null,
       authenticateDeviceDialog: false,
-      otpFormCorrect: false
+      otpFormCorrect: false,
+      selectedDevice: null
     }
   },
   mounted () {
     if(!this.model.settings){
       this.model.settings = {};
+    }
+    if(!this.model.settings.devices){
+      this.model.settings.devices = [];
+    }else{
+      this.selectedDevice = this.model.settings.devices[0];
     }
   },
   methods: {
@@ -83,7 +103,7 @@ export default {
     async pairDevice(){
       let payload = {
         ecTerminalID: this.terminalId,
-        ...this.model.settings
+        ...this.selectedDevice
       };
       let operation = await this.$api.integrations.nayax.pairDevice(payload);
       if (!this.$apiSuccess(operation)) return;
@@ -93,7 +113,7 @@ export default {
     async authenticateDevice(){
       let payload = {
         ecTerminalID: this.terminalId,
-        ...this.model.settings,
+        ...this.selectedDevice.settings,
         OTP: this.authenticateDeviceOTP
       };
 
@@ -102,6 +122,23 @@ export default {
 
       this.authenticateDeviceDialog = false;
       this.authenticateDeviceOTP = null;
+    },
+    removeCurrentDevice(){
+      let idx = this.model.settings.devices.findIndex(i => this.deviceValue(i) === this.deviceValue(this.selectedDevice));
+      if (idx > -1){
+        this.model.settings.devices.splice(idx, 1);
+        this.selectedDevice = (--idx>=0) ? this.model.settings.devices[idx] : this.model.settings.devices[0];
+      }
+    },
+    async addDevice(){
+      let idx = this.model.settings.devices.push({
+        terminalID: null,
+        posName: null
+      });
+      this.selectedDevice = this.model.settings.devices[idx - 1];
+    },
+    deviceValue(a){
+      return `${a.terminalID}-${a.posName}`;
     }
   },
 };

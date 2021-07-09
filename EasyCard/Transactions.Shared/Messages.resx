@@ -300,6 +300,9 @@
   <data name="RejectedByProcessor" xml:space="preserve">
     <value>Transaction rejected by Processor</value>
   </data>
+  <data name="Required" xml:space="preserve">
+    <value>Required</value>
+  </data>
   <data name="TerminalForUpdateParametersRequired" xml:space="preserve">
     <value>Terminal for update parameters is required</value>
   </data>

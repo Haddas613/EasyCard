@@ -30,7 +30,21 @@
       </template>
     </ec-dialog>
     <v-card-text class="py-2">
-      <v-switch v-if="includeDevice && $integrationAvailable(terminalStore, appConstants.terminal.integrations.pinpadProcessor)" v-model="model.pinPad" :label="$t('UsePinPad')"></v-switch>
+      <v-switch v-if="includeDevice"
+        v-model="model.pinPad" :label="$t('UsePinPad')" :disabled="!availableDevices.length">
+      </v-switch>
+      <template v-if="model.pinPad && availableDevices.length > 0">
+        <v-col cols="12">
+        <v-select :items="availableDevices" v-model="selectedDevice" return-object :item-value="deviceValue" outlined>
+          <template v-slot:item="{ item }">
+            {{item.deviceID + '-' + item.deviceName}}
+          </template>
+          <template v-slot:selection="{ item }">
+            {{item.deviceID + '-' + item.deviceName}}
+          </template>
+        </v-select>
+      </v-col>
+      </template>
       <template v-if="!model.pinPad">
         <ec-dialog-invoker
           v-on:click="handleClick()"
@@ -109,7 +123,9 @@ export default {
       customerTokens: null,
       selectedToken: null,
       selectedTokenObj: null,
-      appConstants: appConstants
+      appConstants: appConstants,
+      selectedPinPadDevice: null,
+      availableDevices: []
     };
   },
   async mounted() {
@@ -125,6 +141,7 @@ export default {
       this.model.saveCreditCard = false;
       this.selectedToken = this.selectedTokenObj = null;
     }
+    await this.checkPinPadAvailability();
   },
   computed: {
     token: {
@@ -139,7 +156,7 @@ export default {
     },
     ...mapState({
       terminalStore: state => state.settings.terminal
-    })
+    }),
   },
   methods: {
     ok() {
@@ -159,7 +176,9 @@ export default {
       this.$emit("ok", {
         type: "device",
         data: {
-          pinPad: true
+          pinPad: true,
+          pinPadDeviceID: this.selectedDevice.deviceID,
+          pinPadDeviceName: this.selectedDevice.deviceName
         }
       });
     },
@@ -193,6 +212,15 @@ export default {
     },
     handleClick() {
       this.tokensDialog = this.customerTokens && this.customerTokens.length > 0;
+    },
+    async checkPinPadAvailability(){
+      if(this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.pinpadProcessor)){
+        this.availableDevices = await this.$api.terminals.getTerminalDevices(this.terminalStore.terminalID);
+        this.selectedDevice = this.availableDevices[0];
+      }
+    },
+    deviceValue(a){
+      return `${a.deviceID}-${a.deviceName}`;
     }
   }
 };

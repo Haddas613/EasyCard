@@ -86,7 +86,6 @@ namespace Merchants.Api.Controllers.Integrations
                 return BadRequest(response);
             }
 
-
             NayaxTerminalSettings terminalSettings = nayaxIntegration.Settings.ToObject<NayaxTerminalSettings>();
             terminalSettings.TerminalID = request.terminalID;
             nayaxIntegration.Settings = JObject.FromObject(terminalSettings);

@@ -49,6 +49,8 @@ using Merchants.Business.Entities.Terminal;
 using Shared.Integration.ExternalSystems;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
+using Shared.Integration;
+using Newtonsoft.Json.Linq;
 
 namespace Transactions.Api.Controllers
 {
@@ -726,6 +728,18 @@ namespace Transactions.Api.Controllers
             object pinpadProcessorSettings = null;
             if (pinpadDeal)
             {
+                //TODO: temporary
+                if (terminalPinpadProcessor?.Settings != null && terminalPinpadProcessor.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)
+                {
+                    var devices = terminalPinpadProcessor.Settings.GetValue("devices")?.ToObject<IEnumerable<JObject>>();
+                    if (devices != null)
+                    {
+                        terminalPinpadProcessor.Settings = EnsureExists(
+                            devices.FirstOrDefault(d => d.GetValue("terminalID").Value<string>() == model.PinPadDeviceID
+                            && d.GetValue("posName").Value<string>() == model.PinPadDeviceName), "PinPad Terminal");
+                    }
+                }
+
                 pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
                 mapper.Map(pinpadProcessorSettings, transaction);
             }
@@ -764,7 +778,7 @@ namespace Transactions.Api.Controllers
 
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: ex.Message);
 
-                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, pinpadPreCreateResult.Errors));
+                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, pinpadPreCreateResult?.Errors));
                 }
             }
 
