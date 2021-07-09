@@ -393,6 +393,8 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.ConsumerAddress).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+
+                builder.Property(b => b.ExternalReference).IsRequired(false).HasMaxLength(50).IsUnicode(true);
             }
         }
 
