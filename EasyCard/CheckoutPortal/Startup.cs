@@ -50,6 +50,8 @@ namespace CheckoutPortal
             services.AddAntiforgery(options =>
             {
                 options.SuppressXFrameOptionsHeader = true;
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
             services.AddControllersWithViews()
