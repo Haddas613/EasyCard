@@ -838,7 +838,7 @@ namespace Transactions.Api.Controllers
 
                 //pinpadtransactionid = uid
                 var processorResponse = pinpadDeal ? await pinpadProcessor.CreateTransaction(processorRequest) : await processor.CreateTransaction(processorRequest);
-
+                 
                 mapper.Map(processorResponse, transaction);
 
                 if (pinpadDeal)
