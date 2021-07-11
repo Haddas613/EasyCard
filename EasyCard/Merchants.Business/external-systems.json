@@ -49,7 +49,7 @@
     "ExternalSystemID": 50,
     "Type": "pinpadProcessor",
     "InstanceTypeFullName": "Nayax.NayaxProcessor, Nayax",
-    "SettingsTypeFullName": "Nayax.NayaxTerminalCollection, Nayax",
+    "SettingsTypeFullName": "Nayax.NayaxTerminalSettings, Nayax",
     "Name": "Nayax",
     "Key": "nayax",
     "Active": true,

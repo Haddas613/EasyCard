@@ -753,7 +753,7 @@ namespace Transactions.Api.Controllers
             {
                 try
                 {
-                    // processorRequest.PinPadProcessorSettings = pinpadProcessorSettingsCollection;
+                    processorRequest.PinPadProcessorSettings = pinpadProcessorSettings;
                     var lastDeal = await GetLastShvaTransactionDetails(transaction.ShvaTransactionDetails.ShvaTerminalID);
                     mapper.Map(lastDeal, processorRequest); // Map details of prev shva transaction
 
