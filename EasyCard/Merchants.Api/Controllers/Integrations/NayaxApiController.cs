@@ -85,16 +85,12 @@ namespace Merchants.Api.Controllers.Integrations
 
                 return BadRequest(response);
             }
-            //NayaxTerminalCollection terminalSettings = nayaxIntegration.Settings.ToObject<NayaxTerminalCollection>();
-            //NayaxTerminalSettings nayaxSettings = new NayaxTerminalSettings();
-            //nayaxSettings.TerminalID = request.terminalID;
-            //terminalSettings.NayaxTerminalSettingsCollection.Append(nayaxSettings);
-            // terminalSettings.TerminalID = request.terminalID;
 
+            NayaxTerminalCollection nayaxTerminalCollection = nayaxIntegration.Settings.ToObject<NayaxTerminalCollection>();
+            NayaxTerminalSettings nayaxTerminalSettings = new NayaxTerminalSettings { PosName = string.Empty, TerminalID = request.terminalID };
 
-            NayaxTerminalSettings terminalSettings = nayaxIntegration.Settings.ToObject<NayaxTerminalSettings>();
-            terminalSettings.TerminalID = request.terminalID;
-            nayaxIntegration.Settings = JObject.FromObject(terminalSettings);
+            nayaxTerminalCollection.devices = nayaxTerminalCollection.devices.Append(nayaxTerminalSettings).ToArray();
+            nayaxIntegration.Settings = JObject.FromObject(nayaxTerminalCollection);
             await terminalsService.SaveTerminalExternalSystem(nayaxIntegration, terminal);
 
             return Ok(response);

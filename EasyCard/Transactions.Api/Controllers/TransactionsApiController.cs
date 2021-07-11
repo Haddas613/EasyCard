@@ -726,14 +726,9 @@ namespace Transactions.Api.Controllers
             var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
             mapper.Map(processorSettings, transaction);
 
-            object pinpadProcessorSettingsCollection = null;
             object pinpadProcessorSettings = null;
             if (pinpadDeal)
             {
-                // pinpadProcessorSettingsCollection = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
-                //transaction.PinPadDeviceID = model.PinPadDeviceID;
-
-                //TODO: temporary
                 if (terminalPinpadProcessor?.Settings != null && terminalPinpadProcessor.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)
                 {
                     var devices = terminalPinpadProcessor.Settings.GetValue("devices")?.ToObject<IEnumerable<JObject>>();
@@ -758,7 +753,7 @@ namespace Transactions.Api.Controllers
             {
                 try
                 {
-                   // processorRequest.PinPadProcessorSettings = pinpadProcessorSettingsCollection;
+                    // processorRequest.PinPadProcessorSettings = pinpadProcessorSettingsCollection;
                     var lastDeal = await GetLastShvaTransactionDetails(transaction.ShvaTransactionDetails.ShvaTerminalID);
                     mapper.Map(lastDeal, processorRequest); // Map details of prev shva transaction
 

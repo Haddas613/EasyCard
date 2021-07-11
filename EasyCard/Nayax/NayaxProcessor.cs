@@ -10,7 +10,6 @@ using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Nayax
@@ -22,15 +21,12 @@ namespace Nayax
         private const string DoPeriodic = "doPeriodic";
         private const string Pair = "pair";
         private const string Authenticate = "authenticate";
-
         private readonly IWebApiClient apiClient;
         private readonly NayaxGlobalSettings configuration;
-        private NayaxTerminalSettings terminalSettings;
         private readonly ILogger logger;
         private readonly IIntegrationRequestLogStorageService integrationRequestLogStorageService;
-        
 
-    public NayaxProcessor(IWebApiClient apiClient, IOptions<NayaxGlobalSettings> configuration, ILogger<NayaxProcessor> logger, IIntegrationRequestLogStorageService integrationRequestLogStorageService)
+        public NayaxProcessor(IWebApiClient apiClient, IOptions<NayaxGlobalSettings> configuration, ILogger<NayaxProcessor> logger, IIntegrationRequestLogStorageService integrationRequestLogStorageService)
         {
             this.configuration = configuration.Value;
 
@@ -48,28 +44,14 @@ namespace Nayax
         /// <returns></returns>
         public async Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
         {
-            NayaxTerminalCollection nayaxParametersCollection = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalCollection;
+            NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
 
-            if (nayaxParametersCollection == null || nayaxParametersCollection.NayaxTerminalSettingsCollection == null || nayaxParametersCollection.NayaxTerminalSettingsCollection.Length == 0)
+            if (nayaxParameters == null)
             {
                 throw new ArgumentNullException("NayaxTerminalSettings (at paymentTransactionRequest.ProcessorSettings) is required");
             }
 
-            if (!string.IsNullOrEmpty(paymentTransactionRequest.PinpadDeviceID))
-            {
-                terminalSettings =  nayaxParametersCollection.NayaxTerminalSettingsCollection.FirstOrDefault(x => x.TerminalID == paymentTransactionRequest.PinpadDeviceID);
-
-                if (terminalSettings == null)
-                {
-                    throw new ArgumentNullException("Can not find PinPadDevice ID in NayaxTerminalSettings (at paymentTransactionRequest.ProcessorSettings)");
-                }
-            }
-            else
-            {
-                terminalSettings = nayaxParametersCollection.NayaxTerminalSettingsCollection[0];
-            }
-
-            var phas1Req = terminalSettings.GetPhase1RequestBody(configuration);
+            var phas1Req = nayaxParameters.GetPhase1RequestBody(configuration);
             ObjectInPhase1RequestParams params2 = paymentTransactionRequest.GetObjectInPhase1RequestParams();
 
             phas1Req.paramss[1] = params2;
@@ -150,14 +132,14 @@ namespace Nayax
 
         public async Task<ProcessorCreateTransactionResponse> CreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest)
         {
-            //NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
+            NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
 
-           // if (nayaxParameters == null)
-           // {
-           //     throw new ArgumentNullException("NayaxTerminalSettings (at paymentTransactionRequest.ProcessorSettings) is required");
-           // }
+            if (nayaxParameters == null)
+            {
+                throw new ArgumentNullException("NayaxTerminalSettings (at paymentTransactionRequest.ProcessorSettings) is required");
+            }
 
-            var phase2Req = terminalSettings.GetPhase2RequestBody(configuration);
+            var phase2Req = nayaxParameters.GetPhase2RequestBody(configuration);
 
             ObjectInPhase2RequestParams params2 = paymentTransactionRequest.GetObjectInPhase2RequestParams();
             phase2Req.paramss[1] = params2;
@@ -241,7 +223,7 @@ namespace Nayax
         public async Task<PairResponse> PairDevice(PairRequest pairRequest)
         {
             //pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
-            //NayaxTerminalSettings nayaxParametersCollection = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
+            //NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
 
             if (pairRequest == null)
             {
@@ -318,7 +300,7 @@ namespace Nayax
         public async Task<PairResponse> AuthenticateDevice(AuthenticateRequest authRequest)
         {
             //pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
-            //NayaxTerminalSettings nayaxParametersCollection = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
+            //NayaxTerminalSettings nayaxParameters = paymentTransactionRequest.PinPadProcessorSettings as NayaxTerminalSettings;
 
             if (authRequest == null)
             {

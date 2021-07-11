@@ -6,7 +6,7 @@ namespace Nayax
 {
     public class NayaxTerminalCollection
     {
-        public NayaxTerminalSettings[] NayaxTerminalSettingsCollection {get;set;}
+        public NayaxTerminalSettings[] devices {get;set;}
 
     }
 }
