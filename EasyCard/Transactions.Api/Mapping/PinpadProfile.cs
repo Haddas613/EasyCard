@@ -31,6 +31,10 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.CreditCardDetails, s => s.MapFrom(src => src))
                 .ForAllOtherMembers(d => d.Ignore());
 
+            CreateMap<NayaxCreateTransactionResponse, CreditCardDetails>()
+               .ForMember(d => d.CardExpiration, o => o.MapFrom(d => d.CardExpiration))
+               .ForAllOtherMembers(d => d.Ignore());
+
             CreateMap<SharedIntegration.Models.ProcessorPreCreateTransactionResponse, CreditCardDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))
                 .ForMember(d => d.CardBin, o => o.MapFrom(d => CreditCardHelpers.GetCardBin(d.CardNumber)));
