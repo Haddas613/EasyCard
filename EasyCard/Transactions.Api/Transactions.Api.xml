@@ -1103,6 +1103,11 @@
             Create Pinpad Transaction
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.PinPadDeviceID">
+            <summary>
+             Pinpad device in case of terminal with multiple devices
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">
             <summary>
             Do not store full card number. Please use 123456****1234 pattern CreditCardHelpers.GetCardDigits()

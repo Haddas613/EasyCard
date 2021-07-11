@@ -116,6 +116,11 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         public bool? PinPad { get; set; }
 
+        /// <summary>
+        ///  Pinpad device in case of terminal with multiple devices
+        /// </summary>
+        public string PinPadDeviceID { get; set; }
+
         public Guid? PaymentRequestID { get; set; }
 
         public void Calculate()

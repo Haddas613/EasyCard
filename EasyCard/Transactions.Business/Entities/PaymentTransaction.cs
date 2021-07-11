@@ -249,6 +249,9 @@ namespace Transactions.Business.Entities
 
         public string PinPadTransactionID { get; set; }
 
+        [NotMapped]
+        public string PinPadDeviceID { get; set; }
+
         // TODO: calculate items, VAT
         [Obsolete]
         public void Calculate()

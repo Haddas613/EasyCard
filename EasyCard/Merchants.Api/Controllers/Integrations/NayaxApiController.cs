@@ -87,8 +87,11 @@ namespace Merchants.Api.Controllers.Integrations
             }
 
 
-            NayaxTerminalSettings terminalSettings = nayaxIntegration.Settings.ToObject<NayaxTerminalSettings>();
-            terminalSettings.TerminalID = request.terminalID;
+            NayaxTerminalCollection terminalSettings = nayaxIntegration.Settings.ToObject<NayaxTerminalCollection>();
+            NayaxTerminalSettings nayaxSettings = new NayaxTerminalSettings();
+            nayaxSettings.TerminalID = request.terminalID;
+            terminalSettings.NayaxTerminalSettingsCollection.Append(nayaxSettings);
+           // terminalSettings.TerminalID = request.terminalID;
             nayaxIntegration.Settings = JObject.FromObject(terminalSettings);
             await terminalsService.SaveTerminalExternalSystem(nayaxIntegration, terminal);
 

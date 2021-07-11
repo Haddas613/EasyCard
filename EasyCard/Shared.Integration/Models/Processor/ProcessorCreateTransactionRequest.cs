@@ -25,6 +25,10 @@ namespace Shared.Integration.Models
         public object PinPadProcessorSettings { get; set; }
 
         /// <summary>
+        /// Nayax TerminalID optional, in case of terminal supports multiple  devices
+        /// </summary>
+        public string PinpadDeviceID { get; set; }
+        /// <summary>
         /// Unique transaction ID
         /// </summary>
         public string PinPadTransactionID { get; set; }
