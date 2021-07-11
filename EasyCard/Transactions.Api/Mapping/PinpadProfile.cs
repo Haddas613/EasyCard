@@ -28,8 +28,7 @@ namespace Transactions.Api.Mapping
 
             CreateMap<NayaxCreateTransactionResponse, PaymentTransaction>()
                 .ForMember(m => m.PinPadTransactionID, s => s.MapFrom(src => src.PinPadTransactionID))
-                .ForPath(m => m.CreditCardDetails.CardExpiration.Month, s => s.MapFrom(src => src.CardExpiration.Month))
-                  .ForPath(m => m.CreditCardDetails.CardExpiration.Year, s => s.MapFrom(src => src.CardExpiration.Year))
+                .ForMember(m => m.CreditCardDetails.CardExpiration, s => s.MapFrom(src => src.CardExpiration))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<SharedIntegration.Models.ProcessorPreCreateTransactionResponse, CreditCardDetails>()
