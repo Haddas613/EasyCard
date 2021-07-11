@@ -29,11 +29,14 @@ namespace Transactions.Api.Mapping
             CreateMap<NayaxCreateTransactionResponse, PaymentTransaction>()
                 .ForMember(m => m.PinPadTransactionID, s => s.MapFrom(src => src.PinPadTransactionID))
                 .ForMember(m => m.CreditCardDetails, s => s.MapFrom(src => src))
+                .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<NayaxCreateTransactionResponse, CreditCardDetails>()
-               .ForMember(d => d.CardExpiration, o => o.MapFrom(d => d.CardExpiration))
-               .ForAllOtherMembers(d => d.Ignore());
+                .ForMember(d => d.CardExpiration, o => o.MapFrom(d => d.CardExpiration))
+                .ForMember(m => m.CardNumber, s => s.MapFrom(src => src.CardNumber))
+                .ForMember(m => m.CardVendor, s => s.MapFrom(src => src.CreditCardVendor))
+                .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<SharedIntegration.Models.ProcessorPreCreateTransactionResponse, CreditCardDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))
@@ -42,7 +45,15 @@ namespace Transactions.Api.Mapping
             CreateMap<ShvaTransactionDetails, SharedIntegration.Models.ProcessorCreateTransactionRequest>()
                 .ForMember(m => m.LastDealShvaDetails, s => s.MapFrom(src => src));
 
-            CreateMap<ShvaTransactionDetails, SharedIntegration.Models.Processor.ShvaTransactionDetails>();
+            CreateMap<Nayax.NayaxCreateTransactionResponse, ShvaTransactionDetails>()
+                .ForMember(m => m.ShvaAuthNum, s => s.MapFrom(src => src.AuthNum));
+
+            CreateMap<Nayax.NayaxTerminalSettings, PaymentTransaction>()
+                .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))
+                .ForAllOtherMembers(d => d.Ignore());
+
+            CreateMap<Nayax.NayaxTerminalSettings, ShvaTransactionDetails>()
+                .ForAllOtherMembers(d => d.Ignore());
         }
     }
 }
