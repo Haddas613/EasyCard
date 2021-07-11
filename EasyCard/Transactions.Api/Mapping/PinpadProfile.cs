@@ -28,7 +28,7 @@ namespace Transactions.Api.Mapping
 
             CreateMap<NayaxCreateTransactionResponse, PaymentTransaction>()
                 .ForMember(m => m.PinPadTransactionID, s => s.MapFrom(src => src.PinPadTransactionID))
-                .ForMember(m => m.CreditCardDetails.CardExpiration, s => s.MapFrom(src => src.CardExpiration))
+                .ForMember(m => m.CreditCardDetails, s => s.MapFrom(src => src))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<SharedIntegration.Models.ProcessorPreCreateTransactionResponse, CreditCardDetails>()
