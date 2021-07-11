@@ -11,6 +11,7 @@ using MerchantProfileApi.Extensions;
 using MerchantProfileApi.Models.Terminal;
 using Merchants.Business.Extensions;
 using Merchants.Business.Services;
+using Merchants.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -304,6 +305,27 @@ namespace MerchantProfileApi.Controllers
             var features = await mapper.ProjectTo<FeatureSummary>(featuresService.GetQuery()).ToListAsync();
 
             return Ok(features);
+        }
+
+        [HttpGet]
+        [Route("terminal-devices/{terminalID:guid}")]
+        public async Task<ActionResult<IEnumerable<TerminalDeviceResponse>>> GetTerminalPinPadDevices(Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+            var integration = terminal.Integrations.FirstOrDefault(t => t.Type == ExternalSystemTypeEnum.PinpadProcessor);
+            var response = new List<TerminalDeviceResponse>();
+
+            //TODO: temporary
+            if (integration?.Settings != null && integration.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)
+            {
+                var devices = integration.Settings.GetValue("devices").ToObject<IEnumerable<JObject>>();
+                foreach (var d in devices)
+                {
+                    response.Add(new TerminalDeviceResponse { DeviceID = d.GetValue("terminalID").Value<string>(), DeviceName = d.GetValue("posName").Value<string>() });
+                }
+            }
+
+            return Ok(response);
         }
     }
 }

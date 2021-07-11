@@ -16,7 +16,6 @@ namespace MerchantProfileApi.Models.Billing
         /// <summary>
         /// Target terminal
         /// </summary>
-        [Required(AllowEmptyStrings = false)]
         public Guid? TerminalID { get; set; }
 
         /// <summary>
@@ -54,5 +53,12 @@ namespace MerchantProfileApi.Models.Billing
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [StringLength(250)]
         public string ConsumerAddress { get; set; }
+
+        /// <summary>
+        /// ID in external system
+        /// </summary>
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [StringLength(50)]
+        public string ExternalReference { get; set; }
     }
 }

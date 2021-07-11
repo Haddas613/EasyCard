@@ -76,6 +76,18 @@ namespace Transactions.Api.Validation
                         errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.CardOwnerNationalID)}", Messages.CardOwnerNationalIDRequired));
                     }
                 }
+                else
+                {
+                    if (string.IsNullOrEmpty(model.PinPadDeviceID))
+                    {
+                        errors.Add(new SharedHelpers.Error($"{nameof(model.PinPadDeviceID)}", Messages.Required));
+                    }
+
+                    if (string.IsNullOrEmpty(model.PinPadDeviceName))
+                    {
+                        errors.Add(new SharedHelpers.Error($"{nameof(model.PinPadDeviceName)}", Messages.Required));
+                    }
+                }
             }
 
             if (model.TransactionType == TransactionTypeEnum.Credit || model.TransactionType == TransactionTypeEnum.Installments)

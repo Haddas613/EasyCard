@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 using Shared.Integration.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace CheckoutPortal.Controllers
 {
@@ -343,7 +344,12 @@ namespace CheckoutPortal.Controllers
                 if (allowed)
                 {
                     var c = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture));
-                    HttpContext.Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName, c);
+                    HttpContext.Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName, c, new CookieOptions
+                    {
+                        Expires = DateTimeOffset.UtcNow.AddYears(1),
+                        SameSite = SameSiteMode.None,
+                        Secure = true
+                    });
                 }
             }
             else

@@ -210,6 +210,11 @@
             End-customer address
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ExternalReference">
+            <summary>
+            ID in external system
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerResponse.ConsumerEmail">
             <summary>
             End-customer Email

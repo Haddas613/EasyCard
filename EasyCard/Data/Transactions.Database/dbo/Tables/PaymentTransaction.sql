@@ -70,8 +70,11 @@
     [UpayMerchantNumber]             NVARCHAR (64)    NULL,
     [UpayTransactionID]              NVARCHAR (64)    NULL,
     [UpayWebUrl]                     NVARCHAR (512)   NULL,
+    [PinPadTransactionID]            NVARCHAR (MAX)   NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

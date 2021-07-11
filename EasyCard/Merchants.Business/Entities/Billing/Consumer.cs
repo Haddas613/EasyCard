@@ -49,6 +49,8 @@ namespace Merchants.Business.Entities.Billing
 
         public string CorrelationId { get; set; }
 
+        public string ExternalReference { get; set; }
+
         public string SourceIP { get; set; }
 
         public Guid GetID()

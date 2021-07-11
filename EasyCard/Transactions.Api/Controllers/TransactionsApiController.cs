@@ -49,6 +49,8 @@ using Merchants.Business.Entities.Terminal;
 using Shared.Integration.ExternalSystems;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
+using Shared.Integration;
+using Newtonsoft.Json.Linq;
 
 namespace Transactions.Api.Controllers
 {
@@ -728,10 +730,23 @@ namespace Transactions.Api.Controllers
             object pinpadProcessorSettings = null;
             if (pinpadDeal)
             {
-                pinpadProcessorSettingsCollection = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
-                transaction.PinPadDeviceID = model.PinPadDeviceID;
-                // mapper.Map(pinpadProcessorSettings, transaction);
-               //new  mapper.Map(pinpadProcessorSettingsCollection, transaction);
+                // pinpadProcessorSettingsCollection = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
+                //transaction.PinPadDeviceID = model.PinPadDeviceID;
+
+                //TODO: temporary
+                if (terminalPinpadProcessor?.Settings != null && terminalPinpadProcessor.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID)
+                {
+                    var devices = terminalPinpadProcessor.Settings.GetValue("devices")?.ToObject<IEnumerable<JObject>>();
+                    if (devices != null)
+                    {
+                        terminalPinpadProcessor.Settings = EnsureExists(
+                            devices.FirstOrDefault(d => d.GetValue("terminalID").Value<string>() == model.PinPadDeviceID
+                            && d.GetValue("posName").Value<string>() == model.PinPadDeviceName), "PinPad Terminal");
+                    }
+                }
+
+                pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
+                mapper.Map(pinpadProcessorSettings, transaction);
             }
 
             await transactionsService.CreateEntity(transaction);
@@ -743,7 +758,7 @@ namespace Transactions.Api.Controllers
             {
                 try
                 {
-                    processorRequest.PinPadProcessorSettings = pinpadProcessorSettingsCollection;
+                   // processorRequest.PinPadProcessorSettings = pinpadProcessorSettingsCollection;
                     var lastDeal = await GetLastShvaTransactionDetails(transaction.ShvaTransactionDetails.ShvaTerminalID);
                     mapper.Map(lastDeal, processorRequest); // Map details of prev shva transaction
 
@@ -768,7 +783,7 @@ namespace Transactions.Api.Controllers
 
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: ex.Message);
 
-                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, pinpadPreCreateResult.Errors));
+                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.FailedToProcessTransaction}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, pinpadPreCreateResult?.Errors));
                 }
             }
 
