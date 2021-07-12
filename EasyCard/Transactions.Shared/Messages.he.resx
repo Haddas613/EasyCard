@@ -375,4 +375,7 @@
   <data name="Required" xml:space="preserve">
     <value>חובה</value>
   </data>
+  <data name="CannotCancelInvoicedTransaction" xml:space="preserve">
+    <value>לא ניתן לבטל עסקה שהופקה עבורה חשבונית.</value>
+  </data>
 </root>

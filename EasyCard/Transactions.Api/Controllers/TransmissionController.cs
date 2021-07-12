@@ -307,9 +307,14 @@ namespace Transactions.Api.Controllers
                 transaction = EnsureExists(await transactionsService.GetTransactionsForUpdate()
                  .FirstOrDefaultAsync(m => m.PaymentTransactionID == cancelTransmissionRequest.PaymentTransactionID && m.TerminalID == cancelTransmissionRequest.TerminalID));
 
-                if (transaction.Status != TransactionStatusEnum.AwaitingForTransmission || transaction.InvoiceID.HasValue)
+                if (transaction.Status != TransactionStatusEnum.AwaitingForTransmission)
                 {
                     return BadRequest(new OperationResponse(Messages.TransactionStatusIsNotValid, StatusEnum.Error));
+                }
+
+                if (transaction.InvoiceID.HasValue)
+                {
+                    return BadRequest(new OperationResponse(Messages.CannotCancelInvoicedTransaction, StatusEnum.Error));
                 }
 
                 await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.CancelledByMerchant, dbTransaction: dbTransaction);

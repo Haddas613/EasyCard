@@ -169,6 +169,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot cancel invoiced transaction.
+        /// </summary>
+        public static string CannotCancelInvoicedTransaction {
+            get {
+                return ResourceManager.GetString("CannotCancelInvoicedTransaction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Card owner national ID required.
         /// </summary>
         public static string CardOwnerNationalIDRequired {

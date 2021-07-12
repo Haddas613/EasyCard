@@ -124,6 +124,7 @@
               color="red"
               class="white--text"
               outlined
+              v-if="model.allowTransmissionCancellation"
               @click="cancelTransmission()"
             >{{$t('CancelTransmission')}}</v-btn>
           </v-col>
@@ -135,6 +136,7 @@
               color="red"
               class="white--text"
               outlined
+              
               @click="cancelTransmission()"
             >{{$t('CancelTransmission')}}</v-btn>
           </v-col>
