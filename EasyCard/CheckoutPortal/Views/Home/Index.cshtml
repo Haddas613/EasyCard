@@ -325,6 +325,7 @@
             $("#pin-pad-deal").on("change", function (e) {
                 document.getElementById("credit-card-info-area").hidden = e.target.checked;
             })
+            $("#pin-pad-deal").trigger("change");
         })
     </script>
 }

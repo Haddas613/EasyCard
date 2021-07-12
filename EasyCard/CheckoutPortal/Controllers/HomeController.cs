@@ -165,6 +165,7 @@ namespace CheckoutPortal.Controllers
 
             if (!ModelState.IsValid)
             {
+                mapper.Map(checkoutConfig.Settings, request);
                 return View("Index", request);
             }
 
