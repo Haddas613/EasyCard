@@ -130,7 +130,7 @@ export default {
         this.model.settings.devices.splice(idx, 1);
         this.selectedDevice = (--idx>=0) ? this.model.settings.devices[idx] : this.model.settings.devices[0];
       }
-      await this.save();
+      await this.save(false);
     },
     async addDevice(){
       let idx = this.model.settings.devices.push({
