@@ -267,7 +267,7 @@
     <script nws-csp-add-nonce="true">
         $(document).ready(function () {
             $('input[name="CreditCardToken"]').on('change', function (e) {
-            if (e.target.value == "@(Guid.Empty)") {
+            if (e.target.value == "") {
                 $("#card-info-group-area").attr("hidden", false);
             } else {
                 $("#card-info-group-area").attr("hidden", true);

@@ -127,8 +127,7 @@ namespace CheckoutPortal.Controllers
                 return View("Index", request);
             }
 
-            if (request.TransactionType != TransactionTypeEnum.RegularDeal && request.NumberOfPayments.HasValue 
-                && request.NumberOfPayments.Value != checkoutConfig.PaymentRequest?.NumberOfPayments)
+            if (request.TransactionType != TransactionTypeEnum.RegularDeal)
             {
                 if (request.NumberOfPayments > (request.TransactionType == TransactionTypeEnum.Credit ? checkoutConfig.Settings.MaxCreditInstallments : checkoutConfig.Settings.MaxInstallments))
                 {
