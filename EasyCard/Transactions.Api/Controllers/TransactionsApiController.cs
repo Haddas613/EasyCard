@@ -585,6 +585,21 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
+            if (model.PinPad == true && string.IsNullOrWhiteSpace(model.PinPadDeviceID) && string.IsNullOrWhiteSpace(model.PinPadDeviceName))
+            {
+                var nayaxIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
+                var devices = nayaxIntegration.Settings.ToObject<Nayax.NayaxTerminalCollection>();
+                var firstDevice = devices.devices.FirstOrDefault();
+
+                if (firstDevice == null)
+                {
+                    throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "PinPadDevice", null);
+                }
+
+                model.PinPadDeviceID = firstDevice.TerminalID;
+                model.PinPadDeviceName = firstDevice.PosName;
+            }
+
             TransactionTerminalSettingsValidator.Validate(terminal.Settings, model, token, jDealType, specialTransactionType, initialTransactionID);
 
             var transaction = mapper.Map<PaymentTransaction>(model);
