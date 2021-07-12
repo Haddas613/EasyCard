@@ -314,7 +314,6 @@ export default {
         this.model.creditCardToken = null;
         this.model.saveCreditCard = false;
         Object.assign(this.model, data.data);
-        console.log(this.model)
       }
       if(this.quickChargeMode){
         if(!this.$refs.additionalSettingsForm.ok()){

@@ -201,8 +201,8 @@ export default {
         paymentTransactionIDs: [this.model.$paymentTransactionID]
       });
       
-      if (!this.$apiSuccess(operation)) return;
-      let opResult = operation[0];
+      if (!operation || !operation.data) return;
+      let opResult = operation.data[0];
       
       if (
         opResult.paymentTransactionID == this.$route.params.id &&
@@ -224,9 +224,9 @@ export default {
         terminalID: this.model.terminalID,
         paymentTransactionID: this.model.$paymentTransactionID
       });
-      if (!this.$apiSuccess(operation)) return;
       
-      let opResult = operation[0];
+      if (!operation || !operation.data) return;
+      let opResult = operation.data[0];
 
       if (
         opResult.paymentTransactionID == this.$route.params.id &&
