@@ -104,7 +104,8 @@ export default {
       await this.save(false);
       let payload = {
         ecTerminalID: this.terminalId,
-        ...this.selectedDevice
+        terminalID: this.selectedDevice.terminalID,
+        posName: this.selectedDevice.posName,
       };
       let operation = await this.$api.integrations.nayax.pairDevice(payload);
       if (!this.$apiSuccess(operation)) return;
@@ -114,7 +115,8 @@ export default {
     async authenticateDevice(){
       let payload = {
         ecTerminalID: this.terminalId,
-        ...this.selectedDevice.settings,
+        terminalID: this.selectedDevice.terminalID,
+        posName: this.selectedDevice.posName,
         OTP: this.authenticateDeviceOTP
       };
 
