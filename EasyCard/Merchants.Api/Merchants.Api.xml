@@ -137,6 +137,11 @@
               Looks up a localized string similar to Device authenticated successfully.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.Integrations.Nayax.NayaxMessagesResource.DeviceNotFound">
+            <summary>
+              Looks up a localized string similar to Device not found.
+            </summary>
+        </member>
         <member name="P:Merchants.Api.Models.Integrations.Nayax.NayaxMessagesResource.DevicePairedSuccessfully">
             <summary>
               Looks up a localized string similar to Device paired successfully.

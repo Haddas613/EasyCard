@@ -126,4 +126,7 @@
   <data name="DeviceAuthenticatedSuccessfully" xml:space="preserve">
     <value>הצליח לבצע צימוד</value>
   </data>
+  <data name="DeviceNotFound" xml:space="preserve">
+    <value>מכשיר לא נמצא</value>
+  </data>
 </root>

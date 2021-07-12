@@ -143,7 +143,7 @@ class ApiBase {
         return this._handleRequest(request, true);
     }
 
-    async put(url, payload) {
+    async put(url, payload, showSuccessToastr = true) {
         const access_token = await this.oidc.getAccessToken()
 
         if (!access_token) {
@@ -161,7 +161,7 @@ class ApiBase {
             body: JSON.stringify(payload)
         });
 
-        return this._handleRequest(request, true);
+        return this._handleRequest(request, showSuccessToastr);
     }
 
     async delete(url) {

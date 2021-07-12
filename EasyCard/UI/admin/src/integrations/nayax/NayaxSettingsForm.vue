@@ -92,15 +92,16 @@ export default {
     }
   },
   methods: {
-    save() {
-      if(!this.formValid){
+    async save(showSuccessToastr = true) {
+      if(this.loading || !this.formValid){
         return;
       }
       this.loading = true;
-      this.$api[this.apiName].saveExternalSystem(this.terminalId, this.model);
+      await this.$api[this.apiName].saveExternalSystem(this.terminalId, this.model, showSuccessToastr);
       this.loading = false;
     },
     async pairDevice(){
+      await this.save(false);
       let payload = {
         ecTerminalID: this.terminalId,
         ...this.selectedDevice

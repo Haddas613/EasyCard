@@ -79,6 +79,15 @@ namespace Merchants.Api.Models.Integrations.Nayax {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device not found.
+        /// </summary>
+        public static string DeviceNotFound {
+            get {
+                return ResourceManager.GetString("DeviceNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Device paired successfully.
         /// </summary>
         public static string DevicePairedSuccessfully {

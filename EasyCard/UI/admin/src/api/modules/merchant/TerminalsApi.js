@@ -63,8 +63,8 @@ export default class TerminalsApi {
         return await this.base.get(this.terminalsUrl + '/available-features');
     }
 
-    async saveExternalSystem(terminalID, data){
-        return this.base.put(this.terminalsUrl + `/${terminalID}/externalsystem`, data);
+    async saveExternalSystem(terminalID, data, showSuccessToastr = true){
+        return this.base.put(this.terminalsUrl + `/${terminalID}/externalsystem`, data, showSuccessToastr);
     }
 
     async deleteExternalSystem(terminalID, externalSystemID){

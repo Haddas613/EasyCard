@@ -123,6 +123,9 @@
   <data name="DeviceAuthenticatedSuccessfully" xml:space="preserve">
     <value>Device authenticated successfully</value>
   </data>
+  <data name="DeviceNotFound" xml:space="preserve">
+    <value>Device not found</value>
+  </data>
   <data name="DevicePairedSuccessfully" xml:space="preserve">
     <value>Device paired successfully</value>
   </data>

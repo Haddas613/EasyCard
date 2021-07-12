@@ -44,17 +44,32 @@ namespace Merchants.Api.Controllers.Integrations
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(request.ECTerminalID.Value));
             var nayaxIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
+            var devices = nayaxIntegration.Settings.ToObject<NayaxTerminalCollection>();
 
-            //get settings
-            var pairResult = await nayaxProcessor.PairDevice(request);
+            if (devices.devices?.Any(d => d.TerminalID == request.terminalID && d.PosName == request.posName) == false)
+            {
+                return BadRequest(new OperationResponse(NayaxMessagesResource.DeviceNotFound, StatusEnum.Error));
+            }
 
             var response = new OperationResponse(NayaxMessagesResource.DevicePairedSuccessfully, StatusEnum.Success);
 
-            if (!pairResult.Success)
+            try
+            {
+                //get settings
+                var pairResult = await nayaxProcessor.PairDevice(request);
+
+                if (!pairResult.Success)
+                {
+                    response.Status = StatusEnum.Error;
+                    response.Message = NayaxMessagesResource.CouldNotPairTheDevice;
+
+                    return BadRequest(response);
+                }
+            }
+            catch (Exception ex)
             {
                 response.Status = StatusEnum.Error;
-                response.Message = NayaxMessagesResource.CouldNotPairTheDevice;
-
+                response.Message = ex.Message;
                 return BadRequest(response);
             }
 
@@ -72,6 +87,13 @@ namespace Merchants.Api.Controllers.Integrations
 
             var terminal = EnsureExists(await terminalsService.GetTerminal(request.ECTerminalID.Value));
             var nayaxIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
+
+            var devices = nayaxIntegration.Settings.ToObject<NayaxTerminalCollection>();
+
+            if (devices.devices?.Any(d => d.TerminalID == request.terminalID) == false)
+            {
+                return BadRequest(new OperationResponse(NayaxMessagesResource.DeviceNotFound, StatusEnum.Error));
+            }
 
             //get settings
             var pairResult = await nayaxProcessor.AuthenticateDevice(request);
