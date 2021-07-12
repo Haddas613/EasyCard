@@ -123,12 +123,13 @@ export default {
       this.authenticateDeviceDialog = false;
       this.authenticateDeviceOTP = null;
     },
-    removeCurrentDevice(){
+    async removeCurrentDevice(){
       let idx = this.model.settings.devices.findIndex(i => this.deviceValue(i) === this.deviceValue(this.selectedDevice));
       if (idx > -1){
         this.model.settings.devices.splice(idx, 1);
         this.selectedDevice = (--idx>=0) ? this.model.settings.devices[idx] : this.model.settings.devices[0];
       }
+      await this.save();
     },
     async addDevice(){
       let idx = this.model.settings.devices.push({
