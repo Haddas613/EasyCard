@@ -52,8 +52,7 @@
     "SettingsTypeFullName": "Nayax.NayaxTerminalSettings, Nayax",
     "Name": "Nayax",
     "Key": "nayax",
-    "Active": true,
-    "CanBeUsedInTerminalTemplate": true
+    "Active": true
   },
   {
     "ExternalSystemID": 1,
