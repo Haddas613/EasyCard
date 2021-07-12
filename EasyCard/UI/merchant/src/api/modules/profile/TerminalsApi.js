@@ -54,4 +54,8 @@ export default class TerminalsApi {
     async deleteMerchantLogo(terminalID){
         return this.base.delete(this.terminalsUrl + `/${terminalID}/merchantlogo`);
     }
+
+    async getTerminalDevices(terminalID){
+        return await this.base.get(this.terminalsUrl + `/terminal-devices/${terminalID}`);
+    }
 }

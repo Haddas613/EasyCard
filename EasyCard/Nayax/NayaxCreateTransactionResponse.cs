@@ -1,4 +1,5 @@
-﻿using Shared.Integration.Models;
+﻿using Shared.Helpers;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -53,6 +54,8 @@ namespace Nayax
         public CardVendorEnum CreditCardVendor { get; set; }
 
         public string CardNumber { get; set; }
+
+        public CardExpiration CardExpiration { get; set; }
         public string PinPadTransactionID { get; set; }
 
     }

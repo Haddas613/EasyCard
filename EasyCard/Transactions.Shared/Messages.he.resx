@@ -372,4 +372,7 @@
   <data name="TerminalForUpdateParametersRequired" xml:space="preserve">
     <value>נדרש נתון לעדכון פרמטרים</value>
   </data>
+  <data name="Required" xml:space="preserve">
+    <value>חובה</value>
+  </data>
 </root>

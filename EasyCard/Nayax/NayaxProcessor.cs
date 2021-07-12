@@ -80,7 +80,7 @@ namespace Nayax
                     });
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 this.logger.LogError(ex, $"Nayax integration request failed ({integrationMessageId}): {ex.Message}");
 
@@ -101,7 +101,7 @@ namespace Nayax
 
                 await integrationRequestLogStorageService.Save(integrationMessage);
             }
-            
+
 
             if (phase1ResultBody == null)
             {

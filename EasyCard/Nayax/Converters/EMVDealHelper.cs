@@ -185,38 +185,40 @@ namespace Nayax.Converters
                 ShvaShovarNumber = resultPhase2Body.sysTraceNumber,
                 CreditCardVendor = (CardVendorEnum)resultPhase2Body.manpik,
                 Success = ((PhaseResultEnum)Convert.ToInt32(resultPhase2Body.statusCode)).IsSuccessful(),
-                PinPadTransactionID = resultPhase2Body.vuid
-                /*
-                public string statusCode { get; set; }
-        public string statusMessage { get; set; }
-        public double amount { get; set; }
-        public int mutag { get; set; }
-        public int manpik { get; set; }
-        public int solek { get; set; }
-        public string cardNumber { get; set; }
-        public int tranType { get; set; }
-        public int posEntryMode { get; set; }
-        public int minCreditPayments { get; set; }
-        public int maxCreditPayments { get; set; }
-        public int minCreditAmount { get; set; }
-        public int creditTerms { get; set; }
+                PinPadTransactionID = resultPhase2Body.vuid,
+                CardExpiration = new Shared.Helpers.CardExpiration { Month =int.Parse(resultPhase2Body.expDate.Substring(2, 2)), Year = int.Parse(resultPhase2Body.expDate.Substring(0, 2)) }
 
-        public string issuerAuthNum { get; set; }
-        public string rrn { get; set; }
+                    /*
+                    public string statusCode { get; set; }
+            public string statusMessage { get; set; }
+            public double amount { get; set; }
+            public int mutag { get; set; }
+            public int manpik { get; set; }
+            public int solek { get; set; }
+            public string cardNumber { get; set; }
+            public int tranType { get; set; }
+            public int posEntryMode { get; set; }
+            public int minCreditPayments { get; set; }
+            public int maxCreditPayments { get; set; }
+            public int minCreditAmount { get; set; }
+            public int creditTerms { get; set; }
 
-        public string acquirerMerchantID { get; set; }
-        public string expDate { get; set; }
-        //For Emv Desktop
-        public int authCodeManpik { get; set; }
-        public string cardName { get; set; }
-        public string camutagNamerdName { get; set; }
+            public string issuerAuthNum { get; set; }
+            public string rrn { get; set; }
 
-        */
+            public string acquirerMerchantID { get; set; }
+            public string expDate { get; set; }
+            //For Emv Desktop
+            public int authCodeManpik { get; set; }
+            public string cardName { get; set; }
+            public string camutagNamerdName { get; set; }
 
-                //ShvaTranRecord = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag,
+            */
 
-                //ShvaTransactionDate = resultAshEndBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime()
-            };
+                    //ShvaTranRecord = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag,
+
+                    //ShvaTransactionDate = resultAshEndBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime()
+                };
         }
 
         private static string GetFilNSeq(Shared.Integration.Models.Processor.ShvaTransactionDetails lastDeal)
