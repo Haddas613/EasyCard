@@ -47,10 +47,10 @@ using Transactions.Shared.Enums;
 using Z.EntityFramework.Plus;
 using Merchants.Business.Entities.Terminal;
 using Shared.Integration.ExternalSystems;
-using SharedBusiness = Shared.Business;
-using SharedIntegration = Shared.Integration;
 using Shared.Integration;
 using Newtonsoft.Json.Linq;
+using SharedBusiness = Shared.Business;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
@@ -82,6 +82,7 @@ namespace Transactions.Api.Controllers
         private readonly IQueue invoiceQueue;
         private readonly IEmailSender emailSender;
         private readonly IMetricsService metrics;
+        private readonly IPaymentIntentService paymentIntentService;
 
         public TransactionsApiController(
             ITransactionsService transactionsService,
@@ -104,7 +105,8 @@ namespace Transactions.Api.Controllers
             IQueueResolver queueResolver,
             IEmailSender emailSender,
             IOptions<ApiSettings> apiSettings,
-            IMetricsService metrics)
+            IMetricsService metrics,
+            IPaymentIntentService paymentIntentService)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -127,6 +129,7 @@ namespace Transactions.Api.Controllers
             this.invoiceQueue = queueResolver.GetQueue(QueueResolver.InvoiceQueue);
             this.emailSender = emailSender;
             this.metrics = metrics;
+            this.paymentIntentService = paymentIntentService;
         }
 
         [HttpGet]
@@ -340,11 +343,23 @@ namespace Transactions.Api.Controllers
         [Authorize(Policy = Policy.AnyAdmin)]
         public async Task<ActionResult<OperationResponse>> PRCreateTransaction([FromBody] PRCreateTransactionRequest prmodel)
         {
-            var dbPaymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == prmodel.PaymentRequestID));
+            PaymentRequest dbPaymentRequest = null;
+            bool isPaymentIntent = false;
 
-            if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
+            if (prmodel.PaymentRequestID != null)
             {
-                return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.PaymentRequestStatusIsClosed}", StatusEnum.Error, dbPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+                dbPaymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().FirstOrDefaultAsync(m => m.PaymentRequestID == prmodel.PaymentRequestID));
+
+                if (dbPaymentRequest.Status == PaymentRequestStatusEnum.Payed || (int)dbPaymentRequest.Status < 0 || dbPaymentRequest.PaymentTransactionID != null)
+                {
+                    return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.PaymentRequestStatusIsClosed}", StatusEnum.Error, dbPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+                }
+            }
+            else
+            {
+                dbPaymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(prmodel.TerminalID, prmodel.PaymentIntentID.GetValueOrDefault()), "PaymentIntent");
+
+                isPaymentIntent = true;
             }
 
             CreateTransactionRequest model = new CreateTransactionRequest();
@@ -401,7 +416,14 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: opResult?.EntityUID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
+                if (isPaymentIntent)
+                {
+                    await paymentIntentService.DeletePaymentIntent(prmodel.TerminalID, prmodel.PaymentIntentID.GetValueOrDefault());
+                }
+                else
+                {
+                    await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: opResult?.EntityUID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
+                }
             }
 
             return createResult;

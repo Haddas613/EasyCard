@@ -57,10 +57,15 @@ namespace Transactions.Api.Models.Transactions
         /// <summary>
         /// Primary reference
         /// </summary>
-        [Required]
         public Guid? PaymentRequestID { get; set; }
 
+        /// <summary>
+        /// Primary reference
+        /// </summary>
+        public Guid? PaymentIntentID { get; set; }
+
         public bool? IssueInvoice { get; set; }
+
         public bool? IsPinPadDeal { get; set; }
 
         public InstallmentDetails InstallmentDetails { get; set; }

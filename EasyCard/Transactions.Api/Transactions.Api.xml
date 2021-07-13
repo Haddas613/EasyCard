@@ -1193,6 +1193,11 @@
             Primary reference
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.PaymentIntentID">
+            <summary>
+            Primary reference
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.TransactionType">
             <summary>
             Generic transaction type

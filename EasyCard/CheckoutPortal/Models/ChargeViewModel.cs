@@ -146,5 +146,8 @@ namespace CheckoutPortal.Models
         public IEnumerable<PinPadDevice> PinPadDevices { get; set; }
 
         public string PinPadDeviceID { get; set; }
+
+        [StringLength(100)]
+        public string PaymentIntent { get; set; }
     }
 }

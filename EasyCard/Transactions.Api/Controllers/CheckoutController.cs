@@ -36,6 +36,7 @@ namespace Transactions.Api.Controllers
         private readonly ISystemSettingsService systemSettingsService;
         private readonly IConsumersService consumersService;
         private readonly ICreditCardTokenService creditCardTokenService;
+        private readonly IPaymentIntentService paymentIntentService;
 
         public CheckoutController(
             IMapper mapper,
@@ -45,7 +46,8 @@ namespace Transactions.Api.Controllers
             IHttpContextAccessorWrapper httpContextAccessor,
             ISystemSettingsService systemSettingsService,
             IConsumersService consumersService,
-            ICreditCardTokenService creditCardTokenService)
+            ICreditCardTokenService creditCardTokenService,
+            IPaymentIntentService paymentIntentService)
         {
             this.mapper = mapper;
 
@@ -56,10 +58,11 @@ namespace Transactions.Api.Controllers
             this.systemSettingsService = systemSettingsService;
             this.consumersService = consumersService;
             this.creditCardTokenService = creditCardTokenService;
+            this.paymentIntentService = paymentIntentService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<CheckoutData>> GetCheckoutData(Guid? paymentRequestID, string apiKey, Guid? consumerID)
+        public async Task<ActionResult<CheckoutData>> GetCheckoutData(Guid? paymentRequestID, Guid? paymentIntentID, string apiKey, Guid? consumerID)
         {
             Debug.WriteLine(User);
 
@@ -124,6 +127,23 @@ namespace Transactions.Api.Controllers
                 }
 
                 response.PaymentRequest = mapper.Map<PaymentRequestInfo>(paymentRequest);
+            }
+            else if (paymentIntentID.HasValue)
+            {
+                var paymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(terminal.TerminalID, paymentIntentID.Value));
+
+                response.Settings.AllowPinPad = paymentRequest.AllowPinPad && response.Settings.AllowPinPad.GetValueOrDefault();
+
+                if (consumerID.HasValue)
+                {
+                    if (consumerID.Value != paymentRequest.DealDetails.ConsumerID)
+                    {
+                        return Unauthorized($"{consumerID} does not have access to payment request {paymentRequest.PaymentRequestID}");
+                    }
+                }
+
+                response.PaymentRequest = mapper.Map<PaymentRequestInfo>(paymentRequest);
+                response.PaymentIntentID = paymentIntentID;
             }
 
             if (consumerID.HasValue)

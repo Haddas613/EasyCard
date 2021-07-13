@@ -436,6 +436,12 @@ namespace Transactions.Api
             {
                 return new MetricsService(telemetry);
             });
+
+            services.AddSingleton<IPaymentIntentService, PaymentIntentService>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
+                return new PaymentIntentService(cfg.DefaultStorageConnectionString, cfg.PaymentIntentStorageTable);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

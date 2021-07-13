@@ -88,7 +88,9 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.ConsumerPhone, o => o.MapFrom(d => d.Phone))
                 .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.ConsumerID));
 
-            CreateMap<PaymentRequestInfo, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>();
+            CreateMap<PaymentRequestInfo, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>()
+                .ForMember(d => d.PaymentRequestID, o => o.Ignore());
+
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>();
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, Transactions.Api.Models.Transactions.CreateTransactionRequest>();
             CreateMap<Transactions.Api.Models.Checkout.PinPadDevice, PinPadDevice>();

@@ -43,6 +43,11 @@ namespace CheckoutPortal.Models
         /// </summary>
         public string PaymentRequest { get; set; }
 
+        /// <summary>
+        /// Payment intent ID
+        /// </summary>
+        public string PaymentIntent { get; set; }
+
         public bool? IssueInvoice { get; set; }
 
         public bool? AllowPinPad { get; set; }

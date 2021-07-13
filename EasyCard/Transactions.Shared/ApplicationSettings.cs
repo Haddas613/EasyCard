@@ -35,5 +35,7 @@ namespace Transactions.Shared
         public string InvoiceQueueName { get; set; }
 
         public string BillingDealsQueueName { get; set; }
+
+        public string PaymentIntentStorageTable { get; set; } = "paymentintent";
     }
 }
