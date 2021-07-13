@@ -104,11 +104,26 @@ namespace CheckoutPortal.Controllers
             // If token is present and correct, credit card validation is removed from model state
             if (request.CreditCardToken.HasValue || request.PinPad)
             {
-                if(!request.PinPad && !request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
+                if (!request.PinPad && !request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
                 {
                     ModelState.AddModelError(nameof(request.CreditCardToken), "Token is not recognized");
                     logger.LogWarning($"{nameof(Charge)}: unrecognized token from user. Token: {request.CreditCardToken.Value}; PaymentRequestId: {(checkoutConfig.PaymentRequest?.PaymentRequestID.ToString() ?? "-")}");
                     return View("Index", request);
+                }
+
+                if (request.PinPad)
+                {
+                    if (string.IsNullOrWhiteSpace(request.PinPadDeviceID))
+                    {
+                        ModelState.AddModelError(nameof(request.PinPadDeviceID), "PinPad device is not supplied");
+                    }
+                    else
+                    {
+                        if (!checkoutConfig.Settings.PinPadDevices.Any(d => d.DeviceID == request.PinPadDeviceID))
+                        {
+                            ModelState.AddModelError(nameof(request.PinPadDeviceID), "PinPad device is not recognized");
+                        }
+                    }
                 }
 
                 ModelState[nameof(request.Cvv)].Errors.Clear();

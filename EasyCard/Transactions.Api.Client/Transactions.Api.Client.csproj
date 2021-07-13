@@ -7,6 +7,7 @@
   <ItemGroup>
     <Compile Include="..\Transactions.Api\Models\Checkout\CheckoutData.cs" Link="Models\CheckoutData.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\ConsumerInfo.cs" Link="Models\ConsumerInfo.cs" />
+    <Compile Include="..\Transactions.Api\Models\Checkout\PinPadDevice.cs" Link="Models\PinPadDevice.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\TokenInfo.cs" Link="Models\TokenInfo.cs" />
     <Compile Include="..\Transactions.Api\Models\Checkout\TerminalCheckoutCombinedSettings.cs" Link="Models\TerminalCheckoutCombinedSettings.cs" />
     <Compile Include="..\Transactions.Api\Models\PaymentRequests\Enums\PayReqQuickStatusFilterTypeEnum.cs" Link="Models\PayReqQuickStatusFilterTypeEnum.cs" />

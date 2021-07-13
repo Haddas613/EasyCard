@@ -585,7 +585,7 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
-            if (model.PinPad == true && string.IsNullOrWhiteSpace(model.PinPadDeviceID) && string.IsNullOrWhiteSpace(model.PinPadDeviceName))
+            if (model.PinPad == true && string.IsNullOrWhiteSpace(model.PinPadDeviceID))
             {
                 var nayaxIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
                 var devices = nayaxIntegration.Settings.ToObject<Nayax.NayaxTerminalCollection>();
@@ -597,7 +597,6 @@ namespace Transactions.Api.Controllers
                 }
 
                 model.PinPadDeviceID = firstDevice.TerminalID;
-                model.PinPadDeviceName = firstDevice.PosName;
             }
 
             TransactionTerminalSettingsValidator.Validate(terminal.Settings, model, token, jDealType, specialTransactionType, initialTransactionID);
@@ -750,8 +749,7 @@ namespace Transactions.Api.Controllers
                     if (devices != null)
                     {
                         terminalPinpadProcessor.Settings = EnsureExists(
-                            devices.FirstOrDefault(d => d.GetValue("terminalID").Value<string>() == model.PinPadDeviceID
-                            && d.GetValue("posName").Value<string>() == model.PinPadDeviceName), "PinPad Terminal");
+                            devices.FirstOrDefault(d => d.GetValue("terminalID").Value<string>() == model.PinPadDeviceID), "PinPad Terminal");
                     }
                 }
 
@@ -853,7 +851,7 @@ namespace Transactions.Api.Controllers
 
                 //pinpadtransactionid = uid
                 var processorResponse = pinpadDeal ? await pinpadProcessor.CreateTransaction(processorRequest) : await processor.CreateTransaction(processorRequest);
-                 
+
                 mapper.Map(processorResponse, transaction);
 
                 if (pinpadDeal)

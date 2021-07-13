@@ -82,11 +82,6 @@ namespace Transactions.Api.Validation
                     {
                         errors.Add(new SharedHelpers.Error($"{nameof(model.PinPadDeviceID)}", Messages.Required));
                     }
-
-                    if (string.IsNullOrEmpty(model.PinPadDeviceName))
-                    {
-                        errors.Add(new SharedHelpers.Error($"{nameof(model.PinPadDeviceName)}", Messages.Required));
-                    }
                 }
             }
 

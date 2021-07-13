@@ -57,6 +57,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.MaxCreditInstallments, o => o.MapFrom(src => src.MaxCreditInstallments))
                 .ForMember(d => d.MinCreditInstallments, o => o.MapFrom(src => src.MinCreditInstallments))
                 .ForMember(d => d.TransactionTypes, o => o.MapFrom(src => src.TransactionTypes))
+                .ForMember(d => d.PinPadDevices, o => o.MapFrom(src => src.PinPadDevices))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.ConsumerInfo, ChargeViewModel>()
@@ -90,6 +91,7 @@ namespace CheckoutPortal.Mappings
             CreateMap<PaymentRequestInfo, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>();
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>();
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, Transactions.Api.Models.Transactions.CreateTransactionRequest>();
+            CreateMap<Transactions.Api.Models.Checkout.PinPadDevice, PinPadDevice>();
         }
     }
 }

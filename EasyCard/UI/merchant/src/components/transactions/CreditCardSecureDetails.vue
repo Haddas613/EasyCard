@@ -178,7 +178,6 @@ export default {
         data: {
           pinPad: true,
           pinPadDeviceID: this.selectedDevice.deviceID,
-          pinPadDeviceName: this.selectedDevice.deviceName
         }
       });
     },

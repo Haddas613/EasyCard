@@ -46,7 +46,7 @@ namespace Merchants.Api.Controllers.Integrations
             var nayaxIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
             var devices = nayaxIntegration.Settings.ToObject<NayaxTerminalCollection>();
 
-            if (devices.devices?.Any(d => d.TerminalID == request.terminalID && d.PosName == request.posName) == false)
+            if (devices.devices?.Any(d => d.TerminalID == request.terminalID) == false)
             {
                 return BadRequest(new OperationResponse(NayaxMessagesResource.DeviceNotFound, StatusEnum.Error));
             }

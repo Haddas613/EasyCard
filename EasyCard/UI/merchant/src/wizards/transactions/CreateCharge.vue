@@ -295,8 +295,7 @@ export default {
         this.model.saveCreditCard = data.saveCreditCard || false;
         this.model.creditCardSecureDetails = data;
         this.model.creditCardToken = null;
-        this.model.pinPadTerminalID = null;
-        this.model.pinPadPosName = null;
+        this.model.pinPadDeviceID = null;
         if (data.cardReaderInput) {
           this.model.cardPresence = "regular";
         } else {
@@ -306,8 +305,7 @@ export default {
         this.model.creditCardSecureDetails = null;
         this.model.creditCardToken = data.data;
         this.model.saveCreditCard = false;
-        this.model.pinPadTerminalID = null;
-        this.model.pinPadPosName = null;
+        this.model.pinPadDeviceID = null;
       } 
       else if (data.type === "device") {
         this.model.creditCardSecureDetails = null;

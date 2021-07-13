@@ -91,6 +91,20 @@ namespace Transactions.Api.Controllers
 
             response.Settings.AllowPinPad = terminal.IntegrationEnabled(ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID);
 
+            if (response.Settings.AllowPinPad == true)
+            {
+                var nayaxIntegration = terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID);
+                if (nayaxIntegration != null)
+                {
+                    var devices = nayaxIntegration.Settings.ToObject<Nayax.NayaxTerminalCollection>();
+                    response.Settings.AllowPinPad = devices?.devices?.Any() == true;
+                    if (response.Settings.AllowPinPad == true)
+                    {
+                        response.Settings.PinPadDevices = devices.devices.Select(d => new PinPadDevice { DeviceID = d.TerminalID, DeviceName = d.PosName });
+                    }
+                }
+            }
+
             if (paymentRequestID.HasValue)
             {
                 var paymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().Where(d => d.PaymentRequestID == paymentRequestID && d.TerminalID == terminal.TerminalID).FirstOrDefaultAsync());
