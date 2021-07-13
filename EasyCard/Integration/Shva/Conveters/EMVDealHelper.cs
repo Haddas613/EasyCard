@@ -63,7 +63,7 @@ namespace Shva.Conveters
             return new ShvaCreateTransactionResponse()
             {
                 ShvaShovarNumber = resultAshEndBody.globalObj?.receiptObj?.voucherNumber?.valueTag,
-
+                ResultCode = resultAshEndBody.AshEndResult,
                 ShvaTranRecord = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag,
                 ShvaDealID = resultAshEndBody.globalObj?.outputObj?.uid?.valueTag,
                 AuthSolekNum = resultAshEndBody.globalObj?.outputObj?.authSolekNo?.valueTag,
@@ -72,7 +72,9 @@ namespace Shva.Conveters
                 Solek = (SolekEnum)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.solek?.valueTag),
                 CreditCardVendor = (CardVendorEnum)Convert.ToInt32(resultAshEndBody.globalObj?.outputObj?.manpik?.valueTag), // TODO
                 ShvaTransactionDate = resultAshEndBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime(),
-                TranRecord = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag
+                TranRecord = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag,
+                EmvSoftVersion = resultAshEndBody.globalObj?.outputObj?.appVersion?.valueTag,
+                CompRetailerNum = resultAshEndBody.globalObj?.outputObj?.compRetailerNum?.valueTag 
             };
         }
 
@@ -81,7 +83,7 @@ namespace Shva.Conveters
             return new ShvaCreateTransactionResponse()
             {
                 ShvaShovarNumber = resultAshStartBody.globalObj?.receiptObj?.voucherNumber?.valueTag,
-
+                ResultCode = resultAshStartBody.AshStartResult,
                 ShvaTranRecord = resultAshStartBody.globalObj?.outputObj?.tranRecord?.valueTag,
                 ShvaDealID = resultAshStartBody.globalObj?.outputObj?.uid?.valueTag,
                 AuthSolekNum = resultAshStartBody.globalObj?.outputObj?.authSolekNo?.valueTag,

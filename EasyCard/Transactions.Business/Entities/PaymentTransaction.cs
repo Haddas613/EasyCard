@@ -252,6 +252,11 @@ namespace Transactions.Business.Entities
         [NotMapped]
         public string PinPadDeviceID { get; set; }
 
+        public int? ProcessorResultCode { get; set; }
+
+        public string EmvSoftVersion { get; set; }
+
+        public string CompRetailerNum { get; set; }
         // TODO: calculate items, VAT
         [Obsolete]
         public void Calculate()

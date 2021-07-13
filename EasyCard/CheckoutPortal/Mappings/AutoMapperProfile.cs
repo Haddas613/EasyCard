@@ -5,6 +5,7 @@ using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using Transactions.Api.Models.PaymentRequests;
+using Transactions.Business.Entities;
 
 namespace CheckoutPortal.Mappings
 {
@@ -90,6 +91,35 @@ namespace CheckoutPortal.Mappings
             CreateMap<PaymentRequestInfo, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>();
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>();
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, Transactions.Api.Models.Transactions.CreateTransactionRequest>();
+
+
+            CreateMap<PaymentTransaction, LegacyQueryStringModel>()
+                //  //DealTypeOut = paymentTransaction.DealTypeOut,//empty
+                .ForMember(q => q.Code, src => src.MapFrom(src => src.ProcessorResultCode))
+                .ForMember(q => q.OkNumber, src => src.MapFrom(src => src.ShvaTransactionDetails.ShvaAuthNum))
+                .ForMember(q => q.CardDate, src => src.MapFrom(src => src.CreditCardDetails.CardExpiration))
+                .ForMember(q => q.DealID, src => src.MapFrom(src => src.PaymentTransactionID))
+                .ForMember(q => q.Terminal, src => src.MapFrom(src => src.ShvaTransactionDetails.ShvaTerminalID))
+                .ForMember(q => q.DealNumber, src => src.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
+                .ForMember(q => q.DealDate, src => src.MapFrom(src => src.TransactionDate))
+                .ForMember(q => q.PayNumber, src => src.MapFrom(src => src.NumberOfPayments - 1))//Pay Number is added payments
+                .ForMember(q => q.FirstPay, src => src.MapFrom(src => src.InitialPaymentAmount))
+                .ForMember(q => q.AddPay, src => src.MapFrom(src => src.InstallmentPaymentAmount))
+                .ForMember(q => q.CardNumber, src => src.MapFrom(src => src.CreditCardDetails.CardNumber))
+                .ForMember(q => q.CardOwner, src => src.MapFrom(src => src.CreditCardDetails.CardOwnerName))
+                .ForMember(q => q.Manpik, src => src.MapFrom(src => src.CreditCardDetails.CardVendor))
+            .ForMember(q => q.OriginalUID, src => src.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
+            .ForMember(q => q.CardNameIDCode, src => src.MapFrom(src => (int)src.ShvaTransactionDetails.Solek))
+            .ForMember(q => q.EmvSoftVersion, src => src.MapFrom(src => src.EmvSoftVersion))
+            .ForMember(q => q.CompRetailerNum, src => src.MapFrom(src => src.CompRetailerNum))
+            .ForMember(q => q.CurrencyID, src => src.MapFrom(src => LegacyQueryStringConvertor.GetLegacyCurrencyValue(src.Currency)))
+             .ForMember(q => q.Currency, src => src.MapFrom(src => LegacyQueryStringConvertor.GetLegacyCurrency(src.Currency)))
+             .ForMember(q => q.ManpikID, src => src.MapFrom(src => LegacyQueryStringConvertor.GetInValueManpik(src.CreditCardDetails.CardVendor)))
+            .ForMember(q => q.MutagID, src => src.MapFrom(src => src.CreditCardDetails.CardBrand))
+            .ForMember(q => q.Mutag, src => src.MapFrom(src => LegacyQueryStringConvertor.GetMutagStr(src.CreditCardDetails.CardBrand)))
+          .ForMember(q => q.DealType, src => src.MapFrom(src => src.TransactionType.ToString()))
+         .ForMember(q => q.DealTypeID, src => src.MapFrom(src => LegacyQueryStringConvertor.GetLegacyDealtypeValue(src.TransactionType)))
+         .ForMember(q =>q.Token, src => src.MapFrom(src => src.CreditCardToken));
         }
     }
 }

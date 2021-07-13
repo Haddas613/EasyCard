@@ -142,5 +142,7 @@ namespace CheckoutPortal.Models
 
         [BindNever]
         public IEnumerable<TransactionTypeEnum> TransactionTypes { get; set; }
+
+        public string StateData { get; set; }
     }
 }

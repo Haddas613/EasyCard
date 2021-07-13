@@ -30,6 +30,7 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.PinPadTransactionID, s => s.MapFrom(src => src.PinPadTransactionID))
                 .ForMember(m => m.CreditCardDetails, s => s.MapFrom(src => src))
                 .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))
+                .ForMember(m=>m.ProcessorResultCode, s => s.MapFrom(src => src.ResultCode))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<NayaxCreateTransactionResponse, CreditCardDetails>()
