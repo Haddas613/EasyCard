@@ -35,14 +35,14 @@
     </v-row>
     <v-row v-if="selectedDevice" class="pt-2">
       <v-col cols="12" md="6" class="py-0">
-        <v-text-field v-model="selectedDevice.terminalID" :label="$t('TerminalID')" :rules="[vr.primitives.required]"></v-text-field>
+        <v-text-field v-model="selectedDevice.terminalID" :label="$t('TerminalID')" :rules="[vr.primitives.required, deviceExists]"></v-text-field>
       </v-col>
       <v-col cols="12" md="6" class="py-0">
         <v-text-field v-model="selectedDevice.posName" :label="$t('PaxDeviceLabel')" :rules="[vr.primitives.required]"></v-text-field>
       </v-col>
     </v-row>
     <div class="d-flex justify-end">
-      <v-btn color="primary" @click="save()" :loading="loading">{{$t("Save")}}</v-btn>
+      <v-btn color="primary" @click="save()" :loading="loading" :disabled="!formValid">{{$t("Save")}}</v-btn>
     </div>
   </v-form>
 </template>
@@ -143,6 +143,13 @@ export default {
     },
     deviceValue(a){
       return `${a.terminalID}-${a.posName}`;
+    },
+    deviceExists(val){
+      if(!val || !this.model.settings.devices.length){
+        return false;
+      }
+      
+      return (this.lodash.countBy(this.model.settings.devices, d => d.terminalID  == val).true < 2) || this.$t("AlreadyPresent");
     }
   },
 };

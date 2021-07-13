@@ -140,6 +140,7 @@
   "OnlyImagesAreAllowed": "Only images are allowed",
   "OnlyCSSFilesAreAllowed": "Only CSS files are allowed",
   "MaxFileSizeIs1MB": "Max file size is 1MB",
+  "AlreadyPresent": "Already present",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",

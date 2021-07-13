@@ -143,6 +143,7 @@
   "OnlyImagesAreAllowed": "ניתן להעלות רק תמונות",
   "OnlyCSSFilesAreAllowed": "רק קבצי CSS מותרים",
   "MaxFileSizeIs1MB": "גודל הקובץ המרבי הוא 1MB",
+  "AlreadyPresent": "מיוצג כבר",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ת.ז.",
