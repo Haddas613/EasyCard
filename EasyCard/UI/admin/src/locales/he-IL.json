@@ -102,6 +102,8 @@
   "Actions": "פעולות",
   "Audits": "בקרה",
   "AuthenticateDevice": "אימות מכשיר",
+  "UpayTransactionDetails": "פרטי עסקת מאגד פיידיי",
+  "ClearingHouseTransactionDetails": "פרטי עסקת מאגד",
   
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -346,6 +348,13 @@
   "Actual": "ממשי",
   "PaxDeviceLabel": "תיאור פינפד PAX",
   "OTP": "סיסמה",
+  "ClearingHouseTransactionID": "מזהה עסקת מאגד",
+  "CashieriD": "מזהה קופה",
+  "CreditCardCompanyCode": "קוד חברת כרטיס האשראי",
+  "SessionID": "מזהה חיבור",
+  "ErrorMessage": "הודעת שגיאה",
+  "WebUrl": "כתובת אינטרנטית",
+  "ErrorDescription": "תיאור שגיאה",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

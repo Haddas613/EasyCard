@@ -102,6 +102,8 @@
   "Actions": "Actions",
   "Audits": "Audits",
   "AuthenticateDevice": "Authenticate device",
+  "UpayTransactionDetails": "Upay Transaction Details",
+  "ClearingHouseTransactionDetails": "Clearing House Transaction Details",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -342,6 +344,13 @@
   "Actual": "Actual",
   "PaxDeviceLabel": "Pax Device label",
   "OTP": "OTP",
+  "ClearingHouseTransactionID": "Clearing House Transaction ID",
+  "CashieriD": "Cashier ID",
+  "CreditCardCompanyCode": "Credit Card Company Code",
+  "SessionID": "Session ID",
+  "ErrorMessage": "Error Message",
+  "WebUrl": "Web Url",
+  "ErrorDescription": "Error Description",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

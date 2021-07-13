@@ -115,7 +115,11 @@
               </v-row>
             </v-card-text>
           </v-card>
-          <shva-transaction-details :model="model.shvaTransactionDetails"></shva-transaction-details>
+          <shva-transaction-details v-if="model.shvaTransactionDetails" :model="model.shvaTransactionDetails"></shva-transaction-details>
+          <upay-transaction-details v-if="model.upayTransactionDetails" :model="model.upayTransactionDetails"></upay-transaction-details>
+          <clearing-house-transaction-details 
+            v-if="model.clearingHouseTransactionDetails" 
+            :model="model.clearingHouseTransactionDetails"></clearing-house-transaction-details>
         </div>
         <v-row no-gutters v-if="model && model.allowTransmission" class="py-2">
           <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
@@ -169,7 +173,11 @@ export default {
     TransactionPrintout: () =>
       import("../../components/printouts/TransactionPrintout"),
     TransactionSlipDialog: () =>
-      import("../../components/transactions/TransactionSlipDialog")
+      import("../../components/transactions/TransactionSlipDialog"),
+    UpayTransactionDetails: () =>
+      import("../../components/details/UpayTransactionDetails"),
+    ClearingHouseTransactionDetails: () =>
+      import("../../components/details/ClearingHouseTransactionDetails"),
   },
   data() {
     return {

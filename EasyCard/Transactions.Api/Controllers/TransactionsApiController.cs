@@ -174,6 +174,7 @@ namespace Transactions.Api.Controllers
 
             if (httpContextAccessor.GetUser().IsAdmin())
             {
+                var tr = await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID);
                 var transaction = mapper.Map<TransactionResponseAdmin>(EnsureExists(
                     await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
 
