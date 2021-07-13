@@ -289,6 +289,7 @@
   "ErrorMessage": "Error Message",
   "WebUrl": "Web Url",
   "ErrorDescription": "Error Description",
+  "ExternalReference": "External Reference",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

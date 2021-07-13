@@ -1114,9 +1114,7 @@ namespace Transactions.Api.Controllers
                 new TextSubstitution(nameof(transaction.DealDetails.DealDescription), transaction.DealDetails?.DealDescription ?? string.Empty)
             };
 
-            //TODO: temporary
-            var culture = new CultureInfo("he-IL");
-            var dictionaries = DictionariesService.GetDictionaries(culture);
+            var dictionaries = DictionariesService.GetDictionaries(CurrentCulture);
 
             var transactionTypeKey = typeof(TransactionTypeEnum).GetDataContractAttrForEnum(transaction.TransactionType.ToString());
             var cardPresenceKey = typeof(CardPresenceEnum).GetDataContractAttrForEnum(transaction.CardPresence.ToString());

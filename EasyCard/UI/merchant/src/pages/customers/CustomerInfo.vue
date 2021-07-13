@@ -21,26 +21,36 @@
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text class="body-1 black--text">
-        <div class="info-block">
-          <p class="caption ecgray--text text--darken-2">{{$t('Name')}}</p>
-          <p>{{model.consumerName}}</p>
-        </div>
-        <div class="info-block">
-          <p class="caption ecgray--text text--darken-2">{{$t('Phone')}}</p>
-          <p class="primary--text">{{model.consumerPhone}}</p>
-        </div>
-        <div class="info-block">
-          <p class="caption ecgray--text text--darken-2">{{$t('Email')}}</p>
-          <p class="primary--text">{{model.consumerEmail}}</p>
-        </div>
-        <div class="info-block">
-          <p class="caption ecgray--text text--darken-2">{{$t('NationalID')}}</p>
-          <p>{{model.consumerNationalID}}</p>
-        </div>
-        <div class="info-block">
-          <p class="caption ecgray--text text--darken-2">{{$t('Address')}}</p>
-          <p>{{model.consumerAddress}}</p>
-        </div>
+        <v-row no-gutters>
+          <v-col cols="12" md="6">
+            <div class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Name')}}</p>
+              <p>{{model.consumerName}}</p>
+            </div>
+            <div class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Phone')}}</p>
+              <p class="primary--text">{{model.consumerPhone}}</p>
+            </div>
+            <div class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Email')}}</p>
+              <p class="primary--text">{{model.consumerEmail}}</p>
+            </div>
+          </v-col>
+          <v-col cols="12" md="6">
+            <div class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('NationalID')}}</p>
+              <p>{{model.consumerNationalID || '-'}}</p>
+            </div>
+            <div class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Address')}}</p>
+              <p>{{model.consumerAddress || '-'}}</p>
+            </div>
+            <div class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('ExternalReference')}}</p>
+              <p>{{model.externalReference || '-'}}</p>
+            </div>
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-card>
 
