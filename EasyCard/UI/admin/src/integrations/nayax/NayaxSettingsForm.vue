@@ -28,7 +28,7 @@
         </v-select>
       </v-col>
       <v-col cols="6" class="text-end">
-        <v-btn small color="success" class="mx-1" @click="addDevice()" :disabled="selectedDevice && !selectedDevice.terminalID">{{$t("Add")}}</v-btn>
+        <v-btn small color="success" class="mx-1" @click="addDevice()" :disabled="!formValid || (selectedDevice && !selectedDevice.terminalID)">{{$t("Add")}}</v-btn>
         <v-btn small color="secondary" class="mx-1" @click="pairDevice()" :disabled="!selectedDevice || !formValid">{{$t("PairDevice")}}</v-btn>
         <v-btn small color="error" class="mx-1" @click="removeCurrentDevice()" :disabled="!selectedDevice">{{$t("Delete")}}</v-btn>
       </v-col>
