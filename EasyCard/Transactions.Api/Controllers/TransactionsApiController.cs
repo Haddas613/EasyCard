@@ -177,9 +177,24 @@ namespace Transactions.Api.Controllers
 
             if (httpContextAccessor.GetUser().IsAdmin())
             {
-                var tr = await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID);
-                var transaction = mapper.Map<TransactionResponseAdmin>(EnsureExists(
-                    await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
+                var tr = EnsureExists(
+                    await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID));
+                var transaction = mapper.Map<TransactionResponseAdmin>(tr);
+
+                // TODO: find another way to map it
+                if (tr.AggregatorID == 60)
+                {
+                    transaction.ClearingHouseTransactionDetails = null;
+                }
+                else if (tr.AggregatorID == 10)
+                {
+                    transaction.UpayTransactionDetails = null;
+                }
+                else
+                {
+                    transaction.ClearingHouseTransactionDetails = null;
+                    transaction.UpayTransactionDetails = null;
+                }
 
                 //TODO: cache
                 var merchantName = await merchantsService.GetMerchants().Where(m => m.MerchantID == transaction.MerchantID).Select(m => m.BusinessName).FirstOrDefaultAsync();

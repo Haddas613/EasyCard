@@ -24,11 +24,18 @@ using System.Linq;
 using Shared.Integration.Models;
 using Shared.Business.Extensions;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Logging.Debug;
 
 namespace Transactions.Business.Data
 {
     public class TransactionsContext : DbContext
     {
+        public static readonly LoggerFactory DbCommandConsoleLoggerFactory
+            = new LoggerFactory(new[]
+            {
+                new DebugLoggerProvider()
+            });
+
         public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
 
         public DbSet<CreditCardTokenDetails> CreditCardTokenDetails { get; set; }
@@ -82,9 +89,9 @@ namespace Transactions.Business.Data
         }
 
         // NOTE: use this for debugging purposes to analyse sql query performance
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //    => optionsBuilder
-        //        .UseLoggerFactory(DbCommandConsoleLoggerFactory);
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder
+                .UseLoggerFactory(DbCommandConsoleLoggerFactory);
 
         public async Task<IEnumerable<TransactionSummaryDb>> GetGroupedTransactionSummaries(Guid? terminalID, IDbContextTransaction dbTransaction = null)
         {
@@ -327,14 +334,14 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 {
                     s.Property(p => p.ClearingHouseTransactionID).HasColumnName("ClearingHouseTransactionID");
                     s.Property(p => p.MerchantReference).HasColumnName("ClearingHouseMerchantReference").IsRequired(false).HasMaxLength(50);
-                    s.Ignore(p => p.ConcurrencyToken); 
+                    s.Ignore(p => p.ConcurrencyToken);
                 });
 
                 builder.OwnsOne(b => b.UpayTransactionDetails, s =>
                 {
                     s.Property(p => p.CashieriD).IsRequired(false).HasMaxLength(64).HasColumnName("UpayTransactionID");
-                    s.Property(p => p.CreditCardCompanyCode).IsRequired(true).HasMaxLength(64).HasColumnName("UpayCreditCardCompanyCode");
-                    s.Property(p => p.MerchantNumber).IsRequired(true).HasMaxLength(64).HasColumnName("UpayMerchantNumber");
+                    s.Property(p => p.CreditCardCompanyCode).IsRequired(false).HasMaxLength(64).HasColumnName("UpayCreditCardCompanyCode");
+                    s.Property(p => p.MerchantNumber).IsRequired(false).HasMaxLength(64).HasColumnName("UpayMerchantNumber");
                     s.Ignore(p => p.ErrorMessage)/*.IsRequired(false).HasMaxLength(512).IsUnicode(true)*/;
                     s.Ignore(p => p.ErrorDescription)/*.IsRequired(false).HasMaxLength(512).IsUnicode(true)*/;
                     s.Property(p => p.WebUrl).IsRequired(false).HasMaxLength(512).IsUnicode(true).HasColumnName("UpayWebUrl");
