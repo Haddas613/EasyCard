@@ -136,6 +136,7 @@ namespace CheckoutPortal.Models
                     break;
                 case "6":
                     mutag = "לאומיקארד";
+                    break;
                 default:
                     break;
             }
