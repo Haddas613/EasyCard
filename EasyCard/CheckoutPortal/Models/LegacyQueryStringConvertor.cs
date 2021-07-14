@@ -24,7 +24,7 @@ namespace CheckoutPortal.Models
 
             var shvaDetails = (JObject)paymentTransaction.ShvaTransactionDetails;
             var manpikId = GetInValueManpik(paymentTransaction.CreditCardDetails.CardVendor);
-            var solekStr = shvaDetails["Solek"].ToString();
+            var solekStr = shvaDetails["solek"]?.ToString();
             var solekId = GetInValueSolek(solekStr);
 
             return new LegacyQueryStringModel
@@ -34,14 +34,14 @@ namespace CheckoutPortal.Models
                 Total = paymentTransaction.TotalAmount.ToString("F2"),
                 CardOwner = request.Name,
                 OwnerEmail = request.Email,
-                Id = request.PaymentIntent,
+                Id = !string.IsNullOrWhiteSpace(request.PaymentIntent) ? (new Guid(Convert.FromBase64String(request.PaymentIntent))).ToString() : (string)null,
 
-                OkNumber = shvaDetails["ShvaAuthNum"].ToString(),
+                OkNumber = shvaDetails["shvaAuthNum"]?.ToString(),
                 Code = paymentTransaction.ProcessorResultCode.ToString(),
 
                 BusinessName = paymentTransaction.MerchantName,
-                Terminal = shvaDetails["ShvaTerminalID"].ToString(),
-                DealNumber = GetDealNumber(shvaDetails["ShvaDealID"].ToString()),
+                Terminal = shvaDetails["shvaTerminalID"]?.ToString(),
+                DealNumber = GetDealNumber(shvaDetails["shvaDealID"]?.ToString()),
 
                 CardNumber = paymentTransaction.CreditCardDetails?.CardNumber,
                 DealDate = paymentTransaction.TransactionDate.GetValueOrDefault(DateTime.Today).ToString("yyyy-MM-dd"),
@@ -53,14 +53,14 @@ namespace CheckoutPortal.Models
                 DealType = DealType.ResourceManager.GetString(paymentTransaction.TransactionType.ToString(), culture),
                 DealTypeID = GetLegacyDealtypeValue(paymentTransaction.TransactionType).ToString(),
 
-                Currency = LegacyQueryStringConvertor.GetLegacyCurrency(paymentTransaction.Currency),
+                Currency = GetLegacyCurrency(paymentTransaction.Currency),
                 CurrencyID = GetLegacyCurrencyValue(paymentTransaction.Currency).ToString(),
 
                 CardNameID = CardVendor.ResourceManager.GetString(solekId.ToString(), culture),
                 CardNameIDCode = ((int)solekId).ToString(),
                 Manpik = CardVendor.ResourceManager.GetString(manpikId.ToString(), culture),
                 ManpikID = ((int)manpikId).ToString(),
-                Mutag = LegacyQueryStringConvertor.GetMutagStr(paymentTransaction.CreditCardDetails.CardBrand),
+                Mutag = GetMutagStr(paymentTransaction.CreditCardDetails.CardBrand),
                 MutagID = paymentTransaction.CreditCardDetails.CardBrand,
 
                 Tz = request.NationalID,
@@ -70,9 +70,9 @@ namespace CheckoutPortal.Models
 
                 PhoneNumber = request.Phone,
 
-                EmvSoftVersion = shvaDetails["EmvSoftVersion"].ToString(),
-                OriginalUID = shvaDetails["ShvaDealID"].ToString(),
-                CompRetailerNum = shvaDetails["CompRetailerNum"].ToString(),
+                EmvSoftVersion = shvaDetails["emvSoftVersion"]?.ToString(),
+                OriginalUID = shvaDetails["shvaDealID"]?.ToString(),
+                CompRetailerNum = shvaDetails["compRetailerNum"]?.ToString(),
             };
 
         }

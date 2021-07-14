@@ -162,5 +162,8 @@ namespace Transactions.Business.Entities
 
             TotalAmount = InitialPaymentAmount + (InstallmentPaymentAmount * (NumberOfPayments - 1));
         }
+
+        [NotMapped]
+        public string RedirectUrl { get; set; }
     }
 }

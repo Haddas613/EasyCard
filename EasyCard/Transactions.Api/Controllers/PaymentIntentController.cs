@@ -103,7 +103,7 @@ namespace Transactions.Api.Controllers
 
             var paymentRequest = mapper.Map<PaymentRequestResponse>(dbPaymentRequest);
 
-            paymentRequest.PaymentRequestUrl = GetPaymentIntentUrl(dbPaymentRequest, terminal.SharedApiKey);
+            paymentRequest.PaymentRequestUrl = GetPaymentIntentUrl(dbPaymentRequest, terminal.SharedApiKey, dbPaymentRequest.RedirectUrl);
 
             paymentRequest.TerminalName = terminal.Label;
 
@@ -163,9 +163,14 @@ namespace Transactions.Api.Controllers
 
             newPaymentRequest.MerchantID = terminal.MerchantID;
 
-            await paymentIntentService.SavePaymentIntent(newPaymentRequest);
+            if (!string.IsNullOrWhiteSpace(model.RedirectUrl))
+            {
+                RedirectUrlHelpers.CheckRedirectUrls(terminal.CheckoutSettings.RedirectUrls, model.RedirectUrl);
+            }
 
-            string url = GetPaymentIntentUrl(newPaymentRequest, terminal.SharedApiKey);
+            string url = GetPaymentIntentUrl(newPaymentRequest, terminal.SharedApiKey, model.RedirectUrl);
+
+            await paymentIntentService.SavePaymentIntent(newPaymentRequest);
 
             var respObject = new OperationResponse(Transactions.Shared.Messages.PaymentRequestCreated, StatusEnum.Success, newPaymentRequest.PaymentRequestID) { AdditionalData = JObject.FromObject(new { url }) };
 
@@ -174,7 +179,7 @@ namespace Transactions.Api.Controllers
             return response;
         }
 
-        private string GetPaymentIntentUrl(PaymentRequest dbPaymentRequest, byte[] sharedTerminalApiKey)
+        private string GetPaymentIntentUrl(PaymentRequest dbPaymentRequest, byte[] sharedTerminalApiKey, string redirectUrl)
         {
             if (sharedTerminalApiKey == null)
             {
@@ -185,6 +190,11 @@ namespace Transactions.Api.Controllers
             var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
             query["paymentIntent"] = Convert.ToBase64String(dbPaymentRequest.PaymentRequestID.ToByteArray());
             query["apiKey"] = Convert.ToBase64String(sharedTerminalApiKey);
+
+            if (!string.IsNullOrWhiteSpace(redirectUrl))
+            {
+                query["redirectUrl"] = redirectUrl;
+            }
 
             if (dbPaymentRequest.DealDetails?.ConsumerID.HasValue == true)
             {

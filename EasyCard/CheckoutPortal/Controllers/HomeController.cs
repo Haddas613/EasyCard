@@ -50,7 +50,7 @@ namespace CheckoutPortal.Controllers
         // TODO: preffered language parameter
         // TODO: issueInvoice flag
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> Index([FromQuery]CardRequest request)
+        public async Task<IActionResult> Index([FromQuery] CardRequest request)
         {
 
             if (request == null || !Request.QueryString.HasValue || (Request.Query.Keys.Count == 1 && Request.Query.ContainsKey("culture")))
@@ -80,7 +80,7 @@ namespace CheckoutPortal.Controllers
             }
 
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
-            
+
             return View(model);
         }
 
@@ -149,7 +149,7 @@ namespace CheckoutPortal.Controllers
                 {
                     ModelState.AddModelError(nameof(request.NumberOfPayments),
                        Resources.CommonResources.NumberOfPaymentsMustBeLessThan.Replace("@min", checkoutConfig.Settings.MaxCreditInstallments.Value.ToString()));
-                } 
+                }
                 else
                 {
                     if (checkoutConfig.PaymentRequest != null)
@@ -243,7 +243,7 @@ namespace CheckoutPortal.Controllers
                     CreditCardToken = request.CreditCardToken,
                     InstallmentDetails = installmentDetails,
                     TransactionType = request.TransactionType
-                }; 
+                };
                 mapper.Map(request, mdel);
                 mapper.Map(request, mdel.CreditCardSecureDetails);
                 mapper.Map(request, mdel.DealDetails);
@@ -286,7 +286,9 @@ namespace CheckoutPortal.Controllers
             {
                 var paymentTransaction = await transactionsApiClient.GetTransaction(result.EntityUID);
 
-                string redirectUrl = checkoutConfig.Settings.LegacyRedirectResponse ? UrlHelper.BuildUrl(request.RedirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction)) : UrlHelper.BuildUrl(request.RedirectUrl, null, new { transactionID = result.EntityUID });
+                //string redirectUrl = checkoutConfig.Settings.LegacyRedirectResponse ? UrlHelper.BuildUrl(request.RedirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction)) : UrlHelper.BuildUrl(request.RedirectUrl, null, new { transactionID = result.EntityUID });
+
+                string redirectUrl = UrlHelper.BuildUrl(request.RedirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction));
 
                 return Redirect(redirectUrl);
             }
@@ -301,6 +303,7 @@ namespace CheckoutPortal.Controllers
 
             if (checkoutConfig.PaymentRequest != null)
             {
+                // TODO: cancel payment intent
                 var result = await transactionsApiClient.CancelPaymentRequest(checkoutConfig.PaymentRequest.PaymentRequestID);
 
                 if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
@@ -416,7 +419,7 @@ namespace CheckoutPortal.Controllers
             }
             catch (Exception ex)
             {
-                if(ex is WebApiClientErrorException webEx)
+                if (ex is WebApiClientErrorException webEx)
                 {
                     logger.LogError(ex, $"Failed to get payment request data. Reason: {webEx.Response}");
                 }
@@ -424,7 +427,7 @@ namespace CheckoutPortal.Controllers
                 {
                     logger.LogError(ex, $"Failed to get payment request data. Reason: {ex.Message}");
                 }
-                
+
                 throw new BusinessException(Messages.InvalidCheckoutData);
             }
 

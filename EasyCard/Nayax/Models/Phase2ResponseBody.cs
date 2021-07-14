@@ -4,7 +4,6 @@ using System.Text;
 
 namespace Nayax.Models
 {
-
     public class Phase2ResponseBody
     {
         /// <summary>
@@ -37,7 +36,5 @@ namespace Nayax.Models
         public string camutagNamerdName { get; set; }
         public string currency { get; set; }
         public string retailerId { get; set; }
-      
     }
-
 }

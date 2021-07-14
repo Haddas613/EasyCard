@@ -74,7 +74,7 @@ namespace Shva.Conveters
                 ShvaTransactionDate = resultAshEndBody.globalObj?.outputObj?.dateTime?.valueTag?.GetDateFromShvaDateTime(),
                 TranRecord = resultAshEndBody.globalObj?.outputObj?.tranRecord?.valueTag,
                 EmvSoftVersion = resultAshEndBody.globalObj?.outputObj?.appVersion?.valueTag,
-                CompRetailerNum = resultAshEndBody.globalObj?.outputObj?.compRetailerNum?.valueTag 
+                CompRetailerNum = resultAshEndBody.globalObj?.outputObj?.compRetailerNum?.valueTag
             };
         }
 

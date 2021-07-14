@@ -104,6 +104,14 @@ namespace ShvaServiceImitation.Controllers
                     tranRecord = new OField
                     {
                         valueTag = Guid.NewGuid().ToString()
+                    },
+                    appVersion = new OField
+                    {
+                        valueTag = "test version"
+                    },
+                    compRetailerNum = new OField
+                    {
+                        valueTag = "test retailer"
                     }
                 },
                 receiptObj = new clsReceipt()
