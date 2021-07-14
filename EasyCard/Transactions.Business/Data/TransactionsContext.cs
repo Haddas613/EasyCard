@@ -353,6 +353,8 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.TransmissionDate).HasColumnName("ShvaTransmissionDate").IsRequired(false);
                     s.Property(p => p.Solek).HasColumnName("Solek").IsRequired(false);
                     s.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(500).IsUnicode(false).IsRequired(false);
+                    s.Property(p => p.EmvSoftVersion).HasColumnName("EmvSoftVersion").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.CompRetailerNum).HasColumnName("CompRetailerNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                 });
 
                 builder.OwnsOne(b => b.DealDetails, s =>
@@ -383,6 +385,8 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.TerminalTemplateID).IsRequired(false);
+
+                builder.Property(p => p.PinPadDeviceID).HasColumnName("PinPadDeviceID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
             }
         }
 

@@ -48,5 +48,9 @@ namespace Transactions.Business.Entities
         public string TranRecord { get; set; }
 
         public string ShvaAuthNum { get; set; }
+
+        public string EmvSoftVersion { get; set; }
+
+        public string CompRetailerNum { get; set; }
     }
 }

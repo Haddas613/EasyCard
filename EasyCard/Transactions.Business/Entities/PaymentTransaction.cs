@@ -247,16 +247,17 @@ namespace Transactions.Business.Entities
 
         public long? TerminalTemplateID { get; set; }
 
+        // TODO: move pinpad details to separate class
+
         public string PinPadTransactionID { get; set; }
 
-        [NotMapped]
         public string PinPadDeviceID { get; set; }
 
+        /// <summary>
+        /// Used both in shva and pinpad
+        /// </summary>
         public int? ProcessorResultCode { get; set; }
 
-        public string EmvSoftVersion { get; set; }
-
-        public string CompRetailerNum { get; set; }
         // TODO: calculate items, VAT
         [Obsolete]
         public void Calculate()

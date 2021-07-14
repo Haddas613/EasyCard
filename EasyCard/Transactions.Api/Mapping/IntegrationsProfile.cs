@@ -53,11 +53,6 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.PinpadDeviceID, s => s.MapFrom(src => src.PinPadDeviceID))
                 .ForMember(m => m.PinPadTransactionID, s => s.Ignore());
 
-            CreateMap<ProcessorCreateTransactionRequest, PaymentTransaction>()
-              .ForMember(m => m.PinPadTransactionID, s => s.MapFrom(src => src.PinPadTransactionID));
-            //.ForAllOtherMembers(d => d.Ignore());
-            //.ForMember(m => m.PinPadTransactionID, s => s.MapFrom(src => src.PinPadTransactionID));
-
             CreateMap<ProcessorCreateTransactionResponse, PaymentTransaction>();
 
             CreateMap<ProcessorPreCreateTransactionResponse, ProcessorCreateTransactionRequest>()

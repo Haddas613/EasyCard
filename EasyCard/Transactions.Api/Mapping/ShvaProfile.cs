@@ -22,13 +22,11 @@ namespace Transactions.Api.Mapping
             CreateMap<Shva.ShvaCreateTransactionResponse, PaymentTransaction>()
                 .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))
                 .ForMember(m => m.CreditCardDetails, s => s.MapFrom(src => src))
-                .ForPath(m => m.ShvaTransactionDetails.ShvaAuthNum, s => s.MapFrom(src => src.AuthNum))
                 .ForMember(m => m.ProcessorResultCode, s => s.MapFrom(src => src.ResultCode))
-                .ForMember(m => m.CompRetailerNum, s => s.MapFrom(src => src.CompRetailerNum))
-                .ForMember(m => m.EmvSoftVersion, s => s.MapFrom(src => src.EmvSoftVersion))
                 .ForAllOtherMembers(d => d.Ignore());
 
-            CreateMap<Shva.ShvaCreateTransactionResponse, ShvaTransactionDetails>();
+            CreateMap<Shva.ShvaCreateTransactionResponse, ShvaTransactionDetails>()
+                 .ForMember(m => m.ShvaAuthNum, s => s.MapFrom(src => src.AuthNum));
 
             CreateMap<Shva.ShvaTerminalSettings, PaymentTransaction>()
                 .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))

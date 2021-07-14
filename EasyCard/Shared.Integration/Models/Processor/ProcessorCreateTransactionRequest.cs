@@ -28,6 +28,7 @@ namespace Shared.Integration.Models
         /// Nayax TerminalID optional, in case of terminal supports multiple  devices
         /// </summary>
         public string PinpadDeviceID { get; set; }
+
         /// <summary>
         /// Unique transaction ID
         /// </summary>
@@ -103,6 +104,8 @@ namespace Shared.Integration.Models
         /// To be used for credit or installments
         /// </summary>
         public int NumberOfPayments { get; set; }
+
+        // TODO: why it is called CreditCardToken ?
 
         /// <summary>
         /// Real credit card number

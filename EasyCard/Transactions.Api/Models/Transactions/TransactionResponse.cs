@@ -227,5 +227,7 @@ namespace Transactions.Api.Models.Transactions
         public DocumentOriginEnum DocumentOrigin { get; set; }
 
         public Guid? PaymentRequestID { get; set; }
+
+        public int? ProcessorResultCode { get; set; }
     }
 }

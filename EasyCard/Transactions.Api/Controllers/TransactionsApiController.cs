@@ -741,9 +741,8 @@ namespace Transactions.Api.Controllers
             if (pinpadDeal)
             {
                 terminalPinpadProcessor = ValidateExists(
-                terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.PinpadProcessor),
-                Transactions.Shared.Messages.ProcessorNotDefined);
-
+                    terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.PinpadProcessor),
+                    Transactions.Shared.Messages.ProcessorNotDefined);
             }
 
             transaction.AggregatorID = terminalAggregator.ExternalSystemID;
@@ -803,7 +802,6 @@ namespace Transactions.Api.Controllers
                     else
                     {
                         mapper.Map(pinpadPreCreateResult, processorRequest);
-                        transaction.PinPadTransactionID = processorRequest.PinPadTransactionID;
 
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByPinpadPreProcessor);
                     }
@@ -872,7 +870,6 @@ namespace Transactions.Api.Controllers
 
                 processorRequest.ProcessorSettings = processorSettings;
 
-                //pinpadtransactionid = uid
                 var processorResponse = pinpadDeal ? await pinpadProcessor.CreateTransaction(processorRequest) : await processor.CreateTransaction(processorRequest);
 
                 mapper.Map(processorResponse, transaction);
