@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -36,15 +36,15 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\CardVendor - Copy.Designer.cs">
+    <Compile Update="Resources\CardVendor.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>CardVendor.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Resources\CommonResources - Copy.Designer.cs">
-      <DependentUpon>CommonResources.resx</DependentUpon>
+    <Compile Update="Resources\CommonResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DependentUpon>CommonResources.resx</DependentUpon>
     </Compile>
     <Compile Update="Resources\DealType.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -58,23 +58,17 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\DealType.resx">
-      <LastGenOutput>DealType.Designer.cs</LastGenOutput>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\CardVendor.he.resx">
-      <Generator></Generator>
-    </EmbeddedResource>
     <EmbeddedResource Update="Resources\CardVendor.resx">
-      <LastGenOutput>DealType.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\CommonResources.en.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CardVendor.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\CommonResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>CardVendor.Designer.cs</LastGenOutput>
+      <LastGenOutput>CommonResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\DealType.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>DealType.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 
