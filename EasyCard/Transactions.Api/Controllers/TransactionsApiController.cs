@@ -400,11 +400,14 @@ namespace Transactions.Api.Controllers
                 }
 
                 var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken.ToString()), "CreditCardToken");
-                createResult = await ProcessTransaction(model, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, paymentRequestID: prmodel.PaymentRequestID);
+
+                createResult = await ProcessTransaction(model, token,
+                    specialTransactionType: dbPaymentRequest.IsRefund ? SpecialTransactionTypeEnum.Refund : SpecialTransactionTypeEnum.RegularDeal, paymentRequestID: prmodel.PaymentRequestID);
             }
             else
             {
-                createResult = await ProcessTransaction(model, null, paymentRequestID: prmodel.PaymentRequestID);
+                createResult = await ProcessTransaction(model, null,
+                    specialTransactionType: dbPaymentRequest.IsRefund ? SpecialTransactionTypeEnum.Refund : SpecialTransactionTypeEnum.RegularDeal, paymentRequestID: prmodel.PaymentRequestID);
             }
 
             var opResult = createResult.GetOperationResponse();
