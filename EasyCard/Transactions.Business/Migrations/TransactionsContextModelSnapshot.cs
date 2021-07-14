@@ -495,6 +495,9 @@ namespace Transactions.Business.Migrations
                     b.Property<decimal>("InstallmentPaymentAmount")
                         .HasColumnType("decimal(19,4)");
 
+                    b.Property<bool>("IsRefund")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IssueInvoice")
                         .HasColumnType("bit");
 

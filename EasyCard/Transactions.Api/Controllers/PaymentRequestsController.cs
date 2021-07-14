@@ -276,8 +276,8 @@ namespace Transactions.Api.Controllers
         {
             var settings = terminal.PaymentRequestSettings;
 
-            var emailSubject = paymentRequest.RequestSubject ?? settings.DefaultRequestSubject;
-            var emailTemplateCode = settings.EmailTemplateCode ?? nameof(PaymentRequest);
+            var emailSubject = paymentRequest.RequestSubject ?? (paymentRequest.IsRefund ? settings.DefaultRefundRequestSubject : settings.DefaultRequestSubject);
+            var emailTemplateCode = $"{settings.EmailTemplateCode ?? nameof(PaymentRequest)}{(paymentRequest.IsRefund ? "Refund" : string.Empty)}";
             var url = GetPaymentRequestUrl(paymentRequest, terminal.SharedApiKey);
             var substitutions = new List<TextSubstitution>();
 

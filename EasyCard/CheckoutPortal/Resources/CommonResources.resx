@@ -207,4 +207,7 @@
   <data name="Installments" xml:space="preserve">
     <value>Installment</value>
   </data>
+  <data name="Refund" xml:space="preserve">
+    <value>Refund</value>
+  </data>
 </root>

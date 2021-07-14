@@ -88,5 +88,7 @@ namespace Transactions.Api.Models.PaymentRequests
         /// This amount
         /// </summary>
         public decimal PaymentRequestAmount { get; set; }
+
+        public bool IsRefund { get; set; }
     }
 }

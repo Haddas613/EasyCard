@@ -29,11 +29,17 @@
         <v-switch 
           v-model="isInstallmentTransaction" 
           :label="$t('InstallmentTransaction')" 
-          class="pt-0 mt-0" 
-          v-bind:class="{'pb-2': !isInstallmentTransaction}"
+          class="pt-0 mt-0"
+          hide-details="true"></v-switch>
+
+        <v-switch 
+          v-model="model.isRefund" 
+          :label="$t('Refund')" 
+          class="pt-2 mt-0"
           hide-details="true"></v-switch>
 
         <installment-details
+          class="mt-2"
           ref="instDetails"
           :data="model.installmentDetails"
           v-if="isInstallmentTransaction"

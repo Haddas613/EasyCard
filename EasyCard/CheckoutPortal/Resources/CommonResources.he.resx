@@ -207,4 +207,7 @@
   <data name="RegularDeal" xml:space="preserve">
     <value>עסקה רגילה</value>
   </data>
+  <data name="Refund" xml:space="preserve">
+    <value>זיכוי</value>
+  </data>
 </root>

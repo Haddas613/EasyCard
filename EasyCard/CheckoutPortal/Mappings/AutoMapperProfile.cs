@@ -48,6 +48,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.TotalAmount, o => o.MapFrom(d => d.TotalAmount))
                 .ForMember(d => d.InitialPaymentAmount, o => o.MapFrom(d => d.InitialPaymentAmount))
                 .ForMember(d => d.TransactionType, o => o.MapFrom(d => d.NumberOfPayments > 1 ? TransactionTypeEnum.Installments : TransactionTypeEnum.RegularDeal))
+                .ForMember(d => d.IsRefund, o => o.MapFrom(src => src.IsRefund))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, ChargeViewModel>()

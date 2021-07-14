@@ -219,7 +219,7 @@
           <v-col cols="12">
             <v-divider class="py-2"></v-divider>
           </v-col>
-          <v-col cols="12" md="5">
+          <v-col cols="12" md="4">
             <v-text-field
               v-model="model.paymentRequestSettings.defaultRequestSubject"
               :counter="128"
@@ -227,8 +227,16 @@
               :label="$t('DefaultRequestSubject')"
             ></v-text-field>
           </v-col>
-          <v-spacer></v-spacer>
-          <v-col cols="12" md="5">
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-bind:class="{'px-4' : $vuetify.breakpoint.mdAndUp}"
+              v-model="model.paymentRequestSettings.defaultRefundRequestSubject"
+              :counter="128"
+              :rules="[vr.primitives.maxLength(128)]"
+              :label="$t('DefaultRefundRequestSubject')"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
             <v-text-field
               v-model="model.paymentRequestSettings.fromAddress"
               :rules="[vr.primitives.required, vr.primitives.email]"
