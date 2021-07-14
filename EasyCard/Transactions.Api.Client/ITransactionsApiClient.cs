@@ -30,5 +30,7 @@ namespace Transactions.Api.Client
         Task<OperationResponse> CancelPaymentRequest(Guid paymentRequestID);
 
         Task<OperationResponse> DeleteConsumerRelatedData(Guid consumerID);
+
+        Task<TransactionResponseAdmin> GetTransaction(Guid? transactionID);
     }
 }

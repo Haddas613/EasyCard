@@ -38,6 +38,8 @@ namespace Transactions.Api.Models.Checkout
 
         public int? MaxInstallments { get; set; }
 
+        public bool LegacyRedirectResponse { get; set; }
+
         public IEnumerable<TransactionTypeEnum> TransactionTypes { get; set; }
 
         public IEnumerable<PinPadDevice> PinPadDevices { get; set; }

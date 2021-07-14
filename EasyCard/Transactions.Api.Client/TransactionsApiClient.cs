@@ -176,5 +176,17 @@ namespace Transactions.Api.Client
 
             return headers;
         }
+
+        public async Task<TransactionResponseAdmin> GetTransaction(Guid? transactionID)
+        {
+            try
+            {
+                return await webApiClient.Get<TransactionResponseAdmin>(apiConfiguration.TransactionsApiAddress, $"api/transactions/{transactionID}", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException)
+            {
+                throw;
+            }
+        }
     }
 }

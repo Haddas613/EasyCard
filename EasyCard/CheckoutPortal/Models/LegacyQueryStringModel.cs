@@ -36,9 +36,10 @@ namespace CheckoutPortal.Models
         public string Tz { get; set; }
         public string CardDate { get; set; }
         public string Token { get; set; }
-        public string phoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
         public string EmvSoftVersion { get; set; }
         public string OriginalUID { get; set; }
         public string CompRetailerNum { get; set; }
+        public string Total { get; set; }
     }
 }

@@ -6,15 +6,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Merchants.Business\Merchants.Business.csproj" />
-    <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
-    <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
-    <ProjectReference Include="..\Transactions.Api.Client\Transactions.Api.Client.csproj" />
-    <ProjectReference Include="..\Transactions.Business\Transactions.Business.csproj" />
+    <Compile Remove="Helpers\Attributes\**" />
+    <Content Remove="Helpers\Attributes\**" />
+    <EmbeddedResource Remove="Helpers\Attributes\**" />
+    <None Remove="Helpers\Attributes\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helpers\Attributes\" />
+    <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
+    <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
+    <ProjectReference Include="..\Transactions.Api.Client\Transactions.Api.Client.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Helpers\" />
     <Folder Include="wwwroot\lib\jquery-payment\" />
   </ItemGroup>
 
