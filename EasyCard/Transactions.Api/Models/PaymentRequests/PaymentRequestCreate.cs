@@ -94,5 +94,7 @@ namespace Transactions.Api.Models.PaymentRequests
         [StringLength(50)]
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ConsumerName { get; set; }
+
+        public bool IsRefund { get; set; }
     }
 }

@@ -290,6 +290,15 @@
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="7">
+        <v-text-field
+          v-model="model.paymentRequestSettings.defaultRefundRequestSubject"
+          :counter="128"
+          :rules="[vr.primitives.maxLength(128)]"
+          :label="$t('DefaultRefundRequestSubject')"
+          outlined
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="7">
         <terminal-merchant-logo-input v-model="model"></terminal-merchant-logo-input>
       </v-col>
       <v-col cols="12" md="5">

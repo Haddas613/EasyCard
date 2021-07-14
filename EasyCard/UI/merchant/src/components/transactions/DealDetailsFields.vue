@@ -1,6 +1,6 @@
 <template>
   <v-flex class="d-flex flex-column">
-    <v-row>
+    <v-row no-gutters>
       <v-col cols="12" md="6">
         <v-text-field
           v-model="model.dealReference"
@@ -19,6 +19,7 @@
           :rules="[vr.primitives.email]"
           outlined
           @keydown.native.space.prevent
+          v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="6">
@@ -34,6 +35,7 @@
           v-model="model.consumerAddress"
           :label="$t('CustomerAddress')"
           :rules="[vr.primitives.maxLength(50)]"
+          v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
           outlined
         ></v-text-field>
       </v-col>

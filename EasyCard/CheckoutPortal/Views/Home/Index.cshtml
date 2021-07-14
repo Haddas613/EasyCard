@@ -115,8 +115,8 @@
                             </ul>
                         }
 
-                        <h3 id="total-amount-display" hidden="@(Model.TransactionType != Shared.Integration.Models.TransactionTypeEnum.RegularDeal)" class="panel-title text-center">
-                            @localizer.Get("Amount"): @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()
+                        <h3 id="total-amount-display" hidden="@(Model.TransactionType != Shared.Integration.Models.TransactionTypeEnum.RegularDeal)" class="panel-title text-center @(Model.IsRefund ? "text-danger" : "")">
+                            @(Model.IsRefund ? localizer.Get("Refund") : localizer.Get("Amount")): @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()
                         </h3>
                     }
 
@@ -267,7 +267,14 @@
                         <button class="btn btn-outline-danger mx-1" id="cancel-btn">
                             @localizer.Get("CancelPayment")
                         </button>
-                        <input class="btn btn-primary" type="submit" name="paybtn" value="@localizer.Get("PayWithEasyCard")" />
+                        @if (Model.IsRefund)
+                        {
+                            <input class="btn btn-danger" type="submit" name="paybtn" value="@localizer.Get("Refund")" />
+                        }
+                        else
+                        {
+                            <input class="btn btn-primary" type="submit" name="paybtn" value="@localizer.Get("PayWithEasyCard")" />
+                        }
                     </div>
                 </form>
             </div>

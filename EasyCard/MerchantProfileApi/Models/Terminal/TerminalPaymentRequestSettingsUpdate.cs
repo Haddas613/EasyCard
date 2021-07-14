@@ -14,6 +14,9 @@ namespace MerchantProfileApi.Models.Terminal
         [StringLength(250)]
         public string DefaultRequestSubject { get; set; }
 
+        [StringLength(250)]
+        public string DefaultRefundRequestSubject { get; set; }
+
         [StringLength(50)]
         public string EmailTemplateCode { get; set; }
     }

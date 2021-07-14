@@ -262,6 +262,7 @@
   "DefaultRefundInvoiceType": "Default Refund Invoice Type",
   "DefaultCreditInvoiceType": "Default Credit Invoice Type",
   "DefaultRequestSubject": "Default Request Subject",
+  "DefaultRefundRequestSubject": "Default Refund Request Subject",
   "FromAddress": "From Address",
   "NotificationEmails": "Notification emails",
   "CreateRecurrentPaymentsAutomatically": "Create Recurrent Payments Automatically",

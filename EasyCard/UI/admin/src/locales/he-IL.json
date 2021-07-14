@@ -266,6 +266,7 @@
   "DefaultRefundInvoiceType": "סוג חשבונית זיכוי ברירת מחדל",
   "DefaultCreditInvoiceType": "סוג חשבונית מס/קבלה זיכוי ברירת מחדל",
   "DefaultRequestSubject": "נושא דרישה ברירת מחדל",
+  "DefaultRefundRequestSubject": "ברירת מחדל נושא לדרישת תשלום עבור זיכוי",
   "FromAddress": "מכתובת",
   "NotificationEmails": "התראת אימייל",
   "CreateRecurrentPaymentsAutomatically": "צור תשלומים מחזוריים אוטומטית",

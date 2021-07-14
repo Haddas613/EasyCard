@@ -151,5 +151,8 @@ namespace CheckoutPortal.Models
 
         [StringLength(100)]
         public string PaymentIntent { get; set; }
+
+        [BindNever]
+        public bool IsRefund { get; set; }
     }
 }

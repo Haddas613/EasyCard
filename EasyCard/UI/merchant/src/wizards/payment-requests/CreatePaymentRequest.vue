@@ -82,6 +82,7 @@ export default {
         invoiceType: null,
         paymentRequestAmount: 0.0,
         dueDate: null,
+        isRefund: false,
         dealDetails: {
           dealReference: null,
           consumerEmail: null,
@@ -203,6 +204,7 @@ export default {
       this.model.terminalID = this.terminal.terminalID;
       this.model.dueDate = data.dueDate;
       this.model.consumerName = data.consumerName;
+      this.model.isRefund = data.isRefund;
 
       await this.createPaymentRequest();
     },
