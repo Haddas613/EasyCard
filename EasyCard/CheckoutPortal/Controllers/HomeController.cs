@@ -20,6 +20,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 using Shared.Integration.Models;
 using Microsoft.AspNetCore.Http;
+using Transactions.Business.Services;
+using Microsoft.EntityFrameworkCore;
+using Merchants.Business.Services;
 
 namespace CheckoutPortal.Controllers
 {
@@ -27,7 +30,9 @@ namespace CheckoutPortal.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> logger;
+        private readonly ITerminalsService terminalsService;
         private readonly ITransactionsApiClient transactionsApiClient;
+        private readonly ITransactionsService transactionsService;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly IMapper mapper;
         private readonly RequestLocalizationOptions localizationOptions;
@@ -35,6 +40,8 @@ namespace CheckoutPortal.Controllers
         public HomeController(
             ILogger<HomeController> logger,
             ITransactionsApiClient transactionsApiClient,
+            ITransactionsService transactionsService,
+               ITerminalsService terminalsService,
             ICryptoServiceCompact cryptoServiceCompact,
             IMapper mapper,
             IOptions<RequestLocalizationOptions> localizationOptions)
@@ -44,6 +51,8 @@ namespace CheckoutPortal.Controllers
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.mapper = mapper;
             this.localizationOptions = localizationOptions.Value;
+            this.transactionsService = transactionsService;
+            this.terminalsService = terminalsService;
         }
 
         // TODO: preffered language parameter
@@ -233,7 +242,7 @@ namespace CheckoutPortal.Controllers
                     return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message });
                 }
             }
-            else
+            else//PR IS NULL
             {
                 var mdel = new Transactions.Api.Models.Transactions.CreateTransactionRequest()
                 {
@@ -283,8 +292,13 @@ namespace CheckoutPortal.Controllers
             }
             else
             {
-                var redirectUrl = UrlHelper.BuildUrl(request.RedirectUrl, null, new { transactionID = result.EntityUID });
+                var paymentTransaction = mapper.Map<LegacyQueryStringModel>(
+                   await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == result.EntityUID));
+                var apiKeyB = Convert.FromBase64String(request.ApiKey);
+                var terminalDetails = await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.SharedApiKey == apiKeyB);
 
+                var redirectUrl = UrlHelper.BuildUrl(request.RedirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(result, request, paymentTransaction, terminalDetails));
+              
                 return Redirect(redirectUrl);
             }
         }

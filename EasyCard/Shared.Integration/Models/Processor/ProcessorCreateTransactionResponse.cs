@@ -22,12 +22,13 @@ namespace Shared.Integration.Models
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <param name="rejectionReasonEnum"></param>
-        public ProcessorCreateTransactionResponse(string errorMessage, RejectionReasonEnum errorCode, string errorCodeStr)
+        public ProcessorCreateTransactionResponse(string errorMessage, RejectionReasonEnum errorCode, string errorCodeStr, int? processorResult = null)
         {
             Success = false;
             ErrorMessage = errorMessage;
             RejectReasonCode = errorCode;
             Errors = new List<Error> { new Error { Code = errorCodeStr, Description = errorMessage } };
+            ResultCode = processorResult;
         }
 
         /// <summary>
@@ -36,11 +37,12 @@ namespace Shared.Integration.Models
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <param name="errorCode"></param>
-        public ProcessorCreateTransactionResponse(string errorMessage, string errorCodeStr)
+        public ProcessorCreateTransactionResponse(string errorMessage, string errorCodeStr, int? processorResult = null)
         {
             Success = false;
             ErrorMessage = errorMessage;
             Errors = new List<Error> { new Error { Code = errorCodeStr, Description = errorMessage } };
+            ResultCode = processorResult;
         }
 
         public bool Success { get; set; }
@@ -55,5 +57,6 @@ namespace Shared.Integration.Models
         public int? OriginalHttpResponseCode { get; set; }
 
         public RejectionReasonEnum RejectReasonCode { get; set; }
+        public int? ResultCode { get; set; }
     }
 }

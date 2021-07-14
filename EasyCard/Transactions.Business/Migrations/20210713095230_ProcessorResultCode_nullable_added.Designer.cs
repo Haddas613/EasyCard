@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transactions.Business.Data;
 
 namespace Transactions.Business.Migrations
 {
     [DbContext(typeof(TransactionsContext))]
-    partial class TransactionsContextModelSnapshot : ModelSnapshot
+    [Migration("20210713095230_ProcessorResultCode_nullable_added")]
+    partial class ProcessorResultCode_nullable_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -637,9 +639,6 @@ namespace Transactions.Business.Migrations
                     b.Property<short>("CardPresence")
                         .HasColumnType("smallint");
 
-                    b.Property<string>("CompRetailerNum")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ConsumerIP")
                         .HasMaxLength(32)
                         .IsUnicode(false)
@@ -663,9 +662,6 @@ namespace Transactions.Business.Migrations
 
                     b.Property<short>("DocumentOrigin")
                         .HasColumnType("smallint");
-
-                    b.Property<string>("EmvSoftVersion")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<short?>("FinalizationStatus")
                         .HasColumnType("smallint");

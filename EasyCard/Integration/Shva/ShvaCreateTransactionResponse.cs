@@ -58,5 +58,9 @@ namespace Shva
         public string TranRecord { get; set; }
 
         public string Brand { get; set; }
+
+        public string EmvSoftVersion { get; set; }
+
+        public string CompRetailerNum { get; set; }
     }
 }

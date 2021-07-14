@@ -143,6 +143,8 @@ namespace CheckoutPortal.Models
         [BindNever]
         public IEnumerable<TransactionTypeEnum> TransactionTypes { get; set; }
 
+        public string StateData { get; set; }
+
         public IEnumerable<PinPadDevice> PinPadDevices { get; set; }
 
         public string PinPadDeviceID { get; set; }

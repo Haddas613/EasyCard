@@ -207,11 +207,11 @@ namespace Nayax
             }
             else if (!String.IsNullOrEmpty(phase2ResultBody?.statusCode) && !String.IsNullOrEmpty(phase2ResultBody?.statusMessage))
             {
-                return new ProcessorCreateTransactionResponse(phase2ResultBody?.statusMessage, phase2ResultBody?.statusCode);
+                return new ProcessorCreateTransactionResponse(phase2ResultBody?.statusMessage, phase2ResultBody?.statusCode,Int32.Parse(phase2ResultBody?.statusCode));
             }
             else
             {
-                return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, phase2ResultBody.statusCode);
+                return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, phase2ResultBody.statusCode, Int32.Parse(phase2ResultBody?.statusCode));
             }
         }
 

@@ -77,11 +77,11 @@ namespace Shva
             }
             else if (ashStartResultBody.globalObj?.outputObj?.ashStatus != null && ashStartResultBody.globalObj?.outputObj?.ashStatusDes != null)
             {
-                return new ProcessorCreateTransactionResponse(ashStartResultBody.globalObj.outputObj.ashStatusDes.valueTag, ashStartResultBody.globalObj.outputObj.ashStatus.valueTag);
+                return new ProcessorCreateTransactionResponse(ashStartResultBody.globalObj.outputObj.ashStatusDes.valueTag, ashStartResultBody.globalObj.outputObj.ashStatus.valueTag, ashStartResultBody.AshStartResult);
             }
             else
             {
-                return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, ashStartResultBody.AshStartResult.ToString());
+                return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, ashStartResultBody.AshStartResult.ToString(), ashStartResultBody.AshStartResult);
             }
 
             if (((AshStartResultEnum)ashStartResultBody.AshStartResult).IsSuccessForContinue())
@@ -98,11 +98,11 @@ namespace Shva
                 }
                 else if (authResultBody.globalObj?.outputObj?.ashStatus != null && authResultBody.globalObj?.outputObj?.ashStatusDes != null)
                 {
-                    return new ProcessorCreateTransactionResponse(authResultBody.globalObj.outputObj.ashStatusDes.valueTag, authResultBody.globalObj.outputObj.ashStatus.valueTag);
+                    return new ProcessorCreateTransactionResponse(authResultBody.globalObj.outputObj.ashStatusDes.valueTag, authResultBody.globalObj.outputObj.ashStatus.valueTag, authResultBody.AshAuthResult);
                 }
                 else
                 {
-                    return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, authResultBody.AshAuthResult.ToString());
+                    return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, authResultBody.AshAuthResult.ToString(), authResultBody.AshAuthResult);
                 }
 
                 // end request
@@ -122,11 +122,11 @@ namespace Shva
                 }
                 else if (resultAshEndBody.globalObj?.outputObj?.ashStatus != null && resultAshEndBody.globalObj?.outputObj?.ashStatusDes != null)
                 {
-                    return new ProcessorCreateTransactionResponse(resultAshEndBody.globalObj.outputObj.ashStatusDes.valueTag, resultAshEndBody.globalObj.outputObj.ashStatus.valueTag);
+                    return new ProcessorCreateTransactionResponse(resultAshEndBody.globalObj.outputObj.ashStatusDes.valueTag, resultAshEndBody.globalObj.outputObj.ashStatus.valueTag, resultAshEndBody.AshEndResult);
                 }
                 else
                 {
-                    return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, resultAshEndBody.AshEndResult.ToString());
+                    return new ProcessorCreateTransactionResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, resultAshEndBody.AshEndResult.ToString(), resultAshEndBody.AshEndResult);
                 }
             }
             else /* (((AshStartResultEnum)ashStartResultBody.AshStartResult).IsSuccessful())*/
