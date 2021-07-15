@@ -42,6 +42,7 @@
             :key="model.dealDetails.consumerID"
             :data="model"
             v-on:ok="processCreditCard($event)"
+            include-device
             ref="ccSecureDetails"
             btn-text="Refund"
           ></credit-card-secure-details>
@@ -260,6 +261,7 @@ export default {
         this.model.saveCreditCard = data.saveCreditCard || false;
         this.model.creditCardSecureDetails = data;
         this.model.creditCardToken = null;
+        this.model.pinPadDeviceID = null;
         if (data.cardReaderInput) {
           this.model.cardPresence = "regular";
         } else {
@@ -269,6 +271,13 @@ export default {
         this.model.creditCardSecureDetails = null;
         this.model.creditCardToken = data.data;
         this.model.saveCreditCard = false;
+        this.model.pinPadDeviceID = null;
+      } 
+      else if (data.type === "device") {
+        this.model.creditCardSecureDetails = null;
+        this.model.creditCardToken = null;
+        this.model.saveCreditCard = false;
+        Object.assign(this.model, data.data);
       }
       this.step++;
     },

@@ -1238,6 +1238,16 @@
             Create document
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.PinPad">
+            <summary>
+            Create Pinpad Transaction
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.PinPadDeviceID">
+            <summary>
+             Pinpad device in case of terminal with multiple devices
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.RefundRequest.InvoiceDetails">
             <summary>
             Invoice details
