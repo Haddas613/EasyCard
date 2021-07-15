@@ -15,6 +15,7 @@ import TransmissionsApi from './modules/transactions/TransmissionsApi';
 import BillingDealsApi from './modules/transactions/BillingDealsApi';
 import InvoicingApi from './modules/transactions/InvoicingApi';
 import PaymentRequestsApi from './modules/transactions/PaymentRequestsApi';
+import PaymentIntentsApi from './modules/transactions/PaymentIntentsApi';
 import DashboardReportingApi from './modules/reporting/DashboardReportingApi';
 import FutureBillingDealsApi from './modules/transactions/FutureBillingDealsApi';
 
@@ -36,6 +37,7 @@ class ApiBase {
         this.futureBillingDeals = new FutureBillingDealsApi(this);
         this.invoicing = new InvoicingApi(this);
         this.paymentRequests = new PaymentRequestsApi(this);
+        this.paymentIntents = new PaymentIntentsApi(this);
         this.reporting = {
             dashboard: new DashboardReportingApi(this)
         };

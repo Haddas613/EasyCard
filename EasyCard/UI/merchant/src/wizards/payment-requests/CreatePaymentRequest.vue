@@ -38,17 +38,27 @@
         </v-stepper-content>
 
         <v-stepper-content step="4" class="py-0 px-0">
-          <payment-request-form  v-if="step === 4" :data="model" v-on:ok="processPaymentRequest($event)"></payment-request-form>
+          <payment-request-form v-if="step === 4" :data="model" v-on:ok="processPaymentRequest($event)"></payment-request-form>
         </v-stepper-content>
 
         <v-stepper-content step="5" class="py-0 px-0">
           <wizard-result :errors="errors">
+            <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
             <template v-if="customer">
-              <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
-              <p>{{customer.consumerName}}</p>
-              <div class="pt-5">
+              <p><b>{{customer.consumerName}}</b></p>
+              <div class="pt-5" v-if="!paymentIntent">
                 <p>{{$t("PaymentRequestSentTo")}}</p>
-                <p>{{customer.consumerEmail}}</p>
+                <p><b>{{customer.consumerEmail}}</b></p>
+              </div>
+            </template>
+            <template v-if="paymentIntent">
+              <div class="pt-5">
+                <p>{{$t("PaymentIntentURL")}}
+                  <v-icon small class="pb-2" @click="$copyToClipboard(paymentIntent.url)">mdi-clipboard-text-multiple-outline</v-icon>
+                </p>
+                <p class="word-break-all">
+                  <a target="_blank" v-bind:href="paymentIntent.url">{{paymentIntent.url}}</a>
+                </p>
               </div>
             </template>
           </wizard-result>
@@ -76,6 +86,7 @@ export default {
     return {
       customer: null,
       skipCustomerStep: false,
+      paymentIntent: null,
       model: {
         terminalID: null,
         currency: null,
@@ -206,7 +217,11 @@ export default {
       this.model.consumerName = data.consumerName;
       this.model.isRefund = data.isRefund;
 
-      await this.createPaymentRequest();
+      if(data.paymentIntent){
+        await this.createPaymentIntent();
+      }else{
+        await this.createPaymentRequest();
+      }
     },
     async createPaymentRequest(){
       if(this.loading) return;
@@ -240,9 +255,45 @@ export default {
             name: "PaymentRequest",
             params: { id: result.entityReference }
           });
+        }
+        this.step = lastStepKey;
+        
+      }finally{
+        this.loading = false;
+      }
+    },
+    async createPaymentIntent(){
+      if(this.loading) return;
+
+      try{
+        this.loading = true;
+        let result = await this.$api.paymentIntents.createPaymentIntent(
+          this.model
+        );
+
+        let lastStepKey = Object.keys(this.steps).reduce((l,r) => l > r ? l : r, 0);
+        let lastStep = this.steps[lastStepKey];
+
+        if (!result || result.status === "error") {
+          lastStep.title = "Error";
+          lastStep.completed = false;
+          lastStep.closeable = true;
+          if (result && result.errors && result.errors.length > 0) {
+            this.errors = result.errors;
+          } else {
+            this.errors = [{ description: result.message }];
+          }
+        } else {
+          if(this.customer){
+            this.$store.commit("payment/addLastChargedCustomer", {
+              customerID: this.customer.consumerID,
+              terminalID: this.model.terminalID
+            });
+          }
           lastStep.title = "Success";
           lastStep.completed = true;
-          lastStep.closeable = false;
+          lastStep.closeable = true;
+          this.paymentIntent = result.additionalData;
           this.errors = [];
         }
         this.step = lastStepKey;

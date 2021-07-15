@@ -27,15 +27,16 @@
         </v-menu>
         
         <v-switch 
-          v-model="isInstallmentTransaction" 
-          :label="$t('InstallmentTransaction')" 
-          class="pt-0 mt-0"
+          v-model="model.isRefund" 
+          :label="$t('Refund')" 
+          class="pb-2 pt-0 mt-0"
+          color="error"
           hide-details="true"></v-switch>
 
         <v-switch 
-          v-model="model.isRefund" 
-          :label="$t('Refund')" 
-          class="pt-2 mt-0"
+          v-model="isInstallmentTransaction" 
+          :label="$t('InstallmentTransaction')" 
+          class="pt-0 mt-0"
           hide-details="true"></v-switch>
 
         <installment-details
@@ -66,7 +67,14 @@
       </v-form>
     </v-card-text>
     <v-card-actions class="px-2">
-      <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t('Confirm')}}</v-btn>
+      <v-row no-gutters>
+        <v-col cols="12" md="6" v-bind:class="{'px-1': $vuetify.breakpoint.mdAndUp}">
+          <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t('PaymentRequest')}}</v-btn>
+        </v-col>
+        <v-col cols="12" md="6" v-bind:class="{'px-1': $vuetify.breakpoint.mdAndUp, 'pt-1': $vuetify.breakpoint.smAndDown}">
+          <v-btn color="secondary" bottom :x-large="true" block @click="ok(true)">{{$t('PaymentIntent')}}</v-btn>
+        </v-col>
+      </v-row>
     </v-card-actions>
   </v-card>
 </template>
@@ -127,7 +135,7 @@ export default {
     }
   },
   methods: {
-    ok() {
+    ok(paymentIntent = false) {
       if (!this.$refs.form.validate()) return;
       
       let result = { ...this.model };
@@ -140,6 +148,7 @@ export default {
       result.invoiceDetails = this.$integrationAvailable(this.terminalStore, this.appConstants.terminal.integrations.invoicing) 
           ? this.$refs.invoiceDetails.getData() : null;
       result.dealDetails = this.$refs.dealDetails.getData();
+      result.paymentIntent = paymentIntent;
       this.$emit("ok", result);
     }
   }

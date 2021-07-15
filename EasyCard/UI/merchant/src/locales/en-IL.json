@@ -291,6 +291,7 @@
   "WebUrl": "Web Url",
   "ErrorDescription": "Error Description",
   "ExternalReference": "External Reference",
+  "PaymentIntentURL": "Payment Intent URL",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -337,6 +338,7 @@
   "Print": "Print",
   "Activate": "Activate",
   "Deactivate": "Deactivate",
+  "PaymentIntent": "Payment Intent",
 
   "--AUTH--": null,
   "Login": "Login",

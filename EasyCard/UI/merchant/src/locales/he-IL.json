@@ -291,6 +291,7 @@
   "WebUrl": "כתובת אינטרנטית",
   "ErrorDescription": "תיאור שגיאה",
   "ExternalReference": "אסמכתא חיצונית",
+  "PaymentIntentURL": "קישור לכוונת תשלום",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -337,6 +338,7 @@
   "Print": "הדפס",
   "Activate": "הפעל",
   "Deactivate": "בטל",
+  "PaymentIntent": "כוונת תשלום",
 
   "--AUTH--": null,
   "Login": "כניסה",
