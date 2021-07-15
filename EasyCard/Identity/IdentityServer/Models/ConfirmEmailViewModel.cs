@@ -22,7 +22,7 @@ namespace IdentityServer.Models
 
         public string Code { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
+        [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
         [StringLength(100, MinimumLength = 2)]
         public string FirstName { get; set; }
 
@@ -32,7 +32,7 @@ namespace IdentityServer.Models
         public string PhoneNumber { get; set; }
 
         [Required(AllowEmptyStrings = false, ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
-        [StringLength(100, MinimumLength = 2)]
+        [StringLength(100, MinimumLength = 2, ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "LastNameValidationMessage")]
         public string LastName { get; set; }
     }
 }

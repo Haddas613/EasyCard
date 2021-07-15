@@ -342,4 +342,7 @@
   <data name="PasswordMatchValidatonMessage" xml:space="preserve">
     <value>Password does not meet system requirements </value>
   </data>
+  <data name="LastNameValidationMessage" xml:space="preserve">
+    <value>Last name should be at least 2 and at max 200 characters long</value>
+  </data>
 </root>

@@ -342,4 +342,7 @@
   <data name="PasswordMatchValidationMessage" xml:space="preserve">
     <value>סיסמה לא עומדת בדרישות מערכת</value>
   </data>
+  <data name="LastNameValidationMessage" xml:space="preserve">
+    <value>שם משפחה חייב להיות מינימום 2 תווים ומקסימום 100 תווים</value>
+  </data>
 </root>
