@@ -292,6 +292,7 @@
   "ErrorDescription": "Error Description",
   "ExternalReference": "External Reference",
   "PaymentIntentURL": "Payment Intent URL",
+  "AllowPinPad": "Allow PinPad",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

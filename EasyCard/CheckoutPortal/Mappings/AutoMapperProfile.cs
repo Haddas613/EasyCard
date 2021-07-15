@@ -52,7 +52,7 @@ namespace CheckoutPortal.Mappings
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, ChargeViewModel>()
-                .ForMember(d => d.AllowPinPad, o => o.MapFrom((d, s) => s.AllowPinPad.GetValueOrDefault() && d.AllowPinPad.GetValueOrDefault()))
+                .ForMember(d => d.AllowPinPad, o => o.MapFrom(src => src.AllowPinPad))
                 .ForMember(d => d.MaxInstallments, o => o.MapFrom(src => src.MaxInstallments))
                 .ForMember(d => d.MinInstallments, o => o.MapFrom(src => src.MinInstallments))
                 .ForMember(d => d.MaxCreditInstallments, o => o.MapFrom(src => src.MaxCreditInstallments))

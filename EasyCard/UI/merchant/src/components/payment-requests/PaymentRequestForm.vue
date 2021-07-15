@@ -26,12 +26,23 @@
           </v-date-picker>
         </v-menu>
         
-        <v-switch 
-          v-model="model.isRefund" 
-          :label="$t('Refund')" 
-          class="pb-2 pt-0 mt-0"
-          color="error"
-          hide-details="true"></v-switch>
+        <v-row no-gutters>
+          <v-col cols="12" md="6" class="pb-2">
+            <v-switch 
+              v-model="model.isRefund" 
+              :label="$t('Refund')" 
+              class="pt-0 mt-0"
+              color="error"
+              hide-details="true"></v-switch>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-switch 
+              v-model="model.allowPinPad" 
+              :label="$t('AllowPinPad')" 
+              class="pt-0 mt-0"
+              hide-details="true"></v-switch>
+          </v-col>
+        </v-row>
 
         <v-switch 
           v-model="isInstallmentTransaction" 

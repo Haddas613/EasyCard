@@ -216,6 +216,7 @@ export default {
       this.model.dueDate = data.dueDate;
       this.model.consumerName = data.consumerName;
       this.model.isRefund = data.isRefund;
+      this.model.allowPinPad = data.allowPinPad;
 
       if(data.paymentIntent){
         await this.createPaymentIntent();

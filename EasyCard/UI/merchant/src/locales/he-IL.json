@@ -292,6 +292,7 @@
   "ErrorDescription": "תיאור שגיאה",
   "ExternalReference": "אסמכתא חיצונית",
   "PaymentIntentURL": "קישור לכוונת תשלום",
+  "AllowPinPad": "אפשר לבצע עסקאות פינפד",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
