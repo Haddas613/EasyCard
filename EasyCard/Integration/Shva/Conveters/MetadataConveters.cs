@@ -112,6 +112,8 @@ namespace Shva.Conveters
 
                 case TransactionTypeEnum.Installments:
                     return ShvaCreditTermsEnum.Installment;
+                case TransactionTypeEnum.Immediate:
+                    return ShvaCreditTermsEnum.Immediate;
 
                 default:
                     throw new NotSupportedException($"Given transaction type {transactionType} is not supported by Shva");

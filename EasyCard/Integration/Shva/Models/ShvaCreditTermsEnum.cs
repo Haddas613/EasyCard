@@ -12,6 +12,7 @@ namespace Shva.Models
     public enum ShvaCreditTermsEnum
     {
         Regular = 1,
+        Immediate = 3,
         Credit = 6,
         Installment = 8
     }

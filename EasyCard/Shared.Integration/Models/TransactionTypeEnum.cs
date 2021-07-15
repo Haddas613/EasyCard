@@ -30,5 +30,11 @@ namespace Shared.Integration.Models
         /// </summary>
         [EnumMember(Value = "credit")]
         Credit = 2,
+
+        /// <summary>
+        /// Credit deal
+        /// </summary>
+        [EnumMember(Value = "immediate")]
+        Immediate = 3,
     }
 }

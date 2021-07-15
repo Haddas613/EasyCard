@@ -41,6 +41,9 @@ namespace Nayax.Converters
                 case TransactionTypeEnum.Installments:
                     return NayaxCreditTermsEnum.Payments;
 
+                case TransactionTypeEnum.Immediate:
+                    return NayaxCreditTermsEnum.Immediate;
+
                 default:
                     throw new NotSupportedException($"Given transaction type {transactionType} is not supported by Shva");
             }
