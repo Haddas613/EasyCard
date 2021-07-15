@@ -33,11 +33,11 @@ export default class PaymentRequestsApi {
         this.headers = this.base._formatHeaders(data)
         this.$headers = data.columns
       }
-      let invoice = await this.base.get(this.paymentRequestsUrl + `/${id}`);
+      let paymentRequest = await this.base.get(this.paymentRequestsUrl + `/${id}`);
       let dictionaries = await this.base.dictionaries.$getTransactionDictionaries();
 
-      invoice = this.base.format(invoice, this.$headers, dictionaries)
-      return invoice;
+      paymentRequest = this.base.format(paymentRequest, this.$headers, dictionaries)
+      return paymentRequest;
     }
 
     async createPaymentRequest(data){

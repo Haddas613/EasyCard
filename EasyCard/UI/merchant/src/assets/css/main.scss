@@ -166,3 +166,7 @@ $secondary : var(--v-secondary-base);
   // letter-spacing: .0071428571em!important;
   line-height: 1.3rem;
 }
+
+.word-break-all{
+  word-break: break-all !important;
+}

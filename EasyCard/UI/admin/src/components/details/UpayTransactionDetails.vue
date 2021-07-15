@@ -11,10 +11,6 @@
           <p>{{model.cashieriD || '-'}}</p>
         </v-col>
         <v-col cols="12" md="4" class="info-block">
-          <p class="caption ecgray--text text--darken-2">{{$t('TotalAmount')}}</p>
-          <p>{{model.totalAmount || '-'}}</p>
-        </v-col>
-        <v-col cols="12" md="4" class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('CreditCardCompanyCode')}}</p>
           <p>{{model.creditCardCompanyCode || '-'}}</p>
         </v-col>
@@ -23,16 +19,8 @@
           <p>{{model.merchantNumber || '-'}}</p>
         </v-col>
         <v-col cols="12" md="4" class="info-block">
-          <p class="caption ecgray--text text--darken-2">{{$t('SessionID')}}</p>
-          <p>{{model.sessionID || '-'}}</p>
-        </v-col>
-        <v-col cols="12" md="4" class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('ErrorMessage')}}</p>
           <p>{{model.errorMessage || '-'}}</p>
-        </v-col>
-        <v-col cols="12" md="4" class="info-block">
-          <p class="caption ecgray--text text--darken-2">{{$t('WebUrl')}}</p>
-          <p>{{model.webUrl || '-'}}</p>
         </v-col>
         <v-col cols="12" md="4" class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('ErrorDescription')}}</p>
