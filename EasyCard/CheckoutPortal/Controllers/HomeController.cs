@@ -231,7 +231,21 @@ namespace CheckoutPortal.Controllers
                 if (result.Status != Shared.Api.Models.Enums.StatusEnum.Success)
                 {
                     logger.LogError($"{nameof(Charge)}.{nameof(transactionsApiClient.CreateTransactionPR)}: {result.Message}");
-                    return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message });
+
+                    ModelState.AddModelError("Charge", result.Message);
+                    if (result.Errors?.Count() > 0)
+                    {
+                        foreach (var err in result.Errors)
+                        {
+                            ModelState.AddModelError(err.Code, err.Description);
+                        }
+                    }
+
+                    mapper.Map(checkoutConfig.Settings, request);
+
+                    return View("Index", request);
+
+                    //return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message });
                 }
             }
             else//PR IS NULL
@@ -284,13 +298,18 @@ namespace CheckoutPortal.Controllers
             }
             else
             {
-                var paymentTransaction = await transactionsApiClient.GetTransaction(result.EntityUID);
+                if (checkoutConfig.Settings.LegacyRedirectResponse)
+                {
+                    var paymentTransaction = await transactionsApiClient.GetTransaction(result.EntityUID);
 
-                //string redirectUrl = checkoutConfig.Settings.LegacyRedirectResponse ? UrlHelper.BuildUrl(request.RedirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction)) : UrlHelper.BuildUrl(request.RedirectUrl, null, new { transactionID = result.EntityUID });
+                    string redirectUrl = UrlHelper.BuildUrl(request.RedirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction));
 
-                string redirectUrl = UrlHelper.BuildUrl(request.RedirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction));
-
-                return Redirect(redirectUrl);
+                    return Redirect(redirectUrl);
+                }
+                else
+                {
+                    return Redirect(UrlHelper.BuildUrl(request.RedirectUrl, null, new { transactionID = result.EntityUID }));
+                }
             }
         }
 
