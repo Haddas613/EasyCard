@@ -70,6 +70,15 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Immediate.
+        /// </summary>
+        public static string Immediate {
+            get {
+                return ResourceManager.GetString("Immediate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installments.
         /// </summary>
         public static string Installments {

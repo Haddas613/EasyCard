@@ -120,6 +120,9 @@
   <data name="Credit" xml:space="preserve">
     <value>Credit</value>
   </data>
+  <data name="Immediate" xml:space="preserve">
+    <value>Immediate</value>
+  </data>
   <data name="Installments" xml:space="preserve">
     <value>Installments</value>
   </data>
