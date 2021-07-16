@@ -309,6 +309,9 @@
                 if (document.getElementById("pin-pad-deal").checked == true) {
                     $("#credit-card-info-area").remove();
                 }
+
+                document.getElementById("loading-spinner").hidden = false;
+                document.getElementsByTagName("body")[0].classList.add("no-scroll")
             })
 
             $("#number-of-payments").on("change", function (e) {
