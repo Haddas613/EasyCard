@@ -1258,6 +1258,11 @@
             Invoice details
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.TransactionType">
+            <summary>
+            Generic transaction type
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionRequestBase.TerminalID">
             <summary>
             EasyCard terminal reference
