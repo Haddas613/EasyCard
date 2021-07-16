@@ -1198,6 +1198,11 @@
             Primary reference
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.PinPadDeviceID">
+            <summary>
+             Pinpad device in case of terminal with multiple devices
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.TransactionType">
             <summary>
             Generic transaction type

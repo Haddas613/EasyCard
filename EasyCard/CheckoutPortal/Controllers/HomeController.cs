@@ -483,6 +483,11 @@ namespace CheckoutPortal.Controllers
                 {
                     transactionTypes.Add(TransactionTypeEnum.Installments);
                 }
+
+                if (checkoutConfig.Settings.MaxCreditInstallments > 1)
+                {
+                    transactionTypes.Add(TransactionTypeEnum.Credit);
+                }
             }
             else
             {

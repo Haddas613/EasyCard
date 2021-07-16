@@ -66,7 +66,12 @@ namespace Transactions.Api.Models.Transactions
 
         public bool? IssueInvoice { get; set; }
 
-        public bool? IsPinPadDeal { get; set; }
+        public bool? PinPad { get; set; }
+
+        /// <summary>
+        ///  Pinpad device in case of terminal with multiple devices
+        /// </summary>
+        public string PinPadDeviceID { get; set; }
 
         public InstallmentDetails InstallmentDetails { get; set; }
 
