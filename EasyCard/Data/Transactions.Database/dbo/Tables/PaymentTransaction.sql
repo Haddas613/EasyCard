@@ -71,8 +71,14 @@
     [UpayTransactionID]              NVARCHAR (64)    NULL,
     [UpayWebUrl]                     NVARCHAR (512)   NULL,
     [PinPadTransactionID]            NVARCHAR (MAX)   NULL,
+    [ProcessorResultCode]            INT              NULL,
+    [CompRetailerNum]                VARCHAR (20)     NULL,
+    [EmvSoftVersion]                 VARCHAR (20)     NULL,
+    [PinPadDeviceID]                 VARCHAR (20)     NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 
