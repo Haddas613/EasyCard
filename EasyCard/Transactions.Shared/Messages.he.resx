@@ -378,4 +378,7 @@
   <data name="CannotCancelInvoicedTransaction" xml:space="preserve">
     <value>לא ניתן לבטל עסקה שהופקה עבורה חשבונית.</value>
   </data>
+  <data name="CanOnlyIssueInvoiceForILSTransactions" xml:space="preserve">
+    <value>יכול להנפיק חשבוניות רק עבור עסקאות ILS</value>
+  </data>
 </root>

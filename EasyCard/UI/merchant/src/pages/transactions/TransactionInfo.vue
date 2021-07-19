@@ -260,7 +260,8 @@ export default {
     canCreateInvoice(){
       return (this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing) 
         && this.model.quickStatus != 'Failed' && this.model.quickStatus != 'Canceled'
-        && this.model.dealDetails.consumerEmail)
+        && this.model.dealDetails.consumerEmail
+        && this.model.$currency =='ILS')
     },
     async initThreeDotMenu(){
       var threeDotMenu = [{

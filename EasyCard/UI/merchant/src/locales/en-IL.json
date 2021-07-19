@@ -340,6 +340,7 @@
   "Activate": "Activate",
   "Deactivate": "Deactivate",
   "PaymentIntent": "Payment Intent",
+  "CreatePaymentLink": "Create Payment Link",
 
   "--AUTH--": null,
   "Login": "Login",
@@ -416,5 +417,6 @@
   "--MESSAGES--": null,
   "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?",
   "NewAppVersionAvailableClickToRefreshThePage": "New App Version Available. Click to refresh the page.",
-  "UnsavedChangesWarningMessage": "There are unsaved changes. Are you sure you want to leave?"
+  "UnsavedChangesWarningMessage": "There are unsaved changes. Are you sure you want to leave?",
+  "CanOnlyIssueInvoiceForILSTransactions": "Can only issue invoice for ILS transactions"
 }

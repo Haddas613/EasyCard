@@ -74,7 +74,7 @@
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
         ></deal-details>
 
-        <invoice-details-fields v-if="$integrationAvailable(terminalStore, appConstants.terminal.integrations.invoicing)" ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
+        <invoice-details-fields v-if="invoiceAvailable" ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
       </v-form>
     </v-card-text>
     <v-card-actions class="px-2">
@@ -83,7 +83,7 @@
           <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t('PaymentRequest')}}</v-btn>
         </v-col>
         <v-col cols="12" md="6" v-bind:class="{'px-1': $vuetify.breakpoint.mdAndUp, 'pt-1': $vuetify.breakpoint.smAndDown}">
-          <v-btn color="secondary" bottom :x-large="true" block @click="ok(true)">{{$t('PaymentIntent')}}</v-btn>
+          <v-btn color="secondary" bottom :x-large="true" block @click="ok(true)">{{$t('CreatePaymentLink')}}</v-btn>
         </v-col>
       </v-row>
     </v-card-actions>
@@ -124,7 +124,8 @@ export default {
       dueDateMenu: false,
       minDate: new Date().toISOString(),
       isInstallmentTransaction: false,
-      appConstants: appConstants
+      appConstants: appConstants,
+      invoiceAvailable: false
     };
   },
   computed: {
@@ -142,6 +143,10 @@ export default {
         this.model.currency =
           this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
       }
+
+      this.invoiceAvailable = this.model.currency == 'ILS' 
+        && this.$integrationAvailable(this.terminalStore, this.appConstants.terminal.integrations.invoicing);
+
       // this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
     }
   },
@@ -156,7 +161,7 @@ export default {
         result.installmentDetails = null;
       }
 
-      result.invoiceDetails = this.$integrationAvailable(this.terminalStore, this.appConstants.terminal.integrations.invoicing) 
+      result.invoiceDetails = this.invoiceAvailable
           ? this.$refs.invoiceDetails.getData() : null;
       result.dealDetails = this.$refs.dealDetails.getData();
       result.paymentIntent = paymentIntent;

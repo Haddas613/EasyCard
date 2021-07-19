@@ -178,6 +178,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can only issue invoice for ILS transactions.
+        /// </summary>
+        public static string CanOnlyIssueInvoiceForILSTransactions {
+            get {
+                return ResourceManager.GetString("CanOnlyIssueInvoiceForILSTransactions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Card owner national ID required.
         /// </summary>
         public static string CardOwnerNationalIDRequired {

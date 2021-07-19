@@ -193,7 +193,12 @@
         :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
       ></deal-details>
       <v-col cols="12">
-        <v-switch v-if="$integrationAvailable(terminalStore, appConstants.terminal.integrations.invoicing)" v-model="model.issueInvoice" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
+        <v-switch
+          v-if="$integrationAvailable(terminalStore, appConstants.terminal.integrations.invoicing)"
+          v-model="model.issueInvoice"
+          :label="$t('IssueDocument')"
+          :disabled="issueInvoiceDisabled"
+          class="pt-0 mt-0"></v-switch>
         <div v-if="model.issueInvoice">
           <invoice-details-fields ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
         </div>
@@ -254,7 +259,8 @@ export default {
       scheduleDialog: false,
       ctokenDialog: false,
       billingScheduleJSON: JSON.stringify(this.data.billingSchedule),
-      appConstants: appConstants
+      appConstants: appConstants,
+      issueInvoiceDisabled: false
     };
   },
   computed: {
@@ -393,8 +399,12 @@ export default {
         
       }
     }
-    if (result.issueInvoice) {
-      result.invoiceDetails = this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing);
+    if(this.model.currency != 'ILS'){
+      this.issueInvoice = false;
+      this.issueInvoiceDisabled = true;
+    }
+    else if (this.model.issueInvoice) {
+      this.model.invoiceDetails = this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing);
     }
     this.calculateTotal();
   }
