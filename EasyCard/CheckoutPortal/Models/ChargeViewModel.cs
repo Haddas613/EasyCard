@@ -49,7 +49,7 @@ namespace CheckoutPortal.Models
         /// <summary>
         /// Number Of Installments
         /// </summary>
-        [Range(1, 12)]
+        [Range(1, 36)]
         public int? NumberOfPayments { get; set; }
 
         /// <summary>

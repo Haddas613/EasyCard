@@ -129,6 +129,7 @@
             <v-text-field
               v-model="model.settings.minInstallments"
               :label="$t('MinInstallments')"
+              :rules="[vr.primitives.required, vr.primitives.lessThan(36, true)]"
               type="number"
             ></v-text-field>
           </v-col>
@@ -138,7 +139,7 @@
               v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
               :label="$t('MaxInstallments')"
               type="number"
-              :rules="[vr.primitives.required]"
+              :rules="[vr.primitives.required, vr.primitives.lessThan(36, true)]"
             ></v-text-field>
           </v-col>
           <v-col md="3" cols="12">
@@ -146,6 +147,7 @@
               v-model="model.settings.minCreditInstallments"
               :label="$t('MinCreditInstallments')"
               type="number"
+              :rules="[vr.primitives.required, vr.primitives.lessThan(36, true)]"
             ></v-text-field>
           </v-col>
           <v-col md="3" cols="12">
@@ -154,7 +156,7 @@
               v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
               :label="$t('MaxCreditInstallments')"
               type="number"
-              :rules="[vr.primitives.required]"
+              :rules="[vr.primitives.required, vr.primitives.lessThan(36, true)]"
             ></v-text-field>
           </v-col>
         </v-row>
