@@ -57,6 +57,13 @@ namespace MerchantProfileApi.Models.Billing
         public string ConsumerAddress { get; set; }
 
         /// <summary>
+        /// ID in external system
+        /// </summary>
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [StringLength(50)]
+        public string ExternalReference { get; set; }
+
+        /// <summary>
         /// Concurrency check
         /// </summary>
         [Required]

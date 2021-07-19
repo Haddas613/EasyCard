@@ -19,6 +19,7 @@ export default {
           consumerPhone: null,
           consumerEmail: null,
           consumerAddress: null,
+          externalReference: null,
       }
     };
   },
