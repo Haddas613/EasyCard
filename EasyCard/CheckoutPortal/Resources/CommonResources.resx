@@ -210,4 +210,7 @@
   <data name="Refund" xml:space="preserve">
     <value>Refund</value>
   </data>
+  <data name="Immediate" xml:space="preserve">
+    <value>Immediate</value>
+  </data>
 </root>

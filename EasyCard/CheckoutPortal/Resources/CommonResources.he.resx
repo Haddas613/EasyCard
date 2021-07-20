@@ -210,4 +210,7 @@
   <data name="Refund" xml:space="preserve">
     <value>זיכוי</value>
   </data>
+  <data name="Immediate" xml:space="preserve">
+    <value>חיוב מיידי</value>
+  </data>
 </root>

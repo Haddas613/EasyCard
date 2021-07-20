@@ -151,6 +151,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Immediate.
+        /// </summary>
+        public static string Immediate {
+            get {
+                return ResourceManager.GetString("Immediate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Initial payment.
         /// </summary>
         public static string InitialPayment {

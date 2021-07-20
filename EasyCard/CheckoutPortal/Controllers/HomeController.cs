@@ -477,7 +477,7 @@ namespace CheckoutPortal.Controllers
                 throw new BusinessException(Messages.InvalidCheckoutData);
             }
 
-            var transactionTypes = new List<TransactionTypeEnum> { TransactionTypeEnum.RegularDeal };
+            var transactionTypes = new List<TransactionTypeEnum> { TransactionTypeEnum.RegularDeal, TransactionTypeEnum.Immediate };
 
             if (checkoutConfig.PaymentRequest != null)
             {

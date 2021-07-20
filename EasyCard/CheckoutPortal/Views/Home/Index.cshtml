@@ -323,17 +323,16 @@
                 let value = e.target.value;
                 let min = 0; let max = 0;
 
-                if (value == "@Shared.Integration.Models.TransactionTypeEnum.RegularDeal.ToString()") {
+                if (value == "@Shared.Integration.Models.TransactionTypeEnum.Installments.ToString()") {
+                    min = @(Model.MinInstallments ?? 2);
+                    max = @(Model.MaxInstallments ?? 12);
+                } else if(value == "@Shared.Integration.Models.TransactionTypeEnum.Credit.ToString()") {
+                    min = @(Model.MinCreditInstallments ?? 3);
+                    max = @(Model.MaxCreditInstallments ?? 12);
+                }else {
                     document.getElementById("installments-area").hidden = true;
                     document.getElementById("total-amount-display").hidden = false;
                     return;
-                }
-                else if (value == "@Shared.Integration.Models.TransactionTypeEnum.Installments.ToString()") {
-                    min = @(Model.MinInstallments ?? 2);
-                    max = @(Model.MaxInstallments ?? 12);
-                } else {
-                    min = @(Model.MinCreditInstallments ?? 3);
-                    max = @(Model.MaxCreditInstallments ?? 12);
                 }
                 
                 var select = document.getElementById("number-of-payments");
