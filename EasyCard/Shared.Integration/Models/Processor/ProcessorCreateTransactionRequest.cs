@@ -118,5 +118,7 @@ namespace Shared.Integration.Models
         public object InitialDeal { get; set; }
 
         public Processor.ShvaTransactionDetails LastDealShvaDetails { get; set; }
+
+        public string OKNumber { get; set; }
     }
 }

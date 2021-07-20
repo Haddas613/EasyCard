@@ -120,6 +120,10 @@ namespace Shva
                 {
                     return resultAshEndBody.GetProcessorTransactionResponse();
                 }
+                else if (resultAshEndBody.AshEndResult.IsOKNumberRequired(resultAshEndBody.globalObj?.outputObj?.telAuthAbility?.valueTag))
+                {
+                    return resultAshEndBody.GetOKNumberRequiredProcessorTransactionResponse();
+                }
                 else if (resultAshEndBody.globalObj?.outputObj?.ashStatus != null && resultAshEndBody.globalObj?.outputObj?.ashStatusDes != null)
                 {
                     return new ProcessorCreateTransactionResponse(resultAshEndBody.globalObj.outputObj.ashStatusDes.valueTag, resultAshEndBody.globalObj.outputObj.ashStatus.valueTag, resultAshEndBody.AshEndResult);

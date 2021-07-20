@@ -146,6 +146,9 @@ namespace Transactions.Business.Entities
         public decimal TransactionAmount { get; set; }
 
         [NotMapped]
+        public string OKNumber { get; set; }
+
+        [NotMapped]
         public decimal Amount { get => TransactionAmount; set => TransactionAmount = value; }
 
         public decimal VATRate { get; set; }

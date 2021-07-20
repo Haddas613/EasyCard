@@ -26,7 +26,9 @@ namespace Transactions.Api.Mapping
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Shva.ShvaCreateTransactionResponse, ShvaTransactionDetails>()
-                 .ForMember(m => m.ShvaAuthNum, s => s.MapFrom(src => src.AuthNum));
+                 .ForMember(m => m.ShvaAuthNum, s => s.MapFrom(src => src.AuthNum))
+              .ForMember(m => m.TelToGetAuthNum, s => s.MapFrom(src => src.TelToGetAuthNum))
+             .ForMember(m => m.CompRetailerNum, s => s.MapFrom(src => src.CompRetailerNum));
 
             CreateMap<Shva.ShvaTerminalSettings, PaymentTransaction>()
                 .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))

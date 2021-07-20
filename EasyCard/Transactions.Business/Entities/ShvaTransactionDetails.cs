@@ -52,5 +52,7 @@ namespace Transactions.Business.Entities
         public string EmvSoftVersion { get; set; }
 
         public string CompRetailerNum { get; set; }
+
+        public string TelToGetAuthNum { get; set; }
     }
 }

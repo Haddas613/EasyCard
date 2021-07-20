@@ -78,6 +78,16 @@ namespace Shva.Conveters
             };
         }
 
+        public static ShvaCreateTransactionResponse GetOKNumberRequiredProcessorTransactionResponse(this AshEndResponseBody resultAshEndBody)
+        {
+            return new ShvaCreateTransactionResponse()
+            {
+                ResultCode = resultAshEndBody.AshEndResult,
+                TelToGetAuthNum = resultAshEndBody.globalObj?.outputObj?.telNoCom?.valueTag,
+                CompRetailerNum = resultAshEndBody.globalObj?.outputObj?.compRetailerNum?.valueTag
+            };
+        }
+
         public static ShvaCreateTransactionResponse GetProcessorTransactionResponse(this AshStartResponseBody resultAshStartBody)
         {
             return new ShvaCreateTransactionResponse()
@@ -113,13 +123,18 @@ namespace Shva.Conveters
             var shvaExpDate = req.CreditCardToken.CardExpiration?.GetShvaExpDate();
             var creditTerms = req.TransactionType.GetShvaCreditTerms();
             var currency = req.Currency.GetShvaCurrency();
-
+            var OKNumber = req.OKNumber;
             inputObj.panEntryMode = cardPresence.GetShvaCardPresenceStr();
 
             inputObj.parameterJ = parameterJValue.ToString();
             inputObj.creditTerms = creditTerms.GetShvaCreditTermsStr();
             inputObj.tranType = transactionType.GetShvaTransactionTypeStr();
             inputObj.currency = currency.GetShvaCurrencyStr();
+            if (!string.IsNullOrEmpty(OKNumber))
+            {
+                inputObj.authorizationNo = OKNumber;
+                inputObj.authorizationCodeManpik = "5";
+            }
 
             if (transactionType == ShvaTransactionTypeEnum.InitialDeal)
             {

@@ -123,6 +123,8 @@ namespace Transactions.Api.Models.Transactions
 
         public Guid? PaymentRequestID { get; set; }
 
+        public string OKNumber { get; set; }
+
         public void Calculate()
         {
             if (NetTotal == 0)
