@@ -26,6 +26,10 @@
                 v-bind:class="quickStatusesColors[model.quickStatus]"
               >{{$t(model.quickStatus || 'None')}}</p>
             </v-col>
+            <v-col cols="12" md="4" class="info-block" v-if="model.rejectionMessage">
+              <p class="caption error--text text--darken-2">{{$t('RejectionReason')}}</p>
+              <p>{{model.rejectionMessage}}</p>
+            </v-col>
             <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('TransactionTime')}}</p>
               <p>{{model.$transactionTimestamp | ecdate('LLLL')}}</p>
