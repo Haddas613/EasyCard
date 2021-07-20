@@ -25,6 +25,8 @@
           :data="model.installmentDetails"
           v-if="isInstallmentTransaction"
           :total-amount="model.transactionAmount"
+          :key="model.transactionType"
+          :transaction-type="model.transactionType"
         ></installment-details>
 
         <deal-details
@@ -163,7 +165,7 @@ export default {
     },
     updateTransactionType(){
       if(this.model.transactionType === "credit"){
-        this.invoiceTypeUpd = this.terminal.invoiceSettings.defaultCreditInvoiceType || appConstants.invoicing.defaultCreditInvoiceType;
+        this.invoiceTypeUpd = this.terminalStore.invoiceSettings.defaultCreditInvoiceType || appConstants.invoicing.defaultCreditInvoiceType;
       }else{
         this.invoiceTypeUpd = this.invoiceType;
       }

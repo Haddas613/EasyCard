@@ -56,6 +56,8 @@
           :data="model.installmentDetails"
           v-if="isInstallmentTransaction"
           :total-amount="model.paymentRequestAmount"
+          :key="model.transactionType"
+          :transaction-type="model.transactionType"
           hide-title
         ></installment-details>
 

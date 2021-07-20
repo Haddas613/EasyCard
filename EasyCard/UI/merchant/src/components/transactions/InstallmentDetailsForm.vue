@@ -4,17 +4,25 @@
     <v-container fluid class="px-0">
       <v-row no-gutters>
         <v-col cols="12" md="6">
-          <v-text-field
+          <!-- <v-text-field
             v-model.number="model.numberOfPayments"
             :label="$t('NumberOfPayments')"
-            :rules="[vr.primitives.required, vr.primitives.inRange(1, 36)]"
+            :rules="[vr.primitives.required, vr.primitives.inRange(minInstallments, maxInstallments)]"
             type="number"
-            min="1"
-            max="36"
+            :min="minInstallments"
+            :max="maxInstallments"
             step="1"
             @input="updateInstallments()"
             outlined
-          ></v-text-field>
+          ></v-text-field> -->
+          <v-select
+            v-model.number="model.numberOfPayments"
+            :label="$t('NumberOfPayments')"
+            :rules="[vr.primitives.required, vr.primitives.inRange(minInstallments, maxInstallments)]"
+            @input="updateInstallments()"
+            outlined
+            :items="numberOfPaymentsArr"
+          ></v-select>
         </v-col>
         <v-col cols="12" md="6">
           <v-text-field
@@ -26,7 +34,7 @@
             step="0.01"
             :rules="[vr.primitives.required, vr.primitives.lessThan(totalAmount)]"
             v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
-            @input="updateInstallments()"
+            @input="updateInstallments(true)"
             outlined
           ></v-text-field>
         </v-col>
@@ -58,7 +66,9 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import ValidationRules from "../../helpers/validation-rules";
+import appConstants from "../../helpers/app-constants";
 
 export default {
   name: "InstallmentDetailsForm",
@@ -73,6 +83,10 @@ export default {
       type: Number,
       required: true,
       default: 0
+    },
+    transactionType: {
+      type: String,
+      required: false
     }
   },
   data() {
@@ -80,8 +94,16 @@ export default {
       vr: ValidationRules,
       model: {
         ...this.data
-      }
+      },
+      minInstallments: 1,
+      maxInstallments: 36,
+      numberOfPaymentsArr: []
     };
+  },
+  computed: {
+    ...mapState({
+      terminalStore: state => state.settings.terminal
+    }),
   },
   methods: {
     getData() {
@@ -91,18 +113,17 @@ export default {
         totalAmount: this.totalAmount
       };
     },
-    valid(){
-      
-    },
-    updateInstallments(){
+    updateInstallments(skipInitial = false){
       if (!this.model.initialPaymentAmount || !this.model.numberOfPayments) {
         return 0;
       }
 
       if (this.model.numberOfPayments === 1){ return 0;}
-      
+      console.log((this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1))))
       this.model.installmentPaymentAmount = ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1)).toFixed(2);
-      this.model.initialPaymentAmount = this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1).toFixed(2));
+      if(!skipInitial){
+        this.model.initialPaymentAmount = (this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1))).toFixed(2);
+      }
     }
   },
   mounted() {
@@ -113,6 +134,16 @@ export default {
       this.model.initialPaymentAmount =
         this.totalAmount / this.model.numberOfPayments;
     }
+    
+    if(this.transactionType == appConstants.transaction.types.credit){
+      this.minInstallments = this.terminalStore.settings.minCreditInstallments || 1;
+      this.maxInstallments = this.terminalStore.settings.maxCreditInstallments || 36;
+    }else{
+      this.minInstallments = this.terminalStore.settings.minInstallments || 1;
+      this.maxInstallments = this.terminalStore.settings.maxInstallments || 36;
+    }
+    this.numberOfPaymentsArr = this.lodash.range(this.minInstallments, this.maxInstallments + 1);
+    this.model.numberOfPayments = this.minInstallments;
   }
 };
 </script>

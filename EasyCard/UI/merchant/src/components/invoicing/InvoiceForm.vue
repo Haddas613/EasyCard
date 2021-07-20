@@ -27,6 +27,8 @@
           :data="model.installmentDetails"
           v-if="isInstallmentTransaction"
           :total-amount="model.invoiceAmount"
+          :key="model.transactionType"
+          :transaction-type="model.transactionType"
           :hide-title="true"
         ></installment-details>
 

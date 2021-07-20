@@ -73,6 +73,14 @@ const appConstants = {
                 }
             })
         }
+    },
+    transaction: {
+        types: {
+            credit: "credit",
+            immediate: "immediate",
+            installments: "installments",
+            regularDeal: "regularDeal"
+        }
     }
 };
 
