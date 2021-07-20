@@ -168,11 +168,13 @@ namespace CheckoutPortal.Controllers
                     }
                     else
                     {
+                        var installmentPaymentAmount = Math.Round(request.Amount.Value / request.NumberOfPayments.Value, 2, MidpointRounding.AwayFromZero);
+
                         installmentDetails = new InstallmentDetails
                         {
                             NumberOfPayments = request.NumberOfPayments.Value,
-                            InitialPaymentAmount = request.Amount.Value / request.NumberOfPayments.Value,
-                            InstallmentPaymentAmount = request.Amount.Value / request.NumberOfPayments.Value,
+                            InitialPaymentAmount = request.Amount.Value - installmentPaymentAmount * (request.NumberOfPayments.Value - 1),
+                            InstallmentPaymentAmount = installmentPaymentAmount,
                             TotalAmount = request.Amount.Value
                         };
                     }

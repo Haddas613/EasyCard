@@ -7,10 +7,12 @@
           <v-text-field
             v-model.number="model.numberOfPayments"
             :label="$t('NumberOfPayments')"
-            :rules="[vr.primitives.required, vr.primitives.inRange(1, 100)]"
+            :rules="[vr.primitives.required, vr.primitives.inRange(1, 36)]"
             type="number"
             min="1"
+            max="36"
             step="1"
+            @input="updateInstallments()"
             outlined
           ></v-text-field>
         </v-col>
@@ -24,12 +26,13 @@
             step="0.01"
             :rules="[vr.primitives.required, vr.primitives.lessThan(totalAmount)]"
             v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+            @input="updateInstallments()"
             outlined
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6">
           <v-text-field
-            :value="installmentPaymentAmount"
+            :value="model.installmentPaymentAmount"
             :label="$t('InstallmentPaymentAmount')"
             type="number"
             min="0.01"
@@ -90,6 +93,17 @@ export default {
     },
     valid(){
       
+    },
+    updateInstallments(){
+      if (!this.model.initialPaymentAmount || !this.model.numberOfPayments) {
+        return 0;
+      }
+
+      if (this.model.numberOfPayments === 1){ return 0;}
+      
+      // var installmentPaymentAmountRaw = (this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1);
+      this.model.installmentPaymentAmount = ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1)).toFixed(2);
+      this.model.initialPaymentAmount = this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1).toFixed(2));
     }
   },
   mounted() {
@@ -109,7 +123,9 @@ export default {
 
       if (this.model.numberOfPayments === 1){ return 0;}
 
-      return ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1)).toFixed(2);
+      var instPayAmt = ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1)).toFixed(2);
+      //this.model.initialPaymentAmount = (this.totalAmount - instPayAmt * (this.model.numberOfPayments - 1));
+      return instPayAmt;
     }
     // totalAmount() {
     //   if (
