@@ -17,6 +17,18 @@ namespace Shva
         {
         }
 
+        public ShvaCreateTransactionResponse(string errorMessage, string errorCodeStr, int? processorResult = null)
+            : base(errorMessage, errorCodeStr, processorResult)
+        {
+        }
+
+        public ShvaCreateTransactionResponse(string errorMessage, string errorCodeStr,string telToGetAuthNum,string compRetailerNum, int? processorResult = null)
+           : base(errorMessage, errorCodeStr, processorResult)
+        {
+            this.TelToGetAuthNum = telToGetAuthNum;
+            this.CompRetailerNum = compRetailerNum;
+        }
+
         public ShvaCreateTransactionResponse(string errorMessage, string errorCode)
             : base(errorMessage, errorCode)
         {

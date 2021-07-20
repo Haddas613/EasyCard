@@ -362,6 +362,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(500).IsUnicode(false).IsRequired(false);
                     s.Property(p => p.EmvSoftVersion).HasColumnName("EmvSoftVersion").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CompRetailerNum).HasColumnName("CompRetailerNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.TelToGetAuthNum).HasColumnName("TelToGetAuthNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                 });
 
                 builder.OwnsOne(b => b.DealDetails, s =>
