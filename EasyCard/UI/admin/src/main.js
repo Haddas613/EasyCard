@@ -15,6 +15,7 @@ import ecdate from './extensions/filters/ecdate'
 import currency from './extensions/filters/currency'
 import guid from './extensions/filters/guid'
 import length from './extensions/filters/length'
+import pretty from './extensions/filters/pretty'
 import vmoney from 'v-money';
 import auth from './auth'
 import VueClipboard from 'vue-clipboard2';
@@ -50,6 +51,7 @@ Vue.filter('ecdate', ecdate);
 Vue.filter('currency', currency);
 Vue.filter('guid', guid);
 Vue.filter('length', length);
+Vue.filter('pretty', pretty);
 Vue.mixin(mixin);
 
 new Vue({

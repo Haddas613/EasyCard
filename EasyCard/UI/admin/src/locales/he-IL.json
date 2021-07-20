@@ -357,6 +357,7 @@
   "ErrorMessage": "הודעת שגיאה",
   "WebUrl": "כתובת אינטרנטית",
   "ErrorDescription": "תיאור שגיאה",
+  "Response": "תגובה",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -414,6 +415,7 @@
   "Activate": "הפעל",
   "Deactivate": "בטל",
   "PairDevice": "פינפד PAX",
+  "RequestLog": "לוג בקשות",
 
   "--AUTH--": null,
   "Login": "כניסה",

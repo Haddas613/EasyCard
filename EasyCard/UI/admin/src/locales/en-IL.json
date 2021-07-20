@@ -353,6 +353,7 @@
   "ErrorMessage": "Error Message",
   "WebUrl": "Web Url",
   "ErrorDescription": "Error Description",
+  "Response": "Response",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -410,6 +411,7 @@
   "Activate": "Activate",
   "Deactivate": "Deactivate",
   "PairDevice": "Pair Device",
+  "RequestLog": "Request Log",
 
   "--AUTH--": null,
   "Login": "Login",

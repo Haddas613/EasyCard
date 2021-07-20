@@ -101,7 +101,6 @@ export default {
 
       if (this.model.numberOfPayments === 1){ return 0;}
       
-      // var installmentPaymentAmountRaw = (this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1);
       this.model.installmentPaymentAmount = ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1)).toFixed(2);
       this.model.initialPaymentAmount = this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1).toFixed(2));
     }
@@ -114,33 +113,6 @@ export default {
       this.model.initialPaymentAmount =
         this.totalAmount / this.model.numberOfPayments;
     }
-  },
-  computed: {
-    installmentPaymentAmount() {
-      if (!this.model.initialPaymentAmount || !this.model.numberOfPayments) {
-        return 0;
-      }
-
-      if (this.model.numberOfPayments === 1){ return 0;}
-
-      var instPayAmt = ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1)).toFixed(2);
-      //this.model.initialPaymentAmount = (this.totalAmount - instPayAmt * (this.model.numberOfPayments - 1));
-      return instPayAmt;
-    }
-    // totalAmount() {
-    //   if (
-    //     !this.model.initialPaymentAmount ||
-    //     !this.model.numberOfPayments ||
-    //     !this.model.installmentPaymentAmount
-    //   )
-    //     return null;
-
-    //   this.model.totalAmount =
-    //     this.model.initialPaymentAmount +
-    //     (this.model.numberOfPayments - 1) * this.model.installmentPaymentAmount;
-
-    //   return this.model.totalAmount;
-    // }
   }
 };
 </script>
