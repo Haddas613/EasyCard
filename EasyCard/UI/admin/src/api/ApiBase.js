@@ -21,6 +21,7 @@ import cfg from "../app.config";
 import appConstants from "../helpers/app-constants";
 import CardTokensApi from './modules/transactions/CardTokensApi';
 import NayaxApi from "./modules/integrations/NayaxApi";
+import TransactionsSystemApi from './modules/transactions/SystemApi';
 
 class ApiBase {
     constructor() {
@@ -39,6 +40,7 @@ class ApiBase {
         this.users = new UsersApi(this);
         this.terminalTemplates = new TerminalTemplatesApi(this);
         this.system = new SystemApi(this);
+        this.transactionsSystem = new TransactionsSystemApi(this);
         this.audit = new AuditApi(this);
         this.transmissions = new TransmissionApi(this);
         this.cardTokens = new CardTokensApi(this);

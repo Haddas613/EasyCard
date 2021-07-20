@@ -21,13 +21,13 @@
         <!-- <v-main class="py-2"> -->
           <v-container fluid ma-0 pt-2 center>
             <v-row no-gutters class="pt-4">
-              <v-col cols="3" class="hidden-sm-and-down">
+              <v-col :cols="paddings" class="hidden-sm-and-down">
                 <v-spacer></v-spacer>
               </v-col>
               <v-col>
                 <slot></slot>
               </v-col>
-              <v-col cols="3" class="hidden-sm-and-down">
+              <v-col :cols="paddings" class="hidden-sm-and-down">
                 <v-spacer></v-spacer>
               </v-col>
             </v-row>
@@ -50,6 +50,11 @@ export default {
     color: {
       type: String,
       default: "white",
+      required: false
+    },
+    paddings: {
+      type: String,
+      default: "3",
       required: false
     }
   }

@@ -156,6 +156,9 @@
   <data name="CannotCancelInvoicedTransaction" xml:space="preserve">
     <value>Cannot cancel invoiced transaction</value>
   </data>
+  <data name="CanOnlyIssueInvoiceForILSTransactions" xml:space="preserve">
+    <value>Can only issue invoice for ILS transactions</value>
+  </data>
   <data name="CardOwnerNationalIDRequired" xml:space="preserve">
     <value>Card owner national ID required</value>
   </data>

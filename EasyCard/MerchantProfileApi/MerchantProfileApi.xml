@@ -301,6 +301,11 @@
             End-customer address
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ExternalReference">
+            <summary>
+            ID in external system
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.UpdateTimestamp">
             <summary>
             Concurrency check

@@ -54,6 +54,16 @@
           outlined
         ></v-text-field>
       </v-col>
+      <v-col cols="12" class="py-0">
+        <v-text-field
+          v-model="model.externalReference"
+          :counter="50"
+          :rules="[vr.primitives.maxLength(50)]"
+          :label="$t('ExternalReference')"
+          class="px-1"
+          outlined
+        ></v-text-field>
+      </v-col>
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
         <v-btn class="mx-1" color="white" :to="{ name: 'Customers' }">{{$t('Cancel')}}</v-btn>
         <v-btn color="primary" @click="ok()">{{$t('Save')}}</v-btn>

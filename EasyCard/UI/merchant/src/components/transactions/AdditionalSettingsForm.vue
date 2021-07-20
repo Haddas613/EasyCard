@@ -33,7 +33,11 @@
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
         ></deal-details>
 
-        <v-switch v-if="$integrationAvailable(terminalStore, appConstants.terminal.integrations.invoicing)" v-model="switchIssueDocument" :label="$t('IssueDocument')" class="pt-0 mt-0"></v-switch>
+        <v-switch v-if="$integrationAvailable(terminalStore, appConstants.terminal.integrations.invoicing)"
+          v-model="switchIssueDocument"
+          :label="$t('IssueDocument')"
+          :disabled="switchIssueDocumentDisabled"
+          class="pt-0 mt-0"></v-switch>
         <div v-if="switchIssueDocument">
           <invoice-details-fields :key="invoiceTypeUpd" ref="invoiceDetails" :data="model.invoiceDetails" :invoice-type="invoiceTypeUpd"></invoice-details-fields>
         </div>
@@ -81,6 +85,7 @@ export default {
       },
       vr: ValidationRules,
       switchIssueDocument: this.issueDocument,
+      switchIssueDocumentDisabled: false,
       messageDialog: false,
       invoiceTypeUpd: this.invoiceType,
       jDealTypes: [],
@@ -128,8 +133,11 @@ export default {
       this.jDealTypes = filteredJDealTypes;
       // this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
     }
-
-    if(this.issueDocument){
+    if(this.model.currency != 'ILS'){
+      this.switchIssueDocument = false;
+      this.switchIssueDocumentDisabled = true;
+    }
+    else if(this.issueDocument){
       this.switchIssueDocument = this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing);
     }
   },

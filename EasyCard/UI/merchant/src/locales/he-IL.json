@@ -340,6 +340,7 @@
   "Activate": "הפעל",
   "Deactivate": "בטל",
   "PaymentIntent": "כוונת תשלום",
+  "CreatePaymentLink": "ייצר לינק לתשלום",
 
   "--AUTH--": null,
   "Login": "כניסה",
@@ -416,5 +417,6 @@
   "--MESSAGES--": null,
   "AreYouSureYouWantToDeleteBillingDeal": "האם אתה בטוח שאתה מעוניין למחוק עסקה מחזורית?",
   "NewAppVersionAvailableClickToRefreshThePage": "קיימת גירסה חדשה. לחץ כאן לעדכון הדף",
-  "TerminalSettingsSaveMessage": "יש שינויים שלא נשמרו. אתה בטוח שאתה רוצה לעזוב?"
+  "TerminalSettingsSaveMessage": "יש שינויים שלא נשמרו. אתה בטוח שאתה רוצה לעזוב?",
+  "CanOnlyIssueInvoiceForILSTransactions": "יכול להנפיק חשבוניות רק עבור עסקאות ILS"
 }

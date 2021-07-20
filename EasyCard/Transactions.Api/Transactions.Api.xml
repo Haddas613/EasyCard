@@ -1198,6 +1198,11 @@
             Primary reference
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.PinPadDeviceID">
+            <summary>
+             Pinpad device in case of terminal with multiple devices
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.TransactionType">
             <summary>
             Generic transaction type
@@ -1251,6 +1256,11 @@
         <member name="P:Transactions.Api.Models.Transactions.RefundRequest.InvoiceDetails">
             <summary>
             Invoice details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.TransactionType">
+            <summary>
+            Generic transaction type
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionRequestBase.TerminalID">

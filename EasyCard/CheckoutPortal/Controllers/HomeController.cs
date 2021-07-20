@@ -168,11 +168,13 @@ namespace CheckoutPortal.Controllers
                     }
                     else
                     {
+                        var installmentPaymentAmount = Math.Round(request.Amount.Value / request.NumberOfPayments.Value, 2, MidpointRounding.AwayFromZero);
+
                         installmentDetails = new InstallmentDetails
                         {
                             NumberOfPayments = request.NumberOfPayments.Value,
-                            InitialPaymentAmount = request.Amount.Value / request.NumberOfPayments.Value,
-                            InstallmentPaymentAmount = request.Amount.Value / request.NumberOfPayments.Value,
+                            InitialPaymentAmount = request.Amount.Value - installmentPaymentAmount * (request.NumberOfPayments.Value - 1),
+                            InstallmentPaymentAmount = installmentPaymentAmount,
                             TotalAmount = request.Amount.Value
                         };
                     }
@@ -482,6 +484,11 @@ namespace CheckoutPortal.Controllers
                 if (checkoutConfig.Settings.MaxInstallments > 1)
                 {
                     transactionTypes.Add(TransactionTypeEnum.Installments);
+                }
+
+                if (checkoutConfig.Settings.MaxCreditInstallments > 1)
+                {
+                    transactionTypes.Add(TransactionTypeEnum.Credit);
                 }
             }
             else

@@ -8,7 +8,7 @@ const getters = {};
 const actions = {
   async getDefaultSettings(store, { api, lodash }) {
     await store.dispatch('getTerminal', {api, lodash });
-
+    let state = store.state;
     let dictionaries = await api.dictionaries.getTransactionDictionaries();
     let currencies = dictionaries ? dictionaries.currencyEnum : [];
     if (!state.currency || !state.currency.code) {
@@ -18,7 +18,7 @@ const actions = {
     }
     //cache validation for currencies
     else if (currencies.length > 0 && state.currency) {
-      let exists = lodash.some(state.currencies, c => c.code === state.currency.code);
+      let exists = lodash.some(currencies, c => c.code === state.currency.code);
       if (!exists) await store.dispatch('changeCurrency', {api, newCurrency: currencies[0]});
     }
   },

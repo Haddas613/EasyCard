@@ -309,6 +309,9 @@
                 if (document.getElementById("pin-pad-deal").checked == true) {
                     $("#credit-card-info-area").remove();
                 }
+
+                document.getElementById("loading-spinner").hidden = false;
+                document.getElementsByTagName("body")[0].classList.add("no-scroll")
             })
 
             $("#number-of-payments").on("change", function (e) {
@@ -325,11 +328,11 @@
                     document.getElementById("total-amount-display").hidden = false;
                     return;
                 }
-                else if (value == "@Shared.Integration.Models.TransactionTypeEnum.Credit.ToString()") {
-                    min = @(Model.MinInstallments ?? 0);
+                else if (value == "@Shared.Integration.Models.TransactionTypeEnum.Installments.ToString()") {
+                    min = @(Model.MinInstallments ?? 2);
                     max = @(Model.MaxInstallments ?? 12);
                 } else {
-                    min = @(Model.MinCreditInstallments ?? 0);
+                    min = @(Model.MinCreditInstallments ?? 3);
                     max = @(Model.MaxCreditInstallments ?? 12);
                 }
                 

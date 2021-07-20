@@ -8,7 +8,7 @@
       :skippable="steps[step].skippable"
       :closeable="steps[step].closeable"
       :completed="steps[step].completed"
-      :canchangeterminal="steps[step].canChangeTerminal"
+      :canchangeterminal="!unavailable && steps[step].canChangeTerminal"
       :tdmenuitems="threeDotMenuItems"
       :title="navTitle"
     >
@@ -18,7 +18,7 @@
       </v-btn>
     </template>
     </navbar>
-    <v-stepper class="ec-stepper" v-model="step">
+    <v-stepper class="ec-stepper" v-if="!unavailable" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
           <numpad v-if="step === 1" btn-text="Invoice" v-on:ok="processAmount($event, true);" v-on:update="updateAmount($event)" ref="numpadRef" :data="model"></numpad>
@@ -55,6 +55,16 @@
         </v-stepper-content>
       </v-stepper-items>
     </v-stepper>
+    <v-alert
+      dense 
+      color="error"
+      colored-border
+      icon="mdi-alert-octagon"
+      :border="$vuetify.rtl ? 'right': 'left'"
+      v-else
+    >
+      <p>{{$t("CanOnlyIssueInvoiceForILSTransactions")}}</p>
+    </v-alert>
   </v-flex>
 </template>
 
@@ -126,7 +136,8 @@ export default {
       threeDotMenuItems: null,
       success: true,
       errors: [],
-      loading: false
+      loading: false,
+      unavailable: false,
     };
   },
   computed: {
@@ -135,7 +146,8 @@ export default {
     },
     terminal: {},
     ...mapState({
-      terminal: state => state.settings.terminal
+      terminal: state => state.settings.terminal,
+      currencyStore: state => state.settings.currency,
     })
   },
   async mounted() {
@@ -150,6 +162,10 @@ export default {
         this.model.dealDetails.consumerID = data.consumerID;
       }
     }
+    if (!this.model.currency) {
+      this.model.currency = this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
+    }
+    this.unavailable = this.model.currency != 'ILS'
   },
   methods: {
     goBack() {

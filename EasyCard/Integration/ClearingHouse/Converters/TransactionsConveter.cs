@@ -183,6 +183,8 @@ namespace ClearingHouse.Converters
                     return Models.TransactionTypeEnum.Installments;
                 case Shared.Integration.Models.TransactionTypeEnum.RegularDeal:
                     return Models.TransactionTypeEnum.Regular;
+                case Shared.Integration.Models.TransactionTypeEnum.Immediate:
+                    return Models.TransactionTypeEnum.Regular; //TODO: immediate type
                 default:
                     throw new Exception($"Cannot convert transaction type {transactionType} to Clearing House transaction type"); // TODO:
             }

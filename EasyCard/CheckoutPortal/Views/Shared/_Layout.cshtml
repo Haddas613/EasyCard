@@ -10,7 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - EasyCard Checkout Portal</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/threedots.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
 
     @if (viewModel?.CustomCssReference != null)
     {
@@ -18,13 +19,18 @@
     }
 </head>
 <body dir="@(currentUICulture.Name == "he" ? "rtl" : "ltr")" class="@(currentUICulture.Name == "he" ? "rtl" : "ltr")">
+    <div id="loading-spinner" hidden="hidden">
+        <div class="overlay">
+            <div class="dot-spin"></div>
+        </div>
+    </div>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand">
                     @if (viewModel?.MerchantLogo != null)
                     {
-                        <img src="@viewModel?.MerchantLogo" alt="EasyCard" id="merchant-logo"/>
+                        <img src="@viewModel?.MerchantLogo" alt="EasyCard" id="merchant-logo" />
                     }
                     else
                     {

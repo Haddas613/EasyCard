@@ -39,8 +39,11 @@
     [CustomerAddress]          NVARCHAR (MAX)   NULL,
     [PinPadTerminalID]         VARCHAR (16)     NULL,
     [AllowPinPad]              BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
+    [IsRefund]                 BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
 
 
 

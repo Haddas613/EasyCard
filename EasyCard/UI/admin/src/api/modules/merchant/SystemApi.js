@@ -12,7 +12,7 @@ export default class SystemApi {
             this.$headers = data.columns
         }
 
-        let data = await await this.base.get(this.systemUrl + '/log', params);
+        let data = await this.base.get(this.systemUrl + '/log', params);
 
         let dictionaries = await this.base.dictionaries.$getMerchantDictionaries()
 
