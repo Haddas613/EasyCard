@@ -96,6 +96,10 @@ namespace Shva
                 if (((AshAuthResultEnum)authResultBody.AshAuthResult).IsSuccessful())
                 {
                 }
+                else if (authResultBody.AshAuthResult.IsOKNumberRequired(authResultBody.globalObj?.outputObj?.telAuthAbility?.valueTag))
+                {
+                    return authResultBody.GetOKNumberRequiredProcessorTransactionResponse();
+                }
                 else if (authResultBody.globalObj?.outputObj?.ashStatus != null && authResultBody.globalObj?.outputObj?.ashStatusDes != null)
                 {
                     return new ProcessorCreateTransactionResponse(authResultBody.globalObj.outputObj.ashStatusDes.valueTag, authResultBody.globalObj.outputObj.ashStatus.valueTag, authResultBody.AshAuthResult);
@@ -119,6 +123,10 @@ namespace Shva
                 if (((AshEndResultEnum)resultAshEndBody.AshEndResult).IsSuccessful())
                 {
                     return resultAshEndBody.GetProcessorTransactionResponse();
+                }
+                else if (resultAshEndBody.AshEndResult.IsOKNumberRequired(resultAshEndBody.globalObj?.outputObj?.telAuthAbility?.valueTag))
+                {
+                    return resultAshEndBody.GetOKNumberRequiredProcessorTransactionResponse();
                 }
                 else if (resultAshEndBody.globalObj?.outputObj?.ashStatus != null && resultAshEndBody.globalObj?.outputObj?.ashStatusDes != null)
                 {

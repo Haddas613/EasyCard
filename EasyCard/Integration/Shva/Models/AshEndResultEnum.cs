@@ -8,6 +8,7 @@ namespace Shva.Models
     {
         Success = 0,
         SuccessJ5 = 777,
+        RequestOKNumber = 3479,
         Unknown
     }
 }

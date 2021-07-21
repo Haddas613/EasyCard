@@ -317,6 +317,11 @@
               Looks up a localized string similar to LastName.
             </summary>
         </member>
+        <member name="P:IdentityServer.Resources.CommonResources.LastNameValidationMessage">
+            <summary>
+              Looks up a localized string similar to Last name should be at least 2 and at max 200 characters long.
+            </summary>
+        </member>
         <member name="P:IdentityServer.Resources.CommonResources.LockedOut">
             <summary>
               Looks up a localized string similar to Locked out.
