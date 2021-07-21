@@ -293,6 +293,7 @@
   "ExternalReference": "אסמכתא חיצונית",
   "PaymentIntentURL": "קישור לכוונת תשלום",
   "AllowPinPad": "אפשר לבצע עסקאות פינפד",
+  "AuthorizationCode": "קוד אימות (אופציונאלי)",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

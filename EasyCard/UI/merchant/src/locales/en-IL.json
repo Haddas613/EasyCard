@@ -293,6 +293,7 @@
   "ExternalReference": "External Reference",
   "PaymentIntentURL": "Payment Intent URL",
   "AllowPinPad": "Allow PinPad",
+  "AuthorizationCode": "Authorization Code (optional)",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

@@ -256,6 +256,7 @@ export default {
       this.model.dealDetails.items = data.dealDetails.items;
     },
     processCreditCard(data) {
+      this.model.oKNumber = data.oKNumber;
       if (data.type === "creditcard") {
         data = data.data;
         this.model.saveCreditCard = data.saveCreditCard || false;

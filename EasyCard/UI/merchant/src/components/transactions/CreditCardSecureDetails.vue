@@ -70,13 +70,20 @@
             <re-icon>mdi-chevron-right</re-icon>
           </template>
         </ec-dialog-invoker>
-        <v-form class="ec-form" ref="form" lazy-validation v-if="!token">
-          <credit-card-secure-details-fields
-            :data="model.creditCardSecureDetails"
-            ref="ccsecuredetailsform"
-            :tokens="customerTokens"
-          ></credit-card-secure-details-fields>
-          <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')" :disabled="!model.dealDetails.consumerID"></v-checkbox>
+        <v-form class="ec-form" ref="form" lazy-validation>
+          <template v-if="!token">
+            <credit-card-secure-details-fields
+              :data="model.creditCardSecureDetails"
+              ref="ccsecuredetailsform"
+              :tokens="customerTokens"
+            ></credit-card-secure-details-fields>
+            <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')" :disabled="!model.dealDetails.consumerID"></v-checkbox>
+          </template>
+          <v-text-field
+            v-model="model.oKNumber"
+            :label="$t('AuthorizationCode')"
+            :rules="[vr.primitives.stringLength(1, 50)]">
+          </v-text-field>
         </v-form>
       </template>
     </v-card-text>
@@ -125,7 +132,8 @@ export default {
       selectedTokenObj: null,
       appConstants: appConstants,
       selectedPinPadDevice: null,
-      availableDevices: []
+      availableDevices: [],
+      vr: ValidationRules
     };
   },
   async mounted() {
@@ -178,6 +186,7 @@ export default {
         data: {
           pinPad: true,
           pinPadDeviceID: this.selectedDevice.deviceID,
+          oKNumber: this.model.oKNumber
         }
       });
     },
@@ -186,7 +195,8 @@ export default {
 
       this.$emit("ok", {
         type: "token",
-        data: this.selectedToken
+        data: this.selectedToken,
+        oKNumber: this.model.oKNumber
       });
     },
     okCreditCard() {
@@ -205,7 +215,8 @@ export default {
         data: {
           ...this.model.creditCardSecureDetails,
           ...data,
-          saveCreditCard: this.model.saveCreditCard
+          saveCreditCard: this.model.saveCreditCard,
+          oKNumber: this.model.oKNumber
         }
       });
     },
