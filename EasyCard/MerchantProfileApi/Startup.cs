@@ -11,6 +11,7 @@ using BasicServices;
 using BasicServices.BlobStorage;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServerClient;
+using MerchantProfileApi.Hubs;
 using Merchants.Business.Data;
 using Merchants.Business.Services;
 using Merchants.Shared;
@@ -78,10 +79,13 @@ namespace ProfileApi
                             "http://localhost:8080")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
+                        .AllowCredentials()
                         .WithExposedHeaders(Headers.API_VERSION_HEADER)
                         .WithExposedHeaders(Headers.UI_VERSION_HEADER);
                     });
             });
+
+            services.AddSignalR();
 
             var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
 
@@ -382,6 +386,7 @@ namespace ProfileApi
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
+                endpoints.MapHub<TransactionsHub>("/transactionsHub");
                 //endpoints.MapFallbackToController("Index", "Home");
             });
 

@@ -13,6 +13,7 @@ namespace MerchantProfileApi.Controllers.External
     [ApiController]
     public class NotificationsController : ControllerBase
     {
+        [HttpPost("transaction-status")]
         public async Task<ActionResult<OperationResponse>> TransactionStatus(TransactionsStatusRequest request)
         {
             return Ok();

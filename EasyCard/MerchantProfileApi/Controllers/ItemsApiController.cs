@@ -11,6 +11,7 @@ using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ProfileApi;
 using Shared.Api;
@@ -39,13 +40,23 @@ namespace MerchantProfileApi.Controllers
         private readonly IMerchantsService merchantsService;
         private readonly ICurrencyRateService currencyRateService;
 
-        public ItemsApiController(IItemsService itemsService, IMapper mapper, IHttpContextAccessorWrapper httpContextAccessor, IMerchantsService merchantsService, ICurrencyRateService currencyRateService)
+        //TODO: REMOVE
+        private IHubContext<Hubs.TransactionsHub, Hubs.ITransactionsHub> hubcontext;
+
+        public ItemsApiController(
+            IItemsService itemsService,
+            IMapper mapper,
+            IHttpContextAccessorWrapper httpContextAccessor,
+            IMerchantsService merchantsService,
+            ICurrencyRateService currencyRateService,
+            IHubContext<Hubs.TransactionsHub, Hubs.ITransactionsHub> hubcontext)
         {
             this.itemsService = itemsService;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
             this.merchantsService = merchantsService;
             this.currencyRateService = currencyRateService;
+            this.hubcontext = hubcontext;
         }
 
         [HttpGet]
@@ -99,6 +110,7 @@ namespace MerchantProfileApi.Controllers
         [Route("{itemID}")]
         public async Task<ActionResult<ItemResponse>> GetItem([FromRoute] Guid itemID)
         {
+            await hubcontext.Clients.All.TransactionStatusChanged(new { itemID });
             using (var dbTransaction = itemsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
                 var dbItem = EnsureExists(await itemsService.GetItems().FirstOrDefaultAsync(m => m.ItemID == itemID));

@@ -3,7 +3,10 @@
     <v-overlay :value="requestsCountStore > 0" z-index="10">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
-    <router-view v-if="renderReady" />
+    <template v-if="renderReady">
+      <notifications-hub />
+      <router-view />
+    </template>
   </div>
 </template>
 
@@ -13,6 +16,9 @@ import { mapState } from "vuex";
 import i18n from "./i18n";
 
 export default {
+  components: {
+    NotificationsHub: () => import("./components/misc/NotificationsHub"),
+  },
   data() {
     return {
       requestsCount: 0,

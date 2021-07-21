@@ -23,18 +23,12 @@ namespace Transactions.Api.Services.Notification
 
         public Task Notify(NotificationTypesEnum type, object payload, object settings) => (type, payload, settings) switch
         {
-            (NotificationTypesEnum.TransactionStatus, PaymentTransaction data, _) => NotifyTransactionStatus(data),
+            (NotificationTypesEnum.TransactionStatus, _, _) => NotifyTransactionStatus(payload),
             _ => Task.FromResult(false)
         };
 
-        public Task NotifyTransactionStatus(PaymentTransaction paymentTransaction)
+        public Task NotifyTransactionStatus(object payload)
         {
-            var payload = new
-            {
-                paymentTransaction.PaymentTransactionID,
-                paymentTransaction.Status
-            };
-
             var uri = new UriBuilder(apiSettings.MerchantsManagementApiAddress);
             uri.Path = "external/notifications/transaction-status";
 
