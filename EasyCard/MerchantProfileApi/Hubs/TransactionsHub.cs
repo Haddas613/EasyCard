@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MerchantProfileApi.Models.Notifications;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using ProfileApi;
 using System;
@@ -8,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace MerchantProfileApi.Hubs
 {
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.MerchantFrontend)]
+    [Authorize(AuthenticationSchemes = "SignalR")]
     public class TransactionsHub : Hub<ITransactionsHub>
     {
-        private static readonly Dictionary<string, string> Connections = new Dictionary<string, string>();
+        private static readonly Dictionary<Guid, string> Connections = new Dictionary<Guid, string>();
 
         public override Task OnConnectedAsync()
         {
@@ -19,14 +21,19 @@ namespace MerchantProfileApi.Hubs
             return base.OnConnectedAsync();
         }
 
-        public async Task MapConnection(string userID)
+        public async Task MapConnection(Guid userID)
         {
-            Connections[userID] = this.Context.ConnectionId;
+            Connections[userID] = Context.ConnectionId;
         }
 
-        public async Task TransactionStatusChanged(object payload)
+        public async Task TransactionStatusChanged(TransactionsStatusRequest payload)
         {
-            await Clients.All.TransactionStatusChanged(payload);
+            if (!Connections.ContainsKey(payload.UserID))
+            {
+                return;
+            }
+
+            await Clients.Client(Connections[payload.UserID]).TransactionStatusChanged(payload);
         }
     }
 }

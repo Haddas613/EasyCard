@@ -11,5 +11,7 @@ namespace MerchantProfileApi.Models.Notifications
         public Guid PaymentTransactionID { get; set; }
 
         public TransactionStatusEnum Status { get; set; }
+
+        public Guid UserID { get; set; }
     }
 }

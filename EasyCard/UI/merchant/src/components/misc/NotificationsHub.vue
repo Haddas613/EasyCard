@@ -1,5 +1,7 @@
 <template>
-  <div hidden></div>
+  <div>
+      <v-btn style="margin-top:200px" color="primary" @click="connectToTransactionsHub()">connect</v-btn>
+  </div>
 </template>
 
 <script>
@@ -17,28 +19,37 @@ export default {
   methods: {
     async connectToTransactionsHub() {
       if (this.transactionsHub != null) {
-          this.transactionsHub.stop();
+        this.transactionsHub.stop();
       }
+      
       const options = {
         accessTokenFactory: () => {
           return this.$oidc.getAccessToken();
         },
+        transport: 1
       };
+
       this.transactionsHub = new signalR.HubConnectionBuilder()
         .withUrl(
-          `${this.$cfg.VUE_APP_PROFILE_API_BASE_ADDRESS}/transactionsHub`, options
+            `${this.$cfg.VUE_APP_PROFILE_API_BASE_ADDRESS}/hubs/transactions`,
+            options
         )
         .withAutomaticReconnect()
+        //.configureLogging("Trace")
         .build();
-        console.log(this.transactionsHub)
+        
       this.transactionsHub.on("TransactionStatusChanged", function(payload) {
         console.log(`TransactionStatusChanged: ${payload}`);
         this.$toasted.show("success", "TransactionStatusChanged");
       });
 
-      this.transactionsHub.start().catch(function(err) {
-        return console.error(err.toString());
-      });
+      this.transactionsHub.start()
+        .then(async () => {
+            let user = await this.$oidc.getUserProfile();
+            this.transactionsHub.invoke('MapConnection', user.sub);
+        }).catch(function(err) {
+            return console.error(err.toString());
+        });
     }
   }
 };

@@ -11,10 +11,12 @@ using BasicServices;
 using BasicServices.BlobStorage;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServerClient;
+using MerchantProfileApi.Extensions;
 using MerchantProfileApi.Hubs;
 using Merchants.Business.Data;
 using Merchants.Business.Services;
 using Merchants.Shared;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -24,6 +26,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -93,6 +96,78 @@ namespace ProfileApi
 
             //TODO
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddJwtBearer("SignalR", options =>
+                {
+                    options.ClaimsIssuer = identity.Authority;
+                    options.Authority = identity.Authority;
+                    options.RequireHttpsMetadata = true;
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        ValidateAudience = false,
+                    };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = async (context) =>
+                        {
+                            var path = context.HttpContext.Request.Path;
+
+                            if (string.IsNullOrEmpty(context.Token) && path.StartsWithSegments("/hubs"))
+                            {
+                                // attempt to read the access token from the query string
+                                var accessToken = context.Request.Query["access_token"];
+                                string headerToken = context.Request.Headers["Authorization"];
+
+                                if (!string.IsNullOrEmpty(accessToken))
+                                {
+                                    // Read the token out of the query string
+                                    context.Token = accessToken;
+                                }
+                                else if (!string.IsNullOrEmpty(headerToken))
+                                {
+                                    context.Token = headerToken.Replace("Bearer ", string.Empty);
+                                }
+                            }
+                        },
+                        OnTokenValidated = async (context) =>
+                        {
+                            if (context.Principal.IsInteractiveAdmin())
+                            {
+                                var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                                var userId = context.Principal.GetDoneByID();
+                                var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
+
+                                if (merchantID != null)
+                                {
+                                    var impersonationIdentity = new ClaimsIdentity(new[]
+                                    {
+                                        new Claim(Claims.MerchantIDClaim, merchantID.ToString()),
+                                        new Claim(ClaimTypes.Role, Roles.Merchant)
+                                    });
+                                    context.Principal?.AddIdentity(impersonationIdentity);
+                                }
+                            }
+                            else if (context.Principal.IsMerchant())
+                            {
+                                var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
+                                var userId = context.Principal.GetDoneByID();
+                                var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
+
+                                if (merchantID != null)
+                                {
+                                    var midentity = (ClaimsIdentity)context.Principal.Identity;
+                                    var midclaim = midentity.FindFirst(Claims.MerchantIDClaim);
+                                    if (midclaim != null)
+                                    {
+                                        midentity.TryRemoveClaim(midclaim);
+                                    }
+
+                                    midentity.AddClaim(new Claim(Claims.MerchantIDClaim, merchantID.ToString()));
+                                }
+                            }
+                        },
+                    };
+                })
                 .AddIdentityServerAuthentication(options =>
                 {
                     options.ClaimsIssuer = identity.Authority;
@@ -102,8 +177,33 @@ namespace ProfileApi
                     options.NameClaimType = "name";
                     options.EnableCaching = true;
 
-                    options.JwtBearerEvents = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                    options.JwtBearerEvents = new JwtBearerEvents
                     {
+                        OnChallenge = async (context) =>
+                        {
+                            //var path = context.HttpContext.Request.Path;
+                            //if (path.StartsWithSegments("/hubs"))
+                            //{
+                            //    context.HandleResponse();
+                            //}
+
+                        },
+                        OnMessageReceived = async (context) =>
+                        {
+                            if (string.IsNullOrEmpty(context.Token))
+                            {
+                                // attempt to read the access token from the query string
+                                var accessToken = context.Request.Query["access_token"];
+
+                                // If the request is for our hub...
+                                var path = context.HttpContext.Request.Path;
+                                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                                {
+                                    // Read the token out of the query string
+                                    context.Token = accessToken;
+                                }
+                            }
+                        },
                         OnTokenValidated = async (context) =>
                         {
                             try
@@ -151,6 +251,9 @@ namespace ProfileApi
                         }
                     };
                 });
+
+            //services.TryAddEnumerable(
+            //    ServiceDescriptor.Singleton<IPostConfigureOptions<JwtBearerOptions>, QueryJwtBearerOptions>());
 
             services.AddAuthorization(options =>
             {
@@ -386,7 +489,7 @@ namespace ProfileApi
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
-                endpoints.MapHub<TransactionsHub>("/transactionsHub");
+                endpoints.MapHub<TransactionsHub>("/hubs/transactions");//.RequireAuthorization(IdentityServerAuthenticationDefaults.AuthenticationScheme);
                 //endpoints.MapFallbackToController("Index", "Home");
             });
 
