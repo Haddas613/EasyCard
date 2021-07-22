@@ -109,7 +109,6 @@ export default {
     getData() {
       return {
         ...this.model,
-        installmentPaymentAmount: this.installmentPaymentAmount,
         totalAmount: this.totalAmount
       };
     },
@@ -119,7 +118,7 @@ export default {
       }
 
       if (this.model.numberOfPayments === 1){ return 0;}
-      console.log((this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1))))
+      
       this.model.installmentPaymentAmount = ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1)).toFixed(2);
       if(!skipInitial){
         this.model.initialPaymentAmount = (this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1))).toFixed(2);
