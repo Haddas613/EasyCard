@@ -79,6 +79,7 @@
   "Integrations": "Integrations",
   "UpayTransactionDetails": "Upay Transaction Details",
   "ClearingHouseTransactionDetails": "Clearing House Transaction Details",
+  "NonCardCharge": "Non Card Charge",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

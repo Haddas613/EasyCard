@@ -79,6 +79,7 @@
   "Integrations": "אינטגרציות",
   "UpayTransactionDetails": "פרטי עסקת מאגד פיידיי",
   "ClearingHouseTransactionDetails": "פרטי עסקת מאגד",
+  "NonCardCharge": "חיוב ללא כרטיס אשראי",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
