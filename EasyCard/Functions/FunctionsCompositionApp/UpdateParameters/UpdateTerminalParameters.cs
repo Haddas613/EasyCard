@@ -40,23 +40,20 @@ namespace FunctionsCompositionApp.UpdateParameters
                 {
                     var response = await transactionsApiClient.UpdateTerminalParameters(terminal);
 
-                    result[response.UpdateStatus]++;
+                    if (result.ContainsKey(response.UpdateStatus)) result[response.UpdateStatus]++;
                 }
 
-                if(result[UpdateParamsStatusEnum.Updated] == 0)
+                if (result[UpdateParamsStatusEnum.Updated] == 0)
                 {
-                    log.LogError($"Update Terminal Parameters Completed. Updated: 0;" +
-                        $"UpdateFailed: {result[UpdateParamsStatusEnum.UpdateFailed]}; NotFoundOrInvalidStatus: {result[UpdateParamsStatusEnum.NotFoundOrInvalidStatus]};");
+                    log.LogError($"Update Terminal Parameters Completed. " + string.Join(";", result.Select(e => $"{e.Key}: {e.Value}")));
                 }
-                else if(result[UpdateParamsStatusEnum.NotFoundOrInvalidStatus] > 0 || result[UpdateParamsStatusEnum.UpdateFailed] > 0)
+                else if (result[UpdateParamsStatusEnum.NotFoundOrInvalidStatus] > 0 || result[UpdateParamsStatusEnum.UpdateFailed] > 0)
                 {
-                    log.LogWarning($"Update Terminal Parameters Completed. Updated: {result[UpdateParamsStatusEnum.Updated]};" +
-                        $"UpdateFailed: {result[UpdateParamsStatusEnum.UpdateFailed]}; NotFoundOrInvalidStatus: {result[UpdateParamsStatusEnum.NotFoundOrInvalidStatus]};");
+                    log.LogWarning($"Update Terminal Parameters Completed. " + string.Join(";", result.Select(e => $"{e.Key}: {e.Value}")));
                 }
                 else
                 {
-                    log.LogInformation($"Update Terminal Parameters Completed. Updated: {result[UpdateParamsStatusEnum.Updated]};" +
-                        $"UpdateFailed: {result[UpdateParamsStatusEnum.UpdateFailed]}; NotFoundOrInvalidStatus: {result[UpdateParamsStatusEnum.NotFoundOrInvalidStatus]};");
+                    log.LogInformation($"Update Terminal Parameters Completed. " + string.Join(";", result.Select(e => $"{e.Key}: {e.Value}")));
                 }
             }
             else
