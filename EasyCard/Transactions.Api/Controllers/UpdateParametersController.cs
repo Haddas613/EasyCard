@@ -25,6 +25,7 @@ using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
+using Shared.Helpers.Queue;
 using Shared.Helpers.Security;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
@@ -32,6 +33,7 @@ using Swashbuckle.AspNetCore.Filters;
 using Transactions.Api.Extensions.Filtering;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
+using Transactions.Api.Models.UpdateParameters;
 using Transactions.Api.Services;
 using Transactions.Api.Swagger;
 using Transactions.Api.Validation;
@@ -46,6 +48,7 @@ namespace Transactions.Api.Controllers
     [Route("api/update")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class UpdateParametersController : ApiControllerBase
     {
         private readonly ITransactionsService transactionsService;
@@ -57,13 +60,14 @@ namespace Transactions.Api.Controllers
         private readonly ApplicationSettings appSettings;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly IShvaTerminalsService shvaTerminalsService;
+        private readonly IQueue updateParametersQueue;
 
         // TODO: service client
         private readonly ITerminalsService terminalsService;
 
         public UpdateParametersController(ITransactionsService transactionsService, IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage, IMapper mapper,
             IAggregatorResolver aggregatorResolver, IProcessorResolver processorResolver, ITerminalsService terminalsService, ILogger<TransactionsApiController> logger,
-            IOptions<ApplicationSettings> appSettings, IHttpContextAccessorWrapper httpContextAccessor, IShvaTerminalsService shvaTerminalsService)
+            IOptions<ApplicationSettings> appSettings, IHttpContextAccessorWrapper httpContextAccessor, IShvaTerminalsService shvaTerminalsService, IQueueResolver queueResolver)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -76,11 +80,32 @@ namespace Transactions.Api.Controllers
             this.appSettings = appSettings.Value;
             this.httpContextAccessor = httpContextAccessor;
             this.shvaTerminalsService = shvaTerminalsService;
+            updateParametersQueue = queueResolver.GetQueue(QueueResolver.UpdateTerminalSHVAParametersQueue);
         }
 
-
-
+        [HttpPost]
+        [Route("send-to-queue")]
         [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<SendTerminalsToQueueResponse>> SendTerminalsToUpdateParametersQueue()
+        {
+            var response = new SummariesResponse<Guid>();
+
+            var terminals = await terminalsService.GetTerminals()
+                .Where(t => t.Status != Merchants.Shared.Enums.TerminalStatusEnum.Disabled)
+                .Select(t => t.TerminalID)
+                .ToListAsync();
+
+            var batch = new List<Guid>(appSettings.UpdateParametersTerminalsMaxBatchSize);
+
+            for (int i = 0; i < terminals.Count; i += appSettings.UpdateParametersTerminalsMaxBatchSize)
+            {
+                await updateParametersQueue.PushToQueue(
+                    terminals.Skip(i).Take(appSettings.UpdateParametersTerminalsMaxBatchSize));
+            }
+
+            return new SendTerminalsToQueueResponse { Status = StatusEnum.Success, Message = Messages.TransactionsQueued, Count = terminals.Count };
+        }
+
         [HttpPost]
         [Route("updateByTerminal/{terminalID:guid}")]
         public async Task<ActionResult<UpdateParametersResponse>> UpdateParameters([FromRoute] Guid terminalID)

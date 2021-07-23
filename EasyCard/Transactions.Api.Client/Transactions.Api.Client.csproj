@@ -22,6 +22,8 @@
     <Compile Include="..\Transactions.Api\Models\Billing\CreateTransactionFromBillingDealsRequest.cs" Link="Models\CreateTransactionFromBillingDealsRequest.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\CreateTransactionFromBillingDealsResponse.cs" Link="Models\CreateTransactionFromBillingDealsResponse.cs" />
     <Compile Include="..\Transactions.Api\Models\Billing\SendBillingDealsToQueueResponse.cs" Link="Models\SendBillingDealsToQueueResponse.cs" />
+    <Compile Include="..\Transactions.Api\Models\UpdateParameters\SendTerminalsToQueueResponse.cs" Link="Models\SendTerminalsToQueueResponse.cs" />
+    <Compile Include="..\Transactions.Api\Models\UpdateParameters\UpdateParametersResponse.cs" Link="Models\UpdateParametersResponse.cs" />
   </ItemGroup>
 
   <ItemGroup>
