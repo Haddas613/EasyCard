@@ -1654,7 +1654,7 @@
             IDs of transactions which needs to be transmitted
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.UpdateParametersRequest.TerminalID">
+        <member name="P:Transactions.Api.Models.UpdateParameters.UpdateParametersRequest.TerminalID">
             <summary>
             EasyCard terminal reference
             </summary>

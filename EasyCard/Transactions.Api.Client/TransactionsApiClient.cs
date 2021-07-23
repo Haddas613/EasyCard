@@ -14,6 +14,7 @@ using Transactions.Api.Models.Checkout;
 using Shared.Api.Configuration;
 using Transactions.Api.Models.Billing;
 using SharedApi = Shared.Api;
+using Transactions.Api.Models.UpdateParameters;
 
 namespace Transactions.Api.Client
 {
@@ -163,6 +164,42 @@ namespace Transactions.Api.Client
             }
         }
 
+        public async Task<TransactionResponseAdmin> GetTransaction(Guid? transactionID)
+        {
+            try
+            {
+                return await webApiClient.Get<TransactionResponseAdmin>(apiConfiguration.TransactionsApiAddress, $"api/transactions/{transactionID}", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException)
+            {
+                throw;
+            }
+        }
+
+        public async Task<SendTerminalsToQueueResponse> SendTerminalsToUpdateParametersQueue()
+        {
+            try
+            {
+                return await webApiClient.Post<SendTerminalsToQueueResponse>(apiConfiguration.TransactionsApiAddress, $"api/update-parameters/send-to-queue", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException)
+            {
+                throw;
+            }
+        }
+
+        public async Task<UpdateParametersResponse> UpdateTerminalParameters(Guid terminalID)
+        {
+            try
+            {
+                return await webApiClient.Post<UpdateParametersResponse>(apiConfiguration.TransactionsApiAddress, $"api/update-parameters/update-by-terminal/{terminalID}", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException)
+            {
+                throw;
+            }
+        }
+
         private async Task<NameValueCollection> BuildHeaders()
         {
             var token = await tokenService.GetToken();
@@ -175,18 +212,6 @@ namespace Transactions.Api.Client
             }
 
             return headers;
-        }
-
-        public async Task<TransactionResponseAdmin> GetTransaction(Guid? transactionID)
-        {
-            try
-            {
-                return await webApiClient.Get<TransactionResponseAdmin>(apiConfiguration.TransactionsApiAddress, $"api/transactions/{transactionID}", null, BuildHeaders);
-            }
-            catch (WebApiClientErrorException)
-            {
-                throw;
-            }
         }
     }
 }

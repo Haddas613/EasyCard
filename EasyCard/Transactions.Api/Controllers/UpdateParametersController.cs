@@ -45,7 +45,7 @@ using Transactions.Shared.Enums;
 
 namespace Transactions.Api.Controllers
 {
-    [Route("api/update")]
+    [Route("api/update-parameters")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]
@@ -107,7 +107,7 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpPost]
-        [Route("updateByTerminal/{terminalID:guid}")]
+        [Route("update-by-terminal/{terminalID:guid}")]
         public async Task<ActionResult<UpdateParametersResponse>> UpdateParameters([FromRoute] Guid terminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
