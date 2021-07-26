@@ -1,8 +1,8 @@
 <template>
-  <v-app id="inspire" v-bind:dir="$vuetify.rtl ? 'rtl' : 'ltr'">
+  <div>
     <app-version-overlay></app-version-overlay>
     <wizard-content />
-  </v-app>
+  </div>
 </template>
 
 <script>

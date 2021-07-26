@@ -13,7 +13,12 @@ export default class TerminalsApi {
         };
         
         if(opts.refreshCache || !this.$terminals){
-            this.$terminals = (await this.base.get(this.terminalsUrl, params)) || [];
+            this.$terminals = (await this.base.get(this.terminalsUrl, params)) || {
+                data: [],
+                numberOfRecords: 0
+            };
+            //in case api returned null
+            this.$terminals.data = this.$terminals.data || [];
         }
         var t = opts.showDeleted ? this.$terminals.data : this.$terminals.data.filter(t => t.status != "disabled");
         return { numberOfRecords: t.length, data: t};

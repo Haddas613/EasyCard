@@ -80,6 +80,7 @@
   "UpayTransactionDetails": "Upay Transaction Details",
   "ClearingHouseTransactionDetails": "Clearing House Transaction Details",
   "NonCardCharge": "Non Card Charge",
+  "SystemIsNotReadyToUse": "System is not ready to use",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -420,5 +421,6 @@
   "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?",
   "NewAppVersionAvailableClickToRefreshThePage": "New App Version Available. Click to refresh the page.",
   "UnsavedChangesWarningMessage": "There are unsaved changes. Are you sure you want to leave?",
-  "CanOnlyIssueInvoiceForILSTransactions": "Can only issue invoice for ILS transactions"
+  "CanOnlyIssueInvoiceForILSTransactions": "Can only issue invoice for ILS transactions",
+  "NoAvailableTerminals": "No available terminals"
 }
