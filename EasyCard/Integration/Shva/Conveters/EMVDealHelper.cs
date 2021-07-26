@@ -89,7 +89,7 @@ namespace Shva.Conveters
         {
             string TelToGetAuthNum = resultAshAuthBody.globalObj?.outputObj?.telNoCom?.valueTag;
             string CompRetailerNum = resultAshAuthBody.globalObj?.outputObj?.compRetailerNum?.valueTag;
-            return new ShvaCreateTransactionResponse(resultAshAuthBody.globalObj.outputObj.ashStatusDes.valueTag, resultAshAuthBody.globalObj.outputObj.ashStatus.valueTag, TelToGetAuthNum, CompRetailerNum, resultAshAuthBody.AshAuthResult);
+            return new ShvaCreateTransactionResponse(resultAshAuthBody.globalObj.outputObj.ashStatusDes?.valueTag, resultAshAuthBody.globalObj.outputObj.ashStatus?.valueTag, TelToGetAuthNum, CompRetailerNum, resultAshAuthBody.AshAuthResult);
         }
 
         public static ShvaCreateTransactionResponse GetProcessorTransactionResponse(this AshStartResponseBody resultAshStartBody)
