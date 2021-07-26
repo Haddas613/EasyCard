@@ -47,10 +47,5 @@ namespace Transactions.Business.Entities
         /// End-customer Address
         /// </summary>
         public Address ConsumerAddress { get; set; }
-
-        /// <summary>
-        /// Generic transaction type
-        /// </summary>
-        public TransactionTypeEnum TransactionType { get; set; }
     }
 }

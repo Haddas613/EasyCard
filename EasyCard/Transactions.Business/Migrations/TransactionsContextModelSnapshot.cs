@@ -431,6 +431,12 @@ namespace Transactions.Business.Migrations
                     b.Property<decimal>("TotalDiscount")
                         .HasColumnType("decimal(19,4)");
 
+                    b.Property<short>("TransactionType")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasDefaultValue((short)0)
+                        .HasColumnName("TransactionType");
+
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -762,8 +768,7 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<short>("TransactionType")
-                        .HasColumnType("smallint")
-                        .HasColumnName("PaymentTransaction_TransactionType");
+                        .HasColumnType("smallint");
 
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()
@@ -967,12 +972,6 @@ namespace Transactions.Business.Migrations
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Items");
-
-                            b1.Property<short>("TransactionType")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("smallint")
-                                .HasDefaultValue((short)0)
-                                .HasColumnName("TransactionType");
 
                             b1.HasKey("BillingDealID");
 
@@ -1203,12 +1202,6 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Items");
 
-                            b1.Property<short>("TransactionType")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("smallint")
-                                .HasDefaultValue((short)0)
-                                .HasColumnName("TransactionType");
-
                             b1.HasKey("InvoiceID");
 
                             b1.ToTable("Invoice");
@@ -1315,12 +1308,6 @@ namespace Transactions.Business.Migrations
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Items");
-
-                            b1.Property<short>("TransactionType")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("smallint")
-                                .HasDefaultValue((short)0)
-                                .HasColumnName("TransactionType");
 
                             b1.HasKey("PaymentRequestID");
 
@@ -1469,11 +1456,6 @@ namespace Transactions.Business.Migrations
                                 .IsUnicode(true)
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("Items");
-
-                            b1.Property<short>("TransactionType")
-                                .HasColumnType("smallint")
-                                .HasDefaultValue((short)0)
-                                .HasColumnName("TransactionType");
 
                             b1.HasKey("PaymentTransactionID");
 

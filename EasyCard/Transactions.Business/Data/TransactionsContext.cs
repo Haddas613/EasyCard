@@ -372,7 +372,6 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
-                    s.Property(p => p.TransactionType).HasColumnName("TransactionType").HasColumnType("smallint").HasDefaultValue(TransactionTypeEnum.RegularDeal);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
@@ -502,7 +501,6 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
-                    s.Property(p => p.TransactionType).HasColumnName("TransactionType").HasColumnType("smallint").HasDefaultValue(TransactionTypeEnum.RegularDeal);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
@@ -595,7 +593,6 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
-                    s.Property(p => p.TransactionType).HasColumnName("TransactionType").HasColumnType("smallint").HasDefaultValue(TransactionTypeEnum.RegularDeal);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);
@@ -645,6 +642,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.InitialPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.TotalDiscount).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(p => p.TransactionType).HasColumnName("TransactionType").HasColumnType("smallint").HasDefaultValue(TransactionTypeEnum.RegularDeal);
             }
         }
 
@@ -669,7 +667,6 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
-                    s.Property(p => p.TransactionType).HasColumnName("TransactionType").HasColumnType("smallint").HasDefaultValue(TransactionTypeEnum.RegularDeal);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
                     s.Property(p => p.ConsumerAddress).HasColumnName("CustomerAddress").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(CustomerAddressConverter);

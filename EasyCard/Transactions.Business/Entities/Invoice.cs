@@ -2,6 +2,7 @@
 using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
@@ -161,5 +162,10 @@ namespace Transactions.Business.Entities
                 TotalDiscount = DealDetails.Items.Sum(e => e.Discount.GetValueOrDefault(0));
             }
         }
+
+        /// <summary>
+        /// Generic transaction type
+        /// </summary>
+        public TransactionTypeEnum TransactionType { get; set; }
     }
 }
