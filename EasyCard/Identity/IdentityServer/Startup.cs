@@ -102,6 +102,7 @@ namespace IdentityServer
                 options.Password.RequireLowercase = false;
                 options.Password.RequireDigit = true;
                 options.Password.RequireNonAlphanumeric = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
             });
 
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention

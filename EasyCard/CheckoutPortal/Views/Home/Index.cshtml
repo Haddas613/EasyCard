@@ -70,50 +70,51 @@
                     <input type="hidden" asp-for="ConsumerID" />
                     <input type="hidden" asp-for="IssueInvoice" />
                     <input type="hidden" asp-for="AllowPinPad" />
+
+                    @if (Model.TransactionTypes.Count() > 1)
+                    {
+                        <div class="form-group">
+                            <label for="number-of-payments">@localizer.Get("TransactionType")</label>
+                            <select class="form-control" id="ttype" asp-for="TransactionType">
+                                @foreach (var t in Model.TransactionTypes)
+                                {
+                                    <option selected="@(Model.TransactionType == t)" value="@t">@localizer.Get(t.ToString())</option>
+                                }
+                            </select>
+                            <span asp-validation-for="TransactionType"></span>
+                        </div>
+                        <ul class="list-group px-2" id="installments-area" hidden="@(Model.TransactionType == Shared.Integration.Models.TransactionTypeEnum.RegularDeal)">
+                            <li class="list-group-item">
+                                <div class="form-group">
+                                    <label for="number-of-payments">@localizer.Get("NumberOfPayments")</label>
+                                    <select class="form-control" id="number-of-payments" asp-for="NumberOfPayments">
+                                        @for (var i = Model.MinInstallments; i <= Model.MaxCreditInstallments; i++)
+                                        {
+                                            <option selected="@(i == Model.NumberOfPayments)" value="@i">@i</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="NumberOfPayments"></span>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @localizer.Get("PaymentAmount")
+                                <span class="text-end">
+                                    <b id="payment-amount">@Model.InstallmentPaymentAmount?.ToString("N")@Model.Currency.GetCurrencySymbol()</b>
+                                </span>
+                                <span class="badge badge-primary badge-pill"></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @localizer.Get("Total")
+                                <span class="text-end">
+                                    <b id="total-amount">@(Model.TotalAmount?.ToString("N") ?? Model.Amount?.ToString("N"))@Model.Currency.GetCurrencySymbol()</b>
+                                </span>
+                            </li>
+                        </ul>
+                    }
+
                     @if (Model.Amount.GetValueOrDefault() > 0)
                     {
                         <input type="hidden" asp-for="Amount" />
-
-                        @if (Model.TransactionTypes.Count() > 1)
-                        {
-                            <div class="form-group">
-                                <label for="number-of-payments">@localizer.Get("TransactionType")</label>
-                                <select class="form-control" id="ttype" asp-for="TransactionType">
-                                    @foreach (var t in Model.TransactionTypes)
-                                    {
-                                        <option selected="@(Model.TransactionType == t)" value="@t">@localizer.Get(t.ToString())</option>
-                                    }
-                                </select>
-                                <span asp-validation-for="TransactionType"></span>
-                            </div>
-                            <ul class="list-group px-2" id="installments-area" hidden="@(Model.TransactionType == Shared.Integration.Models.TransactionTypeEnum.RegularDeal)">
-                                <li class="list-group-item">
-                                    <div class="form-group">
-                                        <label for="number-of-payments">@localizer.Get("NumberOfPayments")</label>
-                                        <select class="form-control" id="number-of-payments" asp-for="NumberOfPayments">
-                                            @for (var i = Model.MinInstallments; i <= Model.MaxCreditInstallments; i++)
-                                            {
-                                                <option selected="@(i == Model.NumberOfPayments)" value="@i">@i</option>
-                                            }
-                                        </select>
-                                        <span asp-validation-for="NumberOfPayments"></span>
-                                    </div>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    @localizer.Get("PaymentAmount")
-                                    <span class="text-end">
-                                        <b id="payment-amount">@Model.InstallmentPaymentAmount?.ToString("N")@Model.Currency.GetCurrencySymbol()</b>
-                                    </span>
-                                    <span class="badge badge-primary badge-pill"></span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    @localizer.Get("Total")
-                                    <span class="text-end">
-                                        <b>@(Model.TotalAmount?.ToString("N") ?? Model.Amount?.ToString("N"))@Model.Currency.GetCurrencySymbol()</b>
-                                    </span>
-                                </li>
-                            </ul>
-                        }
 
                         <h3 id="total-amount-display" hidden="@(Model.TransactionType != Shared.Integration.Models.TransactionTypeEnum.RegularDeal)" class="panel-title text-center @(Model.IsRefund ? "text-danger" : "")">
                             @(Model.IsRefund ? localizer.Get("Refund") : localizer.Get("Amount")): @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()
@@ -301,9 +302,14 @@
             });
 
             $("#checkout-form").on("submit", function (e) {
+                if (!$("#checkout-form").valid()) {
+                    e.preventDefault();
+                    return;
+                }
                 let ccvaltrim = $("#cc-number").val().replace(/ /g, '');
                 $("#cc-number").val(ccvaltrim);
-                if (document.getElementById("ttype").value == "@Shared.Integration.Models.TransactionTypeEnum.RegularDeal.ToString()") {
+                if (document.getElementById("ttype").value == "@Shared.Integration.Models.TransactionTypeEnum.RegularDeal.ToString()" ||
+                    document.getElementById("ttype").value == "@Shared.Integration.Models.TransactionTypeEnum.Immediate.ToString()") {
                     $("#installments-area").remove();
                 }
                 if (document.getElementById("pin-pad-deal").checked == true) {
@@ -315,13 +321,22 @@
             })
 
             $("#number-of-payments").on("change", function (e) {
-                let newAmount = (@((Model.TotalAmount ?? Model.Amount) ?? 0) / e.target.value).toFixed(2);
+                let totalAmount = $("#Amount").val();
+                let newAmount = (totalAmount / e.target.value).toFixed(2);
+                
                 $("#payment-amount").text(newAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())");
+                $("#total-amount").text(totalAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())")
             });
+
+            $("#Amount").on('input', function (e) {
+                $("#number-of-payments").trigger("change");
+            })
 
             $("#ttype").on("change", function (e) {
                 let value = e.target.value;
                 let min = 0; let max = 0;
+                let totalAmountDisplay = document.getElementById("total-amount-display");
+                let installmentsArea = document.getElementById("installments-area");
 
                 if (value == "@Shared.Integration.Models.TransactionTypeEnum.Installments.ToString()") {
                     min = @(Model.MinInstallments ?? 2);
@@ -329,9 +344,13 @@
                 } else if(value == "@Shared.Integration.Models.TransactionTypeEnum.Credit.ToString()") {
                     min = @(Model.MinCreditInstallments ?? 3);
                     max = @(Model.MaxCreditInstallments ?? 12);
-                }else {
-                    document.getElementById("installments-area").hidden = true;
-                    document.getElementById("total-amount-display").hidden = false;
+                } else {
+                    if (totalAmountDisplay) {
+                        totalAmountDisplay.hidden = false;
+                    }
+                    if (installmentsArea) {
+                        installmentsArea.hidden = true;
+                    }
                     return;
                 }
                 
@@ -341,8 +360,12 @@
                     select.options.add(new Option(i, i))
                 }
                 $("#number-of-payments").trigger("change");
-                document.getElementById("total-amount-display").hidden = true;
-                document.getElementById("installments-area").hidden = false;
+                if (totalAmountDisplay) {
+                    totalAmountDisplay.hidden = true;
+                }
+                if (installmentsArea) {
+                    installmentsArea.hidden = false;
+                }
             })
             
             $("#pin-pad-deal").on("change", function (e) {
@@ -350,6 +373,7 @@
                 document.getElementById("pin-pad-devices").hidden = !e.target.checked;
             })
             $("#pin-pad-deal").trigger("change");
+            $("#number-of-payments").trigger("change");
         })
     </script>
 }

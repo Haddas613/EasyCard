@@ -278,21 +278,11 @@ namespace Transactions.Api.Controllers
             var processableBillings = billings.Where(b => terminals.Contains(b.TerminalID)).Select(b => b.BillingDealID);
 
             numberOfRecords = processableBillings.Count();
-            var batch = new List<Guid>(appSettings.BillingDealsMaxBatchSize);
-            foreach (var id in processableBillings)
-            {
-                if (batch.Count == appSettings.BillingDealsMaxBatchSize)
-                {
-                    await billingDealsQueue.PushToQueue<IEnumerable<Guid>>(batch);
-                    batch.Clear();
-                }
 
-                batch.Add(id);
-            }
-
-            if (batch.Count > 0)
+            for (int i = 0; i < numberOfRecords; i += appSettings.BillingDealsMaxBatchSize)
             {
-                await billingDealsQueue.PushToQueue<IEnumerable<Guid>>(batch);
+                await billingDealsQueue.PushToQueue(
+                    processableBillings.Skip(i).Take(appSettings.BillingDealsMaxBatchSize));
             }
 
             return new SendBillingDealsToQueueResponse { Status = StatusEnum.Success, Message = Messages.TransactionsQueued, Count = numberOfRecords };

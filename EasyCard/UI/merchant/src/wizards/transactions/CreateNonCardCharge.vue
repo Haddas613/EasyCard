@@ -12,16 +12,24 @@
       :tdmenuitems="threeDotMenuItems"
       :title="navTitle"
     >
-    <template v-if="steps[step].showItemsCount" v-slot:title>
-      <v-btn v-if="$refs.numpadRef" :disabled="!$refs.numpadRef.model.dealDetails.items.length" color="ecgray" small @click="processToBasket()">
-        {{$t("@ItemsQuantity").replace("@quantity", $refs.numpadRef.model.dealDetails.items.length)}}
-      </v-btn>
-    </template>
+      <template v-if="steps[step].showItemsCount" v-slot:title>
+        <v-btn v-if="$refs.numpadRef" :disabled="!$refs.numpadRef.model.dealDetails.items.length" color="ecgray" small @click="processToBasket()">
+          {{$t("@ItemsQuantity").replace("@quantity", $refs.numpadRef.model.dealDetails.items.length)}}
+        </v-btn>
+      </template>
     </navbar>
-    <v-stepper class="ec-stepper" v-model="step">
+    <v-stepper class="ec-stepper" v-model="step" :key="terminal.terminalID">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad v-if="step === 1" btn-text="Refund" v-on:ok="processAmount($event, true);" v-on:update="updateAmount($event)" ref="numpadRef" :data="model"></numpad>
+          <numpad 
+            v-if="step === 1" 
+            btn-text="Charge" 
+            v-on:ok="processAmount($event, true);"
+            v-on:update="updateAmount($event)"
+            ref="numpadRef" 
+            :data="model"
+            support-quick-charge
+          ></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
@@ -38,18 +46,23 @@
         </v-stepper-content>
 
         <v-stepper-content step="4" class="py-0 px-0">
-          <credit-card-secure-details
+          <payment-details
             :key="model.dealDetails.consumerID"
             :data="model"
-            v-on:ok="processCreditCard($event)"
-            include-device
-            ref="ccSecureDetails"
-            btn-text="Refund"
-          ></credit-card-secure-details>
+            v-on:ok="processPaymentDetails($event)"
+            ref="paymentDetails"
+            btn-text="Charge"
+          ></payment-details>
         </v-stepper-content>
 
         <v-stepper-content step="5" class="py-0 px-0">
-          <additional-settings-form :key="model.transactionAmount" :data="model" v-on:ok="processAdditionalSettings($event)" :invoice-type="invoiceType"></additional-settings-form>
+          <non-card-additional-settings-form 
+            :key="model.transactionAmount"
+            :data="model"
+            :issue-document="true"
+            v-on:ok="processAdditionalSettings($event)"
+            ref="additionalSettingsForm"
+          ></non-card-additional-settings-form>
         </v-stepper-content>
 
         <v-stepper-content step="6" class="py-0 px-0">
@@ -58,22 +71,30 @@
               <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
               <p>{{customer.consumerName}}</p>
               <div class="pt-5">
-                <p>{{$t("RefundedCustomer")}}</p>
+                <p>{{$t("ChargedCustomer")}}</p>
                 <p>{{customer.consumerEmail}} ● <ec-money :amount="model.transactionAmount" bold></ec-money></p>
+              </div>
+            </template>
+            <template v-else>
+              <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+              <div class="pt-5">
+                <p>{{$t("ChargedCustomer")}}</p>
+                <p><ec-money :amount="model.transactionAmount" bold></ec-money></p>
               </div>
             </template>
             <template v-slot:link v-if="result.entityReference">
               <router-link class="primary--text" link
                   :to="{ name: 'Transaction', params: { id: result.entityReference } }"
                 >{{$t("GoToTransaction")}}</router-link>
-              <div class="pt-4" v-if="result.innerResponse">
-                <p v-if="result.innerResponse.status == 'error'">
-                  {{result.innerResponse.message}}
-                </p>
-                <router-link v-else class="primary--text" link
-                  :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
-                >{{$t("GoToInvoice")}}</router-link>
-              </div>
+
+                <div class="pt-4" v-if="result.innerResponse">
+                  <p v-if="result.innerResponse.status == 'error'">
+                    {{result.innerResponse.message}}
+                  </p>
+                  <router-link v-else class="primary--text" link
+                    :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
+                  >{{$t("GoToInvoice")}}</router-link>
+                </div>
             </template>
           </wizard-result>
         </v-stepper-content>
@@ -84,7 +105,6 @@
 
 <script>
 import { mapState } from "vuex";
-import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
@@ -93,22 +113,20 @@ export default {
     Basket: () => import("../../components/misc/Basket"),
     EcMoney: () => import("../../components/ec/EcMoney"),
     CustomersList: () => import("../../components/customers/CustomersList"),
-    CreditCardSecureDetails: () => import("../../components/transactions/CreditCardSecureDetails"),
+    PaymentDetails: () => import("../../components/transactions/PaymentDetails"),
     WizardResult: () => import("../../components/wizard/WizardResult"),
-    AdditionalSettingsForm: () => import("../../components/transactions/AdditionalSettingsForm")
+    NonCardAdditionalSettingsForm: () => import("../../components/transactions/NonCardAdditionalSettingsForm")
   },
   props: ["customerid"],
   data() {
     return {
       customer: null,
       skipCustomerStep: false,
-      invoiceType: null,
       model: {
         terminalID: null,
         transactionType: null,
         jDealType: null,
         currency: null,
-        cardPresence: "cardNotPresent",
         creditCardToken: null,
         creditCardSecureDetails: {
           cardExpiration: null,
@@ -134,47 +152,57 @@ export default {
         }
       },
       step: 1,
+      threeDotMenuItems: null,
+      quickChargeMode: false,
+      success: true,
+      errors: [],
+      loading: false,
+      result: {
+        entityReference: null
+      },
       steps: {
         1: {
-          title: "Amount",
-          canChangeTerminal: true,
-          showItemsCount: true
+            title: "Amount",
+            canChangeTerminal: true,
+            showItemsCount: true,
         },
         2: {
-          title: "Basket",
+            title: "Basket",
         },
         3: {
-          title: "ChooseCustomer",
-          skippable: true
+            title: "ChooseCustomer",
+            skippable: true,
         },
         4: {
-          title: "PaymentInfo"
-          // skippable: true
+            title: "PaymentInfo",
         },
         5: {
-          title: "AdditionalSettings"
+            title: "AdditionalSettings",
         },
         //Last step may be dynamically altered to represent error if transaction creation has failed.
         6: {
-          title: "Success",
-          completed: true
+            title: "Success",
+            completed: true,
         }
-      },
-      threeDotMenuItems: null,
-      success: true,
-      errors: [],
-      result: null,
-      loading: false
+      }
     };
   },
   computed: {
     navTitle() {
       return this.$t(this.steps[this.step].title);
     },
-    terminal: {},
     ...mapState({
       terminal: state => state.settings.terminal
     })
+  },
+  watch: {
+    step(newValue, oldValue) {
+      if(newValue > oldValue && this.steps[newValue].skip){
+        this.step++;
+      }else if(this.steps[newValue].skip){
+        this.step--;
+      }
+    }
   },
   async mounted() {
     if (this.customerid) {
@@ -191,8 +219,7 @@ export default {
           data.consumerNationalID;
       }
     }
-    this.model.dealDetails.dealDescription = this.terminal.settings.defaultRefundDescription;
-    this.invoiceType = this.terminal.invoiceSettings.defaultRefundInvoiceType || appConstants.invoicing.defaultRefundInvoiceType;
+    this.model.dealDetails.dealDescription = this.terminal.settings.defaultChargeDescription;
   },
   methods: {
     goBack() {
@@ -211,7 +238,7 @@ export default {
         this.model.creditCardSecureDetails.cardOwnerNationalID = null;
       } else if (this.model.creditCardToken) {
         this.model.creditCardToken = null;
-        this.$refs.ccSecureDetails.resetToken();
+        this.$refs.paymentDetails.resetToken();
       }
     },
     processCustomer(data) {
@@ -224,18 +251,6 @@ export default {
       this.model.dealDetails.consumerPhone = data.consumerPhone;
       this.model.dealDetails.consumerAddress = data.consumerAddress;
       this.model.dealDetails.consumerID = data.consumerID;
-      if (!this.model.creditCardSecureDetails) {
-        this.$set(this.model, "creditCardSecureDetails", {
-          cardOwnerName: data.consumerName,
-          cardOwnerNationalID: data.consumerNationalID
-        });
-      } else {
-        this.model.creditCardSecureDetails.cardOwnerName = data.consumerName;
-        this.model.creditCardSecureDetails.cardOwnerNationalID =
-          data.consumerNationalID;
-      }
-      this.model.creditCardToken = null;
-      this.$refs.ccSecureDetails.resetToken();
       this.step++;
     },
     processToBasket(){
@@ -244,6 +259,11 @@ export default {
     },
     processAmount(data, skipBasket = false) {
       this.updateAmount(data);
+      this.quickChargeMode = data.quickCharge;
+      if (data.quickCharge){
+        this.step = 4;
+        return;
+      }
       if (skipBasket) {this.step += 2 + (this.skipCustomerStep ? 1 : 0)}
       else this.step++;
     },
@@ -255,30 +275,12 @@ export default {
       this.model.note = data.note;
       this.model.dealDetails.items = data.dealDetails.items;
     },
-    processCreditCard(data) {
-      this.model.oKNumber = data.oKNumber;
-      if (data.type === "creditcard") {
-        data = data.data;
-        this.model.saveCreditCard = data.saveCreditCard || false;
-        this.model.creditCardSecureDetails = data;
-        this.model.creditCardToken = null;
-        this.model.pinPadDeviceID = null;
-        if (data.cardReaderInput) {
-          this.model.cardPresence = "regular";
-        } else {
-          this.model.cardPresence = "cardNotPresent";
+    processPaymentDetails(data) {
+      if(this.quickChargeMode){
+        if(!this.$refs.additionalSettingsForm.ok()){
+          this.step++;
         }
-      } else if (data.type === "token") {
-        this.model.creditCardSecureDetails = null;
-        this.model.creditCardToken = data.data;
-        this.model.saveCreditCard = false;
-        this.model.pinPadDeviceID = null;
-      } 
-      else if (data.type === "device") {
-        this.model.creditCardSecureDetails = null;
-        this.model.creditCardToken = null;
-        this.model.saveCreditCard = false;
-        Object.assign(this.model, data.data);
+        return;
       }
       this.step++;
     },
@@ -289,17 +291,21 @@ export default {
       this.model.jDealType = data.jDealType;
       this.model.installmentDetails = data.installmentDetails;
       this.model.terminalID = this.terminal.terminalID;
-      this.model.invoiceDetails = data.invoiceDetails;
-      this.model.issueInvoice = !!this.model.invoiceDetails;
+      if(!this.quickChargeMode){
+        this.model.invoiceDetails = data.invoiceDetails;
+        this.model.issueInvoice = !!this.model.invoiceDetails;
+      }else{
+        this.model.invoiceDetails = null;
+        this.model.issueInvoice = false;
+      }
 
-      await this.createRefund();
+      await this.createTransaction();
     },
-
-    async createRefund(){
+    async createTransaction(){
       if (this.loading) return;
-      try{
+      try {
         this.loading = true;
-        let result = await this.$api.transactions.refund(this.model);
+        let result = await this.$api.transactions.processTransaction(this.model);
         this.result = result;
 
         let lastStepKey = Object.keys(this.steps).reduce((l,r) => l > r ? l : r, 0);
@@ -331,7 +337,7 @@ export default {
 
         this.step = lastStepKey;
       }finally{
-        this.loading = false;  
+        this.loading = false;
       }
     }
   }

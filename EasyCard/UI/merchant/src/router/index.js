@@ -49,6 +49,13 @@ const routes = [
                 props: true
             },
             {
+                name: 'NonCardCharge',
+                path: 'transactions/special-charge',
+                component: () =>
+                    import ('../wizards/transactions/CreateNonCardCharge.vue'),
+                props: true
+            },
+            {
                 name: 'Refund',
                 path: 'transactions/refund',
                 component: () =>

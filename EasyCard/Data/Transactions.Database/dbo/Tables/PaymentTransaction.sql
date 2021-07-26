@@ -75,8 +75,11 @@
     [CompRetailerNum]                VARCHAR (20)     NULL,
     [EmvSoftVersion]                 VARCHAR (20)     NULL,
     [PinPadDeviceID]                 VARCHAR (20)     NULL,
+    [TelToGetAuthNum]                VARCHAR (20)     NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

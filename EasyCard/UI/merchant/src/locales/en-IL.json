@@ -79,6 +79,7 @@
   "Integrations": "Integrations",
   "UpayTransactionDetails": "Upay Transaction Details",
   "ClearingHouseTransactionDetails": "Clearing House Transaction Details",
+  "NonCardCharge": "Non Card Charge",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -293,6 +294,7 @@
   "ExternalReference": "External Reference",
   "PaymentIntentURL": "Payment Intent URL",
   "AllowPinPad": "Allow PinPad",
+  "AuthorizationCode": "Authorization Code (optional)",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

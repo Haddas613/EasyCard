@@ -24,6 +24,8 @@ namespace Transactions.Shared
 
         public int BillingDealsMaxBatchSize { get; set; } = 10;
 
+        public int UpdateParametersTerminalsMaxBatchSize { get; set; } = 10;
+
         public string RequestsLogStorageTable { get; set; }
 
         public string EncrKeyForSharedApiKey { get; set; }
