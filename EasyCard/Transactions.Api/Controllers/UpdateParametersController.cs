@@ -116,49 +116,47 @@ namespace Transactions.Api.Controllers
 
             try
             {
-                terminalPinpadProcessor = ValidateExists(
-                terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.PinpadProcessor),
-                Transactions.Shared.Messages.ProcessorNotDefined);
-                terminalPinpadAllow = true;
+                terminalPinpadProcessor = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.PinpadProcessor);
+                terminalPinpadAllow = terminalPinpadProcessor != null;
+
+                IProcessor pinpadProcessor = null;
+                if (terminalPinpadAllow)
+                {
+                    pinpadProcessor = processorResolver.GetProcessor(terminalPinpadProcessor);
+                }
+
+                var terminalProcessor = ValidateExists(
+                        terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
+                        Messages.ProcessorNotDefined);
+
+                var processor = processorResolver.GetProcessor(terminalProcessor);
+                var processorSettings = processorResolver.GetProcessorTerminalSettings(
+                    terminalProcessor,
+                    terminalProcessor.Settings);
+
+                object pinpadProcessorSettings = null;
+                if (terminalPinpadAllow)
+                {
+                    pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
+                }
+
+                var processorRequest = new ProcessorUpdateParametersRequest { TerminalID = terminalID, ProcessorSettings = processorSettings, CorrelationId = GetCorrelationID() };
+                var pinpadProcessorRequest = new ProcessorUpdateParametersRequest { TerminalID = terminalID, ProcessorSettings = pinpadProcessorSettings, CorrelationId = GetCorrelationID() };
+
+                await processor.ParamsUpdateTransaction(processorRequest); //todo implement it in emulator
+
+                if (terminalPinpadAllow)
+                {
+                    await pinpadProcessor.ParamsUpdateTransaction(pinpadProcessorRequest);
+                }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                logger.LogError($"{nameof(UpdateParameters)} ERROR: {e.Message}");
+                return new UpdateParametersResponse { TerminalID = terminalID, UpdateStatus = UpdateParamsStatusEnum.UpdateFailed };
             }
 
-            IProcessor pinpadProcessor = null;
-            if (terminalPinpadAllow)
-            {
-                pinpadProcessor = processorResolver.GetProcessor(terminalPinpadProcessor);
-            }
-
-            var terminalProcessor = ValidateExists(
-                    terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
-                    Messages.ProcessorNotDefined);
-
-            var processor = processorResolver.GetProcessor(terminalProcessor);
-            var processorSettings = processorResolver.GetProcessorTerminalSettings(
-                terminalProcessor,
-                terminalProcessor.Settings);
-
-            object pinpadProcessorSettings = null;
-            if (terminalPinpadAllow)
-            {
-                pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
-            }
-
-            var processorRequest = new ProcessorUpdateParametersRequest { TerminalID = terminalID, ProcessorSettings = processorSettings, CorrelationId = GetCorrelationID() };
-            var pinpadProcessorRequest = new ProcessorUpdateParametersRequest { TerminalID = terminalID, ProcessorSettings = pinpadProcessorSettings, CorrelationId = GetCorrelationID() };
-          
-            await processor.ParamsUpdateTransaction(processorRequest); //todo implement it in emulator
-
-            if (terminalPinpadAllow)
-            {
-                await pinpadProcessor.ParamsUpdateTransaction(pinpadProcessorRequest);
-            }
-           
-            return new UpdateParametersResponse
-            { TerminalID = terminalID, UpdateStatus = UpdateParamsStatusEnum.Updated };
+            return new UpdateParametersResponse { TerminalID = terminalID, UpdateStatus = UpdateParamsStatusEnum.Updated };
         }
     }
 }
