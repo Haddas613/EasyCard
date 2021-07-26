@@ -431,10 +431,8 @@ namespace Transactions.Business.Migrations
                     b.Property<decimal>("TotalDiscount")
                         .HasColumnType("decimal(19,4)");
 
-                    b.Property<short>("TransactionType")
-                        .ValueGeneratedOnAdd()
+                    b.Property<short?>("TransactionType")
                         .HasColumnType("smallint")
-                        .HasDefaultValue((short)0)
                         .HasColumnName("TransactionType");
 
                     b.Property<byte[]>("UpdateTimestamp")

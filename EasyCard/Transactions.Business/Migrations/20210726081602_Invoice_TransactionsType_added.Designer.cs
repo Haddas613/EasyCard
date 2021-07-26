@@ -10,7 +10,7 @@ using Transactions.Business.Data;
 namespace Transactions.Business.Migrations
 {
     [DbContext(typeof(TransactionsContext))]
-    [Migration("20210726064444_Invoice_TransactionsType_added")]
+    [Migration("20210726081602_Invoice_TransactionsType_added")]
     partial class Invoice_TransactionsType_added
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -433,10 +433,8 @@ namespace Transactions.Business.Migrations
                     b.Property<decimal>("TotalDiscount")
                         .HasColumnType("decimal(19,4)");
 
-                    b.Property<short>("TransactionType")
-                        .ValueGeneratedOnAdd()
+                    b.Property<short?>("TransactionType")
                         .HasColumnType("smallint")
-                        .HasDefaultValue((short)0)
                         .HasColumnName("TransactionType");
 
                     b.Property<byte[]>("UpdateTimestamp")

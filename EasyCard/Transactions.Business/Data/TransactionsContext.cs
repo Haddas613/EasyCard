@@ -642,7 +642,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.InitialPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.TotalDiscount).HasColumnType("decimal(19,4)").IsRequired();
-                builder.Property(p => p.TransactionType).HasColumnName("TransactionType").HasColumnType("smallint").HasDefaultValue(TransactionTypeEnum.RegularDeal);
+                builder.Property(p => p.TransactionType).HasColumnName("TransactionType").HasColumnType("smallint").IsRequired(false);
             }
         }
 

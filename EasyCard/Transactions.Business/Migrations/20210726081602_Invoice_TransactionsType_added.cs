@@ -10,8 +10,7 @@ namespace Transactions.Business.Migrations
                 name: "TransactionType",
                 table: "Invoice",
                 type: "smallint",
-                nullable: false,
-                defaultValue: (short)0);
+                nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

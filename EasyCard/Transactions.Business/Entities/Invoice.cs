@@ -166,6 +166,6 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Generic transaction type
         /// </summary>
-        public TransactionTypeEnum TransactionType { get; set; }
+        public TransactionTypeEnum? TransactionType { get; set; }
     }
 }
