@@ -18,7 +18,6 @@ using Shared.Api.Models.Enums;
 using Shared.Integration;
 using Shared.Integration.Models;
 using Shva;
-using Transactions.Api.Services;
 
 namespace Merchants.Api.Controllers.Integrations
 {
@@ -29,7 +28,7 @@ namespace Merchants.Api.Controllers.Integrations
     public class ShvaApiController : ApiControllerBase
     {
         private readonly ITerminalsService terminalsService;
-        private readonly IProcessorResolver processorResolver;
+        private readonly ShvaProcessor shvaProcessor;
         private readonly IMapper mapper;
         private readonly ISystemSettingsService systemSettingsService;
         private readonly IExternalSystemsService externalSystemsService;
@@ -37,14 +36,14 @@ namespace Merchants.Api.Controllers.Integrations
 
         public ShvaApiController(
             ITerminalsService terminalsService,
-            IProcessorResolver processorResolver,
+            ShvaProcessor shvaProcessor,
             IMapper mapper,
             ISystemSettingsService systemSettingsService,
             IExternalSystemsService externalSystemsService,
             ITerminalTemplatesService terminalTemplatesService)
         {
             this.mapper = mapper;
-            this.processorResolver = processorResolver;
+            this.shvaProcessor = shvaProcessor;
             this.terminalsService = terminalsService;
             this.systemSettingsService = systemSettingsService;
             this.externalSystemsService = externalSystemsService;
@@ -76,9 +75,8 @@ namespace Merchants.Api.Controllers.Integrations
         private async Task<OperationResponse> SetNewPasswordForTerminal(Guid terminalID, string newPassword)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
-            var terminalProcessor = ValidateExists(
-               terminal.Integrations.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID),
-               Transactions.Shared.Messages.ProcessorNotDefined);
+            var terminalProcessor = EnsureExists(
+               terminal.Integrations.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID));
 
             var processorResponse = await ShvaChangePassword(terminalProcessor, newPassword);
 
@@ -100,9 +98,8 @@ namespace Merchants.Api.Controllers.Integrations
         private async Task<OperationResponse> SetNewPasswordForTerminalTemplate(long terminalTemplate, string newPassword)
         {
             var terminal = EnsureExists(await terminalTemplatesService.GetTerminalTemplate(terminalTemplate));
-            var terminalTemplateExternalSystem = ValidateExists(
-               terminal.Integrations.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID),
-               Transactions.Shared.Messages.ProcessorNotDefined);
+            var terminalTemplateExternalSystem = EnsureExists(
+               terminal.Integrations.FirstOrDefault(t => t.ExternalSystemID == ExternalSystemHelpers.ShvaExternalSystemID));
 
             var terminalProcessor = mapper.Map<TerminalExternalSystem>(terminalTemplateExternalSystem);
 
@@ -125,13 +122,15 @@ namespace Merchants.Api.Controllers.Integrations
 
         private async Task<ProcessorChangePasswordResponse> ShvaChangePassword(TerminalExternalSystem externalSystem, string newPassword)
         {
-            var processor = processorResolver.GetProcessor(externalSystem);
+            var processorSettings = externalSystem.Settings.ToObject<ShvaTerminalSettings>();
+            var processorRequest = new ProcessorChangePasswordRequest
+            {
+                NewPassword = newPassword,
+                CorrelationId = GetCorrelationID(),
+                ProcessorSettings = processorSettings
+            };
 
-            var processorSettings = processorResolver.GetProcessorTerminalSettings(externalSystem, externalSystem.Settings);
-
-            var processorRequest = new ProcessorChangePasswordRequest { NewPassword = newPassword, CorrelationId = GetCorrelationID() };
-            processorRequest.ProcessorSettings = processorSettings;
-            return await ((ShvaProcessor)processor).ChangePassword(processorRequest);
+            return await shvaProcessor.ChangePassword(processorRequest);
         }
     }
 }

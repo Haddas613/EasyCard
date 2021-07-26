@@ -38,7 +38,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using Transactions.Api.Services;
 using SharedApi = Shared.Api;
 
 namespace Merchants.Api
@@ -190,8 +189,6 @@ namespace Merchants.Api
             services.AddScoped<IPlansService, PlansService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
             services.AddScoped<IShvaTerminalsService, ShvaTerminalService>();
-            services.AddSingleton<IProcessorResolver, ProcessorResolver>();
-
             services.AddAutoMapper(typeof(Startup));
 
             // DI: identity client
