@@ -7,7 +7,11 @@ const state = () => ({
 const getters = {};
 const actions = {
   async getDefaultSettings(store, { api, lodash }) {
-    await store.dispatch('getTerminal', {api, lodash });
+    let terminalSet = await store.dispatch('getTerminal', {api, lodash });
+    if(!terminalSet){
+      return false;
+    }
+
     let state = store.state;
     let dictionaries = await api.dictionaries.getTransactionDictionaries();
     let currencies = dictionaries ? dictionaries.currencyEnum : [];
@@ -21,12 +25,19 @@ const actions = {
       let exists = lodash.some(currencies, c => c.code === state.currency.code);
       if (!exists) await store.dispatch('changeCurrency', {api, newCurrency: currencies[0]});
     }
+
+    return true;
   },
   async getTerminal(store, { api, lodash }){
     let state = store.state;
     
     let terminals = (await api.terminals.getTerminals());
     terminals = terminals ? terminals.data : [];
+
+    if(terminals.length === 0){
+      state.terminal = null;
+      return false;
+    }
 
     if (!state.terminal || !state.terminal.terminalID) {
       await store.dispatch('changeTerminal', {api, newTerminal: terminals[0].terminalID});

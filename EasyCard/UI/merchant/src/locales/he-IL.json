@@ -80,6 +80,7 @@
   "UpayTransactionDetails": "פרטי עסקת מאגד פיידיי",
   "ClearingHouseTransactionDetails": "פרטי עסקת מאגד",
   "NonCardCharge": "חיוב ללא כרטיס אשראי",
+  "SystemIsNotReadyToUse": "המערכת לא זמינה",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -420,5 +421,6 @@
   "AreYouSureYouWantToDeleteBillingDeal": "האם אתה בטוח שאתה מעוניין למחוק עסקה מחזורית?",
   "NewAppVersionAvailableClickToRefreshThePage": "קיימת גירסה חדשה. לחץ כאן לעדכון הדף",
   "TerminalSettingsSaveMessage": "יש שינויים שלא נשמרו. אתה בטוח שאתה רוצה לעזוב?",
-  "CanOnlyIssueInvoiceForILSTransactions": "יכול להנפיק חשבוניות רק עבור עסקאות ILS"
+  "CanOnlyIssueInvoiceForILSTransactions": "יכול להנפיק חשבוניות רק עבור עסקאות ILS",
+  "NoAvailableTerminals": "מסוף אינו זמין"
 }
