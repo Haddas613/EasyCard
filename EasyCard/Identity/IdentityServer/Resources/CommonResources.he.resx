@@ -345,4 +345,28 @@
   <data name="LastNameValidationMessage" xml:space="preserve">
     <value>שם משפחה חייב להיות מינימום 2 תווים ומקסימום 100 תווים</value>
   </data>
+  <data name="PlanType1" xml:space="preserve">
+    <value>תוכנית סוג 1</value>
+  </data>
+  <data name="PlanType2" xml:space="preserve">
+    <value>תוכנית סוג 2</value>
+  </data>
+  <data name="PlanType3" xml:space="preserve">
+    <value>תוכנית סוג 3</value>
+  </data>
+  <data name="PlanType4" xml:space="preserve">
+    <value>תוכנית סוג 4</value>
+  </data>
+  <data name="ThisIsTheBasicPlanIncludesPreventingDoubleTansactionsNSMSnotification" xml:space="preserve">
+    <value>זאת התוכנית הבסיסית, הכוללת מניעה של עסקאות כפולות ושליחת הודעות sms על התראות במערכת</value>
+  </data>
+  <data name="ThisIsTheMostAdvancedPlanIncludesPreventingDoubleTransactionsSMSNotificationNRecurrentPayments" xml:space="preserve">
+    <value>זאת התוכנית המתקדמת ביותר. כולל מניעת פעולות כפולות, הודעות SMS ותשלומים חוזרים</value>
+  </data>
+  <data name="ThisIsTheRecommendedPlanIncludesPreventingDoubleTansactionsNRecurrentPayments" xml:space="preserve">
+    <value>זאת התוכנית המומלצת. כוללת מניעה של עסקאות כפולות, ותשלומים חוזרים. </value>
+  </data>
+  <data name="ThisIsTheStarterPlanIncludesPreventingDoubleTansactions" xml:space="preserve">
+    <value>זאת התוכנית ההתחלתית הכוללת מניעה של עסקאות כפולות.</value>
+  </data>
 </root>
