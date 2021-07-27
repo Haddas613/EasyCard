@@ -86,5 +86,10 @@ namespace Shared.Integration.Models.Invoicing
         /// Amount of one instalment payment
         /// </summary>
         public decimal InstallmentPaymentAmount { get; set; }
+
+        /// <summary>
+        /// Generic transaction type
+        /// </summary>
+        public TransactionTypeEnum? TransactionType { get; set; }
     }
 }

@@ -44,7 +44,8 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.Status, o => o.Ignore())
                 .ForMember(d => d.InvoiceAmount, o => o.MapFrom(d => d.TransactionAmount))
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerName))
-                .ForMember(d => d.CardOwnerNationalID, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerNationalID));
+                .ForMember(d => d.CardOwnerNationalID, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerNationalID))
+                .ForMember(d => d.TransactionType, o => o.MapFrom(d => d.TransactionType));
         }
     }
 }

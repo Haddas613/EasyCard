@@ -90,7 +90,8 @@ namespace Transactions.Api.Mapping
 
             CreateMap<Invoice, InvoicingCreateDocumentRequest>()
                  .ForMember(m => m.ConsumerName, s => s.MapFrom(src => src.CardOwnerName))
-                 .ForMember(m => m.ConsumerNationalID, s => s.MapFrom(src => src.CardOwnerNationalID));
+                 .ForMember(m => m.ConsumerNationalID, s => s.MapFrom(src => src.CardOwnerNationalID))
+                 .ForMember(m => m.TransactionType, s => s.MapFrom(src => src.TransactionType));
 
             CreateMap<InvoicingCreateDocumentResponse, Invoice>()
                  .ForMember(m => m.InvoiceNumber, s => s.MapFrom(src => src.DocumentNumber));

@@ -125,7 +125,7 @@ namespace EasyInvoice.Converters
 
             var res = new ECInvoicePayment
             {
-                PaymentMethod = message.NumberOfPayments > 1 ? ECInvoicePaymentMethodEnum.CREDIT_CARD_PAYMENTS.ToString() : ECInvoicePaymentMethodEnum.CREDIT_CARD_REGULAR_CREDIT.ToString(),
+                PaymentMethod = message.TransactionType == TransactionTypeEnum.Credit ? ECInvoicePaymentMethodEnum.CREDIT_CARD_CREDITS.ToString() : (message.NumberOfPayments > 1 ? ECInvoicePaymentMethodEnum.CREDIT_CARD_PAYMENTS.ToString() : ECInvoicePaymentMethodEnum.CREDIT_CARD_REGULAR_CREDIT.ToString()),
                 Amount = message.InvoiceAmount,
                 CreditCard4LastDigits = CreditCardHelpers.GetCardLastFourDigits(message.CreditCardDetails.CardNumber),
                 CreditCardType = ccType.ToString(), // TODO: ECInvoice does not support LEUMI_CARD
