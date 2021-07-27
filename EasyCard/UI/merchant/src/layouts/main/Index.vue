@@ -3,8 +3,6 @@
 
     <intercom></intercom>
 
-    <app-version-overlay></app-version-overlay>
-
     <main-app-bar :drawer.sync="drawer"/>
 
     <ec-nav :drawer.sync="drawer"/>
@@ -23,8 +21,7 @@
       EcNav: () => import('../shared/EcNav.vue'),
       MainContent: () => import('./Content.vue'),
       MainFooter: () => import('./Footer.vue'),
-      AppVersionOverlay: () => import("../../components/misc/AppVersionOverlay"),
-      Intercom: () => import("../../components/misc/Intercom")
+      Intercom: () => import("../../components/misc/Intercom"),
     },
 
     data: () => ({

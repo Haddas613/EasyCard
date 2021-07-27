@@ -1,6 +1,5 @@
 <template>
   <div>
-    <app-version-overlay></app-version-overlay>
     <wizard-content />
   </div>
 </template>
@@ -12,7 +11,6 @@ export default {
 
   components: {
     WizardContent: () => import("./Content.vue"),
-    AppVersionOverlay: () => import("../../components/misc/AppVersionOverlay"),
   },
 
   data: () => ({

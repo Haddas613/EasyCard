@@ -8,7 +8,8 @@ const config = {
         VUE_APP_AUTHORITY: process.env.VUE_APP_AUTHORITY,
         VUE_APP_APPLICATION_INSIGHTS_KEY: process.env.VUE_APP_APPLICATION_INSIGHTS_KEY,
         VUE_APP_VERSION: process.env.VUE_APP_VERSION,
-        VUE_APP_SUPPORT_EMAIL: process.env.VUE_APP_SUPPORT_EMAIL
+        VUE_APP_SUPPORT_EMAIL: process.env.VUE_APP_SUPPORT_EMAIL,
+        VUE_APP_IDLE_TIMER_MINUTES: process.env.VUE_APP_IDLE_TIMER_MINUTES
     },
     ...window.config
 };
