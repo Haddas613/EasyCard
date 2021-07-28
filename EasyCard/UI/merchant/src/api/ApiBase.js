@@ -250,6 +250,7 @@ class ApiBase {
             if(storeDispatched){
                 store.commit("ui/requestsCountDecrement");
             }
+            store.commit("idling/refreshTime");
         }
         return null;
     }

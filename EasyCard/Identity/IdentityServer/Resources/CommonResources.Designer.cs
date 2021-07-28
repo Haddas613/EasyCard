@@ -241,6 +241,15 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your password has expired. Please set the new password to continue authorization process..
+        /// </summary>
+        public static string ForceUpdatePasswordMessage {
+            get {
+                return ResourceManager.GetString("ForceUpdatePasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Forgot password.
         /// </summary>
         public static string ForgotPassword {
@@ -498,6 +507,15 @@ namespace IdentityServer.Resources {
         public static string PasswordValidationMessage {
             get {
                 return ResourceManager.GetString("PasswordValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This password was used before. Please specify a new password..
+        /// </summary>
+        public static string PasswordWasUsedBefore {
+            get {
+                return ResourceManager.GetString("PasswordWasUsedBefore", resourceCulture);
             }
         }
         

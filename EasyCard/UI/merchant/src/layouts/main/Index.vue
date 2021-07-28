@@ -1,9 +1,7 @@
 <template>
-  <v-app id="inspire" v-bind:dir="$vuetify.rtl ? 'rtl' : 'ltr'">
+  <div>
 
     <intercom></intercom>
-
-    <app-version-overlay></app-version-overlay>
 
     <main-app-bar :drawer.sync="drawer"/>
 
@@ -11,7 +9,7 @@
 
     <main-content :drawer.sync="drawer" />
 
-  </v-app>
+  </div>
 </template>
 
 <script>
@@ -23,8 +21,7 @@
       EcNav: () => import('../shared/EcNav.vue'),
       MainContent: () => import('./Content.vue'),
       MainFooter: () => import('./Footer.vue'),
-      AppVersionOverlay: () => import("../../components/misc/AppVersionOverlay"),
-      Intercom: () => import("../../components/misc/Intercom")
+      Intercom: () => import("../../components/misc/Intercom"),
     },
 
     data: () => ({

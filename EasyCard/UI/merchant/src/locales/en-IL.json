@@ -80,6 +80,8 @@
   "UpayTransactionDetails": "Upay Transaction Details",
   "ClearingHouseTransactionDetails": "Clearing House Transaction Details",
   "NonCardCharge": "Non Card Charge",
+  "SystemIsNotReadyToUse": "System is not ready to use",
+  "SecurityNotice": "Security notice",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -343,6 +345,7 @@
   "Deactivate": "Deactivate",
   "PaymentIntent": "Payment Intent",
   "CreatePaymentLink": "Create Payment Link",
+  "Renew": "Renew",
 
   "--AUTH--": null,
   "Login": "Login",
@@ -420,5 +423,7 @@
   "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?",
   "NewAppVersionAvailableClickToRefreshThePage": "New App Version Available. Click to refresh the page.",
   "UnsavedChangesWarningMessage": "There are unsaved changes. Are you sure you want to leave?",
-  "CanOnlyIssueInvoiceForILSTransactions": "Can only issue invoice for ILS transactions"
+  "CanOnlyIssueInvoiceForILSTransactions": "Can only issue invoice for ILS transactions",
+  "NoAvailableTerminals": "No available terminals",
+  "SessionEndingMsg": "Your session is about to end. Renew it to continue working or sign out."
 }

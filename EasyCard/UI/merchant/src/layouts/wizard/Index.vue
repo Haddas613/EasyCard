@@ -1,8 +1,7 @@
 <template>
-  <v-app id="inspire" v-bind:dir="$vuetify.rtl ? 'rtl' : 'ltr'">
-    <app-version-overlay></app-version-overlay>
+  <div>
     <wizard-content />
-  </v-app>
+  </div>
 </template>
 
 <script>
@@ -12,7 +11,6 @@ export default {
 
   components: {
     WizardContent: () => import("./Content.vue"),
-    AppVersionOverlay: () => import("../../components/misc/AppVersionOverlay"),
   },
 
   data: () => ({
