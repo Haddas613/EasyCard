@@ -159,12 +159,32 @@ namespace Merchants.Api
 
                 c.ExampleFilters();
 
+                //Temporary fix for Can't use schemaId .. The same schemaId is already used for type. Exception
+                //TODO: fix types and remove
+                c.CustomSchemaIds(type => type.ToString());
+
                 c.SchemaFilter<SharedApi.Swagger.EnumSchemaFilter>();
+                c.SchemaFilter<SharedApi.Swagger.SwaggerExcludeFilter>();
 
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+
+                // Adds "(Auth)" to the summary so that you can see which endpoints have Authorization
+                c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
+
+                // add Security information to each operation for OAuth2
+                c.OperationFilter<SecurityRequirementsOperationFilter>();
+
+                // if you're using the SecurityRequirementsOperationFilter, you also need to tell Swashbuckle you're using OAuth2
+                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
             });
 
             // DI: basics
@@ -349,16 +369,16 @@ namespace Merchants.Api
             //app.UseHttpsRedirection();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
+            //app.UseSwagger();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Merchants API V1");
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Merchants API V1");
 
-                //c.RoutePrefix = string.Empty;
-            });
+            //    //c.RoutePrefix = string.Empty;
+            //});
 
             app.UseRouting();
 
