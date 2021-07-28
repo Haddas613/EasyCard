@@ -12,6 +12,7 @@ using BasicServices;
 using IdentityServer.Data;
 using IdentityServer.Helpers;
 using IdentityServer.Models;
+using IdentityServer.Models.Configuration;
 using IdentityServer.Security;
 using IdentityServer.Security.Auditing;
 using IdentityServer.Services;
@@ -103,6 +104,12 @@ namespace IdentityServer
                 options.Password.RequireDigit = true;
                 options.Password.RequireNonAlphanumeric = true;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+            });
+
+            services.Configure<SecuritySettings>(options =>
+            {
+                options.PasswordExpirationDays = 90;
+                options.RememberLastPasswords = 4;
             });
 
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
