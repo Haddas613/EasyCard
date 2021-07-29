@@ -345,4 +345,10 @@
   <data name="LastNameValidationMessage" xml:space="preserve">
     <value>שם משפחה חייב להיות מינימום 2 תווים ומקסימום 100 תווים</value>
   </data>
+  <data name="ForceUpdatePasswordMessage" xml:space="preserve">
+    <value>סיסמתך פגה. בבקשה הכנס סיסמה חדשה להמשך בתהליך האימות</value>
+  </data>
+  <data name="PasswordWasUsedBefore" xml:space="preserve">
+    <value>הסיסמה הייתה בשימוש בעבר. נא לבחור סיסמה חדשה.</value>
+  </data>
 </root>

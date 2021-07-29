@@ -2,7 +2,9 @@
 using IdentityServer.Helpers;
 using IdentityServer.Messages;
 using IdentityServer.Models;
+using IdentityServer.Models.Configuration;
 using IdentityServer.Models.Enums;
+using IdentityServer.Resources;
 using IdentityServer.Security;
 using IdentityServer.Security.Auditing;
 using IdentityServer.Services;
@@ -62,6 +64,7 @@ namespace IdentityServer.Controllers
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly UserHelpers userHelpers;
         private readonly CommonLocalizationService localization;
+        private readonly SecuritySettings securitySettings;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -80,7 +83,8 @@ namespace IdentityServer.Controllers
             ISmsService smsService,
             IHttpContextAccessorWrapper httpContextAccessor,
             UserHelpers userHelpers,
-            CommonLocalizationService localization)
+            CommonLocalizationService localization,
+            IOptions<SecuritySettings> securitySettings)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -101,6 +105,7 @@ namespace IdentityServer.Controllers
             this.httpContextAccessor = httpContextAccessor;
             this.userHelpers = userHelpers;
             this.localization = localization;
+            this.securitySettings = securitySettings.Value;
         }
 
         /// <summary>
@@ -237,6 +242,11 @@ namespace IdentityServer.Controllers
                     //var messageId = Guid.NewGuid().ToString();
                     //await this.emailSender.Send2faEmailAsync(user.Email, code);
 
+                    if (user.PasswordUpdated == null || user.PasswordUpdated < DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
+                    {
+                        return RedirectToAction(nameof(ForceUpdatePassword));
+                    }
+
                     return RedirectToAction(nameof(LoginWith2faChooseType));
                 }
 
@@ -247,12 +257,85 @@ namespace IdentityServer.Controllers
                 }
 
                 await events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.Client?.ClientId));
+                await auditLogger.RegisterFailedAttempt(model.Username);
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
 
             // something went wrong, show form with error
             var vm = await BuildLoginViewModelAsync(model);
             return View(vm);
+        }
+
+        /// <summary>
+        /// This action should only be used when user password has expired.
+        /// Requires GetTwoFactorAuthenticationUserAsync session. Must be called after login but before 2FA.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForceUpdatePassword()
+        {
+            // Ensure the user has gone through the username & password screen first
+            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            // This page is unavailable if user's PasswordUpdated complies with the requirements
+            if (user.PasswordUpdated != null && user.PasswordUpdated >= DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
+            {
+                return RedirectToAction(nameof(LoginWith2faChooseType));
+            }
+
+            if (user == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForceUpdatePassword(ForceUpdatePasswordViewModel request)
+        {
+            // Ensure the user has gone through the username & password screen first
+            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            if (user == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            // This page is unavailable if user's PasswordUpdated complies with the requirements
+            if (user.PasswordUpdated != null && user.PasswordUpdated >= DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
+            {
+                return RedirectToAction(nameof(LoginWith2faChooseType));
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(request);
+            }
+
+            var passwordsMatch = userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, request.NewPassword);
+
+            if (passwordsMatch == PasswordVerificationResult.Success)
+            {
+                ModelState.AddModelError(nameof(request.NewPassword), CommonResources.PasswordWasUsedBefore);
+                return View(request);
+            }
+
+            user.PasswordHash = userManager.PasswordHasher.HashPassword(user, request.NewPassword);
+            user.PasswordUpdated = DateTime.UtcNow;
+
+            var result = await userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                throw new Exception("Something went wrong. Try again later.");
+            }
+            else
+            {
+                await auditLogger.RegisterChangePassword(user);
+                return RedirectToAction(nameof(LoginWith2faChooseType));
+            }
         }
 
         [HttpGet]
@@ -265,6 +348,11 @@ namespace IdentityServer.Controllers
             if (user == null)
             {
                 return RedirectToAction(nameof(Login));
+            }
+
+            if (user.PasswordUpdated == null || user.PasswordUpdated < DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
+            {
+                return RedirectToAction(nameof(ForceUpdatePassword));
             }
 
             var phoneNumber = await userManager.GetPhoneNumberAsync(user);
@@ -285,6 +373,11 @@ namespace IdentityServer.Controllers
             if (user == null)
             {
                 return RedirectToAction(nameof(Login));
+            }
+
+            if (user.PasswordUpdated == null || user.PasswordUpdated < DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
+            {
+                return RedirectToAction(nameof(ForceUpdatePassword));
             }
 
             var phoneNumber = await userManager.GetPhoneNumberAsync(user);

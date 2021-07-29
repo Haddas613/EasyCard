@@ -15,6 +15,7 @@ const state = () => ({
         altDisplay: true
     },
     requestsCount: 0,
+    overlay: false,
     versionMismatch: false,
     dashboardDateFilter: {
         quickDateType: appConstants.filtering.defaultDashboardQuickDateType,
