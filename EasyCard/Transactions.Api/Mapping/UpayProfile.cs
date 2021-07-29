@@ -57,14 +57,15 @@ namespace Transactions.Api.Mapping
                .ForMember(d => d.ExpiryDate, o => o.MapFrom(src => CreditCardHelpers.ParseCardExpiration(src.CreditCardDetails.CardExpiration)))
                .ForMember(d => d.ExternalID, o => o.MapFrom(src => src.PaymentRequestID))
                .ForMember(d => d.FirstPayment, o => o.MapFrom(src => src.InitialPaymentAmount))
-               .ForMember(d => d.ForeignCard, o => o.MapFrom(src => CreditCardHelpers.ParseCardExpiration(src.CreditCardDetails.CardExpiration)))
+               .ForMember(d => d.ForeignCard, o => o.MapFrom(src => src.CreditCardDetails.CardVendor == CardVendorEnum.UNKNOWN.ToString() ? "1" : "0"))
                .ForMember(d => d.IDNumber, o => o.MapFrom(src => src.CreditCardDetails.CardOwnerNationalID))
                .ForMember(d => d.ManpikID, o => o.MapFrom(src => src.ShvaTransactionDetails.Solek))
                .ForMember(d => d.NumPayments, o => o.MapFrom(src => src.NumberOfPayments))
                .ForMember(d => d.OkNumber, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaAuthNum))
                .ForMember(d => d.OtherPayment, o => o.MapFrom(src => src.InitialPaymentAmount))
                .ForMember(d => d.SixDigits, o => o.MapFrom(src => CreditCardHelpers.GetCardBin(src.CreditCardDetails.CardNumber)))
-               .ForMember(d => d.Terminal, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaTerminalID));
+               .ForMember(d => d.Terminal, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaTerminalID))
+               .ForMember(d => d.Solek, o => o.MapFrom(src => ((int)src.ShvaTransactionDetails.Solek).ToString()));
         }
     }
 }
