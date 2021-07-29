@@ -351,4 +351,7 @@
   <data name="PasswordWasUsedBefore" xml:space="preserve">
     <value>הסיסמה הייתה בשימוש בעבר. נא לבחור סיסמה חדשה.</value>
   </data>
+  <data name="FirstNameValidationMessage" xml:space="preserve">
+    <value>שם פרטי חייב להיות מינימום 2 תווים ומקסימום 100 תווים</value>
+  </data>
 </root>
