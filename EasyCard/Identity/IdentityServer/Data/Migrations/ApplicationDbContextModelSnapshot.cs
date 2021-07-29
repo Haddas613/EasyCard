@@ -61,6 +61,37 @@ namespace IdentityServer.Data.Migrations
                     b.ToTable("UserAudit");
                 });
 
+            modelBuilder.Entity("IdentityServer.Data.Entities.UserPasswordSnapshot", b =>
+                {
+                    b.Property<long>("UserPasswordSnapshotID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("HashedPassword")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(512)");
+
+                    b.Property<string>("SecurityStamp")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(512)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserPasswordSnapshotID");
+
+                    b.ToTable("UserPasswordSnapshot");
+                });
+
             modelBuilder.Entity("IdentityServer.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
