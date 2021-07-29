@@ -57,7 +57,7 @@ namespace ShvaServiceImitation.Controllers
         {
             var response = new AshAuthResponseBody();
             response.pinpad = new clsPinPad();
-            if (body.inputObj.carNumber.Contains("532610") || body.inputObj.carNumber.EndsWith("0443") || body.inputObj.carNumber == "5105105105105100")
+            if (body.inputObj.clientInputPan != null && (body.inputObj.clientInputPan.Contains("532610") || body.inputObj.clientInputPan.EndsWith("0443") || body.inputObj.clientInputPan == "5105105105105100"))
             {
                 int[] numbers = new int[4] { 3, 4, 7, 9 };
                 Random rd = new Random();
