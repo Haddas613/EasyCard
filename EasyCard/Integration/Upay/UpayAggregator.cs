@@ -49,6 +49,15 @@ namespace Upay
             {
                 var upaySettings = transactionRequest.AggregatorSettings as UpayTerminalSettings;
                 
+                if (transactionRequest.TransactionType == TransactionTypeEnum.Credit || transactionRequest.TransactionType == TransactionTypeEnum.Immediate)
+                {
+                    return new AggregatorCreateTransactionResponse
+                    {
+                        Success = false,
+                        ErrorMessage = "Transaction type is not valid for upay transactions"
+                    };
+                }
+
                 var CreateTransactionRequest = UpayHelper.GetCreateTranMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), !configuration.LiveSystem , upaySettings.AuthenticateKey, transactionRequest);
                 var loginRequest = UpayHelper.GetLoginMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), !configuration.LiveSystem, upaySettings.AuthenticateKey);
                 var Msgs = new MsgModel[2];
