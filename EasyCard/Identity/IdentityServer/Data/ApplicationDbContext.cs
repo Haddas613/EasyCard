@@ -13,6 +13,8 @@ namespace IdentityServer.Data
     {
         public DbSet<UserAudit> UserAudits { get; set; }
 
+        public DbSet<UserPasswordSnapshot> UserPasswordSnapshots { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -21,6 +23,7 @@ namespace IdentityServer.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserAuditConfiguration());
+            modelBuilder.ApplyConfiguration(new UserPasswordSnapshotConfiguration());
             base.OnModelCreating(modelBuilder);
         }
 
@@ -44,6 +47,25 @@ namespace IdentityServer.Data
                 builder.Property(b => b.Email).IsRequired(true).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+            }
+        }
+
+        internal class UserPasswordSnapshotConfiguration : IEntityTypeConfiguration<UserPasswordSnapshot>
+        {
+            public void Configure(EntityTypeBuilder<UserPasswordSnapshot> builder)
+            {
+                builder.ToTable("UserPasswordSnapshot");
+
+                builder.HasKey(b => b.UserPasswordSnapshotID);
+                builder.Property(b => b.UserPasswordSnapshotID).ValueGeneratedOnAdd();
+
+                builder.Property(b => b.UserId).IsRequired(true);
+
+                builder.Property(b => b.Created).IsRequired(true);
+
+                builder.Property(b => b.HashedPassword).IsRequired(true).HasMaxLength(512).IsUnicode(false);
+
+                builder.Property(b => b.SecurityStamp).IsRequired(true).HasMaxLength(512).IsUnicode(false);
             }
         }
     }

@@ -584,5 +584,12 @@
               Looks up a localized string similar to Your password has been reset.
             </summary>
         </member>
+        <member name="M:IdentityServer.Services.UserSecurityService.TrySetNewPassword(IdentityServer.Models.ApplicationUser,System.String)">
+            <summary>
+            Sets new password for user if password was not used before (based on SecuritySettings). Returns false if password was not updated.
+            </summary>
+            <param name="user"></param>
+            <param name="newPassword"></param>
+        </member>
     </members>
 </doc>

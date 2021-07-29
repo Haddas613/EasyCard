@@ -65,6 +65,7 @@ namespace IdentityServer.Controllers
         private readonly UserHelpers userHelpers;
         private readonly CommonLocalizationService localization;
         private readonly SecuritySettings securitySettings;
+        private readonly UserSecurityService userSecurityService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -84,7 +85,8 @@ namespace IdentityServer.Controllers
             IHttpContextAccessorWrapper httpContextAccessor,
             UserHelpers userHelpers,
             CommonLocalizationService localization,
-            IOptions<SecuritySettings> securitySettings)
+            IOptions<SecuritySettings> securitySettings,
+            UserSecurityService userSecurityService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -106,6 +108,7 @@ namespace IdentityServer.Controllers
             this.userHelpers = userHelpers;
             this.localization = localization;
             this.securitySettings = securitySettings.Value;
+            this.userSecurityService = userSecurityService;
         }
 
         /// <summary>
@@ -315,21 +318,12 @@ namespace IdentityServer.Controllers
                 return View(request);
             }
 
-            var passwordsMatch = userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, request.NewPassword);
+            var result = await userSecurityService.TrySetNewPassword(user, request.NewPassword);
 
-            if (passwordsMatch == PasswordVerificationResult.Success)
+            if (!result)
             {
                 ModelState.AddModelError(nameof(request.NewPassword), CommonResources.PasswordWasUsedBefore);
                 return View(request);
-            }
-
-            user.PasswordHash = userManager.PasswordHasher.HashPassword(user, request.NewPassword);
-            user.PasswordUpdated = DateTime.UtcNow;
-
-            var result = await userManager.UpdateAsync(user);
-            if (!result.Succeeded)
-            {
-                throw new Exception("Something went wrong. Try again later.");
             }
             else
             {
@@ -855,12 +849,12 @@ namespace IdentityServer.Controllers
                 return View(model);
             }
 
-            user.PasswordHash = userManager.PasswordHasher.HashPassword(user, model.NewPassword);
+            var result = await userSecurityService.TrySetNewPassword(user, model.NewPassword);
 
-            var result = await userManager.UpdateAsync(user);
-            if (!result.Succeeded)
+            if (!result)
             {
-                ModelState.AddModelError("General", "Something went wrong. Try again later or contact administrator");
+                ModelState.AddModelError(nameof(model.NewPassword), CommonResources.PasswordWasUsedBefore);
+                return View(model);
             }
             else
             {
