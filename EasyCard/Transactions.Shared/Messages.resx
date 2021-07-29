@@ -120,6 +120,9 @@
   <data name="AggregatorNotDefined" xml:space="preserve">
     <value>Aggregator is not defined</value>
   </data>
+  <data name="AuthorizationCodeRequired" xml:space="preserve">
+    <value>Authorization code is required. Call @number and tell them the supplier number @retailer to get the authorization code and create a new transaction with it specified.</value>
+  </data>
   <data name="AwaitingForTransmission" xml:space="preserve">
     <value>Awaiting for Transmission</value>
   </data>

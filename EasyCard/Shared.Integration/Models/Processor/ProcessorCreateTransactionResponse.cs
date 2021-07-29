@@ -57,6 +57,17 @@ namespace Shared.Integration.Models
         public int? OriginalHttpResponseCode { get; set; }
 
         public RejectionReasonEnum RejectReasonCode { get; set; }
+
         public int? ResultCode { get; set; }
+
+        /// <summary>
+        /// Retailer number (code) to tell when calling to TelToGetAuthNum
+        /// </summary>
+        public string CompRetailerNum { get; set; }
+
+        /// <summary>
+        /// Phone number to call when authorization code is required
+        /// </summary>
+        public string TelToGetAuthNum { get; set; }
     }
 }

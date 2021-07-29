@@ -27,6 +27,7 @@ namespace Shva
         {
             this.TelToGetAuthNum = telToGetAuthNum;
             this.CompRetailerNum = compRetailerNum;
+            this.RejectReasonCode = RejectionReasonEnum.AuthorizationCodeRequired;
         }
 
         public ShvaCreateTransactionResponse(string errorMessage, string errorCode)
@@ -72,9 +73,5 @@ namespace Shva
         public string Brand { get; set; }
 
         public string EmvSoftVersion { get; set; }
-
-        public string CompRetailerNum { get; set; }
-
-        public string TelToGetAuthNum { get; set; }
     }
 }
