@@ -230,5 +230,21 @@ namespace IdentityServer.Security.Auditing
 
             await SaveAudit(audit);
         }
+
+        public async Task RegisterFailedAttempt(string email)
+        {
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            var audit = new UserAudit
+            {
+                Email = email,
+                OperationCode = AuditingTypeEnum.FailedAttempt.ToString(),
+                UserId = user?.Id,
+                SourceIP = accessor.HttpContext.Connection?.RemoteIpAddress?.ToString(),
+                OperationDate = DateTime.UtcNow
+            };
+
+            await SaveAudit(audit);
+        }
     }
 }

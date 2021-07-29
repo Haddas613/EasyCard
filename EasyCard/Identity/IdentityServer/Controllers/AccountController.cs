@@ -257,6 +257,7 @@ namespace IdentityServer.Controllers
                 }
 
                 await events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.Client?.ClientId));
+                await auditLogger.RegisterFailedAttempt(model.Username);
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
 
