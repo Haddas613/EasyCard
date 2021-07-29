@@ -345,28 +345,4 @@
   <data name="LastNameValidationMessage" xml:space="preserve">
     <value>Last name should be at least 2 and at max 200 characters long</value>
   </data>
-  <data name="PlanType1" xml:space="preserve">
-    <value>Plan type 1</value>
-  </data>
-  <data name="PlanType2" xml:space="preserve">
-    <value>Plan type 2</value>
-  </data>
-  <data name="PlanType3" xml:space="preserve">
-    <value>Plan type 3</value>
-  </data>
-  <data name="PlanType4" xml:space="preserve">
-    <value>Plan type 4</value>
-  </data>
-  <data name="ThisIsTheBasicPlanIncludesPreventingDoubleTansactionsNSMSnotification" xml:space="preserve">
-    <value>This is the basic plan. Includes Preventing double tansactions &amp; SMS notification</value>
-  </data>
-  <data name="ThisIsTheMostAdvancedPlanIncludesPreventingDoubleTransactionsSMSNotificationNRecurrentPayments" xml:space="preserve">
-    <value>This is the most advanced plan includes preventing double transactions, SMS notification &amp; Recurrent Payments</value>
-  </data>
-  <data name="ThisIsTheRecommendedPlanIncludesPreventingDoubleTansactionsNRecurrentPayments" xml:space="preserve">
-    <value>This is the recommended plan. Includes Preventing double tansactions &amp; Recurrent Payments</value>
-  </data>
-  <data name="ThisIsTheStarterPlanIncludesPreventingDoubleTansactions" xml:space="preserve">
-    <value>This is the starter plan. Includes Preventing double tansactions</value>
-  </data>
 </root>

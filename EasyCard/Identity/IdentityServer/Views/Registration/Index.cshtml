@@ -30,14 +30,13 @@
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" asp-for="PlanId" name="PlanId" value="@plan.PlanID" id="plan-id-@plan.PlanID">
                                                     <label class="form-check-label" for="plan-id-@plan.PlanID">
-                                                        @localizer.Get(@plan.Title)  
+                                                        @plan.Title
                                                     </label>
                                                 </div>
                                             </div>
                                             <div class="card-body">
                                                 <p class="card-text">
-                                                    @localizer.Get(@plan.Description)
-
+                                                    @plan.Description
                                                 </p>
                                             </div>
                                         </div>

@@ -511,42 +511,6 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Plan type 1.
-        /// </summary>
-        public static string PlanType1 {
-            get {
-                return ResourceManager.GetString("PlanType1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Plan type 2.
-        /// </summary>
-        public static string PlanType2 {
-            get {
-                return ResourceManager.GetString("PlanType2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Plan type 3.
-        /// </summary>
-        public static string PlanType3 {
-            get {
-                return ResourceManager.GetString("PlanType3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Plan type 4.
-        /// </summary>
-        public static string PlanType4 {
-            get {
-                return ResourceManager.GetString("PlanType4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Privacy.
         /// </summary>
         public static string Privacy {
@@ -660,43 +624,6 @@ namespace IdentityServer.Resources {
         public static string ThereAreNoLoginSchemesConfiguredForThisClient {
             get {
                 return ResourceManager.GetString("ThereAreNoLoginSchemesConfiguredForThisClient", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This is the basic plan. Includes Preventing double tansactions &amp; SMS notification.
-        /// </summary>
-        public static string ThisIsTheBasicPlanIncludesPreventingDoubleTansactionsNSMSnotification {
-            get {
-                return ResourceManager.GetString("ThisIsTheBasicPlanIncludesPreventingDoubleTansactionsNSMSnotification", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This is the most advanced plan includes preventing double transactions, SMS notification &amp; Recurrent Payments.
-        /// </summary>
-        public static string ThisIsTheMostAdvancedPlanIncludesPreventingDoubleTransactionsSMSNotificationNRecurrentPayments {
-            get {
-                return ResourceManager.GetString("ThisIsTheMostAdvancedPlanIncludesPreventingDoubleTransactionsSMSNotificationNRecu" +
-                        "rrentPayments", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This is the recommended plan. Includes Preventing double tansactions &amp; Recurrent Payments.
-        /// </summary>
-        public static string ThisIsTheRecommendedPlanIncludesPreventingDoubleTansactionsNRecurrentPayments {
-            get {
-                return ResourceManager.GetString("ThisIsTheRecommendedPlanIncludesPreventingDoubleTansactionsNRecurrentPayments", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This is the starter plan. Includes Preventing double tansactions.
-        /// </summary>
-        public static string ThisIsTheStarterPlanIncludesPreventingDoubleTansactions {
-            get {
-                return ResourceManager.GetString("ThisIsTheStarterPlanIncludesPreventingDoubleTansactions", resourceCulture);
             }
         }
         
