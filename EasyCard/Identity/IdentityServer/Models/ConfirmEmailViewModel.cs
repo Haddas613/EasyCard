@@ -22,8 +22,9 @@ namespace IdentityServer.Models
 
         public string Code { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
-        [StringLength(100, MinimumLength = 2)]
+       
+        [Required(AllowEmptyStrings = false, ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
+        [StringLength(100, MinimumLength = 2, ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "FirstNameValidationMessage")]
         public string FirstName { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
