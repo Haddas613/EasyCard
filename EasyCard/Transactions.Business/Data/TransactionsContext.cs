@@ -69,6 +69,15 @@ namespace Transactions.Business.Data
           c => c != null ? c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())) : 0,
           c => c != null ? c.ToList() : c);
 
+        private static readonly ValueConverter PaymentDetailsConverter = new ValueConverter<IEnumerable<PaymentDetails>, string>(
+          v => JsonConvert.SerializeObject(v),
+          v => JsonConvert.DeserializeObject<IEnumerable<PaymentDetails>>(v));
+
+        private static readonly ValueComparer PaymentDetailsComparer = new ValueComparer<IEnumerable<PaymentDetails>>(
+          (c1, c2) => c1 != null ? c1.SequenceEqual(c2) : false,
+          c => c != null ? c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())) : 0,
+          c => c != null ? c.ToList() : c);
+
         private static readonly ValueConverter CustomerAddressConverter = new ValueConverter<Address, string>(
            v => JsonConvert.SerializeObject(v),
            v => JsonConvert.DeserializeObject<Address>(v));
@@ -626,6 +635,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.CopyDonwnloadUrl).IsRequired(false).IsUnicode(false);
                 builder.Property(b => b.DownloadUrl).IsRequired(false).IsUnicode(false);
 
+                //TODO: remove after migrating to PaymentDetails
                 builder.OwnsOne(b => b.CreditCardDetails, s =>
                 {
                     s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
@@ -637,6 +647,10 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.CardBrand).HasColumnName("CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Ignore(b => b.CardReaderInput);
                 });
+
+                builder.Property(p => p.PaymentDetails).HasColumnName("PaymentDetails").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true)
+                    .HasConversion(PaymentDetailsConverter)
+                    .Metadata.SetValueComparer(PaymentDetailsComparer);
 
                 builder.Property(b => b.InstallmentPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.InitialPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();

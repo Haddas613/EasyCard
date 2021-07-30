@@ -91,6 +91,7 @@ export default {
         currency: null,
         invoiceType: null,
         invoiceAmount: 0.0,
+        paymentDetails: null,
         dealDetails: {
           dealReference: null,
           consumerEmail: null,
@@ -219,7 +220,7 @@ export default {
       this.model.terminalID = this.terminal.terminalID;
       this.model.cardOwnerName = data.cardOwnerName;
       this.model.cardOwnerNationalID = data.cardOwnerNationalID;
-      this.model.creditCardDetails = data.creditCardDetails;
+      this.model.paymentDetails = data.paymentDetails;
 
       await this.createInvoice();
     },

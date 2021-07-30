@@ -1,4 +1,5 @@
-﻿using Shared.Business;
+﻿using Newtonsoft.Json;
+using Shared.Business;
 using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
@@ -23,6 +24,7 @@ namespace Transactions.Business.Entities
             DealDetails = new DealDetails();
             InvoiceDetails = new InvoiceDetails();
             InvoiceDate = TimeZoneInfo.ConvertTimeFromUtc(InvoiceTimestamp.Value, UserCultureInfo.TimeZone).Date;
+            PaymentDetails = new List<PaymentDetails>();
         }
 
         /// <summary>
@@ -149,7 +151,10 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Credit card information
         /// </summary>
+        [Obsolete("use PaymentDetails")]
         public CreditCardDetails CreditCardDetails { get; set; }
+
+        public IEnumerable<PaymentDetails> PaymentDetails { get; set; }
 
         public DocumentOriginEnum DocumentOrigin { get; set; }
 

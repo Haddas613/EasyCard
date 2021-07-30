@@ -33,15 +33,22 @@
           :hide-title="true"
         ></installment-details>
 
-        <template v-if="paymentInfoAvailable">
-          <invoice-credit-card-details-fields :data="model" ref="ccDetails" :key="paymentInfoAvailable"></invoice-credit-card-details-fields>
-        </template>
-
         <deal-details
           ref="dealDetails"
           :data="model.dealDetails"
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
         ></deal-details>
+
+        <template v-if="paymentInfoAvailable">
+          <payment-type v-model="model.paymentType"></payment-type>
+          <template v-if="model.paymentType == appConstants.transaction.paymentTypes.card">
+            <invoice-credit-card-details-fields :data="model" ref="ccDetails"></invoice-credit-card-details-fields>
+          </template>
+          <template v-else-if="model.paymentType == appConstants.transaction.paymentTypes.cash">
+            Cash work in progress
+            <!-- <invoice-credit-card-details-fields :data="model" ref="ccDetails"></invoice-credit-card-details-fields> -->
+          </template>
+        </template>
       </v-form>
     </v-card-text>
     <v-card-actions class="px-2">
@@ -85,7 +92,7 @@ export default {
       appConstants: appConstants,
       messageDialog: false,
       isInstallmentTransaction: false,
-      paymentInfoAvailable: false
+      paymentInfoAvailable: true
     };
   },
   computed: {
@@ -123,8 +130,25 @@ export default {
         });
         return;
       }
+
+      result.paymentDetails = [];
+      switch(this.model.paymentType){
+        case this.appConstants.transaction.paymentTypes.card:
+          let data = this.$refs.ccDetails.getData();
+          if(data){
+            result.paymentDetails.push({
+              ...this.$refs.ccDetails.getData(),
+              paymentType: this.appConstants.transaction.paymentTypes.card
+            });
+          }
+          break;
+        case this.appConstants.transaction.paymentTypes.cash:
+          result.paymentDetails.push({
+            paymentType: this.appConstants.transaction.paymentTypes.cash
+          });
+          break;
+      }
       
-      result.creditCardDetails = this.paymentInfoAvailable ? this.$refs.ccDetails.getData() : null;
       if (result.invoiceDetails) this.$emit("ok", result);
     },
     invoiceTypeChanged(val){

@@ -411,6 +411,11 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(false)
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("PaymentDetails")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("PaymentDetails");
+
                     b.Property<Guid?>("PaymentTransactionID")
                         .HasColumnType("uniqueidentifier");
 

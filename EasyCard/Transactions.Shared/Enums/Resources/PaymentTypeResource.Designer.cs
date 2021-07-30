@@ -97,11 +97,11 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check.
+        ///   Looks up a localized string similar to Cheque.
         /// </summary>
-        public static string Check {
+        public static string Cheque {
             get {
-                return ResourceManager.GetString("Check", resourceCulture);
+                return ResourceManager.GetString("Cheque", resourceCulture);
             }
         }
     }

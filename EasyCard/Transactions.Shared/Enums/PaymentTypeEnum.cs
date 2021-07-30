@@ -10,8 +10,8 @@ namespace Transactions.Shared.Enums
         [EnumMember(Value = "card")]
         Card = 0,
 
-        [EnumMember(Value = "check")]
-        Check = 1,
+        [EnumMember(Value = "cheque")]
+        Cheque = 1,
 
         [EnumMember(Value = "cash")]
         Cash = 2,
