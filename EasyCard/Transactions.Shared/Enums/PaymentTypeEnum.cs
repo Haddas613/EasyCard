@@ -19,7 +19,8 @@ namespace Transactions.Shared.Enums
         [EnumMember(Value = "bank")]
         Bank = 3,
 
-        [EnumMember(Value = "bitcoin")]
-        Bitcoin = 4
+        //TODO: uncomment when bitcoin is supported
+        //[EnumMember(Value = "bitcoin")]
+        //Bitcoin = 4
     }
 }

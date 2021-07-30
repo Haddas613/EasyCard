@@ -20,7 +20,7 @@
           valuekey="code"
           return-object
           :model.sync="model.invoiceType"
-          @change="invoiceTypeDialog = false;"
+          @change="invoiceTypeChanged()"
         ></ec-radio-group>
       </template>
     </ec-dialog>
@@ -132,6 +132,10 @@ export default {
       result.invoiceType = result.invoiceType.code;
       
       return result;
+    },
+    invoiceTypeChanged(){
+      this.invoiceTypeDialog = false;
+      this.$emit('invoce-type-changed', this.model.invoiceType);
     }
   }
 };

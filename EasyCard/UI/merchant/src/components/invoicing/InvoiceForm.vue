@@ -2,6 +2,7 @@
   <v-card class="ec-card d-flex flex-column">
     <v-card-text class="py-2">
       <v-form class="ec-form" ref="form">
+        <invoice-details-fields ref="invoiceDetails" :data="model.invoiceDetails" v-on:invoce-type-changed="invoiceTypeChanged($event)"></invoice-details-fields>
         <v-text-field
           v-model="model.cardOwnerName"
           :counter="50"
@@ -32,13 +33,15 @@
           :hide-title="true"
         ></installment-details>
 
+        <template v-if="paymentInfoAvailable">
+          <invoice-credit-card-details-fields :data="model" ref="ccDetails" :key="paymentInfoAvailable"></invoice-credit-card-details-fields>
+        </template>
+
         <deal-details
           ref="dealDetails"
           :data="model.dealDetails"
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
         ></deal-details>
-        <invoice-credit-card-details-fields :data="model" v-on:ok="processCreditCard($event)" ref="ccDetails" :required="paymentInfoRequired" :key="paymentInfoRequired"></invoice-credit-card-details-fields>
-        <invoice-details-fields ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
       </v-form>
     </v-card-text>
     <v-card-actions class="px-2">
@@ -57,6 +60,7 @@ export default {
     InstallmentDetails: () => import("../transactions/InstallmentDetailsForm"),
     DealDetails: () => import("../transactions/DealDetailsFields"),
     InvoiceDetailsFields: () => import("./InvoiceDetailsFields"),
+    PaymentType: () => import("../transactions/PaymentType"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     EcDialog: () => import("../../components/ec/EcDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
@@ -67,7 +71,7 @@ export default {
     data: {
       type: Object,
       default: null,
-      required: true,
+      required: true
     }
   },
   data() {
@@ -78,9 +82,10 @@ export default {
         invoiceDetails: this.data.invoiceDetails || {}
       },
       vr: ValidationRules,
+      appConstants: appConstants,
       messageDialog: false,
       isInstallmentTransaction: false,
-      paymentInfoRequired: false
+      paymentInfoAvailable: false
     };
   },
   computed: {
@@ -111,9 +116,6 @@ export default {
       result.invoiceDetails = this.$refs.invoiceDetails.getData();
       result.dealDetails = this.$refs.dealDetails.getData();
 
-      this.paymentInfoRequired = (result.invoiceDetails.invoiceType == appConstants.invoicing.types.invoiceWithPaymentInfo
-        || result.invoiceDetails.invoiceType == appConstants.invoicing.types.invoiceWithPaymentInfo);
-
       if (!this.$refs.form.validate()) {
         const self = this;
         this.$nextTick(function(){
@@ -121,9 +123,14 @@ export default {
         });
         return;
       }
-
-      result.creditCardDetails = this.$refs.ccDetails.getData();
+      
+      result.creditCardDetails = this.paymentInfoAvailable ? this.$refs.ccDetails.getData() : null;
       if (result.invoiceDetails) this.$emit("ok", result);
+    },
+    invoiceTypeChanged(val){
+      this.paymentInfoAvailable = (val.code == appConstants.invoicing.types.invoiceWithPaymentInfo
+        || val.code == appConstants.invoicing.types.paymentInfo
+        || val.code == appConstants.invoicing.types.refundInvoice);
     }
   }
 };
