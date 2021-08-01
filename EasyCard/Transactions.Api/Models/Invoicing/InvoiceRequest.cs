@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
@@ -73,6 +74,12 @@ namespace Transactions.Api.Models.Invoicing
         /// <summary>
         /// Credit card information
         /// </summary>
+        [Obsolete]
         public TransactionsApi.Models.Transactions.CreditCardDetails CreditCardDetails { get; set; }
+
+        /// <summary>
+        /// Array of payment details, e.g. CreditCardDetails, ChequeDetails etc.
+        /// </summary>
+        public IEnumerable<Business.Entities.PaymentDetails> PaymentDetails { get; set; }
     }
 }

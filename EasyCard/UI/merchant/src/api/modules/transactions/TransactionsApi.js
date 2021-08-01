@@ -86,7 +86,7 @@ export default class TransactionsApi {
 
     async createTransaction(data){
         //j4
-        return await this.base.post(this.transactionsUrl + '/create', data);
+        return await this.base.post(this.transactionsUrl + '/create', data, { showBadRequestToastr: false });
     }
 
     async checkCreditCard(data){
@@ -101,7 +101,7 @@ export default class TransactionsApi {
 
     async refund(data){
         //refund no jdeal type
-        return await this.base.post(this.transactionsUrl + '/refund', data);
+        return await this.base.post(this.transactionsUrl + '/refund', data,  { showBadRequestToastr: false });
     }
 
     async triggerBillingDeals(billingDealsID) {

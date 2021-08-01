@@ -251,6 +251,7 @@ namespace IdentityServer
             services.AddScoped<IAuditLogger, AuditLogger>();
             services.AddScoped<UserManageService, UserManageService>();
             services.AddScoped<UserHelpers, UserHelpers>();
+            services.AddScoped<UserSecurityService, UserSecurityService>();
 
             // DI: request logging
 

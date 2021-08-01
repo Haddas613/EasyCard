@@ -390,6 +390,11 @@
             Credit card information
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.PaymentDetails">
+            <summary>
+            Array of payment details, e.g. CreditCardDetails, ChequeDetails etc.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceID">
             <summary>
             Primary reference

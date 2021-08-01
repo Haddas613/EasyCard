@@ -10,8 +10,8 @@ namespace Transactions.Shared.Enums
         [EnumMember(Value = "card")]
         Card = 0,
 
-        [EnumMember(Value = "check")]
-        Check = 1,
+        [EnumMember(Value = "cheque")]
+        Cheque = 1,
 
         [EnumMember(Value = "cash")]
         Cash = 2,
@@ -19,7 +19,8 @@ namespace Transactions.Shared.Enums
         [EnumMember(Value = "bank")]
         Bank = 3,
 
-        [EnumMember(Value = "bitcoin")]
-        Bitcoin = 4
+        //TODO: uncomment when bitcoin is supported
+        //[EnumMember(Value = "bitcoin")]
+        //Bitcoin = 4
     }
 }

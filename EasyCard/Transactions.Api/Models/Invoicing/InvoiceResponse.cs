@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Transactions.Business.Entities;
 using Transactions.Shared.Enums;
 using IntegrationModels = Shared.Integration.Models;
 using TransactionsApi = Transactions.Api;
@@ -107,5 +108,7 @@ namespace Transactions.Api.Models.Invoicing
         /// Credit card information
         /// </summary>
         public TransactionsApi.Models.Transactions.CreditCardDetails CreditCardDetails { get; set; }
+
+        public IEnumerable<object> PaymentDetails { get; set; }
     }
 }

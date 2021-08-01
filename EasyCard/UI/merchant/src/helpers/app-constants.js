@@ -80,6 +80,12 @@ const appConstants = {
             immediate: "immediate",
             installments: "installments",
             regularDeal: "regularDeal"
+        },
+        paymentTypes: {
+            bank: "bank",
+            card: "card",
+            cash: "cash",
+            cheque: "cheque",
         }
     }
 };
