@@ -43,8 +43,12 @@
     [TotalDiscount]            DECIMAL (19, 4)  DEFAULT ((0.0)) NOT NULL,
     [CustomerAddress]          NVARCHAR (MAX)   NULL,
     [CardBrand]                VARCHAR (20)     NULL,
+    [TransactionType]          SMALLINT         NULL,
+    [PaymentDetails]           NVARCHAR (MAX)   NULL,
     CONSTRAINT [PK_Invoice] PRIMARY KEY CLUSTERED ([InvoiceID] ASC)
 );
+
+
 
 
 
