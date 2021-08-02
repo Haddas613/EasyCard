@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,10 +10,13 @@ namespace Transactions.Business.Entities
     /// </summary>
     public abstract class BankDetails : PaymentDetails
     {
+        [JsonProperty(PropertyName = "bank")]
         public int? Bank { get; set; }
 
+        [JsonProperty(PropertyName = "bankBranch")]
         public int? BankBranch { get; set; }
 
-        public int? BankAccount { get; set; }
+        [JsonProperty(PropertyName = "bankAccount")]
+        public string BankAccount { get; set; }
     }
 }

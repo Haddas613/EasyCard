@@ -82,6 +82,7 @@
   "NonCardCharge": "Non Card Charge",
   "SystemIsNotReadyToUse": "System is not ready to use",
   "SecurityNotice": "Security notice",
+  "PaymentDetails": "Payment Details",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -121,6 +122,7 @@
   "OnlyImagesAreAllowed": "Only images are allowed",
   "OnlyCSSFilesAreAllowed": "Only CSS files are allowed",
   "MaxFileSizeIs1MB": "Max file size is 1MB",
+  "OnlyNumbersAreAllowed": "Only numbers are allowed",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -297,6 +299,11 @@
   "PaymentIntentURL": "Payment Intent URL",
   "AllowPinPad": "Allow PinPad",
   "AuthorizationCode": "Authorization Code (optional)",
+  "PaymentType": "Payment Type",
+  "ChequeNumber": "Cheque Number",
+  "Bank": "Bank",
+  "BankBranch": "Bank Branch",
+  "BankAccount": "Bank Account",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
