@@ -38,18 +38,18 @@ namespace EasyInvoice.Converters
             };
 
             //TODO: legacy, switch to PaymentDetails
-            if (message.CreditCardDetails != null)
-            {
-                var payments = GetPaymentFromCard(message);
-                if (payments != null)
-                {
-                    json.Payments = new List<ECInvoicePayment>
-                    {
-                        payments
-                    };
-                }
-            }
-            else if (message.PaymentDetails?.Any() == true)
+            //if (message.CreditCardDetails != null)
+            //{
+            //    var payments = GetPaymentFromCard(message);
+            //    if (payments != null)
+            //    {
+            //        json.Payments = new List<ECInvoicePayment>
+            //        {
+            //            payments
+            //        };
+            //    }
+            //}
+            if (message.PaymentDetails?.Any() == true)
             {
                 json.Payments = MapPaymentDetails(message);
             }
@@ -116,37 +116,6 @@ namespace EasyInvoice.Converters
                 TotalNetAmount = message.NetAmount,
                 TotalTaxAmount = message.VAT,
             };
-
-            return res;
-        }
-
-        public static ECInvoicePayment GetPaymentFromCard(InvoicingCreateDocumentRequest message)
-        {
-            if (message.CreditCardDetails == null)
-            {
-                return null;
-            }
-
-            if (!Enum.TryParse<ECInvoiceCreditCardTypeEnum>(message.CreditCardDetails.CardVendor, true, out var ccType))
-            {
-                ccType = ECInvoiceCreditCardTypeEnum.OTHER;
-            }
-
-            var res = new ECInvoicePayment
-            {
-                PaymentMethod = message.TransactionType == TransactionTypeEnum.Credit ? ECInvoicePaymentMethodEnum.CREDIT_CARD_CREDITS.ToString() : (message.NumberOfPayments > 1 ? ECInvoicePaymentMethodEnum.CREDIT_CARD_PAYMENTS.ToString() : ECInvoicePaymentMethodEnum.CREDIT_CARD_REGULAR_CREDIT.ToString()),
-                Amount = message.InvoiceAmount,
-                CreditCard4LastDigits = CreditCardHelpers.GetCardLastFourDigits(message.CreditCardDetails.CardNumber),
-                CreditCardType = ccType.ToString(), // TODO: ECInvoice does not support LEUMI_CARD
-                PaymentDateTime = message.InvoiceDate.GetValueOrDefault(DateTime.Today).ToString("o"),
-                NumberOfPayments = message.NumberOfPayments
-            };
-
-            if (message.NumberOfPayments > 1)
-            {
-                res.AmountOfFirstPayment = message.InitialPaymentAmount;
-                res.AmountOfEachAdditionalPayment = message.InstallmentPaymentAmount;
-            }
 
             return res;
         }

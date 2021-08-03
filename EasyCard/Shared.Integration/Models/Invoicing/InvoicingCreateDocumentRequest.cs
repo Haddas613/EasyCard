@@ -10,7 +10,6 @@ namespace Shared.Integration.Models.Invoicing
         public InvoicingCreateDocumentRequest()
         {
             this.DealDetails = new DealDetails();
-            this.CreditCardDetails = new CreditCardDetails();
         }
 
         public object InvoiceingSettings { get; set; }
@@ -44,12 +43,6 @@ namespace Shared.Integration.Models.Invoicing
         /// Deal information (optional)
         /// </summary>
         public DealDetails DealDetails { get; set; }
-
-        /// <summary>
-        /// Credit card details
-        /// </summary>
-        [Obsolete("Use PaymentDetails")]
-        public CreditCardDetailsBase CreditCardDetails { get; set; }
 
         public IEnumerable<PaymentDetails.PaymentDetails> PaymentDetails { get; set; }
 
