@@ -48,7 +48,10 @@ namespace Shared.Integration.Models.Invoicing
         /// <summary>
         /// Credit card details
         /// </summary>
+        [Obsolete("Use PaymentDetails")]
         public CreditCardDetailsBase CreditCardDetails { get; set; }
+
+        public IEnumerable<PaymentDetails.PaymentDetails> PaymentDetails { get; set; }
 
         /// <summary>
         /// Invoice amount (should be omitted in case of installment deal)

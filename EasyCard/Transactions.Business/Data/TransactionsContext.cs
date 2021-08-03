@@ -25,6 +25,7 @@ using Shared.Integration.Models;
 using Shared.Business.Extensions;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging.Debug;
+using Shared.Integration.Models.PaymentDetails;
 
 namespace Transactions.Business.Data
 {

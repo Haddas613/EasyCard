@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Shared.Helpers;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Transactions.Api.Mapping.ValueResolvers;
 using Transactions.Api.Models.Invoicing;
 using Transactions.Business.Entities;
 using TransactionsApi = Transactions.Api;
@@ -38,6 +40,10 @@ namespace Transactions.Api.Mapping
 
             CreateMap<Invoice, InvoiceResponse>();
 
+            CreateMap<CreditCardDetails, CreditCardPaymentDetails>()
+                .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardLastFourDigitsWithPrefix(d.CardNumber)))
+                .ForMember(d => d.CardExpiration, o => o.MapFrom(d => d.CardExpiration != null ? d.CardExpiration.ToString() : null));
+
             // TODO: specify all members and ignore rest
             CreateMap<PaymentTransaction, Invoice>()
                 .ForMember(d => d.InvoiceID, o => o.Ignore())
@@ -45,7 +51,9 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.InvoiceAmount, o => o.MapFrom(d => d.TransactionAmount))
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerName))
                 .ForMember(d => d.CardOwnerNationalID, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerNationalID))
-                .ForMember(d => d.TransactionType, o => o.MapFrom(d => d.TransactionType));
+                .ForMember(d => d.TransactionType, o => o.MapFrom(d => d.TransactionType))
+                .ForMember(d => d.CreditCardDetails, o => o.Ignore())
+                .ForMember(d => d.PaymentDetails, o => o.MapFrom<PaymentDetailsTransactionValueResolver>());
         }
     }
 }

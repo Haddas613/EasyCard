@@ -3,9 +3,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Transactions.Shared.Enums;
 
-namespace Transactions.Business.Entities
+namespace Shared.Integration.Models.PaymentDetails
 {
     [JsonConverter(typeof(JsonSubtypes), "PaymentType")]
     [JsonSubtypes.KnownSubType(typeof(ChequeDetails), PaymentTypeEnum.Cheque)]

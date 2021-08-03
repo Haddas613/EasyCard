@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Transactions.Business.Entities
+namespace Shared.Integration.Models.PaymentDetails
 {
     public class CashDetails : PaymentDetails
     {
         public CashDetails()
         {
-            PaymentType = Shared.Enums.PaymentTypeEnum.Cash;
+            PaymentType = PaymentTypeEnum.Cash;
         }
     }
 }

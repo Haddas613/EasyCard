@@ -2,6 +2,7 @@
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,13 +37,21 @@ namespace EasyInvoice.Converters
                 Rows = GetRows(message),
             };
 
-            var payments = GetPaymentFromCard(message);
-            if (payments != null)
+            //TODO: legacy, switch to PaymentDetails
+            if (message.CreditCardDetails != null)
             {
-                json.Payments = new List<ECInvoicePayment>
+                var payments = GetPaymentFromCard(message);
+                if (payments != null)
                 {
-                    payments
-                };
+                    json.Payments = new List<ECInvoicePayment>
+                    {
+                        payments
+                    };
+                }
+            }
+            else if (message.PaymentDetails?.Any() == true)
+            {
+                json.Payments = MapPaymentDetails(message);
             }
 
             return json;
@@ -140,6 +149,56 @@ namespace EasyInvoice.Converters
             }
 
             return res;
+        }
+
+        public static List<ECInvoicePayment> MapPaymentDetails(InvoicingCreateDocumentRequest message)
+        {
+            var result = new List<ECInvoicePayment>();
+
+            foreach (var d in message.PaymentDetails)
+            {
+                var res = new ECInvoicePayment
+                {
+                    PaymentMethod = message.TransactionType == TransactionTypeEnum.Credit ? ECInvoicePaymentMethodEnum.CREDIT_CARD_CREDITS.ToString() : (message.NumberOfPayments > 1 ? ECInvoicePaymentMethodEnum.CREDIT_CARD_PAYMENTS.ToString() : ECInvoicePaymentMethodEnum.CREDIT_CARD_REGULAR_CREDIT.ToString()),
+                    Amount = message.InvoiceAmount,
+                    PaymentDateTime = message.InvoiceDate.GetValueOrDefault(DateTime.Today).ToString("o"),
+                    NumberOfPayments = message.NumberOfPayments
+                };
+
+                if (message.NumberOfPayments > 1)
+                {
+                    res.AmountOfFirstPayment = message.InitialPaymentAmount;
+                    res.AmountOfEachAdditionalPayment = message.InstallmentPaymentAmount;
+                }
+
+                if (d.PaymentType == PaymentTypeEnum.Card && d is CreditCardPaymentDetails cardDetails)
+                {
+                    res.CreditCard4LastDigits = CreditCardHelpers.GetCardLastFourDigits(cardDetails.CardNumber);
+                    res.CreditCardType = ECInvoiceCreditCardTypeEnum.OTHER.ToString();
+                }
+                else if (d.PaymentType == PaymentTypeEnum.Cheque && d is ChequeDetails chequeDetails)
+                {
+                    res.PaymentMethod = ECInvoicePaymentMethodEnum.CHEQUE.ToString();
+                    res.ChequeAccount = chequeDetails.BankAccount;
+                    res.ChequeBank = chequeDetails.Bank?.ToString();
+                    res.ChequeBranch = chequeDetails.BankAccount;
+
+                    //TODO: cheque number
+                }
+                else if (d.PaymentType == PaymentTypeEnum.Cash)
+                {
+                    res.PaymentMethod = ECInvoicePaymentMethodEnum.CASH.ToString();
+                }
+                else
+                {
+                    //TODO: implement
+                    res.PaymentMethod = ECInvoicePaymentMethodEnum.BANK_TRANSFER.ToString();
+                }
+
+                result.Add(res);
+            }
+
+            return result;
         }
 
         public static ECInvoiceDocumentType GetECInvoiceDocumentType(InvoiceTypeEnum documentType)

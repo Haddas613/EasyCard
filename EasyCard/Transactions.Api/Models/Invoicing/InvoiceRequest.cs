@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -80,6 +81,6 @@ namespace Transactions.Api.Models.Invoicing
         /// <summary>
         /// Array of payment details, e.g. CreditCardDetails, ChequeDetails etc.
         /// </summary>
-        public IEnumerable<Business.Entities.PaymentDetails> PaymentDetails { get; set; }
+        public IEnumerable<PaymentDetails> PaymentDetails { get; set; }
     }
 }
