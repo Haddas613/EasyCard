@@ -22,6 +22,13 @@ namespace Shared.Integration.Models
         public string DealReference { get; set; }
 
         /// <summary>
+        /// ShovarNumber
+        /// </summary>
+        [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        public string ShovarNumber { get; set; }
+
+        /// <summary>
         /// Deal description
         /// </summary>
         [StringLength(250)]

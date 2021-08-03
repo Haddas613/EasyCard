@@ -25,8 +25,8 @@ namespace RapidOneInvoices.Converters
                 Vat = Convert.ToDecimal(message.VATTotal.ToString("#.#######")),
                 Subtotal = Convert.ToDecimal((message.TotalAmount - message.VATTotal).ToString("#.#######")),
                 CustomerCell = message.DealDetails?.ConsumerPhone,
-                CustomerCode = message.DealDetails.ExternalConsumerCode,
-                CustomerEmail = message.DealDetails.ConsumerEmail,
+                CustomerCode = message.DealDetails?.ExternalConsumerCode,
+                CustomerEmail = message.DealDetails?.ConsumerEmail,
                 CustomerName = message.ConsumerName,
             };
 
@@ -100,7 +100,7 @@ namespace RapidOneInvoices.Converters
             cc.Expiration = new ExpirationModel();
             cc.Expiration.Month = message.CreditCardDetails.CardExpiration.Month ?? 1;
             cc.Expiration.Year = message.CreditCardDetails.CardExpiration.Year ?? 1991;
-            //mt.VoucherNum = message.DealDetails. voucherNum.Length > 20 ? voucherNum.Substring(voucherNum.Length - 20, 20) : voucherNum; TODO
+            cc.VoucherNum = getVoucherNum(message.DealDetails?.ShovarNumber); 
             cc.Payments = message.NumberOfPayments.ToString();
             cc.FirstPayment = message.InitialPaymentAmount.ToString();
             cc.DealType = getDealType(message.TransactionType);
@@ -111,6 +111,11 @@ namespace RapidOneInvoices.Converters
             }
             result[0] = cc;
             return result;
+        }
+
+        private static string getVoucherNum(string dealReference)
+        {
+            return dealReference.Length > 20 ? dealReference.Substring(dealReference.Length - 20, 20) : dealReference;
         }
 
         private static int getDealType(TransactionTypeEnum? transactionType)

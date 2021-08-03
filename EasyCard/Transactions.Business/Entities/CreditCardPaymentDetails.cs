@@ -16,5 +16,8 @@ namespace Transactions.Business.Entities
 
         [JsonProperty(PropertyName = "cardNumber")]
         public string СardNumber { get; set; }
+
+        [JsonProperty(PropertyName = "shovarNumber")]
+        public string ShovarNumber { get; set; }
     }
 }

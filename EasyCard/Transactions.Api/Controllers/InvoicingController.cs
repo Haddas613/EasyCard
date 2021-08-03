@@ -479,7 +479,6 @@ namespace Transactions.Api.Controllers
                 }
 
                 var invoicing = invoicingResolver.GetInvoicing(terminalInvoicing);
-
                 var invoicingSettings = invoicingResolver.GetInvoicingTerminalSettings(terminalInvoicing, terminalInvoicing.Settings);
                 dbInvoice.InvoicingID = terminalInvoicing.ExternalSystemID;
 

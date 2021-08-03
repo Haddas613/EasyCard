@@ -17,6 +17,8 @@ namespace RapidOneInvoices
 {
     public class RapidInvoiceInvoicing : IInvoicing
     {
+        private const string documentProduce = "/gateway/financialDocuments";
+        private const string ResponseTokenHeader = "ExternalClient";
         private readonly IIntegrationRequestLogStorageService storageService;
         private readonly IWebApiClient apiClient;
         private readonly RapidInvoiceGlobalSettings configuration;
@@ -47,7 +49,7 @@ namespace RapidOneInvoices
             json.DepartmentId = Int32.Parse(terminal.Department);
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            //NameValueCollection headers = GetAuthorizedHeaders(terminal.BaseUrl, terminal.Token, integrationMessageId, documentCreationRequest.CorrelationId);
+            NameValueCollection headers = GetAuthorizedHeaders(terminal.BaseUrl, terminal.Token, integrationMessageId, documentCreationRequest.CorrelationId);
 
             List<DocumentItemModel> svcRes = null;
             string requestUrl = null;
@@ -57,9 +59,7 @@ namespace RapidOneInvoices
 
             try
             {
-//                headers.au DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("ExternalClient", token);//TODO
-  //              client.DefaultRequestHeaders.Accept.Add((new MediaTypeWithQualityHeaderValue("application/json"))); //TODO
-                /*svcRes = await this.apiClient.Post<List<DocumentItemModel>>(terminal.BaseUrl,"", json, () => Task.FromResult(null/*headers),
+                svcRes = await this.apiClient.Post<List<DocumentItemModel>>(terminal.BaseUrl, documentProduce, json, () => Task.FromResult(headers),
                      (url, request) =>
                      {
                          requestStr = request;
@@ -70,7 +70,7 @@ namespace RapidOneInvoices
                          responseStr = response;
                          responseStatusStr = responseStatus.ToString();
                      });
-                */
+                
             }
             catch (Exception ex)
             {
@@ -91,47 +91,38 @@ namespace RapidOneInvoices
                 await storageService.Save(integrationMessage);
             }
 
-            //var response = new InvoicingCreateDocumentResponse
-            //{
-            //    DocumentNumber = svcRes.DocumentNumber?.ToString(),
-            //    DownloadUrl = svcRes.,
-            //    CopyDonwnloadUrl = svcRes.DocumentCopyUrl
-            //};
+            var response = new InvoicingCreateDocumentResponse
+            {
+                DocumentNumber = svcRes[0]?.docEntry.ToString(),
+                DownloadUrl = svcRes[0]?.url,
+                CopyDonwnloadUrl = svcRes[0]?.url
+            };
 
-           // if (svcRes.Errors?.Count > 0 || !string.IsNullOrWhiteSpace(svcRes.Error) || string.IsNullOrWhiteSpace(svcRes.DocumentUrl) || svcRes.DocumentNumber.GetValueOrDefault() <= 0)
-           // {
-           //     response.Success = false;
-           //     response.ErrorMessage = svcRes.Message ?? svcRes.Error;
-           // }
+           //if (svcRes == null || svcRes.Count<1 || string.IsNullOrWhiteSpace(svcRes[0].url) || svcRes[0].docEntry <= 0)
+           //{
+           //    response.Success = false;
+           //    response.ErrorMessage = svcRes.Message ?? svcRes.Error;
+           //}
 
-            //return response;
-           
-            return null;
+            return response;
         }
 
-       /* private NameValueCollection GetAuthorizedHeaders(string BaseUrl, string Token, string integrationMessageId, string correlationId)
+        private NameValueCollection GetAuthorizedHeaders(string BaseUrl, string Token, string integrationMessageId, string correlationId)
         {
             try
             {
-                var loginRequest = new { BaseUrl = BaseUrl, Token = Token };
-
-                var loginres = apiClient.PostRawWithHeaders(this.configuration.BaseUrl, "/api/v1/login", JsonConvert.SerializeObject(loginRequest), "application/json").Result;
-
-                var authToken = loginres.ResponseHeaders.AllKeys.Any(k => k == ResponseTokenHeader) ? loginres.ResponseHeaders[ResponseTokenHeader] : null;
-
                 NameValueCollection headers = new NameValueCollection();
-                headers.Add(ResponseTokenHeader, authToken);
-
+                headers.Add(ResponseTokenHeader, Token);
                 return headers;
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"EasyInvoice integration request failed: failed to get token: {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
+                this.logger.LogError(ex, $"Rapid invoice integration request failed: failed to get token: {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
 
-                throw new IntegrationException("EasyInvoice integration request failed: failed to get token", integrationMessageId);
+                throw new IntegrationException("Rapid invoice integration request failed: failed to get token", integrationMessageId);
             }
         }
-        */
+        
 
 
 
