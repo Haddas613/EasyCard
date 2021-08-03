@@ -337,6 +337,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardBrand).HasColumnName("CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Ignore(b => b.CardReaderInput);
+                    s.Ignore(b => b.Solek);
                 });
 
                 builder.OwnsOne(b => b.ClearingHouseTransactionDetails, s =>
@@ -379,6 +380,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
                     s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ExternalConsumerCode).HasColumnName("ExternalConsumerCode").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
@@ -500,6 +502,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.CardBin).HasColumnName("CardBin").IsRequired(false).HasMaxLength(10).IsUnicode(false);
                     s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardBrand).HasColumnName("CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.Solek).HasColumnName("Solek").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Ignore(b => b.CardReaderInput);
                 });
 
@@ -508,6 +511,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
                     s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ExternalConsumerCode).HasColumnName("ExternalConsumerCode").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
@@ -600,6 +604,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
                     s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ExternalConsumerCode).HasColumnName("ExternalConsumerCode").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
@@ -645,6 +650,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Ignore(p => p.CardBin);
                     s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardBrand).HasColumnName("CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.Solek).HasColumnName("Solek").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Ignore(b => b.CardReaderInput);
                 });
 
@@ -678,6 +684,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 {
                     s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
                     s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ExternalConsumerCode).HasColumnName("ExternalConsumerCode").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
@@ -775,6 +782,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Ignore(p => p.CardVendor);
                     s.Ignore(b => b.CardReaderInput);
                     s.Ignore(b => b.CardBrand);
+                    s.Ignore(b => b.Solek);
                 });
 
                 builder.Property(b => b.TransactionAmount).HasColumnType("decimal(19,4)").HasColumnName("TransactionAmount");

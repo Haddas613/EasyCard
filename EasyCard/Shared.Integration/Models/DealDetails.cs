@@ -57,5 +57,11 @@ namespace Shared.Integration.Models
         /// Consumer address
         /// </summary>
         public string ConsumerAddress { get; set; }
+
+        /// <summary>
+        /// External system consumer code for example Rapid customer code
+        /// </summary>
+        public string ExternalConsumerCode { get; set; }
+
     }
 }

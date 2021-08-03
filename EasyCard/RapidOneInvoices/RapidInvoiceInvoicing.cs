@@ -2,11 +2,15 @@
 using Microsoft.Extensions.Options;
 using RapidOneInvoices.Configuration;
 using RapidOneInvoices.Converters;
+using RapidOneInvoices.Models;
 using Shared.Helpers;
 using Shared.Integration;
+using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models.Invoicing;
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 
 namespace RapidOneInvoices
@@ -34,17 +38,18 @@ namespace RapidOneInvoices
         }
         public async Task<InvoicingCreateDocumentResponse> CreateDocument(InvoicingCreateDocumentRequest documentCreationRequest)
         {
-            /*
+            
             var terminal = documentCreationRequest.InvoiceingSettings as RapidInvoiceTerminalSettings;
 
             var json = RapidInvoiceConverter.GetInvoiceCreateDocumentRequest(documentCreationRequest);
-            //json.BranchId = Int32.Parse(terminal.Branch);
-            //json.Company = terminal.Company;
+            json.BranchId = Int32.Parse(terminal.Branch);
+            json.Company = terminal.Company;
+            json.DepartmentId = Int32.Parse(terminal.Department);
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
-            NameValueCollection headers = GetAuthorizedHeaders(terminal.UserName, terminal.Password, integrationMessageId, documentCreationRequest.CorrelationId);
+            //NameValueCollection headers = GetAuthorizedHeaders(terminal.BaseUrl, terminal.Token, integrationMessageId, documentCreationRequest.CorrelationId);
 
-            ECInvoiceDocumentResponse svcRes = null;
+            List<DocumentItemModel> svcRes = null;
             string requestUrl = null;
             string requestStr = null;
             string responseStr = null;
@@ -52,9 +57,9 @@ namespace RapidOneInvoices
 
             try
             {
-                headers.Add("Accept-language", "he"); // TODO: get language from options
-
-                svcRes = await this.apiClient.Post<ECInvoiceDocumentResponse>(this.configuration.BaseUrl, "/api/v1/docs", json, () => Task.FromResult(headers),
+//                headers.au DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("ExternalClient", token);//TODO
+  //              client.DefaultRequestHeaders.Accept.Add((new MediaTypeWithQualityHeaderValue("application/json"))); //TODO
+                /*svcRes = await this.apiClient.Post<List<DocumentItemModel>>(terminal.BaseUrl,"", json, () => Task.FromResult(null/*headers),
                      (url, request) =>
                      {
                          requestStr = request;
@@ -65,12 +70,13 @@ namespace RapidOneInvoices
                          responseStr = response;
                          responseStatusStr = responseStatus.ToString();
                      });
+                */
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"EasyInvoice integration request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {documentCreationRequest.CorrelationId}");
+                this.logger.LogError(ex, $"Rapid invoice integration request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {documentCreationRequest.CorrelationId}");
 
-                throw new IntegrationException("EasyInvoice integration request failed", integrationMessageId);
+                throw new IntegrationException("Rapid invoice integration request failed", integrationMessageId);
             }
             finally
             {
@@ -85,23 +91,49 @@ namespace RapidOneInvoices
                 await storageService.Save(integrationMessage);
             }
 
-            var response = new InvoicingCreateDocumentResponse
-            {
-                DocumentNumber = svcRes.DocumentNumber?.ToString(),
-                DownloadUrl = svcRes.DocumentUrl,
-                CopyDonwnloadUrl = svcRes.DocumentCopyUrl
-            };
+            //var response = new InvoicingCreateDocumentResponse
+            //{
+            //    DocumentNumber = svcRes.DocumentNumber?.ToString(),
+            //    DownloadUrl = svcRes.,
+            //    CopyDonwnloadUrl = svcRes.DocumentCopyUrl
+            //};
 
-            if (svcRes.Errors?.Count > 0 || !string.IsNullOrWhiteSpace(svcRes.Error) || string.IsNullOrWhiteSpace(svcRes.DocumentUrl) || svcRes.DocumentNumber.GetValueOrDefault() <= 0)
-            {
-                response.Success = false;
-                response.ErrorMessage = svcRes.Message ?? svcRes.Error;
-            }
+           // if (svcRes.Errors?.Count > 0 || !string.IsNullOrWhiteSpace(svcRes.Error) || string.IsNullOrWhiteSpace(svcRes.DocumentUrl) || svcRes.DocumentNumber.GetValueOrDefault() <= 0)
+           // {
+           //     response.Success = false;
+           //     response.ErrorMessage = svcRes.Message ?? svcRes.Error;
+           // }
 
-            return response;
-            */
+            //return response;
+           
             return null;
         }
+
+       /* private NameValueCollection GetAuthorizedHeaders(string BaseUrl, string Token, string integrationMessageId, string correlationId)
+        {
+            try
+            {
+                var loginRequest = new { BaseUrl = BaseUrl, Token = Token };
+
+                var loginres = apiClient.PostRawWithHeaders(this.configuration.BaseUrl, "/api/v1/login", JsonConvert.SerializeObject(loginRequest), "application/json").Result;
+
+                var authToken = loginres.ResponseHeaders.AllKeys.Any(k => k == ResponseTokenHeader) ? loginres.ResponseHeaders[ResponseTokenHeader] : null;
+
+                NameValueCollection headers = new NameValueCollection();
+                headers.Add(ResponseTokenHeader, authToken);
+
+                return headers;
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"EasyInvoice integration request failed: failed to get token: {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
+
+                throw new IntegrationException("EasyInvoice integration request failed: failed to get token", integrationMessageId);
+            }
+        }
+        */
+
+
 
     }
 }

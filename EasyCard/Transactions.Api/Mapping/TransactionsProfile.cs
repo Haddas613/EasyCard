@@ -66,9 +66,12 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)));
 
             CreateMap<SharedIntegration.Models.DealDetails, Business.Entities.DealDetails>()
-                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => new Address { Street = src.ConsumerAddress }));
+                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => new Address { Street = src.ConsumerAddress }))
+                  .ForMember(c => c.ExternalConsumerCode, o => o.MapFrom(src => src.ExternalConsumerCode));
+
             CreateMap<Business.Entities.DealDetails, SharedIntegration.Models.DealDetails>()
-                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => src.ConsumerAddress != null ? src.ConsumerAddress.Street : null));
+                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => src.ConsumerAddress != null ? src.ConsumerAddress.Street : null))
+                 .ForMember(c => c.ExternalConsumerCode, o => o.MapFrom(src => src.ExternalConsumerCode));
 
             CreateMap<CreditCardTokenKeyVault, Business.Entities.CreditCardDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))

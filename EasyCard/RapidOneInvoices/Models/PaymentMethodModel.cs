@@ -25,11 +25,11 @@ namespace RapidOneInvoices.Models
 
         public PaymentMethodModel()
         {
-            this.cash = new CashModel[0];
-            this.check = new CheckModel[0];
-            this.creditCard = new CreditCardModel[0];
-            this.moneyTransfer = new MoneyTransferModel[0];
-            this.currency = "₪";
+            this.Cash = new CashModel[0];
+            this.Check = new CheckModel[0];
+            this.CreditCard = new CreditCardModel[0];
+            this.MoneyTransfer = new MoneyTransferModel[0];
+            this.Currency = "₪";
         }
     }
 }
