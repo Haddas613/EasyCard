@@ -45,35 +45,6 @@ const appConstants = {
             pinpadProcessor: "pinpadProcessor",
         }
     },
-    ui: {
-        charge: {
-            steps: () => ({
-                1: {
-                    title: "Amount",
-                    canChangeTerminal: true,
-                    showItemsCount: true,
-                },
-                2: {
-                    title: "Basket",
-                },
-                3: {
-                    title: "ChooseCustomer",
-                    skippable: true,
-                },
-                4: {
-                    title: "PaymentInfo",
-                },
-                5: {
-                    title: "AdditionalSettings",
-                },
-                //Last step may be dynamically altered to represent error if transaction creation has failed.
-                6: {
-                    title: "Success",
-                    completed: true,
-                }
-            })
-        }
-    },
     transaction: {
         types: {
             credit: "credit",

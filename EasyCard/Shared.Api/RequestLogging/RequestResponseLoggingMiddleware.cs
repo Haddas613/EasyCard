@@ -39,7 +39,8 @@ namespace Shared.Api
             {
                 RequestMethod = context.Request.Method,
                 RequestUrl = $"{context.Request.Scheme} {context.Request.Host}{context.Request.Path} {context.Request.QueryString}",
-                IpAddress = context.Connection?.RemoteIpAddress?.ToString()
+                IpAddress = context.Connection?.RemoteIpAddress?.ToString(),
+                UserID = Helpers.Security.SecurityHelpers.GetDoneByID(context.User).ToString()
             };
 
             if (context.Request.ContentType?.StartsWith("application/json", StringComparison.InvariantCultureIgnoreCase) != true || context.Request.Method == HttpMethods.Delete)

@@ -3,14 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Transactions.Business.Entities
+namespace Shared.Integration.Models.PaymentDetails
 {
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class ChequeDetails : BankDetails
     {
         public ChequeDetails()
         {
-            PaymentType = Shared.Enums.PaymentTypeEnum.Cheque;
+            PaymentType = PaymentTypeEnum.Cheque;
         }
 
         [JsonProperty(PropertyName = "chequeNumber")]

@@ -2,9 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Transactions.Shared.Enums;
 
-namespace Transactions.Business.Entities
+namespace Shared.Integration.Models.PaymentDetails
 {
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class CreditCardPaymentDetails : PaymentDetails

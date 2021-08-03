@@ -6,6 +6,7 @@ using AutoMapper;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
+using Transactions.Api.Mapping.ValueResolvers;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Business.Entities;
@@ -91,7 +92,9 @@ namespace Transactions.Api.Mapping
             CreateMap<Invoice, InvoicingCreateDocumentRequest>()
                  .ForMember(m => m.ConsumerName, s => s.MapFrom(src => src.CardOwnerName))
                  .ForMember(m => m.ConsumerNationalID, s => s.MapFrom(src => src.CardOwnerNationalID))
-                 .ForMember(m => m.TransactionType, s => s.MapFrom(src => src.TransactionType));
+                 .ForMember(m => m.TransactionType, s => s.MapFrom(src => src.TransactionType))
+                 .ForMember(d => d.CreditCardDetails, o => o.Ignore())
+                 .ForMember(d => d.PaymentDetails, o => o.MapFrom(d => d.PaymentDetails));
 
             CreateMap<InvoicingCreateDocumentResponse, Invoice>()
                  .ForMember(m => m.InvoiceNumber, s => s.MapFrom(src => src.DocumentNumber));

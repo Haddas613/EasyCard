@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Shared.Api.Models.Enums;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;

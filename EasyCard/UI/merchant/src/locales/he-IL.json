@@ -81,7 +81,8 @@
   "ClearingHouseTransactionDetails": "פרטי עסקת מאגד",
   "NonCardCharge": "חיוב ללא כרטיס אשראי",
   "SystemIsNotReadyToUse": "המערכת לא זמינה",
-  "SecurityNotice": "Security notice",
+  "SecurityNotice": "אזהרת אבטחה",
+  "PaymentDetails": "פרטי תשלום",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -121,6 +122,7 @@
   "OnlyImagesAreAllowed": "ניתן להעלות רק תמונות",
   "OnlyCSSFilesAreAllowed": "רק קבצי CSS מותרים",
   "MaxFileSizeIs1MB": "גודל הקובץ המרבי הוא 1MB",
+  "OnlyNumbersAreAllowed": "Only numbers are allowed",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ת.ז.",
@@ -297,6 +299,11 @@
   "PaymentIntentURL": "קישור לכוונת תשלום",
   "AllowPinPad": "אפשר לבצע עסקאות פינפד",
   "AuthorizationCode": "קוד אימות (אופציונאלי)",
+  "PaymentType": "סוג תשלום",
+  "ChequeNumber": "מספר המחאה",
+  "Bank": "בנק",
+  "BankBranch": "מספר סניף",
+  "BankAccount": "מספר חשבון בנק",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -425,5 +432,5 @@
   "TerminalSettingsSaveMessage": "יש שינויים שלא נשמרו. אתה בטוח שאתה רוצה לעזוב?",
   "CanOnlyIssueInvoiceForILSTransactions": "יכול להנפיק חשבוניות רק עבור עסקאות ILS",
   "NoAvailableTerminals": "מסוף אינו זמין",
-  "SessionEndingMsg": "Your session is about to end. Renew it to continue working or log out."
+  "SessionEndingMsg": "החיבור שלך עומד להסתיים. על מנת לחדש אותו המשך עבודה במערכת או התנתק."
 }
