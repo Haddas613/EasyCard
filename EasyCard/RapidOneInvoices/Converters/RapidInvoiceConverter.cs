@@ -18,7 +18,7 @@ namespace RapidOneInvoices.Converters
                 DueDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                 InvoiceDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                 InvoiceTypeId = getInvoiceType(message.InvoiceDetails.InvoiceType).ToString(),
-                Items = getItems(message),
+                //Items = getItems(message),////TODO
                 PaymentMethods = getPaymentMethods(message),
                 ToPay = Convert.ToDecimal(message.TotalAmount.ToString("#.#######")),
                 Total = Convert.ToDecimal(message.TotalAmount.ToString("#.#######")),
@@ -35,7 +35,7 @@ namespace RapidOneInvoices.Converters
 
         private static List<ProductInInvoiceModel> getItems(InvoicingCreateDocumentRequest message)
         {
-            throw new NotImplementedException();//TODO IMPLEMENTATION
+            return new List<ProductInInvoiceModel>();//TODO IMPLEMENTATION
         }
 
         private static PaymentMethodModel getPaymentMethods(InvoicingCreateDocumentRequest message)

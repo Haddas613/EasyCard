@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using RapidOneInvoices.Configuration;
+using RapidOneInvoices;
 using RapidOneInvoices.Converters;
 using RapidOneInvoices.Models;
 using Shared.Helpers;

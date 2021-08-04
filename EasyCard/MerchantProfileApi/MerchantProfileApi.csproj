@@ -49,6 +49,7 @@
     <ProjectReference Include="..\Identity\IdentityServerClient\IdentityServerClient.csproj" />
     <ProjectReference Include="..\Integration\EasyInvoice\EasyInvoice.csproj" />
     <ProjectReference Include="..\Merchants.Business\Merchants.Business.csproj" />
+    <ProjectReference Include="..\RapidOneInvoices\RapidOneInvoices.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
     <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
     <ProjectReference Include="..\Transactions.Api.Client\Transactions.Api.Client.csproj" />

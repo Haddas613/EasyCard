@@ -325,6 +325,8 @@ namespace Transactions.Api
             services.Configure<ClearingHouse.ClearingHouseGlobalSettings>(Configuration.GetSection("ClearingHouseGlobalSettings"));
             services.Configure<Upay.UpayGlobalSettings>(Configuration.GetSection("UpayGlobalSettings"));
             services.Configure<EasyInvoice.EasyInvoiceGlobalSettings>(Configuration.GetSection("EasyInvoiceGlobalSettings"));
+            services.Configure<RapidOneInvoices.RapidInvoiceGlobalSettings>(Configuration.GetSection("RapidInvoiceGlobalSettings"));
+
 
             services.AddSingleton<IAggregatorResolver, AggregatorResolver>();
             services.AddSingleton<IProcessorResolver, ProcessorResolver>();
@@ -393,6 +395,18 @@ namespace Transactions.Api
 
                 return new EasyInvoice.ECInvoiceInvoicing(webApiClient, chCfg, logger, storageService);
             });
+
+            services.AddSingleton<RapidOneInvoices.RapidInvoiceInvoicing, RapidOneInvoices.RapidInvoiceInvoicing>(serviceProvider =>
+            {
+                var ecCfg = serviceProvider.GetRequiredService<IOptions<RapidOneInvoices.RapidInvoiceGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<RapidOneInvoices.RapidInvoiceInvoicing>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.RapidInvoiceRequestsLogStorageTable, cfg.RapidInvoiceRequestsLogStorageTable);
+                return new RapidOneInvoices.RapidInvoiceInvoicing(webApiClient, ecCfg, logger, storageService);
+            });
+
+
 
             services.Configure<RequestResponseLoggingSettings>((options) =>
             {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace RapidOneInvoices.Configuration
+namespace RapidOneInvoices
 {
     public class RapidInvoiceGlobalSettings
     {

@@ -36,5 +36,7 @@ namespace Shared.Helpers
 
         //[RegularExpression(@"^;\d{15,17}=\d{19,21}\?$")]
         public string CardReaderInput { get; set; }
+
+        public string ShvaShovarNumber { get; set; }
     }
 }
