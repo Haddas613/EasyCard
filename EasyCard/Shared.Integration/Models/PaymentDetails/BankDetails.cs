@@ -6,10 +6,15 @@ using System.Text;
 namespace Shared.Integration.Models.PaymentDetails
 {
     /// <summary>
-    /// Represents abstract payment related to the bank, e.g. cheque or bank transfer
+    /// Not for invoice. See <see cref="BankTransferDetails"></see>
     /// </summary>
-    public abstract class BankDetails : PaymentDetails
+    public class BankDetails : PaymentDetails
     {
+        public BankDetails()
+        {
+            PaymentType = PaymentTypeEnum.Bank;
+        }
+
         [JsonProperty(PropertyName = "bank")]
         public int? Bank { get; set; }
 

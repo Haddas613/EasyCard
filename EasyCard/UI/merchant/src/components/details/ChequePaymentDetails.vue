@@ -25,7 +25,7 @@
         <v-col cols="6" md="6" class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('DueDate')}}</p>
           <p>
-              <span v-if="model.dueDate">{{model.dueDate | ecdate}}</span>
+              <span v-if="model.chequeDate">{{model.chequeDate | ecdate}}</span>
               <span v-else>-</span>
           </p>
         </v-col>

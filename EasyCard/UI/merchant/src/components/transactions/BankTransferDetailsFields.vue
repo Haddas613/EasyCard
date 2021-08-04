@@ -1,18 +1,7 @@
 <template>
   <v-flex class="d-flex flex-column">
     <v-row no-gutters>
-      <v-col cols="12" md="6">
-        <v-text-field
-          :label="$t('ChequeNumber')"
-          :counter="6"
-          outlined
-          v-model="model.chequeNumber"
-          max="6"
-          :rules="[vr.primitives.required, vr.primitives.stringLength(6, 6)]"
-          v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="12" md="6">
+      <v-col cols="12" md="4">
         <v-text-field
           :label="$t('Bank')"
           :counter="6"
@@ -24,7 +13,7 @@
           v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col cols="12" md="4">
         <v-text-field
           :label="$t('BankBranch')"
           :counter="6"
@@ -36,7 +25,7 @@
           v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="6">
+      <v-col cols="12" md="4">
         <v-text-field
           :label="$t('BankAccount')"
           :counter="12"
@@ -48,9 +37,6 @@
           v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
         ></v-text-field>
       </v-col>
-      <v-col cols="12">
-        <ec-date-input :key="model.chequeDate" v-model="model.chequeDate" :label="$t('DueDate')"></ec-date-input>
-      </v-col>
     </v-row>
   </v-flex>
 </template>
@@ -59,9 +45,6 @@
 import ValidationRules from "../../helpers/validation-rules";
 
 export default {
-  components: {
-    EcDateInput: () => import("../ec/EcDateInput"),
-  },
   props: {
     data: {
       type: Object,
@@ -75,9 +58,7 @@ export default {
   },
   data() {
     return {
-      model: { 
-        chequeNumber: null,
-        chequeDate: null,
+      model: {
         bank: null,
         bankBranch: null,
         bankAccount: null,

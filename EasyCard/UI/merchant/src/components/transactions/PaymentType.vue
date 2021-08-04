@@ -46,6 +46,11 @@ export default {
     required: {
       type: Boolean,
       default: false
+    },
+    excludeTypes: {
+      type: Array,
+      default: [],
+      required: false
     }
   },
   data() {
@@ -60,10 +65,9 @@ export default {
   async mounted() {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
 
-    //temporary, untill bank payments are supported
     this.paymentTypesFiltered = this.lodash.filter(
       this.dictionaries.paymentTypeEnum,
-      e => e.code != "bank"
+      e => this.excludeTypes.indexOf(e.code) === -1
     );
     if (!this.paymentType) {
       this.paymentType = this.paymentTypesFiltered[0];

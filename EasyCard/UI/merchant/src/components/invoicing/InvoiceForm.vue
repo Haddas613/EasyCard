@@ -40,12 +40,12 @@
         ></deal-details>
 
         <template v-if="paymentInfoAvailable">
-          <payment-type v-model="model.paymentType"></payment-type>
+          <payment-type v-model="model.paymentType" :exclude-types="[appConstants.transaction.paymentTypes.bank]"></payment-type>
           <template v-if="model.paymentType == appConstants.transaction.paymentTypes.card">
-            <invoice-credit-card-details-fields :data="model" ref="ccDetails"></invoice-credit-card-details-fields>
+            <invoice-credit-card-details-fields ref="ccDetails"></invoice-credit-card-details-fields>
           </template>
           <template v-else-if="model.paymentType == appConstants.transaction.paymentTypes.cheque">
-            <cheque-details-fields :data="model" ref="chequeDetails"></cheque-details-fields>
+            <cheque-details-fields ref="chequeDetails"></cheque-details-fields>
           </template>
         </template>
       </v-form>

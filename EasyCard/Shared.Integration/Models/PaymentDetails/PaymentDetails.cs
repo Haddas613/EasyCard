@@ -10,6 +10,7 @@ namespace Shared.Integration.Models.PaymentDetails
     [JsonSubtypes.KnownSubType(typeof(ChequeDetails), PaymentTypeEnum.Cheque)]
     [JsonSubtypes.KnownSubType(typeof(CashDetails), PaymentTypeEnum.Cash)]
     [JsonSubtypes.KnownSubType(typeof(CreditCardPaymentDetails), PaymentTypeEnum.Card)]
+    [JsonSubtypes.KnownSubType(typeof(BankTransferDetails), PaymentTypeEnum.Bank)]
     public class PaymentDetails
     {
         public virtual PaymentTypeEnum PaymentType { get; set; }
