@@ -444,6 +444,11 @@ namespace Merchants.Business.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<string>("BankDetails")
+                        .IsUnicode(false)
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("BankDetails");
+
                     b.Property<string>("BillingSettings")
                         .IsUnicode(false)
                         .HasColumnType("nvarchar(max)")

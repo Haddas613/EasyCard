@@ -40,7 +40,8 @@ const primitives = {
         if(!v){ return true;}
         let regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
         return regex.test(v) || i18n.t('MustBeValidGUID');
-    }
+    },
+    numeric: (allowFloatingPoint = false) => (v) => !v || (allowFloatingPoint ? !isNaN(v) : Number.isInteger(Number(v))) || i18n.t('OnlyNumbersAreAllowed')
 };
 
 const complex = {

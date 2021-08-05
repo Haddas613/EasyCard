@@ -408,6 +408,53 @@
         </v-row>
       </v-card-text>
     </v-card>
+
+    <v-card outlined class="mb-2">
+      <v-card-text>
+        <v-row>
+          <v-col cols="12" class="subtitle-2 black--text pb-3">
+            {{$t("BankAccountDetails")}}
+            <v-divider class="pt-1"></v-divider>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              :label="$t('Bank')"
+              :counter="7"
+              outlined
+              v-model="model.bankDetails.bank"
+              max="7"
+              type="number"
+              :rules="[vr.primitives.numeric()]"
+              v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              :label="$t('BankBranch')"
+              :counter="7"
+              outlined
+              v-model="model.bankDetails.bankBranch"
+              max="7"
+              type="number"
+              :rules="[vr.primitives.numeric()]"
+              v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              :label="$t('BankAccount')"
+              :counter="12"
+              outlined
+              v-model="model.bankDetails.bankAccount"
+              max="12"
+              type="number"
+              :rules="[vr.primitives.numeric(), vr.primitives.stringLength(6, 12)]"
+              v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 

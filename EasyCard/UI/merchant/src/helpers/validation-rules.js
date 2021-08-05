@@ -46,7 +46,7 @@ const primitives = {
         let regex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
         return regex.test(v) || i18n.t('MustBeValidID');
     },
-    numeric: (allowFloatingPoint = false) => (v) => (allowFloatingPoint ? !isNaN(v) : Number.isInteger(Number(v))) || i18n.t('OnlyNumbersAreAllowed')
+    numeric: (allowFloatingPoint = false) => (v) => !v || (allowFloatingPoint ? !isNaN(v) : Number.isInteger(Number(v))) || i18n.t('OnlyNumbersAreAllowed')
     
 };
 

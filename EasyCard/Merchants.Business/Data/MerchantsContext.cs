@@ -186,6 +186,9 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.SharedApiKey).IsRequired(false).HasMaxLength(64);
 
                 builder.Property(b => b.TerminalTemplateID).IsRequired(false);
+
+                builder.Property(p => p.BankDetails).HasColumnName("BankDetails").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
+
             }
         }
 

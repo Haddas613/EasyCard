@@ -42,7 +42,8 @@ namespace Merchants.Api.Mapping
                 .ForMember(m => m.Updated, o => o.MapFrom(src => DateTime.UtcNow));
             CreateMap<UpdateTerminalRequest, Terminal>();
 
-            CreateMap<Terminal, TerminalResponse>();
+            CreateMap<Terminal, TerminalResponse>()
+                .ForMember(d => d.BankDetails, o => o.MapFrom(d => d.BankDetails == null ? new TerminalBankDetails() : d.BankDetails));
             CreateMap<Terminal, TerminalSummary>()
                 .ForMember(m => m.MerchantBusinessName, o => o.MapFrom(src => src.Merchant.BusinessName));
                 //.ForMember(m => m.MerchantID, o => o.MapFrom(src => src.MerchantID));

@@ -83,6 +83,7 @@
   "SystemIsNotReadyToUse": "System is not ready to use",
   "SecurityNotice": "Security notice",
   "PaymentDetails": "Payment Details",
+  "BankAccountDetails": "Bank Account Details",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

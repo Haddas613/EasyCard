@@ -104,6 +104,8 @@
   "AuthenticateDevice": "אימות מכשיר",
   "UpayTransactionDetails": "פרטי עסקת מאגד פיידיי",
   "ClearingHouseTransactionDetails": "פרטי עסקת מאגד",
+  "PaymentDetails": "פרטי תשלום",
+  "BankAccountDetails": "פרטי חשבון בנק",
   
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -144,6 +146,7 @@
   "OnlyCSSFilesAreAllowed": "רק קבצי CSS מותרים",
   "MaxFileSizeIs1MB": "גודל הקובץ המרבי הוא 1MB",
   "AlreadyPresent": "מיוצג כבר",
+  "OnlyNumbersAreAllowed": "הכנס מספרים בלבד",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ת.ז.",
@@ -358,6 +361,11 @@
   "WebUrl": "כתובת אינטרנטית",
   "ErrorDescription": "תיאור שגיאה",
   "Response": "תגובה",
+  "PaymentType": "סוג תשלום",
+  "ChequeNumber": "מספר המחאה",
+  "Bank": "בנק",
+  "BankBranch": "מספר סניף",
+  "BankAccount": "מספר חשבון בנק",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

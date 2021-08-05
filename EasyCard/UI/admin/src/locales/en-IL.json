@@ -104,6 +104,8 @@
   "AuthenticateDevice": "Authenticate device",
   "UpayTransactionDetails": "Upay Transaction Details",
   "ClearingHouseTransactionDetails": "Clearing House Transaction Details",
+  "PaymentDetails": "Payment Details",
+  "BankAccountDetails": "Bank Account Details",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -141,6 +143,7 @@
   "OnlyCSSFilesAreAllowed": "Only CSS files are allowed",
   "MaxFileSizeIs1MB": "Max file size is 1MB",
   "AlreadyPresent": "Already present",
+  "OnlyNumbersAreAllowed": "Only numbers are allowed",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -354,6 +357,11 @@
   "WebUrl": "Web Url",
   "ErrorDescription": "Error Description",
   "Response": "Response",
+  "PaymentType": "Payment Type",
+  "ChequeNumber": "Cheque Number",
+  "Bank": "Bank",
+  "BankBranch": "Bank Branch",
+  "BankAccount": "Bank Account",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

@@ -90,6 +90,7 @@
         :consumer-name="model.creditCardDetails ? model.creditCardDetails.cardOwnerName : null"
       ></deal-details>
       <credit-card-details v-if="model.creditCardDetails" :model="model.creditCardDetails"></credit-card-details>
+      <payment-details v-if="model.paymentDetails" :model="model.paymentDetails"></payment-details>
     </div>
   </v-flex>
 </template>
@@ -102,6 +103,7 @@ export default {
     DealDetails: () => import("../../components/details/DealDetails"),
     AmountDetails: () => import("../../components/details/AmountDetails"),
     CreditCardDetails: () => import("../../components/details/CreditCardDetails"),
+    PaymentDetails: () => import("../../components/details/PaymentDetails"),
   },
   data() {
     return {

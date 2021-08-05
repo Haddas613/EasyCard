@@ -413,6 +413,36 @@
         ></v-select>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12" class="subtitle-2 black--text pb-3">
+        {{$t("BankAccountDetails")}}
+        <v-divider class="pt-1"></v-divider>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field
+          :label="$t('Bank')"
+          outlined
+          v-bind:value="model.bankDetails.bank"
+          disabled
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field
+          :label="$t('BankBranch')"
+          outlined
+          v-bind:value="model.bankDetails.bankBranch"
+          disabled
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4">
+        <v-text-field
+          :label="$t('BankAccount')"
+          outlined
+          v-bind:value="model.bankDetails.bankAccount"
+          disabled
+        ></v-text-field>
+      </v-col>
+    </v-row>
   </div>
 </template>
 

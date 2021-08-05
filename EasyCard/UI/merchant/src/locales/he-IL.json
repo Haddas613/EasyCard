@@ -83,6 +83,7 @@
   "SystemIsNotReadyToUse": "המערכת לא זמינה",
   "SecurityNotice": "אזהרת אבטחה",
   "PaymentDetails": "פרטי תשלום",
+  "BankAccountDetails": "פרטי חשבון בנק",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -122,7 +123,7 @@
   "OnlyImagesAreAllowed": "ניתן להעלות רק תמונות",
   "OnlyCSSFilesAreAllowed": "רק קבצי CSS מותרים",
   "MaxFileSizeIs1MB": "גודל הקובץ המרבי הוא 1MB",
-  "OnlyNumbersAreAllowed": "Only numbers are allowed",
+  "OnlyNumbersAreAllowed": "הכנס מספרים בלבד",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ת.ז.",

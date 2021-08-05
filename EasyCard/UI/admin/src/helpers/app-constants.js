@@ -27,6 +27,20 @@ const appConstants = {
         ui: {
             typeaheadTimeout: 500
         }
+    },
+    transaction: {
+        types: {
+            credit: "credit",
+            immediate: "immediate",
+            installments: "installments",
+            regularDeal: "regularDeal"
+        },
+        paymentTypes: {
+            bank: "bank",
+            card: "card",
+            cash: "cash",
+            cheque: "cheque",
+        }
     }
 };
 
