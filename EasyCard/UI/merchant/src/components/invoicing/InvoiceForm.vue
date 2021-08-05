@@ -131,32 +131,34 @@ export default {
         return;
       }
 
-      result.paymentDetails = [];
-      let data = null;
-      switch(this.model.paymentType){
-        case this.appConstants.transaction.paymentTypes.card:
-          data = this.$refs.ccDetails.getData();
-          if(data){
+      if (this.paymentInfoAvailable){
+        result.paymentDetails = [];
+        let data = null;
+        switch(this.model.paymentType){
+          case this.appConstants.transaction.paymentTypes.card:
+            data = this.$refs.ccDetails.getData();
+            if(data){
+              result.paymentDetails.push({
+                ...this.$refs.ccDetails.getData(),
+                paymentType: this.appConstants.transaction.paymentTypes.card
+              });
+            }
+            break;
+          case this.appConstants.transaction.paymentTypes.cash:
             result.paymentDetails.push({
-              ...this.$refs.ccDetails.getData(),
-              paymentType: this.appConstants.transaction.paymentTypes.card
+              paymentType: this.appConstants.transaction.paymentTypes.cash
             });
-          }
-          break;
-        case this.appConstants.transaction.paymentTypes.cash:
-          result.paymentDetails.push({
-            paymentType: this.appConstants.transaction.paymentTypes.cash
-          });
-          break;
-        case this.appConstants.transaction.paymentTypes.cheque:
-          data = this.$refs.chequeDetails.getData();
-          if(data){
-            result.paymentDetails.push({
-              ...this.$refs.chequeDetails.getData(),
-              paymentType: this.appConstants.transaction.paymentTypes.cheque
-            });
-          }
-          break;
+            break;
+          case this.appConstants.transaction.paymentTypes.cheque:
+            data = this.$refs.chequeDetails.getData();
+            if(data){
+              result.paymentDetails.push({
+                ...this.$refs.chequeDetails.getData(),
+                paymentType: this.appConstants.transaction.paymentTypes.cheque
+              });
+            }
+            break;
+        }
       }
       
       if (result.invoiceDetails) this.$emit("ok", result);
