@@ -4,11 +4,11 @@
       <v-col cols="12" md="6">
         <v-text-field
           :label="$t('ChequeNumber')"
-          :counter="6"
+          :counter="12"
           outlined
           v-model="model.chequeNumber"
-          max="6"
-          :rules="[vr.primitives.required, vr.primitives.stringLength(6, 6)]"
+          max="12"
+          :rules="[vr.primitives.required, vr.primitives.stringLength(6, 12)]"
           v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
         ></v-text-field>
       </v-col>

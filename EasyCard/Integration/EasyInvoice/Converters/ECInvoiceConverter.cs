@@ -150,7 +150,7 @@ namespace EasyInvoice.Converters
                     res.PaymentMethod = ECInvoicePaymentMethodEnum.CHEQUE.ToString();
                     res.ChequeAccount = chequeDetails.BankAccount;
                     res.ChequeBank = chequeDetails.Bank?.ToString();
-                    res.ChequeBranch = chequeDetails.BankAccount;
+                    res.ChequeBranch = chequeDetails.BankBranch?.ToString();
 
                     //TODO: cheque number
                 }
@@ -158,10 +158,12 @@ namespace EasyInvoice.Converters
                 {
                     res.PaymentMethod = ECInvoicePaymentMethodEnum.CASH.ToString();
                 }
-                else
+                else if (d.PaymentType == PaymentTypeEnum.Bank && d is BankTransferDetails bankTransfer)
                 {
-                    //TODO: implement
                     res.PaymentMethod = ECInvoicePaymentMethodEnum.BANK_TRANSFER.ToString();
+                    res.ChequeAccount = bankTransfer.BankAccount;
+                    res.ChequeBank = bankTransfer.Bank?.ToString();
+                    res.ChequeBranch = bankTransfer.BankBranch?.ToString();
                 }
 
                 result.Add(res);
