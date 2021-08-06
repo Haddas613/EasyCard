@@ -151,7 +151,6 @@ namespace EasyInvoice.Converters
                     res.ChequeAccount = chequeDetails.BankAccount;
                     res.ChequeBank = chequeDetails.Bank?.ToString();
                     res.ChequeBranch = chequeDetails.BankBranch?.ToString();
-
                     //TODO: cheque number
                 }
                 else if (d.PaymentType == PaymentTypeEnum.Cash)
