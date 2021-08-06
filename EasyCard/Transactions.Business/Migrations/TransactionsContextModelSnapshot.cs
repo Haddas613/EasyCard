@@ -93,6 +93,9 @@ namespace Transactions.Business.Migrations
                     b.Property<DateTime?>("PausedTo")
                         .HasColumnType("date");
 
+                    b.Property<short>("PaymentType")
+                        .HasColumnType("smallint");
+
                     b.Property<string>("SourceIP")
                         .HasMaxLength(50)
                         .IsUnicode(false)
@@ -882,6 +885,35 @@ namespace Transactions.Business.Migrations
                                 .HasForeignKey("BillingDealID");
                         });
 
+                    b.OwnsOne("Shared.Integration.Models.PaymentDetails.BankDetails", "BankDetails", b1 =>
+                        {
+                            b1.Property<Guid>("BillingDealID")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int?>("Bank")
+                                .HasColumnType("int")
+                                .HasColumnName("Bank");
+
+                            b1.Property<string>("BankAccount")
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("BankAccount");
+
+                            b1.Property<int?>("BankBranch")
+                                .HasColumnType("int")
+                                .HasColumnName("BankBranch");
+
+                            b1.Property<short>("PaymentType")
+                                .HasColumnType("smallint");
+
+                            b1.HasKey("BillingDealID");
+
+                            b1.ToTable("BillingDeal");
+
+                            b1.WithOwner()
+                                .HasForeignKey("BillingDealID");
+                        });
+
                     b.OwnsOne("Transactions.Business.Entities.CreditCardDetails", "CreditCardDetails", b1 =>
                         {
                             b1.Property<Guid>("BillingDealID")
@@ -999,6 +1031,8 @@ namespace Transactions.Business.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("BillingDealID");
                         });
+
+                    b.Navigation("BankDetails");
 
                     b.Navigation("CreditCardDetails");
 
@@ -1380,6 +1414,44 @@ namespace Transactions.Business.Migrations
 
             modelBuilder.Entity("Transactions.Business.Entities.PaymentTransaction", b =>
                 {
+                    b.OwnsOne("Shared.Integration.Models.PaymentDetails.BankTransferDetails", "BankTransferDetails", b1 =>
+                        {
+                            b1.Property<Guid>("PaymentTransactionID")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int?>("Bank")
+                                .HasColumnType("int")
+                                .HasColumnName("Bank");
+
+                            b1.Property<string>("BankAccount")
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("BankAccount");
+
+                            b1.Property<int?>("BankBranch")
+                                .HasColumnType("int")
+                                .HasColumnName("BankBranch");
+
+                            b1.Property<DateTime?>("DueDate")
+                                .HasColumnType("datetime2")
+                                .HasColumnName("DueDate");
+
+                            b1.Property<short>("PaymentType")
+                                .HasColumnType("smallint");
+
+                            b1.Property<string>("Reference")
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Reference");
+
+                            b1.HasKey("PaymentTransactionID");
+
+                            b1.ToTable("PaymentTransaction");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PaymentTransactionID");
+                        });
+
                     b.OwnsOne("Transactions.Business.Entities.ClearingHouseTransactionDetails", "ClearingHouseTransactionDetails", b1 =>
                         {
                             b1.Property<Guid>("PaymentTransactionID")
@@ -1634,6 +1706,8 @@ namespace Transactions.Business.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("PaymentTransactionID");
                         });
+
+                    b.Navigation("BankTransferDetails");
 
                     b.Navigation("ClearingHouseTransactionDetails");
 

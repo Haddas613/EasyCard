@@ -342,6 +342,15 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Ignore(b => b.Solek);
                 });
 
+                builder.OwnsOne(b => b.BankTransferDetails, s =>
+                {
+                    s.Property(p => p.Bank).IsRequired(false).HasColumnName("Bank");
+                    s.Property(p => p.BankAccount).IsRequired(false).HasColumnName("BankAccount").HasMaxLength(50);
+                    s.Property(p => p.BankBranch).IsRequired(false).HasColumnName("BankBranch");
+                    s.Property(p => p.DueDate).IsRequired(false).HasColumnName("DueDate");
+                    s.Property(p => p.Reference).IsRequired(false).HasColumnName("Reference").HasMaxLength(50);
+                });
+
                 builder.OwnsOne(b => b.ClearingHouseTransactionDetails, s =>
                 {
                     s.Property(p => p.ClearingHouseTransactionID).HasColumnName("ClearingHouseTransactionID");
@@ -510,6 +519,13 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Ignore(b => b.CardReaderInput);
                 });
 
+                builder.OwnsOne(b => b.BankDetails, s =>
+                {
+                    s.Property(p => p.Bank).IsRequired(false).HasColumnName("Bank");
+                    s.Property(p => p.BankAccount).IsRequired(false).HasColumnName("BankAccount").HasMaxLength(50);
+                    s.Property(p => p.BankBranch).IsRequired(false).HasColumnName("BankBranch");
+                });
+
                 builder.OwnsOne(b => b.DealDetails, s =>
                 {
                     s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
@@ -555,6 +571,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.NextScheduledTransaction).HasColumnType("date").IsRequired(false);
                 builder.Property(b => b.PausedFrom).HasColumnType("date").IsRequired(false);
                 builder.Property(b => b.PausedTo).HasColumnType("date").IsRequired(false);
+                builder.Property(b => b.PaymentType).IsRequired();
             }
         }
 
