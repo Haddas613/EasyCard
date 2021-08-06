@@ -144,6 +144,11 @@
             Credit card information (just to display)
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.BankDetails">
+            <summary>
+            Bank account information
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.CreditCardToken">
             <summary>
             Stored credit card details token

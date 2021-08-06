@@ -188,16 +188,26 @@ namespace Transactions.Api.Controllers
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
             var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
-            var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
 
             var newBillingDeal = mapper.Map<BillingDeal>(model);
             newBillingDeal.Active = true;
-
-            newBillingDeal.InitialTransactionID = token.InitialTransactionID;
-
-            mapper.Map(token, newBillingDeal.CreditCardDetails);
-
             newBillingDeal.MerchantID = terminal.MerchantID;
+
+            if (model.PaymentType == PaymentTypeEnum.Card)
+            {
+                var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                newBillingDeal.InitialTransactionID = token.InitialTransactionID;
+
+                mapper.Map(token, newBillingDeal.CreditCardDetails);
+            }
+            else if (model.PaymentType == PaymentTypeEnum.Bank)
+            {
+                EnsureExists(model.BankDetails);
+            }
+            else
+            {
+                return BadRequest($"{model.PaymentType} payment type is not supported");
+            }
 
             // TODO: calculation
 
