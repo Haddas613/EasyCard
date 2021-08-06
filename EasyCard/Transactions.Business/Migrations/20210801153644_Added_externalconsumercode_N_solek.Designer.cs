@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transactions.Business.Data;
 
 namespace Transactions.Business.Migrations
 {
     [DbContext(typeof(TransactionsContext))]
-    partial class TransactionsContextModelSnapshot : ModelSnapshot
+    [Migration("20210801153644_Added_externalconsumercode_N_solek")]
+    partial class Added_externalconsumercode_N_solek
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1170,12 +1172,6 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("CardVendor");
 
-                            b1.Property<string>("ShvaShovarNumber")
-                                .HasMaxLength(50)
-                                .IsUnicode(false)
-                                .HasColumnType("varchar(50)")
-                                .HasColumnName("ShvaShovarNumber");
-
                             b1.Property<string>("Solek")
                                 .HasMaxLength(20)
                                 .IsUnicode(false)
@@ -1449,13 +1445,6 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("CardVendor");
 
-                            b1.Property<string>("ShvaShovarNumber")
-                                .ValueGeneratedOnUpdateSometimes()
-                                .HasMaxLength(50)
-                                .IsUnicode(false)
-                                .HasColumnType("varchar(50)")
-                                .HasColumnName("ShvaShovarNumber");
-
                             b1.HasKey("PaymentTransactionID");
 
                             b1.ToTable("PaymentTransaction");
@@ -1555,10 +1544,9 @@ namespace Transactions.Business.Migrations
                                 .HasColumnName("ShvaDealID");
 
                             b1.Property<string>("ShvaShovarNumber")
-                                .ValueGeneratedOnUpdateSometimes()
-                                .HasMaxLength(50)
+                                .HasMaxLength(20)
                                 .IsUnicode(false)
-                                .HasColumnType("varchar(50)")
+                                .HasColumnType("varchar(20)")
                                 .HasColumnName("ShvaShovarNumber");
 
                             b1.Property<string>("ShvaTerminalID")

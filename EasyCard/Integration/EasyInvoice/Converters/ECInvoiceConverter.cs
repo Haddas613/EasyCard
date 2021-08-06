@@ -142,7 +142,7 @@ namespace EasyInvoice.Converters
 
                 if (d.PaymentType == PaymentTypeEnum.Card && d is CreditCardPaymentDetails cardDetails)
                 {
-                    res.CreditCard4LastDigits = CreditCardHelpers.GetCardLastFourDigits(cardDetails.CardNumber);
+                    res.CreditCard4LastDigits = CreditCardHelpers.GetCardLastFourDigits(cardDetails.СardNumber);
                     res.CreditCardType = ECInvoiceCreditCardTypeEnum.OTHER.ToString();
                 }
                 else if (d.PaymentType == PaymentTypeEnum.Cheque && d is ChequeDetails chequeDetails)

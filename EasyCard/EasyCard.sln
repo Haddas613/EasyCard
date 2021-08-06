@@ -110,7 +110,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nayax", "Nayax\Nayax.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InforU", "Integration\InforU\InforU.csproj", "{BABDA7A7-FFB6-4CEF-BE17-C2F8CADB55A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Upay", "Integration\Upay\Upay.csproj", "{D2C37518-951E-4ACD-BE10-C65F766FAA47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Upay", "Integration\Upay\Upay.csproj", "{D2C37518-951E-4ACD-BE10-C65F766FAA47}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RapidOneInvoices", "RapidOneInvoices\RapidOneInvoices.csproj", "{5B59DFBD-E1D2-4FD0-BA4E-98792D7C6101}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -288,6 +290,10 @@ Global
 		{D2C37518-951E-4ACD-BE10-C65F766FAA47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2C37518-951E-4ACD-BE10-C65F766FAA47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2C37518-951E-4ACD-BE10-C65F766FAA47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B59DFBD-E1D2-4FD0-BA4E-98792D7C6101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B59DFBD-E1D2-4FD0-BA4E-98792D7C6101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B59DFBD-E1D2-4FD0-BA4E-98792D7C6101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B59DFBD-E1D2-4FD0-BA4E-98792D7C6101}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -333,6 +339,7 @@ Global
 		{BFFE890F-B2AF-411A-AE86-9B94858EB6BB} = {68126764-B9A1-45D9-9C33-E84873A9124E}
 		{BABDA7A7-FFB6-4CEF-BE17-C2F8CADB55A8} = {68126764-B9A1-45D9-9C33-E84873A9124E}
 		{D2C37518-951E-4ACD-BE10-C65F766FAA47} = {68126764-B9A1-45D9-9C33-E84873A9124E}
+		{5B59DFBD-E1D2-4FD0-BA4E-98792D7C6101} = {68126764-B9A1-45D9-9C33-E84873A9124E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB40244C-6EBC-4B97-8F95-FB108B33F76E}

@@ -22,6 +22,13 @@ namespace Shared.Integration.Models
         public string DealReference { get; set; }
 
         /// <summary>
+        /// ShovarNumber
+        /// </summary>
+        [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        public string ShovarNumber { get; set; }
+
+        /// <summary>
         /// Deal description
         /// </summary>
         [StringLength(250)]
@@ -57,5 +64,11 @@ namespace Shared.Integration.Models
         /// Consumer address
         /// </summary>
         public string ConsumerAddress { get; set; }
+
+        /// <summary>
+        /// External system consumer code for example Rapid customer code
+        /// </summary>
+        public string ExternalConsumerCode { get; set; }
+
     }
 }

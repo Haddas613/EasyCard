@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Shared.Integration.Models.PaymentDetails
@@ -10,10 +12,15 @@ namespace Shared.Integration.Models.PaymentDetails
     {
         public override PaymentTypeEnum PaymentType { get; set; } = PaymentTypeEnum.Card;
 
+        [Required]
         [JsonProperty(PropertyName = "cardExpiration")]
-        public string CardExpiration { get; set; }
+        [JsonConverter(typeof(CardExpirationConverter))]
+        public CardExpiration CardExpiration { get; set; }
 
         [JsonProperty(PropertyName = "cardNumber")]
-        public string CardNumber { get; set; }
+        public string СardNumber { get; set; }
+
+        [JsonProperty(PropertyName = "shovarNumber")]
+        public string ShovarNumber { get; set; }
     }
 }

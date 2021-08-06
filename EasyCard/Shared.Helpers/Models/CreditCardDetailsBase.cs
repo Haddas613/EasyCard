@@ -25,6 +25,9 @@ namespace Shared.Helpers
         [StringLength(20)]
         public string CardBrand { get; set; }
 
+        [StringLength(20)]
+        public string Solek { get; set; }
+
         [StringLength(50, MinimumLength = 2)]
         public string CardOwnerName { get; set; }
 
@@ -33,5 +36,7 @@ namespace Shared.Helpers
 
         //[RegularExpression(@"^;\d{15,17}=\d{19,21}\?$")]
         public string CardReaderInput { get; set; }
+
+        public string ShvaShovarNumber { get; set; }
     }
 }
