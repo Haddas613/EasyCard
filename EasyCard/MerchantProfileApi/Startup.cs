@@ -226,7 +226,7 @@ namespace ProfileApi
             services.Configure<ApplicationInsightsSettings>(Configuration.GetSection("ApplicationInsights"));
             services.Configure<UISettings>(Configuration.GetSection("UI"));
             services.Configure<EasyInvoice.EasyInvoiceGlobalSettings>(Configuration.GetSection("EasyInvoiceGlobalSettings"));
-            services.Configure<RapidOneInvoices.RapidInvoiceGlobalSettings>(Configuration.GetSection("RapidInvoiceGlobalSettings"));
+            services.Configure<RapidOne.Configuration.RapidOneGlobalSettings>(Configuration.GetSection("RapidOneGlobalSettings"));
 
             services.AddHttpContextAccessor();
 
@@ -303,16 +303,15 @@ namespace ProfileApi
                 return new EasyInvoice.ECInvoiceInvoicing(webApiClient, ecCfg, logger, storageService);
             });
 
-            services.AddSingleton<RapidOneInvoices.RapidInvoiceInvoicing, RapidOneInvoices.RapidInvoiceInvoicing>(serviceProvider =>
+            services.AddSingleton<RapidOne.RapidOneInvoicing, RapidOne.RapidOneInvoicing>(serviceProvider =>
             {
-                var ecCfg = serviceProvider.GetRequiredService<IOptions<RapidOneInvoices.RapidInvoiceGlobalSettings>>();
+                var ecCfg = serviceProvider.GetRequiredService<IOptions<RapidOne.Configuration.RapidOneGlobalSettings>>();
                 var webApiClient = new WebApiClient();
-                var logger = serviceProvider.GetRequiredService<ILogger<RapidOneInvoices.RapidInvoiceInvoicing>>();
+                var logger = serviceProvider.GetRequiredService<ILogger<RapidOne.RapidOneInvoicing>>();
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.RapidInvoiceRequestsLogStorageTable, cfg.RapidInvoiceRequestsLogStorageTable);
-                return new RapidOneInvoices.RapidInvoiceInvoicing(webApiClient, ecCfg, logger, storageService);
+                return new RapidOne.RapidOneInvoicing(webApiClient, ecCfg, logger, storageService);
             });
-
 
             services.AddSingleton<ICryptoServiceCompact, AesGcmCryptoServiceCompact>(serviceProvider =>
             {

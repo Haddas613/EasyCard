@@ -55,11 +55,11 @@
     <ProjectReference Include="..\BasicServices\BasicServices.csproj" />
     <ProjectReference Include="..\Integration\ClearingHouse\ClearingHouse.csproj" />
     <ProjectReference Include="..\Integration\EasyInvoice\EasyInvoice.csproj" />
+    <ProjectReference Include="..\Integration\Nayax\Nayax.csproj" />
+    <ProjectReference Include="..\Integration\RapidOne\RapidOne.csproj" />
     <ProjectReference Include="..\Integration\Shva\Shva.csproj" />
     <ProjectReference Include="..\Integration\Upay\Upay.csproj" />
     <ProjectReference Include="..\Merchants.Business\Merchants.Business.csproj" />
-    <ProjectReference Include="..\Nayax\Nayax.csproj" />
-    <ProjectReference Include="..\RapidOneInvoices\RapidOneInvoices.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
     <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
     <ProjectReference Include="..\Transactions.Business\Transactions.Business.csproj" />
