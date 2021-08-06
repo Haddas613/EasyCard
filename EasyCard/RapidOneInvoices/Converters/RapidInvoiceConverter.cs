@@ -18,7 +18,7 @@ namespace RapidOneInvoices.Converters
                 DueDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                 InvoiceDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                 InvoiceTypeId = getInvoiceType(message.InvoiceDetails.InvoiceType).ToString(),
-                //Items = getItems(message),////TODO
+                Items = getItems(message),////TODO
                 PaymentMethods = getPaymentMethods(message),
                 ToPay = Convert.ToDecimal(message.TotalAmount.ToString("#.#######")),
                 Total = Convert.ToDecimal(message.TotalAmount.ToString("#.#######")),
@@ -35,7 +35,42 @@ namespace RapidOneInvoices.Converters
 
         private static List<ProductInInvoiceModel> getItems(InvoicingCreateDocumentRequest message)
         {
-            return new List<ProductInInvoiceModel>();//TODO IMPLEMENTATION
+            List<ProductInInvoiceModel> listProducts = new List<ProductInInvoiceModel>();
+            ProductInInvoiceModel productInvoice = new ProductInInvoiceModel
+            {
+                Code = "ROVAT",
+                Description = "חיוב מתאריך 05/08/2021",
+                Quantity = 1,
+                UnitPrice = new UnitPriceModel()
+                {
+                    Value = 1245 / (decimal)10,
+                    Currency = "₪"
+                },
+                Subtotal = 1245 / (decimal)10,
+                VatPercent = 17,
+                Vat = 255 / (decimal)10,
+                Total = 150,
+                ToPay = 150,
+                Discount = 0,
+                Disabled = false,
+                IsDefaultItem = true,
+                IsDefaultItemWithVat = true,
+                Rate = 1,
+                PreventDiscount = false,
+                Charge = false
+            };
+
+            /*
+            
+            "items":[
+             {
+             //"users":[],
+             "notes":null,
+             }
+        ]
+        */
+            listProducts.Add(productInvoice);
+            return listProducts;
         }
 
         private static PaymentMethodModel getPaymentMethods(InvoicingCreateDocumentRequest message)
@@ -46,7 +81,7 @@ namespace RapidOneInvoices.Converters
                 Cash = new CashModel[0],
                 Check = new CheckModel[0],
                 CreditCard = getCreditCardDetails(message),
-                MoneyTransfer = getMoneyTransferDetails(message)
+                MoneyTransfer = new MoneyTransferModel[0]//getMoneyTransferDetails(message)
             };
         }
 
@@ -54,7 +89,7 @@ namespace RapidOneInvoices.Converters
         {
             var result = new MoneyTransferModel[1];
             MoneyTransferModel mt = new MoneyTransferModel();
-            mt.Value = message.TotalAmount;
+            //mt.Value = message.TotalAmount;
             // TODO bank details
             //  int bankID = -1;
             //Int32.TryParse(message., out bankID);
@@ -76,19 +111,19 @@ namespace RapidOneInvoices.Converters
             CreditCardModel cc = new CreditCardModel();
             switch (message.CreditCardDetails.Solek)
             {
-                case "2":
+                case "VISA":
                     cc.Type = 1;
                     break;
-                case "1":
+                case "ISRACARD":
                     cc.Type = 2;
                     break;
-                case "3":
+                case "DINERS_CLUB":
                     cc.Type = 3;
                     break;
-                case "4":
+                case "AMEX":
                     cc.Type = 4;
                     break;
-                case "6":
+                case "LEUMI_CARD":
                     cc.Type = 5;
                     break;
                 default:
@@ -100,7 +135,7 @@ namespace RapidOneInvoices.Converters
             cc.Expiration = new ExpirationModel();
             cc.Expiration.Month = message.CreditCardDetails.CardExpiration.Month ?? 1;
             cc.Expiration.Year = message.CreditCardDetails.CardExpiration.Year ?? 1991;
-            cc.VoucherNum = getVoucherNum(message.DealDetails?.ShovarNumber); 
+            cc.VoucherNum = getVoucherNum(message.CreditCardDetails?.ShvaShovarNumber);
             cc.Payments = message.NumberOfPayments.ToString();
             cc.FirstPayment = message.InitialPaymentAmount.ToString();
             cc.DealType = getDealType(message.TransactionType);

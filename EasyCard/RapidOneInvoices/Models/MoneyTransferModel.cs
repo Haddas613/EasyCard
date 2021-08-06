@@ -12,7 +12,7 @@ namespace RapidOneInvoices.Models
         public decimal Value { get; set; }
 
         [DataMember(Name = "dueDate")]
-        public string DueDate { get; set; }
+        public DateTime? DueDate { get; set; }
 
         [DataMember(Name = "bank")]
         public BankDetailsModel Bank { get; set; }
@@ -31,7 +31,7 @@ namespace RapidOneInvoices.Models
 
         public MoneyTransferModel()
         {
-            this.DueDate = DateTime.Now.ToString();
+           // this.DueDate = DateTime.Now;
         }
     }
 }

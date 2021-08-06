@@ -18,7 +18,7 @@ namespace RapidOneInvoices
     public class RapidInvoiceInvoicing : IInvoicing
     {
         private const string documentProduce = "/gateway/financialDocuments";
-        private const string ResponseTokenHeader = "ExternalClient";
+        private const string ResponseTokenHeader = "Authorization";
         private readonly IIntegrationRequestLogStorageService storageService;
         private readonly IWebApiClient apiClient;
         private readonly RapidInvoiceGlobalSettings configuration;
@@ -112,7 +112,7 @@ namespace RapidOneInvoices
             try
             {
                 NameValueCollection headers = new NameValueCollection();
-                headers.Add(ResponseTokenHeader, Token);
+                headers.Add(ResponseTokenHeader, string.Format("ExternalClient {0}", Token));
                 return headers;
             }
             catch (Exception ex)
