@@ -10,6 +10,6 @@ namespace Upay.Models
         [DataMember(Name = "results")]
         TransactionResponseModel[] Results = new TransactionResponseModel[1];
 
-            
+
     }
 }

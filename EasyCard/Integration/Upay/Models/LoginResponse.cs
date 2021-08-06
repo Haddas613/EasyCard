@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Upay.Models
 {
-   public  class LoginResponse
+    public class LoginResponse
     {
         /// <summary>
         /// Gets or Sets Success status

@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Nayax.Configuration
 {
-   public  class NayaxGlobalSettings
+    public class NayaxGlobalSettings
     {
         public string BaseUrl { get; set; }
-        public string APIKey { get; set; } 
-        public string ClientID { get; set; } 
+        public string APIKey { get; set; }
+        public string ClientID { get; set; }
     }
 }

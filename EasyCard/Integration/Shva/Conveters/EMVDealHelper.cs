@@ -11,7 +11,7 @@ namespace Shva.Conveters
 {
     internal static class EMVDealHelper
     {
-        public static ChangePasswordRequestBody GetChangePasswordRequestBody(this ShvaTerminalSettings shvaParameters,string newPassword)
+        public static ChangePasswordRequestBody GetChangePasswordRequestBody(this ShvaTerminalSettings shvaParameters, string newPassword)
         {
             var changePasswordReq = new ChangePasswordRequestBody();
 
@@ -82,7 +82,7 @@ namespace Shva.Conveters
         {
             string TelToGetAuthNum = resultAshEndBody.globalObj?.outputObj?.telNoCom?.valueTag;
             string CompRetailerNum = resultAshEndBody.globalObj?.outputObj?.compRetailerNum?.valueTag;
-            return new ShvaCreateTransactionResponse( resultAshEndBody.globalObj.outputObj.ashStatusDes.valueTag, resultAshEndBody.globalObj.outputObj.ashStatus.valueTag,TelToGetAuthNum,CompRetailerNum, resultAshEndBody.AshEndResult);
+            return new ShvaCreateTransactionResponse(resultAshEndBody.globalObj.outputObj.ashStatusDes.valueTag, resultAshEndBody.globalObj.outputObj.ashStatus.valueTag, TelToGetAuthNum, CompRetailerNum, resultAshEndBody.AshEndResult);
         }
 
         public static ShvaCreateTransactionResponse GetOKNumberRequiredProcessorTransactionResponse(this AshAuthResponseBody resultAshAuthBody)
@@ -113,7 +113,7 @@ namespace Shva.Conveters
         {
             return new ProcessorChangePasswordResponse()
             {
-                 Success = changePasswordBody.ChangePasswordResult == (int)ChangePasswordResultEnum.Success
+                Success = changePasswordBody.ChangePasswordResult == (int)ChangePasswordResultEnum.Success
             };
         }
 
@@ -238,7 +238,7 @@ namespace Shva.Conveters
 
                 if (creditTerms == ShvaCreditTermsEnum.Installment && req.NumberOfPayments > 1)
                 {
-                    inputObj.noPayments = (req.NumberOfPayments - 1 ).ToString();
+                    inputObj.noPayments = (req.NumberOfPayments - 1).ToString();
                     inputObj.firstPayment = req.InitialPaymentAmount.ToShvaDecimalStr();
                     inputObj.notFirstPayment = req.InstallmentPaymentAmount.ToShvaDecimalStr(); // amount in other installments
                 }

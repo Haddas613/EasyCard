@@ -27,13 +27,13 @@ namespace Nayax.Models
     public class Body
     {
         [XmlElement("Phase1Response", Type = typeof(Phase1ResponseBody))]
-      // [XmlElement("AshStart", Type = typeof(AshStartRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
-      // [XmlElement("AshEndResponse", Type = typeof(AshEndResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
-      // [XmlElement("AshEnd", Type = typeof(AshEndRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
-      // [XmlElement("AshAuthResponse", Type = typeof(AshAuthResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
-      // [XmlElement("AshAuth", Type = typeof(AshAuthRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
-      // [XmlElement("TransEMV", Type = typeof(TransEMVRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
-      // [XmlElement("TransEMVResponse", Type = typeof(TransEMVResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        // [XmlElement("AshStart", Type = typeof(AshStartRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        // [XmlElement("AshEndResponse", Type = typeof(AshEndResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        // [XmlElement("AshEnd", Type = typeof(AshEndRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        // [XmlElement("AshAuthResponse", Type = typeof(AshAuthResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        // [XmlElement("AshAuth", Type = typeof(AshAuthRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        // [XmlElement("TransEMV", Type = typeof(TransEMVRequestBody), Namespace = "http://shva.co.il/xmlwebservices/")]
+        // [XmlElement("TransEMVResponse", Type = typeof(TransEMVResponseBody), Namespace = "http://shva.co.il/xmlwebservices/")]
         public object Content { get; set; }
     }
 

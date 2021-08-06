@@ -31,7 +31,7 @@ namespace RapidOne.Models
 
         public MoneyTransferModel()
         {
-           // this.DueDate = DateTime.Now;
+            // this.DueDate = DateTime.Now;
         }
     }
 }

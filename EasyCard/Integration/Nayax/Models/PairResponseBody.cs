@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Nayax.Models
 {
-   public  class PairResponseBody
+    public class PairResponseBody
     {
         /// <summary>
         /// o OK

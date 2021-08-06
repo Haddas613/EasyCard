@@ -13,7 +13,7 @@ namespace Nayax.Models
 
         [JsonProperty("params")]
         public Object[] paramss { get; set; }
-        public PairRequestBody(string posName,string clientID, string terminalID, string posID)
+        public PairRequestBody(string posName, string clientID, string terminalID, string posID)
         {
             this.clientID = clientID;
             this.terminalID = terminalID;

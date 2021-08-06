@@ -54,7 +54,7 @@ namespace Shva.Conveters
 
         public static bool IsOKNumberRequired(this int ashEndResult, string telAuthAbility)
         {
-            return ((int)AshEndResultEnum.RequestOKNumber).ToString().Contains(ashEndResult.ToString()) && !string.IsNullOrEmpty(telAuthAbility) && telAuthAbility.Equals("1") ;
+            return ((int)AshEndResultEnum.RequestOKNumber).ToString().Contains(ashEndResult.ToString()) && !string.IsNullOrEmpty(telAuthAbility) && telAuthAbility.Equals("1");
         }
 
         public static bool IsSuccessful(this ChangePasswordResultEnum changePasswordResult)

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Nayax
 {
-   public  class NayaxTerminalSettings
+    public class NayaxTerminalSettings
     {
         public string TerminalID { get; set; }
 

@@ -8,8 +8,8 @@ namespace Nayax.Models
     {
         public string otp { get; set; }
         public ObjectInAuthRequestParams(string otp)
-            {
+        {
             this.otp = otp;
-            }
+        }
     }
 }

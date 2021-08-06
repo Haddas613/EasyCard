@@ -22,7 +22,7 @@ namespace Shva
         {
         }
 
-        public ShvaCreateTransactionResponse(string errorMessage, string errorCodeStr,string telToGetAuthNum,string compRetailerNum, int? processorResult = null)
+        public ShvaCreateTransactionResponse(string errorMessage, string errorCodeStr, string telToGetAuthNum, string compRetailerNum, int? processorResult = null)
            : base(errorMessage, errorCodeStr, processorResult)
         {
             this.TelToGetAuthNum = telToGetAuthNum;

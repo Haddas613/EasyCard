@@ -13,9 +13,9 @@ namespace Nayax.Models
     /// </summary>
     public enum NayaxCreditTermsEnum
     {
-        Regular=1,
+        Regular = 1,
         Immediate = 3,
-        Credit=6,
-        Payments=8
+        Credit = 6,
+        Payments = 8
     }
 }

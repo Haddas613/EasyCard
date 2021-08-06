@@ -27,7 +27,7 @@ namespace Nayax.Models
         /// <summary>
         /// number of credit payments
         /// </summary>
-       
+
         public int? creditPayments { get; set; }
         public int? payments { get; set; }
         public int? firstPaymentAmount { get; set; }

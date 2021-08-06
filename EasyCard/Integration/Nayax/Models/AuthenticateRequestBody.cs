@@ -13,7 +13,7 @@ namespace Nayax.Models
 
         [JsonProperty("params")]
         public Object[] paramss { get; set; }
-        public AuthenticateRequestBody(string otp,string clientID, string terminalID, string posID)
+        public AuthenticateRequestBody(string otp, string clientID, string terminalID, string posID)
         {
             this.clientID = clientID;
             this.terminalID = terminalID;

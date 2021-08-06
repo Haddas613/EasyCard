@@ -40,7 +40,7 @@ namespace RapidOne
         }
         public async Task<InvoicingCreateDocumentResponse> CreateDocument(InvoicingCreateDocumentRequest documentCreationRequest)
         {
-            
+
             var terminal = documentCreationRequest.InvoiceingSettings as RapidOneTerminalSettings;
 
             var json = RapidInvoiceConverter.GetInvoiceCreateDocumentRequest(documentCreationRequest);
@@ -70,7 +70,7 @@ namespace RapidOne
                          responseStr = response;
                          responseStatusStr = responseStatus.ToString();
                      });
-                
+
             }
             catch (Exception ex)
             {
@@ -98,11 +98,11 @@ namespace RapidOne
                 CopyDonwnloadUrl = svcRes[0]?.url
             };
 
-           //if (svcRes == null || svcRes.Count<1 || string.IsNullOrWhiteSpace(svcRes[0].url) || svcRes[0].docEntry <= 0)
-           //{
-           //    response.Success = false;
-           //    response.ErrorMessage = svcRes.Message ?? svcRes.Error;
-           //}
+            //if (svcRes == null || svcRes.Count<1 || string.IsNullOrWhiteSpace(svcRes[0].url) || svcRes[0].docEntry <= 0)
+            //{
+            //    response.Success = false;
+            //    response.ErrorMessage = svcRes.Message ?? svcRes.Error;
+            //}
 
             return response;
         }

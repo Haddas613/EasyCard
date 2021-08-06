@@ -15,6 +15,6 @@ namespace Upay.Models
         /// </summary>
         [DataMember(Name = "transactions")]
         public TransactionResponseModel[] Transactions { get; set; }
-       
+
     }
 }

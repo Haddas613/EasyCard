@@ -7,6 +7,6 @@ namespace RapidOne.Models
     public class RapidInvoiceCreateDocumentResponse
     {
         public string error { get; set; }
-        public DocumentItemModel[]  documents{get;set;}
+        public DocumentItemModel[] documents { get; set; }
     }
 }

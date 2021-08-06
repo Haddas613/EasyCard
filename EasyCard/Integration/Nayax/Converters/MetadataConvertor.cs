@@ -70,7 +70,7 @@ namespace Nayax.Converters
 
         public static bool IsSuccessful(this PhaseResultEnum phaseResult)
         {
-            return phaseResult ==  PhaseResultEnum.Success;
+            return phaseResult == PhaseResultEnum.Success;
         }
 
         public static bool IsSuccessful(this Phase1ResponseBody phase1Result)
