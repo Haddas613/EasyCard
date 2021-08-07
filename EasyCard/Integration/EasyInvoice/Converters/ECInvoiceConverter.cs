@@ -151,6 +151,7 @@ namespace EasyInvoice.Converters
                     res.ChequeAccount = chequeDetails.BankAccount;
                     res.ChequeBank = chequeDetails.Bank?.ToString();
                     res.ChequeBranch = chequeDetails.BankBranch?.ToString();
+
                     //TODO: cheque number
                 }
                 else if (d.PaymentType == PaymentTypeEnum.Cash)
@@ -180,6 +181,7 @@ namespace EasyInvoice.Converters
                 InvoiceTypeEnum.InvoiceWithPaymentInfo => ECInvoiceDocumentType.INVOICE_WITH_PAYMENT_INFO,
                 InvoiceTypeEnum.PaymentInfo => ECInvoiceDocumentType.PAYMENT_INFO,
                 InvoiceTypeEnum.RefundInvoice => ECInvoiceDocumentType.REFUND_INVOICE_WITH_PAYMENT_INFO,
+                _ => throw new NotImplementedException(),
             };
         }
     }

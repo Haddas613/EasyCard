@@ -15,7 +15,6 @@ using Upay;
 
 namespace Transactions.Api.Controllers.External
 {
-
     [Authorize(AuthenticationSchemes = Extensions.Auth.ApiKeyAuthenticationScheme, Policy = Policy.UPayAPI)]
     [Route("external/upay")]
     [Produces("application/json")]

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace IdentityServer.Models.Events
 {
+#pragma warning disable SA1402, SA1649 // File may only contain a single type
     public class TwoFactorInfoEvent : Event
     {
         public TwoFactorInfoEvent(string username, string name, string message)
@@ -38,7 +39,7 @@ namespace IdentityServer.Models.Events
         public string Username { get; set; }
     }
 
-    public class ResetPasswordEvent: Event
+    public class ResetPasswordEvent : Event
     {
         public ResetPasswordEvent(string username, string name, string message)
             : base(
@@ -53,4 +54,5 @@ namespace IdentityServer.Models.Events
 
         public string Username { get; set; }
     }
+#pragma warning restore SA1402, SA1649 // File may only contain a single type
 }

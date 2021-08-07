@@ -132,10 +132,10 @@ namespace MerchantProfileApi.Controllers
             return Ok(new OperationResponse(Messages.TerminalUpdated, StatusEnum.Success, terminalID));
         }
 
+        //[RequestSizeLimit(1000000)]
         [HttpPost]
         [Route("{terminalID}/merchantlogo")]
         [Consumes("multipart/form-data")]
-        //[RequestSizeLimit(1000000)]
         public async Task<ActionResult<OperationResponse>> UploadMerchantLogo([FromRoute]Guid terminalID, [FromForm]IFormFile file)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));

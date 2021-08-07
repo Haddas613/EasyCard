@@ -15,6 +15,7 @@ namespace Merchants.Shared
         public string UpayRequestsLogStorageTable { get; set; }
 
         public string EasyInvoiceRequestsLogStorageTable { get; set; }
+
         public string RapidInvoiceRequestsLogStorageTable { get; set; }
 
         public string RequestsLogStorageTable { get; set; }

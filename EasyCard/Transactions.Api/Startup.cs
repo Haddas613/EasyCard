@@ -151,7 +151,8 @@ namespace Transactions.Api
                         }
                     };
                 })
-                .AddApiKeyInHeader(Auth.ApiKeyAuthenticationScheme, options => {
+                .AddApiKeyInHeader(Auth.ApiKeyAuthenticationScheme, options =>
+                {
                     options.SuppressWWWAuthenticateHeader = true;
                     options.KeyName = "API-key";
                     options.Events = new ApiKeyEvents
@@ -326,7 +327,6 @@ namespace Transactions.Api
             services.Configure<Upay.UpayGlobalSettings>(Configuration.GetSection("UpayGlobalSettings"));
             services.Configure<EasyInvoice.EasyInvoiceGlobalSettings>(Configuration.GetSection("EasyInvoiceGlobalSettings"));
             services.Configure<RapidOne.Configuration.RapidOneGlobalSettings>(Configuration.GetSection("RapidOneGlobalSettings"));
-
 
             services.AddSingleton<IAggregatorResolver, AggregatorResolver>();
             services.AddSingleton<IProcessorResolver, ProcessorResolver>();

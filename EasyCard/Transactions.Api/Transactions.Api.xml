@@ -15,6 +15,7 @@
             Generate invocie in EasyInvoice system
             </summary>
             <param name="invoiceID"></param>
+            <param name="ignoreStatus"></param>
             <returns></returns>
         </member>
         <member name="M:Transactions.Api.Controllers.TransactionsApiController.CreateTransaction(Transactions.Api.Models.Transactions.CreateTransactionRequest)">
@@ -343,11 +344,6 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.InvoiceDetails">
             <summary>
             Invoice details
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Billing.FutureBillingSummary.CardNumber">
-            <summary>
-            Billing Schedule
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.FutureBillingSummary.CreditCardDetails">

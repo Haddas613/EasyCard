@@ -407,6 +407,7 @@ namespace ProfileApi
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
+
                 //endpoints.MapFallbackToController("Index", "Home");
             });
 

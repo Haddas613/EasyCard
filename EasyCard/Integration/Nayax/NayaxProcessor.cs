@@ -215,7 +215,7 @@ namespace Nayax
             }
         }
 
-        public async Task<ProcessorTransmitTransactionsResponse> TransmitTransactions(ProcessorTransmitTransactionsRequest transmitTransactionsRequest)
+        public Task<ProcessorTransmitTransactionsResponse> TransmitTransactions(ProcessorTransmitTransactionsRequest transmitTransactionsRequest)
         {
             throw new NotImplementedException();
         }
@@ -396,7 +396,7 @@ namespace Nayax
             {
                 headers.Add("x-api-key", configuration.APIKey);
             }
-            return headers;
+            return await Task.FromResult(headers);
         }
     }
 }

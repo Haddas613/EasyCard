@@ -464,6 +464,7 @@ namespace Transactions.Api.Controllers
         /// Generate invocie in EasyInvoice system
         /// </summary>
         /// <param name="invoiceID"></param>
+        /// <param name="ignoreStatus"></param>
         /// <returns></returns>
         [ApiExplorerSettings(IgnoreApi = true)]
         [Authorize(Policy = Policy.AnyAdmin)]

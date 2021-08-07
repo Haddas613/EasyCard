@@ -366,10 +366,10 @@ namespace Merchants.Api.Controllers
             return Ok(new OperationResponse { Status = StatusEnum.Success });
         }
 
+        //[RequestSizeLimit(1000000)]
         [HttpPost]
         [Route("{terminalID}/merchantlogo")]
         [Consumes("multipart/form-data")]
-        //[RequestSizeLimit(1000000)]
         public async Task<ActionResult<OperationResponse>> UploadMerchantLogo([FromRoute]Guid terminalID, [FromForm]IFormFile file)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));

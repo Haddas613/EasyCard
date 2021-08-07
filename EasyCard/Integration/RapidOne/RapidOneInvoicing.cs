@@ -130,7 +130,7 @@ namespace RapidOne
 
             // TODO: get temporary url from R1
 
-            return documentResponse.Documents.Select(d => d.Url);
+            return await Task.FromResult(documentResponse.Documents.Select(d => d.Url));
         }
 
         private NameValueCollection GetAuthorizedHeaders(string BaseUrl, string Token, string integrationMessageId, string correlationId)

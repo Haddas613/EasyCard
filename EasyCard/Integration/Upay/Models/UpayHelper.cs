@@ -66,6 +66,7 @@ namespace Upay.Models
             }
             catch (Exception ex)
             {
+                // TODO: process exception
                 throw;
             }
         }
@@ -124,6 +125,7 @@ namespace Upay.Models
             }
             catch (Exception ex)
             {
+                // TODO: process exception
                 throw;
             }
         }
@@ -161,6 +163,7 @@ namespace Upay.Models
             }
             catch (Exception ex)
             {
+                // TODO: process exception
                 throw;
             }
         }
@@ -181,6 +184,7 @@ namespace Upay.Models
             }
             catch (Exception ex)
             {
+                // TODO: process exception
                 return null;
             }
             return sb.ToString();

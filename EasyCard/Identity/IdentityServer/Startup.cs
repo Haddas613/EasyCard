@@ -339,7 +339,9 @@ namespace IdentityServer
             //app.UseCookiePolicy();
 
             app.UseXXssProtection(options => options.EnabledWithBlockMode());
+
             //app.UseXfo(options => options.SameOrigin());
+
             app.UseReferrerPolicy(opts => opts.NoReferrerWhenDowngrade());
 
             app.UseCsp(options => options

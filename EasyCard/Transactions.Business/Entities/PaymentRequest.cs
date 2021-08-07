@@ -48,6 +48,7 @@ namespace Transactions.Business.Entities
         public Guid? MerchantID { get; set; }
 
         public InvoiceDetails InvoiceDetails { get; set; }
+
         public PinPadDetails PinPadDetails { get; set; }
 
         /// <summary>

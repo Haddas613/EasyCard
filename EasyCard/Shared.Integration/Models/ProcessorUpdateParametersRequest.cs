@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Shared.Integration.Models
 {
-   public  class ProcessorUpdateParametersRequest
+    public class ProcessorUpdateParametersRequest
     {
         /// <summary>
         /// Shva terminal settings
@@ -14,7 +14,7 @@ namespace Shared.Integration.Models
         /// <summary>
         /// Easy Card TerminalID
         /// </summary>
-        public Guid  TerminalID { get; set; }
+        public Guid TerminalID { get; set; }
 
         /// <summary>
         /// Request ID

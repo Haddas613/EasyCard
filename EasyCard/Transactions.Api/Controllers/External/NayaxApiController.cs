@@ -20,7 +20,6 @@ using SharedApi = Shared.Api;
 
 namespace Transactions.Api.Controllers.External
 {
-
     [Authorize(AuthenticationSchemes = Extensions.Auth.ApiKeyAuthenticationScheme, Policy = Policy.NayaxAPI)]
     [Route("api/external/nayax")]
     [Produces("application/json")]

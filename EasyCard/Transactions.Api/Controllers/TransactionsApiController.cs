@@ -910,7 +910,6 @@ namespace Transactions.Api.Controllers
                     {
                         processorFailedRsponse = BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, processorResponse.Errors));
                     }
-
                 }
                 else
                 {

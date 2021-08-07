@@ -11,7 +11,6 @@ namespace Shared.Integration.Models
     {
         public ProcessorChangePasswordRequest()
         {
-           
         }
 
         /// <summary>
@@ -25,6 +24,5 @@ namespace Shared.Integration.Models
         /// Request ID
         /// </summary>
         public string CorrelationId { get; set; }
-
     }
 }

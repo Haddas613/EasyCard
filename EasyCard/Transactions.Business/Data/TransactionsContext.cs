@@ -37,26 +37,6 @@ namespace Transactions.Business.Data
                 new DebugLoggerProvider()
             });
 
-        public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
-
-        public DbSet<CreditCardTokenDetails> CreditCardTokenDetails { get; set; }
-
-        public DbSet<TransactionHistory> TransactionHistories { get; set; }
-
-        public DbSet<BillingDealHistory> BillingDealHistories { get; set; }
-
-        public DbSet<BillingDeal> BillingDeals { get; set; }
-
-        public DbSet<Invoice> Invoices { get; set; }
-
-        public DbSet<PaymentRequest> PaymentRequests { get; set; }
-
-        public DbSet<PaymentRequestHistory> PaymentRequestHistories { get; set; }
-
-        public DbSet<FutureBilling> FutureBillings { get; set; }
-
-        private readonly ClaimsPrincipal user;
-
         private static readonly ValueConverter CardExpirationConverter = new ValueConverter<CardExpiration, string>(
             v => v.ToString(),
             v => CreditCardHelpers.ParseCardExpiration(v));
@@ -101,16 +81,31 @@ namespace Transactions.Business.Data
            v => v.ToString(Formatting.None).GetHashCode(),
            v => JObject.Parse(v.ToString(Formatting.None)));
 
+        public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
+
+        public DbSet<CreditCardTokenDetails> CreditCardTokenDetails { get; set; }
+
+        public DbSet<TransactionHistory> TransactionHistories { get; set; }
+
+        public DbSet<BillingDealHistory> BillingDealHistories { get; set; }
+
+        public DbSet<BillingDeal> BillingDeals { get; set; }
+
+        public DbSet<Invoice> Invoices { get; set; }
+
+        public DbSet<PaymentRequest> PaymentRequests { get; set; }
+
+        public DbSet<PaymentRequestHistory> PaymentRequestHistories { get; set; }
+
+        public DbSet<FutureBilling> FutureBillings { get; set; }
+
+        private readonly ClaimsPrincipal user;
+
         public TransactionsContext(DbContextOptions<TransactionsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
             : base(options)
         {
             this.user = httpContextAccessor.GetUser();
         }
-
-        // NOTE: use this for debugging purposes to analyse sql query performance
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder
-                .UseLoggerFactory(DbCommandConsoleLoggerFactory);
 
         public async Task<IEnumerable<TransactionSummaryDb>> GetGroupedTransactionSummaries(Guid? terminalID, IDbContextTransaction dbTransaction = null)
         {
@@ -299,6 +294,11 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 }
             }
         }
+
+        // NOTE: use this for debugging purposes to analyse sql query performance
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder
+                .UseLoggerFactory(DbCommandConsoleLoggerFactory);
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

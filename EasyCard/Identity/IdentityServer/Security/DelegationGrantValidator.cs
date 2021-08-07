@@ -20,7 +20,8 @@ namespace IdentityServer.Security
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ICryptoServiceCompact cryptoServiceCompact;
 
-        public DelegationGrantValidator(ITokenValidator validator,
+        public DelegationGrantValidator(
+            ITokenValidator validator,
             ICryptoService cryptoService, UserManager<ApplicationUser> userManager, ICryptoServiceCompact cryptoServiceCompact)
         {
             this.validator = validator;

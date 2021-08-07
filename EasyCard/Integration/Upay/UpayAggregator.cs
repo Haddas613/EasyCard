@@ -210,7 +210,7 @@ namespace Upay
 
         public async Task<AggregatorCancelTransactionResponse> CancelTransaction(AggregatorCancelTransactionRequest transactionRequest)
         {
-            return new AggregatorCancelTransactionResponse { Success = true };//no cancel transaction with upay
+            return await Task.FromResult( new AggregatorCancelTransactionResponse { Success = true }); //no cancel transaction with upay
         }
 
         public bool ShouldBeProcessedByAggregator(Shared.Integration.Models.TransactionTypeEnum transactionType, SpecialTransactionTypeEnum specialTransactionType, JDealTypeEnum jDealType)
@@ -218,9 +218,9 @@ namespace Upay
             return jDealType == JDealTypeEnum.J4 && (specialTransactionType == SpecialTransactionTypeEnum.RegularDeal || specialTransactionType == SpecialTransactionTypeEnum.Refund || specialTransactionType == SpecialTransactionTypeEnum.InitialDeal);
         }
 
-        public async Task<AggregatorTransactionResponse> GetTransaction(string aggregatorTransactionID)
+        public Task<AggregatorTransactionResponse> GetTransaction(string aggregatorTransactionID)
         {
-            return null;//TODO!!
+            throw new NotImplementedException();
         }
     }
 }

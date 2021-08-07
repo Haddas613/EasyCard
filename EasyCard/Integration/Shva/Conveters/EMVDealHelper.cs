@@ -80,16 +80,16 @@ namespace Shva.Conveters
 
         public static ShvaCreateTransactionResponse GetOKNumberRequiredProcessorTransactionResponse(this AshEndResponseBody resultAshEndBody)
         {
-            string TelToGetAuthNum = resultAshEndBody.globalObj?.outputObj?.telNoCom?.valueTag;
-            string CompRetailerNum = resultAshEndBody.globalObj?.outputObj?.compRetailerNum?.valueTag;
-            return new ShvaCreateTransactionResponse(resultAshEndBody.globalObj.outputObj.ashStatusDes.valueTag, resultAshEndBody.globalObj.outputObj.ashStatus.valueTag, TelToGetAuthNum, CompRetailerNum, resultAshEndBody.AshEndResult);
+            string telToGetAuthNum = resultAshEndBody.globalObj?.outputObj?.telNoCom?.valueTag;
+            string compRetailerNum = resultAshEndBody.globalObj?.outputObj?.compRetailerNum?.valueTag;
+            return new ShvaCreateTransactionResponse(resultAshEndBody.globalObj.outputObj.ashStatusDes.valueTag, resultAshEndBody.globalObj.outputObj.ashStatus.valueTag, telToGetAuthNum, compRetailerNum, resultAshEndBody.AshEndResult);
         }
 
         public static ShvaCreateTransactionResponse GetOKNumberRequiredProcessorTransactionResponse(this AshAuthResponseBody resultAshAuthBody)
         {
-            string TelToGetAuthNum = resultAshAuthBody.globalObj?.outputObj?.telNoCom?.valueTag;
-            string CompRetailerNum = resultAshAuthBody.globalObj?.outputObj?.compRetailerNum?.valueTag;
-            return new ShvaCreateTransactionResponse(resultAshAuthBody.globalObj.outputObj.ashStatusDes?.valueTag, resultAshAuthBody.globalObj.outputObj.ashStatus?.valueTag, TelToGetAuthNum, CompRetailerNum, resultAshAuthBody.AshAuthResult);
+            string telToGetAuthNum = resultAshAuthBody.globalObj?.outputObj?.telNoCom?.valueTag;
+            string compRetailerNum = resultAshAuthBody.globalObj?.outputObj?.compRetailerNum?.valueTag;
+            return new ShvaCreateTransactionResponse(resultAshAuthBody.globalObj.outputObj.ashStatusDes?.valueTag, resultAshAuthBody.globalObj.outputObj.ashStatus?.valueTag, telToGetAuthNum, compRetailerNum, resultAshAuthBody.AshAuthResult);
         }
 
         public static ShvaCreateTransactionResponse GetProcessorTransactionResponse(this AshStartResponseBody resultAshStartBody)
@@ -127,16 +127,16 @@ namespace Shva.Conveters
             var shvaExpDate = req.CreditCardToken.CardExpiration?.GetShvaExpDate();
             var creditTerms = req.TransactionType.GetShvaCreditTerms();
             var currency = req.Currency.GetShvaCurrency();
-            var OKNumber = req.OKNumber;
+            var oKNumber = req.OKNumber;
             inputObj.panEntryMode = cardPresence.GetShvaCardPresenceStr();
 
             inputObj.parameterJ = parameterJValue.ToString();
             inputObj.creditTerms = creditTerms.GetShvaCreditTermsStr();
             inputObj.tranType = transactionType.GetShvaTransactionTypeStr();
             inputObj.currency = currency.GetShvaCurrencyStr();
-            if (!string.IsNullOrEmpty(OKNumber))
+            if (!string.IsNullOrEmpty(oKNumber))
             {
-                inputObj.authorizationNo = OKNumber;
+                inputObj.authorizationNo = oKNumber;
                 inputObj.authorizationCodeManpik = "5";
             }
 

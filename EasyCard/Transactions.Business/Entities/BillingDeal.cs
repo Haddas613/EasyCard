@@ -20,7 +20,9 @@ namespace Transactions.Business.Entities
         {
             BillingDealTimestamp = DateTime.UtcNow;
             BillingDealID = Guid.NewGuid().GetSequentialGuid(BillingDealTimestamp.Value);
+
             //CreditCardDetails = new CreditCardDetails();
+
             DealDetails = new DealDetails();
         }
 

@@ -174,6 +174,36 @@ namespace IdentityServer.Security.Auditing
             }
         }
 
+        public async Task RegisterChangePassword(ApplicationUser user)
+        {
+            var audit = await GetAudit(user, AuditingTypeEnum.PasswordChanged);
+
+            await SaveAudit(audit);
+        }
+
+        public async Task RegisterAction(ApplicationUser user, AuditingTypeEnum type)
+        {
+            var audit = await GetAudit(user, type);
+
+            await SaveAudit(audit);
+        }
+
+        public async Task RegisterFailedAttempt(string email)
+        {
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            var audit = new UserAudit
+            {
+                Email = email,
+                OperationCode = AuditingTypeEnum.FailedAttempt.ToString(),
+                UserId = user?.Id,
+                SourceIP = accessor.HttpContext.Connection?.RemoteIpAddress?.ToString(),
+                OperationDate = DateTime.UtcNow
+            };
+
+            await SaveAudit(audit);
+        }
+
         private async Task SaveAudit(UserAudit audit)
         {
             try
@@ -215,36 +245,6 @@ namespace IdentityServer.Security.Auditing
                 // TODO: log error
                 return null;
             }
-        }
-
-        public async Task RegisterChangePassword(ApplicationUser user)
-        {
-            var audit = await GetAudit(user, AuditingTypeEnum.PasswordChanged);
-
-            await SaveAudit(audit);
-        }
-
-        public async Task RegisterAction(ApplicationUser user, AuditingTypeEnum type)
-        {
-            var audit = await GetAudit(user, type);
-
-            await SaveAudit(audit);
-        }
-
-        public async Task RegisterFailedAttempt(string email)
-        {
-            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
-
-            var audit = new UserAudit
-            {
-                Email = email,
-                OperationCode = AuditingTypeEnum.FailedAttempt.ToString(),
-                UserId = user?.Id,
-                SourceIP = accessor.HttpContext.Connection?.RemoteIpAddress?.ToString(),
-                OperationDate = DateTime.UtcNow
-            };
-
-            await SaveAudit(audit);
         }
     }
 }

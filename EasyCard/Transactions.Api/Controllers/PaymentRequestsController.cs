@@ -199,6 +199,7 @@ namespace Transactions.Api.Controllers
             }
 
             var newPaymentRequest = mapper.Map<PaymentRequest>(model);
+
             // Update details if needed
             newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest);
             if (consumer != null)

@@ -55,7 +55,6 @@ namespace Merchants.Business.Services
             return await SaveChagesSafe();
         }
 
-
         private async Task<OperationResponse> SaveChagesSafe()
         {
             var operationResult = new OperationResponse { Status = StatusEnum.Success };
@@ -77,7 +76,6 @@ namespace Merchants.Business.Services
                     logger.LogError(ex, $"Exception {correlationId}: {ex.Message}");
 
                     operationResult = new OperationResponse(ex.Message, StatusEnum.Error, correlationId: correlationId);
-
                 }
             }
 
