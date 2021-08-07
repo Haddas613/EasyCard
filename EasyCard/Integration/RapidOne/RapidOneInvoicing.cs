@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RapidOne.Configuration;
 using RapidOne.Converters;
 using RapidOne.Models;
@@ -12,6 +13,7 @@ using Shared.Integration.Models.Invoicing;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace RapidOne
@@ -52,7 +54,6 @@ namespace RapidOne
 
             NameValueCollection headers = GetAuthorizedHeaders(terminal.BaseUrl, terminal.Token, integrationMessageId, documentCreationRequest.CorrelationId);
 
-            List<DocumentItemModel> svcRes = null;
             string requestUrl = null;
             string requestStr = null;
             string responseStr = null;
@@ -60,7 +61,7 @@ namespace RapidOne
 
             try
             {
-                svcRes = await this.apiClient.Post<List<DocumentItemModel>>(terminal.BaseUrl, documentProduce, json, () => Task.FromResult(headers),
+                var svcRes = await this.apiClient.Post<IEnumerable<DocumentItemModel>>(terminal.BaseUrl, documentProduce, json, () => Task.FromResult(headers),
                      (url, request) =>
                      {
                          requestStr = request;
@@ -72,11 +73,13 @@ namespace RapidOne
                          responseStatusStr = responseStatus.ToString();
                      });
 
+                var firstResult = svcRes.FirstOrDefault();
                 return new InvoicingCreateDocumentResponse
                 {
-                    DocumentNumber = svcRes[0]?.DocEntry.ToString(),
-                    DownloadUrl = svcRes[0]?.Url,
-                    CopyDonwnloadUrl = svcRes[0]?.Url,
+                    DocumentNumber = firstResult?.DocEntry.ToString(),
+                    DownloadUrl = firstResult?.Url,
+                    CopyDonwnloadUrl = firstResult?.Url,
+                    ExternalSystemData = JObject.FromObject(new RapidOneCreateDocumentResponse(svcRes))
                 };
             }
             catch (WebApiClientErrorException wex)
@@ -117,6 +120,17 @@ namespace RapidOne
 
                 await storageService.Save(integrationMessage);
             }
+        }
+
+        public async Task<IEnumerable<string>> GetDownloadUrls(JObject externalSystemData, object invoiceingSettings)
+        {
+            var terminal = invoiceingSettings as RapidOneTerminalSettings;
+
+            RapidOneCreateDocumentResponse documentResponse = externalSystemData.ToObject<RapidOneCreateDocumentResponse>();
+
+            // TODO: get temporary url from R1
+
+            return documentResponse.Documents.Select(d => d.Url);
         }
 
         private NameValueCollection GetAuthorizedHeaders(string BaseUrl, string Token, string integrationMessageId, string correlationId)

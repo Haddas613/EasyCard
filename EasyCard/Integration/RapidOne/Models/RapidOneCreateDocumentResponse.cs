@@ -6,6 +6,16 @@ namespace RapidOne.Models
 {
     public class RapidOneCreateDocumentResponse
     {
+        public RapidOneCreateDocumentResponse()
+        {
+
+        }
+
+        public RapidOneCreateDocumentResponse(IEnumerable<DocumentItemModel> documents)
+        {
+            Documents = documents;
+        }
+
         public IEnumerable<DocumentItemModel> Documents { get; set; }
     }
 

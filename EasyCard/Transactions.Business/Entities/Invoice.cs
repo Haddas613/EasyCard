@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shared.Business;
 using Shared.Business.Financial;
 using Shared.Business.Security;
@@ -173,5 +174,7 @@ namespace Transactions.Business.Entities
         /// Generic transaction type
         /// </summary>
         public TransactionTypeEnum? TransactionType { get; set; }
+
+        public JObject ExternalSystemData { get; set; }
     }
 }

@@ -92,6 +92,15 @@ namespace Transactions.Business.Data
            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
            c => (string[])c.Clone());
 
+        private static readonly ValueConverter SettingsJObjectConverter = new ValueConverter<JObject, string>(
+           v => v.ToString(Formatting.None),
+           v => JObject.Parse(v));
+
+        private static readonly ValueComparer SettingsJObjectComparer = new ValueComparer<JObject>(
+           (s1, s2) => s1.ToString(Formatting.None).GetHashCode() == s2.ToString(Formatting.None).GetHashCode(),
+           v => v.ToString(Formatting.None).GetHashCode(),
+           v => JObject.Parse(v.ToString(Formatting.None)));
+
         public TransactionsContext(DbContextOptions<TransactionsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
             : base(options)
         {
@@ -683,6 +692,9 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.TotalDiscount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(p => p.TransactionType).HasColumnName("TransactionType").HasColumnType("smallint").IsRequired(false);
+
+                builder.Property(b => b.ExternalSystemData).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
+                    .Metadata.SetValueComparer(SettingsJObjectComparer);
             }
         }
 

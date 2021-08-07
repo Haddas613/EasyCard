@@ -1,4 +1,5 @@
-﻿using Shared.Helpers;
+﻿using Newtonsoft.Json.Linq;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -28,5 +29,7 @@ namespace Shared.Integration.Models.Invoicing
         public IEnumerable<Error> Errors { get; set; }
 
         public int? OriginalHttpResponseCode { get; set; }
+
+        public JObject ExternalSystemData { get; set; }
     }
 }

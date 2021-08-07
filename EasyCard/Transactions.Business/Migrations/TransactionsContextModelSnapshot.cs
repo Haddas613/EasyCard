@@ -374,6 +374,10 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
 
+                    b.Property<string>("ExternalSystemData")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("InitialPaymentAmount")
                         .HasColumnType("decimal(19,4)");
 

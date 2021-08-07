@@ -47,8 +47,11 @@
     [PaymentDetails]            NVARCHAR (MAX)   NULL,
     [ConsumerExternalReference] VARCHAR (50)     NULL,
     [Solek]                     VARCHAR (20)     NULL,
+    [ExternalSystemData]        NVARCHAR (MAX)   NULL,
     CONSTRAINT [PK_Invoice] PRIMARY KEY CLUSTERED ([InvoiceID] ASC)
 );
+
+
 
 
 

@@ -34,8 +34,8 @@ using Z.EntityFramework.Plus;
 using Merchants.Business.Entities.Terminal;
 using Transactions.Shared.Enums;
 using Transactions.Api.Extensions;
-using SharedIntegration = Shared.Integration;
 using Newtonsoft.Json;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
@@ -163,15 +163,60 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        // TODO: support several download urls
         [HttpGet]
         [Route("{invoiceID}/download")]
         public async Task<ActionResult<OperationResponse>> GetInvoiceDownloadURL([FromRoute] Guid invoiceID)
         {
             using (var dbTransaction = invoiceService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                var downloadUrl = EnsureExists(await invoiceService.GetInvoices().Where(m => m.InvoiceID == invoiceID).Select(i => i.DownloadUrl).FirstOrDefaultAsync());
+                var dbInvoice = EnsureExists(await invoiceService.GetInvoices().Where(m => m.InvoiceID == invoiceID).FirstOrDefaultAsync());
 
-                return new OperationResponse { Status = StatusEnum.Success, EntityUID = invoiceID, EntityReference = downloadUrl };
+                if (dbInvoice.ExternalSystemData == null)
+                {
+                    var downloadUrl = dbInvoice.DownloadUrl;
+
+                    return new OperationResponse { Status = StatusEnum.Success, EntityUID = invoiceID, EntityReference = downloadUrl };
+                }
+                else
+                {
+                    var terminal = EnsureExists(await terminalsService.GetTerminal(dbInvoice.TerminalID));
+
+                    // TODO: caching
+                    var systemSettings = await systemSettingsService.GetSystemSettings();
+
+                    // merge system settings with terminal settings
+                    mapper.Map(systemSettings, terminal);
+
+                    var terminalInvoicing = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Invoicing);
+
+                    if (terminalInvoicing == null)
+                    {
+                        dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.SendingFailed;
+                        await invoiceService.UpdateEntity(dbInvoice);
+
+                        throw new BusinessException(Messages.InvoicingNotDefined);
+                    }
+
+                    var invoicing = invoicingResolver.GetInvoicing(terminalInvoicing);
+                    var invoicingSettings = invoicingResolver.GetInvoicingTerminalSettings(terminalInvoicing, terminalInvoicing.Settings);
+
+                    try
+                    {
+                        var invoicingRequest = mapper.Map<InvoicingCreateDocumentRequest>(dbInvoice);
+                        invoicingRequest.InvoiceingSettings = invoicingSettings;
+
+                        var invoicingResponse = await invoicing.GetDownloadUrls(dbInvoice.ExternalSystemData, invoicingSettings);
+
+                        return new OperationResponse { Status = StatusEnum.Success, EntityUID = invoiceID, EntityReference = invoicingResponse.FirstOrDefault() };
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, $"Invoice get download Url failed. InvoiceID: {dbInvoice.InvoiceID}");
+
+                        return BadRequest(new OperationResponse($"Invoice get download Url failed", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier));
+                    }
+                }
             }
         }
 
