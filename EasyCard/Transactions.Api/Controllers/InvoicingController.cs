@@ -424,11 +424,11 @@ namespace Transactions.Api.Controllers
         [Authorize(Policy = Policy.AnyAdmin)]
         [HttpPost]
         [Route("generate/{invoiceID}")]
-        public async Task<ActionResult<OperationResponse>> GenerateOrResendInvoice(Guid? invoiceID)
+        public async Task<ActionResult<OperationResponse>> GenerateOrResendInvoice(Guid? invoiceID, [FromQuery]bool ignoreStatus = false)
         {
             var dbInvoice = EnsureExists(await invoiceService.GetInvoices().FirstOrDefaultAsync(m => m.InvoiceID == invoiceID));
 
-            if (dbInvoice.Status != Shared.Enums.InvoiceStatusEnum.Sending)
+            if (!ignoreStatus && dbInvoice.Status != Shared.Enums.InvoiceStatusEnum.Sending)
             {
                 return BadRequest(new OperationResponse($"{Messages.InvoiceStateIsNotValid}", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier));
             }

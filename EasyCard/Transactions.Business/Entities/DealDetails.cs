@@ -51,6 +51,6 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// External system consumer code for example Rapid customer code
         /// </summary>
-        public string ExternalConsumerCode { get; set; }
+        public string ConsumerExternalReference { get; set; }
     }
 }

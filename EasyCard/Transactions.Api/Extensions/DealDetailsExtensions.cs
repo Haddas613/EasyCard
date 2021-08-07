@@ -27,6 +27,11 @@ namespace Transactions.Api.Extensions
                 dealDetails.ConsumerPhone = consumer?.ConsumerPhone;
             }
 
+            if (string.IsNullOrWhiteSpace(dealDetails.ConsumerExternalReference))
+            {
+                dealDetails.ConsumerExternalReference = consumer?.ExternalReference;
+            }
+
             if (!(dealDetails.Items?.Count() > 0))
             {
                 dealDetails.Items = new List<SharedIntegration.Models.Item>
@@ -81,13 +86,14 @@ namespace Transactions.Api.Extensions
                 invoiceDetails.InvoiceType = SharedIntegration.Models.Invoicing.InvoiceTypeEnum.RefundInvoice;
             }
         }
+
         public static PinPadDetails UpdatePinPadDetails(this SharedIntegration.Models.Processor.PinPadDetails pinpadDetails, TerminalExternalSystem terminalSettings, PaymentTransaction transaction = null)
         {
             if (pinpadDetails == null)
             {
                 pinpadDetails = new SharedIntegration.Models.Processor.PinPadDetails();
             }
-            
+
             if (string.IsNullOrWhiteSpace(pinpadDetails.TerminalID))
             {
                 pinpadDetails.TerminalID = terminalSettings.Settings.ToObject<NayaxTerminalSettings>().TerminalID;
@@ -95,7 +101,5 @@ namespace Transactions.Api.Extensions
 
             return pinpadDetails;
         }
-
     }
-
 }

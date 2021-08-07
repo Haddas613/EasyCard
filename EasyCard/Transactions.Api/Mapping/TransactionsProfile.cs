@@ -67,11 +67,11 @@ namespace Transactions.Api.Mapping
 
             CreateMap<SharedIntegration.Models.DealDetails, Business.Entities.DealDetails>()
                 .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => new Address { Street = src.ConsumerAddress }))
-                  .ForMember(c => c.ExternalConsumerCode, o => o.MapFrom(src => src.ExternalConsumerCode));
+                  .ForMember(c => c.ConsumerExternalReference, o => o.MapFrom(src => src.ConsumerExternalReference));
 
             CreateMap<Business.Entities.DealDetails, SharedIntegration.Models.DealDetails>()
                 .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => src.ConsumerAddress != null ? src.ConsumerAddress.Street : null))
-                 .ForMember(c => c.ExternalConsumerCode, o => o.MapFrom(src => src.ExternalConsumerCode));
+                 .ForMember(c => c.ConsumerExternalReference, o => o.MapFrom(src => src.ConsumerExternalReference));
 
             CreateMap<CreditCardTokenKeyVault, Business.Entities.CreditCardDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))

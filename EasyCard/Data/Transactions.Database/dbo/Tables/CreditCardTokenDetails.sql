@@ -22,8 +22,11 @@
     [InitialTransactionID] UNIQUEIDENTIFIER NULL,
     [DocumentOrigin]       SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     [CardBrand]            NVARCHAR (20)    NULL,
+    [Solek]                NVARCHAR (20)    NULL,
     CONSTRAINT [PK_CreditCardTokenDetails] PRIMARY KEY CLUSTERED ([CreditCardTokenID] ASC)
 );
+
+
 
 
 

@@ -44,8 +44,16 @@
     [PausedFrom]                  DATE             NULL,
     [PausedTo]                    DATE             NULL,
     [CardBrand]                   VARCHAR (20)     NULL,
+    [ConsumerExternalReference]   VARCHAR (50)     NULL,
+    [Solek]                       VARCHAR (20)     NULL,
+    [Bank]                        INT              NULL,
+    [BankAccount]                 NVARCHAR (50)    NULL,
+    [BankBranch]                  INT              NULL,
+    [PaymentType]                 SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     CONSTRAINT [PK_BillingDeal] PRIMARY KEY CLUSTERED ([BillingDealID] ASC)
 );
+
+
 
 
 

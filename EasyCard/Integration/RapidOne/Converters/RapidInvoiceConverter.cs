@@ -12,22 +12,22 @@ namespace RapidOne.Converters
     public class RapidInvoiceConverter
     {
 
-        public static RapidInvoiceCreateDocumentRequest GetInvoiceCreateDocumentRequest(InvoicingCreateDocumentRequest message)
+        public static CreateFinancialDocumentModelDto GetInvoiceCreateDocumentRequest(InvoicingCreateDocumentRequest message)
         {
-            var json = new RapidInvoiceCreateDocumentRequest
+            var json = new CreateFinancialDocumentModelDto
             {
                 Discount = 0,
                 DueDate = message.InvoiceDate,
                 InvoiceDate = message.InvoiceDate,
-                InvoiceTypeId = getInvoiceType(message.InvoiceDetails.InvoiceType).ToString(),
-                Items = getItems(message),////TODO
-                PaymentMethods = getPaymentMethods(message),
+                InvoiceTypeId = GetInvoiceType(message.InvoiceDetails.InvoiceType),
+                Items = GetItems(message),
+                PaymentMethods = GetPaymentMethods(message),
                 ToPay = message.TotalAmount,
                 Total = message.TotalAmount,
                 Vat = message.VATTotal,
                 Subtotal = message.TotalAmount - message.VATTotal,
                 CustomerCell = message.DealDetails?.ConsumerPhone,
-                CustomerCode = message.DealDetails?.ExternalConsumerCode,
+                CustomerCode = message.DealDetails?.ConsumerExternalReference,
                 CustomerEmail = message.DealDetails?.ConsumerEmail,
                 CustomerName = message.ConsumerName,
             };
@@ -35,126 +35,116 @@ namespace RapidOne.Converters
             return json;
         }
 
-        private static List<ProductInInvoiceModel> getItems(InvoicingCreateDocumentRequest message)
+        private static IEnumerable<FinDocItemDto> GetItems(InvoicingCreateDocumentRequest message)
         {
-            List<ProductInInvoiceModel> listProducts = new List<ProductInInvoiceModel>();
-            ProductInInvoiceModel productInvoice = new ProductInInvoiceModel
-            {
-                Code = "ROVAT",
-                Description = "חיוב מתאריך 05/08/2021",
-                Quantity = 1,
-                UnitPrice = new UnitPriceModel()
-                {
-                    Value = 1245 / (decimal)10,
-                    Currency = "₪"
-                },
-                Subtotal = 1245 / (decimal)10,
-                VatPercent = 17,
-                Vat = 255 / (decimal)10,
-                Total = 150,
-                ToPay = 150,
-                Discount = 0,
-                Disabled = false,
-                IsDefaultItem = true,
-                IsDefaultItemWithVat = true,
-                Rate = 1,
-                PreventDiscount = false,
-                Charge = false
-            };
+            var listProducts = new List<FinDocItemDto>();
 
-            /*
-            
-            "items":[
-             {
-             //"users":[],
-             "notes":null,
-             }
-        ]
-        */
-            listProducts.Add(productInvoice);
+            foreach (var item in message.DealDetails.Items)
+            {
+                var productInvoice = new FinDocItemDto
+                {
+                    Code = item.ExternalReference ?? "ROVAT",
+                    Description = item.ItemName,
+                    Quantity = item.Quantity.GetValueOrDefault(1),
+                    UnitPrice = new FinDocUnitPriceDto()
+                    {
+                        Value = item.Price.GetValueOrDefault(),
+                        Currency = "₪"
+                    },
+                    Subtotal = item.NetAmount.GetValueOrDefault(),
+                    VatPercent = item.VATRate.GetValueOrDefault(),
+                    Vat = item.VAT.GetValueOrDefault(),
+                    Total = item.Amount.GetValueOrDefault(),
+                    ToPay = item.Amount.GetValueOrDefault(),
+                    Discount = item.Discount.GetValueOrDefault(),
+                    Rate = 1,
+                    Users = new string[] { }, // there is no null-check in R1 so this empty array required
+                    Charge = false // TODO
+                };
+
+                listProducts.Add(productInvoice);
+            }
+
             return listProducts;
         }
 
-        private static PaymentMethodModel getPaymentMethods(InvoicingCreateDocumentRequest message)
+        private static FinDocPaymentMethodDto GetPaymentMethods(InvoicingCreateDocumentRequest message)
         {
-            return new PaymentMethodModel
+            return new FinDocPaymentMethodDto
             {
                 Currency = "₪",
-                Cash = new CashModel[0],
-                Check = new CheckModel[0],
-                CreditCard = getCreditCardDetails(message),
-                MoneyTransfer = new MoneyTransferModel[0]//getMoneyTransferDetails(message)
+                Cash = new FinDocCashDto[0],
+                Check = new FinDocCheckDto[0],
+                CreditCard = GetCreditCardDetails(message),
+                MoneyTransfer = GetMoneyTransferDetails(message)
             };
         }
 
-        private static MoneyTransferModel[] getMoneyTransferDetails(InvoicingCreateDocumentRequest message)
+        private static IEnumerable<FinDocMoneyTransferDto> GetMoneyTransferDetails(InvoicingCreateDocumentRequest message)
         {
-            var result = new MoneyTransferModel[1];
-            MoneyTransferModel mt = new MoneyTransferModel();
-            //mt.Value = message.TotalAmount;
-            // TODO bank details
-            //  int bankID = -1;
-            //Int32.TryParse(message., out bankID);
-            // mt.BankId = bankID;
-            //mt.Branch = bankBrach;
-            //mt.Account = accountNumber;
-            //mt.AccountNumber = accountNumberSettings;
-            //mt.Bank = new BankDetailsModel();
-            //mt.Bank.id = bankID;
-            //mt.Bank.name = "";
-            //mt.Bank.code = bankNumber;
-            result[0] = mt;
-            return result;
-        }
+            var result = new List<FinDocMoneyTransferDto>();
 
-        private static CreditCardModel[] getCreditCardDetails(InvoicingCreateDocumentRequest message)
-        {
-            var result = new CreditCardModel[1];
-            CreditCardModel cc = new CreditCardModel();
-
-            //TODO: temporary, add support for multiple
-            var creditCardPayment = message.PaymentDetails.First(p => p.PaymentType == PaymentTypeEnum.Card) as CreditCardPaymentDetails;
-
-            //TODO: map from R1
-            //switch (message.CreditCardDetails.Solek)
-            //{
-            //    case "VISA":
-            //        cc.Type = 1;
-            //        break;
-            //    case "ISRACARD":
-            //        cc.Type = 2;
-            //        break;
-            //    case "DINERS_CLUB":
-            //        cc.Type = 3;
-            //        break;
-            //    case "AMEX":
-            //        cc.Type = 4;
-            //        break;
-            //    case "LEUMI_CARD":
-            //        cc.Type = 5;
-            //        break;
-            //    default:
-            //        cc.Type = 5;
-            //        break;
-            //}
-            cc.Value = message.TotalAmount;
-            cc.Number = creditCardPayment.СardNumber;
-            cc.Expiration = new ExpirationModel
+            foreach (var bankPayment in message.PaymentDetails.Where(p => p.PaymentType == PaymentTypeEnum.Bank).Cast<BankTransferDetails>())
             {
-                Month = creditCardPayment.CardExpiration.Month.Value,
-                Year = creditCardPayment.CardExpiration.Year.Value
-            };
+                var mt = new FinDocMoneyTransferDto();
 
-            cc.VoucherNum = getVoucherNum(creditCardPayment?.ShovarNumber);
-            cc.Payments = message.NumberOfPayments;
-            cc.FirstPayment = message.InitialPaymentAmount;
-            cc.DealType = getDealType(message.TransactionType);
+                mt.Bank = new BankDto
+                {
+                    Id = bankPayment.Bank.GetValueOrDefault()
+                };
+                mt.Branch = bankPayment.BankBranch.ToString();
+                mt.Account = bankPayment.BankAccount;
+                mt.Value = message.TotalAmount; // TODO: split amounts
 
-            result[0] = cc;
+                result.Add(mt);
+            }
+
             return result;
         }
 
-        private static string getVoucherNum(string dealReference)
+        private static IEnumerable<FinDocCreditCardDto> GetCreditCardDetails(InvoicingCreateDocumentRequest message)
+        {
+            var result = new List<FinDocCreditCardDto>();
+
+            foreach (var creditCardPayment in message.PaymentDetails.Where(p => p.PaymentType == PaymentTypeEnum.Card).Cast<CreditCardPaymentDetails>())
+            {
+                var cc = new FinDocCreditCardDto();
+
+                cc.Type = GetCardVendor(creditCardPayment.CardVendor?.ToUpper());
+                cc.Value = message.TotalAmount; // TODO: split amounts
+                cc.Number = creditCardPayment.СardNumber;
+                cc.Expiration = new FinDocCreditCardExpDto
+                {
+                    Month = creditCardPayment.CardExpiration.Month.Value,
+                    Year = 2000 + creditCardPayment.CardExpiration.Year.Value
+                };
+
+                cc.VoucherNum = GetVoucherNum(creditCardPayment?.ShovarNumber);
+                cc.Payments = message.NumberOfPayments;
+                cc.FirstPayment = message.InitialPaymentAmount;
+                cc.DealType = GetDealType(message.TransactionType);
+
+                result.Add(cc);
+            }
+
+            return result;
+        }
+
+        // TODO: we need to use R1 mapping in terminal configuration - different systems can have different card codes
+        private static int? GetCardVendor(string vendor)
+        {
+            return vendor switch
+            {
+                "VISA" => 1,
+                "ISRACARD" => 2,
+                "DINERS_CLUB" => 3,
+                "AMEX" => 4,
+                "LEUMI_CARD" => 5,
+                _ => 5,
+            };
+        }
+
+        private static string GetVoucherNum(string dealReference)
         {
             if (string.IsNullOrWhiteSpace(dealReference))
                 return null;
@@ -162,18 +152,20 @@ namespace RapidOne.Converters
             return dealReference.Length > 20 ? dealReference.Substring(dealReference.Length - 20, 20) : dealReference;
         }
 
-        //TODO: map to R1 correctly
-        private static int getDealType(TransactionTypeEnum? transactionType)
+        // TODO: we need to use R1 mapping in terminal configuration - credit or installment can have different codes (not only 3 or 2)
+        private static int GetDealType(TransactionTypeEnum? transactionType)
         {
             return transactionType switch
             {
                 TransactionTypeEnum.Credit => 3,
                 TransactionTypeEnum.Installments => 2,
-                TransactionTypeEnum.RegularDeal => 1
+                TransactionTypeEnum.RegularDeal => 1,
+                TransactionTypeEnum.Immediate => 1,
+                _ => throw new NotImplementedException()
             };
         }
 
-        private static RapidOne.Models.Enums.InvoiceTypeEnum getInvoiceType(InvoiceTypeEnum invoiceTypeID)
+        private static RapidOne.Models.Enums.InvoiceTypeEnum GetInvoiceType(InvoiceTypeEnum invoiceTypeID)
         {
             return invoiceTypeID switch
             {
@@ -181,13 +173,10 @@ namespace RapidOne.Converters
                 InvoiceTypeEnum.Invoice => Models.Enums.InvoiceTypeEnum.Invoice,
                 InvoiceTypeEnum.InvoiceWithPaymentInfo => Models.Enums.InvoiceTypeEnum.InvoiceReceipt,
                 InvoiceTypeEnum.PaymentInfo => Models.Enums.InvoiceTypeEnum.Receipt,
-                InvoiceTypeEnum.RefundInvoice => Models.Enums.InvoiceTypeEnum.InvoiceRefund
+                InvoiceTypeEnum.RefundInvoice => Models.Enums.InvoiceTypeEnum.InvoiceRefund,
+                _ => throw new NotImplementedException()
             };
         }
-
-
     }
-
-
 }
 

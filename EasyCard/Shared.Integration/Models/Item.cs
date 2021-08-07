@@ -11,6 +11,9 @@ namespace Shared.Integration.Models
     {
         public Guid? ItemID { get; set; }
 
+        [StringLength(250)]
+        public string ExternalReference { get; set; }
+
         [Required(AllowEmptyStrings = false)]
         [StringLength(250)]
         public string ItemName { get; set; }

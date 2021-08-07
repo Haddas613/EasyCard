@@ -16,7 +16,10 @@ namespace Transactions.Api.Mapping.ValueResolvers
 
             if (source.CreditCardDetails != null)
             {
-                pd.Add(context.Mapper.Map<CreditCardPaymentDetails>(source.CreditCardDetails));
+                var ccd = context.Mapper.Map<CreditCardPaymentDetails>(source.CreditCardDetails);
+                ccd.ShovarNumber = source.ShvaTransactionDetails?.ShvaShovarNumber;
+
+                pd.Add(ccd);
             }
 
             return pd;

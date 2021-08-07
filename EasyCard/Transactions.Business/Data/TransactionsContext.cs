@@ -337,18 +337,18 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.CardBin).HasColumnName("CardBin").IsRequired(false).HasMaxLength(10).IsUnicode(false);
                     s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardBrand).HasColumnName("CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
-                    s.Property(p => p.ShvaShovarNumber).HasColumnName("ShvaShovarNumber").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Ignore(b => b.CardReaderInput);
                     s.Ignore(b => b.Solek);
                 });
 
                 builder.OwnsOne(b => b.BankTransferDetails, s =>
                 {
-                    s.Property(p => p.Bank).IsRequired(false).HasColumnName("Bank");
-                    s.Property(p => p.BankAccount).IsRequired(false).HasColumnName("BankAccount").HasMaxLength(50);
-                    s.Property(p => p.BankBranch).IsRequired(false).HasColumnName("BankBranch");
-                    s.Property(p => p.DueDate).IsRequired(false).HasColumnName("DueDate");
-                    s.Property(p => p.Reference).IsRequired(false).HasColumnName("Reference").HasMaxLength(50);
+                    s.Property(p => p.Bank).IsRequired(false).HasColumnName("BankTransferBank");
+                    s.Property(p => p.BankAccount).IsRequired(false).HasColumnName("BankTransferBankAccount").HasMaxLength(50);
+                    s.Property(p => p.BankBranch).IsRequired(false).HasColumnName("BankTransferBankBranch");
+                    s.Property(p => p.DueDate).IsRequired(false).HasColumnName("BankTransferDueDate");
+                    s.Ignore(p => p.PaymentType);
+                    s.Property(p => p.Reference).IsRequired(false).HasColumnName("BankTransferReference").HasMaxLength(50);
                 });
 
                 builder.OwnsOne(b => b.ClearingHouseTransactionDetails, s =>
@@ -391,7 +391,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
                     s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
-                    s.Property(p => p.ExternalConsumerCode).HasColumnName("ExternalConsumerCode").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerExternalReference).HasColumnName("ConsumerExternalReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
@@ -446,7 +446,6 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Ignore(b => b.CardReaderInput);
-                builder.Ignore(b => b.ShvaShovarNumber);
 
                 builder.OwnsOne(b => b.ShvaInitialTransactionDetails, s =>
                 {
@@ -515,7 +514,6 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardBrand).HasColumnName("CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.Solek).HasColumnName("Solek").IsRequired(false).HasMaxLength(20).IsUnicode(false);
-                    s.Ignore(p => p.ShvaShovarNumber);
                     s.Ignore(b => b.CardReaderInput);
                 });
 
@@ -524,6 +522,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.Bank).IsRequired(false).HasColumnName("Bank");
                     s.Property(p => p.BankAccount).IsRequired(false).HasColumnName("BankAccount").HasMaxLength(50);
                     s.Property(p => p.BankBranch).IsRequired(false).HasColumnName("BankBranch");
+                    s.Ignore(p => p.PaymentType);
                 });
 
                 builder.OwnsOne(b => b.DealDetails, s =>
@@ -531,7 +530,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
                     s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
-                    s.Property(p => p.ExternalConsumerCode).HasColumnName("ExternalConsumerCode").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerExternalReference).HasColumnName("ConsumerExternalReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
@@ -625,7 +624,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
                     s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
-                    s.Property(p => p.ExternalConsumerCode).HasColumnName("ExternalConsumerCode").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerExternalReference).HasColumnName("ConsumerExternalReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
@@ -672,7 +671,6 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardBrand).HasColumnName("CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.Solek).HasColumnName("Solek").IsRequired(false).HasMaxLength(20).IsUnicode(false);
-                    s.Property(p => p.ShvaShovarNumber).HasColumnName("ShvaShovarNumber").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Ignore(b => b.CardReaderInput);
                 });
 
@@ -706,7 +704,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 {
                     s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
                     s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
-                    s.Property(p => p.ExternalConsumerCode).HasColumnName("ExternalConsumerCode").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerExternalReference).HasColumnName("ConsumerExternalReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
@@ -799,7 +797,6 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
                     s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Ignore(p => p.CardOwnerNationalID);
-                    s.Ignore(p => p.ShvaShovarNumber);
                     s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
                     s.Ignore(p => p.CardBin);
                     s.Ignore(p => p.CardVendor);

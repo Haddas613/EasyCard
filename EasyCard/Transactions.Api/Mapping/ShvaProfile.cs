@@ -26,22 +26,21 @@ namespace Transactions.Api.Mapping
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Shva.ShvaCreateTransactionResponse, ShvaTransactionDetails>()
-                 .ForMember(m => m.ShvaAuthNum, s => s.MapFrom(src => src.AuthNum))
-              .ForMember(m => m.TelToGetAuthNum, s => s.MapFrom(src => src.TelToGetAuthNum))
-             .ForMember(m => m.CompRetailerNum, s => s.MapFrom(src => src.CompRetailerNum));
+                .ForMember(m => m.ShvaAuthNum, s => s.MapFrom(src => src.AuthNum))
+                .ForMember(m => m.TelToGetAuthNum, s => s.MapFrom(src => src.TelToGetAuthNum))
+                .ForMember(m => m.CompRetailerNum, s => s.MapFrom(src => src.CompRetailerNum));
 
             CreateMap<Shva.ShvaTerminalSettings, PaymentTransaction>()
                 .ForMember(m => m.ShvaTransactionDetails, s => s.MapFrom(src => src))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Shva.ShvaTerminalSettings, ShvaTransactionDetails>()
-                 .ForMember(m => m.ShvaTerminalID, s => s.MapFrom(src => src.MerchantNumber));
+                .ForMember(m => m.ShvaTerminalID, s => s.MapFrom(src => src.MerchantNumber));
 
             CreateMap<Shva.ShvaCreateTransactionResponse, CreditCardDetails>()
-                 .ForMember(m => m.CardVendor, s => s.MapFrom(src => src.CreditCardVendor))
-             .ForMember(m => m.CardBrand, s => s.MapFrom(src => src.Brand))
-             .ForMember(m => m.ShvaShovarNumber, s => s.MapFrom(src => src.ShvaShovarNumber))
-            .ForMember(m => m.Solek, s => s.MapFrom(src => src.Solek));
+                .ForMember(m => m.CardVendor, s => s.MapFrom(src => src.CreditCardVendor))
+                .ForMember(m => m.CardBrand, s => s.MapFrom(src => src.Brand))
+                .ForMember(m => m.Solek, s => s.MapFrom(src => src.Solek));
 
             // Token (initial deal)
 
@@ -52,11 +51,11 @@ namespace Transactions.Api.Mapping
             CreateMap<Shva.ShvaCreateTransactionResponse, ShvaInitialTransactionDetails>();
 
             CreateMap<ShvaInitialTransactionDetails, Shva.Models.InitDealResultModel>()
-                 .ForMember(m => m.OriginalAuthNum, s => s.MapFrom(src => src.AuthNum))
-                 .ForMember(m => m.OriginalAuthSolekNum, s => s.MapFrom(src => src.AuthSolekNum))
-                 .ForMember(m => m.OriginalUid, s => s.MapFrom(src => src.ShvaDealID))
-                 .ForMember(m => m.OriginalTranDateTime, s => s.MapFrom(src => src.ShvaTransactionDate))
-                 .ForAllOtherMembers(d => d.Ignore());
+                .ForMember(m => m.OriginalAuthNum, s => s.MapFrom(src => src.AuthNum))
+                .ForMember(m => m.OriginalAuthSolekNum, s => s.MapFrom(src => src.AuthSolekNum))
+                .ForMember(m => m.OriginalUid, s => s.MapFrom(src => src.ShvaDealID))
+                .ForMember(m => m.OriginalTranDateTime, s => s.MapFrom(src => src.ShvaTransactionDate))
+                .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<ShvaTransactionDetails, SharedIntegration.Models.Processor.ShvaTransactionDetails>();
         }

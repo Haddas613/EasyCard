@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using RapidOne.Configuration;
 using RapidOne.Converters;
 using RapidOne.Models;
@@ -38,15 +39,15 @@ namespace RapidOne
 
             this.logger = logger;
         }
+
         public async Task<InvoicingCreateDocumentResponse> CreateDocument(InvoicingCreateDocumentRequest documentCreationRequest)
         {
-
             var terminal = documentCreationRequest.InvoiceingSettings as RapidOneTerminalSettings;
 
             var json = RapidInvoiceConverter.GetInvoiceCreateDocumentRequest(documentCreationRequest);
-            json.BranchId = Int32.Parse(terminal.Branch);
+            json.BranchId = terminal.Branch;
             json.Company = terminal.Company;
-            json.DepartmentId = Int32.Parse(terminal.Department);
+            json.DepartmentId = terminal.Department;
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
             NameValueCollection headers = GetAuthorizedHeaders(terminal.BaseUrl, terminal.Token, integrationMessageId, documentCreationRequest.CorrelationId);
@@ -71,12 +72,38 @@ namespace RapidOne
                          responseStatusStr = responseStatus.ToString();
                      });
 
+                return new InvoicingCreateDocumentResponse
+                {
+                    DocumentNumber = svcRes[0]?.DocEntry.ToString(),
+                    DownloadUrl = svcRes[0]?.Url,
+                    CopyDonwnloadUrl = svcRes[0]?.Url,
+                };
+            }
+            catch (WebApiClientErrorException wex)
+            {
+                this.logger.LogError(wex, $"RapidOne integration request failed. {wex.Message} ({integrationMessageId}). CorrelationId: {documentCreationRequest.CorrelationId}");
+
+                try
+                {
+                    var errResp = JsonConvert.DeserializeObject<RapidOneCreateDocumentErrorResponse>(wex.Response);
+
+                    return new InvoicingCreateDocumentResponse
+                    {
+                        Success = false,
+                        ErrorMessage = errResp.Error,
+                        OriginalHttpResponseCode = (int)wex.StatusCode
+                    };
+                }
+                catch (Exception)
+                {
+                    throw new IntegrationException("RapidOne integration request failed", integrationMessageId);
+                }
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"Rapid invoice integration request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {documentCreationRequest.CorrelationId}");
+                this.logger.LogError(ex, $"RapidOne integration request failed. {ex.Message} ({integrationMessageId}). CorrelationId: {documentCreationRequest.CorrelationId}");
 
-                throw new IntegrationException("Rapid invoice integration request failed", integrationMessageId);
+                throw new IntegrationException("RapidOne integration request failed", integrationMessageId);
             }
             finally
             {
@@ -90,21 +117,6 @@ namespace RapidOne
 
                 await storageService.Save(integrationMessage);
             }
-
-            var response = new InvoicingCreateDocumentResponse
-            {
-                DocumentNumber = svcRes[0]?.docEntry.ToString(),
-                DownloadUrl = svcRes[0]?.url,
-                CopyDonwnloadUrl = svcRes[0]?.url
-            };
-
-            //if (svcRes == null || svcRes.Count<1 || string.IsNullOrWhiteSpace(svcRes[0].url) || svcRes[0].docEntry <= 0)
-            //{
-            //    response.Success = false;
-            //    response.ErrorMessage = svcRes.Message ?? svcRes.Error;
-            //}
-
-            return response;
         }
 
         private NameValueCollection GetAuthorizedHeaders(string BaseUrl, string Token, string integrationMessageId, string correlationId)
@@ -117,9 +129,9 @@ namespace RapidOne
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"Rapid invoice integration request failed: failed to get token: {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
+                this.logger.LogError(ex, $"RapidOne integration request failed: failed to get token: {ex.Message} ({integrationMessageId}). CorrelationId: {correlationId}");
 
-                throw new IntegrationException("Rapid invoice integration request failed: failed to get token", integrationMessageId);
+                throw new IntegrationException("RapidOne integration request failed: failed to get token", integrationMessageId);
             }
         }
     }

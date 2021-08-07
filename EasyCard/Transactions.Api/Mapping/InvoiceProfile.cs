@@ -41,9 +41,7 @@ namespace Transactions.Api.Mapping
             CreateMap<Invoice, InvoiceResponse>();
 
             CreateMap<CreditCardDetails, CreditCardPaymentDetails>()
-                .ForMember(d => d.СardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardLastFourDigitsWithPrefix(d.CardNumber)))
-                .ForMember(d => d.CardExpiration, o => o.MapFrom(d => d.CardExpiration != null ? d.CardExpiration.ToString() : null))
-                .ForMember(d => d.ShovarNumber, o => o.MapFrom(d => d.ShvaShovarNumber));
+                .ForMember(d => d.СardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardLastFourDigitsWithPrefix(d.CardNumber)));
 
             // TODO: specify all members and ignore rest
             CreateMap<PaymentTransaction, Invoice>()
@@ -54,15 +52,13 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.CardOwnerNationalID, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerNationalID))
                 .ForMember(d => d.TransactionType, o => o.MapFrom(d => d.TransactionType))
                 .ForPath(d => d.CreditCardDetails.Solek, o => o.MapFrom(d => d.ShvaTransactionDetails.Solek))
-                 .ForPath(d => d.CreditCardDetails.CardBrand, o => o.MapFrom(d => d.CreditCardDetails.CardBrand))
-                 .ForPath(d => d.CreditCardDetails.CardVendor, o => o.MapFrom(d => d.CreditCardDetails.CardVendor))
+                .ForPath(d => d.CreditCardDetails.CardBrand, o => o.MapFrom(d => d.CreditCardDetails.CardBrand))
+                .ForPath(d => d.CreditCardDetails.CardVendor, o => o.MapFrom(d => d.CreditCardDetails.CardVendor))
                 .ForPath(d => d.CreditCardDetails.CardNumber, o => o.MapFrom(d => d.CreditCardDetails.CardNumber))
                 .ForPath(d => d.CreditCardDetails.CardExpiration, o => o.MapFrom(d => d.CreditCardDetails.CardExpiration))
                 .ForPath(d => d.CreditCardDetails.CardOwnerName, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerName))
                 .ForPath(d => d.CreditCardDetails.CardOwnerNationalID, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerNationalID))
                 .ForPath(d => d.CreditCardDetails.CardReaderInput, o => o.MapFrom(d => d.CreditCardDetails.CardReaderInput))
-                //.ForMember(d => d.CreditCardDetails, o => o.Ignore())
-                .ForPath(d => d.CreditCardDetails.ShvaShovarNumber, o => o.MapFrom(d => d.ShvaTransactionDetails.ShvaShovarNumber))
                 .ForMember(d => d.PaymentDetails, o => o.MapFrom<PaymentDetailsTransactionValueResolver>());
         }
     }
