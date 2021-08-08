@@ -19,7 +19,7 @@ namespace Transactions.Api.Models.PaymentRequests
         /// <summary>
         /// Terminal
         /// </summary>
-        public Guid TerminalID { get; set; }
+        public Guid? TerminalID { get; set; }
 
         /// <summary>
         /// Deal information (optional)
@@ -99,5 +99,9 @@ namespace Transactions.Api.Models.PaymentRequests
 
         [StringLength(100)]
         public string RedirectUrl { get; set; }
+
+        public bool UserAmount { get; set; }
+
+        public string CardOwnerNationalID { get; set; }
     }
 }
