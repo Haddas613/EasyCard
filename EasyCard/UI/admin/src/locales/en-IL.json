@@ -106,6 +106,9 @@
   "ClearingHouseTransactionDetails": "Clearing House Transaction Details",
   "PaymentDetails": "Payment Details",
   "BankAccountDetails": "Bank Account Details",
+  "Branch": "Branch",
+  "Department": "Department",
+  "Company": "Company",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

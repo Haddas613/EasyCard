@@ -106,6 +106,9 @@
   "ClearingHouseTransactionDetails": "פרטי עסקת מאגד",
   "PaymentDetails": "פרטי תשלום",
   "BankAccountDetails": "פרטי חשבון בנק",
+  "Branch": "סניף",
+  "Department": "מחלקה",
+  "Company": "חברה",
   
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",

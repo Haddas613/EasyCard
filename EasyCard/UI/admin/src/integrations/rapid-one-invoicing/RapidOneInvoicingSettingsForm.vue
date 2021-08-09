@@ -2,10 +2,19 @@
   <v-form v-model="formValid" lazy-validation>
     <v-row v-if="model.settings">
       <v-col cols="12" md="6" class="py-0">
-        <v-text-field v-model="model.settings.url" :label="$t('URL')"></v-text-field>
+        <v-text-field v-model="model.settings.baseUrl" :label="$t('URL')"></v-text-field>
       </v-col>
       <v-col cols="12" md="6" class="py-0">
-        <v-text-field v-model="model.settings.apiKey" :label="$t('ApiKey')"></v-text-field>
+        <v-text-field v-model="model.settings.token" :label="$t('ApiKey')"></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4" class="py-0">
+        <v-text-field v-model="model.settings.branch" type="number" :rules="[vr.primitives.numeric()]" :label="$t('Branch')"></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4" class="py-0">
+        <v-text-field v-model="model.settings.department" type="number" :rules="[vr.primitives.numeric()]" :label="$t('Department')"></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4" class="py-0">
+        <v-text-field v-model="model.settings.company" :label="$t('Company')"></v-text-field>
       </v-col>
     </v-row>
     <div class="d-flex justify-end">
@@ -15,6 +24,7 @@
 </template>
 
 <script>
+import ValidationRules from "../../helpers/validation-rules";
 export default {
   props: {
     data: {
@@ -35,7 +45,8 @@ export default {
         ...this.data
       },
       formValid: false,
-      loading: false
+      loading: false,
+      vr: ValidationRules
     }
   },
   mounted () {

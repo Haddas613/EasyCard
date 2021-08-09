@@ -247,9 +247,14 @@ namespace Merchants.Api.Controllers
                         throw new ApplicationException($"Could not create instance of {externalSystem.SettingsTypeFullName}");
                     }
 
-                    var settings = texternalSystem.Settings.ToObject(settingsType);
-                    mapper.Map(settings, terminal);
-                    await terminalsService.UpdateEntity(terminal, dbTransaction);
+                    //TODO: check if mapping exists or add empty mapping for every scenario
+                    try
+                    {
+                        var settings = texternalSystem.Settings.ToObject(settingsType);
+                        mapper.Map(settings, terminal, settingsType, typeof(Terminal));
+                        await terminalsService.UpdateEntity(terminal, dbTransaction);
+                    }
+                    catch (AutoMapperMappingException) { }
                 }
 
                 await terminalsService.SaveTerminalExternalSystem(texternalSystem, terminal, dbTransaction);
