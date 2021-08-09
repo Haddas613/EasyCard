@@ -81,5 +81,21 @@ namespace Transactions.Api.Models.Transactions
         [EnumDataType(typeof(TransactionTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public TransactionTypeEnum TransactionType { get; set; }
+
+        [Range(0.01, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal? PaymentRequestAmount { get; set; }
+
+        [Range(0, 1)]
+        [DataType(DataType.Currency)]
+        public decimal? VATRate { get; set; }
+
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal? VATTotal { get; set; }
+
+        [Range(0.01, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal? NetTotal { get; set; }
     }
 }

@@ -166,5 +166,7 @@ namespace Transactions.Business.Entities
 
         [NotMapped]
         public string RedirectUrl { get; set; }
+
+        public bool UserAmount { get; set; }
     }
 }

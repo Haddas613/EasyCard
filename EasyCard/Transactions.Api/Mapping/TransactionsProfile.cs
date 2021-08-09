@@ -85,7 +85,8 @@ namespace Transactions.Api.Mapping
             CreateMap<PaymentRequest, CreateTransactionRequest>()
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.PaymentRequestAmount));
 
-            CreateMap<PRCreateTransactionRequest, CreateTransactionRequest>();
+            CreateMap<PRCreateTransactionRequest, CreateTransactionRequest>()
+                .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.PaymentRequestAmount)); // TODO only for user amount
 
             CreateMap<Business.Entities.TransactionHistory, Models.Transactions.TransactionHistory>();
 

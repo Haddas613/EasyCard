@@ -35,9 +35,6 @@ using Transactions.Shared.Enums;
 using Shared.Integration;
 using Newtonsoft.Json.Linq;
 using System.Security;
-using Merchants.Business.Entities.Billing;
-using Merchants.Shared.Models;
-using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
@@ -157,11 +154,11 @@ namespace Transactions.Api.Controllers
                 model.PinPadDetails = model.PinPadDetails.UpdatePinPadDetails(terminal.Integrations.FirstOrDefault(i => i.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
             }
 
-            var newPaymentRequest = mapper.Map<PaymentIntentInternal>(model);
+            var newPaymentRequest = mapper.Map<PaymentRequest>(model);
             newPaymentRequest.TerminalID = terminal.TerminalID;
 
             // Update details if needed
-            UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest);
+            newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest);
             if (consumer != null)
             {
                 newPaymentRequest.CardOwnerName = consumer.ConsumerName;
@@ -188,63 +185,7 @@ namespace Transactions.Api.Controllers
             return response;
         }
 
-        private void UpdateDealDetails(Consumer consumer, TerminalSettings terminalSettings, PaymentIntentInternal financialItem)
-        {
-            var dealDetails = financialItem.DealDetails;
-
-            if (string.IsNullOrWhiteSpace(dealDetails.ConsumerEmail))
-            {
-                dealDetails.ConsumerEmail = consumer?.ConsumerEmail;
-            }
-
-            if (string.IsNullOrWhiteSpace(dealDetails.ConsumerPhone))
-            {
-                dealDetails.ConsumerPhone = consumer?.ConsumerPhone;
-            }
-
-            if (string.IsNullOrWhiteSpace(dealDetails.ConsumerExternalReference))
-            {
-                dealDetails.ConsumerExternalReference = consumer?.ExternalReference;
-            }
-
-            if (!(dealDetails.Items?.Count() > 0) && financialItem.Amount > 0)
-            {
-                dealDetails.Items = new List<SharedIntegration.Models.Item>
-                {
-                    new SharedIntegration.Models.Item
-                    {
-                         Quantity = 1,
-                         Price = financialItem.Amount,
-                         Amount = financialItem.Amount,
-                         ItemName = terminalSettings.DefaultItemName,
-                         NetAmount = financialItem.NetTotal,
-                         SKU = terminalSettings.DefaultSKU,
-                         VAT = financialItem.VATTotal,
-                         VATRate = financialItem.VATRate
-                    }
-                };
-            }
-
-            if (string.IsNullOrWhiteSpace(dealDetails.DealDescription))
-            {
-                dealDetails.DealDescription = terminalSettings.DefaultChargeDescription;
-            }
-
-            foreach (var item in dealDetails.Items)
-            {
-                if (string.IsNullOrWhiteSpace(item.ItemName))
-                {
-                    item.ItemName = terminalSettings.DefaultItemName;
-                }
-
-                if (string.IsNullOrWhiteSpace(item.SKU))
-                {
-                    item.SKU = terminalSettings.DefaultSKU;
-                }
-            }
-        }
-
-        private string GetPaymentIntentUrl(PaymentIntentInternal dbPaymentRequest, byte[] sharedTerminalApiKey, string redirectUrl)
+        private string GetPaymentIntentUrl(PaymentRequest dbPaymentRequest, byte[] sharedTerminalApiKey, string redirectUrl)
         {
             if (sharedTerminalApiKey == null)
             {

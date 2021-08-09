@@ -227,6 +227,12 @@ namespace CheckoutPortal.Controllers
                     mdel.CreditCardSecureDetails = null;
                 }
 
+                if (checkoutConfig.PaymentRequest.UserAmount)
+                {
+                    mdel.PaymentRequestAmount = request.Amount;
+                    mdel.NetTotal = Math.Round(mdel.PaymentRequestAmount.GetValueOrDefault() / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
+                    mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
+                }
 
                 result = await transactionsApiClient.CreateTransactionPR(mdel);
 

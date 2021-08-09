@@ -44,11 +44,11 @@ namespace Transactions.Business.Services
             // TODO: do we need to throw exception here ?
         }
 
-        public async Task<PaymentIntentInternal> GetPaymentIntent(Guid terminalID, Guid paymentIntentID)
+        public async Task<PaymentRequest> GetPaymentIntent(Guid terminalID, Guid paymentIntentID)
         {
             TableOperation getOperation = TableOperation.Retrieve<PaymentIntent>(terminalID.ToString(), paymentIntentID.ToString());
 
-            PaymentIntentInternal response = null;
+            PaymentRequest response = null;
 
             var res = await table.ExecuteAsync(getOperation);
 
@@ -57,14 +57,14 @@ namespace Transactions.Business.Services
                 var paymentRequestStr = ((PaymentIntent)res.Result)?.PaymentRequest;
                 if (!string.IsNullOrWhiteSpace(paymentRequestStr))
                 {
-                    return response = JsonConvert.DeserializeObject<PaymentIntentInternal>(paymentRequestStr);
+                    return response = JsonConvert.DeserializeObject<PaymentRequest>(paymentRequestStr);
                 }
             }
 
             return response;
         }
 
-        public async Task SavePaymentIntent(PaymentIntentInternal request)
+        public async Task SavePaymentIntent(PaymentRequest request)
         {
             var entity = new PaymentIntent(request.TerminalID.GetValueOrDefault(), request.PaymentRequestID) { PaymentRequest = JsonConvert.SerializeObject(request) };
 

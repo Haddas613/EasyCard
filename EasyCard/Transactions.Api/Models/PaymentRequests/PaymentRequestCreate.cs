@@ -97,9 +97,10 @@ namespace Transactions.Api.Models.PaymentRequests
 
         public bool IsRefund { get; set; }
 
-        [StringLength(100)]
+        [StringLength(1000)]
         public string RedirectUrl { get; set; }
 
+        // TODO: va;idate - this flag is required if amount is 0 or null
         public bool UserAmount { get; set; }
 
         public string CardOwnerNationalID { get; set; }
