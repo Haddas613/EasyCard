@@ -133,5 +133,11 @@ namespace Transactions.Api.Models.Transactions
                 VATTotal = TransactionAmount.GetValueOrDefault() - NetTotal;
             }
         }
+
+        /// <summary>
+        /// Only to be used for pin pad transactions when CredotCardSecureDetails is not available
+        /// </summary>
+        [StringLength(20)]
+        public string CardOwnerNationalID { get; set; }
     }
 }

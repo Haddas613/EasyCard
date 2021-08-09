@@ -795,6 +795,11 @@ namespace Transactions.Api.Controllers
 
                 pinpadProcessorSettings = processorResolver.GetProcessorTerminalSettings(terminalPinpadProcessor, terminalPinpadProcessor.Settings);
                 mapper.Map(pinpadProcessorSettings, transaction);
+
+                if (!string.IsNullOrEmpty(model.CardOwnerNationalID))
+                {
+                    transaction.CreditCardDetails.CardOwnerNationalID = model.CardOwnerNationalID;
+                }
             }
 
             await transactionsService.CreateEntity(transaction);

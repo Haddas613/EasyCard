@@ -30,62 +30,70 @@
       </template>
     </ec-dialog>
     <v-card-text class="py-2">
-      <v-switch v-if="includeDevice"
-        v-model="model.pinPad" :label="$t('UsePinPad')" :disabled="!availableDevices.length">
-      </v-switch>
-      <template v-if="model.pinPad && availableDevices.length > 0">
-        <v-col cols="12">
-        <v-select :items="availableDevices" v-model="selectedDevice" return-object :item-value="deviceValue" outlined>
-          <template v-slot:item="{ item }">
-            {{item.deviceID + '-' + item.deviceName}}
-          </template>
-          <template v-slot:selection="{ item }">
-            {{item.deviceID + '-' + item.deviceName}}
-          </template>
-        </v-select>
-      </v-col>
-      </template>
-      <template v-if="!model.pinPad">
-        <ec-dialog-invoker
-          v-on:click="handleClick()"
-          v-if="customerTokens"
-          :clickable="(customerTokens.length > 0)"
-          class="py-2"
-        >
-          <template v-slot:prepend>
-            <v-icon>mdi-credit-card-outline</v-icon>
-          </template>
-          <template v-slot:left >
-            <div v-if="!token">
-              <span v-if="customerTokens.length > 0" >{{$t("@ChooseFromSavedCount").replace("@count", customerTokens.length)}}</span>
-              <span v-if="customerTokens.length === 0">{{$t("NoSavedCards")}}</span>
-            </div>
-            <div v-if="token">
-              <span class="primary--text">
-                <card-token-string :token="token"></card-token-string>
-              </span>
-            </div>
-          </template>
-          <template v-slot:append>
-            <re-icon>mdi-chevron-right</re-icon>
-          </template>
-        </ec-dialog-invoker>
-        <v-form class="ec-form" ref="form" lazy-validation>
-          <template v-if="!token">
-            <credit-card-secure-details-fields
-              :data="model.creditCardSecureDetails"
-              ref="ccsecuredetailsform"
-              :tokens="customerTokens"
-            ></credit-card-secure-details-fields>
-            <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')" :disabled="!model.dealDetails.consumerID"></v-checkbox>
-          </template>
-          <v-text-field
-            v-model="model.oKNumber"
-            :label="$t('AuthorizationCode')"
-            :rules="[vr.primitives.stringLength(1, 50)]">
-          </v-text-field>
-        </v-form>
-      </template>
+      <v-form class="ec-form" ref="form" lazy-validation>
+        <v-switch v-if="includeDevice"
+          v-model="model.pinPad" :label="$t('UsePinPad')" :disabled="!availableDevices.length">
+        </v-switch>
+        <template v-if="model.pinPad">
+            <v-col cols="12" v-if="availableDevices.length > 0">
+              <v-select :items="availableDevices" v-model="selectedDevice" return-object :item-value="deviceValue" outlined>
+                <template v-slot:item="{ item }">
+                  {{item.deviceID + '-' + item.deviceName}}
+                </template>
+                <template v-slot:selection="{ item }">
+                  {{item.deviceID + '-' + item.deviceName}}
+                </template>
+              </v-select>
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
+                v-model="model.cardOwnerNationalID"
+                :rules="[vr.primitives.required, vr.special.israeliNationalId]"
+                :label="$t('NationalID')"
+                outlined
+              ></v-text-field>
+            </v-col>
+        </template>
+        <template v-if="!model.pinPad">
+          <ec-dialog-invoker
+            v-on:click="handleClick()"
+            v-if="customerTokens"
+            :clickable="(customerTokens.length > 0)"
+            class="py-2"
+          >
+            <template v-slot:prepend>
+              <v-icon>mdi-credit-card-outline</v-icon>
+            </template>
+            <template v-slot:left >
+              <div v-if="!token">
+                <span v-if="customerTokens.length > 0" >{{$t("@ChooseFromSavedCount").replace("@count", customerTokens.length)}}</span>
+                <span v-if="customerTokens.length === 0">{{$t("NoSavedCards")}}</span>
+              </div>
+              <div v-if="token">
+                <span class="primary--text">
+                  <card-token-string :token="token"></card-token-string>
+                </span>
+              </div>
+            </template>
+            <template v-slot:append>
+              <re-icon>mdi-chevron-right</re-icon>
+            </template>
+          </ec-dialog-invoker>
+            <template v-if="!token">
+              <credit-card-secure-details-fields
+                :data="model.creditCardSecureDetails"
+                ref="ccsecuredetailsform"
+                :tokens="customerTokens"
+              ></credit-card-secure-details-fields>
+              <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')" :disabled="!model.dealDetails.consumerID"></v-checkbox>
+            </template>
+            <v-text-field
+              v-model="model.oKNumber"
+              :label="$t('AuthorizationCode')"
+              :rules="[vr.primitives.stringLength(1, 50)]">
+            </v-text-field>
+        </template>
+      </v-form>
     </v-card-text>
     <v-card-actions class="px-4">
       <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t(btnText)}}</v-btn>
@@ -168,6 +176,9 @@ export default {
   },
   methods: {
     ok() {
+      let form = this.$refs.form.validate();
+      if (!form) return;
+
       if (this.model.pinPad) {
         this.okDevice();
       } 
@@ -181,12 +192,14 @@ export default {
       this.token = null;
     },
     okDevice(){
+      if(!this.cardOwnerNationalID)
       this.$emit("ok", {
         type: "device",
         data: {
           pinPad: true,
           pinPadDeviceID: this.selectedDevice.deviceID,
-          oKNumber: this.model.oKNumber
+          oKNumber: this.model.oKNumber,
+          cardOwnerNationalID: this.model.cardOwnerNationalID
         }
       });
     },
@@ -200,10 +213,6 @@ export default {
       });
     },
     okCreditCard() {
-      let form = this.$refs.form.validate();
-
-      if (!form) return;
-
       let data = this.$refs.ccsecuredetailsform.getData();
 
       if (!data) {
