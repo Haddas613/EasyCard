@@ -41,7 +41,6 @@ export default {
   },
   async mounted() {
     this.dictionaries = await this.$api.dictionaries.$getTransactionDictionaries();
-    console.log(this.dictionaries)
   }
 };
 </script>

@@ -172,7 +172,7 @@ namespace Transactions.Api.Controllers
             {
                 var dbInvoice = EnsureExists(await invoiceService.GetInvoices().Where(m => m.InvoiceID == invoiceID).FirstOrDefaultAsync());
 
-                if (dbInvoice.ExternalSystemData == null)
+                if (dbInvoice.ExternalSystemData == null || dbInvoice.ExternalSystemData.Count == 0)
                 {
                     var downloadUrl = dbInvoice.DownloadUrl;
 
