@@ -23,5 +23,7 @@ namespace MerchantProfileApi.Models.Billing
         public string OperationDoneBy { get; set; }
 
         public string CorrelationId { get; set; }
+
+        public string ExternalReference { get; set; }
     }
 }

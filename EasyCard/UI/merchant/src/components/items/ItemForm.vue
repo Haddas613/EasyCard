@@ -4,8 +4,8 @@
       <v-col cols="12">
         <v-text-field
           v-model="model.itemName"
-          :counter="80"
-          :rules="[vr.primitives.required, vr.primitives.maxLength(80)]"
+          :counter="50"
+          :rules="[vr.primitives.required, vr.primitives.maxLength(50)]"
           :label="$t('Name')"
           class="px-1"
           outlined
@@ -29,6 +29,16 @@
           :label="$t('Price')"
           :rules="[vr.primitives.biggerThan(0), vr.primitives.precision(2)]"
           required
+          class="px-1"
+          outlined
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" class="py-0">
+        <v-text-field
+          v-model="model.externalReference"
+          :counter="50"
+          :rules="[vr.primitives.maxLength(50)]"
+          :label="$t('ExternalReference')"
           class="px-1"
           outlined
         ></v-text-field>

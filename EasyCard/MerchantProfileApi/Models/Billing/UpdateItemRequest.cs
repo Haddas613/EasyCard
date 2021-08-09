@@ -23,5 +23,8 @@ namespace MerchantProfileApi.Models.Billing
         public CurrencyEnum Currency { get; set; }
 
         public byte[] UpdateTimestamp { get; set; }
+
+        [StringLength(250)]
+        public string ExternalReference { get; set; }
     }
 }

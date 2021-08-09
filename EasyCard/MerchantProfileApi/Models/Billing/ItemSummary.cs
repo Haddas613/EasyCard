@@ -15,5 +15,7 @@ namespace MerchantProfileApi.Models.Billing
         public decimal? Price { get; set; }
 
         public CurrencyEnum Currency { get; set; }
+
+        public string ExternalReference { get; set; }
     }
 }

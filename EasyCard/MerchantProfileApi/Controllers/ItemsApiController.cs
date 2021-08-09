@@ -86,7 +86,8 @@ namespace MerchantProfileApi.Controllers
                         Currency = currency,
                         ItemID = d.ItemID,
                         ItemName = d.ItemName,
-                        Price = rates.Convert(d.Currency, d.Price, currency)
+                        Price = rates.Convert(d.Currency, d.Price, currency),
+                        ExternalReference = d.ExternalReference
                     });
                 }
 
