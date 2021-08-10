@@ -99,6 +99,10 @@ namespace Transactions.Business.Data
 
         public DbSet<FutureBilling> FutureBillings { get; set; }
 
+        public DbSet<MasavFile> MasavFiles { get; set; }
+
+        public DbSet<MasavFileRow> MasavFileRows { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         public TransactionsContext(DbContextOptions<TransactionsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
@@ -314,6 +318,8 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
             modelBuilder.ApplyConfiguration(new PaymentRequestConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new FutureBillingConfiguration());
+            modelBuilder.ApplyConfiguration(new MasavFileConfiguration());
+            modelBuilder.ApplyConfiguration(new MasavFileRowConfiguration());
 
             // NOTE: security filters moved to Get() methods
 
@@ -845,6 +851,54 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(500).IsUnicode(false).IsRequired(false);
 
                 builder.HasIndex(d => d.PinPadTransactionID).IsUnique();
+            }
+        }
+
+        internal class MasavFileConfiguration : IEntityTypeConfiguration<MasavFile>
+        {
+            public void Configure(EntityTypeBuilder<MasavFile> builder)
+            {
+                builder.ToTable("MasavFile");
+
+                builder.HasKey(b => b.MasavFileID);
+
+                builder.Property(b => b.MasavFileDate);
+                builder.Property(b => b.PayedDate);
+                builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").HasColumnName("TransactionAmount");
+                builder.Property(b => b.StorageReference).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+                builder.Property(b => b.InstituteNumber);
+                builder.Property(b => b.InstituteName).IsRequired(false).HasMaxLength(250).IsUnicode(true);
+                builder.Property(b => b.SendingInstitute);
+                builder.Property(b => b.Currency);
+
+                builder.HasMany(b => b.Rows).WithOne(b => b.MasavFile);
+            }
+        }
+
+        internal class MasavFileRowConfiguration : IEntityTypeConfiguration<MasavFileRow>
+        {
+            public void Configure(EntityTypeBuilder<MasavFileRow> builder)
+            {
+                builder.ToTable("MasavFileRow");
+
+                builder.HasKey(b => b.MasavFileRowID);
+
+                builder.Property(b => b.MasavFileID);
+                builder.Property(b => b.PaymentTransactionID);
+                builder.Property(b => b.TerminalID);
+                builder.Property(b => b.Bankcode);
+                builder.Property(b => b.BranchNumber);
+                builder.Property(b => b.AccountNumber);
+                builder.Property(b => b.NationalID);
+
+                builder.Property(b => b.Amount).HasColumnType("decimal(19,4)");
+                builder.Property(b => b.ComissionTotal).HasColumnType("decimal(19,4)");
+                builder.Property(b => b.IsPayed);
+                builder.Property(b => b.SmsSent);
+                builder.Property(b => b.PayedDate);
+                builder.Property(b => b.SmsSentDate);
+
+                builder.HasOne(b => b.MasavFile).WithMany(b => b.Rows);
             }
         }
     }
