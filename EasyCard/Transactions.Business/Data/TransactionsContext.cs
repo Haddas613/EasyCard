@@ -183,9 +183,10 @@ DECLARE @OutputTransactionIDs table(
     [ShvaTranRecord] [varchar](500) NULL
 );
 
-UPDATE [dbo].[PaymentTransaction] SET [Status]=@NewStatus, [UpdatedDate]=@UpdatedDate 
+UPDATE t SET t.[Status]=@NewStatus, t.[UpdatedDate]=@UpdatedDate, t.ShvaTranRecord = ISNULL(t.ShvaTranRecord, n.ShvaTranRecord)
+FROM [dbo].[PaymentTransaction] as t LEFT OUTER JOIN [dbo].[NayaxTransactionsParameters] as n on n.PinPadTransactionID = t.PinPadTransactionID
 OUTPUT inserted.PaymentTransactionID, inserted.ShvaDealID, inserted.ShvaTerminalID, inserted.ShvaTranRecord INTO @OutputTransactionIDs
-WHERE [PaymentTransactionID] in @TransactionIDs AND [TerminalID] = @TerminalID AND [Status]=@OldStatus";
+WHERE t.[PaymentTransactionID] in @TransactionIDs AND t.[TerminalID] = @TerminalID AND t.[Status]=@OldStatus";
 
             // security check
             // TODO: replace to query builder
@@ -426,6 +427,9 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.TerminalTemplateID).IsRequired(false);
 
                 builder.Property(p => p.PinPadDeviceID).HasColumnName("PinPadDeviceID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.HasIndex(d => d.PinPadTransactionID);
             }
         }
 
@@ -825,6 +829,22 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.FutureScheduledTransaction).HasColumnName("FutureScheduledTransaction");
                 builder.Property(b => b.PausedFrom).HasColumnName("PausedFrom");
                 builder.Property(b => b.PausedTo).HasColumnName("PausedTo");
+            }
+        }
+
+        internal class NayaxTransactionsParametersConfiguration : IEntityTypeConfiguration<NayaxTransactionsParameters>
+        {
+            public void Configure(EntityTypeBuilder<NayaxTransactionsParameters> builder)
+            {
+                builder.ToTable("NayaxTransactionsParameters");
+
+                builder.HasKey(b => b.NayaxTransactionsParametersID);
+                builder.Property(b => b.NayaxTransactionsParametersID).ValueGeneratedNever();
+
+                builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                builder.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(500).IsUnicode(false).IsRequired(false);
+
+                builder.HasIndex(d => d.PinPadTransactionID).IsUnique();
             }
         }
     }

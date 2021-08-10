@@ -897,11 +897,6 @@ namespace Transactions.Api.Controllers
 
                 mapper.Map(processorResponse, transaction);
 
-                if (pinpadDeal)
-                {
-                    await transactionsService.Refresh(transaction);
-                }
-
                 if (!processorResponse.Success)
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);

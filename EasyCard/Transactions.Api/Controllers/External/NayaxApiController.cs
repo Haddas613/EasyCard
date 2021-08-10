@@ -28,13 +28,13 @@ namespace Transactions.Api.Controllers.External
     [ApiExplorerSettings(IgnoreApi = true)]
     public class NayaxApiController : ApiControllerBase
     {
-        private readonly ITransactionsService transactionsService;
+        private readonly INayaxTransactionsParametersService transactionsService;
         private readonly IMapper mapper;
         private readonly ILogger logger;
         private readonly NayaxGlobalSettings configuration;
 
         public NayaxApiController(
-             ITransactionsService transactionsService,
+             INayaxTransactionsParametersService transactionsService,
              IMapper mapper,
              ILogger<TransactionsApiController> logger,
              IOptions<NayaxGlobalSettings> configuration)
@@ -51,12 +51,12 @@ namespace Transactions.Api.Controllers.External
         {
             try
             {
-                var transaction =
-                EnsureExists(
-                await transactionsService.GetTransactionsForUpdate().FirstOrDefaultAsync(m => m.PinPadTransactionID == model.Vuid));
+                await transactionsService.CreateEntity(new Business.Entities.NayaxTransactionsParameters
+                {
+                    TranRecord = model.TranRecord,
+                    PinPadTransactionID = model.Vuid
+                });
 
-                transaction.ShvaTransactionDetails.TranRecord = model.TranRecord;
-                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission, transactionOperationCode: TransactionOperationCodesEnum.ProcessorPreTransmissionCommited);
                 return new NayaxUpdateTranRecordResponse
                 {
                     Status = "0"
