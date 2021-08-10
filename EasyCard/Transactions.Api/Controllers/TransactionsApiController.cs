@@ -457,17 +457,35 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<OperationResponse>> BlockCreditCard([FromBody] BlockCreditCardRequest model)
         {
             var transaction = mapper.Map<CreateTransactionRequest>(model);
-
+            CreditCardTokenKeyVault token = null;
             // Does it have sense to use J5 together with Token?
             if (!string.IsNullOrWhiteSpace(model.CreditCardToken))
             {
-                var token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken), "CreditCardToken");
-                return await ProcessTransaction(transaction, token, JDealTypeEnum.J5);
+                token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken), "CreditCardToken");
             }
             else
             {
-                return await ProcessTransaction(transaction, null, JDealTypeEnum.J5);
+                var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
+                mapper.Map(model, tokenRequest);
+                var dbData = mapper.Map<CreditCardTokenDetails>(tokenRequest);
+                var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+                dbData.MerchantID = terminal.MerchantID;
+                var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest);
+
+                var tokenResponseOperation = tokenResponse.GetOperationResponse();
+
+                if (!(tokenResponseOperation?.Status == StatusEnum.Success))
+                {
+                    return tokenResponse;
+                }
+
+                await creditCardTokenService.CreateEntity(dbData);
+                token = EnsureExists(await keyValueStorage.Get(tokenResponseOperation.EntityUID.ToString()), "CreditCardToken");
+                transaction.CreditCardSecureDetails = null;
+                transaction.CreditCardToken = tokenResponseOperation.EntityUID;
             }
+
+            return await ProcessTransaction(transaction, token, JDealTypeEnum.J5);
         }
 
         /// <summary>
