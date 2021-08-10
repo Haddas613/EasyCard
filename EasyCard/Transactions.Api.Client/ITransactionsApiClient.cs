@@ -38,5 +38,7 @@ namespace Transactions.Api.Client
 
         Task<UpdateParametersResponse> UpdateTerminalParameters(Guid terminalID);
 
+        Task<OperationResponse> GenerateMasavFile();
+
     }
 }
