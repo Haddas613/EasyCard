@@ -3,6 +3,7 @@ using Newtonsoft.Json.Converters;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -55,6 +56,11 @@ namespace Transactions.Api.Models.Transactions
         /// Credit card details (should be omitted in case if stored credit card token used)
         /// </summary>
         public CreditCardSecureDetails CreditCardSecureDetails { get; set; }
+
+        /// <summary>
+        /// Bank transfer details. Should be omitted in case of card transaction
+        /// </summary>
+        public BankTransferDetails BankTransferDetails { get; set; }
 
         /// <summary>
         /// Stored credit card details token (should be omitted in case if full credit card details used)
