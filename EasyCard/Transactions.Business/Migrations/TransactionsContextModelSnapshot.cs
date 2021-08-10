@@ -835,7 +835,10 @@ namespace Transactions.Business.Migrations
                         .HasColumnName("PinPadDeviceID");
 
                     b.Property<string>("PinPadTransactionID")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("PinPadTransactionID");
 
                     b.Property<long?>("ProcessorID")
                         .HasColumnType("bigint");
@@ -895,6 +898,8 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("decimal(19,4)");
 
                     b.HasKey("PaymentTransactionID");
+
+                    b.HasIndex("PinPadTransactionID");
 
                     b.ToTable("PaymentTransaction");
                 });
