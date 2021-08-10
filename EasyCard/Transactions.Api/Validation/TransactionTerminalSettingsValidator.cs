@@ -56,7 +56,7 @@ namespace Transactions.Api.Validation
             {
                 if (!(model.PinPad ?? false))
                 {
-                    if (model.CreditCardSecureDetails == null)
+                    if ((model.CreditCardSecureDetails == null) && (model.CreditCardToken == null))
                     {
                         throw new BusinessException(Messages.CreditCardSecureDetailsRequired);
                     }

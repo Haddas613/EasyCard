@@ -88,6 +88,11 @@ namespace Transactions.Api.Mapping
             CreateMap<PRCreateTransactionRequest, CreateTransactionRequest>()
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.PaymentRequestAmount)); // TODO only for user amount
 
+
+            CreateMap<PaymentTransaction, CreateTransactionRequest>()
+  .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.ShvaTransactionDetails.ShvaAuthNum));
+
+
             CreateMap<Business.Entities.TransactionHistory, Models.Transactions.TransactionHistory>();
 
             CreateMap<Business.Entities.CreditCardTokenDetails, Business.Entities.CreditCardDetails>();

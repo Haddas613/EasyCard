@@ -489,6 +489,30 @@ namespace Transactions.Api.Controllers
         }
 
         /// <summary>
+        /// Implement J5 deal
+        /// </summary>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
+        [Route("selectJ5/{transactionID}")]
+        [ValidateModelState]
+        public async Task<ActionResult<OperationResponse>> SelectJ5(Guid? transactionID )
+        {
+            var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == transactionID));
+
+            var CreateTransactionReq = mapper.Map<CreateTransactionRequest>(transaction);
+            if (transaction.Status != TransactionStatusEnum.AwaitingForSelectJ5)
+            {
+                return BadRequest(Messages.TransactionStatusIsNotValid);
+            }
+
+            var token = EnsureExists(await keyValueStorage.Get(CreateTransactionReq.CreditCardToken.ToString()), "CreditCardToken");
+            var response = await ProcessTransaction(CreateTransactionReq, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
+           // await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed); TODO in other way send trnsactionid in request and update itwhen j5 is success
+
+            return response;
+        }
+
+        /// <summary>
         /// Check if credit card is valid
         /// </summary>
         [HttpPost]
@@ -1025,7 +1049,11 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                if (jDealType != JDealTypeEnum.J4)
+                if (jDealType == JDealTypeEnum.J5)
+                {
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForSelectJ5);
+                }
+                else if (jDealType != JDealTypeEnum.J4)
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed);
                 }

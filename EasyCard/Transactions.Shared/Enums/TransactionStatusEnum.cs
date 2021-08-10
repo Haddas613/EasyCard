@@ -53,6 +53,12 @@ namespace Transactions.Shared.Enums
         Completed = 40,
 
         /// <summary>
+        /// Shva transmision is done
+        /// </summary>
+        [EnumMember(Value = "awaitingToSelectJ5")]
+        AwaitingForSelectJ5 = 45,
+
+        /// <summary>
         /// Transaction is rejeced by Clearing House
         /// </summary>
         [EnumMember(Value = "rejectedByAggregator")]

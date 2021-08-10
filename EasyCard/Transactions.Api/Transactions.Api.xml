@@ -28,6 +28,11 @@
             Blocking funds on credit card (J5 deal)
             </summary>
         </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.SelectJ5(System.Nullable{System.Guid})">
+            <summary>
+            Implement J5 deal
+            </summary>
+        </member>
         <member name="M:Transactions.Api.Controllers.TransactionsApiController.CheckCreditCard(Transactions.Api.Models.Transactions.CheckCreditCardRequest)">
             <summary>
             Check if credit card is valid
