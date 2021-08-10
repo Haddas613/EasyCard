@@ -15,12 +15,14 @@ using SharedIntegration = Shared.Integration;
 
 namespace FunctionsCompositionApp.Transactions
 {
-    public static class TransmitTerminalTransactions
+    public static class GenerateMasavFile
     {
-        [FunctionName("TransmitTerminalTransactions")]
-        public static async Task Run([QueueTrigger("transmission")] string messageBody, ILogger log, ExecutionContext context)
+        [FunctionName("GenerateMasavFile")]
+        public static async Task Run([TimerTrigger("%GetTransmissionTerminalsScheduleTriggerTime%")]TimerInfo myTimer,
+            ILogger log,
+            ExecutionContext context)
         {
-            log.LogInformation($"Transmitting terminal {messageBody} transactions");
+            log.LogInformation($"Generating Masav file");
 
             var config = new ConfigurationBuilder()
                 .SetBasePath(context.FunctionAppDirectory)
@@ -28,22 +30,21 @@ namespace FunctionsCompositionApp.Transactions
                 .AddEnvironmentVariables()
                 .Build();
 
-            var terminalID = Guid.Parse(messageBody);
-
             var transactionsApiClient = TransactionsApiClientHelper.GetTransactionsApiClient(log, config);
 
-            var response = await transactionsApiClient.TransmitTerminalTransactions(terminalID);
+            var response = await transactionsApiClient.GenerateMasavFile();
 
-            var totalCount = response.Data.Count();
-            var failedCount = response.Data.Where(t => t.TransmissionStatus != SharedIntegration.Models.TransmissionStatusEnum.Transmitted).Count();
-
-            if (failedCount > 0)
+            if (response.Status == SharedApi.Models.Enums.StatusEnum.Error)
             {
-                log.LogError($"Failed Transactions: {failedCount}; Successful Transactions: {totalCount - failedCount}; terminalID {messageBody};");
+                log.LogError($"Generating Masav file failed: {response.Message} ");
+            }
+            else if (response.Status == SharedApi.Models.Enums.StatusEnum.Warning)
+            {
+                log.LogWarning($"Generating Masav file completed with issues: {response.Message}");
             }
             else
             {
-                log.LogInformation($"Successful Transactions: {totalCount}; terminalID {messageBody};");
+                log.LogInformation($"Generating Masav file completed successfully {response.Message}");
             }
         }
     }

@@ -470,6 +470,99 @@ namespace Transactions.Business.Migrations
                     b.ToTable("Invoice");
                 });
 
+            modelBuilder.Entity("Transactions.Business.Entities.MasavFile", b =>
+                {
+                    b.Property<long>("MasavFileID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<short>("Currency")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("InstituteName")
+                        .HasMaxLength(250)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<int?>("InstituteNumber")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("MasavFileDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("PayedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SendingInstitute")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StorageReference")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("TotalAmount")
+                        .HasColumnType("decimal(19,4)")
+                        .HasColumnName("TransactionAmount");
+
+                    b.HasKey("MasavFileID");
+
+                    b.ToTable("MasavFile");
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.MasavFileRow", b =>
+                {
+                    b.Property<long>("MasavFileRowID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<int?>("AccountNumber")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Amount")
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<int?>("Bankcode")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BranchNumber")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("ComissionTotal")
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<bool?>("IsPayed")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("MasavFileID")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("NationalID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PayedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("PaymentTransactionID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("SmsSent")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("SmsSentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("TerminalID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("MasavFileRowID");
+
+                    b.HasIndex("MasavFileID");
+
+                    b.ToTable("MasavFileRow");
+                });
+
             modelBuilder.Entity("Transactions.Business.Entities.PaymentRequest", b =>
                 {
                     b.Property<Guid>("PaymentRequestID")
@@ -742,7 +835,10 @@ namespace Transactions.Business.Migrations
                         .HasColumnName("PinPadDeviceID");
 
                     b.Property<string>("PinPadTransactionID")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("PinPadTransactionID");
 
                     b.Property<long?>("ProcessorID")
                         .HasColumnType("bigint");
@@ -802,6 +898,8 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("decimal(19,4)");
 
                     b.HasKey("PaymentTransactionID");
+
+                    b.HasIndex("PinPadTransactionID");
 
                     b.ToTable("PaymentTransaction");
                 });
@@ -1286,6 +1384,15 @@ namespace Transactions.Business.Migrations
                     b.Navigation("InvoiceDetails");
                 });
 
+            modelBuilder.Entity("Transactions.Business.Entities.MasavFileRow", b =>
+                {
+                    b.HasOne("Transactions.Business.Entities.MasavFile", "MasavFile")
+                        .WithMany("Rows")
+                        .HasForeignKey("MasavFileID");
+
+                    b.Navigation("MasavFile");
+                });
+
             modelBuilder.Entity("Transactions.Business.Entities.PaymentRequest", b =>
                 {
                     b.OwnsOne("Shared.Integration.Models.Invoicing.InvoiceDetails", "InvoiceDetails", b1 =>
@@ -1716,6 +1823,11 @@ namespace Transactions.Business.Migrations
                         .IsRequired();
 
                     b.Navigation("PaymentTransaction");
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.MasavFile", b =>
+                {
+                    b.Navigation("Rows");
                 });
 #pragma warning restore 612, 618
         }

@@ -16,5 +16,7 @@ namespace Merchants.Shared.Models
 
         // TODO: validation
         public IEnumerable<string> RedirectUrls { get; set; }
+
+        public bool LegacyRedirectResponse { get; set; }
     }
 }

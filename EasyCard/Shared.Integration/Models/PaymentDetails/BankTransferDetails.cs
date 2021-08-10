@@ -5,9 +5,6 @@ using System.Text;
 
 namespace Shared.Integration.Models.PaymentDetails
 {
-    /// <summary>
-    /// For invoice only
-    /// </summary>
     public class BankTransferDetails : BankDetails
     {
         public BankTransferDetails()

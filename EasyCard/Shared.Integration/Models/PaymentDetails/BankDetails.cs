@@ -7,7 +7,7 @@ using System.Text;
 namespace Shared.Integration.Models.PaymentDetails
 {
     /// <summary>
-    /// Not for invoice. See <see cref="BankTransferDetails"></see>
+    /// For billing deal only. For invoice and payment transaction use <see cref="BankTransferDetails"></see>
     /// </summary>
     public class BankDetails : PaymentDetails
     {
