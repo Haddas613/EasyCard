@@ -99,6 +99,10 @@ namespace Transactions.Business.Data
 
         public DbSet<FutureBilling> FutureBillings { get; set; }
 
+        public DbSet<MasavFile> MasavFiles { get; set; }
+
+        public DbSet<MasavFileRow> MasavFileRows { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         public TransactionsContext(DbContextOptions<TransactionsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
@@ -183,9 +187,10 @@ DECLARE @OutputTransactionIDs table(
     [ShvaTranRecord] [varchar](500) NULL
 );
 
-UPDATE [dbo].[PaymentTransaction] SET [Status]=@NewStatus, [UpdatedDate]=@UpdatedDate 
+UPDATE t SET t.[Status]=@NewStatus, t.[UpdatedDate]=@UpdatedDate, t.ShvaTranRecord = ISNULL(t.ShvaTranRecord, n.ShvaTranRecord)
+FROM [dbo].[PaymentTransaction] as t LEFT OUTER JOIN [dbo].[NayaxTransactionsParameters] as n on n.PinPadTransactionID = t.PinPadTransactionID
 OUTPUT inserted.PaymentTransactionID, inserted.ShvaDealID, inserted.ShvaTerminalID, inserted.ShvaTranRecord INTO @OutputTransactionIDs
-WHERE [PaymentTransactionID] in @TransactionIDs AND [TerminalID] = @TerminalID AND [Status]=@OldStatus";
+WHERE t.[PaymentTransactionID] in @TransactionIDs AND t.[TerminalID] = @TerminalID AND t.[Status]=@OldStatus";
 
             // security check
             // TODO: replace to query builder
@@ -313,6 +318,8 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
             modelBuilder.ApplyConfiguration(new PaymentRequestConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new FutureBillingConfiguration());
+            modelBuilder.ApplyConfiguration(new MasavFileConfiguration());
+            modelBuilder.ApplyConfiguration(new MasavFileRowConfiguration());
 
             // NOTE: security filters moved to Get() methods
 
@@ -426,6 +433,9 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.TerminalTemplateID).IsRequired(false);
 
                 builder.Property(p => p.PinPadDeviceID).HasColumnName("PinPadDeviceID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.HasIndex(d => d.PinPadTransactionID);
             }
         }
 
@@ -825,6 +835,70 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.FutureScheduledTransaction).HasColumnName("FutureScheduledTransaction");
                 builder.Property(b => b.PausedFrom).HasColumnName("PausedFrom");
                 builder.Property(b => b.PausedTo).HasColumnName("PausedTo");
+            }
+        }
+
+        internal class NayaxTransactionsParametersConfiguration : IEntityTypeConfiguration<NayaxTransactionsParameters>
+        {
+            public void Configure(EntityTypeBuilder<NayaxTransactionsParameters> builder)
+            {
+                builder.ToTable("NayaxTransactionsParameters");
+
+                builder.HasKey(b => b.NayaxTransactionsParametersID);
+                builder.Property(b => b.NayaxTransactionsParametersID).ValueGeneratedNever();
+
+                builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                builder.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(500).IsUnicode(false).IsRequired(false);
+
+                builder.HasIndex(d => d.PinPadTransactionID).IsUnique();
+            }
+        }
+
+        internal class MasavFileConfiguration : IEntityTypeConfiguration<MasavFile>
+        {
+            public void Configure(EntityTypeBuilder<MasavFile> builder)
+            {
+                builder.ToTable("MasavFile");
+
+                builder.HasKey(b => b.MasavFileID);
+
+                builder.Property(b => b.MasavFileDate);
+                builder.Property(b => b.PayedDate);
+                builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").HasColumnName("TransactionAmount");
+                builder.Property(b => b.StorageReference).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+                builder.Property(b => b.InstituteNumber);
+                builder.Property(b => b.InstituteName).IsRequired(false).HasMaxLength(250).IsUnicode(true);
+                builder.Property(b => b.SendingInstitute);
+                builder.Property(b => b.Currency);
+
+                builder.HasMany(b => b.Rows).WithOne(b => b.MasavFile);
+            }
+        }
+
+        internal class MasavFileRowConfiguration : IEntityTypeConfiguration<MasavFileRow>
+        {
+            public void Configure(EntityTypeBuilder<MasavFileRow> builder)
+            {
+                builder.ToTable("MasavFileRow");
+
+                builder.HasKey(b => b.MasavFileRowID);
+
+                builder.Property(b => b.MasavFileID);
+                builder.Property(b => b.PaymentTransactionID);
+                builder.Property(b => b.TerminalID);
+                builder.Property(b => b.Bankcode);
+                builder.Property(b => b.BranchNumber);
+                builder.Property(b => b.AccountNumber);
+                builder.Property(b => b.NationalID);
+
+                builder.Property(b => b.Amount).HasColumnType("decimal(19,4)");
+                builder.Property(b => b.ComissionTotal).HasColumnType("decimal(19,4)");
+                builder.Property(b => b.IsPayed);
+                builder.Property(b => b.SmsSent);
+                builder.Property(b => b.PayedDate);
+                builder.Property(b => b.SmsSentDate);
+
+                builder.HasOne(b => b.MasavFile).WithMany(b => b.Rows);
             }
         }
     }

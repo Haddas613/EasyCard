@@ -152,7 +152,7 @@ namespace CheckoutPortal.Controllers
                 }
                 else
                 {
-                    if (checkoutConfig.PaymentRequest != null)
+                    if (checkoutConfig.PaymentRequest != null && !checkoutConfig.PaymentRequest.UserAmount)
                     {
                         checkoutConfig.PaymentRequest.NumberOfPayments = request.NumberOfPayments.Value;
                         checkoutConfig.PaymentRequest.InitialPaymentAmount =

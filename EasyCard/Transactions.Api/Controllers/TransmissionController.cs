@@ -89,8 +89,7 @@ namespace Transactions.Api.Controllers
         {
             var query = transactionsService.GetTransactions()
                 .Filter(filter)
-                .Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission)
-                .Where(d => d.ShvaTransactionDetails != null && d.ShvaTransactionDetails.TranRecord != null);
+                .Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission);
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {

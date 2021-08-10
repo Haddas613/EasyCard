@@ -1064,6 +1064,11 @@
             Credit card details (should be omitted in case if stored credit card token used)
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.BankTransferDetails">
+            <summary>
+            Bank transfer details. Should be omitted in case of card transaction
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.CreditCardToken">
             <summary>
             Stored credit card details token (should be omitted in case if full credit card details used)
