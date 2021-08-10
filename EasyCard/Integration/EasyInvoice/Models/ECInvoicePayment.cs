@@ -53,5 +53,8 @@ namespace EasyInvoice.Models
 
         [DataMember(Name = "chequeAccount")]
         public string ChequeAccount { get; set; }
+
+        [DataMember(Name = "chequeDate")]
+        public string ChequeDate { get; set; }
     }
 }
