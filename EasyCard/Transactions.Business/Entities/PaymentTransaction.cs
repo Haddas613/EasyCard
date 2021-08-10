@@ -267,11 +267,6 @@ namespace Transactions.Business.Entities
         /// </summary>
         public int? ProcessorResultCode { get; set; }
 
-        /// <summary>
-        /// Bank account information
-        /// </summary>
-        public BankDetails BankDetails { get; set; }
-
         // TODO: calculate items, VAT
         [Obsolete]
         public void Calculate()
