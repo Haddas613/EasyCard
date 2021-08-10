@@ -1,11 +1,12 @@
-﻿using Shared.Helpers;
+﻿using Shared.Business;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Transactions.Business.Entities
 {
-    public class MasavFile
+    public class MasavFile : IEntityBase<long>
     {
         public long MasavFileID { get; set; }
 
@@ -26,5 +27,7 @@ namespace Transactions.Business.Entities
         public string InstituteName { get; set; }
 
         public CurrencyEnum Currency { get; set; }
+
+        public long GetID() => MasavFileID;
     }
 }
