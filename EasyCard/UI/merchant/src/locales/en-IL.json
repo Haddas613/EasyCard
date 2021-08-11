@@ -84,6 +84,7 @@
   "SecurityNotice": "Security notice",
   "PaymentDetails": "Payment Details",
   "BankAccountDetails": "Bank Account Details",
+  "ExtendedResponseForCheckoutTransaction": "Extended response for checkout transaction",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

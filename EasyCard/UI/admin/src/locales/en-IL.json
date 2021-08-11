@@ -109,6 +109,7 @@
   "Branch": "Branch",
   "Department": "Department",
   "Company": "Company",
+  "ExtendedResponseForCheckoutTransaction": "Extended response for checkout transaction",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

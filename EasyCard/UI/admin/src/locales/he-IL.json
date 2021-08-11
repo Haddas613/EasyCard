@@ -109,6 +109,7 @@
   "Branch": "סניף",
   "Department": "מחלקה",
   "Company": "חברה",
+  "ExtendedResponseForCheckoutTransaction": "תגובה מורחבת עסקאות רידיירקט",
   
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",

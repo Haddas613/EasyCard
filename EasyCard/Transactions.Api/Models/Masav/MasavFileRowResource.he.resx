@@ -118,45 +118,45 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AccountNumber" xml:space="preserve">
-    <value>Acc. number</value>
+    <value>מספר ת.ז.</value>
   </data>
   <data name="Amount" xml:space="preserve">
-    <value>Amount</value>
+    <value>סכום</value>
   </data>
   <data name="Bankcode" xml:space="preserve">
-    <value>Bank Code</value>
+    <value>קוד בנק</value>
   </data>
   <data name="BranchNumber" xml:space="preserve">
-    <value>Branch</value>
+    <value>סניף</value>
   </data>
   <data name="ComissionTotal" xml:space="preserve">
-    <value>Comission Total</value>
+    <value>סכום הריביות</value>
   </data>
   <data name="IsPayed" xml:space="preserve">
-    <value>Is Payed</value>
+    <value>האם שולם</value>
   </data>
   <data name="MasavFileID" xml:space="preserve">
-    <value>Masav File</value>
+    <value>קובץ מסב</value>
   </data>
   <data name="MasavFileRowID" xml:space="preserve">
-    <value>ID</value>
+    <value>ת.ז</value>
   </data>
   <data name="NationalID" xml:space="preserve">
-    <value>Nat. ID</value>
+    <value>מספר ת.ז.</value>
   </data>
   <data name="PayedDate" xml:space="preserve">
-    <value>Payed Date</value>
+    <value>תאריך תשלום</value>
   </data>
   <data name="PaymentTransactionID" xml:space="preserve">
-    <value>Transaction ID</value>
+    <value>מזהה עסקה</value>
   </data>
   <data name="SmsSent" xml:space="preserve">
-    <value>Sms Sent</value>
+    <value>נשלח מיסרון</value>
   </data>
   <data name="SmsSentDate" xml:space="preserve">
-    <value>Sms Sent Date</value>
+    <value>תאריך שליחת המיסרון</value>
   </data>
   <data name="TerminalID" xml:space="preserve">
-    <value>Terminal</value>
+    <value>מסוף</value>
   </data>
 </root>
