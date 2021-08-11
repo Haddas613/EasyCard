@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Shared.Business;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Transactions.Business.Entities
 {
-    public class MasavFileRow
+    public class MasavFileRow : IEntityBase<long>
     {
         public long MasavFileRowID { get; set; }
 
@@ -35,5 +36,7 @@ namespace Transactions.Business.Entities
         public DateTime? SmsSentDate { get; set; }
 
         public DateTime? PayedDate { get; set; }
+
+        public long GetID() => MasavFileRowID;
     }
 }
