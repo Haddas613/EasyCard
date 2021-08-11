@@ -117,31 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Currency" xml:space="preserve">
-    <value>Currency</value>
+  <data name="AccountNumber" xml:space="preserve">
+    <value>Acc. number</value>
   </data>
-  <data name="InstituteName" xml:space="preserve">
-    <value>Institute name</value>
+  <data name="Amount" xml:space="preserve">
+    <value>Amount</value>
   </data>
-  <data name="InstituteNumber" xml:space="preserve">
-    <value>Institute number</value>
+  <data name="Bankcode" xml:space="preserve">
+    <value>Bank Code</value>
   </data>
-  <data name="MasavFileDate" xml:space="preserve">
-    <value>Date</value>
+  <data name="BranchNumber" xml:space="preserve">
+    <value>Branch</value>
+  </data>
+  <data name="ComissionTotal" xml:space="preserve">
+    <value>Comission Total</value>
+  </data>
+  <data name="IsPayed" xml:space="preserve">
+    <value>Is Payed</value>
   </data>
   <data name="MasavFileID" xml:space="preserve">
+    <value>Masav File</value>
+  </data>
+  <data name="MasavFileRowID" xml:space="preserve">
     <value>ID</value>
+  </data>
+  <data name="NationalID" xml:space="preserve">
+    <value>Nat. ID</value>
   </data>
   <data name="PayedDate" xml:space="preserve">
     <value>Payed Date</value>
   </data>
-  <data name="SendingInstitute" xml:space="preserve">
-    <value>Sending institute</value>
+  <data name="PaymentTransactionID" xml:space="preserve">
+    <value>Transaction ID</value>
   </data>
-  <data name="StorageReference" xml:space="preserve">
-    <value>Reference</value>
+  <data name="SmsSent" xml:space="preserve">
+    <value>Sms Sent</value>
   </data>
-  <data name="TotalAmount" xml:space="preserve">
-    <value>Total</value>
+  <data name="SmsSentDate" xml:space="preserve">
+    <value>Sms Sent Date</value>
+  </data>
+  <data name="TerminalID" xml:space="preserve">
+    <value>Terminal</value>
   </data>
 </root>

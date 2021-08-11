@@ -8,5 +8,6 @@ namespace Transactions.Api.Models.Masav
 {
     public class MasavFileRowFilter : FilterBase
     {
+        public long MasavFileID { get; set; }
     }
 }
