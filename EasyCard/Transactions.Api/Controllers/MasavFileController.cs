@@ -71,65 +71,6 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<MasavFileSummary>>> GetMasavFiles([FromQuery] MasavFileFilter filter)
         {
-            //if (!ensureonce)
-            //{
-            //    ensureonce = true;
-            //    MasavFile m = new MasavFile
-            //    {
-            //        MasavFileDate = DateTime.UtcNow.AddDays(-1),
-            //        PayedDate = DateTime.UtcNow,
-            //        TotalAmount = 45,
-            //        InstituteNumber = 1,
-            //        SendingInstitute = 1,
-            //        InstituteName = "Test masav. Ignore",
-            //        Currency = SharedHelpers.CurrencyEnum.ILS
-            //    };
-            //    await masavFileService.CreateMasavFile(m);
-            //    List<MasavFileRow> rows = new List<MasavFileRow>
-            //    {
-            //        new MasavFileRow
-            //        {
-            //            MasavFileID = m.MasavFileID,
-            //            TerminalID = Guid.Parse("f4fb83aa-d4f0-4d52-92e4-ac1400adc357"),
-            //            Bankcode = 1,
-            //            BranchNumber = 1,
-            //            AccountNumber = 1,
-            //            NationalID = "424242",
-            //            Amount = 5,
-            //            IsPayed = true,
-            //            PayedDate = DateTime.UtcNow
-            //        },
-            //        new MasavFileRow
-            //        {
-            //            MasavFileID = m.MasavFileID,
-            //            TerminalID = Guid.Parse("f4fb83aa-d4f0-4d52-92e4-ac1400adc357"),
-            //            Bankcode = 1,
-            //            BranchNumber = 1,
-            //            AccountNumber = 1,
-            //            NationalID = "523544",
-            //            Amount = 15,
-            //            IsPayed = false,
-            //            PayedDate = null
-            //        },
-            //        new MasavFileRow
-            //        {
-            //            MasavFileID = m.MasavFileID,
-            //            TerminalID = Guid.Parse("f4fb83aa-d4f0-4d52-92e4-ac1400adc357"),
-            //            Bankcode = 1,
-            //            BranchNumber = 1,
-            //            AccountNumber = 1,
-            //            NationalID = "897976",
-            //            Amount = 25,
-            //            IsPayed = true,
-            //            PayedDate = DateTime.UtcNow
-            //        }
-            //    };
-            //    foreach (var r in rows)
-            //    {
-            //        await masavFileService.CreateMasavFileRow(r);
-            //    }
-            //}
-
             var query = masavFileService.GetMasavFiles().Filter(filter);
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
