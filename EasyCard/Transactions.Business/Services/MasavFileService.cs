@@ -38,12 +38,27 @@ namespace Transactions.Business.Services
 
         public async Task UpdateMasavFileRow(MasavFileRow data)
         {
-            throw new NotImplementedException();
+            MasavFileRow exist = context.MasavFileRows.Find(data.GetID());
+
+            context.Entry(exist).CurrentValues.SetValues(data);
+
+            await context.SaveChangesAsync();
         }
 
         public async Task CreateMasavFileRow(MasavFileRow data)
         {
-            throw new NotImplementedException();
+            context.MasavFileRows.Add(data);
+            await context.SaveChangesAsync();
+        }
+
+        public Task CreateMasavFile(MasavFile data)
+        {
+            return CreateEntity(data);
+        }
+
+        public Task UpdateMasavFile(MasavFile data)
+        {
+            return UpdateEntity(data);
         }
     }
 }

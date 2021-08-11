@@ -19,5 +19,9 @@ namespace Transactions.Business.Services
         Task UpdateMasavFileRow(MasavFileRow data);
 
         Task CreateMasavFileRow(MasavFileRow data);
+
+        Task CreateMasavFile(MasavFile data);
+
+        Task UpdateMasavFile(MasavFile data);
     }
 }

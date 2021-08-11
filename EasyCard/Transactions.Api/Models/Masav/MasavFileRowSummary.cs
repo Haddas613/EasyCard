@@ -1,4 +1,5 @@
 ﻿using Shared.Api.UI;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,5 +39,8 @@ namespace Transactions.Api.Models.Masav
         public DateTime? SmsSentDate { get; set; }
 
         public DateTime? PayedDate { get; set; }
+
+        [MetadataOptions(Hidden = true)]
+        public CurrencyEnum Currency { get; set; }
     }
 }

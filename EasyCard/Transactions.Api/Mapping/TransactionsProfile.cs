@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Extensions;
 using Transactions.Api.Models.External;
+using Transactions.Api.Models.Masav;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Business.Entities;
@@ -96,6 +97,9 @@ namespace Transactions.Api.Mapping
             CreateMap<Business.Entities.TransactionHistory, Models.Transactions.TransactionHistory>();
 
             CreateMap<Business.Entities.CreditCardTokenDetails, Business.Entities.CreditCardDetails>();
+
+            CreateMap<Business.Entities.MasavFile, MasavFileSummary>();
+            CreateMap<Business.Entities.MasavFileRow, MasavFileRowSummary>();
         }
     }
 }

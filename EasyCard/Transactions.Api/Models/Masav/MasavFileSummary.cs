@@ -1,4 +1,5 @@
-﻿using Shared.Helpers;
+﻿using Shared.Api.UI;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Transactions.Api.Models.Masav
 
         public decimal? TotalAmount { get; set; }
 
+        [MetadataOptions(Hidden = true)]
         public string StorageReference { get; set; }
 
         public int? InstituteNumber { get; set; }
@@ -24,6 +26,7 @@ namespace Transactions.Api.Models.Masav
 
         public string InstituteName { get; set; }
 
+        [MetadataOptions(Hidden = true)]
         public CurrencyEnum Currency { get; set; }
     }
 }

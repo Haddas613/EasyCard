@@ -36,11 +36,6 @@
             <b>{{item.transactionAmount | currency(item.currency)}}</b>
           </p>
         </template>
-        <template v-slot:item.transactionAmount="{ item }">
-          <p class="text-right">
-            <b>{{item.transactionAmount | currency(item.currency)}}</b>
-          </p>
-        </template>
         <template v-slot:item.quickStatus="{ item }">
           <span v-bind:class="quickStatusesColors[item.$quickStatus]">{{$t(item.quickStatus || 'None')}}</span>
         </template>
