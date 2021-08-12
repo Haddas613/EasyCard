@@ -49,7 +49,8 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.Paused, o => o.MapFrom(d => d.Paused()));
 
             CreateMap<BillingDeal, CreateTransactionRequest>()
-                .ForMember(d => d.BankTransferDetails, o => o.MapFrom(s => s.BankDetails));
+                .ForMember(d => d.BankTransferDetails, o => o.MapFrom(s => s.BankDetails))
+                .ForMember(d => d.PaymentTypeEnum, o => o.MapFrom(s => s.PaymentType));
 
             CreateMap<BillingDealHistory, BillingDealHistoryResponse>();
 

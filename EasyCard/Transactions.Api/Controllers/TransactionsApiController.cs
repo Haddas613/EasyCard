@@ -1183,6 +1183,11 @@ namespace Transactions.Api.Controllers
             transaction.DocumentOrigin = GetDocumentOrigin(billingDeal?.BillingDealID, null, false);
             transaction.CardPresence = pinpadDeal ? CardPresenceEnum.Regular : model.CardPresence;
 
+            // ensuring that bank unrelated fields are null
+            transaction.CreditCardDetails = null;
+            transaction.CreditCardToken = null;
+            transaction.ShvaTransactionDetails = null;
+
             if (transaction.DealDetails == null)
             {
                 transaction.DealDetails = new Business.Entities.DealDetails();
@@ -1203,11 +1208,6 @@ namespace Transactions.Api.Controllers
             if (model.IssueInvoice.GetValueOrDefault())
             {
                 model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings, transaction);
-            }
-
-            if (string.IsNullOrWhiteSpace(transaction.CreditCardDetails.CardOwnerName) && consumer != null)
-            {
-                transaction.CreditCardDetails.CardOwnerName = consumer.ConsumerName;
             }
 
             transaction.Calculate();
