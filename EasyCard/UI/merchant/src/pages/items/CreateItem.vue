@@ -27,7 +27,7 @@ export default {
 
       if (!this.$apiSuccess(result)) return;
 
-      this.$router.push({ name: "Item",  params: { id: this.$route.params.id}})
+      this.$router.push({ name: "Item",  params: { id: result.entityReference}})
     }
   },
 };
