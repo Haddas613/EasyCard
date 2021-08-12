@@ -1409,8 +1409,6 @@ namespace Transactions.Api.Controllers
 
         private async Task<OperationResponse> NextBillingDeal(BillingDeal billingDeal)
         {
-            var token = EnsureExists(await keyValueStorage.Get(billingDeal.CreditCardToken.ToString()), "CreditCardToken");
-
             var transaction = mapper.Map<CreateTransactionRequest>(billingDeal);
 
             transaction.CardPresence = CardPresenceEnum.CardNotPresent;
@@ -1426,6 +1424,7 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
+                    var token = EnsureExists(await keyValueStorage.Get(billingDeal.CreditCardToken.ToString()), "CreditCardToken");
                     actionResult = await ProcessTransaction(transaction, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, initialTransactionID: billingDeal.InitialTransactionID, billingDeal: billingDeal);
                 }
 
