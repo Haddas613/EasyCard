@@ -1431,6 +1431,11 @@
             Generic transaction type
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.CardOwnerNationalID">
+            <summary>
+            Only to be used for pin pad transactions when CredotCardSecureDetails is not available
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionRequestBase.TerminalID">
             <summary>
             EasyCard terminal reference
