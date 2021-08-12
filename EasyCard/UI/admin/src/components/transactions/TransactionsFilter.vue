@@ -135,6 +135,17 @@
             clearable
           ></v-select>
         </v-col>
+        <v-col cols="12" md="3" sm="6">
+          <v-select
+            :items="paymentTypesFiltered"
+            item-text="description"
+            item-value="code"
+            v-model="model.paymentType"
+            :label="$t('PaymentType')"
+            hide-details="true"
+            clearable
+          ></v-select>
+        </v-col>
         <v-col cols="12" md="6">
           <v-row class="pt-3">
             <v-col cols="12" md="6">
@@ -192,11 +203,13 @@ export default {
     return {
       model: { ...this.filterData },
       dictionaries: {},
+      paymentTypesFiltered: null,
       formIsValid: true
     };
   },
   async mounted() {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+    this.paymentTypesFiltered = this.lodash.filter(this.dictionaries.paymentTypeEnum, e => e.code == "bank" || e.code == "card");
   },
   props: {
     filterData: {
