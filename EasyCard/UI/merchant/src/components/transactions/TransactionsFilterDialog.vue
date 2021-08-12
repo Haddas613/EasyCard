@@ -181,6 +181,17 @@
                 clearable
               ></v-select>
             </v-col>
+            <v-col cols="12" class="py-0">
+              <v-select
+                :items="paymentTypesFiltered"
+                item-text="description"
+                item-value="code"
+                v-model="model.paymentType"
+                :label="$t('PaymentType')"
+                outlined
+                clearable
+              ></v-select>
+            </v-col>
           </v-row>
         </v-form>
       </div>
@@ -220,11 +231,13 @@ export default {
       customersDialog: false,
       selectedCustomer: null,
       formIsValid: true,
-      vr: ValidationRules
+      vr: ValidationRules,
+      paymentTypesFiltered: null
     };
   },
   async mounted() {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+    this.paymentTypesFiltered = this.lodash.filter(this.dictionaries.paymentTypeEnum, e => e.code == "bank" || e.code == "card");
   },
   computed: {
     visible: {
