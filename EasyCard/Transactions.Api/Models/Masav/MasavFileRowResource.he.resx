@@ -117,31 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Currency" xml:space="preserve">
-    <value>מטבע</value>
+  <data name="AccountNumber" xml:space="preserve">
+    <value>מספר ת.ז.</value>
   </data>
-  <data name="InstituteName" xml:space="preserve">
-    <value>שם המכון</value>
+  <data name="Amount" xml:space="preserve">
+    <value>סכום</value>
   </data>
-  <data name="InstituteNumber" xml:space="preserve">
-    <value>מספר המכון</value>
+  <data name="Bankcode" xml:space="preserve">
+    <value>קוד בנק</value>
   </data>
-  <data name="MasavFileDate" xml:space="preserve">
-    <value>תאריך</value>
+  <data name="BranchNumber" xml:space="preserve">
+    <value>סניף</value>
+  </data>
+  <data name="ComissionTotal" xml:space="preserve">
+    <value>סכום הריביות</value>
+  </data>
+  <data name="IsPayed" xml:space="preserve">
+    <value>האם שולם</value>
   </data>
   <data name="MasavFileID" xml:space="preserve">
+    <value>קובץ מסב</value>
+  </data>
+  <data name="MasavFileRowID" xml:space="preserve">
     <value>ת.ז</value>
+  </data>
+  <data name="NationalID" xml:space="preserve">
+    <value>מספר ת.ז.</value>
   </data>
   <data name="PayedDate" xml:space="preserve">
     <value>תאריך תשלום</value>
   </data>
-  <data name="SendingInstitute" xml:space="preserve">
-    <value>מכון שולח</value>
+  <data name="PaymentTransactionID" xml:space="preserve">
+    <value>מזהה עסקה</value>
   </data>
-  <data name="StorageReference" xml:space="preserve">
-    <value>אסמכתא</value>
+  <data name="SmsSent" xml:space="preserve">
+    <value>נשלח מיסרון</value>
   </data>
-  <data name="TotalAmount" xml:space="preserve">
-    <value>סכום</value>
+  <data name="SmsSentDate" xml:space="preserve">
+    <value>תאריך שליחת המיסרון</value>
+  </data>
+  <data name="TerminalID" xml:space="preserve">
+    <value>מסוף</value>
   </data>
 </root>

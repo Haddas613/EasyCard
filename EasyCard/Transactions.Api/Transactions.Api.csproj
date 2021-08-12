@@ -87,6 +87,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>MasavFileResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Models\Masav\MasavFileRowResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MasavFileRowResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Models\PaymentRequests\PaymentRequestSummaryResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -131,6 +136,10 @@
     <EmbeddedResource Update="Models\Masav\MasavFileResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>MasavFileResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Masav\MasavFileRowResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MasavFileRowResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Models\PaymentRequests\PaymentRequestSummaryResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

@@ -17,5 +17,8 @@ namespace Transactions.Api.Models.Transactions
 
         [JsonProperty("error_msg")]
         public string ErrorMsg { get; set; }
+
+        [JsonProperty("correlationID")]
+        public string CorrelationID { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Extensions;
 using Transactions.Api.Models.External;
+using Transactions.Api.Models.Masav;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Business.Entities;
@@ -88,7 +89,6 @@ namespace Transactions.Api.Mapping
             CreateMap<PRCreateTransactionRequest, CreateTransactionRequest>()
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.PaymentRequestAmount)); // TODO only for user amount
 
-
             CreateMap<PaymentTransaction, CreateTransactionRequest>()
   .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.ShvaTransactionDetails.ShvaAuthNum))
   .ForMember(d => d.InitialJ5TransactionID, o => o.MapFrom(d => TransactionsHelper.GetJ5transactionID(d.PaymentTransactionID, (int)d.JDealType)));
@@ -96,6 +96,9 @@ namespace Transactions.Api.Mapping
             CreateMap<Business.Entities.TransactionHistory, Models.Transactions.TransactionHistory>();
 
             CreateMap<Business.Entities.CreditCardTokenDetails, Business.Entities.CreditCardDetails>();
+
+            CreateMap<Business.Entities.MasavFile, MasavFileSummary>();
+            CreateMap<Business.Entities.MasavFileRow, MasavFileRowSummary>();
         }
     }
 }

@@ -182,6 +182,11 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.PaymentRequestID != null);
             }
 
+            if (filter.PaymentType != null)
+            {
+                src = src.Where(t => t.PaymentTypeEnum == filter.PaymentType.Value);
+            }
+
             return src;
         }
 

@@ -166,7 +166,7 @@ namespace Transactions.Api.Controllers
         // TODO: support several download urls
         [HttpGet]
         [Route("{invoiceID}/download")]
-        public async Task<ActionResult<OperationResponse>> GetInvoiceDownloadURL([FromRoute] Guid invoiceID)
+        public async Task<ActionResult<DownloadInvoiceResponse>> GetInvoiceDownloadURL([FromRoute] Guid invoiceID)
         {
             using (var dbTransaction = invoiceService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
@@ -174,9 +174,9 @@ namespace Transactions.Api.Controllers
 
                 if (dbInvoice.ExternalSystemData == null || dbInvoice.ExternalSystemData.Count == 0)
                 {
-                    var downloadUrl = dbInvoice.DownloadUrl;
+                    var downloadUrl = new List<string> { dbInvoice.DownloadUrl };
 
-                    return new OperationResponse { Status = StatusEnum.Success, EntityUID = invoiceID, EntityReference = downloadUrl };
+                    return new DownloadInvoiceResponse (downloadUrl) { Status = StatusEnum.Success, EntityUID = invoiceID };
                 }
                 else
                 {
@@ -208,7 +208,7 @@ namespace Transactions.Api.Controllers
 
                         var invoicingResponse = await invoicing.GetDownloadUrls(dbInvoice.ExternalSystemData, invoicingSettings);
 
-                        return new OperationResponse { Status = StatusEnum.Success, EntityUID = invoiceID, EntityReference = invoicingResponse.FirstOrDefault() };
+                        return new DownloadInvoiceResponse(invoicingResponse) { Status = StatusEnum.Success, EntityUID = invoiceID };
                     }
                     catch (Exception ex)
                     {

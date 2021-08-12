@@ -59,5 +59,86 @@ namespace Transactions.Api.Models.Masav {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Currency.
+        /// </summary>
+        public static string Currency {
+            get {
+                return ResourceManager.GetString("Currency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Institute name.
+        /// </summary>
+        public static string InstituteName {
+            get {
+                return ResourceManager.GetString("InstituteName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Institute number.
+        /// </summary>
+        public static string InstituteNumber {
+            get {
+                return ResourceManager.GetString("InstituteNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date.
+        /// </summary>
+        public static string MasavFileDate {
+            get {
+                return ResourceManager.GetString("MasavFileDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ID.
+        /// </summary>
+        public static string MasavFileID {
+            get {
+                return ResourceManager.GetString("MasavFileID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payed Date.
+        /// </summary>
+        public static string PayedDate {
+            get {
+                return ResourceManager.GetString("PayedDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sending institute.
+        /// </summary>
+        public static string SendingInstitute {
+            get {
+                return ResourceManager.GetString("SendingInstitute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reference.
+        /// </summary>
+        public static string StorageReference {
+            get {
+                return ResourceManager.GetString("StorageReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total.
+        /// </summary>
+        public static string TotalAmount {
+            get {
+                return ResourceManager.GetString("TotalAmount", resourceCulture);
+            }
+        }
     }
 }

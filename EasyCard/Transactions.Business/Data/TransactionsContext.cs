@@ -103,6 +103,8 @@ namespace Transactions.Business.Data
 
         public DbSet<MasavFileRow> MasavFileRows { get; set; }
 
+        public DbSet<NayaxTransactionsParameters> NayaxTransactionsParameters { get; set; }
+
         private readonly ClaimsPrincipal user;
 
         public TransactionsContext(DbContextOptions<TransactionsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
@@ -188,8 +190,8 @@ DECLARE @OutputTransactionIDs table(
 );
 
 UPDATE t SET t.[Status]=@NewStatus, t.[UpdatedDate]=@UpdatedDate, t.ShvaTranRecord = ISNULL(t.ShvaTranRecord, n.ShvaTranRecord)
-FROM [dbo].[PaymentTransaction] as t LEFT OUTER JOIN [dbo].[NayaxTransactionsParameters] as n on n.PinPadTransactionID = t.PinPadTransactionID
 OUTPUT inserted.PaymentTransactionID, inserted.ShvaDealID, inserted.ShvaTerminalID, inserted.ShvaTranRecord INTO @OutputTransactionIDs
+FROM [dbo].[PaymentTransaction] as t LEFT OUTER JOIN [dbo].[NayaxTransactionsParameters] as n on n.PinPadTransactionID = t.PinPadTransactionID
 WHERE t.[PaymentTransactionID] in @TransactionIDs AND t.[TerminalID] = @TerminalID AND t.[Status]=@OldStatus";
 
             // security check
@@ -320,6 +322,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
             modelBuilder.ApplyConfiguration(new FutureBillingConfiguration());
             modelBuilder.ApplyConfiguration(new MasavFileConfiguration());
             modelBuilder.ApplyConfiguration(new MasavFileRowConfiguration());
+            modelBuilder.ApplyConfiguration(new NayaxTransactionsParametersConfiguration());
 
             // NOTE: security filters moved to Get() methods
 

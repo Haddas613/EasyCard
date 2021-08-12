@@ -368,13 +368,21 @@
         {{$t("CheckoutRedirectUrls")}}
         <v-divider class="pt-1"></v-divider>
       </v-col>
-      <v-col cols="12" class="d-flex justify-end py-0">
-          <v-btn color="success" small @click="addRedirectUrl()">
-            <v-icon left class="body-1">mdi-plus-circle</v-icon>
-            {{$t('Add')}}
-          </v-btn>
+      <v-col cols="12" md="6" class="d-flex justify-start">
+        <v-switch
+          class="pt-0"
+          v-model="model.checkoutSettings.legacyRedirectResponse"
+          :label="$t('ExtendedResponseForCheckoutTransaction')"
+          hide-details
+        ></v-switch>
       </v-col>
-      <v-col cols="12">
+      <v-col cols="12" md="6" class="d-flex justify-end">
+        <v-btn color="success" small @click="addRedirectUrl()">
+          <v-icon left class="body-1">mdi-plus-circle</v-icon>
+          {{$t('Add')}}
+        </v-btn>
+      </v-col>
+      <v-col cols="12" class="pt-6">
         <ec-list color="ecbg"
             :items="model.checkoutSettings.redirectUrls" 
             v-if="model.checkoutSettings.redirectUrls && model.checkoutSettings.redirectUrls.length > 0"

@@ -94,5 +94,11 @@ namespace Transactions.Api.Models.Transactions
         [EnumDataType(typeof(TransactionTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public TransactionTypeEnum TransactionType { get; set; }
+
+        /// <summary>
+        /// Only to be used for pin pad transactions when CredotCardSecureDetails is not available
+        /// </summary>
+        [StringLength(20)]
+        public string CardOwnerNationalID { get; set; }
     }
 }

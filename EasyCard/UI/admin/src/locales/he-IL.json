@@ -109,6 +109,8 @@
   "Branch": "סניף",
   "Department": "מחלקה",
   "Company": "חברה",
+  "MasavFiles": "קבצים הוראת קבע",
+  "MasavFileRows": "שורות הוראת קבע",
   
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -369,6 +371,7 @@
   "Bank": "בנק",
   "BankBranch": "מספר סניף",
   "BankAccount": "מספר חשבון בנק",
+  "ExtendedResponseForCheckoutTransaction": "תגובה מורחבת עסקאות רידיירקט",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

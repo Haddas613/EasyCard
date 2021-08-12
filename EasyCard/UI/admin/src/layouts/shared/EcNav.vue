@@ -101,6 +101,11 @@ export default {
               icon: "mdi-cash-multiple",
               text: "TransactionsList",
               to: { name: "Transactions" }
+            },
+            {
+              icon: "mdi-bank-transfer",
+              text: "MasavFiles",
+              to: { name: "MasavFiles" }
             }
           ]
         },
