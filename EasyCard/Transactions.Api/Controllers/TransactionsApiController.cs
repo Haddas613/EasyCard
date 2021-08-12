@@ -495,7 +495,7 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         [Route("selectJ5/{transactionID}")]
         [ValidateModelState]
-        public async Task<ActionResult<OperationResponse>> SelectJ5(Guid? transactionID )
+        public async Task<ActionResult<OperationResponse>> SelectJ5(Guid? transactionID)
         {
             var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == transactionID));
 
@@ -507,7 +507,6 @@ namespace Transactions.Api.Controllers
 
             var token = EnsureExists(await keyValueStorage.Get(CreateTransactionReq.CreditCardToken.ToString()), "CreditCardToken");
             var response = await ProcessTransaction(CreateTransactionReq, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
-           // await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed); TODO in other way send trnsactionid in request and update itwhen j5 is success
 
             return response;
         }
@@ -956,6 +955,11 @@ namespace Transactions.Api.Controllers
                 else
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
+                    if (model.InitialJ5TransactionID != null)
+                    {
+                        var transactionJ5 = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == model.InitialJ5TransactionID));
+                        await transactionsService.UpdateEntityWithStatus(transactionJ5, TransactionStatusEnum.Completed);
+                    }
                 }
             }
             catch (Exception ex)

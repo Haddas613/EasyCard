@@ -90,8 +90,8 @@ namespace Transactions.Api.Mapping
 
 
             CreateMap<PaymentTransaction, CreateTransactionRequest>()
-  .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.ShvaTransactionDetails.ShvaAuthNum));
-
+  .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.ShvaTransactionDetails.ShvaAuthNum))
+  .ForMember(d => d.InitialJ5TransactionID, o => o.MapFrom(d => TransactionsHelper.GetJ5transactionID(d.PaymentTransactionID, (int)d.JDealType)));
 
             CreateMap<Business.Entities.TransactionHistory, Models.Transactions.TransactionHistory>();
 
