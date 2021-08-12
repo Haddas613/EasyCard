@@ -48,7 +48,8 @@
           </v-btn>
         </template>    
         <template v-slot:item.cardPresence="{ item }">
-          <span :title="item.cardPresence">
+          <v-icon :title="$t('Bank')" v-if="item.paymentTypeEnum == 'bank'" color="secondary">mdi-bank</v-icon>
+          <span v-else :title="item.cardPresence">
             <v-icon v-if="item.$cardPresence == 'regular'" color="success">mdi-credit-card-check</v-icon>
             <v-icon v-else>mdi-credit-card-off-outline</v-icon>
           </span>
