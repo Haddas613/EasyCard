@@ -493,6 +493,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to J5 Expiration date is {0}.
+        /// </summary>
+        public static string J5ExpirationDate {
+            get {
+                return ResourceManager.GetString("J5ExpirationDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to J5 transaction was expired.
+        /// </summary>
+        public static string J5Expired {
+            get {
+                return ResourceManager.GetString("J5Expired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to J5 deal is not allowed.
         /// </summary>
         public static string J5NotAllowed {

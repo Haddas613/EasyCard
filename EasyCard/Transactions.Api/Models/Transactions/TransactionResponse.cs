@@ -99,6 +99,10 @@ namespace Transactions.Api.Models.Transactions
         public JDealTypeEnum JDealType { get; set; }
 
         /// <summary>
+        /// Transaction J5 expired date (in gengeral after 1 day)
+        /// </summary>
+        public DateTime? TransactionJ5ExpiredDate { get; set; }
+        /// <summary>
         /// Rejection Reason
         /// </summary>
         public RejectionReasonEnum? RejectionReason { get; set; }

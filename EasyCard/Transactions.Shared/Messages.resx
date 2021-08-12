@@ -261,6 +261,12 @@
   <data name="J2NotAllowed" xml:space="preserve">
     <value>J2 deal is not allowed</value>
   </data>
+  <data name="J5ExpirationDate" xml:space="preserve">
+    <value>J5 Expiration date is {0}</value>
+  </data>
+  <data name="J5Expired" xml:space="preserve">
+    <value>J5 transaction was expired</value>
+  </data>
   <data name="J5NotAllowed" xml:space="preserve">
     <value>J5 deal is not allowed</value>
   </data>

@@ -1385,6 +1385,11 @@
             J3, J4, J5
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.TransactionJ5ExpiredDate">
+            <summary>
+            Transaction J5 expired date (in gengeral after 1 day)
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionResponse.RejectionReason">
             <summary>
             Rejection Reason

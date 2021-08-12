@@ -33,6 +33,8 @@ namespace Merchants.Shared.Models
 
         public bool? J5Allowed { get; set; }
 
+        public int J5ExpirationDays { get; set; }
+
         public bool? SendTransactionSlipEmailToMerchant { get; set; }
 
         [StringLength(250)]
@@ -61,5 +63,10 @@ namespace Merchants.Shared.Models
         public bool VATExempt { get; set; }
 
         public TerminalTransmissionScheduleEnum? TransmissionSchedule { get; set; }
+
+        public TerminalSettings()
+        {
+            J5ExpirationDays = 1;
+        }
     }
 }
