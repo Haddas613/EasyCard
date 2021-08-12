@@ -41,8 +41,11 @@
     [AllowPinPad]               BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
     [IsRefund]                  BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
     [ConsumerExternalReference] VARCHAR (50)     NULL,
+    [UserAmount]                BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
 
 
 

@@ -70,7 +70,7 @@
     [UpayMerchantNumber]             NVARCHAR (64)    NULL,
     [UpayTransactionID]              NVARCHAR (64)    NULL,
     [UpayWebUrl]                     NVARCHAR (512)   NULL,
-    [PinPadTransactionID]            NVARCHAR (MAX)   NULL,
+    [PinPadTransactionID]            VARCHAR (50)     NULL,
     [ProcessorResultCode]            INT              NULL,
     [CompRetailerNum]                VARCHAR (20)     NULL,
     [EmvSoftVersion]                 VARCHAR (20)     NULL,
@@ -127,4 +127,11 @@
 
 
 
+
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PaymentTransaction_PinPadTransactionID]
+    ON [dbo].[PaymentTransaction]([PinPadTransactionID] ASC);
 

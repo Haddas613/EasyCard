@@ -74,5 +74,8 @@
     <Build Include="dbo\Tables\BillingDealHistory.sql" />
     <Build Include="dbo\Tables\_numbers.sql" />
     <Build Include="dbo\Views\vFutureBillings.sql" />
+    <Build Include="dbo\Tables\NayaxTransactionsParameters.sql" />
+    <Build Include="dbo\Tables\MasavFileRow.sql" />
+    <Build Include="dbo\Tables\MasavFile.sql" />
   </ItemGroup>
 </Project>
