@@ -315,9 +315,6 @@
   <data name="EmailValidationMessage" xml:space="preserve">
     <value>כתובת מייל אינה תקינה</value>
   </data>
-  <data name="PasswordMatchValidatonMessage" xml:space="preserve">
-    <value>סיסמה לא עומדת בדרישות המערכת</value>
-  </data>
   <data name="PasswordRequired" xml:space="preserve">
     <value>סיסמה חובה</value>
   </data>
