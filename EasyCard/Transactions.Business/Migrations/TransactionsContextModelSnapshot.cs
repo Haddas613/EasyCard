@@ -501,6 +501,9 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("TerminalID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal?>("TotalAmount")
                         .HasColumnType("decimal(19,4)")
                         .HasColumnName("TransactionAmount");
@@ -529,8 +532,13 @@ namespace Transactions.Business.Migrations
                     b.Property<int?>("BranchNumber")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("ComissionTotal")
-                        .HasColumnType("decimal(19,4)");
+                    b.Property<Guid?>("ConsumerID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConsumerName")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool?>("IsPayed")
                         .HasColumnType("bit");
@@ -541,9 +549,6 @@ namespace Transactions.Business.Migrations
                     b.Property<string>("NationalID")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("PayedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<Guid?>("PaymentTransactionID")
                         .HasColumnType("uniqueidentifier");
 
@@ -552,9 +557,6 @@ namespace Transactions.Business.Migrations
 
                     b.Property<DateTime?>("SmsSentDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("TerminalID")
-                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("MasavFileRowID");
 

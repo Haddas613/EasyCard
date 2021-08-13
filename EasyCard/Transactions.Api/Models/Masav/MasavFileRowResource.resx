@@ -132,6 +132,9 @@
   <data name="ComissionTotal" xml:space="preserve">
     <value>Comission Total</value>
   </data>
+  <data name="ConsumerName" xml:space="preserve">
+    <value>Consumer</value>
+  </data>
   <data name="IsPayed" xml:space="preserve">
     <value>Is Payed</value>
   </data>

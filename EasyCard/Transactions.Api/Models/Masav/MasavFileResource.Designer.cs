@@ -133,6 +133,15 @@ namespace Transactions.Api.Models.Masav {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Terminal.
+        /// </summary>
+        public static string TerminalName {
+            get {
+                return ResourceManager.GetString("TerminalName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total.
         /// </summary>
         public static string TotalAmount {

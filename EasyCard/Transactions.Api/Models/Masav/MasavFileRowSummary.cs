@@ -11,11 +11,10 @@ namespace Transactions.Api.Models.Masav
     {
         public long MasavFileRowID { get; set; }
 
+        [MetadataOptions(Hidden = true)]
         public long? MasavFileID { get; set; }
 
         public Guid? PaymentTransactionID { get; set; }
-
-        public Guid? TerminalID { get; set; }
 
         public int? Bankcode { get; set; }
 
@@ -33,14 +32,15 @@ namespace Transactions.Api.Models.Masav
 
         public bool SmsSent { get; set; }
 
-        public decimal? ComissionTotal { get; set; }
-
         [MetadataOptions(Hidden = true)]
         public DateTime? SmsSentDate { get; set; }
 
-        public DateTime? PayedDate { get; set; }
-
         [MetadataOptions(Hidden = true)]
         public CurrencyEnum Currency { get; set; }
+
+        [MetadataOptions(Hidden = true)]
+        public Guid? ConsumerID { get; set; }
+
+        public string ConsumerName { get; set; }
     }
 }

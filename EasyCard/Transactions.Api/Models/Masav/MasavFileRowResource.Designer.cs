@@ -106,6 +106,15 @@ namespace Transactions.Api.Models.Masav {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Consumer.
+        /// </summary>
+        public static string ConsumerName {
+            get {
+                return ResourceManager.GetString("ConsumerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Is Payed.
         /// </summary>
         public static string IsPayed {

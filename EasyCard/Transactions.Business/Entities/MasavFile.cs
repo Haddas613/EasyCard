@@ -16,6 +16,8 @@ namespace Transactions.Business.Entities
 
         public DateTime? PayedDate { get; set; }
 
+        public Guid? TerminalID { get; set; }
+
         public decimal? TotalAmount { get; set; }
 
         public string StorageReference { get; set; }

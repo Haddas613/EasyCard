@@ -658,6 +658,11 @@
               Looks up a localized string similar to Reference.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Masav.MasavFileResource.TotalAmount">
             <summary>
               Looks up a localized string similar to Total.
@@ -702,6 +707,11 @@
         <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.ComissionTotal">
             <summary>
               Looks up a localized string similar to Comission Total.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.ConsumerName">
+            <summary>
+              Looks up a localized string similar to Consumer.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.IsPayed">

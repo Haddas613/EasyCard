@@ -684,6 +684,7 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.InstituteName).IsRequired(false).HasMaxLength(250).IsUnicode(true);
                 builder.Property(b => b.SendingInstitute);
                 builder.Property(b => b.Currency);
+                builder.Property(b => b.TerminalID);
 
                 builder.HasMany(b => b.Rows).WithOne(b => b.MasavFile);
             }
@@ -699,17 +700,16 @@ namespace Transactions.Business.Data
 
                 builder.Property(b => b.MasavFileID);
                 builder.Property(b => b.PaymentTransactionID);
-                builder.Property(b => b.TerminalID);
+                builder.Property(b => b.ConsumerID);
+                builder.Property(b => b.ConsumerName).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.Bankcode);
                 builder.Property(b => b.BranchNumber);
                 builder.Property(b => b.AccountNumber);
                 builder.Property(b => b.NationalID);
 
                 builder.Property(b => b.Amount).HasColumnType("decimal(19,4)");
-                builder.Property(b => b.ComissionTotal).HasColumnType("decimal(19,4)");
                 builder.Property(b => b.IsPayed);
                 builder.Property(b => b.SmsSent);
-                builder.Property(b => b.PayedDate);
                 builder.Property(b => b.SmsSentDate);
 
                 builder.HasOne(b => b.MasavFile).WithMany(b => b.Rows);

@@ -28,6 +28,11 @@
         <template v-slot:item.totalAmount="{ item }">
           <b class="text-center">{{item.totalAmount | currency(item.currency)}}</b>
         </template>
+        <template v-slot:item.terminalName="{ item }">
+          <router-link class="text-decoration-none" link :to="{name: 'EditTerminal', params: {id: item.terminalID}}">
+            {{item.terminalName || item.terminalID}}
+          </router-link>
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-btn outlined color="success" small :disabled="!item.storageReference" :title="$t('ClickToDownload')" @click="downloadMasavFile(item.storageReference)">
             <v-icon color="red" size="1.25rem">mdi-file-outline</v-icon>

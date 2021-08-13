@@ -15,8 +15,6 @@ namespace Transactions.Business.Entities
 
         public Guid? PaymentTransactionID { get; set; }
 
-        public Guid? TerminalID { get; set; }
-
         public int? Bankcode { get; set; }
 
         public int? BranchNumber { get; set; }
@@ -31,11 +29,11 @@ namespace Transactions.Business.Entities
 
         public bool SmsSent { get; set; }
 
-        public decimal? ComissionTotal { get; set; }
-
         public DateTime? SmsSentDate { get; set; }
 
-        public DateTime? PayedDate { get; set; }
+        public Guid? ConsumerID { get; set; }
+
+        public string ConsumerName { get; set; }
 
         public long GetID() => MasavFileRowID;
     }
