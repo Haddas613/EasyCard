@@ -48,7 +48,7 @@
             <v-col cols="12">
               <v-text-field
                 v-model="model.cardOwnerNationalID"
-                :rules="[vr.primitives.required, vr.special.israeliNationalId]"
+                :rules="[vr.special.israeliNationalId]"
                 :label="$t('NationalID')"
                 outlined
               ></v-text-field>
