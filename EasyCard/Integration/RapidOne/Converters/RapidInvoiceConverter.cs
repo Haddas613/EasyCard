@@ -22,10 +22,10 @@ namespace RapidOne.Converters
                 InvoiceTypeId = GetInvoiceType(message.InvoiceDetails.InvoiceType),
                 Items = GetItems(message),
                 PaymentMethods = GetPaymentMethods(message),
-                ToPay = message.TotalAmount,
-                Total = message.TotalAmount,
+                ToPay = message.InvoiceAmount.Value,
+                Total = message.InvoiceAmount.Value,
                 Vat = message.VATTotal,
-                Subtotal = message.TotalAmount - message.VATTotal,
+                Subtotal = message.InvoiceAmount.Value - message.VATTotal,
                 CustomerCell = message.DealDetails?.ConsumerPhone,
                 CustomerCode = message.DealDetails?.ConsumerExternalReference,
                 CustomerEmail = message.DealDetails?.ConsumerEmail,
@@ -94,7 +94,7 @@ namespace RapidOne.Converters
                 };
                 mt.Branch = bankPayment.BankBranch.ToString();
                 mt.Account = bankPayment.BankAccount;
-                mt.Value = message.TotalAmount; // TODO: split amounts
+                mt.Value = message.InvoiceAmount.Value; // TODO: split amounts
 
                 result.Add(mt);
             }
@@ -111,7 +111,7 @@ namespace RapidOne.Converters
                 var cc = new FinDocCreditCardDto();
 
                 cc.Type = GetCardVendor(creditCardPayment.CardVendor?.ToUpper());
-                cc.Value = message.TotalAmount; // TODO: split amounts
+                cc.Value = message.InvoiceAmount.Value; // TODO: split amounts
                 cc.Number = creditCardPayment.СardNumber;
                 cc.Expiration = new FinDocCreditCardExpDto
                 {
@@ -147,7 +147,7 @@ namespace RapidOne.Converters
         private static string GetVoucherNum(string dealReference)
         {
             if (string.IsNullOrWhiteSpace(dealReference))
-                return null;
+                return "1";
 
             return dealReference.Length > 20 ? dealReference.Substring(dealReference.Length - 20, 20) : dealReference;
         }
@@ -161,7 +161,7 @@ namespace RapidOne.Converters
                 TransactionTypeEnum.Installments => 2,
                 TransactionTypeEnum.RegularDeal => 1,
                 TransactionTypeEnum.Immediate => 1,
-                _ => throw new NotImplementedException()
+                _ => 1
             };
         }
 
