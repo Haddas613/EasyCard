@@ -146,7 +146,9 @@ namespace Transactions.Api.Controllers
         [HttpPost("generate")]
         public async Task<ActionResult<OperationResponse>> GenerateMasavFile()
         {
-            //TODO: implement
+            
+
+
             var response = new OperationResponse();
 
             return Ok(response);

@@ -18,7 +18,7 @@ namespace FunctionsCompositionApp.Transactions
     public static class GenerateMasavFile
     {
         [FunctionName("GenerateMasavFile")]
-        public static async Task Run([TimerTrigger("%GetTransmissionTerminalsScheduleTriggerTime%")]TimerInfo myTimer,
+        public static async Task Run([TimerTrigger("%GenerateMasavFileTimeTrigger%")]TimerInfo myTimer,
             ILogger log,
             ExecutionContext context)
         {

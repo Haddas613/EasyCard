@@ -21,7 +21,7 @@ namespace Transactions.Business.Entities
 
         public int? AccountNumber { get; set; }
 
-        public string NationalID { get; set; }
+        public int? NationalID { get; set; }
 
         public decimal? Amount { get; set; }
 

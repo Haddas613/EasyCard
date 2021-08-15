@@ -250,6 +250,8 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.HasIndex(d => d.PinPadTransactionID);
+                builder.HasIndex(b => new { b.TerminalID, b.PaymentTypeEnum, b.MasavFileID });
+                builder.HasIndex(b => new { b.MerchantID, b.TerminalID });
             }
         }
 
@@ -676,9 +678,9 @@ namespace Transactions.Business.Data
 
                 builder.HasKey(b => b.MasavFileID);
 
-                builder.Property(b => b.MasavFileDate);
+                builder.Property(b => b.MasavFileDate).HasColumnType("date");
                 builder.Property(b => b.PayedDate);
-                builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").HasColumnName("TransactionAmount");
+                builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").HasColumnName("TotalAmount");
                 builder.Property(b => b.StorageReference).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                 builder.Property(b => b.InstituteNumber);
                 builder.Property(b => b.InstituteName).IsRequired(false).HasMaxLength(250).IsUnicode(true);
@@ -686,7 +688,8 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.Currency);
                 builder.Property(b => b.TerminalID);
 
-                builder.HasMany(b => b.Rows).WithOne(b => b.MasavFile);
+                builder.HasIndex(d => d.MasavFileDate);
+                builder.HasIndex(d => d.TerminalID);
             }
         }
 
@@ -711,8 +714,6 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.IsPayed);
                 builder.Property(b => b.SmsSent);
                 builder.Property(b => b.SmsSentDate);
-
-                builder.HasOne(b => b.MasavFile).WithMany(b => b.Rows);
             }
         }
     }

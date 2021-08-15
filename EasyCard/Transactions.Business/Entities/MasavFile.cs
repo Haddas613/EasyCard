@@ -14,6 +14,8 @@ namespace Transactions.Business.Entities
 
         public DateTime? MasavFileDate { get; set; }
 
+        public DateTime? MasavFileTimestamp { get; set; }
+
         public DateTime? PayedDate { get; set; }
 
         public Guid? TerminalID { get; set; }

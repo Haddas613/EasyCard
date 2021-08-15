@@ -60,6 +60,7 @@
     <Folder Include="dbo\Tables\" />
     <Folder Include="Security\" />
     <Folder Include="dbo\Views\" />
+    <Folder Include="dbo\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\TransactionHistory.sql" />
@@ -77,5 +78,6 @@
     <Build Include="dbo\Tables\NayaxTransactionsParameters.sql" />
     <Build Include="dbo\Tables\MasavFileRow.sql" />
     <Build Include="dbo\Tables\MasavFile.sql" />
+    <Build Include="dbo\Stored Procedures\PR_GenerateMasavFile.sql" />
   </ItemGroup>
 </Project>
