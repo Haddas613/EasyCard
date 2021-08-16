@@ -14,8 +14,11 @@
     [LockoutEnd]           DATETIMEOFFSET (7) NULL,
     [LockoutEnabled]       BIT                NOT NULL,
     [AccessFailedCount]    INT                NOT NULL,
+    [PasswordUpdated]      DATETIME2 (7)      NULL,
     CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
+
+
 
 
 GO
