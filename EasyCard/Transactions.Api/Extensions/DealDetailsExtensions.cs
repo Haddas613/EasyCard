@@ -89,6 +89,11 @@ namespace Transactions.Api.Extensions
 
         public static PinPadDetails UpdatePinPadDetails(this SharedIntegration.Models.Processor.PinPadDetails pinpadDetails, TerminalExternalSystem terminalSettings, PaymentTransaction transaction = null)
         {
+            if (terminalSettings == null)
+            {
+                return null;
+            }
+
             if (pinpadDetails == null)
             {
                 pinpadDetails = new SharedIntegration.Models.Processor.PinPadDetails();
