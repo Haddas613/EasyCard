@@ -7,6 +7,8 @@ namespace CheckoutPortal.Models
 {
     public class LegacyQueryStringModel
     {
+        public string TransactionID { get; set; }
+
         public string StateData { get; set; }
         public string CardOwner { get; set; }
         public string OwnerEmail { get; set; }

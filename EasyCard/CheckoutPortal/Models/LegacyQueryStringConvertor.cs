@@ -29,6 +29,8 @@ namespace CheckoutPortal.Models
 
             return new LegacyQueryStringModel
             {
+                TransactionID = paymentTransaction.PaymentTransactionID.ToString(),
+
                 DealID = paymentTransaction.PaymentTransactionID.ToString(),
                 StateData = request.StateData,
                 Total = paymentTransaction.TotalAmount.ToString("F2"),
