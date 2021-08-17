@@ -43,7 +43,7 @@ namespace IdentityServer.Models.Registration
         public string BusinessID { get; set; }
 
         [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "NotValidEmailField")]
         [StringLength(100)]
         public string Email { get; set; }
 
@@ -60,7 +60,7 @@ namespace IdentityServer.Models.Registration
 
         [Required(ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "Required")]
         [DataType(DataType.Password)]
-        [Compare(nameof(Password))]
+        [Compare(nameof(Password), ErrorMessageResourceType = typeof(CommonResources), ErrorMessageResourceName = "DoNotMatchPasswordNPasswordRepeat")]
         [StringLength(32, MinimumLength = 8)]
         public string PasswordRepeat { get; set; }
 

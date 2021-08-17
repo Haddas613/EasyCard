@@ -169,6 +169,15 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;Password Repeat&apos; and &apos;Password&apos; do not match..
+        /// </summary>
+        public static string DoNotMatchPasswordNPasswordRepeat {
+            get {
+                return ResourceManager.GetString("DoNotMatchPasswordNPasswordRepeat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
         public static string Email {
@@ -417,6 +426,15 @@ namespace IdentityServer.Resources {
         public static string NewPassword {
             get {
                 return ResourceManager.GetString("NewPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The email field is not a valid e-mail address..
+        /// </summary>
+        public static string NotValidEmailField {
+            get {
+                return ResourceManager.GetString("NotValidEmailField", resourceCulture);
             }
         }
         
