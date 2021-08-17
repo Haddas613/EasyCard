@@ -661,9 +661,6 @@ namespace IdentityServer.Controllers
 
                 AddErrors(addPasswordResult);
                 return View();
-
-
-                
             }
         }
 
