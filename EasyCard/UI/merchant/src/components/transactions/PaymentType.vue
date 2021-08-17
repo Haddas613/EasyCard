@@ -49,7 +49,7 @@ export default {
     },
     excludeTypes: {
       type: Array,
-      default: [],
+      default: () => [],
       required: false
     }
   },
