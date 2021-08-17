@@ -306,6 +306,7 @@
   "BankBranch": "מספר סניף",
   "BankAccount": "מספר חשבון בנק",
   "ExtendedResponseForCheckoutTransaction": "תגובה מורחבת עסקאות רידיירקט",
+  "VoucherNumber": "מספר שובר",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

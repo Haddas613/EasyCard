@@ -25,5 +25,8 @@ namespace Shared.Integration.Models.PaymentDetails
 
         [JsonProperty(PropertyName = "cardVendor")]
         public string CardVendor { get; set; }
+
+        [JsonProperty(PropertyName = "voucherNumber")]
+        public string VoucherNumber { get; set; }
     }
 }
