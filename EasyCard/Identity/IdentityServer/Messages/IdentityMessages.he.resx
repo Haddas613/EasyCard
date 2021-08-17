@@ -135,4 +135,7 @@
   <data name="TwoFactorAuth" xml:space="preserve">
     <value>קוד אימות כפול</value>
   </data>
+  <data name="UserAlreadyHasPassword" xml:space="preserve">
+    <value>סיסמה כבר מוגדרת למשתמש.</value>
+  </data>
 </root>

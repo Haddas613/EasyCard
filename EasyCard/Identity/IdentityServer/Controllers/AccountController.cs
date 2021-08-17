@@ -653,8 +653,17 @@ namespace IdentityServer.Controllers
                 var pwderrors = string.Join(", ", addPasswordResult.Errors.Select(err => err.Code + ":" + err.Description));
                 logger.LogError($"User {user.Email} set password failed: {pwderrors}");
 
+                var passwordSetError = addPasswordResult.Errors.FirstOrDefault(e => e.Code == "UserAlreadyHasPassword");
+                if (passwordSetError != null)
+                {
+                    passwordSetError.Description = Messages.IdentityMessages.UserAlreadyHasPassword;
+                }//TODO ECNG-914 
+
                 AddErrors(addPasswordResult);
                 return View();
+
+
+                
             }
         }
 
