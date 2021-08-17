@@ -70,7 +70,7 @@
     [UpayMerchantNumber]             NVARCHAR (64)    NULL,
     [UpayTransactionID]              NVARCHAR (64)    NULL,
     [UpayWebUrl]                     NVARCHAR (512)   NULL,
-    [PinPadTransactionID]            NVARCHAR (MAX)   NULL,
+    [PinPadTransactionID]            VARCHAR (50)     NULL,
     [ProcessorResultCode]            INT              NULL,
     [CompRetailerNum]                VARCHAR (20)     NULL,
     [EmvSoftVersion]                 VARCHAR (20)     NULL,
@@ -82,6 +82,7 @@
     [BankTransferBankBranch]         INT              NULL,
     [BankTransferDueDate]            DATETIME2 (7)    NULL,
     [BankTransferReference]          NVARCHAR (50)    NULL,
+    [MasavFileID]                    BIGINT           NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
 
@@ -127,4 +128,23 @@
 
 
 
+
+
+
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PaymentTransaction_PinPadTransactionID]
+    ON [dbo].[PaymentTransaction]([PinPadTransactionID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PaymentTransaction_TerminalID_PaymentTypeEnum_MasavFileID]
+    ON [dbo].[PaymentTransaction]([TerminalID] ASC, [PaymentTypeEnum] ASC, [MasavFileID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PaymentTransaction_MerchantID_TerminalID]
+    ON [dbo].[PaymentTransaction]([MerchantID] ASC, [TerminalID] ASC);
 

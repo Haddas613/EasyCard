@@ -196,6 +196,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to National ID must be valid Israeli National ID.
+        /// </summary>
+        public static string CardOwnerNationalIDInvalid {
+            get {
+                return ResourceManager.GetString("CardOwnerNationalIDInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Card owner national ID required.
         /// </summary>
         public static string CardOwnerNationalIDRequired {

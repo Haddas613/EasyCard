@@ -1176,20 +1176,6 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
-            if (model.PinPad == true && string.IsNullOrWhiteSpace(model.PinPadDeviceID))
-            {
-                var nayaxIntegration = EnsureExists(terminal.Integrations.FirstOrDefault(ex => ex.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
-                var devices = nayaxIntegration.Settings.ToObject<Nayax.NayaxTerminalCollection>();
-                var firstDevice = devices.devices.FirstOrDefault();
-
-                if (firstDevice == null)
-                {
-                    throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "PinPadDevice", null);
-                }
-
-                model.PinPadDeviceID = firstDevice.TerminalID;
-            }
-
             //TODO
             //TransactionTerminalSettingsValidator.Validate(terminal.Settings, model, null, null, specialTransactionType);
 
@@ -1203,7 +1189,6 @@ namespace Transactions.Api.Controllers
             transaction.SpecialTransactionType = specialTransactionType;
             transaction.BillingDealID = billingDeal?.BillingDealID;
             transaction.DocumentOrigin = GetDocumentOrigin(billingDeal?.BillingDealID, null, false);
-            transaction.CardPresence = pinpadDeal ? CardPresenceEnum.Regular : model.CardPresence;
 
             // ensuring that bank unrelated fields are null
             transaction.CreditCardDetails = null;

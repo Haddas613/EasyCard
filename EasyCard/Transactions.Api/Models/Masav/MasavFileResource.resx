@@ -141,6 +141,9 @@
   <data name="StorageReference" xml:space="preserve">
     <value>Reference</value>
   </data>
+  <data name="TerminalName" xml:space="preserve">
+    <value>Terminal</value>
+  </data>
   <data name="TotalAmount" xml:space="preserve">
     <value>Total</value>
   </data>

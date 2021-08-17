@@ -162,6 +162,9 @@
   <data name="CanOnlyIssueInvoiceForILSTransactions" xml:space="preserve">
     <value>Can only issue invoice for ILS transactions</value>
   </data>
+  <data name="CardOwnerNationalIDInvalid" xml:space="preserve">
+    <value>National ID must be valid Israeli National ID</value>
+  </data>
   <data name="CardOwnerNationalIDRequired" xml:space="preserve">
     <value>Card owner national ID required</value>
   </data>

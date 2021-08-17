@@ -390,4 +390,7 @@
   <data name="J5Expired" xml:space="preserve">
     <value>פג תוקפו של שריון המסגרת</value>
   </data>
+  <data name="CardOwnerNationalIDInvalid" xml:space="preserve">
+    <value>ת.ז. חייבת להיות ת.ז. ישראלית תקינה</value>
+  </data>
 </root>

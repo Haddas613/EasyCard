@@ -361,7 +361,7 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
-                builder.Property(b => b.ExternalReference).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                builder.Property(b => b.ExternalReference).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.Price).HasColumnType("decimal(19,4)").IsRequired();
             }

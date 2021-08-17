@@ -289,6 +289,11 @@
               Looks up a localized string similar to FirstName.
             </summary>
         </member>
+        <member name="P:IdentityServer.Resources.CommonResources.FirstNameValidationMessage">
+            <summary>
+              Looks up a localized string similar to First name should be at least 2 and at max 100 characters long.
+            </summary>
+        </member>
         <member name="P:IdentityServer.Resources.CommonResources.FollowThisLinkToJoinEasyCard">
             <summary>
               Looks up a localized string similar to Not yet registered? Follow this link to join EasyCard.
@@ -341,7 +346,7 @@
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.LastNameValidationMessage">
             <summary>
-              Looks up a localized string similar to Last name should be at least 2 and at max 200 characters long.
+              Looks up a localized string similar to Last name should be at least 2 and at max 100 characters long.
             </summary>
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.LockedOut">
@@ -417,11 +422,6 @@
         <member name="P:IdentityServer.Resources.CommonResources.PasswordMatchValidationMessage">
             <summary>
               Looks up a localized string similar to Password does not meet system requirements.
-            </summary>
-        </member>
-        <member name="P:IdentityServer.Resources.CommonResources.PasswordMatchValidatonMessage">
-            <summary>
-              Looks up a localized string similar to Password does not meet system requirements .
             </summary>
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.PasswordRepeat">

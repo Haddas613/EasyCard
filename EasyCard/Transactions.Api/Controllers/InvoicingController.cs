@@ -288,6 +288,8 @@ namespace Transactions.Api.Controllers
                 }
             }
 
+            newInvoice.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newInvoice);
+
             newInvoice.Calculate();
 
             // TODO: check result

@@ -29,7 +29,7 @@ using Shared.Integration.Models.PaymentDetails;
 
 namespace Transactions.Business.Data
 {
-    public class TransactionsContext : DbContext
+    public partial class TransactionsContext : DbContext
     {
         public static readonly LoggerFactory DbCommandConsoleLoggerFactory
             = new LoggerFactory(new[]
@@ -111,195 +111,6 @@ namespace Transactions.Business.Data
             : base(options)
         {
             this.user = httpContextAccessor.GetUser();
-        }
-
-        public async Task<IEnumerable<TransactionSummaryDb>> GetGroupedTransactionSummaries(Guid? terminalID, IDbContextTransaction dbTransaction = null)
-        {
-            var builder = new SqlBuilder();
-
-            var query = @"select TOP (@maxRecords) PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, NumberOfRecords
-from(
-    select PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, r = row_number() over(partition by TransactionDate order by PaymentTransactionID desc), NumberOfRecords = count(*) over(partition by TransactionDate)
-    from dbo.PaymentTransaction WITH(NOLOCK) /**where**/
-    ) a
-where r <= @pageSize
- order by PaymentTransactionID desc";
-
-            var selector = builder.AddTemplate(query, new { maxRecords = 100, pageSize = 10 }); // TODO: use config
-
-            var jDealType = JDealTypeEnum.J4;
-
-            builder.Where($"{nameof(PaymentTransaction.JDealType)} = @{nameof(jDealType)}", new { jDealType });
-
-            if (terminalID.HasValue)
-            {
-                user.CheckTerminalPermission(terminalID.Value);
-                builder.Where($"{nameof(PaymentTransaction.TerminalID)} = @{nameof(terminalID)}", new { terminalID });
-            }
-
-            if (user.IsAdmin())
-            {
-            }
-            else if (user.IsTerminal() && !terminalID.HasValue)
-            {
-                builder.Where($"{nameof(PaymentTransaction.TerminalID)} = @{nameof(terminalID)}", new { terminalID = user.GetTerminalID() });
-            }
-            else if (user.IsMerchant())
-            {
-                var merchantID = user.GetMerchantID();
-                builder.Where($"{nameof(PaymentTransaction.MerchantID)} = @{nameof(merchantID)}", new { merchantID });
-            }
-            else
-            {
-                throw new SecurityException("User has no access to requested data");
-            }
-
-            var connection = this.Database.GetDbConnection();
-            bool existingConnection = true;
-            try
-            {
-                if (connection.State != ConnectionState.Open)
-                {
-                    await connection.OpenAsync();
-                    existingConnection = false;
-                }
-
-                var report = await connection.QueryAsync<TransactionSummaryDb>(selector.RawSql, selector.Parameters, transaction: dbTransaction?.GetDbTransaction());
-
-                return report;
-            }
-            finally
-            {
-                if (!existingConnection)
-                {
-                    connection.Close();
-                }
-            }
-        }
-
-        public async Task<IEnumerable<TransmissionInfo>> StartTransmission(Guid terminalID, IEnumerable<Guid> transactionIDs, IDbContextTransaction dbTransaction = null)
-        {
-            user.CheckTerminalPermission(terminalID);
-
-            string query = @"
-DECLARE @OutputTransactionIDs table(
-    [PaymentTransactionID] [uniqueidentifier] NULL,
-    [ShvaDealID] [varchar](50) NULL,
-    [ShvaTerminalID] [varchar](20) NULL,
-    [ShvaTranRecord] [varchar](500) NULL
-);
-
-UPDATE t SET t.[Status]=@NewStatus, t.[UpdatedDate]=@UpdatedDate, t.ShvaTranRecord = ISNULL(t.ShvaTranRecord, n.ShvaTranRecord)
-OUTPUT inserted.PaymentTransactionID, inserted.ShvaDealID, inserted.ShvaTerminalID, inserted.ShvaTranRecord INTO @OutputTransactionIDs
-FROM [dbo].[PaymentTransaction] as t LEFT OUTER JOIN [dbo].[NayaxTransactionsParameters] as n on n.PinPadTransactionID = t.PinPadTransactionID
-WHERE t.[PaymentTransactionID] in @TransactionIDs AND t.[TerminalID] = @TerminalID AND t.[Status]=@OldStatus";
-
-            // security check
-            // TODO: replace to query builder
-
-            if (user.IsAdmin())
-            {
-            }
-            else if (user.IsTerminal())
-            {
-                if (terminalID != user.GetTerminalID())
-                {
-                    throw new SecurityException("User has no access to requested data");
-                }
-            }
-            else if (user.IsMerchant())
-            {
-                query += " AND [MerchantID] = @MerchantID";
-            }
-            else
-            {
-                throw new SecurityException("User has no access to requested data");
-            }
-
-            query += @" SELECT PaymentTransactionID, ShvaDealID, ShvaTerminalID, ShvaTranRecord as TranRecord from @OutputTransactionIDs as a";
-
-            var connection = this.Database.GetDbConnection();
-            bool existingConnection = true;
-            try
-            {
-                if (connection.State != ConnectionState.Open)
-                {
-                    await connection.OpenAsync();
-                    existingConnection = false;
-                }
-
-                var report = await connection.QueryAsync<TransmissionInfo>(query, new { NewStatus = TransactionStatusEnum.TransmissionInProgress, OldStatus = TransactionStatusEnum.AwaitingForTransmission, TerminalID = terminalID, MerchantID = user.GetMerchantID(), TransactionIDs = transactionIDs, UpdatedDate = DateTime.UtcNow }, transaction: dbTransaction?.GetDbTransaction());
-
-                return report;
-            }
-            finally
-            {
-                if (!existingConnection)
-                {
-                    connection.Close();
-                }
-            }
-        }
-
-        public async Task<IEnumerable<Guid>> StartSendingInvoices(Guid terminalID, IEnumerable<Guid> invoicesIDs, IDbContextTransaction dbTransaction)
-        {
-            user.CheckTerminalPermission(terminalID);
-
-            string query = @"
-DECLARE @OutputInvoiceIDs table(
-    [InvoiceID] [uniqueidentifier] NULL
-);
-
-UPDATE [dbo].[Invoice] SET [Status]=@NewStatus, [UpdatedDate]=@UpdatedDate 
-OUTPUT inserted.InvoiceID INTO @OutputInvoiceIDs
-WHERE [InvoiceID] in @InvoicesIDs AND [TerminalID] = @TerminalID AND [Status]<>@OldStatus";
-
-            // security check
-            // TODO: replace to query builder
-
-            if (user.IsAdmin())
-            {
-            }
-            else if (user.IsTerminal())
-            {
-                if (terminalID != user.GetTerminalID())
-                {
-                    throw new SecurityException("User has no access to requested data");
-                }
-            }
-            else if (user.IsMerchant())
-            {
-                query += " AND [MerchantID] = @MerchantID";
-            }
-            else
-            {
-                throw new SecurityException("User has no access to requested data");
-            }
-
-            query += @"
-SELECT InvoiceID from @OutputInvoiceIDs as a";
-
-            var connection = this.Database.GetDbConnection();
-            bool existingConnection = true;
-            try
-            {
-                if (connection.State != ConnectionState.Open)
-                {
-                    await connection.OpenAsync();
-                    existingConnection = false;
-                }
-
-                var report = await connection.QueryAsync<Guid>(query, new { NewStatus = InvoiceStatusEnum.Sending, OldStatus = InvoiceStatusEnum.Sending, TerminalID = terminalID, MerchantID = user.GetMerchantID(), InvoicesIDs = invoicesIDs, UpdatedDate = DateTime.UtcNow }, transaction: dbTransaction?.GetDbTransaction());
-
-                return report;
-            }
-            finally
-            {
-                if (!existingConnection)
-                {
-                    connection.Close();
-                }
-            }
         }
 
         // NOTE: use this for debugging purposes to analyse sql query performance
@@ -439,6 +250,8 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.HasIndex(d => d.PinPadTransactionID);
+                builder.HasIndex(b => new { b.TerminalID, b.PaymentTypeEnum, b.MasavFileID });
+                builder.HasIndex(b => new { b.MerchantID, b.TerminalID });
             }
         }
 
@@ -865,16 +678,18 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
 
                 builder.HasKey(b => b.MasavFileID);
 
-                builder.Property(b => b.MasavFileDate);
+                builder.Property(b => b.MasavFileDate).HasColumnType("date");
                 builder.Property(b => b.PayedDate);
-                builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").HasColumnName("TransactionAmount");
+                builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").HasColumnName("TotalAmount");
                 builder.Property(b => b.StorageReference).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                 builder.Property(b => b.InstituteNumber);
                 builder.Property(b => b.InstituteName).IsRequired(false).HasMaxLength(250).IsUnicode(true);
                 builder.Property(b => b.SendingInstitute);
                 builder.Property(b => b.Currency);
+                builder.Property(b => b.TerminalID);
 
-                builder.HasMany(b => b.Rows).WithOne(b => b.MasavFile);
+                builder.HasIndex(d => d.MasavFileDate);
+                builder.HasIndex(d => d.TerminalID);
             }
         }
 
@@ -888,20 +703,17 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
 
                 builder.Property(b => b.MasavFileID);
                 builder.Property(b => b.PaymentTransactionID);
-                builder.Property(b => b.TerminalID);
+                builder.Property(b => b.ConsumerID);
+                builder.Property(b => b.ConsumerName).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.Bankcode);
                 builder.Property(b => b.BranchNumber);
                 builder.Property(b => b.AccountNumber);
                 builder.Property(b => b.NationalID);
 
                 builder.Property(b => b.Amount).HasColumnType("decimal(19,4)");
-                builder.Property(b => b.ComissionTotal).HasColumnType("decimal(19,4)");
                 builder.Property(b => b.IsPayed);
                 builder.Property(b => b.SmsSent);
-                builder.Property(b => b.PayedDate);
                 builder.Property(b => b.SmsSentDate);
-
-                builder.HasOne(b => b.MasavFile).WithMany(b => b.Rows);
             }
         }
     }

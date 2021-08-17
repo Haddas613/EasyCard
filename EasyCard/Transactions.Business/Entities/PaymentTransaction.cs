@@ -267,6 +267,8 @@ namespace Transactions.Business.Entities
         /// </summary>
         public int? ProcessorResultCode { get; set; }
 
+        public long? MasavFileID { get; set; }
+
         // TODO: calculate items, VAT
         [Obsolete]
         public void Calculate()

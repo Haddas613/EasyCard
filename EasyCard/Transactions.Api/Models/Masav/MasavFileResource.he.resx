@@ -141,6 +141,9 @@
   <data name="StorageReference" xml:space="preserve">
     <value>אסמכתא</value>
   </data>
+  <data name="TerminalName" xml:space="preserve">
+    <value>מסוף</value>
+  </data>
   <data name="TotalAmount" xml:space="preserve">
     <value>סכום</value>
   </data>

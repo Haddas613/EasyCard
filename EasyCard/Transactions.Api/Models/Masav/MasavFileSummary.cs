@@ -15,6 +15,11 @@ namespace Transactions.Api.Models.Masav
 
         public DateTime? PayedDate { get; set; }
 
+        [MetadataOptions(Hidden = true)]
+        public Guid? TerminalID { get; set; }
+
+        public string TerminalName { get; set; }
+
         public decimal? TotalAmount { get; set; }
 
         [MetadataOptions(Hidden = true)]

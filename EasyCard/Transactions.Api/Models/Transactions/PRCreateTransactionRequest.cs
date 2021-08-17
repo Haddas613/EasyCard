@@ -97,5 +97,11 @@ namespace Transactions.Api.Models.Transactions
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
         public decimal? NetTotal { get; set; }
+
+        /// <summary>
+        /// Only to be used for pin pad transactions when CredotCardSecureDetails is not available
+        /// </summary>
+        [StringLength(20)]
+        public string CardOwnerNationalID { get; set; }
     }
 }

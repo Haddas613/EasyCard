@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -31,17 +32,18 @@ namespace Transactions.Api.Controllers
         private readonly ILogger logger;
         private readonly IMasavFileService masavFileService;
         private readonly IMapper mapper;
-
-        static bool ensureonce = false;
+        private readonly ITerminalsService terminalsService;
 
         public MasavFileController(
             ILogger<MasavFileController> logger,
             IMasavFileService masavFileService,
-            IMapper mapper)
+            IMapper mapper,
+            ITerminalsService terminalsService)
         {
             this.logger = logger;
             this.masavFileService = masavFileService;
             this.mapper = mapper;
+            this.terminalsService = terminalsService;
         }
 
         [HttpGet]
@@ -78,7 +80,41 @@ namespace Transactions.Api.Controllers
 
             response.Data = await mapper.ProjectTo<MasavFileSummary>(query.ApplyPagination(filter)).Future().ToListAsync();
 
+            var terminalsId = response.Data.Select(t => t.TerminalID).Distinct();
+
+            var terminals = await terminalsService.GetTerminals()
+                .Where(t => terminalsId.Contains(t.TerminalID))
+                .Select(t => new { t.TerminalID, t.Label })
+                .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label });
+
+            foreach (var data in response.Data)
+            {
+                if (data.TerminalID.HasValue && terminals.ContainsKey(data.TerminalID.Value))
+                {
+                    data.TerminalName = terminals[data.TerminalID.Value].Label;
+                }
+            }
+
             response.NumberOfRecords = numberOfRecordsFuture.Value;
+
+            return Ok(response);
+        }
+
+        [HttpGet("{id:long}")]
+        public async Task<ActionResult<MasavFileSummary>> GetMasavFile([FromRoute] long id)
+        {
+            var dbEntity = EnsureExists(await masavFileService.GetMasavFiles().FirstOrDefaultAsync(m => m.MasavFileID == id));
+            var response = mapper.Map<MasavFileSummary>(dbEntity);
+
+            if (response.TerminalID.HasValue)
+            {
+                var terminal = await terminalsService.GetTerminals().Select(s => s.Label).FirstOrDefaultAsync();
+
+                if (terminal != null)
+                {
+                    response.TerminalName = terminal;
+                }
+            }
 
             return Ok(response);
         }
@@ -110,7 +146,9 @@ namespace Transactions.Api.Controllers
         [HttpPost("generate")]
         public async Task<ActionResult<OperationResponse>> GenerateMasavFile()
         {
-            //TODO: implement
+            
+
+
             var response = new OperationResponse();
 
             return Ok(response);

@@ -241,6 +241,15 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to First name should be at least 2 and at max 100 characters long.
+        /// </summary>
+        public static string FirstNameValidationMessage {
+            get {
+                return ResourceManager.GetString("FirstNameValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not yet registered? Follow this link to join EasyCard.
         /// </summary>
         public static string FollowThisLinkToJoinEasyCard {
@@ -331,7 +340,7 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Last name should be at least 2 and at max 200 characters long.
+        ///   Looks up a localized string similar to Last name should be at least 2 and at max 100 characters long.
         /// </summary>
         public static string LastNameValidationMessage {
             get {
@@ -480,15 +489,6 @@ namespace IdentityServer.Resources {
         public static string PasswordMatchValidationMessage {
             get {
                 return ResourceManager.GetString("PasswordMatchValidationMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Password does not meet system requirements .
-        /// </summary>
-        public static string PasswordMatchValidatonMessage {
-            get {
-                return ResourceManager.GetString("PasswordMatchValidatonMessage", resourceCulture);
             }
         }
         

@@ -99,6 +99,13 @@ namespace CheckoutPortal.Controllers
                 }
             }
 
+            if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
+            {
+                ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                mapper.Map(checkoutConfig.Settings, request);
+                return View("Index", request);
+            }
+
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
@@ -108,6 +115,7 @@ namespace CheckoutPortal.Controllers
                 if (!request.PinPad && !request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
                 {
                     ModelState.AddModelError(nameof(request.CreditCardToken), "Token is not recognized");
+                    mapper.Map(checkoutConfig.Settings, request);
                     logger.LogWarning($"{nameof(Charge)}: unrecognized token from user. Token: {request.CreditCardToken.Value}; PaymentRequestId: {(checkoutConfig.PaymentRequest?.PaymentRequestID.ToString() ?? "-")}");
                     return View("Index", request);
                 }
@@ -140,6 +148,7 @@ namespace CheckoutPortal.Controllers
             if (!checkoutConfig.Settings.TransactionTypes.Any(t => t == request.TransactionType))
             {
                 ModelState.AddModelError(nameof(request.TransactionType), $"{request.TransactionType} is not allowed for this transaction");
+                mapper.Map(checkoutConfig.Settings, request);
                 return View("Index", request);
             }
 

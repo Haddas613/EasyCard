@@ -147,8 +147,8 @@ namespace Merchants.Business.Migrations
 
                     b.Property<string>("ExternalReference")
                         .HasMaxLength(50)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("ItemName")
                         .IsRequired()

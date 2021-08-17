@@ -132,6 +132,9 @@
   <data name="ComissionTotal" xml:space="preserve">
     <value>סכום הריביות</value>
   </data>
+  <data name="ConsumerName" xml:space="preserve">
+    <value>לקוח</value>
+  </data>
   <data name="IsPayed" xml:space="preserve">
     <value>האם שולם</value>
   </data>

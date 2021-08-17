@@ -111,6 +111,7 @@
   "Company": "Company",
   "MasavFiles": "Masav Files",
   "MasavFileRows": "Masav File Rows",
+  "MasavFile": "Masav File",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -368,6 +369,7 @@
   "BankBranch": "Bank Branch",
   "BankAccount": "Bank Account",
   "ExtendedResponseForCheckoutTransaction": "Extended response for checkout transaction",
+  "PayedDate": "Payed Date",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
