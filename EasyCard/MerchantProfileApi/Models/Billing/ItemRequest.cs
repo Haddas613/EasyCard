@@ -13,14 +13,14 @@ namespace MerchantProfileApi.Models.Billing
     {
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [Required(AllowEmptyStrings = false)]
-        [StringLength(80, MinimumLength = 3)]
+        [StringLength(128, MinimumLength = 3)]
         public string ItemName { get; set; }
 
         public decimal Price { get; set; }
 
         public CurrencyEnum Currency { get; set; }
 
-        [StringLength(250)]
+        [StringLength(50)]
         public string ExternalReference { get; set; }
     }
 }
