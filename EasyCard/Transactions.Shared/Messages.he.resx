@@ -384,4 +384,7 @@
   <data name="AuthorizationCodeRequired" xml:space="preserve">
     <value>נדרש קוד אימות. התקשר ל@number ותיידע אותם במספר ספק האשראי @retailer על מנת לקבל קוד אימות ולבצע עסקה.</value>
   </data>
+  <data name="CardOwnerNationalIDInvalid" xml:space="preserve">
+    <value>ת.ז. חייבת להיות ת.ז. ישראלית תקינה</value>
+  </data>
 </root>

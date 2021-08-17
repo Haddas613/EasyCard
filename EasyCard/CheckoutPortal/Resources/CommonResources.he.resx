@@ -213,4 +213,7 @@
   <data name="Immediate" xml:space="preserve">
     <value>חיוב מיידי</value>
   </data>
+  <data name="NationalIDInvalid" xml:space="preserve">
+    <value>ת.ז. חייבת להיות ת.ז. ישראלית תקינה</value>
+  </data>
 </root>
