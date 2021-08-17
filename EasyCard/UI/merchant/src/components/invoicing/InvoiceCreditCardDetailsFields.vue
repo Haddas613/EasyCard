@@ -1,6 +1,6 @@
 <template>
   <v-row no-gutters>
-    <v-col cols="12">
+    <v-col cols="12" md="6">
       <v-text-field
         prefix="**** **** ****"
         :label="$t('CreditCardLast4Numbers')"
@@ -12,6 +12,17 @@
         max="4"
         :rules="[vr.primitives.requiredDepends(this.required), vr.primitives.stringLength(4, 4)]"
         ref="inpCardNumber"
+      ></v-text-field>
+    </v-col>
+    <v-col cols="12" md="6">
+      <v-text-field
+        :label="$t('VoucherNumber')"
+        :counter="12"
+        outlined
+        v-model="model.voucherNumber"
+        max="12"
+        :rules="[vr.primitives.stringLength(6, 12)]"
+        v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
       ></v-text-field>
     </v-col>
     <v-col cols="12" md="12">
@@ -93,7 +104,8 @@ export default {
 
       return {
         cardExpiration: this.model.cardExpiration.replace(/\s/g, ""),
-        cardNumber: `000000000000${this.model.cardNumber}`
+        cardNumber: `000000000000${this.model.cardNumber}`,
+        voucherNumber: this.model.voucherNumber
       };
     }
   }

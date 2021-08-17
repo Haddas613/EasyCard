@@ -166,7 +166,7 @@ export default {
             {
               text: vm.$t("ResendInvoices"),
               fn: async () => {
-                await vm.createTransactions();
+                await vm.resendSelectedInvoices();
               }
             }
           ],

@@ -85,6 +85,7 @@
   "PaymentDetails": "Payment Details",
   "BankAccountDetails": "Bank Account Details",
   "ExtendedResponseForCheckoutTransaction": "Extended response for checkout transaction",
+  "VoucherNumber": "Voucher Number",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",

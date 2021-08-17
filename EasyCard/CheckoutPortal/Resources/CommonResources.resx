@@ -213,4 +213,7 @@
   <data name="Immediate" xml:space="preserve">
     <value>Immediate</value>
   </data>
+  <data name="NationalIDInvalid" xml:space="preserve">
+    <value>National ID must be valid Israeli National ID</value>
+  </data>
 </root>

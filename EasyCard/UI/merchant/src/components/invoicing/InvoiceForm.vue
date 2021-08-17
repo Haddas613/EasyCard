@@ -40,12 +40,15 @@
         ></deal-details>
 
         <template v-if="paymentInfoAvailable">
-          <payment-type v-model="model.paymentType" :exclude-types="[appConstants.transaction.paymentTypes.bank]"></payment-type>
+          <payment-type v-model="model.paymentType"></payment-type>
           <template v-if="model.paymentType == appConstants.transaction.paymentTypes.card">
             <invoice-credit-card-details-fields ref="ccDetails"></invoice-credit-card-details-fields>
           </template>
           <template v-else-if="model.paymentType == appConstants.transaction.paymentTypes.cheque">
             <cheque-details-fields ref="chequeDetails"></cheque-details-fields>
+          </template>
+          <template v-else-if="model.paymentType == appConstants.transaction.paymentTypes.bank">
+            <bank-details-fields ref="bankDetails"></bank-details-fields>
           </template>
         </template>
       </v-form>
@@ -67,6 +70,7 @@ export default {
     DealDetails: () => import("../transactions/DealDetailsFields"),
     InvoiceDetailsFields: () => import("./InvoiceDetailsFields"),
     ChequeDetailsFields: () => import("./ChequeDetailsFields"),
+    BankDetailsFields: () => import("./BankDetailsFields"),
     PaymentType: () => import("../transactions/PaymentType"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     EcDialog: () => import("../../components/ec/EcDialog"),
@@ -139,7 +143,7 @@ export default {
             data = this.$refs.ccDetails.getData();
             if(data){
               result.paymentDetails.push({
-                ...this.$refs.ccDetails.getData(),
+                ...data,
                 paymentType: this.appConstants.transaction.paymentTypes.card
               });
             }
@@ -153,14 +157,22 @@ export default {
             data = this.$refs.chequeDetails.getData();
             if(data){
               result.paymentDetails.push({
-                ...this.$refs.chequeDetails.getData(),
+                ...data,
                 paymentType: this.appConstants.transaction.paymentTypes.cheque
+              });
+            }
+            break;
+          case this.appConstants.transaction.paymentTypes.bank:
+            data = this.$refs.bankDetails.getData();
+            if(data){
+              result.paymentDetails.push({
+                ...data,
+                paymentType: this.appConstants.transaction.paymentTypes.bank
               });
             }
             break;
         }
       }
-      
       if (result.invoiceDetails) this.$emit("ok", result);
     },
     invoiceTypeChanged(val){

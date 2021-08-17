@@ -196,6 +196,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to National ID must be valid Israeli National ID.
+        /// </summary>
+        public static string NationalIDInvalid {
+            get {
+                return ResourceManager.GetString("NationalIDInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Number of payments.
         /// </summary>
         public static string NumberOfPayments {

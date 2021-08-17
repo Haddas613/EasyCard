@@ -169,11 +169,11 @@ namespace RapidOne.Converters
         {
             return invoiceTypeID switch
             {
-                InvoiceTypeEnum.CreditNote => Models.Enums.InvoiceTypeEnum.CreditCustomer,
+                InvoiceTypeEnum.CreditNote => Models.Enums.InvoiceTypeEnum.InvoiceRefund,
                 InvoiceTypeEnum.Invoice => Models.Enums.InvoiceTypeEnum.Invoice,
                 InvoiceTypeEnum.InvoiceWithPaymentInfo => Models.Enums.InvoiceTypeEnum.InvoiceReceipt,
                 InvoiceTypeEnum.PaymentInfo => Models.Enums.InvoiceTypeEnum.Receipt,
-                InvoiceTypeEnum.RefundInvoice => Models.Enums.InvoiceTypeEnum.InvoiceRefund,
+                InvoiceTypeEnum.RefundInvoice => Models.Enums.InvoiceTypeEnum.CreditCustomer,
                 _ => throw new NotImplementedException()
             };
         }
