@@ -842,6 +842,11 @@ namespace Transactions.Api.Controllers
                 {
                     transaction.CreditCardDetails.CardOwnerNationalID = model.CardOwnerNationalID;
                 }
+
+                if (!string.IsNullOrEmpty(model.CardOwnerName))
+                {
+                    transaction.CreditCardDetails.CardOwnerName = model.CardOwnerName;
+                }
             }
 
             await transactionsService.CreateEntity(transaction);

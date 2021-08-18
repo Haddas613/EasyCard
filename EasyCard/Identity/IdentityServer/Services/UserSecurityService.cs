@@ -41,7 +41,7 @@ namespace IdentityServer.Services
             var previousPasswords = await context.UserPasswordSnapshots.Where(s => s.UserId == user.Id).Take(securitySettings.RememberLastPasswords).ToListAsync();
 
             //Password is currently in use
-            if (userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, newPassword) == PasswordVerificationResult.Success)
+            if (user.PasswordHash != null && userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, newPassword) == PasswordVerificationResult.Success)
             {
                 return false;
             }

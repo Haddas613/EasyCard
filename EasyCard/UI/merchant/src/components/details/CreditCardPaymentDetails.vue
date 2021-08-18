@@ -18,7 +18,7 @@
         </v-col>
         <v-col cols="4" md="4" class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('VoucherNumber')}}</p>
-          <p>{{model.voucherNumber || '-'}}</p>
+          <p>{{model.shovarNumber || '-'}}</p>
         </v-col>
       </v-row>
     <!-- </v-card-text>

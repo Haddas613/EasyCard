@@ -99,9 +99,15 @@ namespace Transactions.Api.Models.Transactions
         public decimal? NetTotal { get; set; }
 
         /// <summary>
-        /// Only to be used for pin pad transactions when CredotCardSecureDetails is not available
+        /// Only to be used for pin pad transactions when CreditCardSecureDetails is not available
         /// </summary>
         [StringLength(20)]
         public string CardOwnerNationalID { get; set; }
+
+        /// <summary>
+        /// Only to be used for pin pad transactions when CreditCardSecureDetails is not available
+        /// </summary>
+        [StringLength(50, MinimumLength = 2)]
+        public string CardOwnerName { get; set; }
     }
 }
