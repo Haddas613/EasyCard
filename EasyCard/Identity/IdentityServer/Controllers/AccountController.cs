@@ -623,8 +623,9 @@ namespace IdentityServer.Controllers
                 return View(model);
             }
 
-            var addPasswordResult = await userManager.AddPasswordAsync(user, model.Password);
-            if (addPasswordResult.Succeeded)
+            var addPasswordResult = await userSecurityService.TrySetNewPassword(user, model.Password);
+
+            if (addPasswordResult)
             {
                 await auditLogger.RegisterConfirmEmail(user, $"{model.FirstName} {model.LastName}".Trim());
 
@@ -650,11 +651,8 @@ namespace IdentityServer.Controllers
             }
             else
             {
-                var pwderrors = string.Join(", ", addPasswordResult.Errors.Select(err => err.Code + ":" + err.Description));
-                logger.LogError($"User {user.Email} set password failed: {pwderrors}");
-
-                AddErrors(addPasswordResult);
-                return View();
+                logger.LogError($"User {user.Email} set password failed");
+                throw new BusinessException("Something went wrong.");
             }
         }
 
