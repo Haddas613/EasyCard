@@ -56,11 +56,40 @@ namespace ShvaServiceImitation.Controllers
         private async Task<Envelope> AshAuth(AshAuthRequestBody body)
         {
             var response = new AshAuthResponseBody();
-
-            response.globalObj = new clsGlobal();
             response.pinpad = new clsPinPad();
-            response.AshAuthResult = 777;
+            if (body.inputObj.clientInputPan != null && (body.inputObj.clientInputPan.Contains("532610") || body.inputObj.clientInputPan.EndsWith("0443") || body.inputObj.clientInputPan == "5105105105105100"))
+            {
+                int[] numbers = new int[4] { 3, 4, 7, 9 };
+                Random rd = new Random();
+                int randomIndex = rd.Next(0, 4);
+                int rNumberForRequestAuth = numbers[randomIndex];
+                response.AshAuthResult = rNumberForRequestAuth;
 
+                response.globalObj = new clsGlobal()
+                {
+                    outputObj = new clsOutput()
+                    {
+                        telAuthAbility = new OField
+                        {
+                            valueTag = "1"
+                        },
+                        telNoCom = new OField
+                        {
+                            valueTag = "03-5786328"
+                        },
+                        compRetailerNum = new OField
+                        {
+                            valueTag = "746520"
+                        }
+
+                    }
+                };
+            }
+            else
+            {
+                response.globalObj = new clsGlobal();
+                response.AshAuthResult = 777;
+            }
             return await Task.FromResult(new Envelope
             {
                 Body = new Body

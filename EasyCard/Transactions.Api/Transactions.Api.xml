@@ -10,11 +10,12 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Transactions.Api.Controllers.InvoicingController.GenerateOrResendInvoice(System.Nullable{System.Guid})">
+        <member name="M:Transactions.Api.Controllers.InvoicingController.GenerateOrResendInvoice(System.Nullable{System.Guid},System.Boolean)">
             <summary>
             Generate invocie in EasyInvoice system
             </summary>
             <param name="invoiceID"></param>
+            <param name="ignoreStatus"></param>
             <returns></returns>
         </member>
         <member name="M:Transactions.Api.Controllers.TransactionsApiController.CreateTransaction(Transactions.Api.Models.Transactions.CreateTransactionRequest)">
@@ -25,6 +26,11 @@
         <member name="M:Transactions.Api.Controllers.TransactionsApiController.BlockCreditCard(Transactions.Api.Models.Transactions.BlockCreditCardRequest)">
             <summary>
             Blocking funds on credit card (J5 deal)
+            </summary>
+        </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.SelectJ5(System.Nullable{System.Guid})">
+            <summary>
+            Implement J5 deal
             </summary>
         </member>
         <member name="M:Transactions.Api.Controllers.TransactionsApiController.CheckCreditCard(Transactions.Api.Models.Transactions.CheckCreditCardRequest)">
@@ -142,6 +148,11 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.CreditCardDetails">
             <summary>
             Credit card information (just to display)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.BankDetails">
+            <summary>
+            Bank account information
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.CreditCardToken">
@@ -340,11 +351,6 @@
             Invoice details
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Billing.FutureBillingSummary.CardNumber">
-            <summary>
-            Billing Schedule
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.Billing.FutureBillingSummary.CreditCardDetails">
             <summary>
             Credit card information(just to display)
@@ -388,6 +394,11 @@
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.CreditCardDetails">
             <summary>
             Credit card information
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.PaymentDetails">
+            <summary>
+            Array of payment details, e.g. CreditCardDetails, ChequeDetails etc.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceID">
@@ -589,6 +600,163 @@
         <member name="P:Transactions.Api.Models.Invoicing.ResendInvoiceRequest.InvoicesIDs">
             <summary>
             IDs of invoices which need to be resend
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Masav.MasavFileResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileResource.Currency">
+            <summary>
+              Looks up a localized string similar to Currency.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileResource.InstituteName">
+            <summary>
+              Looks up a localized string similar to Institute name.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileResource.InstituteNumber">
+            <summary>
+              Looks up a localized string similar to Institute number.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileResource.MasavFileDate">
+            <summary>
+              Looks up a localized string similar to Date.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileResource.MasavFileID">
+            <summary>
+              Looks up a localized string similar to ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileResource.PayedDate">
+            <summary>
+              Looks up a localized string similar to Payed Date.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileResource.SendingInstitute">
+            <summary>
+              Looks up a localized string similar to Sending institute.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileResource.StorageReference">
+            <summary>
+              Looks up a localized string similar to Reference.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileResource.TotalAmount">
+            <summary>
+              Looks up a localized string similar to Total.
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Masav.MasavFileRowResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.AccountNumber">
+            <summary>
+              Looks up a localized string similar to Acc. number.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.Amount">
+            <summary>
+              Looks up a localized string similar to Amount.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.Bankcode">
+            <summary>
+              Looks up a localized string similar to Bank Code.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.BranchNumber">
+            <summary>
+              Looks up a localized string similar to Branch.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.ComissionTotal">
+            <summary>
+              Looks up a localized string similar to Comission Total.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.ConsumerName">
+            <summary>
+              Looks up a localized string similar to Consumer.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.IsPayed">
+            <summary>
+              Looks up a localized string similar to Is Payed.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.MasavFileID">
+            <summary>
+              Looks up a localized string similar to Masav File.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.MasavFileRowID">
+            <summary>
+              Looks up a localized string similar to ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.NationalID">
+            <summary>
+              Looks up a localized string similar to Nat. ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.PayedDate">
+            <summary>
+              Looks up a localized string similar to Payed Date.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.PaymentTransactionID">
+            <summary>
+              Looks up a localized string similar to Transaction ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.SmsSent">
+            <summary>
+              Looks up a localized string similar to Sms Sent.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.SmsSentDate">
+            <summary>
+              Looks up a localized string similar to Sms Sent Date.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Masav.MasavFileRowResource.TerminalID">
+            <summary>
+              Looks up a localized string similar to Terminal.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.TerminalID">
@@ -1058,6 +1226,11 @@
             Credit card details (should be omitted in case if stored credit card token used)
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.BankTransferDetails">
+            <summary>
+            Bank transfer details. Should be omitted in case of card transaction
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.CreditCardToken">
             <summary>
             Stored credit card details token (should be omitted in case if full credit card details used)
@@ -1106,6 +1279,16 @@
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.PinPadDeviceID">
             <summary>
              Pinpad device in case of terminal with multiple devices
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.CardOwnerNationalID">
+            <summary>
+            Only to be used for pin pad transactions when CreditCardSecureDetails is not available
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.CardOwnerName">
+            <summary>
+            Only to be used for pin pad transactions when CreditCardSecureDetails is not available
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">
@@ -1208,6 +1391,16 @@
             Generic transaction type
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.CardOwnerNationalID">
+            <summary>
+            Only to be used for pin pad transactions when CreditCardSecureDetails is not available
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.CardOwnerName">
+            <summary>
+            Only to be used for pin pad transactions when CreditCardSecureDetails is not available
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.RefundRequest">
             <summary>
             Refund request
@@ -1261,6 +1454,11 @@
         <member name="P:Transactions.Api.Models.Transactions.RefundRequest.TransactionType">
             <summary>
             Generic transaction type
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.CardOwnerNationalID">
+            <summary>
+            Only to be used for pin pad transactions when CredotCardSecureDetails is not available
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionRequestBase.TerminalID">
@@ -1654,7 +1852,7 @@
             IDs of transactions which needs to be transmitted
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.UpdateParametersRequest.TerminalID">
+        <member name="P:Transactions.Api.Models.UpdateParameters.UpdateParametersRequest.TerminalID">
             <summary>
             EasyCard terminal reference
             </summary>

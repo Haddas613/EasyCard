@@ -35,6 +35,10 @@
             <ec-money :amount="model.price" :currency="model.$currency"></ec-money>
           </p>
         </div>
+        <div class="info-block">
+          <p class="caption ecgray--text text--darken-2">{{$t('ExternalReference')}}</p>
+          <p>{{model.externalReference || '-'}}</p>
+        </div>
       </v-card-text>
     </v-card>
   </v-flex>

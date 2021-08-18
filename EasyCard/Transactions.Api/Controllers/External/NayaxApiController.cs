@@ -20,7 +20,6 @@ using SharedApi = Shared.Api;
 
 namespace Transactions.Api.Controllers.External
 {
-
     [Authorize(AuthenticationSchemes = Extensions.Auth.ApiKeyAuthenticationScheme, Policy = Policy.NayaxAPI)]
     [Route("api/external/nayax")]
     [Produces("application/json")]
@@ -29,13 +28,13 @@ namespace Transactions.Api.Controllers.External
     [ApiExplorerSettings(IgnoreApi = true)]
     public class NayaxApiController : ApiControllerBase
     {
-        private readonly ITransactionsService transactionsService;
+        private readonly INayaxTransactionsParametersService transactionsService;
         private readonly IMapper mapper;
         private readonly ILogger logger;
         private readonly NayaxGlobalSettings configuration;
 
         public NayaxApiController(
-             ITransactionsService transactionsService,
+             INayaxTransactionsParametersService transactionsService,
              IMapper mapper,
              ILogger<TransactionsApiController> logger,
              IOptions<NayaxGlobalSettings> configuration)
@@ -52,12 +51,12 @@ namespace Transactions.Api.Controllers.External
         {
             try
             {
-                var transaction =
-                EnsureExists(
-                await transactionsService.GetTransactionsForUpdate().FirstOrDefaultAsync(m => m.PinPadTransactionID == model.Vuid));
+                await transactionsService.CreateEntity(new Business.Entities.NayaxTransactionsParameters
+                {
+                    TranRecord = model.TranRecord,
+                    PinPadTransactionID = model.Vuid
+                });
 
-                transaction.ShvaTransactionDetails.TranRecord = model.TranRecord;
-                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission, transactionOperationCode: TransactionOperationCodesEnum.ProcessorPreTransmissionCommited);
                 return new NayaxUpdateTranRecordResponse
                 {
                     Status = "0"
@@ -67,12 +66,13 @@ namespace Transactions.Api.Controllers.External
             {
                 logger.LogError(ex, $"Failed to update TransactionRecord for PAX deal. Vuid: {model.Vuid} Uid: {model.Uid} ");
 
-                return new NayaxUpdateTranRecordResponse
+                return BadRequest(new NayaxUpdateTranRecordResponse
                 {
                     StatusCode = 14,
                     ErrorMsg = string.Format("Failed to update TransactionRecord for PAX deal. Vuid: {0} Uid: {1} ", model.Vuid, model.Uid),
-                    Status = "error"
-                };
+                    Status = "error",
+                    CorrelationID = GetCorrelationID()
+                });
             }
         }
     }

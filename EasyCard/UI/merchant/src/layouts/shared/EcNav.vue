@@ -14,8 +14,12 @@
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title class="text-underline">
+          <v-list-item-title class="text-underline mt-4">
             <router-link class="ecnavLink--text" :to="{name: 'MyProfile'}">{{userName}}</router-link>
+            <p>
+              <v-icon small>mdi-account-key</v-icon>
+              <small class="px-1">{{idlingTimeLeft}}</small>
+            </p>
           </v-list-item-title>
           <!-- <v-list-item-subtitle>Subtext</v-list-item-subtitle> -->
         </v-list-item-content>
@@ -74,7 +78,7 @@
   </v-navigation-drawer>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import Avatar from "vue-avatar";
 import appConstants from "../../helpers/app-constants";
 
@@ -105,6 +109,22 @@ export default {
               icon: "mdi-cash-multiple",
               text: "TransactionsList",
               to: { name: "Transactions" }
+            },
+            {
+              icon: "mdi-chevron-down-box-outline",
+              to: { name: "Charge" },
+              text: "Charge"
+            },
+            // {
+            //   icon: "mdi-credit-card-off",
+            //   to: { name: "NonCardCharge" },
+            //   text: "NonCardCharge"
+            // },
+            {
+              icon: "mdi-chevron-up-box-outline",
+              to: { name: "Refund" },
+              text: "Refund",
+              allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin]
             }
           ]
         },
@@ -261,8 +281,12 @@ export default {
       }
     },
     ...mapState({
-      terminalStore: state => state.settings.terminal
-    })
+      terminalStore: state => state.settings.terminal,
+      idlingStore: state => state.idling,
+    }),
+    ...mapGetters({
+      idlingTimeLeft: 'idling/idlingTimeLeft',
+    }),
   },
   watch: {
     'terminalStore': async function(newValue, oldValue) {

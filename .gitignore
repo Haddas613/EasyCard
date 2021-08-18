@@ -353,3 +353,7 @@ MigrationBackup/
 .ionide/
 /EasyCard/Transactions.Business/Migrations/20210627082730_ShvaAuthNum_N_CardBrand_UpayFields_corrections_added.cs
 /EasyCard/Transactions.Business/Migrations/20210627082730_ShvaAuthNum_N_CardBrand_UpayFields_corrections_added.Designer.cs
+/EasyCard/Merchants.Api/appsettings.Development.json
+/EasyCard/Merchants.Api/appsettings.json
+/EasyCard/Transactions.Api/appsettings.Development.json
+/EasyCard/Transactions.Api/appsettings.json

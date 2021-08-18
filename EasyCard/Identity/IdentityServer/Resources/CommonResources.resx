@@ -339,10 +339,16 @@
   <data name="PasswordMatchValidationMessage" xml:space="preserve">
     <value>Password does not meet system requirements</value>
   </data>
-  <data name="PasswordMatchValidatonMessage" xml:space="preserve">
-    <value>Password does not meet system requirements </value>
-  </data>
   <data name="LastNameValidationMessage" xml:space="preserve">
-    <value>Last name should be at least 2 and at max 200 characters long</value>
+    <value>Last name should be at least 2 and at max 100 characters long</value>
+  </data>
+  <data name="ForceUpdatePasswordMessage" xml:space="preserve">
+    <value>Your password has expired. Please set the new password to continue authorization process.</value>
+  </data>
+  <data name="PasswordWasUsedBefore" xml:space="preserve">
+    <value>This password was used before. Please specify a new password.</value>
+  </data>
+  <data name="FirstNameValidationMessage" xml:space="preserve">
+    <value>First name should be at least 2 and at max 100 characters long</value>
   </data>
 </root>

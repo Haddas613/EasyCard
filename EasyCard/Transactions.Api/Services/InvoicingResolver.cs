@@ -30,7 +30,6 @@ namespace Transactions.Api.Services
         public IInvoicing GetInvoicing(TerminalExternalSystem terminalExternalSystem)
         {
             var invoicing = externalSystemsService.GetExternalSystem(terminalExternalSystem.ExternalSystemID);
-
             return serviceProvider.GetService(Type.GetType(invoicing.InstanceTypeFullName)) as IInvoicing;
         }
     }

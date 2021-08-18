@@ -56,7 +56,7 @@ namespace Transactions.Api.Validation
             {
                 if (!(model.PinPad ?? false))
                 {
-                    if (model.CreditCardSecureDetails == null)
+                    if ((model.CreditCardSecureDetails == null) && (model.CreditCardToken == null))
                     {
                         throw new BusinessException(Messages.CreditCardSecureDetailsRequired);
                     }
@@ -71,9 +71,16 @@ namespace Transactions.Api.Validation
                         errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.CardReaderInput)}", Messages.CardReaderInputRequired));
                     }
 
-                    if (terminalSettings.NationalIDRequired == true && string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID))
+                    if (terminalSettings.NationalIDRequired == true)
                     {
-                        errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.CardOwnerNationalID)}", Messages.CardOwnerNationalIDRequired));
+                        if (string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID))
+                        {
+                            errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.CardOwnerNationalID)}", Messages.CardOwnerNationalIDRequired));
+                        }
+                        else if (!IsraelNationalIdHelpers.Valid(model.CreditCardSecureDetails.CardOwnerNationalID))
+                        {
+                            errors.Add(new SharedHelpers.Error($"{nameof(model.CreditCardSecureDetails)}.{nameof(model.CreditCardSecureDetails.CardOwnerNationalID)}", Messages.CardOwnerNationalIDInvalid));
+                        }
                     }
                 }
                 else

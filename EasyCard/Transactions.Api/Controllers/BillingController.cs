@@ -188,16 +188,26 @@ namespace Transactions.Api.Controllers
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
             var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
-            var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
 
             var newBillingDeal = mapper.Map<BillingDeal>(model);
             newBillingDeal.Active = true;
-
-            newBillingDeal.InitialTransactionID = token.InitialTransactionID;
-
-            mapper.Map(token, newBillingDeal.CreditCardDetails);
-
             newBillingDeal.MerchantID = terminal.MerchantID;
+
+            if (model.PaymentType == PaymentTypeEnum.Card)
+            {
+                var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                newBillingDeal.InitialTransactionID = token.InitialTransactionID;
+
+                mapper.Map(token, newBillingDeal.CreditCardDetails);
+            }
+            else if (model.PaymentType == PaymentTypeEnum.Bank)
+            {
+                EnsureExists(model.BankDetails);
+            }
+            else
+            {
+                return BadRequest($"{model.PaymentType} payment type is not supported");
+            }
 
             // TODO: calculation
 
@@ -278,21 +288,11 @@ namespace Transactions.Api.Controllers
             var processableBillings = billings.Where(b => terminals.Contains(b.TerminalID)).Select(b => b.BillingDealID);
 
             numberOfRecords = processableBillings.Count();
-            var batch = new List<Guid>(appSettings.BillingDealsMaxBatchSize);
-            foreach (var id in processableBillings)
-            {
-                if (batch.Count == appSettings.BillingDealsMaxBatchSize)
-                {
-                    await billingDealsQueue.PushToQueue<IEnumerable<Guid>>(batch);
-                    batch.Clear();
-                }
 
-                batch.Add(id);
-            }
-
-            if (batch.Count > 0)
+            for (int i = 0; i < numberOfRecords; i += appSettings.BillingDealsMaxBatchSize)
             {
-                await billingDealsQueue.PushToQueue<IEnumerable<Guid>>(batch);
+                await billingDealsQueue.PushToQueue(
+                    processableBillings.Skip(i).Take(appSettings.BillingDealsMaxBatchSize));
             }
 
             return new SendBillingDealsToQueueResponse { Status = StatusEnum.Success, Message = Messages.TransactionsQueued, Count = numberOfRecords };

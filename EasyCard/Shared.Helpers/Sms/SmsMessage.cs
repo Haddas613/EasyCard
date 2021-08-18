@@ -9,7 +9,6 @@ namespace Shared.Helpers.Sms
     {
         public SmsMessage()
         {
-
         }
 
         public SmsMessage(DateTime messageDate, string messageId)
@@ -46,7 +45,7 @@ namespace Shared.Helpers.Sms
         public Guid? TerminalID { get; set; }
 
         [IgnoreProperty]
-        public string MessageId { get { return this.RowKey; } set { this.RowKey = value; } }
+        public string MessageId { get => RowKey; set => RowKey = value; }
 
         public string CorrelationId { get; set; }
     }

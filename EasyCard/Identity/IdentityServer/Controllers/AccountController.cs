@@ -2,7 +2,10 @@
 using IdentityServer.Helpers;
 using IdentityServer.Messages;
 using IdentityServer.Models;
+using IdentityServer.Models.Configuration;
 using IdentityServer.Models.Enums;
+using IdentityServer.Models.Events;
+using IdentityServer.Resources;
 using IdentityServer.Security;
 using IdentityServer.Security.Auditing;
 using IdentityServer.Services;
@@ -62,6 +65,8 @@ namespace IdentityServer.Controllers
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly UserHelpers userHelpers;
         private readonly CommonLocalizationService localization;
+        private readonly SecuritySettings securitySettings;
+        private readonly UserSecurityService userSecurityService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -80,7 +85,9 @@ namespace IdentityServer.Controllers
             ISmsService smsService,
             IHttpContextAccessorWrapper httpContextAccessor,
             UserHelpers userHelpers,
-            CommonLocalizationService localization)
+            CommonLocalizationService localization,
+            IOptions<SecuritySettings> securitySettings,
+            UserSecurityService userSecurityService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -101,6 +108,8 @@ namespace IdentityServer.Controllers
             this.httpContextAccessor = httpContextAccessor;
             this.userHelpers = userHelpers;
             this.localization = localization;
+            this.securitySettings = securitySettings.Value;
+            this.userSecurityService = userSecurityService;
         }
 
         /// <summary>
@@ -166,6 +175,7 @@ namespace IdentityServer.Controllers
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
+                    await events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.Client?.ClientId));
                     return View(await BuildLoginViewModelAsync(model));
                 }
 
@@ -237,22 +247,92 @@ namespace IdentityServer.Controllers
                     //var messageId = Guid.NewGuid().ToString();
                     //await this.emailSender.Send2faEmailAsync(user.Email, code);
 
+                    if (user.PasswordUpdated == null || user.PasswordUpdated < DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
+                    {
+                        return RedirectToAction(nameof(ForceUpdatePassword));
+                    }
+
                     return RedirectToAction(nameof(LoginWith2faChooseType));
                 }
 
                 if (result.IsLockedOut)
                 {
+                    await events.RaiseAsync(new UserLoginFailureEvent(model.Username, "user is locked", clientId: context?.Client?.ClientId));
                     await auditLogger.RegisterLockout(user);
                     return RedirectToAction(nameof(Lockout));
                 }
 
                 await events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.Client?.ClientId));
+                await auditLogger.RegisterFailedAttempt(model.Username);
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
 
             // something went wrong, show form with error
             var vm = await BuildLoginViewModelAsync(model);
             return View(vm);
+        }
+
+        /// <summary>
+        /// This action should only be used when user password has expired.
+        /// Requires GetTwoFactorAuthenticationUserAsync session. Must be called after login but before 2FA.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForceUpdatePassword()
+        {
+            // Ensure the user has gone through the username & password screen first
+            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            // This page is unavailable if user's PasswordUpdated complies with the requirements
+            if (user.PasswordUpdated != null && user.PasswordUpdated >= DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
+            {
+                return RedirectToAction(nameof(LoginWith2faChooseType));
+            }
+
+            if (user == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForceUpdatePassword(ForceUpdatePasswordViewModel request)
+        {
+            // Ensure the user has gone through the username & password screen first
+            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            if (user == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            // This page is unavailable if user's PasswordUpdated complies with the requirements
+            if (user.PasswordUpdated != null && user.PasswordUpdated >= DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
+            {
+                return RedirectToAction(nameof(LoginWith2faChooseType));
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(request);
+            }
+
+            var result = await userSecurityService.TrySetNewPassword(user, request.NewPassword);
+
+            if (!result)
+            {
+                ModelState.AddModelError(nameof(request.NewPassword), CommonResources.PasswordWasUsedBefore);
+                return View(request);
+            }
+            else
+            {
+                await auditLogger.RegisterChangePassword(user);
+                return RedirectToAction(nameof(LoginWith2faChooseType));
+            }
         }
 
         [HttpGet]
@@ -265,6 +345,11 @@ namespace IdentityServer.Controllers
             if (user == null)
             {
                 return RedirectToAction(nameof(Login));
+            }
+
+            if (user.PasswordUpdated == null || user.PasswordUpdated < DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
+            {
+                return RedirectToAction(nameof(ForceUpdatePassword));
             }
 
             var phoneNumber = await userManager.GetPhoneNumberAsync(user);
@@ -287,6 +372,11 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
+            if (user.PasswordUpdated == null || user.PasswordUpdated < DateTime.UtcNow.AddDays(-securitySettings.PasswordExpirationDays))
+            {
+                return RedirectToAction(nameof(ForceUpdatePassword));
+            }
+
             var phoneNumber = await userManager.GetPhoneNumberAsync(user);
 
             ViewBag.HasPhone = !string.IsNullOrWhiteSpace(phoneNumber);
@@ -295,6 +385,8 @@ namespace IdentityServer.Controllers
             {
                 var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProviderPhone);
                 var messageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+                await events.RaiseAsync(new TwoFactorInfoEvent(user.Email, "2fa code sent", $"2fa code sent to {phoneNumber}"));
 
                 var response = await smsService.Send(new SmsMessage
                 {
@@ -309,12 +401,14 @@ namespace IdentityServer.Controllers
                 if (response.Status == Shared.Api.Models.Enums.StatusEnum.Error)
                 {
                     ViewBag.Error = localization.Get("CouldNotSendSMSErrorMessage");
+                    await events.RaiseAsync(new TwoFactorErrorEvent(user.Email, "Could not send 2fa code", $"Could not send 2fa code to {phoneNumber}"));
                     return View();
                 }
             }
             else
             {
                 var code = await userManager.GenerateTwoFactorTokenAsync(user, TwoFactorAuthProviderEmail);
+                await events.RaiseAsync(new TwoFactorInfoEvent(user.Email, "2fa code sent", $"2fa code sent to {user.Email}"));
                 await emailSender.Send2faEmailAsync(user.Email, code);
             }
 
@@ -365,7 +459,8 @@ namespace IdentityServer.Controllers
 
             if (result.Succeeded)
             {
-                logger.LogInformation("User with ID {UserId} logged in with 2fa.", user.Id);
+                logger.LogInformation($"User with ID {user.Id} logged in with 2fa.");
+                await events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName));
 
                 await auditLogger.RegisterLogin(user, await userHelpers.GetUserFullname(user));
 
@@ -381,11 +476,13 @@ namespace IdentityServer.Controllers
             else if (result.IsLockedOut)
             {
                 logger.LogWarning("User with ID {UserId} account locked out.", user.Id);
+                await events.RaiseAsync(new UserLoginFailureEvent(user.UserName, "user is locked"));
                 return RedirectToAction(nameof(Lockout));
             }
             else
             {
                 logger.LogWarning("Invalid authenticator code entered for user with ID {UserId}.", user.Id);
+                await events.RaiseAsync(new UserLoginFailureEvent(user.UserName, "Invalid authenticator code."));
                 ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
                 return View();
             }
@@ -483,9 +580,6 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            //var result = await userManager.ConfirmEmailAsync(user, code);
-            //return View(result.Succeeded ? "ConfirmEmail" : "Error");
-
             if (!string.IsNullOrWhiteSpace(user.PasswordHash))
             {
                 logger.LogError($"User {user.Email} already has password");
@@ -553,8 +647,6 @@ namespace IdentityServer.Controllers
                 {
                     return RedirectToAction(nameof(HomeController.Index), "Home");
                 }
-
-                //return RedirectToAction(nameof(ManageController.EnableAuthenticator), "Manage");
             }
             else
             {
@@ -631,6 +723,7 @@ namespace IdentityServer.Controllers
                 await emailSender.SendEmailResetPasswordAsync(model.Email, callbackUrl);
 
                 await auditLogger.RegisterForgotPassword(model.Email);
+                await events.RaiseAsync(new ResetPasswordEvent(user.UserName, "Forgot password", $"User forgot passwors enail sent to {model.Email}"));
                 return RedirectToAction(nameof(ForgotPasswordConfirmation));
             }
 
@@ -693,12 +786,6 @@ namespace IdentityServer.Controllers
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
 
-            //var result = await userManager.ResetPasswordAsync(user, model.Code, model.Password);
-            //if (result.Succeeded)
-            //{
-            //    return RedirectToAction(nameof(ResetPasswordConfirmation));
-            //}
-
             if (model.Code == null)
             {
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
@@ -723,16 +810,15 @@ namespace IdentityServer.Controllers
             var result = await userManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
-                //throw exception......
+                AddErrors(result);
+                return View();
             }
             else
             {
                 await auditLogger.RegisterResetPassword(user);
+                await events.RaiseAsync(new ResetPasswordEvent(user.UserName, "Reset password", "User password reseted"));
                 return RedirectToAction(nameof(ResetPasswordConfirmation));
             }
-
-            AddErrors(result);
-            return View();
         }
 
         [HttpGet]
@@ -762,12 +848,12 @@ namespace IdentityServer.Controllers
                 return View(model);
             }
 
-            user.PasswordHash = userManager.PasswordHasher.HashPassword(user, model.NewPassword);
+            var result = await userSecurityService.TrySetNewPassword(user, model.NewPassword);
 
-            var result = await userManager.UpdateAsync(user);
-            if (!result.Succeeded)
+            if (!result)
             {
-                ModelState.AddModelError("General", "Something went wrong. Try again later or contact administrator");
+                ModelState.AddModelError(nameof(model.NewPassword), CommonResources.PasswordWasUsedBefore);
+                return View(model);
             }
             else
             {
@@ -801,15 +887,6 @@ namespace IdentityServer.Controllers
             }
 
             var user = await userManager.FindByIdAsync(User.GetDoneByID().Value.ToString());
-
-            //if (!result.Succeeded)
-            //{
-            //    ModelState.AddModelError("General", "Something went wrong. Try again later or contact administrator");
-            //}
-            //else
-            //{
-            //    //await auditLogger.RegisterAction(user, model.Enabled ? AuditingTypeEnum.UserEnabledTwoFactor : AuditingTypeEnum.UserDisabledTwoFactor);
-            //}
 
             model.UserInfo = user;
 
@@ -925,7 +1002,7 @@ namespace IdentityServer.Controllers
                 await userManager.AddClaim(allClaims, user, Claims.FirstNameClaim, firstName);
                 await userManager.AddClaim(allClaims, user, Claims.LastNameClaim, lastName);
 
-                logger.LogInformation("User logged in with {Name} provider.", "test");
+                logger.LogInformation($"User {email} logged in with {externalProvider} provider.");
 
                 await RefreshExternalUserRoles(user, isECNGBillingAdmin, isECNGBusinessAdmin);
 
@@ -946,7 +1023,7 @@ namespace IdentityServer.Controllers
                 var newUserResult = await userManager.CreateAsync(newUser);
                 if (!newUserResult.Succeeded)
                 {
-                    logger.LogInformation("User is not created");
+                    logger.LogError($"User {email} is not created");
 
                     // TODO: error details
                     return new BadRequestResult();
@@ -965,14 +1042,14 @@ namespace IdentityServer.Controllers
             var addLoginresult = await userManager.AddLoginAsync(newUser, userLoginInfo);
             if (!addLoginresult.Succeeded)
             {
-                logger.LogInformation("User is not created");
+                logger.LogError($"User {email} login is not created");
 
                 // TODO: error details
                 return new BadRequestResult();
             }
 
             await signInManager.SignInAsync(newUser, isPersistent: true); //isPersistent: false
-            logger.LogInformation("User created an account using {Name} provider.", userLoginInfo.LoginProvider);
+            logger.LogInformation($"User {email} created an account using {userLoginInfo.LoginProvider} provider.");
             return RedirectToLocal(returnUrl);
         }
 

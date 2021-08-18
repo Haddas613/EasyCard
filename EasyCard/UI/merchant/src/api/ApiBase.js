@@ -82,12 +82,16 @@ class ApiBase {
             mode: 'cors',
             headers: this._buildRequestHeaders(access_token)
         });
-        this._ongoingRequests[_urlKey] = this._handleRequest(request);
+        this._ongoingRequests[_urlKey] = this._handleRequest(request, null);
 
         return new Promise((s, e) => s(this._ongoingRequests[_urlKey])).finally(() => delete this._ongoingRequests[_urlKey])
     }
 
-    async post(url, payload) {
+    async post(url, payload, options = null) {
+        options = {
+            showSuccessToastr: true,
+            ...options
+        }
         const access_token = await this.oidc.getAccessToken()
 
         if (!access_token) {
@@ -105,10 +109,14 @@ class ApiBase {
             body: JSON.stringify(payload)
         });
 
-        return this._handleRequest(request, true);
+        return this._handleRequest(request, options);
     }
 
-    async postFile(url, file) {
+    async postFile(url, file, options = null) {
+        options = {
+            showSuccessToastr: true,
+            ...options
+        }
         const access_token = await this.oidc.getAccessToken()
 
         if (!access_token) {
@@ -133,7 +141,7 @@ class ApiBase {
             body: formData
         });
 
-        return this._handleRequest(request, true);
+        return this._handleRequest(request, options);
     }
 
     async put(url, payload) {
@@ -154,7 +162,7 @@ class ApiBase {
             body: JSON.stringify(payload)
         });
 
-        return this._handleRequest(request, true);
+        return this._handleRequest(request, { showSuccessToastr: true });
     }
 
     async delete(url) {
@@ -174,10 +182,15 @@ class ApiBase {
             headers: this._buildRequestHeaders(access_token)
         });
 
-        return this._handleRequest(request, true);
+        return this._handleRequest(request, { showSuccessToastr: true });
     }
 
-    async _handleRequest(request, showSuccessToastr = false) {
+    async _handleRequest(request, options = null) {
+        options = {
+            showSuccessToastr: false,
+            showBadRequestToastr: true,
+            ...options
+        }
         let requestIncrementTimeout = null;
         let storeDispatched = false;
 
@@ -191,7 +204,7 @@ class ApiBase {
                 let result = await request.json();
                 if (result.status === "warning") {
                     Vue.toasted.show(result.message, { type: 'info' });
-                } else if (showSuccessToastr && result.status === "success") {
+                } else if (options.showSuccessToastr && result.status === "success") {
                     Vue.toasted.show(result.message, { type: 'success', duration: 5000 });
                 }
                 await this._checkAppVersion(request.headers);
@@ -199,8 +212,10 @@ class ApiBase {
             } else {
                 //Server Validation errors are returned to component
                 if (request.status === 400 || request.status === 409) {
+                    if(options.showBadRequestToastr){
+                        Vue.toasted.show(result.message || i18n.t('SomethingWentWrong'), { type: 'error' });
+                    }
                     let result = await request.json();
-                    Vue.toasted.show(result.message || i18n.t('SomethingWentWrong'), { type: 'error' });
                     return result;
                 } else if (request.status === 401) {
                     Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error' });
@@ -250,6 +265,7 @@ class ApiBase {
             if(storeDispatched){
                 store.commit("ui/requestsCountDecrement");
             }
+            store.commit("idling/refreshTime");
         }
         return null;
     }

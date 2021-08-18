@@ -56,7 +56,8 @@ namespace Shared.Integration
 
         public string MessageId
         {
-            get { return RowKey; } set { RowKey = value; }
+            get { return RowKey; }
+            set { RowKey = value; }
         }
 
         public string Action { get; set; }

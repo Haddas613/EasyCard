@@ -79,6 +79,13 @@
   "Integrations": "Integrations",
   "UpayTransactionDetails": "Upay Transaction Details",
   "ClearingHouseTransactionDetails": "Clearing House Transaction Details",
+  "NonCardCharge": "Non Card Charge",
+  "SystemIsNotReadyToUse": "System is not ready to use",
+  "SecurityNotice": "Security notice",
+  "PaymentDetails": "Payment Details",
+  "BankAccountDetails": "Bank Account Details",
+  "ExtendedResponseForCheckoutTransaction": "Extended response for checkout transaction",
+  "VoucherNumber": "Voucher Number",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -118,6 +125,7 @@
   "OnlyImagesAreAllowed": "Only images are allowed",
   "OnlyCSSFilesAreAllowed": "Only CSS files are allowed",
   "MaxFileSizeIs1MB": "Max file size is 1MB",
+  "OnlyNumbersAreAllowed": "Only numbers are allowed",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -294,6 +302,11 @@
   "PaymentIntentURL": "Payment Intent URL",
   "AllowPinPad": "Allow PinPad",
   "AuthorizationCode": "Authorization Code (optional)",
+  "PaymentType": "Payment Type",
+  "ChequeNumber": "Cheque Number",
+  "Bank": "Bank",
+  "BankBranch": "Bank Branch",
+  "BankAccount": "Bank Account",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -342,6 +355,7 @@
   "Deactivate": "Deactivate",
   "PaymentIntent": "Payment Intent",
   "CreatePaymentLink": "Create Payment Link",
+  "Renew": "Renew",
 
   "--AUTH--": null,
   "Login": "Login",
@@ -419,5 +433,7 @@
   "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?",
   "NewAppVersionAvailableClickToRefreshThePage": "New App Version Available. Click to refresh the page.",
   "UnsavedChangesWarningMessage": "There are unsaved changes. Are you sure you want to leave?",
-  "CanOnlyIssueInvoiceForILSTransactions": "Can only issue invoice for ILS transactions"
+  "CanOnlyIssueInvoiceForILSTransactions": "Can only issue invoice for ILS transactions",
+  "NoAvailableTerminals": "No available terminals",
+  "SessionEndingMsg": "Your session is about to end. Renew it to continue working or sign out."
 }

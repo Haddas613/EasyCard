@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Upay.Models
 {
-    public class TransfersModel: ParameterBase
+    public class TransfersModel : ParameterBase
     {
         /// <summary>
         /// Gets or Sets email

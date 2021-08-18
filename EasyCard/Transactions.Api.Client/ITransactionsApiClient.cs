@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Transactions.Api.Models.Billing;
 using Transactions.Api.Models.Checkout;
 using Transactions.Api.Models.Transactions;
+using Transactions.Api.Models.UpdateParameters;
 
 namespace Transactions.Api.Client
 {
@@ -32,5 +33,12 @@ namespace Transactions.Api.Client
         Task<OperationResponse> DeleteConsumerRelatedData(Guid consumerID);
 
         Task<TransactionResponseAdmin> GetTransaction(Guid? transactionID);
+
+        Task<SendTerminalsToQueueResponse> SendTerminalsToUpdateParametersQueue();
+
+        Task<UpdateParametersResponse> UpdateTerminalParameters(Guid terminalID);
+
+        Task<OperationResponse> GenerateMasavFile();
+
     }
 }

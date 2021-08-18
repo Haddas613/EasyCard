@@ -145,6 +145,11 @@ namespace Merchants.Business.Migrations
                     b.Property<short>("Currency")
                         .HasColumnType("smallint");
 
+                    b.Property<string>("ExternalReference")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("ItemName")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -443,6 +448,11 @@ namespace Merchants.Business.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
+
+                    b.Property<string>("BankDetails")
+                        .IsUnicode(false)
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("BankDetails");
 
                     b.Property<string>("BillingSettings")
                         .IsUnicode(false)

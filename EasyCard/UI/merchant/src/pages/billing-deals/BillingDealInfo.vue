@@ -69,6 +69,7 @@
           ></deal-details>
 
           <credit-card-details v-if="model.creditCardDetails" :model="model.creditCardDetails"></credit-card-details>
+          <bank-payment-details card v-if="model.bankDetails" :model="model.bankDetails"></bank-payment-details>
 
           <v-card flat class="my-2" v-if="model.invoiceDetails">
             <v-card-title
@@ -114,6 +115,7 @@ export default {
       import("../../components/transactions/TransactionItemsList"),
     DealDetails: () => import("../../components/details/DealDetails"),
     AmountDetails: () => import("../../components/details/AmountDetails"),
+    BankPaymentDetails: () => import("../../components/details/BankPaymentDetails"),
     CreditCardDetails: () =>
       import("../../components/details/CreditCardDetails"),
     BillingDealPauseDialog: () =>

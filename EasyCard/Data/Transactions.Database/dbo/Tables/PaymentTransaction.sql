@@ -30,7 +30,7 @@
     [DealDescription]                NVARCHAR (MAX)   NULL,
     [ConsumerEmail]                  VARCHAR (50)     NULL,
     [ConsumerPhone]                  VARCHAR (20)     NULL,
-    [ShvaShovarNumber]               VARCHAR (20)     NULL,
+    [ShvaShovarNumber]               VARCHAR (50)     NULL,
     [ShvaDealID]                     VARCHAR (30)     NULL,
     [ShvaTransmissionNumber]         VARCHAR (20)     NULL,
     [ShvaTerminalID]                 VARCHAR (20)     NULL,
@@ -70,11 +70,19 @@
     [UpayMerchantNumber]             NVARCHAR (64)    NULL,
     [UpayTransactionID]              NVARCHAR (64)    NULL,
     [UpayWebUrl]                     NVARCHAR (512)   NULL,
-    [PinPadTransactionID]            NVARCHAR (MAX)   NULL,
+    [PinPadTransactionID]            VARCHAR (50)     NULL,
     [ProcessorResultCode]            INT              NULL,
     [CompRetailerNum]                VARCHAR (20)     NULL,
     [EmvSoftVersion]                 VARCHAR (20)     NULL,
     [PinPadDeviceID]                 VARCHAR (20)     NULL,
+    [TelToGetAuthNum]                VARCHAR (20)     NULL,
+    [ConsumerExternalReference]      VARCHAR (50)     NULL,
+    [BankTransferBank]               INT              NULL,
+    [BankTransferBankAccount]        NVARCHAR (50)    NULL,
+    [BankTransferBankBranch]         INT              NULL,
+    [BankTransferDueDate]            DATETIME2 (7)    NULL,
+    [BankTransferReference]          NVARCHAR (50)    NULL,
+    [MasavFileID]                    BIGINT           NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
 
@@ -116,4 +124,27 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PaymentTransaction_PinPadTransactionID]
+    ON [dbo].[PaymentTransaction]([PinPadTransactionID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PaymentTransaction_TerminalID_PaymentTypeEnum_MasavFileID]
+    ON [dbo].[PaymentTransaction]([TerminalID] ASC, [PaymentTypeEnum] ASC, [MasavFileID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_PaymentTransaction_MerchantID_TerminalID]
+    ON [dbo].[PaymentTransaction]([MerchantID] ASC, [TerminalID] ASC);
 

@@ -25,16 +25,61 @@ using Shared.Integration.Models;
 using Shared.Business.Extensions;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging.Debug;
+using Shared.Integration.Models.PaymentDetails;
 
 namespace Transactions.Business.Data
 {
-    public class TransactionsContext : DbContext
+    public partial class TransactionsContext : DbContext
     {
         public static readonly LoggerFactory DbCommandConsoleLoggerFactory
             = new LoggerFactory(new[]
             {
                 new DebugLoggerProvider()
             });
+
+        private static readonly ValueConverter CardExpirationConverter = new ValueConverter<CardExpiration, string>(
+            v => v.ToString(),
+            v => CreditCardHelpers.ParseCardExpiration(v));
+
+        private static readonly ValueConverter ItemsConverter = new ValueConverter<IEnumerable<Item>, string>(
+           v => JsonConvert.SerializeObject(v),
+           v => JsonConvert.DeserializeObject<IEnumerable<Item>>(v));
+
+        private static readonly ValueComparer ItemsComparer = new ValueComparer<IEnumerable<Item>>(
+          (c1, c2) => c1 != null ? c1.SequenceEqual(c2) : false,
+          c => c != null ? c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())) : 0,
+          c => c != null ? c.ToList() : c);
+
+        private static readonly ValueConverter PaymentDetailsConverter = new ValueConverter<IEnumerable<PaymentDetails>, string>(
+          v => JsonConvert.SerializeObject(v),
+          v => JsonConvert.DeserializeObject<IEnumerable<PaymentDetails>>(v));
+
+        private static readonly ValueComparer PaymentDetailsComparer = new ValueComparer<IEnumerable<PaymentDetails>>(
+          (c1, c2) => c1 != null ? c1.SequenceEqual(c2) : false,
+          c => c != null ? c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())) : 0,
+          c => c != null ? c.ToList() : c);
+
+        private static readonly ValueConverter CustomerAddressConverter = new ValueConverter<Address, string>(
+           v => JsonConvert.SerializeObject(v),
+           v => JsonConvert.DeserializeObject<Address>(v));
+
+        private static readonly ValueConverter StringsArrayConverter = new ValueConverter<string[], string>(
+          v => v == null ? null : string.Join(",", v),
+          v => v == null ? null : v.Split(",", StringSplitOptions.RemoveEmptyEntries));
+
+        private static readonly ValueComparer StringArrayComparer = new ValueComparer<string[]>(
+           (c1, c2) => c1.SequenceEqual(c2),
+           c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+           c => (string[])c.Clone());
+
+        private static readonly ValueConverter SettingsJObjectConverter = new ValueConverter<JObject, string>(
+           v => v.ToString(Formatting.None),
+           v => JObject.Parse(v));
+
+        private static readonly ValueComparer SettingsJObjectComparer = new ValueComparer<JObject>(
+           (s1, s2) => s1.ToString(Formatting.None).GetHashCode() == s2.ToString(Formatting.None).GetHashCode(),
+           v => v.ToString(Formatting.None).GetHashCode(),
+           v => JObject.Parse(v.ToString(Formatting.None)));
 
         public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
 
@@ -54,33 +99,13 @@ namespace Transactions.Business.Data
 
         public DbSet<FutureBilling> FutureBillings { get; set; }
 
+        public DbSet<MasavFile> MasavFiles { get; set; }
+
+        public DbSet<MasavFileRow> MasavFileRows { get; set; }
+
+        public DbSet<NayaxTransactionsParameters> NayaxTransactionsParameters { get; set; }
+
         private readonly ClaimsPrincipal user;
-
-        private static readonly ValueConverter CardExpirationConverter = new ValueConverter<CardExpiration, string>(
-            v => v.ToString(),
-            v => CreditCardHelpers.ParseCardExpiration(v));
-
-        private static readonly ValueConverter ItemsConverter = new ValueConverter<IEnumerable<Item>, string>(
-           v => JsonConvert.SerializeObject(v),
-           v => JsonConvert.DeserializeObject<IEnumerable<Item>>(v));
-
-        private static readonly ValueComparer ItemsComparer = new ValueComparer<IEnumerable<Item>>(
-          (c1, c2) => c1 != null ? c1.SequenceEqual(c2) : false,
-          c => c != null ? c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())) : 0,
-          c => c != null ? c.ToList() : c);
-
-        private static readonly ValueConverter CustomerAddressConverter = new ValueConverter<Address, string>(
-           v => JsonConvert.SerializeObject(v),
-           v => JsonConvert.DeserializeObject<Address>(v));
-
-        private static readonly ValueConverter StringsArrayConverter = new ValueConverter<string[], string>(
-          v => v == null ? null : string.Join(",", v),
-          v => v == null ? null : v.Split(",", StringSplitOptions.RemoveEmptyEntries));
-
-        private static readonly ValueComparer StringArrayComparer = new ValueComparer<string[]>(
-           (c1, c2) => c1.SequenceEqual(c2),
-           c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-           c => (string[])c.Clone());
 
         public TransactionsContext(DbContextOptions<TransactionsContext> options, IHttpContextAccessorWrapper httpContextAccessor)
             : base(options)
@@ -92,194 +117,6 @@ namespace Transactions.Business.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder
                 .UseLoggerFactory(DbCommandConsoleLoggerFactory);
-
-        public async Task<IEnumerable<TransactionSummaryDb>> GetGroupedTransactionSummaries(Guid? terminalID, IDbContextTransaction dbTransaction = null)
-        {
-            var builder = new SqlBuilder();
-
-            var query = @"select TOP (@maxRecords) PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, NumberOfRecords
-from(
-    select PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, r = row_number() over(partition by TransactionDate order by PaymentTransactionID desc), NumberOfRecords = count(*) over(partition by TransactionDate)
-    from dbo.PaymentTransaction WITH(NOLOCK) /**where**/
-    ) a
-where r <= @pageSize
- order by PaymentTransactionID desc";
-
-            var selector = builder.AddTemplate(query, new { maxRecords = 100, pageSize = 10 }); // TODO: use config
-
-            var jDealType = JDealTypeEnum.J4;
-
-            builder.Where($"{nameof(PaymentTransaction.JDealType)} = @{nameof(jDealType)}", new { jDealType });
-
-            if (terminalID.HasValue)
-            {
-                user.CheckTerminalPermission(terminalID.Value);
-                builder.Where($"{nameof(PaymentTransaction.TerminalID)} = @{nameof(terminalID)}", new { terminalID });
-            }
-
-            if (user.IsAdmin())
-            {
-            }
-            else if (user.IsTerminal() && !terminalID.HasValue)
-            {
-                builder.Where($"{nameof(PaymentTransaction.TerminalID)} = @{nameof(terminalID)}", new { terminalID = user.GetTerminalID() });
-            }
-            else if (user.IsMerchant())
-            {
-                var merchantID = user.GetMerchantID();
-                builder.Where($"{nameof(PaymentTransaction.MerchantID)} = @{nameof(merchantID)}", new { merchantID });
-            }
-            else
-            {
-                throw new SecurityException("User has no access to requested data");
-            }
-
-            var connection = this.Database.GetDbConnection();
-            bool existingConnection = true;
-            try
-            {
-                if (connection.State != ConnectionState.Open)
-                {
-                    await connection.OpenAsync();
-                    existingConnection = false;
-                }
-
-                var report = await connection.QueryAsync<TransactionSummaryDb>(selector.RawSql, selector.Parameters, transaction: dbTransaction?.GetDbTransaction());
-
-                return report;
-            }
-            finally
-            {
-                if (!existingConnection)
-                {
-                    connection.Close();
-                }
-            }
-        }
-
-        public async Task<IEnumerable<TransmissionInfo>> StartTransmission(Guid terminalID, IEnumerable<Guid> transactionIDs, IDbContextTransaction dbTransaction = null)
-        {
-            user.CheckTerminalPermission(terminalID);
-
-            string query = @"
-DECLARE @OutputTransactionIDs table(
-    [PaymentTransactionID] [uniqueidentifier] NULL,
-    [ShvaDealID] [varchar](50) NULL,
-    [ShvaTerminalID] [varchar](20) NULL,
-    [ShvaTranRecord] [varchar](500) NULL
-);
-
-UPDATE [dbo].[PaymentTransaction] SET [Status]=@NewStatus, [UpdatedDate]=@UpdatedDate 
-OUTPUT inserted.PaymentTransactionID, inserted.ShvaDealID, inserted.ShvaTerminalID, inserted.ShvaTranRecord INTO @OutputTransactionIDs
-WHERE [PaymentTransactionID] in @TransactionIDs AND [TerminalID] = @TerminalID AND [Status]=@OldStatus";
-
-            // security check
-            // TODO: replace to query builder
-
-            if (user.IsAdmin())
-            {
-            }
-            else if (user.IsTerminal())
-            {
-                if (terminalID != user.GetTerminalID())
-                {
-                    throw new SecurityException("User has no access to requested data");
-                }
-            }
-            else if (user.IsMerchant())
-            {
-                query += " AND [MerchantID] = @MerchantID";
-            }
-            else
-            {
-                throw new SecurityException("User has no access to requested data");
-            }
-
-            query += @" SELECT PaymentTransactionID, ShvaDealID, ShvaTerminalID, ShvaTranRecord as TranRecord from @OutputTransactionIDs as a";
-
-            var connection = this.Database.GetDbConnection();
-            bool existingConnection = true;
-            try
-            {
-                if (connection.State != ConnectionState.Open)
-                {
-                    await connection.OpenAsync();
-                    existingConnection = false;
-                }
-
-                var report = await connection.QueryAsync<TransmissionInfo>(query, new { NewStatus = TransactionStatusEnum.TransmissionInProgress, OldStatus = TransactionStatusEnum.AwaitingForTransmission, TerminalID = terminalID, MerchantID = user.GetMerchantID(), TransactionIDs = transactionIDs, UpdatedDate = DateTime.UtcNow }, transaction: dbTransaction?.GetDbTransaction());
-
-                return report;
-            }
-            finally
-            {
-                if (!existingConnection)
-                {
-                    connection.Close();
-                }
-            }
-        }
-
-        public async Task<IEnumerable<Guid>> StartSendingInvoices(Guid terminalID, IEnumerable<Guid> invoicesIDs, IDbContextTransaction dbTransaction)
-        {
-            user.CheckTerminalPermission(terminalID);
-
-            string query = @"
-DECLARE @OutputInvoiceIDs table(
-    [InvoiceID] [uniqueidentifier] NULL
-);
-
-UPDATE [dbo].[Invoice] SET [Status]=@NewStatus, [UpdatedDate]=@UpdatedDate 
-OUTPUT inserted.InvoiceID INTO @OutputInvoiceIDs
-WHERE [InvoiceID] in @InvoicesIDs AND [TerminalID] = @TerminalID AND [Status]<>@OldStatus";
-
-            // security check
-            // TODO: replace to query builder
-
-            if (user.IsAdmin())
-            {
-            }
-            else if (user.IsTerminal())
-            {
-                if (terminalID != user.GetTerminalID())
-                {
-                    throw new SecurityException("User has no access to requested data");
-                }
-            }
-            else if (user.IsMerchant())
-            {
-                query += " AND [MerchantID] = @MerchantID";
-            }
-            else
-            {
-                throw new SecurityException("User has no access to requested data");
-            }
-
-            query += @"
-SELECT InvoiceID from @OutputInvoiceIDs as a";
-
-            var connection = this.Database.GetDbConnection();
-            bool existingConnection = true;
-            try
-            {
-                if (connection.State != ConnectionState.Open)
-                {
-                    await connection.OpenAsync();
-                    existingConnection = false;
-                }
-
-                var report = await connection.QueryAsync<Guid>(query, new { NewStatus = InvoiceStatusEnum.Sending, OldStatus = InvoiceStatusEnum.Sending, TerminalID = terminalID, MerchantID = user.GetMerchantID(), InvoicesIDs = invoicesIDs, UpdatedDate = DateTime.UtcNow }, transaction: dbTransaction?.GetDbTransaction());
-
-                return report;
-            }
-            finally
-            {
-                if (!existingConnection)
-                {
-                    connection.Close();
-                }
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -294,6 +131,9 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
             modelBuilder.ApplyConfiguration(new PaymentRequestConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentRequestHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new FutureBillingConfiguration());
+            modelBuilder.ApplyConfiguration(new MasavFileConfiguration());
+            modelBuilder.ApplyConfiguration(new MasavFileRowConfiguration());
+            modelBuilder.ApplyConfiguration(new NayaxTransactionsParametersConfiguration());
 
             // NOTE: security filters moved to Get() methods
 
@@ -328,6 +168,17 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardBrand).HasColumnName("CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Ignore(b => b.CardReaderInput);
+                    s.Ignore(b => b.Solek);
+                });
+
+                builder.OwnsOne(b => b.BankTransferDetails, s =>
+                {
+                    s.Property(p => p.Bank).IsRequired(false).HasColumnName("BankTransferBank");
+                    s.Property(p => p.BankAccount).IsRequired(false).HasColumnName("BankTransferBankAccount").HasMaxLength(50);
+                    s.Property(p => p.BankBranch).IsRequired(false).HasColumnName("BankTransferBankBranch");
+                    s.Property(p => p.DueDate).IsRequired(false).HasColumnName("BankTransferDueDate");
+                    s.Ignore(p => p.PaymentType);
+                    s.Property(p => p.Reference).IsRequired(false).HasColumnName("BankTransferReference").HasMaxLength(50);
                 });
 
                 builder.OwnsOne(b => b.ClearingHouseTransactionDetails, s =>
@@ -352,7 +203,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.OwnsOne(b => b.ShvaTransactionDetails, s =>
                 {
                     s.Property(p => p.ShvaDealID).HasColumnName("ShvaDealID").IsRequired(false).HasMaxLength(30).IsUnicode(false);
-                    s.Property(p => p.ShvaShovarNumber).HasColumnName("ShvaShovarNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.ShvaShovarNumber).HasColumnName("ShvaShovarNumber").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ManuallyTransmitted).HasColumnName("ManuallyTransmitted");
                     s.Property(p => p.ShvaTerminalID).HasColumnName("ShvaTerminalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.ShvaTransmissionNumber).HasColumnName("ShvaTransmissionNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
@@ -370,6 +221,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
                     s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerExternalReference).HasColumnName("ConsumerExternalReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
@@ -395,6 +247,11 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.TerminalTemplateID).IsRequired(false);
 
                 builder.Property(p => p.PinPadDeviceID).HasColumnName("PinPadDeviceID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.HasIndex(d => d.PinPadTransactionID);
+                builder.HasIndex(b => new { b.TerminalID, b.PaymentTypeEnum, b.MasavFileID });
+                builder.HasIndex(b => new { b.MerchantID, b.TerminalID });
             }
         }
 
@@ -491,7 +348,16 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.CardBin).HasColumnName("CardBin").IsRequired(false).HasMaxLength(10).IsUnicode(false);
                     s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardBrand).HasColumnName("CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.Solek).HasColumnName("Solek").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Ignore(b => b.CardReaderInput);
+                });
+
+                builder.OwnsOne(b => b.BankDetails, s =>
+                {
+                    s.Property(p => p.Bank).IsRequired(false).HasColumnName("Bank");
+                    s.Property(p => p.BankAccount).IsRequired(false).HasColumnName("BankAccount").HasMaxLength(50);
+                    s.Property(p => p.BankBranch).IsRequired(false).HasColumnName("BankBranch");
+                    s.Ignore(p => p.PaymentType);
                 });
 
                 builder.OwnsOne(b => b.DealDetails, s =>
@@ -499,6 +365,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
                     s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerExternalReference).HasColumnName("ConsumerExternalReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
@@ -538,6 +405,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.NextScheduledTransaction).HasColumnType("date").IsRequired(false);
                 builder.Property(b => b.PausedFrom).HasColumnType("date").IsRequired(false);
                 builder.Property(b => b.PausedTo).HasColumnType("date").IsRequired(false);
+                builder.Property(b => b.PaymentType).IsRequired();
             }
         }
 
@@ -591,6 +459,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
                     s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerExternalReference).HasColumnName("ConsumerExternalReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
@@ -626,6 +495,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.CopyDonwnloadUrl).IsRequired(false).IsUnicode(false);
                 builder.Property(b => b.DownloadUrl).IsRequired(false).IsUnicode(false);
 
+                //TODO: remove after migrating to PaymentDetails
                 builder.OwnsOne(b => b.CreditCardDetails, s =>
                 {
                     s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
@@ -635,13 +505,22 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Ignore(p => p.CardBin);
                     s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardBrand).HasColumnName("CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.Solek).HasColumnName("Solek").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Ignore(b => b.CardReaderInput);
                 });
+
+                builder.Property(p => p.PaymentDetails).HasColumnName("PaymentDetails").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true)
+                    .HasConversion(PaymentDetailsConverter)
+                    .Metadata.SetValueComparer(PaymentDetailsComparer);
 
                 builder.Property(b => b.InstallmentPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.InitialPaymentAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").IsRequired();
                 builder.Property(b => b.TotalDiscount).HasColumnType("decimal(19,4)").IsRequired();
+                builder.Property(p => p.TransactionType).HasColumnName("TransactionType").HasColumnType("smallint").IsRequired(false);
+
+                builder.Property(b => b.ExternalSystemData).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
+                    .Metadata.SetValueComparer(SettingsJObjectComparer);
             }
         }
 
@@ -663,6 +542,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 {
                     s.Property(p => p.ConsumerID).HasColumnName("ConsumerID");
                     s.Property(p => p.ConsumerEmail).HasColumnName("ConsumerEmail").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                    s.Property(p => p.ConsumerExternalReference).HasColumnName("ConsumerExternalReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
@@ -760,6 +640,7 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                     s.Ignore(p => p.CardVendor);
                     s.Ignore(b => b.CardReaderInput);
                     s.Ignore(b => b.CardBrand);
+                    s.Ignore(b => b.Solek);
                 });
 
                 builder.Property(b => b.TransactionAmount).HasColumnType("decimal(19,4)").HasColumnName("TransactionAmount");
@@ -770,6 +651,69 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 builder.Property(b => b.FutureScheduledTransaction).HasColumnName("FutureScheduledTransaction");
                 builder.Property(b => b.PausedFrom).HasColumnName("PausedFrom");
                 builder.Property(b => b.PausedTo).HasColumnName("PausedTo");
+            }
+        }
+
+        internal class NayaxTransactionsParametersConfiguration : IEntityTypeConfiguration<NayaxTransactionsParameters>
+        {
+            public void Configure(EntityTypeBuilder<NayaxTransactionsParameters> builder)
+            {
+                builder.ToTable("NayaxTransactionsParameters");
+
+                builder.HasKey(b => b.NayaxTransactionsParametersID);
+                builder.Property(b => b.NayaxTransactionsParametersID).ValueGeneratedNever();
+
+                builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
+                builder.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(500).IsUnicode(false).IsRequired(false);
+
+                builder.HasIndex(d => d.PinPadTransactionID).IsUnique();
+            }
+        }
+
+        internal class MasavFileConfiguration : IEntityTypeConfiguration<MasavFile>
+        {
+            public void Configure(EntityTypeBuilder<MasavFile> builder)
+            {
+                builder.ToTable("MasavFile");
+
+                builder.HasKey(b => b.MasavFileID);
+
+                builder.Property(b => b.MasavFileDate).HasColumnType("date");
+                builder.Property(b => b.PayedDate);
+                builder.Property(b => b.TotalAmount).HasColumnType("decimal(19,4)").HasColumnName("TotalAmount");
+                builder.Property(b => b.StorageReference).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
+                builder.Property(b => b.InstituteNumber);
+                builder.Property(b => b.InstituteName).IsRequired(false).HasMaxLength(250).IsUnicode(true);
+                builder.Property(b => b.SendingInstitute);
+                builder.Property(b => b.Currency);
+                builder.Property(b => b.TerminalID);
+
+                builder.HasIndex(d => d.MasavFileDate);
+                builder.HasIndex(d => d.TerminalID);
+            }
+        }
+
+        internal class MasavFileRowConfiguration : IEntityTypeConfiguration<MasavFileRow>
+        {
+            public void Configure(EntityTypeBuilder<MasavFileRow> builder)
+            {
+                builder.ToTable("MasavFileRow");
+
+                builder.HasKey(b => b.MasavFileRowID);
+
+                builder.Property(b => b.MasavFileID);
+                builder.Property(b => b.PaymentTransactionID);
+                builder.Property(b => b.ConsumerID);
+                builder.Property(b => b.ConsumerName).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                builder.Property(b => b.Bankcode);
+                builder.Property(b => b.BranchNumber);
+                builder.Property(b => b.AccountNumber);
+                builder.Property(b => b.NationalID);
+
+                builder.Property(b => b.Amount).HasColumnType("decimal(19,4)");
+                builder.Property(b => b.IsPayed);
+                builder.Property(b => b.SmsSent);
+                builder.Property(b => b.SmsSentDate);
             }
         }
     }

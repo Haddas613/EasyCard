@@ -48,8 +48,17 @@ namespace Upay
             try
             {
                 var upaySettings = transactionRequest.AggregatorSettings as UpayTerminalSettings;
-                
-                var CreateTransactionRequest = UpayHelper.GetCreateTranMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), !configuration.LiveSystem , upaySettings.AuthenticateKey, transactionRequest);
+
+                if (transactionRequest.TransactionType == TransactionTypeEnum.Credit || transactionRequest.TransactionType == TransactionTypeEnum.Immediate)
+                {
+                    return new AggregatorCreateTransactionResponse
+                    {
+                        Success = false,
+                        ErrorMessage = "Transaction type is not valid for upay transactions"
+                    };
+                }
+
+                var CreateTransactionRequest = UpayHelper.GetCreateTranMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), !configuration.LiveSystem, upaySettings.AuthenticateKey, transactionRequest);
                 var loginRequest = UpayHelper.GetLoginMsgModel(upaySettings.Email, UpayHelper.GetStringInMD5(upaySettings.Password), !configuration.LiveSystem, upaySettings.AuthenticateKey);
                 var Msgs = new MsgModel[2];
                 Msgs[0] = loginRequest;
@@ -201,7 +210,7 @@ namespace Upay
 
         public async Task<AggregatorCancelTransactionResponse> CancelTransaction(AggregatorCancelTransactionRequest transactionRequest)
         {
-            return new AggregatorCancelTransactionResponse { Success = true };//no cancel transaction with upay
+            return await Task.FromResult( new AggregatorCancelTransactionResponse { Success = true }); //no cancel transaction with upay
         }
 
         public bool ShouldBeProcessedByAggregator(Shared.Integration.Models.TransactionTypeEnum transactionType, SpecialTransactionTypeEnum specialTransactionType, JDealTypeEnum jDealType)
@@ -209,9 +218,9 @@ namespace Upay
             return jDealType == JDealTypeEnum.J4 && (specialTransactionType == SpecialTransactionTypeEnum.RegularDeal || specialTransactionType == SpecialTransactionTypeEnum.Refund || specialTransactionType == SpecialTransactionTypeEnum.InitialDeal);
         }
 
-        public async Task<AggregatorTransactionResponse> GetTransaction(string aggregatorTransactionID)
+        public Task<AggregatorTransactionResponse> GetTransaction(string aggregatorTransactionID)
         {
-            return null;//TODO!!
+            throw new NotImplementedException();
         }
     }
 }

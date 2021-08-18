@@ -15,7 +15,6 @@ namespace Merchants.Business.Services
     public class SystemSettingsService : ISystemSettingsService
     {
         private readonly MerchantsContext context;
-        private readonly ClaimsPrincipal user;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
 
         public SystemSettingsService(MerchantsContext context, IHttpContextAccessorWrapper httpContextAccessor)

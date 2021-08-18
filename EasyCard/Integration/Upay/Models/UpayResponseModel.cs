@@ -20,6 +20,6 @@ namespace Upay.Models
         /// Gets or Sets  Result
         /// </summary>
         [DataMember(Name = "result")]
-        public ResultResponseModel Result {get;set;}
+        public ResultResponseModel Result { get; set; }
     }
 }

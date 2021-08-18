@@ -117,8 +117,13 @@ namespace Transactions.Api.Controllers
             var merchantID = User.GetMerchantID();
             var userIsTerminal = User.IsTerminal();
 
+            if (!userIsTerminal && model.TerminalID == null)
+            {
+                return BadRequest(new OperationResponse("TerminalID required", StatusEnum.Error, correlationId: httpContextAccessor.TraceIdentifier));
+            }
+
             // TODO: caching
-            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal((model.TerminalID ?? User.GetTerminalID()).GetValueOrDefault()));
 
             if (terminal.EnabledFeatures == null || !terminal.EnabledFeatures.Any(f => f == Merchants.Shared.Enums.FeatureEnum.Checkout))
             {
@@ -150,6 +155,7 @@ namespace Transactions.Api.Controllers
             }
 
             var newPaymentRequest = mapper.Map<PaymentRequest>(model);
+            newPaymentRequest.TerminalID = terminal.TerminalID;
 
             // Update details if needed
             newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest);

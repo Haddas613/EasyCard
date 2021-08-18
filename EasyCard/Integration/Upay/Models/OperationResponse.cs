@@ -78,6 +78,6 @@ namespace Upay.Models
         [DataMember(Name = "status")]
         [JsonConverter(typeof(StringEnumConverter))]
         public StatusEnum? Status { get; set; }
-        
+
     }
 }

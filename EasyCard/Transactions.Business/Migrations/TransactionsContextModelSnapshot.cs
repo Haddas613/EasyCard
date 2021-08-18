@@ -93,6 +93,9 @@ namespace Transactions.Business.Migrations
                     b.Property<DateTime?>("PausedTo")
                         .HasColumnType("date");
 
+                    b.Property<short>("PaymentType")
+                        .HasColumnType("smallint");
+
                     b.Property<string>("SourceIP")
                         .HasMaxLength(50)
                         .IsUnicode(false)
@@ -257,6 +260,10 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(false)
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Solek")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("SourceIP")
                         .HasMaxLength(50)
                         .IsUnicode(false)
@@ -367,6 +374,10 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
 
+                    b.Property<string>("ExternalSystemData")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("InitialPaymentAmount")
                         .HasColumnType("decimal(19,4)");
 
@@ -411,6 +422,11 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(false)
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("PaymentDetails")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("PaymentDetails");
+
                     b.Property<Guid?>("PaymentTransactionID")
                         .HasColumnType("uniqueidentifier");
 
@@ -431,6 +447,10 @@ namespace Transactions.Business.Migrations
                     b.Property<decimal>("TotalDiscount")
                         .HasColumnType("decimal(19,4)");
 
+                    b.Property<short?>("TransactionType")
+                        .HasColumnType("smallint")
+                        .HasColumnName("TransactionType");
+
                     b.Property<byte[]>("UpdateTimestamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -448,6 +468,137 @@ namespace Transactions.Business.Migrations
                     b.HasKey("InvoiceID");
 
                     b.ToTable("Invoice");
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.MasavFile", b =>
+                {
+                    b.Property<long>("MasavFileID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<short>("Currency")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("InstituteName")
+                        .HasMaxLength(250)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<int?>("InstituteNumber")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("MasavFileDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("MasavFileTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("PayedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SendingInstitute")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StorageReference")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("TerminalID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("TotalAmount")
+                        .HasColumnType("decimal(19,4)")
+                        .HasColumnName("TotalAmount");
+
+                    b.HasKey("MasavFileID");
+
+                    b.HasIndex("MasavFileDate");
+
+                    b.HasIndex("TerminalID");
+
+                    b.ToTable("MasavFile");
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.MasavFileRow", b =>
+                {
+                    b.Property<long>("MasavFileRowID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<int?>("AccountNumber")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Amount")
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<int?>("Bankcode")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BranchNumber")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("ConsumerID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConsumerName")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool?>("IsPayed")
+                        .HasColumnType("bit");
+
+                    b.Property<long?>("MasavFileID")
+                        .HasColumnType("bigint");
+
+                    b.Property<int?>("NationalID")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("PaymentTransactionID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("SmsSent")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("SmsSentDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("MasavFileRowID");
+
+                    b.HasIndex("MasavFileID");
+
+                    b.ToTable("MasavFileRow");
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.NayaxTransactionsParameters", b =>
+                {
+                    b.Property<Guid>("NayaxTransactionsParametersID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("NayaxTransactionsParametersTimestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PinPadTransactionID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("PinPadTransactionID");
+
+                    b.Property<string>("TranRecord")
+                        .HasMaxLength(500)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnName("ShvaTranRecord");
+
+                    b.HasKey("NayaxTransactionsParametersID");
+
+                    b.HasIndex("PinPadTransactionID")
+                        .IsUnique()
+                        .HasFilter("[PinPadTransactionID] IS NOT NULL");
+
+                    b.ToTable("NayaxTransactionsParameters");
                 });
 
             modelBuilder.Entity("Transactions.Business.Entities.PaymentRequest", b =>
@@ -558,6 +709,9 @@ namespace Transactions.Business.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("UserAmount")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("VATRate")
                         .HasColumnType("decimal(19,4)");
@@ -691,6 +845,9 @@ namespace Transactions.Business.Migrations
                     b.Property<long?>("MarketerID")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("MasavFileID")
+                        .HasColumnType("bigint");
+
                     b.Property<Guid>("MerchantID")
                         .HasColumnType("uniqueidentifier");
 
@@ -719,7 +876,10 @@ namespace Transactions.Business.Migrations
                         .HasColumnName("PinPadDeviceID");
 
                     b.Property<string>("PinPadTransactionID")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("PinPadTransactionID");
 
                     b.Property<long?>("ProcessorID")
                         .HasColumnType("bigint");
@@ -779,6 +939,12 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("decimal(19,4)");
 
                     b.HasKey("PaymentTransactionID");
+
+                    b.HasIndex("PinPadTransactionID");
+
+                    b.HasIndex("MerchantID", "TerminalID");
+
+                    b.HasIndex("TerminalID", "PaymentTypeEnum", "MasavFileID");
 
                     b.ToTable("PaymentTransaction");
                 });
@@ -869,6 +1035,32 @@ namespace Transactions.Business.Migrations
                                 .HasForeignKey("BillingDealID");
                         });
 
+                    b.OwnsOne("Shared.Integration.Models.PaymentDetails.BankDetails", "BankDetails", b1 =>
+                        {
+                            b1.Property<Guid>("BillingDealID")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int?>("Bank")
+                                .HasColumnType("int")
+                                .HasColumnName("Bank");
+
+                            b1.Property<string>("BankAccount")
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("BankAccount");
+
+                            b1.Property<int?>("BankBranch")
+                                .HasColumnType("int")
+                                .HasColumnName("BankBranch");
+
+                            b1.HasKey("BillingDealID");
+
+                            b1.ToTable("BillingDeal");
+
+                            b1.WithOwner()
+                                .HasForeignKey("BillingDealID");
+                        });
+
                     b.OwnsOne("Transactions.Business.Entities.CreditCardDetails", "CreditCardDetails", b1 =>
                         {
                             b1.Property<Guid>("BillingDealID")
@@ -916,6 +1108,12 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("CardVendor");
 
+                            b1.Property<string>("Solek")
+                                .HasMaxLength(20)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("Solek");
+
                             b1.HasKey("BillingDealID");
 
                             b1.ToTable("BillingDeal");
@@ -939,6 +1137,12 @@ namespace Transactions.Business.Migrations
                                 .IsUnicode(false)
                                 .HasColumnType("varchar(50)")
                                 .HasColumnName("ConsumerEmail");
+
+                            b1.Property<string>("ConsumerExternalReference")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerExternalReference");
 
                             b1.Property<Guid?>("ConsumerID")
                                 .HasColumnType("uniqueidentifier")
@@ -974,6 +1178,8 @@ namespace Transactions.Business.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("BillingDealID");
                         });
+
+                    b.Navigation("BankDetails");
 
                     b.Navigation("CreditCardDetails");
 
@@ -1145,6 +1351,12 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("CardVendor");
 
+                            b1.Property<string>("Solek")
+                                .HasMaxLength(20)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(20)")
+                                .HasColumnName("Solek");
+
                             b1.HasKey("InvoiceID");
 
                             b1.ToTable("Invoice");
@@ -1168,6 +1380,12 @@ namespace Transactions.Business.Migrations
                                 .IsUnicode(false)
                                 .HasColumnType("varchar(50)")
                                 .HasColumnName("ConsumerEmail");
+
+                            b1.Property<string>("ConsumerExternalReference")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerExternalReference");
 
                             b1.Property<Guid?>("ConsumerID")
                                 .HasColumnType("uniqueidentifier")
@@ -1209,6 +1427,15 @@ namespace Transactions.Business.Migrations
                     b.Navigation("DealDetails");
 
                     b.Navigation("InvoiceDetails");
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.MasavFileRow", b =>
+                {
+                    b.HasOne("Transactions.Business.Entities.MasavFile", "MasavFile")
+                        .WithMany("Rows")
+                        .HasForeignKey("MasavFileID");
+
+                    b.Navigation("MasavFile");
                 });
 
             modelBuilder.Entity("Transactions.Business.Entities.PaymentRequest", b =>
@@ -1276,6 +1503,12 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(50)")
                                 .HasColumnName("ConsumerEmail");
 
+                            b1.Property<string>("ConsumerExternalReference")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerExternalReference");
+
                             b1.Property<Guid?>("ConsumerID")
                                 .HasColumnType("uniqueidentifier")
                                 .HasColumnName("ConsumerID");
@@ -1331,6 +1564,41 @@ namespace Transactions.Business.Migrations
 
             modelBuilder.Entity("Transactions.Business.Entities.PaymentTransaction", b =>
                 {
+                    b.OwnsOne("Shared.Integration.Models.PaymentDetails.BankTransferDetails", "BankTransferDetails", b1 =>
+                        {
+                            b1.Property<Guid>("PaymentTransactionID")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int?>("Bank")
+                                .HasColumnType("int")
+                                .HasColumnName("BankTransferBank");
+
+                            b1.Property<string>("BankAccount")
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("BankTransferBankAccount");
+
+                            b1.Property<int?>("BankBranch")
+                                .HasColumnType("int")
+                                .HasColumnName("BankTransferBankBranch");
+
+                            b1.Property<DateTime?>("DueDate")
+                                .HasColumnType("datetime2")
+                                .HasColumnName("BankTransferDueDate");
+
+                            b1.Property<string>("Reference")
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("BankTransferReference");
+
+                            b1.HasKey("PaymentTransactionID");
+
+                            b1.ToTable("PaymentTransaction");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PaymentTransactionID");
+                        });
+
                     b.OwnsOne("Transactions.Business.Entities.ClearingHouseTransactionDetails", "ClearingHouseTransactionDetails", b1 =>
                         {
                             b1.Property<Guid>("PaymentTransactionID")
@@ -1424,6 +1692,12 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(50)")
                                 .HasColumnName("ConsumerEmail");
 
+                            b1.Property<string>("ConsumerExternalReference")
+                                .HasMaxLength(50)
+                                .IsUnicode(false)
+                                .HasColumnType("varchar(50)")
+                                .HasColumnName("ConsumerExternalReference");
+
                             b1.Property<Guid?>("ConsumerID")
                                 .HasColumnType("uniqueidentifier")
                                 .HasColumnName("ConsumerID");
@@ -1493,9 +1767,9 @@ namespace Transactions.Business.Migrations
                                 .HasColumnName("ShvaDealID");
 
                             b1.Property<string>("ShvaShovarNumber")
-                                .HasMaxLength(20)
+                                .HasMaxLength(50)
                                 .IsUnicode(false)
-                                .HasColumnType("varchar(20)")
+                                .HasColumnType("varchar(50)")
                                 .HasColumnName("ShvaShovarNumber");
 
                             b1.Property<string>("ShvaTerminalID")
@@ -1572,6 +1846,8 @@ namespace Transactions.Business.Migrations
                                 .HasForeignKey("PaymentTransactionID");
                         });
 
+                    b.Navigation("BankTransferDetails");
+
                     b.Navigation("ClearingHouseTransactionDetails");
 
                     b.Navigation("CreditCardDetails");
@@ -1592,6 +1868,11 @@ namespace Transactions.Business.Migrations
                         .IsRequired();
 
                     b.Navigation("PaymentTransaction");
+                });
+
+            modelBuilder.Entity("Transactions.Business.Entities.MasavFile", b =>
+                {
+                    b.Navigation("Rows");
                 });
 #pragma warning restore 612, 618
         }

@@ -47,5 +47,10 @@ namespace Transactions.Business.Entities
         /// End-customer Address
         /// </summary>
         public Address ConsumerAddress { get; set; }
+
+        /// <summary>
+        /// External system consumer code for example Rapid customer code
+        /// </summary>
+        public string ConsumerExternalReference { get; set; }
     }
 }

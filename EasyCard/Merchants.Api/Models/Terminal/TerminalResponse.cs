@@ -19,6 +19,7 @@ namespace Merchants.Api.Models.Terminal
             InvoiceSettings = new TerminalInvoiceSettings();
             PaymentRequestSettings = new TerminalPaymentRequestSettings();
             CheckoutSettings = new TerminalCheckoutSettings();
+            BankDetails = new TerminalBankDetails();
         }
 
         public Guid TerminalID { get; set; }
@@ -52,6 +53,8 @@ namespace Merchants.Api.Models.Terminal
         public TerminalPaymentRequestSettings PaymentRequestSettings { get; set; }
 
         public TerminalCheckoutSettings CheckoutSettings { get; set; }
+
+        public TerminalBankDetails BankDetails { get; set; }
 
         public byte[] SharedApiKey { get; set; }
     }

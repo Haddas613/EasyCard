@@ -32,7 +32,9 @@ namespace MerchantProfileApi.Mapping
             CreateMap<TerminalPaymentRequestSettingsUpdate, Merchants.Shared.Models.TerminalPaymentRequestSettings>();
 
             CreateMap<Terminal, TerminalResponse>()
-                .ForMember(d => d.Integrations, o => o.Ignore());
+                .ForMember(d => d.Integrations, o => o.Ignore())
+                .ForMember(d => d.BankDetails, o => o.MapFrom(d => d.BankDetails == null ? new TerminalBankDetails() : d.BankDetails));
+
             CreateMap<Terminal, TerminalSummary>();
             CreateMap<ExternalSystem, ExternalSystemSummary>();
             CreateMap<Feature, FeatureSummary>();

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Upay.Models
 {
-    public  class LoginRequestModel
+    public class LoginRequestModel
     {
         public MsgModel msg { get; set; }
         public LoginRequestModel(MsgModel _msg)

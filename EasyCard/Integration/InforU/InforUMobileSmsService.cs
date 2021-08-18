@@ -21,7 +21,6 @@ namespace InforU
         private readonly IWebApiClient apiClient;
         private readonly InforUMobileSmsSettings configuration;
         private readonly ILogger logger;
-        private readonly IHttpContextAccessorWrapper httpContextAccessor;
 
         private readonly bool doNotSend;
 
@@ -36,7 +35,6 @@ namespace InforU
             this.apiClient = apiClient;
 
             this.logger = logger;
-            this.httpContextAccessor = httpContextAccessor;
             this.doNotSend = doNotSend;
         }
 

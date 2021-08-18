@@ -14,13 +14,13 @@ namespace Merchants.Business.Services
     {
         private readonly MerchantsContext context;
 
-        public ShvaTerminalService (MerchantsContext context)
+        public ShvaTerminalService(MerchantsContext context)
             : base(context)
         {
             this.context = context;
         }
 
-        public Task<ShvaTerminal> GetShvaTerminal(string userName) 
+        public Task<ShvaTerminal> GetShvaTerminal(string userName)
             => context.ShvaTerminals.FirstOrDefaultAsync(t => t.UserName == userName);
 
         public IQueryable<ShvaTerminal> GetShvaTerminals()

@@ -90,6 +90,7 @@ namespace Shared.Helpers
                     request.Headers.Add(header, headers.GetValues(header).FirstOrDefault());
                 }
             }
+
             var json = JsonConvert.SerializeObject(payload);
 
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -139,6 +140,7 @@ namespace Shared.Helpers
                     request.Headers.Add(header, headers.GetValues(header).FirstOrDefault());
                 }
             }
+
             var credentials = values;
 
             HttpResponseMessage response = await HttpClient.PostAsync(url, credentials);

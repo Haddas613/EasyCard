@@ -24,6 +24,7 @@ namespace Merchants.Business.Entities.Terminal
             EnabledFeatures = new HashSet<FeatureEnum>();
             Created = DateTime.UtcNow;
             TerminalID = Guid.NewGuid().GetSequentialGuid(Created.Value);
+            BankDetails = new TerminalBankDetails();
         }
 
         public Guid TerminalID { get; set; }
@@ -73,6 +74,8 @@ namespace Merchants.Business.Entities.Terminal
         public string AggregatorTerminalReference { get; set; }
 
         public long? TerminalTemplateID { get; set; }
+
+        public TerminalBankDetails BankDetails { get; set; }
 
         public Guid GetID()
         {

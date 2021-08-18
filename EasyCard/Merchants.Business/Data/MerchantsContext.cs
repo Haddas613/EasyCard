@@ -186,6 +186,8 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.SharedApiKey).IsRequired(false).HasMaxLength(64);
 
                 builder.Property(b => b.TerminalTemplateID).IsRequired(false);
+
+                builder.Property(p => p.BankDetails).HasColumnName("BankDetails").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(false).HasJsonConversion();
             }
         }
 
@@ -358,6 +360,8 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.CorrelationId).IsRequired().HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.ExternalReference).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.Price).HasColumnType("decimal(19,4)").IsRequired();
             }

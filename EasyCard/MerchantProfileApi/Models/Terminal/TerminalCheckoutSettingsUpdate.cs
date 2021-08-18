@@ -12,5 +12,7 @@ namespace MerchantProfileApi.Models.Terminal
 
         // TODO: validation
         public IEnumerable<string> RedirectUrls { get; set; }
+
+        public bool LegacyRedirectResponse { get; set; }
     }
 }

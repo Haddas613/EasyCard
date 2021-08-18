@@ -152,7 +152,8 @@ export default {
         amount: 0,
         itemName: null,
         currency: null,
-        quantity: 1
+        quantity: 1,
+        externalReference: null
       },
       activeArea: "calc",
       search: null,
@@ -307,6 +308,7 @@ export default {
         discount: 0,
         currency: item.$currency,
         quantity: 1,
+        externalReference: item.externalReference
       };
 
       this.calculatePricingForItem(newItem);

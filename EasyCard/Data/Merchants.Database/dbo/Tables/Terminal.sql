@@ -17,9 +17,12 @@
     [ProcessorTerminalReference]  VARCHAR (50)     NULL,
     [TerminalTemplateID]          BIGINT           NULL,
     [Updated]                     DATETIME2 (7)    NULL,
+    [BankDetails]                 NVARCHAR (MAX)   NULL,
     CONSTRAINT [PK_Terminal] PRIMARY KEY CLUSTERED ([TerminalID] ASC),
     CONSTRAINT [FK_Terminal_Merchant_MerchantID] FOREIGN KEY ([MerchantID]) REFERENCES [dbo].[Merchant] ([MerchantID])
 );
+
+
 
 
 

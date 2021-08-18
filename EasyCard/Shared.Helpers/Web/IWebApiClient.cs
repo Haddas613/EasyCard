@@ -48,7 +48,6 @@ namespace Shared.Helpers
             );
 
         HttpClient HttpClient { get; }
-
     }
 
     public delegate void ProcessRequest(string url, string request);

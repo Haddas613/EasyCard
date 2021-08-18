@@ -2,6 +2,7 @@
 using Shared.Business.Financial;
 using Shared.Helpers;
 using Shared.Integration.Models;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -183,6 +184,11 @@ namespace Transactions.Business.Entities
         public CreditCardDetails CreditCardDetails { get; set; }
 
         /// <summary>
+        /// Bank transfer information
+        /// </summary>
+        public BankTransferDetails BankTransferDetails { get; set; }
+
+        /// <summary>
         /// Stored credit card details token
         /// </summary>
         public Guid? CreditCardToken { get; set; }
@@ -260,6 +266,8 @@ namespace Transactions.Business.Entities
         /// Used both in shva and pinpad
         /// </summary>
         public int? ProcessorResultCode { get; set; }
+
+        public long? MasavFileID { get; set; }
 
         // TODO: calculate items, VAT
         [Obsolete]

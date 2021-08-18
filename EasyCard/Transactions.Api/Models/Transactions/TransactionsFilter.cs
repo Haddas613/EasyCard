@@ -105,5 +105,7 @@ namespace Transactions.Api.Models.Transactions
         public bool? HasInvoice { get; set; }
 
         public bool? IsPaymentRequest { get; set; }
+
+        public PaymentTypeEnum? PaymentType { get; set; }
     }
 }

@@ -129,7 +129,7 @@
   <data name="Cash" xml:space="preserve">
     <value>מזומן</value>
   </data>
-  <data name="Check" xml:space="preserve">
+  <data name="Cheque" xml:space="preserve">
     <value>המחאות</value>
   </data>
 </root>

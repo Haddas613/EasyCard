@@ -39,9 +39,9 @@
   {
     "ExternalSystemID": 40,
     "Type": "invoicing",
-    "InstanceTypeFullName": null,
-    "SettingsTypeFullName": null,
-    "Name": "RapidOne Invoicing",
+    "InstanceTypeFullName": "RapidOne.RapidOneInvoicing, RapidOne",
+    "SettingsTypeFullName": "RapidOne.RapidOneTerminalSettings, RapidOne",
+    "Name": "RapidOne",
     "Key": "rapid-one-invoicing",
     "Active": true
   },

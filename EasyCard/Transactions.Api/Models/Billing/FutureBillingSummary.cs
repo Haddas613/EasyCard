@@ -30,11 +30,6 @@ namespace Transactions.Api.Models.Billing
 
         public string CardOwnerName { get; set; }
 
-        /// <summary>
-        /// Billing Schedule
-        /// </summary>
-        //public BillingSchedule BillingSchedule { get; set; }
-
         public string CardNumber { get; set; }
 
         /// <summary>

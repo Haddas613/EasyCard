@@ -26,7 +26,7 @@ namespace ClearingHouse.Converters
 
             details.CardBin = createTransactionRequest.CreditCardDetails.CardBin;
             details.CardLastFourDigits = createTransactionRequest.CreditCardDetails.CardLastFourDigits;
-            details.CardExpiration = createTransactionRequest.CreditCardDetails.CardExpiration == null ? String.Empty : createTransactionRequest.CreditCardDetails.CardExpiration.ToString();
+            details.CardExpiration = createTransactionRequest.CreditCardDetails.CardExpiration == null ? string.Empty : createTransactionRequest.CreditCardDetails.CardExpiration.ToString();
 
             //response.IsTourist TODO:
             //details.Solek TODO:

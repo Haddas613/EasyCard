@@ -11,9 +11,14 @@
     [OperationDoneByID] UNIQUEIDENTIFIER NULL,
     [CorrelationId]     VARCHAR (50)     NOT NULL,
     [SourceIP]          VARCHAR (50)     NULL,
+    [ExternalReference] NVARCHAR (50)    NULL,
     CONSTRAINT [PK_Item] PRIMARY KEY CLUSTERED ([ItemID] ASC),
     CONSTRAINT [FK_Item_Merchant_MerchantID] FOREIGN KEY ([MerchantID]) REFERENCES [dbo].[Merchant] ([MerchantID])
 );
+
+
+
+
 
 
 

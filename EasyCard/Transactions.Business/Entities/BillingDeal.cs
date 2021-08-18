@@ -2,7 +2,9 @@
 using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,7 +20,9 @@ namespace Transactions.Business.Entities
         {
             BillingDealTimestamp = DateTime.UtcNow;
             BillingDealID = Guid.NewGuid().GetSequentialGuid(BillingDealTimestamp.Value);
-            CreditCardDetails = new CreditCardDetails();
+
+            //CreditCardDetails = new CreditCardDetails();
+
             DealDetails = new DealDetails();
         }
 
@@ -97,6 +101,11 @@ namespace Transactions.Business.Entities
         public CreditCardDetails CreditCardDetails { get; set; }
 
         /// <summary>
+        /// Bank account information
+        /// </summary>
+        public BankDetails BankDetails { get; set; }
+
+        /// <summary>
         /// Stored credit card details token
         /// </summary>
         public Guid CreditCardToken { get; set; }
@@ -173,6 +182,6 @@ namespace Transactions.Business.Entities
             return (PausedFrom.Value.Date <= utcNow) && (PausedTo.Value.Date >= utcNow);
         }
 
-        // TODO: recalculate items and fill default SKU
+        public PaymentTypeEnum PaymentType { get; set; }
     }
 }

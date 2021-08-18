@@ -123,8 +123,17 @@
   <data name="EntityNotFound" xml:space="preserve">
     <value>Entity not found</value>
   </data>
+  <data name="PaymentDetailsMustSpecifyAtLeastOne" xml:space="preserve">
+    <value>Must specify at least one payment details</value>
+  </data>
+  <data name="PaymentDetailsNotAllowedForThisTypeOfInvoice" xml:space="preserve">
+    <value>Payment details not allowed for this type of invoice</value>
+  </data>
   <data name="RecordChangedSinceLastRead" xml:space="preserve">
     <value>Record changed since last read</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Required</value>
   </data>
   <data name="ValidationErrors" xml:space="preserve">
     <value>Validation errors</value>

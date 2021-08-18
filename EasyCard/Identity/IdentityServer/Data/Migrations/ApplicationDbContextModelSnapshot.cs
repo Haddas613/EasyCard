@@ -17,31 +17,7 @@ namespace IdentityServer.Data.Migrations
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "3.1.2");
-
-            modelBuilder.Entity("IdentityServer.Data.Entities.TerminalApiAuthKey", b =>
-                {
-                    b.Property<long>("TerminalApiAuthKeyID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<string>("AuthKey")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(512)");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("TerminalID")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("TerminalApiAuthKeyID");
-
-                    b.ToTable("TerminalApiAuthKey");
-                });
+                .HasAnnotation("ProductVersion", "5.0.0");
 
             modelBuilder.Entity("IdentityServer.Data.Entities.UserAudit", b =>
                 {
@@ -85,6 +61,37 @@ namespace IdentityServer.Data.Migrations
                     b.ToTable("UserAudit");
                 });
 
+            modelBuilder.Entity("IdentityServer.Data.Entities.UserPasswordSnapshot", b =>
+                {
+                    b.Property<long>("UserPasswordSnapshotID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("HashedPassword")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(512)");
+
+                    b.Property<string>("SecurityStamp")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(512)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserPasswordSnapshotID");
+
+                    b.ToTable("UserPasswordSnapshot");
+                });
+
             modelBuilder.Entity("IdentityServer.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -120,6 +127,9 @@ namespace IdentityServer.Data.Migrations
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PasswordUpdated")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");

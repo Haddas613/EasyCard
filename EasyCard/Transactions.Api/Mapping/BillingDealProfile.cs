@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Shared.Helpers;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,9 +48,13 @@ namespace Transactions.Api.Mapping
                     .MapFrom(d => (d.CreditCardDetails != null && d.CreditCardDetails.CardExpiration != null) ? d.CreditCardDetails.CardExpiration.Expired : default))
                 .ForMember(d => d.Paused, o => o.MapFrom(d => d.Paused()));
 
-            CreateMap<BillingDeal, CreateTransactionRequest>();
+            CreateMap<BillingDeal, CreateTransactionRequest>()
+                .ForMember(d => d.BankTransferDetails, o => o.MapFrom(s => s.BankDetails))
+                .ForMember(d => d.PaymentTypeEnum, o => o.MapFrom(s => s.PaymentType));
 
             CreateMap<BillingDealHistory, BillingDealHistoryResponse>();
+
+            CreateMap<BankDetails, BankTransferDetails>();
         }
     }
 }

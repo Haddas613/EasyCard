@@ -13,7 +13,7 @@ using Transactions.Api.Client;
 using SharedApi = Shared.Api;
 using SharedIntegration = Shared.Integration;
 
-namespace FunctionsCompositionApp.Invoicing
+namespace FunctionsCompositionApp.Transactions
 {
     public static class TransmitTerminalTransactions
     {

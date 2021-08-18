@@ -108,6 +108,7 @@ namespace CheckoutPortal.Controllers
                 if (!request.PinPad && !request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
                 {
                     ModelState.AddModelError(nameof(request.CreditCardToken), "Token is not recognized");
+                    mapper.Map(checkoutConfig.Settings, request);
                     logger.LogWarning($"{nameof(Charge)}: unrecognized token from user. Token: {request.CreditCardToken.Value}; PaymentRequestId: {(checkoutConfig.PaymentRequest?.PaymentRequestID.ToString() ?? "-")}");
                     return View("Index", request);
                 }
@@ -135,15 +136,23 @@ namespace CheckoutPortal.Controllers
                 ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
             }
 
+            if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
+            {
+                ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                mapper.Map(checkoutConfig.Settings, request);
+                return View("Index", request);
+            }
+
             InstallmentDetails installmentDetails = null;
 
             if (!checkoutConfig.Settings.TransactionTypes.Any(t => t == request.TransactionType))
             {
                 ModelState.AddModelError(nameof(request.TransactionType), $"{request.TransactionType} is not allowed for this transaction");
+                mapper.Map(checkoutConfig.Settings, request);
                 return View("Index", request);
             }
 
-            if (request.TransactionType != TransactionTypeEnum.RegularDeal)
+            if (request.TransactionType == TransactionTypeEnum.Installments || request.TransactionType == TransactionTypeEnum.Credit)
             {
                 if (request.NumberOfPayments > (request.TransactionType == TransactionTypeEnum.Credit ? checkoutConfig.Settings.MaxCreditInstallments : checkoutConfig.Settings.MaxInstallments))
                 {
@@ -152,7 +161,7 @@ namespace CheckoutPortal.Controllers
                 }
                 else
                 {
-                    if (checkoutConfig.PaymentRequest != null)
+                    if (checkoutConfig.PaymentRequest != null && !checkoutConfig.PaymentRequest.UserAmount)
                     {
                         checkoutConfig.PaymentRequest.NumberOfPayments = request.NumberOfPayments.Value;
                         checkoutConfig.PaymentRequest.InitialPaymentAmount =
@@ -227,6 +236,12 @@ namespace CheckoutPortal.Controllers
                     mdel.CreditCardSecureDetails = null;
                 }
 
+                if (checkoutConfig.PaymentRequest.UserAmount)
+                {
+                    mdel.PaymentRequestAmount = request.Amount;
+                    mdel.NetTotal = Math.Round(mdel.PaymentRequestAmount.GetValueOrDefault() / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
+                    mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
+                }
 
                 result = await transactionsApiClient.CreateTransactionPR(mdel);
 

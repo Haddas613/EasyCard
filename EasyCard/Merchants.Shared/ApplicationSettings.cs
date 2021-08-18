@@ -16,6 +16,8 @@ namespace Merchants.Shared
 
         public string EasyInvoiceRequestsLogStorageTable { get; set; }
 
+        public string RapidInvoiceRequestsLogStorageTable { get; set; }
+
         public string RequestsLogStorageTable { get; set; }
 
         public string EncrKeyForSharedApiKey { get; set; }

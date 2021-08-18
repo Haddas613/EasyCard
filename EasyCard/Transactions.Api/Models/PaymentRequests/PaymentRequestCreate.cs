@@ -19,7 +19,7 @@ namespace Transactions.Api.Models.PaymentRequests
         /// <summary>
         /// Terminal
         /// </summary>
-        public Guid TerminalID { get; set; }
+        public Guid? TerminalID { get; set; }
 
         /// <summary>
         /// Deal information (optional)
@@ -69,15 +69,15 @@ namespace Transactions.Api.Models.PaymentRequests
 
         [Range(0, 1)]
         [DataType(DataType.Currency)]
-        public decimal VATRate { get; set; }
+        public decimal? VATRate { get; set; }
 
         [Range(0, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal VATTotal { get; set; }
+        public decimal? VATTotal { get; set; }
 
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal NetTotal { get; set; }
+        public decimal? NetTotal { get; set; }
 
         /// <summary>
         /// Email subject
@@ -97,7 +97,12 @@ namespace Transactions.Api.Models.PaymentRequests
 
         public bool IsRefund { get; set; }
 
-        [StringLength(100)]
+        [StringLength(1000)]
         public string RedirectUrl { get; set; }
+
+        // TODO: va;idate - this flag is required if amount is 0 or null
+        public bool UserAmount { get; set; }
+
+        public string CardOwnerNationalID { get; set; }
     }
 }

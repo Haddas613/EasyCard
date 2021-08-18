@@ -247,9 +247,14 @@ namespace Merchants.Api.Controllers
                         throw new ApplicationException($"Could not create instance of {externalSystem.SettingsTypeFullName}");
                     }
 
-                    var settings = texternalSystem.Settings.ToObject(settingsType);
-                    mapper.Map(settings, terminal);
-                    await terminalsService.UpdateEntity(terminal, dbTransaction);
+                    //TODO: check if mapping exists or add empty mapping for every scenario
+                    try
+                    {
+                        var settings = texternalSystem.Settings.ToObject(settingsType);
+                        mapper.Map(settings, terminal, settingsType, typeof(Terminal));
+                        await terminalsService.UpdateEntity(terminal, dbTransaction);
+                    }
+                    catch (AutoMapperMappingException) { }
                 }
 
                 await terminalsService.SaveTerminalExternalSystem(texternalSystem, terminal, dbTransaction);
@@ -366,10 +371,10 @@ namespace Merchants.Api.Controllers
             return Ok(new OperationResponse { Status = StatusEnum.Success });
         }
 
+        //[RequestSizeLimit(1000000)]
         [HttpPost]
         [Route("{terminalID}/merchantlogo")]
         [Consumes("multipart/form-data")]
-        //[RequestSizeLimit(1000000)]
         public async Task<ActionResult<OperationResponse>> UploadMerchantLogo([FromRoute]Guid terminalID, [FromForm]IFormFile file)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));

@@ -52,7 +52,7 @@ namespace CheckoutPortal.Mappings
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, ChargeViewModel>()
-                .ForMember(d => d.AllowPinPad, o => o.MapFrom(src => src.AllowPinPad))
+                .ForMember(d => d.AllowPinPad, o => o.MapFrom((src, d) => d.AllowPinPad.HasValue ? d.AllowPinPad : src.AllowPinPad))
                 .ForMember(d => d.MaxInstallments, o => o.MapFrom(src => src.MaxInstallments))
                 .ForMember(d => d.MinInstallments, o => o.MapFrom(src => src.MinInstallments))
                 .ForMember(d => d.MaxCreditInstallments, o => o.MapFrom(src => src.MaxCreditInstallments))
@@ -70,11 +70,16 @@ namespace CheckoutPortal.Mappings
 
             CreateMap<ChargeViewModel, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>()
                    .ForMember(d => d.PinPad, o => o.MapFrom(d => d.PinPad))
-                   .ForMember(d => d.PinPadDeviceID, o => o.MapFrom(d => d.PinPadDeviceID));
+                   .ForMember(d => d.PinPadDeviceID, o => o.MapFrom(d => d.PinPadDeviceID))
+                   .ForMember(d => d.CardOwnerNationalID, o => o.MapFrom(d => d.NationalID))
+                   .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.Name));
+
 
             CreateMap<ChargeViewModel, Transactions.Api.Models.Transactions.CreateTransactionRequest>()
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.Amount))
-                .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency));
+                .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
+                .ForMember(d => d.CardOwnerNationalID, o => o.MapFrom(d => d.NationalID))
+                .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.Name));
 
             CreateMap<ChargeViewModel, Shared.Integration.Models.CreditCardSecureDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => string.IsNullOrWhiteSpace(d.CardNumber) ? null : d.CardNumber.Replace(" ", string.Empty)))

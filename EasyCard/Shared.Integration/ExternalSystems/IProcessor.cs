@@ -13,6 +13,5 @@ namespace Shared.Integration.ExternalSystems
         Task ParamsUpdateTransaction(ProcessorUpdateParametersRequest updateParametersRequest);
 
         Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest);
-
     }
 }

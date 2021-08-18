@@ -33,6 +33,8 @@ namespace IdentityServer.Controllers
         private readonly UserManageService userManageService;
         private readonly UserHelpers userHelpers;
         private readonly CommonLocalizationService localization;
+        private readonly UserSecurityService userSecurityService;
+        private readonly ILogger logger;
 
         public RegistrationController(
             IMerchantsApiClient merchantsApiClient,
@@ -40,7 +42,9 @@ namespace IdentityServer.Controllers
             UserManager<ApplicationUser> userManager,
             UserManageService userManageService,
             UserHelpers userHelpers,
-            CommonLocalizationService localization)
+            CommonLocalizationService localization,
+            UserSecurityService userSecurityService,
+            ILogger<RegistrationController> logger)
         {
             this.merchantsApiClient = merchantsApiClient;
             this.mapper = mapper;
@@ -48,6 +52,8 @@ namespace IdentityServer.Controllers
             this.userManageService = userManageService;
             this.userHelpers = userHelpers;
             this.localization = localization;
+            this.userSecurityService = userSecurityService;
+            this.logger = logger;
         }
 
         public async Task<IActionResult> Index()
@@ -124,8 +130,18 @@ namespace IdentityServer.Controllers
             await userManager.UpdateAsync(user);
 
             //set user password
-            user.PasswordHash = userManager.PasswordHasher.HashPassword(user, model.Password);
-            await userManager.UpdateAsync(user);
+            var passwordSet = await userSecurityService.TrySetNewPassword(user, model.Password);
+
+            if (passwordSet == false)
+            {
+                logger.LogError($"{nameof(userSecurityService.TrySetNewPassword)} ERROR. Reverting to force password set");
+
+                //revert to force updating password
+                user.PasswordHash = userManager.PasswordHasher.HashPassword(user, model.Password);
+                user.PasswordUpdated = DateTime.UtcNow;
+
+                await userManager.UpdateAsync(user);
+            }
 
             var allClaims = await userManager.GetClaimsAsync(user);
 

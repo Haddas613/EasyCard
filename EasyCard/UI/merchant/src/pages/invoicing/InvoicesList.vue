@@ -222,8 +222,10 @@ export default {
     async downloadInvoicePDF(invoiceID){
       let opResult = await this.$api.invoicing.downloadPDF(invoiceID);
 
-      if(opResult.status === "success" && opResult.entityReference){
-        window.open(opResult.entityReference);
+      if(opResult.status === "success" && opResult.downloadLinks){
+        for(var link of opResult.downloadLinks){
+          window.open(link, '_blank');
+        }
       }
     }
   },

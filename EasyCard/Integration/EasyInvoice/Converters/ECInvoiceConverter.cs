@@ -2,6 +2,7 @@
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,13 +37,21 @@ namespace EasyInvoice.Converters
                 Rows = GetRows(message),
             };
 
-            var payments = GetPaymentFromCard(message);
-            if (payments != null)
+            //TODO: legacy, switch to PaymentDetails
+            //if (message.CreditCardDetails != null)
+            //{
+            //    var payments = GetPaymentFromCard(message);
+            //    if (payments != null)
+            //    {
+            //        json.Payments = new List<ECInvoicePayment>
+            //        {
+            //            payments
+            //        };
+            //    }
+            //}
+            if (message.PaymentDetails?.Any() == true)
             {
-                json.Payments = new List<ECInvoicePayment>
-                {
-                    payments
-                };
+                json.Payments = MapPaymentDetails(message);
             }
 
             return json;
@@ -111,35 +120,56 @@ namespace EasyInvoice.Converters
             return res;
         }
 
-        public static ECInvoicePayment GetPaymentFromCard(InvoicingCreateDocumentRequest message)
+        public static List<ECInvoicePayment> MapPaymentDetails(InvoicingCreateDocumentRequest message)
         {
-            if (message.CreditCardDetails == null)
+            var result = new List<ECInvoicePayment>();
+
+            foreach (var d in message.PaymentDetails)
             {
-                return null;
+                var res = new ECInvoicePayment
+                {
+                    PaymentMethod = message.TransactionType == TransactionTypeEnum.Credit ? ECInvoicePaymentMethodEnum.CREDIT_CARD_CREDITS.ToString() : (message.NumberOfPayments > 1 ? ECInvoicePaymentMethodEnum.CREDIT_CARD_PAYMENTS.ToString() : ECInvoicePaymentMethodEnum.CREDIT_CARD_REGULAR_CREDIT.ToString()),
+                    Amount = message.InvoiceAmount,
+                    PaymentDateTime = message.InvoiceDate.GetValueOrDefault(DateTime.Today).ToString("o"),
+                    NumberOfPayments = message.NumberOfPayments
+                };
+
+                if (message.NumberOfPayments > 1)
+                {
+                    res.AmountOfFirstPayment = message.InitialPaymentAmount;
+                    res.AmountOfEachAdditionalPayment = message.InstallmentPaymentAmount;
+                }
+
+                if (d.PaymentType == PaymentTypeEnum.Card && d is CreditCardPaymentDetails cardDetails)
+                {
+                    res.CreditCard4LastDigits = CreditCardHelpers.GetCardLastFourDigits(cardDetails.СardNumber);
+                    res.CreditCardType = ECInvoiceCreditCardTypeEnum.OTHER.ToString();
+                }
+                else if (d.PaymentType == PaymentTypeEnum.Cheque && d is ChequeDetails chequeDetails)
+                {
+                    res.PaymentMethod = ECInvoicePaymentMethodEnum.CHEQUE.ToString();
+                    res.ChequeAccount = chequeDetails.BankAccount;
+                    res.ChequeBank = chequeDetails.Bank?.ToString();
+                    res.ChequeBranch = chequeDetails.BankBranch?.ToString();
+                    res.ChequeDate = chequeDetails.ChequeDate?.ToString("yyyy-MM-ddThh:mm");
+                    //TODO: cheque number
+                }
+                else if (d.PaymentType == PaymentTypeEnum.Cash)
+                {
+                    res.PaymentMethod = ECInvoicePaymentMethodEnum.CASH.ToString();
+                }
+                else if (d.PaymentType == PaymentTypeEnum.Bank && d is BankTransferDetails bankTransfer)
+                {
+                    res.PaymentMethod = ECInvoicePaymentMethodEnum.BANK_TRANSFER.ToString();
+                    res.ChequeAccount = bankTransfer.BankAccount;
+                    res.ChequeBank = bankTransfer.Bank?.ToString();
+                    res.ChequeBranch = bankTransfer.BankBranch?.ToString();
+                }
+
+                result.Add(res);
             }
 
-            if (!Enum.TryParse<ECInvoiceCreditCardTypeEnum>(message.CreditCardDetails.CardVendor, true, out var ccType))
-            {
-                ccType = ECInvoiceCreditCardTypeEnum.OTHER;
-            }
-
-            var res = new ECInvoicePayment
-            {
-                PaymentMethod = message.NumberOfPayments > 1 ? ECInvoicePaymentMethodEnum.CREDIT_CARD_PAYMENTS.ToString() : ECInvoicePaymentMethodEnum.CREDIT_CARD_REGULAR_CREDIT.ToString(),
-                Amount = message.InvoiceAmount,
-                CreditCard4LastDigits = CreditCardHelpers.GetCardLastFourDigits(message.CreditCardDetails.CardNumber),
-                CreditCardType = ccType.ToString(), // TODO: ECInvoice does not support LEUMI_CARD
-                PaymentDateTime = message.InvoiceDate.GetValueOrDefault(DateTime.Today).ToString("o"),
-                NumberOfPayments = message.NumberOfPayments
-            };
-
-            if (message.NumberOfPayments > 1)
-            {
-                res.AmountOfFirstPayment = message.InitialPaymentAmount;
-                res.AmountOfEachAdditionalPayment = message.InstallmentPaymentAmount;
-            }
-
-            return res;
+            return result;
         }
 
         public static ECInvoiceDocumentType GetECInvoiceDocumentType(InvoiceTypeEnum documentType)
@@ -151,6 +181,7 @@ namespace EasyInvoice.Converters
                 InvoiceTypeEnum.InvoiceWithPaymentInfo => ECInvoiceDocumentType.INVOICE_WITH_PAYMENT_INFO,
                 InvoiceTypeEnum.PaymentInfo => ECInvoiceDocumentType.PAYMENT_INFO,
                 InvoiceTypeEnum.RefundInvoice => ECInvoiceDocumentType.REFUND_INVOICE_WITH_PAYMENT_INFO,
+                _ => throw new NotImplementedException(),
             };
         }
     }

@@ -24,7 +24,8 @@ namespace MerchantProfileApi.Models.Billing
         /// End-customer Email
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
-        [StringLength(50)]
+        [EmailAddress]
+        [Required(AllowEmptyStrings = false)]
         public string ConsumerEmail { get; set; }
 
         /// <summary>
@@ -39,6 +40,7 @@ namespace MerchantProfileApi.Models.Billing
         /// End-customer Phone
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
+        [Required(AllowEmptyStrings = false)]
         [StringLength(50)]
         public string ConsumerPhone { get; set; }
 

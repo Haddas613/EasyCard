@@ -81,5 +81,33 @@ namespace Transactions.Api.Models.Transactions
         [EnumDataType(typeof(TransactionTypeEnum))]
         [JsonConverter(typeof(StringEnumConverter))]
         public TransactionTypeEnum TransactionType { get; set; }
+
+        [Range(0.01, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal? PaymentRequestAmount { get; set; }
+
+        [Range(0, 1)]
+        [DataType(DataType.Currency)]
+        public decimal? VATRate { get; set; }
+
+        [Range(0, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal? VATTotal { get; set; }
+
+        [Range(0.01, double.MaxValue)]
+        [DataType(DataType.Currency)]
+        public decimal? NetTotal { get; set; }
+
+        /// <summary>
+        /// Only to be used for pin pad transactions when CreditCardSecureDetails is not available
+        /// </summary>
+        [StringLength(20)]
+        public string CardOwnerNationalID { get; set; }
+
+        /// <summary>
+        /// Only to be used for pin pad transactions when CreditCardSecureDetails is not available
+        /// </summary>
+        [StringLength(50, MinimumLength = 2)]
+        public string CardOwnerName { get; set; }
     }
 }

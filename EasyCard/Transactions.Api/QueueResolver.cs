@@ -10,10 +10,13 @@ namespace Transactions.Api
     {
         public const string InvoiceQueue = "invoice";
         public const string BillingDealsQueue = "billingdeals";
+        public const string UpdateTerminalSHVAParametersQueue = "updateTerminalSHVAParameters";
 
-        private Dictionary<string, IQueue> queues = new Dictionary<string, IQueue>();
+        private readonly Dictionary<string, IQueue> queues = new Dictionary<string, IQueue>();
 
-        public QueueResolver() { }
+        public QueueResolver()
+        {
+        }
 
         public QueueResolver AddQueue(string key, IQueue queue)
         {

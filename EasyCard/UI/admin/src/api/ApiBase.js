@@ -22,6 +22,7 @@ import appConstants from "../helpers/app-constants";
 import CardTokensApi from './modules/transactions/CardTokensApi';
 import NayaxApi from "./modules/integrations/NayaxApi";
 import TransactionsSystemApi from './modules/transactions/SystemApi';
+import MasavFilesApi from './modules/transactions/MasavFilesApi';
 
 class ApiBase {
     constructor() {
@@ -44,6 +45,7 @@ class ApiBase {
         this.audit = new AuditApi(this);
         this.transmissions = new TransmissionApi(this);
         this.cardTokens = new CardTokensApi(this);
+        this.masavFiles = new MasavFilesApi(this);
         this.integrations = {
             shva: new ShvaApi(this),
             easyInvoice: new EasyInvoiceApi(this),

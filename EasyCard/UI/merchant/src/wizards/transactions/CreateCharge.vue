@@ -263,6 +263,7 @@ export default {
         this.model.creditCardSecureDetails.cardOwnerNationalID =
           data.consumerNationalID;
       }
+      this.model.cardOwnerNationalID = data.consumerNationalID;
       this.model.creditCardToken = null;
       this.$refs.ccSecureDetails.resetToken();
       this.step++;
@@ -297,6 +298,7 @@ export default {
         this.model.creditCardSecureDetails = data;
         this.model.creditCardToken = null;
         this.model.pinPadDeviceID = null;
+        this.model.cardOwnerNationalID = null;
         if (data.cardReaderInput) {
           this.model.cardPresence = "regular";
         } else {
@@ -307,6 +309,7 @@ export default {
         this.model.creditCardToken = data.data;
         this.model.saveCreditCard = false;
         this.model.pinPadDeviceID = null;
+        this.model.cardOwnerNationalID = null;
       } 
       else if (data.type === "device") {
         this.model.creditCardSecureDetails = null;

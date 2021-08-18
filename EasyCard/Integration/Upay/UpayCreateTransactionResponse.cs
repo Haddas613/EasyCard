@@ -10,7 +10,7 @@ namespace Upay
         public long Cashierid { get; set; }
 
         public string TotalAmount { get; set; }
-        
+
         public string CreditcardCompanycode { get; set; }
 
         public string MerchantNumber { get; set; }
@@ -18,7 +18,7 @@ namespace Upay
         public string SessionId { get; set; }
 
         public string WebUrl { get; set; }
-       
+
         public string ErrorDescription { get; set; }
     }
 }

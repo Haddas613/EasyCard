@@ -172,7 +172,7 @@ namespace Transactions.Api.Controllers
             var userIsTerminal = User.IsTerminal();
 
             // TODO: caching
-            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID.Value));
 
             if (terminal.EnabledFeatures == null || !terminal.EnabledFeatures.Any(f => f == Merchants.Shared.Enums.FeatureEnum.Checkout))
             {
@@ -199,6 +199,7 @@ namespace Transactions.Api.Controllers
             }
 
             var newPaymentRequest = mapper.Map<PaymentRequest>(model);
+
             // Update details if needed
             newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest);
             if (consumer != null)

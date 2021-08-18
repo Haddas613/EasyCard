@@ -34,5 +34,8 @@ namespace Shared.Integration.Models
 
         [EnumMember(Value = "cardOwnerNationalIdRequired")]
         CardOwnerNationalIdRequired = 8,
+
+        [EnumMember(Value = "authCodeRequired")]
+        AuthorizationCodeRequired = 9,
     }
 }

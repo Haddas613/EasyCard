@@ -8,7 +8,6 @@ namespace IdentityServer.Models
 {
     public class TwoFactorAuthSettingsViewModel
     {
-
         public TwoFactorAuthTypeEnum TwoFactorAuthType { get; set; }
 
         public ApplicationUser UserInfo { get; set; }

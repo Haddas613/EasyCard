@@ -12,6 +12,12 @@ namespace MerchantProfileApi.Models.Terminal
     {
         public TerminalResponse()
         {
+            Settings = new TerminalSettings();
+            BillingSettings = new TerminalBillingSettings();
+            InvoiceSettings = new TerminalInvoiceSettings();
+            PaymentRequestSettings = new TerminalPaymentRequestSettings();
+            CheckoutSettings = new TerminalCheckoutSettings();
+            BankDetails = new TerminalBankDetails();
         }
 
         public Guid TerminalID { get; set; }
@@ -41,6 +47,8 @@ namespace MerchantProfileApi.Models.Terminal
         public TerminalCheckoutSettings CheckoutSettings { get; set; }
 
         public Dictionary<ExternalSystemTypeEnum, string> Integrations { get; set; }
+
+        public TerminalBankDetails BankDetails { get; set; }
 
         public byte[] SharedApiKey { get; set; }
     }

@@ -23,11 +23,14 @@
           :customer-id="model.dealDetails.consumerID" 
           @update="processCustomer($event)"></customer-dialog-invoker>
       </v-col>
+      <v-col cols="12" md="6" class="pb-2" v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-5': $vuetify.breakpoint.mdAndUp}">
+        <payment-type v-model="model.paymentType" :exclude-types="['cash', 'cheque']"></payment-type>
+      </v-col>
       <v-col
         cols="12"
-        md="6"
         class="pb-2"
         v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-0': $vuetify.breakpoint.mdAndUp}"
+        v-if="model.paymentType == appConstants.transaction.paymentTypes.card"
       >
         <v-flex class="d-flex justify-end">
           <v-btn
@@ -94,7 +97,14 @@
           </template>
         </ec-dialog-invoker>
       </v-col>
-      <v-col cols="12" class="pt-0">
+      <v-col
+        cols="12"
+        class="pb-2"
+        v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-0': $vuetify.breakpoint.mdAndUp}"
+        v-else-if="model.paymentType == appConstants.transaction.paymentTypes.bank">
+        <bank-transfer-details-fields :data="model.bankTransferDetails" ref="bankTransferDetails"></bank-transfer-details-fields>
+      </v-col>
+      <v-col cols="12">
         <ec-dialog :dialog.sync="scheduleDialog" color="ecbg">
           <template v-slot:title>{{$t('BillingSchedule')}}</template>
           <template v-slot:right>
@@ -205,12 +215,12 @@
       </v-col>
       <v-col cols="12" class="d-flex justify-end" v-if="!$vuetify.breakpoint.smAndDown">
         <v-btn class="mx-1" color="white" :to="{ name: 'BillingDeals' }">{{$t('Cancel')}}</v-btn>
-        <v-btn color="primary" @click="ok()" :disabled="!token">{{$t('OK')}}</v-btn>
+        <v-btn color="primary" @click="ok()" :disabled="!valid">{{$t('OK')}}</v-btn>
       </v-col>
       <v-col cols="12" v-if="$vuetify.breakpoint.smAndDown">
         <v-btn block color="white" :to="{ name: 'BillingDeals' }">{{$t('Cancel')}}</v-btn>
         <v-spacer class="py-2"></v-spacer>
-        <v-btn block color="primary" @click="ok()" :disabled="!token">{{$t('OK')}}</v-btn>
+        <v-btn block color="primary" @click="ok()" :disabled="!valid">{{$t('OK')}}</v-btn>
       </v-col>
     </v-row>
   </v-form>
@@ -237,6 +247,8 @@ export default {
     NumpadDialogInvoker: () => import("../dialog-invokers/NumpadDialogInvoker"),
     Basket: () => import("../misc/Basket"),
     InvoiceDetailsFields: () => import("../invoicing/InvoiceDetailsFields"),
+    BankTransferDetailsFields: () => import("../transactions/BankTransferDetailsFields"),
+    PaymentType: () => import("../transactions/PaymentType"),
     
   },
   props: {
@@ -326,6 +338,10 @@ export default {
         return;
       }
 
+      if(this.model.paymentType == appConstants.transaction.paymentTypes.bank){
+        result.creditCardToken = null;
+        result.bankDetails = this.$refs.bankTransferDetails.getData();
+      }
       this.$emit("ok", result);
     },
     applySchedule() {
@@ -384,7 +400,7 @@ export default {
       this.model.currency =
         this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
     }
-    if (this.model.dealDetails.consumerID) {
+    if (this.model.dealDetails.consumerID && this.model.paymentType == appConstants.transaction.paymentTypes.card) {
       this.customerTokens =
         (
           await this.$api.cardTokens.getCustomerCardTokens(

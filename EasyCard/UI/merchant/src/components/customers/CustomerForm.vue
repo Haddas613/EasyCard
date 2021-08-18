@@ -47,8 +47,8 @@
       <v-col cols="12" class="py-0">
         <v-text-field
           v-model="model.consumerAddress"
-          :counter="50"
-          :rules="[vr.primitives.maxLength(50)]"
+          :counter="250"
+          :rules="[vr.primitives.maxLength(250)]"
           :label="$t('Address')"
           class="px-1"
           outlined

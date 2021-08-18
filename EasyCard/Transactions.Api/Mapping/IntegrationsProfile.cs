@@ -6,6 +6,7 @@ using AutoMapper;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
+using Transactions.Api.Mapping.ValueResolvers;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Business.Entities;
@@ -64,14 +65,10 @@ namespace Transactions.Api.Mapping
             CreateMap<ProcessorCreateTransactionResponse, CreditCardTokenDetails>();
 
             CreateMap<PaymentTransaction, AggregatorCommitTransactionRequest>()
-
-                //.ForMember(m => m.CreditCardDetails.CardVendor, s => s.MapFrom(src => src.CreditCardDetails.CardVendor))
                 .ForMember(m => m.TransactionID, s => s.MapFrom(src => src.PaymentTransactionID.ToString()))
                 .ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.ClearingHouseTransactionDetails == null || src.ClearingHouseTransactionDetails.ClearingHouseTransactionID == null ? src.UpayTransactionDetails.CashieriD : src.ClearingHouseTransactionDetails.ClearingHouseTransactionID.ToString())) // TODO
                 .ForMember(m => m.ConcurrencyToken, s => s.MapFrom(src => src.ClearingHouseTransactionDetails.ConcurrencyToken)) // TODO
                 .ForMember(m => m.ProcessorTransactionDetails, s => s.MapFrom(src => src.ShvaTransactionDetails))
-                //  .ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.UpayTransactionDetails.CashieriD))
-                //.ForMember(m => m.AggregatorTransactionID, s => s.MapFrom(src => src.ClearingHouseTransactionDetails.ClearingHouseTransactionID))
                 ; // TODO
 
             CreateMap<PaymentTransaction, AggregatorCancelTransactionRequest>()
@@ -90,7 +87,9 @@ namespace Transactions.Api.Mapping
 
             CreateMap<Invoice, InvoicingCreateDocumentRequest>()
                  .ForMember(m => m.ConsumerName, s => s.MapFrom(src => src.CardOwnerName))
-                 .ForMember(m => m.ConsumerNationalID, s => s.MapFrom(src => src.CardOwnerNationalID));
+                 .ForMember(m => m.ConsumerNationalID, s => s.MapFrom(src => src.CardOwnerNationalID))
+                 .ForMember(m => m.TransactionType, s => s.MapFrom(src => src.TransactionType))
+                 .ForMember(d => d.PaymentDetails, o => o.MapFrom(d => d.PaymentDetails));
 
             CreateMap<InvoicingCreateDocumentResponse, Invoice>()
                  .ForMember(m => m.InvoiceNumber, s => s.MapFrom(src => src.DocumentNumber));

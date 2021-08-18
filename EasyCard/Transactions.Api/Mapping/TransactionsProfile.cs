@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Extensions;
 using Transactions.Api.Models.External;
+using Transactions.Api.Models.Masav;
 using Transactions.Api.Models.Tokens;
 using Transactions.Api.Models.Transactions;
 using Transactions.Business.Entities;
@@ -66,9 +67,12 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)));
 
             CreateMap<SharedIntegration.Models.DealDetails, Business.Entities.DealDetails>()
-                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => new Address { Street = src.ConsumerAddress }));
+                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => new Address { Street = src.ConsumerAddress }))
+                  .ForMember(c => c.ConsumerExternalReference, o => o.MapFrom(src => src.ConsumerExternalReference));
+
             CreateMap<Business.Entities.DealDetails, SharedIntegration.Models.DealDetails>()
-                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => src.ConsumerAddress != null ? src.ConsumerAddress.Street : null));
+                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => src.ConsumerAddress != null ? src.ConsumerAddress.Street : null))
+                 .ForMember(c => c.ConsumerExternalReference, o => o.MapFrom(src => src.ConsumerExternalReference));
 
             CreateMap<CreditCardTokenKeyVault, Business.Entities.CreditCardDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))
@@ -82,11 +86,18 @@ namespace Transactions.Api.Mapping
             CreateMap<PaymentRequest, CreateTransactionRequest>()
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.PaymentRequestAmount));
 
-            CreateMap<PRCreateTransactionRequest, CreateTransactionRequest>();
+            CreateMap<PRCreateTransactionRequest, CreateTransactionRequest>()
+                .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.PaymentRequestAmount)); // TODO only for user amount
+
+            CreateMap<PaymentTransaction, CreateTransactionRequest>()
+                .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.ShvaTransactionDetails.ShvaAuthNum));
 
             CreateMap<Business.Entities.TransactionHistory, Models.Transactions.TransactionHistory>();
 
             CreateMap<Business.Entities.CreditCardTokenDetails, Business.Entities.CreditCardDetails>();
+
+            CreateMap<Business.Entities.MasavFile, MasavFileSummary>();
+            CreateMap<Business.Entities.MasavFileRow, MasavFileRowSummary>();
         }
     }
 }

@@ -315,9 +315,6 @@
   <data name="EmailValidationMessage" xml:space="preserve">
     <value>כתובת מייל אינה תקינה</value>
   </data>
-  <data name="PasswordMatchValidatonMessage" xml:space="preserve">
-    <value>סיסמה לא עומדת בדרישות המערכת</value>
-  </data>
   <data name="PasswordRequired" xml:space="preserve">
     <value>סיסמה חובה</value>
   </data>
@@ -344,5 +341,14 @@
   </data>
   <data name="LastNameValidationMessage" xml:space="preserve">
     <value>שם משפחה חייב להיות מינימום 2 תווים ומקסימום 100 תווים</value>
+  </data>
+  <data name="ForceUpdatePasswordMessage" xml:space="preserve">
+    <value>סיסמתך פגה. בבקשה הכנס סיסמה חדשה להמשך בתהליך האימות</value>
+  </data>
+  <data name="PasswordWasUsedBefore" xml:space="preserve">
+    <value>הסיסמה הייתה בשימוש בעבר. נא לבחור סיסמה חדשה.</value>
+  </data>
+  <data name="FirstNameValidationMessage" xml:space="preserve">
+    <value>שם פרטי חייב להיות מינימום 2 תווים ומקסימום 100 תווים</value>
   </data>
 </root>

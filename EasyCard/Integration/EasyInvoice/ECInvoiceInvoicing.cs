@@ -3,6 +3,7 @@ using EasyInvoice.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shared.Api.Models;
 using Shared.Helpers;
 using Shared.Integration;
@@ -253,6 +254,11 @@ namespace EasyInvoice
 
                 throw new IntegrationException("EasyInvoice UploadUserLogo request failed", integrationMessageId);
             }
+        }
+
+        public Task<IEnumerable<string>> GetDownloadUrls(JObject externalSystemData, object invoiceingSettings)
+        {
+            throw new NotImplementedException();
         }
 
         private NameValueCollection GetAuthorizedHeaders(string username, string password, string integrationMessageId, string correlationId)

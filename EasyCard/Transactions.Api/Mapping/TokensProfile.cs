@@ -39,6 +39,12 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.ConsumerEmail, o => o.MapFrom(d => d.DealDetails.ConsumerEmail))
                 .ForAllOtherMembers(d => d.Ignore());
 
+            CreateMap<BlockCreditCardRequest, TokenRequest>()
+                .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
+                .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails.ConsumerID))
+                .ForMember(d => d.ConsumerEmail, o => o.MapFrom(d => d.DealDetails.ConsumerEmail))
+                .ForAllOtherMembers(d => d.Ignore());
+
             CreateMap<CreditCardSecureDetails, TokenRequest>();
         }
     }

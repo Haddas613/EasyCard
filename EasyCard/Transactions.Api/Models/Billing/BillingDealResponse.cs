@@ -1,5 +1,6 @@
 ﻿using Shared.Helpers;
 using Shared.Integration.Models.Invoicing;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,6 +85,11 @@ namespace Transactions.Api.Models.Billing
         /// Credit card information (just to display)
         /// </summary>
         public CreditCardDetails CreditCardDetails { get; set; }
+
+        /// <summary>
+        /// Bank account information
+        /// </summary>
+        public BankDetails BankDetails { get; set; }
 
         /// <summary>
         /// Stored credit card details token

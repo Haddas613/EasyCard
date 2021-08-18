@@ -18,7 +18,7 @@ const mixins = {
             return terminal && terminal.enabledFeatures.indexOf(feature) > -1;
         },
         $integrationAvailable: function (terminal, integration) {
-            return terminal && terminal.integrations[integration];
+            return terminal && terminal.integrations && terminal.integrations[integration];
         },
         $apiSuccess: function (operation){
             return operation && operation.status == "success";

@@ -87,7 +87,9 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetNotTransmittedTransactions([FromQuery] TransmissionFilter filter)
         {
-            var query = transactionsService.GetTransactions().Filter(filter).Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission);
+            var query = transactionsService.GetTransactions()
+                .Filter(filter)
+                .Where(d => d.Status == TransactionStatusEnum.AwaitingForTransmission);
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {

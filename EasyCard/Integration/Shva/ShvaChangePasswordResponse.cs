@@ -21,9 +21,5 @@ namespace Shva
             : base(errorMessage, errorCode)
         {
         }
-
-       
-
-
     }
 }

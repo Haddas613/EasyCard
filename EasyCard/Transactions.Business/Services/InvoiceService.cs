@@ -31,7 +31,6 @@ namespace Transactions.Business.Services
         public async override Task CreateEntity(Invoice entity, IDbContextTransaction dbTransaction = null)
         {
             entity.ApplyAuditInfo(httpContextAccessor);
-
             await base.CreateEntity(entity, dbTransaction);
         }
 

@@ -17,12 +17,15 @@ namespace Transactions.Shared
         public string UpayRequestsLogStorageTable { get; set; }
 
         public string EasyInvoiceRequestsLogStorageTable { get; set; }
+        public string RapidInvoiceRequestsLogStorageTable { get; set; }
 
         public int FiltersGlobalPageSizeLimit { get; set; } = 1000;
 
         public int TransmissionMaxBatchSize { get; set; } = 10;
 
         public int BillingDealsMaxBatchSize { get; set; } = 10;
+
+        public int UpdateParametersTerminalsMaxBatchSize { get; set; } = 10;
 
         public string RequestsLogStorageTable { get; set; }
 

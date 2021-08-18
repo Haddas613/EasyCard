@@ -232,11 +232,29 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to First name should be at least 2 and at max 100 characters long.
+        /// </summary>
+        public static string FirstNameValidationMessage {
+            get {
+                return ResourceManager.GetString("FirstNameValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not yet registered? Follow this link to join EasyCard.
         /// </summary>
         public static string FollowThisLinkToJoinEasyCard {
             get {
                 return ResourceManager.GetString("FollowThisLinkToJoinEasyCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your password has expired. Please set the new password to continue authorization process..
+        /// </summary>
+        public static string ForceUpdatePasswordMessage {
+            get {
+                return ResourceManager.GetString("ForceUpdatePasswordMessage", resourceCulture);
             }
         }
         
@@ -313,7 +331,7 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Last name should be at least 2 and at max 200 characters long.
+        ///   Looks up a localized string similar to Last name should be at least 2 and at max 100 characters long.
         /// </summary>
         public static string LastNameValidationMessage {
             get {
@@ -457,15 +475,6 @@ namespace IdentityServer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Password does not meet system requirements .
-        /// </summary>
-        public static string PasswordMatchValidatonMessage {
-            get {
-                return ResourceManager.GetString("PasswordMatchValidatonMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Password repeat.
         /// </summary>
         public static string PasswordRepeat {
@@ -498,6 +507,15 @@ namespace IdentityServer.Resources {
         public static string PasswordValidationMessage {
             get {
                 return ResourceManager.GetString("PasswordValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This password was used before. Please specify a new password..
+        /// </summary>
+        public static string PasswordWasUsedBefore {
+            get {
+                return ResourceManager.GetString("PasswordWasUsedBefore", resourceCulture);
             }
         }
         

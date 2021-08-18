@@ -56,7 +56,7 @@ namespace Upay.Models
                     Key = keyAuthnticate,
                     //cardreader = (Convert.ToInt32(model.DealType)) == 0 ? "1" : "0", /// קורא כרטיס
                     Cardreader = "0",
-                    Providername =/* isBitDeal ? "bit" : */"easycard",
+                    Providername =/* isBitDeal ? "bit" : */"easycardng",
                     Creditcardcompanytype = "ISR",
                     Creditcardtype = "MA"
                 };
@@ -66,6 +66,7 @@ namespace Upay.Models
             }
             catch (Exception ex)
             {
+                // TODO: process exception
                 throw;
             }
         }
@@ -124,6 +125,7 @@ namespace Upay.Models
             }
             catch (Exception ex)
             {
+                // TODO: process exception
                 throw;
             }
         }
@@ -161,6 +163,7 @@ namespace Upay.Models
             }
             catch (Exception ex)
             {
+                // TODO: process exception
                 throw;
             }
         }
@@ -181,6 +184,7 @@ namespace Upay.Models
             }
             catch (Exception ex)
             {
+                // TODO: process exception
                 return null;
             }
             return sb.ToString();

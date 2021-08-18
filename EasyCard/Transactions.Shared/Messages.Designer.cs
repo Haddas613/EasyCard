@@ -70,6 +70,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authorization code is required. Call @number and tell them the supplier number @retailer to get the authorization code and create a new transaction with it specified..
+        /// </summary>
+        public static string AuthorizationCodeRequired {
+            get {
+                return ResourceManager.GetString("AuthorizationCodeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Awaiting for Transmission.
         /// </summary>
         public static string AwaitingForTransmission {
@@ -183,6 +192,15 @@ namespace Transactions.Shared {
         public static string CanOnlyIssueInvoiceForILSTransactions {
             get {
                 return ResourceManager.GetString("CanOnlyIssueInvoiceForILSTransactions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to National ID must be valid Israeli National ID.
+        /// </summary>
+        public static string CardOwnerNationalIDInvalid {
+            get {
+                return ResourceManager.GetString("CardOwnerNationalIDInvalid", resourceCulture);
             }
         }
         

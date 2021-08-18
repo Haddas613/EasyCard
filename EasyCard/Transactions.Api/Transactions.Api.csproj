@@ -55,10 +55,11 @@
     <ProjectReference Include="..\BasicServices\BasicServices.csproj" />
     <ProjectReference Include="..\Integration\ClearingHouse\ClearingHouse.csproj" />
     <ProjectReference Include="..\Integration\EasyInvoice\EasyInvoice.csproj" />
+    <ProjectReference Include="..\Integration\Nayax\Nayax.csproj" />
+    <ProjectReference Include="..\Integration\RapidOne\RapidOne.csproj" />
     <ProjectReference Include="..\Integration\Shva\Shva.csproj" />
     <ProjectReference Include="..\Integration\Upay\Upay.csproj" />
     <ProjectReference Include="..\Merchants.Business\Merchants.Business.csproj" />
-    <ProjectReference Include="..\Nayax\Nayax.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
     <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
     <ProjectReference Include="..\Transactions.Business\Transactions.Business.csproj" />
@@ -80,6 +81,16 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>InvoiceSummaryResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Models\Masav\MasavFileResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MasavFileResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Models\Masav\MasavFileRowResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MasavFileRowResource.resx</DependentUpon>
     </Compile>
     <Compile Update="Models\PaymentRequests\PaymentRequestSummaryResource.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -121,6 +132,14 @@
     <EmbeddedResource Update="Models\Invoicing\InvoiceSummaryResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>InvoiceSummaryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Masav\MasavFileResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MasavFileResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Masav\MasavFileRowResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MasavFileRowResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Models\PaymentRequests\PaymentRequestSummaryResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

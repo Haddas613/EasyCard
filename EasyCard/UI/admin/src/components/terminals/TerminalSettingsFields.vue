@@ -355,13 +355,21 @@
           <v-col cols="12">
             <v-divider class="py-2"></v-divider>
           </v-col>
-          <v-col cols="12" class="d-flex justify-end py-0">
+          <v-col cols="12" md="6" class="d-flex justify-start">
+            <v-switch
+              class="pt-0"
+              v-model="model.checkoutSettings.legacyRedirectResponse"
+              :label="$t('ExtendedResponseForCheckoutTransaction')"
+              hide-details
+            ></v-switch>
+          </v-col>
+          <v-col cols="12" md="6" class="d-flex justify-end">
             <v-btn color="success" small @click="addRedirectUrl()">
               <v-icon left class="body-1">mdi-plus-circle</v-icon>
               {{$t('Add')}}
             </v-btn>
           </v-col>
-          <v-col cols="12">
+          <v-col cols="12" class="pt-6">
             <ec-list
               :items="model.checkoutSettings.redirectUrls"
               v-if="model.checkoutSettings.redirectUrls && model.checkoutSettings.redirectUrls.length > 0"
@@ -404,6 +412,53 @@
               :label="$t('TransmissionTime')"
               outlined
             ></v-select>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+
+    <v-card outlined class="mb-2">
+      <v-card-text>
+        <v-row>
+          <v-col cols="12" class="subtitle-2 black--text pb-3">
+            {{$t("BankAccountDetails")}}
+            <v-divider class="pt-1"></v-divider>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              :label="$t('Bank')"
+              :counter="7"
+              outlined
+              v-model="model.bankDetails.bank"
+              max="7"
+              type="number"
+              :rules="[vr.primitives.numeric()]"
+              v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              :label="$t('BankBranch')"
+              :counter="7"
+              outlined
+              v-model="model.bankDetails.bankBranch"
+              max="7"
+              type="number"
+              :rules="[vr.primitives.numeric()]"
+              v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              :label="$t('BankAccount')"
+              :counter="12"
+              outlined
+              v-model="model.bankDetails.bankAccount"
+              max="12"
+              type="number"
+              :rules="[vr.primitives.numeric(), vr.primitives.stringLength(6, 12)]"
+              v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+            ></v-text-field>
           </v-col>
         </v-row>
       </v-card-text>

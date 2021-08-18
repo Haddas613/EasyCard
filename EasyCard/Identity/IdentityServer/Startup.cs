@@ -12,6 +12,7 @@ using BasicServices;
 using IdentityServer.Data;
 using IdentityServer.Helpers;
 using IdentityServer.Models;
+using IdentityServer.Models.Configuration;
 using IdentityServer.Security;
 using IdentityServer.Security.Auditing;
 using IdentityServer.Services;
@@ -102,6 +103,13 @@ namespace IdentityServer
                 options.Password.RequireLowercase = false;
                 options.Password.RequireDigit = true;
                 options.Password.RequireNonAlphanumeric = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+            });
+
+            services.Configure<SecuritySettings>(options =>
+            {
+                options.PasswordExpirationDays = 90;
+                options.RememberLastPasswords = 4;
             });
 
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
@@ -243,6 +251,7 @@ namespace IdentityServer
             services.AddScoped<IAuditLogger, AuditLogger>();
             services.AddScoped<UserManageService, UserManageService>();
             services.AddScoped<UserHelpers, UserHelpers>();
+            services.AddScoped<UserSecurityService, UserSecurityService>();
 
             // DI: request logging
 
@@ -330,7 +339,9 @@ namespace IdentityServer
             //app.UseCookiePolicy();
 
             app.UseXXssProtection(options => options.EnabledWithBlockMode());
+
             //app.UseXfo(options => options.SameOrigin());
+
             app.UseReferrerPolicy(opts => opts.NoReferrerWhenDowngrade());
 
             app.UseCsp(options => options

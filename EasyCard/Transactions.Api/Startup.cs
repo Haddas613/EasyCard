@@ -151,7 +151,8 @@ namespace Transactions.Api
                         }
                     };
                 })
-                .AddApiKeyInHeader(Auth.ApiKeyAuthenticationScheme, options => {
+                .AddApiKeyInHeader(Auth.ApiKeyAuthenticationScheme, options =>
+                {
                     options.SuppressWWWAuthenticateHeader = true;
                     options.KeyName = "API-key";
                     options.Events = new ApiKeyEvents
@@ -289,6 +290,7 @@ namespace Transactions.Api
             services.AddScoped<IItemsService, ItemsService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
             services.AddScoped<IShvaTerminalsService, ShvaTerminalService>();
+            services.AddScoped<IMasavFileService, MasavFileService>();
             services.AddTransient<CardTokenController, CardTokenController>();
             services.AddTransient<InvoicingController, InvoicingController>();
             services.AddTransient<PaymentRequestsController, PaymentRequestsController>();
@@ -310,6 +312,7 @@ namespace Transactions.Api
             services.AddDbContext<TransactionsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<ITransactionsService, TransactionsService>();
             services.AddScoped<ICreditCardTokenService, CreditCardTokenService>();
+            services.AddScoped<INayaxTransactionsParametersService, NayaxTransactionsParametersService>();
             services.AddScoped<IBillingDealService, BillingDealService>();
             services.AddScoped<IFutureBillingsService, BillingDealService>();
             services.AddScoped<IInvoiceService, InvoiceService>();
@@ -325,6 +328,7 @@ namespace Transactions.Api
             services.Configure<ClearingHouse.ClearingHouseGlobalSettings>(Configuration.GetSection("ClearingHouseGlobalSettings"));
             services.Configure<Upay.UpayGlobalSettings>(Configuration.GetSection("UpayGlobalSettings"));
             services.Configure<EasyInvoice.EasyInvoiceGlobalSettings>(Configuration.GetSection("EasyInvoiceGlobalSettings"));
+            services.Configure<RapidOne.Configuration.RapidOneGlobalSettings>(Configuration.GetSection("RapidOneGlobalSettings"));
 
             services.AddSingleton<IAggregatorResolver, AggregatorResolver>();
             services.AddSingleton<IProcessorResolver, ProcessorResolver>();
@@ -392,6 +396,16 @@ namespace Transactions.Api
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.EasyInvoiceRequestsLogStorageTable, cfg.EasyInvoiceRequestsLogStorageTable);
 
                 return new EasyInvoice.ECInvoiceInvoicing(webApiClient, chCfg, logger, storageService);
+            });
+
+            services.AddSingleton<RapidOne.RapidOneInvoicing, RapidOne.RapidOneInvoicing>(serviceProvider =>
+            {
+                var ecCfg = serviceProvider.GetRequiredService<IOptions<RapidOne.Configuration.RapidOneGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<RapidOne.RapidOneInvoicing>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.RapidInvoiceRequestsLogStorageTable, cfg.RapidInvoiceRequestsLogStorageTable);
+                return new RapidOne.RapidOneInvoicing(webApiClient, ecCfg, logger, storageService);
             });
 
             services.Configure<RequestResponseLoggingSettings>((options) =>

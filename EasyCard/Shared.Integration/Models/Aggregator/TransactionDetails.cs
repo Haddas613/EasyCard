@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Shared.Integration.Models.Aggregator
 {
-   public class TransactionDetails
+    public class TransactionDetails
     {
         public string Amount { get; set; }
 

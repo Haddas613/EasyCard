@@ -10,7 +10,6 @@ namespace Shared.Integration.Models.Invoicing
         public InvoicingCreateDocumentRequest()
         {
             this.DealDetails = new DealDetails();
-            this.CreditCardDetails = new CreditCardDetails();
         }
 
         public object InvoiceingSettings { get; set; }
@@ -45,10 +44,7 @@ namespace Shared.Integration.Models.Invoicing
         /// </summary>
         public DealDetails DealDetails { get; set; }
 
-        /// <summary>
-        /// Credit card details
-        /// </summary>
-        public CreditCardDetailsBase CreditCardDetails { get; set; }
+        public IEnumerable<PaymentDetails.PaymentDetails> PaymentDetails { get; set; }
 
         /// <summary>
         /// Invoice amount (should be omitted in case of installment deal)
@@ -86,5 +82,10 @@ namespace Shared.Integration.Models.Invoicing
         /// Amount of one instalment payment
         /// </summary>
         public decimal InstallmentPaymentAmount { get; set; }
+
+        /// <summary>
+        /// Generic transaction type
+        /// </summary>
+        public TransactionTypeEnum? TransactionType { get; set; }
     }
 }
