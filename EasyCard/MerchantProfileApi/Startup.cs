@@ -12,7 +12,6 @@ using BasicServices.BlobStorage;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServerClient;
 using MerchantProfileApi.Extensions;
-using MerchantProfileApi.Hubs;
 using Merchants.Business.Data;
 using Merchants.Business.Services;
 using Merchants.Shared;
@@ -82,16 +81,10 @@ namespace ProfileApi
                             "http://localhost:8080")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowCredentials()
                         .WithExposedHeaders(Headers.API_VERSION_HEADER)
                         .WithExposedHeaders(Headers.UI_VERSION_HEADER);
                     });
             });
-
-            services.AddSignalR()
-                .AddAzureSignalR(opts => {
-                    opts.ConnectionString = appConfig.AzureSignalRConnectionString;
-                });
 
             var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
 
@@ -99,78 +92,6 @@ namespace ProfileApi
 
             //TODO
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                .AddJwtBearer("SignalR", options =>
-                {
-                    options.ClaimsIssuer = identity.Authority;
-                    options.Authority = identity.Authority;
-                    options.RequireHttpsMetadata = true;
-                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                    {
-                        ValidateAudience = false,
-                    };
-
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnMessageReceived = async (context) =>
-                        {
-                            var path = context.HttpContext.Request.Path;
-
-                            if (string.IsNullOrEmpty(context.Token) && path.StartsWithSegments("/hubs"))
-                            {
-                                // attempt to read the access token from the query string
-                                var accessToken = context.Request.Query["access_token"];
-                                string headerToken = context.Request.Headers["Authorization"];
-
-                                if (!string.IsNullOrEmpty(accessToken))
-                                {
-                                    // Read the token out of the query string
-                                    context.Token = accessToken;
-                                }
-                                else if (!string.IsNullOrEmpty(headerToken))
-                                {
-                                    context.Token = headerToken.Replace("Bearer ", string.Empty);
-                                }
-                            }
-                        },
-                        OnTokenValidated = async (context) =>
-                        {
-                            if (context.Principal.IsInteractiveAdmin())
-                            {
-                                var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
-                                var userId = context.Principal.GetDoneByID();
-                                var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
-
-                                if (merchantID != null)
-                                {
-                                    var impersonationIdentity = new ClaimsIdentity(new[]
-                                    {
-                                        new Claim(Claims.MerchantIDClaim, merchantID.ToString()),
-                                        new Claim(ClaimTypes.Role, Roles.Merchant)
-                                    });
-                                    context.Principal?.AddIdentity(impersonationIdentity);
-                                }
-                            }
-                            else if (context.Principal.IsMerchant())
-                            {
-                                var svc = context.HttpContext.RequestServices.GetService<IImpersonationService>();
-                                var userId = context.Principal.GetDoneByID();
-                                var merchantID = await svc.GetImpersonatedMerchantID(userId.Value);
-
-                                if (merchantID != null)
-                                {
-                                    var midentity = (ClaimsIdentity)context.Principal.Identity;
-                                    var midclaim = midentity.FindFirst(Claims.MerchantIDClaim);
-                                    if (midclaim != null)
-                                    {
-                                        midentity.TryRemoveClaim(midclaim);
-                                    }
-
-                                    midentity.AddClaim(new Claim(Claims.MerchantIDClaim, merchantID.ToString()));
-                                }
-                            }
-                        },
-                    };
-                })
                 .AddIdentityServerAuthentication(options =>
                 {
                     options.ClaimsIssuer = identity.Authority;
@@ -517,14 +438,6 @@ namespace ProfileApi
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
-
-                //endpoints.MapHub<TransactionsHub>("/hubs/transactions");//.RequireAuthorization(IdentityServerAuthenticationDefaults.AuthenticationScheme);
-                //endpoints.MapFallbackToController("Index", "Home");
-            });
-
-            app.UseAzureSignalR(endpoints =>
-            {
-                endpoints.MapHub<TransactionsHub>("/hubs/transactions");
             });
 
             app.UseSpa(spa =>

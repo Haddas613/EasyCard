@@ -31,7 +31,7 @@ export default {
 
       this.transactionsHub = new signalR.HubConnectionBuilder()
         .withUrl(
-            `${this.$cfg.VUE_APP_PROFILE_API_BASE_ADDRESS}/hubs/transactions`,
+            `${this.$cfg.VUE_APP_TRANSACTIONS_API_BASE_ADDRESS}/hubs/transactions`,
             options
         )
         .withAutomaticReconnect()

@@ -27,7 +27,5 @@ namespace Merchants.Shared
         public string NayaxRequestsLogStorageTable { get; set; }
 
         public string PublicBlobStorageTable { get; set; }
-
-        public string AzureSignalRConnectionString { get; set; }
     }
 }

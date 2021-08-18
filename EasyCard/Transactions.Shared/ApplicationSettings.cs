@@ -40,5 +40,7 @@ namespace Transactions.Shared
         public string BillingDealsQueueName { get; set; }
 
         public string PaymentIntentStorageTable { get; set; } = "paymentintent";
+
+        public string AzureSignalRConnectionString { get; set; }
     }
 }

@@ -1,14 +1,12 @@
-﻿using MerchantProfileApi.Models.Notifications;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using ProfileApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MerchantProfileApi.Hubs
+namespace Transactions.Hubs
 {
     [Authorize(AuthenticationSchemes = "SignalR")]
     public class TransactionsHub : Hub<ITransactionsHub>
@@ -17,7 +15,6 @@ namespace MerchantProfileApi.Hubs
 
         public override Task OnConnectedAsync()
         {
-            var ctx = this.Context;
             return base.OnConnectedAsync();
         }
 
@@ -26,14 +23,14 @@ namespace MerchantProfileApi.Hubs
             Connections[userID] = Context.ConnectionId;
         }
 
-        public async Task TransactionStatusChanged(TransactionsStatusRequest payload)
-        {
-            if (!Connections.ContainsKey(payload.UserID))
-            {
-                return;
-            }
+        //public async Task TransactionStatusChanged(Object payload)
+        //{
+        //    if (!Connections.ContainsKey(payload.UserID))
+        //    {
+        //        return;
+        //    }
 
-            await Clients.Client(Connections[payload.UserID]).TransactionStatusChanged(Connections[payload.UserID]);
-        }
+        //    await Clients.Client(Connections[payload.UserID]).TransactionStatusChanged(Connections[payload.UserID]);
+        //}
     }
 }
