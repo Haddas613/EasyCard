@@ -1283,7 +1283,12 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.CardOwnerNationalID">
             <summary>
-            Only to be used for pin pad transactions when CredotCardSecureDetails is not available
+            Only to be used for pin pad transactions when CreditCardSecureDetails is not available
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.CardOwnerName">
+            <summary>
+            Only to be used for pin pad transactions when CreditCardSecureDetails is not available
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">
@@ -1388,7 +1393,12 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.CardOwnerNationalID">
             <summary>
-            Only to be used for pin pad transactions when CredotCardSecureDetails is not available
+            Only to be used for pin pad transactions when CreditCardSecureDetails is not available
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.CardOwnerName">
+            <summary>
+            Only to be used for pin pad transactions when CreditCardSecureDetails is not available
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.RefundRequest">

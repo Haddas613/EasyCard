@@ -19,7 +19,7 @@
         :label="$t('VoucherNumber')"
         :counter="12"
         outlined
-        v-model="model.voucherNumber"
+        v-model="model.shovarNumber"
         max="12"
         :rules="[vr.primitives.stringLength(6, 12)]"
         v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
@@ -105,7 +105,7 @@ export default {
       return {
         cardExpiration: this.model.cardExpiration.replace(/\s/g, ""),
         cardNumber: `000000000000${this.model.cardNumber}`,
-        voucherNumber: this.model.voucherNumber
+        shovarNumber: this.model.shovarNumber
       };
     }
   }
