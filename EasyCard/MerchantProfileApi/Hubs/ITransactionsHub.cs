@@ -7,7 +7,7 @@ namespace MerchantProfileApi.Hubs
 {
     public interface ITransactionsHub
     {
-        public Dictionary<Guid, string> Connections { get; }
+        //public Dictionary<Guid, string> Connections { get; }
 
         Task TransactionStatusChanged(object payload);
     }

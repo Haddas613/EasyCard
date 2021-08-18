@@ -1,6 +1,6 @@
 <template>
   <div>
-      <v-btn style="margin-top:200px" color="primary" @click="connectToTransactionsHub()">connect</v-btn>
+      <v-btn class="mt-15" color="pink" @click="connectToTransactionsHub()">connect</v-btn>
   </div>
 </template>
 
@@ -39,7 +39,8 @@ export default {
         .build();
         
       this.transactionsHub.on("TransactionStatusChanged", function(payload) {
-        console.log(`TransactionStatusChanged: ${payload}`);
+        console.log(payload)
+        // console.log(`TransactionStatusChanged: ${JSON.stringify(payload)}`);
         this.$toasted.show("success", "TransactionStatusChanged");
       });
 

@@ -33,7 +33,7 @@ namespace MerchantProfileApi.Hubs
                 return;
             }
 
-            await Clients.Client(Connections[payload.UserID]).TransactionStatusChanged(payload);
+            await Clients.Client(Connections[payload.UserID]).TransactionStatusChanged(Connections[payload.UserID]);
         }
     }
 }

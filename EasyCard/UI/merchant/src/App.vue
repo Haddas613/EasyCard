@@ -2,6 +2,7 @@
   <v-app id="inspire" v-bind:dir="$vuetify.rtl ? 'rtl' : 'ltr'" class="ecbg">
     <app-version-overlay></app-version-overlay>
     <idle-confirmation-overlay></idle-confirmation-overlay>
+    <notifications-hub v-if="renderReady"></notifications-hub>
     <v-overlay :value="requestsCountStore > 0" z-index="10">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>

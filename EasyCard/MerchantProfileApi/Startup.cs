@@ -88,7 +88,10 @@ namespace ProfileApi
                     });
             });
 
-            services.AddSignalR();
+            services.AddSignalR()
+                .AddAzureSignalR(opts => {
+                    opts.ConnectionString = appConfig.AzureSignalRConnectionString;
+                });
 
             var identity = Configuration.GetSection("IdentityServerClient")?.Get<IdentityServerClientSettings>();
 
@@ -514,8 +517,14 @@ namespace ProfileApi
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
-                endpoints.MapHub<TransactionsHub>("/hubs/transactions");//.RequireAuthorization(IdentityServerAuthenticationDefaults.AuthenticationScheme);
+
+                //endpoints.MapHub<TransactionsHub>("/hubs/transactions");//.RequireAuthorization(IdentityServerAuthenticationDefaults.AuthenticationScheme);
                 //endpoints.MapFallbackToController("Index", "Home");
+            });
+
+            app.UseAzureSignalR(endpoints =>
+            {
+                endpoints.MapHub<TransactionsHub>("/hubs/transactions");
             });
 
             app.UseSpa(spa =>

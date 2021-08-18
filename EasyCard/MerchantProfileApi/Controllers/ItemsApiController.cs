@@ -111,7 +111,7 @@ namespace MerchantProfileApi.Controllers
         [Route("{itemID}")]
         public async Task<ActionResult<ItemResponse>> GetItem([FromRoute] Guid itemID)
         {
-            //await hubcontext.TransactionStatusChanged(new Models.Notifications.TransactionsStatusRequest { UserID = Guid.Parse("dc62c689-74db-484f-9e31-30e512407e87") });
+            await hubcontext.Clients.All.TransactionStatusChanged(new Models.Notifications.TransactionsStatusRequest { UserID = Guid.Parse("dc62c689-74db-484f-9e31-30e512407e87") });
             using (var dbTransaction = itemsService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
                 var dbItem = EnsureExists(await itemsService.GetItems().FirstOrDefaultAsync(m => m.ItemID == itemID));
