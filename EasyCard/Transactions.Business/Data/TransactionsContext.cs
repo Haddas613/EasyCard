@@ -210,7 +210,7 @@ namespace Transactions.Business.Data
                     s.Property(p => p.ShvaAuthNum).HasColumnName("ShvaAuthNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.TransmissionDate).HasColumnName("ShvaTransmissionDate").IsRequired(false);
                     s.Property(p => p.Solek).HasColumnName("Solek").IsRequired(false);
-                    s.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(500).IsUnicode(false).IsRequired(false);
+                    s.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(600).IsUnicode(false).IsRequired(false);
                     s.Property(p => p.EmvSoftVersion).HasColumnName("EmvSoftVersion").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CompRetailerNum).HasColumnName("CompRetailerNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.TelToGetAuthNum).HasColumnName("TelToGetAuthNum").IsRequired(false).HasMaxLength(20).IsUnicode(false);
@@ -664,7 +664,7 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.NayaxTransactionsParametersID).ValueGeneratedNever();
 
                 builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
-                builder.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(500).IsUnicode(false).IsRequired(false);
+                builder.Property(p => p.TranRecord).HasColumnName("ShvaTranRecord").HasMaxLength(600).IsUnicode(false).IsRequired(false);
 
                 builder.HasIndex(d => d.PinPadTransactionID).IsUnique();
             }

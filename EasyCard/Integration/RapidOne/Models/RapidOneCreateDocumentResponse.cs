@@ -38,5 +38,9 @@ namespace RapidOne.Models
         ///  IncomingPayments = 24
         /// </summary>
         public int DocType { get; set; }
+
+        public string IssuerDB { get; set; }
+
+        public string DocNumber { get; set; }
     }
 }
