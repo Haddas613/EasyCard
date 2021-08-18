@@ -36,6 +36,7 @@ using Transactions.Shared.Enums;
 using Transactions.Api.Extensions;
 using Newtonsoft.Json;
 using SharedIntegration = Shared.Integration;
+using Transactions.Api.Validation;
 
 namespace Transactions.Api.Controllers
 {
@@ -232,6 +233,7 @@ namespace Transactions.Api.Controllers
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
             // TODO: validate Invoice with Payment Info, do not send to EInvoice if no payment info present
+            InvoiceValidator.ValidateInvoiceRequest(model);
 
             // TODO: caching
             var systemSettings = await systemSettingsService.GetSystemSettings();

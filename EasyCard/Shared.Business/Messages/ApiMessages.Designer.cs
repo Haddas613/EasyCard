@@ -79,11 +79,38 @@ namespace Shared.Business.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Must specify at least one payment details.
+        /// </summary>
+        public static string PaymentDetailsMustSpecifyAtLeastOne {
+            get {
+                return ResourceManager.GetString("PaymentDetailsMustSpecifyAtLeastOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment details not allowed for this type of invoice.
+        /// </summary>
+        public static string PaymentDetailsNotAllowedForThisTypeOfInvoice {
+            get {
+                return ResourceManager.GetString("PaymentDetailsNotAllowedForThisTypeOfInvoice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Record changed since last read.
         /// </summary>
         public static string RecordChangedSinceLastRead {
             get {
                 return ResourceManager.GetString("RecordChangedSinceLastRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required.
+        /// </summary>
+        public static string Required {
+            get {
+                return ResourceManager.GetString("Required", resourceCulture);
             }
         }
         
