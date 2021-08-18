@@ -99,13 +99,6 @@ namespace CheckoutPortal.Controllers
                 }
             }
 
-            if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
-            {
-                ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
-                mapper.Map(checkoutConfig.Settings, request);
-                return View("Index", request);
-            }
-
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
@@ -141,6 +134,13 @@ namespace CheckoutPortal.Controllers
                 ModelState[nameof(request.CardNumber)].ValidationState = ModelValidationState.Skipped;
                 ModelState[nameof(request.CardExpiration)].Errors.Clear();
                 ModelState[nameof(request.CardExpiration)].ValidationState = ModelValidationState.Skipped;
+            }
+
+            if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
+            {
+                ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
+                mapper.Map(checkoutConfig.Settings, request);
+                return View("Index", request);
             }
 
             InstallmentDetails installmentDetails = null;
