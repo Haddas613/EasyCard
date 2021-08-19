@@ -8,6 +8,11 @@ namespace Shared.Integration.ExternalSystems
 {
     public class NullAggregator : IAggregator
     {
+        public bool AllowTransmissionCancellation()
+        {
+            return false;
+        }
+
         public Task<AggregatorCancelTransactionResponse> CancelTransaction(AggregatorCancelTransactionRequest transactionRequest)
         {
             throw new NotImplementedException();
@@ -31,6 +36,11 @@ namespace Shared.Integration.ExternalSystems
         public bool ShouldBeProcessedByAggregator(TransactionTypeEnum transactionType, SpecialTransactionTypeEnum specialTransactionType, JDealTypeEnum jDealType)
         {
             return false;
+        }
+
+        public bool Validate(AggregatorCreateTransactionRequest transactionRequest)
+        {
+            throw new NotImplementedException();
         }
     }
 }

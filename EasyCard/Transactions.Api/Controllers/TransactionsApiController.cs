@@ -203,11 +203,19 @@ namespace Transactions.Api.Controllers
                     transaction.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == transaction.TerminalID.Value).Select(t => t.Label).FirstOrDefaultAsync();
                 }
 
-                var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == transaction.TerminalID.Value));
+                var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID.Value));
 
                 if (transaction.JDealType == JDealTypeEnum.J5)
                 {
                     transaction.TransactionJ5ExpiredDate = DateTime.Now.AddDays(terminal.Settings.J5ExpirationDays);
+                }
+
+                var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
+
+                if (terminalAggregator != null)
+                {
+                    var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+                    transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? false;
                 }
 
                 transaction.MerchantName = merchantName;
@@ -902,6 +910,12 @@ namespace Transactions.Api.Controllers
                 {
                     var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
                     aggregatorRequest.AggregatorSettings = aggregatorSettings;
+
+                    var aggregatorValidationErrorMsg = aggregator.Validate(aggregatorRequest);
+                    if (aggregatorValidationErrorMsg != null)
+                    {
+                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByAggregator}: {aggregatorValidationErrorMsg}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier)));
+                    }
 
                     var aggregatorResponse = await aggregator.CreateTransaction(aggregatorRequest);
                     mapper.Map(aggregatorResponse, transaction);
