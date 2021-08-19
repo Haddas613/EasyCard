@@ -914,7 +914,7 @@ namespace Transactions.Api.Controllers
                     var aggregatorValidationErrorMsg = aggregator.Validate(aggregatorRequest);
                     if (aggregatorValidationErrorMsg != null)
                     {
-                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByAggregator}: {aggregatorValidationErrorMsg}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier)));
+                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByAggregator}: {aggregatorValidationErrorMsg}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
                     }
 
                     var aggregatorResponse = await aggregator.CreateTransaction(aggregatorRequest);

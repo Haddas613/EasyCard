@@ -38,7 +38,7 @@ namespace Shared.Integration.ExternalSystems
             return false;
         }
 
-        public bool Validate(AggregatorCreateTransactionRequest transactionRequest)
+        public string Validate(AggregatorCreateTransactionRequest transactionRequest)
         {
             throw new NotImplementedException();
         }
