@@ -145,5 +145,30 @@ namespace Transactions.Api.Validation
                 return;
             }
         }
+
+        public static void Validate(TerminalSettings terminalSettings, DateTime transactionDate)
+        {
+            if (terminalSettings == null)
+            {
+                throw new ApplicationException("Terminal settings is not present");
+            }
+
+            DateTime expiredTransaction = transactionDate.AddDays(terminalSettings.J5ExpirationDays);
+
+            List<SharedHelpers.Error> errors = new List<SharedHelpers.Error>();
+            if (expiredTransaction <= DateTime.Now)
+            {
+                errors.Add(new SharedHelpers.Error($"{nameof(terminalSettings.J5ExpirationDays)}", Messages.J5Expired));
+            }
+
+            if (errors.Count == 1)
+            {
+                throw new BusinessException(errors.First().Description, errors);
+            }
+            else
+            {
+                return;
+            }
+        }
     }
 }

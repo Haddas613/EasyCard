@@ -203,6 +203,13 @@ namespace Transactions.Api.Controllers
                     transaction.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == transaction.TerminalID.Value).Select(t => t.Label).FirstOrDefaultAsync();
                 }
 
+                var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == transaction.TerminalID.Value));
+
+                if (transaction.JDealType == JDealTypeEnum.J5)
+                {
+                    transaction.TransactionJ5ExpiredDate = DateTime.Now.AddDays(terminal.Settings.J5ExpirationDays);
+                }
+
                 transaction.MerchantName = merchantName;
                 return Ok(transaction);
             }
@@ -495,9 +502,10 @@ namespace Transactions.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
         [Route("selectJ5/{transactionID}")]
         [ValidateModelState]
-        public async Task<ActionResult<OperationResponse>> SelectJ5(Guid? transactionID )
+        public async Task<ActionResult<OperationResponse>> SelectJ5(Guid? transactionID)
         {
             var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == transactionID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
             var CreateTransactionReq = mapper.Map<CreateTransactionRequest>(transaction);
             if (transaction.Status != TransactionStatusEnum.AwaitingForSelectJ5)
@@ -505,9 +513,10 @@ namespace Transactions.Api.Controllers
                 return BadRequest(Messages.TransactionStatusIsNotValid);
             }
 
+            TransactionTerminalSettingsValidator.Validate(terminal.Settings, transaction.TransactionDate.Value);
+
             var token = EnsureExists(await keyValueStorage.Get(CreateTransactionReq.CreditCardToken.ToString()), "CreditCardToken");
             var response = await ProcessTransaction(CreateTransactionReq, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
-           // await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed); TODO in other way send trnsactionid in request and update itwhen j5 is success
 
             return response;
         }
@@ -961,6 +970,11 @@ namespace Transactions.Api.Controllers
                 else
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
+                    if (model.InitialJ5TransactionID != null)
+                    {
+                        var transactionJ5 = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == model.InitialJ5TransactionID));
+                        await transactionsService.UpdateEntityWithStatus(transactionJ5, TransactionStatusEnum.Completed);
+                    }
                 }
             }
             catch (Exception ex)
@@ -1057,6 +1071,7 @@ namespace Transactions.Api.Controllers
                 if (jDealType == JDealTypeEnum.J5)
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForSelectJ5);
+                    
                 }
                 else if (jDealType != JDealTypeEnum.J4)
                 {
@@ -1079,6 +1094,11 @@ namespace Transactions.Api.Controllers
             }
 
             var endResponse = new OperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);
+
+            if (jDealType == JDealTypeEnum.J5)
+            {
+                endResponse.InnerResponse = new OperationResponse(string.Format(Transactions.Shared.Messages.J5ExpirationDate, transaction.TransactionTimestamp.Value.AddDays(terminal.Settings.J5ExpirationDays)), StatusEnum.Success);
+            }
 
             // TODO: validate InvoiceDetails
             if (model.IssueInvoice == true && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && model.Currency == CurrencyEnum.ILS)
@@ -1144,6 +1164,8 @@ namespace Transactions.Api.Controllers
             {
                 logger.LogError(e, $"{nameof(ProcessTransaction)}: EmailSend");
             }
+
+         
 
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
         }
