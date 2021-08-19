@@ -4,11 +4,12 @@ using System.Text;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Shared.Api.Models
+namespace Shared.Helpers.Models
 {
     public static class ExtensionMethods
     {
-        public static bool IsIn<T>(this T value, params T[] otherValues) where T : struct
+        public static bool IsIn<T>(this T value, params T[] otherValues)
+            where T : struct
         {
             return otherValues.Contains(value);
         }
