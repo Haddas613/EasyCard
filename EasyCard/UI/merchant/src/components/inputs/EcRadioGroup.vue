@@ -80,7 +80,12 @@ export default {
   methods: {
     onSelect(val) {
       if (this.returnObject) {
-        let obj = this.lodash.find(this.items, i => i[this.valuekey] === val);
+        let obj = this.lodash.find(this.items, i => i[this.valuekey] == val);
+
+        //Workaround, vuetify radio group returns 0 for null values
+        if(!obj && !val){
+          obj = this.lodash.find(this.items, i => i[this.valuekey] == null);
+        }
         if (obj) this.$emit("update:model", obj);
       } else {
         this.$emit("update:model", val);
