@@ -59,6 +59,11 @@ export default {
           showDeleted: this.showDeleted
         })
     ).data || [];
-  }
+  },
+  watch: {
+    'val'(newValue, oldValue) {
+      this.value = newValue;
+    }
+  },
 };
 </script>
