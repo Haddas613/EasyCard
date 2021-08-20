@@ -43,6 +43,12 @@
             Refund request
             </summary>
         </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.NotifyStatusChanged(Transactions.Business.Entities.PaymentTransaction)">
+            <summary>
+            Notify SignalR (if needed) about transaction status change
+            </summary>
+            <param name="transaction">Transaction data</param>
+        </member>
         <member name="M:Transactions.Api.Controllers.TransmissionController.GetNotTransmittedTransactions(Transactions.Api.Models.Transactions.TransmissionFilter)">
             <summary>
             Get transactions which are not transmitted yet
@@ -1289,6 +1295,11 @@
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.CardOwnerName">
             <summary>
             Only to be used for pin pad transactions when CreditCardSecureDetails is not available
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.ConnectionID">
+            <summary>
+            SignalR connection id
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">

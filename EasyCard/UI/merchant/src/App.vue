@@ -2,7 +2,6 @@
   <v-app id="inspire" v-bind:dir="$vuetify.rtl ? 'rtl' : 'ltr'" class="ecbg">
     <app-version-overlay></app-version-overlay>
     <idle-confirmation-overlay></idle-confirmation-overlay>
-    <notifications-hub v-if="renderReady"></notifications-hub>
     <v-overlay :value="requestsCountStore > 0" z-index="10">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
@@ -32,7 +31,6 @@ import i18n from "./i18n";
 
 export default {
   components: {
-    NotificationsHub: () => import("./components/misc/NotificationsHub"),
     AppVersionOverlay: () => import("./components/misc/AppVersionOverlay"),
     IdleConfirmationOverlay: () =>
       import("./components/misc/IdleConfirmationOverlay")

@@ -269,6 +269,9 @@ namespace Transactions.Business.Entities
 
         public long? MasavFileID { get; set; }
 
+        [NotMapped]
+        public string ConnectionID { get; set; }
+
         // TODO: calculate items, VAT
         [Obsolete]
         public void Calculate()

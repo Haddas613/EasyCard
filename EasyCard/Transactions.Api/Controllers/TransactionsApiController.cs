@@ -51,6 +51,7 @@ using Shared.Integration;
 using Newtonsoft.Json.Linq;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Transactions.Api.Controllers
 {
@@ -84,6 +85,8 @@ namespace Transactions.Api.Controllers
         private readonly IMetricsService metrics;
         private readonly IPaymentIntentService paymentIntentService;
 
+        private readonly IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext;
+
         public TransactionsApiController(
             ITransactionsService transactionsService,
             IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage,
@@ -106,7 +109,8 @@ namespace Transactions.Api.Controllers
             IEmailSender emailSender,
             IOptions<ApiSettings> apiSettings,
             IMetricsService metrics,
-            IPaymentIntentService paymentIntentService)
+            IPaymentIntentService paymentIntentService,
+            IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -130,6 +134,7 @@ namespace Transactions.Api.Controllers
             this.emailSender = emailSender;
             this.metrics = metrics;
             this.paymentIntentService = paymentIntentService;
+            this.transactionsHubContext = transactionsHubContext;
         }
 
         [HttpGet]
@@ -901,6 +906,7 @@ namespace Transactions.Api.Controllers
                         mapper.Map(pinpadPreCreateResult, processorRequest);
 
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByPinpadPreProcessor);
+                        await NotifyStatusChanged(transaction);
                     }
                 }
                 catch (Exception ex)
@@ -994,6 +1000,8 @@ namespace Transactions.Api.Controllers
                 else
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
+                    await NotifyStatusChanged(transaction);
+
                     if (model.InitialJ5TransactionID != null)
                     {
                         var transactionJ5 = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == model.InitialJ5TransactionID));
@@ -1074,6 +1082,7 @@ namespace Transactions.Api.Controllers
                         else
                         {
                             await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission, transactionOperationCode: TransactionOperationCodesEnum.CommitedByAggregator);
+                            await NotifyStatusChanged(transaction);
                         }
                     }
                     catch (Exception ex)
@@ -1095,7 +1104,6 @@ namespace Transactions.Api.Controllers
                 if (jDealType == JDealTypeEnum.J5)
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForSelectJ5);
-                    
                 }
                 else if (jDealType != JDealTypeEnum.J4)
                 {
@@ -1105,6 +1113,7 @@ namespace Transactions.Api.Controllers
                 {
                     //If aggregator is not required transaction is eligible for transmission
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
+                    await NotifyStatusChanged(transaction);
                 }
             }
 
@@ -1188,8 +1197,6 @@ namespace Transactions.Api.Controllers
             {
                 logger.LogError(e, $"{nameof(ProcessTransaction)}: EmailSend");
             }
-
-         
 
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
         }
@@ -1471,6 +1478,34 @@ namespace Transactions.Api.Controllers
             {
                 logger.LogError($"{nameof(NextBillingDeal)}: {billingDeal.BillingDealID}, Error: {string.Join("; ", businessEx.Errors?.Select(b => $"{b.Code}:{b.Description}"))}");
                 return new OperationResponse { Message = businessEx.Message, Status = StatusEnum.Error, Errors = businessEx.Errors };
+            }
+        }
+
+        /// <summary>
+        /// Notify SignalR (if needed) about transaction status change
+        /// </summary>
+        /// <param name="transaction">Transaction data</param>
+        private async Task NotifyStatusChanged(PaymentTransaction transaction)
+        {
+            if (transaction.ConnectionID == null)
+            {
+                return;
+            }
+
+            var payload = new Shared.Models.TransactionStatusChangedHubModel
+            {
+                PaymentTransactionID = transaction.PaymentTransactionID,
+                Status = transaction.Status,
+                StatusString = transaction.Status.ToString()
+            };
+
+            try
+            {
+                await transactionsHubContext.Clients.Clients(transaction.ConnectionID).TransactionStatusChanged(payload);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{nameof(NotifyStatusChanged)} ERROR: {ex.Message}");
             }
         }
     }

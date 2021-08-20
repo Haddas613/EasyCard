@@ -106,6 +106,7 @@
 
 <script>
 import { mapState } from "vuex";
+import * as signalR from "@microsoft/signalr";
 
 export default {
   components: {
@@ -186,7 +187,8 @@ export default {
             title: "Success",
             completed: true,
         }
-      }
+      },
+      transactionsHub: null
     };
   },
   computed: {
@@ -340,7 +342,8 @@ export default {
         this.model.issueInvoice = false;
       }
 
-      await this.createTransaction();
+      // await this.createTransaction();
+      await this.establishSignalRConnectionAndCharge();
     },
     async createTransaction(){
       if (this.loading) return;
@@ -367,6 +370,7 @@ export default {
           lastStep.title = "Success";
           lastStep.completed = true;
           lastStep.closeable = false;
+          this.disposeSignalRConnection();
           this.errors = [];
         }
         if (this.customer) {
@@ -380,7 +384,52 @@ export default {
       }finally{
         this.loading = false;
       }
+    },
+
+    async establishSignalRConnectionAndCharge(){
+      const options = {
+        accessTokenFactory: () => {
+          return this.$oidc.getAccessToken();
+        },
+        transport: 1
+      };
+
+      this.transactionsHub = new signalR.HubConnectionBuilder()
+        .withUrl(
+            `${this.$cfg.VUE_APP_TRANSACTIONS_API_BASE_ADDRESS}/hubs/transactions`,
+            options
+        )
+        .withAutomaticReconnect()
+        //.configureLogging("Trace")
+        .build();
+        
+      this.transactionsHub.on("TransactionStatusChanged", (payload) => {
+        // console.log(payload)
+        this.$toasted.show(`TransactionStatusChanged: ${payload.statusString}`, { type: "success", duration: 5000 });
+      });
+
+      await this.transactionsHub.start();
+      this.model.connectionID = this.transactionsHub.connectionId;
+      await this.createTransaction();
+
+        // .then(async (e) => {
+        //     // let user = await this.$oidc.getUserProfile();
+        //     // this.transactionsHub.invoke('MapConnection', user.sub);
+            
+        //     this.model.connectionID = this.transactionsHub.connectionId;
+        // }).catch(function(err) {
+        //     return console.error(err.toString());
+        // });
+    },
+    async disposeSignalRConnection(){
+      if(!this.transactionsHub){
+        return;
+      }
+      this.transactionsHub.stop();
     }
-  }
+  },
+  async beforeDestroy () {
+    await this.disposeSignalRConnection();
+  },
 };
 </script>
