@@ -4,29 +4,40 @@
       <v-row>
         <merchant-terminal-filter v-model="model"></merchant-terminal-filter>
         <v-col cols="12" md="4" class="py-0">
-            <v-text-field
-              v-model="model.billingDealID"
-              :label="$t('BillingDealID')"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4" class="py-0">
-            <v-text-field
-              v-model="model.cardOwnerNationalID"
-              :label="$t('CardOwnerNationalID')"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4" class="py-0">
-            <v-text-field
-              v-model="model.cardOwnerName"
-              :label="$t('CardOwnerName')"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4" class="py-0">
-            <v-text-field
-              v-model="model.consumerEmail"
-              :label="$t('CustomerEmail')"
-            ></v-text-field>
-          </v-col>
+          <v-text-field
+            v-model="model.billingDealID"
+            :label="$t('BillingDealID')"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="4" class="py-0">
+          <v-text-field
+            v-model="model.cardOwnerNationalID"
+            :label="$t('CardOwnerNationalID')"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="4" class="py-0">
+          <v-select
+            :items="paymentTypesFiltered"
+            item-text="description"
+            item-value="code"
+            v-model="model.paymentType"
+            :label="$t('PaymentType')"
+            hide-details="true"
+            clearable
+          ></v-select>
+        </v-col>
+        <v-col cols="12" md="4" class="py-0">
+          <v-text-field
+            v-model="model.cardOwnerName"
+            :label="$t('CardOwnerName')"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="4" class="py-0">
+          <v-text-field
+            v-model="model.consumerEmail"
+            :label="$t('CustomerEmail')"
+          ></v-text-field>
+        </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" md="4" class="py-0">
@@ -93,10 +104,12 @@ export default {
       dictionaries: {},
       vr: ValidationRules,
       formIsValid: true,
+      paymentTypesFiltered: []
     };
   },
   async mounted() {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+    this.paymentTypesFiltered = this.lodash.filter(this.dictionaries.paymentTypeEnum, e => e.code == "bank" || e.code == "card");
   },
   props: {
     filterData: {

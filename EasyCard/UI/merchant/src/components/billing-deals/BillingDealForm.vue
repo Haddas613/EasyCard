@@ -2,7 +2,7 @@
   <v-form class="pt-0" ref="form" v-model="valid" lazy-validation>
     <v-row>
       <v-col cols="12" md="6" class="py-0">
-        <terminal-select v-model="model.terminalID" clearable show-deleted></terminal-select>
+        <terminal-select v-model="model.terminalID" clearable></terminal-select>
       </v-col>
       <v-col cols="12" md="6" class="py-0">
         <v-select

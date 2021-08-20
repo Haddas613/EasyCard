@@ -300,6 +300,11 @@ namespace Transactions.Api.Controllers
 
             var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
 
+            if (!aggregator.AllowTransmissionCancellation())
+            {
+                return BadRequest(new OperationResponse(Messages.FailedToCancelByAggregator, StatusEnum.Error));
+            }
+
             var aggregatorSettings = aggregatorResolver.GetAggregatorTerminalSettings(terminalAggregator, terminalAggregator.Settings);
 
             PaymentTransaction transaction = null;

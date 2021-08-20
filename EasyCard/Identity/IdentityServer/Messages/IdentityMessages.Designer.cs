@@ -113,5 +113,14 @@ namespace IdentityServer.Messages {
                 return ResourceManager.GetString("TwoFactorAuth", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User already has a password set..
+        /// </summary>
+        public static string UserAlreadyHasPassword {
+            get {
+                return ResourceManager.GetString("UserAlreadyHasPassword", resourceCulture);
+            }
+        }
     }
 }

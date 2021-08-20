@@ -14,6 +14,9 @@
       <div class="px-4 py-2">
         <v-form ref="form" v-model="formIsValid">
           <v-row>
+            <v-col cols="12" md="12" class="py-0">
+              <payment-type v-model="model.paymentType" :exclude-types="['cash', 'cheque']" all></payment-type>
+            </v-col>
             <!-- <v-col cols="12" md="12" class="py-0">
               <v-switch
                 v-model="model.finished"
@@ -89,7 +92,8 @@ import ValidationRules from "../../helpers/validation-rules";
 export default {
   components: {
     EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
-    EcDialog: () => import("../../components/ec/EcDialog")
+    EcDialog: () => import("../../components/ec/EcDialog"),
+    PaymentType: () => import("../transactions/PaymentType"),
   },
   props: {
     show: {

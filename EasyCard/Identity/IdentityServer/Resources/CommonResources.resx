@@ -348,6 +348,12 @@
   <data name="PasswordWasUsedBefore" xml:space="preserve">
     <value>This password was used before. Please specify a new password.</value>
   </data>
+  <data name="DoNotMatchPasswordNPasswordRepeat" xml:space="preserve">
+    <value>'Password Repeat' and 'Password' do not match.</value>
+  </data>
+  <data name="NotValidEmailField" xml:space="preserve">
+    <value>The email field is not a valid e-mail address.</value>
+  </data>
   <data name="FirstNameValidationMessage" xml:space="preserve">
     <value>First name should be at least 2 and at max 100 characters long</value>
   </data>

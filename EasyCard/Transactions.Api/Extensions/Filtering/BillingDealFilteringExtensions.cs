@@ -20,6 +20,11 @@ namespace Transactions.Api.Extensions.Filtering
                 return src;
             }
 
+            if (filter.PaymentType != null)
+            {
+                src = src.Where(t => t.PaymentType == filter.PaymentType);
+            }
+
             if (filter.Actual)
             {
                 src = src

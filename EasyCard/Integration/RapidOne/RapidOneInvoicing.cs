@@ -21,6 +21,7 @@ namespace RapidOne
     public class RapidOneInvoicing : IInvoicing
     {
         private const string documentProduce = "/gateway/financialDocuments";
+        private const string getDownloadUrl = "/gateway/getDownloadUrl";
         private const string ResponseTokenHeader = "Authorization";
         private readonly IIntegrationRequestLogStorageService storageService;
         private readonly IWebApiClient apiClient;
@@ -76,9 +77,9 @@ namespace RapidOne
                 var firstResult = svcRes.FirstOrDefault();
                 return new InvoicingCreateDocumentResponse
                 {
-                    DocumentNumber = firstResult?.DocEntry.ToString(),
-                    DownloadUrl = firstResult?.Url,
-                    CopyDonwnloadUrl = firstResult?.Url,
+                    DocumentNumber = GetDocumentNumber(svcRes),
+                    DownloadUrl = null,
+                    CopyDonwnloadUrl = null,
                     ExternalSystemData = JObject.FromObject(new RapidOneCreateDocumentResponse(svcRes))
                 };
             }
@@ -127,10 +128,48 @@ namespace RapidOne
             var terminal = invoiceingSettings as RapidOneTerminalSettings;
 
             RapidOneCreateDocumentResponse documentResponse = externalSystemData.ToObject<RapidOneCreateDocumentResponse>();
+            NameValueCollection headers = GetAuthorizedHeaders(terminal.BaseUrl, terminal.Token, null, null);
 
-            // TODO: get temporary url from R1
+            try
+            {
+                var svcRes = await this.apiClient.Post<IEnumerable<DocumentItemModel>>(terminal.BaseUrl, getDownloadUrl, documentResponse.Documents, () => Task.FromResult(headers));
 
-            return await Task.FromResult(documentResponse.Documents.Select(d => d.Url));
+                var rs = svcRes.Select(d => d.Url);
+
+                return rs;
+               
+            }
+            catch (WebApiClientErrorException wex)
+            {
+                this.logger.LogError(wex, $"RapidOne integration request failed. {wex.Message}");
+
+                throw new IntegrationException("RapidOne integration request failed", null);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"RapidOne integration request failed. {ex.Message}");
+
+                throw new IntegrationException("RapidOne integration request failed", null);
+            }
+        }
+
+        private string GetDocumentNumber(IEnumerable<DocumentItemModel> documents)
+        {
+            var invoice = documents.FirstOrDefault(d => d.DocType == 13)?.DocEntry;
+            var payment = documents.FirstOrDefault(d => d.DocType == 24)?.DocEntry;
+            var other = documents.Where(d => d.DocType != 24 && d.DocType != 13).Select(d => d.DocEntry).ToList();
+
+            if (payment != null)
+            {
+                other.Insert(0, payment.Value);
+            }
+
+            if (invoice != null)
+            {
+                other.Insert(0, invoice.Value);
+            }
+
+            return string.Join("/", other.Select(d => d.ToString()));
         }
 
         private NameValueCollection GetAuthorizedHeaders(string BaseUrl, string Token, string integrationMessageId, string correlationId)

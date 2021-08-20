@@ -2,6 +2,7 @@
 using Shared.Api.Models.Enums;
 using Shared.Api.Swagger;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -56,5 +57,7 @@ namespace Transactions.Api.Models.Billing
         public bool Finished { get; set; }
 
         public bool Paused { get; set; }
+
+        public PaymentTypeEnum? PaymentType { get; set; }
     }
 }

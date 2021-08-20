@@ -336,6 +336,8 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.ReasonForChange).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+
+                builder.HasIndex(d => d.MerchantID);
             }
         }
 
@@ -364,6 +366,8 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.ExternalReference).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.Price).HasColumnType("decimal(19,4)").IsRequired();
+
+                builder.HasIndex(d => d.MerchantID);
             }
         }
 
@@ -399,6 +403,10 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.ConsumerAddress).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
 
                 builder.Property(b => b.ExternalReference).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+
+                builder.HasIndex(d => d.TerminalID);
+                builder.HasIndex(d => new { d.TerminalID, d.ConsumerID });
+                builder.HasIndex(d => new { d.TerminalID, d.ExternalReference });
             }
         }
 

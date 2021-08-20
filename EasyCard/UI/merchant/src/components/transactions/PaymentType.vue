@@ -51,6 +51,10 @@ export default {
       type: Array,
       default: () => [],
       required: false
+    },
+    all: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -65,10 +69,17 @@ export default {
   async mounted() {
     this.dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
 
-    this.paymentTypesFiltered = this.lodash.filter(
+    let filtered = this.lodash.filter(
       this.dictionaries.paymentTypeEnum,
       e => this.excludeTypes.indexOf(e.code) === -1
     );
+
+    if (this.all){
+      this.paymentTypesFiltered = [{description: this.$t("All"), code: null}, ...filtered];
+    }else{
+      this.paymentTypesFiltered = filtered;
+    }
+
     if (!this.paymentType) {
       this.paymentType = this.paymentTypesFiltered[0];
       this.paymentTypeChanged();

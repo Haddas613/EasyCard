@@ -177,7 +177,7 @@ namespace Transactions.Api.Controllers
                 {
                     var downloadUrl = new List<string> { dbInvoice.DownloadUrl };
 
-                    return new DownloadInvoiceResponse (downloadUrl) { Status = StatusEnum.Success, EntityUID = invoiceID };
+                    return new DownloadInvoiceResponse(downloadUrl) { Status = StatusEnum.Success, EntityUID = invoiceID };
                 }
                 else
                 {
@@ -492,8 +492,9 @@ namespace Transactions.Api.Controllers
             mapper.Map(systemSettings, terminal);
 
             // invoice already generated
-            if (!string.IsNullOrWhiteSpace(dbInvoice.InvoiceNumber))
+            if (!string.IsNullOrWhiteSpace(dbInvoice.InvoiceNumber) && !ignoreStatus)
             {
+                // TODO: support for R1 invoices
                 if (string.IsNullOrWhiteSpace(dbInvoice.CopyDonwnloadUrl))
                 {
                     return BadRequest(new OperationResponse($"{Messages.InvoiceStateIsNotValid}", StatusEnum.Error, dbInvoice.InvoiceID, httpContextAccessor.TraceIdentifier));

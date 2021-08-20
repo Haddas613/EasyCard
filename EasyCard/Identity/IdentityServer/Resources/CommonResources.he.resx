@@ -351,4 +351,10 @@
   <data name="FirstNameValidationMessage" xml:space="preserve">
     <value>שם פרטי חייב להיות מינימום 2 תווים ומקסימום 100 תווים</value>
   </data>
+  <data name="DoNotMatchPasswordNPasswordRepeat" xml:space="preserve">
+    <value>סיסמת אימות לא תואמת לסיסמה</value>
+  </data>
+  <data name="NotValidEmailField" xml:space="preserve">
+    <value>כתובת האימייל אינה כתובת אימייל תקינה</value>
+  </data>
 </root>

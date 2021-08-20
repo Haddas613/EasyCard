@@ -384,6 +384,12 @@
   <data name="AuthorizationCodeRequired" xml:space="preserve">
     <value>נדרש קוד אימות. התקשר ל@number ותיידע אותם במספר ספק האשראי @retailer על מנת לקבל קוד אימות ולבצע עסקה.</value>
   </data>
+  <data name="J5ExpirationDate" xml:space="preserve">
+    <value>תאריך פקיעת התוקף של שריון המסגרת {0}</value>
+  </data>
+  <data name="J5Expired" xml:space="preserve">
+    <value>פג תוקפו של שריון המסגרת</value>
+  </data>
   <data name="CardOwnerNationalIDInvalid" xml:space="preserve">
     <value>ת.ז. חייבת להיות ת.ז. ישראלית תקינה</value>
   </data>

@@ -222,5 +222,25 @@ namespace Upay
         {
             throw new NotImplementedException();
         }
+
+        public string Validate(AggregatorCreateTransactionRequest transactionRequest)
+        {
+            if (transactionRequest.Currency != CurrencyEnum.ILS)
+            {
+                return Messages.OnlyILSTransactionsAllowed;
+            }
+
+            if (transactionRequest.SpecialTransactionType == SpecialTransactionTypeEnum.Refund)
+            {
+                return Messages.RefundsAreNotAllowedForUPay;
+            }
+
+            return null;
+        }
+
+        public bool AllowTransmissionCancellation()
+        {
+            return false;
+        }
     }
 }

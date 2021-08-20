@@ -16,6 +16,15 @@ namespace Shared.Integration.ExternalSystems
 
         bool ShouldBeProcessedByAggregator(TransactionTypeEnum transactionType, SpecialTransactionTypeEnum specialTransactionType, JDealTypeEnum jDealType);
 
+        /// <summary>
+        ///  Validate data if it's compatible with aggregator requirements
+        /// </summary>
+        /// <param name="transactionRequest"></param>
+        /// <returns>Error message when there is an error, null otherwise</returns>
+        string Validate(AggregatorCreateTransactionRequest transactionRequest);
+
+        bool AllowTransmissionCancellation();
+
         Task<AggregatorTransactionResponse> GetTransaction(string aggregatorTransactionID);
     }
 }
