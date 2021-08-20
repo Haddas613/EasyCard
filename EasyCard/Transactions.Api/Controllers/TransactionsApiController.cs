@@ -231,6 +231,8 @@ namespace Transactions.Api.Controllers
                     transaction.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == transaction.TerminalID.Value).Select(t => t.Label).FirstOrDefaultAsync();
                 }
 
+                var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID.Value));
+
                 var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
 
                 if (terminalAggregator != null)
