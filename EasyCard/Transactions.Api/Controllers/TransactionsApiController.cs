@@ -50,8 +50,8 @@ using Shared.Integration.ExternalSystems;
 using Shared.Integration;
 using Newtonsoft.Json.Linq;
 using SharedBusiness = Shared.Business;
-using SharedIntegration = Shared.Integration;
 using Microsoft.AspNetCore.SignalR;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
@@ -201,13 +201,6 @@ namespace Transactions.Api.Controllers
                     transaction.UpayTransactionDetails = null;
                 }
 
-                //TODO: cache
-                var merchantName = await merchantsService.GetMerchants().Where(m => m.MerchantID == transaction.MerchantID).Select(m => m.BusinessName).FirstOrDefaultAsync();
-                if (transaction.TerminalID.HasValue)
-                {
-                    transaction.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == transaction.TerminalID.Value).Select(t => t.Label).FirstOrDefaultAsync();
-                }
-
                 var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID.Value));
 
                 if (transaction.JDealType == JDealTypeEnum.J5)
@@ -223,7 +216,8 @@ namespace Transactions.Api.Controllers
                     transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? false;
                 }
 
-                transaction.MerchantName = merchantName;
+                transaction.TerminalName = terminal.Label;
+                transaction.MerchantName = terminal.Merchant.BusinessName;
                 return Ok(transaction);
             }
             else
@@ -231,12 +225,8 @@ namespace Transactions.Api.Controllers
                 var transaction = mapper.Map<TransactionResponse>(EnsureExists(
                     await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
 
-                if (transaction.TerminalID.HasValue)
-                {
-                    transaction.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == transaction.TerminalID.Value).Select(t => t.Label).FirstOrDefaultAsync();
-                }
-
                 var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID.Value));
+                transaction.TerminalName = terminal.Label;
 
                 var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
 
@@ -530,7 +520,7 @@ namespace Transactions.Api.Controllers
             var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == transactionID));
             var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
-            var CreateTransactionReq = mapper.Map<CreateTransactionRequest>(transaction);
+            var createTransactionReq = mapper.Map<CreateTransactionRequest>(transaction);
             if (transaction.Status != TransactionStatusEnum.AwaitingForSelectJ5)
             {
                 return BadRequest(Messages.TransactionStatusIsNotValid);
@@ -538,8 +528,8 @@ namespace Transactions.Api.Controllers
 
             TransactionTerminalSettingsValidator.Validate(terminal.Settings, transaction.TransactionDate.Value);
 
-            var token = EnsureExists(await keyValueStorage.Get(CreateTransactionReq.CreditCardToken.ToString()), "CreditCardToken");
-            var response = await ProcessTransaction(CreateTransactionReq, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
+            var token = EnsureExists(await keyValueStorage.Get(createTransactionReq.CreditCardToken.ToString()), "CreditCardToken");
+            var response = await ProcessTransaction(createTransactionReq, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
 
             return response;
         }
@@ -581,18 +571,6 @@ namespace Transactions.Api.Controllers
                 return await ProcessTransaction(transaction, null, JDealTypeEnum.J4, SpecialTransactionTypeEnum.Refund);
             }
         }
-
-        ///// <summary>
-        ///// Initial request for set of billing trnsactions
-        ///// </summary>
-        //[HttpPost]
-        //[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
-        //[Route("initalBillingDeal")]
-        //[ValidateModelState]
-        //public async Task<ActionResult<OperationResponse>> InitalBillingDeal([FromBody] InitalBillingDealRequest model)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         [HttpPost]
         [Route("trigger-billing-deals")]
@@ -653,7 +631,7 @@ namespace Transactions.Api.Controllers
 
         [HttpPost]
         [Route("send-transaction-slip-email")]
-        public async Task<ActionResult<OperationResponse>> CreateTransactionsFromBillingDeals(SendTransactionSlipEmailRequest request)
+        public async Task<ActionResult<OperationResponse>> SendTransactionSlipEmail(SendTransactionSlipEmailRequest request)
         {
             if (!ModelState.IsValid)
             {

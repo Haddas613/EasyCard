@@ -1,25 +1,29 @@
 ﻿using AutoMapper;
+using BasicServices.BlobStorage;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PoalimOnlineBusiness;
 using Shared.Api;
 using Shared.Api.Models;
 using Shared.Business.Security;
+using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Tokens;
 using Transactions.Business.Services;
 using SharedApi = Shared.Api;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
-    [Route("api/adminwebhook")]
     [Produces("application/json")]
     [Consumes("application/json")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
@@ -37,6 +41,8 @@ namespace Transactions.Api.Controllers
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly BillingController billingController;
         private readonly CardTokenController cardTokenController;
+        private readonly IMasavFileService masavFileService;
+        private readonly IBlobStorageService blobStorageService;
 
         public AdminWebhookController(
             ITransactionsService transactionsService,
@@ -64,7 +70,7 @@ namespace Transactions.Api.Controllers
             this.cardTokenController = cardTokenController;
         }
 
-        [Route("deleteConsumerRelatedData/{consumerID:guid}")]
+        [Route("api/adminwebhook/deleteConsumerRelatedData/{consumerID:guid}")]
         [HttpDelete]
         public async Task<ActionResult<OperationResponse>> DeleteConsumerRelatedData(Guid consumerID)
         {
@@ -102,6 +108,42 @@ namespace Transactions.Api.Controllers
             }
 
             return Ok(result);
+        }
+
+        [HttpPost("api/adminwebhook/generateMasavFile/{terminalID:guid}")]
+        public async Task<ActionResult<OperationResponse>> GenerateMasavFile(Guid terminalID)
+        {
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
+
+            var bankDetails = terminal.BankDetails;
+
+            var fileDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+
+            long? masavFileID = await masavFileService.GenerateMasavFile(bankDetails.Bank, bankDetails.BankBranch, bankDetails.BankAccount, fileDate);
+
+            if (masavFileID.HasValue)
+            {
+                var masavFile = EnsureExists(await masavFileService.GetMasavFile(masavFileID.Value));
+
+                MasavData masavData = mapper.Map<MasavData>(masavFile);
+
+                using (var file = new MemoryStream())
+                {
+                    var str = masavData.ExportFile(file);
+
+                    await file.FlushAsync();
+
+                    file.Seek(0, SeekOrigin.Begin);
+
+                    var fileReference = await blobStorageService.Upload("TODO: file name", file);
+
+                    // TODO update masav file
+                }
+            }
+
+            var response = new OperationResponse();
+
+            return Ok(response);
         }
     }
 }

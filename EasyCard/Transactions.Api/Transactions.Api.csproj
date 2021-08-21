@@ -57,6 +57,7 @@
     <ProjectReference Include="..\BasicServices\BasicServices.csproj" />
     <ProjectReference Include="..\Integration\ClearingHouse\ClearingHouse.csproj" />
     <ProjectReference Include="..\Integration\EasyInvoice\EasyInvoice.csproj" />
+    <ProjectReference Include="..\Integration\MasavFile\MasavFile.csproj" />
     <ProjectReference Include="..\Integration\Nayax\Nayax.csproj" />
     <ProjectReference Include="..\Integration\RapidOne\RapidOne.csproj" />
     <ProjectReference Include="..\Integration\Shva\Shva.csproj" />

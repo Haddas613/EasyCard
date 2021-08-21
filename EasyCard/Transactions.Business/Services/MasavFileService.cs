@@ -31,9 +31,13 @@ namespace Transactions.Business.Services
             return context.MasavFiles.AsNoTracking();
         }
 
-        public async Task<MasavFileRow> GetMasavFileRow(Expression<Func<MasavFileRow, bool>> predicate)
+        public async Task<MasavFile> GetMasavFile(long masavFileID)
         {
-            throw new NotImplementedException();
+            var masavFile = await context.MasavFiles.FirstOrDefaultAsync(d => d.MasavFileID == masavFileID);
+
+            // TODO: rows (use future)
+
+            return masavFile;
         }
 
         public async Task UpdateMasavFileRow(MasavFileRow data)
@@ -59,6 +63,11 @@ namespace Transactions.Business.Services
         public Task UpdateMasavFile(MasavFile data)
         {
             return UpdateEntity(data);
+        }
+
+        public Task<long> GenerateMasavFile(int? bank, int? bankBranch, string bankAccount, DateTime? masavFileDate)
+        {
+            throw new NotImplementedException();
         }
     }
 }

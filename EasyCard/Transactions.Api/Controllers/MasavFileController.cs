@@ -141,17 +141,5 @@ namespace Transactions.Api.Controllers
 
             return Ok(response);
         }
-
-        [ApiExplorerSettings(IgnoreApi = true)]
-        [HttpPost("generate")]
-        public async Task<ActionResult<OperationResponse>> GenerateMasavFile()
-        {
-            
-
-
-            var response = new OperationResponse();
-
-            return Ok(response);
-        }
     }
 }
