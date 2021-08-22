@@ -219,5 +219,49 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
                 }
             }
         }
+
+        public async Task<long> GenerateMasavFile(Guid? terminalID, int? bank, int? bankBranch, string bankAccount, DateTime? masavFileDate)
+        {
+            var connection = this.Database.GetDbConnection();
+            bool connectionOpened = connection.State == ConnectionState.Open;
+            try
+            {
+                if (!connectionOpened)
+                {
+                    await connection.OpenAsync();
+                }
+
+                var query = "[dbo].[PR_GenerateMasavFile]";
+
+                var args = new DynamicParameters(new { FileDate = masavFileDate, TerminalID = terminalID, InstitueName = bank.ToString(), InstituteNumber = bankAccount, SendingInstitute = bankBranch, PaymentTypeEnum = PaymentTypeEnum.Bank, Currency = CurrencyEnum.ILS });
+
+                args.Add("@Error", dbType: DbType.String, direction: ParameterDirection.Output, size: -1);
+                args.Add("@MasavFileID", dbType: DbType.Int64, direction: ParameterDirection.Output, size: -1);
+
+                var result = await connection.ExecuteAsync(query, args, commandType: CommandType.StoredProcedure);
+
+                var error = args.Get<string>("@Error");
+
+                if (!string.IsNullOrWhiteSpace(error))
+                {
+                    throw new ApplicationException(error);
+                }
+
+                var res = args.Get<long>("@MasavFileID");
+
+                return res;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (!connectionOpened)
+                {
+                    connection.Close();
+                }
+            }
+        }
     }
 }

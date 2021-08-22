@@ -42,7 +42,6 @@ namespace Transactions.Api.Controllers
         private readonly BillingController billingController;
         private readonly CardTokenController cardTokenController;
         private readonly IMasavFileService masavFileService;
-        private readonly IBlobStorageService blobStorageService;
 
         public AdminWebhookController(
             ITransactionsService transactionsService,
@@ -54,7 +53,8 @@ namespace Transactions.Api.Controllers
             IHttpContextAccessorWrapper httpContextAccessor,
             IConsumersService consumersService,
             BillingController billingController,
-            CardTokenController cardTokenController)
+            CardTokenController cardTokenController,
+            IMasavFileService masavFileService)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -68,6 +68,7 @@ namespace Transactions.Api.Controllers
 
             this.billingController = billingController;
             this.cardTokenController = cardTokenController;
+            this.masavFileService = masavFileService;
         }
 
         [Route("api/adminwebhook/deleteConsumerRelatedData/{consumerID:guid}")]
@@ -119,26 +120,26 @@ namespace Transactions.Api.Controllers
 
             var fileDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
 
-            long? masavFileID = await masavFileService.GenerateMasavFile(bankDetails.Bank, bankDetails.BankBranch, bankDetails.BankAccount, fileDate);
+            long? masavFileID = await masavFileService.GenerateMasavFile(terminalID, bankDetails.Bank, bankDetails.BankBranch, bankDetails.BankAccount, fileDate);
 
             if (masavFileID.HasValue)
             {
                 var masavFile = EnsureExists(await masavFileService.GetMasavFile(masavFileID.Value));
 
-                MasavData masavData = mapper.Map<MasavData>(masavFile);
+                MasavDataWithdraw masavData = mapper.Map<MasavDataWithdraw>(masavFile);
 
-                using (var file = new MemoryStream())
-                {
-                    var str = masavData.ExportFile(file);
+                var str = masavData.ExportStringWithdrawFormat();
 
-                    await file.FlushAsync();
+                //using (var file = new MemoryStream())
+                //{
+                //    await file.FlushAsync();
 
-                    file.Seek(0, SeekOrigin.Begin);
+                //    file.Seek(0, SeekOrigin.Begin);
 
-                    var fileReference = await blobStorageService.Upload("TODO: file name", file);
+                //    var fileReference = await blobStorageService.Upload("TODO: file name", file);
 
-                    // TODO update masav file
-                }
+                //    // TODO update masav file
+                //}
             }
 
             var response = new OperationResponse();

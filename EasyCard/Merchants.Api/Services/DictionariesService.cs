@@ -41,7 +41,6 @@ namespace Merchants.Api.Services
 
         private static MerchantsDictionaries GetDictionariesInternal(CultureInfo culture)
         {
-
             var response = new MerchantsDictionaries();
 
             var transactionStatusEnumType = typeof(TerminalStatusEnum);

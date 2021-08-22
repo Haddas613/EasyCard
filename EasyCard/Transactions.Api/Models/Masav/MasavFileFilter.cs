@@ -8,6 +8,5 @@ namespace Transactions.Api.Models.Masav
 {
     public class MasavFileFilter : FilterBase
     {
-
     }
 }

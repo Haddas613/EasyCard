@@ -35,8 +35,8 @@ using Merchants.Business.Entities.Terminal;
 using Transactions.Shared.Enums;
 using Transactions.Api.Extensions;
 using Newtonsoft.Json;
-using SharedIntegration = Shared.Integration;
 using Transactions.Api.Validation;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {

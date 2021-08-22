@@ -60,11 +60,6 @@ namespace Transactions.Api.Models.PaymentRequests
         public decimal NetTotal { get; set; }
 
         /// <summary>
-        /// Installment payments details (should be omitted in case of regular deal)
-        /// </summary>
-        //public IntegrationModels.InstallmentDetails InstallmentDetails { get; set; }
-
-        /// <summary>
         /// Number Of payments (cannot be more than 999)
         /// </summary>
         public int NumberOfPayments { get; set; }

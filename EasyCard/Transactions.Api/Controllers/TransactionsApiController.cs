@@ -49,8 +49,8 @@ using Merchants.Business.Entities.Terminal;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration;
 using Newtonsoft.Json.Linq;
-using SharedBusiness = Shared.Business;
 using Microsoft.AspNetCore.SignalR;
+using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
@@ -477,7 +477,8 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<OperationResponse>> BlockCreditCard([FromBody] BlockCreditCardRequest model)
         {
             var transaction = mapper.Map<CreateTransactionRequest>(model);
-            CreditCardTokenKeyVault token = null;
+            CreditCardTokenKeyVault token;
+
             // Does it have sense to use J5 together with Token?
             if (!string.IsNullOrWhiteSpace(model.CreditCardToken))
             {

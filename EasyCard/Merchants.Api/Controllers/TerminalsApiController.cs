@@ -254,7 +254,9 @@ namespace Merchants.Api.Controllers
                         mapper.Map(settings, terminal, settingsType, typeof(Terminal));
                         await terminalsService.UpdateEntity(terminal, dbTransaction);
                     }
-                    catch (AutoMapperMappingException) { }
+                    catch (AutoMapperMappingException)
+                    {
+                    }
                 }
 
                 await terminalsService.SaveTerminalExternalSystem(texternalSystem, terminal, dbTransaction);

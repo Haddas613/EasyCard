@@ -31,6 +31,7 @@ namespace Merchants.Shared.Models
         public bool? J2Allowed { get; set; }
 
         public bool? J5Allowed { get; set; }
+
         public int J5ExpirationDays { get; set; }
 
         [StringLength(250)]

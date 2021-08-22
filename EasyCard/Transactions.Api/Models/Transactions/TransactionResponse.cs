@@ -102,6 +102,7 @@ namespace Transactions.Api.Models.Transactions
         /// Transaction J5 expired date (in gengeral after 1 day)
         /// </summary>
         public DateTime? TransactionJ5ExpiredDate { get; set; }
+
         /// <summary>
         /// Rejection Reason
         /// </summary>

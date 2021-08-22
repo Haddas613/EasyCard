@@ -35,6 +35,7 @@ namespace Transactions.Api.Services.Notification
             this.webApiClient = webApiClient;
             this.logger = logger;
             this.httpContextAccessor = httpContextAccessor;
+            this.apiSettings = apiSettings.Value;
             RegisterNotifiers();
         }
 

@@ -98,7 +98,8 @@ namespace Transactions.Api
             });
 
             services.AddSignalR()
-                .AddAzureSignalR(opts => {
+                .AddAzureSignalR(opts =>
+                {
                     opts.ConnectionString = appConfig.AzureSignalRConnectionString;
                 });
 

@@ -64,7 +64,7 @@ namespace Upay.Models
                 msgModel.Request = request;
                 return msgModel;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TODO: process exception
                 throw;
@@ -123,7 +123,7 @@ namespace Upay.Models
                 msgModel.Request = request;
                 return msgModel;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TODO: process exception
                 throw;
@@ -161,7 +161,7 @@ namespace Upay.Models
                 msgModel.Request = request;
                 return msgModel;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TODO: process exception
                 throw;
@@ -182,7 +182,7 @@ namespace Upay.Models
                 foreach (var i in r)
                     sb.Append(i.ToString("x2"));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TODO: process exception
                 return null;
