@@ -16,7 +16,7 @@ namespace BasicServices.BlobStorage
         private string _containerName;
         private BlobContainerClient _client;
 
-        public BlobStorageService(string storageConnectionString, string tableName, string containerName, ILogger logger)
+        public BlobStorageService(string storageConnectionString, string containerName, ILogger logger)
         {
             this.logger = logger;
 
@@ -39,6 +39,23 @@ namespace BasicServices.BlobStorage
                 await blob.UploadAsync(stream, true);
             }
             catch(Exception e)
+            {
+                logger.LogError($"{nameof(BlobStorageService)}.{nameof(Upload)} Error: {e.Message}");
+                throw;
+            }
+
+            return blob.Uri.ToString();
+        }
+
+        public async Task<string> UploadString(string filename, string content)
+        {
+            var blob = _client.GetBlobClient(filename);
+
+            try
+            {
+                await blob.UploadAsync(stream, true);
+            }
+            catch (Exception e)
             {
                 logger.LogError($"{nameof(BlobStorageService)}.{nameof(Upload)} Error: {e.Message}");
                 throw;

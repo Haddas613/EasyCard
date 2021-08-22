@@ -17,6 +17,7 @@ namespace Transactions.Shared
         public string UpayRequestsLogStorageTable { get; set; }
 
         public string EasyInvoiceRequestsLogStorageTable { get; set; }
+
         public string RapidInvoiceRequestsLogStorageTable { get; set; }
 
         public int FiltersGlobalPageSizeLimit { get; set; } = 1000;
@@ -42,5 +43,7 @@ namespace Transactions.Shared
         public string PaymentIntentStorageTable { get; set; } = "paymentintent";
 
         public string AzureSignalRConnectionString { get; set; }
+
+        public string MasavFilesStorageTable { get; set; } = "masav";
     }
 }

@@ -276,7 +276,7 @@ namespace ProfileApi
             {
                 var appCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
                 var logger = serviceProvider.GetRequiredService<ILogger<BlobStorageService>>();
-                var blobStorageService = new BlobStorageService(appCfg.PublicStorageConnectionString, appCfg.PublicBlobStorageTable, appCfg.PublicBlobStorageTable, logger);
+                var blobStorageService = new BlobStorageService(appCfg.PublicStorageConnectionString, appCfg.PublicBlobStorageTable, logger);
 
                 return blobStorageService;
             });

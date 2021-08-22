@@ -42,6 +42,8 @@ namespace Transactions.Api.Controllers
         private readonly BillingController billingController;
         private readonly CardTokenController cardTokenController;
         private readonly IMasavFileService masavFileService;
+        private readonly IBlobStorageService masavFileSorageService;
+        private readonly Shared.ApplicationSettings appSettings;
 
         public AdminWebhookController(
             ITransactionsService transactionsService,
@@ -54,7 +56,8 @@ namespace Transactions.Api.Controllers
             IConsumersService consumersService,
             BillingController billingController,
             CardTokenController cardTokenController,
-            IMasavFileService masavFileService)
+            IMasavFileService masavFileService,
+            IOptions<Shared.ApplicationSettings> appSettings)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -69,6 +72,9 @@ namespace Transactions.Api.Controllers
             this.billingController = billingController;
             this.cardTokenController = cardTokenController;
             this.masavFileService = masavFileService;
+
+            this.appSettings = appSettings.Value;
+            this.masavFileSorageService = new BlobStorageService(this.appSettings.DefaultStorageConnectionString, this.appSettings.MasavFilesStorageTable, this.logger);
         }
 
         [Route("api/adminwebhook/deleteConsumerRelatedData/{consumerID:guid}")]
@@ -128,18 +134,19 @@ namespace Transactions.Api.Controllers
 
                 MasavDataWithdraw masavData = mapper.Map<MasavDataWithdraw>(masavFile);
 
-                var str = masavData.ExportStringWithdrawFormat();
+                using (var file = new MemoryStream())
+                {
+                    await masavData.ExportWithdrawFile(file);
 
-                //using (var file = new MemoryStream())
-                //{
-                //    await file.FlushAsync();
+                    await file.FlushAsync();
 
-                //    file.Seek(0, SeekOrigin.Begin);
+                    file.Seek(0, SeekOrigin.Begin);
 
-                //    var fileReference = await blobStorageService.Upload("TODO: file name", file);
+                    var fileReference = await masavFileSorageService.Upload($"{terminalID}/{fileDate:yyyy-MM-dd}-{masavFile.MasavFileID}", file);
 
-                //    // TODO update masav file
-                //}
+                    masavFile.StorageReference = fileReference;
+                    await masavFileService.UpdateMasavFile(masavFile);
+                }
             }
 
             var response = new OperationResponse();
