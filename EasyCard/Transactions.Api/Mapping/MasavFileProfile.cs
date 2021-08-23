@@ -19,9 +19,30 @@ namespace Transactions.Api.Mapping
 
         private void RegisterMasavFileMappings()
         {
-            CreateMap<MasavFile, MasavDataWithdraw>();
+            CreateMap<MasavFile, MasavDataWithdraw>()
+                .ForMember(d => d.Footer, o => o.MapFrom(d => d))
+                .ForMember(d => d.Header, o => o.MapFrom(d => d))
+                .ForMember(d => d.Transactions, o => o.MapFrom(d => d.Rows));
 
-            CreateMap<MasavFileRow, TransactionRowWithdraw>();
+            CreateMap<MasavFile, Header>()
+                .ForMember(d => d.InstituteNumber, o => o.MapFrom(d => d.InstituteNumber))
+                .ForMember(d => d.SendingInstitute, o => o.MapFrom(d => d.SendingInstitute))
+                .ForMember(d => d.InstitueName, o => o.MapFrom(d => d.InstituteName))
+                .ForMember(d => d.PaymentDate, o => o.MapFrom(d => d.MasavFileDate))
+                .ForMember(d => d.CreationDate, o => o.MapFrom(d => d.MasavFileDate));
+
+            CreateMap<MasavFile, Footer>()
+                .ForMember(d => d.InstituteNumber, o => o.MapFrom(d => d.InstituteNumber))
+                .ForMember(d => d.TotalAmount, o => o.MapFrom(d => d.TotalAmount))
+                .ForMember(d => d.TransactionsCount, o => o.MapFrom(d => d.Rows.Count))
+                .ForMember(d => d.PaymentDate, o => o.MapFrom(d => d.MasavFileDate));
+
+            CreateMap<MasavFileRow, TransactionRowWithdraw>()
+                .ForMember(d => d.InstituteNumber, o => o.MapFrom(d => d.NationalID))
+                .ForMember(d => d.Bankcode, o => o.MapFrom(d => d.Bankcode))
+                .ForMember(d => d.BranchNumber, o => o.MapFrom(d => d.BranchNumber))
+                .ForMember(d => d.BeneficiaryNname, o => o.MapFrom(d => d.ConsumerName))
+                .ForMember(d => d.Amount, o => o.MapFrom(d => d.Amount));
         }
     }
 }

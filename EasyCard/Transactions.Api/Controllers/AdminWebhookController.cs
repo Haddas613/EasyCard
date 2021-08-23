@@ -117,8 +117,8 @@ namespace Transactions.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("api/adminwebhook/generateMasavFile/{terminalID:guid}")]
-        public async Task<ActionResult<OperationResponse>> GenerateMasavFile(Guid terminalID)
+        [HttpPost("api/adminwebhook/prepareMasavFile/{terminalID:guid}")]
+        public async Task<ActionResult<OperationResponse>> PrepareMasavFile(Guid terminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
@@ -130,23 +130,37 @@ namespace Transactions.Api.Controllers
 
             if (masavFileID.HasValue)
             {
-                var masavFile = EnsureExists(await masavFileService.GetMasavFile(masavFileID.Value));
+                var response = new OperationResponse() { EntityID = masavFileID.Value };
 
-                MasavDataWithdraw masavData = mapper.Map<MasavDataWithdraw>(masavFile);
+                return Ok(response);
+            }
+            else
+            {
+                var response = new OperationResponse();
 
-                using (var file = new MemoryStream())
-                {
-                    await masavData.ExportWithdrawFile(file);
+                return Ok(response);
+            }
+        }
 
-                    await file.FlushAsync();
+        [HttpPost("api/adminwebhook/generateMasavFile/{masavFileID}")]
+        public async Task<ActionResult<OperationResponse>> GenerateMasavFile(long masavFileID)
+        {
+            var masavFile = EnsureExists(await masavFileService.GetMasavFile(masavFileID));
 
-                    file.Seek(0, SeekOrigin.Begin);
+            MasavDataWithdraw masavData = mapper.Map<MasavDataWithdraw>(masavFile);
 
-                    var fileReference = await masavFileSorageService.Upload($"{terminalID}/{fileDate:yyyy-MM-dd}-{masavFile.MasavFileID}", file);
+            using (var file = new MemoryStream())
+            {
+                await masavData.ExportWithdrawFile(file);
 
-                    masavFile.StorageReference = fileReference;
-                    await masavFileService.UpdateMasavFile(masavFile);
-                }
+                await file.FlushAsync();
+
+                file.Seek(0, SeekOrigin.Begin);
+
+                var fileReference = await masavFileSorageService.Upload($"{masavFile.TerminalID}/{masavFile.MasavFileDate:yyyy-MM-dd}-{masavFile.MasavFileID}", file);
+
+                masavFile.StorageReference = fileReference;
+                await masavFileService.UpdateMasavFile(masavFile);
             }
 
             var response = new OperationResponse();

@@ -46,22 +46,5 @@ namespace BasicServices.BlobStorage
 
             return blob.Uri.ToString();
         }
-
-        public async Task<string> UploadString(string filename, string content)
-        {
-            var blob = _client.GetBlobClient(filename);
-
-            try
-            {
-                await blob.UploadAsync(stream, true);
-            }
-            catch (Exception e)
-            {
-                logger.LogError($"{nameof(BlobStorageService)}.{nameof(Upload)} Error: {e.Message}");
-                throw;
-            }
-
-            return blob.Uri.ToString();
-        }
     }
 }
