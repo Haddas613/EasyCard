@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Transactions.Business.Data;
 using Transactions.Business.Entities;
+using Z.EntityFramework.Plus;
 
 namespace Transactions.Business.Services
 {
@@ -33,11 +34,10 @@ namespace Transactions.Business.Services
 
         public async Task<MasavFile> GetMasavFile(long masavFileID)
         {
-            var masavFile = await context.MasavFiles.FirstOrDefaultAsync(d => d.MasavFileID == masavFileID);
+            var masavFile = context.MasavFiles.Where(d => d.MasavFileID == masavFileID).Future();
+            var masavFileRows = context.MasavFileRows.Where(d => d.MasavFileID == masavFileID).Future();
 
-            // TODO: rows (use future)
-
-            return masavFile;
+            return (await masavFile.ToListAsync()).FirstOrDefault();
         }
 
         public async Task UpdateMasavFileRow(MasavFileRow data)

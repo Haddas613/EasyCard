@@ -155,9 +155,11 @@ namespace Transactions.Api.Controllers
 
                 await file.FlushAsync();
 
+                var length = file.Length;
+
                 file.Seek(0, SeekOrigin.Begin);
 
-                var fileReference = await masavFileSorageService.Upload($"{masavFile.TerminalID}/{masavFile.MasavFileDate:yyyy-MM-dd}-{masavFile.MasavFileID}", file);
+                var fileReference = await masavFileSorageService.Upload($"{masavFile.TerminalID}/{masavFile.MasavFileDate:yyyy-MM-dd}-{masavFile.MasavFileID}.msv", file);
 
                 masavFile.StorageReference = fileReference;
                 await masavFileService.UpdateMasavFile(masavFile);

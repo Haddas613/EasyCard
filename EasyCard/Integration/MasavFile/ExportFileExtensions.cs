@@ -230,6 +230,8 @@ namespace PoalimOnlineBusiness
             await writer.WriteLineAsync(new[] { dataToExport.Footer }.BuildFixedString().First());
 
             await writer.WriteLineAsync("99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999");
+
+            await writer.FlushAsync();
         }
     }
 }
