@@ -288,6 +288,26 @@ const routes = [
                     import ('../pages/profile/Profile.vue'),
             },
             {
+                name: 'MasavFiles',
+                path: 'masav-files/list',
+                props: true,
+                meta: {
+                    backBtn: 'Dashboard'
+                },
+                component: () =>
+                    import ('../pages/masav/MasavFilesList.vue'),
+            },
+            {
+                name: 'MasavFileRows',
+                path: 'masav-file/:id(\\d+)/rows',
+                meta: {
+                    backBtn: 'MasavFiles'
+                },
+                props: true,
+                component: () =>
+                    import ('../pages/masav/MasavFileRowsList.vue'),
+            },
+            {
                 name: '404',
                 path: '*',
                 component: () =>

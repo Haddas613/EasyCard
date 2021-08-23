@@ -43,11 +43,12 @@
             Refund request
             </summary>
         </member>
-        <member name="M:Transactions.Api.Controllers.TransactionsApiController.NotifyStatusChanged(Transactions.Business.Entities.PaymentTransaction)">
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.NotifyStatusChanged(Transactions.Business.Entities.PaymentTransaction,System.String)">
             <summary>
             Notify SignalR (if needed) about transaction status change
             </summary>
             <param name="transaction">Transaction data</param>
+            <param name="message">Message to display</param>
         </member>
         <member name="M:Transactions.Api.Controllers.TransmissionController.GetNotTransmittedTransactions(Transactions.Api.Models.Transactions.TransmissionFilter)">
             <summary>

@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shared.Business;
+using Shared.Business.Security;
+using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Transactions.Business.Data;
@@ -15,21 +18,58 @@ namespace Transactions.Business.Services
     public class MasavFileService : ServiceBase<MasavFile, long>, IMasavFileService
     {
         private readonly TransactionsContext context;
+        private readonly IHttpContextAccessorWrapper httpContextAccessor;
+        private readonly ClaimsPrincipal user;
 
-        public MasavFileService(TransactionsContext context)
+        public MasavFileService(TransactionsContext context, IHttpContextAccessorWrapper httpContextAccessor)
             : base(context)
         {
             this.context = context;
+            this.httpContextAccessor = httpContextAccessor;
+            user = httpContextAccessor.GetUser();
+        }
+
+        private IQueryable<MasavFileRow> GetRowsInternal()
+        {
+            if (user.IsAdmin())
+            {
+                return context.MasavFileRows;
+            }
+            else if (user.IsTerminal())
+            {
+                return context.MasavFileRows.Where(t => t.MasavFile.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.MasavFileRows.Where(t => t.MasavFile.MerchantID == user.GetMerchantID());
+            }
         }
 
         public IQueryable<MasavFileRow> GetMasavFileRows()
         {
-            return context.MasavFileRows.AsNoTracking();
+
+            return GetRowsInternal().AsNoTracking();
+        }
+
+        private IQueryable<MasavFile> GetFilesInternal()
+        {
+            if (user.IsAdmin())
+            {
+                return context.MasavFiles;
+            }
+            else if (user.IsTerminal())
+            {
+                return context.MasavFiles.Where(t => t.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.MasavFiles.Where(t => t.MerchantID == user.GetMerchantID());
+            }
         }
 
         public IQueryable<MasavFile> GetMasavFiles()
         {
-            return context.MasavFiles.AsNoTracking();
+            return GetFilesInternal().AsNoTracking();
         }
 
         public async Task<MasavFile> GetMasavFile(long masavFileID)

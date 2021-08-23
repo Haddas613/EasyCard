@@ -20,6 +20,8 @@ namespace Transactions.Business.Entities
 
         public Guid? TerminalID { get; set; }
 
+        public Guid? MerchantID { get; set; }
+
         public decimal? TotalAmount { get; set; }
 
         public string StorageReference { get; set; }

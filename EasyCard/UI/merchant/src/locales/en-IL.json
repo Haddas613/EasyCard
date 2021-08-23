@@ -84,8 +84,9 @@
   "SecurityNotice": "Security notice",
   "PaymentDetails": "Payment Details",
   "BankAccountDetails": "Bank Account Details",
-  "ExtendedResponseForCheckoutTransaction": "Extended response for checkout transaction",
-  "VoucherNumber": "Voucher Number",
+  "MasavFiles": "Masav Files",
+  "MasavFileRows": "Masav File Rows",
+  "MasavFile": "Masav File",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -307,6 +308,9 @@
   "Bank": "Bank",
   "BankBranch": "Bank Branch",
   "BankAccount": "Bank Account",
+  "ExtendedResponseForCheckoutTransaction": "Extended response for checkout transaction",
+  "VoucherNumber": "Voucher Number",
+  "PayedDate": "Payed Date",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -356,6 +360,7 @@
   "PaymentIntent": "Payment Intent",
   "CreatePaymentLink": "Create Payment Link",
   "Renew": "Renew",
+  "Download": "Download",
 
   "--AUTH--": null,
   "Login": "Login",

@@ -25,7 +25,7 @@ namespace Transactions.Api.Controllers
     [Route("api/masav")]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
     [ApiController]
     public class MasavFileController : ApiControllerBase
     {
@@ -73,7 +73,7 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<MasavFileSummary>>> GetMasavFiles([FromQuery] MasavFileFilter filter)
         {
-            var query = masavFileService.GetMasavFiles().Filter(filter);
+            var query = masavFileService.GetMasavFiles().OrderByDescending(f => f.MasavFileID).Filter(filter);
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
             var response = new SummariesResponse<MasavFileSummary>();

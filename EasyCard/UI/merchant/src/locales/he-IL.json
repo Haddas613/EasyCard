@@ -84,6 +84,9 @@
   "SecurityNotice": "אזהרת אבטחה",
   "PaymentDetails": "פרטי תשלום",
   "BankAccountDetails": "פרטי חשבון בנק",
+  "MasavFiles": "קבצים הוראת קבע",
+  "MasavFileRows": "שורות הוראת קבע",
+  "MasavFile": "קבצי אורת קבע",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -307,6 +310,7 @@
   "BankAccount": "מספר חשבון בנק",
   "ExtendedResponseForCheckoutTransaction": "תגובה מורחבת עסקאות רידיירקט",
   "VoucherNumber": "מספר שובר",
+  "PayedDate": "תאריך תשלום",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -356,6 +360,7 @@
   "PaymentIntent": "כוונת תשלום",
   "CreatePaymentLink": "ייצר לינק לתשלום",
   "Renew": "לחדש",
+  "Download": "Download",
 
   "--AUTH--": null,
   "Login": "כניסה",

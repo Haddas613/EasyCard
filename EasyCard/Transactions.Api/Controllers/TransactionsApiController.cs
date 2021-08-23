@@ -208,12 +208,15 @@ namespace Transactions.Api.Controllers
                     transaction.TransactionJ5ExpiredDate = DateTime.Now.AddDays(terminal.Settings.J5ExpirationDays);
                 }
 
-                var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
-
-                if (terminalAggregator != null)
+                if (transaction.AllowTransmissionCancellation)
                 {
-                    var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
-                    transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
+                    var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
+
+                    if (terminalAggregator != null)
+                    {
+                        var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+                        transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
+                    }
                 }
 
                 transaction.TerminalName = terminal.Label;
@@ -228,12 +231,15 @@ namespace Transactions.Api.Controllers
                 var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID.Value));
                 transaction.TerminalName = terminal.Label;
 
-                var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
-
-                if (terminalAggregator != null)
+                if (transaction.AllowTransmissionCancellation)
                 {
-                    var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
-                    transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
+                    var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
+
+                    if (terminalAggregator != null)
+                    {
+                        var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+                        transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
+                    }
                 }
 
                 return Ok(transaction);
@@ -873,7 +879,11 @@ namespace Transactions.Api.Controllers
                     var lastDeal = await GetLastShvaTransactionDetails(transaction.ShvaTransactionDetails.ShvaTerminalID);
                     mapper.Map(lastDeal, processorRequest); // Map details of prev shva transaction
 
+                    //1. check pair device EVT
+                    await NotifyStatusChanged(transaction, Messages.ApproveTransactionOnDevice);
+
                     pinpadPreCreateResult = await pinpadProcessor.PreCreateTransaction(processorRequest);
+
                     if (!pinpadPreCreateResult.Success)
                     {
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: pinpadPreCreateResult.ErrorMessage);
@@ -885,7 +895,6 @@ namespace Transactions.Api.Controllers
                         mapper.Map(pinpadPreCreateResult, processorRequest);
 
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByPinpadPreProcessor);
-                        await NotifyStatusChanged(transaction);
                     }
                 }
                 catch (Exception ex)
@@ -958,6 +967,12 @@ namespace Transactions.Api.Controllers
 
                 processorRequest.ProcessorSettings = processorSettings;
 
+                if (pinpadDeal)
+                {
+                    //2. Device is processing transaction
+                    await NotifyStatusChanged(transaction, Messages.DeviceIsProcessingTransaction);
+                }
+
                 var processorResponse = pinpadDeal ? await pinpadProcessor.CreateTransaction(processorRequest) : await processor.CreateTransaction(processorRequest);
 
                 mapper.Map(processorResponse, transaction);
@@ -979,7 +994,6 @@ namespace Transactions.Api.Controllers
                 else
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
-                    await NotifyStatusChanged(transaction);
 
                     if (model.InitialJ5TransactionID != null)
                     {
@@ -1061,7 +1075,6 @@ namespace Transactions.Api.Controllers
                         else
                         {
                             await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission, transactionOperationCode: TransactionOperationCodesEnum.CommitedByAggregator);
-                            await NotifyStatusChanged(transaction);
                         }
                     }
                     catch (Exception ex)
@@ -1092,7 +1105,6 @@ namespace Transactions.Api.Controllers
                 {
                     //If aggregator is not required transaction is eligible for transmission
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForTransmission);
-                    await NotifyStatusChanged(transaction);
                 }
             }
 
@@ -1464,7 +1476,8 @@ namespace Transactions.Api.Controllers
         /// Notify SignalR (if needed) about transaction status change
         /// </summary>
         /// <param name="transaction">Transaction data</param>
-        private async Task NotifyStatusChanged(PaymentTransaction transaction)
+        /// <param name="message">Message to display</param>
+        private async Task NotifyStatusChanged(PaymentTransaction transaction, string message)
         {
             if (transaction.ConnectionID == null)
             {
@@ -1475,7 +1488,7 @@ namespace Transactions.Api.Controllers
             {
                 PaymentTransactionID = transaction.PaymentTransactionID,
                 Status = transaction.Status,
-                StatusString = transaction.Status.ToString()
+                StatusString = message
             };
 
             try

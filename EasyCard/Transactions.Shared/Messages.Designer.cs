@@ -70,6 +70,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Approve transaction on device.
+        /// </summary>
+        public static string ApproveTransactionOnDevice {
+            get {
+                return ResourceManager.GetString("ApproveTransactionOnDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authorization code is required. Call @number and tell them the supplier number @retailer to get the authorization code and create a new transaction with it specified..
         /// </summary>
         public static string AuthorizationCodeRequired {
@@ -336,6 +345,15 @@ namespace Transactions.Shared {
         public static string CvvRequiredButStoredTokenCannotUseCvv {
             get {
                 return ResourceManager.GetString("CvvRequiredButStoredTokenCannotUseCvv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device is processing transaction.
+        /// </summary>
+        public static string DeviceIsProcessingTransaction {
+            get {
+                return ResourceManager.GetString("DeviceIsProcessingTransaction", resourceCulture);
             }
         }
         

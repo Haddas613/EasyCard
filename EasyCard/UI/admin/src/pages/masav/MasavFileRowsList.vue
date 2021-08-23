@@ -21,10 +21,6 @@
           :header-props="{ sortIcon: null }"
           class="elevation-1"
         >
-          <template v-slot:item.masavFileDate="{ item }">{{item.$masavFileDate | ecdate}}</template>
-          <template v-slot:item.payedDate="{ item }">
-            <span class="success--text">{{item.$payedDate | ecdate}}</span>
-          </template>
           <template v-slot:item.amount="{ item }">
             <b class="text-center">{{item.amount | currency(item.currency)}}</b>
           </template>
