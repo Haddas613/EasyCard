@@ -208,12 +208,15 @@ namespace Transactions.Api.Controllers
                     transaction.TransactionJ5ExpiredDate = DateTime.Now.AddDays(terminal.Settings.J5ExpirationDays);
                 }
 
-                var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
-
-                if (terminalAggregator != null)
+                if (transaction.AllowTransmissionCancellation)
                 {
-                    var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
-                    transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
+                    var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
+
+                    if (terminalAggregator != null)
+                    {
+                        var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+                        transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
+                    }
                 }
 
                 transaction.TerminalName = terminal.Label;
@@ -228,12 +231,15 @@ namespace Transactions.Api.Controllers
                 var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID.Value));
                 transaction.TerminalName = terminal.Label;
 
-                var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
-
-                if (terminalAggregator != null)
+                if (transaction.AllowTransmissionCancellation)
                 {
-                    var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
-                    transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
+                    var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
+
+                    if (terminalAggregator != null)
+                    {
+                        var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+                        transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
+                    }
                 }
 
                 return Ok(transaction);
