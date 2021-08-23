@@ -213,7 +213,7 @@ namespace Transactions.Api.Controllers
                 if (terminalAggregator != null)
                 {
                     var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
-                    transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? false;
+                    transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
                 }
 
                 transaction.TerminalName = terminal.Label;
@@ -233,7 +233,7 @@ namespace Transactions.Api.Controllers
                 if (terminalAggregator != null)
                 {
                     var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
-                    transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? false;
+                    transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
                 }
 
                 return Ok(transaction);
