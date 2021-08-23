@@ -393,4 +393,10 @@
   <data name="CardOwnerNationalIDInvalid" xml:space="preserve">
     <value>ת.ז. חייבת להיות ת.ז. ישראלית תקינה</value>
   </data>
+  <data name="ApproveTransactionOnDevice" xml:space="preserve">
+    <value>אשר את העסקה במכשיר</value>
+  </data>
+  <data name="DeviceIsProcessingTransaction" xml:space="preserve">
+    <value>המכשיר מעבד עסקה</value>
+  </data>
 </root>

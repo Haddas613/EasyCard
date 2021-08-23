@@ -188,7 +188,8 @@ export default {
             completed: true,
         }
       },
-      transactionsHub: null
+      transactionsHub: null,
+      signalRToast: null
     };
   },
   computed: {
@@ -342,13 +343,16 @@ export default {
         this.model.issueInvoice = false;
       }
 
-      // await this.createTransaction();
-      await this.establishSignalRConnectionAndCharge();
+      await this.createTransaction();
     },
     async createTransaction(){
       if (this.loading) return;
       try {
         this.loading = true;
+        if(this.model.pinPad){
+          await this.establishSignalRConnection();
+        }
+
         let result = await this.$api.transactions.processTransaction(this.model);
         this.result = result;
 
@@ -370,7 +374,9 @@ export default {
           lastStep.title = "Success";
           lastStep.completed = true;
           lastStep.closeable = false;
-          this.disposeSignalRConnection();
+          if(this.model.pinPad){
+            this.disposeSignalRConnection();
+          }
           this.errors = [];
         }
         if (this.customer) {
@@ -386,7 +392,7 @@ export default {
       }
     },
 
-    async establishSignalRConnectionAndCharge(){
+    async establishSignalRConnection(){
       const options = {
         accessTokenFactory: () => {
           return this.$oidc.getAccessToken();
@@ -400,31 +406,29 @@ export default {
             options
         )
         .withAutomaticReconnect()
-        //.configureLogging("Trace")
+        .configureLogging("Warning")
         .build();
         
       this.transactionsHub.on("TransactionStatusChanged", (payload) => {
-        // console.log(payload)
-        this.$toasted.show(`TransactionStatusChanged: ${payload.statusString}`, { type: "success", duration: 5000 });
+        if(this.signalRToast){
+          this.signalRToast.text(payload.statusString)
+        }else{
+          this.signalRToast = this.$toasted.show(payload.statusString, { type: "info", action: [] });
+        }
       });
 
       await this.transactionsHub.start();
       this.model.connectionID = this.transactionsHub.connectionId;
-      await this.createTransaction();
-
-        // .then(async (e) => {
-        //     // let user = await this.$oidc.getUserProfile();
-        //     // this.transactionsHub.invoke('MapConnection', user.sub);
-            
-        //     this.model.connectionID = this.transactionsHub.connectionId;
-        // }).catch(function(err) {
-        //     return console.error(err.toString());
-        // });
     },
     async disposeSignalRConnection(){
       if(!this.transactionsHub){
         return;
       }
+      if(this.signalRToast){
+        this.signalRToast.goAway();
+        this.signalRToast = null;
+      }
+
       this.transactionsHub.stop();
     }
   },
