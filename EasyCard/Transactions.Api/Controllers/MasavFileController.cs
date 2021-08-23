@@ -73,7 +73,7 @@ namespace Transactions.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<SummariesResponse<MasavFileSummary>>> GetMasavFiles([FromQuery] MasavFileFilter filter)
         {
-            var query = masavFileService.GetMasavFiles().Filter(filter);
+            var query = masavFileService.GetMasavFiles().OrderByDescending(f => f.MasavFileID).Filter(filter);
             var numberOfRecordsFuture = query.DeferredCount().FutureValue();
 
             var response = new SummariesResponse<MasavFileSummary>();
