@@ -10,8 +10,11 @@
     [Currency]           SMALLINT         NOT NULL,
     [TerminalID]         UNIQUEIDENTIFIER NULL,
     [MasavFileTimestamp] DATETIME2 (7)    NULL,
+    [MerchantID]         UNIQUEIDENTIFIER NULL,
     CONSTRAINT [PK_MasavFile] PRIMARY KEY CLUSTERED ([MasavFileID] ASC)
 );
+
+
 
 
 

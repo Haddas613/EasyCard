@@ -29,42 +29,9 @@ namespace Transactions.Business.Services
             user = httpContextAccessor.GetUser();
         }
 
-        private IQueryable<MasavFileRow> GetRowsInternal()
-        {
-            if (user.IsAdmin())
-            {
-                return context.MasavFileRows;
-            }
-            else if (user.IsTerminal())
-            {
-                return context.MasavFileRows.Where(t => t.MasavFile.TerminalID == user.GetTerminalID());
-            }
-            else
-            {
-                return context.MasavFileRows.Where(t => t.MasavFile.MerchantID == user.GetMerchantID());
-            }
-        }
-
         public IQueryable<MasavFileRow> GetMasavFileRows()
         {
-
             return GetRowsInternal().AsNoTracking();
-        }
-
-        private IQueryable<MasavFile> GetFilesInternal()
-        {
-            if (user.IsAdmin())
-            {
-                return context.MasavFiles;
-            }
-            else if (user.IsTerminal())
-            {
-                return context.MasavFiles.Where(t => t.TerminalID == user.GetTerminalID());
-            }
-            else
-            {
-                return context.MasavFiles.Where(t => t.MerchantID == user.GetMerchantID());
-            }
         }
 
         public IQueryable<MasavFile> GetMasavFiles()
@@ -108,6 +75,38 @@ namespace Transactions.Business.Services
         public async Task<long> GenerateMasavFile(Guid? terminalID, int? bank, int? bankBranch, string bankAccount, DateTime? masavFileDate)
         {
             return await context.GenerateMasavFile(terminalID, bank, bankBranch, bankAccount, masavFileDate);
+        }
+
+        private IQueryable<MasavFileRow> GetRowsInternal()
+        {
+            if (user.IsAdmin())
+            {
+                return context.MasavFileRows;
+            }
+            else if (user.IsTerminal())
+            {
+                return context.MasavFileRows.Where(t => t.MasavFile.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.MasavFileRows.Where(t => t.MasavFile.MerchantID == user.GetMerchantID());
+            }
+        }
+
+        private IQueryable<MasavFile> GetFilesInternal()
+        {
+            if (user.IsAdmin())
+            {
+                return context.MasavFiles;
+            }
+            else if (user.IsTerminal())
+            {
+                return context.MasavFiles.Where(t => t.TerminalID == user.GetTerminalID());
+            }
+            else
+            {
+                return context.MasavFiles.Where(t => t.MerchantID == user.GetMerchantID());
+            }
         }
     }
 }
