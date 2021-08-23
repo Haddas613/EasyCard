@@ -104,7 +104,7 @@ DECLARE @OutputTransactionIDs table(
     [PaymentTransactionID] [uniqueidentifier] NULL,
     [ShvaDealID] [varchar](50) NULL,
     [ShvaTerminalID] [varchar](20) NULL,
-    [ShvaTranRecord] [varchar](500) NULL
+    [ShvaTranRecord] [varchar](600) NULL
 );
 
 UPDATE t SET t.[Status]=@NewStatus, t.[UpdatedDate]=@UpdatedDate, t.ShvaTranRecord = ISNULL(t.ShvaTranRecord, n.ShvaTranRecord)
