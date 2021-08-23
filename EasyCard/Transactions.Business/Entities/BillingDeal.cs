@@ -183,5 +183,30 @@ namespace Transactions.Business.Entities
         }
 
         public PaymentTypeEnum PaymentType { get; set; }
+
+        public bool HasError { get; set; }
+
+        public string LastError { get; set; }
+
+        public string LastErrorCorrelationID { get; set; }
+
+        public void UpdateNextScheduledDate(PaymentTransaction transaction)
+        {
+            CurrentTransactionTimestamp = transaction.TransactionTimestamp;
+            CurrentDeal = CurrentDeal.HasValue ? CurrentDeal.Value + 1 : 1;
+            HasError = false;
+            LastError = null;
+            if ((BillingSchedule.EndAtType == EndAtTypeEnum.AfterNumberOfPayments && BillingSchedule.EndAtNumberOfPayments.HasValue && CurrentDeal >= BillingSchedule.EndAtNumberOfPayments) ||
+                (BillingSchedule.EndAtType == EndAtTypeEnum.SpecifiedDate && BillingSchedule.EndAt.HasValue && BillingSchedule.EndAt <= transaction.TransactionDate.Value))
+            {
+                NextScheduledTransaction = null;
+            }
+            else
+            {
+                NextScheduledTransaction = BillingSchedule?.GetNextScheduledDate(transaction.TransactionDate.Value, CurrentDeal.Value);
+            }
+
+            Active = NextScheduledTransaction != null;
+        }
     }
 }

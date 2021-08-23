@@ -406,6 +406,8 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.PausedFrom).HasColumnType("date").IsRequired(false);
                 builder.Property(b => b.PausedTo).HasColumnType("date").IsRequired(false);
                 builder.Property(b => b.PaymentType).IsRequired();
+
+                builder.Property(b => b.LastErrorCorrelationID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
             }
         }
 

@@ -620,6 +620,12 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
+                    billingDeal.Active = false;
+                    billingDeal.HasError = true;
+                    billingDeal.LastError = operationResult.Message;
+                    billingDeal.LastErrorCorrelationID = GetCorrelationID();
+                    await billingDealService.UpdateEntity(billingDeal);
+
                     response.FailedCount++;
                 }
             }
@@ -1110,9 +1116,7 @@ namespace Transactions.Api.Controllers
 
             if (billingDeal != null && jDealType == JDealTypeEnum.J4)
             {
-                billingDeal.CurrentDeal = billingDeal.CurrentDeal.HasValue ? billingDeal.CurrentDeal.Value + 1 : 1;
-                billingDeal.NextScheduledTransaction = billingDeal.BillingSchedule?.GetNextScheduledDate(transaction.TransactionDate.Value, billingDeal.CurrentDeal.Value);
-                billingDeal.Active = billingDeal.NextScheduledTransaction != null;
+                billingDeal.UpdateNextScheduledDate(transaction);
 
                 await billingDealService.UpdateEntity(billingDeal);
             }
@@ -1254,9 +1258,7 @@ namespace Transactions.Api.Controllers
 
             if (billingDeal != null)
             {
-                billingDeal.CurrentDeal = billingDeal.CurrentDeal.HasValue ? billingDeal.CurrentDeal.Value + 1 : 1;
-                billingDeal.NextScheduledTransaction = billingDeal.BillingSchedule?.GetNextScheduledDate(transaction.TransactionDate.Value, billingDeal.CurrentDeal.Value);
-                billingDeal.Active = billingDeal.NextScheduledTransaction != null;
+                billingDeal.UpdateNextScheduledDate(transaction);
 
                 await billingDealService.UpdateEntity(billingDeal);
             }
@@ -1469,6 +1471,16 @@ namespace Transactions.Api.Controllers
             {
                 logger.LogError($"{nameof(NextBillingDeal)}: {billingDeal.BillingDealID}, Error: {string.Join("; ", businessEx.Errors?.Select(b => $"{b.Code}:{b.Description}"))}");
                 return new OperationResponse { Message = businessEx.Message, Status = StatusEnum.Error, Errors = businessEx.Errors };
+            }
+            catch (EntityConflictException businessEx)
+            {
+                logger.LogError($"{nameof(NextBillingDeal)}: {billingDeal.BillingDealID}, Error: {businessEx.Message}: {businessEx.EntityType} {businessEx.ConflictDetails}");
+                return new OperationResponse { Message = $"{businessEx.Message}: {businessEx.EntityType} {businessEx.ConflictDetails}", Status = StatusEnum.Error, Errors = new List<Error> { new Error(businessEx.EntityType, businessEx.ConflictDetails) } };
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{nameof(NextBillingDeal)}: {billingDeal.BillingDealID}, Error: {ex.Message}");
+                return new OperationResponse { Message = $"System error", Status = StatusEnum.Error };
             }
         }
 

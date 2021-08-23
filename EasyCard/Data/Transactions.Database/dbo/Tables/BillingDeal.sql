@@ -50,8 +50,13 @@
     [BankAccount]                 NVARCHAR (50)    NULL,
     [BankBranch]                  INT              NULL,
     [PaymentType]                 SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
+    [HasError]                    BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
+    [LastError]                   NVARCHAR (MAX)   NULL,
+    [LastErrorCorrelationID]      VARCHAR (50)     NULL,
     CONSTRAINT [PK_BillingDeal] PRIMARY KEY CLUSTERED ([BillingDealID] ASC)
 );
+
+
 
 
 
