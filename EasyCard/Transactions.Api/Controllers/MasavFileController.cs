@@ -25,7 +25,7 @@ namespace Transactions.Api.Controllers
     [Route("api/masav")]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrMerchantFrontendOrAdmin)]
     [ApiController]
     public class MasavFileController : ApiControllerBase
     {

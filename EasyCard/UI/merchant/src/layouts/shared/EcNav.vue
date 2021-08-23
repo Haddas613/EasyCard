@@ -125,6 +125,11 @@ export default {
               to: { name: "Refund" },
               text: "Refund",
               allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin]
+            },
+            {
+              icon: "mdi-bank-transfer",
+              text: "MasavFiles",
+              to: { name: "MasavFiles" }
             }
           ]
         },

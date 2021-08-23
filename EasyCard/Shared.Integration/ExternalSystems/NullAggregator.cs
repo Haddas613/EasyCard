@@ -10,7 +10,7 @@ namespace Shared.Integration.ExternalSystems
     {
         public bool AllowTransmissionCancellation()
         {
-            return false;
+            return true;
         }
 
         public Task<AggregatorCancelTransactionResponse> CancelTransaction(AggregatorCancelTransactionRequest transactionRequest)

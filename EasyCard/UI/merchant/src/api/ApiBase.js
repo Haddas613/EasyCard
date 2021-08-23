@@ -18,6 +18,7 @@ import PaymentRequestsApi from './modules/transactions/PaymentRequestsApi';
 import PaymentIntentsApi from './modules/transactions/PaymentIntentsApi';
 import DashboardReportingApi from './modules/reporting/DashboardReportingApi';
 import FutureBillingDealsApi from './modules/transactions/FutureBillingDealsApi';
+import MasavFilesApi from './modules/transactions/MasavFilesApi';
 
 class ApiBase {
     constructor() {
@@ -41,6 +42,7 @@ class ApiBase {
         this.reporting = {
             dashboard: new DashboardReportingApi(this)
         };
+        this.masavFiles = new MasavFilesApi(this);
     }
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */
