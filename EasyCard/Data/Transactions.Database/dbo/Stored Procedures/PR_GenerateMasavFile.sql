@@ -10,6 +10,9 @@ CREATE PROCEDURE [dbo].[PR_GenerateMasavFile]
 @PaymentTypeEnum smallint,
 @Currency smallint,
 
+@TransactionStatusOld smallint,
+@TransactionStatusNew smallint,
+
 @Error nvarchar(max) out,
 @MasavFileID bigint out
 
@@ -36,20 +39,13 @@ BEGIN TRY
 
 BEGIN TRANSACTION
 
-SELECT TOP 1 @MasavFileID = [MasavFileID] FROM [dbo].[MasavFile] WHERE [MasavFileDate] = @FileDate and [TerminalID]=@TerminalID
 
-IF @MasavFileID is not null 
-BEGIN
-	SET @Error = 'Masav file already exist'
-	COMMIT TRANSACTION
-	RETURN
-END
 
 
 insert into @MasavFileRows ([ConsumerID],[PaymentTransactionID],[Amount],[NationalID],[Bankcode],[BranchNumber],[AccountNumber],[ConsumerName])
 select t.[ConsumerID], t.[PaymentTransactionID], t.[TransactionAmount] as [Amount], t.[CardOwnerNationalID] as [NationalID], t.BankTransferBank as [Bankcode], t.BankTransferBankBranch as [BranchNumber], TRY_CAST(t.BankTransferBankAccount as int) as [AccountNumber], t.[CardOwnerName]
 from [dbo].[PaymentTransaction] as t
-where t.TerminalID = @TerminalID and t.PaymentTypeEnum = @PaymentTypeEnum and t.MasavFileID is null
+where t.TerminalID = @TerminalID and t.PaymentTypeEnum = @PaymentTypeEnum and t.MasavFileID is null and t.[Status] = @TransactionStatusOld
 
 select @TotalAmount=sum(Amount) from @MasavFileRows as prows
 
@@ -87,7 +83,7 @@ INSERT INTO [dbo].[MasavFileRow]
 		   ,[SmsSent])
 select @MasavFileID,[PaymentTransactionID],[ConsumerID],[Bankcode],[BranchNumber],[AccountNumber],[NationalID],[Amount],[ConsumerName],0 from @MasavFileRows as prows order by [PaymentTransactionID]
 
-update [dbo].[PaymentTransaction] set [dbo].[PaymentTransaction].[MasavFileID] = @MasavFileID
+update [dbo].[PaymentTransaction] set [dbo].[PaymentTransaction].[MasavFileID] = @MasavFileID, [dbo].[PaymentTransaction].[Status] = @TransactionStatusNew
 from [dbo].[PaymentTransaction] INNER JOIN  [dbo].[MasavFileRow] on [dbo].[PaymentTransaction].[PaymentTransactionID] = [dbo].[MasavFileRow].[PaymentTransactionID] and [dbo].[MasavFileRow].[MasavFileID] = @MasavFileID
 
 END

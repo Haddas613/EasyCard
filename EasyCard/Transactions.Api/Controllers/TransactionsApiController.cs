@@ -1207,7 +1207,7 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
-            //TODO
+            //TODO: validate bank parameters
             //TransactionTerminalSettingsValidator.Validate(terminal.Settings, model, null, null, specialTransactionType);
 
             var transaction = mapper.Map<PaymentTransaction>(model);
