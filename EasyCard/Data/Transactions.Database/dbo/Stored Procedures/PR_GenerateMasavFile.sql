@@ -1,6 +1,7 @@
 ﻿
 CREATE PROCEDURE [dbo].[PR_GenerateMasavFile]
 @FileDate date,
+@MerchantID uniqueidentifier,
 @TerminalID uniqueidentifier,
 
 @InstitueName nvarchar(100),
@@ -64,9 +65,10 @@ INSERT INTO [dbo].[MasavFile]
            ,[InstituteName]
            ,[Currency]
            ,[TerminalID]
+		   ,[MerchantID]
 		   ,[MasavFileTimestamp])
 
-values (@FileDate, @TotalAmount, @InstituteNumber, @SendingInstitute, @InstitueName, @Currency, @TerminalID, GetUtcDate())
+values (@FileDate, @TotalAmount, @InstituteNumber, @SendingInstitute, @InstitueName, @Currency, @TerminalID, @MerchantID, GetUtcDate())
 
 
 select @MasavFileID = SCOPE_IDENTITY()

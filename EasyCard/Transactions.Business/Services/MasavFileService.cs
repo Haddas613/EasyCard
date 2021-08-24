@@ -41,8 +41,8 @@ namespace Transactions.Business.Services
 
         public async Task<MasavFile> GetMasavFile(long masavFileID)
         {
-            var masavFile = context.MasavFiles.Where(d => d.MasavFileID == masavFileID).Future();
-            var masavFileRows = context.MasavFileRows.Where(d => d.MasavFileID == masavFileID).Future();
+            var masavFile = GetFilesInternal().Where(d => d.MasavFileID == masavFileID).Future();
+            var masavFileRows = GetRowsInternal().Where(d => d.MasavFileID == masavFileID).Future();
 
             return (await masavFile.ToListAsync()).FirstOrDefault();
         }
@@ -72,9 +72,9 @@ namespace Transactions.Business.Services
             return UpdateEntity(data);
         }
 
-        public async Task<long> GenerateMasavFile(Guid? terminalID, int? bank, int? bankBranch, string bankAccount, DateTime? masavFileDate)
+        public async Task<long> GenerateMasavFile(Guid? merchantID, Guid? terminalID, int? bank, int? bankBranch, string bankAccount, DateTime? masavFileDate)
         {
-            return await context.GenerateMasavFile(terminalID, bank, bankBranch, bankAccount, masavFileDate);
+            return await context.GenerateMasavFile(merchantID, terminalID, bank, bankBranch, bankAccount, masavFileDate);
         }
 
         private IQueryable<MasavFileRow> GetRowsInternal()

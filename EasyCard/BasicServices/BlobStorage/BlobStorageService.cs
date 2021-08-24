@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using Azure.Storage.Sas;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Logging;
 using System;
@@ -38,13 +39,41 @@ namespace BasicServices.BlobStorage
             {
                 await blob.UploadAsync(stream, true);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.LogError($"{nameof(BlobStorageService)}.{nameof(Upload)} Error: {e.Message}");
                 throw;
             }
 
-            return blob.Uri.ToString();
+            return filename;
+        }
+
+        public string GetDownloadUrl(string blobUri)
+        {
+            var blobClient = _client.GetBlobClient(blobUri);
+
+            // Check whether this BlobContainerClient object has been authorized with Shared Key.
+            if (blobClient.CanGenerateSasUri)
+            {
+                BlobSasBuilder sasBuilder = new BlobSasBuilder()
+                {
+                    BlobContainerName = _client.Name,
+                    BlobName = blobClient.Name,
+                    Resource = "b"
+                };
+
+                sasBuilder.ExpiresOn = DateTimeOffset.UtcNow.AddHours(1);
+                sasBuilder.SetPermissions(BlobSasPermissions.Read |
+                    BlobSasPermissions.Write);
+
+                Uri sasUri = blobClient.GenerateSasUri(sasBuilder);
+
+                return sasUri.ToString();
+            }
+            else
+            {
+                throw new ApplicationException("BlobContainerClient must be authorized with Shared Key credentials to create a service SAS.");
+            }
         }
     }
 }

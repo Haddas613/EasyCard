@@ -264,7 +264,7 @@ namespace Transactions.Api.Controllers
         [HttpPost]
         [Route("due-billings")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<ActionResult<SendBillingDealsToQueueResponse>> SendDueBillingDeals()
+        public async Task<ActionResult<SendBillingDealsToQueueResponse>> SendDueBillingDealsToQueue()
         {
             var filter = new BillingDealsFilter
             {
@@ -382,9 +382,12 @@ namespace Transactions.Api.Controllers
                 Actual = true
             };
 
-            var allBillings = await billingDealService.GetBillingDeals().Filter(filter).OrderBy(b => b.NextScheduledTransaction)
-                    .Join(creditCardTokenService.GetTokens(), o => o.CreditCardToken, i => i.CreditCardTokenID, (l, r) => new { l.BillingDealID, l.TerminalID, r.CardExpiration })
-                    .ToListAsync();
+            var allBillings = await billingDealService.GetBillingDeals()
+                .Filter(filter)
+                .Where(d => d.PaymentType == PaymentTypeEnum.Card)
+                .OrderBy(b => b.NextScheduledTransaction)
+                .Join(creditCardTokenService.GetTokens(), o => o.CreditCardToken, i => i.CreditCardTokenID, (l, r) => new { l.BillingDealID, l.TerminalID, r.CardExpiration })
+                .ToListAsync();
 
             var response = new List<BillingDealQueueEntry>();
 

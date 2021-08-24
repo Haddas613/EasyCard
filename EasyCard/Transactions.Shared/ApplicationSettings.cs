@@ -8,6 +8,8 @@ namespace Transactions.Shared
     {
         public string DefaultStorageConnectionString { get; set; }
 
+        public string PublicStorageConnectionString { get; set; }
+
         public string ShvaRequestsLogStorageTable { get; set; }
 
         public string NayaxRequestsLogStorageTable { get; set; }

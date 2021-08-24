@@ -74,7 +74,9 @@ namespace Transactions.Api.Controllers
             this.masavFileService = masavFileService;
 
             this.appSettings = appSettings.Value;
-            this.masavFileSorageService = new BlobStorageService(this.appSettings.DefaultStorageConnectionString, this.appSettings.MasavFilesStorageTable, this.logger);
+
+            // TODO: remove, make singleton
+            this.masavFileSorageService = new BlobStorageService(this.appSettings.PublicStorageConnectionString, this.appSettings.MasavFilesStorageTable, this.logger);
         }
 
         [Route("api/adminwebhook/deleteConsumerRelatedData/{consumerID:guid}")]
@@ -126,17 +128,17 @@ namespace Transactions.Api.Controllers
 
             var fileDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
 
-            long? masavFileID = await masavFileService.GenerateMasavFile(terminalID, bankDetails.Bank, bankDetails.BankBranch, bankDetails.BankAccount, fileDate);
+            long? masavFileID = await masavFileService.GenerateMasavFile(terminal.MerchantID, terminalID, bankDetails.Bank, bankDetails.BankBranch, bankDetails.BankAccount, fileDate);
 
             if (masavFileID.HasValue)
             {
-                var response = new OperationResponse() { EntityID = masavFileID.Value };
+                var response = new OperationResponse() { EntityID = masavFileID.Value, Message = "Masav file generated" };
 
                 return Ok(response);
             }
             else
             {
-                var response = new OperationResponse();
+                var response = new OperationResponse() { Message = "Msav file not geenrated"};
 
                 return Ok(response);
             }
@@ -159,7 +161,7 @@ namespace Transactions.Api.Controllers
 
                 file.Seek(0, SeekOrigin.Begin);
 
-                var fileReference = await masavFileSorageService.Upload($"{masavFile.TerminalID}/{masavFile.MasavFileDate:yyyy-MM-dd}-{masavFile.MasavFileID}.msv", file);
+                var fileReference = await masavFileSorageService.Upload($"{masavFile.TerminalID}/{masavFile.MasavFileDate:yyyy-MM-dd}-{masavFile.MasavFileID}-{Guid.NewGuid().ToString().Substring(0, 6)}.msv", file);
 
                 masavFile.StorageReference = fileReference;
                 await masavFileService.UpdateMasavFile(masavFile);

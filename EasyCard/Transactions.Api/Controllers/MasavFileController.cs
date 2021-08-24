@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using BasicServices.BlobStorage;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
@@ -11,6 +13,7 @@ using Shared.Api.Models.Metadata;
 using Shared.Api.UI;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Extensions.Filtering;
@@ -33,17 +36,25 @@ namespace Transactions.Api.Controllers
         private readonly IMasavFileService masavFileService;
         private readonly IMapper mapper;
         private readonly ITerminalsService terminalsService;
+        private readonly IBlobStorageService masavFileSorageService;
+        private readonly Shared.ApplicationSettings appSettings;
 
         public MasavFileController(
             ILogger<MasavFileController> logger,
             IMasavFileService masavFileService,
             IMapper mapper,
-            ITerminalsService terminalsService)
+            ITerminalsService terminalsService,
+            IOptions<Shared.ApplicationSettings> appSettings)
         {
             this.logger = logger;
             this.masavFileService = masavFileService;
             this.mapper = mapper;
             this.terminalsService = terminalsService;
+
+            this.appSettings = appSettings.Value;
+
+            // TODO: remove, make singleton
+            this.masavFileSorageService = new BlobStorageService(this.appSettings.PublicStorageConnectionString, this.appSettings.MasavFilesStorageTable, this.logger);
         }
 
         [HttpGet]
@@ -140,6 +151,16 @@ namespace Transactions.Api.Controllers
             response.NumberOfRecords = numberOfRecordsFuture.Value;
 
             return Ok(response);
+        }
+
+        [HttpGet("getDownloadUrl/{masavFileID}")]
+        public async Task<IActionResult> DownloadFile(long masavFileID)
+        {
+            var masavFile = EnsureExists(await masavFileService.GetMasavFiles().Where(f => f.MasavFileID == masavFileID).FirstOrDefaultAsync());
+
+            var res = masavFileSorageService.GetDownloadUrl(masavFile.StorageReference);
+
+            return Ok(res);
         }
     }
 }

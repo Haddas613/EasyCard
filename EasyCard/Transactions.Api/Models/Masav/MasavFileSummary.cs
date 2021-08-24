@@ -22,9 +22,6 @@ namespace Transactions.Api.Models.Masav
 
         public decimal? TotalAmount { get; set; }
 
-        [MetadataOptions(Hidden = true)]
-        public string StorageReference { get; set; }
-
         public int? InstituteNumber { get; set; }
 
         public int? SendingInstitute { get; set; }
