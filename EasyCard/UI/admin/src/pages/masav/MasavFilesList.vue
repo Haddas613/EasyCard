@@ -20,7 +20,7 @@
         class="elevation-1"
       >
         <template v-slot:item.masavFileDate="{ item }">
-          {{item.$masavFileDate | ecdate}}
+          {{item.$masavFileDate | ecdate('DD/MM/YYYY')}}
         </template>
         <template v-slot:item.payedDate="{ item }">
           <span class="success--text">{{item.$payedDate | ecdate}}</span>
