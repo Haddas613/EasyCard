@@ -195,7 +195,12 @@ namespace Transactions.Api.Controllers
 
             if (model.PaymentType == PaymentTypeEnum.Card)
             {
-                var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                if (!model.CreditCardToken.HasValue)
+                {
+                    EnsureExists(model.CreditCardToken);
+                }
+
+                var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
                 newBillingDeal.InitialTransactionID = token.InitialTransactionID;
                 newBillingDeal.CreditCardDetails = new Business.Entities.CreditCardDetails();
 
@@ -207,7 +212,7 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                return BadRequest($"{model.PaymentType} payment type is not supported");
+                return BadRequest(new OperationResponse($"{model.PaymentType} payment type is not supported", StatusEnum.Error));
             }
 
             // TODO: calculation
@@ -226,10 +231,45 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<OperationResponse>> UpdateBillingDeal([FromRoute] Guid billingDealID, [FromBody] BillingDealUpdateRequest model)
         {
             var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             if (model.IssueInvoice != true)
             {
                 model.InvoiceDetails = null;
+            }
+
+            if (model.PaymentType != billingDeal.PaymentType)
+            {
+                return BadRequest(new OperationResponse(Messages.PaymentTypeCannotBeChanged, StatusEnum.Error));
+            }
+
+            EnsureExists(model.DealDetails);
+            //if (model.DealDetails.ConsumerID != billingDeal.DealDetails.ConsumerID)
+            //{
+            //    return BadRequest(MessagesConsumerCannotBeChanged);
+            //}
+
+            if (model.PaymentType == PaymentTypeEnum.Card)
+            {
+                if (!model.CreditCardToken.HasValue)
+                {
+                    EnsureExists(model.CreditCardToken);
+                }
+
+                var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+                billingDeal.InitialTransactionID = token.InitialTransactionID;
+                billingDeal.CreditCardDetails = new Business.Entities.CreditCardDetails();
+
+                mapper.Map(token, billingDeal.CreditCardDetails);
+            }
+            else if (model.PaymentType == PaymentTypeEnum.Bank)
+            {
+                EnsureExists(model.BankDetails);
+            }
+            else
+            {
+                return BadRequest(new OperationResponse($"{model.PaymentType} payment type is not supported", StatusEnum.Error));
             }
 
             mapper.Map(model, billingDeal);

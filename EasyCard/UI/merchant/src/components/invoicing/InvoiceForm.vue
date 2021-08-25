@@ -70,7 +70,7 @@ export default {
     DealDetails: () => import("../transactions/DealDetailsFields"),
     InvoiceDetailsFields: () => import("./InvoiceDetailsFields"),
     ChequeDetailsFields: () => import("./ChequeDetailsFields"),
-    BankDetailsFields: () => import("./BankDetailsFields"),
+    BankTransferDetailsFields: () => import("./BankTransferDetailsFields"),
     PaymentType: () => import("../transactions/PaymentType"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     EcDialog: () => import("../../components/ec/EcDialog"),

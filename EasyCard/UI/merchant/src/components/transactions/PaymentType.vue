@@ -1,14 +1,15 @@
 <template>
   <v-flex>
-    <ec-dialog-invoker v-on:click="paymentTypeDialog = true" class="py-2">
+    <ec-dialog-invoker :clickable="!disabled" v-on:click="paymentTypeDialog = true" class="py-2">
       <template v-slot:left>
-        <div class="font-weight-medium">{{$t("PaymentType")}}</div>
+        <div v-bind:class="{'ecgray--text' : disabled }" class="font-weight-medium">{{$t("PaymentType")}}</div>
       </template>
       <template v-slot:right>
         <div>{{paymentType ? paymentType.description : $t('PleaseSelect')}}</div>
       </template>
       <template v-slot:append>
-        <re-icon>mdi-chevron-right</re-icon>
+        <re-icon v-if="!disabled">mdi-chevron-right</re-icon>
+        <v-icon small class="py-1" v-else>mdi-lock-outline</v-icon>
       </template>
     </ec-dialog-invoker>
     <ec-dialog :dialog.sync="paymentTypeDialog">
@@ -55,6 +56,10 @@ export default {
     all: {
       type: Boolean,
       default: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -79,11 +84,13 @@ export default {
     }else{
       this.paymentTypesFiltered = filtered;
     }
-
-    if (!this.paymentType) {
+    if (!this.val) {
       this.paymentType = this.paymentTypesFiltered[0];
-      this.paymentTypeChanged();
+    }else{
+      this.paymentType = this.lodash.filter(filtered, t => t.code == this.val)[0];
     }
+    
+    this.paymentTypeChanged();
   },
   methods: {
     paymentTypeChanged() {

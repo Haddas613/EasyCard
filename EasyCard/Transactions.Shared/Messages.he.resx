@@ -399,4 +399,7 @@
   <data name="DeviceIsProcessingTransaction" xml:space="preserve">
     <value>המכשיר מעבד עסקה</value>
   </data>
+  <data name="PaymentTypeCannotBeChanged" xml:space="preserve">
+    <value>לא ניתן לשנות את סוג התשלום</value>
+  </data>
 </root>

@@ -214,10 +214,10 @@ class ApiBase {
             } else {
                 //Server Validation errors are returned to component
                 if (request.status === 400 || request.status === 409) {
+                    let result = await request.json();
                     if(options.showBadRequestToastr){
                         Vue.toasted.show(result.message || i18n.t('SomethingWentWrong'), { type: 'error' });
                     }
-                    let result = await request.json();
                     return result;
                 } else if (request.status === 401) {
                     Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error' });

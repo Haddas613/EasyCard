@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Converters;
 using Shared.Api.UI;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -52,5 +53,7 @@ namespace Transactions.Api.Models.Billing
         public DateTime? PausedTo { get; set; }
 
         public bool Paused { get; set; }
+
+        public PaymentTypeEnum PaymentType { get; set; }
     }
 }

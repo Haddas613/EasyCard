@@ -637,6 +637,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment type can not be changed.
+        /// </summary>
+        public static string PaymentTypeCannotBeChanged {
+            get {
+                return ResourceManager.GetString("PaymentTypeCannotBeChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please check specified values.
         /// </summary>
         public static string PleaseCheckValues {

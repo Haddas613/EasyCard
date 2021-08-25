@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json.Converters;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -24,7 +26,7 @@ namespace Transactions.Api.Models.Billing
         /// <summary>
         /// Stored credit card details token (should be omitted in case if full credit card details used)
         /// </summary>
-        public Guid CreditCardToken { get; set; }
+        public Guid? CreditCardToken { get; set; }
 
         /// <summary>
         /// Transaction amount (should be omitted in case of installment deal)
@@ -56,5 +58,9 @@ namespace Transactions.Api.Models.Billing
         /// Invoice details
         /// </summary>
         public InvoiceDetails InvoiceDetails { get; set; }
+
+        public PaymentTypeEnum PaymentType { get; set; }
+
+        public BankDetails BankDetails { get; set; }
     }
 }

@@ -108,7 +108,7 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// Stored credit card details token
         /// </summary>
-        public Guid CreditCardToken { get; set; }
+        public Guid? CreditCardToken { get; set; }
 
         /// <summary>
         /// Deal information
