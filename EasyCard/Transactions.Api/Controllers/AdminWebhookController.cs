@@ -118,58 +118,5 @@ namespace Transactions.Api.Controllers
 
             return Ok(result);
         }
-
-        [HttpPost("api/adminwebhook/prepareMasavFile/{terminalID:guid}")]
-        public async Task<ActionResult<OperationResponse>> PrepareMasavFile(Guid terminalID)
-        {
-            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
-
-            var bankDetails = terminal.BankDetails;
-
-            var fileDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
-
-            long? masavFileID = await masavFileService.GenerateMasavFile(terminal.MerchantID, terminalID, bankDetails.Bank, bankDetails.BankBranch, bankDetails.BankAccount, fileDate);
-
-            if (masavFileID.HasValue)
-            {
-                var response = new OperationResponse() { EntityID = masavFileID.Value, Message = "Masav file generated" };
-
-                return Ok(response);
-            }
-            else
-            {
-                var response = new OperationResponse() { Message = "Msav file not geenrated"};
-
-                return Ok(response);
-            }
-        }
-
-        [HttpPost("api/adminwebhook/generateMasavFile/{masavFileID}")]
-        public async Task<ActionResult<OperationResponse>> GenerateMasavFile(long masavFileID)
-        {
-            var masavFile = EnsureExists(await masavFileService.GetMasavFile(masavFileID));
-
-            MasavDataWithdraw masavData = mapper.Map<MasavDataWithdraw>(masavFile);
-
-            using (var file = new MemoryStream())
-            {
-                await masavData.ExportWithdrawFile(file);
-
-                await file.FlushAsync();
-
-                var length = file.Length;
-
-                file.Seek(0, SeekOrigin.Begin);
-
-                var fileReference = await masavFileSorageService.Upload($"{masavFile.TerminalID}/{masavFile.MasavFileDate:yyyy-MM-dd}-{masavFile.MasavFileID}-{Guid.NewGuid().ToString().Substring(0, 6)}.msv", file);
-
-                masavFile.StorageReference = fileReference;
-                await masavFileService.UpdateMasavFile(masavFile);
-            }
-
-            var response = new OperationResponse();
-
-            return Ok(response);
-        }
     }
 }
