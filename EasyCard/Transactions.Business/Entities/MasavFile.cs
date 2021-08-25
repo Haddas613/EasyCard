@@ -6,6 +6,7 @@ using System.Text;
 
 namespace Transactions.Business.Entities
 {
+    // TODO: audit fields
     public class MasavFile : IEntityBase<long>
     {
         public long MasavFileID { get; set; }

@@ -210,5 +210,15 @@ namespace Transactions.Api.Controllers
 
             return Ok(res);
         }
+
+        [HttpPost("setPayed/{masavFileID}")]
+        public async Task<ActionResult<OperationResponse>> SetPayed(long masavFileID, DateTime? payedDate)
+        {
+            await masavFileService.SetMasavFilePayed(masavFileID, payedDate ?? DateTime.UtcNow);
+
+            var response = new OperationResponse() { Message = "Msav file payed" };
+
+            return Ok(response);
+        }
     }
 }

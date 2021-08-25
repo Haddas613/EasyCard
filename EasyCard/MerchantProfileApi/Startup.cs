@@ -110,7 +110,6 @@ namespace ProfileApi
                             //{
                             //    context.HandleResponse();
                             //}
-
                         },
                         OnMessageReceived = async (context) =>
                         {
