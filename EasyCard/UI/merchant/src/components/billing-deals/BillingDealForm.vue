@@ -21,7 +21,8 @@
           :key="model.dealDetails.consumerID" 
           :terminal="true" 
           :customer-id="model.dealDetails.consumerID" 
-          @update="processCustomer($event)"></customer-dialog-invoker>
+          @update="processCustomer($event)"
+          ref="customerDialogInvoker"></customer-dialog-invoker>
       </v-col>
       <v-col cols="12" md="6" class="pb-2" v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-5': $vuetify.breakpoint.mdAndUp}">
         <payment-type v-model="model.paymentType" :exclude-types="['cash', 'cheque']"></payment-type>
@@ -335,6 +336,12 @@ export default {
 
       if(!this.model.transactionAmount){
         this.$toasted.show(this.$t("SelectItems"), { type: "error" });
+        return;
+      }
+
+      if (this.model.dealDetails.consumerID == null){
+        this.$toasted.show(this.$t("PleaseSelectCustomerFirst"), { type: "error" });
+        this.$refs.customerDialogInvoker.showDialog();
         return;
       }
 

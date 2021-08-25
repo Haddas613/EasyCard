@@ -75,6 +75,9 @@ export default {
       this.selectedCustomer = data;
       this.$emit("update", data);
       this.customersDialog = false;
+    },
+    showDialog(){
+      this.customersDialog = true;
     }
   }
 };
