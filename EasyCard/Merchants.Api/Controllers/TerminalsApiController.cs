@@ -310,7 +310,7 @@ namespace Merchants.Api.Controllers
             var opResult = await userManagementClient.CreateTerminalApiKey(new CreateTerminalApiKeyRequest { TerminalID = terminal.TerminalID, MerchantID = terminal.MerchantID });
 
             // TODO: failed case
-            return Ok(new OperationResponse { EntityReference = opResult.ApiKey });
+            return Ok(new OperationResponse { EntityReference = opResult.ApiKey, Status = StatusEnum.Success });
         }
 
         [HttpPost]
