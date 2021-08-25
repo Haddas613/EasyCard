@@ -40,6 +40,16 @@
                   <p v-else class="error--text">{{$t("No")}}</p>
                 </v-col>
               </v-row>
+              <v-row class="pt-2 info-container" v-if="model.lastError">
+                <v-col cols="12" md="4" class="info-block">
+                  <p class="caption error--text text--darken-2">{{$t('LastError')}}</p>
+                  <p>{{model.lastError || '-'}}</p>
+                </v-col>
+                <v-col cols="12" md="4" class="info-block">
+                  <p class="caption error--text text--darken-2">{{$t('LastErrorCorrelationID')}}</p>
+                  <p>{{model.lastErrorCorrelationID || '-'}}</p>
+                </v-col>
+              </v-row>
             </v-card-text>
           </v-card>
           <v-card flat class="my-2">

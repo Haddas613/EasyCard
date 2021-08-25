@@ -374,6 +374,8 @@
   "BankAccount": "מספר חשבון בנק",
   "ExtendedResponseForCheckoutTransaction": "תגובה מורחבת עסקאות רידיירקט",
   "PayedDate": "תאריך תשלום",
+  "LastError": "שגיאה אחרונה",
+  "LastErrorCorrelationID": "מזהה מתאם שגיאה אחרונה",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

@@ -370,6 +370,8 @@
   "BankAccount": "Bank Account",
   "ExtendedResponseForCheckoutTransaction": "Extended response for checkout transaction",
   "PayedDate": "Payed Date",
+  "LastError": "Last Error",
+  "LastErrorCorrelationID": "Last Error Correlation ID",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

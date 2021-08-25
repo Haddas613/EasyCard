@@ -152,5 +152,9 @@ namespace Transactions.Api.Models.Billing
         public bool Paused { get; set; }
 
         public PaymentTypeEnum PaymentType { get; set; }
+
+        public string LastError { get; set; }
+
+        public string LastErrorCorrelationID { get; set; }
     }
 }
