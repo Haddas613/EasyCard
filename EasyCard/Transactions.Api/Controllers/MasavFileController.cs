@@ -121,7 +121,7 @@ namespace Transactions.Api.Controllers
 
             if (response.TerminalID.HasValue)
             {
-                var terminal = await terminalsService.GetTerminals().Select(s => s.Label).FirstOrDefaultAsync();
+                var terminal = await terminalsService.GetTerminals().Where(t => t.TerminalID == response.TerminalID.Value).Select(s => s.Label).FirstOrDefaultAsync();
 
                 if (terminal != null)
                 {
