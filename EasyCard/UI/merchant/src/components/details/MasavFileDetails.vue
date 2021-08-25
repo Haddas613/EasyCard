@@ -17,7 +17,7 @@
         </v-col>
         <v-col cols="12" :md="oneline ? '2' : '4'" class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('Created')}}</p>
-          <p v-if="model.masavFileDate">{{model.masavFileDate | ecdate}}</p>
+          <p v-if="model.masavFileDate">{{model.masavFileDate | ecdate('DD/MM/YYYY')}}</p>
           <p v-else>-</p>
         </v-col>
         <v-col cols="12" :md="oneline ? '2' : '4'" class="info-block">
