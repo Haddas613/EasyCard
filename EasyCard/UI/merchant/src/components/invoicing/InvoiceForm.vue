@@ -48,7 +48,7 @@
             <cheque-details-fields ref="chequeDetails"></cheque-details-fields>
           </template>
           <template v-else-if="model.paymentType == appConstants.transaction.paymentTypes.bank">
-            <bank-details-fields ref="bankDetails"></bank-details-fields>
+            <bank-transfer-details-fields ref="bankDetails"></bank-transfer-details-fields>
           </template>
         </template>
       </v-form>
