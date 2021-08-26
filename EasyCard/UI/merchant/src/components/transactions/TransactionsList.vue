@@ -1,5 +1,6 @@
 <template>
   <v-flex>
+    <transaction-slip-dialog ref="slipDialog" v-if="selectedTransaction" :key="selectedTransaction.$paymentTransactionID"  :transaction="selectedTransaction" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
     <ec-list :items="data" v-if="data">
       <template v-slot:prepend="{ item }" v-if="selectable">
          <v-checkbox
@@ -27,8 +28,18 @@
           md="6"
           lg="6"
           class="text-end body-2"
-          v-bind:class="quickStatusesColors[item.quickStatus]"
-        >{{$t(item.quickStatus || 'None')}}</v-col>
+          v-bind:class="quickStatusesColors[item.$quickStatus]"
+        >
+        <v-btn x-small color="success" outlined v-if="item.$quickStatus == 'Completed'" @click="showSlipDialog(item)">
+          <span>{{item.quickStatus}}</span>
+          <v-icon class="mx-1" small :right="$vuetify.$ltr" :left="$vuetify.$ltr">
+            mdi-checkbook
+          </v-icon>
+        </v-btn>
+        <span v-else>
+          {{item.quickStatus}}
+        </span>
+        </v-col>
         <v-col
           cols="12"
           md="6"
@@ -58,6 +69,7 @@ export default {
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
+    TransactionSlipDialog: () => import("../../components/transactions/TransactionSlipDialog"),
   },
   props: {
     transactions: {
@@ -81,6 +93,17 @@ export default {
         this.$toasted.show(this.$t("@MaxSelectionCount").replace("@count", this.selectLimit), { type: "error" });
         item.selected = false;
       }
+    },
+    async showSlipDialog(transaction){
+      if(this.loadingTransaction){
+        return;
+      }
+      this.loadingTransaction = true;
+      this.selectedTransaction = await this.$api.transactions.getTransaction(
+        transaction.$paymentTransactionID
+      );
+      this.loadingTransaction = false;
+      this.transactionSlipDialog = true;
     }
   },
   data() {
@@ -94,7 +117,10 @@ export default {
         Canceled: "accent--text"
       },
       customerInfo: null,
-      moment: moment
+      moment: moment,
+      selectedTransaction: null,
+      transactionSlipDialog: false,
+      loadingTransaction: false
     };
   }
 };
