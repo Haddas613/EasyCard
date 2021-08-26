@@ -30,10 +30,9 @@
         </v-col>
         <v-col cols="12" :md="oneline ? '2' : '4'" class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('Download')}}</p>
-          <v-btn v-if="model.storageReference" outlined color="success" small :disabled="!model.storageReference" :title="$t('ClickToDownload')" @click="downloadMasavFile(model.storageReference)">
+          <v-btn outlined color="success" small :title="$t('ClickToDownload')" @click="downloadMasavFile(model.storageReference)">
             <v-icon color="red" size="1.25rem">mdi-file-outline</v-icon>
           </v-btn>
-          <span v-else>-</span>
         </v-col>
       </v-row>
     </v-card-text>
@@ -58,8 +57,10 @@ export default {
     }
   },
   methods: {
-      downloadMasavFile(link) {
-          window.open(link, '_blank');
+      async downloadMasavFile(link) {
+          var operation = await this.$api.masavFiles.downloadMasavFile(this.selectedTerminal);
+          if(!this.$apiSuccess(operation)) return;
+          window.open(operation.entityReference, "_blank");
       }
   },
 };

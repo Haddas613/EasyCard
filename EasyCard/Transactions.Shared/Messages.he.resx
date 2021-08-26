@@ -402,4 +402,13 @@
   <data name="PaymentTypeCannotBeChanged" xml:space="preserve">
     <value>לא ניתן לשנות את סוג התשלום</value>
   </data>
+  <data name="MasavFileGeneratedSuccessfully" xml:space="preserve">
+    <value>קובץ מסב נוצר בהצלחה</value>
+  </data>
+  <data name="MasavFileWasNotGenerated" xml:space="preserve">
+    <value>קובץ מסב לא נוצר</value>
+  </data>
+  <data name="TerminalMustHaveBankDetailsSpecified" xml:space="preserve">
+    <value>על המסוף לציין פרטי בנק</value>
+  </data>
 </root>

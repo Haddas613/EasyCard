@@ -1,6 +1,28 @@
 <template>
   <v-flex>
-    <v-card class="mx-auto" outlined :loading="loading">
+    <ec-dialog :dialog.sync="generateMasavFileDialog">
+    <template v-slot:title>{{$t('GenerateMasavFile')}}</template>
+    <template>
+      <v-form ref="form" lazy-validation>
+        <v-row>
+          <terminal-select v-model="selectedTerminal"></terminal-select>
+        </v-row>
+      </v-form>
+      <div class="d-flex justify-end">
+        <v-btn
+          class="mx-1"
+          color="success"
+          @click="generateMasavFile()"
+          :disabled="!selectedTerminal"
+          :loading="loading"
+        >{{$t("OK")}}</v-btn>
+      </div>
+    </template>
+  </ec-dialog>
+    <v-card class="mt-2 mx-auto" flat :loading="loading">
+      <v-card-actions class="d-flex justify-end">
+        <v-btn class="mx-4" color="primary" small @click="generateMasavFileDialog = true">{{$t("GenerateMasavFile")}}</v-btn>
+      </v-card-actions>
       <v-card-text class="px-0" v-if="masavFiles">
         <ec-list :items="masavFiles">
           <template v-slot:prepend="{ item }">
@@ -53,10 +75,13 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   components: {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
-    EcList: () => import("../../components/ec/EcList")
+    EcList: () => import("../../components/ec/EcList"),
+    EcDialog: () => import("../../components/ec/EcDialog"),
   },
   props: {
     filters: {
@@ -72,15 +97,18 @@ export default {
       numberOfRecords: 0,
       masavFiles: null,
       loading: true,
+      generateMasavFileDialog: false,
       options: {},
       pagination: {},
       masavFilesFilter: {
         ...this.filters
       },
+      selectedTerminal: null
     };
   },
   async mounted () {
     await this.getDataFromApi();
+    this.selectedTerminal = this.terminalStore.terminalID;
   },
   methods: {
     async getDataFromApi() {
@@ -98,8 +126,20 @@ export default {
       this.masavFilesFilter = filter;
       await this.getDataFromApi();
     },
-    async downloadMasavFile(link){
-      window.open(link, '_blank');
+    async downloadMasavFile(link) {
+        var operation = await this.$api.masavFiles.downloadMasavFile(this.selectedTerminal);
+        if(!this.$apiSuccess(operation)) return;
+        window.open(operation.entityReference, "_blank");
+    },
+    async generateMasavFile(){
+      if(!this.selectedTerminal){
+        return;
+      }
+
+      var operation = await this.$api.masavFiles.generateMasavFile(this.selectedTerminal);
+      if(!this.$apiSuccess(operation)) return;
+      await this.getDataFromApi();
+      this.generateMasavFileDialog = false;
     }
   },
   computed: {
@@ -109,7 +149,10 @@ export default {
         this.masavFilesFilter.take + this.masavFilesFilter.skip <
           this.numberOfRecords
       );
-    }
+    },
+    ...mapState({
+      terminalStore: state => state.settings.terminal
+    }),
   },
 };
 </script>

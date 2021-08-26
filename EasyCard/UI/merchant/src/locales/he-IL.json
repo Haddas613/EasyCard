@@ -360,7 +360,8 @@
   "PaymentIntent": "כוונת תשלום",
   "CreatePaymentLink": "ייצר לינק לתשלום",
   "Renew": "לחדש",
-  "Download": "Download",
+  "Download": "וגם: הורדה",
+  "GenerateMasavFile": "וגם: הצג מפתח פרטי",
 
   "--AUTH--": null,
   "Login": "כניסה",

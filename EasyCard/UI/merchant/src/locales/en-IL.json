@@ -361,6 +361,7 @@
   "CreatePaymentLink": "Create Payment Link",
   "Renew": "Renew",
   "Download": "Download",
+  "GenerateMasavFile": "Generate Masav File",
 
   "--AUTH--": null,
   "Login": "Login",
