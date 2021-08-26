@@ -321,6 +321,7 @@
         <v-row no-gutters>
           <v-col cols="12" md="12">
             <v-btn color="primary" small @click="resetPrivateKey()">{{$t("ResetPrivateKey")}}</v-btn>
+            <v-btn color="success" :disabled="privateApiKey" small @click="showPrivateKey()">{{$t("ShowPrivateKey")}}</v-btn>
           </v-col>
           <v-col cols="12" md="12" class="mt-4">
             <v-text-field
@@ -576,6 +577,17 @@ export default {
         return;
       }
       let operation = await this.$api.terminals.resetPrivateApiKey(
+        this.model.terminalID
+      );
+      if (!this.$apiSuccess(operation)) return;
+
+      this.privateApiKey = operation.entityReference;
+    },
+    async showPrivateKey(){
+      if (!this.model.terminalID || this.privateApiKey) {
+        return;
+      }
+      let operation = await this.$api.terminals.getPrivateApiKey(
         this.model.terminalID
       );
       if (!this.$apiSuccess(operation)) return;

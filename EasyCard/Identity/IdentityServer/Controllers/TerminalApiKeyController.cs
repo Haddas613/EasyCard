@@ -102,5 +102,23 @@ namespace IdentityServer.Controllers
 
             return Ok(new ApiKeyOperationResponse());
         }
+
+        // admin only
+        [HttpGet]
+        [Route("{terminalID}")]
+        public async Task<ActionResult<ApiKeyOperationResponse>> Get([FromRoute] Guid terminalID)
+        {
+            var user = await userManager.FindByNameAsync($"terminal_{terminalID}");
+
+            if (user == null)
+            {
+                logger.LogError($"Terminal Api Key does not exist, TerminalID: {terminalID}");
+                return NotFound("Terminal Api Key does not exist");
+            }
+
+            var key = cryptoServiceCompact.EncryptCompact(user.Id);
+
+            return Ok(new ApiKeyOperationResponse { ApiKey = key });
+        }
     }
 }

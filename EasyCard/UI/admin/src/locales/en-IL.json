@@ -395,6 +395,7 @@
   "GoToInvoice": "Go to invoice",
   "SelectAll": "Select all",
   "ResetPrivateKey": "Reset Private Key",
+  "ShowPrivateKey": "Show Private Key",
   "ResetSharedKey": "Reset Shared Key",
   "ShowSharedKey": "Show Shared Key",
   "CreateNew": "Create new",

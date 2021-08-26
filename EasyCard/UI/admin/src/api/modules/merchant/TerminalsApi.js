@@ -51,6 +51,10 @@ export default class TerminalsApi {
         return this.base.post(this.terminalsUrl + `/${terminalID}/resetApiKey`);
     }
 
+    async getPrivateApiKey(terminalID){
+        return this.base.get(this.terminalsUrl + `/${terminalID}/getApiKey`);
+    }
+
     async resetSharedApiKey(terminalID){
         return this.base.post(this.terminalsUrl + `/${terminalID}/resetSharedApiKey`);
     }

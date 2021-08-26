@@ -399,6 +399,7 @@
   "GoToInvoice": "עבור לחשבונית",
   "SelectAll": "בחר הכל",
   "ResetPrivateKey": "איפוס מפתח פרטי",
+  "ShowPrivateKey": "הצג מפתח פרטי",
   "ResetSharedKey": "איפוס מפתח משותף",
   "ShowSharedKey": "הצג מפתח משותף",
   "CreateNew": "צור חדש",
