@@ -30,7 +30,7 @@
         </v-col>
         <v-col cols="12" :md="oneline ? '2' : '4'" class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('Download')}}</p>
-          <v-btn outlined color="success" small :title="$t('ClickToDownload')" @click="downloadMasavFile(model.storageReference)">
+          <v-btn outlined color="success" small :title="$t('ClickToDownload')" @click="downloadMasavFile()">
             <v-icon color="red" size="1.25rem">mdi-file-outline</v-icon>
           </v-btn>
         </v-col>
@@ -57,8 +57,8 @@ export default {
     }
   },
   methods: {
-      async downloadMasavFile(link) {
-          var operation = await this.$api.masavFiles.downloadMasavFile(this.selectedTerminal);
+      async downloadMasavFile() {
+          var operation = await this.$api.masavFiles.downloadMasavFile(this.model.masavFileID);
           if(!this.$apiSuccess(operation)) return;
           window.open(operation.entityReference, "_blank");
       }

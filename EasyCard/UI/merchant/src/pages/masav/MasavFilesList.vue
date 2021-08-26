@@ -40,7 +40,7 @@
 
           <template v-slot:right="{ item }">
             <!-- <v-col cols="12" md="6" lg="6" class="text-end body-2">
-              <v-btn outlined color="success" x-small :disabled="!item.storageReference" :title="$t('ClickToDownload')" @click="downloadMasavFile(item.$invoiceID)">
+              <v-btn outlined color="success" x-small :disabled="!item.storageReference" :title="$t('ClickToDownload')" @click="downloadMasavFile(item.masavFileID)">
                 <v-icon right color="red" size="1rem">mdi-file-outline</v-icon>
               </v-btn>
             </v-col> -->
@@ -126,8 +126,8 @@ export default {
       this.masavFilesFilter = filter;
       await this.getDataFromApi();
     },
-    async downloadMasavFile(link) {
-        var operation = await this.$api.masavFiles.downloadMasavFile(this.selectedTerminal);
+    async downloadMasavFile(fileID) {
+        var operation = await this.$api.masavFiles.downloadMasavFile(fileID);
         if(!this.$apiSuccess(operation)) return;
         window.open(operation.entityReference, "_blank");
     },
