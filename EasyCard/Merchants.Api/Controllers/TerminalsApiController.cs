@@ -314,7 +314,7 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{terminalID}/resetApiKey")]
+        [Route("{terminalID}/getApiKey")]
         public async Task<ActionResult<OperationResponse>> GetTerminalApiKey([FromRoute] Guid terminalID)
         {
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
