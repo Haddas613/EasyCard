@@ -376,6 +376,8 @@
   "PayedDate": "תאריך תשלום",
   "LastError": "שגיאה אחרונה",
   "LastErrorCorrelationID": "מזהה מתאם שגיאה אחרונה",
+  "LedgerAccount": "חשבון ספר חשבונות",
+  "Charge": "חיוב",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

@@ -372,6 +372,8 @@
   "PayedDate": "Payed Date",
   "LastError": "Last Error",
   "LastErrorCorrelationID": "Last Error Correlation ID",
+  "LedgerAccount": "Ledger Account",
+  "Charge": "Charge",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

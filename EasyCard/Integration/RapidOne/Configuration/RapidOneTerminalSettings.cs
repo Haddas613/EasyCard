@@ -12,5 +12,7 @@ namespace RapidOne
         public int Department { get; set; }
         public int Branch { get; set; }
         public string BankAccountNumber { get; set; }
+        public string LedgerAccount { get; set; }
+        public bool Charge { get; set; }
     }
 }

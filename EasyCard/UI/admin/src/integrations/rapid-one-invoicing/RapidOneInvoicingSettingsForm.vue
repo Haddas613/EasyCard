@@ -16,6 +16,12 @@
       <v-col cols="12" md="4" class="py-0">
         <v-text-field v-model="model.settings.company" :label="$t('Company')"></v-text-field>
       </v-col>
+      <v-col cols="12" md="4" class="py-0">
+        <v-text-field v-model="model.settings.ledgerAccount" :label="$t('LedgerAccount')"></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4" class="py-0">
+        <v-switch class="mt-4" v-model="model.settings.charge" :label="$t('Charge')"></v-switch>
+      </v-col>
     </v-row>
     <div class="d-flex justify-end">
       <v-btn color="primary" @click="save()" :loading="loading">{{$t("Save")}}</v-btn>
