@@ -117,7 +117,7 @@
                         <input type="hidden" asp-for="Amount" />
 
                         <h3 id="total-amount-display" hidden="@(Model.TransactionType != Shared.Integration.Models.TransactionTypeEnum.RegularDeal)" class="panel-title text-center @(Model.IsRefund ? "text-danger" : "")">
-                            @(Model.IsRefund ? localizer.Get("Refund") : localizer.Get("Amount")): @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()
+                            @(Model.IsRefund ? localizer.Get("Refund") : localizer.Get("TotalSum")): @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()
                         </h3>
                     }
 
@@ -127,9 +127,9 @@
                             @if (!(Model.Amount.GetValueOrDefault() > 0))
                             {
                                 <div class="form-group row">
-                                    <label asp-for="Amount" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("Amount") (@Model.Currency.GetCurrencySymbol())</label>
+                                    <label asp-for="Amount" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("TotalSum") (@Model.Currency.GetCurrencySymbol())</label>
                                     <div class="col-sm-9">
-                                        <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("Amount")" asp-for="Amount" autocomplete="off">
+                                        <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("TotalSum")" asp-for="Amount" autocomplete="off">
                                         <span asp-validation-for="Amount"></span>
                                     </div>
                                 </div>
@@ -159,9 +159,9 @@
                     {
                         <fieldset class="border rounded p-2 m-2">
                             <div class="form-group row">
-                                <label asp-for="Amount" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("Amount") (@Model.Currency.GetCurrencySymbol())</label>
+                                <label asp-for="Amount" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("TotalSum") (@Model.Currency.GetCurrencySymbol())</label>
                                 <div class="col-sm-9">
-                                    <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("Amount")" asp-for="Amount" autocomplete="off">
+                                    <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("TotalSum")" asp-for="Amount" autocomplete="off">
                                     <span asp-validation-for="Amount"></span>
                                 </div>
                             </div>

@@ -322,6 +322,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Total Sum.
+        /// </summary>
+        public static string TotalSum {
+            get {
+                return ResourceManager.GetString("TotalSum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transaction type.
         /// </summary>
         public static string TransactionType {

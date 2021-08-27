@@ -216,4 +216,7 @@
   <data name="NationalIDInvalid" xml:space="preserve">
     <value>ת.ז. חייבת להיות ת.ז. ישראלית תקינה</value>
   </data>
+  <data name="TotalSum" xml:space="preserve">
+    <value>סכום</value>
+  </data>
 </root>
