@@ -37,6 +37,13 @@
                     <p>{{model.pausedTo | ecdate}}</p>
                   </v-col>
                 </template>
+                <template v-else>
+                  <v-col cols="12" md="4" class="info-block">
+                    <p class="caption ecgray--text text--darken-2">{{$t('NextScheduledTransaction')}}</p>
+                    <p v-if="model.$nextScheduledTransaction">{{model.$nextScheduledTransaction | ecdate('L')}}</p>
+                    <p v-else>-</p>
+                  </v-col>
+                </template>
               </v-row>
             </v-card-text>
           </v-card>

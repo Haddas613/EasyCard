@@ -311,6 +311,7 @@
   "ExtendedResponseForCheckoutTransaction": "תגובה מורחבת עסקאות רידיירקט",
   "VoucherNumber": "מספר שובר",
   "PayedDate": "תאריך תשלום",
+  "NextScheduledTransaction": "העסקה המתוזמנת הבאה",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

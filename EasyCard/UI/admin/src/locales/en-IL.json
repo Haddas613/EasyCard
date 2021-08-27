@@ -374,6 +374,7 @@
   "LastErrorCorrelationID": "Last Error Correlation ID",
   "LedgerAccount": "Ledger Account",
   "Charge": "Charge",
+  "NextScheduledTransaction": "Next Scheduled Transaction",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

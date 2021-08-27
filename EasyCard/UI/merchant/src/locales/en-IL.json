@@ -311,6 +311,7 @@
   "ExtendedResponseForCheckoutTransaction": "Extended response for checkout transaction",
   "VoucherNumber": "Voucher Number",
   "PayedDate": "Payed Date",
+  "NextScheduledTransaction": "Next Scheduled Transaction",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

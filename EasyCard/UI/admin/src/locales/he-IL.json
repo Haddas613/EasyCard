@@ -378,6 +378,7 @@
   "LastErrorCorrelationID": "מזהה מתאם שגיאה אחרונה",
   "LedgerAccount": "חשבון ספר חשבונות",
   "Charge": "חיוב",
+  "NextScheduledTransaction": "העסקה המתוזמנת הבאה",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",
