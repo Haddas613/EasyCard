@@ -379,7 +379,7 @@ export default {
             this.model.dealDetails.consumerID
           )
         ).data || [];
-      if(this.customerTokens.length === 1){
+      if(this.customerTokens.length === 1 && !this.model.billingDealID){
         this.token = this.customerTokens[0];
       }
     },
