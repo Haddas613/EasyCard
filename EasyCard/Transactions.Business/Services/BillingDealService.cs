@@ -130,7 +130,7 @@ namespace Transactions.Business.Services
             }
         }
 
-        public async Task<OperationResponse> InactivateBillingDeals(IEnumerable<BillingDeal> billingDealsToIncactivate)
+        public async Task<SharedApi.Models.OperationResponse> InactivateBillingDeals(IEnumerable<BillingDeal> billingDealsToIncactivate)
         {
             foreach (var billingDeal in billingDealsToIncactivate)
             {
@@ -151,7 +151,7 @@ namespace Transactions.Business.Services
 
             await context.SaveChangesAsync();
 
-            return new OperationResponse
+            return new SharedApi.Models.OperationResponse
             {
                  Status = SharedApi.Models.Enums.StatusEnum.Success
             };
