@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Shared.Api.Models;
 using Shared.Business;
 using Shared.Business.AutoHistory;
 using Shared.Business.Security;
@@ -14,6 +15,8 @@ using Transactions.Business.Data;
 using Transactions.Business.Entities;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
+using Z.EntityFramework.Plus;
+using SharedApi = Shared.Api;
 
 namespace Transactions.Business.Services
 {
@@ -125,6 +128,33 @@ namespace Transactions.Business.Services
             {
                 return context.FutureBillings.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
             }
+        }
+
+        public async Task<OperationResponse> InactivateBillingDeals(IEnumerable<BillingDeal> billingDealsToIncactivate)
+        {
+            foreach (var billingDeal in billingDealsToIncactivate)
+            {
+                billingDeal.Active = false;
+
+                var historyRecord = new BillingDealHistory
+                {
+                    BillingDealID = billingDeal.BillingDealID,
+                    OperationCode = BillingDealOperationCodesEnum.Deactivated,
+                    OperationDescription = null,
+                    OperationMessage = Messages.BillingDealDeactivated
+                };
+
+                historyRecord.ApplyAuditInfo(httpContextAccessor);
+
+                context.BillingDealHistories.Add(historyRecord);
+            }
+
+            await context.SaveChangesAsync();
+
+            return new OperationResponse
+            {
+                 Status = SharedApi.Models.Enums.StatusEnum.Success
+            };
         }
 
         private async Task AddHistory(Guid billingDealID, string opDescription, string message, BillingDealOperationCodesEnum operationCode)

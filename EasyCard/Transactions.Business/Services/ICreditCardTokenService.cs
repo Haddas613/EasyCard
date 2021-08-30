@@ -9,6 +9,6 @@ namespace Transactions.Business.Services
 {
     public interface ICreditCardTokenService : IServiceBase<CreditCardTokenDetails, Guid>
     {
-        IQueryable<CreditCardTokenDetails> GetTokens();
+        IQueryable<CreditCardTokenDetails> GetTokens(bool showIncactive = false);
     }
 }

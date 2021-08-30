@@ -266,34 +266,16 @@ namespace Transactions.Api.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<SendBillingDealsToQueueResponse>> SendDueBillingDealsToQueue()
         {
-            var filter = new BillingDealsFilter
-            {
-                Actual = true
-            };
-
-            var query = billingDealService.GetBillingDeals().Filter(filter);
-            var numberOfRecords = 0;
-
             var response = new SummariesResponse<Guid>();
 
             var billings = await GetFilteredQueueBillingDeals();
 
-            var allTerminalsID = billings.Select(b => b.TerminalID).Distinct();
-
-            var terminals = (await terminalsService.GetTerminals().Where(t => allTerminalsID.Contains(t.TerminalID)).ToListAsync())
-                .Where(t => t.EnabledFeatures?.Contains(Merchants.Shared.Enums.FeatureEnum.Billing) == true)
-                .Where(t => t.BillingSettings.CreateRecurrentPaymentsAutomatically == true)
-                .Select(t => t.TerminalID)
-                .ToHashSet();
-
-            var processableBillings = billings.Where(b => terminals.Contains(b.TerminalID)).Select(b => b.BillingDealID);
-
-            numberOfRecords = processableBillings.Count();
+            var numberOfRecords = billings.Count();
 
             for (int i = 0; i < numberOfRecords; i += appSettings.BillingDealsMaxBatchSize)
             {
                 await billingDealsQueue.PushToQueue(
-                    processableBillings.Skip(i).Take(appSettings.BillingDealsMaxBatchSize));
+                    billings.Skip(i).Take(appSettings.BillingDealsMaxBatchSize));
             }
 
             return new SendBillingDealsToQueueResponse { Status = StatusEnum.Success, Message = Messages.TransactionsQueued, Count = numberOfRecords };
@@ -386,7 +368,7 @@ namespace Transactions.Api.Controllers
                 .Filter(filter)
                 .Where(d => d.PaymentType == PaymentTypeEnum.Card)
                 .OrderBy(b => b.NextScheduledTransaction)
-                .Join(creditCardTokenService.GetTokens(), o => o.CreditCardToken, i => i.CreditCardTokenID, (l, r) => new { l.BillingDealID, l.TerminalID, r.CardExpiration })
+                .Join(creditCardTokenService.GetTokens(true), o => o.CreditCardToken, i => i.CreditCardTokenID, (l, r) => new { l.BillingDealID, l.TerminalID, r.CardExpiration })
                 .ToListAsync();
 
             var response = new List<BillingDealQueueEntry>();
@@ -396,43 +378,43 @@ namespace Transactions.Api.Controllers
                 return response;
             }
 
-            var allTerminalsID = allBillings.Select(t => t.TerminalID).Distinct();
+            var allTerminalsID = allBillings.Select(t => t.TerminalID).Distinct().ToList();
 
-            //TODO: optimize
-            var terminals = await terminalsService.GetTerminals().Include(t => t.Merchant).Where(t => allTerminalsID.Contains(t.TerminalID)).ToDictionaryAsync(k => k.TerminalID, v => v);
+            // we need all terminals to mark billing inactive in case if card expired even if it is not automatic
+            var terminals = (await terminalsService.GetTerminals().Include(d => d.Merchant).Where(t => allTerminalsID.Contains(t.TerminalID)).ToListAsync())
+                .ToDictionary(k => k.TerminalID, v => v);
+
+            var billingsToDeactivate = new List<Guid>();
 
             foreach (var billing in allBillings)
             {
-                if (terminals.ContainsKey(billing.TerminalID) && terminals[billing.TerminalID].BillingSettings.CreateRecurrentPaymentsAutomatically.GetValueOrDefault(false) == false)
+                if (!terminals.TryGetValue(billing.TerminalID, out var terminal))
                 {
+                    logger.LogError($"Could not send {nameof(SendBillingDealCreditCardTokenExpiredEmail)}. Terminal {billing.TerminalID} was not present in dictionary.");
                     continue;
                 }
 
                 if (billing.CardExpiration?.Expired == true)
                 {
-                    var dealEntity = await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(b => b.BillingDealID == billing.BillingDealID);
-
-                    logger.LogInformation($"Billing Deal {dealEntity?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity?.CreditCardDetails.CardNumber)} has expired ({dealEntity?.CreditCardDetails.CardExpiration}). Setting it as inactive.");
-
-                    if (dealEntity != null)
-                    {
-                        dealEntity.Active = false;
-                        await billingDealService.UpdateEntity(dealEntity);
-
-                        if (terminals.ContainsKey(billing.TerminalID))
-                        {
-                            await SendBillingDealCreditCardTokenExpiredEmail(dealEntity, terminals[billing.TerminalID]);
-                        }
-                        else
-                        {
-                            logger.LogError($"Could not send {nameof(SendBillingDealCreditCardTokenExpiredEmail)}. Terminal {billing.TerminalID} was not present in dictionary.");
-                        }
-                    }
+                    billingsToDeactivate.Add(billing.BillingDealID);
                 }
                 else
                 {
-                    response.Add(new BillingDealQueueEntry { BillingDealID = billing.BillingDealID, TerminalID = billing.TerminalID });
+                    if (terminal.EnabledFeatures?.Contains(Merchants.Shared.Enums.FeatureEnum.Billing) == true && terminal.BillingSettings.CreateRecurrentPaymentsAutomatically == true)
+                    {
+                        response.Add(new BillingDealQueueEntry { BillingDealID = billing.BillingDealID, TerminalID = billing.TerminalID });
+                    }
                 }
+            }
+
+            var dealsToInactivate = await billingDealService.GetBillingDealsForUpdate().Where(b => billingsToDeactivate.Contains(b.BillingDealID)).ToListAsync();
+            await billingDealService.InactivateBillingDeals(dealsToInactivate);
+
+            foreach (var dealEntity in dealsToInactivate)
+            {
+                logger.LogInformation($"Billing Deal {dealEntity?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity?.CreditCardDetails.CardNumber)} has expired ({dealEntity?.CreditCardDetails.CardExpiration}). Setting it as inactive.");
+
+                await SendBillingDealCreditCardTokenExpiredEmail(dealEntity, terminals[dealEntity.TerminalID]);
             }
 
             return response;

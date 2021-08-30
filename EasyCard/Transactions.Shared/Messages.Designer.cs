@@ -106,6 +106,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Billing Deal Deactivated.
+        /// </summary>
+        public static string BillingDealDeactivated {
+            get {
+                return ResourceManager.GetString("BillingDealDeactivated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Billing Deal Deleted.
         /// </summary>
         public static string BillingDealDeleted {

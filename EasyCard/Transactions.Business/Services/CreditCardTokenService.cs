@@ -35,19 +35,25 @@ namespace Transactions.Business.Services
             await base.CreateEntity(entity, dbTransaction);
         }
 
-        public IQueryable<CreditCardTokenDetails> GetTokens()
+        public IQueryable<CreditCardTokenDetails> GetTokens(bool showIncactive = false)
         {
+            var tokens = context.CreditCardTokenDetails.AsQueryable();
+            if (!showIncactive)
+            {
+                tokens = tokens.Where(t => t.Active);
+            }
+
             if (user.IsAdmin())
             {
-                return context.CreditCardTokenDetails.Where(t => t.Active);
+                return tokens;
             }
             else if (user.IsTerminal())
             {
-                return context.CreditCardTokenDetails.Where(t => t.Active && t.TerminalID == user.GetTerminalID());
+                return tokens.Where(t => t.TerminalID == user.GetTerminalID());
             }
             else
             {
-                return context.CreditCardTokenDetails.Where(t => t.Active && t.MerchantID == user.GetMerchantID());
+                return tokens.Where(t => t.MerchantID == user.GetMerchantID());
             }
         }
 

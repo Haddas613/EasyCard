@@ -132,6 +132,9 @@
   <data name="BillingDealCreated" xml:space="preserve">
     <value>Billing Deal Created</value>
   </data>
+  <data name="BillingDealDeactivated" xml:space="preserve">
+    <value>Billing Deal Deactivated</value>
+  </data>
   <data name="BillingDealDeleted" xml:space="preserve">
     <value>Billing Deal Deleted</value>
   </data>

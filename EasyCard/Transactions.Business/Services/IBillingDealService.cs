@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
+using Shared.Api.Models;
 using Shared.Business;
 using System;
 using System.Collections.Generic;
@@ -19,5 +20,7 @@ namespace Transactions.Business.Services
         IQueryable<BillingDealHistory> GetBillingDealHistory(Guid billingDealID);
 
         Task UpdateEntityWithHistory(BillingDeal entity, string message, BillingDealOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null);
+
+        Task<OperationResponse> InactivateBillingDeals(IEnumerable<BillingDeal> billingDealsToIncactivate);
     }
 }
