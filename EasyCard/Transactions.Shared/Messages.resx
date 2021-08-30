@@ -207,6 +207,9 @@
   <data name="CreditCardSecureDetailsShouldBeOmitted" xml:space="preserve">
     <value>CreditCardSecureDetails should be omitted in case if credit card token present</value>
   </data>
+  <data name="CreditCardTokenChanged" xml:space="preserve">
+    <value>Credit Card Token changed</value>
+  </data>
   <data name="CvvRequired" xml:space="preserve">
     <value>CVV required</value>
   </data>

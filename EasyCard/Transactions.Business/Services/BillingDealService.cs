@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Newtonsoft.Json.Linq;
 using Shared.Business;
 using Shared.Business.AutoHistory;
 using Shared.Business.Security;
@@ -125,6 +126,19 @@ namespace Transactions.Business.Services
             {
                 return context.FutureBillings.AsNoTracking().Where(t => t.MerchantID == user.GetMerchantID());
             }
+        }
+
+        public Task AddCardTokenChangedHistory(BillingDeal billingDeal, Guid? newToken)
+        {
+            var obj = new
+            {
+                before = billingDeal.CreditCardToken?.ToString(),
+                after = newToken?.ToString(),
+            };
+
+            var changesStr = string.Concat("[", string.Join(",", JObject.FromObject(obj).ToString()), "]");
+
+            return AddHistory(billingDeal.BillingDealID, changesStr, Messages.CreditCardTokenChanged, BillingDealOperationCodesEnum.CreditCardTokenChanged);
         }
 
         private async Task AddHistory(Guid billingDealID, string opDescription, string message, BillingDealOperationCodesEnum operationCode)

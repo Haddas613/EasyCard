@@ -18,6 +18,8 @@ namespace Transactions.Business.Services
 
         IQueryable<BillingDealHistory> GetBillingDealHistory(Guid billingDealID);
 
+        Task AddCardTokenChangedHistory(BillingDeal billingDeal, Guid? newToken);
+
         Task UpdateEntityWithHistory(BillingDeal entity, string message, BillingDealOperationCodesEnum operationCode, IDbContextTransaction dbTransaction = null);
     }
 }
