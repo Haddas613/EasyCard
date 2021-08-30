@@ -261,6 +261,11 @@ namespace Transactions.Api.Controllers
                 billingDeal.InitialTransactionID = token.InitialTransactionID;
                 billingDeal.CreditCardDetails = new Business.Entities.CreditCardDetails();
 
+                if (billingDeal.CreditCardToken != token.CreditCardTokenID)
+                {
+                    await billingDealService.AddCardTokenChangedHistory(billingDeal, token.CreditCardTokenID);
+                }
+
                 mapper.Map(token, billingDeal.CreditCardDetails);
             }
             else if (model.PaymentType == PaymentTypeEnum.Bank)

@@ -340,6 +340,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Credit Card Token changed.
+        /// </summary>
+        public static string CreditCardTokenChanged {
+            get {
+                return ResourceManager.GetString("CreditCardTokenChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CVV required.
         /// </summary>
         public static string CvvRequired {
