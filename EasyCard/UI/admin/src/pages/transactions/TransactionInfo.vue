@@ -254,6 +254,13 @@ export default {
         await this.initThreeDotMenu();
       }
     },
+    async selectJ5(){
+      let operation = await this.$api.transactions.selectJ5(this.model.$paymentTransactionID);
+      
+      if(operation.status == "success" && operation.entityReference){
+        this.$router.push({ name: "Transaction", params: { id: operation.entityReference }});
+      }
+    },
     async initThreeDotMenu(){
       var threeDotMenu = [{
         text: this.$t("Print"),
@@ -268,6 +275,13 @@ export default {
           fn: () => {
             this.transactionSlipDialog = true;
           }
+        });
+      }
+
+      if(this.model.$status == 'awaitingToSelectJ5' && this.model.$jDealType == 'J5'){
+        threeDotMenu.push({
+          text: this.$t("ConvertToJ4"),
+          fn: async() => await this.selectJ5()
         });
       }
 

@@ -113,4 +113,8 @@ export default class TransactionsApi {
     async sendTransactionSlipEmail(data) {
       return await this.base.post(this.transactionsUrl + '/send-transaction-slip-email', data);
     }
+
+    async selectJ5(transactionID){
+      return await this.base.post(this.transactionsUrl + `/selectJ5/${transactionID}`);
+    }
 }
