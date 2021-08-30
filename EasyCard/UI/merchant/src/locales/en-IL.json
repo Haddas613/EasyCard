@@ -127,6 +127,7 @@
   "OnlyCSSFilesAreAllowed": "Only CSS files are allowed",
   "MaxFileSizeIs1MB": "Max file size is 1MB",
   "OnlyNumbersAreAllowed": "Only numbers are allowed",
+  "PleaseSelectCardToken": "Please Select Card Token",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",

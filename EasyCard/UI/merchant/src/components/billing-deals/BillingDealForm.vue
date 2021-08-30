@@ -336,6 +336,16 @@ export default {
         result.creditCardToken = null;
         result.bankDetails = this.$refs.bankDetails.getData();
       }
+      else if(this.model.paymentType == appConstants.transaction.paymentTypes.card){
+        if(!this.token){
+          this.$toasted.show(this.$t("PleaseSelectCardToken"), { type: "error" });
+          if(this.customerTokens.length > 0){
+            this.tokensDialog = true;
+          }
+          return;
+        }
+        result.bankDetails = null;
+      }
 
       //if this is edit and billing schedule has not been clicked, no need to validate
       if (!this.$refs.billingScheduleRef && this.model.billingDealID) {
@@ -416,11 +426,15 @@ export default {
           )
         ).data || [];
       if (this.model.creditCardToken) {
-        this.selectedToken = this.lodash.find(
-          this.customerTokens,
-          t => t.creditCardTokenID === this.model.creditCardToken
-        );
-        
+        if(!this.model.cardExpired){
+          this.selectedToken = this.lodash.find(
+            this.customerTokens,
+            t => t.creditCardTokenID === this.model.creditCardToken
+          );
+        }else{
+          this.token = null;
+          this.model.creditCardDetails = null;
+        }
       }
     }
     if(this.model.currency != 'ILS'){

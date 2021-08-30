@@ -127,6 +127,7 @@
   "OnlyCSSFilesAreAllowed": "רק קבצי CSS מותרים",
   "MaxFileSizeIs1MB": "גודל הקובץ המרבי הוא 1MB",
   "OnlyNumbersAreAllowed": "הכנס מספרים בלבד",
+  "PleaseSelectCardToken": "אנא בחר כרטיס אסימון",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ת.ז.",
