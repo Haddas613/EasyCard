@@ -204,6 +204,19 @@ namespace IdentityServerClient
             }
         }
 
+        public async Task<ApiKeyOperationResponse> GetTerminalApiKey(Guid terminalID)
+        {
+            try
+            {
+                return await webApiClient.Get<ApiKeyOperationResponse>(configuration.Authority, $"api/terminalapikeys/{terminalID}", null, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                logger.LogError(clientError.Message);
+                return clientError.TryConvert(new ApiKeyOperationResponse { Message = clientError.Message });
+            }
+        }
+
         private async Task<NameValueCollection> BuildHeaders()
         {
             var token = await tokenService.GetToken();

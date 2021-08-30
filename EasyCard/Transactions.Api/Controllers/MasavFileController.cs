@@ -24,6 +24,7 @@ using Transactions.Business.Entities;
 using Transactions.Business.Services;
 using Z.EntityFramework.Plus;
 using SharedHelpers = Shared.Helpers;
+using SharedApi = Shared.Api;
 
 namespace Transactions.Api.Controllers
 {
@@ -162,21 +163,27 @@ namespace Transactions.Api.Controllers
 
             var bankDetails = terminal.BankDetails;
 
+            if (bankDetails == null)
+            {
+                var response = new OperationResponse() { Status = SharedApi.Models.Enums.StatusEnum.Error, Message = Shared.Messages.TerminalMustHaveBankDetailsSpecified };
+                return BadRequest(response);
+            }
+
             var fileDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
 
             long? masavFileID = await masavFileService.GenerateMasavFile(terminal.MerchantID, terminalID, bankDetails.Bank, bankDetails.BankBranch, bankDetails.BankAccount, fileDate);
 
             if (masavFileID.HasValue)
             {
-                var response = new OperationResponse() { EntityID = masavFileID.Value, Message = "Masav file generated" };
+                var response = new OperationResponse() { EntityID = masavFileID.Value, Message = Shared.Messages.MasavFileGeneratedSuccessfully };
 
                 return Ok(response);
             }
             else
             {
-                var response = new OperationResponse() { Message = "Msav file not geenrated" };
+                var response = new OperationResponse() { Status = SharedApi.Models.Enums.StatusEnum.Error, Message = Shared.Messages.MasavFileWasNotGenerated };
 
-                return Ok(response);
+                return BadRequest(response);
             }
         }
 
@@ -208,7 +215,7 @@ namespace Transactions.Api.Controllers
 
             var res = masavFileSorageService.GetDownloadUrl(masavFile.StorageReference);
 
-            return Ok(res);
+            return Ok(new OperationResponse { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityReference = res });
         }
 
         [HttpPost("setPayed/{masavFileID}")]

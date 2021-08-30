@@ -216,4 +216,7 @@
   <data name="NationalIDInvalid" xml:space="preserve">
     <value>National ID must be valid Israeli National ID</value>
   </data>
+  <data name="TotalSum" xml:space="preserve">
+    <value>Total Sum</value>
+  </data>
 </root>

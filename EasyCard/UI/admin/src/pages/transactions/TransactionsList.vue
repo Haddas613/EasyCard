@@ -53,7 +53,10 @@
             <v-icon v-if="item.$cardPresence == 'regular'" color="success">mdi-credit-card-check</v-icon>
             <v-icon v-else>mdi-credit-card-off-outline</v-icon>
           </span>
-        </template>  
+        </template>
+        <template v-slot:item.cardNumber="{ item }">
+          <span dir="ltr">{{item.cardNumber}}</span>
+        </template>   
         <template v-slot:item.transactionType="{ item }">
           <span :title="item.transactionType">
             <v-icon v-if="item.$transactionType == 'regularDeal'" color="primary">mdi-cash</v-icon>

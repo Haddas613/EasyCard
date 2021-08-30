@@ -34,10 +34,38 @@
                   <p>{{model.$billingDealTimestamp | ecdate('LLLL')}}</p>
                 </v-col>
 
-                <v-col cols="12" md="4" class="info-block">
+                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('Active')}}</p>
-                  <p v-if="model.active" class="success--text">{{$t("Yes")}}</p>
+                  <p v-if="model.paused" class="accent--text">{{$t("Paused")}}</p>
+                  <p v-else-if="model.active" class="success--text">{{$t("Yes")}}</p>
                   <p v-else class="error--text">{{$t("No")}}</p>
+                </v-col>
+                <template v-if="model.paused">
+                  <v-col cols="12" md="4" class="info-block">
+                    <p class="caption accent--text">{{$t('From')}}</p>
+                    <p>{{model.pausedFrom | ecdate}}</p>
+                  </v-col>
+                  <v-col cols="12" md="4" class="info-block">
+                    <p class="caption accent--text">{{$t('To')}}</p>
+                    <p>{{model.pausedTo | ecdate}}</p>
+                  </v-col>
+                </template>
+                <template v-else>
+                  <v-col cols="12" md="4" class="info-block">
+                    <p class="caption ecgray--text text--darken-2">{{$t('NextScheduledTransaction')}}</p>
+                    <p v-if="model.$nextScheduledTransaction">{{model.$nextScheduledTransaction | ecdate('L')}}</p>
+                    <p v-else>-</p>
+                  </v-col>
+                </template>
+              </v-row>
+              <v-row class="pt-2 info-container" v-if="model.lastError">
+                <v-col cols="12" md="4" class="info-block">
+                  <p class="caption error--text text--darken-2">{{$t('LastError')}}</p>
+                  <p>{{model.lastError || '-'}}</p>
+                </v-col>
+                <v-col cols="12" md="4" class="info-block">
+                  <p class="caption error--text text--darken-2">{{$t('LastErrorCorrelationID')}}</p>
+                  <p>{{model.lastErrorCorrelationID || '-'}}</p>
                 </v-col>
               </v-row>
             </v-card-text>

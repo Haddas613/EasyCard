@@ -70,7 +70,7 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bi montly.
+        ///   Looks up a localized string similar to Bi-montly.
         /// </summary>
         public static string BiMontly {
             get {

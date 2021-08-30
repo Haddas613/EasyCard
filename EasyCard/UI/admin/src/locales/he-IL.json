@@ -374,6 +374,11 @@
   "BankAccount": "מספר חשבון בנק",
   "ExtendedResponseForCheckoutTransaction": "תגובה מורחבת עסקאות רידיירקט",
   "PayedDate": "תאריך תשלום",
+  "LastError": "שגיאה אחרונה",
+  "LastErrorCorrelationID": "מזהה מתאם שגיאה אחרונה",
+  "LedgerAccount": "חשבון ספר חשבונות",
+  "Charge": "חיוב",
+  "NextScheduledTransaction": "העסקה המתוזמנת הבאה",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -397,6 +402,7 @@
   "GoToInvoice": "עבור לחשבונית",
   "SelectAll": "בחר הכל",
   "ResetPrivateKey": "איפוס מפתח פרטי",
+  "ShowPrivateKey": "הצג מפתח פרטי",
   "ResetSharedKey": "איפוס מפתח משותף",
   "ShowSharedKey": "הצג מפתח משותף",
   "CreateNew": "צור חדש",
@@ -433,6 +439,7 @@
   "PairDevice": "פינפד PAX",
   "RequestLog": "לוג בקשות",
   "Download": "הורד",
+  "ConvertToJ4": "המרה ל- J4",
 
   "--AUTH--": null,
   "Login": "כניסה",

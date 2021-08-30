@@ -282,6 +282,12 @@
   <data name="J5NotAllowed" xml:space="preserve">
     <value>J5 deal is not allowed</value>
   </data>
+  <data name="MasavFileGeneratedSuccessfully" xml:space="preserve">
+    <value>Masav File generated successfully</value>
+  </data>
+  <data name="MasavFileWasNotGenerated" xml:space="preserve">
+    <value>Masav File was not generated</value>
+  </data>
   <data name="NothingToTransmit" xml:space="preserve">
     <value>Nothing to transmit</value>
   </data>
@@ -312,6 +318,9 @@
   <data name="PaymentRequestUpdated" xml:space="preserve">
     <value>Payment Request Updated</value>
   </data>
+  <data name="PaymentTypeCannotBeChanged" xml:space="preserve">
+    <value>Payment type can not be changed</value>
+  </data>
   <data name="PleaseCheckValues" xml:space="preserve">
     <value>Please check specified values</value>
   </data>
@@ -332,6 +341,9 @@
   </data>
   <data name="TerminalForUpdateParametersRequired" xml:space="preserve">
     <value>Terminal for update parameters is required</value>
+  </data>
+  <data name="TerminalMustHaveBankDetailsSpecified" xml:space="preserve">
+    <value>Terminal must have Bank details specified</value>
   </data>
   <data name="ThereAreNoInvoicesToResend" xml:space="preserve">
     <value>There are no invoices to resend</value>

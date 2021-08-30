@@ -127,6 +127,7 @@
   "OnlyCSSFilesAreAllowed": "Only CSS files are allowed",
   "MaxFileSizeIs1MB": "Max file size is 1MB",
   "OnlyNumbersAreAllowed": "Only numbers are allowed",
+  "PleaseSelectCardToken": "Please Select Card Token",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -311,6 +312,7 @@
   "ExtendedResponseForCheckoutTransaction": "Extended response for checkout transaction",
   "VoucherNumber": "Voucher Number",
   "PayedDate": "Payed Date",
+  "NextScheduledTransaction": "Next Scheduled Transaction",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -361,6 +363,8 @@
   "CreatePaymentLink": "Create Payment Link",
   "Renew": "Renew",
   "Download": "Download",
+  "GenerateMasavFile": "Generate Masav File",
+  "ConvertToJ4": "Convert to J4",
 
   "--AUTH--": null,
   "Login": "Login",

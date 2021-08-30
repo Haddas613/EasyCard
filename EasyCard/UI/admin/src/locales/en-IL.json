@@ -370,6 +370,11 @@
   "BankAccount": "Bank Account",
   "ExtendedResponseForCheckoutTransaction": "Extended response for checkout transaction",
   "PayedDate": "Payed Date",
+  "LastError": "Last Error",
+  "LastErrorCorrelationID": "Last Error Correlation ID",
+  "LedgerAccount": "Ledger Account",
+  "Charge": "Charge",
+  "NextScheduledTransaction": "Next Scheduled Transaction",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -393,6 +398,7 @@
   "GoToInvoice": "Go to invoice",
   "SelectAll": "Select all",
   "ResetPrivateKey": "Reset Private Key",
+  "ShowPrivateKey": "Show Private Key",
   "ResetSharedKey": "Reset Shared Key",
   "ShowSharedKey": "Show Shared Key",
   "CreateNew": "Create new",
@@ -429,6 +435,7 @@
   "PairDevice": "Pair Device",
   "RequestLog": "Request Log",
   "Download": "Download",
+  "ConvertToJ4": "Convert to J4",
 
   "--AUTH--": null,
   "Login": "Login",

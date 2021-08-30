@@ -337,7 +337,7 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.TerminalID).IsRequired(true);
                 builder.Property(p => p.MerchantID).IsRequired(true);
 
-                builder.Property(p => p.CreditCardToken).HasColumnName("CreditCardToken");
+                builder.Property(p => p.CreditCardToken).IsRequired(false).HasColumnName("CreditCardToken");
 
                 builder.OwnsOne(b => b.CreditCardDetails, s =>
                 {

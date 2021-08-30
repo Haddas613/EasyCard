@@ -316,6 +316,26 @@
     </v-card>
 
     <v-card outlined class="mb-2" v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
+      <v-card-title class="pb-0 mb-0 subtitle-2 black--text">{{$t("PrivateApiKey")}}</v-card-title>
+      <v-card-text>
+        <v-row no-gutters>
+          <v-col cols="12" md="12">
+            <v-btn color="primary" small @click="resetPrivateKey()">{{$t("ResetPrivateKey")}}</v-btn>
+            <v-btn color="success" class="mx-1" :disabled="privateApiKey" small @click="showPrivateKey()">{{$t("ShowPrivateKey")}}</v-btn>
+          </v-col>
+          <v-col cols="12" md="12" class="mt-4">
+            <v-text-field
+              v-if="privateApiKey"
+              :value="privateApiKey"
+              :label="$t('PrivateApiKey')"
+              readonly
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+
+    <v-card outlined class="mb-2" v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
       <v-card-title class="pb-0 mb-0 subtitle-2 black--text">{{$t("Checkout")}}</v-card-title>
       <v-card-text>
         <v-row no-gutters>
@@ -556,6 +576,17 @@ export default {
         return;
       }
       let operation = await this.$api.terminals.resetPrivateApiKey(
+        this.model.terminalID
+      );
+      if (!this.$apiSuccess(operation)) return;
+
+      this.privateApiKey = operation.entityReference;
+    },
+    async showPrivateKey(){
+      if (!this.model.terminalID || this.privateApiKey) {
+        return;
+      }
+      let operation = await this.$api.terminals.getPrivateApiKey(
         this.model.terminalID
       );
       if (!this.$apiSuccess(operation)) return;

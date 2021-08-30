@@ -42,7 +42,7 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<Guid>("CreditCardToken")
+                    b.Property<Guid?>("CreditCardToken")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("CreditCardToken");
 

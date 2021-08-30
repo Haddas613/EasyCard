@@ -556,6 +556,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Masav File generated successfully.
+        /// </summary>
+        public static string MasavFileGeneratedSuccessfully {
+            get {
+                return ResourceManager.GetString("MasavFileGeneratedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Masav File was not generated.
+        /// </summary>
+        public static string MasavFileWasNotGenerated {
+            get {
+                return ResourceManager.GetString("MasavFileWasNotGenerated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nothing to transmit.
         /// </summary>
         public static string NothingToTransmit {
@@ -646,6 +664,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment type can not be changed.
+        /// </summary>
+        public static string PaymentTypeCannotBeChanged {
+            get {
+                return ResourceManager.GetString("PaymentTypeCannotBeChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please check specified values.
         /// </summary>
         public static string PleaseCheckValues {
@@ -705,6 +732,15 @@ namespace Transactions.Shared {
         public static string TerminalForUpdateParametersRequired {
             get {
                 return ResourceManager.GetString("TerminalForUpdateParametersRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal must have Bank details specified.
+        /// </summary>
+        public static string TerminalMustHaveBankDetailsSpecified {
+            get {
+                return ResourceManager.GetString("TerminalMustHaveBankDetailsSpecified", resourceCulture);
             }
         }
         
