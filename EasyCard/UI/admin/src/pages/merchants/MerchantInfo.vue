@@ -98,15 +98,28 @@
 
           <template v-slot:append="{ item }">
             <v-item-group borderless dense>
-              <v-btn icon link :to="{name: 'EditTerminal', params: {id: item.$terminalID}}">
+              <template v-if="$vuetify.breakpoint.smAndDown">
+                <v-btn icon link :to="{name: 'EditTerminal', params: {id: item.$terminalID}}">
                 <v-icon color="secondary">mdi-pencil</v-icon>
-              </v-btn>
-              <v-btn class="mx-1" color="error" icon v-if="item.$status != 'disabled'" @click="disable(item)">
-                <v-icon small>mdi-cancel</v-icon>
-              </v-btn>
-              <v-btn class="mx-1" color="success" icon v-if="item.$status == 'disabled'" @click="enable(item)">
-                <v-icon small>mdi-chevron-down-circle</v-icon>
-              </v-btn>
+                </v-btn>
+                <v-btn class="mx-1" color="error" icon v-if="item.$status != 'disabled'" @click="disable(item)">
+                  <v-icon small>mdi-cancel</v-icon>
+                </v-btn>
+                <v-btn class="mx-1" color="success" icon v-if="item.$status == 'disabled'" @click="enable(item)">
+                  <v-icon small>mdi-chevron-down-circle</v-icon>
+                </v-btn>
+              </template>
+              <template v-else>
+                <v-btn link small outlined :to="{name: 'EditTerminal', params: {id: item.$terminalID}}">
+                  <v-icon color="secondary">mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn class="mx-1" small outlined color="error" v-if="item.$status != 'disabled'" @click="disable(item)">
+                  <v-icon small>mdi-cancel</v-icon>
+                </v-btn>
+                <v-btn class="mx-1" small outlined color="success" v-if="item.$status == 'disabled'" @click="enable(item)">
+                  <v-icon small>mdi-chevron-down-circle</v-icon>
+                </v-btn>
+              </template>
             </v-item-group>
           </template>
         </ec-list>
