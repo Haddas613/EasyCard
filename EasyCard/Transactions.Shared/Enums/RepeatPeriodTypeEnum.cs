@@ -10,11 +10,11 @@ namespace Transactions.Shared.Enums
         [EnumMember(Value = "oneTime")]
         OneTime = 0,
 
-        [EnumMember(Value = "montly")]
-        Montly = 1,
+        [EnumMember(Value = "monthly")]
+        Monthly = 1,
 
-        [EnumMember(Value = "biMontly")]
-        BiMontly = 2,
+        [EnumMember(Value = "biMonthly")]
+        BiMonthly = 2,
 
         [EnumMember(Value = "quarter")]
         Quarter = 3,
