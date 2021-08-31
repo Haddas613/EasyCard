@@ -16,6 +16,24 @@
           ></v-select>
         </v-col>
         <v-col cols="12" md="3" sm="6">
+          <v-text-field
+            v-model="model.paymentTransactionID"
+            :label="$t('PaymentTransactionIDFull')"
+            :rules="[vr.primitives.guid]"
+            placeholder="b51f5306-e075-4c9a-a4bf-680f91dba205"
+            clearable
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="3" sm="6">
+          <v-text-field
+            v-model="model.paymentTransactionIDShort"
+            :label="$t('PaymentTransactionIDShort')"
+            :rules="[vr.primitives.stringLength(8,8)]"
+            placeholder="b51f5306"
+            clearable
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="3" sm="6">
           <v-select
             :items="dictionaries.quickDateFilterTypeEnum"
             item-text="description"

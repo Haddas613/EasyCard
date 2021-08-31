@@ -314,6 +314,8 @@
   "PayedDate": "תאריך תשלום",
   "NextScheduledTransaction": "העסקה המתוזמנת הבאה",
   "ShvaDealIdLast5Digits": "מזהה עסקת שב\"א 5 הספרות האחרונות",
+  "PaymentTransactionIDShort": "קצר מזהה עסקה",
+  "PaymentTransactionIDFull": "מזהה עסקה ארוך",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

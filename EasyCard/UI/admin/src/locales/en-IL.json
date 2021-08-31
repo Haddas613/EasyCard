@@ -376,6 +376,8 @@
   "Charge": "Charge",
   "NextScheduledTransaction": "Next Scheduled Transaction",
   "ShvaDealIdLast5Digits": "Shva Deal ID Last 5 digits",
+  "PaymentTransactionIDShort": "Transaction ID (short)",
+  "PaymentTransactionIDFull": "Transaction ID (full)",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

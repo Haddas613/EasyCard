@@ -24,6 +24,11 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => EF.Functions.Like(t.ShvaTransactionDetails.ShvaDealID, $"%{filter.ShvaDealIDLastDigits}"));
             }
 
+            if (!string.IsNullOrWhiteSpace(filter.PaymentTransactionIDShort))
+            {
+                src = src.Where(t => EF.Functions.Like(t.PaymentTransactionID.ToString(), $"{filter.PaymentTransactionIDShort}%"));
+            }
+
             if (filter.TerminalID != null)
             {
                 src = src.Where(t => t.TerminalID == filter.TerminalID);

@@ -110,5 +110,8 @@ namespace Transactions.Api.Models.Transactions
 
         [StringLength(5, MinimumLength = 5)]
         public string ShvaDealIDLastDigits { get; set; }
+
+        [StringLength(8, MinimumLength = 8)]
+        public string PaymentTransactionIDShort { get; set; }
     }
 }
