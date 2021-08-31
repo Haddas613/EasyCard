@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Shared.Api.UI;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using System;
@@ -15,8 +16,10 @@ namespace Transactions.Api.Models.Transactions
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class TransactionSummary
     {
+        [MetadataOptions(Order = 1)]
         public Guid PaymentTransactionID { get; set; }
 
+        [MetadataOptions(Order = 2)]
         public Guid TerminalID { get; set; }
 
         public decimal TransactionAmount { get; set; }
@@ -78,5 +81,8 @@ namespace Transactions.Api.Models.Transactions
         public CardPresenceEnum CardPresence { get; set; }
 
         public string CardOwnerName { get; set; }
+
+        [MetadataOptions(Order = 3)]
+        public string ShvaDealID { get; set; }
     }
 }

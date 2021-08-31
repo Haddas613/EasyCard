@@ -178,6 +178,15 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Shva Deal ID.
+        /// </summary>
+        internal static string ShvaDealID {
+            get {
+                return ResourceManager.GetString("ShvaDealID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spec. type.
         /// </summary>
         internal static string SpecialTransactionType {
@@ -232,7 +241,7 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction type.
+        ///   Looks up a localized string similar to Tran. type.
         /// </summary>
         internal static string TransactionType {
             get {

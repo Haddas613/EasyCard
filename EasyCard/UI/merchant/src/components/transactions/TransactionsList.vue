@@ -1,7 +1,7 @@
 <template>
   <v-flex>
     <transaction-slip-dialog ref="slipDialog" v-if="selectedTransaction" :key="selectedTransaction.$paymentTransactionID"  :transaction="selectedTransaction" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
-    <ec-list :items="data" v-if="data">
+    <ec-list :items="data" v-if="data" dashed>
       <template v-slot:prepend="{ item }" v-if="selectable">
          <v-checkbox
             v-model="item.selected"
@@ -18,8 +18,14 @@
           md="6"
           lg="6"
           class="pt-1 caption ecgray--text"
-        >{{item.$transactionTimestamp | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
-        <v-col cols="12" md="6" lg="6">{{item.cardOwnerName || '-'}}</v-col>
+        >
+          <p class="my-0">{{item.$transactionTimestamp | ecdate('DD/MM/YYYY HH:mm')}}</p>
+          <p class="my-0 secondary--text">
+            <span v-if="$vuetify.breakpoint.smAndDown">{{ item.shvaDealID | rlength(5)}}</span>
+            <span v-else>{{ item.shvaDealID }}</span>
+          </p>
+        </v-col>
+        <v-col cols="12" md="6" lg="6" class="d-flex align-center">{{item.cardOwnerName || '-'}}</v-col>
       </template>
 
       <template v-slot:right="{ item }">

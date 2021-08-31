@@ -156,6 +156,9 @@
   <data name="RejectionReason" xml:space="preserve">
     <value>סיבת דחיה</value>
   </data>
+  <data name="ShvaDealID" xml:space="preserve">
+    <value>מזהה עסקת שב"א</value>
+  </data>
   <data name="SpecialTransactionType" xml:space="preserve">
     <value>סוג מיוחד</value>
   </data>

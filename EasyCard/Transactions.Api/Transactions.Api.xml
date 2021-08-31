@@ -1819,6 +1819,11 @@
               Looks up a localized string similar to Rej. Reason.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.ShvaDealID">
+            <summary>
+              Looks up a localized string similar to Shva Deal ID.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.SpecialTransactionType">
             <summary>
               Looks up a localized string similar to Spec. type.
@@ -1851,7 +1856,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.TransactionType">
             <summary>
-              Looks up a localized string similar to Transaction type.
+              Looks up a localized string similar to Tran. type.
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.TransmitTransactionsRequest">
