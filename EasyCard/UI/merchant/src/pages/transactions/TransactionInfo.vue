@@ -13,6 +13,13 @@
               <v-chip color="primary" small>{{model.$paymentTransactionID | guid}}</v-chip>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('ShvaDealID')}}</p>
+              <p>
+                <b v-if="model.shvaTransactionDetails">{{model.shvaTransactionDetails.shvaDealID}}</b>
+                <span v-else>-</span>
+              </p>
+            </v-col>
+            <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
               <p>{{model.terminalName}}</p>
             </v-col>
