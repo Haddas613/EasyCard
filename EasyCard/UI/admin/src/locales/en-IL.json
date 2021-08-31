@@ -375,6 +375,7 @@
   "LedgerAccount": "Ledger Account",
   "Charge": "Charge",
   "NextScheduledTransaction": "Next Scheduled Transaction",
+  "ShvaDealIdLast5Digits": "Shva Deal ID Last 5 digits",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

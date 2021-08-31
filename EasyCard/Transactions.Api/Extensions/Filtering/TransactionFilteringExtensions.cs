@@ -19,6 +19,11 @@ namespace Transactions.Api.Extensions.Filtering
                 return src;
             }
 
+            if (!string.IsNullOrWhiteSpace(filter.ShvaDealIDLastDigits))
+            {
+                src = src.Where(t => EF.Functions.Like(t.ShvaTransactionDetails.ShvaDealID, $"%{filter.ShvaDealIDLastDigits}"));
+            }
+
             if (filter.TerminalID != null)
             {
                 src = src.Where(t => t.TerminalID == filter.TerminalID);

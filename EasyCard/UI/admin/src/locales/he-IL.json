@@ -379,6 +379,7 @@
   "LedgerAccount": "חשבון ספר חשבונות",
   "Charge": "חיוב",
   "NextScheduledTransaction": "העסקה המתוזמנת הבאה",
+  "ShvaDealIdLast5Digits": "מזהה עסקת שב\"א 5 הספרות האחרונות",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

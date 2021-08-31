@@ -26,6 +26,25 @@
             clearable
           ></v-select>
         </v-col>
+        <v-col cols="12" md="3">
+          <v-text-field
+            v-model="model.shvaDealIDLastDigits"
+            :label="$t('ShvaDealIdLast5Digits')"
+            :rules="[vr.primitives.stringLength(5,5), vr.primitives.numeric()]"
+            clearable
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="3" sm="6">
+          <v-select
+            :items="paymentTypesFiltered"
+            item-text="description"
+            item-value="code"
+            v-model="model.paymentType"
+            :label="$t('PaymentType')"
+            hide-details="true"
+            clearable
+          ></v-select>
+        </v-col>
         <v-col cols="12" md="3" sm="6">
           <v-select
             :items="dictionaries.quickDateFilterTypeEnum"
@@ -135,18 +154,7 @@
             clearable
           ></v-select>
         </v-col>
-        <v-col cols="12" md="3" sm="6">
-          <v-select
-            :items="paymentTypesFiltered"
-            item-text="description"
-            item-value="code"
-            v-model="model.paymentType"
-            :label="$t('PaymentType')"
-            hide-details="true"
-            clearable
-          ></v-select>
-        </v-col>
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="3">
           <v-row class="pt-3">
             <v-col cols="12" md="6">
                 <v-switch v-model="model.hasInvoice" hide-details>
@@ -190,6 +198,8 @@
 </template>
 
 <script>
+import ValidationRules from "../../helpers/validation-rules";
+
 export default {
   name: "TransactionsFilter",
   components: {
@@ -203,8 +213,9 @@ export default {
     return {
       model: { ...this.filterData },
       dictionaries: {},
-      paymentTypesFiltered: null,
-      formIsValid: true
+      paymentTypesFiltered: [],
+      formIsValid: true,
+      vr: ValidationRules
     };
   },
   async mounted() {

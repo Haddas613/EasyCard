@@ -107,5 +107,8 @@ namespace Transactions.Api.Models.Transactions
         public bool? IsPaymentRequest { get; set; }
 
         public PaymentTypeEnum? PaymentType { get; set; }
+
+        [StringLength(5, MinimumLength = 5)]
+        public string ShvaDealIDLastDigits { get; set; }
     }
 }

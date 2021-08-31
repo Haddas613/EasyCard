@@ -51,6 +51,26 @@
             </v-col>
             <v-col cols="12" md="6" class="py-0">
               <v-select
+                :items="paymentTypesFiltered"
+                item-text="description"
+                item-value="code"
+                v-model="model.paymentType"
+                :label="$t('PaymentType')"
+                outlined
+                clearable
+              ></v-select>
+            </v-col>
+            <v-col cols="12" md="6" class="py-0">
+              <v-text-field
+                v-model="model.shvaDealIDLastDigits"
+                :label="$t('ShvaDealIdLast5Digits')"
+                :rules="[vr.primitives.stringLength(5,5), vr.primitives.numeric()]"
+                clearable
+                outlined
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6" class="py-0">
+              <v-select
                 :items="dictionaries.transactionTypeEnum"
                 item-text="description"
                 item-value="code"
@@ -177,17 +197,6 @@
                 item-value="code"
                 v-model="model.documentOrigin"
                 :label="$t('Origin')"
-                outlined
-                clearable
-              ></v-select>
-            </v-col>
-            <v-col cols="12" class="py-0">
-              <v-select
-                :items="paymentTypesFiltered"
-                item-text="description"
-                item-value="code"
-                v-model="model.paymentType"
-                :label="$t('PaymentType')"
                 outlined
                 clearable
               ></v-select>
