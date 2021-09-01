@@ -421,7 +421,7 @@
         ></v-select>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="$featureEnabled(model, appConstants.terminal.features.Billing)">
       <v-col cols="12" class="subtitle-2 black--text pb-3">
         {{$t("BankAccountDetails")}}
         <v-divider class="pt-1"></v-divider>

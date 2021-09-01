@@ -437,7 +437,7 @@
       </v-card-text>
     </v-card>
 
-    <v-card outlined class="mb-2">
+    <v-card outlined class="mb-2" v-if="$featureEnabled(model, appConstants.terminal.features.Billing)">
       <v-card-text>
         <v-row>
           <v-col cols="12" class="subtitle-2 black--text pb-3">
