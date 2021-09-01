@@ -45,6 +45,10 @@ namespace Transactions.Api.Extensions.Filtering
             {
                 src = src.Where(t => (t.PausedFrom != null || t.PausedFrom >= today) && (t.PausedTo != null || t.PausedTo >= today));
             }
+            else if (filter.HasError == true)
+            {
+                src = src.Where(t => t.HasError);
+            }
             else
             {
                 src = src.Where(t => t.Active == true);

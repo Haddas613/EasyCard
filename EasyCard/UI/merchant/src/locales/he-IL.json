@@ -317,6 +317,7 @@
   "ShvaDealIdLast5Digits": "מזהה עסקת שב\"א 5 הספרות האחרונות",
   "PaymentTransactionIDShort": "קצר מזהה עסקה",
   "PaymentTransactionIDFull": "מזהה עסקה ארוך",
+  "HasError": "בעייתי",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

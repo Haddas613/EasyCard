@@ -75,6 +75,13 @@
               </template>
             </v-switch>
           </v-col>
+          <v-col cols="3">
+            <v-switch v-model="billingDealsFilter.hasError" @change="switchFilterChanged('hasError')">
+              <template v-slot:label>
+                <small>{{$t('HasError')}}</small>
+              </template>
+            </v-switch>
+          </v-col>
         </v-row>
       </v-card-text>
     </v-card>
@@ -316,7 +323,7 @@ export default {
       }
     },
     async switchFilterChanged(type){
-      let allTypes = ['showDeleted', 'actual', 'paused', 'finished'].filter(v => v != type);
+      let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError'].filter(v => v != type);
       for(var t of allTypes){
         this.$set(this.billingDealsFilter, t, false);
       }

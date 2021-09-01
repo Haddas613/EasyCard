@@ -58,6 +58,8 @@ namespace Transactions.Api.Models.Billing
 
         public bool Paused { get; set; }
 
+        public bool HasError { get; set; }
+
         public PaymentTypeEnum? PaymentType { get; set; }
     }
 }

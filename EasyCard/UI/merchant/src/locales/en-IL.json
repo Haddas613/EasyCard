@@ -317,6 +317,7 @@
   "ShvaDealIdLast5Digits": "Shva Deal ID Last 5 digits",
   "PaymentTransactionIDShort": "Transaction ID (short)",
   "PaymentTransactionIDFull": "Transaction ID (full)",
+  "HasError": "Has Error",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
