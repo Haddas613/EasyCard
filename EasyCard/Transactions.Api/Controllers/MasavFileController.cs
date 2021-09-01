@@ -175,7 +175,7 @@ namespace Transactions.Api.Controllers
 
             if (masavFileID.HasValue)
             {
-                var response = new OperationResponse() { EntityID = masavFileID.Value, Message = Shared.Messages.MasavFileGeneratedSuccessfully };
+                var response = new OperationResponse() { Status = SharedApi.Models.Enums.StatusEnum.Success, EntityID = masavFileID.Value, Message = Shared.Messages.MasavFileGeneratedSuccessfully };
 
                 return Ok(response);
             }

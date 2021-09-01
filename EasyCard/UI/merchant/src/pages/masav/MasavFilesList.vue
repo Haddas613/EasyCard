@@ -4,7 +4,7 @@
     <template v-slot:title>{{$t('GenerateMasavFile')}}</template>
     <template>
       <v-form ref="form" lazy-validation>
-        <v-row>
+        <v-row no-gutters class="mx-2 pt-2">
           <terminal-select v-model="selectedTerminal"></terminal-select>
         </v-row>
       </v-form>
