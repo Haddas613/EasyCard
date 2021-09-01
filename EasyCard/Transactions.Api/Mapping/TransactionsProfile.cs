@@ -103,6 +103,9 @@ namespace Transactions.Api.Mapping
 
             CreateMap<Business.Entities.MasavFile, MasavFileSummary>();
             CreateMap<Business.Entities.MasavFileRow, MasavFileRowSummary>();
+
+            CreateMap<SharedIntegration.Models.DealDetails, Merchants.Business.Entities.Billing.Consumer>()
+                .ForMember(d => d.ConsumerID, o => o.Ignore());
         }
     }
 }

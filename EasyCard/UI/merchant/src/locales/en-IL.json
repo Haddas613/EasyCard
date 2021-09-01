@@ -165,6 +165,7 @@
   "Expiry": "Expiry",
   "NatID": "Nat. ID",
   "SaveCard": "Save Card",
+  "SaveCardCreateNewCustomer": "Save Card (create new customer)",
   "AdditionalSettings": "Additional Settings",
   "SpecialTransactionType": "Special Transaction Type",
   "CardOwnerNationalID": "Card Owner National ID",

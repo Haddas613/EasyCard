@@ -344,6 +344,11 @@ namespace Transactions.Api.Controllers
                     throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDIsNotValid);
                 }
 
+                if (model.DealDetails.ConsumerID == null)
+                {
+                    model.DealDetails.ConsumerID = await CreateConsumer(model, merchantID.Value);
+                }
+
                 var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
                 mapper.Map(model, tokenRequest);
 
@@ -1511,6 +1516,28 @@ namespace Transactions.Api.Controllers
             {
                 logger.LogError($"{nameof(NotifyStatusChanged)} ERROR: {ex.Message}");
             }
+        }
+
+        /// <summary>
+        /// Creates consumer based on transaction data. To be used when "SaveCreditCard" flag is true, but no customer is supplied
+        /// </summary>
+        /// <param name="transaction">Transaction</param>
+        /// <param name="merchantID">Merchant ID</param>
+        /// <returns>New customer ID</returns>
+        private async Task<Guid> CreateConsumer(CreateTransactionRequest transaction, Guid merchantID)
+        {
+            var consumer = new Merchants.Business.Entities.Billing.Consumer();
+
+            mapper.Map(transaction.DealDetails, consumer);
+            consumer.ConsumerName = transaction.CardOwnerName ?? transaction.CreditCardSecureDetails?.CardOwnerName;
+            consumer.ConsumerNationalID = transaction.CardOwnerNationalID ?? transaction.CreditCardSecureDetails?.CardOwnerNationalID;
+            consumer.TerminalID = transaction.TerminalID;
+            consumer.MerchantID = merchantID;
+            consumer.ApplyAuditInfo(httpContextAccessor);
+
+            await consumersService.CreateEntity(consumer);
+
+            return consumer.ConsumerID;
         }
     }
 }
