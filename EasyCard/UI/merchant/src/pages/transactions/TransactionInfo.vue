@@ -288,7 +288,7 @@ export default {
         }
       }];
 
-      if(this.model.$status == 'completed' && this.model.$jDealType == 'J4'){
+      if((this.model.$status == 'completed' || this.model.$status == 'awaitingForTransmission') && this.model.$jDealType == 'J4'){
         threeDotMenu.push({
           text: this.$t("SendTransactionSlipEmail"),
           fn: () => {

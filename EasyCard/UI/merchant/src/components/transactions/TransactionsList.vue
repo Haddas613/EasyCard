@@ -42,6 +42,14 @@
             mdi-checkbook
           </v-icon>
         </v-btn>
+        <template v-else-if="item.$status == 'awaitingForTransmission'">
+          <span class="teal--text">{{item.quickStatus}}</span>
+          <v-btn class="mx-1" x-small color="teal" outlined  @click="showSlipDialog(item)">
+            <v-icon small :right="$vuetify.$ltr" :left="$vuetify.$ltr">
+              mdi-checkbook
+            </v-icon>
+          </v-btn>
+        </template>
         <span v-else>
           {{item.quickStatus}}
         </span>

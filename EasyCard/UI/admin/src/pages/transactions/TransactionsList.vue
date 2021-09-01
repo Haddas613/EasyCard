@@ -43,7 +43,7 @@
           <v-btn class="mx-1" color="primary" outlined small link :to="{name: 'Transaction', params: {id: item.$paymentTransactionID}}">
             <re-icon small>mdi-arrow-right</re-icon>
           </v-btn>
-          <v-btn v-if="item.status == 'completed' && item.$jDealType == 'J4'" color="orange" class="mx-1" outlined small @click="showSlipDialog(item)">
+          <v-btn v-if="(item.status == 'completed' || item.status == 'awaitingForTransmission') && item.$jDealType == 'J4'" color="orange" class="mx-1" outlined small @click="showSlipDialog(item)">
             <v-icon small>mdi-checkbook</v-icon>
           </v-btn>
         </template>    
