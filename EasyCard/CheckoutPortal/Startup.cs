@@ -24,6 +24,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using SharedApi = Shared.Api;
 using CheckoutPortal.Services;
+using CheckoutPortal.Models;
 
 namespace CheckoutPortal
 {
@@ -39,6 +40,8 @@ namespace CheckoutPortal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var appConfig = Configuration.GetSection("AppConfig").Get<ApplicationSettings>();
+
             services.AddLogging(logging =>
             {
                 logging.AddConfiguration(Configuration.GetSection("Logging"));
@@ -64,6 +67,12 @@ namespace CheckoutPortal
                     // Note: do not use options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore; - use [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)] attribute in place
                 })
                 .AddRazorRuntimeCompilation();
+
+            services.AddSignalR()
+                .AddAzureSignalR(opts =>
+                {
+                    opts.ConnectionString = appConfig.AzureSignalRConnectionString;
+                });
 
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
@@ -146,8 +155,7 @@ namespace CheckoutPortal
 
             app.UseCsp(options => options
                 .DefaultSources(s => s.Self()
-                    .CustomSources("data:")
-                    .CustomSources("https:"))
+                    .CustomSources("data:", "https:", "wss:"))
                 .StyleSources(s => s.Self()
                     .CustomSources("ecngpublic.blob.core.windows.net")
                 )
@@ -170,6 +178,11 @@ namespace CheckoutPortal
             app.UseRequestLocalization(localizationOptions);
 
             app.UseAuthorization();
+
+            app.UseAzureSignalR(endpoints =>
+            {
+                endpoints.MapHub<Hubs.TransactionsHub>("/hubs/transactions");
+            });
 
             app.UseEndpoints(endpoints =>
             {

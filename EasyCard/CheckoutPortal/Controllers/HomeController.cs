@@ -21,6 +21,7 @@ using Microsoft.Extensions.Options;
 using Shared.Integration.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CheckoutPortal.Controllers
 {
@@ -32,19 +33,22 @@ namespace CheckoutPortal.Controllers
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly IMapper mapper;
         private readonly RequestLocalizationOptions localizationOptions;
+        private readonly IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext;
 
         public HomeController(
             ILogger<HomeController> logger,
             ITransactionsApiClient transactionsApiClient,
             ICryptoServiceCompact cryptoServiceCompact,
             IMapper mapper,
-            IOptions<RequestLocalizationOptions> localizationOptions)
+            IOptions<RequestLocalizationOptions> localizationOptions,
+            IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext)
         {
             this.logger = logger;
             this.transactionsApiClient = transactionsApiClient;
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.mapper = mapper;
             this.localizationOptions = localizationOptions.Value;
+            this.transactionsHubContext = transactionsHubContext;
         }
 
         // TODO: preffered language parameter

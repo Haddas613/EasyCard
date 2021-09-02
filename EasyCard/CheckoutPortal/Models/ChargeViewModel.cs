@@ -154,5 +154,7 @@ namespace CheckoutPortal.Models
 
         [BindNever]
         public bool IsRefund { get; set; }
+
+        public string ConnectionID { get; set; }
     }
 }

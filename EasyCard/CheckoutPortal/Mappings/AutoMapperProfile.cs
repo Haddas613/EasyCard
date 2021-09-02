@@ -23,6 +23,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.RedirectUrl, o => o.MapFrom(d => d.RedirectUrl))
                 .ForMember(d => d.ApiKey, o => o.MapFrom(d => d.ApiKey))
                 .ForMember(d => d.PaymentRequest, o => o.MapFrom(d => d.PaymentRequest))
+                .ForMember(d => d.PaymentIntent, o => o.MapFrom(d => d.PaymentIntent))
                 .ForMember(d => d.Amount, o => o.MapFrom(d => d.Amount))
                 .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
                 .ForMember(d => d.Description, o => o.MapFrom(d => d.Description))

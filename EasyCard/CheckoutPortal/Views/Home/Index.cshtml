@@ -5,7 +5,6 @@
 @model ChargeViewModel
 @inject CommonLocalizationService localizer
 
-
 <form asp-action="CancelPayment" method="post" hidden id="cancel-form">
     <input type="hidden" asp-for="RedirectUrl" id="RedirectUrlHidden" />
     <input type="hidden" asp-for="PaymentRequest" id="PaymentRequestHidden" />
@@ -20,7 +19,6 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="panel panel-default">
-
             <partial name="_ValidationSummary" />
 
             <div class="panel-heading">
@@ -70,6 +68,11 @@
                     <input type="hidden" asp-for="ConsumerID" />
                     <input type="hidden" asp-for="IssueInvoice" />
                     <input type="hidden" asp-for="AllowPinPad" />
+
+                    @if (Model.AllowPinPad == true && Model.PaymentIntent != null)
+                    {
+                        <input type="hidden" asp-for="ConnectionID" />
+                    }
 
                     @if (Model.TransactionTypes.Count() > 1)
                     {
@@ -274,7 +277,7 @@
                         }
                         else
                         {
-                            <input class="btn btn-primary" type="submit" name="paybtn" value="@localizer.Get("PayWithEasyCard")" />
+                            <button class="btn btn-primary" id="submitbtn" name="paybtn"> @localizer.Get("PayWithEasyCard")</button>
                         }
                     </div>
                 </form>
@@ -285,15 +288,90 @@
 </div>
 
 @section Scripts {
-    @await Html.PartialAsync("_ValidationScriptsPartial")
-    <script nws-csp-add-nonce="true">
+
+@if (Model.PaymentIntent != null && Model.AllowPinPad == true)
+{
+    <script src="~/lib/signalr/signalr.min.js"></script>
+    <script src="~/lib/toastr/toastr.min.js"></script>
+    <link rel="stylesheet" href="~/lib/toastr/toastr.min.css" />
+}
+
+@await Html.PartialAsync("_ValidationScriptsPartial")
+<script nws-csp-add-nonce="true">
         $(document).ready(function () {
-            $('input[name="CreditCardToken"]').on('change', function (e) {
-            if (e.target.value == "") {
-                $("#card-info-group-area").attr("hidden", false);
-            } else {
-                $("#card-info-group-area").attr("hidden", true);
+            @if (Model.PaymentIntent != null && Model.AllowPinPad == true)
+            {
+                <text>
+                    toastr.options = {
+                      "closeButton": false,
+                      "newestOnTop": false,
+                      "progressBar": false,
+                      "positionClass": "toast-top-right",
+                      "preventDuplicates": false,
+                      "onclick": null,
+                      "timeOut": -1,
+                      "extendedTimeOut ": -1,
+                      "disableTimeOut": true,
+                      "tapToDismiss": false,
+                      "toastClass": "signalr-toast",
+                      "showEasing": "swing",
+                      "hideEasing": "linear",
+                      "showMethod": "fadeIn",
+                      "hideMethod": "fadeOut"
+                    }
+                    let signalRClient = new (function() {
+                        this.transactionsHub = null;
+                        this.toast = null;
+                        this.establishSignalRConnection = function () {
+                            if (this.transactionsHub) {
+                                return Promise.resolve();
+                            }
+                            const options = {
+                                accessTokenFactory: () => {
+                                    //return this.$oidc.getAccessToken();
+                                },
+                                transport: 1
+                            };
+
+                            this.transactionsHub = new signalR.HubConnectionBuilder()
+                                .withUrl(
+                                    `/hubs/transactions`,
+                                    options
+                                )
+                                .withAutomaticReconnect()
+                                .configureLogging("Warning")
+                                .build();
+
+                            this.transactionsHub.on("TransactionStatusChanged", (payload) => {
+                                console.log(this.toast)
+                                if(this.toast){
+                                  this.toast.text(payload.statusString)
+                                }else{
+                                    this.toast = toastr["info"](payload.statusString);
+                                }
+                            });
+
+                            return this.transactionsHub.start().then(r => {
+                                $("#ConnectionID").val(this.transactionsHub.connectionId)
+                            });
+                        };
+                        this.disposeSignalRConnection = function () {
+                            if (!this.transactionsHub) {
+                                return;
+                            }
+                            this.toast.fadeOut();
+                            this.transactionsHub.stop();
+                        }
+                    })
+                </text>
             }
+
+            $('input[name="CreditCardToken"]').on('change', function (e) {
+                if (e.target.value == "") {
+                    $("#card-info-group-area").attr("hidden", false);
+                } else {
+                    $("#card-info-group-area").attr("hidden", true);
+                }
             });
 
             $("#cancel-btn").on('click', function (e) {
@@ -301,13 +379,38 @@
                 $('#cancel-form').submit();
             });
 
+            @if(Model.PaymentIntent != null && Model.AllowPinPad == true)
+            {
+            <text>
+            $("#submitbtn").on("click", function (e) {
+                    e.preventDefault();
+                    if (!$("#checkout-form").valid()) {
+                        return;
+                    }
+                    signalRClient.establishSignalRConnection().then(r => {
+                        $("#checkout-form").submit();
+                    }, e => {
+                        $("#checkout-form").submit();
+                    })
+                })
+            </text>
+            }
+            else
+            {
+            <text>
+                $("#submitbtn").on("click", function () {
+                    $("#checkout-form").submit();
+                })
+            </text>
+            }
+
             $("#checkout-form").on("submit", function (e) {
                 if (!$("#checkout-form").valid()) {
                     e.preventDefault();
                     return;
                 }
                 let ccvaltrim = $("#cc-number").val().replace(/ /g, '');
-                $("#cc-number").val(ccvaltrim);
+                    $("#cc-number").val(ccvaltrim);
                 if (document.getElementById("ttype").value == "@Shared.Integration.Models.TransactionTypeEnum.RegularDeal.ToString()" ||
                     document.getElementById("ttype").value == "@Shared.Integration.Models.TransactionTypeEnum.Immediate.ToString()") {
                     $("#installments-area").remove();
@@ -320,10 +423,16 @@
                 document.getElementsByTagName("body")[0].classList.add("no-scroll")
             })
 
+            window.onunload = function (e) {
+                if (signalRClient) {
+                    signalRClient.disposeSignalRConnection();
+                }
+            };
+
             $("#number-of-payments").on("change", function (e) {
                 let totalAmount = $("#Amount").val();
                 let newAmount = (totalAmount / e.target.value).toFixed(2);
-                
+
                 $("#payment-amount").text(newAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())");
                 $("#total-amount").text(totalAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())")
             });
@@ -341,10 +450,12 @@
                 if (value == "@Shared.Integration.Models.TransactionTypeEnum.Installments.ToString()") {
                     min = @(Model.MinInstallments ?? 2);
                     max = @(Model.MaxInstallments ?? 12);
-                } else if(value == "@Shared.Integration.Models.TransactionTypeEnum.Credit.ToString()") {
+                }
+                else if (value == "@Shared.Integration.Models.TransactionTypeEnum.Credit.ToString()") {
                     min = @(Model.MinCreditInstallments ?? 3);
                     max = @(Model.MaxCreditInstallments ?? 12);
-                } else {
+                }
+                else {
                     if (totalAmountDisplay) {
                         totalAmountDisplay.hidden = false;
                     }
@@ -353,12 +464,13 @@
                     }
                     return;
                 }
-                
+
                 var select = document.getElementById("number-of-payments");
                 select.length = 0;
                 for (var i = min; i <= max; i++) {
                     select.options.add(new Option(i, i))
                 }
+
                 $("#number-of-payments").trigger("change");
                 if (totalAmountDisplay) {
                     totalAmountDisplay.hidden = true;
@@ -367,7 +479,7 @@
                     installmentsArea.hidden = false;
                 }
             })
-            
+
             $("#pin-pad-deal").on("change", function (e) {
                 document.getElementById("credit-card-info-area").hidden = e.target.checked;
                 document.getElementById("pin-pad-devices").hidden = !e.target.checked;
@@ -375,5 +487,5 @@
             $("#pin-pad-deal").trigger("change");
             $("#number-of-payments").trigger("change");
         })
-    </script>
+</script>
 }

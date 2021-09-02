@@ -109,5 +109,10 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [StringLength(50, MinimumLength = 2)]
         public string CardOwnerName { get; set; }
+
+        /// <summary>
+        /// SignalR connection ID
+        /// </summary>
+        public string ConnectionID { get; set; }
     }
 }
