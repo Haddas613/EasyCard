@@ -62,7 +62,7 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<CheckoutData>> GetCheckoutData(Guid? paymentRequestID, Guid? paymentIntentID, string apiKey, Guid? consumerID)
+        public async Task<ActionResult<CheckoutData>> GetCheckoutData(Guid? paymentRequestID, Guid? paymentIntentID, string apiKey)
         {
             Debug.WriteLine(User);
 
@@ -108,18 +108,13 @@ namespace Transactions.Api.Controllers
                 }
             }
 
+            Guid? consumerID = null;
+
             if (paymentRequestID.HasValue)
             {
                 var paymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().Where(d => d.PaymentRequestID == paymentRequestID && d.TerminalID == terminal.TerminalID).FirstOrDefaultAsync());
                 response.Settings.AllowPinPad = paymentRequest.AllowPinPad && response.Settings.AllowPinPad.GetValueOrDefault();
-
-                if (consumerID.HasValue)
-                {
-                    if (consumerID.Value != paymentRequest.DealDetails.ConsumerID)
-                    {
-                        return Unauthorized($"{consumerID} does not have access to payment request {paymentRequest.PaymentRequestID}");
-                    }
-                }
+                consumerID = paymentRequest.DealDetails.ConsumerID;
 
                 if (paymentRequest.Status == Shared.Enums.PaymentRequestStatusEnum.Sent || paymentRequest.Status == Shared.Enums.PaymentRequestStatusEnum.Initial)
                 {
@@ -133,14 +128,7 @@ namespace Transactions.Api.Controllers
                 var paymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(terminal.TerminalID, paymentIntentID.Value));
 
                 response.Settings.AllowPinPad = paymentRequest.AllowPinPad && response.Settings.AllowPinPad.GetValueOrDefault();
-
-                if (consumerID.HasValue)
-                {
-                    if (consumerID.Value != paymentRequest.DealDetails.ConsumerID)
-                    {
-                        return Unauthorized($"{consumerID} does not have access to payment request {paymentRequest.PaymentRequestID}");
-                    }
-                }
+                consumerID = paymentRequest.DealDetails.ConsumerID;
 
                 response.PaymentRequest = mapper.Map<PaymentRequestInfo>(paymentRequest);
                 response.PaymentIntentID = paymentIntentID;

@@ -62,7 +62,7 @@ namespace CheckoutPortal.Controllers
                 return View("PaymentImpossible");
             }
 
-            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl, request.ConsumerID);
+            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
 
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
@@ -93,7 +93,7 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Charge(ChargeViewModel request)
         {
-            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl, request.ConsumerID);
+            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
 
             if (checkoutConfig.Consumer != null)
             {
@@ -339,7 +339,7 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> CancelPayment(ChargeViewModel request)
         {
-            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl, request.ConsumerID);
+            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
 
             if (checkoutConfig.PaymentRequest != null)
             {
@@ -429,7 +429,7 @@ namespace CheckoutPortal.Controllers
             return Ok();
         }
 
-        private async Task<Transactions.Api.Models.Checkout.CheckoutData> GetCheckoutData(string apiKey, string paymentRequest, string paymentIntent, string redirectUrl, Guid? consumerID)
+        private async Task<CheckoutData> GetCheckoutData(string apiKey, string paymentRequest, string paymentIntent, string redirectUrl)
         {
             // redirect url is required if it is not payment request
             if (string.IsNullOrWhiteSpace(paymentRequest) && string.IsNullOrWhiteSpace(redirectUrl) && string.IsNullOrWhiteSpace(paymentIntent))
@@ -452,10 +452,10 @@ namespace CheckoutPortal.Controllers
                 throw new BusinessException(Messages.InvalidCheckoutData);
             }
 
-            Transactions.Api.Models.Checkout.CheckoutData checkoutConfig;
+            CheckoutData checkoutConfig;
             try
             {
-                checkoutConfig = await transactionsApiClient.GetCheckout(paymentRequestID, paymentIntentID, apiKey, consumerID);
+                checkoutConfig = await transactionsApiClient.GetCheckout(paymentRequestID, paymentIntentID, apiKey);
             }
             catch (Exception ex)
             {

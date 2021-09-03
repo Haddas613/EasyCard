@@ -38,6 +38,7 @@ namespace CheckoutPortal.Models
         [StringLength(50)]
         public string Phone { get; set; }
 
+        [BindNever]
         public Guid? ConsumerID { get; set; }
 
         public CurrencyEnum Currency { get; set; }
