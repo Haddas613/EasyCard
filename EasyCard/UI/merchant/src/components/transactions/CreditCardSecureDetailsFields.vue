@@ -204,8 +204,14 @@ export default {
         this.errors.cvv = this.$t("Invalid");
       }
 
-      if (!this.$cardFormat.validateCardExpiry(this.$refs.expiryInp.value)) {
+      let cardExpiration = this.$refs.expiryInp.value;
+      let trimmed = this.$refs.expiryInp.value.replace(/\s/g, "");
+
+      if (!this.$cardFormat.validateCardExpiry(trimmed)) {
         this.errors.expiry = this.$t("Invalid");
+      }
+      else if(trimmed.length != 5){ //workaround for chrome payment auto fill (it uses full year format for inputs)
+          cardExpiration = `${trimmed.slice(0, 3)}${trimmed.slice(-2)}`;
       }
 
       let nationalIdValidation = ValidationRules.primitives.required(
@@ -227,7 +233,7 @@ export default {
         save: this.model.save,
         cardOwnerName: this.model.cardOwnerName,
         cardNumber: this.$refs.cardNumberInp.value.replace(/\s/g, ""),
-        cardExpiration: this.$refs.expiryInp.value.replace(/\s/g, ""),
+        cardExpiration: cardExpiration.replace(/\s/g, ""),
         cardOwnerNationalID: this.model.cardOwnerNationalID,
         cvv: this.$refs.cvvInp.value,
         cardReaderInput: this.model.cardReaderInput
