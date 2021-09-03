@@ -383,6 +383,7 @@
   "PaymentTransactionIDShort": "קצר מזהה עסקה",
   "PaymentTransactionIDFull": "מזהה עסקה ארוך",
   "HasError": "בעייתי",
+  "HasMasavFile": "קבצי מסב",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

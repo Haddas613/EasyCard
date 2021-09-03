@@ -379,6 +379,7 @@
   "PaymentTransactionIDShort": "Transaction ID (short)",
   "PaymentTransactionIDFull": "Transaction ID (full)",
   "HasError": "Has Error",
+  "HasMasavFile": "Has Masav File",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

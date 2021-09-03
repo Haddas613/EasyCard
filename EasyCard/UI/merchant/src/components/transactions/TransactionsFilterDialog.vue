@@ -23,17 +23,24 @@
               :customer-id="model.consumerID"
               @update="processCustomer($event)"></customer-dialog-invoker>
             </v-col>
-            <v-col cols="12" md="6" class="pt-0 pb-3">
+            <v-col cols="12" md="4" class="pt-0 pb-4">
                <v-switch v-model="model.hasInvoice" hide-details>
                 <template v-slot:label>
                   <small>{{$t('HasInvoice')}}</small>
                 </template>
               </v-switch>
             </v-col>
-            <v-col cols="12" md="6" class="pt-0 pb-3">
+            <v-col cols="12" md="4" class="pt-0 pb-4">
                <v-switch v-model="model.isPaymentRequest" hide-details>
                 <template v-slot:label>
                   <small>{{$t('IsPaymentRequest')}}</small>
+                </template>
+              </v-switch>
+            </v-col>
+            <v-col cols="12" md="4" class="pt-0 pb-4">
+               <v-switch v-model="model.hasMasavFile" hide-details>
+                <template v-slot:label>
+                  <small>{{$t('HasMasavFile')}}</small>
                 </template>
               </v-switch>
             </v-col>
