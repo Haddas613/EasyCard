@@ -34,9 +34,11 @@ using Shared.Api.Swagger;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.Configuration;
 using Shared.Helpers.KeyValueStorage;
 using Shared.Helpers.Queue;
 using Shared.Helpers.Security;
+using Shared.Helpers.Services;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -520,15 +522,9 @@ namespace Transactions.Api
 
             var appInsightsConfig = Configuration.GetSection("ApplicationInsights").Get<ApplicationInsightsSettings>();
 
-            var appInsightsConfiguration = new Microsoft.ApplicationInsights.Extensibility.TelemetryConfiguration
-            {
-                InstrumentationKey = appInsightsConfig.InstrumentationKey
-            };
-            var telemetry = new Microsoft.ApplicationInsights.TelemetryClient(appInsightsConfiguration);
-
             services.AddSingleton<IMetricsService, MetricsService>(serviceProvider =>
             {
-                return new MetricsService(telemetry);
+                return new MetricsService(appInsightsConfig);
             });
 
             services.AddSingleton<IPaymentIntentService, PaymentIntentService>(serviceProvider =>

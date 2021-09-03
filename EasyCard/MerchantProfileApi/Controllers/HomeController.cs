@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Shared.Api.Configuration;
 using Shared.Helpers;
+using Shared.Helpers.Configuration;
 using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;

@@ -30,6 +30,7 @@ using Shared.Api.Models.Binding;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.Configuration;
 using Shared.Helpers.Security;
 using Swashbuckle.AspNetCore.Filters;
 using System;
