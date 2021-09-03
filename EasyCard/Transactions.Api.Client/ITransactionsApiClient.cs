@@ -16,7 +16,7 @@ namespace Transactions.Api.Client
 
         Task<OperationResponse> CreateTransactionPR(PRCreateTransactionRequest model);
 
-        Task<CheckoutData> GetCheckout(Guid? paymentRequestID, Guid? paymentIntentID, string apiKey, Guid? consumerID = null);
+        Task<CheckoutData> GetCheckout(Guid? paymentRequestID, Guid? paymentIntentID, string apiKey);
 
         Task<OperationResponse> GenerateInvoice(Guid? invoiceID);
 
