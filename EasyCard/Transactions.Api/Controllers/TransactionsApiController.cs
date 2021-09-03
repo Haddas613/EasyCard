@@ -792,12 +792,16 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
-                    if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && model.CreditCardSecureDetails != null && !string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(model.CreditCardSecureDetails.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        throw new EntityConflictException(Transactions.Shared.Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
-                    }
+                    // NOTE: consumer can pay using another person credit card
+
+                    //if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && model.CreditCardSecureDetails != null && !string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(model.CreditCardSecureDetails.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
+                    //{
+                    //    throw new EntityConflictException(Transactions.Shared.Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
+                    //}
                 }
             }
+
+            transaction.DealDetails.CheckConsumerDetails(consumer);
 
             // Update details if needed
             transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction);
@@ -810,6 +814,9 @@ namespace Transactions.Api.Controllers
             {
                 transaction.CreditCardDetails.CardOwnerName = consumer.ConsumerName;
             }
+
+            // map consumer name from card details if needed
+            transaction.DealDetails.UpdateDealDetails(transaction.CreditCardDetails);
 
             transaction.Calculate();
 
@@ -1144,15 +1151,10 @@ namespace Transactions.Api.Controllers
                         mapper.Map(transaction, invoiceRequest);
                         invoiceRequest.InvoiceDetails = model.InvoiceDetails;
 
-                        if (string.IsNullOrWhiteSpace(invoiceRequest.CardOwnerName) && consumer != null)
-                        {
-                            invoiceRequest.CardOwnerName = consumer.ConsumerName;
-                        }
+                        var creditCardDetails = invoiceRequest.PaymentDetails.FirstOrDefault(d => d.PaymentType == SharedIntegration.Models.PaymentTypeEnum.Card) as SharedIntegration.Models.PaymentDetails.CreditCardPaymentDetails;
 
-                        if (string.IsNullOrWhiteSpace(invoiceRequest.CardOwnerNationalID) && consumer != null)
-                        {
-                            invoiceRequest.CardOwnerNationalID = consumer.ConsumerNationalID;
-                        }
+                        // in case if consumer name/natid is not specified in deal details, get it from credit card details
+                        invoiceRequest.DealDetails.UpdateDealDetails(creditCardDetails);
 
                         invoiceRequest.MerchantID = terminal.MerchantID;
 
@@ -1280,16 +1282,6 @@ namespace Transactions.Api.Controllers
                         Invoice invoiceRequest = new Invoice();
                         mapper.Map(transaction, invoiceRequest);
                         invoiceRequest.InvoiceDetails = model.InvoiceDetails;
-
-                        if (string.IsNullOrWhiteSpace(invoiceRequest.CardOwnerName) && consumer != null)
-                        {
-                            invoiceRequest.CardOwnerName = consumer.ConsumerName;
-                        }
-
-                        if (string.IsNullOrWhiteSpace(invoiceRequest.CardOwnerNationalID) && consumer != null)
-                        {
-                            invoiceRequest.CardOwnerNationalID = consumer.ConsumerNationalID;
-                        }
 
                         invoiceRequest.MerchantID = terminal.MerchantID;
 

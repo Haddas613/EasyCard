@@ -39,6 +39,9 @@ namespace Transactions.Business.Entities
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ConsumerName { get; set; }
 
+        [StringLength(20)]
+        public string ConsumerNationalID { get; set; }
+
         /// <summary>
         /// End-customer Phone
         /// </summary>

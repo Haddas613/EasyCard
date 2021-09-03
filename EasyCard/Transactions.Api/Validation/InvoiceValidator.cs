@@ -17,9 +17,9 @@ namespace Transactions.Api.Validation
         {
             List<Error> errors = new List<Error>();
 
-            if (string.IsNullOrWhiteSpace(model.CardOwnerName))
+            if (string.IsNullOrWhiteSpace(model.DealDetails?.ConsumerName))
             {
-                errors.Add(new Error(nameof(model.CardOwnerName), ApiMessages.Required));
+                errors.Add(new Error(nameof(model.DealDetails.ConsumerName), ApiMessages.Required));
             }
 
             if (string.IsNullOrWhiteSpace(model.DealDetails.ConsumerEmail))
@@ -38,7 +38,7 @@ namespace Transactions.Api.Validation
             }
             else if (model.PaymentDetails?.Any() == true)
             {
-                errors.Add(new Error(nameof(model.CardOwnerName), ApiMessages.PaymentDetailsNotAllowedForThisTypeOfInvoice));
+                errors.Add(new Error(nameof(model.InvoiceDetails.InvoiceType), ApiMessages.PaymentDetailsNotAllowedForThisTypeOfInvoice));
             }
 
             if (errors.Count == 1)

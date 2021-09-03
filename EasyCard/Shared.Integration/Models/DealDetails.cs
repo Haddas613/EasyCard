@@ -33,12 +33,23 @@ namespace Shared.Integration.Models
         /// </summary>
         [StringLength(50)]
         [JsonConverter(typeof(TrimmingJsonConverter))]
+        [EmailAddress]
         public string ConsumerEmail { get; set; }
+
+        /// <summary>
+        /// End-customer Name
+        /// </summary>
+        [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        public string ConsumerName { get; set; }
+
+        [StringLength(20)]
+        public string ConsumerNationalID { get; set; }
 
         /// <summary>
         /// End-customer Phone
         /// </summary>
-        [StringLength(50)]
+        [StringLength(20)]
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ConsumerPhone { get; set; }
 
@@ -63,6 +74,7 @@ namespace Shared.Integration.Models
         /// External system consumer code for example Rapid customer code
         /// </summary>
         [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ConsumerExternalReference { get; set; }
     }
 }
