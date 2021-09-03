@@ -4,14 +4,14 @@
       <v-form class="ec-form" ref="form">
         <invoice-details-fields ref="invoiceDetails" :data="model.invoiceDetails" v-on:invoce-type-changed="invoiceTypeChanged($event)"></invoice-details-fields>
         <v-text-field
-          v-model="model.cardOwnerName"
+          v-model="model.dealDetails.consumerName"
           :counter="50"
           :rules="[vr.primitives.required, vr.primitives.maxLength(50)]"
           :label="$t('CustomerName')"
           outlined
         ></v-text-field>
         <v-text-field
-          v-model="model.cardOwnerNationalID"
+          v-model="model.dealDetails.consumerNationalID"
           :rules="[vr.special.israeliNationalId]"
           :label="$t('NationalID')"
           outlined
