@@ -384,6 +384,7 @@
   "PaymentTransactionIDFull": "מזהה עסקה ארוך",
   "HasError": "בעייתי",
   "HasMasavFile": "קבצי מסב",
+  "CustomerName": "שם לקוח",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

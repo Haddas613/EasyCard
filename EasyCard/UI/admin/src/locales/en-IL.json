@@ -380,6 +380,7 @@
   "PaymentTransactionIDFull": "Transaction ID (full)",
   "HasError": "Has Error",
   "HasMasavFile": "Has Masav File",
+  "CustomerName": "Customer Name",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
