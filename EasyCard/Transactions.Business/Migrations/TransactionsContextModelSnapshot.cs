@@ -488,6 +488,11 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
+                    b.Property<string>("CorrelationId")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
+
                     b.Property<short>("Currency")
                         .HasColumnType("smallint");
 
@@ -508,11 +513,27 @@ namespace Transactions.Business.Migrations
                     b.Property<Guid?>("MerchantID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("OperationDoneBy")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid?>("OperationDoneByID")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("PayedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("SendingInstitute")
                         .HasColumnType("int");
+
+                    b.Property<string>("SourceIP")
+                        .HasMaxLength(50)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("StorageReference")
                         .IsUnicode(true)
