@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shared.Api.Configuration
+namespace Shared.Helpers.Configuration
 {
     /// <summary>
     /// Custom application insights class. To be injected into UI config

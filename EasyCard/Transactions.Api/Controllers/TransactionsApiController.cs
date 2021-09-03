@@ -52,6 +52,8 @@ using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.SignalR;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
+using Shared.Helpers.Services;
+using Transactions.Api.Extensions;
 
 namespace Transactions.Api.Controllers
 {

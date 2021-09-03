@@ -187,6 +187,11 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.InvoiceID != null);
             }
 
+            if (filter.HasMasavFile.GetValueOrDefault())
+            {
+                src = src.Where(t => t.MasavFileID != null);
+            }
+
             if (filter.IsPaymentRequest.GetValueOrDefault())
             {
                 src = src.Where(t => t.PaymentRequestID != null);

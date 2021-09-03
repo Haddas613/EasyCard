@@ -113,5 +113,7 @@ namespace Transactions.Api.Models.Transactions
 
         [StringLength(8, MinimumLength = 8)]
         public string PaymentTransactionIDShort { get; set; }
+
+        public bool? HasMasavFile { get; set; }
     }
 }
