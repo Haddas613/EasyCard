@@ -11,6 +11,10 @@ namespace MerchantProfileApi.Models.Terminal
         [StringLength(100)]
         public string FromAddress { get; set; }
 
+        [StringLength(15)]
+        [DataType(DataType.PhoneNumber)]
+        public string FromPhoneNumber { get; set; }
+
         [StringLength(250)]
         public string DefaultRequestSubject { get; set; }
 

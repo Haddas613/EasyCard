@@ -56,6 +56,7 @@
     <ProjectReference Include="..\BasicServices\BasicServices.csproj" />
     <ProjectReference Include="..\Integration\ClearingHouse\ClearingHouse.csproj" />
     <ProjectReference Include="..\Integration\EasyInvoice\EasyInvoice.csproj" />
+    <ProjectReference Include="..\Integration\InforU\InforU.csproj" />
     <ProjectReference Include="..\Integration\MasavFile\MasavFile.csproj" />
     <ProjectReference Include="..\Integration\Nayax\Nayax.csproj" />
     <ProjectReference Include="..\Integration\RapidOne\RapidOne.csproj" />
@@ -124,6 +125,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>QuickTimeFilterTypeResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\SMSResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SMSResource.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -166,6 +172,13 @@
     <EmbeddedResource Update="Resources\QuickTimeFilterTypeResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>QuickTimeFilterTypeResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SMSResource.he.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SMSResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SMSResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

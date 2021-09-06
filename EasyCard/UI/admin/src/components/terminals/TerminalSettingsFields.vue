@@ -221,7 +221,7 @@
           <v-col cols="12">
             <v-divider class="py-2"></v-divider>
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="6">
             <v-text-field
               v-model="model.paymentRequestSettings.defaultRequestSubject"
               :counter="128"
@@ -229,7 +229,7 @@
               :label="$t('DefaultRequestSubject')"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="6">
             <v-text-field
               v-bind:class="{'px-4' : $vuetify.breakpoint.mdAndUp}"
               v-model="model.paymentRequestSettings.defaultRefundRequestSubject"
@@ -238,11 +238,19 @@
               :label="$t('DefaultRefundRequestSubject')"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="6">
             <v-text-field
               v-model="model.paymentRequestSettings.fromAddress"
               :rules="[vr.primitives.required, vr.primitives.email]"
               :label="$t('FromAddress')"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6" v-if="$featureEnabled(model, appConstants.terminal.features.SmsNotification)">
+            <v-text-field
+              v-bind:class="{'px-4' : $vuetify.breakpoint.mdAndUp}"
+              v-model="model.paymentRequestSettings.fromPhoneNumber"
+              :rules="[vr.primitives.numeric()]"
+              :label="$t('FromPhoneNumber')"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="5">

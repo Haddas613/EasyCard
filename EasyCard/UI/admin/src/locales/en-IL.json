@@ -273,6 +273,7 @@
   "DefaultRequestSubject": "Default Request Subject",
   "DefaultRefundRequestSubject": "Default Refund Request Subject",
   "FromAddress": "From Address",
+  "FromPhoneNumber": "From Phone Number",
   "NotificationEmails": "Notification emails",
   "CreateRecurrentPaymentsAutomatically": "Create Recurrent Payments Automatically",
   "VATRate": "VAT Rate",

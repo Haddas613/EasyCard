@@ -272,7 +272,7 @@
         {{$t("PaymentRequest")}}
         <v-divider class="pt-1"></v-divider>
       </v-col>
-      <v-col cols="12" md="7">
+      <v-col cols="12" md="6">
         <v-text-field
           v-model="model.paymentRequestSettings.defaultRequestSubject"
           :counter="128"
@@ -281,7 +281,16 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="5">
+      <v-col cols="12" md="6">
+        <v-text-field
+          v-model="model.paymentRequestSettings.defaultRefundRequestSubject"
+          :counter="128"
+          :rules="[vr.primitives.maxLength(128)]"
+          :label="$t('DefaultRefundRequestSubject')"
+          outlined
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6">
         <v-text-field
           v-model="model.paymentRequestSettings.fromAddress"
           :rules="[vr.primitives.required, vr.primitives.email]"
@@ -289,12 +298,11 @@
           outlined
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="7">
+      <v-col cols="12" md="6" v-if="$featureEnabled(model, appConstants.terminal.features.SmsNotification)">
         <v-text-field
-          v-model="model.paymentRequestSettings.defaultRefundRequestSubject"
-          :counter="128"
-          :rules="[vr.primitives.maxLength(128)]"
-          :label="$t('DefaultRefundRequestSubject')"
+          v-model="model.paymentRequestSettings.fromPhoneNumber"
+          :rules="[vr.primitives.numeric()]"
+          :label="$t('FromPhoneNumber')"
           outlined
         ></v-text-field>
       </v-col>

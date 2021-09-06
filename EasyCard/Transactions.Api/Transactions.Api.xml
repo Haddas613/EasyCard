@@ -2000,5 +2000,31 @@
               Looks up a localized string similar to None.
             </summary>
         </member>
+        <member name="T:Transactions.Api.Resources.SMSResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.SMSResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.SMSResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.SMSResource.PaymentRequest">
+            <summary>
+              Looks up a localized string similar to Request from {Merchant} for {Amount}. Proceed with the link {PaymentLink}.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.SMSResource.PaymentRequestRefund">
+            <summary>
+              Looks up a localized string similar to Refund {Amount} from {Merchant} here {PaymentLink}.
+            </summary>
+        </member>
     </members>
 </doc>

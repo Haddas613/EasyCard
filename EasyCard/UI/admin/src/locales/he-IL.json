@@ -277,6 +277,7 @@
   "DefaultRequestSubject": "נושא דרישה ברירת מחדל",
   "DefaultRefundRequestSubject": "ברירת מחדל נושא לדרישת תשלום עבור זיכוי",
   "FromAddress": "מכתובת",
+  "FromPhoneNumber": "ממספר טלפון",
   "NotificationEmails": "התראת אימייל",
   "CreateRecurrentPaymentsAutomatically": "צור תשלומים מחזוריים אוטומטית",
   "VATRate": "שיעור מע\"מ",

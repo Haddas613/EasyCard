@@ -47,5 +47,9 @@ namespace Transactions.Shared
         public string AzureSignalRConnectionString { get; set; }
 
         public string MasavFilesStorageTable { get; set; } = "masav";
+
+        public string SmsTableName { get; set; }
+
+        public bool DoNotSendSms { get; set; }
     }
 }

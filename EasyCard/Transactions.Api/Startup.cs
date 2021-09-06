@@ -10,6 +10,7 @@ using AutoMapper;
 using BasicServices;
 using BasicServices.KeyValueStorage;
 using IdentityServer4.AccessTokenValidation;
+using InforU;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -39,6 +40,7 @@ using Shared.Helpers.KeyValueStorage;
 using Shared.Helpers.Queue;
 using Shared.Helpers.Security;
 using Shared.Helpers.Services;
+using Shared.Helpers.Sms;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -531,6 +533,22 @@ namespace Transactions.Api
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
                 return new PaymentIntentService(cfg.DefaultStorageConnectionString, cfg.PaymentIntentStorageTable);
+            });
+
+            services.AddSingleton<ISmsService, InforUMobileSmsService>(serviceProvider =>
+            {
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.SmsTableName, null);
+                var inforUMobileSmsSettings = Configuration.GetSection("InforUMobileSmsSettings")?.Get<InforUMobileSmsSettings>();
+
+                var webApiClient = new WebApiClient();
+
+                var logger = serviceProvider.GetRequiredService<ILogger<InforUMobileSmsService>>();
+                var metrics = serviceProvider.GetRequiredService<IMetricsService>();
+
+                var doNotSendSms = cfg.DoNotSendSms;
+
+                return new InforUMobileSmsService(webApiClient, inforUMobileSmsSettings, logger, storageService, metrics, doNotSendSms);
             });
         }
 
