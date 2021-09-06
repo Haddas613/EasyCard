@@ -2018,12 +2018,12 @@
         </member>
         <member name="P:Transactions.Api.Resources.SMSResource.PaymentRequest">
             <summary>
-              Looks up a localized string similar to Request from {Merchant} for {Amount}. Proceed with the link {PaymentLink}.
+              Looks up a localized string similar to Request from {Merchant}: {PaymentLink}.
             </summary>
         </member>
         <member name="P:Transactions.Api.Resources.SMSResource.PaymentRequestRefund">
             <summary>
-              Looks up a localized string similar to Refund {Amount} from {Merchant} here {PaymentLink}.
+              Looks up a localized string similar to Refund from {Merchant}: {PaymentLink}.
             </summary>
         </member>
     </members>
