@@ -33,7 +33,9 @@ using Shared.Api.Configuration;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.Configuration;
 using Shared.Helpers.Security;
+using Shared.Helpers.Services;
 using Swashbuckle.AspNetCore.Filters;
 using SharedApi = Shared.Api;
 
@@ -218,6 +220,7 @@ namespace Reporting.Api
             services.AddScoped<ICurrencyRateService, CurrencyRateService>();
             services.AddScoped<ISystemSettingsService, SystemSettingsService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
+            services.AddScoped<IAdminService, AdminService>();
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -246,6 +249,14 @@ namespace Reporting.Api
                 var httpContext = serviceProvider.GetRequiredService<IHttpContextAccessorWrapper>();
 
                 return new DashboardService(Configuration.GetConnectionString("DefaultConnection"), httpContext);
+            });
+
+            var appInsightsConfig = Configuration.GetSection("ApplicationInsights").Get<ApplicationInsightsSettings>();
+
+            services.AddSingleton<IAppInsightReaderService, AppInsightReaderService>(serviceProvider =>
+            {
+                var webApiClient = new WebApiClient();
+                return new AppInsightReaderService(appInsightsConfig, webApiClient);
             });
 
             Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;  // TODO: remove for production

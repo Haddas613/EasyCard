@@ -23,6 +23,7 @@ import CardTokensApi from './modules/transactions/CardTokensApi';
 import NayaxApi from "./modules/integrations/NayaxApi";
 import TransactionsSystemApi from './modules/transactions/SystemApi';
 import MasavFilesApi from './modules/transactions/MasavFilesApi';
+import AdminReportingApi from './modules/reporting/AdminReportingApi';
 
 class ApiBase {
     constructor() {
@@ -52,6 +53,9 @@ class ApiBase {
             clearingHouse: new ClearingHouseApi(this),
             nayax: new NayaxApi(this)
         };
+        this.reporting = {
+            admin: new AdminReportingApi(this)
+        }
     }
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */

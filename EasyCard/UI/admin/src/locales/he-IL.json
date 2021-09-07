@@ -112,6 +112,7 @@
   "MasavFiles": "קבצים הוראת קבע",
   "MasavFileRows": "שורות הוראת קבע",
   "MasavFile": "קבצי אורת קבע",
+  "SMSSent": "SMS Sent",
   
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
