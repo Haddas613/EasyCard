@@ -1,12 +1,17 @@
-﻿using Reporting.Business.Models;
+﻿using Dapper;
+using Reporting.Business.Models;
+using Reporting.Shared.Helpers;
 using Reporting.Shared.Models;
 using Reporting.Shared.Models.Admin;
 using Shared.Api.Extensions.Filtering;
 using Shared.Api.Models.Enums;
 using Shared.Helpers;
 using Shared.Helpers.Services;
+using Shared.Integration;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,26 +20,26 @@ namespace Reporting.Business.Services
 {
     public class AdminService : IAdminService
     {
+        private readonly string connectionString;
         private readonly IAppInsightReaderService appInsightReaderService;
 
-        public AdminService(IAppInsightReaderService appInsightReaderService)
+        public AdminService(string connectionString, IAppInsightReaderService appInsightReaderService)
         {
+            this.connectionString = connectionString;
             this.appInsightReaderService = appInsightReaderService;
         }
 
         public async Task<AdminSmsTimelines> GetSmsTotals(DashboardQuery query)
         {
-            //TODO: extract
-            NormalizeFilter(query);
+            query.NormalizeFilter();
 
             var timestampFilter = KustoAgo(query.DateFrom.Value, query.DateTo.Value);
             var granularity = KustoGranularity(query.Granularity.Value);
 
-            //TODO: SmsSent and SmsError
             var kustoQuery = @$"
                 customEvents 
                 | where timestamp > ago({timestampFilter})
-                | where (name == ""ServiceProfilerIndex"" or name == ""ServiceProfilerSample"")
+                | where (name == ""{Metrics.SmsSent}"" or name == ""{Metrics.SmsError}"")
                 | summarize count = count() by bin(timestamp, {granularity}), name
                 | order by timestamp asc 
             ";
@@ -50,8 +55,7 @@ namespace Reporting.Business.Services
 
             var all = aiRes.Select(e => new SmsTimeline {
                 DimensionValue = e.Timestamp,
-                //Type = e.Name == "SmsSent" ? SmsTimelineTypeEnum.Success : SmsTimelineTypeEnum.Error,
-                Type = e.Name == "ServiceProfilerIndex" ? SmsTimelineTypeEnum.Success : SmsTimelineTypeEnum.Error, //TODO: remove
+                Type = e.Name == Metrics.SmsSent ? SmsTimelineTypeEnum.Success : SmsTimelineTypeEnum.Error,
                 Measure = e.Count
             });
 
@@ -62,6 +66,58 @@ namespace Reporting.Business.Services
             response.ErrorMeasure = response.Error.Sum(d => d.Measure);
 
             return response;
+        }
+
+        public async Task<IEnumerable<TransactionsTotals>> GetTransactionsTotals(DashboardQuery request)
+        {
+            request.NormalizeFilter();
+
+            var query = new
+            {
+                RegularSpecialType = SpecialTransactionTypeEnum.RegularDeal,
+                RefundSpecialType = SpecialTransactionTypeEnum.Refund,
+                DateFrom = request.DateFrom,
+                DateTo = request.DateTo,
+            };
+
+            var sql = @"select 
+    sum(case when t.SpecialTransactionType = @RegularSpecialType then 1 else 0 end) as RegularTransactionsCount,
+    sum(case when t.SpecialTransactionType = @RefundSpecialType then 1 else 0 end) as RefundTransactionsCount,
+    sum(case when t.SpecialTransactionType = @RegularSpecialType then t.TotalAmount else 0 end) as RegularTransactionsAmount,
+    sum(case when t.SpecialTransactionType = @RefundSpecialType then t.TotalAmount else 0 end) as RefundTransactionsAmount
+    from [dbo].[PaymentTransaction] as t where 
+    t.QuickType IN (0, -1)
+    and t.TransactionDate <= @DateTo and t.TransactionDate >= @DateFrom";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                return await connection.QueryAsync<TransactionsTotals>(sql, query);
+            }
+        }
+
+        public async Task<IEnumerable<MerchantsTotals>> GetMerchantsTotals(DashboardQuery request)
+        {
+            request.NormalizeFilter();
+
+            var query = new
+            {
+                RegularSpecialType = SpecialTransactionTypeEnum.RegularDeal,
+                RefundSpecialType = SpecialTransactionTypeEnum.Refund,
+                DateFrom = request.DateFrom,
+                DateTo = request.DateTo,
+            };
+
+            var sql = @"select top (5) ROW_NUMBER() OVER(ORDER BY transactions.TotalAmount DESC) AS RowN, transactions.[MerchantID], transactions.TotalAmount
+	from (
+    select t.[MerchantID], sum(case when t.SpecialTransactionType = @RegularSpecialType then t.TotalAmount else 0 end) as TotalAmount 
+    from [dbo].[PaymentTransaction] as t where t.TransactionDate <= @DateTo and t.TransactionDate >= @DateFrom and t.QuickType IN (0, -1)
+	group by t.[MerchantID]
+	) transactions";
+
+            using (var connection = new SqlConnection(connectionString))
+            {
+                return await connection.QueryAsync<MerchantsTotals>(sql, query);
+            }
         }
 
         private string KustoAgo(DateTime from, DateTime to)
@@ -78,70 +134,6 @@ namespace Reporting.Business.Services
                 ReportGranularityEnum.Month => "30d",
                 _ => "7d"
             };
-        }
-
-        private void NormalizeFilter(DashboardQuery request)
-        {
-            var useDateRange = false;
-
-            // If not enough info
-            if (!request.QuickDateFilter.HasValue || request.DateTo.HasValue || request.DateFrom.HasValue)
-            {
-                if (request.DateTo == null)
-                {
-                    request.DateTo = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
-                }
-
-                if (request.DateFrom == null)
-                {
-                    request.DateFrom = request.DateTo.Value.AddDays(-30).Date;
-                }
-
-                if (!request.Granularity.HasValue)
-                {
-                    request.Granularity = CommonFiltertingExtensions.GetReportGranularity(request.DateFrom.Value, request.DateTo.Value);
-                }
-            }
-            else
-            {
-                useDateRange = true;
-                var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(request.QuickDateFilter.Value);
-                request.DateFrom = dateRange.DateFrom;
-                request.DateTo = dateRange.DateTo;
-
-                if (!request.Granularity.HasValue)
-                {
-                    request.Granularity = CommonFiltertingExtensions.GetReportGranularity(request.QuickDateFilter.Value);
-                }
-            }
-
-            if (request.AltQuickDateFilter != QuickDateFilterAltEnum.NoComparison && (request.AltQuickDateFilter.HasValue || request.AltDateTo.HasValue || request.AltDateFrom.HasValue))
-            {
-                if (request.AltDateTo.HasValue || request.AltDateFrom.HasValue || (request.AltQuickDateFilter.Value == QuickDateFilterAltEnum.PrevPeriod && !useDateRange))
-                {
-                    if (request.AltDateTo == null)
-                    {
-                        request.AltDateTo = request.DateFrom.Value.AddDays(-1);
-                    }
-
-                    if (request.AltDateFrom == null)
-                    {
-                        request.AltDateFrom = request.AltDateTo.Value.AddDays(-(request.DateTo.Value - request.DateFrom.Value).TotalDays).Date;
-                    }
-                }
-                else if (request.AltQuickDateFilter.Value == QuickDateFilterAltEnum.PrevPeriod && useDateRange)
-                {
-                    var dateRange = CommonFiltertingExtensions.QuickDateToPrevDateRange(request.QuickDateFilter.Value);
-                    request.AltDateFrom = dateRange.DateFrom;
-                    request.AltDateTo = dateRange.DateTo;
-                }
-                else
-                {
-                    var dateRange = CommonFiltertingExtensions.AltQuickDateToDateRange(request.AltQuickDateFilter.Value);
-                    request.AltDateFrom = dateRange.DateFrom;
-                    request.AltDateTo = dateRange.DateTo;
-                }
-            }
         }
     }
 }

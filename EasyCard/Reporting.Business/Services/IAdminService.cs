@@ -10,5 +10,9 @@ namespace Reporting.Business.Services
     public interface IAdminService
     {
         public Task<AdminSmsTimelines> GetSmsTotals(DashboardQuery query);
+
+        public Task<IEnumerable<TransactionsTotals>> GetTransactionsTotals(DashboardQuery query); 
+
+        public Task<IEnumerable<MerchantsTotals>> GetMerchantsTotals(DashboardQuery query);
     }
 }

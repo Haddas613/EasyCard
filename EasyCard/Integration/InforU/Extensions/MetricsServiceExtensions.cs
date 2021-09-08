@@ -1,5 +1,6 @@
 ﻿using Shared.Helpers.Services;
 using Shared.Helpers.Sms;
+using Shared.Integration;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +14,7 @@ namespace InforU.Extensions
             try
             {
                 ms.TrackEvent(
-                    eventName: $"Sms{(success ? "Sent" : "Error")}",
+                    eventName: success ? Metrics.SmsSent : Metrics.SmsError,
                     properties: new Dictionary<string, string>() {
                         { nameof(message.MerchantID), message.MerchantID?.ToString() },
                         { nameof(message.TerminalID), message.TerminalID?.ToString() },

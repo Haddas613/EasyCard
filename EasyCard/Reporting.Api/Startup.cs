@@ -220,7 +220,6 @@ namespace Reporting.Api
             services.AddScoped<ICurrencyRateService, CurrencyRateService>();
             services.AddScoped<ISystemSettingsService, SystemSettingsService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
-            services.AddScoped<IAdminService, AdminService>();
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -249,6 +248,13 @@ namespace Reporting.Api
                 var httpContext = serviceProvider.GetRequiredService<IHttpContextAccessorWrapper>();
 
                 return new DashboardService(Configuration.GetConnectionString("DefaultConnection"), httpContext);
+            });
+
+            services.AddScoped<IAdminService, AdminService>(serviceProvider =>
+            {
+                var appInsightReaderService = serviceProvider.GetRequiredService<IAppInsightReaderService>();
+
+                return new AdminService(Configuration.GetConnectionString("DefaultConnection"), appInsightReaderService);
             });
 
             var appInsightsConfig = Configuration.GetSection("ApplicationInsights").Get<ApplicationInsightsSettings>();

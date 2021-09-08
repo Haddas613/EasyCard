@@ -21,17 +21,17 @@
         <sales-stats></sales-stats>
       </v-col>
       <v-col cols="12" md="4" class="dashboard-tile-item">
-        <cash-flow-stats></cash-flow-stats>
+        <sms-timeline-stats></sms-timeline-stats>
       </v-col>
       <v-col cols="12" md="4" class="dashboard-tile-item">
         <top-merchants-stats></top-merchants-stats>
       </v-col>
-      <v-col cols="12" md="4" class="dashboard-tile-item">
+      <!-- <v-col cols="12" md="4" class="dashboard-tile-item">
         <charge-type-stats></charge-type-stats>
       </v-col>
       <v-col cols="12" md="4" class="dashboard-tile-item">
         <information-stats></information-stats>
-      </v-col>
+      </v-col> -->
     </v-row>
   </div>
 </template>
@@ -41,7 +41,7 @@ export default {
   components: { 
     ActionsBar: () => import("../components/misc/ActionsBar"),
     SalesStats: () => import("../components/stats/SalesStats"),
-    CashFlowStats: () => import("../components/stats/CashFlowStats"),
+    SmsTimelineStats: () => import("../components/stats/SmsTimelineStats"),
     TopMerchantsStats: () => import("../components/stats/TopMerchantsStats"),
     ChargeTypeStats: () => import("../components/stats/ChargeTypeStats"),
     InformationStats: () => import("../components/stats/InformationStats"),

@@ -6,6 +6,14 @@ export default class AdminReportingApi {
     }
 
     async getSmsTimelines(params) {
-        return await this.base.get(this.adminUrl + '/getSmsTimelines', params);
+        return await this.base.get(this.adminUrl + '/sms-timelines', params);
+    }
+
+    async getTransactionsTotals(params) {
+        return await this.base.get(this.adminUrl + '/transactions-totals', params);
+    }
+    
+    async getMerchantsTotals(params) {
+        return await this.base.get(this.adminUrl + '/merchants-totals', params);
     }
 }

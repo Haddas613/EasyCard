@@ -13,7 +13,7 @@
       <template>
         <v-form ref="form" v-model="formIsValid">
           <v-row>
-            <v-col cols="12" md="6" class="px-6">
+            <v-col cols="12" :md="disableReference ? 12 : 6" class="px-6">
               <v-select
                 :items="dictionaries.reportGranularityEnum"
                 item-text="description"
@@ -24,7 +24,7 @@
                 hide-details
               ></v-select>
             </v-col>
-            <v-col cols="12" md="6" class="px-6">
+            <v-col cols="12" md="6" class="px-6" v-if="!disableReference">
               <v-select
                 :items="dictionaries.quickDateFilterAltEnum"
                 item-text="description"
@@ -63,6 +63,12 @@ import ValidationRules from "../../helpers/validation-rules";
 import moment from "moment";
 
 export default {
+  props: {
+    disableReference: {
+      type: Boolean,
+      default: false
+    },
+  },
   components: {
     EcDialog: () => import("../ec/EcDialog"),
     EcRadioGroup: () => import("../inputs/EcRadioGroup"),

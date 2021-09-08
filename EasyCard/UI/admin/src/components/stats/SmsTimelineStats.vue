@@ -4,13 +4,13 @@
       <v-row no-gutters align="center">
         <v-col cols="6">{{$t("SMSSent")}}</v-col>
         <v-col cols="6" class="text-none text-end body-2">
-          <stats-filter-alt></stats-filter-alt>
+          <stats-filter-alt disable-reference></stats-filter-alt>
         </v-col>
       </v-row>
     </v-card-title>
     <v-divider></v-divider>
     <v-card-text class="px-0">
-      <v-row class="px-2 black--text body-2" v-if="report">
+      <v-row class="px-2 black--text body-2" v-if="report && (report.successMeasure || report.errorMeasure)">
         <v-col cols="6" md="6" class="pb-0">
           <span class="main-line-color">{{$t("Success")}}</span>
           <div>
@@ -135,7 +135,9 @@ export default {
       });
 
       if(!report || (report.success.length < 3 && report.error.length < 3)){
+        this.draw = false;
         this.nothingToShow = true;
+        this.report = report;
         return;
       }
       this.report = report;

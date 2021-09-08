@@ -140,6 +140,7 @@
   "@AllowedPrecision": "Allowed precision is @val",
   "OnlyPositiveNumbersAreAllowed": "Only positive numbers are allowed",
   "@TransactionsCount": "@count Transactions",
+  "@RefundsCount": "@count Refunds",
   "SelectItems": "Select Items",
   "AddItems": "Add Items",
   "@RedirectURLNumber": "Redirect URL #@number",

@@ -140,6 +140,7 @@
   "@AllowedPrecision": "רמת דיוק מורשית היא @val",
   "OnlyPositiveNumbersAreAllowed": "מספרים חיוביים בלבד",
   "@TransactionsCount": "@count תנועות",
+  "@RefundsCount": "@count זיכויים",
   "SelectItems": "בחר פריטים",
   "AddItems": "הוסף פריטים",
   "@MaxSelectionCount": "ניתן לבחור רק עד @count פריטים",
