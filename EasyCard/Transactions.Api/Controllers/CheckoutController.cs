@@ -16,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Checkout;
 using Transactions.Api.Models.PaymentRequests;
+using Transactions.Business.Entities;
 using Transactions.Business.Services;
 
 namespace Transactions.Api.Controllers
@@ -68,10 +69,27 @@ namespace Transactions.Api.Controllers
 
             var response = new CheckoutData();
 
-            var apiKeyB = Convert.FromBase64String(apiKey);
+            Guid? terminalID = null;
+            Terminal terminal = null;
+            PaymentRequest paymentRequest = null;
 
-            var tid = EnsureExists(await terminalsService.GetTerminals().Where(d => d.SharedApiKey == apiKeyB).Select(t => t.TerminalID).FirstOrDefaultAsync(), nameof(Terminal));
-            var terminal = await terminalsService.GetTerminal(tid);
+            //Api key is not required and ignored for payment request
+            if (paymentRequestID.HasValue)
+            {
+                paymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().Where(d => d.PaymentRequestID == paymentRequestID).FirstOrDefaultAsync());
+                terminalID = EnsureExists(paymentRequest.TerminalID);
+            }
+            else if (!string.IsNullOrWhiteSpace(apiKey))
+            {
+                var apiKeyB = Convert.FromBase64String(apiKey);
+                terminalID = EnsureExists(await terminalsService.GetTerminals().Where(d => d.SharedApiKey == apiKeyB).Select(t => t.TerminalID).FirstOrDefaultAsync(), nameof(Terminal));
+            }
+            else
+            {
+                return Unauthorized($"Terminal is not specified");
+            }
+
+            terminal = EnsureExists(await terminalsService.GetTerminal(terminalID.Value));
 
             if (terminal.EnabledFeatures == null || !terminal.EnabledFeatures.Any(f => f == Merchants.Shared.Enums.FeatureEnum.Checkout))
             {
@@ -110,9 +128,8 @@ namespace Transactions.Api.Controllers
 
             Guid? consumerID = null;
 
-            if (paymentRequestID.HasValue)
+            if (paymentRequest != null)
             {
-                var paymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().Where(d => d.PaymentRequestID == paymentRequestID && d.TerminalID == terminal.TerminalID).FirstOrDefaultAsync());
                 response.Settings.AllowPinPad = paymentRequest.AllowPinPad && response.Settings.AllowPinPad.GetValueOrDefault();
                 consumerID = paymentRequest.DealDetails.ConsumerID;
 
@@ -125,7 +142,7 @@ namespace Transactions.Api.Controllers
             }
             else if (paymentIntentID.HasValue)
             {
-                var paymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(terminal.TerminalID, paymentIntentID.Value));
+                paymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(terminal.TerminalID, paymentIntentID.Value));
 
                 response.Settings.AllowPinPad = paymentRequest.AllowPinPad && response.Settings.AllowPinPad.GetValueOrDefault();
                 consumerID = paymentRequest.DealDetails.ConsumerID;

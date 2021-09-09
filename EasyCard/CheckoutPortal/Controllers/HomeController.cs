@@ -51,6 +51,32 @@ namespace CheckoutPortal.Controllers
             this.transactionsHubContext = transactionsHubContext;
         }
 
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [Route("p")]
+        public async Task<IActionResult> ShortUrl([FromQuery]string r)
+        {
+            if (string.IsNullOrWhiteSpace(r))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var paymentRequestDecrypted = cryptoServiceCompact.DecryptCompactToBytes(r);
+
+            if (paymentRequestDecrypted == null || paymentRequestDecrypted.Length != 16)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            Guid paymentRequestId = new Guid(paymentRequestDecrypted);
+
+            var checkoutConfig = await GetCheckoutData(paymentRequestId);
+
+            // TODO: add merchant site origin instead of unsafe-inline
+            //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
+
+            return await IndexViewResult(checkoutConfig);
+        }
+
         // TODO: preffered language parameter
         // TODO: issueInvoice flag
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -64,28 +90,7 @@ namespace CheckoutPortal.Controllers
 
             var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
 
-            // TODO: add merchant site origin instead of unsafe-inline
-            //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
-
-            var model = new ChargeViewModel();
-
-            // TODO: consumer detals by consumerID
-            mapper.Map(request, model);
-            mapper.Map(checkoutConfig.PaymentRequest, model);
-            mapper.Map(checkoutConfig.Settings, model);
-            if (checkoutConfig.Consumer != null)
-            {
-                mapper.Map(checkoutConfig.Consumer, model);
-
-                if (checkoutConfig.Consumer.Tokens?.Count() > 0)
-                {
-                    model.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new KeyValuePair<Guid, string>(d.CreditCardTokenID, $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}"));
-                }
-            }
-
-            ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
-
-            return View(model);
+            return await IndexViewResult(checkoutConfig, request);
         }
 
         [HttpPost]
@@ -429,12 +434,131 @@ namespace CheckoutPortal.Controllers
             return Ok();
         }
 
-        private async Task<CheckoutData> GetCheckoutData(string apiKey, string paymentRequest, string paymentIntent, string redirectUrl)
+        private async Task<IActionResult> IndexViewResult(CheckoutData checkoutConfig, CardRequest request = null)
+        {
+            // TODO: add merchant site origin instead of unsafe-inline
+            //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
+
+            var model = new ChargeViewModel();
+
+            // TODO: consumer detals by consumerID
+            if (request != null)
+            {
+                mapper.Map(request, model);
+            }
+
+            mapper.Map(checkoutConfig.PaymentRequest, model);
+            mapper.Map(checkoutConfig.Settings, model);
+            if (checkoutConfig.Consumer != null)
+            {
+                mapper.Map(checkoutConfig.Consumer, model);
+
+                if (checkoutConfig.Consumer.Tokens?.Count() > 0)
+                {
+                    model.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new KeyValuePair<Guid, string>(d.CreditCardTokenID, $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}"));
+                }
+            }
+
+            ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
+
+            return View(nameof(Index), model);
+        }
+
+        /// <summary>
+        /// Preferred method. To be used when payment request id or payment intent id are available.
+        /// </summary>
+        /// <param name="id">Payment request or payment intent id (depends on <paramref name="isPaymentIntent"/>)</param>
+        /// <param name="redirectUrl">Redirect url (optional)</param>
+        /// <param name="isPaymentIntent">Type flag. If set to true, Id will be treated as if it's payment intent</param>
+        /// <returns></returns>
+        private async Task<CheckoutData> GetCheckoutData(Guid id, string redirectUrl = null, bool isPaymentIntent = false)
+        {
+            Guid? paymentRequestID = !isPaymentIntent ? id : default;
+            Guid? paymentIntentID = isPaymentIntent ? id : default;
+
+            CheckoutData checkoutConfig;
+            try
+            {
+                checkoutConfig = await transactionsApiClient.GetCheckout(paymentRequestID, paymentIntentID, null);
+            }
+            catch (Exception ex)
+            {
+                if (ex is WebApiClientErrorException webEx)
+                {
+                    logger.LogError(ex, $"Failed to get checkout data. Reason: {webEx.Response}");
+                }
+                else
+                {
+                    logger.LogError(ex, $"Failed to get checkout data. Reason: {ex.Message}");
+                }
+
+                throw new BusinessException(Messages.InvalidCheckoutData);
+            }
+
+            // TODO: check if terminal is not active
+
+            // Check payment request state. TODO: we can try to pay failed requests again
+            if (checkoutConfig.PaymentRequest?.QuickStatus == Transactions.Api.Models.PaymentRequests.Enums.PayReqQuickStatusFilterTypeEnum.Completed)
+            {
+                throw new BusinessException(Messages.PaymentRequestAlreadyPayed);
+            }
+            else if (checkoutConfig.PaymentRequest?.QuickStatus == Transactions.Api.Models.PaymentRequests.Enums.PayReqQuickStatusFilterTypeEnum.Canceled)
+            {
+                throw new BusinessException(Messages.PaymentRequestClosed);
+            }
+
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(redirectUrl))
+                {
+                    checkoutConfig.Settings.RedirectUrls.CheckRedirectUrls(redirectUrl);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Invalid redirect url");
+                throw new BusinessException(Messages.InvalidCheckoutData);
+            }
+
+            var transactionTypes = new List<TransactionTypeEnum> { TransactionTypeEnum.RegularDeal, TransactionTypeEnum.Immediate };
+
+            if (checkoutConfig.PaymentRequest != null)
+            {
+                if (checkoutConfig.Settings.MaxInstallments > 1)
+                {
+                    transactionTypes.Add(TransactionTypeEnum.Installments);
+                }
+
+                if (checkoutConfig.Settings.MaxCreditInstallments > 1)
+                {
+                    transactionTypes.Add(TransactionTypeEnum.Credit);
+                }
+            }
+            else
+            {
+                transactionTypes.Add(TransactionTypeEnum.Installments);
+                transactionTypes.Add(TransactionTypeEnum.Credit);
+            }
+
+            checkoutConfig.Settings.TransactionTypes = transactionTypes;
+
+            return checkoutConfig;
+        }
+
+        /// <summary>
+        /// Legacy method with ApiKey. To be used only when payment request id or payment intent id are not available.
+        /// </summary>
+        /// <param name="apiKey">Api key</param>
+        /// <param name="paymentRequestB64">Base64 encoded payment request id</param>
+        /// <param name="paymentIntentB64">Base64 encoded payment intent id</param>
+        /// <param name="redirectUrl">Redirect url (required)</param>
+        /// <returns></returns>
+        private async Task<CheckoutData> GetCheckoutData(string apiKey, string paymentRequestB64, string paymentIntentB64, string redirectUrl)
         {
             // redirect url is required if it is not payment request
-            if (string.IsNullOrWhiteSpace(paymentRequest) && string.IsNullOrWhiteSpace(redirectUrl) && string.IsNullOrWhiteSpace(paymentIntent))
+            if (string.IsNullOrWhiteSpace(paymentRequestB64) && string.IsNullOrWhiteSpace(redirectUrl) && string.IsNullOrWhiteSpace(paymentIntentB64))
             {
-                logger.LogError($"Checkout data provided by merchant is not valid. RedirectUrl: {redirectUrl}, PaymentRequest: {paymentRequest}, PaymentIntent: {paymentIntent}");
+                logger.LogError($"Checkout data provided by merchant is not valid. RedirectUrl: {redirectUrl}, PaymentRequest: {paymentRequestB64}, PaymentIntent: {paymentIntentB64}");
                 throw new BusinessException(Messages.InvalidCheckoutData);
             }
 
@@ -443,12 +567,12 @@ namespace CheckoutPortal.Controllers
             try
             {
                 var apiKeyd = cryptoServiceCompact.DecryptCompact(apiKey);
-                paymentRequestID = !string.IsNullOrWhiteSpace(paymentRequest) ? new Guid(Convert.FromBase64String(paymentRequest)) : (Guid?)null;
-                paymentIntentID = !string.IsNullOrWhiteSpace(paymentIntent) ? new Guid(Convert.FromBase64String(paymentIntent)) : (Guid?)null;
+                paymentRequestID = !string.IsNullOrWhiteSpace(paymentRequestB64) ? new Guid(Convert.FromBase64String(paymentRequestB64)) : (Guid?)null;
+                paymentIntentID = !string.IsNullOrWhiteSpace(paymentIntentB64) ? new Guid(Convert.FromBase64String(paymentIntentB64)) : (Guid?)null;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Failed to decrypt request keys. ApiKey: {apiKey}, PaymentRequest: {paymentRequest}, PaymentIntent: {paymentIntent}");
+                logger.LogError(ex, $"Failed to decrypt request keys. ApiKey: {apiKey}, PaymentRequest: {paymentRequestB64}, PaymentIntent: {paymentIntentB64}");
                 throw new BusinessException(Messages.InvalidCheckoutData);
             }
 

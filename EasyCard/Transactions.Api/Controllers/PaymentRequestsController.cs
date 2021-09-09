@@ -35,6 +35,7 @@ using Transactions.Shared.Enums;
 using Shared.Integration;
 using Shared.Helpers.Sms;
 using Merchants.Business.Extensions;
+using System.Web;
 
 namespace Transactions.Api.Controllers
 {
@@ -159,7 +160,7 @@ namespace Transactions.Api.Controllers
 
                 var paymentRequest = mapper.Map<PaymentRequestResponse>(dbPaymentRequest);
 
-                paymentRequest.PaymentRequestUrl = GetPaymentRequestUrl(dbPaymentRequest, terminal.SharedApiKey)?.Item1;
+                paymentRequest.PaymentRequestUrl = GetPaymentRequestSMSUrl(dbPaymentRequest);
 
                 paymentRequest.History = await mapper.ProjectTo<PaymentRequestHistorySummary>(paymentRequestsService.GetPaymentRequestHistory(dbPaymentRequest.PaymentRequestID).OrderByDescending(d => d.PaymentRequestHistoryID)).ToListAsync();
 
@@ -280,6 +281,19 @@ namespace Transactions.Api.Controllers
             return Tuple.Create(url, rejectUrl);
         }
 
+        private string GetPaymentRequestSMSUrl(PaymentRequest dbPaymentRequest)
+        {
+            var uriBuilder = new UriBuilder(apiSettings.CheckoutPortalUrl);
+            uriBuilder.Path = "/p";
+            var encrypted = cryptoServiceCompact.EncryptCompact(dbPaymentRequest.PaymentRequestID.ToByteArray());
+
+            var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+            query["r"] = encrypted;
+            uriBuilder.Query = query.ToString();
+
+            return uriBuilder.ToString();
+        }
+
         private Email BuildPaymentRequestEmail(PaymentRequest paymentRequest, Terminal terminal)
         {
             var settings = terminal.PaymentRequestSettings;
@@ -324,12 +338,12 @@ namespace Transactions.Api.Controllers
             var messageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
 
             var template = paymentRequest.IsRefund ? Resources.SMSResource.PaymentRequestRefund : Resources.SMSResource.PaymentRequest;
-            var url = GetPaymentRequestUrl(paymentRequest, terminal.SharedApiKey);
+            var url = GetPaymentRequestSMSUrl(paymentRequest);
 
             //TODO: due date?
             template.Replace("{Merchant}", terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName);
             template.Replace("{Amount}", $"{paymentRequest.PaymentRequestAmount.ToString("F2")}{paymentRequest.Currency.GetCurrencySymbol()}");
-            template.Replace("{PaymentLink}", url.Item1);
+            template.Replace("{PaymentLink}", url);
 
             return smsService.Send(new SmsMessage
             {

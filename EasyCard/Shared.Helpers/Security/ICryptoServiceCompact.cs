@@ -9,5 +9,9 @@ namespace Shared.Helpers.Security
         string EncryptCompact(string textToEncrypt);
 
         string DecryptCompact(string encryptedText);
+
+        byte[] DecryptCompactToBytes(string encryptedText);
+
+        string EncryptCompact(byte[] textToEncrypt);
     }
 }
