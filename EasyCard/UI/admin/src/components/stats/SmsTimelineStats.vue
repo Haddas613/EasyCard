@@ -30,7 +30,7 @@
       <v-container class="chart-container mt-2 px-0" v-if="!nothingToShow">
         <line-chart v-if="draw" :options="chartOptions" :data="chartData"></line-chart>
       </v-container>
-      <p class="text-center" v-else>
+      <p class="text-center" v-else-if="!report || !(report.successMeasure || report.errorMeasure)">
         {{$t("NothingToShow")}}
       </p>
     </v-card-text>
