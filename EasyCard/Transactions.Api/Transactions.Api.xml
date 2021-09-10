@@ -65,6 +65,11 @@
             <param name="filter"></param>
             <returns></returns>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.Currency">
             <summary>
             Currency
@@ -339,6 +344,11 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.TransactionAmount">
             <summary>
               Looks up a localized string similar to Amount.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.Currency">
@@ -1151,6 +1161,11 @@
             Blocking funds on credit card
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.BlockCreditCardRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.BlockCreditCardRequest.Currency">
             <summary>
             Currency
@@ -1214,6 +1229,11 @@
         <member name="T:Transactions.Api.Models.Transactions.CreateTransactionRequest">
             <summary>
             Create the charge based on credit card or previously stored credit card token
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.TransactionType">
@@ -1484,11 +1504,6 @@
         <member name="P:Transactions.Api.Models.Transactions.RefundRequest.CardOwnerNationalID">
             <summary>
             Only to be used for pin pad transactions when CredotCardSecureDetails is not available
-            </summary>
-        </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionRequestBase.TerminalID">
-            <summary>
-            EasyCard terminal reference
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionRequestBase.DealDetails">

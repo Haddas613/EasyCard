@@ -186,7 +186,7 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<OperationResponse>> CreateBillingDeal([FromBody] BillingDealRequest model)
         {
             // TODO: caching
-            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
             var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             var newBillingDeal = mapper.Map<BillingDeal>(model);
@@ -231,7 +231,7 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<OperationResponse>> UpdateBillingDeal([FromRoute] Guid billingDealID, [FromBody] BillingDealUpdateRequest model)
         {
             var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
-            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
             var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             if (model.IssueInvoice != true)
@@ -245,6 +245,7 @@ namespace Transactions.Api.Controllers
             }
 
             EnsureExists(model.DealDetails);
+
             //if (model.DealDetails.ConsumerID != billingDeal.DealDetails.ConsumerID)
             //{
             //    return BadRequest(MessagesConsumerCannotBeChanged);

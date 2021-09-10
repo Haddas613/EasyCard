@@ -25,6 +25,12 @@ namespace Transactions.Api.Models.Transactions
     public class CreateTransactionRequest : TransactionRequestBase
     {
         /// <summary>
+        /// EasyCard terminal reference
+        /// </summary>
+        [Required(AllowEmptyStrings = false)]
+        public Guid TerminalID { get; set; }
+
+        /// <summary>
         /// Generic transaction type
         /// </summary>
         [EnumDataType(typeof(TransactionTypeEnum))]

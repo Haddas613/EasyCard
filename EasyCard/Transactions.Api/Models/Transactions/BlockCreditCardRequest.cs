@@ -21,6 +21,12 @@ namespace Transactions.Api.Models.Transactions
     public class BlockCreditCardRequest : TransactionRequestBase
     {
         /// <summary>
+        /// EasyCard terminal reference
+        /// </summary>
+        [Required(AllowEmptyStrings = false)]
+        public Guid TerminalID { get; set; }
+
+        /// <summary>
         /// Currency
         /// </summary>
         [EnumDataType(typeof(CurrencyEnum))]
