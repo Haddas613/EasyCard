@@ -199,6 +199,17 @@ namespace CheckoutPortal.Controllers
                 }
             }
 
+            if (request.Amount.GetValueOrDefault() == 0 && request.SaveCreditCard)
+            {
+                ModelState[nameof(request.Amount)].Errors.Clear();
+                ModelState[nameof(request.Amount)].ValidationState = ModelValidationState.Skipped;
+
+                if (string.IsNullOrWhiteSpace(request.NationalID))
+                {
+                    ModelState.AddModelError(nameof(request.NationalID), Messages.NationalIDRequiredWhenSaveCardSelected);
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 mapper.Map(checkoutConfig.Settings, request);

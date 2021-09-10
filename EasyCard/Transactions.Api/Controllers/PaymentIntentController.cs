@@ -35,6 +35,7 @@ using Transactions.Shared.Enums;
 using Shared.Integration;
 using Newtonsoft.Json.Linq;
 using System.Security;
+using Shared.Api.Validation;
 
 namespace Transactions.Api.Controllers
 {
@@ -111,6 +112,7 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpPost]
+        [ValidateModelState]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreatePaymentIntent([FromBody] PaymentRequestCreate model)
         {

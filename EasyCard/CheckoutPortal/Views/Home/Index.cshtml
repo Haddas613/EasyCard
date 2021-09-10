@@ -124,7 +124,7 @@
 
                     @if (!(Model.Amount.GetValueOrDefault() > 0) || Model.SavedTokens?.Count() > 0)
                     {
-                        <fieldset class="border rounded p-2 m-2">
+                        <fieldset class="border rounded p-2 m-2" id="amount-area">
                             @if (!(Model.Amount.GetValueOrDefault() > 0))
                             {
                                 <div class="form-group row">
@@ -158,7 +158,7 @@
                     }
                     else if (Model.Amount.GetValueOrDefault() == 0)
                     {
-                        <fieldset class="border rounded p-2 m-2">
+                        <fieldset class="border rounded p-2 m-2" id="amount-area">
                             <div class="form-group row">
                                 <label asp-for="Amount" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("TotalSum") (@Model.Currency.GetCurrencySymbol())</label>
                                 <div class="col-sm-9">
@@ -220,7 +220,7 @@
                                 </div>
                             </div>
 
-                            @if (Model.ConsumerID.HasValue)
+                            @if (Model.ConsumerID.HasValue || (Model.PaymentIntent != null && Model.Amount.GetValueOrDefault() == 0))
                             {
                                 <div class="form-group row">
                                     <label class="fcol-form-label col-form-label-sm col-sm-3" asp-for="SaveCreditCard">@localizer.Get("SaveCard")</label>
@@ -402,7 +402,38 @@
             </text>
             }
 
+            $("#Amount").on("focus", function () {
+                if ($("#SaveCreditCard").is(":checked")) {
+                    setTimeout(() => {
+                        $("span[data-valmsg-for=Amount]").html("");
+                        $("#Amount").removeClass("input-validation-error");
+                    }, 500)
+                }
+            });
+
+            $("#Amount").on("input", function (e) {
+                if ((!e.target.value || !Number(e.target.value)) && $("#SaveCreditCard").is(":checked")) {
+                    setTimeout(() => {
+                        $("span[data-valmsg-for=Amount]").html("");
+                        $("#Amount").removeClass("input-validation-error");
+                    }, 500)
+                }
+            });
+
+            $("#SaveCreditCard").on("click", function (e) {
+                if ($(e.target).is(":checked")) {
+                    $("span[data-valmsg-for=Amount]").html("");
+                    $("#Amount").removeClass("input-validation-error");
+                }
+            })
+
             $("#checkout-form").on("submit", function (e) {
+
+                if (!Number($("#Amount").val()) && $("#SaveCreditCard").is(":checked")) {
+                    $("#amount-area").hide();
+                } else {
+                    $("#amount-area").show();
+                }
                 if (!$("#checkout-form").valid()) {
                     e.preventDefault();
                     return;
@@ -413,7 +444,9 @@
                     document.getElementById("ttype").value == "@Shared.Integration.Models.TransactionTypeEnum.Immediate.ToString()") {
                     $("#installments-area").remove();
                 }
-                if (document.getElementById("pin-pad-deal").checked == true) {
+
+                var pinPadDeal = document.getElementById("pin-pad-deal");
+                if (pinPadDeal && pinPadDeal.checked == true) {
                     $("#credit-card-info-area").remove();
                 }
 

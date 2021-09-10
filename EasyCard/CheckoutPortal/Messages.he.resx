@@ -123,6 +123,9 @@
   <data name="InvalidCheckoutData" xml:space="preserve">
     <value>מידע Checkout שסופק ע"י בית העסק אינו תקין</value>
   </data>
+  <data name="NationalIDRequiredWhenSaveCardSelected" xml:space="preserve">
+    <value>חובה להזין תעודת זהות כאשר מסומן לשמור הכרטיס</value>
+  </data>
   <data name="PaymentRequestAlreadyPayed" xml:space="preserve">
     <value>בקשת התשלום כבר שולמה</value>
   </data>

@@ -410,6 +410,7 @@ namespace Transactions.Api.Controllers
                 isPaymentIntent = true;
             }
 
+            var merchantID = dbPaymentRequest.MerchantID ?? User.GetMerchantID();
             CreateTransactionRequest model = new CreateTransactionRequest();
 
             mapper.Map(dbPaymentRequest, model);
@@ -422,6 +423,13 @@ namespace Transactions.Api.Controllers
                     throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDIsNotValid);
                 }
 
+                EnsureExists(merchantID);
+
+                if (model.DealDetails.ConsumerID == null)
+                {
+                    model.DealDetails.ConsumerID = await CreateConsumer(model, merchantID.Value);
+                }
+
                 var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
                 mapper.Map(model, tokenRequest);
 
@@ -429,8 +437,18 @@ namespace Transactions.Api.Controllers
 
                 var tokenResponseOperation = tokenResponse.GetOperationResponse();
 
-                if (!(tokenResponseOperation?.Status == StatusEnum.Success))
+                // if TransactionAmount is null/zero  we only create customer & save card, no transaction needed
+                if (!(tokenResponseOperation?.Status == StatusEnum.Success) || model.TransactionAmount.GetValueOrDefault() == 0)
                 {
+                    if (isPaymentIntent)
+                    {
+                        await paymentIntentService.DeletePaymentIntent(prmodel.TerminalID, prmodel.PaymentIntentID.GetValueOrDefault());
+                    }
+                    else if (prmodel.PaymentRequestID != null)
+                    {
+                        await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: prmodel.PaymentRequestID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
+                    }
+
                     return tokenResponse;
                 }
 

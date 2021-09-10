@@ -33,7 +33,7 @@ namespace Transactions.Api.Models.PaymentRequests
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyEnum Currency { get; set; }
 
-        [Range(0.01, double.MaxValue)]
+        [Range(0, double.MaxValue)]
         [DataType(DataType.Currency)]
         public decimal? PaymentRequestAmount { get; set; }
 
@@ -75,7 +75,7 @@ namespace Transactions.Api.Models.PaymentRequests
         [DataType(DataType.Currency)]
         public decimal? VATTotal { get; set; }
 
-        [Range(0.01, double.MaxValue)]
+        [Range(0, double.MaxValue)]
         [DataType(DataType.Currency)]
         public decimal? NetTotal { get; set; }
 
