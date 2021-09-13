@@ -22,6 +22,12 @@ namespace Transactions.Api.Models.Transactions
     public class RefundRequest : TransactionRequestBase
     {
         /// <summary>
+        /// EasyCard terminal reference
+        /// </summary>
+        [Required(AllowEmptyStrings = false)]
+        public Guid TerminalID { get; set; }
+
+        /// <summary>
         /// Currency
         /// </summary>
         [EnumDataType(typeof(CurrencyEnum))]
@@ -100,5 +106,10 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [StringLength(20)]
         public string CardOwnerNationalID { get; set; }
+
+        /// <summary>
+        /// SignalR connection id
+        /// </summary>
+        public string ConnectionID { get; set; }
     }
 }
