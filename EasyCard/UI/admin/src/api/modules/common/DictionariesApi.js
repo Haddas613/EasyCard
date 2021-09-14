@@ -68,4 +68,12 @@ export default class DictionariesApi {
         }
         return this.$merchantDictionaries;
     }
+
+    async getBanks(){
+        if(!this.banks){
+            this.banks = await this.base.get(this.transactionDictionariesUrl + `/banks?lang=${this.locale}`);
+        }
+
+        return this.banks;
+    }
 }

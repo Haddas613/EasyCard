@@ -1,13 +1,14 @@
 ﻿using Shared.Helpers.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Shared.Helpers
 {
     public static class BankHelper
     {
-        public static IEnumerable<BankDetails> GetListOfBankOptions()//TODO TASK ECNG-927
+        public static IEnumerable<BankDetails> GetListOfBankOptions(CultureInfo culture)//TODO TASK ECNG-927
         {
             yield return new BankDetails() { Description = "בחרו בנק מהרשימה", Value = "0" };
             yield return new BankDetails() { Description = "יהב (04)", Value = "04" };

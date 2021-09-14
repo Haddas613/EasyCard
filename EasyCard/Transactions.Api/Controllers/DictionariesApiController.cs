@@ -3,6 +3,9 @@ using Merchants.Business.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
+using Shared.Helpers;
+using Shared.Helpers.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Dictionaries;
 using Transactions.Api.Services;
@@ -28,6 +31,14 @@ namespace Transactions.Api.Controllers
         {
             var dictionaries = DictionariesService.GetDictionaries(CurrentCulture);
             return Ok(dictionaries);
+        }
+
+        [HttpGet]
+        [Route("banks")]
+        [ResponseCache(VaryByHeader = "Accept-Language", Duration = 3600)]
+        public async Task<ActionResult<IEnumerable<BankDetails>>> GetBanks()
+        {
+            return Ok(BankHelper.GetListOfBankOptions(CurrentCulture));
         }
     }
 }
