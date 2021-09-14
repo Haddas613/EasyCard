@@ -17,8 +17,7 @@
         ></v-select>
       </v-col>
       <v-col cols="12" md="6" class="pb-2" v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-7': $vuetify.breakpoint.mdAndUp}">
-        <customer-dialog-invoker 
-          :key="model.dealDetails.consumerID" 
+        <customer-dialog-invoker
           :terminal="true" 
           :customer-id="model.dealDetails.consumerID" 
           @update="processCustomer($event)"
@@ -299,10 +298,7 @@ export default {
   },
   methods: {
     async processCustomer(data) {
-      this.model.dealDetails.consumerEmail = data.consumerEmail;
-      this.model.dealDetails.consumerPhone = data.consumerPhone;
-      this.model.dealDetails.consumerID = data.consumerID;
-      this.model.dealDetails.consumerAddress = data.consumerAddress;
+      this.model.dealDetails = {...this.model.dealDetails, ...data};
       await this.getCustomerTokens();
     },
     handleClick() {

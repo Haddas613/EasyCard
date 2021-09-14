@@ -223,10 +223,7 @@ export default {
         return this.step++;;
       }
       this.customer = data;
-      this.model.dealDetails.consumerEmail = data.consumerEmail;
-      this.model.dealDetails.consumerPhone = data.consumerPhone;
-      this.model.dealDetails.consumerAddress = data.consumerAddress;
-      this.model.dealDetails.consumerID = data.consumerID;
+      this.model.dealDetails = {...this.model.dealDetails, ...data};
       if (!this.model.creditCardSecureDetails) {
         this.$set(this.model, "creditCardSecureDetails", {
           cardOwnerName: data.consumerName,
