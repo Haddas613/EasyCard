@@ -1,4 +1,5 @@
-﻿using Shared.Business;
+﻿using Newtonsoft.Json.Linq;
+using Shared.Business;
 using Shared.Business.Financial;
 using Shared.Helpers;
 using Shared.Integration.Models;
@@ -298,5 +299,7 @@ namespace Transactions.Business.Entities
         {
             return PaymentTransactionID;
         }
+
+        public JObject Extension { get; set; }
     }
 }

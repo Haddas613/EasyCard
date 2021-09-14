@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
+using Shared.Api.Swagger;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
@@ -162,5 +164,8 @@ namespace Transactions.Api.Models.Transactions
         /// SignalR connection id
         /// </summary>
         public string ConnectionID { get; set; }
+
+        [SwaggerExclude]
+        public JObject Extension { get; set; }
     }
 }

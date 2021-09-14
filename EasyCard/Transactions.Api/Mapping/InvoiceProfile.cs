@@ -59,6 +59,7 @@ namespace Transactions.Api.Mapping
                 //.ForPath(d => d.CreditCardDetails.CardOwnerNationalID, o => o.MapFrom(d => d.CreditCardDetails.CardOwnerNationalID))
                 //.ForPath(d => d.CreditCardDetails.CardReaderInput, o => o.MapFrom(d => d.CreditCardDetails.CardReaderInput))
 
+                .ForMember(d => d.Extension, o => o.MapFrom(d => d.Extension))
                 .ForMember(d => d.PaymentDetails, o => o.MapFrom<PaymentDetailsTransactionValueResolver>());
         }
     }

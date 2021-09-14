@@ -251,6 +251,9 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.PinPadDeviceID).HasColumnName("PinPadDeviceID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                 builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
+                builder.Property(b => b.Extension).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
+                    .Metadata.SetValueComparer(SettingsJObjectComparer);
+
                 builder.HasIndex(d => d.PinPadTransactionID);
                 builder.HasIndex(b => new { b.TerminalID, b.PaymentTypeEnum, b.MasavFileID });
                 builder.HasIndex(b => new { b.MerchantID, b.TerminalID });
@@ -520,6 +523,9 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.TransactionType).HasColumnName("TransactionType").HasColumnType("smallint").IsRequired(false);
 
                 builder.Property(b => b.ExternalSystemData).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
+                    .Metadata.SetValueComparer(SettingsJObjectComparer);
+
+                builder.Property(b => b.Extension).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
                     .Metadata.SetValueComparer(SettingsJObjectComparer);
             }
         }

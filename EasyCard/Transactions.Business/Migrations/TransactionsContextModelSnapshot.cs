@@ -401,6 +401,10 @@ namespace Transactions.Business.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
 
+                    b.Property<string>("Extension")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ExternalSystemData")
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
@@ -873,6 +877,10 @@ namespace Transactions.Business.Migrations
 
                     b.Property<short>("DocumentOrigin")
                         .HasColumnType("smallint");
+
+                    b.Property<string>("Extension")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<short?>("FinalizationStatus")
                         .HasColumnType("smallint");

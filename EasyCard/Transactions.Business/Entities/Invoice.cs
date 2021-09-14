@@ -172,5 +172,7 @@ namespace Transactions.Business.Entities
         public TransactionTypeEnum? TransactionType { get; set; }
 
         public JObject ExternalSystemData { get; set; }
+
+        public JObject Extension { get; set; }
     }
 }
