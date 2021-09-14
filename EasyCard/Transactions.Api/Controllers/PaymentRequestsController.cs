@@ -341,9 +341,9 @@ namespace Transactions.Api.Controllers
             var url = GetPaymentRequestSMSUrl(paymentRequest);
 
             //TODO: due date?
-            template.Replace("{Merchant}", terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName);
-            template.Replace("{Amount}", $"{paymentRequest.PaymentRequestAmount.ToString("F2")}{paymentRequest.Currency.GetCurrencySymbol()}");
-            template.Replace("{PaymentLink}", url);
+            template = template.Replace("{Merchant}", terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName)
+                .Replace("{Amount}", $"{paymentRequest.PaymentRequestAmount.ToString("F2")}{paymentRequest.Currency.GetCurrencySymbol()}")
+                .Replace("{PaymentLink}", url);
 
             return smsService.Send(new SmsMessage
             {
