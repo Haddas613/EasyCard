@@ -87,6 +87,9 @@
   "MasavFiles": "Masav Files",
   "MasavFileRows": "Masav File Rows",
   "MasavFile": "Masav File",
+  "Transmissions": "Transmissions",
+  "TransmissionsList": "Transmissions List",
+  "FilterTransmissions": "Filter Transmissions",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -320,6 +323,7 @@
   "PaymentTransactionIDFull": "Transaction ID (full)",
   "HasError": "Has Error",
   "HasMasavFile": "Has Masav File",
+  "Successful": "Successful",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -451,5 +455,6 @@
   "UnsavedChangesWarningMessage": "There are unsaved changes. Are you sure you want to leave?",
   "CanOnlyIssueInvoiceForILSTransactions": "Can only issue invoice for ILS transactions",
   "NoAvailableTerminals": "No available terminals",
-  "SessionEndingMsg": "Your session is about to end. Renew it to continue working or sign out."
+  "SessionEndingMsg": "Your session is about to end. Renew it to continue working or sign out.",
+  "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions"
 }

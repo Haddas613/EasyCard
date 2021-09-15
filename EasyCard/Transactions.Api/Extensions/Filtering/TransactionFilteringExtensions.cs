@@ -215,6 +215,49 @@ namespace Transactions.Api.Extensions.Filtering
             return src;
         }
 
+        public static IQueryable<PaymentTransaction> Filter(this IQueryable<PaymentTransaction> src, TransmitReportFilter filter)
+        {
+            if (filter.Success)
+            {
+                src = src.Where(t => t.ShvaTransactionDetails.TransmissionDate != null);
+            }
+            else
+            {
+                src = src.Where(t => t.Status == Shared.Enums.TransactionStatusEnum.TransmissionToProcessorFailed);
+            }
+
+            if (filter.TerminalID != null)
+            {
+                src = src.Where(t => t.TerminalID == filter.TerminalID);
+            }
+
+            if (filter.MerchantID != null)
+            {
+                src = src.Where(t => t.MerchantID == filter.MerchantID);
+            }
+
+            if (filter.QuickDateFilter != null)
+            {
+                var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(filter.QuickDateFilter.Value);
+
+                src = src.Where(t => t.UpdatedDate >= dateRange.DateFrom && t.UpdatedDate <= dateRange.DateTo);
+            }
+            else
+            {
+                if (filter.DateFrom != null)
+                {
+                    src = src.Where(t => t.UpdatedDate >= filter.DateFrom.Value);
+                }
+
+                if (filter.DateTo != null)
+                {
+                    src = src.Where(t => t.UpdatedDate <= filter.DateTo.Value);
+                }
+            }
+
+            return src;
+        }
+
         private static IQueryable<PaymentTransaction> HandleDateFiltering(IQueryable<PaymentTransaction> src, TransactionsFilter filter)
         {
             if (filter.TransmissionQuickDateFilter != null)

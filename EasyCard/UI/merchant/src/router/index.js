@@ -95,6 +95,12 @@ const routes = [
                     import ('../pages/transactions/TransactionsList.vue'),
             },
             {
+                name: 'Transmissions',
+                path: 'transmissions/list',
+                component: () =>
+                    import ('../pages/transmissions/TransmissionsList.vue'),
+            },
+            {
                 name: 'Transaction',
                 path: 'transactions/view/:id',
                 meta: {

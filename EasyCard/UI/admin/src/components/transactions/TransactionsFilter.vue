@@ -172,7 +172,7 @@
             clearable
           ></v-select>
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="6">
           <v-row class="pt-3">
             <v-col cols="12" md="4">
                 <v-switch v-model="model.hasInvoice" hide-details>

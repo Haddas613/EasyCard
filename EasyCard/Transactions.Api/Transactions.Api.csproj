@@ -110,6 +110,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TransactionSummaryResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Models\Transactions\TransmissionReportSummaryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TransmissionReportSummaryResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\DateFilterTypeResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -160,6 +165,10 @@
     <EmbeddedResource Update="Models\Transactions\TransactionSummaryResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TransactionSummaryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Transactions\TransmissionReportSummaryResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TransmissionReportSummaryResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\DateFilterTypeResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

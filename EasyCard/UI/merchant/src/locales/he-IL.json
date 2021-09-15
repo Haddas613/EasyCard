@@ -87,6 +87,9 @@
   "MasavFiles": "קבצים הוראת קבע",
   "MasavFileRows": "שורות הוראת קבע",
   "MasavFile": "קבצי אורת קבע",
+  "Transmissions": "שידורים",
+  "TransmissionsList": "רשימת שידורים",
+  "FilterTransmissions": "מסנן שידורים",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -320,6 +323,7 @@
   "PaymentTransactionIDFull": "מזהה עסקה ארוך",
   "HasError": "בעייתי",
   "HasMasavFile": "קבצי מסב",
+  "Successful": "בהצלחה",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -451,5 +455,6 @@
   "TerminalSettingsSaveMessage": "יש שינויים שלא נשמרו. אתה בטוח שאתה רוצה לעזוב?",
   "CanOnlyIssueInvoiceForILSTransactions": "יכול להנפיק חשבוניות רק עבור עסקאות ILS",
   "NoAvailableTerminals": "מסוף אינו זמין",
-  "SessionEndingMsg": "החיבור שלך עומד להסתיים. על מנת לחדש אותו המשך עבודה במערכת או התנתק."
+  "SessionEndingMsg": "החיבור שלך עומד להסתיים. על מנת לחדש אותו המשך עבודה במערכת או התנתק.",
+  "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון"
 }

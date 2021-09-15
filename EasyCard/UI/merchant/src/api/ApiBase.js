@@ -19,6 +19,7 @@ import PaymentIntentsApi from './modules/transactions/PaymentIntentsApi';
 import DashboardReportingApi from './modules/reporting/DashboardReportingApi';
 import FutureBillingDealsApi from './modules/transactions/FutureBillingDealsApi';
 import MasavFilesApi from './modules/transactions/MasavFilesApi';
+import TransmissionsReportingApi from './modules/transactions/TransmissionsReportingApi';
 
 class ApiBase {
     constructor() {
@@ -40,7 +41,8 @@ class ApiBase {
         this.paymentRequests = new PaymentRequestsApi(this);
         this.paymentIntents = new PaymentIntentsApi(this);
         this.reporting = {
-            dashboard: new DashboardReportingApi(this)
+            dashboard: new DashboardReportingApi(this),
+            transmissions: new TransmissionsReportingApi(this)
         };
         this.masavFiles = new MasavFilesApi(this);
     }

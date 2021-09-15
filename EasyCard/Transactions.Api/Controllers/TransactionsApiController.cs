@@ -272,7 +272,7 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetTransactions([FromQuery] TransactionsFilter filter)
+        public async Task<ActionResult<SummariesAmountResponse<TransactionSummary>>> GetTransactions([FromQuery] TransactionsFilter filter)
         {
             Debug.WriteLine(User);
             var merchantID = User.GetMerchantID();
@@ -287,7 +287,8 @@ namespace Transactions.Api.Controllers
                 var dataQuery = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.SortDesc).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
 
                 var numberOfRecords = query.DeferredCount().FutureValue();
-                var response = new SummariesResponse<TransactionSummary>();
+                var totalAmount = query.DeferredSum(e => e.TotalAmount).FutureValue();
+                var response = new SummariesAmountResponse<TransactionSummary>();
 
                 if (httpContextAccessor.GetUser().IsAdmin())
                 {
@@ -313,6 +314,7 @@ namespace Transactions.Api.Controllers
 
                     response.Data = summary;
                     response.NumberOfRecords = numberOfRecords.Value;
+                    response.TotalAmount = totalAmount.Value;
                     return Ok(response);
                 }
                 else
@@ -320,6 +322,7 @@ namespace Transactions.Api.Controllers
                     // TODO: try to remove ProjectTo
                     response.Data = await mapper.ProjectTo<TransactionSummary>(dataQuery).Future().ToListAsync();
                     response.NumberOfRecords = numberOfRecords.Value;
+                    response.TotalAmount = totalAmount.Value;
                     return Ok(response);
                 }
             }
