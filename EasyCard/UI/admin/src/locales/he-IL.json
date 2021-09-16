@@ -389,6 +389,7 @@
   "PaymentTransactionIDShort": "קצר מזהה עסקה",
   "PaymentTransactionIDFull": "מזהה עסקה ארוך",
   "HasError": "בעייתי",
+  "Error": "בעייתי",
   "HasMasavFile": "קבצי מסב",
   "CustomerName": "שם לקוח",
   "Successful": "בהצלחה",

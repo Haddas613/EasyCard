@@ -19,7 +19,7 @@ namespace Reporting.Api.Controllers
     [Produces("application/json")]
     [Consumes("application/json")]
     [Route("api/admin")]
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.TerminalOrManagerOrAdmin)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.Admin)]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]
     public class AdminController : ApiControllerBase

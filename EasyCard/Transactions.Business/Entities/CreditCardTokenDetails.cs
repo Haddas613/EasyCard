@@ -28,6 +28,8 @@ namespace Transactions.Business.Entities
 
         public DateTime? Created { get; set; }
 
+        public string ExpirationDate { get; set; }
+
         public bool Active { get; set; }
 
         public Guid GetID() => CreditCardTokenID;
@@ -58,5 +60,9 @@ namespace Transactions.Business.Entities
         public Guid? InitialTransactionID { get; set; }
 
         public DocumentOriginEnum DocumentOrigin { get; set; }
+
+        //TODO: Tokens Report
+        //for tokens report, must be set to previous token ID when updating/renewing other token
+        //public Guid? ReplacementOfTokenID { get; set; }
     }
 }

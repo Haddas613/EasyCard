@@ -15,6 +15,7 @@
     <ProjectReference Include="..\Reporting.Shared\Reporting.Shared.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
     <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
+    <ProjectReference Include="..\Transactions.Business\Transactions.Business.csproj" />
     <ProjectReference Include="..\Transactions.Shared\Transactions.Shared.csproj" />
   </ItemGroup>
 
@@ -30,10 +31,6 @@
     <None Update="Reporting.Api.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
 

@@ -6,7 +6,7 @@
         <!-- <terminal-template-filter md="4" class="pt-3" v-model="model"></terminal-template-filter> -->
         <date-from-to-filter class="pt-3" v-model="model"></date-from-to-filter>
       </v-row>
-      <v-row no-gutters>
+      <!-- <v-row no-gutters>
         <v-switch
           class="mt-2"
           v-model="model.success" 
@@ -17,6 +17,22 @@
             <small>{{$t('Successful')}}</small>
           </template>
         </v-switch>
+      </v-row> -->
+      <v-row no-gutters>
+        <v-radio-group class="mt-4" :column="false" v-model="model.success">
+          <v-radio
+            class="px-2"
+            :label="$t('Successful')"
+            color="success"
+            :value="true"
+          ></v-radio>
+          <v-radio
+            class="px-2"
+            :label="$t('Error')"
+            color="error"
+            :value="false"
+          ></v-radio>
+        </v-radio-group>
       </v-row>
       <v-row>
         <v-col cols="12" class="d-flex justify-end">

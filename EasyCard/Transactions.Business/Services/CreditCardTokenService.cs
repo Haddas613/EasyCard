@@ -38,6 +38,7 @@ namespace Transactions.Business.Services
         public IQueryable<CreditCardTokenDetails> GetTokens(bool showIncactive = false)
         {
             var tokens = context.CreditCardTokenDetails.AsQueryable();
+
             if (!showIncactive)
             {
                 tokens = tokens.Where(t => t.Active);

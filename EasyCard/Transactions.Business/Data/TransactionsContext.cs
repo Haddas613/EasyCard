@@ -296,6 +296,8 @@ namespace Transactions.Business.Data
                 });
 
                 builder.Property(p => p.ConsumerEmail).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(p => p.ExpirationDate).HasColumnName("CardExpiration");
             }
         }
 

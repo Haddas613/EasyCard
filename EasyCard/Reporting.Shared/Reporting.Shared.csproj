@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Merchants.Shared\Merchants.Shared.csproj" />
     <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
     <ProjectReference Include="..\Shared.Integration\Shared.Integration.csproj" />
     <ProjectReference Include="..\Transactions.Shared\Transactions.Shared.csproj" />

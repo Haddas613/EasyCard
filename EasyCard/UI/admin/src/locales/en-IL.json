@@ -385,6 +385,7 @@
   "PaymentTransactionIDShort": "Transaction ID (short)",
   "PaymentTransactionIDFull": "Transaction ID (full)",
   "HasError": "Has Error",
+  "Error": "Error",
   "HasMasavFile": "Has Masav File",
   "CustomerName": "Customer Name",
   "Successful": "Successful",
