@@ -1938,9 +1938,19 @@
               Looks up a localized string similar to Merchant.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.PaymentTransactionID">
+            <summary>
+              Looks up a localized string similar to Tran. ID.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.ShvaDealID">
             <summary>
               Looks up a localized string similar to Shva Deal ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.ShvaTransmissionNumber">
+            <summary>
+              Looks up a localized string similar to Transmission Num.
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.Solek">
@@ -1958,9 +1968,14 @@
               Looks up a localized string similar to Terminal.
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.TransactionAmount">
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.TotalAmount">
             <summary>
               Looks up a localized string similar to Amount.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.TransmissionDate">
+            <summary>
+              Looks up a localized string similar to Transmitted at.
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.TransmitTransactionsRequest">

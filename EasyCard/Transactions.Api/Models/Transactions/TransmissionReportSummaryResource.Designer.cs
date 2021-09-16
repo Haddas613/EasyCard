@@ -106,11 +106,29 @@ namespace Transactions.Api.Models.Transactions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tran. ID.
+        /// </summary>
+        public static string PaymentTransactionID {
+            get {
+                return ResourceManager.GetString("PaymentTransactionID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Shva Deal ID.
         /// </summary>
         public static string ShvaDealID {
             get {
                 return ResourceManager.GetString("ShvaDealID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transmission Num.
+        /// </summary>
+        public static string ShvaTransmissionNumber {
+            get {
+                return ResourceManager.GetString("ShvaTransmissionNumber", resourceCulture);
             }
         }
         
@@ -144,9 +162,18 @@ namespace Transactions.Api.Models.Transactions {
         /// <summary>
         ///   Looks up a localized string similar to Amount.
         /// </summary>
-        public static string TransactionAmount {
+        public static string TotalAmount {
             get {
-                return ResourceManager.GetString("TransactionAmount", resourceCulture);
+                return ResourceManager.GetString("TotalAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transmitted at.
+        /// </summary>
+        public static string TransmissionDate {
+            get {
+                return ResourceManager.GetString("TransmissionDate", resourceCulture);
             }
         }
     }

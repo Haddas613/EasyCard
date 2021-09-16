@@ -113,7 +113,7 @@ export default {
             {
               icon: "mdi-bank-transfer-in",
               to: { name: "Transmissions" },
-              text: "Transmissions"
+              text: "TransmissionsList"
             },
             {
               icon: "mdi-chevron-down-box-outline",

@@ -60,7 +60,7 @@ export default {
     return {
       totalAmount: 0,
       terminalTemplates: [],
-      loading: true,
+      loading: false,
       options: {},
       pagination: {},
       headers: [],
@@ -87,6 +87,7 @@ export default {
   },
   methods: {
     async getDataFromApi() {
+      if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.terminalTemplates.get({
         ...this.terminalTemplatesFilter,

@@ -32,9 +32,7 @@
           </router-link>
         </template> 
         <template v-slot:item.transactionAmount="{ item }">
-          <p class="text-right">
-            <b>{{item.transactionAmount | currency(item.currency)}}</b>
-          </p>
+          <b class="text-right">{{item.transactionAmount | currency(item.currency)}}</b>
         </template>
         <template v-slot:item.quickStatus="{ item }">
           <span v-bind:class="quickStatusesColors[item.$quickStatus]">{{$t(item.quickStatus || 'None')}}</span>
@@ -89,7 +87,7 @@ export default {
     return {
       totalAmount: 0,
       transactions: [],
-      loading: true,
+      loading: false,
       options: {},
       pagination: {},
       headers: [],
@@ -121,6 +119,7 @@ export default {
   },
   methods: {
     async getDataFromApi() {
+      if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.transactions.get({ ...this.transactionsFilter, ...this.options });
       this.transactions = data.data;

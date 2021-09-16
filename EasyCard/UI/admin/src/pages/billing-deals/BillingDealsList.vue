@@ -125,6 +125,7 @@ export default {
   },
   methods: {
     async getDataFromApi() {
+      if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.billingDeals.get({
         ...this.billingDealsFilter,

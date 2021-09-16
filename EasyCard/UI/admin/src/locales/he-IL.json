@@ -113,6 +113,9 @@
   "MasavFileRows": "שורות הוראת קבע",
   "MasavFile": "קבצי אורת קבע",
   "SMSSent": "SMS Sent",
+  "Transmissions": "שידורים",
+  "TransmissionsList": "רשימת שידורים",
+  "FilterTransmissions": "מסנן שידורים",
   
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -388,6 +391,7 @@
   "HasError": "בעייתי",
   "HasMasavFile": "קבצי מסב",
   "CustomerName": "שם לקוח",
+  "Successful": "בהצלחה",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -524,5 +528,6 @@
   "ShvaNewPasswordInfoMessage": "בביצוע הפעולה יתעדכנו כל המסופים שמקושרים למשתמש זה באותם הערכים",
   "NullAggregatorConnectedMessage": "NULL מאגד מחובר.",
   "NewAppVersionAvailableClickToRefreshThePage": "קיימת גירסה חדשה. לחץ כאן לעדכון הדף",
-  "TerminalSettingsSaveMessage": "יש שינויים שלא נשמרו. אתה בטוח שאתה רוצה לעזוב?"
+  "TerminalSettingsSaveMessage": "יש שינויים שלא נשמרו. אתה בטוח שאתה רוצה לעזוב?",
+  "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון"
 }

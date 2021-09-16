@@ -113,6 +113,9 @@
   "MasavFileRows": "Masav File Rows",
   "MasavFile": "Masav File",
   "SMSSent": "SMS Sent",
+  "Transmissions": "Transmissions",
+  "TransmissionsList": "Transmissions List",
+  "FilterTransmissions": "Filter Transmissions",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -384,6 +387,7 @@
   "HasError": "Has Error",
   "HasMasavFile": "Has Masav File",
   "CustomerName": "Customer Name",
+  "Successful": "Successful",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -519,5 +523,6 @@
   "ShvaNewPasswordInfoMessage": "By doing this all Terminals who use that User will be automatically updated with the same values.",
   "NullAggregatorConnectedMessage": "NULL Aggregator connected.",
   "NewAppVersionAvailableClickToRefreshThePage": "New App Version Available. Click to refresh the page.",
-  "UnsavedChangesWarningMessage": "There are unsaved changes. Are you sure you want to leave?"
+  "UnsavedChangesWarningMessage": "There are unsaved changes. Are you sure you want to leave?",
+  "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions"
 }

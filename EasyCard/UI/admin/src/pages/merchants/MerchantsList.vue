@@ -47,7 +47,7 @@ export default {
     return {
       totalAmount: 0,
       merchants: [],
-      loading: true,
+      loading: false,
       options: {},
       headers: [],
       merchantsFilter: {}
@@ -68,6 +68,7 @@ export default {
   },
   methods: {
     async getDataFromApi() {
+      if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.merchants.get({
         ...this.merchantsFilter,

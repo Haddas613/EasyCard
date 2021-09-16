@@ -53,7 +53,7 @@ export default {
     return {
       totalAmount: 0,
       terminals: [],
-      loading: true,
+      loading: false,
       options: {},
       pagination: {},
       headers: [],
@@ -80,6 +80,7 @@ export default {
   },
   methods: {
     async getDataFromApi() {
+      if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.terminals.get({
         ...this.terminalsFilter,

@@ -52,7 +52,7 @@ export default {
     return {
       totalAmount: 0,
       tokens: [],
-      loading: true,
+      loading: false,
       options: {},
       pagination: {},
       headers: [],
@@ -78,6 +78,7 @@ export default {
   },
   methods: {
     async getDataFromApi() {
+      if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.cardTokens.get({
         ...this.tokensFilter,

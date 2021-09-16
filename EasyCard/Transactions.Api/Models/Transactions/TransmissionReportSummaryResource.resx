@@ -132,8 +132,14 @@
   <data name="MerchantName" xml:space="preserve">
     <value>Merchant</value>
   </data>
+  <data name="PaymentTransactionID" xml:space="preserve">
+    <value>Tran. ID</value>
+  </data>
   <data name="ShvaDealID" xml:space="preserve">
     <value>Shva Deal ID</value>
+  </data>
+  <data name="ShvaTransmissionNumber" xml:space="preserve">
+    <value>Transmission Num</value>
   </data>
   <data name="Solek" xml:space="preserve">
     <value>Solek</value>
@@ -144,7 +150,10 @@
   <data name="TerminalName" xml:space="preserve">
     <value>Terminal</value>
   </data>
-  <data name="TransactionAmount" xml:space="preserve">
+  <data name="TotalAmount" xml:space="preserve">
     <value>Amount</value>
+  </data>
+  <data name="TransmissionDate" xml:space="preserve">
+    <value>Transmitted at</value>
   </data>
 </root>

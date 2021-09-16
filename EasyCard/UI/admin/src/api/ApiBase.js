@@ -24,6 +24,7 @@ import NayaxApi from "./modules/integrations/NayaxApi";
 import TransactionsSystemApi from './modules/transactions/SystemApi';
 import MasavFilesApi from './modules/transactions/MasavFilesApi';
 import AdminReportingApi from './modules/reporting/AdminReportingApi';
+import TransmissionsReportingApi from './modules/transactions/TransmissionsReportingApi';
 
 class ApiBase {
     constructor() {
@@ -54,7 +55,8 @@ class ApiBase {
             nayax: new NayaxApi(this)
         };
         this.reporting = {
-            admin: new AdminReportingApi(this)
+            admin: new AdminReportingApi(this),
+            transmissions: new TransmissionsReportingApi(this)
         }
     }
 

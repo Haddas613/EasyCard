@@ -84,7 +84,7 @@ export default {
     return {
       totalAmount: 0,
       audits: [],
-      loading: true,
+      loading: false,
       options: {},
       pagination: {},
       headers: [],
@@ -109,6 +109,7 @@ export default {
   },
   methods: {
     async getDataFromApi() {
+      if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.audit.get({
         ...this.auditFilter,

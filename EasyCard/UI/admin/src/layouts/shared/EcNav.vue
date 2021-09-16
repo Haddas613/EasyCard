@@ -103,6 +103,11 @@ export default {
               to: { name: "Transactions" }
             },
             {
+              icon: "mdi-bank-transfer-in",
+              text: "TransmissionsList",
+              to: { name: "Transmissions" }
+            },
+            {
               icon: "mdi-bank-transfer",
               text: "MasavFiles",
               to: { name: "MasavFiles" }

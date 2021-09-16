@@ -121,6 +121,7 @@ namespace Transactions.Api.Mapping
                .ForMember(d => d.Date, o => o.MapFrom(src => src.UpdatedDate))
                .ForMember(d => d.TransmissionDate, o => o.MapFrom(src => src.ShvaTransactionDetails.TransmissionDate))
                .ForMember(d => d.ShvaDealID, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
+               .ForMember(d => d.ShvaTransmissionNumber, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaTransmissionNumber))
                .ForMember(d => d.Solek, o => o.MapFrom(src => src.ShvaTransactionDetails.Solek));
         }
     }

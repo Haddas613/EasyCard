@@ -64,7 +64,7 @@ export default {
     return {
       totalAmount: 0,
       masavFiles: [],
-      loading: true,
+      loading: false,
       options: {},
       pagination: {},
       headers: [],
@@ -86,6 +86,7 @@ export default {
   },
   methods: {
     async getDataFromApi() {
+      if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.masavFiles.get({
         ...this.masavFilesFilter,

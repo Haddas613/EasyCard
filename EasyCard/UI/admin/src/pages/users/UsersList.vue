@@ -68,7 +68,7 @@ export default {
     return {
       totalAmount: 0,
       users: [],
-      loading: true,
+      loading: false,
       options: {},
       pagination: {},
       headers: [],
@@ -101,6 +101,7 @@ export default {
   },
   methods: {
     async getDataFromApi() {
+      if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.users.get({
         ...this.usersFilter,

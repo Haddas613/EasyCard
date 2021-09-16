@@ -81,7 +81,7 @@ namespace Transactions.Api.Controllers.Reporting
             return new TableMeta
             {
                 Columns = (httpContextAccessor.GetUser().IsAdmin() ? typeof(TransmissionReportSummaryAdmin) : typeof(TransmissionReportSummary))
-                    .GetObjectMeta(TransactionSummaryResource.ResourceManager, CurrentCulture)
+                    .GetObjectMeta(TransmissionReportSummaryResource.ResourceManager, CurrentCulture)
             };
         }
 
