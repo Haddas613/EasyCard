@@ -29,7 +29,7 @@ namespace Shared.Helpers
         {
             if (Year.HasValue && Month.HasValue)
             {
-                return new DateTime(Year.Value + 2000, Month.Value, 1);
+                return new DateTime(Year.Value + 2000, Month.Value, DateTime.DaysInMonth(Year.Value + 2000, Month.Value));
             }
             else
             {
@@ -41,7 +41,7 @@ namespace Shared.Helpers
         {
             get
             {
-                return ToDate()?.Date.AddMonths(1) < DateTime.UtcNow;
+                return ToDate() < DateTime.UtcNow;
             }
 
             set
