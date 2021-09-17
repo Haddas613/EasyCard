@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -87,35 +88,42 @@ namespace Reporting.Api.Controllers
             filter.DateTo = (filter.DateTo ?? TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date).AddDays(1);
             filter.DateFrom = filter.DateFrom ?? filter.DateTo.Value.AddDays(-30);
 
-            var tokens = await q
-                .Where(t => terminalsIds.Contains(t.TerminalID.Value) && t.ReplacementOfTokenID == null && (t.Created > filter.DateFrom && t.Created < filter.DateTo))
-                .GroupBy(k => k.TerminalID)
-                .Select(t => new TerminalTokenSubResult { TerminalID = t.Key, Created = t.Count(), Updated = 0, Expired = 0 })
 
-                .Union(q
-                    .Where(t => terminalsIds.Contains(t.TerminalID.Value) && t.ReplacementOfTokenID != null  && (t.Created > filter.DateFrom && t.Created < filter.DateTo))
-                    .GroupBy(k => k.TerminalID)
-                    .Select(t => new TerminalTokenSubResult { TerminalID = t.Key, Created = 0, Updated = t.Count(), Expired = 0 }))
-
-                .Union(q
-                    .Where(t => terminalsIds.Contains(t.TerminalID.Value) && (t.ExpirationDate > filter.DateFrom && t.ExpirationDate < filter.DateTo))
-                    .GroupBy(k => k.TerminalID)
-                    .Select(t => new TerminalTokenSubResult { TerminalID = t.Key, Created = 0, Updated = 0, Expired = t.Count() }))
-
-                .ToDictionaryAsync(k => k.TerminalID, v => v);
-
-            foreach (var terminal in terminals)
+            using (var dbTransaction = creditCardTokenService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
             {
-                if (tokens.ContainsKey(terminal.TerminalID))
+                var tokens = await q
+                    .Where(t => terminalsIds.Contains(t.TerminalID.Value) && (t.Created > filter.DateFrom && t.Created < filter.DateTo))
+                    .GroupBy(k => k.TerminalID)
+                    .Select(t => new TerminalTokenSubResult
+                    {
+                        TerminalID = t.Key,
+                        Created = t.Sum(e => e.ReplacementOfTokenID == null ? 1 : 0),
+                        Updated = t.Sum(e => e.ReplacementOfTokenID == null ? 0 : 1),
+                        Expired = 0
+                    })
+
+                    .Union(q
+                        .Where(t => terminalsIds.Contains(t.TerminalID.Value) && (t.ExpirationDate > filter.DateFrom && t.ExpirationDate < filter.DateTo))
+                        .GroupBy(k => k.TerminalID)
+                        .Select(t => new TerminalTokenSubResult { TerminalID = t.Key, Created = 0, Updated = 0, Expired = t.Count() }))
+
+                    .GroupBy(k => k.TerminalID)
+                    .Select(t => new TerminalTokenSubResult { TerminalID = t.Key, Created = t.Sum(e => e.Created), Updated = t.Sum(e => e.Updated), Expired = t.Sum(e => e.Expired) })
+                    .ToDictionaryAsync(k => k.TerminalID, v => v);
+
+                foreach (var terminal in terminals)
                 {
-                    var t = tokens[terminal.TerminalID];
-                    terminal.CreatedCount = t.Created;
-                    terminal.ExpiredCount = t.Expired;
-                    terminal.UpdatedCount = t.Updated;
+                    if (tokens.ContainsKey(terminal.TerminalID))
+                    {
+                        var t = tokens[terminal.TerminalID];
+                        terminal.CreatedCount = t.Created;
+                        terminal.ExpiredCount = t.Expired;
+                        terminal.UpdatedCount = t.Updated;
+                    }
                 }
             }
-
             response.Data = terminals;
+
             return Ok(response);
         }
     }
