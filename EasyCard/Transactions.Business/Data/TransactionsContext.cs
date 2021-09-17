@@ -37,8 +37,8 @@ namespace Transactions.Business.Data
                 new DebugLoggerProvider()
             });
 
-        private static readonly ValueConverter CardExpirationConverter = new ValueConverter<CardExpiration, string>(
-            v => v.ToString(),
+        private static readonly ValueConverter CardExpirationConverter = new ValueConverter<CardExpiration, DateTime?>(
+            v => v.ToDate(),
             v => CreditCardHelpers.ParseCardExpiration(v));
 
         private static readonly ValueConverter ItemsConverter = new ValueConverter<IEnumerable<Item>, string>(
@@ -158,9 +158,15 @@ namespace Transactions.Business.Data
 
                 builder.Property(p => p.CreditCardToken).HasColumnName("CreditCardToken");
 
+                //TODO: remove
+                builder.Property(typeof(string), "CardExpiration").HasMaxLength(5).IsUnicode(false).IsRequired(false);
+
                 builder.OwnsOne(b => b.CreditCardDetails, s =>
                 {
-                    s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
+                    s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
+                        .HasColumnName("CardExpirationDate")
+                        .HasColumnType("date");
+
                     s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
@@ -273,7 +279,14 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.MerchantID).IsRequired(true);
 
                 builder.Property(b => b.CardNumber).IsRequired(true).HasMaxLength(20).IsUnicode(false);
-                builder.Property(b => b.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter);
+
+                //TODO: remove
+                builder.Property(typeof(string), "CardExpirationOld").HasMaxLength(5).IsUnicode(false).IsRequired(false).HasColumnName("CardExpiration");
+
+                builder.Property(b => b.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
+                    .HasColumnName("CardExpirationDate")
+                    .HasColumnType("date");
+
                 builder.Property(b => b.CardVendor).HasMaxLength(20).IsRequired(false).IsUnicode(false);
                 builder.Property(b => b.CardOwnerNationalID).HasMaxLength(20).IsRequired(false).IsUnicode(false);
                 builder.Property(b => b.CardOwnerName).HasMaxLength(50).IsRequired(false).IsUnicode(true);
@@ -297,7 +310,9 @@ namespace Transactions.Business.Data
 
                 builder.Property(p => p.ConsumerEmail).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
-                builder.Property(p => p.ExpirationDate).HasColumnName("CardExpiration");
+                builder.Property(p => p.ExpirationDate).HasColumnName("CardExpirationDate").HasColumnType("date");
+
+                builder.Property(p => p.ReplacementOfTokenID).IsRequired(false);
             }
         }
 
@@ -346,9 +361,15 @@ namespace Transactions.Business.Data
 
                 builder.Property(p => p.CreditCardToken).IsRequired(false).HasColumnName("CreditCardToken");
 
+                //TODO: remove
+                builder.Property(typeof(string), "CardExpiration").HasMaxLength(5).IsUnicode(false).IsRequired(false);
+
                 builder.OwnsOne(b => b.CreditCardDetails, s =>
                 {
-                    s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
+                    s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
+                        .HasColumnName("CardExpirationDate")
+                        .HasColumnType("date");
+
                     s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
@@ -640,9 +661,15 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.TerminalID).HasColumnName("TerminalID");
                 builder.Property(p => p.MerchantID).HasColumnName("MerchantID");
 
+                //TODO: remove
+                builder.Property(typeof(string), "CardExpiration").HasMaxLength(5).IsUnicode(false).IsRequired(false);
+
                 builder.OwnsOne(b => b.CreditCardDetails, s =>
                 {
-                    s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
+                    s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
+                        .HasColumnName("CardExpirationDate")
+                        .HasColumnType("date");
+
                     s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Ignore(p => p.CardOwnerNationalID);
                     s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);

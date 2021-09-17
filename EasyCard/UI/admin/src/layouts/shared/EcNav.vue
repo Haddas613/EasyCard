@@ -200,6 +200,19 @@ export default {
           ]
         },
         {
+          icon: "mdi-chart-bar-stacked",
+          "icon-alt": "mdi-chart-bar-stacked",
+          text: "Reporting",
+          expanded: false,
+          children: [
+            {
+              icon: "mdi-credit-card-multiple",
+              text: "TerminalsTokens",
+              to: { name: "TerminalsTokens" }
+            }
+          ]
+        },
+        {
           icon: "mdi-console",
           "icon-alt": "mdi-console",
           text: "System",

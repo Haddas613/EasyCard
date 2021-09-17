@@ -28,6 +28,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Models\TerminalTokensResponseResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TerminalTokensResponseResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Models\TerminalTokensResponseResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TerminalTokensResponseResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Reporting.Api.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

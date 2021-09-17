@@ -37,6 +37,11 @@ namespace Transactions.Business.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("BillingSchedule");
 
+                    b.Property<string>("CardExpiration")
+                        .HasMaxLength(5)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(5)");
+
                     b.Property<string>("CorrelationId")
                         .HasMaxLength(50)
                         .IsUnicode(false)
@@ -208,10 +213,16 @@ namespace Transactions.Business.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("CardExpiration")
+                    b.Property<DateTime?>("CardExpiration")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("date")
+                        .HasColumnName("CardExpirationDate");
+
+                    b.Property<string>("CardExpirationOld")
                         .HasMaxLength(5)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(5)");
+                        .HasColumnType("varchar(5)")
+                        .HasColumnName("CardExpiration");
 
                     b.Property<string>("CardNumber")
                         .IsRequired()
@@ -253,6 +264,11 @@ namespace Transactions.Business.Migrations
                     b.Property<short>("DocumentOrigin")
                         .HasColumnType("smallint");
 
+                    b.Property<DateTime?>("ExpirationDate")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("date")
+                        .HasColumnName("CardExpirationDate");
+
                     b.Property<Guid?>("InitialTransactionID")
                         .HasColumnType("uniqueidentifier");
 
@@ -269,6 +285,9 @@ namespace Transactions.Business.Migrations
                     b.Property<Guid?>("OperationDoneByID")
                         .HasMaxLength(50)
                         .IsUnicode(false)
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ReplacementOfTokenID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Solek")
@@ -299,6 +318,11 @@ namespace Transactions.Business.Migrations
 
                     b.Property<DateTime?>("BillingDealTimestamp")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("CardExpiration")
+                        .HasMaxLength(5)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(5)");
 
                     b.Property<string>("CardNumber")
                         .HasColumnType("nvarchar(max)")
@@ -851,6 +875,11 @@ namespace Transactions.Business.Migrations
                     b.Property<Guid?>("BillingDealID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("CardExpiration")
+                        .HasMaxLength(5)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(5)");
+
                     b.Property<short>("CardPresence")
                         .HasColumnType("smallint");
 
@@ -1142,11 +1171,9 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("CardBrand");
 
-                            b1.Property<string>("CardExpiration")
-                                .HasMaxLength(5)
-                                .IsUnicode(false)
-                                .HasColumnType("varchar(5)")
-                                .HasColumnName("CardExpiration");
+                            b1.Property<DateTime?>("CardExpiration")
+                                .HasColumnType("date")
+                                .HasColumnName("CardExpirationDate");
 
                             b1.Property<string>("CardNumber")
                                 .HasMaxLength(20)
@@ -1325,11 +1352,9 @@ namespace Transactions.Business.Migrations
                             b1.Property<int>("FutureBillingCurrentDeal")
                                 .HasColumnType("int");
 
-                            b1.Property<string>("CardExpiration")
-                                .HasMaxLength(5)
-                                .IsUnicode(false)
-                                .HasColumnType("varchar(5)")
-                                .HasColumnName("CardExpiration");
+                            b1.Property<DateTime?>("CardExpiration")
+                                .HasColumnType("date")
+                                .HasColumnName("CardExpirationDate");
 
                             b1.Property<string>("CardNumber")
                                 .HasMaxLength(20)
@@ -1679,11 +1704,9 @@ namespace Transactions.Business.Migrations
                                 .HasColumnType("varchar(20)")
                                 .HasColumnName("CardBrand");
 
-                            b1.Property<string>("CardExpiration")
-                                .HasMaxLength(5)
-                                .IsUnicode(false)
-                                .HasColumnType("varchar(5)")
-                                .HasColumnName("CardExpiration");
+                            b1.Property<DateTime?>("CardExpiration")
+                                .HasColumnType("date")
+                                .HasColumnName("CardExpirationDate");
 
                             b1.Property<string>("CardNumber")
                                 .HasMaxLength(20)

@@ -4,6 +4,67 @@
         <name>Reporting.Api</name>
     </assembly>
     <members>
+        <member name="T:Reporting.Api.Models.TerminalTokensResponseResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.ActivityStartDate">
+            <summary>
+              Looks up a localized string similar to Activity Start.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.AggregatorTerminalReference">
+            <summary>
+              Looks up a localized string similar to Aggregator.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.CreatedCount">
+            <summary>
+              Looks up a localized string similar to Created.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.ExpiredCount">
+            <summary>
+              Looks up a localized string similar to Expired.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.Label">
+            <summary>
+              Looks up a localized string similar to Label.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.ProcessorTerminalReference">
+            <summary>
+              Looks up a localized string similar to Processor.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.Status">
+            <summary>
+              Looks up a localized string similar to Status.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.UpdatedCount">
+            <summary>
+              Looks up a localized string similar to Updated.
+            </summary>
+        </member>
         <member name="F:Reporting.Api.Policy.Terminal">
             <summary>
             Noninteractive api access

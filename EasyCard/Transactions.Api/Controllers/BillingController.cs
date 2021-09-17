@@ -264,6 +264,12 @@ namespace Transactions.Api.Controllers
 
                 if (billingDeal.CreditCardToken != token.CreditCardTokenID)
                 {
+                    if (token.ReplacementOfTokenID == null && billingDeal.CreditCardToken != null)
+                    {
+                        token.ReplacementOfTokenID = billingDeal.CreditCardToken;
+                        await creditCardTokenService.UpdateEntity(token);
+                    }
+
                     await billingDealService.AddCardTokenChangedHistory(billingDeal, token.CreditCardTokenID);
                 }
 

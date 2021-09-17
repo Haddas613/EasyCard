@@ -14,7 +14,8 @@ namespace Reporting.Api.Mapping
 
         void RegisterMappings()
         {
-            CreateMap<Terminal, TerminalTokensResponse>();
+            CreateMap<Terminal, TerminalTokensResponse>()
+                .ForMember(t => t.MerchantName, o => o.MapFrom(src => src.Merchant.BusinessName));
         }
     }
 }

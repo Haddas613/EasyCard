@@ -17,6 +17,8 @@ namespace Reporting.Shared.Models.Tokens
         [MetadataOptions(Hidden = true)]
         public Guid? MerchantID { get; set; }
 
+        public string MerchantName { get; set; }
+
         public string Label { get; set; }
 
         /// <summary>
@@ -33,12 +35,12 @@ namespace Reporting.Shared.Models.Tokens
         [JsonConverter(typeof(StringEnumConverter))]
         public TerminalStatusEnum Status { get; set; }
 
-        public DateTime? ActivityStartDate { get; set; }
+        //public DateTime? ActivityStartDate { get; set; }
 
-        public int Total { get; set; }
+        public int CreatedCount { get; set; }
 
-        public int Expired { get; set; }
+        public int ExpiredCount { get; set; }
 
-        public int Deleted { get; set; }
+        public int UpdatedCount { get; set; }
     }
 }

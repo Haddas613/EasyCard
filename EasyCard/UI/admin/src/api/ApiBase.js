@@ -25,6 +25,7 @@ import TransactionsSystemApi from './modules/transactions/SystemApi';
 import MasavFilesApi from './modules/transactions/MasavFilesApi';
 import AdminReportingApi from './modules/reporting/AdminReportingApi';
 import TransmissionsReportingApi from './modules/transactions/TransmissionsReportingApi';
+import CardTokensReportingApi from './modules/reporting/CardTokensReportingApi';
 
 class ApiBase {
     constructor() {
@@ -56,7 +57,8 @@ class ApiBase {
         };
         this.reporting = {
             admin: new AdminReportingApi(this),
-            transmissions: new TransmissionsReportingApi(this)
+            transmissions: new TransmissionsReportingApi(this),
+            cardTokens: new CardTokensReportingApi(this)
         }
     }
 

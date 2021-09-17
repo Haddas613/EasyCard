@@ -122,30 +122,30 @@ const routes = [
         component: () => import('../pages/invoicing/InvoicesList.vue'),
       },
       {
-          name: 'Invoice',
-          meta: {
-              backBtn: 'Invoicing'
-          },
-          path: 'invoicing/view/:id',
-          component: () =>
-              import ('../pages/invoicing/InvoiceInfo.vue'),
+        name: 'Invoice',
+        meta: {
+            backBtn: 'Invoicing'
+        },
+        path: 'invoicing/view/:id',
+        component: () =>
+            import ('../pages/invoicing/InvoiceInfo.vue'),
       },
       {
-          name: 'PaymentRequests',
-          path: 'payment-requests/list',
-          keepAlive: true,
-          props: true,
-          component: () =>
-              import ('../pages/payment-requests/PaymentRequestsList.vue'),
+        name: 'PaymentRequests',
+        path: 'payment-requests/list',
+        keepAlive: true,
+        props: true,
+        component: () =>
+            import ('../pages/payment-requests/PaymentRequestsList.vue'),
       },
       {
-          name: 'PaymentRequest',
-          meta: {
-              backBtn: 'PaymentRequests'
-          },
-          path: 'payment-requests/view/:id',
-          component: () =>
-              import ('../pages/payment-requests/PaymentRequestInfo.vue'),
+        name: 'PaymentRequest',
+        meta: {
+            backBtn: 'PaymentRequests'
+        },
+        path: 'payment-requests/view/:id',
+        component: () =>
+            import ('../pages/payment-requests/PaymentRequestInfo.vue'),
       },
       {
         name: 'BillingDeals',
@@ -156,13 +156,13 @@ const routes = [
             import ('../pages/billing-deals/BillingDealsList.vue'),
       },
       {
-          name: 'BillingDeal',
-          meta: {
-              backBtn: true,
-          },
-          path: 'billing-deals/view/:id',
-          component: () =>
-              import ('../pages/billing-deals/BillingDealInfo.vue'),
+        name: 'BillingDeal',
+        meta: {
+            backBtn: true,
+        },
+        path: 'billing-deals/view/:id',
+        component: () =>
+            import ('../pages/billing-deals/BillingDealInfo.vue'),
       },
       {
         name: 'MyProfile',
@@ -185,6 +185,14 @@ const routes = [
         props: true,
         component: () =>
             import ('../pages/masav/MasavFileRowsList.vue'),
+      },
+      {
+        name: 'TerminalsTokens',
+        path: 'reporting/terminals-tokens',
+        keepAlive: true,
+        props: true,
+        component: () =>
+            import ('../pages/reporting/TerminalsTokensReportList.vue'),
       },
       {
         name: '404',

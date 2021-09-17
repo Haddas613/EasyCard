@@ -28,7 +28,7 @@ namespace Transactions.Business.Entities
 
         public DateTime? Created { get; set; }
 
-        public string ExpirationDate { get; set; }
+        public DateTime? ExpirationDate { get; set; }
 
         public bool Active { get; set; }
 
@@ -61,8 +61,9 @@ namespace Transactions.Business.Entities
 
         public DocumentOriginEnum DocumentOrigin { get; set; }
 
-        //TODO: Tokens Report
-        //for tokens report, must be set to previous token ID when updating/renewing other token
-        //public Guid? ReplacementOfTokenID { get; set; }
+        /// <summary>
+        /// For tokens report, must be set to previous token ID when updating/renewing other token
+        /// </summary>
+        public Guid? ReplacementOfTokenID { get; set; }
     }
 }

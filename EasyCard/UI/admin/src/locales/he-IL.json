@@ -158,6 +158,8 @@
   "MaxFileSizeIs1MB": "גודל הקובץ המרבי הוא 1MB",
   "AlreadyPresent": "מיוצג כבר",
   "OnlyNumbersAreAllowed": "הכנס מספרים בלבד",
+  "Reporting": "דיווח",
+  "TerminalsTokens": "מסופי אסימונים",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ת.ז.",

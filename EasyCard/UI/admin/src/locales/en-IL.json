@@ -116,6 +116,8 @@
   "Transmissions": "Transmissions",
   "TransmissionsList": "Transmissions List",
   "FilterTransmissions": "Filter Transmissions",
+  "Reporting": "Reporting",
+  "TerminalsTokens": "Terminals Tokens",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
