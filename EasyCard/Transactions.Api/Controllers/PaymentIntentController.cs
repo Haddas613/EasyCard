@@ -86,25 +86,15 @@ namespace Transactions.Api.Controllers
 
         [HttpGet]
         [Route("{paymentIntentID}")]
-        public async Task<ActionResult<PaymentRequestResponse>> GetPaymentIntent([FromRoute] Guid paymentIntentID, Guid? terminalID = null)
+        public async Task<ActionResult<PaymentRequestResponse>> GetPaymentIntent([FromRoute] Guid paymentIntentID)
         {
-            if (terminalID == null && User.IsTerminal())
-            {
-                terminalID = User.GetTerminalID();
-            }
+            var dbPaymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(paymentIntentID));
 
-            if (terminalID == null)
-            {
-                throw new SecurityException("Cannot determine TerminalID");
-            }
-
-            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID.GetValueOrDefault()));
-
-            var dbPaymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(terminal.TerminalID, paymentIntentID));
+            var terminal = EnsureExists(await terminalsService.GetTerminal(dbPaymentRequest.TerminalID.Value));
 
             var paymentRequest = mapper.Map<PaymentRequestResponse>(dbPaymentRequest);
 
-            paymentRequest.PaymentRequestUrl = GetPaymentIntentUrl(dbPaymentRequest, terminal.SharedApiKey, dbPaymentRequest.RedirectUrl);
+            paymentRequest.PaymentRequestUrl = GetPaymentIntentShortUrl(dbPaymentRequest);
 
             paymentRequest.TerminalName = terminal.Label;
 
@@ -176,7 +166,7 @@ namespace Transactions.Api.Controllers
                 RedirectUrlHelpers.CheckRedirectUrls(terminal.CheckoutSettings.RedirectUrls, model.RedirectUrl);
             }
 
-            string url = GetPaymentIntentUrl(newPaymentRequest, terminal.SharedApiKey, model.RedirectUrl);
+            string url = GetPaymentIntentShortUrl(newPaymentRequest);
 
             await paymentIntentService.SavePaymentIntent(newPaymentRequest);
 
@@ -185,6 +175,19 @@ namespace Transactions.Api.Controllers
             var response = CreatedAtAction(nameof(GetPaymentIntent), new { paymentIntentID = newPaymentRequest.PaymentRequestID }, respObject);
 
             return response;
+        }
+
+        private string GetPaymentIntentShortUrl(PaymentRequest dbPaymentRequest)
+        {
+            var uriBuilder = new UriBuilder(apiSettings.CheckoutPortalUrl);
+            uriBuilder.Path = "/i";
+            var encrypted = cryptoServiceCompact.EncryptCompact(dbPaymentRequest.PaymentRequestID.ToByteArray());
+
+            var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+            query["r"] = encrypted;
+            uriBuilder.Query = query.ToString();
+
+            return uriBuilder.ToString();
         }
 
         private string GetPaymentIntentUrl(PaymentRequest dbPaymentRequest, byte[] sharedTerminalApiKey, string redirectUrl)

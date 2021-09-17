@@ -11,6 +11,7 @@ namespace Transactions.Business.Services
 {
     public class PaymentIntentService : IPaymentIntentService
     {
+        private const string PartitionKey = "1";
         private readonly CloudTable table;
 
         public PaymentIntentService(string storageConnectionString, string tableName)
@@ -24,9 +25,9 @@ namespace Transactions.Business.Services
             table.CreateIfNotExists();
         }
 
-        public async Task DeletePaymentIntent(Guid terminalID, Guid paymentIntentID)
+        public async Task DeletePaymentIntent(Guid paymentIntentID)
         {
-            TableOperation getOperation = TableOperation.Retrieve<PaymentIntent>(terminalID.ToString(), paymentIntentID.ToString());
+            TableOperation getOperation = TableOperation.Retrieve<PaymentIntent>(PartitionKey, paymentIntentID.ToString());
 
             var res = await table.ExecuteAsync(getOperation);
 
@@ -44,9 +45,9 @@ namespace Transactions.Business.Services
             // TODO: do we need to throw exception here ?
         }
 
-        public async Task<PaymentRequest> GetPaymentIntent(Guid terminalID, Guid paymentIntentID)
+        public async Task<PaymentRequest> GetPaymentIntent(Guid paymentIntentID)
         {
-            TableOperation getOperation = TableOperation.Retrieve<PaymentIntent>(terminalID.ToString(), paymentIntentID.ToString());
+            TableOperation getOperation = TableOperation.Retrieve<PaymentIntent>(PartitionKey, paymentIntentID.ToString());
 
             PaymentRequest response = null;
 

@@ -7,27 +7,22 @@ namespace Transactions.Business.Entities
 {
     public class PaymentIntent : TableEntity
     {
+        private readonly string partitionKey = "1";
+
         public PaymentIntent()
         {
         }
 
         public PaymentIntent(Guid terminalID, Guid paymentIntentID)
         {
+            this.PartitionKey = partitionKey;
             this.TerminalID = terminalID;
             this.PaymentIntentID = paymentIntentID;
         }
 
         public string PaymentRequest { get; set; }
 
-        public Guid? TerminalID
-        {
-            get => Guid.Parse(this.PartitionKey);
-
-            set
-            {
-                this.PartitionKey = value.ToString();
-            }
-        }
+        public Guid? TerminalID { get; set; }
 
         public Guid? PaymentIntentID
         {

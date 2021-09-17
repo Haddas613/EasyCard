@@ -12,10 +12,10 @@ namespace Transactions.Business.Services
 {
     public interface IPaymentIntentService
     {
-        Task<PaymentRequest> GetPaymentIntent(Guid terminalID, Guid paymentIntentID);
+        Task<PaymentRequest> GetPaymentIntent(Guid paymentIntentID);
 
         Task SavePaymentIntent(PaymentRequest entity);
 
-        Task DeletePaymentIntent(Guid terminalID, Guid guid);
+        Task DeletePaymentIntent(Guid guid);
     }
 }

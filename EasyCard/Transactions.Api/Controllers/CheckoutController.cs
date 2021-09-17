@@ -79,6 +79,11 @@ namespace Transactions.Api.Controllers
                 paymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().Where(d => d.PaymentRequestID == paymentRequestID).FirstOrDefaultAsync());
                 terminalID = EnsureExists(paymentRequest.TerminalID);
             }
+            else if (paymentIntentID.HasValue)
+            {
+                paymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(paymentIntentID.Value));
+                terminalID = EnsureExists(paymentRequest.TerminalID);
+            }
             else if (!string.IsNullOrWhiteSpace(apiKey))
             {
                 var apiKeyB = Convert.FromBase64String(apiKey);
@@ -128,7 +133,7 @@ namespace Transactions.Api.Controllers
 
             Guid? consumerID = null;
 
-            if (paymentRequest != null)
+            if (paymentRequestID.HasValue)
             {
                 response.Settings.AllowPinPad = paymentRequest.AllowPinPad && response.Settings.AllowPinPad.GetValueOrDefault();
                 consumerID = paymentRequest.DealDetails.ConsumerID;
@@ -142,8 +147,6 @@ namespace Transactions.Api.Controllers
             }
             else if (paymentIntentID.HasValue)
             {
-                paymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(terminal.TerminalID, paymentIntentID.Value));
-
                 response.Settings.AllowPinPad = paymentRequest.AllowPinPad && response.Settings.AllowPinPad.GetValueOrDefault();
                 consumerID = paymentRequest.DealDetails.ConsumerID;
 

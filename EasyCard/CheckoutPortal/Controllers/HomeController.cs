@@ -51,9 +51,14 @@ namespace CheckoutPortal.Controllers
             this.transactionsHubContext = transactionsHubContext;
         }
 
+        /// <summary>
+        /// Payment Request short url
+        /// </summary>
+        /// <param name="r">Payment request</param>
+        /// <returns></returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [Route("p")]
-        public async Task<IActionResult> ShortUrl([FromQuery]string r)
+        public async Task<IActionResult> ShortUrlPaymentRequest([FromQuery]string r)
         {
             if (string.IsNullOrWhiteSpace(r))
             {
@@ -70,6 +75,37 @@ namespace CheckoutPortal.Controllers
             Guid paymentRequestId = new Guid(paymentRequestDecrypted);
 
             var checkoutConfig = await GetCheckoutData(paymentRequestId);
+
+            // TODO: add merchant site origin instead of unsafe-inline
+            //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
+
+            return await IndexViewResult(checkoutConfig);
+        }
+
+        /// <summary>
+        /// Payment Intent short url
+        /// </summary>
+        /// <param name="r">Payment intent</param>
+        /// <returns></returns>
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [Route("i")]
+        public async Task<IActionResult> ShortUrlPaymentIntent([FromQuery]string r)
+        {
+            if (string.IsNullOrWhiteSpace(r))
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var paymentIntentDecrypted = cryptoServiceCompact.DecryptCompactToBytes(r);
+
+            if (paymentIntentDecrypted == null || paymentIntentDecrypted.Length != 16)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            Guid paymentRequestId = new Guid(paymentIntentDecrypted);
+
+            var checkoutConfig = await GetCheckoutData(paymentRequestId, null, true);
 
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
@@ -484,8 +520,8 @@ namespace CheckoutPortal.Controllers
         /// <returns></returns>
         private async Task<CheckoutData> GetCheckoutData(Guid id, string redirectUrl = null, bool isPaymentIntent = false)
         {
-            Guid? paymentRequestID = !isPaymentIntent ? id : default;
-            Guid? paymentIntentID = isPaymentIntent ? id : default;
+            Guid? paymentRequestID = !isPaymentIntent ? id : default(Guid?);
+            Guid? paymentIntentID = isPaymentIntent ? id : default(Guid?);
 
             CheckoutData checkoutConfig;
             try

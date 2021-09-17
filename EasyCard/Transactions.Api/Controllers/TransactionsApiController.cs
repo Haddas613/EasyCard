@@ -408,7 +408,7 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                dbPaymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(prmodel.TerminalID, prmodel.PaymentIntentID.GetValueOrDefault()), "PaymentIntent");
+                dbPaymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(prmodel.PaymentIntentID.GetValueOrDefault()), "PaymentIntent");
 
                 isPaymentIntent = true;
             }
@@ -445,7 +445,7 @@ namespace Transactions.Api.Controllers
                 {
                     if (isPaymentIntent)
                     {
-                        await paymentIntentService.DeletePaymentIntent(prmodel.TerminalID, prmodel.PaymentIntentID.GetValueOrDefault());
+                        await paymentIntentService.DeletePaymentIntent(prmodel.PaymentIntentID.GetValueOrDefault());
                     }
                     else if (prmodel.PaymentRequestID != null)
                     {
@@ -490,7 +490,7 @@ namespace Transactions.Api.Controllers
             {
                 if (isPaymentIntent)
                 {
-                    await paymentIntentService.DeletePaymentIntent(prmodel.TerminalID, prmodel.PaymentIntentID.GetValueOrDefault());
+                    await paymentIntentService.DeletePaymentIntent(prmodel.PaymentIntentID.GetValueOrDefault());
                 }
                 else
                 {
