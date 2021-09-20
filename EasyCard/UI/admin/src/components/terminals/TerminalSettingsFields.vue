@@ -453,16 +453,7 @@
             <v-divider class="pt-1"></v-divider>
           </v-col>
           <v-col cols="12" md="4">
-            <v-text-field
-              :label="$t('Bank')"
-              :counter="7"
-              outlined
-              v-model="model.bankDetails.bank"
-              max="7"
-              type="number"
-              :rules="[vr.primitives.numeric()]"
-              v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
-            ></v-text-field>
+            <bank-select v-model="model.bankDetails.bank" v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"></bank-select>
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
@@ -503,6 +494,7 @@ export default {
     EcList: () => import("../ec/EcList"),
     TerminalMerchantLogoInput: () => import("./TerminalMerchantLogoInput"),
     TerminalMerchantStyleInput: () => import("./TerminalMerchantStyleInput"),
+    BankSelect: () => import("../bank/BankSelect")
   },
   props: {
     data: {
