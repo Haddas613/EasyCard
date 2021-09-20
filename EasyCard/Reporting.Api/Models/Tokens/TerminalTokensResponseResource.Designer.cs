@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Reporting.Api.Models {
+namespace Reporting.Api.Models.Tokens {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Reporting.Api.Models {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Reporting.Api.Models.TerminalTokensResponseResource", typeof(TerminalTokensResponseResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Reporting.Api.Models.Tokens.TerminalTokensResponseResource", typeof(TerminalTokensResponseResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

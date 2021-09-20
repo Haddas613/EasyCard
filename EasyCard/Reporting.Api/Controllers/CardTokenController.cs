@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Reporting.Api.Extensions.Filtering;
 using Reporting.Api.Models;
 using Reporting.Api.Models.Tokens;
 using Reporting.Business.Services;
@@ -25,6 +26,7 @@ using Shared.Helpers;
 using Shared.Helpers.Services;
 using Transactions.Business.Services;
 using Z.EntityFramework.Plus;
+using SharedIntegration = Shared.Integration;
 
 namespace Reporting.Api.Controllers
 {
@@ -40,16 +42,19 @@ namespace Reporting.Api.Controllers
         private readonly ITerminalsService terminalsService;
         private readonly ICreditCardTokenService creditCardTokenService;
         private readonly IMapper mapper;
+        private readonly ITransactionsService transactionsService;
 
         public CardTokenController(IMapper mapper,
             IMerchantsService merchantsService,
             ITerminalsService terminalsService,
-            ICreditCardTokenService creditCardTokenService)
+            ICreditCardTokenService creditCardTokenService,
+            ITransactionsService transactionsService)
         {
             this.mapper = mapper;
             this.merchantsService = merchantsService;
             this.terminalsService = terminalsService;
             this.creditCardTokenService = creditCardTokenService;
+            this.transactionsService = transactionsService;
         }
 
         [HttpGet]
@@ -65,6 +70,18 @@ namespace Reporting.Api.Controllers
         }
 
         [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("$meta-tokens-transactions")]
+        public TableMeta GetMetadataTokenTransactions()
+        {
+            return new TableMeta
+            {
+                Columns = typeof(TokenTransactionsResponse)
+                    .GetObjectMeta(TokenTransactionsResponseResource.ResourceManager, CurrentCulture)
+            };
+        }
+
+        [HttpGet]
         [Route("terminals-tokens")]
         public async Task<ActionResult<SummariesResponse<TerminalTokensResponse>>> GetTerminalsTokens([FromQuery]TerminalsTokensFilter filter)
         {
@@ -72,7 +89,7 @@ namespace Reporting.Api.Controllers
             
             var numberOfRecords = terminalsQuery.DeferredCount().FutureValue();
 
-            var terminals = await mapper.ProjectTo<TerminalTokensResponse>(terminalsQuery.Include(t => t.Merchant).Filter(filter).ApplyPagination(filter, 15))
+            var terminals = await mapper.ProjectTo<TerminalTokensResponse>(terminalsQuery.Include(t => t.Merchant).OrderByDescending(t => t.TerminalID).ApplyPagination(filter, 15))
                 .Future()
                 .ToListAsync();
 
@@ -123,6 +140,65 @@ namespace Reporting.Api.Controllers
                 }
             }
             response.Data = terminals;
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("tokens-transactions")]
+        public async Task<ActionResult<SummariesResponse<TokenTransactionsResponse>>> GetTokenTransactions([FromQuery]TokensTransactionsFilter filter)
+        {
+            var response = new SummariesResponse<TokenTransactionsResponse>();
+
+            filter.DateTo = (filter.DateTo ?? TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date).AddDays(1);
+            filter.DateFrom = filter.DateFrom ?? filter.DateTo.Value.AddDays(-30);
+
+            var tokensQuery = creditCardTokenService.GetTokens(true).Filter(filter);
+
+            using (var dbTransaction = creditCardTokenService.BeginDbTransaction(System.Data.IsolationLevel.ReadUncommitted))
+            {
+                var numberOfRecords = tokensQuery.DeferredCount().FutureValue();
+
+                tokensQuery = tokensQuery.ApplyPagination(filter, 15).OrderByDescending(t => t.CreditCardTokenID);
+                var tokens = await mapper.ProjectTo<TokenTransactionsResponse>(tokensQuery)
+                    .Future()
+                    .ToListAsync();
+
+                var transactionsQuery = transactionsService.GetTransactions().Where(t => t.TransactionTimestamp >= filter.DateFrom && t.TransactionTimestamp < filter.DateTo);
+
+                var subres = await tokensQuery.Select(t => t.CreditCardTokenID)
+                    .Join(transactionsQuery, o => o, i => i.CreditCardToken, (to, tr) => new TokenTransactionsSubResult {
+                        CreditCardTokenID = to,
+                        PaymentTransactionID = tr.PaymentTransactionID,
+                        ProductionTransactions = tr.Status > 0 ? 1 : 0,
+                        FailedTransactions = tr.Status < (Transactions.Shared.Enums.TransactionStatusEnum )(-1) ? 1 : 0,
+                        TotalSum = tr.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund ? 0 : tr.TotalAmount,
+                        TotalRefund = tr.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund ? tr.TotalAmount : 0,
+                    })
+                    .GroupBy(k => k.CreditCardTokenID)
+                    .Select(t => new TokenTransactionsSubResult
+                    {
+                        CreditCardTokenID = t.Key,
+                        ProductionTransactions = t.Sum(e => e.ProductionTransactions),
+                        FailedTransactions = t.Sum(e => e.FailedTransactions),
+                        TotalSum = t.Sum(e => e.TotalSum)
+                    })
+                    .ToDictionaryAsync(k => k.CreditCardTokenID, v => v);
+
+                foreach (var token in tokens)
+                {
+                    if (subres.ContainsKey(token.CreditCardTokenID))
+                    {
+                        var sub = subres[token.CreditCardTokenID];
+                        token.ProductionTransactions = sub.ProductionTransactions;
+                        token.FailedTransactions = sub.FailedTransactions;
+                        token.TotalSum = sub.TotalSum;
+                        token.TotalRefund = sub.TotalRefund;
+                    }
+                }
+                response.Data = tokens;
+                response.NumberOfRecords = numberOfRecords.Value;
+            }
 
             return Ok(response);
         }

@@ -28,17 +28,26 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Models\TerminalTokensResponseResource.Designer.cs">
+    <Compile Update="Models\Tokens\TerminalTokensResponseResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>TerminalTokensResponseResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Models\Tokens\TokenTransactionsResponseResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TokenTransactionsResponseResource.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Models\TerminalTokensResponseResource.resx">
+    <EmbeddedResource Update="Models\Tokens\TerminalTokensResponseResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>TerminalTokensResponseResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Models\Tokens\TokenTransactionsResponseResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TokenTransactionsResponseResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

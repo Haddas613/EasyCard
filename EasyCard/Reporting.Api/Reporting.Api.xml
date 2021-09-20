@@ -4,65 +4,171 @@
         <name>Reporting.Api</name>
     </assembly>
     <members>
-        <member name="T:Reporting.Api.Models.TerminalTokensResponseResource">
+        <member name="T:Reporting.Api.Models.Tokens.TerminalTokensResponseResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
             </summary>
         </member>
-        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.ResourceManager">
+        <member name="P:Reporting.Api.Models.Tokens.TerminalTokensResponseResource.ResourceManager">
             <summary>
               Returns the cached ResourceManager instance used by this class.
             </summary>
         </member>
-        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.Culture">
+        <member name="P:Reporting.Api.Models.Tokens.TerminalTokensResponseResource.Culture">
             <summary>
               Overrides the current thread's CurrentUICulture property for all
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
-        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.ActivityStartDate">
+        <member name="P:Reporting.Api.Models.Tokens.TerminalTokensResponseResource.ActivityStartDate">
             <summary>
               Looks up a localized string similar to Activity Start.
             </summary>
         </member>
-        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.AggregatorTerminalReference">
+        <member name="P:Reporting.Api.Models.Tokens.TerminalTokensResponseResource.AggregatorTerminalReference">
             <summary>
               Looks up a localized string similar to Aggregator.
             </summary>
         </member>
-        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.CreatedCount">
+        <member name="P:Reporting.Api.Models.Tokens.TerminalTokensResponseResource.CreatedCount">
             <summary>
               Looks up a localized string similar to Created.
             </summary>
         </member>
-        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.ExpiredCount">
+        <member name="P:Reporting.Api.Models.Tokens.TerminalTokensResponseResource.ExpiredCount">
             <summary>
               Looks up a localized string similar to Expired.
             </summary>
         </member>
-        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.Label">
+        <member name="P:Reporting.Api.Models.Tokens.TerminalTokensResponseResource.Label">
             <summary>
               Looks up a localized string similar to Label.
             </summary>
         </member>
-        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.MerchantName">
+        <member name="P:Reporting.Api.Models.Tokens.TerminalTokensResponseResource.MerchantName">
             <summary>
               Looks up a localized string similar to Merchant.
             </summary>
         </member>
-        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.ProcessorTerminalReference">
+        <member name="P:Reporting.Api.Models.Tokens.TerminalTokensResponseResource.ProcessorTerminalReference">
             <summary>
               Looks up a localized string similar to Processor.
             </summary>
         </member>
-        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.Status">
+        <member name="P:Reporting.Api.Models.Tokens.TerminalTokensResponseResource.Status">
             <summary>
               Looks up a localized string similar to Status.
             </summary>
         </member>
-        <member name="P:Reporting.Api.Models.TerminalTokensResponseResource.UpdatedCount">
+        <member name="P:Reporting.Api.Models.Tokens.TerminalTokensResponseResource.UpdatedCount">
             <summary>
               Looks up a localized string similar to Updated.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokensTransactionsFilter.ConsumerEmail">
+            <summary>
+            End-customer Email
+            </summary>
+        </member>
+        <member name="T:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.CardExpiration">
+            <summary>
+              Looks up a localized string similar to Expiry.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.CardNumber">
+            <summary>
+              Looks up a localized string similar to Number.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.CardOwnerName">
+            <summary>
+              Looks up a localized string similar to Owner name.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.CardVendor">
+            <summary>
+              Looks up a localized string similar to Vendor.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.ConsumerEmail">
+            <summary>
+              Looks up a localized string similar to Email.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.ConsumerID">
+            <summary>
+              Looks up a localized string similar to ConsumerID.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.Created">
+            <summary>
+              Looks up a localized string similar to Created.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.CreditCardTokenID">
+            <summary>
+              Looks up a localized string similar to ID.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.Expired">
+            <summary>
+              Looks up a localized string similar to Expired.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.FailedTransactions">
+            <summary>
+              Looks up a localized string similar to Transactions (failed).
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.MerchantID">
+            <summary>
+              Looks up a localized string similar to Merchant ID.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.SuccessfulTransactions">
+            <summary>
+              Looks up a localized string similar to Transactions (success/in progress).
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.TerminalID">
+            <summary>
+              Looks up a localized string similar to Terminal ID.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.TotalRefund">
+            <summary>
+              Looks up a localized string similar to Refund.
+            </summary>
+        </member>
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.TotalSum">
+            <summary>
+              Looks up a localized string similar to Total.
             </summary>
         </member>
         <member name="F:Reporting.Api.Policy.Terminal">
