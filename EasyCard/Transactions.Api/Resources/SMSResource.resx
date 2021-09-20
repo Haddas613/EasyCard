@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PaymentRequest" xml:space="preserve">
-    <value>Request from {Merchant}: {PaymentLink}</value>
+    <value>Hello {Customer}. You have received payment request from {Merchant}. Amount {Amount}: {PaymentLink}</value>
   </data>
   <data name="PaymentRequestRefund" xml:space="preserve">
-    <value>Refund from {Merchant}: {PaymentLink}</value>
+    <value>Hello {Customer}. You have received refund request from {Merchant}. Amount {Amount}: {PaymentLink}</value>
   </data>
 </root>

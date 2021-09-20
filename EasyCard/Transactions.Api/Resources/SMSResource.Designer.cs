@@ -61,7 +61,7 @@ namespace Transactions.Api.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Request from {Merchant}: {PaymentLink}.
+        ///   Looks up a localized string similar to Hello {Customer}. You have received payment request from {Merchant}. Amount {Amount}: {PaymentLink}.
         /// </summary>
         public static string PaymentRequest {
             get {
@@ -70,7 +70,7 @@ namespace Transactions.Api.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Refund from {Merchant}: {PaymentLink}.
+        ///   Looks up a localized string similar to Hello {Customer}. You have received refund request from {Merchant}. Amount {Amount}: {PaymentLink}.
         /// </summary>
         public static string PaymentRequestRefund {
             get {

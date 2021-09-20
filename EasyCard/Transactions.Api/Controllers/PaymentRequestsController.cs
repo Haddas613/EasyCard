@@ -342,6 +342,7 @@ namespace Transactions.Api.Controllers
 
             //TODO: due date?
             template = template.Replace("{Merchant}", terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName)
+                .Replace("{Customer}", paymentRequest.DealDetails.ConsumerName ?? paymentRequest.CardOwnerName)
                 .Replace("{Amount}", $"{paymentRequest.PaymentRequestAmount.ToString("F2")}{paymentRequest.Currency.GetCurrencySymbol()}")
                 .Replace("{PaymentLink}", url);
 
