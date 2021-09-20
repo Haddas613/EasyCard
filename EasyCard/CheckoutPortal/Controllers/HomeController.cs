@@ -103,9 +103,10 @@ namespace CheckoutPortal.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            Guid paymentRequestId = new Guid(paymentIntentDecrypted);
+            Guid paymentIntentID = new Guid(paymentIntentDecrypted);
 
-            var checkoutConfig = await GetCheckoutData(paymentRequestId, null, true);
+            var checkoutConfig = await GetCheckoutData(paymentIntentID, null, true);
+            checkoutConfig.PaymentIntentID = paymentIntentID;
 
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
@@ -134,7 +135,23 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Charge(ChargeViewModel request)
         {
-            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+            CheckoutData checkoutConfig;
+
+            if(request.ApiKey != null)
+            {
+                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+            }
+            else
+            {
+                bool isPaymentIntent = request.PaymentIntent != null;
+
+                if(!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
+                {
+                    throw new BusinessException(Messages.InvalidCheckoutData);
+                }
+
+                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, isPaymentIntent);
+            }
 
             if (checkoutConfig.Consumer != null)
             {
@@ -496,6 +513,8 @@ namespace CheckoutPortal.Controllers
 
             mapper.Map(checkoutConfig.PaymentRequest, model);
             mapper.Map(checkoutConfig.Settings, model);
+            model.PaymentIntent = checkoutConfig.PaymentIntentID?.ToString();
+
             if (checkoutConfig.Consumer != null)
             {
                 mapper.Map(checkoutConfig.Consumer, model);

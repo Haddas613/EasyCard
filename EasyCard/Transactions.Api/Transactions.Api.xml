@@ -2124,12 +2124,12 @@
         </member>
         <member name="P:Transactions.Api.Resources.SMSResource.PaymentRequest">
             <summary>
-              Looks up a localized string similar to Request from {Merchant}: {PaymentLink}.
+              Looks up a localized string similar to Hello {Customer}. You have received payment request from {Merchant}. Amount {Amount}: {PaymentLink}.
             </summary>
         </member>
         <member name="P:Transactions.Api.Resources.SMSResource.PaymentRequestRefund">
             <summary>
-              Looks up a localized string similar to Refund from {Merchant}: {PaymentLink}.
+              Looks up a localized string similar to Hello {Customer}. You have received refund request from {Merchant}. Amount {Amount}: {PaymentLink}.
             </summary>
         </member>
     </members>

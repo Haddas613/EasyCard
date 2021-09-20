@@ -35,6 +35,7 @@ namespace CheckoutPortal.Mappings
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<PaymentRequestInfo, ChargeViewModel>()
+                .ForMember(d => d.PaymentRequest, o => o.MapFrom(d => d.PaymentRequestID))
                 .ForMember(d => d.Amount, o => o.MapFrom(d => d.PaymentRequestAmount))
                 .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
                 .ForMember(d => d.Description, o => o.MapFrom(d => d.DealDetails == null ? null : d.DealDetails.DealDescription))
