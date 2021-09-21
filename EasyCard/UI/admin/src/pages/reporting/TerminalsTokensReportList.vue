@@ -14,7 +14,7 @@
         :headers="headers"
         :items="terminals"
         :options.sync="options"
-        :server-items-length="totalAmount"
+        :server-items-length="numberOfRecords"
         :loading="loading"
         :header-props="{ sortIcon: null }"
         class="elevation-1"
@@ -62,7 +62,7 @@ export default {
   },
   data() {
     return {
-      totalAmount: 0,
+      numberOfRecords: 0,
       terminals: [],
       loading: false,
       options: {},
@@ -106,7 +106,7 @@ export default {
       }
 
       this.terminals = data.data;
-      this.totalAmount = data.numberOfRecords;
+      this.numberOfRecords = data.numberOfRecords;
       this.loading = false;
 
       if (!this.headers || this.headers.length === 0) {

@@ -142,7 +142,7 @@ namespace Reporting.Api.Models.Tokens {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transactions (failed).
+        ///   Looks up a localized string similar to Failed.
         /// </summary>
         public static string FailedTransactions {
             get {
@@ -169,11 +169,11 @@ namespace Reporting.Api.Models.Tokens {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transactions (success/in progress).
+        ///   Looks up a localized string similar to Operations.
         /// </summary>
-        public static string SuccessfulTransactions {
+        public static string ProductionTransactions {
             get {
-                return ResourceManager.GetString("SuccessfulTransactions", resourceCulture);
+                return ResourceManager.GetString("ProductionTransactions", resourceCulture);
             }
         }
         

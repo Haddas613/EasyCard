@@ -160,7 +160,8 @@
   "OnlyNumbersAreAllowed": "הכנס מספרים בלבד",
   "Reporting": "דיווח",
   "TerminalsTokens": "מסופי אסימונים",
-  
+  "TokensTransactions": "עסקאות אסימונים",
+
   "--FORM & DATA FIELDS--": null,
   "ID": "ת.ז.",
   "Terminal": "טרמינל",

@@ -133,7 +133,7 @@
         </member>
         <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.FailedTransactions">
             <summary>
-              Looks up a localized string similar to Transactions (failed).
+              Looks up a localized string similar to Failed.
             </summary>
         </member>
         <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.MerchantID">
@@ -146,9 +146,9 @@
               Looks up a localized string similar to Merchant.
             </summary>
         </member>
-        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.SuccessfulTransactions">
+        <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.ProductionTransactions">
             <summary>
-              Looks up a localized string similar to Transactions (success/in progress).
+              Looks up a localized string similar to Operations.
             </summary>
         </member>
         <member name="P:Reporting.Api.Models.Tokens.TokenTransactionsResponseResource.TerminalID">
