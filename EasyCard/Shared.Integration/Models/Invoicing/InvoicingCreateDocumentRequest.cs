@@ -87,5 +87,7 @@ namespace Shared.Integration.Models.Invoicing
         /// Generic transaction type
         /// </summary>
         public TransactionTypeEnum? TransactionType { get; set; }
+
+        public Newtonsoft.Json.Linq.JObject Extension { get; set; }
     }
 }

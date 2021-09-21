@@ -48,6 +48,9 @@ namespace RapidOne.Models
         public string CustomerEmail { get; set; }
 
         public string CustomerCell { get; set; }
+
+        [JsonExtensionData]
+        public Newtonsoft.Json.Linq.JObject Extension { get; set; }
     }
 
     public class FinDocItemDto

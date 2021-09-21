@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using Shared.Api.Models.Binding;
+using Shared.Api.Swagger;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
@@ -104,5 +106,8 @@ namespace Transactions.Api.Models.PaymentRequests
         public bool UserAmount { get; set; }
 
         public string CardOwnerNationalID { get; set; }
+
+        [SwaggerExclude]
+        public JObject Extension { get; set; }
     }
 }
