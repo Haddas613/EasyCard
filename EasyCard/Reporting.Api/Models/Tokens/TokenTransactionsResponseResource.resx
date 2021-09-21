@@ -145,7 +145,7 @@
     <value>Expired</value>
   </data>
   <data name="FailedTransactions" xml:space="preserve">
-    <value>Transactions (failed)</value>
+    <value>Failed</value>
   </data>
   <data name="MerchantID" xml:space="preserve">
     <value>Merchant ID</value>
@@ -153,8 +153,8 @@
   <data name="MerchantName" xml:space="preserve">
     <value>Merchant</value>
   </data>
-  <data name="SuccessfulTransactions" xml:space="preserve">
-    <value>Transactions (success/in progress)</value>
+  <data name="ProductionTransactions" xml:space="preserve">
+    <value>Operations</value>
   </data>
   <data name="TerminalID" xml:space="preserve">
     <value>Terminal ID</value>

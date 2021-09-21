@@ -195,6 +195,14 @@ const routes = [
             import ('../pages/reporting/TerminalsTokensReportList.vue'),
       },
       {
+        name: 'TokensTransactions',
+        path: 'reporting/tokens-transactions',
+        keepAlive: true,
+        props: true,
+        component: () =>
+            import ('../pages/reporting/TokensTransactionsReportList.vue'),
+      },
+      {
         name: '404',
         path: '*',
         component: () => import('../views/NotFound.vue'),

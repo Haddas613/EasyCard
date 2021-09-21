@@ -17,6 +17,10 @@ namespace Reporting.Shared.Models.Tokens
         [MetadataOptions(Hidden = true)]
         public Guid? MerchantID { get; set; }
 
+        public string TerminalName { get; set; }
+
+        public string MerchantName { get; set; }
+
         public string CardNumber { get; set; }
 
         [JsonConverter(typeof(CardExpirationConverter))]

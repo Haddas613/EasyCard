@@ -166,12 +166,12 @@ namespace Reporting.Api.Controllers
 
                 var transactionsQuery = transactionsService.GetTransactions().Where(t => t.TransactionTimestamp >= filter.DateFrom && t.TransactionTimestamp < filter.DateTo);
 
-                var subres = await tokensQuery.Select(t => t.CreditCardTokenID)
-                    .Join(transactionsQuery, o => o, i => i.CreditCardToken, (to, tr) => new TokenTransactionsSubResult {
-                        CreditCardTokenID = to,
+                var subres = await tokensQuery
+                    .Join(transactionsQuery, o => o.CreditCardTokenID, i => i.CreditCardToken, (to, tr) => new TokenTransactionsSubResult {
+                        CreditCardTokenID = to.CreditCardTokenID,
                         PaymentTransactionID = tr.PaymentTransactionID,
                         ProductionTransactions = tr.Status > 0 ? 1 : 0,
-                        FailedTransactions = tr.Status < (Transactions.Shared.Enums.TransactionStatusEnum )(-1) ? 1 : 0,
+                        FailedTransactions = tr.Status < (Transactions.Shared.Enums.TransactionStatusEnum)(-1) ? 1 : 0,
                         TotalSum = tr.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund ? 0 : tr.TotalAmount,
                         TotalRefund = tr.SpecialTransactionType == SharedIntegration.Models.SpecialTransactionTypeEnum.Refund ? tr.TotalAmount : 0,
                     })
@@ -183,19 +183,34 @@ namespace Reporting.Api.Controllers
                         FailedTransactions = t.Sum(e => e.FailedTransactions),
                         TotalSum = t.Sum(e => e.TotalSum)
                     })
+                    .OrderByDescending(e => e.CreditCardTokenID)
                     .ToDictionaryAsync(k => k.CreditCardTokenID, v => v);
 
-                foreach (var token in tokens)
+                var terminalsId = tokens.Where(t => t.TerminalID != null).Select(t => t.TerminalID).Distinct();
+                var terminals = await terminalsService.GetTerminals()
+                    .Include(t => t.Merchant)
+                    .Where(t => terminalsId.Contains(t.TerminalID))
+                    .Select(t => new { t.TerminalID, t.Label, t.Merchant.BusinessName })
+                    .ToDictionaryAsync(k => k.TerminalID, v => new { v.Label, v.BusinessName });
+
+                //TODO: Merchant name instead of BusinessName
+                tokens.ForEach(s =>
                 {
-                    if (subres.ContainsKey(token.CreditCardTokenID))
+                    if (s.TerminalID.HasValue && terminals.ContainsKey(s.TerminalID.Value))
                     {
-                        var sub = subres[token.CreditCardTokenID];
-                        token.ProductionTransactions = sub.ProductionTransactions;
-                        token.FailedTransactions = sub.FailedTransactions;
-                        token.TotalSum = sub.TotalSum;
-                        token.TotalRefund = sub.TotalRefund;
+                        s.TerminalName = terminals[s.TerminalID.Value].Label;
+                        s.MerchantName = terminals[s.TerminalID.Value].BusinessName;
                     }
-                }
+
+                    if (subres.ContainsKey(s.CreditCardTokenID))
+                    {
+                        var sub = subres[s.CreditCardTokenID];
+                        s.ProductionTransactions = sub.ProductionTransactions;
+                        s.FailedTransactions = sub.FailedTransactions;
+                        s.TotalSum = sub.TotalSum;
+                        s.TotalRefund = sub.TotalRefund;
+                    }
+                });
                 response.Data = tokens;
                 response.NumberOfRecords = numberOfRecords.Value;
             }

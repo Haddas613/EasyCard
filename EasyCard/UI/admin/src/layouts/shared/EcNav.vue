@@ -209,6 +209,11 @@ export default {
               icon: "mdi-credit-card-multiple",
               text: "TerminalsTokens",
               to: { name: "TerminalsTokens" }
+            },
+            {
+              icon: "mdi-credit-card-settings",
+              text: "TokensTransactions",
+              to: { name: "TokensTransactions" }
             }
           ]
         },

@@ -145,7 +145,7 @@
     <value>תוקף</value>
   </data>
   <data name="FailedTransactions" xml:space="preserve">
-    <value>Transactions (failed)</value>
+    <value>Failed</value>
   </data>
   <data name="MerchantID" xml:space="preserve">
     <value>מזהה בית עסק</value>
@@ -154,7 +154,7 @@
     <value>בית עסק</value>
   </data>
   <data name="ProductionTransactions" xml:space="preserve">
-    <value>Transactions (success/in progress)</value>
+    <value>Operations</value>
   </data>
   <data name="TerminalID" xml:space="preserve">
     <value>מזהה מסוף</value>
