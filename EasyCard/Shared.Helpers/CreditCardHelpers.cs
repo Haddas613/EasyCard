@@ -126,7 +126,7 @@ namespace Shared.Helpers
                 return null;
             }
 
-            return new CardExpiration { Year = expirationDate.Value.Year, Month = expirationDate.Value.Month };
+            return new CardExpiration { Year = expirationDate.Value.Year - 2000, Month = expirationDate.Value.Month };
         }
 
         public static string FormatCardExpiration(DateTime? expirationDate)

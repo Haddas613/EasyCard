@@ -207,7 +207,7 @@ namespace Transactions.Api.Controllers
             var newPaymentRequest = mapper.Map<PaymentRequest>(model);
 
             // Update details if needed
-            newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest);
+            newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest, null);
             if (consumer != null)
             {
                 newPaymentRequest.CardOwnerName = consumer.ConsumerName;

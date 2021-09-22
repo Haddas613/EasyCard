@@ -28,6 +28,11 @@ namespace Transactions.Business.Entities
 
         public DateTime? Created { get; set; }
 
+        public override CardExpiration CardExpiration
+        {
+            get { return CreditCardHelpers.ParseCardExpiration(ExpirationDate); } set { ExpirationDate = value?.ToDate(); }
+        }
+
         public DateTime? ExpirationDate { get; set; }
 
         public bool Active { get; set; }

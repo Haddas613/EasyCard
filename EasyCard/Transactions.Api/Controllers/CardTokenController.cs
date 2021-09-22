@@ -208,10 +208,11 @@ namespace Transactions.Api.Controllers
             {
                 var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer");
 
-                if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(model.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(model.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    throw new EntityConflictException(Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
-                }
+                // TODO: enable if needed
+                //if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(model.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(model.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
+                //{
+                //    throw new EntityConflictException(Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
+                //}
             }
             else
             {

@@ -15,7 +15,7 @@ namespace Transactions.Api.Extensions
 {
     public static class DealDetailsExtensions
     {
-        public static void UpdateDealDetails(this DealDetails dealDetails, Consumer consumer, TerminalSettings terminalSettings, IFinancialItem financialItem)
+        public static void UpdateDealDetails(this DealDetails dealDetails, Consumer consumer, TerminalSettings terminalSettings, IFinancialItem financialItem, CreditCardDetailsBase creditCardDetails)
         {
             if (string.IsNullOrWhiteSpace(dealDetails.ConsumerEmail))
             {
@@ -34,12 +34,12 @@ namespace Transactions.Api.Extensions
 
             if (string.IsNullOrWhiteSpace(dealDetails.ConsumerName))
             {
-                dealDetails.ConsumerName = consumer?.ConsumerName;
+                dealDetails.ConsumerName = consumer?.ConsumerName ?? creditCardDetails?.CardOwnerName;
             }
 
             if (string.IsNullOrWhiteSpace(dealDetails.ConsumerNationalID))
             {
-                dealDetails.ConsumerNationalID = consumer?.ConsumerNationalID;
+                dealDetails.ConsumerNationalID = consumer?.ConsumerNationalID ?? creditCardDetails.CardOwnerNationalID;
             }
 
             if (!(dealDetails.Items?.Count() > 0))

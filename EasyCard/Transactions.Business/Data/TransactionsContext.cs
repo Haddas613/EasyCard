@@ -283,9 +283,11 @@ namespace Transactions.Business.Data
                 //TODO: remove
                 builder.Property(typeof(string), "CardExpirationOld").HasMaxLength(5).IsUnicode(false).IsRequired(false).HasColumnName("CardExpiration");
 
-                builder.Property(b => b.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
-                    .HasColumnName("CardExpirationDate")
-                    .HasColumnType("date");
+                builder.Ignore(b => b.CardExpiration);
+
+                //builder.Property(b => b.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
+                //    .HasColumnName("CardExpirationDate")
+                //    .HasColumnType("date");
 
                 builder.Property(b => b.CardVendor).HasMaxLength(20).IsRequired(false).IsUnicode(false);
                 builder.Property(b => b.CardOwnerNationalID).HasMaxLength(20).IsRequired(false).IsUnicode(false);
@@ -310,7 +312,7 @@ namespace Transactions.Business.Data
 
                 builder.Property(p => p.ConsumerEmail).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
-                builder.Property(p => p.ExpirationDate).HasColumnName("CardExpirationDate").HasColumnType("date");
+                builder.Property(p => p.ExpirationDate).HasColumnName("CardExpirationDate").HasColumnType("date").IsRequired(false);
 
                 builder.Property(p => p.ReplacementOfTokenID).IsRequired(false);
             }

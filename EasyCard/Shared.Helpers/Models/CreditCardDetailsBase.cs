@@ -18,7 +18,7 @@ namespace Shared.Helpers
         [Required]
         [JsonConverter(typeof(CardExpirationConverter))]
         [Models.CardExpirationValidator]
-        public CardExpiration CardExpiration { get; set; }
+        public virtual CardExpiration CardExpiration { get; set; }
 
         [StringLength(20)]
         public string CardVendor { get; set; }

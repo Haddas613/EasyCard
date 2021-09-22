@@ -262,7 +262,7 @@ namespace Transactions.Api.Controllers
 
             newInvoice.DealDetails.CheckConsumerDetails(consumer);
 
-            newInvoice.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newInvoice);
+            newInvoice.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newInvoice, null);
 
             var creditCardDetails = newInvoice.PaymentDetails.FirstOrDefault(d => d.PaymentType == SharedIntegration.Models.PaymentTypeEnum.Card) as SharedIntegration.Models.PaymentDetails.CreditCardPaymentDetails;
 

@@ -827,7 +827,7 @@ namespace Transactions.Api.Controllers
             transaction.DealDetails.CheckConsumerDetails(consumer);
 
             // Update details if needed
-            transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction);
+            transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction, transaction.CreditCardDetails);
             if (model.IssueInvoice.GetValueOrDefault())
             {
                 model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings, transaction);
@@ -1272,7 +1272,7 @@ namespace Transactions.Api.Controllers
                 EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
 
             // Update details if needed
-            transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction);
+            transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction, null);
             if (model.IssueInvoice.GetValueOrDefault())
             {
                 model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings, transaction);
@@ -1296,48 +1296,55 @@ namespace Transactions.Api.Controllers
             var endResponse = new OperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);
 
             // TODO: validate InvoiceDetails
-            if (model.IssueInvoice == true && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && model.Currency == CurrencyEnum.ILS)
+            if (model.IssueInvoice == true && model.Currency == CurrencyEnum.ILS)
             {
-                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+                if (!string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerName))
                 {
-                    try
+                    using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
                     {
-                        Invoice invoiceRequest = new Invoice();
-                        mapper.Map(transaction, invoiceRequest);
-                        invoiceRequest.InvoiceDetails = model.InvoiceDetails;
-
-                        invoiceRequest.MerchantID = terminal.MerchantID;
-
-                        invoiceRequest.ApplyAuditInfo(httpContextAccessor);
-
-                        invoiceRequest.Calculate();
-
-                        await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
-
-                        endResponse.InnerResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
-
-                        transaction.InvoiceID = invoiceRequest.InvoiceID;
-
-                        await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
-
-                        var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
-
-                        // TODO: validate, rollback
-                        if (invoicesToResend.Count() > 0)
+                        try
                         {
-                            await invoiceQueue.PushToQueue(invoicesToResend.First());
+                            Invoice invoiceRequest = new Invoice();
+                            mapper.Map(transaction, invoiceRequest);
+                            invoiceRequest.InvoiceDetails = model.InvoiceDetails;
+
+                            invoiceRequest.MerchantID = terminal.MerchantID;
+
+                            invoiceRequest.ApplyAuditInfo(httpContextAccessor);
+
+                            invoiceRequest.Calculate();
+
+                            await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
+
+                            endResponse.InnerResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
+
+                            transaction.InvoiceID = invoiceRequest.InvoiceID;
+
+                            await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
+
+                            var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
+
+                            // TODO: validate, rollback
+                            if (invoicesToResend.Count() > 0)
+                            {
+                                await invoiceQueue.PushToQueue(invoicesToResend.First());
+                            }
+
+                            await dbTransaction.CommitAsync();
                         }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
 
-                        await dbTransaction.CommitAsync();
+                            endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
+
+                            await dbTransaction.RollbackAsync();
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
-
-                        endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
-
-                        await dbTransaction.RollbackAsync();
-                    }
+                }
+                else
+                {
+                    endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Consumer Name and Consumer Email are required");
                 }
             }
 
@@ -1347,7 +1354,7 @@ namespace Transactions.Api.Controllers
             }
             catch (Exception e)
             {
-                logger.LogError(e, $"{nameof(ProcessTransaction)}: EmailSend");
+                logger.LogError(e, $"{nameof(ProcessTransaction)}: Email sending failed");
             }
 
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
@@ -1395,6 +1402,13 @@ namespace Transactions.Api.Controllers
 
         private async Task SendTransactionSuccessEmails(PaymentTransaction transaction, Merchants.Business.Entities.Terminal.Terminal terminal, string emailTo = null)
         {
+            if (transaction.DealDetails?.ConsumerEmail == null)
+            {
+                return;
+
+                //throw new ArgumentNullException(nameof(transaction.DealDetails.ConsumerEmail));
+            }
+
             var settings = terminal.PaymentRequestSettings;
 
             var emailSubject = "Payment Success";
@@ -1428,11 +1442,6 @@ namespace Transactions.Api.Controllers
             substitutions.Add(new TextSubstitution(nameof(transaction.TransactionType), transactionTypeStr));
             substitutions.Add(new TextSubstitution(nameof(transaction.CardPresence), cardPresenceTypeStr));
             substitutions.Add(new TextSubstitution(nameof(transaction.DocumentOrigin), originStr));
-
-            if (transaction.DealDetails?.ConsumerEmail == null)
-            {
-                throw new ArgumentNullException(nameof(transaction.DealDetails.ConsumerEmail));
-            }
 
             var email = new Email
             {
