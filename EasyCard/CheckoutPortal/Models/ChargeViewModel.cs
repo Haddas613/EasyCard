@@ -77,7 +77,6 @@ namespace CheckoutPortal.Models
         /// <summary>
         /// Key for merchant's system - to have ability to validate redirect
         /// </summary>
-        [Required]
         [StringLength(100)]
         public string ApiKey { get; set; }
 

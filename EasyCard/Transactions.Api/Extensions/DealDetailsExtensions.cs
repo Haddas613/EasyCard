@@ -39,7 +39,7 @@ namespace Transactions.Api.Extensions
 
             if (string.IsNullOrWhiteSpace(dealDetails.ConsumerNationalID))
             {
-                dealDetails.ConsumerNationalID = consumer?.ConsumerNationalID ?? creditCardDetails.CardOwnerNationalID;
+                dealDetails.ConsumerNationalID = consumer?.ConsumerNationalID ?? creditCardDetails?.CardOwnerNationalID;
             }
 
             if (!(dealDetails.Items?.Count() > 0))
@@ -115,10 +115,12 @@ namespace Transactions.Api.Extensions
         {
             if (consumer != null)
             {
-                if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(dealDetails.ConsumerNationalID) && !consumer.ConsumerNationalID.Equals(dealDetails.ConsumerNationalID, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    throw new EntityConflictException(Transactions.Shared.Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
-                }
+                // NOTE: consumer can pay using another person credit card
+
+                //if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(dealDetails.ConsumerNationalID) && !consumer.ConsumerNationalID.Equals(dealDetails.ConsumerNationalID, StringComparison.InvariantCultureIgnoreCase))
+                //{
+                //    throw new EntityConflictException(Transactions.Shared.Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
+                //}
             }
         }
 
