@@ -87,5 +87,7 @@ namespace Transactions.Api.Models.PaymentRequests
         public bool IsRefund { get; set; }
 
         public bool UserAmount { get; set; }
+
+        public string RedirectUrl { get; set; }
     }
 }

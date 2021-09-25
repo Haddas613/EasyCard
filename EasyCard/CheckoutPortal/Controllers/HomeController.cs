@@ -382,7 +382,9 @@ namespace CheckoutPortal.Controllers
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(request.RedirectUrl))
+            var redirectUrl = request.RedirectUrl ?? checkoutConfig.PaymentRequest.RedirectUrl;
+
+            if (string.IsNullOrWhiteSpace(redirectUrl))
             {
                 return RedirectToAction("PaymentResult");
             }
@@ -392,13 +394,13 @@ namespace CheckoutPortal.Controllers
                 {
                     var paymentTransaction = await transactionsApiClient.GetTransaction(result.EntityUID);
 
-                    string redirectUrl = UrlHelper.BuildUrl(request.RedirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction));
+                    redirectUrl = UrlHelper.BuildUrl(redirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction));
 
                     return Redirect(redirectUrl);
                 }
                 else
                 {
-                    return Redirect(UrlHelper.BuildUrl(request.RedirectUrl, null, new { transactionID = result.EntityUID }));
+                    return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { transactionID = result.EntityUID }));
                 }
             }
         }
