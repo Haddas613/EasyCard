@@ -164,7 +164,7 @@ namespace Transactions.Api.Controllers
                     mapper.Map(consumer, response.Consumer);
 
                     var tokensRaw = await creditCardTokenService.GetTokens()
-                        .Where(d => d.ConsumerID == consumer.ConsumerID)
+                        .Where(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == consumer.ConsumerID)
                         .ToListAsync();
 
                     //TODO: no in memory filtering

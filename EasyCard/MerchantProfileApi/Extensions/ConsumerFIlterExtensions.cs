@@ -28,7 +28,8 @@ namespace MerchantProfileApi.Extensions
                 src = src.Where(c => EF.Functions.Like(c.ConsumerName, $"%{search}%")
                 || EF.Functions.Like(c.ConsumerEmail, $"%{search}%")
                 || EF.Functions.Like(c.ConsumerNationalID, $"%{search}%")
-                || EF.Functions.Like(c.ConsumerPhone, $"%{search}%"));
+                || EF.Functions.Like(c.ConsumerPhone, $"%{search}%")
+                || EF.Functions.Like(c.ExternalReference, $"%{search}%"));
             }
 
             if (filter.ConsumerID.HasValue)

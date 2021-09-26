@@ -362,9 +362,10 @@ namespace IdentityServer
                     .CustomSources("ecngpublic.blob.core.windows.net")
                 )
                 .ScriptSources(s => s.Self()
+                    .UnsafeInline()
                     .CustomSources("az416426.vo.msecnd.net")
                 )
-                .FrameAncestors(s => s.Self())
+                /*.FrameAncestors(s => s.Self())*/
                 .FormActions(s => s.Self()
                     .CustomSources(apiConfig.MerchantProfileURL, apiConfig.MerchantsManagementApiAddress, "http://localhost:8080/", "http://localhost:8081/", "login.microsoftonline.com")
                 )

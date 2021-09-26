@@ -23,6 +23,8 @@
     [DocumentOrigin]       SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
     [CardBrand]            NVARCHAR (20)    NULL,
     [Solek]                NVARCHAR (20)    NULL,
+    [CardExpirationDate]   DATE             NULL,
+    [ReplacementOfTokenID] UNIQUEIDENTIFIER NULL,
     CONSTRAINT [PK_CreditCardTokenDetails] PRIMARY KEY CLUSTERED ([CreditCardTokenID] ASC)
 );
 
@@ -37,4 +39,18 @@
 
 
 
+
+
+
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_CreditCardTokenDetails_Active_TerminalID_ConsumerID]
+    ON [dbo].[CreditCardTokenDetails]([Active] ASC, [TerminalID] ASC, [ConsumerID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_CreditCardTokenDetails_Active_MerchantID_ConsumerID]
+    ON [dbo].[CreditCardTokenDetails]([Active] ASC, [MerchantID] ASC, [ConsumerID] ASC);
 

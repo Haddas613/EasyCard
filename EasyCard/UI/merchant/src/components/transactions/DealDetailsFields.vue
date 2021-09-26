@@ -1,29 +1,13 @@
 <template>
   <v-flex class="d-flex flex-column">
     <v-row no-gutters>
-      <!-- <v-col cols="12" md="6">
-        <v-text-field
-          v-model="model.dealDetails.consumerName"
-          :counter="50"
-          :rules="[vr.primitives.required, vr.primitives.maxLength(50)]"
-          :label="$t('CustomerName')"
-          outlined
-        ></v-text-field>
-      </v-col>
+
       <v-col cols="12" md="6">
         <v-text-field
-          v-model="model.dealDetails.consumerNationalID"
-          :rules="[vr.special.israeliNationalId]"
-          :label="$t('NationalID')"
-          outlined
-        ></v-text-field>
-      </v-col> -->
-      <v-col cols="12" md="6">
-        <v-text-field
-          v-model="model.dealReference"
+          v-model="model.consumerName"
           :counter="50"
           :rules="[vr.primitives.maxLength(50)]"
-          :label="$t('DealReference')"
+          :label="$t('CustomerName')"
           @keydown.native.space.prevent
           outlined
           required

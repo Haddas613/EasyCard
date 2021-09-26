@@ -83,8 +83,14 @@
     [BankTransferDueDate]            DATETIME2 (7)    NULL,
     [BankTransferReference]          NVARCHAR (50)    NULL,
     [MasavFileID]                    BIGINT           NULL,
+    [ConsumerName]                   NVARCHAR (50)    NULL,
+    [ConsumerNationalID]             VARCHAR (20)     NULL,
+    [Extension]                      NVARCHAR (MAX)   NULL,
+    [CardExpirationDate]             DATE             NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

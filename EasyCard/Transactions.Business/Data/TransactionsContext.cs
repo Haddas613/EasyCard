@@ -315,6 +315,9 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.ExpirationDate).HasColumnName("CardExpirationDate").HasColumnType("date").IsRequired(false);
 
                 builder.Property(p => p.ReplacementOfTokenID).IsRequired(false);
+
+                builder.HasIndex(d => new { d.Active, d.MerchantID, d.ConsumerID }); // UI usage. TODO: add TerminalID to query and to index
+                builder.HasIndex(d => new { d.Active, d.TerminalID, d.ConsumerID }); // checkout usage
             }
         }
 
