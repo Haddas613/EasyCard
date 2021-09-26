@@ -223,7 +223,7 @@ export default {
         return this.step++;;
       }
       this.customer = data;
-      this.model.dealDetails = {...this.model.dealDetails, ...data};
+      this.model.dealDetails = Object.assign(this.model.dealDetails, data);
       if (!this.model.creditCardSecureDetails) {
         this.$set(this.model, "creditCardSecureDetails", {
           cardOwnerName: data.consumerName,

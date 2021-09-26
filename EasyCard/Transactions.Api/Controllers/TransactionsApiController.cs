@@ -1166,53 +1166,60 @@ namespace Transactions.Api.Controllers
             }
 
             // TODO: validate InvoiceDetails
-            if (model.IssueInvoice == true && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && model.Currency == CurrencyEnum.ILS)
+            if (model.IssueInvoice == true && model.Currency == CurrencyEnum.ILS)
             {
-                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+                if (!string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerName))
                 {
-                    try
+                    using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
                     {
-                        Invoice invoiceRequest = new Invoice();
-                        mapper.Map(transaction, invoiceRequest);
-                        invoiceRequest.InvoiceDetails = model.InvoiceDetails;
-
-                        var creditCardDetails = invoiceRequest.PaymentDetails.FirstOrDefault(d => d.PaymentType == SharedIntegration.Models.PaymentTypeEnum.Card) as SharedIntegration.Models.PaymentDetails.CreditCardPaymentDetails;
-
-                        // in case if consumer name/natid is not specified in deal details, get it from credit card details
-                        invoiceRequest.DealDetails.UpdateDealDetails(creditCardDetails);
-
-                        invoiceRequest.MerchantID = terminal.MerchantID;
-
-                        invoiceRequest.ApplyAuditInfo(httpContextAccessor);
-
-                        invoiceRequest.Calculate();
-
-                        await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
-
-                        endResponse.InnerResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
-
-                        transaction.InvoiceID = invoiceRequest.InvoiceID;
-
-                        await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
-
-                        var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
-
-                        // TODO: validate, rollback
-                        if (invoicesToResend.Count() > 0)
+                        try
                         {
-                            await invoiceQueue.PushToQueue(invoicesToResend.First());
+                            Invoice invoiceRequest = new Invoice();
+                            mapper.Map(transaction, invoiceRequest);
+                            invoiceRequest.InvoiceDetails = model.InvoiceDetails;
+
+                            var creditCardDetails = invoiceRequest.PaymentDetails.FirstOrDefault(d => d.PaymentType == SharedIntegration.Models.PaymentTypeEnum.Card) as SharedIntegration.Models.PaymentDetails.CreditCardPaymentDetails;
+
+                            // in case if consumer name/natid is not specified in deal details, get it from credit card details
+                            invoiceRequest.DealDetails.UpdateDealDetails(creditCardDetails);
+
+                            invoiceRequest.MerchantID = terminal.MerchantID;
+
+                            invoiceRequest.ApplyAuditInfo(httpContextAccessor);
+
+                            invoiceRequest.Calculate();
+
+                            await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
+
+                            endResponse.InnerResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
+
+                            transaction.InvoiceID = invoiceRequest.InvoiceID;
+
+                            await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
+
+                            var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
+
+                            // TODO: validate, rollback
+                            if (invoicesToResend.Count() > 0)
+                            {
+                                await invoiceQueue.PushToQueue(invoicesToResend.First());
+                            }
+
+                            await dbTransaction.CommitAsync();
                         }
+                        catch (Exception ex)
+                        {
+                            logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
 
-                        await dbTransaction.CommitAsync();
+                            endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
+
+                            await dbTransaction.RollbackAsync();
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
-
-                        endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
-
-                        await dbTransaction.RollbackAsync();
-                    }
+                }
+                else
+                {
+                    endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Consumer Name and Consumer Email are required");
                 }
             }
 
