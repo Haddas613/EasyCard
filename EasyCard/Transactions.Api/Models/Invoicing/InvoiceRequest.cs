@@ -42,12 +42,6 @@ namespace Transactions.Api.Models.Invoicing
         /// </summary>
         public IntegrationModels.DealDetails DealDetails { get; set; }
 
-        [StringLength(50, MinimumLength = 2)]
-        public string CardOwnerName { get; set; }
-
-        [StringLength(20)]
-        public string CardOwnerNationalID { get; set; }
-
         /// <summary>
         /// Invoice amount (should be omitted in case of installment deal)
         /// </summary>

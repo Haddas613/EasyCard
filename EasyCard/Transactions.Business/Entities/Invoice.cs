@@ -112,10 +112,6 @@ namespace Transactions.Business.Entities
 
         public decimal TotalDiscount { get; set; }
 
-        public string CardOwnerName { get; set; }
-
-        public string CardOwnerNationalID { get; set; }
-
         /// <summary>
         /// Deal information
         /// </summary>
@@ -150,11 +146,11 @@ namespace Transactions.Business.Entities
 
         public string CopyDonwnloadUrl { get; set; }
 
-        /// <summary>
-        /// Credit card information
-        /// </summary>
-        [Obsolete("use PaymentDetails")]
-        public CreditCardDetails CreditCardDetails { get; set; }
+        ///// <summary>
+        ///// Credit card information
+        ///// </summary>
+        //[Obsolete("use PaymentDetails")]
+        //public CreditCardDetails CreditCardDetails { get; set; }
 
         public IEnumerable<PaymentDetails> PaymentDetails { get; set; }
 
@@ -176,5 +172,7 @@ namespace Transactions.Business.Entities
         public TransactionTypeEnum? TransactionType { get; set; }
 
         public JObject ExternalSystemData { get; set; }
+
+        public JObject Extension { get; set; }
     }
 }

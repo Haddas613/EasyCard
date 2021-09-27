@@ -23,18 +23,19 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.RedirectUrl, o => o.MapFrom(d => d.RedirectUrl))
                 .ForMember(d => d.ApiKey, o => o.MapFrom(d => d.ApiKey))
                 .ForMember(d => d.PaymentRequest, o => o.MapFrom(d => d.PaymentRequest))
+                .ForMember(d => d.PaymentIntent, o => o.MapFrom(d => d.PaymentIntent))
                 .ForMember(d => d.Amount, o => o.MapFrom(d => d.Amount))
                 .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
                 .ForMember(d => d.Description, o => o.MapFrom(d => d.Description))
                 .ForMember(d => d.Email, o => o.MapFrom(d => d.Email))
                 .ForMember(d => d.Name, o => o.MapFrom(d => d.Name))
                 .ForMember(d => d.NationalID, o => o.MapFrom(d => d.NationalID))
-                .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.ConsumerID))
                 .ForMember(d => d.Phone, o => o.MapFrom(d => d.Phone))
                 .ForMember(d => d.AllowPinPad, o => o.MapFrom(d => d.AllowPinPad))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<PaymentRequestInfo, ChargeViewModel>()
+                .ForMember(d => d.PaymentRequest, o => o.MapFrom(d => d.PaymentRequestID))
                 .ForMember(d => d.Amount, o => o.MapFrom(d => d.PaymentRequestAmount))
                 .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
                 .ForMember(d => d.Description, o => o.MapFrom(d => d.DealDetails == null ? null : d.DealDetails.DealDescription))
@@ -66,6 +67,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.NationalID, o => o.MapFrom(d => d.ConsumerNationalID))
                 .ForMember(d => d.Email, o => o.MapFrom(d => d.ConsumerEmail))
                 .ForMember(d => d.Name, o => o.MapFrom(d => d.ConsumerName))
+                .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.ConsumerID))
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember, destMember) => destMember == null));
 
             CreateMap<ChargeViewModel, Transactions.Api.Models.Transactions.PRCreateTransactionRequest>()

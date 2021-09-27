@@ -10,8 +10,17 @@
     [Currency]           SMALLINT         NOT NULL,
     [TerminalID]         UNIQUEIDENTIFIER NULL,
     [MasavFileTimestamp] DATETIME2 (7)    NULL,
+    [MerchantID]         UNIQUEIDENTIFIER NULL,
+    [CorrelationId]      VARCHAR (50)     NULL,
+    [OperationDoneBy]    NVARCHAR (50)    DEFAULT (N'') NOT NULL,
+    [OperationDoneByID]  UNIQUEIDENTIFIER NULL,
+    [SourceIP]           VARCHAR (50)     NULL,
     CONSTRAINT [PK_MasavFile] PRIMARY KEY CLUSTERED ([MasavFileID] ASC)
 );
+
+
+
+
 
 
 

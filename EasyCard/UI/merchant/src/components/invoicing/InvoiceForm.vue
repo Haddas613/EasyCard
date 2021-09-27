@@ -3,15 +3,9 @@
     <v-card-text class="py-2">
       <v-form class="ec-form" ref="form">
         <invoice-details-fields ref="invoiceDetails" :data="model.invoiceDetails" v-on:invoce-type-changed="invoiceTypeChanged($event)"></invoice-details-fields>
+
         <v-text-field
-          v-model="model.cardOwnerName"
-          :counter="50"
-          :rules="[vr.primitives.required, vr.primitives.maxLength(50)]"
-          :label="$t('CustomerName')"
-          outlined
-        ></v-text-field>
-        <v-text-field
-          v-model="model.cardOwnerNationalID"
+          v-model="model.dealDetails.consumerNationalID"
           :rules="[vr.special.israeliNationalId]"
           :label="$t('NationalID')"
           outlined
@@ -48,7 +42,7 @@
             <cheque-details-fields ref="chequeDetails"></cheque-details-fields>
           </template>
           <template v-else-if="model.paymentType == appConstants.transaction.paymentTypes.bank">
-            <bank-details-fields ref="bankDetails"></bank-details-fields>
+            <bank-transfer-details-fields ref="bankDetails"></bank-transfer-details-fields>
           </template>
         </template>
       </v-form>
@@ -70,7 +64,7 @@ export default {
     DealDetails: () => import("../transactions/DealDetailsFields"),
     InvoiceDetailsFields: () => import("./InvoiceDetailsFields"),
     ChequeDetailsFields: () => import("./ChequeDetailsFields"),
-    BankDetailsFields: () => import("./BankDetailsFields"),
+    BankTransferDetailsFields: () => import("./BankTransferDetailsFields"),
     PaymentType: () => import("../transactions/PaymentType"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     EcDialog: () => import("../../components/ec/EcDialog"),

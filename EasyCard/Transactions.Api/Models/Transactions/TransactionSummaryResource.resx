@@ -156,6 +156,9 @@
   <data name="RejectionReason" xml:space="preserve">
     <value>Rej. Reason</value>
   </data>
+  <data name="ShvaDealID" xml:space="preserve">
+    <value>Shva Deal ID</value>
+  </data>
   <data name="SpecialTransactionType" xml:space="preserve">
     <value>Spec. type</value>
   </data>
@@ -175,6 +178,6 @@
     <value>Date</value>
   </data>
   <data name="TransactionType" xml:space="preserve">
-    <value>Transaction type</value>
+    <value>Tran. type</value>
   </data>
 </root>

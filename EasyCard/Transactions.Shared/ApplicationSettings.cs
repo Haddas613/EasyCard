@@ -8,6 +8,8 @@ namespace Transactions.Shared
     {
         public string DefaultStorageConnectionString { get; set; }
 
+        public string PublicStorageConnectionString { get; set; }
+
         public string ShvaRequestsLogStorageTable { get; set; }
 
         public string NayaxRequestsLogStorageTable { get; set; }
@@ -17,6 +19,7 @@ namespace Transactions.Shared
         public string UpayRequestsLogStorageTable { get; set; }
 
         public string EasyInvoiceRequestsLogStorageTable { get; set; }
+
         public string RapidInvoiceRequestsLogStorageTable { get; set; }
 
         public int FiltersGlobalPageSizeLimit { get; set; } = 1000;
@@ -40,5 +43,13 @@ namespace Transactions.Shared
         public string BillingDealsQueueName { get; set; }
 
         public string PaymentIntentStorageTable { get; set; } = "paymentintent";
+
+        public string AzureSignalRConnectionString { get; set; }
+
+        public string MasavFilesStorageTable { get; set; } = "masav";
+
+        public string SmsTableName { get; set; }
+
+        public bool DoNotSendSms { get; set; }
     }
 }

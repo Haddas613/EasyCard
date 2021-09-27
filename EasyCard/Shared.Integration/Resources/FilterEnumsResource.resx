@@ -124,7 +124,7 @@
     <value>Canceled</value>
   </data>
   <data name="Completed" xml:space="preserve">
-    <value>Completed</value>
+    <value>Done</value>
   </data>
   <data name="Created" xml:space="preserve">
     <value>Created</value>

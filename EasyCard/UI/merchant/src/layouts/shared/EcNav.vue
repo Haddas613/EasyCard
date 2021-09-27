@@ -111,20 +111,25 @@ export default {
               to: { name: "Transactions" }
             },
             {
+              icon: "mdi-bank-transfer-in",
+              to: { name: "Transmissions" },
+              text: "TransmissionsList"
+            },
+            {
               icon: "mdi-chevron-down-box-outline",
               to: { name: "Charge" },
               text: "Charge"
             },
-            // {
-            //   icon: "mdi-credit-card-off",
-            //   to: { name: "NonCardCharge" },
-            //   text: "NonCardCharge"
-            // },
             {
               icon: "mdi-chevron-up-box-outline",
               to: { name: "Refund" },
               text: "Refund",
               allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin]
+            },
+            {
+              icon: "mdi-bank-transfer",
+              text: "MasavFiles",
+              to: { name: "MasavFiles" }
             }
           ]
         },

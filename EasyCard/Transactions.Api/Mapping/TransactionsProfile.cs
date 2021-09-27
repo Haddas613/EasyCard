@@ -31,6 +31,8 @@ namespace Transactions.Api.Mapping
                    .ForMember(d => d.NumberOfPayments, s => s.MapFrom(src => src.InstallmentDetails.NumberOfPayments))
                    .ForMember(d => d.InstallmentPaymentAmount, s => s.MapFrom(src => src.InstallmentDetails.InstallmentPaymentAmount))
                    .ForMember(d => d.OKNumber, s => s.MapFrom(src => src.OKNumber))
+                   .ForMember(d => d.ConnectionID, s => s.MapFrom(src => src.ConnectionID))
+                   .ForMember(d => d.Extension, s => s.MapFrom(src => src.Extension))
                 .ForMember(d => d.CreditCardDetails, o => o.Ignore());
 
             CreateMap<CreditCardSecureDetails, Business.Entities.CreditCardDetails>()
@@ -41,7 +43,8 @@ namespace Transactions.Api.Mapping
             CreateMap<Merchants.Business.Entities.Terminal.Terminal, PaymentTransaction>()
                 .ForMember(d => d.TerminalID, o => o.MapFrom(d => d.TerminalID))
                 .ForMember(d => d.TerminalTemplateID, o => o.MapFrom(d => d.TerminalTemplateID))
-                .ForMember(d => d.MerchantID, o => o.MapFrom(d => d.MerchantID));
+                .ForMember(d => d.MerchantID, o => o.MapFrom(d => d.MerchantID))
+                .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<PaymentTransaction, TransactionResponse>()
                 .ForMember(d => d.AllowTransmission, o => o.MapFrom(src => src.Status == Shared.Enums.TransactionStatusEnum.AwaitingForTransmission))
@@ -54,11 +57,13 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)));
 
             CreateMap<PaymentTransaction, TransactionSummary>()
-                .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.CreditCardDetails.CardOwnerName))
+                .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.DealDetails.ConsumerName ?? src.CreditCardDetails.CardOwnerName))
+                .ForMember(d => d.ShvaDealID, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)));
 
             CreateMap<PaymentTransaction, TransactionSummaryAdmin>()
-                .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.CreditCardDetails.CardOwnerName))
+                .ForMember(d => d.CardOwnerName, o => o.MapFrom(src => src.DealDetails.ConsumerName ?? src.CreditCardDetails.CardOwnerName))
+                .ForMember(d => d.ShvaDealID, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)))
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CreditCardDetails.CardNumber)));
 
@@ -87,11 +92,12 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.PaymentRequestAmount));
 
             CreateMap<PRCreateTransactionRequest, CreateTransactionRequest>()
+                .ForMember(d => d.ConnectionID, s => s.MapFrom(src => src.ConnectionID))
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.PaymentRequestAmount)); // TODO only for user amount
 
             CreateMap<PaymentTransaction, CreateTransactionRequest>()
-  .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.ShvaTransactionDetails.ShvaAuthNum))
-  .ForMember(d => d.InitialJ5TransactionID, o => o.MapFrom(d => TransactionsHelper.GetJ5transactionID(d.PaymentTransactionID, (int)d.JDealType)));
+                .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.ShvaTransactionDetails.ShvaAuthNum))
+                .ForMember(d => d.InitialJ5TransactionID, o => o.MapFrom(d => TransactionsHelper.GetJ5transactionID(d.PaymentTransactionID, (int)d.JDealType)));
 
             CreateMap<Business.Entities.TransactionHistory, Models.Transactions.TransactionHistory>();
 
@@ -99,6 +105,24 @@ namespace Transactions.Api.Mapping
 
             CreateMap<Business.Entities.MasavFile, MasavFileSummary>();
             CreateMap<Business.Entities.MasavFileRow, MasavFileRowSummary>();
+
+            CreateMap<SharedIntegration.Models.DealDetails, Merchants.Business.Entities.Billing.Consumer>()
+                .ForMember(d => d.ConsumerID, o => o.Ignore());
+
+            CreateMap<PaymentTransaction, TransmissionReportSummary>()
+                .ForMember(d => d.ConsumerName, o => o.MapFrom(src => src.DealDetails.ConsumerName ?? src.CreditCardDetails.CardOwnerName))
+                .ForMember(d => d.Date, o => o.MapFrom(src => src.UpdatedDate))
+                .ForMember(d => d.TransmissionDate, o => o.MapFrom(src => src.ShvaTransactionDetails.TransmissionDate))
+                .ForMember(d => d.ShvaDealID, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
+                .ForMember(d => d.Solek, o => o.MapFrom(src => src.ShvaTransactionDetails.Solek));
+
+            CreateMap<PaymentTransaction, TransmissionReportSummaryAdmin>()
+               .ForMember(d => d.ConsumerName, o => o.MapFrom(src => src.DealDetails.ConsumerName ?? src.CreditCardDetails.CardOwnerName))
+               .ForMember(d => d.Date, o => o.MapFrom(src => src.UpdatedDate))
+               .ForMember(d => d.TransmissionDate, o => o.MapFrom(src => src.ShvaTransactionDetails.TransmissionDate))
+               .ForMember(d => d.ShvaDealID, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaDealID))
+               .ForMember(d => d.ShvaTransmissionNumber, o => o.MapFrom(src => src.ShvaTransactionDetails.ShvaTransmissionNumber))
+               .ForMember(d => d.Solek, o => o.MapFrom(src => src.ShvaTransactionDetails.Solek));
         }
     }
 }

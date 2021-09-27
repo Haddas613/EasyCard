@@ -1,6 +1,7 @@
 <template>
   <v-flex>
-    <ec-list :items="data" v-if="data">
+    <transaction-slip-dialog ref="slipDialog" v-if="selectedTransaction" :key="selectedTransaction.$paymentTransactionID"  :transaction="selectedTransaction" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
+    <ec-list :items="data" v-if="data" dashed>
       <template v-slot:prepend="{ item }" v-if="selectable">
          <v-checkbox
             v-model="item.selected"
@@ -17,8 +18,14 @@
           md="6"
           lg="6"
           class="pt-1 caption ecgray--text"
-        >{{item.$transactionTimestamp | ecdate('DD/MM/YYYY HH:mm')}}</v-col>
-        <v-col cols="12" md="6" lg="6">{{item.cardOwnerName || '-'}}</v-col>
+        >
+          <p class="my-0">{{item.$transactionTimestamp | ecdate('DD/MM/YYYY HH:mm')}}</p>
+          <p class="my-0 secondary--text">
+            <span v-if="$vuetify.breakpoint.smAndDown">{{ item.shvaDealID | rlength(5)}}</span>
+            <span v-else>{{ item.shvaDealID }}</span>
+          </p>
+        </v-col>
+        <v-col cols="12" md="6" lg="6" class="d-flex align-center">{{item.cardOwnerName || '-'}}</v-col>
       </template>
 
       <template v-slot:right="{ item }">
@@ -27,8 +34,26 @@
           md="6"
           lg="6"
           class="text-end body-2"
-          v-bind:class="quickStatusesColors[item.quickStatus]"
-        >{{$t(item.quickStatus || 'None')}}</v-col>
+          v-bind:class="quickStatusesColors[item.$quickStatus]"
+        >
+        <v-btn x-small color="success" outlined v-if="item.$quickStatus == 'Completed'" @click="showSlipDialog(item)">
+          <span>{{item.quickStatus}}</span>
+          <v-icon class="mx-1" small :right="$vuetify.$ltr" :left="$vuetify.$ltr">
+            mdi-checkbook
+          </v-icon>
+        </v-btn>
+        <template v-else-if="item.$status == 'awaitingForTransmission'">
+          <span class="teal--text">{{item.quickStatus}}</span>
+          <v-btn class="mx-1" x-small color="teal" outlined  @click="showSlipDialog(item)">
+            <v-icon small :right="$vuetify.$ltr" :left="$vuetify.$ltr">
+              mdi-checkbook
+            </v-icon>
+          </v-btn>
+        </template>
+        <span v-else>
+          {{item.quickStatus}}
+        </span>
+        </v-col>
         <v-col
           cols="12"
           md="6"
@@ -58,6 +83,7 @@ export default {
   components: {
     EcList: () => import("../../components/ec/EcList"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
+    TransactionSlipDialog: () => import("../../components/transactions/TransactionSlipDialog"),
   },
   props: {
     transactions: {
@@ -81,6 +107,17 @@ export default {
         this.$toasted.show(this.$t("@MaxSelectionCount").replace("@count", this.selectLimit), { type: "error" });
         item.selected = false;
       }
+    },
+    async showSlipDialog(transaction){
+      if(this.loadingTransaction){
+        return;
+      }
+      this.loadingTransaction = true;
+      this.selectedTransaction = await this.$api.transactions.getTransaction(
+        transaction.$paymentTransactionID
+      );
+      this.loadingTransaction = false;
+      this.transactionSlipDialog = true;
     }
   },
   data() {
@@ -94,7 +131,10 @@ export default {
         Canceled: "accent--text"
       },
       customerInfo: null,
-      moment: moment
+      moment: moment,
+      selectedTransaction: null,
+      transactionSlipDialog: false,
+      loadingTransaction: false
     };
   }
 };

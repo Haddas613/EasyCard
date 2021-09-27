@@ -30,6 +30,7 @@ using Shared.Api.Models.Binding;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.Configuration;
 using Shared.Helpers.Security;
 using Swashbuckle.AspNetCore.Filters;
 using System;
@@ -295,7 +296,7 @@ namespace Merchants.Api
             {
                 var appCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
                 var logger = serviceProvider.GetRequiredService<ILogger<BlobStorageService>>();
-                var blobStorageService = new BlobStorageService(appCfg.PublicStorageConnectionString, appCfg.PublicBlobStorageTable, appCfg.PublicBlobStorageTable, logger);
+                var blobStorageService = new BlobStorageService(appCfg.PublicStorageConnectionString, appCfg.PublicBlobStorageTable, logger);
 
                 return blobStorageService;
             });

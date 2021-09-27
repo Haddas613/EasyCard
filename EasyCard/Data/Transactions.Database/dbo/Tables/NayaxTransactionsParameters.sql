@@ -2,9 +2,11 @@
     [NayaxTransactionsParametersID]        UNIQUEIDENTIFIER NOT NULL,
     [NayaxTransactionsParametersTimestamp] DATETIME2 (7)    NULL,
     [PinPadTransactionID]                  VARCHAR (50)     NULL,
-    [ShvaTranRecord]                       VARCHAR (500)    NULL,
+    [ShvaTranRecord]                       VARCHAR (600)    NULL,
     CONSTRAINT [PK_NayaxTransactionsParameters] PRIMARY KEY CLUSTERED ([NayaxTransactionsParametersID] ASC)
 );
+
+
 
 
 GO

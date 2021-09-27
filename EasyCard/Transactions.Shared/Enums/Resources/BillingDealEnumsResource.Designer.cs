@@ -70,11 +70,11 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bi montly.
+        ///   Looks up a localized string similar to Bi-monthly.
         /// </summary>
-        public static string BiMontly {
+        public static string BiMonthly {
             get {
-                return ResourceManager.GetString("BiMontly", resourceCulture);
+                return ResourceManager.GetString("BiMonthly", resourceCulture);
             }
         }
         
@@ -97,11 +97,11 @@ namespace Transactions.Shared.Enums.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Montly.
+        ///   Looks up a localized string similar to Monthly.
         /// </summary>
-        public static string Montly {
+        public static string Monthly {
             get {
-                return ResourceManager.GetString("Montly", resourceCulture);
+                return ResourceManager.GetString("Monthly", resourceCulture);
             }
         }
         

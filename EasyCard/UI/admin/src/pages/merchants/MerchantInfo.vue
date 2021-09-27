@@ -90,10 +90,37 @@
             <v-col cols="12" md="6" lg="6">{{item.label}}</v-col>
           </template>
 
+          <template v-slot:right="{ item }">
+            <v-col class="text-end" cols="12" md="6">
+              <span v-bind:class="terminalStatusColors[item.$status]">{{item.status}}</span>
+            </v-col>
+          </template>
+
           <template v-slot:append="{ item }">
-            <v-btn icon link :to="{name: 'EditTerminal', params: {id: item.$terminalID}}">
-              <v-icon color="secondary">mdi-pencil</v-icon>
-            </v-btn>
+            <v-item-group borderless dense>
+              <template v-if="$vuetify.breakpoint.smAndDown">
+                <v-btn icon link :to="{name: 'EditTerminal', params: {id: item.$terminalID}}">
+                <v-icon color="secondary">mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn class="mx-1" color="error" icon v-if="item.$status != 'disabled'" @click="disable(item)">
+                  <v-icon small>mdi-cancel</v-icon>
+                </v-btn>
+                <v-btn class="mx-1" color="success" icon v-if="item.$status == 'disabled'" @click="enable(item)">
+                  <v-icon small>mdi-chevron-down-circle</v-icon>
+                </v-btn>
+              </template>
+              <template v-else>
+                <v-btn link small outlined :to="{name: 'EditTerminal', params: {id: item.$terminalID}}">
+                  <v-icon color="secondary">mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn class="mx-1" small outlined color="error" v-if="item.$status != 'disabled'" @click="disable(item)">
+                  <v-icon small>mdi-cancel</v-icon>
+                </v-btn>
+                <v-btn class="mx-1" small outlined color="success" v-if="item.$status == 'disabled'" @click="enable(item)">
+                  <v-icon small>mdi-chevron-down-circle</v-icon>
+                </v-btn>
+              </template>
+            </v-item-group>
           </template>
         </ec-list>
         <p
@@ -250,6 +277,11 @@ export default {
         active: "success--text",
         locked: "error--text"
       },
+      terminalStatusColors: {
+        'approved': 'success--text',
+        'disabled': 'error--text',
+        'pendingApproval': 'secondary--text',
+      },
       userStatuses: {}
     };
   },
@@ -311,6 +343,14 @@ export default {
     async closeEditRolesDialog() {
       this.editUserDialog = false;
       await this.getMerchant();
+    },
+    async enable(terminal){
+      let opResult = await this.$api.terminals.enableTerminal(terminal.$terminalID);
+      await this.getTerminals();
+    },
+    async disable(terminal){
+      let opResult = await this.$api.terminals.disableTerminal(terminal.$terminalID);
+      await this.getTerminals();
     }
   },
   async mounted() {

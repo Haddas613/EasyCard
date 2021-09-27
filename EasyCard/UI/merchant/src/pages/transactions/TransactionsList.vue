@@ -119,6 +119,7 @@ export default {
       await this.getGroupedDataFromApi();
     },
     async getGroupedDataFromApi() {
+      if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.transactions.getGrouped({
         ...this.transactionsFilter,

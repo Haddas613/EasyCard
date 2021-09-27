@@ -33,8 +33,12 @@ using Shared.Api.Configuration;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.Configuration;
 using Shared.Helpers.Security;
+using Shared.Helpers.Services;
 using Swashbuckle.AspNetCore.Filters;
+using Transactions.Business.Data;
+using Transactions.Business.Services;
 using SharedApi = Shared.Api;
 
 namespace Reporting.Api
@@ -154,6 +158,8 @@ namespace Reporting.Api
                     policy.RequireAssertion(context => context.User.IsManager() || context.User.IsTerminal() || context.User.IsAdmin()));
                 options.AddPolicy(Policy.MerchantFrontend, policy =>
                    policy.RequireAssertion(context => context.User.IsMerchantFrontend()));
+                options.AddPolicy(Policy.Admin, policy =>
+                   policy.RequireAssertion(context => context.User.IsAdmin()));
             });
 
             //Required for all infrastructure json serializers such as GlobalExceptionHandler to follow camelCase convention
@@ -219,6 +225,10 @@ namespace Reporting.Api
             services.AddScoped<ISystemSettingsService, SystemSettingsService>();
             services.AddScoped<IImpersonationService, ImpersonationService>();
 
+            services.AddDbContext<TransactionsContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("TransactionsConnection")));
+            services.AddScoped<ITransactionsService, TransactionsService>();
+            services.AddScoped<ICreditCardTokenService, CreditCardTokenService>();
+
             services.AddAutoMapper(typeof(Startup));
 
             // DI: request logging
@@ -246,6 +256,21 @@ namespace Reporting.Api
                 var httpContext = serviceProvider.GetRequiredService<IHttpContextAccessorWrapper>();
 
                 return new DashboardService(Configuration.GetConnectionString("DefaultConnection"), httpContext);
+            });
+
+            services.AddScoped<IAdminService, AdminService>(serviceProvider =>
+            {
+                var appInsightReaderService = serviceProvider.GetRequiredService<IAppInsightReaderService>();
+
+                return new AdminService(Configuration.GetConnectionString("DefaultConnection"), appInsightReaderService);
+            });
+
+            var appInsightsConfig = Configuration.GetSection("ApplicationInsights").Get<ApplicationInsightsSettings>();
+
+            services.AddSingleton<IAppInsightReaderService, AppInsightReaderService>(serviceProvider =>
+            {
+                var webApiClient = new WebApiClient();
+                return new AppInsightReaderService(appInsightsConfig, webApiClient);
             });
 
             Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;  // TODO: remove for production

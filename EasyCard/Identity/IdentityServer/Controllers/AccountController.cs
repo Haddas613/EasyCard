@@ -30,6 +30,7 @@ using Shared.Helpers.Email;
 using Shared.Helpers.Security;
 using Shared.Helpers.Sms;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -652,7 +653,8 @@ namespace IdentityServer.Controllers
             else
             {
                 logger.LogError($"User {user.Email} set password failed");
-                throw new BusinessException("Something went wrong.");
+                ModelState.AddModelError(string.Empty, Messages.IdentityMessages.UserAlreadyHasPassword);
+                return View();
             }
         }
 

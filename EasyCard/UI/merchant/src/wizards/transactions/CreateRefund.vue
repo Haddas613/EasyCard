@@ -85,6 +85,7 @@
 <script>
 import { mapState } from "vuex";
 import appConstants from "../../helpers/app-constants";
+import * as signalR from "@microsoft/signalr";
 
 export default {
   components: {
@@ -164,7 +165,9 @@ export default {
       success: true,
       errors: [],
       result: null,
-      loading: false
+      loading: false,
+      transactionsHub: null,
+      signalRToast: null
     };
   },
   computed: {
@@ -220,10 +223,7 @@ export default {
         return this.step++;;
       }
       this.customer = data;
-      this.model.dealDetails.consumerEmail = data.consumerEmail;
-      this.model.dealDetails.consumerPhone = data.consumerPhone;
-      this.model.dealDetails.consumerAddress = data.consumerAddress;
-      this.model.dealDetails.consumerID = data.consumerID;
+      this.model.dealDetails = Object.assign(this.model.dealDetails, data);
       if (!this.model.creditCardSecureDetails) {
         this.$set(this.model, "creditCardSecureDetails", {
           cardOwnerName: data.consumerName,
@@ -300,6 +300,11 @@ export default {
     async createRefund(){
       if (this.loading) return;
       try{
+        
+        if(this.model.pinPad){
+          await this.establishSignalRConnection();
+        }
+
         this.loading = true;
         let result = await this.$api.transactions.refund(this.model);
         this.result = result;
@@ -323,6 +328,9 @@ export default {
           lastStep.completed = true;
           lastStep.closeable = false;
           this.errors = [];
+          if(this.model.pinPad){
+            this.disposeSignalRConnection();
+          }
         }
         if (this.customer) {
           this.$store.commit("payment/addLastChargedCustomer", {
@@ -335,7 +343,50 @@ export default {
       }finally{
         this.loading = false;  
       }
+    },
+
+    async establishSignalRConnection(){
+      const options = {
+        accessTokenFactory: () => {
+          return this.$oidc.getAccessToken();
+        },
+        transport: 1
+      };
+
+      this.transactionsHub = new signalR.HubConnectionBuilder()
+        .withUrl(
+            `${this.$cfg.VUE_APP_TRANSACTIONS_API_BASE_ADDRESS}/hubs/transactions`,
+            options
+        )
+        .withAutomaticReconnect()
+        .configureLogging("Warning")
+        .build();
+        
+      this.transactionsHub.on("TransactionStatusChanged", (payload) => {
+        if(this.signalRToast){
+          this.signalRToast.text(payload.statusString)
+        }else{
+          this.signalRToast = this.$toasted.show(payload.statusString, { type: "info", action: [] });
+        }
+      });
+
+      await this.transactionsHub.start();
+      this.model.connectionID = this.transactionsHub.connectionId;
+    },
+    async disposeSignalRConnection(){
+      if(!this.transactionsHub){
+        return;
+      }
+      if(this.signalRToast){
+        this.signalRToast.goAway();
+        this.signalRToast = null;
+      }
+
+      this.transactionsHub.stop();
     }
+  },
+  async beforeDestroy () {
+    await this.disposeSignalRConnection();
   }
 };
 </script>

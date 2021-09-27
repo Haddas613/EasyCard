@@ -59,8 +59,8 @@ export default {
       vr: ValidationRules,
       dateFromMenu: false,
       dateToMenu: false,
-      dateFromRaw: null,
-      dateToRaw: null
+      dateFromRaw: this.data.dateFrom,
+      dateToRaw: this.data.dateTo
     };
   },
   watch: {

@@ -16,12 +16,49 @@
           ></v-select>
         </v-col>
         <v-col cols="12" md="3" sm="6">
+          <v-text-field
+            v-model="model.paymentTransactionID"
+            :label="$t('PaymentTransactionIDFull')"
+            :rules="[vr.primitives.guid]"
+            placeholder="b51f5306-e075-4c9a-a4bf-680f91dba205"
+            clearable
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="3" sm="6">
+          <v-text-field
+            v-model="model.paymentTransactionIDShort"
+            :label="$t('PaymentTransactionIDShort')"
+            :rules="[vr.primitives.stringLength(8,8)]"
+            placeholder="b51f5306"
+            clearable
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="3" sm="6">
           <v-select
             :items="dictionaries.quickDateFilterTypeEnum"
             item-text="description"
             item-value="code"
             v-model="model.quickDateFilter"
             :label="$t('QuickDate')"
+            hide-details="true"
+            clearable
+          ></v-select>
+        </v-col>
+        <v-col cols="12" md="3">
+          <v-text-field
+            v-model="model.shvaDealIDLastDigits"
+            :label="$t('ShvaDealIdLast5Digits')"
+            :rules="[vr.primitives.stringLength(5,5), vr.primitives.numeric()]"
+            clearable
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="3" sm="6">
+          <v-select
+            :items="paymentTypesFiltered"
+            item-text="description"
+            item-value="code"
+            v-model="model.paymentType"
+            :label="$t('PaymentType')"
             hide-details="true"
             clearable
           ></v-select>
@@ -135,27 +172,23 @@
             clearable
           ></v-select>
         </v-col>
-        <v-col cols="12" md="3" sm="6">
-          <v-select
-            :items="paymentTypesFiltered"
-            item-text="description"
-            item-value="code"
-            v-model="model.paymentType"
-            :label="$t('PaymentType')"
-            hide-details="true"
-            clearable
-          ></v-select>
-        </v-col>
         <v-col cols="12" md="6">
           <v-row class="pt-3">
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="4">
                 <v-switch v-model="model.hasInvoice" hide-details>
                 <template v-slot:label>
                   <small>{{$t('HasInvoice')}}</small>
                 </template>
               </v-switch>
             </v-col>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="4">
+                <v-switch v-model="model.hasMasavFile" hide-details>
+                <template v-slot:label>
+                  <small>{{$t('HasMasavFile')}}</small>
+                </template>
+              </v-switch>
+            </v-col>
+            <v-col cols="12" md="4">
                 <v-switch v-model="model.isPaymentRequest" hide-details>
                 <template v-slot:label>
                   <small>{{$t('IsPaymentRequest')}}</small>
@@ -190,6 +223,8 @@
 </template>
 
 <script>
+import ValidationRules from "../../helpers/validation-rules";
+
 export default {
   name: "TransactionsFilter",
   components: {
@@ -203,8 +238,9 @@ export default {
     return {
       model: { ...this.filterData },
       dictionaries: {},
-      paymentTypesFiltered: null,
-      formIsValid: true
+      paymentTypesFiltered: [],
+      formIsValid: true,
+      vr: ValidationRules
     };
   },
   async mounted() {

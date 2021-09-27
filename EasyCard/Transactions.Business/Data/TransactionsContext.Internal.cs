@@ -35,9 +35,9 @@ namespace Transactions.Business.Data
         {
             var builder = new SqlBuilder();
 
-            var query = @"select TOP (@maxRecords) PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, NumberOfRecords
+            var query = @"select TOP (@maxRecords) PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, NumberOfRecords, ShvaDealID 
 from(
-    select PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, r = row_number() over(partition by TransactionDate order by PaymentTransactionID desc), NumberOfRecords = count(*) over(partition by TransactionDate)
+    select PaymentTransactionID, TerminalID, MerchantID, TransactionAmount, TransactionType, Currency, TransactionTimestamp, Status, SpecialTransactionType, JDealType, RejectionReason, CardPresence, CardOwnerName, TransactionDate, r = row_number() over(partition by TransactionDate order by PaymentTransactionID desc), NumberOfRecords = count(*) over(partition by TransactionDate), ShvaDealID
     from dbo.PaymentTransaction WITH(NOLOCK) /**where**/
     ) a
 where r <= @pageSize
@@ -104,7 +104,7 @@ DECLARE @OutputTransactionIDs table(
     [PaymentTransactionID] [uniqueidentifier] NULL,
     [ShvaDealID] [varchar](50) NULL,
     [ShvaTerminalID] [varchar](20) NULL,
-    [ShvaTranRecord] [varchar](500) NULL
+    [ShvaTranRecord] [varchar](600) NULL
 );
 
 UPDATE t SET t.[Status]=@NewStatus, t.[UpdatedDate]=@UpdatedDate, t.ShvaTranRecord = ISNULL(t.ShvaTranRecord, n.ShvaTranRecord)
@@ -214,6 +214,50 @@ SELECT InvoiceID from @OutputInvoiceIDs as a";
             finally
             {
                 if (!existingConnection)
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        public async Task<long> GenerateMasavFile(Guid? merchantID, Guid? terminalID, int? bank, int? bankBranch, string bankAccount, DateTime? masavFileDate)
+        {
+            var connection = this.Database.GetDbConnection();
+            bool connectionOpened = connection.State == ConnectionState.Open;
+            try
+            {
+                if (!connectionOpened)
+                {
+                    await connection.OpenAsync();
+                }
+
+                var query = "[dbo].[PR_GenerateMasavFile]";
+
+                var args = new DynamicParameters(new { FileDate = masavFileDate, MerchantID = merchantID, TerminalID = terminalID, InstitueName = bank.ToString(), InstituteNumber = bankAccount, SendingInstitute = bankBranch, PaymentTypeEnum = PaymentTypeEnum.Bank, Currency = CurrencyEnum.ILS, TransactionStatusOld = TransactionStatusEnum.Initial, TransactionStatusNew = TransactionStatusEnum.AwaitingForTransmission });
+
+                args.Add("@Error", dbType: DbType.String, direction: ParameterDirection.Output, size: -1);
+                args.Add("@MasavFileID", dbType: DbType.Int64, direction: ParameterDirection.Output, size: -1);
+
+                var result = await connection.ExecuteAsync(query, args, commandType: CommandType.StoredProcedure);
+
+                var error = args.Get<string>("@Error");
+
+                if (!string.IsNullOrWhiteSpace(error))
+                {
+                    throw new ApplicationException(error);
+                }
+
+                var res = args.Get<long>("@MasavFileID");
+
+                return res;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (!connectionOpened)
                 {
                     connection.Close();
                 }

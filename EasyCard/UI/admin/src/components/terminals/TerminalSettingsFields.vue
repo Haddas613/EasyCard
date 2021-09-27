@@ -221,7 +221,7 @@
           <v-col cols="12">
             <v-divider class="py-2"></v-divider>
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="6">
             <v-text-field
               v-model="model.paymentRequestSettings.defaultRequestSubject"
               :counter="128"
@@ -229,7 +229,7 @@
               :label="$t('DefaultRequestSubject')"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="6">
             <v-text-field
               v-bind:class="{'px-4' : $vuetify.breakpoint.mdAndUp}"
               v-model="model.paymentRequestSettings.defaultRefundRequestSubject"
@@ -238,11 +238,19 @@
               :label="$t('DefaultRefundRequestSubject')"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="6">
             <v-text-field
               v-model="model.paymentRequestSettings.fromAddress"
               :rules="[vr.primitives.required, vr.primitives.email]"
               :label="$t('FromAddress')"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6" v-if="$featureEnabled(model, appConstants.terminal.features.SmsNotification)">
+            <v-text-field
+              v-bind:class="{'px-4' : $vuetify.breakpoint.mdAndUp}"
+              v-model="model.paymentRequestSettings.fromPhoneNumber"
+              :rules="[vr.primitives.numeric()]"
+              :label="$t('FromPhoneNumber')"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="5">
@@ -308,6 +316,26 @@
               v-if="showSharedApiKey"
               :value="model.sharedApiKey"
               :label="$t('SharedApiKey')"
+              readonly
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+
+    <v-card outlined class="mb-2" v-if="$featureEnabled(model, appConstants.terminal.features.Checkout)">
+      <v-card-title class="pb-0 mb-0 subtitle-2 black--text">{{$t("PrivateApiKey")}}</v-card-title>
+      <v-card-text>
+        <v-row no-gutters>
+          <v-col cols="12" md="12">
+            <v-btn color="primary" small @click="resetPrivateKey()">{{$t("ResetPrivateKey")}}</v-btn>
+            <v-btn color="success" class="mx-1" :disabled="privateApiKey" small @click="showPrivateKey()">{{$t("ShowPrivateKey")}}</v-btn>
+          </v-col>
+          <v-col cols="12" md="12" class="mt-4">
+            <v-text-field
+              v-if="privateApiKey"
+              :value="privateApiKey"
+              :label="$t('PrivateApiKey')"
               readonly
             ></v-text-field>
           </v-col>
@@ -417,7 +445,7 @@
       </v-card-text>
     </v-card>
 
-    <v-card outlined class="mb-2">
+    <v-card outlined class="mb-2" v-if="$featureEnabled(model, appConstants.terminal.features.Billing)">
       <v-card-text>
         <v-row>
           <v-col cols="12" class="subtitle-2 black--text pb-3">
@@ -425,16 +453,7 @@
             <v-divider class="pt-1"></v-divider>
           </v-col>
           <v-col cols="12" md="4">
-            <v-text-field
-              :label="$t('Bank')"
-              :counter="7"
-              outlined
-              v-model="model.bankDetails.bank"
-              max="7"
-              type="number"
-              :rules="[vr.primitives.numeric()]"
-              v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
-            ></v-text-field>
+            <bank-select v-model="model.bankDetails.bank" v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"></bank-select>
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
@@ -475,6 +494,7 @@ export default {
     EcList: () => import("../ec/EcList"),
     TerminalMerchantLogoInput: () => import("./TerminalMerchantLogoInput"),
     TerminalMerchantStyleInput: () => import("./TerminalMerchantStyleInput"),
+    BankSelect: () => import("../bank/BankSelect")
   },
   props: {
     data: {
@@ -556,6 +576,17 @@ export default {
         return;
       }
       let operation = await this.$api.terminals.resetPrivateApiKey(
+        this.model.terminalID
+      );
+      if (!this.$apiSuccess(operation)) return;
+
+      this.privateApiKey = operation.entityReference;
+    },
+    async showPrivateKey(){
+      if (!this.model.terminalID || this.privateApiKey) {
+        return;
+      }
+      let operation = await this.$api.terminals.getPrivateApiKey(
         this.model.terminalID
       );
       if (!this.$apiSuccess(operation)) return;

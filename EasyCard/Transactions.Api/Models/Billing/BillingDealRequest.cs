@@ -17,6 +17,11 @@ namespace Transactions.Api.Models.Billing
     public class BillingDealRequest : TransactionRequestBase
     {
         /// <summary>
+        /// EasyCard terminal reference
+        /// </summary>
+        public Guid? TerminalID { get; set; }
+
+        /// <summary>
         /// Currency
         /// </summary>
         [EnumDataType(typeof(CurrencyEnum))]

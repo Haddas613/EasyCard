@@ -38,6 +38,7 @@ namespace CheckoutPortal.Models
         [StringLength(50)]
         public string Phone { get; set; }
 
+        [BindNever]
         public Guid? ConsumerID { get; set; }
 
         public CurrencyEnum Currency { get; set; }
@@ -76,7 +77,6 @@ namespace CheckoutPortal.Models
         /// <summary>
         /// Key for merchant's system - to have ability to validate redirect
         /// </summary>
-        [Required]
         [StringLength(100)]
         public string ApiKey { get; set; }
 
@@ -154,5 +154,7 @@ namespace CheckoutPortal.Models
 
         [BindNever]
         public bool IsRefund { get; set; }
+
+        public string ConnectionID { get; set; }
     }
 }

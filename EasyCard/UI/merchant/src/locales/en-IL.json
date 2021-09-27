@@ -84,8 +84,12 @@
   "SecurityNotice": "Security notice",
   "PaymentDetails": "Payment Details",
   "BankAccountDetails": "Bank Account Details",
-  "ExtendedResponseForCheckoutTransaction": "Extended response for checkout transaction",
-  "VoucherNumber": "Voucher Number",
+  "MasavFiles": "Masav Files",
+  "MasavFileRows": "Masav File Rows",
+  "MasavFile": "Masav File",
+  "Transmissions": "Transmissions",
+  "TransmissionsList": "Transmissions List",
+  "FilterTransmissions": "Filter Transmissions",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -126,6 +130,7 @@
   "OnlyCSSFilesAreAllowed": "Only CSS files are allowed",
   "MaxFileSizeIs1MB": "Max file size is 1MB",
   "OnlyNumbersAreAllowed": "Only numbers are allowed",
+  "PleaseSelectCardToken": "Please Select Card Token",
   
   "--FORM & DATA FIELDS--": null,
   "ID": "ID",
@@ -163,6 +168,7 @@
   "Expiry": "Expiry",
   "NatID": "Nat. ID",
   "SaveCard": "Save Card",
+  "SaveCardCreateNewCustomer": "Save Card (create new customer)",
   "AdditionalSettings": "Additional Settings",
   "SpecialTransactionType": "Special Transaction Type",
   "CardOwnerNationalID": "Card Owner National ID",
@@ -245,6 +251,7 @@
   "DefaultRequestSubject": "Default Request Subject",
   "DefaultRefundRequestSubject": "Default Refund Request Subject",
   "FromAddress": "From Address",
+  "FromPhoneNumber": "From Phone Number",
   "NotificationEmails": "Notification emails",
   "CreateRecurrentPaymentsAutomatically": "Create Recurrent Payments Automatically",
   "VATRate": "VAT Rate",
@@ -307,6 +314,16 @@
   "Bank": "Bank",
   "BankBranch": "Bank Branch",
   "BankAccount": "Bank Account",
+  "ExtendedResponseForCheckoutTransaction": "Extended response for checkout transaction",
+  "VoucherNumber": "Voucher Number",
+  "PayedDate": "Payed Date",
+  "NextScheduledTransaction": "Next Scheduled Transaction",
+  "ShvaDealIdLast5Digits": "Shva Deal ID Last 5 digits",
+  "PaymentTransactionIDShort": "Transaction ID (short)",
+  "PaymentTransactionIDFull": "Transaction ID (full)",
+  "HasError": "Has Error",
+  "HasMasavFile": "Has Masav File",
+  "Successful": "Successful",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -356,6 +373,9 @@
   "PaymentIntent": "Payment Intent",
   "CreatePaymentLink": "Create Payment Link",
   "Renew": "Renew",
+  "Download": "Download",
+  "GenerateMasavFile": "Generate Masav File",
+  "ConvertToJ4": "Convert to J4",
 
   "--AUTH--": null,
   "Login": "Login",
@@ -435,5 +455,6 @@
   "UnsavedChangesWarningMessage": "There are unsaved changes. Are you sure you want to leave?",
   "CanOnlyIssueInvoiceForILSTransactions": "Can only issue invoice for ILS transactions",
   "NoAvailableTerminals": "No available terminals",
-  "SessionEndingMsg": "Your session is about to end. Renew it to continue working or sign out."
+  "SessionEndingMsg": "Your session is about to end. Renew it to continue working or sign out.",
+  "SuccessfulTransmissionsSwitchTip": "Switch between successful and failed transmissions"
 }

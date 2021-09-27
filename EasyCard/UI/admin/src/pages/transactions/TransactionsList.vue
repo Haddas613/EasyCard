@@ -32,9 +32,7 @@
           </router-link>
         </template> 
         <template v-slot:item.transactionAmount="{ item }">
-          <p class="text-right">
-            <b>{{item.transactionAmount | currency(item.currency)}}</b>
-          </p>
+          <b class="text-right">{{item.transactionAmount | currency(item.currency)}}</b>
         </template>
         <template v-slot:item.quickStatus="{ item }">
           <span v-bind:class="quickStatusesColors[item.$quickStatus]">{{$t(item.quickStatus || 'None')}}</span>
@@ -43,7 +41,7 @@
           <v-btn class="mx-1" color="primary" outlined small link :to="{name: 'Transaction', params: {id: item.$paymentTransactionID}}">
             <re-icon small>mdi-arrow-right</re-icon>
           </v-btn>
-          <v-btn v-if="item.status == 'completed' && item.$jDealType == 'J4'" color="orange" class="mx-1" outlined small @click="showSlipDialog(item)">
+          <v-btn v-if="(item.status == 'completed' || item.status == 'awaitingForTransmission') && item.$jDealType == 'J4'" color="orange" class="mx-1" outlined small @click="showSlipDialog(item)">
             <v-icon small>mdi-checkbook</v-icon>
           </v-btn>
         </template>    
@@ -53,7 +51,10 @@
             <v-icon v-if="item.$cardPresence == 'regular'" color="success">mdi-credit-card-check</v-icon>
             <v-icon v-else>mdi-credit-card-off-outline</v-icon>
           </span>
-        </template>  
+        </template>
+        <template v-slot:item.cardNumber="{ item }">
+          <span dir="ltr">{{item.cardNumber}}</span>
+        </template>   
         <template v-slot:item.transactionType="{ item }">
           <span :title="item.transactionType">
             <v-icon v-if="item.$transactionType == 'regularDeal'" color="primary">mdi-cash</v-icon>
@@ -86,7 +87,7 @@ export default {
     return {
       totalAmount: 0,
       transactions: [],
-      loading: true,
+      loading: false,
       options: {},
       pagination: {},
       headers: [],
@@ -118,6 +119,7 @@ export default {
   },
   methods: {
     async getDataFromApi() {
+      if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.transactions.get({ ...this.transactionsFilter, ...this.options });
       this.transactions = data.data;

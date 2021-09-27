@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Shared.Api.Models.Binding;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ namespace Transactions.Business.Entities
         /// Deal reference on merchant side
         /// </summary>
         [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string DealReference { get; set; }
 
         /// <summary>
@@ -25,12 +28,25 @@ namespace Transactions.Business.Entities
         /// End-customer Email
         /// </summary>
         [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [EmailAddress]
         public string ConsumerEmail { get; set; }
+
+        /// <summary>
+        /// End-customer Name
+        /// </summary>
+        [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        public string ConsumerName { get; set; }
+
+        [StringLength(20)]
+        public string ConsumerNationalID { get; set; }
 
         /// <summary>
         /// End-customer Phone
         /// </summary>
         [StringLength(20)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ConsumerPhone { get; set; }
 
         /// <summary>
@@ -51,6 +67,8 @@ namespace Transactions.Business.Entities
         /// <summary>
         /// External system consumer code for example Rapid customer code
         /// </summary>
+        [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ConsumerExternalReference { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace RapidOne.Converters
     public class RapidInvoiceConverter
     {
 
-        public static CreateFinancialDocumentModelDto GetInvoiceCreateDocumentRequest(InvoicingCreateDocumentRequest message)
+        public static CreateFinancialDocumentModelDto GetInvoiceCreateDocumentRequest(InvoicingCreateDocumentRequest message, RapidOneTerminalSettings terminalSettings)
         {
             var json = new CreateFinancialDocumentModelDto
             {
@@ -20,8 +20,8 @@ namespace RapidOne.Converters
                 DueDate = message.InvoiceDate,
                 InvoiceDate = message.InvoiceDate,
                 InvoiceTypeId = GetInvoiceType(message.InvoiceDetails.InvoiceType),
-                Items = GetItems(message),
-                PaymentMethods = GetPaymentMethods(message),
+                Items = GetItems(message, terminalSettings),
+                PaymentMethods = GetPaymentMethods(message, terminalSettings),
                 ToPay = message.InvoiceAmount.Value,
                 Total = message.InvoiceAmount.Value,
                 Vat = message.VATTotal,
@@ -30,12 +30,13 @@ namespace RapidOne.Converters
                 CustomerCode = message.DealDetails?.ConsumerExternalReference,
                 CustomerEmail = message.DealDetails?.ConsumerEmail,
                 CustomerName = message.ConsumerName,
+                Extension = message.Extension
             };
 
             return json;
         }
 
-        private static IEnumerable<FinDocItemDto> GetItems(InvoicingCreateDocumentRequest message)
+        private static IEnumerable<FinDocItemDto> GetItems(InvoicingCreateDocumentRequest message, RapidOneTerminalSettings terminalSettings)
         {
             var listProducts = new List<FinDocItemDto>();
 
@@ -59,7 +60,7 @@ namespace RapidOne.Converters
                     Discount = item.Discount.GetValueOrDefault(),
                     Rate = 1,
                     Users = new string[] { }, // there is no null-check in R1 so this empty array required
-                    Charge = false // TODO
+                    Charge = terminalSettings.Charge
                 };
 
                 listProducts.Add(productInvoice);
@@ -68,7 +69,7 @@ namespace RapidOne.Converters
             return listProducts;
         }
 
-        private static FinDocPaymentMethodDto GetPaymentMethods(InvoicingCreateDocumentRequest message)
+        private static FinDocPaymentMethodDto GetPaymentMethods(InvoicingCreateDocumentRequest message, RapidOneTerminalSettings terminalSettings)
         {
             return new FinDocPaymentMethodDto
             {
@@ -76,11 +77,11 @@ namespace RapidOne.Converters
                 Cash = new FinDocCashDto[0],
                 Check = new FinDocCheckDto[0],
                 CreditCard = GetCreditCardDetails(message),
-                MoneyTransfer = GetMoneyTransferDetails(message)
+                MoneyTransfer = GetMoneyTransferDetails(message, terminalSettings)
             };
         }
 
-        private static IEnumerable<FinDocMoneyTransferDto> GetMoneyTransferDetails(InvoicingCreateDocumentRequest message)
+        private static IEnumerable<FinDocMoneyTransferDto> GetMoneyTransferDetails(InvoicingCreateDocumentRequest message, RapidOneTerminalSettings terminalSettings)
         {
             var result = new List<FinDocMoneyTransferDto>();
 
@@ -95,7 +96,7 @@ namespace RapidOne.Converters
                 mt.Branch = bankPayment.BankBranch.ToString();
                 mt.Account = bankPayment.BankAccount;
                 mt.Value = message.InvoiceAmount.Value; // TODO: split amounts
-
+                mt.AccountNumber = terminalSettings.LedgerAccount;
                 result.Add(mt);
             }
 

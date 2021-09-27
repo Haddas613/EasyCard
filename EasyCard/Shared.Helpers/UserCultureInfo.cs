@@ -17,9 +17,9 @@ namespace Shared.Helpers
             DateFormat = "dd/MM/yyyy"; // Default format.
         }
 
-        public static string DateFormat { get;  }
+        public static string DateFormat { get; }
 
-        public static string DateTimeFormat { get;  }
+        public static string DateTimeFormat { get; }
 
         public static TimeZoneInfo TimeZone { get; set; }
 

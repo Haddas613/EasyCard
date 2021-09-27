@@ -191,8 +191,8 @@ export default {
       this.model.dealDetails.consumerPhone = data.consumerPhone;
       this.model.dealDetails.consumerAddress = data.consumerAddress;
       this.model.dealDetails.consumerID = data.consumerID;
-      this.model.cardOwnerName = data.consumerName;
-      this.model.cardOwnerNationalID = data.consumerNationalID;
+      this.model.dealDetails.consumerName = data.consumerName;
+      this.model.dealDetails.consumerNationalID = data.consumerNationalID;
       this.step++;
     },
     processToBasket(){
@@ -218,8 +218,6 @@ export default {
       this.model.installmentDetails = data.installmentDetails;
       this.model.invoiceDetails = data.invoiceDetails;
       this.model.terminalID = this.terminal.terminalID;
-      this.model.cardOwnerName = data.cardOwnerName;
-      this.model.cardOwnerNationalID = data.cardOwnerNationalID;
       this.model.paymentDetails = data.paymentDetails;
 
       await this.createInvoice();

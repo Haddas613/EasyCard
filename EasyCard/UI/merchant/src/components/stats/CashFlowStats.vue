@@ -157,7 +157,7 @@ export default {
         altQuickDateFilter: this.storeDateFilter.altQuickDateFilter
       });
 
-      if(!report || report.length < 3){
+      if(!report || report.givenPeriod.length < 3){
         this.nothingToShow = true;
         return;
       }

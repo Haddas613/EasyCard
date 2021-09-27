@@ -30,8 +30,9 @@
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
-    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.17.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="3.1.18" />
+    <PackageReference Include="Microsoft.Azure.SignalR" Version="1.9.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -55,6 +56,8 @@
     <ProjectReference Include="..\BasicServices\BasicServices.csproj" />
     <ProjectReference Include="..\Integration\ClearingHouse\ClearingHouse.csproj" />
     <ProjectReference Include="..\Integration\EasyInvoice\EasyInvoice.csproj" />
+    <ProjectReference Include="..\Integration\InforU\InforU.csproj" />
+    <ProjectReference Include="..\Integration\MasavFile\MasavFile.csproj" />
     <ProjectReference Include="..\Integration\Nayax\Nayax.csproj" />
     <ProjectReference Include="..\Integration\RapidOne\RapidOne.csproj" />
     <ProjectReference Include="..\Integration\Shva\Shva.csproj" />
@@ -107,6 +110,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>TransactionSummaryResource.resx</DependentUpon>
     </Compile>
+    <Compile Update="Models\Transactions\TransmissionReportSummaryResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TransmissionReportSummaryResource.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\DateFilterTypeResource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -121,6 +129,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>QuickTimeFilterTypeResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\SMSResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SMSResource.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -153,6 +166,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TransactionSummaryResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Models\Transactions\TransmissionReportSummaryResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>TransmissionReportSummaryResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\DateFilterTypeResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>DateFilterTypeResource.Designer.cs</LastGenOutput>
@@ -164,6 +181,13 @@
     <EmbeddedResource Update="Resources\QuickTimeFilterTypeResource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>QuickTimeFilterTypeResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SMSResource.he.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\SMSResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>SMSResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 

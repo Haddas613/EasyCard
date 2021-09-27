@@ -49,8 +49,11 @@ using Merchants.Business.Entities.Terminal;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.SignalR;
 using SharedBusiness = Shared.Business;
 using SharedIntegration = Shared.Integration;
+using Shared.Helpers.Services;
+using Transactions.Api.Extensions;
 
 namespace Transactions.Api.Controllers
 {
@@ -84,6 +87,8 @@ namespace Transactions.Api.Controllers
         private readonly IMetricsService metrics;
         private readonly IPaymentIntentService paymentIntentService;
 
+        private readonly IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext;
+
         public TransactionsApiController(
             ITransactionsService transactionsService,
             IKeyValueStorage<CreditCardTokenKeyVault> keyValueStorage,
@@ -106,7 +111,8 @@ namespace Transactions.Api.Controllers
             IEmailSender emailSender,
             IOptions<ApiSettings> apiSettings,
             IMetricsService metrics,
-            IPaymentIntentService paymentIntentService)
+            IPaymentIntentService paymentIntentService,
+            IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -130,6 +136,7 @@ namespace Transactions.Api.Controllers
             this.emailSender = emailSender;
             this.metrics = metrics;
             this.paymentIntentService = paymentIntentService;
+            this.transactionsHubContext = transactionsHubContext;
         }
 
         [HttpGet]
@@ -196,21 +203,26 @@ namespace Transactions.Api.Controllers
                     transaction.UpayTransactionDetails = null;
                 }
 
-                //TODO: cache
-                var merchantName = await merchantsService.GetMerchants().Where(m => m.MerchantID == transaction.MerchantID).Select(m => m.BusinessName).FirstOrDefaultAsync();
-                if (transaction.TerminalID.HasValue)
-                {
-                    transaction.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == transaction.TerminalID.Value).Select(t => t.Label).FirstOrDefaultAsync();
-                }
-
-                var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == transaction.TerminalID.Value));
+                var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID.Value));
 
                 if (transaction.JDealType == JDealTypeEnum.J5)
                 {
                     transaction.TransactionJ5ExpiredDate = DateTime.Now.AddDays(terminal.Settings.J5ExpirationDays);
                 }
 
-                transaction.MerchantName = merchantName;
+                if (transaction.AllowTransmissionCancellation)
+                {
+                    var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
+
+                    if (terminalAggregator != null)
+                    {
+                        var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+                        transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
+                    }
+                }
+
+                transaction.TerminalName = terminal.Label;
+                transaction.MerchantName = terminal.Merchant.BusinessName;
                 return Ok(transaction);
             }
             else
@@ -218,9 +230,18 @@ namespace Transactions.Api.Controllers
                 var transaction = mapper.Map<TransactionResponse>(EnsureExists(
                     await transactionsService.GetTransactions().FirstOrDefaultAsync(m => m.PaymentTransactionID == transactionID)));
 
-                if (transaction.TerminalID.HasValue)
+                var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID.Value));
+                transaction.TerminalName = terminal.Label;
+
+                if (transaction.AllowTransmissionCancellation)
                 {
-                    transaction.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == transaction.TerminalID.Value).Select(t => t.Label).FirstOrDefaultAsync();
+                    var terminalAggregator = terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Aggregator);
+
+                    if (terminalAggregator != null)
+                    {
+                        var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+                        transaction.AllowTransmissionCancellation = aggregator?.AllowTransmissionCancellation() ?? transaction.AllowTransmissionCancellation;
+                    }
                 }
 
                 return Ok(transaction);
@@ -251,7 +272,7 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<SummariesResponse<TransactionSummary>>> GetTransactions([FromQuery] TransactionsFilter filter)
+        public async Task<ActionResult<SummariesAmountResponse<TransactionSummary>>> GetTransactions([FromQuery] TransactionsFilter filter)
         {
             Debug.WriteLine(User);
             var merchantID = User.GetMerchantID();
@@ -266,7 +287,8 @@ namespace Transactions.Api.Controllers
                 var dataQuery = query.OrderByDynamic(filter.SortBy ?? nameof(PaymentTransaction.PaymentTransactionID), filter.SortDesc).ApplyPagination(filter, appSettings.FiltersGlobalPageSizeLimit);
 
                 var numberOfRecords = query.DeferredCount().FutureValue();
-                var response = new SummariesResponse<TransactionSummary>();
+                var totalAmount = query.DeferredSum(e => e.TotalAmount).FutureValue();
+                var response = new SummariesAmountResponse<TransactionSummary>();
 
                 if (httpContextAccessor.GetUser().IsAdmin())
                 {
@@ -292,6 +314,7 @@ namespace Transactions.Api.Controllers
 
                     response.Data = summary;
                     response.NumberOfRecords = numberOfRecords.Value;
+                    response.TotalAmount = totalAmount.Value;
                     return Ok(response);
                 }
                 else
@@ -299,6 +322,7 @@ namespace Transactions.Api.Controllers
                     // TODO: try to remove ProjectTo
                     response.Data = await mapper.ProjectTo<TransactionSummary>(dataQuery).Future().ToListAsync();
                     response.NumberOfRecords = numberOfRecords.Value;
+                    response.TotalAmount = totalAmount.Value;
                     return Ok(response);
                 }
             }
@@ -323,6 +347,11 @@ namespace Transactions.Api.Controllers
                 if (model.CreditCardToken != null)
                 {
                     throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDIsNotValid);
+                }
+
+                if (model.DealDetails.ConsumerID == null)
+                {
+                    model.DealDetails.ConsumerID = await CreateConsumer(model, merchantID.Value);
                 }
 
                 var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
@@ -379,11 +408,12 @@ namespace Transactions.Api.Controllers
             }
             else
             {
-                dbPaymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(prmodel.TerminalID, prmodel.PaymentIntentID.GetValueOrDefault()), "PaymentIntent");
+                dbPaymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(prmodel.PaymentIntentID.GetValueOrDefault()), "PaymentIntent");
 
                 isPaymentIntent = true;
             }
 
+            var merchantID = dbPaymentRequest.MerchantID ?? User.GetMerchantID();
             CreateTransactionRequest model = new CreateTransactionRequest();
 
             mapper.Map(dbPaymentRequest, model);
@@ -396,6 +426,13 @@ namespace Transactions.Api.Controllers
                     throw new BusinessException(Transactions.Shared.Messages.WhenSpecifiedTokenCCDIsNotValid);
                 }
 
+                EnsureExists(merchantID);
+
+                if (model.DealDetails.ConsumerID == null)
+                {
+                    model.DealDetails.ConsumerID = await CreateConsumer(model, merchantID.Value);
+                }
+
                 var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
                 mapper.Map(model, tokenRequest);
 
@@ -403,8 +440,18 @@ namespace Transactions.Api.Controllers
 
                 var tokenResponseOperation = tokenResponse.GetOperationResponse();
 
-                if (!(tokenResponseOperation?.Status == StatusEnum.Success))
+                // if TransactionAmount is null/zero  we only create customer & save card, no transaction needed
+                if (!(tokenResponseOperation?.Status == StatusEnum.Success) || model.TransactionAmount.GetValueOrDefault() == 0)
                 {
+                    if (isPaymentIntent)
+                    {
+                        await paymentIntentService.DeletePaymentIntent(prmodel.PaymentIntentID.GetValueOrDefault());
+                    }
+                    else if (prmodel.PaymentRequestID != null)
+                    {
+                        await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: prmodel.PaymentRequestID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
+                    }
+
                     return tokenResponse;
                 }
 
@@ -443,7 +490,7 @@ namespace Transactions.Api.Controllers
             {
                 if (isPaymentIntent)
                 {
-                    await paymentIntentService.DeletePaymentIntent(prmodel.TerminalID, prmodel.PaymentIntentID.GetValueOrDefault());
+                    await paymentIntentService.DeletePaymentIntent(prmodel.PaymentIntentID.GetValueOrDefault());
                 }
                 else
                 {
@@ -464,7 +511,8 @@ namespace Transactions.Api.Controllers
         public async Task<ActionResult<OperationResponse>> BlockCreditCard([FromBody] BlockCreditCardRequest model)
         {
             var transaction = mapper.Map<CreateTransactionRequest>(model);
-            CreditCardTokenKeyVault token = null;
+            CreditCardTokenKeyVault token;
+
             // Does it have sense to use J5 together with Token?
             if (!string.IsNullOrWhiteSpace(model.CreditCardToken))
             {
@@ -507,7 +555,7 @@ namespace Transactions.Api.Controllers
             var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == transactionID));
             var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
-            var CreateTransactionReq = mapper.Map<CreateTransactionRequest>(transaction);
+            var createTransactionReq = mapper.Map<CreateTransactionRequest>(transaction);
             if (transaction.Status != TransactionStatusEnum.AwaitingForSelectJ5)
             {
                 return BadRequest(Messages.TransactionStatusIsNotValid);
@@ -515,8 +563,8 @@ namespace Transactions.Api.Controllers
 
             TransactionTerminalSettingsValidator.Validate(terminal.Settings, transaction.TransactionDate.Value);
 
-            var token = EnsureExists(await keyValueStorage.Get(CreateTransactionReq.CreditCardToken.ToString()), "CreditCardToken");
-            var response = await ProcessTransaction(CreateTransactionReq, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
+            var token = EnsureExists(await keyValueStorage.Get(createTransactionReq.CreditCardToken.ToString()), "CreditCardToken");
+            var response = await ProcessTransaction(createTransactionReq, token, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal);
 
             return response;
         }
@@ -559,18 +607,6 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        ///// <summary>
-        ///// Initial request for set of billing trnsactions
-        ///// </summary>
-        //[HttpPost]
-        //[ProducesResponseType(StatusCodes.Status201Created, Type = typeof(OperationResponse))]
-        //[Route("initalBillingDeal")]
-        //[ValidateModelState]
-        //public async Task<ActionResult<OperationResponse>> InitalBillingDeal([FromBody] InitalBillingDealRequest model)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         [HttpPost]
         [Route("trigger-billing-deals")]
         public async Task<ActionResult<CreateTransactionFromBillingDealsResponse>> CreateTransactionsFromBillingDeals(CreateTransactionFromBillingDealsRequest request)
@@ -612,6 +648,12 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
+                    billingDeal.Active = false;
+                    billingDeal.HasError = true;
+                    billingDeal.LastError = operationResult.Message;
+                    billingDeal.LastErrorCorrelationID = GetCorrelationID();
+                    await billingDealService.UpdateEntity(billingDeal);
+
                     response.FailedCount++;
                 }
             }
@@ -630,7 +672,7 @@ namespace Transactions.Api.Controllers
 
         [HttpPost]
         [Route("send-transaction-slip-email")]
-        public async Task<ActionResult<OperationResponse>> CreateTransactionsFromBillingDeals(SendTransactionSlipEmailRequest request)
+        public async Task<ActionResult<OperationResponse>> SendTransactionSlipEmail(SendTransactionSlipEmailRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -766,22 +808,28 @@ namespace Transactions.Api.Controllers
                         throw new EntityNotFoundException(SharedBusiness.Messages.ApiMessages.EntityNotFound, "CreditCardToken", null);
                     }
 
-                    if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(dbToken.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(dbToken.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        throw new EntityConflictException(Transactions.Shared.Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
-                    }
+                    // NOTE: consumer can pay using another person credit card
+
+                    //if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(dbToken.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(dbToken.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
+                    //{
+                    //    throw new EntityConflictException(Transactions.Shared.Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
+                    //}
                 }
                 else
                 {
-                    if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && model.CreditCardSecureDetails != null && !string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(model.CreditCardSecureDetails.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        throw new EntityConflictException(Transactions.Shared.Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
-                    }
+                    // NOTE: consumer can pay using another person credit card
+
+                    //if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && model.CreditCardSecureDetails != null && !string.IsNullOrWhiteSpace(model.CreditCardSecureDetails.CardOwnerNationalID) && !consumer.ConsumerNationalID.Equals(model.CreditCardSecureDetails.CardOwnerNationalID, StringComparison.InvariantCultureIgnoreCase))
+                    //{
+                    //    throw new EntityConflictException(Transactions.Shared.Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
+                    //}
                 }
             }
 
+            transaction.DealDetails.CheckConsumerDetails(consumer);
+
             // Update details if needed
-            transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction);
+            transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction, transaction.CreditCardDetails);
             if (model.IssueInvoice.GetValueOrDefault())
             {
                 model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings, transaction);
@@ -791,6 +839,9 @@ namespace Transactions.Api.Controllers
             {
                 transaction.CreditCardDetails.CardOwnerName = consumer.ConsumerName;
             }
+
+            // map consumer name from card details if needed
+            transaction.DealDetails.UpdateDealDetails(transaction.CreditCardDetails);
 
             transaction.Calculate();
 
@@ -871,7 +922,11 @@ namespace Transactions.Api.Controllers
                     var lastDeal = await GetLastShvaTransactionDetails(transaction.ShvaTransactionDetails.ShvaTerminalID);
                     mapper.Map(lastDeal, processorRequest); // Map details of prev shva transaction
 
+                    //1. check pair device EVT
+                    await NotifyStatusChanged(transaction, Messages.ApproveTransactionOnDevice);
+
                     pinpadPreCreateResult = await pinpadProcessor.PreCreateTransaction(processorRequest);
+
                     if (!pinpadPreCreateResult.Success)
                     {
                         await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, rejectionMessage: pinpadPreCreateResult.ErrorMessage);
@@ -902,6 +957,12 @@ namespace Transactions.Api.Controllers
                 {
                     var aggregatorRequest = mapper.Map<AggregatorCreateTransactionRequest>(transaction);
                     aggregatorRequest.AggregatorSettings = aggregatorSettings;
+
+                    var aggregatorValidationErrorMsg = aggregator.Validate(aggregatorRequest);
+                    if (aggregatorValidationErrorMsg != null)
+                    {
+                        return BadRequest(new OperationResponse($"{Transactions.Shared.Messages.RejectedByAggregator}: {aggregatorValidationErrorMsg}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
+                    }
 
                     var aggregatorResponse = await aggregator.CreateTransaction(aggregatorRequest);
                     mapper.Map(aggregatorResponse, transaction);
@@ -949,6 +1010,12 @@ namespace Transactions.Api.Controllers
 
                 processorRequest.ProcessorSettings = processorSettings;
 
+                if (pinpadDeal)
+                {
+                    //2. Device is processing transaction
+                    await NotifyStatusChanged(transaction, Messages.DeviceIsProcessingTransaction);
+                }
+
                 var processorResponse = pinpadDeal ? await pinpadProcessor.CreateTransaction(processorRequest) : await processor.CreateTransaction(processorRequest);
 
                 mapper.Map(processorResponse, transaction);
@@ -970,6 +1037,7 @@ namespace Transactions.Api.Controllers
                 else
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.ConfirmedByProcessor);
+
                     if (model.InitialJ5TransactionID != null)
                     {
                         var transactionJ5 = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == model.InitialJ5TransactionID));
@@ -1071,7 +1139,6 @@ namespace Transactions.Api.Controllers
                 if (jDealType == JDealTypeEnum.J5)
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.AwaitingForSelectJ5);
-                    
                 }
                 else if (jDealType != JDealTypeEnum.J4)
                 {
@@ -1086,9 +1153,7 @@ namespace Transactions.Api.Controllers
 
             if (billingDeal != null && jDealType == JDealTypeEnum.J4)
             {
-                billingDeal.CurrentDeal = billingDeal.CurrentDeal.HasValue ? billingDeal.CurrentDeal.Value + 1 : 1;
-                billingDeal.NextScheduledTransaction = billingDeal.BillingSchedule?.GetNextScheduledDate(transaction.TransactionDate.Value, billingDeal.CurrentDeal.Value);
-                billingDeal.Active = billingDeal.NextScheduledTransaction != null;
+                billingDeal.UpdateNextScheduledDate(transaction);
 
                 await billingDealService.UpdateEntity(billingDeal);
             }
@@ -1101,58 +1166,60 @@ namespace Transactions.Api.Controllers
             }
 
             // TODO: validate InvoiceDetails
-            if (model.IssueInvoice == true && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && model.Currency == CurrencyEnum.ILS)
+            if (model.IssueInvoice == true && model.Currency == CurrencyEnum.ILS)
             {
-                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+                if (!string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerName))
                 {
-                    try
+                    using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
                     {
-                        Invoice invoiceRequest = new Invoice();
-                        mapper.Map(transaction, invoiceRequest);
-                        invoiceRequest.InvoiceDetails = model.InvoiceDetails;
-
-                        if (string.IsNullOrWhiteSpace(invoiceRequest.CardOwnerName) && consumer != null)
+                        try
                         {
-                            invoiceRequest.CardOwnerName = consumer.ConsumerName;
-                        }
+                            Invoice invoiceRequest = new Invoice();
+                            mapper.Map(transaction, invoiceRequest);
+                            invoiceRequest.InvoiceDetails = model.InvoiceDetails;
 
-                        if (string.IsNullOrWhiteSpace(invoiceRequest.CardOwnerNationalID) && consumer != null)
+                            var creditCardDetails = invoiceRequest.PaymentDetails.FirstOrDefault(d => d.PaymentType == SharedIntegration.Models.PaymentTypeEnum.Card) as SharedIntegration.Models.PaymentDetails.CreditCardPaymentDetails;
+
+                            // in case if consumer name/natid is not specified in deal details, get it from credit card details
+                            invoiceRequest.DealDetails.UpdateDealDetails(creditCardDetails);
+
+                            invoiceRequest.MerchantID = terminal.MerchantID;
+
+                            invoiceRequest.ApplyAuditInfo(httpContextAccessor);
+
+                            invoiceRequest.Calculate();
+
+                            await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
+
+                            endResponse.InnerResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
+
+                            transaction.InvoiceID = invoiceRequest.InvoiceID;
+
+                            await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
+
+                            var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
+
+                            // TODO: validate, rollback
+                            if (invoicesToResend.Count() > 0)
+                            {
+                                await invoiceQueue.PushToQueue(invoicesToResend.First());
+                            }
+
+                            await dbTransaction.CommitAsync();
+                        }
+                        catch (Exception ex)
                         {
-                            invoiceRequest.CardOwnerNationalID = consumer.ConsumerNationalID;
+                            logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
+
+                            endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
+
+                            await dbTransaction.RollbackAsync();
                         }
-
-                        invoiceRequest.MerchantID = terminal.MerchantID;
-
-                        invoiceRequest.ApplyAuditInfo(httpContextAccessor);
-
-                        invoiceRequest.Calculate();
-
-                        await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
-
-                        endResponse.InnerResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
-
-                        transaction.InvoiceID = invoiceRequest.InvoiceID;
-
-                        await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
-
-                        var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
-
-                        // TODO: validate, rollback
-                        if (invoicesToResend.Count() > 0)
-                        {
-                            await invoiceQueue.PushToQueue(invoicesToResend.First());
-                        }
-
-                        await dbTransaction.CommitAsync();
                     }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
-
-                        endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
-
-                        await dbTransaction.RollbackAsync();
-                    }
+                }
+                else
+                {
+                    endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Consumer Name and Consumer Email are required");
                 }
             }
 
@@ -1164,8 +1231,6 @@ namespace Transactions.Api.Controllers
             {
                 logger.LogError(e, $"{nameof(ProcessTransaction)}: EmailSend");
             }
-
-         
 
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
         }
@@ -1181,7 +1246,7 @@ namespace Transactions.Api.Controllers
             // merge system settings with terminal settings
             mapper.Map(systemSettings, terminal);
 
-            //TODO
+            //TODO: validate bank parameters
             //TransactionTerminalSettingsValidator.Validate(terminal.Settings, model, null, null, specialTransactionType);
 
             var transaction = mapper.Map<PaymentTransaction>(model);
@@ -1216,7 +1281,7 @@ namespace Transactions.Api.Controllers
                 EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == transaction.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
 
             // Update details if needed
-            transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction);
+            transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction, null);
             if (model.IssueInvoice.GetValueOrDefault())
             {
                 model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings, transaction);
@@ -1232,9 +1297,7 @@ namespace Transactions.Api.Controllers
 
             if (billingDeal != null)
             {
-                billingDeal.CurrentDeal = billingDeal.CurrentDeal.HasValue ? billingDeal.CurrentDeal.Value + 1 : 1;
-                billingDeal.NextScheduledTransaction = billingDeal.BillingSchedule?.GetNextScheduledDate(transaction.TransactionDate.Value, billingDeal.CurrentDeal.Value);
-                billingDeal.Active = billingDeal.NextScheduledTransaction != null;
+                billingDeal.UpdateNextScheduledDate(transaction);
 
                 await billingDealService.UpdateEntity(billingDeal);
             }
@@ -1242,58 +1305,55 @@ namespace Transactions.Api.Controllers
             var endResponse = new OperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, transaction.PaymentTransactionID);
 
             // TODO: validate InvoiceDetails
-            if (model.IssueInvoice == true && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && model.Currency == CurrencyEnum.ILS)
+            if (model.IssueInvoice == true && model.Currency == CurrencyEnum.ILS)
             {
-                using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+                if (!string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerEmail) && !string.IsNullOrWhiteSpace(transaction.DealDetails.ConsumerName))
                 {
-                    try
+                    using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
                     {
-                        Invoice invoiceRequest = new Invoice();
-                        mapper.Map(transaction, invoiceRequest);
-                        invoiceRequest.InvoiceDetails = model.InvoiceDetails;
-
-                        if (string.IsNullOrWhiteSpace(invoiceRequest.CardOwnerName) && consumer != null)
+                        try
                         {
-                            invoiceRequest.CardOwnerName = consumer.ConsumerName;
-                        }
+                            Invoice invoiceRequest = new Invoice();
+                            mapper.Map(transaction, invoiceRequest);
+                            invoiceRequest.InvoiceDetails = model.InvoiceDetails;
 
-                        if (string.IsNullOrWhiteSpace(invoiceRequest.CardOwnerNationalID) && consumer != null)
+                            invoiceRequest.MerchantID = terminal.MerchantID;
+
+                            invoiceRequest.ApplyAuditInfo(httpContextAccessor);
+
+                            invoiceRequest.Calculate();
+
+                            await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
+
+                            endResponse.InnerResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
+
+                            transaction.InvoiceID = invoiceRequest.InvoiceID;
+
+                            await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
+
+                            var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
+
+                            // TODO: validate, rollback
+                            if (invoicesToResend.Count() > 0)
+                            {
+                                await invoiceQueue.PushToQueue(invoicesToResend.First());
+                            }
+
+                            await dbTransaction.CommitAsync();
+                        }
+                        catch (Exception ex)
                         {
-                            invoiceRequest.CardOwnerNationalID = consumer.ConsumerNationalID;
+                            logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
+
+                            endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
+
+                            await dbTransaction.RollbackAsync();
                         }
-
-                        invoiceRequest.MerchantID = terminal.MerchantID;
-
-                        invoiceRequest.ApplyAuditInfo(httpContextAccessor);
-
-                        invoiceRequest.Calculate();
-
-                        await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
-
-                        endResponse.InnerResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
-
-                        transaction.InvoiceID = invoiceRequest.InvoiceID;
-
-                        await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
-
-                        var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
-
-                        // TODO: validate, rollback
-                        if (invoicesToResend.Count() > 0)
-                        {
-                            await invoiceQueue.PushToQueue(invoicesToResend.First());
-                        }
-
-                        await dbTransaction.CommitAsync();
                     }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, $"Failed to create invoice. TransactionID: {transaction.PaymentTransactionID}");
-
-                        endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
-
-                        await dbTransaction.RollbackAsync();
-                    }
+                }
+                else
+                {
+                    endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Consumer Name and Consumer Email are required");
                 }
             }
 
@@ -1303,7 +1363,7 @@ namespace Transactions.Api.Controllers
             }
             catch (Exception e)
             {
-                logger.LogError(e, $"{nameof(ProcessTransaction)}: EmailSend");
+                logger.LogError(e, $"{nameof(ProcessTransaction)}: Email sending failed");
             }
 
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
@@ -1351,6 +1411,13 @@ namespace Transactions.Api.Controllers
 
         private async Task SendTransactionSuccessEmails(PaymentTransaction transaction, Merchants.Business.Entities.Terminal.Terminal terminal, string emailTo = null)
         {
+            if (transaction.DealDetails?.ConsumerEmail == null)
+            {
+                return;
+
+                //throw new ArgumentNullException(nameof(transaction.DealDetails.ConsumerEmail));
+            }
+
             var settings = terminal.PaymentRequestSettings;
 
             var emailSubject = "Payment Success";
@@ -1384,11 +1451,6 @@ namespace Transactions.Api.Controllers
             substitutions.Add(new TextSubstitution(nameof(transaction.TransactionType), transactionTypeStr));
             substitutions.Add(new TextSubstitution(nameof(transaction.CardPresence), cardPresenceTypeStr));
             substitutions.Add(new TextSubstitution(nameof(transaction.DocumentOrigin), originStr));
-
-            if (transaction.DealDetails?.ConsumerEmail == null)
-            {
-                throw new ArgumentNullException(nameof(transaction.DealDetails.ConsumerEmail));
-            }
 
             var email = new Email
             {
@@ -1448,6 +1510,67 @@ namespace Transactions.Api.Controllers
                 logger.LogError($"{nameof(NextBillingDeal)}: {billingDeal.BillingDealID}, Error: {string.Join("; ", businessEx.Errors?.Select(b => $"{b.Code}:{b.Description}"))}");
                 return new OperationResponse { Message = businessEx.Message, Status = StatusEnum.Error, Errors = businessEx.Errors };
             }
+            catch (EntityConflictException businessEx)
+            {
+                logger.LogError($"{nameof(NextBillingDeal)}: {billingDeal.BillingDealID}, Error: {businessEx.Message}: {businessEx.EntityType} {businessEx.ConflictDetails}");
+                return new OperationResponse { Message = $"{businessEx.Message}: {businessEx.EntityType} {businessEx.ConflictDetails}", Status = StatusEnum.Error, Errors = new List<Error> { new Error(businessEx.EntityType, businessEx.ConflictDetails) } };
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{nameof(NextBillingDeal)}: {billingDeal.BillingDealID}, Error: {ex.Message}");
+                return new OperationResponse { Message = $"System error", Status = StatusEnum.Error };
+            }
+        }
+
+        /// <summary>
+        /// Notify SignalR (if needed) about transaction status change
+        /// </summary>
+        /// <param name="transaction">Transaction data</param>
+        /// <param name="message">Message to display</param>
+        private async Task NotifyStatusChanged(PaymentTransaction transaction, string message)
+        {
+            if (transaction.ConnectionID == null)
+            {
+                return;
+            }
+
+            var payload = new Shared.Models.TransactionStatusChangedHubModel
+            {
+                PaymentTransactionID = transaction.PaymentTransactionID,
+                Status = transaction.Status,
+                StatusString = message
+            };
+
+            try
+            {
+                await transactionsHubContext.Clients.Clients(transaction.ConnectionID).TransactionStatusChanged(payload);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{nameof(NotifyStatusChanged)} ERROR: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Creates consumer based on transaction data. To be used when "SaveCreditCard" flag is true, but no customer is supplied
+        /// </summary>
+        /// <param name="transaction">Transaction</param>
+        /// <param name="merchantID">Merchant ID</param>
+        /// <returns>New customer ID</returns>
+        private async Task<Guid> CreateConsumer(CreateTransactionRequest transaction, Guid merchantID)
+        {
+            var consumer = new Merchants.Business.Entities.Billing.Consumer();
+
+            mapper.Map(transaction.DealDetails, consumer);
+            consumer.ConsumerName = transaction.CardOwnerName ?? transaction.CreditCardSecureDetails?.CardOwnerName;
+            consumer.ConsumerNationalID = transaction.CardOwnerNationalID ?? transaction.CreditCardSecureDetails?.CardOwnerNationalID;
+            consumer.TerminalID = transaction.TerminalID;
+            consumer.MerchantID = merchantID;
+            consumer.ApplyAuditInfo(httpContextAccessor);
+
+            await consumersService.CreateEntity(consumer);
+
+            return consumer.ConsumerID;
         }
     }
 }

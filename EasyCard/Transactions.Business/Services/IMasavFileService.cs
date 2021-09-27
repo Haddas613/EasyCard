@@ -14,7 +14,7 @@ namespace Transactions.Business.Services
 
         IQueryable<MasavFileRow> GetMasavFileRows();
 
-        Task<MasavFileRow> GetMasavFileRow(Expression<Func<MasavFileRow, bool>> predicate);
+        Task<MasavFile> GetMasavFile(long masavFileID);
 
         Task UpdateMasavFileRow(MasavFileRow data);
 
@@ -23,5 +23,9 @@ namespace Transactions.Business.Services
         Task CreateMasavFile(MasavFile data);
 
         Task UpdateMasavFile(MasavFile data);
+
+        Task<long> GenerateMasavFile(Guid? merchantID, Guid? terminalID, int? bank, int? bankBranch, string bankAccount, DateTime? masavFileDate);
+
+        Task SetMasavFilePayed(long masavFileID, DateTime payedDate);
     }
 }

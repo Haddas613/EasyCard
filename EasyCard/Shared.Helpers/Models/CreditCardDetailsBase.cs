@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Shared.Api.Models.Binding;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +18,7 @@ namespace Shared.Helpers
         [Required]
         [JsonConverter(typeof(CardExpirationConverter))]
         [Models.CardExpirationValidator]
-        public CardExpiration CardExpiration { get; set; }
+        public virtual CardExpiration CardExpiration { get; set; }
 
         [StringLength(20)]
         public string CardVendor { get; set; }
@@ -28,6 +29,7 @@ namespace Shared.Helpers
         [StringLength(20)]
         public string Solek { get; set; }
 
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         [StringLength(50, MinimumLength = 2)]
         public string CardOwnerName { get; set; }
 

@@ -10,7 +10,9 @@
       <v-row class="info-container body-1 black--text">
         <v-col cols="6" md="4" class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('Bank')}}</p>
-          <p>{{model.bank || '-'}}</p>
+          <p>
+            <bank-details-string :data="model.bank"></bank-details-string>
+          </p>
         </v-col>
         <v-col cols="6" md="4" class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('BankBranch')}}</p>
@@ -27,6 +29,9 @@
 
 <script>
 export default {
+  components: {
+    BankDetailsString: () => import("../bank/BankDetailsString"),
+  },
   props: {
     model: {
       type: Object,

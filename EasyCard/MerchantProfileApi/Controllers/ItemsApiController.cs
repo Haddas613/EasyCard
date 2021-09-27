@@ -11,6 +11,7 @@ using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ProfileApi;
 using Shared.Api;
@@ -39,7 +40,12 @@ namespace MerchantProfileApi.Controllers
         private readonly IMerchantsService merchantsService;
         private readonly ICurrencyRateService currencyRateService;
 
-        public ItemsApiController(IItemsService itemsService, IMapper mapper, IHttpContextAccessorWrapper httpContextAccessor, IMerchantsService merchantsService, ICurrencyRateService currencyRateService)
+        public ItemsApiController(
+            IItemsService itemsService,
+            IMapper mapper,
+            IHttpContextAccessorWrapper httpContextAccessor,
+            IMerchantsService merchantsService,
+            ICurrencyRateService currencyRateService)
         {
             this.itemsService = itemsService;
             this.mapper = mapper;

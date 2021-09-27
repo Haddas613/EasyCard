@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Shared.Api.Configuration;
+using Shared.Helpers.Configuration;
 using Shared.Helpers.Security;
 
 namespace Merchants.Api.Controllers

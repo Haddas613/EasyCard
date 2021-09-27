@@ -38,7 +38,7 @@ export default {
       let result = await this.$api.billingDeals.createBillingDeal(data);
       
       if (!this.$apiSuccess(result)) return;
-      this.$router.push({ name: "BillingDeals" });
+      this.$router.push({ name: "BillingDeal", params: { id: result.entityReference } });
     }
   },
 };

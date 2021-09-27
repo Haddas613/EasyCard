@@ -41,8 +41,10 @@ using Shared.Api;
 using Shared.Api.Configuration;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.Configuration;
 using Shared.Helpers.Email;
 using Shared.Helpers.Security;
+using Shared.Helpers.Services;
 using Shared.Helpers.Sms;
 using Shared.Integration;
 using SharedApi = Shared.Api;
@@ -261,6 +263,13 @@ namespace IdentityServer
                 options.StorageConnectionString = config.DefaultStorageConnectionString;
             });
 
+            var appInsightsConfig = Configuration.GetSection("ApplicationInsights").Get<ApplicationInsightsSettings>();
+
+            services.AddSingleton<IMetricsService, MetricsService>(serviceProvider =>
+            {
+                return new MetricsService(appInsightsConfig);
+            });
+
             services.AddSingleton<ISmsService, InforUMobileSmsService>(serviceProvider =>
             {
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
@@ -270,10 +279,11 @@ namespace IdentityServer
                 var webApiClient = new WebApiClient();
 
                 var logger = serviceProvider.GetRequiredService<ILogger<InforUMobileSmsService>>();
+                var metrics = serviceProvider.GetRequiredService<IMetricsService>();
 
                 var doNotSendSms = cfg.TwoFactorAuthenticationDoNotSendSms;
 
-                return new InforUMobileSmsService(webApiClient, inforUMobileSmsSettings, logger, storageService, doNotSendSms);
+                return new InforUMobileSmsService(webApiClient, inforUMobileSmsSettings, logger, storageService, metrics, doNotSendSms);
             });
 
             services.AddSingleton<IRequestLogStorageService, RequestLogStorageService>();
@@ -352,9 +362,10 @@ namespace IdentityServer
                     .CustomSources("ecngpublic.blob.core.windows.net")
                 )
                 .ScriptSources(s => s.Self()
+                    .UnsafeInline()
                     .CustomSources("az416426.vo.msecnd.net")
                 )
-                .FrameAncestors(s => s.Self())
+                /*.FrameAncestors(s => s.Self())*/
                 .FormActions(s => s.Self()
                     .CustomSources(apiConfig.MerchantProfileURL, apiConfig.MerchantsManagementApiAddress, "http://localhost:8080/", "http://localhost:8081/", "login.microsoftonline.com")
                 )

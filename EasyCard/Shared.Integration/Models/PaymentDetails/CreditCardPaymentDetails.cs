@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Shared.Api.Models.Binding;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace Shared.Integration.Models.PaymentDetails
         [JsonConverter(typeof(CardExpirationConverter))]
         public CardExpiration CardExpiration { get; set; }
 
+        [Required]
         [JsonProperty(PropertyName = "cardNumber")]
         public string СardNumber { get; set; }
 
@@ -25,5 +27,14 @@ namespace Shared.Integration.Models.PaymentDetails
 
         [JsonProperty(PropertyName = "cardVendor")]
         public string CardVendor { get; set; }
+
+        [JsonProperty(PropertyName = "cardOwnerName")]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [StringLength(50, MinimumLength = 2)]
+        public string CardOwnerName { get; set; }
+
+        [JsonProperty(PropertyName = "cardOwnerNationalID")]
+        [StringLength(20)]
+        public string CardOwnerNationalID { get; set; }
     }
 }

@@ -112,6 +112,10 @@
   "MasavFiles": "קבצים הוראת קבע",
   "MasavFileRows": "שורות הוראת קבע",
   "MasavFile": "קבצי אורת קבע",
+  "SMSSent": "SMS Sent",
+  "Transmissions": "שידורים",
+  "TransmissionsList": "רשימת שידורים",
+  "FilterTransmissions": "מסנן שידורים",
   
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -139,6 +143,7 @@
   "@AllowedPrecision": "רמת דיוק מורשית היא @val",
   "OnlyPositiveNumbersAreAllowed": "מספרים חיוביים בלבד",
   "@TransactionsCount": "@count תנועות",
+  "@RefundsCount": "@count זיכויים",
   "SelectItems": "בחר פריטים",
   "AddItems": "הוסף פריטים",
   "@MaxSelectionCount": "ניתן לבחור רק עד @count פריטים",
@@ -153,7 +158,10 @@
   "MaxFileSizeIs1MB": "גודל הקובץ המרבי הוא 1MB",
   "AlreadyPresent": "מיוצג כבר",
   "OnlyNumbersAreAllowed": "הכנס מספרים בלבד",
-  
+  "Reporting": "דיווח",
+  "TerminalsTokens": "מסופי אסימונים",
+  "TokensTransactions": "עסקאות אסימונים",
+
   "--FORM & DATA FIELDS--": null,
   "ID": "ת.ז.",
   "Terminal": "טרמינל",
@@ -277,6 +285,7 @@
   "DefaultRequestSubject": "נושא דרישה ברירת מחדל",
   "DefaultRefundRequestSubject": "ברירת מחדל נושא לדרישת תשלום עבור זיכוי",
   "FromAddress": "מכתובת",
+  "FromPhoneNumber": "ממספר טלפון",
   "NotificationEmails": "התראת אימייל",
   "CreateRecurrentPaymentsAutomatically": "צור תשלומים מחזוריים אוטומטית",
   "VATRate": "שיעור מע\"מ",
@@ -374,6 +383,19 @@
   "BankAccount": "מספר חשבון בנק",
   "ExtendedResponseForCheckoutTransaction": "תגובה מורחבת עסקאות רידיירקט",
   "PayedDate": "תאריך תשלום",
+  "LastError": "שגיאה אחרונה",
+  "LastErrorCorrelationID": "מזהה מתאם שגיאה אחרונה",
+  "LedgerAccount": "חשבון ספר חשבונות",
+  "Charge": "חיוב",
+  "NextScheduledTransaction": "העסקה המתוזמנת הבאה",
+  "ShvaDealIdLast5Digits": "מזהה עסקת שב\"א 5 הספרות האחרונות",
+  "PaymentTransactionIDShort": "קצר מזהה עסקה",
+  "PaymentTransactionIDFull": "מזהה עסקה ארוך",
+  "HasError": "בעייתי",
+  "Error": "בעייתי",
+  "HasMasavFile": "קבצי מסב",
+  "CustomerName": "שם לקוח",
+  "Successful": "בהצלחה",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -397,6 +419,7 @@
   "GoToInvoice": "עבור לחשבונית",
   "SelectAll": "בחר הכל",
   "ResetPrivateKey": "איפוס מפתח פרטי",
+  "ShowPrivateKey": "הצג מפתח פרטי",
   "ResetSharedKey": "איפוס מפתח משותף",
   "ShowSharedKey": "הצג מפתח משותף",
   "CreateNew": "צור חדש",
@@ -432,6 +455,8 @@
   "Deactivate": "בטל",
   "PairDevice": "פינפד PAX",
   "RequestLog": "לוג בקשות",
+  "Download": "הורד",
+  "ConvertToJ4": "המרה ל- J4",
 
   "--AUTH--": null,
   "Login": "כניסה",
@@ -507,5 +532,6 @@
   "ShvaNewPasswordInfoMessage": "בביצוע הפעולה יתעדכנו כל המסופים שמקושרים למשתמש זה באותם הערכים",
   "NullAggregatorConnectedMessage": "NULL מאגד מחובר.",
   "NewAppVersionAvailableClickToRefreshThePage": "קיימת גירסה חדשה. לחץ כאן לעדכון הדף",
-  "TerminalSettingsSaveMessage": "יש שינויים שלא נשמרו. אתה בטוח שאתה רוצה לעזוב?"
+  "TerminalSettingsSaveMessage": "יש שינויים שלא נשמרו. אתה בטוח שאתה רוצה לעזוב?",
+  "SuccessfulTransmissionsSwitchTip": "מעבר בין שידורים מוצלחים לכישלון"
 }

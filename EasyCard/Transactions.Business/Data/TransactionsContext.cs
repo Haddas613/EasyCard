@@ -37,8 +37,8 @@ namespace Transactions.Business.Data
                 new DebugLoggerProvider()
             });
 
-        private static readonly ValueConverter CardExpirationConverter = new ValueConverter<CardExpiration, string>(
-            v => v.ToString(),
+        private static readonly ValueConverter CardExpirationConverter = new ValueConverter<CardExpiration, DateTime?>(
+            v => v.ToDate(),
             v => CreditCardHelpers.ParseCardExpiration(v));
 
         private static readonly ValueConverter ItemsConverter = new ValueConverter<IEnumerable<Item>, string>(
@@ -158,9 +158,15 @@ namespace Transactions.Business.Data
 
                 builder.Property(p => p.CreditCardToken).HasColumnName("CreditCardToken");
 
+                //TODO: remove
+                builder.Property(typeof(string), "CardExpiration").HasMaxLength(5).IsUnicode(false).IsRequired(false);
+
                 builder.OwnsOne(b => b.CreditCardDetails, s =>
                 {
-                    s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
+                    s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
+                        .HasColumnName("CardExpirationDate")
+                        .HasColumnType("date");
+
                     s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
@@ -223,6 +229,8 @@ namespace Transactions.Business.Data
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerExternalReference).HasColumnName("ConsumerExternalReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.ConsumerName).HasColumnName("ConsumerName").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.ConsumerNationalID).HasColumnName("ConsumerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
@@ -249,6 +257,9 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.PinPadDeviceID).HasColumnName("PinPadDeviceID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                 builder.Property(p => p.PinPadTransactionID).HasColumnName("PinPadTransactionID").IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
+                builder.Property(b => b.Extension).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
+                    .Metadata.SetValueComparer(SettingsJObjectComparer);
+
                 builder.HasIndex(d => d.PinPadTransactionID);
                 builder.HasIndex(b => new { b.TerminalID, b.PaymentTypeEnum, b.MasavFileID });
                 builder.HasIndex(b => new { b.MerchantID, b.TerminalID });
@@ -268,7 +279,16 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.MerchantID).IsRequired(true);
 
                 builder.Property(b => b.CardNumber).IsRequired(true).HasMaxLength(20).IsUnicode(false);
-                builder.Property(b => b.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter);
+
+                //TODO: remove
+                builder.Property(typeof(string), "CardExpirationOld").HasMaxLength(5).IsUnicode(false).IsRequired(false).HasColumnName("CardExpiration");
+
+                builder.Ignore(b => b.CardExpiration);
+
+                //builder.Property(b => b.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
+                //    .HasColumnName("CardExpirationDate")
+                //    .HasColumnType("date");
+
                 builder.Property(b => b.CardVendor).HasMaxLength(20).IsRequired(false).IsUnicode(false);
                 builder.Property(b => b.CardOwnerNationalID).HasMaxLength(20).IsRequired(false).IsUnicode(false);
                 builder.Property(b => b.CardOwnerName).HasMaxLength(50).IsRequired(false).IsUnicode(true);
@@ -291,6 +311,13 @@ namespace Transactions.Business.Data
                 });
 
                 builder.Property(p => p.ConsumerEmail).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(p => p.ExpirationDate).HasColumnName("CardExpirationDate").HasColumnType("date").IsRequired(false);
+
+                builder.Property(p => p.ReplacementOfTokenID).IsRequired(false);
+
+                builder.HasIndex(d => new { d.Active, d.MerchantID, d.ConsumerID }); // UI usage. TODO: add TerminalID to query and to index
+                builder.HasIndex(d => new { d.Active, d.TerminalID, d.ConsumerID }); // checkout usage
             }
         }
 
@@ -337,11 +364,17 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.TerminalID).IsRequired(true);
                 builder.Property(p => p.MerchantID).IsRequired(true);
 
-                builder.Property(p => p.CreditCardToken).HasColumnName("CreditCardToken");
+                builder.Property(p => p.CreditCardToken).IsRequired(false).HasColumnName("CreditCardToken");
+
+                //TODO: remove
+                builder.Property(typeof(string), "CardExpiration").HasMaxLength(5).IsUnicode(false).IsRequired(false);
 
                 builder.OwnsOne(b => b.CreditCardDetails, s =>
                 {
-                    s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
+                    s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
+                        .HasColumnName("CardExpirationDate")
+                        .HasColumnType("date");
+
                     s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
@@ -367,6 +400,8 @@ namespace Transactions.Business.Data
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerExternalReference).HasColumnName("ConsumerExternalReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.ConsumerName).HasColumnName("ConsumerName").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.ConsumerNationalID).HasColumnName("ConsumerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
@@ -406,6 +441,8 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.PausedFrom).HasColumnType("date").IsRequired(false);
                 builder.Property(b => b.PausedTo).HasColumnType("date").IsRequired(false);
                 builder.Property(b => b.PaymentType).IsRequired();
+
+                builder.Property(b => b.LastErrorCorrelationID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
             }
         }
 
@@ -461,6 +498,8 @@ namespace Transactions.Business.Data
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerExternalReference).HasColumnName("ConsumerExternalReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.ConsumerName).HasColumnName("ConsumerName").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.ConsumerNationalID).HasColumnName("ConsumerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
@@ -489,25 +528,17 @@ namespace Transactions.Business.Data
 
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
-                builder.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
-                builder.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
+                // ToBeRemoved
+                builder.Property(typeof(string), "CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                builder.Property(typeof(string), "CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
+                builder.Property(typeof(string), "CardExpiration").IsRequired(false).HasMaxLength(5).IsUnicode(false);
+                builder.Property(typeof(string), "CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                builder.Property(typeof(string), "CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                builder.Property(typeof(string), "CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                builder.Property(typeof(string), "Solek").IsRequired(false).HasMaxLength(20).IsUnicode(false);
 
                 builder.Property(b => b.CopyDonwnloadUrl).IsRequired(false).IsUnicode(false);
                 builder.Property(b => b.DownloadUrl).IsRequired(false).IsUnicode(false);
-
-                //TODO: remove after migrating to PaymentDetails
-                builder.OwnsOne(b => b.CreditCardDetails, s =>
-                {
-                    s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
-                    s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
-                    s.Property(p => p.CardOwnerNationalID).HasColumnName("CardOwnerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
-                    s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
-                    s.Ignore(p => p.CardBin);
-                    s.Property(p => p.CardVendor).HasColumnName("CardVendor").IsRequired(false).HasMaxLength(20).IsUnicode(false);
-                    s.Property(p => p.CardBrand).HasColumnName("CardBrand").IsRequired(false).HasMaxLength(20).IsUnicode(false);
-                    s.Property(p => p.Solek).HasColumnName("Solek").IsRequired(false).HasMaxLength(20).IsUnicode(false);
-                    s.Ignore(b => b.CardReaderInput);
-                });
 
                 builder.Property(p => p.PaymentDetails).HasColumnName("PaymentDetails").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true)
                     .HasConversion(PaymentDetailsConverter)
@@ -520,6 +551,9 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.TransactionType).HasColumnName("TransactionType").HasColumnType("smallint").IsRequired(false);
 
                 builder.Property(b => b.ExternalSystemData).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
+                    .Metadata.SetValueComparer(SettingsJObjectComparer);
+
+                builder.Property(b => b.Extension).IsRequired(false).IsUnicode(true).HasConversion(SettingsJObjectConverter)
                     .Metadata.SetValueComparer(SettingsJObjectComparer);
             }
         }
@@ -545,6 +579,8 @@ namespace Transactions.Business.Data
                     s.Property(p => p.ConsumerExternalReference).HasColumnName("ConsumerExternalReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.DealReference).HasColumnName("DealReference").IsRequired(false).HasMaxLength(50).IsUnicode(false);
                     s.Property(p => p.ConsumerPhone).HasColumnName("ConsumerPhone").IsRequired(false).HasMaxLength(20).IsUnicode(false);
+                    s.Property(p => p.ConsumerName).HasColumnName("ConsumerName").IsRequired(false).HasMaxLength(50).IsUnicode(true);
+                    s.Property(p => p.ConsumerNationalID).HasColumnName("ConsumerNationalID").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Property(p => p.DealDescription).HasColumnName("DealDescription").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true);
                     s.Property(p => p.Items).HasColumnName("Items").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasConversion(ItemsConverter)
                         .Metadata.SetValueComparer(ItemsComparer);
@@ -630,9 +666,15 @@ namespace Transactions.Business.Data
                 builder.Property(p => p.TerminalID).HasColumnName("TerminalID");
                 builder.Property(p => p.MerchantID).HasColumnName("MerchantID");
 
+                //TODO: remove
+                builder.Property(typeof(string), "CardExpiration").HasMaxLength(5).IsUnicode(false).IsRequired(false);
+
                 builder.OwnsOne(b => b.CreditCardDetails, s =>
                 {
-                    s.Property(p => p.CardExpiration).IsRequired(false).HasMaxLength(5).IsUnicode(false).HasConversion(CardExpirationConverter).HasColumnName("CardExpiration");
+                    s.Property(p => p.CardExpiration).IsRequired(false).HasConversion(CardExpirationConverter)
+                        .HasColumnName("CardExpirationDate")
+                        .HasColumnType("date");
+
                     s.Property(p => p.CardNumber).HasColumnName("CardNumber").IsRequired(false).HasMaxLength(20).IsUnicode(false);
                     s.Ignore(p => p.CardOwnerNationalID);
                     s.Property(p => p.CardOwnerName).HasColumnName("CardOwnerName").IsRequired(false).HasMaxLength(100).IsUnicode(true);
@@ -687,6 +729,14 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.SendingInstitute);
                 builder.Property(b => b.Currency);
                 builder.Property(b => b.TerminalID);
+
+                builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.CorrelationId).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.HasIndex(d => d.MasavFileDate);
                 builder.HasIndex(d => d.TerminalID);

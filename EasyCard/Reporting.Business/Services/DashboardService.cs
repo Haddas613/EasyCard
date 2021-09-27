@@ -14,6 +14,7 @@ using Shared.Integration.Models;
 using Shared.Helpers;
 using Shared.Api.Extensions.Filtering;
 using Shared.Api.Models.Enums;
+using Reporting.Shared.Helpers;
 
 namespace Reporting.Business.Services
 {
@@ -30,7 +31,7 @@ namespace Reporting.Business.Services
 
         public async Task<IEnumerable<TransactionsTotals>> GetTransactionsTotals(MerchantDashboardQuery request)
         {
-            NormalizeFilter(request);
+            request.NormalizeFilter();
 
             var query = new
             {
@@ -60,7 +61,7 @@ namespace Reporting.Business.Services
 
         public async Task<IEnumerable<PaymentTypeTotals>> GetPaymentTypeTotals(MerchantDashboardQuery request)
         {
-            NormalizeFilter(request);
+            request.NormalizeFilter();
 
             var query = new
             {
@@ -84,7 +85,7 @@ namespace Reporting.Business.Services
 
         public async Task<TransactionTimelines> GetTransactionTimeline(MerchantDashboardQuery request)
         {
-            NormalizeFilter(request);
+            request.NormalizeFilter();
 
             var response = new TransactionTimelines
             {
@@ -148,7 +149,7 @@ namespace Reporting.Business.Services
 
         public async Task<IEnumerable<ItemsTotals>> GetItemsTotals(MerchantDashboardQuery request)
         {
-            NormalizeFilter(request);
+            request.NormalizeFilter();
 
             var query = new
             {
@@ -173,7 +174,7 @@ namespace Reporting.Business.Services
 
         public async Task<IEnumerable<ConsumersTotals>> GetConsumersTotals(MerchantDashboardQuery request)
         {
-            NormalizeFilter(request);
+            request.NormalizeFilter();
 
             var query = new
             {
@@ -203,70 +204,6 @@ namespace Reporting.Business.Services
             using (var connection = new SqlConnection(connectionString))
             {
                 return await connection.QueryAsync<ConsumersTotals>(sql, query);
-            }
-        }
-
-        private void NormalizeFilter(MerchantDashboardQuery request)
-        {
-            var useDateRange = false;
-
-            // If not enough info
-            if (!request.QuickDateFilter.HasValue || request.DateTo.HasValue || request.DateFrom.HasValue)
-            {
-                if (request.DateTo == null)
-                {
-                    request.DateTo = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
-                }
-
-                if (request.DateFrom == null)
-                {
-                    request.DateFrom = request.DateTo.Value.AddDays(-30).Date;
-                }
-
-                if (!request.Granularity.HasValue)
-                {
-                    request.Granularity = CommonFiltertingExtensions.GetReportGranularity(request.DateFrom.Value, request.DateTo.Value);
-                }
-            }
-            else
-            {
-                useDateRange = true;
-                var dateRange = CommonFiltertingExtensions.QuickDateToDateRange(request.QuickDateFilter.Value);
-                request.DateFrom = dateRange.DateFrom;
-                request.DateTo = dateRange.DateTo;
-
-                if (!request.Granularity.HasValue)
-                {
-                    request.Granularity = CommonFiltertingExtensions.GetReportGranularity(request.QuickDateFilter.Value);
-                }
-            }
-
-            if (request.AltQuickDateFilter != QuickDateFilterAltEnum.NoComparison && (request.AltQuickDateFilter.HasValue || request.AltDateTo.HasValue || request.AltDateFrom.HasValue))
-            {
-                if (request.AltDateTo.HasValue || request.AltDateFrom.HasValue || (request.AltQuickDateFilter.Value == QuickDateFilterAltEnum.PrevPeriod && !useDateRange))
-                {
-                    if (request.AltDateTo == null)
-                    {
-                        request.AltDateTo = request.DateFrom.Value.AddDays(-1);
-                    }
-
-                    if (request.AltDateFrom == null)
-                    {
-                        request.AltDateFrom = request.AltDateTo.Value.AddDays(-(request.DateTo.Value - request.DateFrom.Value).TotalDays).Date;
-                    }
-                }
-                else if(request.AltQuickDateFilter.Value == QuickDateFilterAltEnum.PrevPeriod && useDateRange)
-                {
-                    var dateRange = CommonFiltertingExtensions.QuickDateToPrevDateRange(request.QuickDateFilter.Value);
-                    request.AltDateFrom = dateRange.DateFrom;
-                    request.AltDateTo = dateRange.DateTo;
-                }
-                else
-                {
-                    var dateRange = CommonFiltertingExtensions.AltQuickDateToDateRange(request.AltQuickDateFilter.Value);
-                    request.AltDateFrom = dateRange.DateFrom;
-                    request.AltDateTo = dateRange.DateTo;
-                }
             }
         }
     }

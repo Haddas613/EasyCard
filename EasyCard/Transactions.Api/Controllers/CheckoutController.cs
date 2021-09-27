@@ -16,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Checkout;
 using Transactions.Api.Models.PaymentRequests;
+using Transactions.Business.Entities;
 using Transactions.Business.Services;
 
 namespace Transactions.Api.Controllers
@@ -62,16 +63,38 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<CheckoutData>> GetCheckoutData(Guid? paymentRequestID, Guid? paymentIntentID, string apiKey, Guid? consumerID)
+        public async Task<ActionResult<CheckoutData>> GetCheckoutData(Guid? paymentRequestID, Guid? paymentIntentID, string apiKey)
         {
             Debug.WriteLine(User);
 
             var response = new CheckoutData();
 
-            var apiKeyB = Convert.FromBase64String(apiKey);
+            Guid? terminalID = null;
+            Terminal terminal = null;
+            PaymentRequest paymentRequest = null;
 
-            var tid = EnsureExists(await terminalsService.GetTerminals().Where(d => d.SharedApiKey == apiKeyB).Select(t => t.TerminalID).FirstOrDefaultAsync(), nameof(Terminal));
-            var terminal = await terminalsService.GetTerminal(tid);
+            //Api key is not required and ignored for payment request
+            if (paymentRequestID.HasValue)
+            {
+                paymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().Where(d => d.PaymentRequestID == paymentRequestID).FirstOrDefaultAsync());
+                terminalID = EnsureExists(paymentRequest.TerminalID);
+            }
+            else if (paymentIntentID.HasValue)
+            {
+                paymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(paymentIntentID.Value));
+                terminalID = EnsureExists(paymentRequest.TerminalID);
+            }
+            else if (!string.IsNullOrWhiteSpace(apiKey))
+            {
+                var apiKeyB = Convert.FromBase64String(apiKey);
+                terminalID = EnsureExists(await terminalsService.GetTerminals().Where(d => d.SharedApiKey == apiKeyB).Select(t => t.TerminalID).FirstOrDefaultAsync(), nameof(Terminal));
+            }
+            else
+            {
+                return Unauthorized($"Terminal is not specified");
+            }
+
+            terminal = EnsureExists(await terminalsService.GetTerminal(terminalID.Value));
 
             if (terminal.EnabledFeatures == null || !terminal.EnabledFeatures.Any(f => f == Merchants.Shared.Enums.FeatureEnum.Checkout))
             {
@@ -108,18 +131,12 @@ namespace Transactions.Api.Controllers
                 }
             }
 
+            Guid? consumerID = null;
+
             if (paymentRequestID.HasValue)
             {
-                var paymentRequest = EnsureExists(await paymentRequestsService.GetPaymentRequests().Where(d => d.PaymentRequestID == paymentRequestID && d.TerminalID == terminal.TerminalID).FirstOrDefaultAsync());
                 response.Settings.AllowPinPad = paymentRequest.AllowPinPad && response.Settings.AllowPinPad.GetValueOrDefault();
-
-                if (consumerID.HasValue)
-                {
-                    if (consumerID.Value != paymentRequest.DealDetails.ConsumerID)
-                    {
-                        return Unauthorized($"{consumerID} does not have access to payment request {paymentRequest.PaymentRequestID}");
-                    }
-                }
+                consumerID = paymentRequest.DealDetails.ConsumerID;
 
                 if (paymentRequest.Status == Shared.Enums.PaymentRequestStatusEnum.Sent || paymentRequest.Status == Shared.Enums.PaymentRequestStatusEnum.Initial)
                 {
@@ -130,17 +147,8 @@ namespace Transactions.Api.Controllers
             }
             else if (paymentIntentID.HasValue)
             {
-                var paymentRequest = EnsureExists(await paymentIntentService.GetPaymentIntent(terminal.TerminalID, paymentIntentID.Value));
-
                 response.Settings.AllowPinPad = paymentRequest.AllowPinPad && response.Settings.AllowPinPad.GetValueOrDefault();
-
-                if (consumerID.HasValue)
-                {
-                    if (consumerID.Value != paymentRequest.DealDetails.ConsumerID)
-                    {
-                        return Unauthorized($"{consumerID} does not have access to payment request {paymentRequest.PaymentRequestID}");
-                    }
-                }
+                consumerID = paymentRequest.DealDetails.ConsumerID;
 
                 response.PaymentRequest = mapper.Map<PaymentRequestInfo>(paymentRequest);
                 response.PaymentIntentID = paymentIntentID;
@@ -156,7 +164,7 @@ namespace Transactions.Api.Controllers
                     mapper.Map(consumer, response.Consumer);
 
                     var tokensRaw = await creditCardTokenService.GetTokens()
-                        .Where(d => d.ConsumerID == consumer.ConsumerID)
+                        .Where(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == consumer.ConsumerID)
                         .ToListAsync();
 
                     //TODO: no in memory filtering

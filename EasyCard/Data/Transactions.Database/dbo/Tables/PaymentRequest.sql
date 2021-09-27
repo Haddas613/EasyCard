@@ -42,8 +42,13 @@
     [IsRefund]                  BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
     [ConsumerExternalReference] VARCHAR (50)     NULL,
     [UserAmount]                BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
+    [ConsumerName]              NVARCHAR (50)    NULL,
+    [ConsumerNationalID]        VARCHAR (20)     NULL,
+    [RedirectUrl]               NVARCHAR (MAX)   NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
 
 
 

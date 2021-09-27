@@ -23,31 +23,69 @@
               :customer-id="model.consumerID"
               @update="processCustomer($event)"></customer-dialog-invoker>
             </v-col>
-            <v-col cols="12" md="6" class="pt-0 pb-3">
+            <v-col cols="12" md="4" class="pt-0 pb-4">
                <v-switch v-model="model.hasInvoice" hide-details>
                 <template v-slot:label>
                   <small>{{$t('HasInvoice')}}</small>
                 </template>
               </v-switch>
             </v-col>
-            <v-col cols="12" md="6" class="pt-0 pb-3">
+            <v-col cols="12" md="4" class="pt-0 pb-4">
                <v-switch v-model="model.isPaymentRequest" hide-details>
                 <template v-slot:label>
                   <small>{{$t('IsPaymentRequest')}}</small>
                 </template>
               </v-switch>
             </v-col>
+            <v-col cols="12" md="4" class="pt-0 pb-4">
+               <v-switch v-model="model.hasMasavFile" hide-details>
+                <template v-slot:label>
+                  <small>{{$t('HasMasavFile')}}</small>
+                </template>
+              </v-switch>
+            </v-col>
             <v-col cols="12" md="6" class="py-0">
               <v-text-field
                 v-model="model.paymentTransactionID"
-                :label="$t('PaymentTransactionID')"
+                :label="$t('PaymentTransactionIDFull')"
                 :rules="[vr.primitives.guid]"
+                placeholder="b51f5306-e075-4c9a-a4bf-680f91dba205"
                 clearable
                 outlined
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="6" class="py-0">
+              <v-text-field
+                v-model="model.paymentTransactionIDShort"
+                :label="$t('PaymentTransactionIDShort')"
+                :rules="[vr.primitives.stringLength(8,8)]"
+                placeholder="b51f5306"
+                clearable
+                outlined
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="12" class="py-0">
               <terminal-select v-model="model.terminalID" :disabled="model.consumerID != null" clearable></terminal-select>
+            </v-col>
+            <v-col cols="12" md="6" class="py-0">
+              <v-select
+                :items="paymentTypesFiltered"
+                item-text="description"
+                item-value="code"
+                v-model="model.paymentType"
+                :label="$t('PaymentType')"
+                outlined
+                clearable
+              ></v-select>
+            </v-col>
+            <v-col cols="12" md="6" class="py-0">
+              <v-text-field
+                v-model="model.shvaDealIDLastDigits"
+                :label="$t('ShvaDealIdLast5Digits')"
+                :rules="[vr.primitives.stringLength(5,5), vr.primitives.numeric()]"
+                clearable
+                outlined
+              ></v-text-field>
             </v-col>
             <v-col cols="12" md="6" class="py-0">
               <v-select
@@ -177,17 +215,6 @@
                 item-value="code"
                 v-model="model.documentOrigin"
                 :label="$t('Origin')"
-                outlined
-                clearable
-              ></v-select>
-            </v-col>
-            <v-col cols="12" class="py-0">
-              <v-select
-                :items="paymentTypesFiltered"
-                item-text="description"
-                item-value="code"
-                v-model="model.paymentType"
-                :label="$t('PaymentType')"
                 outlined
                 clearable
               ></v-select>

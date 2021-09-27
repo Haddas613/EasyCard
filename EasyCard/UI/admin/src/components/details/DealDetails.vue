@@ -10,6 +10,14 @@
           <p class="caption ecgray--text text--darken-2">{{$t('DealDescription')}}</p>
           <p>{{(model.dealDescription || '-')}}</p>
         </v-col>
+        <v-col cols="12" md="4" class="info-block">
+          <p class="caption ecgray--text text--darken-2">{{$t('CustomerName')}}</p>
+          <p>{{(model.consumerName || '-')}}</p>
+        </v-col>
+        <v-col cols="12" md="4" class="info-block">
+          <p class="caption ecgray--text text--darken-2">{{$t('NationalID')}}</p>
+          <p>{{(model.consumerNationalID || '-')}}</p>
+        </v-col>
         <template v-if="model.consumerID">
           <v-col cols="12" md="4" class="info-block">
             <p class="caption ecgray--text text--darken-2">{{$t('Customer')}}</p>

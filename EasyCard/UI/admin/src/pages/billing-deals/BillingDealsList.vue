@@ -54,6 +54,9 @@
             <span v-if="item.cardExpired" class="error--text">{{$t("Yes")}}</span>
             <span v-else>{{$t("No")}}</span>
           </template>
+          <template v-slot:item.cardNumber="{ item }">
+            <span dir="ltr">{{item.cardNumber}}</span>
+          </template> 
           <template v-slot:item.active="{ item }">
             <span v-bind:class="{'success--text': item.active, 'error--text': !item.active}">
               {{item.active ? $t("Yes") : $t("No")}}
@@ -122,6 +125,7 @@ export default {
   },
   methods: {
     async getDataFromApi() {
+      if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.billingDeals.get({
         ...this.billingDealsFilter,

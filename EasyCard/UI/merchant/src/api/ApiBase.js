@@ -18,6 +18,8 @@ import PaymentRequestsApi from './modules/transactions/PaymentRequestsApi';
 import PaymentIntentsApi from './modules/transactions/PaymentIntentsApi';
 import DashboardReportingApi from './modules/reporting/DashboardReportingApi';
 import FutureBillingDealsApi from './modules/transactions/FutureBillingDealsApi';
+import MasavFilesApi from './modules/transactions/MasavFilesApi';
+import TransmissionsReportingApi from './modules/transactions/TransmissionsReportingApi';
 
 class ApiBase {
     constructor() {
@@ -39,8 +41,10 @@ class ApiBase {
         this.paymentRequests = new PaymentRequestsApi(this);
         this.paymentIntents = new PaymentIntentsApi(this);
         this.reporting = {
-            dashboard: new DashboardReportingApi(this)
+            dashboard: new DashboardReportingApi(this),
+            transmissions: new TransmissionsReportingApi(this)
         };
+        this.masavFiles = new MasavFilesApi(this);
     }
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */
@@ -212,10 +216,10 @@ class ApiBase {
             } else {
                 //Server Validation errors are returned to component
                 if (request.status === 400 || request.status === 409) {
+                    let result = await request.json();
                     if(options.showBadRequestToastr){
                         Vue.toasted.show(result.message || i18n.t('SomethingWentWrong'), { type: 'error' });
                     }
-                    let result = await request.json();
                     return result;
                 } else if (request.status === 401) {
                     Vue.toasted.show(i18n.t('SessionExpired'), { type: 'error' });

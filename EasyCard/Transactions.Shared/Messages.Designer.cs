@@ -70,6 +70,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Approve transaction on device.
+        /// </summary>
+        public static string ApproveTransactionOnDevice {
+            get {
+                return ResourceManager.GetString("ApproveTransactionOnDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authorization code is required. Call @number and tell them the supplier number @retailer to get the authorization code and create a new transaction with it specified..
         /// </summary>
         public static string AuthorizationCodeRequired {
@@ -93,6 +102,15 @@ namespace Transactions.Shared {
         public static string BillingDealCreated {
             get {
                 return ResourceManager.GetString("BillingDealCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Billing Deal Deactivated.
+        /// </summary>
+        public static string BillingDealDeactivated {
+            get {
+                return ResourceManager.GetString("BillingDealDeactivated", resourceCulture);
             }
         }
         
@@ -322,6 +340,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Credit Card Token changed.
+        /// </summary>
+        public static string CreditCardTokenChanged {
+            get {
+                return ResourceManager.GetString("CreditCardTokenChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CVV required.
         /// </summary>
         public static string CvvRequired {
@@ -336,6 +363,15 @@ namespace Transactions.Shared {
         public static string CvvRequiredButStoredTokenCannotUseCvv {
             get {
                 return ResourceManager.GetString("CvvRequiredButStoredTokenCannotUseCvv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device is processing transaction.
+        /// </summary>
+        public static string DeviceIsProcessingTransaction {
+            get {
+                return ResourceManager.GetString("DeviceIsProcessingTransaction", resourceCulture);
             }
         }
         
@@ -529,6 +565,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Masav File generated successfully.
+        /// </summary>
+        public static string MasavFileGeneratedSuccessfully {
+            get {
+                return ResourceManager.GetString("MasavFileGeneratedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Masav File was not generated.
+        /// </summary>
+        public static string MasavFileWasNotGenerated {
+            get {
+                return ResourceManager.GetString("MasavFileWasNotGenerated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nothing to transmit.
         /// </summary>
         public static string NothingToTransmit {
@@ -619,6 +673,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment type can not be changed.
+        /// </summary>
+        public static string PaymentTypeCannotBeChanged {
+            get {
+                return ResourceManager.GetString("PaymentTypeCannotBeChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please check specified values.
         /// </summary>
         public static string PleaseCheckValues {
@@ -678,6 +741,15 @@ namespace Transactions.Shared {
         public static string TerminalForUpdateParametersRequired {
             get {
                 return ResourceManager.GetString("TerminalForUpdateParametersRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminal must have Bank details specified.
+        /// </summary>
+        public static string TerminalMustHaveBankDetailsSpecified {
+            get {
+                return ResourceManager.GetString("TerminalMustHaveBankDetailsSpecified", resourceCulture);
             }
         }
         

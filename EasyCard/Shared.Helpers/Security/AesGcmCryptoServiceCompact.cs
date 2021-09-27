@@ -11,6 +11,10 @@ namespace Shared.Helpers.Security
         private readonly int nonceLength = AesGcm.NonceByteSizes.MaxSize;
         private readonly int tagLength = AesGcm.TagByteSizes.MaxSize;
 
+        //for byte encryptions (shorter)
+        private readonly int nonceLengthMicro = AesGcm.NonceByteSizes.MinSize;
+        private readonly int tagLengthMicro = AesGcm.TagByteSizes.MinSize;
+
         private readonly byte[] secretKeyBytes;
 
         public AesGcmCryptoServiceCompact(string secretKey)
@@ -42,11 +46,45 @@ namespace Shared.Helpers.Security
             return Encoding.UTF8.GetString(decryptedData);
         }
 
+        public byte[] DecryptCompactToBytes(string encryptedText)
+        {
+            var encryptedTextSpan = Convert.FromBase64String(encryptedText).AsSpan();
+            var encryptedData = encryptedTextSpan.Slice(nonceLengthMicro + tagLengthMicro);
+            var decryptedData = new byte[encryptedData.Length].AsSpan();
+            var nonce = encryptedTextSpan.Slice(0, nonceLengthMicro);
+            var tag = encryptedTextSpan.Slice(nonceLengthMicro, tagLengthMicro);
+
+            using var aes = new AesGcm(secretKeyBytes);
+            aes.Decrypt(nonce, encryptedData, tag, decryptedData);
+
+            return decryptedData.ToArray();
+        }
+
         public string EncryptCompact(string textToEncrypt)
         {
             var nonce = new byte[nonceLength].AsSpan();
             var tag = new byte[tagLength].AsSpan();
             var plainTextBytes = Encoding.UTF8.GetBytes(textToEncrypt);
+            var cipherText = new byte[plainTextBytes.Length].AsSpan();
+
+            RandomNumberGenerator.Fill(nonce);
+
+            using var aes = new AesGcm(secretKeyBytes);
+            aes.Encrypt(nonce, plainTextBytes, cipherText, tag);
+
+            var result = new byte[nonce.Length + tag.Length + cipherText.Length].AsSpan();
+            nonce.CopyTo(result.Slice(0, nonce.Length));
+            tag.CopyTo(result.Slice(nonce.Length, tag.Length));
+            cipherText.CopyTo(result.Slice(nonce.Length + tag.Length));
+
+            return Convert.ToBase64String(result);
+        }
+
+        public string EncryptCompact(byte[] textToEncrypt)
+        {
+            var nonce = new byte[nonceLengthMicro].AsSpan();
+            var tag = new byte[tagLengthMicro].AsSpan();
+            var plainTextBytes = textToEncrypt;
             var cipherText = new byte[plainTextBytes.Length].AsSpan();
 
             RandomNumberGenerator.Fill(nonce);

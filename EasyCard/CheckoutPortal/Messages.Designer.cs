@@ -79,6 +79,15 @@ namespace CheckoutPortal {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to National ID is required when Save Card is selected.
+        /// </summary>
+        public static string NationalIDRequiredWhenSaveCardSelected {
+            get {
+                return ResourceManager.GetString("NationalIDRequiredWhenSaveCardSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment Request Already Payed.
         /// </summary>
         public static string PaymentRequestAlreadyPayed {

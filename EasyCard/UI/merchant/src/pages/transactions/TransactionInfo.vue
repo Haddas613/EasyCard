@@ -13,6 +13,13 @@
               <v-chip color="primary" small>{{model.$paymentTransactionID | guid}}</v-chip>
             </v-col>
             <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('ShvaDealID')}}</p>
+              <p>
+                <b v-if="model.shvaTransactionDetails">{{model.shvaTransactionDetails.shvaDealID}}</b>
+                <span v-else>-</span>
+              </p>
+            </v-col>
+            <v-col cols="12" md="4" class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
               <p>{{model.terminalName}}</p>
             </v-col>
@@ -248,7 +255,6 @@ export default {
       let tr = await this.$api.transactions.getTransaction(
           this.$route.params.id
         );
-      this.model.quickStatus = tr.quickStatus;
       this.model = tr;
       this.model.allowTransmission = false;
     },
@@ -267,6 +273,13 @@ export default {
         && this.model.dealDetails.consumerEmail
         && this.model.$currency =='ILS')
     },
+    async selectJ5(){
+      let operation = await this.$api.transactions.selectJ5(this.model.$paymentTransactionID);
+      
+      if(operation.status == "success" && operation.entityReference){
+        this.$router.push({ name: "Transaction", params: { id: operation.entityReference }});
+      }
+    },
     async initThreeDotMenu(){
       var threeDotMenu = [{
         text: this.$t("Print"),
@@ -275,12 +288,19 @@ export default {
         }
       }];
 
-      if(this.model.$status == 'completed' && this.model.$jDealType == 'J4'){
+      if((this.model.$status == 'completed' || this.model.$status == 'awaitingForTransmission') && this.model.$jDealType == 'J4'){
         threeDotMenu.push({
           text: this.$t("SendTransactionSlipEmail"),
           fn: () => {
             this.transactionSlipDialog = true;
           }
+        });
+      }
+
+      if(this.model.$status == 'awaitingToSelectJ5' && this.model.$jDealType == 'J5'){
+        threeDotMenu.push({
+          text: this.$t("ConvertToJ4"),
+          fn: async() => await this.selectJ5()
         });
       }
 

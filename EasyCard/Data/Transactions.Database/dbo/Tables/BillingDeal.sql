@@ -14,7 +14,7 @@
     [CardOwnerName]               NVARCHAR (100)   NULL,
     [CardOwnerNationalID]         VARCHAR (20)     NULL,
     [CardBin]                     VARCHAR (10)     NULL,
-    [CreditCardToken]             UNIQUEIDENTIFIER NOT NULL,
+    [CreditCardToken]             UNIQUEIDENTIFIER NULL,
     [DealReference]               VARCHAR (50)     NULL,
     [DealDescription]             NVARCHAR (MAX)   NULL,
     [ConsumerEmail]               VARCHAR (50)     NULL,
@@ -50,8 +50,18 @@
     [BankAccount]                 NVARCHAR (50)    NULL,
     [BankBranch]                  INT              NULL,
     [PaymentType]                 SMALLINT         DEFAULT (CONVERT([smallint],(0))) NOT NULL,
+    [HasError]                    BIT              DEFAULT (CONVERT([bit],(0))) NOT NULL,
+    [LastError]                   NVARCHAR (MAX)   NULL,
+    [LastErrorCorrelationID]      VARCHAR (50)     NULL,
+    [ConsumerName]                NVARCHAR (50)    NULL,
+    [ConsumerNationalID]          VARCHAR (20)     NULL,
+    [CardExpirationDate]          DATE             NULL,
     CONSTRAINT [PK_BillingDeal] PRIMARY KEY CLUSTERED ([BillingDealID] ASC)
 );
+
+
+
+
 
 
 

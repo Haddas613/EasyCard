@@ -54,6 +54,13 @@
       </v-row>
       <v-row class="d-flex" justify="end">
         <v-col cols="3" md="2">
+          <v-switch v-model="model.hasError" @change="switchFilterChanged('hasError')">
+            <template v-slot:label>
+              <small>{{$t('HasError')}}</small>
+            </template>
+          </v-switch>
+        </v-col>
+        <v-col cols="3" md="2">
           <v-switch v-model="model.showDeleted" @change="switchFilterChanged('showDeleted')">
             <template v-slot:label>
               <small>{{$t('Inactive')}}</small>
@@ -126,7 +133,7 @@ export default {
       });
     },
     async switchFilterChanged(type){
-      let allTypes = ['showDeleted', 'actual', 'paused', 'finished'].filter(v => v != type);
+      let allTypes = ['showDeleted', 'actual', 'paused', 'finished', 'hasError'].filter(v => v != type);
       for(var t of allTypes){
         this.$set(this.model, t, false);
       }

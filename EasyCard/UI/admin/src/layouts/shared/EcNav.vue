@@ -103,6 +103,11 @@ export default {
               to: { name: "Transactions" }
             },
             {
+              icon: "mdi-bank-transfer-in",
+              text: "TransmissionsList",
+              to: { name: "Transmissions" }
+            },
+            {
               icon: "mdi-bank-transfer",
               text: "MasavFiles",
               to: { name: "MasavFiles" }
@@ -191,6 +196,24 @@ export default {
               icon: "mdi-format-list-bulleted",
               text: "BillingDealsList",
               to: { name: "BillingDeals" }
+            }
+          ]
+        },
+        {
+          icon: "mdi-chart-bar-stacked",
+          "icon-alt": "mdi-chart-bar-stacked",
+          text: "Reporting",
+          expanded: false,
+          children: [
+            {
+              icon: "mdi-credit-card-multiple",
+              text: "TerminalsTokens",
+              to: { name: "TerminalsTokens" }
+            },
+            {
+              icon: "mdi-credit-card-settings",
+              text: "TokensTransactions",
+              to: { name: "TokensTransactions" }
             }
           ]
         },

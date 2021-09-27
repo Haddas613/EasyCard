@@ -7,6 +7,9 @@
           <billing-deal-pause-dialog :show.sync="pauseDialog" :billing="model" v-on:ok="billingPausedChanged($event)"></billing-deal-pause-dialog>
           <v-card flat class="mb-2">
             <v-card-text class="body-1 black--text" v-if="model">
+              <v-alert dense text :border="$vuetify.rtl ? 'right': 'left'" icon="mdi-alert-octagon" type="error" v-if="model.cardExpired">
+                {{$t("CreditCardExpired")}}
+              </v-alert>
               <v-row class="info-container">
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('BillingDealID')}}</p>
@@ -35,6 +38,13 @@
                   <v-col cols="12" md="4" class="info-block">
                     <p class="caption accent--text">{{$t('To')}}</p>
                     <p>{{model.pausedTo | ecdate}}</p>
+                  </v-col>
+                </template>
+                <template v-else>
+                  <v-col cols="12" md="4" class="info-block">
+                    <p class="caption ecgray--text text--darken-2">{{$t('NextScheduledTransaction')}}</p>
+                    <p v-if="model.$nextScheduledTransaction">{{model.$nextScheduledTransaction | ecdate('L')}}</p>
+                    <p v-else>-</p>
                   </v-col>
                 </template>
               </v-row>

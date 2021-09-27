@@ -82,7 +82,7 @@ namespace Transactions.Api.Models.Transactions
         [JsonConverter(typeof(StringEnumConverter))]
         public TransactionTypeEnum TransactionType { get; set; }
 
-        [Range(0.01, double.MaxValue)]
+        [Range(0, double.MaxValue)]
         [DataType(DataType.Currency)]
         public decimal? PaymentRequestAmount { get; set; }
 
@@ -94,7 +94,7 @@ namespace Transactions.Api.Models.Transactions
         [DataType(DataType.Currency)]
         public decimal? VATTotal { get; set; }
 
-        [Range(0.01, double.MaxValue)]
+        [Range(0, double.MaxValue)]
         [DataType(DataType.Currency)]
         public decimal? NetTotal { get; set; }
 
@@ -109,5 +109,10 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [StringLength(50, MinimumLength = 2)]
         public string CardOwnerName { get; set; }
+
+        /// <summary>
+        /// SignalR connection ID
+        /// </summary>
+        public string ConnectionID { get; set; }
     }
 }

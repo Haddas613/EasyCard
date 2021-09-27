@@ -47,7 +47,7 @@ namespace RapidOne
         {
             var terminal = documentCreationRequest.InvoiceingSettings as RapidOneTerminalSettings;
 
-            var json = RapidInvoiceConverter.GetInvoiceCreateDocumentRequest(documentCreationRequest);
+            var json = RapidInvoiceConverter.GetInvoiceCreateDocumentRequest(documentCreationRequest, terminal);
             json.BranchId = terminal.Branch;
             json.Company = terminal.Company;
             json.DepartmentId = terminal.Department;

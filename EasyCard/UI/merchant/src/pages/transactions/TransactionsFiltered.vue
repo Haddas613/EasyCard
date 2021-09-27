@@ -118,6 +118,7 @@ export default {
   },
   methods: {
     async getDataFromApi(extendData) {
+      if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.transactions.get({
         ...this.transactionsFilter

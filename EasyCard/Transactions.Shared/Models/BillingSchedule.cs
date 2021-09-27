@@ -29,8 +29,8 @@ namespace Transactions.Shared.Models
         {
             DateTime? date = RepeatPeriodType switch
             {
-                RepeatPeriodTypeEnum.Montly => fromDate.AddMonths(1),
-                RepeatPeriodTypeEnum.BiMontly => fromDate.AddMonths(2),
+                RepeatPeriodTypeEnum.Monthly => fromDate.AddMonths(1),
+                RepeatPeriodTypeEnum.BiMonthly => fromDate.AddMonths(2),
                 RepeatPeriodTypeEnum.Quarter => fromDate.AddMonths(3),
                 RepeatPeriodTypeEnum.Year => fromDate.AddYears(1),
                 _ => null

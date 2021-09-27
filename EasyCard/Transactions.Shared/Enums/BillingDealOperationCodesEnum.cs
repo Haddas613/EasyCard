@@ -6,9 +6,11 @@ namespace Transactions.Shared.Enums
 {
     public enum BillingDealOperationCodesEnum : short
     {
-        Created,
-        Updated,
-        Paused,
-        Unpaused
+        Created = 0,
+        Updated = 1,
+        Paused = 2,
+        Unpaused = 3,
+        Deactivated = 4,
+        CreditCardTokenChanged = 5,
     }
 }

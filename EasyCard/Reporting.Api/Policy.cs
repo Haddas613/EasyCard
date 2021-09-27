@@ -19,6 +19,9 @@ namespace Reporting.Api
 
         public const string TerminalOrManagerOrAdmin = "terminal_or_manager_or_admin";
 
+
+        public const string Admin = "admin";
+
         /// <summary>
         /// Merchant UI access
         /// </summary>

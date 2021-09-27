@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
+using Shared.Api.Swagger;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
@@ -24,6 +26,12 @@ namespace Transactions.Api.Models.Transactions
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class CreateTransactionRequest : TransactionRequestBase
     {
+        /// <summary>
+        /// EasyCard terminal reference
+        /// </summary>
+        [Required(AllowEmptyStrings = false)]
+        public Guid TerminalID { get; set; }
+
         /// <summary>
         /// Generic transaction type
         /// </summary>
@@ -151,5 +159,13 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [StringLength(50, MinimumLength = 2)]
         public string CardOwnerName { get; set; }
+
+        /// <summary>
+        /// SignalR connection id
+        /// </summary>
+        public string ConnectionID { get; set; }
+
+        [SwaggerExclude]
+        public JObject Extension { get; set; }
     }
 }

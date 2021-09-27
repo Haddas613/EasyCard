@@ -18,10 +18,11 @@ namespace PoalimOnlineBusiness
             //Encoding hebrewEncoding = Encoding.GetEncoding("Windows-1255");
             Encoding hebrewEncoding = Encoding.GetEncoding(862);
             TextWriter writer = new StreamWriter(targetStream, hebrewEncoding);
-            
+
             await writer.WriteLineAsync(new[] { dataToExport.Header }.BuildFixedString().First());
 
-            if (dataToExport.Transactions != null) {
+            if (dataToExport.Transactions != null)
+            {
                 foreach (var transaction in dataToExport.Transactions.BuildFixedString()) await writer.WriteLineAsync(transaction);
             }
 
@@ -212,24 +213,25 @@ namespace PoalimOnlineBusiness
             return original;
         }
 
-        public static string ExportStringWithdrawFormat(this MasavDataWithdraw dataToExport)
+        public static async Task ExportWithdrawFile(this MasavDataWithdraw dataToExport, Stream targetStream)
         {
             if (dataToExport == null || dataToExport.Header == null || dataToExport.Footer == null) throw new ArgumentNullException(nameof(dataToExport));
 
-            var exportSb = new StringBuilder();
+            Encoding hebrewEncoding = Encoding.GetEncoding(862);
+            TextWriter writer = new StreamWriter(targetStream, hebrewEncoding);
 
-            exportSb.AppendLine(new[] { dataToExport.Header }.BuildFixedString().First());
+            await writer.WriteLineAsync(new[] { dataToExport.Header }.BuildFixedString().First());
 
             if (dataToExport.Transactions != null)
             {
-                foreach (var transaction in dataToExport.Transactions.BuildFixedString()) exportSb.AppendLine(transaction);
+                foreach (var transaction in dataToExport.Transactions.BuildFixedString()) await writer.WriteLineAsync(transaction);
             }
 
-            exportSb.AppendLine(new[] { dataToExport.Footer }.BuildFixedString().First());
+            await writer.WriteLineAsync(new[] { dataToExport.Footer }.BuildFixedString().First());
 
-            exportSb.AppendLine("99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999");
+            await writer.WriteLineAsync("99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999");
 
-            return exportSb.ToString();
+            await writer.FlushAsync();
         }
     }
 }

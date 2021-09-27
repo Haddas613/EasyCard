@@ -27,6 +27,8 @@ namespace IdentityServerClient
 
         Task<ApiKeyOperationResponse> CreateTerminalApiKey(CreateTerminalApiKeyRequest model);
 
+        Task<ApiKeyOperationResponse> GetTerminalApiKey(Guid terminalID);
+
         Task<ApiKeyOperationResponse> DeleteTerminalApiKey(Guid terminalID);
 
         Task<UserOperationResponse> UnlinkUserFromMerchant(Guid userId, Guid merchantId);

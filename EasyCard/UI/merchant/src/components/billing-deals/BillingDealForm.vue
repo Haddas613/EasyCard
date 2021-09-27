@@ -17,14 +17,14 @@
         ></v-select>
       </v-col>
       <v-col cols="12" md="6" class="pb-2" v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-7': $vuetify.breakpoint.mdAndUp}">
-        <customer-dialog-invoker 
-          :key="model.dealDetails.consumerID" 
+        <customer-dialog-invoker
           :terminal="true" 
           :customer-id="model.dealDetails.consumerID" 
-          @update="processCustomer($event)"></customer-dialog-invoker>
+          @update="processCustomer($event)"
+          ref="customerDialogInvoker"></customer-dialog-invoker>
       </v-col>
       <v-col cols="12" md="6" class="pb-2" v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-5': $vuetify.breakpoint.mdAndUp}">
-        <payment-type v-model="model.paymentType" :exclude-types="['cash', 'cheque']"></payment-type>
+        <payment-type :disabled="!!model.billingDealID" v-model="model.paymentType" :exclude-types="['cash', 'cheque']"></payment-type>
       </v-col>
       <v-col
         cols="12"
@@ -102,7 +102,7 @@
         class="pb-2"
         v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-0': $vuetify.breakpoint.mdAndUp}"
         v-else-if="model.paymentType == appConstants.transaction.paymentTypes.bank">
-        <bank-transfer-details-fields :data="model.bankTransferDetails" ref="bankTransferDetails"></bank-transfer-details-fields>
+        <bank-details-fields :data="model.bankDetails" ref="bankDetails"></bank-details-fields>
       </v-col>
       <v-col cols="12">
         <ec-dialog :dialog.sync="scheduleDialog" color="ecbg">
@@ -247,7 +247,7 @@ export default {
     NumpadDialogInvoker: () => import("../dialog-invokers/NumpadDialogInvoker"),
     Basket: () => import("../misc/Basket"),
     InvoiceDetailsFields: () => import("../invoicing/InvoiceDetailsFields"),
-    BankTransferDetailsFields: () => import("../transactions/BankTransferDetailsFields"),
+    BankDetailsFields: () => import("../transactions/BankDetailsFields"),
     PaymentType: () => import("../transactions/PaymentType"),
     
   },
@@ -298,10 +298,7 @@ export default {
   },
   methods: {
     async processCustomer(data) {
-      this.model.dealDetails.consumerEmail = data.consumerEmail;
-      this.model.dealDetails.consumerPhone = data.consumerPhone;
-      this.model.dealDetails.consumerID = data.consumerID;
-      this.model.dealDetails.consumerAddress = data.consumerAddress;
+      this.model.dealDetails = Object.assign(this.model.dealDetails, data);
       await this.getCustomerTokens();
     },
     handleClick() {
@@ -320,6 +317,32 @@ export default {
         result.invoiceDetails = null;
       }
 
+      if(!this.model.transactionAmount){
+        this.$toasted.show(this.$t("SelectItems"), { type: "error" });
+        return;
+      }
+
+      if (this.model.dealDetails.consumerID == null){
+        this.$toasted.show(this.$t("PleaseSelectCustomerFirst"), { type: "error" });
+        this.$refs.customerDialogInvoker.showDialog();
+        return;
+      }
+
+      if(this.model.paymentType == appConstants.transaction.paymentTypes.bank){
+        result.creditCardToken = null;
+        result.bankDetails = this.$refs.bankDetails.getData();
+      }
+      else if(this.model.paymentType == appConstants.transaction.paymentTypes.card){
+        if(!this.token){
+          this.$toasted.show(this.$t("PleaseSelectCardToken"), { type: "error" });
+          if(this.customerTokens.length > 0){
+            this.tokensDialog = true;
+          }
+          return;
+        }
+        result.bankDetails = null;
+      }
+
       //if this is edit and billing schedule has not been clicked, no need to validate
       if (!this.$refs.billingScheduleRef && this.model.billingDealID) {
         return this.$emit("ok", result);
@@ -332,16 +355,7 @@ export default {
         this.$toasted.show(this.$t("CheckScheduleSettings"), { type: "error" });
         return;
       }
-
-      if(!this.model.transactionAmount){
-        this.$toasted.show(this.$t("SelectItems"), { type: "error" });
-        return;
-      }
-
-      if(this.model.paymentType == appConstants.transaction.paymentTypes.bank){
-        result.creditCardToken = null;
-        result.bankDetails = this.$refs.bankTransferDetails.getData();
-      }
+      
       this.$emit("ok", result);
     },
     applySchedule() {
@@ -371,7 +385,7 @@ export default {
             this.model.dealDetails.consumerID
           )
         ).data || [];
-      if(this.customerTokens.length === 1){
+      if(this.customerTokens.length === 1 && !this.model.billingDealID){
         this.token = this.customerTokens[0];
       }
     },
@@ -408,11 +422,15 @@ export default {
           )
         ).data || [];
       if (this.model.creditCardToken) {
-        this.selectedToken = this.lodash.find(
-          this.customerTokens,
-          t => t.creditCardTokenID === this.model.creditCardToken
-        );
-        
+        if(!this.model.cardExpired){
+          this.selectedToken = this.lodash.find(
+            this.customerTokens,
+            t => t.creditCardTokenID === this.model.creditCardToken
+          );
+        }else{
+          this.token = null;
+          this.model.creditCardDetails = null;
+        }
       }
     }
     if(this.model.currency != 'ILS'){

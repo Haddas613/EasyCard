@@ -79,7 +79,7 @@ namespace Shared.Integration.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Completed.
+        ///   Looks up a localized string similar to Done.
         /// </summary>
         public static string Completed {
             get {

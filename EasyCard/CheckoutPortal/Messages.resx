@@ -123,6 +123,9 @@
   <data name="InvalidCheckoutData" xml:space="preserve">
     <value>Checkout data provided by merchant is not valid</value>
   </data>
+  <data name="NationalIDRequiredWhenSaveCardSelected" xml:space="preserve">
+    <value>National ID is required when Save Card is selected</value>
+  </data>
   <data name="PaymentRequestAlreadyPayed" xml:space="preserve">
     <value>Payment Request Already Payed</value>
   </data>

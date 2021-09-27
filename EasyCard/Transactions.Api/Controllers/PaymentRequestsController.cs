@@ -33,6 +33,9 @@ using Z.EntityFramework.Plus;
 using Shared.Api.Configuration;
 using Transactions.Shared.Enums;
 using Shared.Integration;
+using Shared.Helpers.Sms;
+using Merchants.Business.Extensions;
+using System.Web;
 
 namespace Transactions.Api.Controllers
 {
@@ -54,6 +57,7 @@ namespace Transactions.Api.Controllers
         private readonly ICryptoServiceCompact cryptoServiceCompact;
         private readonly ISystemSettingsService systemSettingsService;
         private readonly IEmailSender emailSender;
+        private readonly ISmsService smsService;
 
         public PaymentRequestsController(
                     IPaymentRequestsService paymentRequestsService,
@@ -66,7 +70,8 @@ namespace Transactions.Api.Controllers
                     ICryptoServiceCompact cryptoServiceCompact,
                     ISystemSettingsService systemSettingsService,
                     IEmailSender emailSender,
-                    IOptions<ApiSettings> apiSettings)
+                    IOptions<ApiSettings> apiSettings,
+                    ISmsService smsService)
         {
             this.paymentRequestsService = paymentRequestsService;
             this.mapper = mapper;
@@ -79,6 +84,7 @@ namespace Transactions.Api.Controllers
             this.cryptoServiceCompact = cryptoServiceCompact;
             this.systemSettingsService = systemSettingsService;
             this.emailSender = emailSender;
+            this.smsService = smsService;
         }
 
         [HttpGet]
@@ -154,7 +160,7 @@ namespace Transactions.Api.Controllers
 
                 var paymentRequest = mapper.Map<PaymentRequestResponse>(dbPaymentRequest);
 
-                paymentRequest.PaymentRequestUrl = GetPaymentRequestUrl(dbPaymentRequest, terminal.SharedApiKey)?.Item1;
+                paymentRequest.PaymentRequestUrl = GetPaymentRequestSMSUrl(dbPaymentRequest);
 
                 paymentRequest.History = await mapper.ProjectTo<PaymentRequestHistorySummary>(paymentRequestsService.GetPaymentRequestHistory(dbPaymentRequest.PaymentRequestID).OrderByDescending(d => d.PaymentRequestHistoryID)).ToListAsync();
 
@@ -201,7 +207,7 @@ namespace Transactions.Api.Controllers
             var newPaymentRequest = mapper.Map<PaymentRequest>(model);
 
             // Update details if needed
-            newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest);
+            newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest, null);
             if (consumer != null)
             {
                 newPaymentRequest.CardOwnerName = consumer.ConsumerName;
@@ -224,6 +230,13 @@ namespace Transactions.Api.Controllers
             }
 
             await emailSender.SendEmail(BuildPaymentRequestEmail(newPaymentRequest, terminal));
+
+            if (terminal.PaymentRequestSettings.FromPhoneNumber != null
+                && newPaymentRequest.DealDetails.ConsumerPhone != null
+                && terminal.FeatureEnabled(Merchants.Shared.Enums.FeatureEnum.SmsNotification))
+            {
+                await SendPaymentRequestSMS(newPaymentRequest, terminal);
+            }
 
             await paymentRequestsService.UpdateEntityWithStatus(newPaymentRequest, Shared.Enums.PaymentRequestStatusEnum.Sent);
 
@@ -258,11 +271,6 @@ namespace Transactions.Api.Controllers
             query["paymentRequest"] = Convert.ToBase64String(dbPaymentRequest.PaymentRequestID.ToByteArray());
             query["apiKey"] = Convert.ToBase64String(sharedTerminalApiKey);
 
-            if (dbPaymentRequest.DealDetails?.ConsumerID.HasValue == true)
-            {
-                query["consumerID"] = dbPaymentRequest.DealDetails.ConsumerID.Value.ToString();
-            }
-
             uriBuilder.Query = query.ToString();
             var url = uriBuilder.ToString();
 
@@ -271,6 +279,19 @@ namespace Transactions.Api.Controllers
             var rejectUrl = uriBuilder.ToString();
 
             return Tuple.Create(url, rejectUrl);
+        }
+
+        private string GetPaymentRequestSMSUrl(PaymentRequest dbPaymentRequest)
+        {
+            var uriBuilder = new UriBuilder(apiSettings.CheckoutPortalUrl);
+            uriBuilder.Path = "/p";
+            var encrypted = cryptoServiceCompact.EncryptCompact(dbPaymentRequest.PaymentRequestID.ToByteArray());
+
+            var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+            query["r"] = encrypted;
+            uriBuilder.Query = query.ToString();
+
+            return uriBuilder.ToString();
         }
 
         private Email BuildPaymentRequestEmail(PaymentRequest paymentRequest, Terminal terminal)
@@ -299,6 +320,41 @@ namespace Transactions.Api.Controllers
             };
 
             return email;
+        }
+
+        private Task<OperationResponse> SendPaymentRequestSMS(PaymentRequest paymentRequest, Terminal terminal)
+        {
+            if (string.IsNullOrWhiteSpace(paymentRequest.DealDetails.ConsumerPhone))
+            {
+                return Task.FromResult(new OperationResponse { Status = StatusEnum.Error, Message = "DealDetails ConsumerPhone is null" });
+            }
+
+            if (string.IsNullOrWhiteSpace(terminal.PaymentRequestSettings.FromPhoneNumber))
+            {
+                return Task.FromResult(new OperationResponse { Status = StatusEnum.Error, Message = "Terminal FromPhoneNumber is null" });
+            }
+
+            var settings = terminal.PaymentRequestSettings;
+            var messageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
+
+            var template = paymentRequest.IsRefund ? Resources.SMSResource.PaymentRequestRefund : Resources.SMSResource.PaymentRequest;
+            var url = GetPaymentRequestSMSUrl(paymentRequest);
+
+            //TODO: due date?
+            template = template.Replace("{Merchant}", terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName)
+                .Replace("{Customer}", paymentRequest.DealDetails.ConsumerName ?? paymentRequest.CardOwnerName)
+                .Replace("{Amount}", $"{paymentRequest.PaymentRequestAmount.ToString("F2")}{paymentRequest.Currency.GetCurrencySymbol()}")
+                .Replace("{PaymentLink}", url);
+
+            return smsService.Send(new SmsMessage
+            {
+                MerchantID = terminal.MerchantID,
+                MessageId = messageId,
+                Body = template,
+                From = settings.FromPhoneNumber,
+                To = paymentRequest.DealDetails.ConsumerPhone,
+                CorrelationId = httpContextAccessor.GetCorrelationId()
+            });
         }
     }
 }

@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using InforU.Extensions;
+using Microsoft.Extensions.Logging;
 using Shared.Api.Models;
 using Shared.Api.Models.Enums;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.Services;
 using Shared.Helpers.Sms;
 using Shared.Integration;
 using Shared.Integration.Exceptions;
@@ -21,19 +23,21 @@ namespace InforU
         private readonly IWebApiClient apiClient;
         private readonly InforUMobileSmsSettings configuration;
         private readonly ILogger logger;
+        private readonly IMetricsService metrics;
 
         private readonly bool doNotSend;
 
-        public InforUMobileSmsService(IWebApiClient apiClient, InforUMobileSmsSettings configuration, ILogger<InforUMobileSmsService> logger,  IIntegrationRequestLogStorageService storageService, bool doNotSend = false)
+        public InforUMobileSmsService(IWebApiClient apiClient,
+            InforUMobileSmsSettings configuration,
+            ILogger<InforUMobileSmsService> logger,
+            IIntegrationRequestLogStorageService storageService,
+            IMetricsService metrics,
+            bool doNotSend = false)
         {
             this.configuration = configuration;
-
-
             this.storageService = storageService;
-
-
             this.apiClient = apiClient;
-
+            this.metrics = metrics;
             this.logger = logger;
             this.doNotSend = doNotSend;
         }
@@ -87,13 +91,18 @@ namespace InforU
 
                 await storageService.Save(integrationMessage);
 
+                _ = Task.Run(() => metrics.TrackSmsEvent(false, message));
                 throw new IntegrationException("InforUMobileSms integration request failed", message.MessageId);
             }
 
             await storageService.Save(integrationMessage);
 
-            if (svcResStr == null) throw new IntegrationException("InforUMobileSms integration request failed", message.MessageId);
+            if (svcResStr == null) {
+                _ = Task.Run(() => metrics.TrackSmsEvent(false, message));
+                throw new IntegrationException("InforUMobileSms integration request failed", message.MessageId);
+            }
 
+            _ = Task.Run(() => metrics.TrackSmsEvent(true, message));
             try
             {
                 svcRes = svcResStr.FromXml<SendSmsResponse>();

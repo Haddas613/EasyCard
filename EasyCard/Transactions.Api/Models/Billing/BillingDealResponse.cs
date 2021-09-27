@@ -1,4 +1,5 @@
 ﻿using Shared.Helpers;
+using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
 using Shared.Integration.Models.PaymentDetails;
 using System;
@@ -84,7 +85,7 @@ namespace Transactions.Api.Models.Billing
         /// <summary>
         /// Credit card information (just to display)
         /// </summary>
-        public CreditCardDetails CreditCardDetails { get; set; }
+        public Transactions.CreditCardDetails CreditCardDetails { get; set; }
 
         /// <summary>
         /// Bank account information
@@ -149,5 +150,11 @@ namespace Transactions.Api.Models.Billing
         public DateTime? PausedTo { get; set; }
 
         public bool Paused { get; set; }
+
+        public PaymentTypeEnum PaymentType { get; set; }
+
+        public string LastError { get; set; }
+
+        public string LastErrorCorrelationID { get; set; }
     }
 }

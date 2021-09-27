@@ -23,6 +23,9 @@ import CardTokensApi from './modules/transactions/CardTokensApi';
 import NayaxApi from "./modules/integrations/NayaxApi";
 import TransactionsSystemApi from './modules/transactions/SystemApi';
 import MasavFilesApi from './modules/transactions/MasavFilesApi';
+import AdminReportingApi from './modules/reporting/AdminReportingApi';
+import TransmissionsReportingApi from './modules/transactions/TransmissionsReportingApi';
+import CardTokensReportingApi from './modules/reporting/CardTokensReportingApi';
 
 class ApiBase {
     constructor() {
@@ -52,6 +55,11 @@ class ApiBase {
             clearingHouse: new ClearingHouseApi(this),
             nayax: new NayaxApi(this)
         };
+        this.reporting = {
+            admin: new AdminReportingApi(this),
+            transmissions: new TransmissionsReportingApi(this),
+            cardTokens: new CardTokensReportingApi(this)
+        }
     }
 
     /** Get requests are syncronized based on their url and query string to prevent the same requests be fired at the same time */

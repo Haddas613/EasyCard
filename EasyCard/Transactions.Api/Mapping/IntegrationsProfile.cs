@@ -86,8 +86,8 @@ namespace Transactions.Api.Mapping
             CreateMap<CreditCardSecureDetails, CreditCardSecureDetails>();
 
             CreateMap<Invoice, InvoicingCreateDocumentRequest>()
-                 .ForMember(m => m.ConsumerName, s => s.MapFrom(src => src.CardOwnerName))
-                 .ForMember(m => m.ConsumerNationalID, s => s.MapFrom(src => src.CardOwnerNationalID))
+                 .ForMember(m => m.ConsumerName, s => s.MapFrom(src => src.DealDetails.ConsumerName))
+                 .ForMember(m => m.ConsumerNationalID, s => s.MapFrom(src => src.DealDetails.ConsumerNationalID))
                  .ForMember(m => m.TransactionType, s => s.MapFrom(src => src.TransactionType))
                  .ForMember(d => d.PaymentDetails, o => o.MapFrom(d => d.PaymentDetails));
 

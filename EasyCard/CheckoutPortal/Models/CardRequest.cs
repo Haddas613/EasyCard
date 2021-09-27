@@ -25,8 +25,6 @@ namespace CheckoutPortal.Models
 
         public string Phone { get; set; }
 
-        public Guid? ConsumerID { get; set; }
-
         public CurrencyEnum Currency { get; set; }
 
         public decimal? Amount { get; set; }

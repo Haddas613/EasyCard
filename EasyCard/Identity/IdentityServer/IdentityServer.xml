@@ -148,6 +148,11 @@
               Looks up a localized string similar to Two Factor Authentication Code.
             </summary>
         </member>
+        <member name="P:IdentityServer.Messages.IdentityMessages.UserAlreadyHasPassword">
+            <summary>
+              Looks up a localized string similar to User already has a password set..
+            </summary>
+        </member>
         <member name="P:IdentityServer.Models.Configuration.SecuritySettings.PasswordExpirationDays">
             <summary>
             Password lifetime
@@ -252,6 +257,11 @@
         <member name="P:IdentityServer.Resources.CommonResources.CouldNotSendSMSErrorMessage">
             <summary>
               Looks up a localized string similar to Could not send SMS. Try again later or use Email authentication..
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.DoNotMatchPasswordNPasswordRepeat">
+            <summary>
+              Looks up a localized string similar to &apos;Password Repeat&apos; and &apos;Password&apos; do not match..
             </summary>
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.Email">
@@ -397,6 +407,11 @@
         <member name="P:IdentityServer.Resources.CommonResources.NewPassword">
             <summary>
               Looks up a localized string similar to New password.
+            </summary>
+        </member>
+        <member name="P:IdentityServer.Resources.CommonResources.NotValidEmailField">
+            <summary>
+              Looks up a localized string similar to The email field is not a valid e-mail address..
             </summary>
         </member>
         <member name="P:IdentityServer.Resources.CommonResources.OK">

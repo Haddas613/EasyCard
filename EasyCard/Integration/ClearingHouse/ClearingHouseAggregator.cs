@@ -194,6 +194,19 @@ namespace ClearingHouse
             return jDealType == JDealTypeEnum.J4 && (specialTransactionType == SpecialTransactionTypeEnum.RegularDeal || specialTransactionType == SpecialTransactionTypeEnum.Refund || specialTransactionType == SpecialTransactionTypeEnum.InitialDeal);
         }
 
+        public string Validate(AggregatorCreateTransactionRequest transactionRequest)
+        {
+            //TODO: implement
+            return null;
+        }
+
+        public bool AllowTransmissionCancellation() => true;
+
+        private async Task HandleIntegrationMessage(IntegrationMessage msg)
+        {
+            await integrationRequestLogStorageService.Save(msg);
+        }
+
         private async Task<NameValueCollection> BuildHeaders()
         {
             var token = await tokenService.GetToken();
@@ -206,11 +219,6 @@ namespace ClearingHouse
             }
 
             return headers;
-        }
-
-        private async Task HandleIntegrationMessage(IntegrationMessage msg)
-        {
-            await integrationRequestLogStorageService.Save(msg);
         }
     }
 }

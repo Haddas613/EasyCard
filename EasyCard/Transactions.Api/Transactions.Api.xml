@@ -43,12 +43,32 @@
             Refund request
             </summary>
         </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.NotifyStatusChanged(Transactions.Business.Entities.PaymentTransaction,System.String)">
+            <summary>
+            Notify SignalR (if needed) about transaction status change
+            </summary>
+            <param name="transaction">Transaction data</param>
+            <param name="message">Message to display</param>
+        </member>
+        <member name="M:Transactions.Api.Controllers.TransactionsApiController.CreateConsumer(Transactions.Api.Models.Transactions.CreateTransactionRequest,System.Guid)">
+            <summary>
+            Creates consumer based on transaction data. To be used when "SaveCreditCard" flag is true, but no customer is supplied
+            </summary>
+            <param name="transaction">Transaction</param>
+            <param name="merchantID">Merchant ID</param>
+            <returns>New customer ID</returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.TransmissionController.GetNotTransmittedTransactions(Transactions.Api.Models.Transactions.TransmissionFilter)">
             <summary>
             Get transactions which are not transmitted yet
             </summary>
             <param name="filter"></param>
             <returns></returns>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.Currency">
             <summary>
@@ -324,6 +344,11 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.TransactionAmount">
             <summary>
               Looks up a localized string similar to Amount.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.Currency">
@@ -1136,6 +1161,11 @@
             Blocking funds on credit card
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.BlockCreditCardRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.BlockCreditCardRequest.Currency">
             <summary>
             Currency
@@ -1199,6 +1229,11 @@
         <member name="T:Transactions.Api.Models.Transactions.CreateTransactionRequest">
             <summary>
             Create the charge based on credit card or previously stored credit card token
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.TransactionType">
@@ -1289,6 +1324,11 @@
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.CardOwnerName">
             <summary>
             Only to be used for pin pad transactions when CreditCardSecureDetails is not available
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.ConnectionID">
+            <summary>
+            SignalR connection id
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.CreditCardDetails">
@@ -1401,9 +1441,19 @@
             Only to be used for pin pad transactions when CreditCardSecureDetails is not available
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.PRCreateTransactionRequest.ConnectionID">
+            <summary>
+            SignalR connection ID
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Transactions.RefundRequest">
             <summary>
             Refund request
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.RefundRequest.Currency">
@@ -1461,9 +1511,9 @@
             Only to be used for pin pad transactions when CredotCardSecureDetails is not available
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Transactions.TransactionRequestBase.TerminalID">
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.ConnectionID">
             <summary>
-            EasyCard terminal reference
+            SignalR connection id
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionRequestBase.DealDetails">
@@ -1807,6 +1857,11 @@
               Looks up a localized string similar to Rej. Reason.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.ShvaDealID">
+            <summary>
+              Looks up a localized string similar to Shva Deal ID.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.SpecialTransactionType">
             <summary>
               Looks up a localized string similar to Spec. type.
@@ -1839,7 +1894,88 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionSummaryResource.TransactionType">
             <summary>
-              Looks up a localized string similar to Transaction type.
+              Looks up a localized string similar to Tran. type.
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.ConsumerName">
+            <summary>
+              Looks up a localized string similar to Customer.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.Currency">
+            <summary>
+              Looks up a localized string similar to Currency.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.Date">
+            <summary>
+              Looks up a localized string similar to Date.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.MerchantID">
+            <summary>
+              Looks up a localized string similar to Merchant ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.MerchantName">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.PaymentTransactionID">
+            <summary>
+              Looks up a localized string similar to Tran. ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.ShvaDealID">
+            <summary>
+              Looks up a localized string similar to Shva Deal ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.ShvaTransmissionNumber">
+            <summary>
+              Looks up a localized string similar to Transmission Num.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.Solek">
+            <summary>
+              Looks up a localized string similar to Solek.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.TerminalID">
+            <summary>
+              Looks up a localized string similar to Terminal ID.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.TerminalName">
+            <summary>
+              Looks up a localized string similar to Terminal.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.TotalAmount">
+            <summary>
+              Looks up a localized string similar to Amount.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.TransmissionReportSummaryResource.TransmissionDate">
+            <summary>
+              Looks up a localized string similar to Transmitted at.
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.TransmitTransactionsRequest">
@@ -1968,6 +2104,32 @@
         <member name="P:Transactions.Api.Resources.QuickTimeFilterTypeResource.None">
             <summary>
               Looks up a localized string similar to None.
+            </summary>
+        </member>
+        <member name="T:Transactions.Api.Resources.SMSResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.SMSResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.SMSResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.SMSResource.PaymentRequest">
+            <summary>
+              Looks up a localized string similar to Hello {Customer}. You have received payment request from {Merchant}. Amount {Amount}: {PaymentLink}.
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Resources.SMSResource.PaymentRequestRefund">
+            <summary>
+              Looks up a localized string similar to Hello {Customer}. You have received refund request from {Merchant}. Amount {Amount}: {PaymentLink}.
             </summary>
         </member>
     </members>

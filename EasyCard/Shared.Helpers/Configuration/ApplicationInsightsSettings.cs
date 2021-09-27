@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shared.Api.Configuration
+namespace Shared.Helpers.Configuration
 {
     /// <summary>
     /// Custom application insights class. To be injected into UI config
@@ -10,5 +10,13 @@ namespace Shared.Api.Configuration
     public class ApplicationInsightsSettings
     {
         public string InstrumentationKey { get; set; }
+
+        public string AppInsightsApi { get; set; }
+
+        public string AppInsightsApiAction { get; set; }
+
+        public string AiAppId { get; set; }
+
+        public string AiAppKey { get; set; }
     }
 }

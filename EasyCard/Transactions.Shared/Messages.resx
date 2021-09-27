@@ -120,6 +120,9 @@
   <data name="AggregatorNotDefined" xml:space="preserve">
     <value>Aggregator is not defined</value>
   </data>
+  <data name="ApproveTransactionOnDevice" xml:space="preserve">
+    <value>Approve transaction on device</value>
+  </data>
   <data name="AuthorizationCodeRequired" xml:space="preserve">
     <value>Authorization code is required. Call @number and tell them the supplier number @retailer to get the authorization code and create a new transaction with it specified.</value>
   </data>
@@ -128,6 +131,9 @@
   </data>
   <data name="BillingDealCreated" xml:space="preserve">
     <value>Billing Deal Created</value>
+  </data>
+  <data name="BillingDealDeactivated" xml:space="preserve">
+    <value>Billing Deal Deactivated</value>
   </data>
   <data name="BillingDealDeleted" xml:space="preserve">
     <value>Billing Deal Deleted</value>
@@ -204,11 +210,17 @@
   <data name="CreditCardSecureDetailsShouldBeOmitted" xml:space="preserve">
     <value>CreditCardSecureDetails should be omitted in case if credit card token present</value>
   </data>
+  <data name="CreditCardTokenChanged" xml:space="preserve">
+    <value>Credit Card Token changed</value>
+  </data>
   <data name="CvvRequired" xml:space="preserve">
     <value>CVV required</value>
   </data>
   <data name="CvvRequiredButStoredTokenCannotUseCvv" xml:space="preserve">
     <value>CVV required, but stored credit card token cannot use cvv</value>
+  </data>
+  <data name="DeviceIsProcessingTransaction" xml:space="preserve">
+    <value>Device is processing transaction</value>
   </data>
   <data name="EmailRequired" xml:space="preserve">
     <value>EmailAddressRequired</value>
@@ -273,6 +285,12 @@
   <data name="J5NotAllowed" xml:space="preserve">
     <value>J5 deal is not allowed</value>
   </data>
+  <data name="MasavFileGeneratedSuccessfully" xml:space="preserve">
+    <value>Masav File generated successfully</value>
+  </data>
+  <data name="MasavFileWasNotGenerated" xml:space="preserve">
+    <value>Masav File was not generated</value>
+  </data>
   <data name="NothingToTransmit" xml:space="preserve">
     <value>Nothing to transmit</value>
   </data>
@@ -303,6 +321,9 @@
   <data name="PaymentRequestUpdated" xml:space="preserve">
     <value>Payment Request Updated</value>
   </data>
+  <data name="PaymentTypeCannotBeChanged" xml:space="preserve">
+    <value>Payment type can not be changed</value>
+  </data>
   <data name="PleaseCheckValues" xml:space="preserve">
     <value>Please check specified values</value>
   </data>
@@ -323,6 +344,9 @@
   </data>
   <data name="TerminalForUpdateParametersRequired" xml:space="preserve">
     <value>Terminal for update parameters is required</value>
+  </data>
+  <data name="TerminalMustHaveBankDetailsSpecified" xml:space="preserve">
+    <value>Terminal must have Bank details specified</value>
   </data>
   <data name="ThereAreNoInvoicesToResend" xml:space="preserve">
     <value>There are no invoices to resend</value>

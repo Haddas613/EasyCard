@@ -11,27 +11,9 @@ using Transactions.Shared.Enums;
 
 namespace Reporting.Shared.Models
 {
-    public class MerchantDashboardQuery
+    public class MerchantDashboardQuery : DashboardQuery
     {
         [Required]
         public Guid? TerminalID { get; set; }
-
-        [DataType(DataType.Date)]
-        public DateTime? DateFrom { get; set; }
-
-        [DataType(DataType.Date)]
-        public DateTime? DateTo { get; set; }
-
-        public QuickDateFilterTypeEnum? QuickDateFilter { get; set; }
-
-        [DataType(DataType.Date)]
-        public DateTime? AltDateFrom { get; set; }
-
-        [DataType(DataType.Date)]
-        public DateTime? AltDateTo { get; set; }
-
-        public QuickDateFilterAltEnum? AltQuickDateFilter { get; set; }
-
-        public ReportGranularityEnum? Granularity { get; set; }
     }
 }

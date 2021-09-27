@@ -1,25 +1,29 @@
 ﻿using AutoMapper;
+using BasicServices.BlobStorage;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PoalimOnlineBusiness;
 using Shared.Api;
 using Shared.Api.Models;
 using Shared.Business.Security;
+using Shared.Helpers;
 using Shared.Helpers.KeyValueStorage;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Tokens;
 using Transactions.Business.Services;
 using SharedApi = Shared.Api;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
-    [Route("api/adminwebhook")]
     [Produces("application/json")]
     [Consumes("application/json")]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
@@ -37,6 +41,9 @@ namespace Transactions.Api.Controllers
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly BillingController billingController;
         private readonly CardTokenController cardTokenController;
+        private readonly IMasavFileService masavFileService;
+        private readonly IBlobStorageService masavFileSorageService;
+        private readonly Shared.ApplicationSettings appSettings;
 
         public AdminWebhookController(
             ITransactionsService transactionsService,
@@ -48,7 +55,9 @@ namespace Transactions.Api.Controllers
             IHttpContextAccessorWrapper httpContextAccessor,
             IConsumersService consumersService,
             BillingController billingController,
-            CardTokenController cardTokenController)
+            CardTokenController cardTokenController,
+            IMasavFileService masavFileService,
+            IOptions<Shared.ApplicationSettings> appSettings)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -62,9 +71,15 @@ namespace Transactions.Api.Controllers
 
             this.billingController = billingController;
             this.cardTokenController = cardTokenController;
+            this.masavFileService = masavFileService;
+
+            this.appSettings = appSettings.Value;
+
+            // TODO: remove, make singleton
+            this.masavFileSorageService = new BlobStorageService(this.appSettings.PublicStorageConnectionString, this.appSettings.MasavFilesStorageTable, this.logger);
         }
 
-        [Route("deleteConsumerRelatedData/{consumerID:guid}")]
+        [Route("api/adminwebhook/deleteConsumerRelatedData/{consumerID:guid}")]
         [HttpDelete]
         public async Task<ActionResult<OperationResponse>> DeleteConsumerRelatedData(Guid consumerID)
         {

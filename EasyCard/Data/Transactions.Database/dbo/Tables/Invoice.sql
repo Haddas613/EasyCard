@@ -48,8 +48,13 @@
     [ConsumerExternalReference] VARCHAR (50)     NULL,
     [Solek]                     VARCHAR (20)     NULL,
     [ExternalSystemData]        NVARCHAR (MAX)   NULL,
+    [ConsumerName]              NVARCHAR (50)    NULL,
+    [ConsumerNationalID]        VARCHAR (20)     NULL,
+    [Extension]                 NVARCHAR (MAX)   NULL,
     CONSTRAINT [PK_Invoice] PRIMARY KEY CLUSTERED ([InvoiceID] ASC)
 );
+
+
 
 
 

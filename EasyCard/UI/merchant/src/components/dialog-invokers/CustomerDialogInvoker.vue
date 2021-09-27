@@ -65,9 +65,15 @@ export default {
   },
   async mounted() {
     if (this.customerId) {
-      this.processCustomer(
-        await this.$api.consumers.getConsumer(this.customerId)
-      );
+      let customer = await this.$api.consumers.getConsumer(this.customerId);
+      this.processCustomer({
+        consumerEmail: customer.consumerEmail,
+        consumerPhone: customer.consumerPhone,
+        consumerID: customer.consumerID,
+        consumerAddress: customer.consumerAddress,
+        consumerNationalID: customer.consumerNationalID,
+        consumerName: customer.consumerName,
+      });
     }
   },
   methods: {
@@ -75,6 +81,9 @@ export default {
       this.selectedCustomer = data;
       this.$emit("update", data);
       this.customersDialog = false;
+    },
+    showDialog(){
+      this.customersDialog = true;
     }
   }
 };

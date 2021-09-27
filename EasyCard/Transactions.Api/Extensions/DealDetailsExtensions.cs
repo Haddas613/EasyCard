@@ -1,8 +1,8 @@
 ﻿using Merchants.Business.Entities.Billing;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Shared.Models;
-using Nayax;
 using Shared.Business.Financial;
+using Shared.Helpers;
 using Shared.Integration.Models.Processor;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace Transactions.Api.Extensions
 {
     public static class DealDetailsExtensions
     {
-        public static void UpdateDealDetails(this DealDetails dealDetails, Consumer consumer, TerminalSettings terminalSettings, IFinancialItem financialItem)
+        public static void UpdateDealDetails(this DealDetails dealDetails, Consumer consumer, TerminalSettings terminalSettings, IFinancialItem financialItem, CreditCardDetailsBase creditCardDetails)
         {
             if (string.IsNullOrWhiteSpace(dealDetails.ConsumerEmail))
             {
@@ -30,6 +30,16 @@ namespace Transactions.Api.Extensions
             if (string.IsNullOrWhiteSpace(dealDetails.ConsumerExternalReference))
             {
                 dealDetails.ConsumerExternalReference = consumer?.ExternalReference;
+            }
+
+            if (string.IsNullOrWhiteSpace(dealDetails.ConsumerName))
+            {
+                dealDetails.ConsumerName = consumer?.ConsumerName ?? creditCardDetails?.CardOwnerName;
+            }
+
+            if (string.IsNullOrWhiteSpace(dealDetails.ConsumerNationalID))
+            {
+                dealDetails.ConsumerNationalID = consumer?.ConsumerNationalID ?? creditCardDetails?.CardOwnerNationalID;
             }
 
             if (!(dealDetails.Items?.Count() > 0))
@@ -69,6 +79,51 @@ namespace Transactions.Api.Extensions
             }
         }
 
+        public static void UpdateDealDetails(this DealDetails dealDetails, SharedIntegration.Models.PaymentDetails.CreditCardPaymentDetails creditCardDetails)
+        {
+            if (creditCardDetails != null)
+            {
+                if (string.IsNullOrWhiteSpace(dealDetails.ConsumerName))
+                {
+                    dealDetails.ConsumerName = creditCardDetails.CardOwnerName;
+                }
+
+                if (string.IsNullOrWhiteSpace(dealDetails.ConsumerNationalID))
+                {
+                    dealDetails.ConsumerNationalID = creditCardDetails.CardOwnerNationalID;
+                }
+            }
+        }
+
+        public static void UpdateDealDetails(this DealDetails dealDetails, CreditCardDetails creditCardDetails)
+        {
+            if (creditCardDetails != null)
+            {
+                if (string.IsNullOrWhiteSpace(dealDetails.ConsumerName))
+                {
+                    dealDetails.ConsumerName = creditCardDetails.CardOwnerName;
+                }
+
+                if (string.IsNullOrWhiteSpace(dealDetails.ConsumerNationalID))
+                {
+                    dealDetails.ConsumerNationalID = creditCardDetails.CardOwnerNationalID;
+                }
+            }
+        }
+
+        public static void CheckConsumerDetails(this DealDetails dealDetails, Consumer consumer)
+        {
+            if (consumer != null)
+            {
+                // NOTE: consumer can pay using another person credit card
+
+                //if (!string.IsNullOrWhiteSpace(consumer.ConsumerNationalID) && !string.IsNullOrWhiteSpace(dealDetails.ConsumerNationalID) && !consumer.ConsumerNationalID.Equals(dealDetails.ConsumerNationalID, StringComparison.InvariantCultureIgnoreCase))
+                //{
+                //    throw new EntityConflictException(Transactions.Shared.Messages.ConsumerNatIdIsNotEqTranNatId, "Consumer");
+                //}
+            }
+        }
+
         public static void UpdateInvoiceDetails(this SharedIntegration.Models.Invoicing.InvoiceDetails invoiceDetails, TerminalInvoiceSettings terminalSettings, PaymentTransaction transaction = null)
         {
             if (string.IsNullOrWhiteSpace(invoiceDetails.InvoiceSubject))
@@ -101,7 +156,7 @@ namespace Transactions.Api.Extensions
 
             if (string.IsNullOrWhiteSpace(pinpadDetails.TerminalID))
             {
-                pinpadDetails.TerminalID = terminalSettings.Settings.ToObject<NayaxTerminalSettings>().TerminalID;
+                pinpadDetails.TerminalID = terminalSettings.Settings.ToObject<Nayax.NayaxTerminalSettings>().TerminalID;
             }
 
             return pinpadDetails;

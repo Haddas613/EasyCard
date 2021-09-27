@@ -53,5 +53,7 @@ namespace Transactions.Business.Entities
         public string CardOwnerName { get; set; }
 
         public int NumberOfRecords { get; set; }
+
+        public string ShvaDealID { get; set; }
     }
 }

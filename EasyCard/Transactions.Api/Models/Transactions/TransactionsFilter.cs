@@ -107,5 +107,13 @@ namespace Transactions.Api.Models.Transactions
         public bool? IsPaymentRequest { get; set; }
 
         public PaymentTypeEnum? PaymentType { get; set; }
+
+        [StringLength(5, MinimumLength = 5)]
+        public string ShvaDealIDLastDigits { get; set; }
+
+        [StringLength(8, MinimumLength = 8)]
+        public string PaymentTransactionIDShort { get; set; }
+
+        public bool? HasMasavFile { get; set; }
     }
 }

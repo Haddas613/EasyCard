@@ -11,9 +11,11 @@ using BasicServices;
 using BasicServices.BlobStorage;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServerClient;
+using MerchantProfileApi.Extensions;
 using Merchants.Business.Data;
 using Merchants.Business.Services;
 using Merchants.Shared;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,6 +25,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -35,6 +38,7 @@ using Shared.Api.Configuration;
 using Shared.Api.Validation;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Helpers.Configuration;
 using Shared.Helpers.Security;
 using Swashbuckle.AspNetCore.Filters;
 using Transactions.Api.Client;
@@ -98,8 +102,32 @@ namespace ProfileApi
                     options.NameClaimType = "name";
                     options.EnableCaching = true;
 
-                    options.JwtBearerEvents = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                    options.JwtBearerEvents = new JwtBearerEvents
                     {
+                        OnChallenge = async (context) =>
+                        {
+                            //var path = context.HttpContext.Request.Path;
+                            //if (path.StartsWithSegments("/hubs"))
+                            //{
+                            //    context.HandleResponse();
+                            //}
+                        },
+                        OnMessageReceived = async (context) =>
+                        {
+                            if (string.IsNullOrEmpty(context.Token))
+                            {
+                                // attempt to read the access token from the query string
+                                var accessToken = context.Request.Query["access_token"];
+
+                                // If the request is for our hub...
+                                var path = context.HttpContext.Request.Path;
+                                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                                {
+                                    // Read the token out of the query string
+                                    context.Token = accessToken;
+                                }
+                            }
+                        },
                         OnTokenValidated = async (context) =>
                         {
                             try
@@ -147,6 +175,9 @@ namespace ProfileApi
                         }
                     };
                 });
+
+            //services.TryAddEnumerable(
+            //    ServiceDescriptor.Singleton<IPostConfigureOptions<JwtBearerOptions>, QueryJwtBearerOptions>());
 
             services.AddAuthorization(options =>
             {
@@ -245,7 +276,7 @@ namespace ProfileApi
             {
                 var appCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
                 var logger = serviceProvider.GetRequiredService<ILogger<BlobStorageService>>();
-                var blobStorageService = new BlobStorageService(appCfg.PublicStorageConnectionString, appCfg.PublicBlobStorageTable, appCfg.PublicBlobStorageTable, logger);
+                var blobStorageService = new BlobStorageService(appCfg.PublicStorageConnectionString, appCfg.PublicBlobStorageTable, logger);
 
                 return blobStorageService;
             });
@@ -407,8 +438,6 @@ namespace ProfileApi
             {
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllers();
-
-                //endpoints.MapFallbackToController("Index", "Home");
             });
 
             app.UseSpa(spa =>

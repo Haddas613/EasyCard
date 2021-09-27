@@ -20,7 +20,7 @@
         class="elevation-1"
       >
         <template v-slot:item.masavFileDate="{ item }">
-          {{item.$masavFileDate | ecdate}}
+          {{item.$masavFileDate | ecdate('DD/MM/YYYY')}}
         </template>
         <template v-slot:item.payedDate="{ item }">
           <span class="success--text">{{item.$payedDate | ecdate}}</span>
@@ -64,7 +64,7 @@ export default {
     return {
       totalAmount: 0,
       masavFiles: [],
-      loading: true,
+      loading: false,
       options: {},
       pagination: {},
       headers: [],
@@ -86,6 +86,7 @@ export default {
   },
   methods: {
     async getDataFromApi() {
+      if(this.loading) { return; }
       this.loading = true;
       let data = await this.$api.masavFiles.get({
         ...this.masavFilesFilter,

@@ -51,7 +51,6 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("ConsumerPhone")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(50)");
@@ -98,6 +97,12 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("rowversion");
 
                     b.HasKey("ConsumerID");
+
+                    b.HasIndex("TerminalID");
+
+                    b.HasIndex("TerminalID", "ConsumerID");
+
+                    b.HasIndex("TerminalID", "ExternalReference");
 
                     b.ToTable("Consumer");
                 });

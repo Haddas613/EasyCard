@@ -85,7 +85,7 @@
                 ref="ccsecuredetailsform"
                 :tokens="customerTokens"
               ></credit-card-secure-details-fields>
-              <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')" :disabled="!model.dealDetails.consumerID"></v-checkbox>
+              <v-checkbox v-model="model.saveCreditCard" :label="model.dealDetails.consumerID ? $t('SaveCard') : $t('SaveCardCreateNewCustomer')"></v-checkbox>
             </template>
             <v-text-field
               v-model="model.oKNumber"

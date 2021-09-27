@@ -25,11 +25,13 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.PaymentType == filter.PaymentType);
             }
 
+            var today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, UserCultureInfo.TimeZone).Date;
+
             if (filter.Actual)
             {
                 src = src
-                    .Where(t => t.Active && t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= DateTime.Today)
-                    .Where(t => (t.PausedFrom == null || t.PausedFrom > DateTime.Today) && (t.PausedTo == null || t.PausedTo < DateTime.Today));
+                    .Where(t => t.Active && t.NextScheduledTransaction != null && t.NextScheduledTransaction.Value.Date <= today)
+                    .Where(t => (t.PausedFrom == null || t.PausedFrom > today) && (t.PausedTo == null || t.PausedTo < today));
             }
             else if (filter.Finished == true)
             {
@@ -41,7 +43,11 @@ namespace Transactions.Api.Extensions.Filtering
             }
             else if (filter.Paused == true)
             {
-                src = src.Where(t => (t.PausedFrom != null || t.PausedFrom >= DateTime.Today) && (t.PausedTo != null || t.PausedTo >= DateTime.Today));
+                src = src.Where(t => (t.PausedFrom != null || t.PausedFrom >= today) && (t.PausedTo != null || t.PausedTo >= today));
+            }
+            else if (filter.HasError == true)
+            {
+                src = src.Where(t => t.HasError);
             }
             else
             {
