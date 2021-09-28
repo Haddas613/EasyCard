@@ -568,6 +568,13 @@ export default {
         ? (result.settings.vatRatePercent / 100).toFixed(2)
         : 0;
 
+      // TODO: should be implemented something like "touchet" ot bank details component
+      if (result.bankDetails) {
+        if (!result.bankDetails.bank && !result.bankDetails.bankBranch && !result.bankDetails.bankAccount) {
+          result.bankDetails = null;
+        }
+      }  
+
       this.watchModel();
       return result;
     },

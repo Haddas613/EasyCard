@@ -141,6 +141,10 @@ export default {
         return this.$router.push({ name: "Terminals" });
       }
 
+      if (!terminal.bankDetails) {
+        terminal.bankDetails = {};
+      }
+
       this.terminal = terminal;
     },
     confirmLeave($event){
