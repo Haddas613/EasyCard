@@ -453,7 +453,11 @@
             <v-divider class="pt-1"></v-divider>
           </v-col>
           <v-col cols="12" md="4">
-            <bank-select v-model="model.bankDetails.bank" v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"></bank-select>
+            <bank-select 
+              v-model="model.bankDetails.bank"
+              v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+              required
+            ></bank-select>
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
@@ -463,7 +467,7 @@
               v-model="model.bankDetails.bankBranch"
               max="7"
               type="number"
-              :rules="[vr.primitives.numeric()]"
+              :rules="[vr.primitives.required, vr.primitives.numeric()]"
               v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
             ></v-text-field>
           </v-col>
@@ -475,7 +479,7 @@
               v-model="model.bankDetails.bankAccount"
               max="12"
               type="number"
-              :rules="[vr.primitives.numeric(), vr.primitives.stringLength(6, 12)]"
+              :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.stringLength(6, 12)]"
               v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
             ></v-text-field>
           </v-col>
