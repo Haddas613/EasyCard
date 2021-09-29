@@ -265,17 +265,14 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse { EntityUID = paymentRequestID, Status = StatusEnum.Success, Message = Messages.PaymentRequestCanceled });
         }
 
-        private Tuple<string, string> GetPaymentRequestUrl(PaymentRequest dbPaymentRequest, byte[] sharedTerminalApiKey)
+        private Tuple<string, string> GetPaymentRequestUrl(PaymentRequest dbPaymentRequest)
         {
-            if (sharedTerminalApiKey == null)
-            {
-                return null;
-            }
-
             var uriBuilder = new UriBuilder(apiSettings.CheckoutPortalUrl);
+            uriBuilder.Path = "/p";
+            var encrypted = cryptoServiceCompact.EncryptCompact(dbPaymentRequest.PaymentRequestID.ToByteArray());
+
             var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
-            query["paymentRequest"] = Convert.ToBase64String(dbPaymentRequest.PaymentRequestID.ToByteArray());
-            query["apiKey"] = Convert.ToBase64String(sharedTerminalApiKey);
+            query["r"] = encrypted;
 
             uriBuilder.Query = query.ToString();
             var url = uriBuilder.ToString();
@@ -306,7 +303,7 @@ namespace Transactions.Api.Controllers
 
             var emailSubject = paymentRequest.RequestSubject ?? (paymentRequest.IsRefund ? settings.DefaultRefundRequestSubject : settings.DefaultRequestSubject);
             var emailTemplateCode = $"{settings.EmailTemplateCode ?? nameof(PaymentRequest)}{(paymentRequest.IsRefund ? "Refund" : string.Empty)}";
-            var url = GetPaymentRequestUrl(paymentRequest, terminal.SharedApiKey);
+            var url = GetPaymentRequestUrl(paymentRequest);
             var substitutions = new List<TextSubstitution>();
 
             substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));

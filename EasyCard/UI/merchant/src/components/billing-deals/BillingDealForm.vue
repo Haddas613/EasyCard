@@ -200,7 +200,7 @@
         class="px-2"
         ref="dealDetails"
         :data="model"
-        :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
+        :key="model.dealDetails.consumerName"
       ></deal-details>
       <v-col cols="12">
         <v-switch
@@ -299,6 +299,7 @@ export default {
   methods: {
     async processCustomer(data) {
       this.model.dealDetails = Object.assign(this.model.dealDetails, data);
+      debugger
       await this.getCustomerTokens();
     },
     handleClick() {

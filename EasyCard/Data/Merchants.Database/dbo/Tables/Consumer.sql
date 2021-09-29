@@ -1,11 +1,11 @@
-﻿CREATE TABLE [dbo].[Consumer] (
+CREATE TABLE [dbo].[Consumer] (
     [ConsumerID]         UNIQUEIDENTIFIER NOT NULL,
     [MerchantID]         UNIQUEIDENTIFIER NOT NULL,
     [Active]             BIT              DEFAULT (CONVERT([bit],(1))) NOT NULL,
     [UpdateTimestamp]    ROWVERSION       NULL,
     [ConsumerEmail]      NVARCHAR (50)    NOT NULL,
     [ConsumerName]       NVARCHAR (50)    NOT NULL,
-    [ConsumerPhone]      NVARCHAR (50)    NOT NULL,
+    [ConsumerPhone]      NVARCHAR (50)    NULL,
     [ConsumerAddress]    NVARCHAR (MAX)   NULL,
     [Created]            DATETIME2 (7)    NULL,
     [OperationDoneBy]    NVARCHAR (50)    NOT NULL,
@@ -23,6 +23,19 @@
 
 
 
-GO
 
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Consumer_TerminalID_ExternalReference]
+    ON [dbo].[Consumer]([TerminalID] ASC, [ExternalReference] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Consumer_TerminalID_ConsumerID]
+    ON [dbo].[Consumer]([TerminalID] ASC, [ConsumerID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Consumer_TerminalID]
+    ON [dbo].[Consumer]([TerminalID] ASC);
 
