@@ -199,7 +199,7 @@
       <deal-details
         class="px-2"
         ref="dealDetails"
-        :data="model.dealDetails"
+        :data="model"
         :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
       ></deal-details>
       <v-col cols="12">

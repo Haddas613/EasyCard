@@ -214,6 +214,12 @@ namespace Transactions.Api.Controllers
                 newPaymentRequest.CardOwnerNationalID = consumer.ConsumerNationalID;
             }
 
+            if (string.IsNullOrWhiteSpace(newPaymentRequest.DealDetails.ConsumerEmail))
+            {
+                // TODO: prper message
+                return BadRequest(new OperationResponse("Email required", StatusEnum.Error, newPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+            }
+
             newPaymentRequest.Calculate();
 
             newPaymentRequest.MerchantID = terminal.MerchantID;

@@ -306,7 +306,7 @@ export default {
         } else {
           this.model.cardPresence = "cardNotPresent";
         }
-        debugger;
+        
         if (!this.model.dealDetails.consumerName) {
           this.model.dealDetails.consumerName = this.model.creditCardSecureDetails.cardOwnerName;
         }

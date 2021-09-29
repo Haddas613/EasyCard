@@ -61,19 +61,11 @@
           hide-title
         ></installment-details>
 
-        <v-text-field
-          v-if="!model.dealDetails.consumerID"
-          v-model="model.consumerName"
-          :label="$t('CustomerName')"
-          :rules="[vr.primitives.required, vr.primitives.stringLength(3, 50)]"
-          background-color="white"
-          type="text"
-          outlined
-        ></v-text-field>
         <deal-details
           ref="dealDetails"
-          :data="model.dealDetails"
+          :data="model"
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
+          :isPaymentRequest = true
         ></deal-details>
 
         <invoice-details-fields v-if="invoiceAvailable" ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>

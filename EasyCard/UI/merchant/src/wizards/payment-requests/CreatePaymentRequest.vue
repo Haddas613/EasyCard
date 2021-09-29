@@ -183,11 +183,7 @@ export default {
         return this.step++;
       }
       this.customer = data;
-      this.model.dealDetails.consumerEmail = data.consumerEmail;
-      this.model.dealDetails.consumerPhone = data.consumerPhone;
-      this.model.dealDetails.consumerAddress = data.consumerAddress;
-      this.model.dealDetails.consumerID = data.consumerID;
-      this.model.consumerName = data.consumerName;
+      this.model.dealDetails = Object.assign(this.model.dealDetails, data);
       this.step++;
     },
     processToBasket(){
@@ -214,7 +210,6 @@ export default {
       this.model.invoiceDetails = data.invoiceDetails;
       this.model.terminalID = this.terminal.terminalID;
       this.model.dueDate = data.dueDate;
-      this.model.consumerName = data.consumerName;
       this.model.isRefund = data.isRefund;
       this.model.allowPinPad = data.allowPinPad;
 

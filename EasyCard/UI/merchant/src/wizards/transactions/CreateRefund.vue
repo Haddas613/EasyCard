@@ -49,7 +49,13 @@
         </v-stepper-content>
 
         <v-stepper-content step="5" class="py-0 px-0">
-          <additional-settings-form :key="model.transactionAmount" :data="model" v-on:ok="processAdditionalSettings($event)" :invoice-type="invoiceType"></additional-settings-form>
+          <additional-settings-form 
+            :key="model.dealDetails.consumerName"
+          :data="model" 
+          v-on:ok="processAdditionalSettings($event)" 
+          ref="additionalSettingsForm"
+          :invoice-type="invoiceType"
+          ></additional-settings-form>
         </v-stepper-content>
 
         <v-stepper-content step="6" class="py-0 px-0">
@@ -234,6 +240,7 @@ export default {
         this.model.creditCardSecureDetails.cardOwnerNationalID =
           data.consumerNationalID;
       }
+      this.model.cardOwnerNationalID = data.consumerNationalID;
       this.model.creditCardToken = null;
       this.$refs.ccSecureDetails.resetToken();
       this.step++;
@@ -269,6 +276,11 @@ export default {
         } else {
           this.model.cardPresence = "cardNotPresent";
         }
+        
+        if (!this.model.dealDetails.consumerName) {
+          this.model.dealDetails.consumerName = this.model.creditCardSecureDetails.cardOwnerName;
+        }
+
       } else if (data.type === "token") {
         this.model.creditCardSecureDetails = null;
         this.model.creditCardToken = data.data;
