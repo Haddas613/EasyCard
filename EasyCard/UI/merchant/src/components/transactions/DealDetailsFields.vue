@@ -6,18 +6,17 @@
         <v-text-field
           v-model="model.consumerName"
           :counter="50"
-          :rules="[vr.primitives.maxLength(50)]"
+          :rules="[vr.primitives.requiredDepends(this.saveCreditCard), vr.primitives.maxLength(50)]"
           :label="$t('CustomerName')"
           @keydown.native.space.prevent
           outlined
-          required
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="6">
         <v-text-field
           v-model="model.consumerEmail"
           :label="$t('CustomerEmail')"
-          :rules="[vr.primitives.email]"
+          :rules="[vr.primitives.requiredDepends(this.saveCreditCard), vr.primitives.email]"
           outlined
           @keydown.native.space.prevent
           v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
@@ -71,11 +70,13 @@ export default {
     }
   },
   data() {
+    debugger;
     return {
       dictionaries: {},
       model: {
-        ...this.data
+        ...this.data.dealDetails
       },
+      saveCreditCard: this.data.saveCreditCard,
       vr: ValidationRules,
       messageDialog: false
     };

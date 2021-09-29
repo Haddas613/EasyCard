@@ -907,16 +907,22 @@ namespace Transactions.Api.Controllers
         /// <param name="transaction">Transaction</param>
         /// <param name="merchantID">Merchant ID</param>
         /// <returns>New customer ID</returns>
-        private async Task<Guid> CreateConsumer(CreateTransactionRequest transaction, Guid merchantID)
+        private async Task<Guid?> CreateConsumer(CreateTransactionRequest transaction, Guid merchantID)
         {
             var consumer = new Merchants.Business.Entities.Billing.Consumer();
 
             mapper.Map(transaction.DealDetails, consumer);
-            consumer.ConsumerName = transaction.CardOwnerName ?? transaction.CreditCardSecureDetails?.CardOwnerName;
+            consumer.ConsumerName = (transaction.CardOwnerName ?? transaction.CreditCardSecureDetails?.CardOwnerName) ?? transaction.DealDetails?.ConsumerName;
+            consumer.ConsumerEmail = transaction.DealDetails?.ConsumerEmail;
             consumer.ConsumerNationalID = transaction.CardOwnerNationalID ?? transaction.CreditCardSecureDetails?.CardOwnerNationalID;
             consumer.TerminalID = transaction.TerminalID;
             consumer.MerchantID = merchantID;
             consumer.ApplyAuditInfo(httpContextAccessor);
+
+            if (!(!string.IsNullOrWhiteSpace(consumer.ConsumerName) && !string.IsNullOrWhiteSpace(consumer.ConsumerEmail)))
+            {
+                return null;
+            }
 
             await consumersService.CreateEntity(consumer);
 

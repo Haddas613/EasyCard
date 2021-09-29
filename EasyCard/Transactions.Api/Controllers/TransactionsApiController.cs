@@ -353,20 +353,23 @@ namespace Transactions.Api.Controllers
                     model.DealDetails.ConsumerID = await CreateConsumer(model, merchantID.Value);
                 }
 
-                var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
-                mapper.Map(model, tokenRequest);
-
-                var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest);
-
-                var tokenResponseOperation = tokenResponse.GetOperationResponse();
-
-                if (!(tokenResponseOperation?.Status == StatusEnum.Success))
+                if (model.DealDetails.ConsumerID != null)
                 {
-                    return tokenResponse;
-                }
+                    var tokenRequest = mapper.Map<TokenRequest>(model.CreditCardSecureDetails);
+                    mapper.Map(model, tokenRequest);
 
-                model.CreditCardToken = tokenResponseOperation.EntityUID;
-                model.CreditCardSecureDetails = null;
+                    var tokenResponse = await cardTokenController.CreateTokenInternal(tokenRequest);
+
+                    var tokenResponseOperation = tokenResponse.GetOperationResponse();
+
+                    if (!(tokenResponseOperation?.Status == StatusEnum.Success))
+                    {
+                        return tokenResponse;
+                    }
+
+                    model.CreditCardToken = tokenResponseOperation.EntityUID;
+                    model.CreditCardSecureDetails = null;
+                }
             }
 
             if (model.CreditCardToken != null)

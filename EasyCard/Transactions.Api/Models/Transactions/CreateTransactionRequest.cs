@@ -137,6 +137,7 @@ namespace Transactions.Api.Models.Transactions
 
         public Guid? PaymentRequestID { get; set; }
 
+        // ShvaAuthNum
         public string OKNumber { get; set; }
 
         public void Calculate()
@@ -152,17 +153,20 @@ namespace Transactions.Api.Models.Transactions
         /// Only to be used for pin pad transactions when CreditCardSecureDetails is not available
         /// </summary>
         [StringLength(20)]
+        [SwaggerExclude]
         public string CardOwnerNationalID { get; set; }
 
         /// <summary>
         /// Only to be used for pin pad transactions when CreditCardSecureDetails is not available
         /// </summary>
         [StringLength(50, MinimumLength = 2)]
+        [SwaggerExclude]
         public string CardOwnerName { get; set; }
 
         /// <summary>
         /// SignalR connection id
         /// </summary>
+        [SwaggerExclude]
         public string ConnectionID { get; set; }
 
         [SwaggerExclude]

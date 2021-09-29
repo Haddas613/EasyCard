@@ -31,7 +31,7 @@
 
         <deal-details
           ref="dealDetails"
-          :data="model.dealDetails"
+          :data="model"
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
         ></deal-details>
 

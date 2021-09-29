@@ -58,7 +58,7 @@
 
         <v-stepper-content step="5" class="py-0 px-0">
           <additional-settings-form 
-            :key="model.transactionAmount"
+            :key="model.dealDetails.consumerName"
             :data="model"
             :issue-document="true"
             v-on:ok="processAdditionalSettings($event)"
@@ -306,6 +306,11 @@ export default {
         } else {
           this.model.cardPresence = "cardNotPresent";
         }
+        debugger;
+        if (!this.model.dealDetails.consumerName) {
+          this.model.dealDetails.consumerName = this.model.creditCardSecureDetails.cardOwnerName;
+        }
+
       } else if (data.type === "token") {
         this.model.creditCardSecureDetails = null;
         this.model.creditCardToken = data.data;
