@@ -30,7 +30,7 @@
           color="primary"
           class="white--text"
           :block="$vuetify.breakpoint.smAndDown"
-          @click="ok()"
+          @click.once="ok()"
         >{{$t("OK")}}</v-btn>
       </div>
     </template>
