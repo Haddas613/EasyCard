@@ -25,7 +25,7 @@ namespace FunctionsCompositionApp.Billing
                 .AddEnvironmentVariables()
                 .Build();
 
-            var billingDealIDs = JsonConvert.DeserializeObject<IEnumerable<Guid>>(messageBody);
+            var billingDealIDs = JsonConvert.DeserializeObject<IEnumerable<BillingDealQueueEntry>>(messageBody);
 
             if (billingDealIDs?.Count() > 0)
             {
@@ -33,7 +33,7 @@ namespace FunctionsCompositionApp.Billing
 
                 var request = new TransactionsApi.Models.Billing.CreateTransactionFromBillingDealsRequest
                 {
-                    BillingDealsID = billingDealIDs
+                    BillingDealsID = billingDealIDs.Select(d => d.BillingDealID)
                 };
 
                 var response = await transactionsApiClient.CreateTransactionsFromBillingDeals(request);
@@ -56,5 +56,12 @@ namespace FunctionsCompositionApp.Billing
                 log.LogInformation("Trigger Billing Deals Completed. Nothing to process");
             }
         }
+    }
+
+    public class BillingDealQueueEntry
+    {
+        public Guid BillingDealID { get; set; }
+
+        public Guid TerminalID { get; set; }
     }
 }
