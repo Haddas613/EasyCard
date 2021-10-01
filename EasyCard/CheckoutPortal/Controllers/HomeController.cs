@@ -529,7 +529,7 @@ namespace CheckoutPortal.Controllers
 
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
 
-            return View(nameof(Index), model);
+            return await Task.FromResult(View(nameof(Index), model));
         }
 
         /// <summary>

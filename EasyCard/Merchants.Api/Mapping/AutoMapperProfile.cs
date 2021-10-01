@@ -43,7 +43,6 @@ namespace Merchants.Api.Mapping
             CreateMap<UpdateTerminalRequest, Terminal>();
 
             CreateMap<Terminal, TerminalResponse>();
-                //.ForMember(d => d.BankDetails, o => o.MapFrom(d => d.BankDetails == null ? new TerminalBankDetails() : d.BankDetails));
             CreateMap<Terminal, TerminalSummary>()
                 .ForMember(m => m.MerchantBusinessName, o => o.MapFrom(src => src.Merchant.BusinessName));
             CreateMap<ExternalSystem, ExternalSystemSummary>();
