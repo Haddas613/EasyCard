@@ -95,7 +95,7 @@ namespace Merchants.Api
                     options.EnableCaching = true;
                 });
 
-            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true; // TODO: remove for production
+            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = false; // TODO: remove for production
 
             services.AddAuthorization(options =>
             {
@@ -323,6 +323,7 @@ namespace Merchants.Api
                 var cryptoCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
                 return new AesGcmCryptoServiceCompact(cryptoCfg.EncrKeyForSharedApiKey);
             });
+            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

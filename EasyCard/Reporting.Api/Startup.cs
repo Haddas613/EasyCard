@@ -273,7 +273,8 @@ namespace Reporting.Api
                 return new AppInsightReaderService(appInsightsConfig, webApiClient);
             });
 
-            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;  // TODO: remove for production
+            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = false;  // TODO: remove for production
+            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -269,7 +269,7 @@ namespace Transactions.Api
                     };
                 });
 
-            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;  // TODO: remove for production
+            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = false;  // TODO: remove for production
 
             services.AddAuthorization(options =>
             {
@@ -550,6 +550,7 @@ namespace Transactions.Api
 
                 return new InforUMobileSmsService(webApiClient, inforUMobileSmsSettings, logger, storageService, metrics, doNotSendSms);
             });
+            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
