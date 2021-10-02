@@ -518,8 +518,9 @@ namespace Transactions.Api
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
 
                 return new QueueResolver()
-                    .AddQueue(cfg.InvoiceQueueName, new AzureQueue(cfg.DefaultStorageConnectionString, cfg.InvoiceQueueName))
-                    .AddQueue(cfg.BillingDealsQueueName, new AzureQueue(cfg.DefaultStorageConnectionString, cfg.BillingDealsQueueName));
+                    .AddQueue(cfg.InvoiceQueueName, new AzureQueue(cfg.DefaultStorageConnectionString, cfg.InvoiceQueueName)) // TODO: change cfg to constant in QueueResolver
+                    .AddQueue(cfg.BillingDealsQueueName, new AzureQueue(cfg.DefaultStorageConnectionString, cfg.BillingDealsQueueName))
+                    .AddQueue(QueueResolver.UpdateTerminalSHVAParametersQueue, new AzureQueue(cfg.DefaultStorageConnectionString, QueueResolver.UpdateTerminalSHVAParametersQueue));
             });
 
             var appInsightsConfig = Configuration.GetSection("ApplicationInsights").Get<ApplicationInsightsSettings>();
