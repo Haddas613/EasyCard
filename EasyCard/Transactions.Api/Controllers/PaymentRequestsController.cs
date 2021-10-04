@@ -36,6 +36,7 @@ using Shared.Integration;
 using Shared.Helpers.Sms;
 using Merchants.Business.Extensions;
 using System.Web;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
@@ -196,6 +197,11 @@ namespace Transactions.Api.Controllers
 
             if (model.IssueInvoice.GetValueOrDefault())
             {
+                if (model.InvoiceDetails == null)
+                {
+                    model.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
+                }
+
                 model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings);
             }
 

@@ -60,7 +60,8 @@ namespace RapidOne.Converters
                     Discount = item.Discount.GetValueOrDefault(),
                     Rate = 1,
                     Users = new string[] { }, // there is no null-check in R1 so this empty array required
-                    Charge = terminalSettings.Charge
+                    Charge = terminalSettings.Charge,
+                    Extension = item.Extension
                 };
 
                 listProducts.Add(productInvoice);

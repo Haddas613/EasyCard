@@ -1,4 +1,6 @@
-﻿using Shared.Helpers;
+﻿using Newtonsoft.Json.Linq;
+using Shared.Api.Swagger;
+using Shared.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -63,5 +65,8 @@ namespace Shared.Integration.Models
         [Range(0, double.MaxValue)]
         [DataType(DataType.Currency)]
         public decimal? Discount { get; set; }
+
+        [SwaggerExclude]
+        public JObject Extension { get; set; }
     }
 }

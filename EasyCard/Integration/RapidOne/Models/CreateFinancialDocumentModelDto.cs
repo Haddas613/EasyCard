@@ -92,6 +92,9 @@ namespace RapidOne.Models
 
         // there is no null-check in R1 so this empty array required
         public string[] Users { get; set; }
+
+        [JsonExtensionData]
+        public Newtonsoft.Json.Linq.JObject Extension { get; set; }
     }
 
     public class FinDocUnitPriceDto
