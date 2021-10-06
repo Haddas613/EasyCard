@@ -1,4 +1,5 @@
-﻿using Shared.Business;
+﻿using Newtonsoft.Json.Linq;
+using Shared.Business;
 using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
@@ -167,5 +168,7 @@ namespace Transactions.Business.Entities
         public string RedirectUrl { get; set; }
 
         public bool UserAmount { get; set; }
+
+        public JObject Extension { get; set; }
     }
 }
