@@ -69,7 +69,7 @@
         <v-stepper-content step="6" class="py-0 px-0">
            <wizard-result :errors="errors" v-if="result">
             <template v-if="customer">
-              <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+              <v-icon @click="$router.push({name: 'Dashboard'})" class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
               <p>{{customer.consumerName}}</p>
               <div class="pt-5">
                 <p>{{$t("ChargedCustomer")}}</p>
@@ -88,14 +88,18 @@
                   :to="{ name: 'Transaction', params: { id: result.entityReference } }"
                 >{{$t("GoToTransaction")}}</router-link>
 
-                <div class="pt-4" v-if="result.innerResponse">
-                  <p v-if="result.innerResponse.status == 'error'">
-                    {{result.innerResponse.message}}
-                  </p>
-                  <router-link v-else class="primary--text" link
-                    :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
-                  >{{$t("GoToInvoice")}}</router-link>
-                </div>
+              <div class="pt-4" v-if="result.innerResponse">
+                <p v-if="result.innerResponse.status == 'error'">
+                  {{result.innerResponse.message}}
+                </p>
+                <router-link v-else class="primary--text" link
+                  :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
+                >{{$t("GoToInvoice")}}</router-link>
+              </div>
+
+              <v-flex class="text-center">
+                <v-btn outlined color="success" @click="$router.push({name: 'Dashboard'})">{{$t("Ok")}}</v-btn>
+              </v-flex>
             </template>
           </wizard-result>
         </v-stepper-content>

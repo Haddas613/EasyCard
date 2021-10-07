@@ -48,7 +48,8 @@
           >{{n}}</v-col>
         </v-row>
         <v-row dir="ltr">
-          <v-col cols="4" class="numpad-btn numpad-num" @click="reset()">C</v-col>
+          <v-col cols="2" class="numpad-btn numpad-num" @click="reset()">C</v-col>
+          <v-col cols="2" class="numpad-btn numpad-num" @click="resetItems()">CE</v-col>
           <v-col cols="4" class="numpad-btn numpad-num" @click="addDigit(0)">0</v-col>
           <v-col cols="2" class="numpad-btn numpad-num secondary--text" @click="addDot()">.</v-col>
           <v-col cols="2" class="numpad-btn numpad-num accent--text" @click="stash()">+</v-col>
@@ -229,12 +230,6 @@ export default {
         case "Backspace":
           this.removeDigit();
           break;
-        // case "Enter": {
-        //   if (this.totalAmount > 0) {
-        //     this.ok($event.shiftKey || $event.ctrlKey);
-        //   }
-        //   break;
-        // }
       }
     },
     addDigit(d) {
