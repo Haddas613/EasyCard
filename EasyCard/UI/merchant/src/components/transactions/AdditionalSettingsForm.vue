@@ -46,7 +46,10 @@
       </v-form>
     </v-card-text>
     <v-card-actions class="px-2">
-      <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t('Confirm')}}</v-btn>
+      <v-btn color="primary" bottom :x-large="true" block @click="ok()">
+        {{$t('Confirm')}}
+        <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -58,6 +61,7 @@ import { mapState } from "vuex";
 
 export default {
   components: {
+    EcMoney: () => import("../ec/EcMoney"),
     InstallmentDetails: () => import("./InstallmentDetailsForm"),
     DealDetails: () => import("../transactions/DealDetailsFields"),
     InvoiceDetailsFields: () => import("../invoicing/InvoiceDetailsFields"),
@@ -133,6 +137,7 @@ export default {
         }
       }
       this.jDealTypes = filteredJDealTypes;
+      
       // this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
     }
     if(this.model.currency != 'ILS'){
@@ -144,8 +149,10 @@ export default {
     }
   },
   methods: {
-    ok() {
-      if (!this.$refs.form.validate()) return false;
+    ok(quickCharge) {
+      if (!quickCharge) {
+        if (!this.$refs.form.validate()) return false;
+      }
 
       let result = { ...this.model };
       if (this.$refs.instDetails) {
@@ -160,7 +167,7 @@ export default {
         result.invoiceDetails = null;
       }
       result.dealDetails = this.$refs.dealDetails.getData();
-      this.$emit("ok", result);
+      if (!quickCharge) this.$emit("ok", result);
       return result;
     },
     updateTransactionType(){

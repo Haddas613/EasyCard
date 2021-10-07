@@ -199,10 +199,10 @@ export default {
     await this.getItems();
     this.$emit('update', this.model);
 
-    window.addEventListener("keypress", this.handleKeyPress);
+    window.addEventListener("keydown", this.handleKeyPress);
   },
   destroyed () {
-    window.removeEventListener("keypress", this.handleKeyPress);
+    window.removeEventListener("keydown", this.handleKeyPress);
   },
   methods: {
     handleKeyPress($event){
@@ -211,6 +211,7 @@ export default {
         return;
       }
       switch($event.key){
+        
         case ".":
         case ",":
           this.addDot();
@@ -218,6 +219,22 @@ export default {
         case "+":
           this.stash();
           break;
+        case "Delete":
+          if ($event.shiftKey || $event.ctrlKey) {
+            this.resetItems();
+          }else{
+            this.reset();
+          }
+          break;
+        case "Backspace":
+          this.removeDigit();
+          break;
+        // case "Enter": {
+        //   if (this.totalAmount > 0) {
+        //     this.ok($event.shiftKey || $event.ctrlKey);
+        //   }
+        //   break;
+        // }
       }
     },
     addDigit(d) {
@@ -232,6 +249,11 @@ export default {
         //TODO: config for max allowed transaction amount
         this.defaultItem.price += "" + d;
       }
+    },
+    removeDigit(d) {
+      if (this.defaultItem.price == "0") return;
+      else if (this.defaultItem.price.length == 1) this.defaultItem.price = "0";
+      else this.defaultItem.price = this.defaultItem.price.substring(0, this.defaultItem.price.length - 1);
     },
     addDot() {
       if (!this.defaultItem.price) {
@@ -261,11 +283,13 @@ export default {
       }
     },
     ok(quickCharge) {
-      this.stash();
-      this.$emit("ok", {
-        ...this.getData(),
-        quickCharge
-      });
+      if (this.totalAmount > 0) {
+        this.stash();
+        this.$emit("ok", {
+          ...this.getData(),
+          quickCharge
+        });
+      }
     },
     getData(){
       this.stash();

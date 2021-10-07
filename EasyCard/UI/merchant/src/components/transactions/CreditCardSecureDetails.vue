@@ -96,7 +96,10 @@
       </v-form>
     </v-card-text>
     <v-card-actions class="px-4">
-      <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t(btnText)}}</v-btn>
+      <v-btn color="primary" bottom :x-large="true" block @click="ok()">
+        {{$t(btnText)}}
+        <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -108,6 +111,7 @@ import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
+    EcMoney: () => import("../ec/EcMoney"),
     CreditCardSecureDetailsFields: () => import("./CreditCardSecureDetailsFields"),
     EcDialog: () => import("../../components/ec/EcDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
@@ -158,6 +162,8 @@ export default {
       this.selectedToken = this.selectedTokenObj = null;
     }
     await this.checkPinPadAvailability();
+
+
   },
   computed: {
     token: {

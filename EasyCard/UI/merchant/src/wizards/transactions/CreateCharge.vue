@@ -47,7 +47,7 @@
 
         <v-stepper-content step="4" class="py-0 px-0">
           <credit-card-secure-details
-            :key="model.dealDetails.consumerID"
+            :key="model.key"
             :data="model"
             v-on:ok="processCreditCard($event)"
             include-device
@@ -125,6 +125,7 @@ export default {
       customer: null,
       skipCustomerStep: false,
       model: {
+        key: "0",
         terminalID: null,
         transactionType: null,
         jDealType: null,
@@ -225,11 +226,43 @@ export default {
       }
     }
     this.model.dealDetails.dealDescription = this.terminal.settings.defaultChargeDescription;
+
+    window.addEventListener("keydown", this.handleKeyPress);
+  },
+  destroyed () {
+    window.removeEventListener("keydown", this.handleKeyPress);
   },
   methods: {
+    handleKeyPress($event){
+
+      switch($event.key){
+
+        case "Backspace":
+          if ($event.shiftKey || $event.ctrlKey) {
+            this.goBack();
+          }
+          break;
+        case "Enter": {
+          if (this.step === 1) {
+            this.$refs.numpadRef.ok($event.shiftKey || $event.ctrlKey);
+          } else if (this.step === 3) {
+            this.step = 4;
+          }
+          else if (this.step === 4) {
+            this.$refs.ccSecureDetails.ok();
+          } 
+          else if (this.step === 5) {
+            this.$refs.additionalSettingsForm.ok();
+          }
+          break;
+        }
+      }
+    },
     goBack() {
       if (this.step === 1) this.$router.push({ name: "Dashboard" });
-      else this.step--;
+      else { 
+        this.step--;
+      }
     },
     terminalChanged() {
       this.skipCustomerStep = false;
@@ -254,6 +287,8 @@ export default {
       this.customer = data;
 
       this.model.dealDetails = Object.assign(this.model.dealDetails, data);
+
+      this.model.key = `${this.model.transactionAmount}-${this.model.dealDetails.consumerID}`
 
       if (!this.model.creditCardSecureDetails) {
         this.$set(this.model, "creditCardSecureDetails", {
@@ -291,6 +326,8 @@ export default {
       this.model.vatRate = data.vatRate;
       this.model.note = data.note;
       this.model.dealDetails.items = data.dealDetails.items;
+
+      this.model.key = `${this.model.transactionAmount}-${this.model.dealDetails.consumerID}`
     },
     processCreditCard(data) {
       this.model.oKNumber = data.oKNumber;
@@ -324,9 +361,13 @@ export default {
         this.model.saveCreditCard = false;
         Object.assign(this.model, data.data);
       }
-      if(this.quickChargeMode){
-        if(!this.$refs.additionalSettingsForm.ok()){
+      if (this.quickChargeMode) {
+        let res = this.$refs.additionalSettingsForm.ok(true)
+        
+        if (!res) {
           this.step++;
+        } else {
+          this.processAdditionalSettings(res)
         }
         return;
       }

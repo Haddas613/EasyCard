@@ -299,7 +299,6 @@ export default {
   methods: {
     async processCustomer(data) {
       this.model.dealDetails = Object.assign(this.model.dealDetails, data);
-      debugger
       await this.getCustomerTokens();
     },
     handleClick() {
