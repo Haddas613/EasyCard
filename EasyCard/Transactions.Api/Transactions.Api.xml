@@ -220,6 +220,11 @@
             Billing deals that can be manually triggered
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealsFilter.DealReference">
+            <summary>
+            Merchant deal reference
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.BillingSchedule">
             <summary>
             Billing Schedule

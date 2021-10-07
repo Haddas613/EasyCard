@@ -219,6 +219,14 @@ namespace Transactions.Api.Controllers
                 newPaymentRequest.CardOwnerName = consumer.ConsumerName;
                 newPaymentRequest.CardOwnerNationalID = consumer.ConsumerNationalID;
             }
+            else
+            {
+                var consumerID = await CreateConsumer(model, merchantID.Value);
+                if (consumerID.HasValue)
+                {
+                    newPaymentRequest.DealDetails.ConsumerID = consumerID;
+                }
+            }
 
             if (string.IsNullOrWhiteSpace(newPaymentRequest.DealDetails.ConsumerEmail))
             {
@@ -364,6 +372,36 @@ namespace Transactions.Api.Controllers
                 To = paymentRequest.DealDetails.ConsumerPhone,
                 CorrelationId = httpContextAccessor.GetCorrelationId()
             });
+        }
+
+        private async Task<Guid?> CreateConsumer(PaymentRequestCreate transaction, Guid merchantID)
+        {
+            try
+            {
+                var consumer = new Merchants.Business.Entities.Billing.Consumer();
+
+                mapper.Map(transaction.DealDetails, consumer);
+                consumer.ConsumerName = transaction.DealDetails?.ConsumerName;
+                consumer.ConsumerEmail = transaction.DealDetails?.ConsumerEmail;
+                consumer.ConsumerNationalID = transaction.CardOwnerNationalID;
+                consumer.TerminalID = transaction.TerminalID.GetValueOrDefault();
+                consumer.MerchantID = merchantID;
+                consumer.ApplyAuditInfo(httpContextAccessor);
+
+                if (!(!string.IsNullOrWhiteSpace(consumer.ConsumerName) && !string.IsNullOrWhiteSpace(consumer.ConsumerEmail)))
+                {
+                    return null;
+                }
+
+                await consumersService.CreateEntity(consumer);
+
+                return consumer.ConsumerID;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Cannot create consumer: {ex.Message}", ex);
+                return null;
+            }
         }
     }
 }

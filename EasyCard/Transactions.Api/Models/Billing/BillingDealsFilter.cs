@@ -61,5 +61,10 @@ namespace Transactions.Api.Models.Billing
         public bool HasError { get; set; }
 
         public PaymentTypeEnum? PaymentType { get; set; }
+
+        /// <summary>
+        /// Merchant deal reference
+        /// </summary>
+        public string DealReference { get; set; }
     }
 }

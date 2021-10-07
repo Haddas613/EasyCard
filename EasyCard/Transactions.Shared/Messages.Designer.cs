@@ -295,6 +295,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Consumer Name and Consumer Email are required.
+        /// </summary>
+        public static string ConsumerNameAndConsumerEmailRequired {
+            get {
+                return ResourceManager.GetString("ConsumerNameAndConsumerEmailRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Consumer National Id is not equal to credit card National Id.
         /// </summary>
         public static string ConsumerNatIdIsNotEqTranNatId {

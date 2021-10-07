@@ -39,7 +39,7 @@
 
         <v-stepper-content step="4" class="py-0 px-0">
           <credit-card-secure-details
-            :key="model.dealDetails.consumerID"
+            :key="model.key"
             :data="model"
             v-on:ok="processCreditCard($event)"
             include-device
@@ -59,7 +59,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="6" class="py-0 px-0">
-           <wizard-result :errors="errors" v-if="result">
+           <wizard-result :errors="errors" v-if="result" :error="error">
             <template v-if="customer">
               <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
               <p>{{customer.consumerName}}</p>
@@ -111,6 +111,7 @@ export default {
       skipCustomerStep: false,
       invoiceType: null,
       model: {
+        key: "0",
         terminalID: null,
         transactionType: null,
         jDealType: null,
@@ -170,6 +171,7 @@ export default {
       threeDotMenuItems: null,
       success: true,
       errors: [],
+      error: null,
       result: null,
       loading: false,
       transactionsHub: null,
@@ -230,6 +232,7 @@ export default {
       }
       this.customer = data;
       this.model.dealDetails = Object.assign(this.model.dealDetails, data);
+      this.model.key = `${this.model.transactionAmount}-${this.model.dealDetails.consumerID}`
       if (!this.model.creditCardSecureDetails) {
         this.$set(this.model, "creditCardSecureDetails", {
           cardOwnerName: data.consumerName,
@@ -261,6 +264,8 @@ export default {
       this.model.vatRate = data.vatRate;
       this.model.note = data.note;
       this.model.dealDetails.items = data.dealDetails.items;
+
+      this.model.key = `${this.model.transactionAmount}-${this.model.dealDetails.consumerID}`
     },
     processCreditCard(data) {
       this.model.oKNumber = data.oKNumber;
@@ -329,10 +334,9 @@ export default {
           lastStep.title = "Error";
           lastStep.completed = false;
           lastStep.closeable = true;
+          this.error = result.message;
           if (result && result.errors && result.errors.length > 0) {
             this.errors = result.errors;
-          } else {
-            this.errors = [{ description: result.message }];
           }
         } else {
           this.success = true;
@@ -340,6 +344,7 @@ export default {
           lastStep.completed = true;
           lastStep.closeable = false;
           this.errors = [];
+          this.error = null;
           if(this.model.pinPad){
             this.disposeSignalRConnection();
           }

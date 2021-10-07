@@ -377,7 +377,7 @@ namespace Transactions.Api.Controllers
                     if (processorResponse.RejectReasonCode == RejectionReasonEnum.AuthorizationCodeRequired)
                     {
                         var message = Messages.AuthorizationCodeRequired.Replace("@number", processorResponse.TelToGetAuthNum).Replace("@retailer", processorResponse.CompRetailerNum);
-                        processorFailedRsponse = BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier));
+                        processorFailedRsponse = BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier) { AdditionalData = JObject.FromObject(new { authorizationCodeRequired = true }) } );
                     }
                     else
                     {
@@ -569,7 +569,7 @@ namespace Transactions.Api.Controllers
                 }
                 else
                 {
-                    endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Consumer Name and Consumer Email are required");
+                    endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice} - {Transactions.Shared.Messages.ConsumerNameAndConsumerEmailRequired}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", Transactions.Shared.Messages.ConsumerNameAndConsumerEmailRequired);
                 }
             }
 

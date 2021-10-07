@@ -8,7 +8,6 @@
           :counter="50"
           :rules="[vr.primitives.requiredDepends(this.saveCreditCard | this.isPaymentRequest), vr.primitives.maxLength(50)]"
           :label="$t('CustomerName')"
-          @keydown.native.space.prevent
           outlined
         ></v-text-field>
       </v-col>

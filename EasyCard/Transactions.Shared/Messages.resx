@@ -195,6 +195,9 @@
   <data name="ConfirmedByProcessor" xml:space="preserve">
     <value>Confirmed By Processor</value>
   </data>
+  <data name="ConsumerNameAndConsumerEmailRequired" xml:space="preserve">
+    <value>Consumer Name and Consumer Email are required</value>
+  </data>
   <data name="ConsumerNatIdIsNotEqTranNatId" xml:space="preserve">
     <value>Consumer National Id is not equal to credit card National Id</value>
   </data>

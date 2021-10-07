@@ -67,7 +67,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="6" class="py-0 px-0">
-           <wizard-result :errors="errors" v-if="result">
+           <wizard-result :errors="errors" v-if="result" :error="error">
             <template v-if="customer">
               <v-icon @click="$router.push({name: 'Dashboard'})" class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
               <p>{{customer.consumerName}}</p>
@@ -98,8 +98,21 @@
               </div>
 
               <v-flex class="text-center">
-                <v-btn outlined color="success" @click="$router.push({name: 'Dashboard'})">{{$t("Ok")}}</v-btn>
+                <v-btn outlined color="success" @click="$router.push({name: 'Dashboard'})">{{$t("Close")}}</v-btn>
               </v-flex>
+            </template>
+            <template v-slot:errors v-if="result.additionalData && result.additionalData.authorizationCodeRequired">
+              <v-form class="ec-form" ref="form" lazy-validation>
+                <v-text-field
+                  v-model="model.oKNumber"
+                  :label="$t('AuthorizationCode')"
+                  :rules="[vr.primitives.stringLength(1, 50)]">
+                </v-text-field>
+                <v-btn color="primary" bottom :x-large="true" block @click="retry()">
+                  {{$t("Retry")}}
+                  <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
+                </v-btn>
+              </v-form>
             </template>
           </wizard-result>
         </v-stepper-content>
@@ -111,7 +124,7 @@
 <script>
 import { mapState } from "vuex";
 import * as signalR from "@microsoft/signalr";
-
+import ValidationRules from "../../helpers/validation-rules";
 export default {
   components: {
     Navbar: () => import("../../components/wizard/NavBar"),
@@ -126,6 +139,7 @@ export default {
   props: ["customerid"],
   data() {
     return {
+      vr: ValidationRules,
       customer: null,
       skipCustomerStep: false,
       model: {
@@ -164,6 +178,7 @@ export default {
       quickChargeMode: false,
       success: true,
       errors: [],
+      error: null,
       loading: false,
       result: {
         entityReference: null
@@ -394,6 +409,9 @@ export default {
 
       await this.createTransaction();
     },
+    async retry(){
+      await this.createTransaction();
+    },
     async createTransaction(){
       if (this.loading) return;
       try {
@@ -413,10 +431,9 @@ export default {
           lastStep.title = "Error";
           lastStep.completed = false;
           lastStep.closeable = true;
+          this.error = result.message;
           if (result && result.errors && result.errors.length > 0) {
             this.errors = result.errors;
-          } else {
-            this.errors = [{ description: result.message }];
           }
         } else {
           this.success = true;
@@ -427,6 +444,7 @@ export default {
             this.disposeSignalRConnection();
           }
           this.errors = [];
+          this.error = null;
         }
         if (this.customer) {
           this.$store.commit("payment/addLastChargedCustomer", {
