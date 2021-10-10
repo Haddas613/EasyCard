@@ -70,6 +70,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amount required for pinpad deal.
+        /// </summary>
+        public static string AmountRequiredForPinpadDeal {
+            get {
+                return ResourceManager.GetString("AmountRequiredForPinpadDeal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Approve transaction on device.
         /// </summary>
         public static string ApproveTransactionOnDevice {

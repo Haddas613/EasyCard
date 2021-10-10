@@ -55,6 +55,7 @@ namespace Transactions.Api.Models.Billing
         /// <summary>
         /// Billing Schedule
         /// </summary>
+        [Required]
         public BillingSchedule BillingSchedule { get; set; }
 
         /// <summary>

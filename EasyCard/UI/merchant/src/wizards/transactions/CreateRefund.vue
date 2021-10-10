@@ -60,8 +60,8 @@
 
         <v-stepper-content step="6" class="py-0 px-0">
            <wizard-result :errors="errors" v-if="result" :error="error">
+            
             <template v-if="customer">
-              <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
               <p>{{customer.consumerName}}</p>
               <div class="pt-5">
                 <p>{{$t("RefundedCustomer")}}</p>

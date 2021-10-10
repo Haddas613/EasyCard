@@ -9,7 +9,7 @@
           @click="ok()"
           block
           tile
-          :disabled="totalAmount == 0 && model.discount == 0"
+          :disabled="!supportZeroAmount && totalAmount == 0"
         >
           {{$t(btnText)}}
           <ec-money :amount="totalAmount - model.discount" class="px-1" :currency="currencyStore.code"></ec-money>
@@ -24,7 +24,7 @@
           block
           tile
           :dark="totalAmount > 0"
-          :disabled="totalAmount == 0 && model.discount == 0"
+          :disabled="totalAmount == 0"
         >
           {{$t(`Quick${btnText}`)}}
         </v-btn>
@@ -135,6 +135,10 @@ export default {
     supportQuickCharge: {
       type: Boolean,
       default: false
+    },
+    supportZeroAmount: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -234,7 +238,7 @@ export default {
     },
     addDigit(d) {
       if (this.defaultItem.price == "0") this.defaultItem.price = d;
-      else if (this.defaultItem.price < 100000) {
+      else if (this.defaultItem.price < 1000000) {
         if (
           `${this.defaultItem.price}`.indexOf(".") > -1 &&
           `${this.defaultItem.price}`.split(".")[1].length == 2
@@ -278,7 +282,7 @@ export default {
       }
     },
     ok(quickCharge) {
-      if (this.totalAmount > 0) {
+      if (this.supportZeroAmount || this.totalAmount > 0) {
         this.stash();
         this.$emit("ok", {
           ...this.getData(),

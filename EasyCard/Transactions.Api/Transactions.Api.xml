@@ -839,11 +839,6 @@
             Email subject
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.ConsumerName">
-            <summary>
-            End-customer Name
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.PaymentRequestID">
             <summary>
             Primary reference

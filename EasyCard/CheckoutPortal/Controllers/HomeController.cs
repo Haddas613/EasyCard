@@ -311,9 +311,14 @@ namespace CheckoutPortal.Controllers
 
                 if (checkoutConfig.PaymentRequest.UserAmount)
                 {
-                    mdel.PaymentRequestAmount = request.Amount;
+                    mdel.PaymentRequestAmount = request.Amount ?? checkoutConfig.PaymentRequest.PaymentRequestAmount;
                     mdel.NetTotal = Math.Round(mdel.PaymentRequestAmount.GetValueOrDefault() / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
                     mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
+                }
+
+                if (checkoutConfig.PaymentRequest.OnlyAddCard)
+                {
+                    mdel.SaveCreditCard = true;
                 }
 
                 result = await transactionsApiClient.CreateTransactionPR(mdel);
@@ -331,11 +336,7 @@ namespace CheckoutPortal.Controllers
                         }
                     }
 
-                    mapper.Map(checkoutConfig.Settings, request);
-
-                    return View("Index", request);
-
-                    //return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message });
+                    return await IndexViewResult(checkoutConfig, request);
                 }
             }
             else//PR IS NULL
@@ -374,11 +375,7 @@ namespace CheckoutPortal.Controllers
                         }
                     }
 
-                    mapper.Map(checkoutConfig.Settings, request);
-
-                    return View("Index", request);
-
-                    //return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message, RequestId = HttpContext.TraceIdentifier });
+                    return await IndexViewResult(checkoutConfig, request);
                 }
             }
 
@@ -513,6 +510,27 @@ namespace CheckoutPortal.Controllers
                 mapper.Map(request, model);
             }
 
+            mapper.Map(checkoutConfig.PaymentRequest, model);
+            mapper.Map(checkoutConfig.Settings, model);
+            model.PaymentIntent = checkoutConfig.PaymentIntentID?.ToString();
+
+            if (checkoutConfig.Consumer != null)
+            {
+                mapper.Map(checkoutConfig.Consumer, model);
+
+                if (checkoutConfig.Consumer.Tokens?.Count() > 0)
+                {
+                    model.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new KeyValuePair<Guid, string>(d.CreditCardTokenID, $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}"));
+                }
+            }
+
+            ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
+
+            return await Task.FromResult(View(nameof(Index), model));
+        }
+
+        private async Task<IActionResult> IndexViewResult(CheckoutData checkoutConfig, ChargeViewModel model)
+        {
             mapper.Map(checkoutConfig.PaymentRequest, model);
             mapper.Map(checkoutConfig.Settings, model);
             model.PaymentIntent = checkoutConfig.PaymentIntentID?.ToString();

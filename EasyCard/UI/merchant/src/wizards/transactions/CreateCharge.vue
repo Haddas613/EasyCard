@@ -68,8 +68,9 @@
 
         <v-stepper-content step="6" class="py-0 px-0">
            <wizard-result :errors="errors" v-if="result" :error="error">
+
             <template v-if="customer">
-              <v-icon @click="$router.push({name: 'Dashboard'})" class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+              
               <p>{{customer.consumerName}}</p>
               <div class="pt-5">
                 <p>{{$t("ChargedCustomer")}}</p>
@@ -254,28 +255,29 @@ export default {
   methods: {
     handleKeyPress($event){
 
-      switch($event.key){
+      // TODO: this is disabled
+      // switch($event.key){
 
-        case "Backspace":
-          if ($event.shiftKey || $event.ctrlKey) {
-            this.goBack();
-          }
-          break;
-        case "Enter": {
-          if (this.step === 1) {
-            this.$refs.numpadRef.ok($event.shiftKey || $event.ctrlKey);
-          } else if (this.step === 3) {
-            this.step = 4;
-          }
-          else if (this.step === 4) {
-            this.$refs.ccSecureDetails.ok();
-          } 
-          else if (this.step === 5) {
-            this.$refs.additionalSettingsForm.ok();
-          }
-          break;
-        }
-      }
+      //   case "Backspace":
+      //     if ($event.shiftKey || $event.ctrlKey) {
+      //       this.goBack();
+      //     }
+      //     break;
+      //   case "Enter": {
+      //     if (this.step === 1) {
+      //       this.$refs.numpadRef.ok($event.shiftKey || $event.ctrlKey);
+      //     } else if (this.step === 3) {
+      //       this.step = 4;
+      //     }
+      //     else if (this.step === 4) {
+      //       this.$refs.ccSecureDetails.ok();
+      //     } 
+      //     else if (this.step === 5) {
+      //       this.$refs.additionalSettingsForm.ok();
+      //     }
+      //     break;
+      //   }
+      // }
     },
     goBack() {
       if (this.step === 1) this.$router.push({ name: "Dashboard" });

@@ -123,6 +123,12 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse(Messages.CheckoutFeatureMustBeEnabled, StatusEnum.Error));
             }
 
+            // TODO: validation procedure
+            if (model.AllowPinPad == true && !(model.PaymentRequestAmount > 0))
+            {
+                return BadRequest(new OperationResponse(Messages.AmountRequiredForPinpadDeal, StatusEnum.Error));
+            }
+
             // TODO: caching
             var systemSettings = await systemSettingsService.GetSystemSettings();
 
@@ -162,6 +168,14 @@ namespace Transactions.Api.Controllers
                 newPaymentRequest.CardOwnerName = consumer.ConsumerName;
                 newPaymentRequest.CardOwnerNationalID = consumer.ConsumerNationalID;
             }
+            else
+            {
+                var consumerID = await CreateConsumer(model, merchantID.Value);
+                if (consumerID.HasValue)
+                {
+                    newPaymentRequest.DealDetails.ConsumerID = consumerID;
+                }
+            }
 
             newPaymentRequest.Calculate();
 
@@ -181,6 +195,36 @@ namespace Transactions.Api.Controllers
             var response = CreatedAtAction(nameof(GetPaymentIntent), new { paymentIntentID = newPaymentRequest.PaymentRequestID }, respObject);
 
             return response;
+        }
+
+        private async Task<Guid?> CreateConsumer(PaymentRequestCreate transaction, Guid merchantID)
+        {
+            try
+            {
+                var consumer = new Merchants.Business.Entities.Billing.Consumer();
+
+                mapper.Map(transaction.DealDetails, consumer);
+                consumer.ConsumerName = transaction.DealDetails?.ConsumerName;
+                consumer.ConsumerEmail = transaction.DealDetails?.ConsumerEmail;
+                consumer.ConsumerNationalID = transaction.CardOwnerNationalID;
+                consumer.TerminalID = transaction.TerminalID.GetValueOrDefault();
+                consumer.MerchantID = merchantID;
+                consumer.ApplyAuditInfo(httpContextAccessor);
+
+                if (!(!string.IsNullOrWhiteSpace(consumer.ConsumerName) && !string.IsNullOrWhiteSpace(consumer.ConsumerEmail)))
+                {
+                    return null;
+                }
+
+                await consumersService.CreateEntity(consumer);
+
+                return consumer.ConsumerID;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Cannot create consumer: {ex.Message}", ex);
+                return null;
+            }
         }
 
         private string GetPaymentIntentShortUrl(PaymentRequest dbPaymentRequest)
