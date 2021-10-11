@@ -60,7 +60,7 @@
 
         <v-stepper-content step="6" class="py-0 px-0">
            <wizard-result :errors="errors" v-if="result" :error="error">
-            
+            <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
             <template v-if="customer">
               <p>{{customer.consumerName}}</p>
               <div class="pt-5">
@@ -79,6 +79,24 @@
                 <router-link v-else class="primary--text" link
                   :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
                 >{{$t("GoToInvoice")}}</router-link>
+              </div>
+            </template>
+            <template v-slot:slip v-if="transaction">
+              <transaction-printout ref="printout" :transaction="transaction"></transaction-printout>
+              <transaction-slip-dialog ref="slipDialog" :transaction="transaction" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
+              <div class="mb-4">
+                <v-btn small class="mx-1" @click="$refs.printout.print()">
+                  {{$t("Print")}}
+                  <v-icon class="px-1" small :right="$vuetify.ltr">
+                    mdi-printer
+                  </v-icon>
+                </v-btn>
+                <v-btn small color="primary" class="mx-1" @click="transactionSlipDialog = true">
+                  {{$t("Email")}}
+                  <v-icon small class="px-1" :right="$vuetify.ltr">
+                    mdi-email
+                  </v-icon>
+                </v-btn>
               </div>
             </template>
           </wizard-result>
@@ -102,7 +120,9 @@ export default {
     CustomersList: () => import("../../components/customers/CustomersList"),
     CreditCardSecureDetails: () => import("../../components/transactions/CreditCardSecureDetails"),
     WizardResult: () => import("../../components/wizard/WizardResult"),
-    AdditionalSettingsForm: () => import("../../components/transactions/AdditionalSettingsForm")
+    AdditionalSettingsForm: () => import("../../components/transactions/AdditionalSettingsForm"),
+    TransactionPrintout: () => import("../../components/printouts/TransactionPrintout"),
+    TransactionSlipDialog: () => import("../../components/transactions/TransactionSlipDialog")
   },
   props: ["customerid"],
   data() {
@@ -175,7 +195,9 @@ export default {
       result: null,
       loading: false,
       transactionsHub: null,
-      signalRToast: null
+      signalRToast: null,
+      transaction: null,
+      transactionSlipDialog: false
     };
   },
   computed: {
@@ -345,6 +367,7 @@ export default {
           lastStep.closeable = false;
           this.errors = [];
           this.error = null;
+          this.transaction = await this.$api.transactions.getTransaction(this.result.entityReference);
           if(this.model.pinPad){
             this.disposeSignalRConnection();
           }

@@ -18,8 +18,6 @@
                       <v-list-item-content>
                         <v-list-item-title v-text="e.description"></v-list-item-title>
                       </v-list-item-content>
-
-
                     </v-list-item>
                   </template>
                 </v-expansion-panel-content>
@@ -33,10 +31,12 @@
             </v-list-item>
           </v-flex>
           <slot name="errors"></slot>
-                         
         </template>
         <template v-else>
-          
+          <slot></slot>
+        </template>
+        <template v-if="hasSlot('slip')">
+          <slot name="slip"></slot>
         </template>
         <template v-if="hasSlot('link')">
           <slot name="link"></slot>

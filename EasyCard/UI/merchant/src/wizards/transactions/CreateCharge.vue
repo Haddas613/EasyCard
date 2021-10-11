@@ -67,54 +67,71 @@
         </v-stepper-content>
 
         <v-stepper-content step="6" class="py-0 px-0">
-           <wizard-result :errors="errors" v-if="result" :error="error">
+          <wizard-result :errors="errors" v-if="result" :error="error">
+          <template v-if="customer">
+            <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+            <p>{{customer.consumerName}}</p>
+            <div class="pt-5">
+              <p>{{$t("ChargedCustomer")}}</p>
+              <p>{{customer.consumerEmail}} ● <ec-money :amount="model.transactionAmount" bold></ec-money></p>
+            </div>
+          </template>
+          <template v-else>
+            <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+            <div class="pt-5">
+              <p>{{$t("ChargedCustomer")}}</p>
+              <p><ec-money :amount="model.transactionAmount" bold></ec-money></p>
+            </div>
+          </template>
+          <template v-slot:link v-if="result.entityReference">
+            <router-link class="primary--text" link
+              :to="{ name: 'Transaction', params: { id: result.entityReference } }"
+            >{{$t("GoToTransaction")}}</router-link>
 
-            <template v-if="customer">
-              
-              <p>{{customer.consumerName}}</p>
-              <div class="pt-5">
-                <p>{{$t("ChargedCustomer")}}</p>
-                <p>{{customer.consumerEmail}} ● <ec-money :amount="model.transactionAmount" bold></ec-money></p>
-              </div>
+            <template class="pt-2" v-if="result.innerResponse">
+              <p v-if="result.innerResponse.status == 'error'">
+                {{result.innerResponse.message}}
+              </p>
+              <router-link v-else class="primary--text" link
+                :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
+              >{{$t("GoToInvoice")}}</router-link>
             </template>
-            <template v-else>
-              <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
-              <div class="pt-5">
-                <p>{{$t("ChargedCustomer")}}</p>
-                <p><ec-money :amount="model.transactionAmount" bold></ec-money></p>
-              </div>
-            </template>
-            <template v-slot:link v-if="result.entityReference">
-              <router-link class="primary--text" link
-                  :to="{ name: 'Transaction', params: { id: result.entityReference } }"
-                >{{$t("GoToTransaction")}}</router-link>
 
-              <div class="pt-4" v-if="result.innerResponse">
-                <p v-if="result.innerResponse.status == 'error'">
-                  {{result.innerResponse.message}}
-                </p>
-                <router-link v-else class="primary--text" link
-                  :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
-                >{{$t("GoToInvoice")}}</router-link>
-              </div>
-
-              <v-flex class="text-center">
-                <v-btn outlined color="success" @click="$router.push({name: 'Dashboard'})">{{$t("Close")}}</v-btn>
-              </v-flex>
-            </template>
-            <template v-slot:errors v-if="result.additionalData && result.additionalData.authorizationCodeRequired">
-              <v-form class="ec-form" ref="form" lazy-validation>
-                <v-text-field
-                  v-model="model.oKNumber"
-                  :label="$t('AuthorizationCode')"
-                  :rules="[vr.primitives.stringLength(1, 50)]">
-                </v-text-field>
-                <v-btn color="primary" bottom :x-large="true" block @click="retry()">
-                  {{$t("Retry")}}
-                  <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
-                </v-btn>
-              </v-form>
-            </template>
+            <v-flex class="text-center pt-2">
+              <v-btn outlined color="success" @click="$router.push({name: 'Dashboard'})">{{$t("Close")}}</v-btn>
+            </v-flex>
+          </template>
+          <template v-slot:errors v-if="result.additionalData && result.additionalData.authorizationCodeRequired">
+            <v-form class="ec-form" ref="form" lazy-validation>
+              <v-text-field
+                v-model="model.oKNumber"
+                :label="$t('AuthorizationCode')"
+                :rules="[vr.primitives.stringLength(1, 50)]">
+              </v-text-field>
+              <v-btn color="primary" bottom :x-large="true" block @click="retry()">
+                {{$t("Retry")}}
+                <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
+              </v-btn>
+            </v-form>
+          </template>
+          <template v-slot:slip v-if="transaction">
+            <transaction-printout ref="printout" :transaction="transaction"></transaction-printout>
+            <transaction-slip-dialog ref="slipDialog" :transaction="transaction" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
+            <div class="mb-4">
+              <v-btn small class="mx-1" @click="$refs.printout.print()">
+                {{$t("Print")}}
+                <v-icon class="px-1" small :right="$vuetify.ltr">
+                  mdi-printer
+                </v-icon>
+              </v-btn>
+              <v-btn small color="primary" class="mx-1" @click="transactionSlipDialog = true">
+                {{$t("Email")}}
+                <v-icon small class="px-1" :right="$vuetify.ltr">
+                  mdi-email
+                </v-icon>
+              </v-btn>
+            </div>
+          </template>
           </wizard-result>
         </v-stepper-content>
       </v-stepper-items>
@@ -135,7 +152,9 @@ export default {
     CustomersList: () => import("../../components/customers/CustomersList"),
     CreditCardSecureDetails: () => import("../../components/transactions/CreditCardSecureDetails"),
     WizardResult: () => import("../../components/wizard/WizardResult"),
-    AdditionalSettingsForm: () => import("../../components/transactions/AdditionalSettingsForm")
+    AdditionalSettingsForm: () => import("../../components/transactions/AdditionalSettingsForm"),
+    TransactionPrintout: () => import("../../components/printouts/TransactionPrintout"),
+    TransactionSlipDialog: () => import("../../components/transactions/TransactionSlipDialog"),
   },
   props: ["customerid"],
   data() {
@@ -210,7 +229,9 @@ export default {
         }
       },
       transactionsHub: null,
-      signalRToast: null
+      signalRToast: null,
+      transaction: null,
+      transactionSlipDialog: false
     };
   },
   computed: {
@@ -447,6 +468,7 @@ export default {
           }
           this.errors = [];
           this.error = null;
+          this.transaction = await this.$api.transactions.getTransaction(this.result.entityReference);
         }
         if (this.customer) {
           this.$store.commit("payment/addLastChargedCustomer", {
@@ -454,7 +476,6 @@ export default {
             terminalID: this.model.terminalID
           });
         }
-
         this.step = lastStepKey;
       }finally{
         this.loading = false;
