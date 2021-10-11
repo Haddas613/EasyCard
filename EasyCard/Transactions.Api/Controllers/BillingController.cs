@@ -192,6 +192,7 @@ namespace Transactions.Api.Controllers
             var newBillingDeal = mapper.Map<BillingDeal>(model);
             newBillingDeal.Active = true;
             newBillingDeal.MerchantID = terminal.MerchantID;
+            newBillingDeal.TerminalID = terminal.TerminalID;
 
             if (model.PaymentType == PaymentTypeEnum.Card)
             {
