@@ -49,7 +49,9 @@
         </v-row>
         <v-row dir="ltr">
           <v-col cols="2" class="numpad-btn numpad-num" @click="reset()">C</v-col>
-          <v-col cols="2" class="numpad-btn numpad-num" @click="resetItems()">CE</v-col>
+          <v-col cols="2" class="numpad-btn numpad-text-btn flex-column" @click="resetItems()">
+            {{$t("ClearItems")}}
+          </v-col>
           <v-col cols="4" class="numpad-btn numpad-num" @click="addDigit(0)">0</v-col>
           <v-col cols="2" class="numpad-btn numpad-num secondary--text" @click="addDot()">.</v-col>
           <v-col cols="2" class="numpad-btn numpad-num accent--text" @click="stash()">+</v-col>
@@ -350,12 +352,17 @@ export default {
   font-size: 2rem;
   font-weight: 300;
   min-height: 4rem;
-  line-height: 2.5rem;
+  //line-height: 2.5rem;
 }
 button.complete-btn {
   z-index: 2;
   &[disabled] {
     background-color: var(--v-ecdgray-lighten5) !important;
   }
+}
+.numpad-text-btn{
+  font-size: 1.1rem;
+  line-height: 1.5rem;
+  font-weight: 300;
 }
 </style>
