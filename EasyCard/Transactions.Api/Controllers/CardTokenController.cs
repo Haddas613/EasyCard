@@ -299,7 +299,7 @@ namespace Transactions.Api.Controllers
 
             await creditCardTokenService.CreateEntity(dbData);
 
-            return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID);
+            return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID) { InnerResponse = new OperationResponse(Messages.TokenCreated, StatusEnum.Success, transaction.PaymentTransactionID) };
         }
     }
 }

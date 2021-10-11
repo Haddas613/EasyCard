@@ -443,17 +443,24 @@ namespace Transactions.Api.Controllers
                 var tokenResponseOperation = tokenResponse.GetOperationResponse();
 
                 // if TransactionAmount is null/zero  we only create customer & save card, no transaction needed
-                if (!(tokenResponseOperation?.Status == StatusEnum.Success) || model.TransactionAmount.GetValueOrDefault() == 0)
+                if (tokenResponseOperation?.Status == StatusEnum.Success)
                 {
-                    if (isPaymentIntent)
+                    if (model.TransactionAmount.GetValueOrDefault() == 0)
                     {
-                        await paymentIntentService.DeletePaymentIntent(prmodel.PaymentIntentID.GetValueOrDefault());
-                    }
-                    else if (prmodel.PaymentRequestID != null)
-                    {
-                        await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: prmodel.PaymentRequestID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
-                    }
+                        if (isPaymentIntent)
+                        {
+                            await paymentIntentService.DeletePaymentIntent(prmodel.PaymentIntentID.GetValueOrDefault());
+                        }
+                        else if (prmodel.PaymentRequestID != null)
+                        {
+                            await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: prmodel.PaymentRequestID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
+                        }
 
+                        return tokenResponse.GetOperationResponse()?.InnerResponse;
+                    }
+                }
+                else
+                {
                     return tokenResponse;
                 }
 

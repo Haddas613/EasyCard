@@ -115,6 +115,8 @@
 
                     @if ((Model.Amount.GetValueOrDefault() > 0 && !Model.UserAmount) || Model.OnlyAddCard)
                     {
+                        <input type="hidden" asp-for="Amount" />
+
                         <h3 id="total-amount-display" hidden="@(Model.TransactionType != Shared.Integration.Models.TransactionTypeEnum.RegularDeal)" class="panel-title text-center @(Model.IsRefund ? "text-danger" : "")">
                             @(Model.IsRefund ? localizer.Get("Refund") : localizer.Get("TotalSum")): @Model.Amount.GetValueOrDefault().ToString("F2")@Model.Currency.GetCurrencySymbol()
                         </h3>

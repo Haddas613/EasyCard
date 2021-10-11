@@ -166,10 +166,11 @@ namespace CheckoutPortal.Controllers
                 if (checkoutConfig.PaymentRequest.OnlyAddCard)
                 {
                     request.SaveCreditCard = true;
+                    request.Amount = null;
                 }
                 else
                 {
-                    if (request.Amount.GetValueOrDefault() == 0 && checkoutConfig.PaymentRequest.TotalAmount > 0)
+                    if (!checkoutConfig.PaymentRequest.UserAmount && checkoutConfig.PaymentRequest.TotalAmount > 0)
                     {
                         request.Amount = checkoutConfig.PaymentRequest.TotalAmount;
                         ModelState[nameof(request.Amount)].Errors.Clear();
