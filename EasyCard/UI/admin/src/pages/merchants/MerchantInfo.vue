@@ -157,7 +157,12 @@
             <v-col cols="12" md="6" lg="6">{{item.email}}</v-col>
           </template>
           <template v-slot:right="{ item }">
-            <v-col cols="12" class="text-end">
+            <v-col cols="12" md="6" lg="6">
+              <span v-if="item.displayName != item.email">
+                <b>{{item.displayName}}</b>
+              </span>
+            </v-col>
+            <v-col cols="12" md="6" lg="6" class="text-end">
               <span v-bind:class="userStatusColors[item.status]">{{userStatuses[item.status]}}</span>
             </v-col>
           </template>
