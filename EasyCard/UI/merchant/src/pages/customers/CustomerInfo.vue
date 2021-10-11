@@ -199,6 +199,15 @@ export default {
             }
           },
           {
+            text: this.$t("CreateBillingDeal"),
+            fn: () => {
+              this.$router.push({
+                name: "CreateBillingDeal",
+                params: { customerid: this.$route.params.id }
+              });
+            }
+          },
+          {
             text: this.$t("Transactions"),
             fn: () => {
               this.$router.push({

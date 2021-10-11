@@ -12,6 +12,7 @@ export default {
     BillingDealForm: () =>
       import("../../components/billing-deals/BillingDealForm"),
   },
+  props: ["customerid"],
   data() {
     return {
       model: {
@@ -25,7 +26,7 @@ export default {
           dealReference: null,
           consumerEmail: null,
           consumerPhone: null,
-          consumerID: null,
+          consumerID: this.customerid,
           dealDescription: null,
           items: []
         },
@@ -40,7 +41,7 @@ export default {
       if (!this.$apiSuccess(result)) return;
       this.$router.push({ name: "BillingDeal", params: { id: result.entityReference } });
     }
-  },
+  }
 };
 </script>
 

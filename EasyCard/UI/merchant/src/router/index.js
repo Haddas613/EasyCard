@@ -245,6 +245,7 @@ const routes = [
             },
             {
                 name: 'CreateBillingDeal',
+                props: true,
                 path: 'billing-deals/create',
                 meta: {
                     guard: allowedForManagerOrAdminGuard
