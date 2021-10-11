@@ -167,6 +167,15 @@ namespace CheckoutPortal.Controllers
                 {
                     request.SaveCreditCard = true;
                 }
+                else
+                {
+                    if (request.Amount.GetValueOrDefault() == 0 && checkoutConfig.PaymentRequest.TotalAmount > 0)
+                    {
+                        request.Amount = checkoutConfig.PaymentRequest.TotalAmount;
+                        ModelState[nameof(request.Amount)].Errors.Clear();
+                        ModelState[nameof(request.Amount)].ValidationState = ModelValidationState.Skipped;
+                    }
+                }
             }
 
             // TODO: add merchant site origin instead of unsafe-inline
@@ -260,6 +269,7 @@ namespace CheckoutPortal.Controllers
                 }
             }
 
+            // only add card case
             if (request.Amount.GetValueOrDefault() == 0 && request.SaveCreditCard)
             {
                 ModelState[nameof(request.Amount)].Errors.Clear();

@@ -48,10 +48,10 @@
           >{{n}}</v-col>
         </v-row>
         <v-row dir="ltr">
-          <v-col cols="2" class="numpad-btn numpad-num" @click="reset()">C</v-col>
-          <v-col cols="2" class="numpad-btn numpad-text-btn flex-column" @click="resetItems()">
+          <v-col cols="4" class="numpad-btn numpad-num" @click="reset()">C</v-col>
+          <!-- <v-col cols="2" class="numpad-btn numpad-text-btn flex-column" @click="resetItems()">
             {{$t("ClearItems")}}
-          </v-col>
+          </v-col> -->
           <v-col cols="4" class="numpad-btn numpad-num" @click="addDigit(0)">0</v-col>
           <v-col cols="2" class="numpad-btn numpad-num secondary--text" @click="addDot()">.</v-col>
           <v-col cols="2" class="numpad-btn numpad-num accent--text" @click="stash()">+</v-col>
@@ -227,11 +227,7 @@ export default {
           this.stash();
           break;
         case "Delete":
-          if ($event.shiftKey || $event.ctrlKey) {
-            this.resetItems();
-          }else{
-            this.reset();
-          }
+          this.reset();
           break;
         case "Backspace":
           this.removeDigit();
@@ -320,6 +316,8 @@ export default {
     reset() {
       this.defaultItem.price = 0;
       this.defaultItem.discount = 0;
+
+      this.resetItems();
     },
     async resetItems() {
       this.model.dealDetails.items = [];
