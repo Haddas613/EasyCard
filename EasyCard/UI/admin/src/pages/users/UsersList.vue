@@ -42,7 +42,7 @@
           <v-btn class="mx-1" color="success" outlined small :title="$t('Unlock')" :disabled="actionInProgress" @click="invokeAction('unlockUser', item)" v-if="item.$status == 'locked'">
             <v-icon small>mdi-lock-open</v-icon>
           </v-btn>
-          <v-btn class="mx-1" color="orange darken-3" outlined small :title="$t('ResetPassword')" :disabled="actionInProgress" @click="invokeAction('resetUserPassword', item)">
+          <v-btn class="mx-1" color="orange darken-3" outlined small :title="$t('ResetPassword')" v-if="item.$status != 'invited'" :disabled="actionInProgress" @click="invokeAction('resetUserPassword', item)">
             <v-icon small>mdi-lock-reset</v-icon>
           </v-btn>
           <v-btn class="mx-1" color="deep-purple" outlined link small :title="$t('SeeHistory')" :to="{name:'Audits',params:{filters:{userID: item.$userID}}}">

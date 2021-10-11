@@ -202,7 +202,7 @@
                 color="orange darken-3"
                 icon
                 :title="$t('ResetPassword')"
-                :disabled="actionInProgress"
+                :disabled="actionInProgress || item.status == 'invited'"
                 @click="invokeAction('resetUserPassword', item)"
               >
                 <v-icon>mdi-lock-reset</v-icon>

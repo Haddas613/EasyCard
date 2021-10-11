@@ -16,6 +16,7 @@ namespace IdentityServerClient
         InvitationResent = 6,
         UserLocked = 7,
         UserUnlocked = 8,
-        UserUnlinkedFromMerchant = 9
+        UserUnlinkedFromMerchant = 9,
+        UserIsNotRegistered = 10
     }
 }
