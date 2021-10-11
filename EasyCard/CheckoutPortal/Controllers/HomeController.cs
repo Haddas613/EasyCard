@@ -410,7 +410,14 @@ namespace CheckoutPortal.Controllers
                 }
                 else
                 {
-                    return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { transactionID = result.EntityUID }));
+                    if (checkoutConfig.PaymentRequest.OnlyAddCard)
+                    {
+                        return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { tokenID = result.EntityUID }));
+                    }
+                    else
+                    {
+                        return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { transactionID = result.EntityUID }));
+                    }
                 }
             }
         }

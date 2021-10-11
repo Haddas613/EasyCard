@@ -271,11 +271,11 @@
                         </button>
                         @if (Model.IsRefund)
                         {
-                            <input class="btn btn-danger" type="button" name="paybtn" value="@localizer.Get("Refund")" />
+                            <input class="btn btn-danger" type="button" id="submitbtn" value="@localizer.Get("Refund")" />
                         }
                         else
                         {
-                            <button class="btn btn-primary" id="button" name="paybtn"> @localizer.Get("PayWithEasyCard")</button>
+                            <input class="btn btn-primary" type="button" id="submitbtn" value="@localizer.Get("PayWithEasyCard")" />
                         }
                     </div>
                 </form>

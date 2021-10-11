@@ -456,7 +456,7 @@ namespace Transactions.Api.Controllers
                             await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: prmodel.PaymentRequestID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
                         }
 
-                        return tokenResponse.GetOperationResponse()?.InnerResponse;
+                        return tokenResponse;
                     }
                 }
                 else
