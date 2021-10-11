@@ -161,6 +161,14 @@ namespace CheckoutPortal.Controllers
                 }
             }
 
+            if (checkoutConfig.PaymentRequest != null)
+            {
+                if (checkoutConfig.PaymentRequest.OnlyAddCard)
+                {
+                    request.SaveCreditCard = true;
+                }
+            }
+
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
@@ -170,9 +178,9 @@ namespace CheckoutPortal.Controllers
                 if (!request.PinPad && !request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
                 {
                     ModelState.AddModelError(nameof(request.CreditCardToken), "Token is not recognized");
-                    mapper.Map(checkoutConfig.Settings, request);
+
                     logger.LogWarning($"{nameof(Charge)}: unrecognized token from user. Token: {request.CreditCardToken.Value}; PaymentRequestId: {(checkoutConfig.PaymentRequest?.PaymentRequestID.ToString() ?? "-")}");
-                    return View("Index", request);
+                    return await IndexViewResult(checkoutConfig, request);
                 }
 
                 if (request.PinPad)
@@ -201,8 +209,8 @@ namespace CheckoutPortal.Controllers
             if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
             {
                 ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
-                mapper.Map(checkoutConfig.Settings, request);
-                return View("Index", request);
+
+                return await IndexViewResult(checkoutConfig, request);
             }
 
             InstallmentDetails installmentDetails = null;
@@ -210,8 +218,8 @@ namespace CheckoutPortal.Controllers
             if (!checkoutConfig.Settings.TransactionTypes.Any(t => t == request.TransactionType))
             {
                 ModelState.AddModelError(nameof(request.TransactionType), $"{request.TransactionType} is not allowed for this transaction");
-                mapper.Map(checkoutConfig.Settings, request);
-                return View("Index", request);
+
+                return await IndexViewResult(checkoutConfig, request);
             }
 
             if (request.TransactionType == TransactionTypeEnum.Installments || request.TransactionType == TransactionTypeEnum.Credit)
@@ -265,8 +273,7 @@ namespace CheckoutPortal.Controllers
 
             if (!ModelState.IsValid)
             {
-                mapper.Map(checkoutConfig.Settings, request);
-                return View("Index", request);
+                return await IndexViewResult(checkoutConfig, request);
             }
 
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
@@ -314,11 +321,6 @@ namespace CheckoutPortal.Controllers
                     mdel.PaymentRequestAmount = request.Amount ?? checkoutConfig.PaymentRequest.PaymentRequestAmount;
                     mdel.NetTotal = Math.Round(mdel.PaymentRequestAmount.GetValueOrDefault() / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
                     mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
-                }
-
-                if (checkoutConfig.PaymentRequest.OnlyAddCard)
-                {
-                    mdel.SaveCreditCard = true;
                 }
 
                 result = await transactionsApiClient.CreateTransactionPR(mdel);

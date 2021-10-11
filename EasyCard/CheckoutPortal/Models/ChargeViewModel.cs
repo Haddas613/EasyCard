@@ -44,7 +44,7 @@ namespace CheckoutPortal.Models
         public CurrencyEnum Currency { get; set; }
 
         [Required]
-        [Range(0, 10000000)]
+        [Range(0.01, 10000000)]
         public decimal? Amount { get; set; }
 
         /// <summary>

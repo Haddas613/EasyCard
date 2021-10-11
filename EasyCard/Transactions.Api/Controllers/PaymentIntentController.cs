@@ -124,10 +124,10 @@ namespace Transactions.Api.Controllers
             }
 
             // TODO: validation procedure
-            if (model.AllowPinPad == true && !(model.PaymentRequestAmount > 0))
-            {
-                return BadRequest(new OperationResponse(Messages.AmountRequiredForPinpadDeal, StatusEnum.Error));
-            }
+            //if (model.AllowPinPad == true && !(model.PaymentRequestAmount > 0))
+            //{
+            //    return BadRequest(new OperationResponse(Messages.AmountRequiredForPinpadDeal, StatusEnum.Error));
+            //}
 
             // TODO: caching
             var systemSettings = await systemSettingsService.GetSystemSettings();
