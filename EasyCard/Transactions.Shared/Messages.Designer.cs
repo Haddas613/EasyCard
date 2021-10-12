@@ -952,6 +952,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User Amount must be set to true when making transaction without amount.
+        /// </summary>
+        public static string UserAmountRequiredValidationMessage {
+            get {
+                return ResourceManager.GetString("UserAmountRequiredValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Amount can only be specified if Request Amount is 0.
+        /// </summary>
+        public static string UserAmountValidationMessage {
+            get {
+                return ResourceManager.GetString("UserAmountValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment Request Viewed.
         /// </summary>
         public static string Viewed {

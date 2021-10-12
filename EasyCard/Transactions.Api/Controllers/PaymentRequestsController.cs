@@ -186,6 +186,16 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse(Messages.CheckoutFeatureMustBeEnabled, StatusEnum.Error));
             }
 
+            //User amount is only possible if amount is not specified
+            if (model.UserAmount && model.PaymentRequestAmount.GetValueOrDefault(0) != 0)
+            {
+                return BadRequest(new OperationResponse(Messages.UserAmountValidationMessage, StatusEnum.Error));
+            }
+            else if (model.UserAmount == false && model.PaymentRequestAmount.GetValueOrDefault(0) == 0)
+            {
+                return BadRequest(new OperationResponse(Messages.UserAmountRequiredValidationMessage, StatusEnum.Error));
+            }
+
             // TODO: validation procedure
             //if (model.AllowPinPad == true && !(model.PaymentRequestAmount > 0))
             //{

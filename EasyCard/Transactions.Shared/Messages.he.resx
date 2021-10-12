@@ -414,4 +414,10 @@
   <data name="CreditCardTokenChanged" xml:space="preserve">
     <value>אסימון כרטיס האשראי השתנה</value>
   </data>
+  <data name="UserAmountRequiredValidationMessage" xml:space="preserve">
+    <value>חובה לאפשר למשתמש להכניס סכום בנסיון לבצע דרישת תשלום ללא סכום</value>
+  </data>
+  <data name="UserAmountValidationMessage" xml:space="preserve">
+    <value>משתמש יכול להזין סכום רק כאשר הסכום לדרישת התשלום הוא 0.</value>
+  </data>
 </root>

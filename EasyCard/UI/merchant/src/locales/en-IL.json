@@ -324,6 +324,7 @@
   "HasError": "Has Error",
   "HasMasavFile": "Has Masav File",
   "Successful": "Successful",
+  "AllowUserAmount": "Allow User Amount",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

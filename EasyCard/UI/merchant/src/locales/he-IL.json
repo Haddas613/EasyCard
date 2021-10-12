@@ -324,6 +324,7 @@
   "HasError": "בעייתי",
   "HasMasavFile": "קבצי מסב",
   "Successful": "בהצלחה",
+  "AllowUserAmount": "אפשר למשתמש להכניס סכום",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

@@ -414,6 +414,12 @@
   <data name="TransmittedByProcessor" xml:space="preserve">
     <value>Transmitted By Processor</value>
   </data>
+  <data name="UserAmountRequiredValidationMessage" xml:space="preserve">
+    <value>User Amount must be set to true when making transaction without amount</value>
+  </data>
+  <data name="UserAmountValidationMessage" xml:space="preserve">
+    <value>User Amount can only be specified if Request Amount is 0</value>
+  </data>
   <data name="Viewed" xml:space="preserve">
     <value>Payment Request Viewed</value>
   </data>
