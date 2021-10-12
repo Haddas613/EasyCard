@@ -305,7 +305,7 @@
   "ErrorMessage": "הודעת שגיאה",
   "WebUrl": "כתובת אינטרנטית",
   "ErrorDescription": "תיאור שגיאה",
-  "ExternalReference": "אסמכתא חיצונית",
+  "ExternalReference": "מזהה חיצוני",
   "PaymentIntentURL": "קישור לכוונת תשלום",
   "AllowPinPad": "אפשר לבצע עסקאות פינפד",
   "AuthorizationCode": "קוד אימות (אופציונאלי)",
