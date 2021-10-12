@@ -18,7 +18,7 @@
       </v-col>
       <v-col cols="12" md="6" class="pb-2" v-bind:class="{'pt-2': $vuetify.breakpoint.smAndDown, 'pt-7': $vuetify.breakpoint.mdAndUp}">
         <customer-dialog-invoker
-          :terminal="true" 
+          :terminal="model.terminalID" 
           :customer-id="model.dealDetails.consumerID" 
           @update="processCustomer($event)"
           ref="customerDialogInvoker"></customer-dialog-invoker>

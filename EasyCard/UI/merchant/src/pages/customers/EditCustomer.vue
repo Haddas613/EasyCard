@@ -7,10 +7,11 @@
 </template>
 
 <script>
-import CustomerForm from "../../components/customers/CustomerForm";
 
 export default {
-  components: { CustomerForm },
+  components: { 
+    CustomerForm: () => import("../../components/customers/CustomerForm")
+  },
   data() {
     return {
       model: null
