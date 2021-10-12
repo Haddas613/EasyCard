@@ -30,7 +30,7 @@ namespace Merchants.Api.Controllers
         }
 
         [HttpGet]
-        [ResponseCache(VaryByQueryKeys = new string[] { "showForTemplatesOnly" })]
+        [ResponseCache(VaryByQueryKeys = new string[] { "showForTemplatesOnly" }, Duration = 3600)]
         [Route("externalsystems")]
         public async Task<ActionResult<SummariesResponse<ExternalSystemSummary>>> GetExternalSystems(bool showForTemplatesOnly = false)
         {

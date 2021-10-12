@@ -119,6 +119,7 @@
   "Reporting": "Reporting",
   "TerminalsTokens": "Terminals Tokens",
   "TokensTransactions": "Tokens Transactions",
+  "ListOfPinpadDevices": "List of PinPad Devices",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
