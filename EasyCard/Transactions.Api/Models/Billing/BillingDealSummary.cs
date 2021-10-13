@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Shared.Enums;
 using Transactions.Shared.Models;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Models.Billing
 {
@@ -55,5 +56,11 @@ namespace Transactions.Api.Models.Billing
         public bool Paused { get; set; }
 
         public PaymentTypeEnum PaymentType { get; set; }
+
+        /// <summary>
+        /// Deal information
+        /// </summary>
+        [MetadataOptions(Hidden = true)]
+        public SharedIntegration.Models.DealDetails DealDetails { get; set; }
     }
 }

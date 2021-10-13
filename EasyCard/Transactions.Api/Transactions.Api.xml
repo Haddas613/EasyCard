@@ -230,6 +230,11 @@
             Billing Schedule
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.DealDetails">
+            <summary>
+            Deal information
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryAdmin.Currency">
             <summary>
             Currency
