@@ -211,10 +211,12 @@ export default {
         },
         2: {
             title: "Basket",
+            autoskip: true,
         },
         3: {
             title: "ChooseCustomer",
             skippable: true,
+            quickChargeExclude: true,
         },
         4: {
             title: "PaymentInfo",
@@ -300,10 +302,14 @@ export default {
       //   }
       // }
     },
-    goBack() {
+    goBack(acc = 1) {
       if (this.step === 1) this.$router.push({ name: "Dashboard" });
       else { 
-        this.step--;
+        let prevStep = this.steps[this.step - acc];
+        if(prevStep.autoskip || (this.quickChargeMode && prevStep.quickChargeExclude)){
+          return this.goBack(++acc);
+        }
+        this.step -= acc;
       }
     },
     terminalChanged() {
