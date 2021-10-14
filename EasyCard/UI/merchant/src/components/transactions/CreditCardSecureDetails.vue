@@ -89,7 +89,7 @@
             </template>
             <v-text-field
               v-model="model.oKNumber"
-              :label="$t('AuthorizationCode')"
+              :label="$t('AuthorizationCodeOptional')"
               :rules="[vr.primitives.stringLength(1, 50)]">
             </v-text-field>
         </template>
