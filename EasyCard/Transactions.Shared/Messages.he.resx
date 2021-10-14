@@ -382,7 +382,7 @@
     <value>יכול להנפיק חשבוניות רק עבור עסקאות ILS</value>
   </data>
   <data name="AuthorizationCodeRequired" xml:space="preserve">
-    <value>נדרש קוד אימות. התקשר ל@number ותיידע אותם במספר ספק האשראי @retailer על מנת לקבל קוד אימות ולבצע עסקה.</value>
+    <value>נדרש קוד אימות. התקשר ל@number ותיידע אותם במספר ספק האשראי @retailer על מנת לקבל קוד אימות ולנסות שוב לבצע עסקה</value>
   </data>
   <data name="J5ExpirationDate" xml:space="preserve">
     <value>תאריך פקיעת התוקף של שריון המסגרת {0}</value>

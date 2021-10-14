@@ -82,6 +82,9 @@
                   >{{$t("GoToInvoice")}}</router-link>
                 </p>
               </template>
+              <v-flex class="text-center pt-2">
+                <v-btn outlined color="success" link :to="{name: 'Dashboard'}">{{$t("Close")}}</v-btn>
+              </v-flex>
             </template>
             <template v-slot:slip v-if="transaction">
               <transaction-printout ref="printout" :transaction="transaction"></transaction-printout>

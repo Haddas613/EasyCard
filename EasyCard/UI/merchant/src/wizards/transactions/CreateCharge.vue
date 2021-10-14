@@ -100,7 +100,7 @@
             </template>
 
             <v-flex class="text-center pt-2">
-              <v-btn outlined color="success" @click="$router.push({name: 'Dashboard'})">{{$t("Close")}}</v-btn>
+              <v-btn outlined color="success" link :to="{name: 'Dashboard'}">{{$t("Close")}}</v-btn>
             </v-flex>
           </template>
           <template v-slot:errors v-if="result.additionalData && result.additionalData.authorizationCodeRequired">
