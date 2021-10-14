@@ -427,7 +427,28 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> CancelPayment(ChargeViewModel request)
         {
-            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+            CheckoutData checkoutConfig;
+
+            if (request.ApiKey != null)
+            {
+                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+            }
+            else
+            {
+                //TODO
+                //bool isPaymentIntent = request.PaymentIntent != null;
+
+                //if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
+                //{
+                //    throw new BusinessException(Messages.InvalidCheckoutData);
+                //}
+
+                if (!Guid.TryParse(request.PaymentRequest, out var id))
+                {
+                    throw new BusinessException(Messages.InvalidCheckoutData);
+                }
+                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, false);
+            }
 
             if (checkoutConfig.PaymentRequest != null)
             {
