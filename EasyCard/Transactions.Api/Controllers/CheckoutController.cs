@@ -62,7 +62,6 @@ namespace Transactions.Api.Controllers
             this.consumersService = consumersService;
             this.creditCardTokenService = creditCardTokenService;
             this.paymentIntentService = paymentIntentService;
-            this.apiSettings = apiSettings.Value;
         }
 
         [HttpGet]
