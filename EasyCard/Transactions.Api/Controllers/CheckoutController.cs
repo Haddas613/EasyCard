@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Shared.Api;
+using Shared.Api.Configuration;
 using Shared.Business.Security;
 using Shared.Integration;
 using System;
@@ -60,6 +62,7 @@ namespace Transactions.Api.Controllers
             this.consumersService = consumersService;
             this.creditCardTokenService = creditCardTokenService;
             this.paymentIntentService = paymentIntentService;
+            this.apiSettings = apiSettings.Value;
         }
 
         [HttpGet]

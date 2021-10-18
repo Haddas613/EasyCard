@@ -22,5 +22,8 @@ namespace Merchants.Api
 
         [JsonProperty("VUE_APP_MERCHANT_API_BASE_ADDRESS")]
         public string VUE_APP_MERCHANT_API_BASE_ADDRESS { get; set; }
+
+        [JsonProperty("VUE_APP_BLOB_BASE_ADDRESS")]
+        public string VUE_APP_BLOB_BASE_ADDRESS { get; set; }
     }
 }

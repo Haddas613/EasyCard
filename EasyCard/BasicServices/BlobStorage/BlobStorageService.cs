@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 using Microsoft.Azure.Cosmos.Table;
 using Microsoft.Extensions.Logging;
@@ -31,13 +32,14 @@ namespace BasicServices.BlobStorage
             }
         }
 
-        public async Task<string> Upload(string filename, Stream stream)
+        public async Task<string> Upload(string filename, Stream stream, string contentType = null)
         {
             var blob = _client.GetBlobClient(filename);
+            BlobHttpHeaders blobHeaders = string.IsNullOrWhiteSpace(contentType) ? null : new BlobHttpHeaders { ContentType = contentType };
 
             try
             {
-                await blob.UploadAsync(stream, true);
+                await blob.UploadAsync(stream, httpHeaders: blobHeaders);
             }
             catch (Exception e)
             {

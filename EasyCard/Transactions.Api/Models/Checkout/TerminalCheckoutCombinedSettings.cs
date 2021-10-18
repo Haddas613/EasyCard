@@ -43,5 +43,7 @@ namespace Transactions.Api.Models.Checkout
         public IEnumerable<TransactionTypeEnum> TransactionTypes { get; set; }
 
         public IEnumerable<PinPadDevice> PinPadDevices { get; set; }
+
+        public string BlobBaseAddress { get; set; }
     }
 }

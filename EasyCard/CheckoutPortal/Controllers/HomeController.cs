@@ -22,6 +22,7 @@ using Shared.Integration.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
+using Shared.Api.Configuration;
 
 namespace CheckoutPortal.Controllers
 {
@@ -34,6 +35,7 @@ namespace CheckoutPortal.Controllers
         private readonly IMapper mapper;
         private readonly RequestLocalizationOptions localizationOptions;
         private readonly IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext;
+        private readonly ApiSettings apiSettings;
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -41,7 +43,8 @@ namespace CheckoutPortal.Controllers
             ICryptoServiceCompact cryptoServiceCompact,
             IMapper mapper,
             IOptions<RequestLocalizationOptions> localizationOptions,
-            IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext)
+            IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext,
+            IOptions<ApiSettings> apiSettings)
         {
             this.logger = logger;
             this.transactionsApiClient = transactionsApiClient;
@@ -49,6 +52,7 @@ namespace CheckoutPortal.Controllers
             this.mapper = mapper;
             this.localizationOptions = localizationOptions.Value;
             this.transactionsHubContext = transactionsHubContext;
+            this.apiSettings = apiSettings.Value;
         }
 
         /// <summary>
@@ -668,7 +672,7 @@ namespace CheckoutPortal.Controllers
             }
 
             checkoutConfig.Settings.TransactionTypes = transactionTypes;
-
+            checkoutConfig.Settings.BlobBaseAddress = apiSettings.BlobBaseAddress;
             return checkoutConfig;
         }
 

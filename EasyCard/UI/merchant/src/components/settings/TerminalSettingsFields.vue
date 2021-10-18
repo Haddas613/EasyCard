@@ -311,7 +311,7 @@
       </v-col>
       <v-col cols="12" md="5">
         <div  class="d-flex justify-items-center" v-if="model.paymentRequestSettings.merchantLogo">
-          <img class="mt-1" v-bind:src="model.paymentRequestSettings.merchantLogo" height="48">
+          <img class="mt-1" v-bind:src="getBlobUrl(model.paymentRequestSettings.merchantLogo)" height="48">
           <v-btn class="mt-2" icon color="error" @click="deleteMerchantLogo()">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
@@ -354,7 +354,7 @@
       </v-col>
       <v-col cols="12" md="5">
         <div v-if="model.checkoutSettings.customCssReference" class="mt-5">
-          <a class="body-1" v-bind:href="model.checkoutSettings.customCssReference">
+          <a class="body-1" v-bind:href="getBlobUrl(model.checkoutSettings.customCssReference)">
             {{$t("LinkToCSS")}}
           </a>
           <v-btn icon color="error" @click="deleteCustomCSS()">
@@ -607,6 +607,9 @@ export default {
       let operation = await this.$api.terminals.deleteMerchantLogo(this.data.terminalID);
       if(!this.$apiSuccess(operation)) return;
        this.data.paymentRequestSettings.merchantLogo = null;
+    },
+    getBlobUrl(resource){
+      return `${this.$cfg.VUE_APP_BLOB_BASE_ADDRESS}/${resource}`;
     }
   }
 };
