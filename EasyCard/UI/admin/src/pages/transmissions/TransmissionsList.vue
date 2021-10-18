@@ -32,7 +32,7 @@
           </router-link>
         </template> 
         <template v-slot:item.totalAmount="{ item }">
-          <b class="text-right">{{item.totalAmount | currency(item.currency)}}</b>
+          <b class="justify-currency">{{item.totalAmount | currency(item.currency)}}</b>
         </template>
         <template v-slot:item.solek="{ item }">
           <span class="secondary--text">{{item.solek}}</span>

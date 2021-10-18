@@ -32,7 +32,7 @@
           </router-link>
         </template> 
         <template v-slot:item.transactionAmount="{ item }">
-          <b class="text-right">{{item.transactionAmount | currency(item.currency)}}</b>
+          <b class="justify-currency">{{item.transactionAmount | currency(item.currency)}}</b>
         </template>
         <template v-slot:item.quickStatus="{ item }">
           <span v-bind:class="quickStatusesColors[item.$quickStatus]">{{$t(item.quickStatus || 'None')}}</span>
