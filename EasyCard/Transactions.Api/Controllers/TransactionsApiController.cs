@@ -155,7 +155,6 @@ namespace Transactions.Api.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<IEnumerable<GroupedSummariesResponse<TransactionSummary>>>> GetTransactionsGrouped([FromQuery] Guid? terminalID)
         {
-            return Ok(new List<object>());
             Debug.WriteLine(User);
             var merchantID = User.GetMerchantID();
             var userIsTerminal = User.IsTerminal();
