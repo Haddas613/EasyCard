@@ -126,14 +126,6 @@ export default {
     }
   },
   mounted() {
-    if (!this.model.numberOfPayments) {
-      this.model.numberOfPayments = 1;
-    }
-    if (!this.model.initialPaymentAmount) {
-      this.model.initialPaymentAmount =
-        this.totalAmount / this.model.numberOfPayments;
-    }
-    
     if(this.transactionType == appConstants.transaction.types.credit){
       this.minInstallments = this.terminalStore.settings.minCreditInstallments || 1;
       this.maxInstallments = this.terminalStore.settings.maxCreditInstallments || 36;
@@ -143,6 +135,12 @@ export default {
     }
     this.numberOfPaymentsArr = this.lodash.range(this.minInstallments, this.maxInstallments + 1);
     this.model.numberOfPayments = this.minInstallments;
+
+    if (!this.model.initialPaymentAmount) {
+      this.model.initialPaymentAmount =
+        this.totalAmount / this.model.numberOfPayments;
+    }
+    this.updateInstallments();
   }
 };
 </script>

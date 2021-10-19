@@ -139,7 +139,6 @@ export default {
       });
       this.systemLogs = data.data;
       this.totalAmount = (data.data.length >= this.options.itemsPerPage ? data.data.length + 1 : data.data.length) * this.options.page;
-      console.log(this.totalAmount)
       this.loading = false;
 
       if (!this.headers || this.headers.length === 0) {
