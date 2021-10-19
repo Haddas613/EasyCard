@@ -10,24 +10,6 @@
           :label="$t('JDealType')"
           outlined
         ></v-select>
-        <v-select
-          :items="dictionaries.transactionTypeEnum"
-          item-text="description"
-          item-value="code"
-          v-model="model.transactionType"
-          :label="$t('TransactionType')"
-          @change="updateTransactionType()"
-          outlined
-        ></v-select>
-
-        <installment-details
-          ref="instDetails"
-          :data="model.installmentDetails"
-          v-if="isInstallmentTransaction"
-          :total-amount="model.transactionAmount"
-          :key="model.transactionType"
-          :transaction-type="model.transactionType"
-        ></installment-details>
 
         <deal-details
           ref="dealDetails"
@@ -62,7 +44,6 @@ import { mapState } from "vuex";
 export default {
   components: {
     EcMoney: () => import("../ec/EcMoney"),
-    InstallmentDetails: () => import("./InstallmentDetailsForm"),
     DealDetails: () => import("../transactions/DealDetailsFields"),
     InvoiceDetailsFields: () => import("../invoicing/InvoiceDetailsFields"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
@@ -147,6 +128,7 @@ export default {
     else if(this.issueDocument){
       this.switchIssueDocument = this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing);
     }
+    this.updateTransactionType();
   },
   methods: {
     ok(quickCharge) {
@@ -155,12 +137,7 @@ export default {
       }
 
       let result = { ...this.model };
-      if (this.$refs.instDetails) {
-        result.installmentDetails = this.$refs.instDetails.getData();
-      }else{
-        result.installmentDetails = null;
-      }
-
+      
       if (this.switchIssueDocument) {
         result.invoiceDetails = this.$refs.invoiceDetails.getData();
       } else {

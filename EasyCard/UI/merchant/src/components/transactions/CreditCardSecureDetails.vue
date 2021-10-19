@@ -95,6 +95,22 @@
               :rules="[vr.primitives.stringLength(1, 50)]">
             </v-text-field>
         </template>
+        <v-select
+          :items="dictionaries.transactionTypeEnum"
+          item-text="description"
+          item-value="code"
+          v-model="model.transactionType"
+          :label="$t('TransactionType')"
+          outlined
+        ></v-select>
+        <installment-details
+          ref="instDetails"
+          :data="model.installmentDetails"
+          v-if="isInstallmentTransaction"
+          :total-amount="model.transactionAmount"
+          :key="model.transactionType"
+          :transaction-type="model.transactionType"
+        ></installment-details>
       </v-form>
     </v-card-text>
     <v-card-actions class="px-4">
@@ -119,7 +135,8 @@ export default {
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
     EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
-    CardTokenString: () => import("../../components/ctokens/CardTokenString")
+    CardTokenString: () => import("../../components/ctokens/CardTokenString"),
+    InstallmentDetails: () => import("./InstallmentDetailsForm"),
   },
   props: {
     data: {
@@ -147,10 +164,16 @@ export default {
       appConstants: appConstants,
       selectedPinPadDevice: null,
       availableDevices: [],
-      vr: ValidationRules
+      vr: ValidationRules,
+      dictionaries: {},
     };
   },
   async mounted() {
+    let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+    if (dictionaries) {
+      this.dictionaries = dictionaries;
+      this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
+    }
     if (this.model.dealDetails.consumerID) {
       this.customerTokens =
         (
@@ -164,8 +187,6 @@ export default {
       this.selectedToken = this.selectedTokenObj = null;
     }
     await this.checkPinPadAvailability();
-
-
   },
   computed: {
     token: {
@@ -181,27 +202,42 @@ export default {
     ...mapState({
       terminalStore: state => state.settings.terminal
     }),
+    isInstallmentTransaction() {
+      return (
+        this.model.transactionType === "installments" ||
+        this.model.transactionType === "credit"
+      );
+    }
   },
   methods: {
     ok() {
       let form = this.$refs.form.validate();
       if (!form) return;
+      let result = null;
 
       if (this.model.pinPad) {
-        this.okDevice();
+        result = this.okDevice();
       } 
       else if (this.selectedToken) {
-        this.okCardToken();
+        result = this.okCardToken();
       } else {
-        this.okCreditCard();
+        result = this.okCreditCard();
       }
+
+      if (this.$refs.instDetails) {
+        result.installmentDetails = this.$refs.instDetails.getData();
+      }else{
+        result.installmentDetails = null;
+      }
+      result.transactionType = this.model.transactionType;
+      this.$emit("ok", result);
     },
     resetToken() {
       this.token = null;
     },
     okDevice(){
       if(!this.cardOwnerNationalID)
-      this.$emit("ok", {
+      return {
         type: "device",
         data: {
           pinPad: true,
@@ -209,16 +245,16 @@ export default {
           oKNumber: this.model.oKNumber,
           cardOwnerNationalID: this.model.cardOwnerNationalID
         }
-      });
+      };
     },
     okCardToken() {
       if (!this.selectedToken) return;
 
-      this.$emit("ok", {
+      return {
         type: "token",
         data: this.selectedToken,
         oKNumber: this.model.oKNumber
-      });
+      };
     },
     okCreditCard() {
       let data = this.$refs.ccsecuredetailsform.getData();
@@ -227,7 +263,7 @@ export default {
         return;
       }
 
-      this.$emit("ok", {
+      return {
         type: "creditcard",
         data: {
           ...this.model.creditCardSecureDetails,
@@ -235,7 +271,7 @@ export default {
           saveCreditCard: this.model.saveCreditCard,
           oKNumber: this.model.oKNumber
         }
-      });
+      };
     },
     handleClick() {
       this.tokensDialog = this.customerTokens && this.customerTokens.length > 0;

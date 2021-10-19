@@ -381,6 +381,9 @@ export default {
     },
     processCreditCard(data) {
       this.model.oKNumber = data.oKNumber;
+      this.$set(this.model, 'installmentDetails', data.installmentDetails);
+      this.model.transactionType = data.transactionType;
+      
       if (data.type === "creditcard") {
         data = data.data;
         this.model.saveCreditCard = data.saveCreditCard || false;
@@ -425,10 +428,8 @@ export default {
     },
     async processAdditionalSettings(data) {
       this.model.dealDetails = data.dealDetails;
-      this.model.transactionType = data.transactionType;
       this.model.currency = data.currency;
       this.model.jDealType = data.jDealType;
-      this.model.installmentDetails = data.installmentDetails;
       this.model.terminalID = this.terminal.terminalID;
       if(!this.quickChargeMode){
         this.model.invoiceDetails = data.invoiceDetails;
