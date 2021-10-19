@@ -127,7 +127,7 @@
     <value>Approve transaction on device</value>
   </data>
   <data name="AuthorizationCodeRequired" xml:space="preserve">
-    <value>Authorization code is required. Call @number and tell them the supplier number @retailer to get the authorization code and create a new transaction with it specified.</value>
+    <value>Authorization code is required. Call @number and tell them the supplier number @retailer to get the authorization code and try again.</value>
   </data>
   <data name="AwaitingForTransmission" xml:space="preserve">
     <value>Awaiting for Transmission</value>

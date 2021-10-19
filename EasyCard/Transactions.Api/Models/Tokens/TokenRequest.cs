@@ -31,5 +31,10 @@ namespace Transactions.Api.Models.Tokens
         /// </summary>
         [MaxLength(50)]
         public string ConsumerEmail { get; set; }
+
+        /// <summary>
+        /// Authorization code
+        /// </summary>
+        public string OKNumber { get; set; }
     }
 }

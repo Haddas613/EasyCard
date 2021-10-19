@@ -83,6 +83,10 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))
                 .ForMember(d => d.CardBin, o => o.MapFrom(d => CreditCardHelpers.GetCardBin(d.CardNumber)));
 
+            CreateMap<CreditCardTokenKeyVault, PaymentTransaction>()
+                .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.OKNumber))
+                .ForAllOtherMembers(d => d.Ignore());
+
             CreateMap<RefundRequest, CreateTransactionRequest>();
             CreateMap<BlockCreditCardRequest, CreateTransactionRequest>();
             CreateMap<CheckCreditCardRequest, CreateTransactionRequest>();

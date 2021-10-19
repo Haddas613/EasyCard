@@ -33,5 +33,7 @@ namespace Transactions.Business.Entities
                 this.RowKey = value.ToString();
             }
         }
+
+        public bool Deleted { get; set; }
     }
 }

@@ -37,7 +37,7 @@
             <input type="checkbox" v-model="item.selected" :disabled="item.$status == 'sending'">
           </template>
           <template v-slot:item.invoiceAmount="{ item }">
-            <b>{{item.invoiceAmount | currency(item.currency)}}</b>
+            <b class="justify-currency">{{item.invoiceAmount | currency(item.currency)}}</b>
           </template>
           <template v-slot:item.actions="{ item }">
             <v-btn outlined color="success" small :disabled="item.$status != 'sent'" :title="$t('ClickToDownload')" @click="downloadInvoicePDF(item.$invoiceID)">

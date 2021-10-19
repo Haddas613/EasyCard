@@ -164,7 +164,7 @@ namespace MerchantProfileApi.Controllers
 
                 var filename = $"merchantdata/{terminal.TerminalID.ToString().Substring(0, 8)}/logo{Path.GetExtension(file.FileName)}";
 
-                var url = await blobStorageService.Upload(filename, uploadStream);
+                var url = await blobStorageService.Upload(filename, uploadStream, file.ContentType);
 
                 terminal.PaymentRequestSettings.MerchantLogo = url;
                 await terminalsService.UpdateEntity(terminal);
@@ -228,7 +228,7 @@ namespace MerchantProfileApi.Controllers
 
                 var filename = $"merchantdata/{terminal.TerminalID.ToString().Substring(0, 8)}/style.css";
 
-                var url = await blobStorageService.Upload(filename, uploadStream);
+                var url = await blobStorageService.Upload(filename, uploadStream, file.ContentType);
 
                 terminal.CheckoutSettings.CustomCssReference = url;
                 await terminalsService.UpdateEntity(terminal);

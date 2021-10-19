@@ -72,14 +72,19 @@
               <router-link class="primary--text" link
                   :to="{ name: 'Transaction', params: { id: result.entityReference } }"
                 >{{$t("GoToTransaction")}}</router-link>
-              <div class="pt-4" v-if="result.innerResponse">
-                <p v-if="result.innerResponse.status == 'error'">
+              <template v-if="result.innerResponse">
+                <p class="pt-4" v-if="result.innerResponse.status == 'error'">
                   {{result.innerResponse.message}}
                 </p>
-                <router-link v-else class="primary--text" link
-                  :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
-                >{{$t("GoToInvoice")}}</router-link>
-              </div>
+                <p class="pt-4" v-else>
+                  <router-link class="primary--text" link
+                    :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
+                  >{{$t("GoToInvoice")}}</router-link>
+                </p>
+              </template>
+              <v-flex class="text-center pt-2">
+                <v-btn outlined color="success" link :to="{name: 'Dashboard'}">{{$t("Close")}}</v-btn>
+              </v-flex>
             </template>
             <template v-slot:slip v-if="transaction">
               <transaction-printout ref="printout" :transaction="transaction"></transaction-printout>

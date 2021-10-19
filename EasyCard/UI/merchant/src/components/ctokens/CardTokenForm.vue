@@ -15,6 +15,25 @@
           :tokens="customerTokens"
           ref="ccsecuredetailsform"
         ></credit-card-secure-details-fields>
+
+        <v-alert
+          class="mt-4"
+          dense 
+          color="error"
+          colored-border
+          icon="mdi-alert"
+          :border="$vuetify.rtl ? 'right': 'left'"
+          v-if="authCodeRequired"
+        >
+          <small>{{authCodeRequired}}</small>
+        </v-alert>
+        <v-text-field
+          v-bind:class="{'mt-4': !authCodeRequired, 'pt-0': authCodeRequired}"
+          outlined
+          v-model="model.oKNumber"
+          :label="authCodeRequired ? $t('AuthorizationCode') : $t('AuthorizationCodeOptional')"
+          :rules="[vr.primitives.requiredDepends(authCodeRequired), vr.primitives.stringLength(1, 50)]">
+        </v-text-field>
       </v-form>
     </v-card-text>
     <v-card-actions v-if="showActions">
@@ -57,6 +76,11 @@ export default {
       type: Boolean,
       default: true,
       required: false
+    },
+    authCodeRequired: {
+      type: String,
+      default: null,
+      required: false
     }
   },
   data() {
@@ -92,10 +116,15 @@ export default {
     this.model.cardOwnerNationalID = this.customer.consumerNationalID;
     this.model.consumerEmail = this.customer.consumerEmail;
   },
+  watch: {
+    authCodeRequired(newValue, oldValue) {
+      this.$nextTick(() => this.$refs.form.validate())
+    }
+  },
   methods: {
     ok() {
       let data = this.getData();
-
+      
       if(!data){ return;}
 
       this.$emit("ok", data);
@@ -106,6 +135,8 @@ export default {
       if (!form) return;
 
       let data = this.$refs.ccsecuredetailsform.getData();
+
+      if (!data) return;
 
       return {
         ...this.model,

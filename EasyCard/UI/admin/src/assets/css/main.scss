@@ -185,3 +185,12 @@ pre {
   border-color: #e0e0e0;
   border-style: solid;
 }
+
+.justify-currency{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rtl .justify-currency{
+  justify-content: flex-start !important;
+}
