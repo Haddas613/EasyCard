@@ -27,7 +27,7 @@ namespace Shared.Api.Logging
 
             var selector = builder.AddTemplate("SELECT [ID], [LogLevel], [CategoryName], [Message], [UserName], [UserID], [IP], [Timestamp], [CorrelationID], [Exception], [ApiName], [Host], [Url], [MachineName] FROM [dbo].[SystemLog] WITH(NOLOCK) /**where**/ /**orderby**/ OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY", new { take, skip });
 
-            var count = builder.AddTemplate("SELECT COUNT (*) FROM [dbo].[SystemLog] WITH(NOLOCK) /**where**/");
+            //var count = builder.AddTemplate("SELECT COUNT (*) FROM [dbo].[SystemLog] WITH(NOLOCK) /**where**/");
 
             builder.OrderBy($"[{GetSortBy(query)}] {(query.SortDesc.GetValueOrDefault(true) ? "DESC" : "ASC")}");
 
@@ -96,7 +96,7 @@ namespace Shared.Api.Logging
             {
                 var response = new SummariesResponse<DatabaseLogEntry>
                 {
-                    NumberOfRecords = await connection.QuerySingleOrDefaultAsync<int>(count.RawSql, count.Parameters),
+                    //NumberOfRecords = await connection.QuerySingleOrDefaultAsync<int>(count.RawSql, count.Parameters),
                     Data = await connection.QueryAsync<DatabaseLogEntry>(selector.RawSql, selector.Parameters)
                 };
 

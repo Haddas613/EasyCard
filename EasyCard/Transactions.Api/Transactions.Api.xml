@@ -1131,6 +1131,11 @@
             Reference to initial transaction
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenKeyVault.OKNumber">
+            <summary>
+            Authorization code
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenSummary.ConsumerID">
             <summary>
             Consumer ID
@@ -1159,6 +1164,11 @@
         <member name="P:Transactions.Api.Models.Tokens.TokenRequest.ConsumerEmail">
             <summary>
             End-customer Email
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.TokenRequest.OKNumber">
+            <summary>
+            Authorization code
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.BlockCreditCardRequest">

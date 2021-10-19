@@ -8,7 +8,7 @@ namespace BasicServices.BlobStorage
 {
     public interface IBlobStorageService
     {
-        Task<string> Upload(string filename, Stream stream);
+        Task<string> Upload(string filename, Stream stream, string contentType = null);
 
         string GetDownloadUrl(string blobUri);
     }

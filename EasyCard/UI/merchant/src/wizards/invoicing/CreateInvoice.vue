@@ -51,6 +51,9 @@
                 <p>{{customer.consumerEmail}}</p>
               </div>
             </template>
+            <v-flex class="text-center pt-2">
+              <v-btn outlined color="success" link :to="{name: 'Dashboard'}">{{$t("Close")}}</v-btn>
+            </v-flex>
           </wizard-result>
         </v-stepper-content>
       </v-stepper-items>

@@ -128,6 +128,7 @@ namespace Transactions.Api.Controllers
                 }
 
                 mapper.Map(token, transaction.CreditCardDetails);
+                mapper.Map(token, transaction);
 
                 dbToken = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.CreditCardTokenID == model.CreditCardToken));
 
@@ -377,7 +378,7 @@ namespace Transactions.Api.Controllers
                     if (processorResponse.RejectReasonCode == RejectionReasonEnum.AuthorizationCodeRequired)
                     {
                         var message = Messages.AuthorizationCodeRequired.Replace("@number", processorResponse.TelToGetAuthNum).Replace("@retailer", processorResponse.CompRetailerNum);
-                        processorFailedRsponse = BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier) { AdditionalData = JObject.FromObject(new { authorizationCodeRequired = true }) } );
+                        processorFailedRsponse = BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier) { AdditionalData = JObject.FromObject(new { authorizationCodeRequired = true, message }) } );
                     }
                     else
                     {

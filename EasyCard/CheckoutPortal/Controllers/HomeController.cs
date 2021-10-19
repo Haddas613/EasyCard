@@ -22,6 +22,7 @@ using Shared.Integration.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
+using Shared.Api.Configuration;
 
 namespace CheckoutPortal.Controllers
 {
@@ -34,6 +35,7 @@ namespace CheckoutPortal.Controllers
         private readonly IMapper mapper;
         private readonly RequestLocalizationOptions localizationOptions;
         private readonly IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext;
+        private readonly ApiSettings apiSettings;
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -41,7 +43,8 @@ namespace CheckoutPortal.Controllers
             ICryptoServiceCompact cryptoServiceCompact,
             IMapper mapper,
             IOptions<RequestLocalizationOptions> localizationOptions,
-            IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext)
+            IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext,
+            IOptions<ApiSettings> apiSettings)
         {
             this.logger = logger;
             this.transactionsApiClient = transactionsApiClient;
@@ -49,6 +52,7 @@ namespace CheckoutPortal.Controllers
             this.mapper = mapper;
             this.localizationOptions = localizationOptions.Value;
             this.transactionsHubContext = transactionsHubContext;
+            this.apiSettings = apiSettings.Value;
         }
 
         /// <summary>
@@ -427,7 +431,28 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> CancelPayment(ChargeViewModel request)
         {
-            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+            CheckoutData checkoutConfig;
+
+            if (request.ApiKey != null)
+            {
+                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+            }
+            else
+            {
+                //TODO
+                //bool isPaymentIntent = request.PaymentIntent != null;
+
+                //if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
+                //{
+                //    throw new BusinessException(Messages.InvalidCheckoutData);
+                //}
+
+                if (!Guid.TryParse(request.PaymentRequest, out var id))
+                {
+                    throw new BusinessException(Messages.InvalidCheckoutData);
+                }
+                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, false);
+            }
 
             if (checkoutConfig.PaymentRequest != null)
             {
@@ -647,7 +672,7 @@ namespace CheckoutPortal.Controllers
             }
 
             checkoutConfig.Settings.TransactionTypes = transactionTypes;
-
+            checkoutConfig.Settings.BlobBaseAddress = apiSettings.BlobBaseAddress;
             return checkoutConfig;
         }
 

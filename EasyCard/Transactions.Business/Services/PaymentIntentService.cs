@@ -38,9 +38,10 @@ namespace Transactions.Business.Services
                 throw new EntityNotFoundException("Payment Intent not found", "PaymentIntent", paymentIntentID.ToString());
             }
 
-            TableOperation deleteOperation = TableOperation.Delete(paymentIntent);
+            paymentIntent.Deleted = true;
 
-            var res2 = await table.ExecuteAsync(deleteOperation);
+            TableOperation updateOperation = TableOperation.Replace(paymentIntent);
+            var resUpdate = await table.ExecuteAsync(updateOperation);
 
             // TODO: do we need to throw exception here ?
         }
@@ -55,10 +56,11 @@ namespace Transactions.Business.Services
 
             if (res.Result != null)
             {
-                var paymentRequestStr = ((PaymentIntent)res.Result)?.PaymentRequest;
-                if (!string.IsNullOrWhiteSpace(paymentRequestStr))
+                var paymentIntent = (PaymentIntent)res.Result;
+
+                if (!paymentIntent.Deleted && !string.IsNullOrWhiteSpace(paymentIntent?.PaymentRequest))
                 {
-                    return response = JsonConvert.DeserializeObject<PaymentRequest>(paymentRequestStr);
+                    response = JsonConvert.DeserializeObject<PaymentRequest>(paymentIntent?.PaymentRequest);
                 }
             }
 

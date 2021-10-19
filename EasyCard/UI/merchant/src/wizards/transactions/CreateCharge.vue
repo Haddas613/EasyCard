@@ -88,17 +88,19 @@
               :to="{ name: 'Transaction', params: { id: result.entityReference } }"
             >{{$t("GoToTransaction")}}</router-link>
 
-            <template class="pt-2" v-if="result.innerResponse">
-              <p v-if="result.innerResponse.status == 'error'">
+            <template v-if="result.innerResponse">
+              <p class="pt-4" v-if="result.innerResponse.status == 'error'">
                 {{result.innerResponse.message}}
               </p>
-              <router-link v-else class="primary--text" link
-                :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
-              >{{$t("GoToInvoice")}}</router-link>
+              <p class="pt-4" v-else>
+                <router-link class="primary--text" link
+                  :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
+                >{{$t("GoToInvoice")}}</router-link>
+              </p>
             </template>
 
             <v-flex class="text-center pt-2">
-              <v-btn outlined color="success" @click="$router.push({name: 'Dashboard'})">{{$t("Close")}}</v-btn>
+              <v-btn outlined color="success" link :to="{name: 'Dashboard'}">{{$t("Close")}}</v-btn>
             </v-flex>
           </template>
           <template v-slot:errors v-if="result.additionalData && result.additionalData.authorizationCodeRequired">
@@ -379,6 +381,9 @@ export default {
     },
     processCreditCard(data) {
       this.model.oKNumber = data.oKNumber;
+      this.$set(this.model, 'installmentDetails', data.installmentDetails);
+      this.model.transactionType = data.transactionType;
+      
       if (data.type === "creditcard") {
         data = data.data;
         this.model.saveCreditCard = data.saveCreditCard || false;
@@ -423,10 +428,8 @@ export default {
     },
     async processAdditionalSettings(data) {
       this.model.dealDetails = data.dealDetails;
-      this.model.transactionType = data.transactionType;
       this.model.currency = data.currency;
       this.model.jDealType = data.jDealType;
-      this.model.installmentDetails = data.installmentDetails;
       this.model.terminalID = this.terminal.terminalID;
       if(!this.quickChargeMode){
         this.model.invoiceDetails = data.invoiceDetails;

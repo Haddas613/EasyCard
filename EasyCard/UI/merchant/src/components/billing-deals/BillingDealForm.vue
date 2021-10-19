@@ -48,7 +48,7 @@
           :key="model.dealDetails.consumerID"
           :customer-id="model.dealDetails.consumerID"
           :show.sync="ctokenDialog"
-          v-on:ok="createCardToken($event)"
+          v-on:ok="onCreateCardToken($event)"
           ref="ctokenDialogRef"
         ></card-token-form-dialog>
         <ec-dialog :dialog.sync="tokensDialog">
@@ -366,16 +366,13 @@ export default {
       this.model.billingSchedule = this.$refs.billingScheduleRef.model;
       this.billingScheduleJSON = JSON.stringify(this.model.billingSchedule);
     },
-    async createCardToken(data) {
+    async onCreateCardToken(data) {
       this.ctokenDialog = false;
-      let result = await this.$api.cardTokens.createCardToken(data);
-      
-      if (!this.$apiSuccess(result)) return;
       await this.getCustomerTokens();
-      this.token = this.lodash.find(
-        this.customerTokens,
-        t => t.creditCardTokenID == result.entityReference
-      );
+        this.token = this.lodash.find(
+          this.customerTokens,
+          t => t.creditCardTokenID == result.entityReference
+        );
       this.$refs.ctokenDialogRef.reset();
     },
     async getCustomerTokens() {

@@ -37,7 +37,7 @@
             <input type="checkbox" v-model="item.selected" :disabled="item.$status == 'sending'">
           </template>
           <template v-slot:item.paymentRequestAmount="{ item }">
-            <b>{{item.paymentRequestAmount | currency(item.currency)}}</b>
+            <b class="justify-currency">{{item.paymentRequestAmount | currency(item.currency)}}</b>
           </template>
           <template v-slot:item.paymentTransactionID="{ item }">
             <router-link v-if="item.paymentTransactionID" class="text-decoration-none" link :to="{name: 'Transaction', params: {id: item.$paymentTransactionID}}">

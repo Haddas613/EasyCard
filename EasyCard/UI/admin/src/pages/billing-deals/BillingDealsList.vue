@@ -48,7 +48,7 @@
           <v-icon v-else>mdi-calendar</v-icon>
           </template>
           <template v-slot:item.transactionAmount="{ item }">
-            <b>{{item.transactionAmount | currency(item.currency)}}</b>
+            <b class="justify-currency">{{item.transactionAmount | currency(item.currency)}}</b>
           </template>
           <template v-slot:item.cardExpired="{ item }">
             <span v-if="item.cardExpired" class="error--text">{{$t("Yes")}}</span>

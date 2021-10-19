@@ -88,7 +88,7 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Authorization code is required. Call @number and tell them the supplier number @retailer to get the authorization code and create a new transaction with it specified..
+        ///   Looks up a localized string similar to Authorization code is required. Call @number and tell them the supplier number @retailer to get the authorization code and try again..
         /// </summary>
         public static string AuthorizationCodeRequired {
             get {
