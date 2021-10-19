@@ -35,24 +35,26 @@
           v-model="model.pinPad" :label="$t('UsePinPad')" :disabled="!availableDevices.length">
         </v-switch>
         <template v-if="model.pinPad">
-            <v-col cols="12" v-if="availableDevices.length > 0">
-              <v-select :items="availableDevices" v-model="selectedDevice" return-object :item-value="deviceValue" outlined>
-                <template v-slot:item="{ item }">
-                  {{item.deviceID + '-' + item.deviceName}}
-                </template>
-                <template v-slot:selection="{ item }">
-                  {{item.deviceID + '-' + item.deviceName}}
-                </template>
-              </v-select>
-            </v-col>
-            <v-col cols="12">
-              <v-text-field
-                v-model="model.cardOwnerNationalID"
-                :rules="[vr.special.israeliNationalId]"
-                :label="$t('NationalID')"
-                outlined
-              ></v-text-field>
-            </v-col>
+            <v-row no-gutters>
+              <v-col cols="12" v-if="availableDevices.length > 0">
+                <v-select :items="availableDevices" v-model="selectedDevice" return-object :item-value="deviceValue" outlined>
+                  <template v-slot:item="{ item }">
+                    {{item.deviceID + '-' + item.deviceName}}
+                  </template>
+                  <template v-slot:selection="{ item }">
+                    {{item.deviceID + '-' + item.deviceName}}
+                  </template>
+                </v-select>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-model="model.cardOwnerNationalID"
+                  :rules="[vr.special.israeliNationalId]"
+                  :label="$t('NationalID')"
+                  outlined
+                ></v-text-field>
+              </v-col>
+            </v-row>
         </template>
         <template v-if="!model.pinPad">
           <ec-dialog-invoker
