@@ -690,16 +690,6 @@ namespace Transactions.Api.Controllers
 
             var transaction = EnsureExists(await transactionsService.GetTransaction(t => t.PaymentTransactionID == request.TransactionID));
 
-            if (transaction.Status != TransactionStatusEnum.Completed)
-            {
-                return BadRequest(Messages.TransactionMustBeCompleted);
-            }
-
-            if (transaction.JDealType != JDealTypeEnum.J4)
-            {
-                return BadRequest(transaction.JDealType == JDealTypeEnum.J2 ? Messages.J2NotAllowed : Messages.J5NotAllowed);
-            }
-
             var terminal = EnsureExists(await terminalsService.GetTerminal(transaction.TerminalID));
 
             var response = new OperationResponse
