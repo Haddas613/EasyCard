@@ -961,6 +961,9 @@ namespace Transactions.Business.Migrations
                     b.Property<int>("NumberOfPayments")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("PaymentIntentID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("PaymentRequestID")
                         .HasColumnType("uniqueidentifier");
 

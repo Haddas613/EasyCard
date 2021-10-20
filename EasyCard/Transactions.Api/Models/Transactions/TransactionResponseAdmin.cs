@@ -23,5 +23,7 @@ namespace Transactions.Api.Models.Transactions
         /// Merchant name
         /// </summary>
         public string MerchantName { get; set; }
+
+        public Guid? PaymentIntentID { get; set; }
     }
 }

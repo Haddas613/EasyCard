@@ -253,6 +253,11 @@ namespace Transactions.Business.Entities
         /// </summary>
         public Guid? PaymentRequestID { get; set; }
 
+        /// <summary>
+        /// Payment intent reference
+        /// </summary>
+        public Guid? PaymentIntentID { get; set; }
+
         public DocumentOriginEnum DocumentOrigin { get; set; }
 
         public long? TerminalTemplateID { get; set; }

@@ -98,6 +98,12 @@ namespace Transactions.Api.Controllers
             transaction.InitialTransactionID = initialTransactionID;
             transaction.DocumentOrigin = GetDocumentOrigin(billingDeal?.BillingDealID, paymentRequestID, pinpadDeal);
             transaction.PaymentRequestID = paymentRequestID;
+
+            if (paymentRequestID == null)
+            {
+                transaction.PaymentIntentID = model.PaymentIntentID;
+            }
+
             transaction.CardPresence = pinpadDeal ? CardPresenceEnum.Regular : model.CardPresence;
 
             if (transaction.DealDetails == null)

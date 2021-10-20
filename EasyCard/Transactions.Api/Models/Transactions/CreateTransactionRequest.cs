@@ -137,6 +137,9 @@ namespace Transactions.Api.Models.Transactions
 
         public Guid? PaymentRequestID { get; set; }
 
+        [SwaggerExclude]
+        public Guid? PaymentIntentID { get; set; }
+
         // ShvaAuthNum
         public string OKNumber { get; set; }
 
