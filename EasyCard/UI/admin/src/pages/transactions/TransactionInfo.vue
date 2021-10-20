@@ -76,6 +76,10 @@
                     <small>{{model.paymentRequestID | guid}}</small>
                   </router-link>
                 </v-col>
+                <v-col cols="12" md="4" class="info-block" v-if="model.paymentIntentID">
+                  <p class="caption ecgray--text text--darken-2">{{$t('PaymentIntentID')}}</p>
+                  <small>{{model.paymentIntentID}}</small>
+                </v-col>
                 <v-col cols="12" md="4" class="info-block" v-if="model.billingDealID">
                   <p class="caption ecgray--text text--darken-2">{{$t('BillingDealID')}}</p>
                   <router-link

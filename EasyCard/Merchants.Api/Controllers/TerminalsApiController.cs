@@ -319,7 +319,7 @@ namespace Merchants.Api.Controllers
         {
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
 
-            var opResult = await userManagementClient.CreateTerminalApiKey(new CreateTerminalApiKeyRequest { TerminalID = terminal.TerminalID, MerchantID = terminal.MerchantID });
+            var opResult = await userManagementClient.GetTerminalApiKey(terminal.TerminalID);
 
             // TODO: failed case
             return Ok(new OperationResponse { EntityReference = opResult.ApiKey, Status = StatusEnum.Success });

@@ -76,5 +76,7 @@ namespace Transactions.Api.Models.Invoicing
         /// Array of payment details, e.g. CreditCardDetails, ChequeDetails etc.
         /// </summary>
         public IEnumerable<PaymentDetails> PaymentDetails { get; set; }
+
+        public TransactionTypeEnum? TransactionType { get; set; }
     }
 }

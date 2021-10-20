@@ -140,15 +140,14 @@ namespace CheckoutPortal.Controllers
         public async Task<IActionResult> Charge(ChargeViewModel request)
         {
             CheckoutData checkoutConfig;
+            bool isPaymentIntent = request.PaymentIntent != null;
 
-            if(request.ApiKey != null)
+            if (request.ApiKey != null)
             {
                 checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
             }
             else
             {
-                bool isPaymentIntent = request.PaymentIntent != null;
-
                 if(!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
                 {
                     throw new BusinessException(Messages.InvalidCheckoutData);
@@ -364,7 +363,8 @@ namespace CheckoutPortal.Controllers
                     DealDetails = new DealDetails(),
                     CreditCardToken = request.CreditCardToken,
                     InstallmentDetails = installmentDetails,
-                    TransactionType = request.TransactionType
+                    TransactionType = request.TransactionType,
+                    PaymentIntentID = isPaymentIntent ? new Guid(request.PaymentIntent) : (Guid?)null
                 };
                 mapper.Map(request, mdel);
                 mapper.Map(request, mdel.CreditCardSecureDetails);

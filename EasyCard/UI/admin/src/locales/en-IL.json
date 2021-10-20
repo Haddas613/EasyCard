@@ -393,6 +393,7 @@
   "HasMasavFile": "Has Masav File",
   "CustomerName": "Customer Name",
   "Successful": "Successful",
+  "PaymentIntentID": "Payment Intent ID",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

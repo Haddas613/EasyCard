@@ -94,9 +94,24 @@ namespace Transactions.Api.Models.Invoicing
         public decimal NetTotal { get; set; }
 
         /// <summary>
-        /// Installment payments details (should be omitted in case of regular deal)
+        /// Number Of payments (cannot be more than 999)
         /// </summary>
-        public InstallmentDetails InstallmentDetails { get; set; }
+        public int NumberOfPayments { get; set; }
+
+        /// <summary>
+        /// Initial installment payment
+        /// </summary>
+        public decimal InitialPaymentAmount { get; set; }
+
+        /// <summary>
+        /// TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+        /// </summary>
+        public decimal TotalAmount { get; set; }
+
+        /// <summary>
+        /// Amount of one instalment payment
+        /// </summary>
+        public decimal InstallmentPaymentAmount { get; set; }
 
         public Guid? PaymentTransactionID { get; set; }
 
@@ -106,5 +121,7 @@ namespace Transactions.Api.Models.Invoicing
         public TransactionsApi.Models.Transactions.CreditCardDetails CreditCardDetails { get; set; }
 
         public IEnumerable<object> PaymentDetails { get; set; }
+
+        public TransactionTypeEnum? TransactionType { get; set; }
     }
 }

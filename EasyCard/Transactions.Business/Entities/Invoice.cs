@@ -160,10 +160,22 @@ namespace Transactions.Business.Entities
         [Obsolete]
         public void Calculate()
         {
+            if (NumberOfPayments == 0)
+            {
+                NumberOfPayments = 1;
+            }
+
+            if (InitialPaymentAmount == 0)
+            {
+                InitialPaymentAmount = InvoiceAmount;
+            }
+
             if (DealDetails?.Items?.Count() > 0)
             {
                 TotalDiscount = DealDetails.Items.Sum(e => e.Discount.GetValueOrDefault(0));
             }
+
+            TotalAmount = InitialPaymentAmount + (InstallmentPaymentAmount * (NumberOfPayments - 1));
         }
 
         /// <summary>

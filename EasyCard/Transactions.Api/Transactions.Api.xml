@@ -491,9 +491,24 @@
             Invoice amount (should be omitted in case of installment deal)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InstallmentDetails">
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.NumberOfPayments">
             <summary>
-            Installment payments details (should be omitted in case of regular deal)
+            Number Of payments (cannot be more than 999)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InitialPaymentAmount">
+            <summary>
+            Initial installment payment
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.TotalAmount">
+            <summary>
+            TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InstallmentPaymentAmount">
+            <summary>
+            Amount of one instalment payment
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.CreditCardDetails">

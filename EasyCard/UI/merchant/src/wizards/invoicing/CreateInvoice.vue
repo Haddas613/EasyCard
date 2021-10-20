@@ -222,6 +222,7 @@ export default {
       this.model.invoiceDetails = data.invoiceDetails;
       this.model.terminalID = this.terminal.terminalID;
       this.model.paymentDetails = data.paymentDetails;
+      this.model.transactionType = data.transactionType;
 
       await this.createInvoice();
     },

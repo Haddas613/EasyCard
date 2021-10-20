@@ -168,7 +168,7 @@ namespace Transactions.Api.Controllers
                 await dbTransaction.CommitAsync();
             }
 
-            var processorIds = transactionsToTransmit.Select(d => d.TranRecord).ToList();
+            var processorIds = transactionsToTransmit.Select(d => d.TranRecord).Where(d => d != null).ToList();
 
             if (processorIds.Count == 0)
             {
