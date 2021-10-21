@@ -34,7 +34,7 @@
             step="0.01"
             :rules="[vr.primitives.required, vr.primitives.lessThan(totalAmount)]"
             v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
-            @input="updateInstallments(true)"
+            @keyup="updateInstallments(true)"
             outlined
           ></v-text-field>
         </v-col>
@@ -113,15 +113,26 @@ export default {
       };
     },
     updateInstallments(skipInitial = false){
-      if (!this.model.initialPaymentAmount || !this.model.numberOfPayments) {
+      // if (!this.model.initialPaymentAmount || !this.model.numberOfPayments) {
+      //   return 0;
+      // }
+      if (!this.model.numberOfPayments || this.model.numberOfPayments === 1) {
         return 0;
       }
 
-      if (this.model.numberOfPayments === 1){ return 0;}
-      
-      this.model.installmentPaymentAmount = ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1)).toFixed(2);
+      let leftover = this.totalAmount % 1;
+      // this.model.installmentPaymentAmount = ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments)).toFixed(2);
+
       if(!skipInitial){
-        this.model.initialPaymentAmount = (this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1))).toFixed(2);
+        let installmentPaymentAmountRaw = (this.totalAmount - leftover) / (this.model.numberOfPayments);
+        this.model.installmentPaymentAmount = installmentPaymentAmountRaw.toFixed(2);
+        this.model.initialPaymentAmount = (installmentPaymentAmountRaw + leftover).toFixed(2);
+        // this.model.initialPaymentAmount = (this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1))).toFixed(2);
+
+      }else{
+        let installmentPaymentAmountRaw = (this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1);
+        this.model.installmentPaymentAmount = installmentPaymentAmountRaw.toFixed(2);
+        this.model.initialPaymentAmount = (this.totalAmount - this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1)).toFixed(2);
       }
     }
   },
@@ -136,10 +147,9 @@ export default {
     this.numberOfPaymentsArr = this.lodash.range(this.minInstallments, this.maxInstallments + 1);
     this.model.numberOfPayments = this.minInstallments;
 
-    if (!this.model.initialPaymentAmount) {
-      this.model.initialPaymentAmount =
-        this.totalAmount / this.model.numberOfPayments;
-    }
+    // if (!this.model.initialPaymentAmount) {
+    //   this.model.initialPaymentAmount = this.totalAmount / this.model.numberOfPayments;
+    // }
     this.updateInstallments();
   }
 };

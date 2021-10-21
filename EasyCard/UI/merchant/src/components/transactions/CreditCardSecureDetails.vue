@@ -213,6 +213,7 @@ export default {
     ok() {
       let form = this.$refs.form.validate();
       if (!form) return;
+      
       let result = null;
 
       if (this.model.pinPad) {
@@ -222,6 +223,10 @@ export default {
         result = this.okCardToken();
       } else {
         result = this.okCreditCard();
+      }
+
+      if(result == null){
+        return;
       }
 
       if (this.$refs.instDetails) {
