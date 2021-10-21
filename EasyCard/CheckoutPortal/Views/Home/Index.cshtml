@@ -297,6 +297,10 @@
 @await Html.PartialAsync("_ValidationScriptsPartial")
 <script nws-csp-add-nonce="true">
         $(document).ready(function () {
+            let amt = parseFloat($("#Amount").val());
+            if (!amt) {
+                $("#Amount").val(amt.toFixed(2))
+            }
             @if (Model.PaymentIntent != null && Model.AllowPinPad == true)
             {
                 <text>
@@ -402,38 +406,38 @@
             </text>
             }
 
-            $("#Amount").on("focus", function () {
-                if ($("#SaveCreditCard").is(":checked")) {
-                    setTimeout(() => {
-                        $("span[data-valmsg-for=Amount]").html("");
-                        $("#Amount").removeClass("input-validation-error");
-                    }, 500)
-                }
-            });
+            //$("#Amount").on("focus", function () {
+            //    if ($("#SaveCreditCard").is(":checked")) {
+            //        setTimeout(() => {
+            //            $("span[data-valmsg-for=Amount]").html("");
+            //            $("#Amount").removeClass("input-validation-error");
+            //        }, 500)
+            //    }
+            //});
 
-            $("#Amount").on("input", function (e) {
-                if ((!e.target.value || !Number(e.target.value)) && $("#SaveCreditCard").is(":checked")) {
-                    setTimeout(() => {
-                        $("span[data-valmsg-for=Amount]").html("");
-                        $("#Amount").removeClass("input-validation-error");
-                    }, 500)
-                }
-            });
+            //$("#Amount").on("input", function (e) {
+            //    if ((!e.target.value || !Number(e.target.value)) && $("#SaveCreditCard").is(":checked")) {
+            //        setTimeout(() => {
+            //            $("span[data-valmsg-for=Amount]").html("");
+            //            $("#Amount").removeClass("input-validation-error");
+            //        }, 500)
+            //    }
+            //});
 
-            $("#SaveCreditCard").on("click", function (e) {
-                if ($(e.target).is(":checked")) {
-                    $("span[data-valmsg-for=Amount]").html("");
-                    $("#Amount").removeClass("input-validation-error");
-                }
-            })
+            //$("#SaveCreditCard").on("click", function (e) {
+            //    if ($(e.target).is(":checked")) {
+            //        $("span[data-valmsg-for=Amount]").html("");
+            //        $("#Amount").removeClass("input-validation-error");
+            //    }
+            //})
 
             $("#checkout-form").on("submit", function (e) {
 
-                if (!Number($("#Amount").val()) && $("#SaveCreditCard").is(":checked")) {
-                    $("#amount-area").hide();
-                } else {
-                    $("#amount-area").show();
-                }
+                //if (!Number($("#Amount").val()) && $("#SaveCreditCard").is(":checked")) {
+                //    $("#amount-area").hide();
+                //} else {
+                //    $("#amount-area").show();
+                //}
                 if (!$("#checkout-form").valid()) {
                     e.preventDefault();
                     return;
