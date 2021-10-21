@@ -171,6 +171,9 @@ namespace IdentityServer.Controllers
 
             if (ModelState.IsValid)
             {
+                model.Username = model.Username.Trim();
+                model.Password = model.Password.Trim();
+
                 var user = await userManager.FindByNameAsync(model.Username);
 
                 if (user == null)
@@ -450,7 +453,7 @@ namespace IdentityServer.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{userManager.GetUserId(User)}'.");
             }
 
-            var authenticatorCode = model.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+            var authenticatorCode = model.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty).Trim();
 
             var authProvider = model.LoginType == TwoFactorAuthTypeEnum.SMS ? TwoFactorAuthProviderPhone : TwoFactorAuthProviderEmail;
 
