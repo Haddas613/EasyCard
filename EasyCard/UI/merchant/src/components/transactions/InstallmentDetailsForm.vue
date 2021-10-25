@@ -34,7 +34,7 @@
             step="0.01"
             :rules="[vr.primitives.required, vr.primitives.lessThan(totalAmount)]"
             v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
-            @keyup="updateInstallments(true)"
+            @input="updateInstallmentsTimeout(true)"
             outlined
           ></v-text-field>
         </v-col>
@@ -97,7 +97,8 @@ export default {
       },
       minInstallments: 1,
       maxInstallments: 36,
-      numberOfPaymentsArr: []
+      numberOfPaymentsArr: [],
+      installmentsTimeout: null
     };
   },
   computed: {
@@ -111,6 +112,12 @@ export default {
         ...this.model,
         totalAmount: this.totalAmount
       };
+    },
+    updateInstallmentsTimeout(skipInitial = false){
+      if(this.installmentsTimeout){
+        clearTimeout(this.installmentsTimeout);
+      }
+      this.installmentsTimeout = setTimeout(() => this.updateInstallments(skipInitial), 500);
     },
     updateInstallments(skipInitial = false){
       // if (!this.model.initialPaymentAmount || !this.model.numberOfPayments) {
