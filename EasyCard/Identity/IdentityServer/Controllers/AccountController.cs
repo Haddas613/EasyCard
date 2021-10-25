@@ -535,8 +535,16 @@ namespace IdentityServer.Controllers
 
                 // raise the logout event
                 await events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
-                var user = await userManager.FindByIdAsync(User.GetSubjectId());
-                await auditLogger.RegisterLogout(user);
+
+                try
+                {
+                    var user = await userManager.FindByIdAsync(User.GetSubjectId());
+                    await auditLogger.RegisterLogout(user);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, ex.Message);
+                }
             }
 
             // check if we need to trigger sign-out at an upstream identity provider
