@@ -58,7 +58,7 @@
 
         <v-stepper-content step="5" class="py-0 px-0">
           <additional-settings-form 
-            :key="model.dealDetails.consumerName"
+            :key="model.key"
             :data="model"
             :issue-document="true"
             v-on:ok="processAdditionalSettings($event)"
@@ -338,8 +338,9 @@ export default {
 
       this.model.dealDetails = Object.assign(this.model.dealDetails, data);
 
-      this.model.key = `${this.model.transactionAmount}-${this.model.dealDetails.consumerID}`
-
+      if(this.model.dealDetails){
+        this.model.key = `${this.terminal.terminalID}-${this.model.dealDetails.consumerID}`;
+      }
       if (!this.model.creditCardSecureDetails) {
         this.$set(this.model, "creditCardSecureDetails", {
           cardOwnerName: data.consumerName,
@@ -376,8 +377,6 @@ export default {
       this.model.vatRate = data.vatRate;
       this.model.note = data.note;
       this.model.dealDetails.items = data.dealDetails.items;
-
-      this.model.key = `${this.model.transactionAmount}-${this.model.dealDetails.consumerID}`
     },
     processCreditCard(data) {
       this.model.oKNumber = data.oKNumber;
