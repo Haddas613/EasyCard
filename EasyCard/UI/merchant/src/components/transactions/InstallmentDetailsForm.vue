@@ -117,7 +117,7 @@ export default {
       if(this.installmentsTimeout){
         clearTimeout(this.installmentsTimeout);
       }
-      this.installmentsTimeout = setTimeout(() => this.updateInstallments(skipInitial), 500);
+      this.installmentsTimeout = setTimeout(() => this.updateInstallments(skipInitial), 1000);
     },
     updateInstallments(skipInitial = false){
       // if (!this.model.initialPaymentAmount || !this.model.numberOfPayments) {
