@@ -127,17 +127,20 @@ export default {
     async getDataFromApi() {
       if(this.loading) { return; }
       this.loading = true;
-      let data = await this.$api.billingDeals.get({
-        ...this.billingDealsFilter,
-        ...this.options
-      });
-      
-      this.billingDeals = data.data;
-      this.totalAmount = data.numberOfRecords;
-      this.loading = false;
+      try{
+        let data = await this.$api.billingDeals.get({
+          ...this.billingDealsFilter,
+          ...this.options
+        });
+        
+        this.billingDeals = data.data;
+        this.totalAmount = data.numberOfRecords;
 
-      if (!this.headers || this.headers.length === 0) {
-        this.headers = [{ value: "select", text: "", sortable: false }, ...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false }];
+        if (!this.headers || this.headers.length === 0) {
+          this.headers = [{ value: "select", text: "", sortable: false }, ...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false }];
+        }
+      }finally{
+        this.loading = false;
       }
     },
     async applyFilter(data) {

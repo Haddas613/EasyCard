@@ -148,7 +148,7 @@ export default {
       this.terminal = terminal;
     },
     confirmLeave($event){
-      if(this.$refs.terminalSettingsRef.changed && !window.confirm(this.$t("UnsavedChangesWarningMessage"))){
+      if(this.$refs.terminalSettingsRef && this.$refs.terminalSettingsRef.changed && !window.confirm(this.$t("UnsavedChangesWarningMessage"))){
           if($event){
             $event.preventDefault();
           }

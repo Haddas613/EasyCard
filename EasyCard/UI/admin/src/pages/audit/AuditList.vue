@@ -111,16 +111,19 @@ export default {
     async getDataFromApi() {
       if(this.loading) { return; }
       this.loading = true;
-      let data = await this.$api.audit.get({
-        ...this.auditFilter,
-        ...this.options
-      });
-      this.audits = data.data;
-      this.totalAmount = data.numberOfRecords;
-      this.loading = false;
+      try{
+        let data = await this.$api.audit.get({
+          ...this.auditFilter,
+          ...this.options
+        });
+        this.audits = data.data;
+        this.totalAmount = data.numberOfRecords;
 
-      if (!this.headers || this.headers.length === 0) {
-        this.headers = data.headers;
+        if (!this.headers || this.headers.length === 0) {
+          this.headers = data.headers;
+        }
+      }finally{
+        this.loading = false;
       }
     },
     async applyFilter(filter) {

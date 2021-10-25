@@ -82,21 +82,19 @@ export default {
     async getDataFromApi() {
       if(this.loading) { return; }
       this.loading = true;
-      let data = await this.$api.terminals.get({
-        ...this.terminalsFilter,
-        ...this.options
-      });
+      try{
+        let data = await this.$api.terminals.get({
+          ...this.terminalsFilter,
+          ...this.options
+        });
+        this.terminals = data.data;
+        this.totalAmount = data.numberOfRecords;
 
-      if(!data){
-        return;
-      }
-
-      this.terminals = data.data;
-      this.totalAmount = data.numberOfRecords;
-      this.loading = false;
-
-      if (!this.headers || this.headers.length === 0) {
-        this.headers = [...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false  }];
+        if (!this.headers || this.headers.length === 0) {
+          this.headers = [...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false  }];
+        }
+      }finally{
+        this.loading = false;
       }
     },
     async applyFilter(filter) {

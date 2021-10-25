@@ -101,14 +101,17 @@ export default {
     async getDataFromApi() {
       if(this.loading) { return; }
       this.loading = true;
-      let data = await this.$api.reporting.transmissions.get({ ...this.transmissionsFilter, ...this.options });
-      this.transmissions = data.data;
-      this.numberOfRecords = data.numberOfRecords;
-      this.totalAmount = data.totalAmount;
-      this.loading = false;
+      try{
+        let data = await this.$api.reporting.transmissions.get({ ...this.transmissionsFilter, ...this.options });
+        this.transmissions = data.data;
+        this.numberOfRecords = data.numberOfRecords;
+        this.totalAmount = data.totalAmount;
 
-      if(!this.headers || this.headers.length === 0){
-        this.headers = [...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false  }];
+        if(!this.headers || this.headers.length === 0){
+          this.headers = [...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false  }];
+        }
+      }finally{
+        this.loading = false;
       }
     },
     async applyFilter(filter){

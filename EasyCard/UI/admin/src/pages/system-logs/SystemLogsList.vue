@@ -133,16 +133,19 @@ export default {
     async getDataFromApi() {
       if(this.loading) { return; }
       this.loading = true;
-      let data = await this.$api.system.getSystemLogs({
-        ...this.systemLogsFilter,
-        ...this.options
-      });
-      this.systemLogs = data.data;
-      this.totalAmount = (data.data.length >= this.options.itemsPerPage ? data.data.length + 1 : data.data.length) * this.options.page;
-      this.loading = false;
+      try{
+        let data = await this.$api.system.getSystemLogs({
+          ...this.systemLogsFilter,
+          ...this.options
+        });
+        this.systemLogs = data.data;
+        this.totalAmount = (data.data.length >= this.options.itemsPerPage ? data.data.length + 1 : data.data.length) * this.options.page;
 
-      if (!this.headers || this.headers.length === 0) {
-        this.headers = data.headers;
+        if (!this.headers || this.headers.length === 0) {
+          this.headers = data.headers;
+        }
+      }finally{
+        this.loading = false;
       }
     },
     async applyFilter(filter) {

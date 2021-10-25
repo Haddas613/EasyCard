@@ -96,21 +96,20 @@ export default {
     async getDataFromApi() {
       if(this.loading) { return; }
       this.loading = true;
-      let data = await this.$api.reporting.cardTokens.getTerminalsTokens({
-        ...this.terminalsFilter,
-        ...this.options
-      });
+      try{
+        let data = await this.$api.reporting.cardTokens.getTerminalsTokens({
+          ...this.terminalsFilter,
+          ...this.options
+        });
 
-      if(!data){
-        return;
-      }
+        this.terminals = data.data;
+        this.numberOfRecords = data.numberOfRecords;
 
-      this.terminals = data.data;
-      this.numberOfRecords = data.numberOfRecords;
-      this.loading = false;
-
-      if (!this.headers || this.headers.length === 0) {
-        this.headers = data.headers;//[...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false  }];
+        if (!this.headers || this.headers.length === 0) {
+          this.headers = data.headers;//[...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false  }];
+        }
+      }finally{
+        this.loading = false;
       }
     },
     async applyFilter(filter) {
