@@ -48,6 +48,8 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.DueDate)));
 
             CreateMap<PaymentRequestHistory, PaymentRequestHistorySummary>();
+
+            CreateMap<PaymentTransaction, PaymentRequestUserPaidDetails>();
         }
     }
 }

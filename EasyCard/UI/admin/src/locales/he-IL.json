@@ -398,6 +398,7 @@
   "CustomerName": "שם לקוח",
   "Successful": "בהצלחה",
   "PaymentIntentID": "מזהה כוונת תשלום",
+  "UserPaid": "שולם על ידי המשתמש",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

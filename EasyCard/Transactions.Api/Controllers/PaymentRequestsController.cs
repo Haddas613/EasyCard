@@ -59,6 +59,7 @@ namespace Transactions.Api.Controllers
         private readonly ISystemSettingsService systemSettingsService;
         private readonly IEmailSender emailSender;
         private readonly ISmsService smsService;
+        private readonly ITransactionsService transactionsService;
 
         public PaymentRequestsController(
                     IPaymentRequestsService paymentRequestsService,
@@ -72,7 +73,8 @@ namespace Transactions.Api.Controllers
                     ISystemSettingsService systemSettingsService,
                     IEmailSender emailSender,
                     IOptions<ApiSettings> apiSettings,
-                    ISmsService smsService)
+                    ISmsService smsService,
+                    ITransactionsService transactionsService)
         {
             this.paymentRequestsService = paymentRequestsService;
             this.mapper = mapper;
@@ -86,6 +88,7 @@ namespace Transactions.Api.Controllers
             this.systemSettingsService = systemSettingsService;
             this.emailSender = emailSender;
             this.smsService = smsService;
+            this.transactionsService = transactionsService;
         }
 
         [HttpGet]
@@ -166,6 +169,13 @@ namespace Transactions.Api.Controllers
                 paymentRequest.History = await mapper.ProjectTo<PaymentRequestHistorySummary>(paymentRequestsService.GetPaymentRequestHistory(dbPaymentRequest.PaymentRequestID).OrderByDescending(d => d.PaymentRequestHistoryID)).ToListAsync();
 
                 paymentRequest.TerminalName = terminal.Label;
+
+                var transaction = await transactionsService.GetTransaction(t => t.PaymentRequestID == paymentRequestID);
+
+                if (transaction != null)
+                {
+                    paymentRequest.UserPaidDetails = mapper.Map<PaymentRequestUserPaidDetails>(transaction);
+                }
 
                 return Ok(paymentRequest);
             }

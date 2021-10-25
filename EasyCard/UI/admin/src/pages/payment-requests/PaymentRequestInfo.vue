@@ -53,6 +53,7 @@
         </v-card-text>
       </v-card>
       <amount-details :model="model" amount-key="paymentRequestAmount"></amount-details>
+      <amount-details title="UserPaid" :currency="model.$currency" v-if="model.userPaidDetails" :model="model.userPaidDetails" amount-key="transactionAmount"></amount-details>
       <v-card flat class="my-2" v-if="model.dealDetails && model.dealDetails.items.length > 0">
         <v-card-title
           class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"

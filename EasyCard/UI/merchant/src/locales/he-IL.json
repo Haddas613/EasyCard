@@ -90,6 +90,7 @@
   "Transmissions": "שידורים",
   "TransmissionsList": "רשימת שידורים",
   "FilterTransmissions": "מסנן שידורים",
+  "UserPaid": "שולם על ידי המשתמש",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",

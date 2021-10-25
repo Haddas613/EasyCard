@@ -120,6 +120,7 @@
   "TerminalsTokens": "Terminals Tokens",
   "TokensTransactions": "Tokens Transactions",
   "ListOfPinpadDevices": "List of PinPad Devices",
+  "UserPaid": "User Paid",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
