@@ -91,7 +91,12 @@
           </template>
 
           <template v-slot:right="{ item }">
-            <v-col class="text-end" cols="12" md="6">
+            <v-col class="text-start" cols="6" md="6">
+              <span class="success--text" v-if="item.processorTerminalReference">
+                <b>{{item.processorTerminalReference}}</b>
+              </span>
+            </v-col>
+            <v-col class="text-end" cols="6" md="6">
               <span v-bind:class="terminalStatusColors[item.$status]">{{item.status}}</span>
             </v-col>
           </template>
