@@ -300,7 +300,7 @@
   "Password": "סיסמה",
   "MerchantNumber": "מספר בית עסק",
   "MerchantReference": "אסמכתת בית עסק",
-  "ShvaTerminalReference": "מזהה ענן",
+  "ShvaTerminalReference": "מספר מסוף",
   "KeyStorePassword": "סיסמת Keystore",
   "IntegrationType": "סוג אינטגרציה",
   "IntegrationName": "שם אינטגרציה",
