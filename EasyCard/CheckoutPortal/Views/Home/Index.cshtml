@@ -21,7 +21,7 @@
             <partial name="_ValidationSummary" />
 
             <div class="panel-heading">
-                <p class="px-2">@Model.Description</p>
+                <p class="px-3 font-italic">@Model.Description</p>
                 @*@if (Model.NumberOfPayments > 1)
         {
             <ul class="list-group px-2">
@@ -72,7 +72,7 @@
                         <input type="hidden" asp-for="ConnectionID" />
                     }
 
-                    @if (Model.TransactionTypes.Count() > 1)
+                    @if (Model.TransactionTypes.Count() > 1 && !Model.OnlyAddCard)
                     {
                         <div class="form-group">
                             <label for="number-of-payments">@localizer.Get("TransactionType")</label>
@@ -122,7 +122,7 @@
                         </h3>
                     }
 
-                    @if (Model.UserAmount || Model.SavedTokens?.Count() > 0)
+                    @if (Model.UserAmount || (Model.SavedTokens?.Count() > 0 && !Model.OnlyAddCard))
                     {
                         <fieldset class="border rounded p-2 m-2" id="amount-area">
                             @if (Model.UserAmount)
@@ -135,7 +135,7 @@
                                     </div>
                                 </div>
                             }
-                            @if (Model.SavedTokens?.Count() > 0)
+                            @if (Model.SavedTokens?.Count() > 0 && !Model.OnlyAddCard)
                             {
                                 <div class="form-group row">
                                     <label asp-for="CreditCardToken" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("UseSavedCard")</label>
@@ -272,6 +272,10 @@
                         @if (Model.IsRefund)
                         {
                             <input class="btn btn-danger" type="button" id="submitbtn" value="@localizer.Get("Refund")" />
+                        }
+                        else if (Model.OnlyAddCard)
+                        {
+                            <input class="btn btn-primary" type="button" id="submitbtn" value="@localizer.Get("OnlyAddCard")" />
                         }
                         else
                         {
@@ -444,9 +448,11 @@
                 }
                 let ccvaltrim = $("#cc-number").val().replace(/ /g, '');
                     $("#cc-number").val(ccvaltrim);
-                if (document.getElementById("ttype").value == "@Shared.Integration.Models.TransactionTypeEnum.RegularDeal.ToString()" ||
-                    document.getElementById("ttype").value == "@Shared.Integration.Models.TransactionTypeEnum.Immediate.ToString()") {
-                    $("#installments-area").remove();
+                if (document.getElementById("ttype")) {
+                    if (document.getElementById("ttype").value == "@Shared.Integration.Models.TransactionTypeEnum.RegularDeal.ToString()" ||
+                        document.getElementById("ttype").value == "@Shared.Integration.Models.TransactionTypeEnum.Immediate.ToString()") {
+                        $("#installments-area").remove();
+                        }
                 }
 
                 var pinPadDeal = document.getElementById("pin-pad-deal");

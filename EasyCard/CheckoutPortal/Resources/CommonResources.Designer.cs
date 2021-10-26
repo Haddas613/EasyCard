@@ -223,6 +223,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add card.
+        /// </summary>
+        public static string OnlyAddCard {
+            get {
+                return ResourceManager.GetString("OnlyAddCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment amount.
         /// </summary>
         public static string PaymentAmount {

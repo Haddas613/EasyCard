@@ -219,4 +219,7 @@
   <data name="TotalSum" xml:space="preserve">
     <value>Total Sum</value>
   </data>
+  <data name="OnlyAddCard" xml:space="preserve">
+    <value>Add card</value>
+  </data>
 </root>
