@@ -26,6 +26,7 @@ import MasavFilesApi from './modules/transactions/MasavFilesApi';
 import AdminReportingApi from './modules/reporting/AdminReportingApi';
 import TransmissionsReportingApi from './modules/transactions/TransmissionsReportingApi';
 import CardTokensReportingApi from './modules/reporting/CardTokensReportingApi';
+import RapidOneApi from './modules/integrations/RapidOneApi';
 
 class ApiBase {
     constructor() {
@@ -53,7 +54,8 @@ class ApiBase {
             shva: new ShvaApi(this),
             easyInvoice: new EasyInvoiceApi(this),
             clearingHouse: new ClearingHouseApi(this),
-            nayax: new NayaxApi(this)
+            nayax: new NayaxApi(this),
+            rapidOne: new RapidOneApi(this),
         };
         this.reporting = {
             admin: new AdminReportingApi(this),

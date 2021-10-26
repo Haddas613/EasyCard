@@ -193,6 +193,7 @@ namespace Merchants.Api
             services.Configure<ApplicationInsightsSettings>(Configuration.GetSection("ApplicationInsights"));
             services.Configure<ClearingHouse.ClearingHouseGlobalSettings>(Configuration.GetSection("ClearingHouseGlobalSettings"));
             services.Configure<EasyInvoice.EasyInvoiceGlobalSettings>(Configuration.GetSection("EasyInvoiceGlobalSettings"));
+            services.Configure<RapidOne.Configuration.RapidOneGlobalSettings>(Configuration.GetSection("RapidOneGlobalSettings"));
 
             services.AddHttpContextAccessor();
 
@@ -268,6 +269,16 @@ namespace Merchants.Api
                 var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.EasyInvoiceRequestsLogStorageTable, cfg.EasyInvoiceRequestsLogStorageTable);
 
                 return new EasyInvoice.ECInvoiceInvoicing(webApiClient, chCfg, logger, storageService);
+            });
+
+            services.AddSingleton<RapidOne.RapidOneInvoicing, RapidOne.RapidOneInvoicing>(serviceProvider =>
+            {
+                var ecCfg = serviceProvider.GetRequiredService<IOptions<RapidOne.Configuration.RapidOneGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<RapidOne.RapidOneInvoicing>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.RapidInvoiceRequestsLogStorageTable, cfg.RapidInvoiceRequestsLogStorageTable);
+                return new RapidOne.RapidOneInvoicing(webApiClient, ecCfg, logger, storageService);
             });
 
             services.AddSingleton<Shva.ShvaProcessor, Shva.ShvaProcessor>(serviceProvider =>
