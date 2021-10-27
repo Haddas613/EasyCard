@@ -277,10 +277,10 @@
     <value>לא הוגדר מעבד</value>
   </data>
   <data name="RejectedByAggregator" xml:space="preserve">
-    <value>עסקה נדחתה ע"י המאגד</value>
+    <value>נכשל עיבוד העסקה</value>
   </data>
   <data name="RejectedByProcessor" xml:space="preserve">
-    <value>עסקה נדחתה ע"י המעבד</value>
+    <value>נכשל עיבוד העסקה</value>
   </data>
   <data name="ThereAreNoInvoicesToResend" xml:space="preserve">
     <value>אין חשבוניות למשלוח חוזר</value>

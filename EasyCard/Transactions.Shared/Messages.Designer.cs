@@ -745,7 +745,7 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction rejected by Aggregator.
+        ///   Looks up a localized string similar to Failed To Process Transaction.
         /// </summary>
         public static string RejectedByAggregator {
             get {
@@ -754,7 +754,7 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction rejected by Processor.
+        ///   Looks up a localized string similar to Failed To Process Transaction.
         /// </summary>
         public static string RejectedByProcessor {
             get {

@@ -346,10 +346,10 @@
     <value>Processor is not defined</value>
   </data>
   <data name="RejectedByAggregator" xml:space="preserve">
-    <value>Transaction rejected by Aggregator</value>
+    <value>Failed To Process Transaction</value>
   </data>
   <data name="RejectedByProcessor" xml:space="preserve">
-    <value>Transaction rejected by Processor</value>
+    <value>Failed To Process Transaction</value>
   </data>
   <data name="Required" xml:space="preserve">
     <value>Required</value>
