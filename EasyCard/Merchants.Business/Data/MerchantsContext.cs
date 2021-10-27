@@ -404,6 +404,8 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.ExternalReference).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
+                builder.Property(b => b.Origin).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+
                 builder.HasIndex(d => d.TerminalID);
                 builder.HasIndex(d => new { d.TerminalID, d.ConsumerID });
                 builder.HasIndex(d => new { d.TerminalID, d.ExternalReference });

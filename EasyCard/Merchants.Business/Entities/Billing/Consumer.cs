@@ -53,6 +53,8 @@ namespace Merchants.Business.Entities.Billing
 
         public string SourceIP { get; set; }
 
+        public string Origin { get; set; }
+
         public Guid GetID()
         {
             return ConsumerID;

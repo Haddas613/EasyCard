@@ -62,5 +62,12 @@ namespace MerchantProfileApi.Models.Billing
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [StringLength(50)]
         public string ExternalReference { get; set; }
+
+        /// <summary>
+        /// Origin of customer
+        /// </summary>
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [StringLength(50)]
+        public string Origin { get; set; }
     }
 }
