@@ -42,6 +42,11 @@ namespace Transactions.Api.Extensions
                 dealDetails.ConsumerNationalID = consumer?.ConsumerNationalID ?? creditCardDetails?.CardOwnerNationalID;
             }
 
+            if (dealDetails.ConsumerAddress == null)
+            {
+                dealDetails.ConsumerAddress = new SharedIntegration.Models.Address { Street = consumer.ConsumerAddress }; // TODO: full address in consumer
+            }
+
             if (!(dealDetails.Items?.Count() > 0))
             {
                 dealDetails.Items = new List<SharedIntegration.Models.Item>
