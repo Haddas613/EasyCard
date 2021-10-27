@@ -38,7 +38,7 @@ namespace Transactions.Api.Models.Billing
         /// </summary>
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal? TransactionAmount { get; set; }
+        public decimal TransactionAmount { get; set; }
 
         [Range(0, 1)]
         [DataType(DataType.Currency)]
