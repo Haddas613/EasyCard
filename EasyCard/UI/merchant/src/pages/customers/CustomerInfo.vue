@@ -35,6 +35,10 @@
               <p class="caption ecgray--text text--darken-2">{{$t('Email')}}</p>
               <p class="primary--text">{{model.consumerEmail}}</p>
             </div>
+            <div class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Origin')}}</p>
+              <p>{{model.origin || '-'}}</p>
+            </div>
           </v-col>
           <v-col cols="12" md="6">
             <div class="info-block">
