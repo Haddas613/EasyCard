@@ -100,6 +100,11 @@
             Invoice details
             </summary>
         </member>
+        <member name="M:Transactions.Api.Models.Billing.BillingDealRequest.Calculate(System.Decimal)">
+            <summary>
+            If VATRate, NetTotal and VatTotal properties were not specified, this method should be called
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.BillingDealID">
             <summary>
             Primary transaction reference
@@ -434,6 +439,11 @@
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceRequest.PaymentDetails">
             <summary>
             Array of payment details, e.g. CreditCardDetails, ChequeDetails etc.
+            </summary>
+        </member>
+        <member name="M:Transactions.Api.Models.Invoicing.InvoiceRequest.Calculate(System.Decimal)">
+            <summary>
+            If VATRate, NetTotal and VatTotal properties were not specified, this method should be called
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceID">

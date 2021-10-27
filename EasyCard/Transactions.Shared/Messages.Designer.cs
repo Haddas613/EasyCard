@@ -70,6 +70,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In case if at least one of the following parameters is specified: VatRate, NetTotal, VatTotal, each one must be specified as well (or left null correspondingly). These parameters are mutually dependend.
+        /// </summary>
+        public static string AllVatCalculationsMustBeSpecified {
+            get {
+                return ResourceManager.GetString("AllVatCalculationsMustBeSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Amount required for pinpad deal.
         /// </summary>
         public static string AmountRequiredForPinpadDeal {
@@ -408,6 +417,15 @@ namespace Transactions.Shared {
         public static string EmailSent {
             get {
                 return ResourceManager.GetString("EmailSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected @value got @input.
+        /// </summary>
+        public static string ExpectedValue {
+            get {
+                return ResourceManager.GetString("ExpectedValue", resourceCulture);
             }
         }
         

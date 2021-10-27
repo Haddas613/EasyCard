@@ -8,6 +8,7 @@ using Transactions.Api.Models.Invoicing;
 using SharedHelpers = Shared.Helpers;
 using SharedIntegration = Shared.Integration;
 using SharedInvoicing = Shared.Integration.Models.Invoicing;
+using Transactions.Shared;
 
 namespace Transactions.Api.Validation
 {
@@ -39,6 +40,28 @@ namespace Transactions.Api.Validation
             else if (model.PaymentDetails?.Any() == true)
             {
                 errors.Add(new Error(nameof(model.InvoiceDetails.InvoiceType), ApiMessages.PaymentDetailsNotAllowedForThisTypeOfInvoice));
+            }
+
+            //If all fields are present validate the totals
+            if (model.VATRate.HasValue && model.VATTotal.HasValue && model.NetTotal.HasValue)
+            {
+                var correctNetTotal = Math.Round(model.InvoiceAmount / (1m + model.VATRate.Value), 2, MidpointRounding.AwayFromZero);
+
+                if (correctNetTotal != model.NetTotal.Value)
+                {
+                    errors.Add(new Error(nameof(model.NetTotal), Messages.ExpectedValue.Replace("@value", correctNetTotal.ToString()).Replace("@input", model.NetTotal.Value.ToString())));
+                }
+
+                var correctVatTotal = model.InvoiceAmount - correctNetTotal;
+
+                if (correctVatTotal != model.VATTotal.Value)
+                {
+                    errors.Add(new Error(nameof(model.VATTotal), Messages.ExpectedValue.Replace("@value", correctVatTotal.ToString()).Replace("@input", model.VATTotal.Value.ToString())));
+                }
+            }
+            else if (!(!model.VATRate.HasValue && !model.VATTotal.HasValue && !model.NetTotal.HasValue)) //If not all fields are null, show an error
+            {
+                throw new BusinessException(Messages.AllVatCalculationsMustBeSpecified);
             }
 
             if (errors.Count == 1)

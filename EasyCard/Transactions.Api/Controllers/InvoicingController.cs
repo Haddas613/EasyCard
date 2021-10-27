@@ -235,6 +235,8 @@ namespace Transactions.Api.Controllers
             // TODO: validate Invoice with Payment Info, do not send to EInvoice if no payment info present
             InvoiceValidator.ValidateInvoiceRequest(model);
 
+            model.Calculate(terminal.Settings.VATRate.GetValueOrDefault(0));
+
             // TODO: caching
             var systemSettings = await systemSettingsService.GetSystemSettings();
 

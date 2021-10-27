@@ -189,6 +189,11 @@ namespace Transactions.Api.Controllers
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
             var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
+            BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
+
+            // Optional calculate if values were not specified
+            model.Calculate(terminal.Settings.VATRate.GetValueOrDefault(0));
+
             var newBillingDeal = mapper.Map<BillingDeal>(model);
             newBillingDeal.Active = true;
             newBillingDeal.MerchantID = terminal.MerchantID;

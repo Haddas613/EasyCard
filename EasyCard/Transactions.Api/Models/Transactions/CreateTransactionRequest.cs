@@ -80,19 +80,19 @@ namespace Transactions.Api.Models.Transactions
         /// </summary>
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal? TransactionAmount { get; set; }
+        public decimal TransactionAmount { get; set; }
 
         [Range(0, 1)]
         [DataType(DataType.Currency)]
-        public decimal VATRate { get; set; }
+        public decimal? VATRate { get; set; }
 
         [Range(0, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal VATTotal { get; set; }
+        public decimal? VATTotal { get; set; }
 
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal NetTotal { get; set; }
+        public decimal? NetTotal { get; set; }
 
         /// <summary>
         /// Installment payments details (should be omitted in case of regular deal)
@@ -147,9 +147,16 @@ namespace Transactions.Api.Models.Transactions
         {
             if (NetTotal == 0)
             {
-                NetTotal = Math.Round(TransactionAmount.GetValueOrDefault() / (1m + VATRate), 2, MidpointRounding.AwayFromZero);
-                VATTotal = TransactionAmount.GetValueOrDefault() - NetTotal;
+                NetTotal = Math.Round(TransactionAmount / (1m + VATRate.GetValueOrDefault(0)), 2, MidpointRounding.AwayFromZero);
+                VATTotal = TransactionAmount - NetTotal;
             }
+        }
+
+        public void Calculate(decimal vatRate)
+        {
+            VATRate = vatRate;
+            NetTotal = Math.Round(TransactionAmount / (1m + VATRate.GetValueOrDefault(0)), 2, MidpointRounding.AwayFromZero);
+            VATTotal = TransactionAmount - NetTotal;
         }
 
         /// <summary>

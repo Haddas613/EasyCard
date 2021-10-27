@@ -445,7 +445,7 @@ namespace Transactions.Api.Controllers
                 // if TransactionAmount is null/zero  we only create customer & save card, no transaction needed
                 if (tokenResponseOperation?.Status == StatusEnum.Success)
                 {
-                    if (model.TransactionAmount.GetValueOrDefault() == 0)
+                    if (model.TransactionAmount == 0)
                     {
                         if (isPaymentIntent)
                         {

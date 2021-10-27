@@ -420,4 +420,10 @@
   <data name="UserAmountValidationMessage" xml:space="preserve">
     <value>משתמש יכול להזין סכום רק כאשר הסכום לדרישת התשלום הוא 0.</value>
   </data>
+  <data name="AllVatCalculationsMustBeSpecified" xml:space="preserve">
+    <value>במקרה שצוין לפחות אחד מהפרמטרים הבאים: ברוטו, נטו, מע"מ, יש לציין גם כל אחד מהם (או להשאיר null בהתאם). פרמטרים אלו תלויים זה בזה.</value>
+  </data>
+  <data name="ExpectedValue" xml:space="preserve">
+    <value>ערך מצופה: @value, ערך התקבל: @input</value>
+  </data>
 </root>

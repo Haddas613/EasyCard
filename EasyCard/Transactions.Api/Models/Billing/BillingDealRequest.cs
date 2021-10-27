@@ -42,15 +42,15 @@ namespace Transactions.Api.Models.Billing
 
         [Range(0, 1)]
         [DataType(DataType.Currency)]
-        public decimal VATRate { get; set; }
+        public decimal? VATRate { get; set; }
 
         [Range(0, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal VATTotal { get; set; }
+        public decimal? VATTotal { get; set; }
 
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal NetTotal { get; set; }
+        public decimal? NetTotal { get; set; }
 
         /// <summary>
         /// Billing Schedule
@@ -71,5 +71,21 @@ namespace Transactions.Api.Models.Billing
         public PaymentTypeEnum PaymentType { get; set; }
 
         public BankDetails BankDetails { get; set; }
+
+        /// <summary>
+        /// If VATRate, NetTotal and VatTotal properties were not specified, this method should be called
+        /// </summary>
+        public void Calculate(decimal vatRate)
+        {
+            //Only calculated if values are not present
+            if (VATRate.HasValue)
+            {
+                return;
+            }
+
+            VATRate = vatRate;
+            NetTotal = Math.Round(TransactionAmount / (1m + VATRate.Value), 2, MidpointRounding.AwayFromZero);
+            VATTotal = TransactionAmount - NetTotal;
+        }
     }
 }

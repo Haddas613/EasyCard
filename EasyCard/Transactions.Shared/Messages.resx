@@ -120,6 +120,9 @@
   <data name="AggregatorNotDefined" xml:space="preserve">
     <value>Aggregator is not defined</value>
   </data>
+  <data name="AllVatCalculationsMustBeSpecified" xml:space="preserve">
+    <value>In case if at least one of the following parameters is specified: VatRate, NetTotal, VatTotal, each one must be specified as well (or left null correspondingly). These parameters are mutually dependend</value>
+  </data>
   <data name="AmountRequiredForPinpadDeal" xml:space="preserve">
     <value>Amount required for pinpad deal</value>
   </data>
@@ -233,6 +236,9 @@
   </data>
   <data name="EmailSent" xml:space="preserve">
     <value>Email sent</value>
+  </data>
+  <data name="ExpectedValue" xml:space="preserve">
+    <value>Expected @value got @input</value>
   </data>
   <data name="FailedToCancelByAggregator" xml:space="preserve">
     <value>Failed To Cancel By Aggregator</value>

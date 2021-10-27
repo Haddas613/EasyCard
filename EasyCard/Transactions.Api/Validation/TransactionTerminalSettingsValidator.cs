@@ -132,6 +132,28 @@ namespace Transactions.Api.Validation
                 }
             }
 
+            //If all fields are present validate the totals
+            if (model.VATRate.HasValue && model.VATTotal.HasValue && model.NetTotal.HasValue)
+            {
+                var correctNetTotal = Math.Round(model.TransactionAmount / (1m + model.VATRate.Value), 2, MidpointRounding.AwayFromZero);
+
+                if (correctNetTotal != model.NetTotal.Value)
+                {
+                    errors.Add(new Error(nameof(model.NetTotal), Messages.ExpectedValue.Replace("@value", correctNetTotal.ToString()).Replace("@input", model.NetTotal.Value.ToString())));
+                }
+
+                var correctVatTotal = model.TransactionAmount - correctNetTotal;
+
+                if (correctVatTotal != model.VATTotal.Value)
+                {
+                    errors.Add(new Error(nameof(model.VATTotal), Messages.ExpectedValue.Replace("@value", correctVatTotal.ToString()).Replace("@input", model.VATTotal.Value.ToString())));
+                }
+            }
+            else if (!(!model.VATRate.HasValue && !model.VATTotal.HasValue && !model.NetTotal.HasValue)) //If not all fields are null, show an error
+            {
+                throw new BusinessException(Messages.AllVatCalculationsMustBeSpecified);
+            }
+
             if (errors.Count == 1)
             {
                 throw new BusinessException(errors.First().Description, errors);

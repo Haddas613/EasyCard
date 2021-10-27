@@ -69,17 +69,17 @@ namespace Transactions.Api.Models.PaymentRequests
         /// </summary>
         public bool? AllowPinPad { get; set; }
 
-        [Range(0, 1)]
-        [DataType(DataType.Currency)]
-        public decimal? VATRate { get; set; }
+        //[Range(0, 1)]
+        //[DataType(DataType.Currency)]
+        //public decimal? VATRate { get; set; }
 
-        [Range(0, double.MaxValue)]
-        [DataType(DataType.Currency)]
-        public decimal? VATTotal { get; set; }
+        //[Range(0, double.MaxValue)]
+        //[DataType(DataType.Currency)]
+        //public decimal? VATTotal { get; set; }
 
-        [Range(0, double.MaxValue)]
-        [DataType(DataType.Currency)]
-        public decimal? NetTotal { get; set; }
+        //[Range(0, double.MaxValue)]
+        //[DataType(DataType.Currency)]
+        //public decimal? NetTotal { get; set; }
 
         /// <summary>
         /// Email subject
