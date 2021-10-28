@@ -44,7 +44,7 @@ namespace Transactions.Api.Extensions
 
             if (dealDetails.ConsumerAddress == null)
             {
-                dealDetails.ConsumerAddress = new SharedIntegration.Models.Address { Street = consumer.ConsumerAddress }; // TODO: full address in consumer
+                dealDetails.ConsumerAddress = consumer.ConsumerAddress;
             }
 
             if (!(dealDetails.Items?.Count() > 0))

@@ -327,6 +327,9 @@
   "HasMasavFile": "Has Masav File",
   "Successful": "Successful",
   "AllowUserAmount": "Allow User Amount",
+  "City": "City",
+  "Zip": "Zip",
+  "Street": "Street",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

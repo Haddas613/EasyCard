@@ -50,16 +50,6 @@
     </v-col>
     <v-col cols="12" md="6" class="py-0">
       <v-text-field
-        v-model="model.consumerAddress"
-        :counter="250"
-        :rules="[vr.primitives.maxLength(250)]"
-        :label="$t('Address')"
-        class="px-1"
-        outlined
-      ></v-text-field>
-    </v-col>
-    <v-col cols="12" md="6" class="py-0">
-      <v-text-field
         v-model="model.externalReference"
         :counter="50"
         :rules="[vr.primitives.maxLength(50)]"
@@ -74,6 +64,36 @@
         :counter="50"
         :rules="[vr.primitives.maxLength(50)]"
         :label="$t('Origin')"
+        class="px-1"
+        outlined
+      ></v-text-field>
+    </v-col>
+    <v-col cols="12" md="4" class="py-0">
+      <v-text-field
+        v-model="model.consumerAddress.city"
+        :counter="50"
+        :rules="[vr.primitives.maxLength(50)]"
+        :label="$t('City')"
+        class="px-1"
+        outlined
+      ></v-text-field>
+    </v-col>
+    <v-col cols="12" md="2" class="py-0">
+      <v-text-field
+        v-model="model.consumerAddress.zip"
+        :counter="50"
+        :rules="[vr.primitives.maxLength(50)]"
+        :label="$t('Zip')"
+        class="px-1"
+        outlined
+      ></v-text-field>
+    </v-col>
+    <v-col cols="12" md="6" class="py-0">
+      <v-text-field
+        v-model="model.consumerAddress.street"
+        :counter="50"
+        :rules="[vr.primitives.maxLength(50)]"
+        :label="$t('Street')"
         class="px-1"
         outlined
       ></v-text-field>
@@ -115,6 +135,10 @@ export default {
       this.model.terminalID = this.terminalStore
         ? this.terminalStore.terminalID
         : this.terminals[0].terminalID;
+    }
+
+    if(!this.model.consumerAddress || typeof(consumerAddress) != "object"){
+      this.$set(this.model, 'consumerAddress', {});
     }
   },
   methods: {

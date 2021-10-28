@@ -327,6 +327,9 @@
   "HasMasavFile": "קבצי מסב",
   "Successful": "בהצלחה",
   "AllowUserAmount": "אפשר למשתמש להכניס סכום",
+  "City": "עִיר",
+  "Zip": "מיקוד",
+  "Street": "רְחוֹב",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

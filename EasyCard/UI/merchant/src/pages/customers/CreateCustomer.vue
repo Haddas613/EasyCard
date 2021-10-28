@@ -18,7 +18,11 @@ export default {
         consumerName: null,
         consumerPhone: null,
         consumerEmail: null,
-        consumerAddress: null,
+        consumerAddress: {
+          city: null,
+          zip: null,
+          street: null
+        },
         externalReference: null,
         origin: null
       },

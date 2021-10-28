@@ -82,7 +82,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.TransactionAmount">
             <summary>
-            Transaction amount (should be omitted in case of installment deal)
+            Transaction amount
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.BillingSchedule">
@@ -378,7 +378,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.TransactionAmount">
             <summary>
-            Transaction amount (should be omitted in case of installment deal)
+            Transaction amount
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.BillingSchedule">
