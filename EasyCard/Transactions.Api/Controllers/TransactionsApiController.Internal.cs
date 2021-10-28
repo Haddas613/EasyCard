@@ -190,6 +190,7 @@ namespace Transactions.Api.Controllers
             }
 
             transaction.DealDetails.CheckConsumerDetails(consumer);
+            transaction.Calculate();
 
             // Update details if needed
             transaction.DealDetails.UpdateDealDetails(consumer, terminal.Settings, transaction, transaction.CreditCardDetails);
@@ -205,8 +206,6 @@ namespace Transactions.Api.Controllers
 
             // map consumer name from card details if needed
             transaction.DealDetails.UpdateDealDetails(transaction.CreditCardDetails);
-
-            transaction.Calculate();
 
             transaction.MerchantIP = GetIP();
             transaction.CorrelationId = GetCorrelationID();
