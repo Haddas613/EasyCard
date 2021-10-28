@@ -105,6 +105,11 @@ namespace Transactions.Api.Validation
                 {
                     errors.Add(new SharedHelpers.Error($"{nameof(model.InstallmentDetails)}.{nameof(model.InstallmentDetails.TotalAmount)}", Messages.TotalAmountIsInvalid));
                 }
+
+                if (model.TransactionAmount != model.InstallmentDetails.TotalAmount)
+                {
+                    errors.Add(new SharedHelpers.Error($"{nameof(model.TransactionAmount)}", Messages.TransactionAmountDoesNotMatchInstallmentsAmount));
+                }
             }
 
             if (model.TransactionType == TransactionTypeEnum.Credit)

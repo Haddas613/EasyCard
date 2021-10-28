@@ -426,4 +426,7 @@
   <data name="ExpectedValue" xml:space="preserve">
     <value>ערך מצופה: @value, ערך התקבל: @input</value>
   </data>
+  <data name="TransactionAmountDoesNotMatchInstallmentsAmount" xml:space="preserve">
+    <value>הסכום אינו תואם לסכום הכולל של תשלומים</value>
+  </data>
 </root>

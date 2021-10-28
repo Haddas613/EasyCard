@@ -844,6 +844,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transaction Amount does not match Installments Total Amount.
+        /// </summary>
+        public static string TransactionAmountDoesNotMatchInstallmentsAmount {
+            get {
+                return ResourceManager.GetString("TransactionAmountDoesNotMatchInstallmentsAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transaction Canceled.
         /// </summary>
         public static string TransactionCanceled {

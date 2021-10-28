@@ -85,6 +85,12 @@ namespace Transactions.Api.Controllers
 
             TransactionTerminalSettingsValidator.Validate(terminal.Settings, model, token, jDealType, specialTransactionType, initialTransactionID);
 
+            //TODO: map terminal to model?
+            if (model.VATRate == null)
+            {
+                model.VATRate = terminal.Settings.VATRate;
+            }
+
             var transaction = mapper.Map<PaymentTransaction>(model);
 
             // NOTE: this is security assignment

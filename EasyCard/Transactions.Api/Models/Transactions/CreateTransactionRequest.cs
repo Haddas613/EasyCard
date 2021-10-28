@@ -76,7 +76,7 @@ namespace Transactions.Api.Models.Transactions
         public Guid? CreditCardToken { get; set; }
 
         /// <summary>
-        /// Transaction amount (should be omitted in case of installment deal)
+        /// Transaction amount. Must always be specified. In case of Installments must match InstallmentDetails.TotalAmount
         /// </summary>
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]

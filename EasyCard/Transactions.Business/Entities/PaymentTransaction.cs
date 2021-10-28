@@ -287,6 +287,16 @@ namespace Transactions.Business.Entities
                 NumberOfPayments = 1;
             }
 
+            if (NetTotal == default)
+            {
+                NetTotal = Math.Round(TransactionAmount / (1m + VATRate), 2, MidpointRounding.AwayFromZero);
+            }
+
+            if (VATTotal == default)
+            {
+                VATTotal = TransactionAmount - NetTotal;
+            }
+
             if (InitialPaymentAmount == 0)
             {
                 InitialPaymentAmount = TransactionAmount;

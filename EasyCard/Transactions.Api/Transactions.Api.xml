@@ -1318,7 +1318,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.TransactionAmount">
             <summary>
-            Transaction amount (should be omitted in case of installment deal)
+            Transaction amount. Must always be specified. In case of Installments must match InstallmentDetails.TotalAmount
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.InstallmentDetails">

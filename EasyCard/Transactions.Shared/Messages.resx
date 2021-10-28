@@ -378,6 +378,9 @@
   <data name="TransactionAlreadyHasInvoice" xml:space="preserve">
     <value>Transaction already has invoice</value>
   </data>
+  <data name="TransactionAmountDoesNotMatchInstallmentsAmount" xml:space="preserve">
+    <value>Transaction Amount does not match Installments Total Amount</value>
+  </data>
   <data name="TransactionCanceled" xml:space="preserve">
     <value>Transaction Canceled</value>
   </data>
