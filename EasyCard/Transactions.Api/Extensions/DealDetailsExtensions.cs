@@ -65,13 +65,16 @@ namespace Transactions.Api.Extensions
                 };
             }
 
-            if (dealDetails.Items?.Count() > 0 && dealDetails.Items?.Sum(i => i.Amount).GetValueOrDefault(0) != financialItem.Amount)
+            if (dealDetails.Items?.Count() > 0 &&
+                (dealDetails.Items?.Sum(i => i.Amount).GetValueOrDefault(0) != financialItem.Amount
+                || dealDetails.Items?.Sum(i => i.VAT).GetValueOrDefault(0) != financialItem.VATTotal))
             {
                 var firstItem = dealDetails.Items.First();
 
                 firstItem.Amount = financialItem.Amount - dealDetails.Items?.Sum(i => i.Amount).GetValueOrDefault(0);
                 firstItem.Price = firstItem.Amount;
-                firstItem.VAT = Math.Round(firstItem.Amount.Value / (1m + financialItem.VATRate), 2, MidpointRounding.AwayFromZero);
+                //firstItem.VAT = Math.Round(firstItem.Amount.Value / (1m + financialItem.VATRate), 2, MidpointRounding.AwayFromZero);
+                firstItem.VAT = financialItem.VATTotal - dealDetails.Items?.Sum(i => i.VAT).GetValueOrDefault(0);
                 firstItem.NetAmount = firstItem.Amount - firstItem.VAT;
             }
 
