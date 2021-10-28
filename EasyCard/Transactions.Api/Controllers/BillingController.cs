@@ -317,6 +317,47 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
         }
 
+        [HttpPatch]
+        [Route("{BillingDealID}/change-token/{tokenID}")]
+        public async Task<ActionResult<OperationResponse>> UpdateBillingDealToken([FromRoute] Guid billingDealID, [FromRoute] Guid tokenID)
+        {
+            var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+            var consumer = EnsureExists(
+                await consumersService.GetConsumers()
+                .FirstOrDefaultAsync(d => d.TerminalID == billingDeal.TerminalID && d.ConsumerID == billingDeal.DealDetails.ConsumerID), "Consumer");
+
+            if (billingDeal.PaymentType != PaymentTypeEnum.Card)
+            {
+                return BadRequest(new OperationResponse($"{billingDeal.PaymentType} payment type is not supported", StatusEnum.Error));
+            }
+
+            var token = EnsureExists(
+                await creditCardTokenService.GetTokens()
+                .FirstOrDefaultAsync(d => d.TerminalID == billingDeal.TerminalID && d.CreditCardTokenID == tokenID && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+
+            billingDeal.InitialTransactionID = token.InitialTransactionID;
+            billingDeal.CreditCardDetails = new Business.Entities.CreditCardDetails();
+
+            if (billingDeal.CreditCardToken != token.CreditCardTokenID)
+            {
+                if (token.ReplacementOfTokenID == null && billingDeal.CreditCardToken != null)
+                {
+                    token.ReplacementOfTokenID = billingDeal.CreditCardToken;
+                    await creditCardTokenService.UpdateEntity(token);
+                }
+
+                await billingDealService.AddCardTokenChangedHistory(billingDeal, token.CreditCardTokenID);
+            }
+
+            mapper.Map(token, billingDeal.CreditCardDetails);
+
+            billingDeal.ApplyAuditInfo(httpContextAccessor);
+
+            await billingDealService.UpdateEntity(billingDeal);
+
+            return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
+        }
+
         [HttpPost]
         [Route("{BillingDealID}/switch")]
         public async Task<ActionResult<OperationResponse>> SwitchBillingDeal([FromRoute] Guid billingDealID)
