@@ -34,23 +34,23 @@ namespace Transactions.Api.Models.Billing
         public Guid? CreditCardToken { get; set; }
 
         /// <summary>
-        /// Transaction amount (should be omitted in case of installment deal)
+        /// Transaction amount
         /// </summary>
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal? TransactionAmount { get; set; }
+        public decimal TransactionAmount { get; set; }
 
         [Range(0, 1)]
         [DataType(DataType.Currency)]
-        public decimal VATRate { get; set; }
+        public decimal? VATRate { get; set; }
 
         [Range(0, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal VATTotal { get; set; }
+        public decimal? VATTotal { get; set; }
 
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal NetTotal { get; set; }
+        public decimal? NetTotal { get; set; }
 
         /// <summary>
         /// Billing Schedule

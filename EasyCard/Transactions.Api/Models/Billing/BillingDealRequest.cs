@@ -34,7 +34,7 @@ namespace Transactions.Api.Models.Billing
         public Guid? CreditCardToken { get; set; }
 
         /// <summary>
-        /// Transaction amount (should be omitted in case of installment deal)
+        /// Transaction amount
         /// </summary>
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
