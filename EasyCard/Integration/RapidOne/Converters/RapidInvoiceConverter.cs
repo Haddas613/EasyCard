@@ -53,7 +53,7 @@ namespace RapidOne.Converters
                         Currency = "₪"
                     },
                     Subtotal = item.NetAmount.GetValueOrDefault(),
-                    VatPercent = item.VATRate.GetValueOrDefault(),
+                    VatPercent = (item.VATRate.GetValueOrDefault()) * 100m,
                     Vat = item.VAT.GetValueOrDefault(),
                     Total = item.Amount.GetValueOrDefault(),
                     ToPay = item.Amount.GetValueOrDefault(),
