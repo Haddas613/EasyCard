@@ -34,7 +34,7 @@
           </v-col>
           <v-col cols="12" md="4" class="info-block">
             <p class="caption ecgray--text text--darken-2">{{$t('CustomerAddress')}}</p>
-            <p>{{(model.consumerAddress || '-')}}</p>
+            <p>{{(model.consumerAddress ? model.consumerAddress.street : '-')}}</p>
           </v-col>
         </template>
       </v-row>

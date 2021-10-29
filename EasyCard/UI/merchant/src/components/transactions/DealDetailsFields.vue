@@ -1,7 +1,6 @@
 <template>
   <v-flex class="d-flex flex-column">
     <v-row no-gutters>
-
       <v-col cols="12" md="6">
         <v-text-field
           v-model="model.consumerName"
@@ -31,7 +30,7 @@
       </v-col>
       <v-col cols="12" md="6">
         <v-text-field
-          v-model="model.consumerAddress"
+          v-model="model.consumerAddress.street"
           :label="$t('CustomerAddress')"
           :rules="[vr.primitives.maxLength(50)]"
           v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
@@ -77,6 +76,11 @@ export default {
     return {
       dictionaries: {},
       model: {
+        consumerAddress:{
+          city: null,
+          zip: null,
+          street: null
+        },
         ...this.data.dealDetails
       },
       saveCreditCard: this.data.saveCreditCard,

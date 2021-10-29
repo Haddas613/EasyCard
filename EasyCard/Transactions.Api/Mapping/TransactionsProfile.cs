@@ -72,11 +72,11 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)));
 
             CreateMap<SharedIntegration.Models.DealDetails, Business.Entities.DealDetails>()
-                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => string.IsNullOrWhiteSpace(src.ConsumerAddress) ? null : new Address { Street = src.ConsumerAddress }))
+                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => src.ConsumerAddress))
                 .ForMember(c => c.ConsumerExternalReference, o => o.MapFrom(src => src.ConsumerExternalReference));
 
             CreateMap<Business.Entities.DealDetails, SharedIntegration.Models.DealDetails>()
-                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => src.ConsumerAddress != null ? src.ConsumerAddress.Street : null))
+                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => src.ConsumerAddress))
                  .ForMember(c => c.ConsumerExternalReference, o => o.MapFrom(src => src.ConsumerExternalReference));
 
             CreateMap<CreditCardTokenKeyVault, Business.Entities.CreditCardDetails>()
