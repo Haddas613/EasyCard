@@ -364,6 +364,7 @@ export default {
       this.updateAmount(data);
       this.quickChargeMode = data.quickCharge;
       if (data.quickCharge){
+        this.model.key = `${this.terminal.terminalID}-${this.model.transactionAmount}`;
         this.step = 4;
         return;
       }
