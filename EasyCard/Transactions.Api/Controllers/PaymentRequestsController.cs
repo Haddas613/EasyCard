@@ -226,10 +226,18 @@ namespace Transactions.Api.Controllers
                 model.PinPadDetails = model.PinPadDetails.UpdatePinPadDetails(terminal.Integrations.FirstOrDefault(i => i.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
             }
 
+            if (!model.VATRate.HasValue)
+            {
+                model.VATRate = terminal.Settings.VATRate;
+            }
+
             var newPaymentRequest = mapper.Map<PaymentRequest>(model);
+
+            newPaymentRequest.Calculate();
 
             // Update details if needed
             newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest, null);
+
             if (consumer != null)
             {
                 newPaymentRequest.CardOwnerName = consumer.ConsumerName;
@@ -249,8 +257,6 @@ namespace Transactions.Api.Controllers
                 // TODO: prper message
                 return BadRequest(new OperationResponse("Email required", StatusEnum.Error, newPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
             }
-
-            newPaymentRequest.Calculate();
 
             newPaymentRequest.MerchantID = terminal.MerchantID;
 
