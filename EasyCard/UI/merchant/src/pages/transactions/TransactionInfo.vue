@@ -77,6 +77,16 @@
                 <small>{{model.paymentRequestID | guid}}</small>
               </router-link>
             </v-col>
+            <v-col cols="12" md="4" class="info-block" v-if="model.billingDealID">
+              <p class="caption ecgray--text text--darken-2">{{$t('BillingDeal')}}</p>
+              <router-link
+                class="primary--text"
+                link
+                :to="{name: 'BillingDeal', params: {id: model.billingDealID}}"
+              >
+                <small>{{model.billingDealID | guid}}</small>
+              </router-link>
+            </v-col>
           </v-row>
         </v-card-text>
       </v-card>
