@@ -104,7 +104,8 @@
             </v-flex>
           </template>
           <template v-slot:errors v-if="result.additionalData && result.additionalData.authorizationCodeRequired">
-            <v-form class="ec-form" ref="form" lazy-validation>
+            <v-form class="my-4 ec-form" ref="form" lazy-validation>
+              <p>{{result.additionalData.message}}</p>
               <v-text-field
                 v-model="model.oKNumber"
                 :label="$t('AuthorizationCode')"

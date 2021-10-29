@@ -44,7 +44,7 @@ namespace Transactions.Api.Extensions
 
             if (dealDetails.ConsumerAddress == null)
             {
-                dealDetails.ConsumerAddress = consumer.ConsumerAddress;
+                dealDetails.ConsumerAddress = consumer?.ConsumerAddress;
             }
 
             if (!(dealDetails.Items?.Count() > 0))

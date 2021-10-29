@@ -86,6 +86,20 @@
                 <v-btn outlined color="success" link :to="{name: 'Dashboard'}">{{$t("Close")}}</v-btn>
               </v-flex>
             </template>
+            <template v-slot:errors v-if="result.additionalData && result.additionalData.authorizationCodeRequired">
+              <v-form class="my-4 ec-form" ref="form" lazy-validation>
+                <p>{{result.additionalData.message}}</p>
+                <v-text-field
+                  v-model="model.oKNumber"
+                  :label="$t('AuthorizationCode')"
+                  :rules="[vr.primitives.stringLength(1, 50)]">
+                </v-text-field>
+                <v-btn color="primary" bottom :x-large="true" block @click="createRefund()">
+                  {{$t("Retry")}}
+                  <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
+                </v-btn>
+              </v-form>
+            </template>
             <template v-slot:slip v-if="transaction">
               <transaction-printout ref="printout" :transaction="transaction"></transaction-printout>
               <transaction-slip-dialog ref="slipDialog" :transaction="transaction" :show.sync="transactionSlipDialog"></transaction-slip-dialog>

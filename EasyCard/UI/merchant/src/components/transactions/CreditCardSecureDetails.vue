@@ -107,7 +107,7 @@
           ref="instDetails"
           :data="model.installmentDetails"
           v-if="isInstallmentTransaction"
-          :total-amount="model.transactionAmount"
+          :total-amount="data.transactionAmount"
           :key="model.transactionType"
           :transaction-type="model.transactionType"
         ></installment-details>
@@ -116,7 +116,7 @@
     <v-card-actions class="px-4">
       <v-btn color="primary" bottom :x-large="true" block @click="ok()">
         {{$t(btnText)}}
-        <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
+        <ec-money :amount="data.transactionAmount" class="px-1" :currency="data.currency"></ec-money>
       </v-btn>
     </v-card-actions>
   </v-card>

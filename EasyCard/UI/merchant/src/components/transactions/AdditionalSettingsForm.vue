@@ -30,7 +30,7 @@
     <v-card-actions class="px-2">
       <v-btn color="primary" bottom :x-large="true" block @click="ok()">
         {{$t('Confirm')}}
-        <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
+        <ec-money :amount="data.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
       </v-btn>
     </v-card-actions>
   </v-card>
