@@ -153,11 +153,11 @@ namespace Merchants.Api.Mapping
              .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<ClearingHouse.ClearingHouseTerminalSettings, Terminal>()
-               .ForMember(m => m.AggregatorTerminalReference, s => s.MapFrom(src => src.MerchantReference))
+               .ForMember(m => m.AggregatorTerminalReference, s => s.MapFrom(src => src.MerchantID.HasValue ? $"CH: {src.MerchantID.ToString()}" : "CH"))
                .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Upay.UpayTerminalSettings, Terminal>()
-               .ForMember(m => m.AggregatorTerminalReference, s => s.MapFrom(src => src.Email))
+               .ForMember(m => m.AggregatorTerminalReference, s => s.MapFrom(src => "UPay"))
                .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<EasyInvoice.EasyInvoiceTerminalSettings, Terminal>()
