@@ -6,7 +6,7 @@
           <v-icon class="error--text font-weight-thin" size="170">mdi-progress-close</v-icon>
           <p class="subtitle-1 error--text">{{error || $t('Error')}}</p>
           <v-flex class="pt-1" flat>
-            <v-card flat v-if="errors && errors.length > 0">
+            <v-card class="ecbg" flat v-if="errors && errors.length > 0">
               <v-card-text>
                 <v-list two-line subheader>
                   <v-list-item class="px-0" v-for="e in errors" dashed v-bind:key="e.message">

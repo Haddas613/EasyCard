@@ -244,10 +244,10 @@ export default {
       if(!this.cardOwnerNationalID)
       return {
         type: "device",
+        oKNumber: this.model.oKNumber,
         data: {
           pinPad: true,
           pinPadDeviceID: this.selectedDevice.deviceID,
-          oKNumber: this.model.oKNumber,
           cardOwnerNationalID: this.model.cardOwnerNationalID
         }
       };
@@ -257,8 +257,8 @@ export default {
 
       return {
         type: "token",
-        data: this.selectedToken,
-        oKNumber: this.model.oKNumber
+        oKNumber: this.model.oKNumber,
+        data: this.selectedToken
       };
     },
     okCreditCard() {
@@ -270,11 +270,11 @@ export default {
 
       return {
         type: "creditcard",
+        oKNumber: this.model.oKNumber,
         data: {
           ...this.model.creditCardSecureDetails,
           ...data,
           saveCreditCard: this.model.saveCreditCard,
-          oKNumber: this.model.oKNumber
         }
       };
     },

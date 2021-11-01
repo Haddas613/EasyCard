@@ -111,5 +111,10 @@ namespace Transactions.Api.Models.Transactions
         /// SignalR connection id
         /// </summary>
         public string ConnectionID { get; set; }
+
+        /// <summary>
+        /// ShvaAuthNum
+        /// </summary>
+        public string OKNumber { get; set; }
     }
 }

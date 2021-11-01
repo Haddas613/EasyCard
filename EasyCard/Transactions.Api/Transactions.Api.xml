@@ -1561,6 +1561,11 @@
             SignalR connection id
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.OKNumber">
+            <summary>
+            ShvaAuthNum
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionRequestBase.DealDetails">
             <summary>
             Deal information (optional)
