@@ -136,7 +136,7 @@
     <value>מזהה בית עסק</value>
   </data>
   <data name="ProcessorTerminalReference" xml:space="preserve">
-    <value>אסמכתת מעבד</value>
+    <value>מספר מסוף</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>סטטוס</value>
