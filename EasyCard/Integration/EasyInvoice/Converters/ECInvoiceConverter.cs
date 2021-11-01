@@ -16,7 +16,7 @@ namespace EasyInvoice.Converters
         {
             var json = new ECInvoiceCreateDocumentRequest
             {
-                CustomerAddress = GetCustomerAddress(message.DealDetails?.ConsumerAddress?.Street),
+                CustomerAddress = GetCustomerAddress(message.DealDetails?.ConsumerAddress),
                 CustomerEmail = message.DealDetails.ConsumerEmail,
                 CustomerName = message.ConsumerName,
                 CustomerPhoneNumber = message.DealDetails?.ConsumerPhone,
@@ -84,18 +84,19 @@ namespace EasyInvoice.Converters
             }
         }
 
-        public static ECInvoiceCustomerAddress GetCustomerAddress(string message)
+        public static ECInvoiceCustomerAddress GetCustomerAddress(Address address)
         {
-            if (message == null)
+            if (address == null)
             {
                 return null;
             }
 
             var res = new ECInvoiceCustomerAddress
             {
-                City = string.Empty,
-                Street = message,
-                PostalCode = string.Empty,
+                City = address.City,
+                Street = address.Street,
+                PostalCode = address.Zip,
+                StreetNumber = address.House
             };
 
             return res;

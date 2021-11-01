@@ -44,6 +44,14 @@
                 <p class="caption ecgray--text text--darken-2">{{$t('Street')}}</p>
                 <p>{{model.consumerAddress.street || '-'}}</p>
               </div>
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('House')}}</p>
+                <p>{{model.consumerAddress.house || '-'}}</p>
+              </div>
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('Apartment')}}</p>
+                <p>{{model.consumerAddress.apartment || '-'}}</p>
+              </div>
             </template>
           </v-col>
           <v-col cols="12" md="6">

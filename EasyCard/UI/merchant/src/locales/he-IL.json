@@ -330,6 +330,8 @@
   "City": "עִיר",
   "Zip": "מיקוד",
   "Street": "רְחוֹב",
+  "House": "בַּיִת",
+  "Apartment": "דירה",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

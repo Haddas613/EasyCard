@@ -32,10 +32,20 @@
             <p class="caption ecgray--text text--darken-2">{{$t('CustomerPhone')}}</p>
             <p>{{(model.consumerPhone || '-')}}</p>
           </v-col>
-          <v-col cols="12" md="4" class="info-block">
-            <p class="caption ecgray--text text--darken-2">{{$t('CustomerAddress')}}</p>
-            <p>{{(model.consumerAddress ? model.consumerAddress.street : '-')}}</p>
-          </v-col>
+          <template v-if="model.consumerAddress">
+            <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Street')}}</p>
+              <p>{{model.consumerAddress.street || '-'}}</p>
+            </v-col>
+            <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('House')}}</p>
+              <p>{{model.consumerAddress.house || '-'}}</p>
+            </v-col>
+            <v-col cols="12" md="4" class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Apartment')}}</p>
+              <p>{{model.consumerAddress.apartment || '-'}}</p>
+            </v-col>
+          </template>
         </template>
       </v-row>
     </v-card-text>

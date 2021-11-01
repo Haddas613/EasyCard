@@ -35,7 +35,7 @@ export default {
     if (!result) {
       this.$router.push({ name: "Customers" });
     }
-
+    
     this.model = result;
     this.$store.commit("ui/changeHeader", {
       value: {

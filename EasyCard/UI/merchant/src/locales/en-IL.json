@@ -330,6 +330,8 @@
   "City": "City",
   "Zip": "Zip",
   "Street": "Street",
+  "House": "House",
+  "Apartment": "Apartment",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",

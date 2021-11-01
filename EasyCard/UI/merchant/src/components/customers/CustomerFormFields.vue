@@ -98,6 +98,26 @@
         outlined
       ></v-text-field>
     </v-col>
+    <v-col cols="12" md="6" class="py-0">
+      <v-text-field
+        v-model="model.consumerAddress.house"
+        :counter="50"
+        :rules="[vr.primitives.maxLength(50)]"
+        :label="$t('House')"
+        class="px-1"
+        outlined
+      ></v-text-field>
+    </v-col>
+    <v-col cols="12" md="6" class="py-0">
+      <v-text-field
+        v-model="model.consumerAddress.apartment"
+        :counter="50"
+        :rules="[vr.primitives.maxLength(50)]"
+        :label="$t('Apartment')"
+        class="px-1"
+        outlined
+      ></v-text-field>
+    </v-col>
   </v-row>
 </template>
 
@@ -136,8 +156,8 @@ export default {
         ? this.terminalStore.terminalID
         : this.terminals[0].terminalID;
     }
-
-    if(!this.model.consumerAddress || typeof(consumerAddress) != "object"){
+    
+    if(!this.model.consumerAddress || typeof(this.model.consumerAddress) != "object"){
       this.$set(this.model, 'consumerAddress', {});
     }
   },

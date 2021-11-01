@@ -11,6 +11,10 @@ namespace Shared.Integration.Models
     {
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [StringLength(50)]
+        public string CountryCode { get; set; }
+
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [StringLength(50)]
         public string City { get; set; }
 
         [JsonConverter(typeof(TrimmingJsonConverter))]
@@ -20,5 +24,13 @@ namespace Shared.Integration.Models
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [StringLength(250)]
         public string Street { get; set; }
+
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [StringLength(50)]
+        public string House { get; set; }
+
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [StringLength(50)]
+        public string Apartment { get; set; }
     }
 }

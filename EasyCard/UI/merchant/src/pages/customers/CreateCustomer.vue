@@ -21,7 +21,9 @@ export default {
         consumerAddress: {
           city: null,
           zip: null,
-          street: null
+          street: null,
+          house: null,
+          apartment: null
         },
         externalReference: null,
         origin: null

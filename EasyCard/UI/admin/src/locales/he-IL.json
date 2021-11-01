@@ -400,6 +400,9 @@
   "Successful": "בהצלחה",
   "PaymentIntentID": "מזהה כוונת תשלום",
   "UserPaid": "שולם על ידי המשתמש",
+  "Street": "רְחוֹב",
+  "House": "בַּיִת",
+  "Apartment": "דירה",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

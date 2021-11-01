@@ -120,7 +120,6 @@
   "TerminalsTokens": "Terminals Tokens",
   "TokensTransactions": "Tokens Transactions",
   "ListOfPinpadDevices": "List of PinPad Devices",
-  "UserPaid": "User Paid",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -396,6 +395,10 @@
   "CustomerName": "Customer Name",
   "Successful": "Successful",
   "PaymentIntentID": "Payment Intent ID",
+  "UserPaid": "User Paid",
+  "Street": "Street",
+  "House": "House",
+  "Apartment": "Apartment",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
