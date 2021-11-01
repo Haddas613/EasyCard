@@ -282,7 +282,7 @@ namespace Transactions.Api.Controllers
                     if (processorResponse.RejectReasonCode == RejectionReasonEnum.AuthorizationCodeRequired)
                     {
                         var message = Messages.AuthorizationCodeRequired.Replace("@number", processorResponse.TelToGetAuthNum).Replace("@retailer", processorResponse.CompRetailerNum);
-                        return BadRequest(new OperationResponse(Messages.RejectedByProcessor, StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier) { AdditionalData = JObject.FromObject(new { authorizationCodeRequired = true, message }) });
+                        return BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier) { AdditionalData = JObject.FromObject(new { authorizationCodeRequired = true, message }) });
                     }
                     else
                     {
