@@ -218,6 +218,7 @@
   "AmountFrom": "סכום מ-",
   "AmountTo": "עד סכום",
   "RejectionReason": "סיבת דחיה",
+  "RejectionMessage": "הודעת דחייה",
   "MerchantID": "מזהה בית עסק",
   "MerchantEmail": "מייל בית עסק",
   "MerchantName": "שם בית עסק",

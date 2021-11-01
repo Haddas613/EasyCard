@@ -215,6 +215,7 @@
   "AmountFrom": "Amount from",
   "AmountTo": "Amount to",
   "RejectionReason": "Rejection Reason",
+  "RejectionMessage": "Rejection Message",
   "MerchantID": "Merchant ID",
   "MerchantEmail": "Merchant Email",
   "MerchantName": "Merchant Name",
