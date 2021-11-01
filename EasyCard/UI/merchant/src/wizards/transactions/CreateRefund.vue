@@ -88,7 +88,7 @@
             </template>
             <template v-slot:errors v-if="result.additionalData && result.additionalData.authorizationCodeRequired">
               <v-form class="my-4 ec-form" ref="form" lazy-validation>
-                <p>{{result.additionalData.message}}</p>
+                <!-- <p>{{result.additionalData.message}}</p> -->
                 <v-text-field
                   v-model="model.oKNumber"
                   :label="$t('AuthorizationCode')"
@@ -129,6 +129,7 @@
 import { mapState } from "vuex";
 import appConstants from "../../helpers/app-constants";
 import * as signalR from "@microsoft/signalr";
+import ValidationRules from "../../helpers/validation-rules";
 
 export default {
   components: {
@@ -216,7 +217,8 @@ export default {
       transactionsHub: null,
       signalRToast: null,
       transaction: null,
-      transactionSlipDialog: false
+      transactionSlipDialog: false,
+      vr: ValidationRules
     };
   },
   computed: {
