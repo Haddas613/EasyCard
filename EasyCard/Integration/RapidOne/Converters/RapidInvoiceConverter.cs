@@ -123,8 +123,22 @@ namespace RapidOne.Converters
 
                 cc.VoucherNum = GetVoucherNum(creditCardPayment?.ShovarNumber);
                 cc.Payments = message.NumberOfPayments;
-                cc.FirstPayment = message.InitialPaymentAmount;
+                
                 cc.DealType = GetDealType(message.TransactionType);
+
+                if (message.TransactionType == TransactionTypeEnum.Credit)
+                {
+
+                }
+                else if (message.TransactionType == TransactionTypeEnum.Installments)
+                {
+                    cc.FirstPayment = message.InitialPaymentAmount;
+                    cc.Remaining = message.InstallmentPaymentAmount;
+                }
+                else
+                {
+
+                }
 
                 result.Add(cc);
             }
