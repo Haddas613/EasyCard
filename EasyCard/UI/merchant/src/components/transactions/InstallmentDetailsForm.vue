@@ -133,8 +133,8 @@ export default {
       if(!skipInitial){
         let installmentPaymentAmountRaw = (this.totalAmount - leftover) / (this.model.numberOfPayments);
         this.model.installmentPaymentAmount = installmentPaymentAmountRaw.toFixed(2);
-        this.model.initialPaymentAmount = (installmentPaymentAmountRaw + leftover).toFixed(2);
-        // this.model.initialPaymentAmount = (this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1))).toFixed(2);
+        //this.model.initialPaymentAmount = (installmentPaymentAmountRaw + leftover).toFixed(2);
+        this.model.initialPaymentAmount = (this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1))).toFixed(2);
 
       }else{
         let installmentPaymentAmountRaw = (this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1);
