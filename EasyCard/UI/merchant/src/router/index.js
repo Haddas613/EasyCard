@@ -49,6 +49,13 @@ const routes = [
                 props: true
             },
             {
+                name: 'QuickCharge',
+                path: 'transactions/quickcharge',
+                component: () =>
+                    import ('../wizards/transactions/QuickCharge.vue'),
+                props: true
+            },
+            {
                 name: 'Refund',
                 path: 'transactions/refund',
                 component: () =>

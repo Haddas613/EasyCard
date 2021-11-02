@@ -5,7 +5,7 @@
       <ec-radio-group :data="terminals" valuekey="terminalID" return-object :model.sync="terminal"></ec-radio-group>
     </ec-dialog>
     <v-app-bar app fixed flat color="white">
-      <v-row :align="'center'" class="top-area">
+      <v-row :align="'center'" v-bind:class="{'top-area': !oneLevel}">
         <v-col class="d-flex justify-start" cols="4" md="3" lg="4">
           <img v-bind:class="{'logo-top-m': $vuetify.breakpoint.smAndDown, 'logo-top-d': $vuetify.breakpoint.mdAndUp}" src="/assets/img/logon.png" />
         </v-col>
@@ -20,7 +20,12 @@
             class="subtitle-1 ecgray--text"
           >{{terminalName}}</v-toolbar-title>
         </v-col>
-        <v-col v-if="$vuetify.breakpoint.mdAndUp" cols="1" md="3" lg="4" class="d-flex justify-end">
+        <v-col cols="1" md="3" lg="4" class="d-flex px-1 justify-end" v-if="oneLevel && closeable">
+          <v-btn color="error darken-3" icon>
+            <v-icon icon size="1.5rem" @click="onClickClose()">mdi-close</v-icon>
+          </v-btn>
+        </v-col>
+        <v-col v-else-if="$vuetify.breakpoint.mdAndUp" cols="1" md="3" lg="4" class="d-flex justify-end">
           <v-menu offset-y dark v-if="tdmenuitems && tdmenuitems.length > 0">
             <template v-slot:activator="{ on, attrs }">
               <v-icon v-bind="attrs" v-on="on">mdi-dots-vertical</v-icon>
@@ -35,7 +40,7 @@
         </v-col>
         <span v-else class="delimiter-m"></span>
       </v-row>
-      <template v-slot:extension>
+      <template v-if="!oneLevel" v-slot:extension>
         <v-row :align="'center'">
           <v-col cols="2" class="d-flex px-1 justify-start" v-if="completed">
             <v-spacer></v-spacer>
@@ -114,6 +119,10 @@ export default {
       required: false
     },
     canchangeterminal: {
+      type: Boolean,
+      default: false
+    },
+    oneLevel: {
       type: Boolean,
       default: false
     }

@@ -29,11 +29,17 @@
         </ec-radio-group>
       </template>
     </ec-dialog>
-    <v-card-text class="py-2">
+    <v-card-text class="py-0">
       <v-form class="ec-form" ref="form" lazy-validation>
-        <v-switch v-if="includeDevice"
-          v-model="model.pinPad" :label="$t('UsePinPad')" :disabled="!availableDevices.length">
-        </v-switch>
+        <div class="d-flex justify-center" v-if="includeDevice && availableDevices.length">
+          <v-switch
+            dense
+            hide-details
+            v-model="model.pinPad"
+            :label="$t('UsePinPad')"
+            :disabled="!availableDevices.length">
+          </v-switch>
+        </div>
         <template v-if="model.pinPad">
             <v-row no-gutters>
               <v-col cols="12" v-if="availableDevices.length > 0">
@@ -87,9 +93,22 @@
                 ref="ccsecuredetailsform"
                 :tokens="customerTokens"
               ></credit-card-secure-details-fields>
-              <v-checkbox v-model="model.saveCreditCard" :label="model.dealDetails.consumerID ? $t('SaveCard') : $t('SaveCardCreateNewCustomer')"></v-checkbox>
+              <v-row no-gutters>
+                <v-col cols="5">
+                  <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')"></v-checkbox>
+                </v-col>
+                <v-col cols="7">
+                  <v-text-field
+                    class="mt-2"
+                    v-model="model.oKNumber"
+                    :label="$t('AuthorizationCode')"
+                    :rules="[vr.primitives.stringLength(1, 50)]">
+                  </v-text-field>
+                </v-col>
+              </v-row>
             </template>
             <v-text-field
+              v-else
               v-model="model.oKNumber"
               :label="$t('AuthorizationCodeOptional')"
               :rules="[vr.primitives.stringLength(1, 50)]">
@@ -113,7 +132,7 @@
         ></installment-details>
       </v-form>
     </v-card-text>
-    <v-card-actions class="px-4">
+    <v-card-actions class="px-4" v-if="btnText">
       <v-btn color="primary" bottom :x-large="true" block @click="ok()">
         {{$t(btnText)}}
         <ec-money :amount="data.transactionAmount" class="px-1" :currency="data.currency"></ec-money>

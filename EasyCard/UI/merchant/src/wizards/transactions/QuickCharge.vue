@@ -1,0 +1,578 @@
+<template>
+  <v-flex fluid fill-height>
+    <navbar
+      v-on:back="goBack()"
+      v-on:close="$router.push({name: 'Dashboard'})"
+      v-on:terminal-changed="terminalChanged()"
+      :canchangeterminal="true"
+      one-level
+      closeable
+    >
+    </navbar>
+    <v-form class="px-1 pt-4" ref="form" v-model="valid" lazy-validation>
+      <v-row no-gutters>
+        <v-col cols="12">
+          <v-text-field
+            class="mx-2 centered-input amount-input"
+            v-model="model.transactionAmount"
+            outlined
+            :rules="[vr.primitives.numeric(true), vr.primitives.biggerThan(0)]"
+            hide-details="true"
+            autofocus
+          >
+            <template v-slot:append>
+              <span class="currency-icon">{{currency.description}}</span>
+            </template>
+          </v-text-field>
+        </v-col>
+        <v-col cols="12" class="pt-1">
+          <numpad-dialog-invoker class="mx-4" :data="model" @ok="processAmount($event)"></numpad-dialog-invoker>
+        </v-col>
+        <v-col cols="12">
+          <credit-card-secure-details
+            :key="model.key"
+            :data="model"
+            v-on:ok="processCreditCard($event)"
+            include-device
+            ref="ccSecureDetails"
+            :btn-text="null"
+          ></credit-card-secure-details>
+        </v-col>
+        <v-col cols="12">
+          <v-btn color="primary" bottom block @click="ok()">
+            {{$t("Charge")}}
+            <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-form>
+    <v-stepper v-if="false" class="ec-stepper" v-model="step" :key="terminal.terminalID">
+      <v-stepper-items>
+        <v-stepper-content step="1" class="py-0 px-0">
+          <numpad 
+            v-if="step === 1" 
+            btn-text="Charge" 
+            v-on:ok="processAmount($event, true);"
+            v-on:update="updateAmount($event)"
+            ref="numpadRef" 
+            :data="model"
+            support-quick-charge
+          ></numpad>
+        </v-stepper-content>
+
+        <v-stepper-content step="2" class="py-0 px-0">
+          <basket v-if="step === 2" btn-text="Total" v-on:ok="processAmount($event)" v-on:update="updateAmount($event)" :data="model"></basket>
+        </v-stepper-content>
+
+        <v-stepper-content step="3" class="py-0 px-0">
+          <customers-list
+            :key="terminal.terminalID"
+            :show-previously-charged="true"
+            :filter-by-terminal="true"
+            v-on:ok="processCustomer($event)"
+          ></customers-list>
+        </v-stepper-content>
+
+        <v-stepper-content step="4" class="py-0 px-0">
+          <credit-card-secure-details
+            :key="model.key"
+            :data="model"
+            v-on:ok="processCreditCard($event)"
+            include-device
+            ref="ccSecureDetails"
+            btn-text="Charge"
+          ></credit-card-secure-details>
+        </v-stepper-content>
+
+        <v-stepper-content step="5" class="py-0 px-0">
+          <additional-settings-form 
+            :key="model.key"
+            :data="model"
+            :issue-document="true"
+            v-on:ok="processAdditionalSettings($event)"
+            ref="additionalSettingsForm"
+          ></additional-settings-form>
+        </v-stepper-content>
+
+        <v-stepper-content step="6" class="py-0 px-0">
+          <wizard-result :errors="errors" v-if="result" :error="error">
+          <template v-if="customer">
+            <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+            <p>{{customer.consumerName}}</p>
+            <div class="pt-5">
+              <p>{{$t("ChargedCustomer")}}</p>
+              <p>{{customer.consumerEmail}} ● <ec-money :amount="model.transactionAmount" bold></ec-money></p>
+            </div>
+          </template>
+          <template v-else>
+            <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+            <div class="pt-5">
+              <p>{{$t("ChargedCustomer")}}</p>
+              <p><ec-money :amount="model.transactionAmount" bold></ec-money></p>
+            </div>
+          </template>
+          <template v-slot:link v-if="result.entityReference">
+            <router-link class="primary--text" link
+              :to="{ name: 'Transaction', params: { id: result.entityReference } }"
+            >{{$t("GoToTransaction")}}</router-link>
+
+            <template v-if="result.innerResponse">
+              <p class="pt-4" v-if="result.innerResponse.status == 'error'">
+                {{result.innerResponse.message}}
+              </p>
+              <p class="pt-4" v-else>
+                <router-link class="primary--text" link
+                  :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
+                >{{$t("GoToInvoice")}}</router-link>
+              </p>
+            </template>
+
+            <v-flex class="text-center pt-2">
+              <v-btn outlined color="success" link :to="{name: 'Dashboard'}">{{$t("Close")}}</v-btn>
+            </v-flex>
+          </template>
+          <template v-slot:errors v-if="result.additionalData && result.additionalData.authorizationCodeRequired">
+            <v-form class="my-4 ec-form" ref="form" lazy-validation>
+              <!-- <p>{{result.additionalData.message}}</p> -->
+              <v-text-field
+                v-model="model.oKNumber"
+                :label="$t('AuthorizationCode')"
+                :rules="[vr.primitives.stringLength(1, 50)]">
+              </v-text-field>
+              <v-btn color="primary" bottom :x-large="true" block @click="retry()">
+                {{$t("Retry")}}
+                <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
+              </v-btn>
+            </v-form>
+          </template>
+          <template v-slot:slip v-if="transaction">
+            <transaction-printout ref="printout" :transaction="transaction"></transaction-printout>
+            <transaction-slip-dialog ref="slipDialog" :transaction="transaction" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
+            <div class="mb-4">
+              <v-btn small class="mx-1" @click="$refs.printout.print()">
+                {{$t("Print")}}
+                <v-icon class="px-1" small :right="$vuetify.ltr">
+                  mdi-printer
+                </v-icon>
+              </v-btn>
+              <v-btn small color="primary" class="mx-1" @click="transactionSlipDialog = true">
+                {{$t("Email")}}
+                <v-icon small class="px-1" :right="$vuetify.ltr">
+                  mdi-email
+                </v-icon>
+              </v-btn>
+            </div>
+          </template>
+          </wizard-result>
+        </v-stepper-content>
+      </v-stepper-items>
+    </v-stepper>
+  </v-flex>
+</template>
+
+<script>
+import { mapState } from "vuex";
+import * as signalR from "@microsoft/signalr";
+import ValidationRules from "../../helpers/validation-rules";
+export default {
+  components: {
+    Navbar: () => import("../../components/wizard/NavBar"),
+    Numpad: () => import("../../components/misc/Numpad"),
+    Basket: () => import("../../components/misc/Basket"),
+    EcMoney: () => import("../../components/ec/EcMoney"),
+    CustomersList: () => import("../../components/customers/CustomersList"),
+    CreditCardSecureDetails: () => import("../../components/transactions/CreditCardSecureDetails"),
+    WizardResult: () => import("../../components/wizard/WizardResult"),
+    AdditionalSettingsForm: () => import("../../components/transactions/AdditionalSettingsForm"),
+    TransactionPrintout: () => import("../../components/printouts/TransactionPrintout"),
+    TransactionSlipDialog: () => import("../../components/transactions/TransactionSlipDialog"),
+    NumpadDialogInvoker: () => import("../../components/dialog-invokers/NumpadDialogInvoker"),
+    CustomerDialogInvoker: () => import("../../components/dialog-invokers/CustomerDialogInvoker"),
+  },
+  props: ["customerid"],
+  data() {
+    return {
+      vr: ValidationRules,
+      valid: false,
+      customer: null,
+      skipCustomerStep: false,
+      model: {
+        key: "0",
+        terminalID: null,
+        transactionType: null,
+        jDealType: null,
+        currency: null,
+        cardPresence: "cardNotPresent",
+        creditCardToken: null,
+        creditCardSecureDetails: {
+          cardExpiration: null,
+          cardNumber: null,
+          cvv: null,
+          cardOwnerNationalID: null,
+          cardOwnerName: null
+        },
+        transactionAmount: 0.0,
+        dealDetails: {
+          dealReference: null,
+          consumerEmail: null,
+          consumerPhone: null,
+          consumerID: null,
+          dealDescription: null,
+          items: []
+        },
+        invoiceDetails: null,
+        installmentDetails: {
+          numberOfPayments: 0,
+          initialPaymentAmount: 0,
+          installmentPaymentAmount: 0
+        }
+      },
+      step: 1,
+      threeDotMenuItems: null,
+      quickChargeMode: false,
+      success: true,
+      errors: [],
+      error: null,
+      loading: false,
+      result: {
+        entityReference: null
+      },
+      steps: {
+        1: {
+            title: "Amount",
+            canChangeTerminal: true,
+            showItemsCount: true,
+        },
+        2: {
+            title: "Basket",
+            autoskip: true,
+        },
+        3: {
+            title: "ChooseCustomer",
+            skippable: true,
+            quickChargeExclude: true,
+        },
+        4: {
+            title: "PaymentInfo",
+        },
+        5: {
+            title: "AdditionalSettings",
+        },
+        //Last step may be dynamically altered to represent error if transaction creation has failed.
+        6: {
+            title: "Success",
+            completed: true,
+        }
+      },
+      transactionsHub: null,
+      signalRToast: null,
+      transaction: null,
+      transactionSlipDialog: false
+    };
+  },
+  computed: {
+    navTitle() {
+      return this.$t(this.steps[this.step].title);
+    },
+    ...mapState({
+      terminal: state => state.settings.terminal,
+      currency: state => state.settings.currency
+    })
+  },
+  watch: {
+    step(newValue, oldValue) {
+      if(newValue > oldValue && this.steps[newValue].skip){
+        this.step++;
+      }else if(this.steps[newValue].skip){
+        this.step--;
+      }
+    }
+  },
+  async mounted() {
+    if (this.customerid) {
+      let data = await this.$api.consumers.getConsumer(this.customerid);
+      if (data) {
+        this.skipCustomerStep = true;
+        this.customer = data;
+        this.model.dealDetails.consumerEmail = data.consumerEmail;
+        this.model.dealDetails.consumerPhone = data.consumerPhone;
+        this.model.dealDetails.consumerAddress = data.consumerAddress;
+        this.model.dealDetails.consumerID = data.consumerID;
+        this.model.creditCardSecureDetails.cardOwnerName = data.consumerName;
+        this.model.creditCardSecureDetails.cardOwnerNationalID =
+          data.consumerNationalID;
+      }
+    }
+    this.model.dealDetails.dealDescription = this.terminal.settings.defaultChargeDescription;
+    window.addEventListener("keydown", this.handleKeyPress);
+  },
+  destroyed () {
+    window.removeEventListener("keydown", this.handleKeyPress);
+  },
+  methods: {
+    handleKeyPress($event){
+
+      // TODO: this is disabled
+      // switch($event.key){
+
+      //   case "Backspace":
+      //     if ($event.shiftKey || $event.ctrlKey) {
+      //       this.goBack();
+      //     }
+      //     break;
+      //   case "Enter": {
+      //     if (this.step === 1) {
+      //       this.$refs.numpadRef.ok($event.shiftKey || $event.ctrlKey);
+      //     } else if (this.step === 3) {
+      //       this.step = 4;
+      //     }
+      //     else if (this.step === 4) {
+      //       this.$refs.ccSecureDetails.ok();
+      //     } 
+      //     else if (this.step === 5) {
+      //       this.$refs.additionalSettingsForm.ok();
+      //     }
+      //     break;
+      //   }
+      // }
+    },
+    goBack(acc = 1) {
+      if (this.step === 1) this.$router.push({ name: "Dashboard" });
+      else { 
+        let prevStep = this.steps[this.step - acc];
+        if(prevStep.autoskip || (this.quickChargeMode && prevStep.quickChargeExclude)){
+          return this.goBack(++acc);
+        }
+        this.step -= acc;
+      }
+    },
+    terminalChanged() {
+      this.skipCustomerStep = false;
+      this.customer = null;
+      this.model.dealDetails.consumerEmail = null;
+      this.model.dealDetails.consumerPhone = null;
+      this.model.dealDetails.consumerAddress = null;
+      this.model.dealDetails.consumerID = null;
+      if (this.model.creditCardSecureDetails) {
+        this.model.creditCardSecureDetails.cardOwnerName = null;
+        this.model.creditCardSecureDetails.cardOwnerNationalID = null;
+      } else if (this.model.creditCardToken) {
+        this.model.creditCardToken = null;
+        this.$refs.ccSecureDetails.resetToken();
+      }
+    },
+    processCustomer(data) {
+      this.skipCustomerStep = false;
+      if(this.customer && data.consumerID === this.customer.consumerID){
+        return this.step++;;
+      }
+      this.customer = data;
+
+      this.model.dealDetails = Object.assign(this.model.dealDetails, data);
+
+      if(this.model.dealDetails){
+        this.model.key = `${this.terminal.terminalID}-${this.model.dealDetails.consumerID}`;
+      }
+      if (!this.model.creditCardSecureDetails) {
+        this.$set(this.model, "creditCardSecureDetails", {
+          cardOwnerName: data.consumerName,
+          cardOwnerNationalID: data.consumerNationalID
+        });
+      } else {
+        this.model.creditCardSecureDetails.cardOwnerName = data.consumerName;
+        this.model.creditCardSecureDetails.cardOwnerNationalID =
+          data.consumerNationalID;
+      }
+      this.model.cardOwnerNationalID = data.consumerNationalID;
+      this.model.creditCardToken = null;
+      this.$refs.ccSecureDetails.resetToken();
+      this.step++;
+    },
+    processToBasket(){
+      let data = this.$refs.numpadRef.getData();
+      this.processAmount(data);
+    },
+    processAmount(data, skipBasket = false) {
+      this.updateAmount(data);
+      this.quickChargeMode = data.quickCharge;
+      if (data.quickCharge){
+        this.model.key = `${this.terminal.terminalID}-${this.model.transactionAmount}`;
+        this.step = 4;
+        return;
+      }
+      if (skipBasket) {this.step += 2 + (this.skipCustomerStep ? 1 : 0)}
+      else this.step++;
+    },
+    updateAmount(data) {
+      this.model.transactionAmount = data.totalAmount;
+      this.model.netTotal = data.netTotal;
+      this.model.vatTotal = data.vatTotal;
+      this.model.vatRate = data.vatRate;
+      this.model.note = data.note;
+      this.model.dealDetails.items = data.dealDetails.items;
+    },
+    processCreditCard(data) {
+      this.model.oKNumber = data.oKNumber;
+      this.$set(this.model, 'installmentDetails', data.installmentDetails);
+      this.model.transactionType = data.transactionType;
+      
+      if (data.type === "creditcard") {
+        data = data.data;
+        this.model.saveCreditCard = data.saveCreditCard || false;
+        this.model.creditCardSecureDetails = data;
+        this.model.creditCardToken = null;
+        this.model.pinPadDeviceID = null;
+        this.model.cardOwnerNationalID = null;
+        if (data.cardReaderInput) {
+          this.model.cardPresence = "regular";
+        } else {
+          this.model.cardPresence = "cardNotPresent";
+        }
+        
+        if (!this.model.dealDetails.consumerName) {
+          this.model.dealDetails.consumerName = this.model.creditCardSecureDetails.cardOwnerName;
+        }
+
+      } else if (data.type === "token") {
+        this.model.creditCardSecureDetails = null;
+        this.model.creditCardToken = data.data;
+        this.model.saveCreditCard = false;
+        this.model.pinPadDeviceID = null;
+        this.model.cardOwnerNationalID = null;
+      } 
+      else if (data.type === "device") {
+        this.model.creditCardSecureDetails = null;
+        this.model.creditCardToken = null;
+        this.model.saveCreditCard = false;
+        Object.assign(this.model, data.data);
+      }
+      if (this.quickChargeMode) {
+        let res = this.$refs.additionalSettingsForm.ok(true)
+        
+        if (!res) {
+          this.step++;
+        } else {
+          this.processAdditionalSettings(res)
+        }
+        return;
+      }
+      this.step++;
+    },
+    async processAdditionalSettings(data) {
+      this.model.dealDetails = data.dealDetails;
+      this.model.currency = data.currency;
+      this.model.jDealType = data.jDealType;
+      this.model.terminalID = this.terminal.terminalID;
+      if(!this.quickChargeMode){
+        this.model.invoiceDetails = data.invoiceDetails;
+        this.model.issueInvoice = !!this.model.invoiceDetails;
+      }else{
+        this.model.invoiceDetails = null;
+        this.model.issueInvoice = false;
+      }
+
+      await this.createTransaction();
+    },
+    async retry(){
+      await this.createTransaction();
+    },
+    async createTransaction(){
+      if (this.loading) return;
+      try {
+        this.loading = true;
+        if(this.model.pinPad){
+          await this.establishSignalRConnection();
+        }
+
+        let result = await this.$api.transactions.processTransaction(this.model);
+        this.result = result;
+
+        let lastStepKey = Object.keys(this.steps).reduce((l,r) => l > r ? l : r, 0);
+        let lastStep = this.steps[lastStepKey];
+
+        if (!result || result.status === "error") {
+          this.success = false;
+          lastStep.title = "Error";
+          lastStep.completed = false;
+          lastStep.closeable = true;
+          this.error = result.message;
+          if (result && result.errors && result.errors.length > 0) {
+            this.errors = result.errors;
+          }
+        } else {
+          this.success = true;
+          lastStep.title = "Success";
+          lastStep.completed = true;
+          lastStep.closeable = false;
+          if(this.model.pinPad){
+            this.disposeSignalRConnection();
+          }
+          this.errors = [];
+          this.error = null;
+          this.transaction = await this.$api.transactions.getTransaction(this.result.entityReference);
+        }
+        if (this.customer) {
+          this.$store.commit("payment/addLastChargedCustomer", {
+            customerID: this.customer.consumerID,
+            terminalID: this.model.terminalID
+          });
+        }
+        this.step = lastStepKey;
+      }finally{
+        this.loading = false;
+      }
+    },
+
+    async establishSignalRConnection(){
+      const options = {
+        accessTokenFactory: () => {
+          return this.$oidc.getAccessToken();
+        },
+        transport: 1
+      };
+
+      this.transactionsHub = new signalR.HubConnectionBuilder()
+        .withUrl(
+            `${this.$cfg.VUE_APP_TRANSACTIONS_API_BASE_ADDRESS}/hubs/transactions`,
+            options
+        )
+        .withAutomaticReconnect()
+        .configureLogging("Warning")
+        .build();
+        
+      this.transactionsHub.on("TransactionStatusChanged", (payload) => {
+        if(this.signalRToast){
+          this.signalRToast.text(payload.statusString)
+        }else{
+          this.signalRToast = this.$toasted.show(payload.statusString, { type: "info", action: [] });
+        }
+      });
+
+      await this.transactionsHub.start();
+      this.model.connectionID = this.transactionsHub.connectionId;
+    },
+    async disposeSignalRConnection(){
+      if(!this.transactionsHub){
+        return;
+      }
+      if(this.signalRToast){
+        this.signalRToast.goAway();
+        this.signalRToast = null;
+      }
+
+      this.transactionsHub.stop();
+    }
+  },
+  async beforeDestroy () {
+    await this.disposeSignalRConnection();
+  },
+};
+</script>
+<style lang="scss" scoped>
+.currency-icon{
+  font-size: 1.25rem;
+}
+.amount-input{
+  font-size: 2rem;
+}
+</style>
