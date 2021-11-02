@@ -157,7 +157,7 @@ namespace Merchants.Api.Mapping
                .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Upay.UpayTerminalSettings, Terminal>()
-               .ForMember(m => m.AggregatorTerminalReference, s => s.MapFrom(src => "UPay"))
+               .ForMember(m => m.AggregatorTerminalReference, s => s.MapFrom(src => "Upay"))
                .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<EasyInvoice.EasyInvoiceTerminalSettings, Terminal>()
