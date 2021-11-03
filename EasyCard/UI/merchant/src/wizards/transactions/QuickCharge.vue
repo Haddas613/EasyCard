@@ -51,7 +51,7 @@
           ></credit-card-secure-details>
         </v-col>
         <v-col cols="12">
-          <v-btn color="primary" bottom block @click="ok()">
+          <v-btn color="primary" :disabled="!model.transactionAmount" bottom block @click="ok()">
             {{$t("Charge")}}
             <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
           </v-btn>

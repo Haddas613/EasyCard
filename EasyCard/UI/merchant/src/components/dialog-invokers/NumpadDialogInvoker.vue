@@ -5,6 +5,7 @@
       <template>
         <v-flex fluid fill-height>
           <numpad
+            v-if="numpadDialog"
             btn-text="OK"
             v-on:ok="processAmount($event);"
             ref="numpadRef"
