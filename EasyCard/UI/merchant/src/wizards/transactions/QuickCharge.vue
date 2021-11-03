@@ -14,7 +14,10 @@
         <v-col cols="12">
           <v-text-field
             class="mx-2 centered-input amount-input"
-            v-model="model.transactionAmount"
+            v-model.number="model.transactionAmount"
+            :disabled="model.dealDetails.items.length > 0"
+            type="number"
+            min="0"
             outlined
             :rules="[vr.primitives.numeric(true), vr.primitives.biggerThan(0)]"
             hide-details="true"
@@ -26,7 +29,16 @@
           </v-text-field>
         </v-col>
         <v-col cols="12" class="pt-1">
-          <numpad-dialog-invoker class="mx-4" :data="model" @ok="processAmount($event)"></numpad-dialog-invoker>
+          <numpad-dialog-invoker :amount="model.transactionAmount" items-only class="mx-4" :data="model" @ok="processAmount($event)"></numpad-dialog-invoker>
+        </v-col>
+        <v-col cols="12" class="pt-0">
+          <basket
+            v-if="model.dealDetails.items && model.dealDetails.items.length" 
+            :key="model.dealDetails.items.length" 
+            embed 
+            v-on:ok="processAmount($event)" 
+            v-on:update="processAmount($event)" 
+            :data="model"></basket>
         </v-col>
         <v-col cols="12">
           <credit-card-secure-details
@@ -394,14 +406,6 @@ export default {
     },
     processAmount(data, skipBasket = false) {
       this.updateAmount(data);
-      this.quickChargeMode = data.quickCharge;
-      if (data.quickCharge){
-        this.model.key = `${this.terminal.terminalID}-${this.model.transactionAmount}`;
-        this.step = 4;
-        return;
-      }
-      if (skipBasket) {this.step += 2 + (this.skipCustomerStep ? 1 : 0)}
-      else this.step++;
     },
     updateAmount(data) {
       this.model.transactionAmount = data.totalAmount;

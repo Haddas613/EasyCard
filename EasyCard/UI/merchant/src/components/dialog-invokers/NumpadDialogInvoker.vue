@@ -7,9 +7,9 @@
           <numpad
             btn-text="OK"
             v-on:ok="processAmount($event);"
-            v-on:update="updateAmount($event);"
             ref="numpadRef"
-            :data="model"
+            :data="getModel()"
+            :items-only="itemsOnly"
           ></numpad>
         </v-flex>
       </template>
@@ -40,6 +40,14 @@ export default {
     },
     terminal: {
       default: null
+    },
+    itemsOnly: {
+      type: Boolean,
+      default: false
+    },
+    amount: {
+      required: false,
+      default: 0
     }
   },
   components: {
@@ -51,7 +59,7 @@ export default {
   data() {
     return {
       model: {
-        amount: 0,
+        amount: Number(this.amount) || 0,
         discount: 0,
         netTotal: 0,
         totalAmount: 0,
@@ -75,15 +83,27 @@ export default {
   },
   methods: {
     processAmount(data) {
-      this.updateAmount(data);
+      //this.updateAmount(data);
       this.$emit("ok", data);
       this.numpadDialog = false;
     },
-    updateAmount(data){
-      this.model = data;
-      itemPricingService.total.calculate(this.model, {
-        vatRate: this.model.vatRate
-      });
+    updateAmount(data){},
+    // updateAmount(data){
+    //   this.model = data;
+    //   itemPricingService.total.calculate(this.model, {
+    //     vatRate: this.model.vatRate
+    //   });
+    // }
+    getModel(){
+      return {
+        amount: Number(this.amount) || 0,
+        discount: 0,
+        netTotal: 0,
+        totalAmount: 0,
+        vatRate: 0,
+        vatTotal: 0,
+        ...this.data
+      }
     }
   }
 };

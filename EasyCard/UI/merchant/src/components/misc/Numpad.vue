@@ -57,7 +57,7 @@
           <v-col cols="2" class="numpad-btn numpad-num accent--text" @click="stash()">+</v-col>
         </v-row>
       </template>
-      <v-footer :fixed="$vuetify.breakpoint.smAndDown" :padless="true" color="white">
+      <v-footer v-if="!itemsOnly" :fixed="$vuetify.breakpoint.smAndDown" :padless="true" color="white">
         <v-row dir="ltr">
           <v-col cols="6" class="numpad-btn py-5" @click="activeArea = 'calc'">
             <v-icon v-bind:class="{'primary--text': (activeArea == 'calc')}">mdi-calculator-variant</v-icon>
@@ -90,7 +90,7 @@
 
           <template v-slot:right="{ item }">
             <v-col cols="12" md="6" lg="6" class="text-end caption">
-              <span>{{item.quantity || ''}}</span>
+              <!-- <span>{{item.quantity || ''}}</span> -->
             </v-col>
             <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold subtitle-2">
               <ec-money
@@ -141,6 +141,10 @@ export default {
     supportZeroAmount: {
       type: Boolean,
       default: false
+    },
+    itemsOnly: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -162,7 +166,7 @@ export default {
         quantity: 1,
         externalReference: null
       },
-      activeArea: "calc",
+      activeArea: this.itemsOnly ? "items" : "calc",
       search: null,
       searchTimeout: null,
     };
@@ -200,16 +204,27 @@ export default {
   async mounted() {
     this.defaultItem.currency = this.currencyStore.code;
     this.defaultItem.itemName = this.terminalStore.settings.defaultItemName || 'Custom Charge';
+    
+    //Default item price may be set externally if data.amount is present
+    if(this.data.amount > 0){
+      //If external data is bigger than current total amount, it's put in the default item price
+      this.defaultItem.price = this.data.amount - this.totalAmount;
+    }
+
     if(this.model.vatRate === null){
       this.model.vatRate = this.terminalStore.settings.vatRate
     }
     await this.getItems();
     this.$emit('update', this.model);
-
-    window.addEventListener("keydown", this.handleKeyPress);
+    
+    if(!this.itemsOnly){
+      window.addEventListener("keydown", this.handleKeyPress);
+    }
   },
   destroyed () {
-    window.removeEventListener("keydown", this.handleKeyPress);
+    if(!this.itemsOnly){
+      window.removeEventListener("keydown", this.handleKeyPress);
+    }
   },
   methods: {
     handleKeyPress($event){
@@ -333,7 +348,6 @@ export default {
         quantity: 1,
         externalReference: item.externalReference
       };
-
       this.calculatePricingForItem(newItem);
       this.model.dealDetails.items.push(newItem);
     }
