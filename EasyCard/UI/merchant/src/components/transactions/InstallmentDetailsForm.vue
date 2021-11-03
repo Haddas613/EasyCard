@@ -127,17 +127,17 @@ export default {
         return 0;
       }
 
-      let leftover = this.totalAmount % 1;
+      //let leftover = this.totalAmount % 1;
       // this.model.installmentPaymentAmount = ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments)).toFixed(2);
 
       if(!skipInitial){
-        let installmentPaymentAmountRaw = (this.totalAmount - leftover) / (this.model.numberOfPayments);
+        let installmentPaymentAmountRaw = Math.floor((this.totalAmount) / (this.model.numberOfPayments));
         this.model.installmentPaymentAmount = installmentPaymentAmountRaw.toFixed(2);
         //this.model.initialPaymentAmount = (installmentPaymentAmountRaw + leftover).toFixed(2);
         this.model.initialPaymentAmount = (this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1))).toFixed(2);
 
       }else{
-        let installmentPaymentAmountRaw = (this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1);
+        let installmentPaymentAmountRaw = ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1));
         this.model.installmentPaymentAmount = installmentPaymentAmountRaw.toFixed(2);
         this.model.initialPaymentAmount = (this.totalAmount - this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1)).toFixed(2);
       }
