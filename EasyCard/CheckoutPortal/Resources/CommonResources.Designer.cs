@@ -169,6 +169,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Initial Payment Amount.
+        /// </summary>
+        public static string InitialPaymentAmount {
+            get {
+                return ResourceManager.GetString("InitialPaymentAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installment.
         /// </summary>
         public static string Installments {

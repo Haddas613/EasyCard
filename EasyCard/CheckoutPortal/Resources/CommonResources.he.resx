@@ -219,4 +219,7 @@
   <data name="TotalSum" xml:space="preserve">
     <value>סכום</value>
   </data>
+  <data name="InitialPaymentAmount" xml:space="preserve">
+    <value>סכום תשלום ראשון</value>
+  </data>
 </root>

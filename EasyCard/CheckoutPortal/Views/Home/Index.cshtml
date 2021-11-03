@@ -98,6 +98,13 @@
                                 </div>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @localizer.Get("InitialPaymentAmount")
+                                <span class="text-end">
+                                    <b id="initial-payment-amount">@Model.InitialPaymentAmount?.ToString("N")@Model.Currency.GetCurrencySymbol()</b>
+                                </span>
+                                <span class="badge badge-primary badge-pill"></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
                                 @localizer.Get("PaymentAmount")
                                 <span class="text-end">
                                     <b id="payment-amount">@Model.InstallmentPaymentAmount?.ToString("N")@Model.Currency.GetCurrencySymbol()</b>
@@ -472,9 +479,11 @@
 
             $("#number-of-payments").on("change", function (e) {
                 let totalAmount = $("#Amount").val();
-                let newAmount = (totalAmount / e.target.value).toFixed(2);
+                let newAmount = Math.floor((totalAmount / e.target.value));
+                let initialAmount = (totalAmount - newAmount * (e.target.value - 1));
 
                 $("#payment-amount").text(newAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())");
+                $("#initial-payment-amount").text(initialAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())");
                 $("#total-amount").text(totalAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())")
             });
 
