@@ -14,6 +14,9 @@
       <!-- <template v-slot:append>
         <v-icon class="orange--text">mdi-camera-outline</v-icon>
       </template> -->
+      <template v-if="showCustomerSelectBtn" v-slot:append>
+        <v-icon @click="$emit('select-customer')" color="primary">mdi-account-details</v-icon>
+      </template>
     </v-text-field>
     <div class="input-special-group">
       <v-alert
@@ -160,6 +163,10 @@ export default {
       type: Array,
       default: () => [],
       required: false
+    },
+    showCustomerSelectBtn: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

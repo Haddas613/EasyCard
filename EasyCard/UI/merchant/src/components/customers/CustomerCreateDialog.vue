@@ -56,7 +56,13 @@ export default {
         consumerName: null,
         consumerPhone: null,
         consumerEmail: null,
-        consumerAddress: null,
+        consumerAddress: {
+          city: null,
+          zip: null,
+          street: null,
+          house: null,
+          apartment: null
+        },
         externalReference: null
       },
       valid: false,

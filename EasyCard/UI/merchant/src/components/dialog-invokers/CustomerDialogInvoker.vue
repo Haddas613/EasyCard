@@ -5,7 +5,7 @@
       :show.sync="customerCreateDialog"
       v-on:ok="processCustomer($event)"
     ></customer-create-dialog>
-    <ec-dialog :dialog.sync="customersDialog" color="ecbg">
+    <ec-dialog :dialog.sync="visible" color="ecbg">
       <template v-slot:title>{{$t('Customers')}}</template>
       <template>
         <div class="d-flex pb-2 justify-end">
@@ -46,7 +46,7 @@
         ></customers-list>
       </template>
     </ec-dialog>
-    <ec-dialog-invoker v-on:click="customersDialog = true">
+    <ec-dialog-invoker v-if="!dialogOnly" v-on:click="showDialog()">
       <template v-slot:prepend>
         <v-icon>mdi-account</v-icon>
       </template>
@@ -72,6 +72,16 @@ export default {
     },
     terminal: {
       default: null
+    },
+    //component can function as dialog invoker or purely as dialog dependent on dialogOnly prop
+    //if dialogOnly is specified, show prop is required as well
+    dialogOnly:{
+      type: Boolean,
+      default: false
+    },
+    show: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -102,15 +112,29 @@ export default {
       });
     }
   },
+  computed: {
+    visible: {
+      get: function() {
+        return this.dialogOnly ? this.show : this.customersDialog;
+      },
+      set: function(val) {
+        if(this.dialogOnly){
+          this.$emit("update:show", val);
+        }else{
+          this.customersDialog = val;
+        }
+      }
+    }
+  },
   methods: {
     processCustomer(data) {
       this.selectedCustomer = data;
       this.$emit("update", data);
-      this.customersDialog = false;
+      this.visible = false;
       this.customerCreateDialog = false;
     },
     showDialog() {
-      this.customersDialog = true;
+      this.visible = true;
     }
   }
 };

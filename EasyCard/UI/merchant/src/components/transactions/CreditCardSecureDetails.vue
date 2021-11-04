@@ -92,12 +92,14 @@
                 :data="model.creditCardSecureDetails"
                 ref="ccsecuredetailsform"
                 :tokens="customerTokens"
+                :show-customer-select-btn="includeCustomer"
+                v-on:select-customer="onCustomerSelect()"
               ></credit-card-secure-details-fields>
               <v-row no-gutters>
-                <v-col cols="5">
+                <v-col cols="5" md="3">
                   <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')"></v-checkbox>
                 </v-col>
-                <v-col cols="7">
+                <v-col cols="7" md="9">
                   <v-text-field
                     class="mt-2"
                     v-model="model.oKNumber"
@@ -169,6 +171,10 @@ export default {
       required: false
     },
     includeDevice: {
+      type: Boolean,
+      default: false
+    },
+    includeCustomer: {
       type: Boolean,
       default: false
     }
@@ -308,6 +314,11 @@ export default {
     },
     deviceValue(a){
       return `${a.deviceID}-${a.deviceName}`;
+    },
+    onCustomerSelect(){
+      if(this.includeCustomer){
+        this.$emit('select-customer');
+      }
     }
   }
 };

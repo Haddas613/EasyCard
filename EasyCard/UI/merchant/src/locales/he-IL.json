@@ -332,6 +332,7 @@
   "Street": "רְחוֹב",
   "House": "בַּיִת",
   "Apartment": "דירה",
+  "UseQuickChargeByDefault": "UseQuickChargeByDefault",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
