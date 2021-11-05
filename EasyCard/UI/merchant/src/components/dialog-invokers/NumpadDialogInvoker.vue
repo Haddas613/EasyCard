@@ -5,7 +5,6 @@
       <template>
         <v-flex fluid fill-height>
           <numpad
-            v-if="numpadDialog"
             btn-text="OK"
             v-on:ok="processAmount($event);"
             ref="numpadRef"
@@ -104,6 +103,12 @@ export default {
         vatRate: 0,
         vatTotal: 0,
         ...this.data
+      }
+    },
+    recalculate(){
+      //may have not been yet initialized
+      if(this.$refs.numpadRef){
+        this.$refs.numpadRef.adjustItemsToAmount(this.amount);
       }
     }
   }

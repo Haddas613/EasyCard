@@ -403,6 +403,7 @@
   "Street": "רְחוֹב",
   "House": "בַּיִת",
   "Apartment": "דירה",
+  "UseQuickChargeByDefault": "בצע עסקה מהירה כברירת מחדל",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

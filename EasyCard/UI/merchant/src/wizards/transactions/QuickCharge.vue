@@ -7,7 +7,7 @@
       :canchangeterminal="!result"
       one-level
       closeable></navbar>
-    <v-form class="px-1 pt-4" ref="form" v-model="valid" lazy-validation :key="terminal.terminalID">
+    <v-form v-if="!result" class="px-1 pt-4" ref="form" v-model="valid" lazy-validation :key="terminal.terminalID">
       <v-row no-gutters>
         <v-col cols="12">
           <v-text-field
@@ -19,6 +19,7 @@
             :rules="[vr.primitives.numeric(true), vr.primitives.biggerThan(0)]"
             hide-details="true"
             autofocus
+            @input="adjustItemsAmountToTotalAmount()"
           >
             <template v-slot:append>
               <span class="currency-icon">{{currency.description}}</span>
@@ -26,14 +27,19 @@
           </v-text-field>
         </v-col>
         <v-col cols="12" class="pt-1">
-          <numpad-dialog-invoker :amount="model.transactionAmount" items-only class="mx-4" :data="model" @ok="processAmount($event)"></numpad-dialog-invoker>
+          <numpad-dialog-invoker
+          :amount="model.transactionAmount"
+          items-only
+          class="mx-4"
+          :data="model"
+          ref="numpadInvoker"
+          @ok="processAmount($event)"></numpad-dialog-invoker>
         </v-col>
         <v-col cols="12" class="pt-0">
           <basket
             v-if="model.dealDetails.items && model.dealDetails.items.length" 
-            :key="model.dealDetails.items.length" 
-            embed 
-            v-on:ok="processAmount($event)" 
+            :key="model.dealDetails.items.length + model.totalAmount" 
+            embed
             v-on:update="processAmount($event)" 
             :data="model"></basket>
         </v-col>
@@ -63,98 +69,93 @@
             :label="$t('CustomerEmail')"
             outlined
           ></v-text-field>
-        </v-col>
-        <v-col cols="12" v-if="false">
-          TODO: implement
-          <additional-settings-form 
-            :key="model.key"
-            :data="model"
-            :issue-document="true"
-            v-on:ok="processAdditionalSettings($event)"
-            ref="additionalSettingsForm"
-          ></additional-settings-form>
+          <div hidden>
+            <additional-settings-form
+              :data="model"
+              :issue-document="true"
+              ref="additionalSettingsForm"
+            ></additional-settings-form>
+          </div>
         </v-col>
       </v-row>
       <v-row no-gutters class="mx-2">
         <v-col cols="12">
-          <v-btn color="primary" :disabled="!model.transactionAmount" bottom block @click="ok()">
+          <v-btn color="primary" :disabled="!model.transactionAmount" bottom block @click="createTransaction()">
             {{$t("Charge")}}
             <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
           </v-btn>
         </v-col>
       </v-row>
     </v-form>
-    <template v-if="false">
-      <wizard-result :errors="errors" v-if="result" :error="error">
-        <template v-if="customer">
-          <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
-          <p>{{customer.consumerName}}</p>
-          <div class="pt-5">
-            <p>{{$t("ChargedCustomer")}}</p>
-            <p>{{customer.consumerEmail}} ● <ec-money :amount="model.transactionAmount" bold></ec-money></p>
-          </div>
-        </template>
-        <template v-else>
-          <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
-          <div class="pt-5">
-            <p>{{$t("ChargedCustomer")}}</p>
-            <p><ec-money :amount="model.transactionAmount" bold></ec-money></p>
-          </div>
-        </template>
-        <template v-slot:link v-if="result.entityReference">
-          <router-link class="primary--text" link
-            :to="{ name: 'Transaction', params: { id: result.entityReference } }"
-          >{{$t("GoToTransaction")}}</router-link>
+    <wizard-result :errors="errors" v-if="result" :error="error">
+      <template v-if="customer">
+        <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+        <p>{{customer.consumerName}}</p>
+        <div class="pt-5">
+          <p>{{$t("ChargedCustomer")}}</p>
+          <p>{{customer.consumerEmail}} ● <ec-money :amount="model.transactionAmount" bold></ec-money></p>
+        </div>
+      </template>
+      <template v-else>
+        <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+        <div class="pt-5">
+          <p>{{$t("ChargedCustomer")}}</p>
+          <p><ec-money :amount="model.transactionAmount" bold></ec-money></p>
+        </div>
+      </template>
+      <template v-slot:link v-if="result.entityReference">
+        <router-link class="primary--text" link
+          :to="{ name: 'Transaction', params: { id: result.entityReference } }"
+        >{{$t("GoToTransaction")}}</router-link>
 
-          <template v-if="result.innerResponse">
-            <p class="pt-4" v-if="result.innerResponse.status == 'error'">
-              {{result.innerResponse.message}}
-            </p>
-            <p class="pt-4" v-else>
-              <router-link class="primary--text" link
-                :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
-              >{{$t("GoToInvoice")}}</router-link>
-            </p>
-          </template>
+        <template v-if="result.innerResponse">
+          <p class="pt-4" v-if="result.innerResponse.status == 'error'">
+            {{result.innerResponse.message}}
+          </p>
+          <p class="pt-4" v-else>
+            <router-link class="primary--text" link
+              :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
+            >{{$t("GoToInvoice")}}</router-link>
+          </p>
+        </template>
 
-          <v-flex class="text-center pt-2">
-            <v-btn outlined color="success" link :to="{name: 'Dashboard'}">{{$t("Close")}}</v-btn>
-          </v-flex>
-        </template>
-        <template v-slot:errors v-if="result.additionalData && result.additionalData.authorizationCodeRequired">
-          <v-form class="my-4 ec-form" ref="form" lazy-validation>
-            <!-- <p>{{result.additionalData.message}}</p> -->
-            <v-text-field
-              v-model="model.oKNumber"
-              :label="$t('AuthorizationCode')"
-              :rules="[vr.primitives.stringLength(1, 50)]">
-            </v-text-field>
-            <v-btn color="primary" bottom :x-large="true" block @click="retry()">
-              {{$t("Retry")}}
-              <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
-            </v-btn>
-          </v-form>
-        </template>
-        <template v-slot:slip v-if="transaction">
-          <transaction-printout ref="printout" :transaction="transaction"></transaction-printout>
-          <transaction-slip-dialog ref="slipDialog" :transaction="transaction" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
-          <div class="mb-4">
-            <v-btn small class="mx-1" @click="$refs.printout.print()">
-              {{$t("Print")}}
-              <v-icon class="px-1" small :right="$vuetify.ltr">
-                mdi-printer
-              </v-icon>
-            </v-btn>
-            <v-btn small color="primary" class="mx-1" @click="transactionSlipDialog = true">
-              {{$t("Email")}}
-              <v-icon small class="px-1" :right="$vuetify.ltr">
-                mdi-email
-              </v-icon>
-            </v-btn>
-          </div>
-        </template>
-      </wizard-result>
-    </template>
+        <v-flex class="text-center pt-2">
+          <v-btn outlined color="success" link :to="{name: 'Dashboard'}">{{$t("Close")}}</v-btn>
+        </v-flex>
+      </template>
+      <template v-slot:errors v-if="result.additionalData && result.additionalData.authorizationCodeRequired">
+        <v-form class="my-4 ec-form" ref="form" lazy-validation>
+          <!-- <p>{{result.additionalData.message}}</p> -->
+          <v-text-field
+            v-model="model.oKNumber"
+            :label="$t('AuthorizationCode')"
+            :rules="[vr.primitives.stringLength(1, 50)]">
+          </v-text-field>
+          <v-btn color="primary" bottom :x-large="true" block @click="retry()">
+            {{$t("Retry")}}
+            <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
+          </v-btn>
+        </v-form>
+      </template>
+      <template v-slot:slip v-if="transaction">
+        <transaction-printout ref="printout" :transaction="transaction"></transaction-printout>
+        <transaction-slip-dialog ref="slipDialog" :transaction="transaction" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
+        <div class="mb-4">
+          <v-btn small class="mx-1" @click="$refs.printout.print()">
+            {{$t("Print")}}
+            <v-icon class="px-1" small :right="$vuetify.ltr">
+              mdi-printer
+            </v-icon>
+          </v-btn>
+          <v-btn small color="primary" class="mx-1" @click="transactionSlipDialog = true">
+            {{$t("Email")}}
+            <v-icon small class="px-1" :right="$vuetify.ltr">
+              mdi-email
+            </v-icon>
+          </v-btn>
+        </div>
+      </template>
+    </wizard-result>
   </v-flex>
 </template>
 
@@ -222,7 +223,8 @@ export default {
       transactionsHub: null,
       signalRToast: null,
       transaction: null,
-      transactionSlipDialog: false
+      transactionSlipDialog: false,
+      totalAmountTimeout: null
     };
   },
   computed: {
@@ -285,14 +287,10 @@ export default {
       this.$refs.ccSecureDetails.resetToken();
       this.customersDialog = false;
     },
-    processToBasket(){
-      let data = this.$refs.numpadRef.getData();
-      this.processAmount(data);
-    },
-    processAmount(data, skipBasket = false) {
-      this.updateAmount(data);
-    },
-    updateAmount(data) {
+    // processAmount(data, skipBasket = false) {
+    //   this.updateAmount(data);
+    // },
+    processAmount(data) {
       this.model.transactionAmount = data.totalAmount;
       this.model.netTotal = data.netTotal;
       this.model.vatTotal = data.vatTotal;
@@ -355,23 +353,41 @@ export default {
       await this.createTransaction();
     },
     async createTransaction(){
-      if (this.loading) return;
+      if (this.loading || !this.validate()) return;
       try {
         this.loading = true;
         if(this.model.pinPad){
           await this.establishSignalRConnection();
         }
 
-        let result = await this.$api.transactions.processTransaction(this.model);
-        this.result = result;
+        let asf = this.$refs.additionalSettingsForm.ok(true)
+        
+        if (!asf) {
+          this.$toasted.show(this.$t("SomethingWentWrong"), { type: "error" });
+          return;
+        } else {
+          this.processAdditionalSettings(asf)
+        }
 
+        let result = await this.$api.transactions.processTransaction(this.model);
+        
         if (!result || result.status === "error") {
           this.success = false;
           this.error = result.message;
-          if (result && result.errors && result.errors.length > 0) {
-            this.errors = result.errors;
+          if (result.additionalData && result.additionalData.authorizationCodeRequired){
+            this.result = result;
           }
-        } else {
+          else if (result && result.errors && result.errors.length > 0) {
+            result.errors.forEach(e => {
+              this.$toasted.show(`${e.code}: ${e.description}`, { type: "error" });
+            })
+            this.errors = result.errors;
+          }else{
+            this.$toasted.show(result.message, { type: "error" });
+          }
+        } 
+        else {
+          this.result = result;
           this.success = true;
           if(this.model.pinPad){
             this.disposeSignalRConnection();
@@ -390,7 +406,17 @@ export default {
         this.loading = false;
       }
     },
+    validate(){
+      if (!this.$refs.form.validate()) return false;
 
+      let ccValid = this.$refs.ccSecureDetails.ok();
+      
+      if(!ccValid){
+        return;
+      }
+
+      return true;
+    },
     async establishSignalRConnection(){
       const options = {
         accessTokenFactory: () => {
@@ -429,6 +455,17 @@ export default {
       }
 
       this.transactionsHub.stop();
+    },
+    adjustItemsAmountToTotalAmount(){
+      if(this.totalAmountTimeout){
+        clearTimeout(this.totalAmountTimeout);
+      }
+      if( this.model.totalAmount < 0){
+        return;
+      }
+      this.totalAmountTimeout = setTimeout(() => {
+        this.$refs.numpadInvoker.recalculate();
+      }, 1000);
     }
   },
   async beforeDestroy () {

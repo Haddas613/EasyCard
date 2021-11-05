@@ -37,6 +37,7 @@
 
 <script>
 import appConstants from "../../helpers/app-constants";
+import { mapState } from "vuex";
 
 export default {
   props: {
@@ -61,28 +62,32 @@ export default {
         default:
           return "auto";
       }
-    }
+    },
+    ...mapState({
+      terminal: state => state.settings.terminal
+    })
   },
   data() {
     return {
       items: [
         {
           icon: "mdi-chevron-down-box-outline",
-          to: { name: "Charge" },
           css: "deep-purple--text",
-          text: "Charge"
+          text: "Charge",
+          link: "Charge",
+          quickChargeLink: "QuickCharge"
         },
         {
           icon: "mdi-chevron-left-box-outline",
-          to: { name: "CreatePaymentRequest" },
           css: "orange--text",
-          text: "Request"
+          text: "Request",
+          link: "CreatePaymentRequest",
         },
         {
           icon: "mdi-chevron-up-box-outline",
-          to: { name: "Refund" },
           css: "primary--text",
           text: "Refund",
+          link: "Refund",
           allowedFor: [appConstants.users.roles.manager, appConstants.users.roles.billingAdmin]
         }
       ]
@@ -90,16 +95,28 @@ export default {
   },
   async mounted() {
     const self = this;
-    let items = [];
-    
-    for(var i of this.items){
-      if(!i.allowedFor){
-        items.push(i);
-      }else if(await this.$oidc.isInRole(i.allowedFor)){
-          items.push(i);
-      }
+    await this.refreshLinks();
+  },
+  watch: {
+    async terminal(newValue, oldValue) {
+      await this.refreshLinks();
     }
-    this.items = items;
+  },
+  methods: {
+    async refreshLinks() {
+      let items = [];
+      for(var i of this.items){
+        i.to = {
+          name: (this.terminal.settings.useQuickChargeByDefault && i.quickChargeLink) ? i.quickChargeLink : i.link
+        }
+        if (!i.allowedFor){
+          items.push(i);
+        }else if (await this.$oidc.isInRole(i.allowedFor)){
+          items.push(i);
+        }
+      }
+      this.items = items;
+    }
   },
 };
 </script>

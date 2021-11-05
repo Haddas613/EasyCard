@@ -121,6 +121,11 @@ export default {
               text: "Charge"
             },
             {
+              icon: "mdi-chevron-down-circle-outline",
+              to: { name: "QuickCharge" },
+              text: "QuickCharge"
+            },
+            {
               icon: "mdi-chevron-up-box-outline",
               to: { name: "Refund" },
               text: "Refund",

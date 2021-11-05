@@ -79,6 +79,7 @@ export default class TransactionsApi {
           result = await this.blockCreditCard(data);
           break;
         default:
+          console.error(`Could not process JDeal type: ${data.jDealType}`);
           result.message = `Could not process JDeal type: ${data.jDealType}`;
       }
       return result;

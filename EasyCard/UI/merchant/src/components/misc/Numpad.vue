@@ -164,7 +164,8 @@ export default {
         itemName: null,
         currency: null,
         quantity: 1,
-        externalReference: null
+        externalReference: null,
+        default: true
       },
       activeArea: this.itemsOnly ? "items" : "calc",
       search: null,
@@ -193,7 +194,7 @@ export default {
     totalAmount() {
       return (
         parseFloat(this.defaultItem.price) +
-        this.lodash.sumBy(this.model.dealDetails.items, "amount")
+        this.lodash.sumBy(this.model.dealDetails.items, e => e.price - e.discount)
       );
     },
     ...mapState({
@@ -350,6 +351,37 @@ export default {
       };
       this.calculatePricingForItem(newItem);
       this.model.dealDetails.items.push(newItem);
+    },
+    adjustItemsToAmount(amount){
+      if(this.model.dealDetails.items.length == 0){
+        this.defaultItem.price = amount;
+        return;
+      }
+
+      for(let item of this.model.dealDetails.items){
+        item.discount = 0;
+      }
+      this.defaultItem.price = 0;
+      let diff = this.totalAmount - amount;
+
+      //we need to distribute difference between items in their discount in descending (by price) order
+      if(diff > 0){
+        for(let item of this.lodash.sortBy(this.model.dealDetails.items, e => e.price).reverse()){
+          if(diff <= 0){
+            break;
+          }
+          item.discount = item.price > diff ? diff : item.price;
+          diff -= item.discount;
+        }
+      }
+      //we need to add sum instead of deducting it
+      else{
+        //first remove all default items (extra price will be added as default item, so to remove duplication)
+        this.lodash.remove(this.model.dealDetails.items, e => e.default);
+        let newItem = this.prepareItem();
+        newItem.price = Math.abs(diff);
+        this.model.dealDetails.items.push(newItem);
+      }
     }
   }
 };

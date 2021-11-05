@@ -261,6 +261,8 @@ export default {
       }
       result.transactionType = this.model.transactionType;
       this.$emit("ok", result);
+
+      return true;
     },
     resetToken() {
       this.token = null;

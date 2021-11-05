@@ -399,6 +399,7 @@
   "Street": "Street",
   "House": "House",
   "Apartment": "Apartment",
+  "UseQuickChargeByDefault": "Use Quick Charge by Default",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

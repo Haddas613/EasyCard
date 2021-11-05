@@ -53,7 +53,8 @@
             <v-row no-gutters>
               <v-col cols="6" class="text-start">{{$t("Total")}}</v-col>
               <v-col cols="3" class="text-end">{{model.dealDetails.items.length}}</v-col>
-              <v-col cols="3" class="text-end">{{model.totalAmount | currency(currencyStore.code)}}</v-col>
+              <v-col cols="3" class="text-end" v-if="!embed">{{model.totalAmount | currency(currencyStore.code)}}</v-col>
+              <v-col cols="3" class="text-end" v-else>{{totalAmount | currency(currencyStore.code)}}</v-col>
             </v-row>
           </v-list-item-content>
         </v-list-item>
@@ -117,7 +118,7 @@ export default {
       selectedItem: null,
       itemPriceDialog: false,
       search: null,
-      vatExempt: false,
+      vatExempt: this.data.vatRate === 0,
     };
   },
   props: {
@@ -135,12 +136,15 @@ export default {
     }
   },
   mounted () {
-    this.vatExempt = this.model.vatRate === 0;
-    itemPricingService.total.calculate(this.model, { vatRate: this.model.vatRate});
+    //this.vatExempt = this.model.vatRate === 0;
+    //itemPricingService.total.calculate(this.model, { vatRate: this.model.vatRate});
   },
   computed: {
     totalDiscount() {
       return this.lodash.sumBy(this.model.dealDetails.items, "discount");
+    },
+    totalAmount() {
+      return this.lodash.sumBy(this.model.dealDetails.items, e => e.price - e.discount);
     },
     ...mapState({
       currencyStore: state => state.settings.currency,

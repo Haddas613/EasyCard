@@ -41,5 +41,7 @@ namespace MerchantProfileApi.Models.Terminal
         public bool VATExempt { get; set; }
 
         public bool? SendTransactionSlipEmailToMerchant { get; set; }
+
+        public bool? UseQuickChargeByDefault { get; set; }
     }
 }

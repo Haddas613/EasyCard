@@ -30,6 +30,7 @@
       </v-col>
       <v-col cols="12" md="6">
         <v-text-field
+          v-if="model.consumerAddress"
           v-model="model.consumerAddress.street"
           :label="$t('CustomerAddress')"
           :rules="[vr.primitives.maxLength(50)]"
@@ -92,6 +93,13 @@ export default {
     // if(!this.model.dealDescription){
     //     this.model.dealDescription = this.terminalStore.settings.defaultChargeDescription;
     // }
+    if(!this.model.consumerAddress){
+      this.model.consumerAddress = {
+        city: null,
+        zip: null,
+        street: null
+      };
+    }
   },
   methods: {
     getData() {
