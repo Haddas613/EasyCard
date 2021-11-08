@@ -70,6 +70,24 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authorization Code.
+        /// </summary>
+        public static string AuthorizationCode {
+            get {
+                return ResourceManager.GetString("AuthorizationCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authorization Code (optional).
+        /// </summary>
+        public static string AuthorizationCodeOptional {
+            get {
+                return ResourceManager.GetString("AuthorizationCodeOptional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel payment.
         /// </summary>
         public static string CancelPayment {

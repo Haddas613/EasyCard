@@ -222,4 +222,10 @@
   <data name="InitialPaymentAmount" xml:space="preserve">
     <value>סכום תשלום ראשון</value>
   </data>
+  <data name="AuthorizationCode" xml:space="preserve">
+    <value>קוד אימות</value>
+  </data>
+  <data name="AuthorizationCodeOptional" xml:space="preserve">
+    <value>קוד אימות (אופציונאלי)</value>
+  </data>
 </root>

@@ -77,6 +77,7 @@ namespace CheckoutPortal.Mappings
                    .ForMember(d => d.PinPad, o => o.MapFrom(d => d.PinPad))
                    .ForMember(d => d.PinPadDeviceID, o => o.MapFrom(d => d.PinPadDeviceID))
                    .ForMember(d => d.CardOwnerNationalID, o => o.MapFrom(d => d.NationalID))
+                   .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.AuthNum))
                    .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.Name));
 
 
@@ -84,6 +85,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.Amount))
                 .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
                 .ForMember(d => d.CardOwnerNationalID, o => o.MapFrom(d => d.NationalID))
+                .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.AuthNum))
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.Name));
 
             CreateMap<ChargeViewModel, Shared.Integration.Models.CreditCardSecureDetails>()

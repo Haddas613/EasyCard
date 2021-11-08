@@ -225,4 +225,10 @@
   <data name="InitialPaymentAmount" xml:space="preserve">
     <value>Initial Payment Amount</value>
   </data>
+  <data name="AuthorizationCode" xml:space="preserve">
+    <value>Authorization Code</value>
+  </data>
+  <data name="AuthorizationCodeOptional" xml:space="preserve">
+    <value>Authorization Code (optional)</value>
+  </data>
 </root>

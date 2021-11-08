@@ -269,6 +269,13 @@
                                 <span asp-validation-for="Phone"></span>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label asp-for="AuthNum" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("AuthorizationCodeOptional")</label>
+                            <div class="col-sm-9">
+                                <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("AuthorizationCode")" asp-for="AuthNum" autocomplete="off">
+                                <span asp-validation-for="AuthNum"></span>
+                            </div>
+                        </div>
 
                     </fieldset>
 

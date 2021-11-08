@@ -97,6 +97,7 @@ namespace Transactions.Api.Mapping
 
             CreateMap<PRCreateTransactionRequest, CreateTransactionRequest>()
                 .ForMember(d => d.ConnectionID, s => s.MapFrom(src => src.ConnectionID))
+                .ForMember(d => d.OKNumber, s => s.MapFrom(src => src.OKNumber))
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.PaymentRequestAmount)); // TODO only for user amount
 
             CreateMap<PaymentTransaction, CreateTransactionRequest>()
