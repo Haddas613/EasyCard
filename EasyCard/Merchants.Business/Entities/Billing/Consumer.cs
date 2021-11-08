@@ -38,7 +38,11 @@ namespace Merchants.Business.Entities.Billing
         /// </summary>
         public string ConsumerPhone { get; set; }
 
+        public string ConsumeSecondPhone { get; set; }
+
         public string ConsumerNationalID { get; set; }
+
+        public string ConsumerNote { get; set; }
 
         public Address ConsumerAddress { get; set; }
 
