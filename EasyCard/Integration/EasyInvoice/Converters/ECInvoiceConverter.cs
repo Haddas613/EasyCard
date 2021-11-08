@@ -96,7 +96,8 @@ namespace EasyInvoice.Converters
                 City = address.City,
                 Street = address.Street,
                 PostalCode = address.Zip,
-                StreetNumber = address.House
+                StreetNumber = address.House,
+                CountryCode = address.CountryCode
             };
 
             return res;

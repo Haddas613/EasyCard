@@ -222,4 +222,7 @@
   <data name="OnlyAddCard" xml:space="preserve">
     <value>Add card</value>
   </data>
+  <data name="InitialPaymentAmount" xml:space="preserve">
+    <value>Initial Payment Amount</value>
+  </data>
 </root>

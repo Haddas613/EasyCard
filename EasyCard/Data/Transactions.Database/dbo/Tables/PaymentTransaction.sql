@@ -87,8 +87,11 @@
     [ConsumerNationalID]             VARCHAR (20)     NULL,
     [Extension]                      NVARCHAR (MAX)   NULL,
     [CardExpirationDate]             DATE             NULL,
+    [PaymentIntentID]                UNIQUEIDENTIFIER NULL,
     CONSTRAINT [PK_PaymentTransaction] PRIMARY KEY CLUSTERED ([PaymentTransactionID] ASC)
 );
+
+
 
 
 

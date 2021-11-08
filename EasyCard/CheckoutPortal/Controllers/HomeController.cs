@@ -246,7 +246,7 @@ namespace CheckoutPortal.Controllers
                 {
                     if (checkoutConfig.PaymentRequest != null && !checkoutConfig.PaymentRequest.UserAmount)
                     {
-                        var installmentPaymentAmount = Math.Round(checkoutConfig.PaymentRequest.TotalAmount / request.NumberOfPayments.Value, 2, MidpointRounding.AwayFromZero);
+                        var installmentPaymentAmount = Math.Floor(checkoutConfig.PaymentRequest.TotalAmount / request.NumberOfPayments.Value);
 
                         checkoutConfig.PaymentRequest.NumberOfPayments = request.NumberOfPayments.Value;
                         checkoutConfig.PaymentRequest.InitialPaymentAmount = checkoutConfig.PaymentRequest.TotalAmount - installmentPaymentAmount * (request.NumberOfPayments.Value - 1);
@@ -262,7 +262,7 @@ namespace CheckoutPortal.Controllers
                     }
                     else
                     {
-                        var installmentPaymentAmount = Math.Round(request.Amount.Value / request.NumberOfPayments.Value, 2, MidpointRounding.AwayFromZero);
+                        var installmentPaymentAmount = Math.Floor(request.Amount.Value / request.NumberOfPayments.Value);
 
                         installmentDetails = new InstallmentDetails
                         {
