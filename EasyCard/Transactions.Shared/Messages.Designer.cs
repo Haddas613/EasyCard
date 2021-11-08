@@ -70,6 +70,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In case if at least one of the following parameters is specified: VatRate, NetTotal, VatTotal, each one must be specified as well (or left null correspondingly). These parameters are mutually dependend.
+        /// </summary>
+        public static string AllVatCalculationsMustBeSpecified {
+            get {
+                return ResourceManager.GetString("AllVatCalculationsMustBeSpecified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount required for pinpad deal.
+        /// </summary>
+        public static string AmountRequiredForPinpadDeal {
+            get {
+                return ResourceManager.GetString("AmountRequiredForPinpadDeal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Approve transaction on device.
         /// </summary>
         public static string ApproveTransactionOnDevice {
@@ -79,7 +97,7 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Authorization code is required. Call @number and tell them the supplier number @retailer to get the authorization code and create a new transaction with it specified..
+        ///   Looks up a localized string similar to Authorization code is required. Call @number and tell them the supplier number @retailer to get the authorization code and try again..
         /// </summary>
         public static string AuthorizationCodeRequired {
             get {
@@ -295,6 +313,15 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Consumer Name and Consumer Email are required.
+        /// </summary>
+        public static string ConsumerNameAndConsumerEmailRequired {
+            get {
+                return ResourceManager.GetString("ConsumerNameAndConsumerEmailRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Consumer National Id is not equal to credit card National Id.
         /// </summary>
         public static string ConsumerNatIdIsNotEqTranNatId {
@@ -390,6 +417,15 @@ namespace Transactions.Shared {
         public static string EmailSent {
             get {
                 return ResourceManager.GetString("EmailSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected @value got @input.
+        /// </summary>
+        public static string ExpectedValue {
+            get {
+                return ResourceManager.GetString("ExpectedValue", resourceCulture);
             }
         }
         
@@ -709,7 +745,7 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction rejected by Aggregator.
+        ///   Looks up a localized string similar to Failed To Process Transaction.
         /// </summary>
         public static string RejectedByAggregator {
             get {
@@ -718,7 +754,7 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transaction rejected by Processor.
+        ///   Looks up a localized string similar to Failed To Process Transaction.
         /// </summary>
         public static string RejectedByProcessor {
             get {
@@ -804,6 +840,15 @@ namespace Transactions.Shared {
         public static string TransactionAlreadyHasInvoice {
             get {
                 return ResourceManager.GetString("TransactionAlreadyHasInvoice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transaction Amount does not match Installments Total Amount.
+        /// </summary>
+        public static string TransactionAmountDoesNotMatchInstallmentsAmount {
+            get {
+                return ResourceManager.GetString("TransactionAmountDoesNotMatchInstallmentsAmount", resourceCulture);
             }
         }
         
@@ -930,6 +975,24 @@ namespace Transactions.Shared {
         public static string TransmittedByProcessor {
             get {
                 return ResourceManager.GetString("TransmittedByProcessor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Amount must be set to true when making transaction without amount.
+        /// </summary>
+        public static string UserAmountRequiredValidationMessage {
+            get {
+                return ResourceManager.GetString("UserAmountRequiredValidationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Amount can only be specified if Request Amount is 0.
+        /// </summary>
+        public static string UserAmountValidationMessage {
+            get {
+                return ResourceManager.GetString("UserAmountValidationMessage", resourceCulture);
             }
         }
         

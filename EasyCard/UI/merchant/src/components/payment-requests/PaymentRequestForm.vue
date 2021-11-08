@@ -42,13 +42,22 @@
               class="pt-0 mt-0"
               hide-details="true"></v-switch>
           </v-col>
+          <v-col cols="12" md="6">
+            <v-switch 
+              v-model="isInstallmentTransaction" 
+              :label="$t('InstallmentTransaction')" 
+              class="pt-0 mt-0"
+              hide-details="true"></v-switch>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-switch 
+              v-model="model.userAmount"
+              v-if="!model.paymentRequestAmount"
+              :label="$t('AllowUserAmount')" 
+              class="pt-0 mt-0"
+              hide-details="true"></v-switch>
+          </v-col>
         </v-row>
-
-        <v-switch 
-          v-model="isInstallmentTransaction" 
-          :label="$t('InstallmentTransaction')" 
-          class="pt-0 mt-0"
-          hide-details="true"></v-switch>
 
         <installment-details
           class="mt-2"
@@ -61,19 +70,11 @@
           hide-title
         ></installment-details>
 
-        <v-text-field
-          v-if="!model.dealDetails.consumerID"
-          v-model="model.consumerName"
-          :label="$t('CustomerName')"
-          :rules="[vr.primitives.required, vr.primitives.stringLength(3, 50)]"
-          background-color="white"
-          type="text"
-          outlined
-        ></v-text-field>
         <deal-details
           ref="dealDetails"
-          :data="model.dealDetails"
+          :data="model"
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
+          :isPaymentRequest = true
         ></deal-details>
 
         <invoice-details-fields v-if="invoiceAvailable" ref="invoiceDetails" :data="model.invoiceDetails"></invoice-details-fields>
@@ -156,13 +157,16 @@ export default {
     ok(paymentIntent = false) {
       if (!this.$refs.form.validate()) return;
       
+      if(this.model.userAmount && this.model.paymentRequestAmount){
+        this.model.userAmount = false;
+      }
+
       let result = { ...this.model };
       if (this.isInstallmentTransaction) {
         result.installmentDetails = this.$refs.instDetails.getData();
       }else{
         result.installmentDetails = null;
       }
-
       result.invoiceDetails = this.invoiceAvailable
           ? this.$refs.invoiceDetails.getData() : null;
       result.dealDetails = this.$refs.dealDetails.getData();

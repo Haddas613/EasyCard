@@ -193,8 +193,6 @@ export default {
     this.transactions = data.data || [];
     this.numberOfRecords = data.numberOfRecords || 0;
 
-    let terminals = (await this.$api.terminals.getTerminals()).data;
-
     if (
       this.model.invoiceDetails &&
       this.model.invoiceDetails.sendCCTo &&

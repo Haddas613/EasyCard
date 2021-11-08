@@ -269,7 +269,7 @@ namespace Transactions.Api
                     };
                 });
 
-            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;  // TODO: remove for production
+            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = false;  // TODO: remove for production
 
             services.AddAuthorization(options =>
             {
@@ -518,8 +518,9 @@ namespace Transactions.Api
                 var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
 
                 return new QueueResolver()
-                    .AddQueue(cfg.InvoiceQueueName, new AzureQueue(cfg.DefaultStorageConnectionString, cfg.InvoiceQueueName))
-                    .AddQueue(cfg.BillingDealsQueueName, new AzureQueue(cfg.DefaultStorageConnectionString, cfg.BillingDealsQueueName));
+                    .AddQueue(cfg.InvoiceQueueName, new AzureQueue(cfg.DefaultStorageConnectionString, cfg.InvoiceQueueName)) // TODO: change cfg to constant in QueueResolver
+                    .AddQueue(cfg.BillingDealsQueueName, new AzureQueue(cfg.DefaultStorageConnectionString, cfg.BillingDealsQueueName))
+                    .AddQueue(QueueResolver.UpdateTerminalSHVAParametersQueue, new AzureQueue(cfg.DefaultStorageConnectionString, QueueResolver.UpdateTerminalSHVAParametersQueue));
             });
 
             var appInsightsConfig = Configuration.GetSection("ApplicationInsights").Get<ApplicationInsightsSettings>();
@@ -550,6 +551,7 @@ namespace Transactions.Api
 
                 return new InforUMobileSmsService(webApiClient, inforUMobileSmsSettings, logger, storageService, metrics, doNotSendSms);
             });
+            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

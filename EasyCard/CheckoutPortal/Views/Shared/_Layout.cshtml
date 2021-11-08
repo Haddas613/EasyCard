@@ -15,7 +15,7 @@
 
     @if (viewModel?.CustomCssReference != null)
     {
-        <link rel="stylesheet" href="@viewModel?.CustomCssReference" />
+        <link rel="stylesheet" href="@viewModel.BlobBaseAddress/@viewModel?.CustomCssReference" />
     }
 </head>
 <body dir="@(currentUICulture.Name == "he" ? "rtl" : "ltr")" class="@(currentUICulture.Name == "he" ? "rtl" : "ltr")">
@@ -30,7 +30,7 @@
                 <a class="navbar-brand">
                     @if (viewModel?.MerchantLogo != null)
                     {
-                        <img src="@viewModel?.MerchantLogo" alt="EasyCard" id="merchant-logo" />
+                        <img src="@viewModel.BlobBaseAddress/@viewModel?.MerchantLogo" alt="EasyCard" id="merchant-logo" />
                     }
                     else
                     {

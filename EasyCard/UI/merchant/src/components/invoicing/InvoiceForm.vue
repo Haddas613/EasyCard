@@ -11,12 +11,21 @@
           outlined
         ></v-text-field>
 
-        <v-switch 
+        <!-- <v-switch 
           v-model="isInstallmentTransaction" 
           :label="$t('InstallmentTransaction')" 
           class="pt-0 mt-0" 
           v-bind:class="{'pb-2': !isInstallmentTransaction}"
-          hide-details="true"></v-switch>
+          hide-details="true"></v-switch> -->
+        <v-select
+          :items="dictionaries.transactionTypeEnum"
+          item-text="description"
+          item-value="code"
+          v-model="model.transactionType"
+          :label="$t('TransactionType')"
+          outlined
+        ></v-select>
+        
         <installment-details
           ref="instDetails"
           :data="model.installmentDetails"
@@ -29,7 +38,7 @@
 
         <deal-details
           ref="dealDetails"
-          :data="model.dealDetails"
+          :data="model"
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
         ></deal-details>
 
@@ -84,19 +93,25 @@ export default {
       dictionaries: {},
       model: {
         ...this.data,
-        invoiceDetails: this.data.invoiceDetails || {}
+        invoiceDetails: this.data.invoiceDetails || {},
+        transactionType: null
       },
       vr: ValidationRules,
       appConstants: appConstants,
       messageDialog: false,
-      isInstallmentTransaction: false,
       paymentInfoAvailable: true
     };
   },
   computed: {
     ...mapState({
       currencyStore: state => state.settings.currency
-    })
+    }),
+    isInstallmentTransaction() {
+      return (
+        this.model.transactionType === "installments" ||
+        this.model.transactionType === "credit"
+      );
+    }
   },
   async mounted() {
     let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
@@ -107,6 +122,7 @@ export default {
           this.currencyStore.code || this.dictionaries.currencyEnum[0].code;
       }
       // this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
+      this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
     }
   },
   methods: {

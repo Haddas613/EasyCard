@@ -47,7 +47,7 @@
 
         <v-stepper-content step="4" class="py-0 px-0">
           <credit-card-secure-details
-            :key="model.dealDetails.consumerID"
+            :key="model.key"
             :data="model"
             v-on:ok="processCreditCard($event)"
             include-device
@@ -58,7 +58,7 @@
 
         <v-stepper-content step="5" class="py-0 px-0">
           <additional-settings-form 
-            :key="model.transactionAmount"
+            :key="model.key"
             :data="model"
             :issue-document="true"
             v-on:ok="processAdditionalSettings($event)"
@@ -67,36 +67,74 @@
         </v-stepper-content>
 
         <v-stepper-content step="6" class="py-0 px-0">
-           <wizard-result :errors="errors" v-if="result">
-            <template v-if="customer">
-              <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
-              <p>{{customer.consumerName}}</p>
-              <div class="pt-5">
-                <p>{{$t("ChargedCustomer")}}</p>
-                <p>{{customer.consumerEmail}} ● <ec-money :amount="model.transactionAmount" bold></ec-money></p>
-              </div>
-            </template>
-            <template v-else>
-              <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
-              <div class="pt-5">
-                <p>{{$t("ChargedCustomer")}}</p>
-                <p><ec-money :amount="model.transactionAmount" bold></ec-money></p>
-              </div>
-            </template>
-            <template v-slot:link v-if="result.entityReference">
-              <router-link class="primary--text" link
-                  :to="{ name: 'Transaction', params: { id: result.entityReference } }"
-                >{{$t("GoToTransaction")}}</router-link>
+          <wizard-result :errors="errors" v-if="result" :error="error">
+          <template v-if="customer">
+            <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+            <p>{{customer.consumerName}}</p>
+            <div class="pt-5">
+              <p>{{$t("ChargedCustomer")}}</p>
+              <p>{{customer.consumerEmail}} ● <ec-money :amount="model.transactionAmount" bold></ec-money></p>
+            </div>
+          </template>
+          <template v-else>
+            <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
+            <div class="pt-5">
+              <p>{{$t("ChargedCustomer")}}</p>
+              <p><ec-money :amount="model.transactionAmount" bold></ec-money></p>
+            </div>
+          </template>
+          <template v-slot:link v-if="result.entityReference">
+            <router-link class="primary--text" link
+              :to="{ name: 'Transaction', params: { id: result.entityReference } }"
+            >{{$t("GoToTransaction")}}</router-link>
 
-                <div class="pt-4" v-if="result.innerResponse">
-                  <p v-if="result.innerResponse.status == 'error'">
-                    {{result.innerResponse.message}}
-                  </p>
-                  <router-link v-else class="primary--text" link
-                    :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
-                  >{{$t("GoToInvoice")}}</router-link>
-                </div>
+            <template v-if="result.innerResponse">
+              <p class="pt-4" v-if="result.innerResponse.status == 'error'">
+                {{result.innerResponse.message}}
+              </p>
+              <p class="pt-4" v-else>
+                <router-link class="primary--text" link
+                  :to="{ name: 'Invoice', params: { id: result.innerResponse.entityReference } }"
+                >{{$t("GoToInvoice")}}</router-link>
+              </p>
             </template>
+
+            <v-flex class="text-center pt-2">
+              <v-btn outlined color="success" link :to="{name: 'Dashboard'}">{{$t("Close")}}</v-btn>
+            </v-flex>
+          </template>
+          <template v-slot:errors v-if="result.additionalData && result.additionalData.authorizationCodeRequired">
+            <v-form class="my-4 ec-form" ref="form" lazy-validation>
+              <!-- <p>{{result.additionalData.message}}</p> -->
+              <v-text-field
+                v-model="model.oKNumber"
+                :label="$t('AuthorizationCode')"
+                :rules="[vr.primitives.stringLength(1, 50)]">
+              </v-text-field>
+              <v-btn color="primary" bottom :x-large="true" block @click="retry()">
+                {{$t("Retry")}}
+                <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
+              </v-btn>
+            </v-form>
+          </template>
+          <template v-slot:slip v-if="transaction">
+            <transaction-printout ref="printout" :transaction="transaction"></transaction-printout>
+            <transaction-slip-dialog ref="slipDialog" :transaction="transaction" :show.sync="transactionSlipDialog"></transaction-slip-dialog>
+            <div class="mb-4">
+              <v-btn small class="mx-1" @click="$refs.printout.print()">
+                {{$t("Print")}}
+                <v-icon class="px-1" small :right="$vuetify.ltr">
+                  mdi-printer
+                </v-icon>
+              </v-btn>
+              <v-btn small color="primary" class="mx-1" @click="transactionSlipDialog = true">
+                {{$t("Email")}}
+                <v-icon small class="px-1" :right="$vuetify.ltr">
+                  mdi-email
+                </v-icon>
+              </v-btn>
+            </div>
+          </template>
           </wizard-result>
         </v-stepper-content>
       </v-stepper-items>
@@ -107,7 +145,7 @@
 <script>
 import { mapState } from "vuex";
 import * as signalR from "@microsoft/signalr";
-
+import ValidationRules from "../../helpers/validation-rules";
 export default {
   components: {
     Navbar: () => import("../../components/wizard/NavBar"),
@@ -117,14 +155,18 @@ export default {
     CustomersList: () => import("../../components/customers/CustomersList"),
     CreditCardSecureDetails: () => import("../../components/transactions/CreditCardSecureDetails"),
     WizardResult: () => import("../../components/wizard/WizardResult"),
-    AdditionalSettingsForm: () => import("../../components/transactions/AdditionalSettingsForm")
+    AdditionalSettingsForm: () => import("../../components/transactions/AdditionalSettingsForm"),
+    TransactionPrintout: () => import("../../components/printouts/TransactionPrintout"),
+    TransactionSlipDialog: () => import("../../components/transactions/TransactionSlipDialog"),
   },
   props: ["customerid"],
   data() {
     return {
+      vr: ValidationRules,
       customer: null,
       skipCustomerStep: false,
       model: {
+        key: "0",
         terminalID: null,
         transactionType: null,
         jDealType: null,
@@ -159,6 +201,7 @@ export default {
       quickChargeMode: false,
       success: true,
       errors: [],
+      error: null,
       loading: false,
       result: {
         entityReference: null
@@ -171,10 +214,12 @@ export default {
         },
         2: {
             title: "Basket",
+            autoskip: true,
         },
         3: {
             title: "ChooseCustomer",
             skippable: true,
+            quickChargeExclude: true,
         },
         4: {
             title: "PaymentInfo",
@@ -189,7 +234,9 @@ export default {
         }
       },
       transactionsHub: null,
-      signalRToast: null
+      signalRToast: null,
+      transaction: null,
+      transactionSlipDialog: false
     };
   },
   computed: {
@@ -225,11 +272,48 @@ export default {
       }
     }
     this.model.dealDetails.dealDescription = this.terminal.settings.defaultChargeDescription;
+
+    window.addEventListener("keydown", this.handleKeyPress);
+  },
+  destroyed () {
+    window.removeEventListener("keydown", this.handleKeyPress);
   },
   methods: {
-    goBack() {
+    handleKeyPress($event){
+
+      // TODO: this is disabled
+      // switch($event.key){
+
+      //   case "Backspace":
+      //     if ($event.shiftKey || $event.ctrlKey) {
+      //       this.goBack();
+      //     }
+      //     break;
+      //   case "Enter": {
+      //     if (this.step === 1) {
+      //       this.$refs.numpadRef.ok($event.shiftKey || $event.ctrlKey);
+      //     } else if (this.step === 3) {
+      //       this.step = 4;
+      //     }
+      //     else if (this.step === 4) {
+      //       this.$refs.ccSecureDetails.ok();
+      //     } 
+      //     else if (this.step === 5) {
+      //       this.$refs.additionalSettingsForm.ok();
+      //     }
+      //     break;
+      //   }
+      // }
+    },
+    goBack(acc = 1) {
       if (this.step === 1) this.$router.push({ name: "Dashboard" });
-      else this.step--;
+      else { 
+        let prevStep = this.steps[this.step - acc];
+        if(prevStep.autoskip || (this.quickChargeMode && prevStep.quickChargeExclude)){
+          return this.goBack(++acc);
+        }
+        this.step -= acc;
+      }
     },
     terminalChanged() {
       this.skipCustomerStep = false;
@@ -255,6 +339,9 @@ export default {
 
       this.model.dealDetails = Object.assign(this.model.dealDetails, data);
 
+      if(this.model.dealDetails){
+        this.model.key = `${this.terminal.terminalID}-${this.model.dealDetails.consumerID}`;
+      }
       if (!this.model.creditCardSecureDetails) {
         this.$set(this.model, "creditCardSecureDetails", {
           cardOwnerName: data.consumerName,
@@ -278,6 +365,7 @@ export default {
       this.updateAmount(data);
       this.quickChargeMode = data.quickCharge;
       if (data.quickCharge){
+        this.model.key = `${this.terminal.terminalID}-${this.model.transactionAmount}`;
         this.step = 4;
         return;
       }
@@ -294,6 +382,9 @@ export default {
     },
     processCreditCard(data) {
       this.model.oKNumber = data.oKNumber;
+      this.$set(this.model, 'installmentDetails', data.installmentDetails);
+      this.model.transactionType = data.transactionType;
+      
       if (data.type === "creditcard") {
         data = data.data;
         this.model.saveCreditCard = data.saveCreditCard || false;
@@ -306,6 +397,11 @@ export default {
         } else {
           this.model.cardPresence = "cardNotPresent";
         }
+        
+        if (!this.model.dealDetails.consumerName) {
+          this.model.dealDetails.consumerName = this.model.creditCardSecureDetails.cardOwnerName;
+        }
+
       } else if (data.type === "token") {
         this.model.creditCardSecureDetails = null;
         this.model.creditCardToken = data.data;
@@ -319,9 +415,13 @@ export default {
         this.model.saveCreditCard = false;
         Object.assign(this.model, data.data);
       }
-      if(this.quickChargeMode){
-        if(!this.$refs.additionalSettingsForm.ok()){
+      if (this.quickChargeMode) {
+        let res = this.$refs.additionalSettingsForm.ok(true)
+        
+        if (!res) {
           this.step++;
+        } else {
+          this.processAdditionalSettings(res)
         }
         return;
       }
@@ -329,10 +429,8 @@ export default {
     },
     async processAdditionalSettings(data) {
       this.model.dealDetails = data.dealDetails;
-      this.model.transactionType = data.transactionType;
       this.model.currency = data.currency;
       this.model.jDealType = data.jDealType;
-      this.model.installmentDetails = data.installmentDetails;
       this.model.terminalID = this.terminal.terminalID;
       if(!this.quickChargeMode){
         this.model.invoiceDetails = data.invoiceDetails;
@@ -342,6 +440,9 @@ export default {
         this.model.issueInvoice = false;
       }
 
+      await this.createTransaction();
+    },
+    async retry(){
       await this.createTransaction();
     },
     async createTransaction(){
@@ -363,10 +464,9 @@ export default {
           lastStep.title = "Error";
           lastStep.completed = false;
           lastStep.closeable = true;
+          this.error = result.message;
           if (result && result.errors && result.errors.length > 0) {
             this.errors = result.errors;
-          } else {
-            this.errors = [{ description: result.message }];
           }
         } else {
           this.success = true;
@@ -377,6 +477,8 @@ export default {
             this.disposeSignalRConnection();
           }
           this.errors = [];
+          this.error = null;
+          this.transaction = await this.$api.transactions.getTransaction(this.result.entityReference);
         }
         if (this.customer) {
           this.$store.commit("payment/addLastChargedCustomer", {
@@ -384,7 +486,6 @@ export default {
             terminalID: this.model.terminalID
           });
         }
-
         this.step = lastStepKey;
       }finally{
         this.loading = false;

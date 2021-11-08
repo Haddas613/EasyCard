@@ -42,8 +42,7 @@ namespace Merchants.Api.Mapping
                 .ForMember(m => m.Updated, o => o.MapFrom(src => DateTime.UtcNow));
             CreateMap<UpdateTerminalRequest, Terminal>();
 
-            CreateMap<Terminal, TerminalResponse>()
-                .ForMember(d => d.BankDetails, o => o.MapFrom(d => d.BankDetails == null ? new TerminalBankDetails() : d.BankDetails));
+            CreateMap<Terminal, TerminalResponse>();
             CreateMap<Terminal, TerminalSummary>()
                 .ForMember(m => m.MerchantBusinessName, o => o.MapFrom(src => src.Merchant.BusinessName));
             CreateMap<ExternalSystem, ExternalSystemSummary>();
@@ -154,11 +153,11 @@ namespace Merchants.Api.Mapping
              .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<ClearingHouse.ClearingHouseTerminalSettings, Terminal>()
-               .ForMember(m => m.AggregatorTerminalReference, s => s.MapFrom(src => src.MerchantReference))
+               .ForMember(m => m.AggregatorTerminalReference, s => s.MapFrom(src => src.MerchantID.HasValue ? $"CH: {src.MerchantID.ToString()}" : "CH"))
                .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Upay.UpayTerminalSettings, Terminal>()
-               .ForMember(m => m.AggregatorTerminalReference, s => s.MapFrom(src => src.Email))
+               .ForMember(m => m.AggregatorTerminalReference, s => s.MapFrom(src => "Upay"))
                .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<EasyInvoice.EasyInvoiceTerminalSettings, Terminal>()

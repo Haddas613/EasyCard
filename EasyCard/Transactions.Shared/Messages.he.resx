@@ -277,10 +277,10 @@
     <value>לא הוגדר מעבד</value>
   </data>
   <data name="RejectedByAggregator" xml:space="preserve">
-    <value>עסקה נדחתה ע"י המאגד</value>
+    <value>נכשל עיבוד העסקה</value>
   </data>
   <data name="RejectedByProcessor" xml:space="preserve">
-    <value>עסקה נדחתה ע"י המעבד</value>
+    <value>נכשל עיבוד העסקה</value>
   </data>
   <data name="ThereAreNoInvoicesToResend" xml:space="preserve">
     <value>אין חשבוניות למשלוח חוזר</value>
@@ -382,7 +382,7 @@
     <value>יכול להנפיק חשבוניות רק עבור עסקאות ILS</value>
   </data>
   <data name="AuthorizationCodeRequired" xml:space="preserve">
-    <value>נדרש קוד אימות. התקשר ל@number ותיידע אותם במספר ספק האשראי @retailer על מנת לקבל קוד אימות ולבצע עסקה.</value>
+    <value>נדרש קוד אימות. התקשר ל@number ותיידע אותם במספר ספק האשראי @retailer על מנת לקבל קוד אימות ולנסות שוב לבצע עסקה</value>
   </data>
   <data name="J5ExpirationDate" xml:space="preserve">
     <value>תאריך פקיעת התוקף של שריון המסגרת {0}</value>
@@ -413,5 +413,20 @@
   </data>
   <data name="CreditCardTokenChanged" xml:space="preserve">
     <value>אסימון כרטיס האשראי השתנה</value>
+  </data>
+  <data name="UserAmountRequiredValidationMessage" xml:space="preserve">
+    <value>חובה לאפשר למשתמש להכניס סכום בנסיון לבצע דרישת תשלום ללא סכום</value>
+  </data>
+  <data name="UserAmountValidationMessage" xml:space="preserve">
+    <value>משתמש יכול להזין סכום רק כאשר הסכום לדרישת התשלום הוא 0.</value>
+  </data>
+  <data name="AllVatCalculationsMustBeSpecified" xml:space="preserve">
+    <value>במקרה שצוין לפחות אחד מהפרמטרים הבאים: ברוטו, נטו, מע"מ, יש לציין גם כל אחד מהם (או להשאיר null בהתאם). פרמטרים אלו תלויים זה בזה.</value>
+  </data>
+  <data name="ExpectedValue" xml:space="preserve">
+    <value>ערך מצופה: @value, ערך התקבל: @input</value>
+  </data>
+  <data name="TransactionAmountDoesNotMatchInstallmentsAmount" xml:space="preserve">
+    <value>הסכום אינו תואם לסכום הכולל של תשלומים</value>
   </data>
 </root>

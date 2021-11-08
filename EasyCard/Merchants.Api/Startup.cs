@@ -95,7 +95,7 @@ namespace Merchants.Api
                     options.EnableCaching = true;
                 });
 
-            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true; // TODO: remove for production
+            Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = false; // TODO: remove for production
 
             services.AddAuthorization(options =>
             {
@@ -193,6 +193,7 @@ namespace Merchants.Api
             services.Configure<ApplicationInsightsSettings>(Configuration.GetSection("ApplicationInsights"));
             services.Configure<ClearingHouse.ClearingHouseGlobalSettings>(Configuration.GetSection("ClearingHouseGlobalSettings"));
             services.Configure<EasyInvoice.EasyInvoiceGlobalSettings>(Configuration.GetSection("EasyInvoiceGlobalSettings"));
+            services.Configure<RapidOne.Configuration.RapidOneGlobalSettings>(Configuration.GetSection("RapidOneGlobalSettings"));
 
             services.AddHttpContextAccessor();
 
@@ -270,6 +271,16 @@ namespace Merchants.Api
                 return new EasyInvoice.ECInvoiceInvoicing(webApiClient, chCfg, logger, storageService);
             });
 
+            services.AddSingleton<RapidOne.RapidOneInvoicing, RapidOne.RapidOneInvoicing>(serviceProvider =>
+            {
+                var ecCfg = serviceProvider.GetRequiredService<IOptions<RapidOne.Configuration.RapidOneGlobalSettings>>();
+                var webApiClient = new WebApiClient();
+                var logger = serviceProvider.GetRequiredService<ILogger<RapidOne.RapidOneInvoicing>>();
+                var cfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>().Value;
+                var storageService = new IntegrationRequestLogStorageService(cfg.DefaultStorageConnectionString, cfg.RapidInvoiceRequestsLogStorageTable, cfg.RapidInvoiceRequestsLogStorageTable);
+                return new RapidOne.RapidOneInvoicing(webApiClient, ecCfg, logger, storageService);
+            });
+
             services.AddSingleton<Shva.ShvaProcessor, Shva.ShvaProcessor>(serviceProvider =>
             {
                 var shvaCfg = serviceProvider.GetRequiredService<IOptions<Shva.ShvaGlobalSettings>>();
@@ -323,6 +334,7 @@ namespace Merchants.Api
                 var cryptoCfg = serviceProvider.GetRequiredService<IOptions<ApplicationSettings>>()?.Value;
                 return new AesGcmCryptoServiceCompact(cryptoCfg.EncrKeyForSharedApiKey);
             });
+            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -136,7 +136,7 @@ namespace CheckoutPortal
 
             services.AddMvc().AddViewLocalization();
             services.AddSingleton<CommonLocalizationService>();
-
+            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_CONNECTIONSTRING"]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

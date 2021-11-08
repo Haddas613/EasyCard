@@ -70,6 +70,24 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authorization Code.
+        /// </summary>
+        public static string AuthorizationCode {
+            get {
+                return ResourceManager.GetString("AuthorizationCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authorization Code (optional).
+        /// </summary>
+        public static string AuthorizationCodeOptional {
+            get {
+                return ResourceManager.GetString("AuthorizationCodeOptional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel payment.
         /// </summary>
         public static string CancelPayment {
@@ -169,6 +187,15 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Initial Payment Amount.
+        /// </summary>
+        public static string InitialPaymentAmount {
+            get {
+                return ResourceManager.GetString("InitialPaymentAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installment.
         /// </summary>
         public static string Installments {
@@ -219,6 +246,15 @@ namespace CheckoutPortal.Resources {
         public static string NumberOfPaymentsMustBeLessThan {
             get {
                 return ResourceManager.GetString("NumberOfPaymentsMustBeLessThan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add card.
+        /// </summary>
+        public static string OnlyAddCard {
+            get {
+                return ResourceManager.GetString("OnlyAddCard", resourceCulture);
             }
         }
         

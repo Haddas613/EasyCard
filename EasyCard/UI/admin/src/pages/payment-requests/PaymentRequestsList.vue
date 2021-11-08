@@ -37,7 +37,7 @@
             <input type="checkbox" v-model="item.selected" :disabled="item.$status == 'sending'">
           </template>
           <template v-slot:item.paymentRequestAmount="{ item }">
-            <b>{{item.paymentRequestAmount | currency(item.currency)}}</b>
+            <b class="justify-currency">{{item.paymentRequestAmount | currency(item.currency)}}</b>
           </template>
           <template v-slot:item.paymentTransactionID="{ item }">
             <router-link v-if="item.paymentTransactionID" class="text-decoration-none" link :to="{name: 'Transaction', params: {id: item.$paymentTransactionID}}">
@@ -114,17 +114,20 @@ export default {
     async getDataFromApi() {
       if(this.loading) { return; }
       this.loading = true;
-      let data = await this.$api.paymentRequests.get({
-        ...this.paymentRequestsFilter,
-        ...this.options
-      });
-      
-      this.paymentRequests = data.data;
-      this.totalAmount = data.numberOfRecords;
-      this.loading = false;
+      try{
+        let data = await this.$api.paymentRequests.get({
+          ...this.paymentRequestsFilter,
+          ...this.options
+        });
+        
+        this.paymentRequests = data.data;
+        this.totalAmount = data.numberOfRecords;
 
-      if (!this.headers || this.headers.length === 0) {
-        this.headers = [{ value: "select", text: "", sortable: false }, ...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false }];
+        if (!this.headers || this.headers.length === 0) {
+          this.headers = [{ value: "select", text: "", sortable: false }, ...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false }];
+        }
+      }finally{
+        this.loading = false;
       }
     },
     async applyFilter(data) {

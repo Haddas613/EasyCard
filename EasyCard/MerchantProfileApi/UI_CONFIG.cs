@@ -27,5 +27,8 @@ namespace MerchantProfileApi
 
         [JsonProperty("VUE_APP_SUPPORT_EMAIL")]
         public string VUE_APP_SUPPORT_EMAIL { get; set; }
+
+        [JsonProperty("VUE_APP_BLOB_BASE_ADDRESS")]
+        public string VUE_APP_BLOB_BASE_ADDRESS { get; set; }
     }
 }

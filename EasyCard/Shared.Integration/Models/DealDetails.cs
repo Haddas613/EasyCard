@@ -67,8 +67,7 @@ namespace Shared.Integration.Models
         /// <summary>
         /// Consumer address
         /// </summary>
-        [StringLength(250)]
-        public string ConsumerAddress { get; set; }
+        public Address ConsumerAddress { get; set; }
 
         /// <summary>
         /// External system consumer code for example Rapid customer code

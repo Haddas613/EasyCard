@@ -21,7 +21,7 @@
     <v-stepper class="ec-stepper" v-model="step">
       <v-stepper-items>
         <v-stepper-content step="1" class="py-0 px-0">
-          <numpad v-if="step === 1" btn-text="Request" v-on:ok="processAmount($event, true);" v-on:update="updateAmount($event)" ref="numpadRef" :data="model"></numpad>
+          <numpad v-if="step === 1" btn-text="Request" v-on:ok="processAmount($event, true);" v-on:update="updateAmount($event)" ref="numpadRef" :data="model" :supportZeroAmount="true"></numpad>
         </v-stepper-content>
 
         <v-stepper-content step="2" class="py-0 px-0">
@@ -42,6 +42,7 @@
         </v-stepper-content>
 
         <v-stepper-content step="5" class="py-0 px-0">
+          
           <wizard-result :errors="errors">
             <v-icon class="success--text font-weight-thin" size="170">mdi-check-circle-outline</v-icon>
             <template v-if="customer">
@@ -51,7 +52,7 @@
                 <p><b>{{customer.consumerEmail}}</b></p>
               </div>
             </template>
-            <template v-if="paymentIntent">
+            <template v-if="paymentIntent" v-slot:link>
               <div class="pt-5">
                 <p>{{$t("PaymentIntentURL")}}
                   <v-icon small class="pb-2" @click="$copyToClipboard(paymentIntent.url)">mdi-clipboard-text-multiple-outline</v-icon>
@@ -61,6 +62,9 @@
                 </p>
               </div>
             </template>
+            <v-flex class="text-center pt-2">
+              <v-btn outlined color="success" link :to="{name: 'Dashboard'}">{{$t("Close")}}</v-btn>
+            </v-flex>
           </wizard-result>
         </v-stepper-content>
       </v-stepper-items>
@@ -183,11 +187,7 @@ export default {
         return this.step++;
       }
       this.customer = data;
-      this.model.dealDetails.consumerEmail = data.consumerEmail;
-      this.model.dealDetails.consumerPhone = data.consumerPhone;
-      this.model.dealDetails.consumerAddress = data.consumerAddress;
-      this.model.dealDetails.consumerID = data.consumerID;
-      this.model.consumerName = data.consumerName;
+      this.model.dealDetails = Object.assign(this.model.dealDetails, data);
       this.step++;
     },
     processToBasket(){
@@ -214,9 +214,9 @@ export default {
       this.model.invoiceDetails = data.invoiceDetails;
       this.model.terminalID = this.terminal.terminalID;
       this.model.dueDate = data.dueDate;
-      this.model.consumerName = data.consumerName;
       this.model.isRefund = data.isRefund;
       this.model.allowPinPad = data.allowPinPad;
+      this.model.userAmount = data.userAmount;
 
       if(data.paymentIntent){
         await this.createPaymentIntent();

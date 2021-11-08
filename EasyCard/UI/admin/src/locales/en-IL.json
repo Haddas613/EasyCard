@@ -119,6 +119,7 @@
   "Reporting": "Reporting",
   "TerminalsTokens": "Terminals Tokens",
   "TokensTransactions": "Tokens Transactions",
+  "ListOfPinpadDevices": "List of PinPad Devices",
     
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -213,6 +214,7 @@
   "AmountFrom": "Amount from",
   "AmountTo": "Amount to",
   "RejectionReason": "Rejection Reason",
+  "RejectionMessage": "Rejection Message",
   "MerchantID": "Merchant ID",
   "MerchantEmail": "Merchant Email",
   "MerchantName": "Merchant Name",
@@ -392,6 +394,12 @@
   "HasMasavFile": "Has Masav File",
   "CustomerName": "Customer Name",
   "Successful": "Successful",
+  "PaymentIntentID": "Payment Intent ID",
+  "UserPaid": "User Paid",
+  "Street": "Street",
+  "House": "House",
+  "Apartment": "Apartment",
+  "UseQuickChargeByDefault": "Use Quick Charge by Default",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

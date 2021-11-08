@@ -23,7 +23,11 @@ namespace Transactions.Api.Mapping
 
         private void RegisterInvoiceMappings()
         {
-            CreateMap<InvoiceRequest, Invoice>();
+            CreateMap<InvoiceRequest, Invoice>()
+                .ForMember(d => d.InitialPaymentAmount, s => s.MapFrom(src => src.InstallmentDetails.InitialPaymentAmount))
+                .ForMember(d => d.NumberOfPayments, s => s.MapFrom(src => src.InstallmentDetails.NumberOfPayments))
+                .ForMember(d => d.TotalAmount, s => s.MapFrom(src => src.InstallmentDetails.TotalAmount))
+                .ForMember(d => d.InstallmentPaymentAmount, s => s.MapFrom(src => src.InstallmentDetails.InstallmentPaymentAmount));
 
             CreateMap<TransactionsApi.Models.Transactions.CreditCardDetails, Transactions.Business.Entities.CreditCardDetails>();
 

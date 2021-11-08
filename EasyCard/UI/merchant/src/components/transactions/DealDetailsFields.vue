@@ -1,23 +1,20 @@
 <template>
   <v-flex class="d-flex flex-column">
     <v-row no-gutters>
-
       <v-col cols="12" md="6">
         <v-text-field
           v-model="model.consumerName"
           :counter="50"
-          :rules="[vr.primitives.maxLength(50)]"
+          :rules="[vr.primitives.requiredDepends(this.saveCreditCard | this.isPaymentRequest), vr.primitives.maxLength(50)]"
           :label="$t('CustomerName')"
-          @keydown.native.space.prevent
           outlined
-          required
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="6">
         <v-text-field
           v-model="model.consumerEmail"
           :label="$t('CustomerEmail')"
-          :rules="[vr.primitives.email]"
+          :rules="[vr.primitives.requiredDepends(this.saveCreditCard | this.isPaymentRequest), vr.primitives.email]"
           outlined
           @keydown.native.space.prevent
           v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
@@ -33,7 +30,8 @@
       </v-col>
       <v-col cols="12" md="6">
         <v-text-field
-          v-model="model.consumerAddress"
+          v-if="model.consumerAddress"
+          v-model="model.consumerAddress.street"
           :label="$t('CustomerAddress')"
           :rules="[vr.primitives.maxLength(50)]"
           v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
@@ -67,15 +65,26 @@ export default {
     data: {
       type: Object,
       default: null,
-      required: true
-    }
+      required: true,
+    },
+    isPaymentRequest: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
   },
   data() {
     return {
       dictionaries: {},
       model: {
-        ...this.data
+        consumerAddress:{
+          city: null,
+          zip: null,
+          street: null
+        },
+        ...this.data.dealDetails
       },
+      saveCreditCard: this.data.saveCreditCard,
       vr: ValidationRules,
       messageDialog: false
     };
@@ -84,6 +93,13 @@ export default {
     // if(!this.model.dealDescription){
     //     this.model.dealDescription = this.terminalStore.settings.defaultChargeDescription;
     // }
+    if(!this.model.consumerAddress){
+      this.model.consumerAddress = {
+        city: null,
+        zip: null,
+        street: null
+      };
+    }
   },
   methods: {
     getData() {

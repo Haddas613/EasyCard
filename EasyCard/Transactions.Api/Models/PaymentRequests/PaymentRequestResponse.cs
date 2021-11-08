@@ -33,6 +33,8 @@ namespace Transactions.Api.Models.PaymentRequests
 
         public IEnumerable<PaymentRequestHistorySummary> History { get; set; }
 
+        public PaymentRequestUserPaidDetails UserPaidDetails { get; set; }
+
         public decimal Amount { get; set; }
     }
 }

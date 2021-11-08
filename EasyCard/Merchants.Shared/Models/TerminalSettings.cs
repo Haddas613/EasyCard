@@ -64,6 +64,8 @@ namespace Merchants.Shared.Models
 
         public TerminalTransmissionScheduleEnum? TransmissionSchedule { get; set; }
 
+        public bool? UseQuickChargeByDefault { get; set; }
+
         public TerminalSettings()
         {
             J5ExpirationDays = 1;

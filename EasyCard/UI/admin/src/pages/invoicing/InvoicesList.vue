@@ -37,7 +37,7 @@
             <input type="checkbox" v-model="item.selected" :disabled="item.$status == 'sending'">
           </template>
           <template v-slot:item.invoiceAmount="{ item }">
-            <b>{{item.invoiceAmount | currency(item.currency)}}</b>
+            <b class="justify-currency">{{item.invoiceAmount | currency(item.currency)}}</b>
           </template>
           <template v-slot:item.actions="{ item }">
             <v-btn outlined color="success" small :disabled="item.$status != 'sent'" :title="$t('ClickToDownload')" @click="downloadInvoicePDF(item.$invoiceID)">
@@ -108,17 +108,20 @@ export default {
     async getDataFromApi() {
       if(this.loading) { return; }
       this.loading = true;
-      let data = await this.$api.invoicing.get({
-        ...this.invoicesFilter,
-        ...this.options
-      });
-      
-      this.invoices = data.data;
-      this.totalAmount = data.numberOfRecords;
-      this.loading = false;
+      try{
+        let data = await this.$api.invoicing.get({
+          ...this.invoicesFilter,
+          ...this.options
+        });
+        
+        this.invoices = data.data;
+        this.totalAmount = data.numberOfRecords;
 
-      if (!this.headers || this.headers.length === 0) {
-        this.headers = [{ value: "select", text: "", sortable: false }, ...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false }];
+        if (!this.headers || this.headers.length === 0) {
+          this.headers = [{ value: "select", text: "", sortable: false }, ...data.headers, { value: "actions", text: this.$t("Actions"), sortable: false }];
+        }
+      }finally{
+        this.loading = false;
       }
     },
     async applyFilter(data) {

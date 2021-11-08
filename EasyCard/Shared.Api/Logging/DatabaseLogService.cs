@@ -25,11 +25,23 @@ namespace Shared.Api.Logging
 
             var builder = new SqlBuilder();
 
-            var selector = builder.AddTemplate("SELECT [ID], [LogLevel], [CategoryName], [Message], [UserName], [UserID], [IP], [Timestamp], [CorrelationID], [Exception], [ApiName], [Host], [Url], [MachineName] FROM [dbo].[SystemLog] WITH(NOLOCK) /**where**/ /**orderby**/ OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY", new { take, skip });
+            //var selector = builder.AddTemplate("SELECT [ID], [LogLevel], [CategoryName], [Message], [UserName], [UserID], [IP], [Timestamp], [CorrelationID], [Exception], [ApiName], [Host], [Url], [MachineName] FROM [dbo].[SystemLog] WITH(NOLOCK) /**where**/ /**orderby**/ OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY", new { take, skip });
+            var sql = @"
+;WITH pg AS 
+(
+SELECT [ID] FROM [dbo].[SystemLog] WITH(NOLOCK) /**where**/ order by [ID] desc OFFSET @skip ROWS FETCH NEXT @take ROWS ONLY
+)
+SELECT c.[ID], [LogLevel], [CategoryName], [Message], [UserName], [UserID], [IP], [Timestamp], [CorrelationID], [Exception], [ApiName], [Host], [Url], [MachineName]
+FROM dbo.[SystemLog] AS c
+WHERE EXISTS (SELECT 1 FROM pg WHERE pg.[ID] = c.[ID])
+ORDER BY c.[ID] desc OPTION (RECOMPILE);
+";
 
-            var count = builder.AddTemplate("SELECT COUNT (*) FROM [dbo].[SystemLog] WITH(NOLOCK) /**where**/");
+            var selector = builder.AddTemplate(sql, new { take, skip });
 
-            builder.OrderBy($"[{GetSortBy(query)}] {(query.SortDesc.GetValueOrDefault(true) ? "DESC" : "ASC")}");
+            //var count = builder.AddTemplate("SELECT COUNT (*) FROM [dbo].[SystemLog] WITH(NOLOCK) /**where**/");
+
+            //builder.OrderBy($"[{GetSortBy(query)}] {(query.SortDesc.GetValueOrDefault(true) ? "DESC" : "ASC")}");
 
             // filters
             if (query.LogLevel != null)
@@ -96,7 +108,7 @@ namespace Shared.Api.Logging
             {
                 var response = new SummariesResponse<DatabaseLogEntry>
                 {
-                    NumberOfRecords = await connection.QuerySingleOrDefaultAsync<int>(count.RawSql, count.Parameters),
+                    //NumberOfRecords = await connection.QuerySingleOrDefaultAsync<int>(count.RawSql, count.Parameters),
                     Data = await connection.QueryAsync<DatabaseLogEntry>(selector.RawSql, selector.Parameters)
                 };
 

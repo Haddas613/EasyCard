@@ -64,10 +64,13 @@
       <v-col cols="12" class="pt-0 text-end pb-4">
         <v-btn small class="mx-1" color="secondary" @click="loadMerchantDialog = true;">{{$t("LoadMerchantData")}}</v-btn>
       </v-col>
-      <v-col cols="12" md="6" class="py-0">
+      <v-col cols="12" md="4" class="py-0">
+        <v-text-field v-model="model.settings.merchantID" type="number" disabled :label="$t('MerchantID')" ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="4" class="py-0">
         <v-text-field v-model="model.settings.merchantReference" :label="$t('MerchantReference')" ></v-text-field>
       </v-col>
-      <v-col cols="12" md="6" class="py-0">
+      <v-col cols="12" md="4" class="py-0">
         <v-text-field v-model="model.settings.shvaTerminalReference" :label="$t('ShvaTerminalReference')" ></v-text-field>
       </v-col>
     </v-row>
@@ -139,6 +142,7 @@ export default {
     },
     async saveWithMerchantData(){
       this.model.settings.merchantReference = this.selectedMerchant.merchantReference;
+      this.model.settings.merchantID = this.selectedMerchant.merchantID;
       this.loadMerchantDialog = false;
       await this.save();
     }

@@ -103,6 +103,11 @@
               :label="$t('EnableCancellationOfUntransmittedTransactions')"
               hide-details
             ></v-switch>
+            <v-switch
+              v-model="model.settings.useQuickChargeByDefault"
+              :label="$t('UseQuickChargeByDefault')"
+              hide-details
+            ></v-switch>
           </v-col>
           <v-col md="6" cols="12">
             <v-switch
@@ -259,7 +264,7 @@
           <v-spacer></v-spacer>
           <v-col cols="12" md="5">
             <div class="d-flex justify-items-center" v-if="model.paymentRequestSettings.merchantLogo">
-              <img class="mt-1"  v-bind:src="model.paymentRequestSettings.merchantLogo" height="48">
+              <img class="mt-1"  v-bind:src="getBlobUrl(model.paymentRequestSettings.merchantLogo)" height="48">
               <v-btn class="mt-2" icon color="error" @click="deleteMerchantLogo()">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
@@ -356,7 +361,7 @@
           <v-spacer></v-spacer>
           <v-col cols="12" md="5">
             <div v-if="model.checkoutSettings.customCssReference" class="px-4 mt-5">
-              <a class="body-1" v-bind:href="model.checkoutSettings.customCssReference">
+              <a class="body-1" v-bind:href="getBlobUrl(model.checkoutSettings.customCssReference)">
                 {{$t("LinkToCSS")}}
               </a>
               <v-btn class="pb-1" icon color="error" @click="deleteCustomCSS()">
@@ -453,7 +458,11 @@
             <v-divider class="pt-1"></v-divider>
           </v-col>
           <v-col cols="12" md="4">
-            <bank-select v-model="model.bankDetails.bank" v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"></bank-select>
+            <bank-select 
+              v-model="model.bankDetails.bank"
+              v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+              required
+            ></bank-select>
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
@@ -463,7 +472,7 @@
               v-model="model.bankDetails.bankBranch"
               max="7"
               type="number"
-              :rules="[vr.primitives.numeric()]"
+              :rules="[vr.primitives.required, vr.primitives.numeric()]"
               v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
             ></v-text-field>
           </v-col>
@@ -475,7 +484,7 @@
               v-model="model.bankDetails.bankAccount"
               max="12"
               type="number"
-              :rules="[vr.primitives.numeric(), vr.primitives.stringLength(6, 12)]"
+              :rules="[vr.primitives.required, vr.primitives.numeric(), vr.primitives.stringLength(6, 12)]"
               v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
             ></v-text-field>
           </v-col>
@@ -568,6 +577,13 @@ export default {
         ? (result.settings.vatRatePercent / 100).toFixed(2)
         : 0;
 
+      // TODO: should be implemented something like "touchet" ot bank details component
+      if (result.bankDetails) {
+        if (!result.bankDetails.bank && !result.bankDetails.bankBranch && !result.bankDetails.bankAccount) {
+          result.bankDetails = null;
+        }
+      }  
+
       this.watchModel();
       return result;
     },
@@ -647,6 +663,9 @@ export default {
       let operation = await this.$api.terminals.deleteMerchantLogo(this.data.terminalID);
       if(!this.$apiSuccess(operation)) return;
        this.data.paymentRequestSettings.merchantLogo = null;
+    },
+    getBlobUrl(resource){
+      return `${this.$cfg.VUE_APP_BLOB_BASE_ADDRESS}/${resource}`;
     }
   },
 };

@@ -89,5 +89,10 @@ namespace Transactions.Api.Models.PaymentRequests
         public bool UserAmount { get; set; }
 
         public string RedirectUrl { get; set; }
+
+        public bool OnlyAddCard
+        {
+            get { return TotalAmount == 0 && !UserAmount && DealDetails?.ConsumerID != null; }
+        }
     }
 }

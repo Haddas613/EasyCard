@@ -24,7 +24,8 @@ namespace Shared.Helpers.Services
 
         public async Task<IEnumerable<T>> GetData<T>(string query)
         {
-            var httpResponse = await webApiClient.Get<JToken>(config.AppInsightsApi, actionUrl, new {
+            var httpResponse = await webApiClient.Get<JToken>(config.AppInsightsApi, actionUrl, new
+            {
                 query
             }, () => BuildHeaders());
 

@@ -82,7 +82,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.TransactionAmount">
             <summary>
-            Transaction amount (should be omitted in case of installment deal)
+            Transaction amount
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.BillingSchedule">
@@ -98,6 +98,11 @@
         <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.InvoiceDetails">
             <summary>
             Invoice details
+            </summary>
+        </member>
+        <member name="M:Transactions.Api.Models.Billing.BillingDealRequest.Calculate(System.Decimal)">
+            <summary>
+            If VATRate, NetTotal and VatTotal properties were not specified, this method should be called
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealResponse.BillingDealID">
@@ -220,9 +225,19 @@
             Billing deals that can be manually triggered
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealsFilter.DealReference">
+            <summary>
+            Merchant deal reference
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.BillingSchedule">
             <summary>
             Billing Schedule
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummary.DealDetails">
+            <summary>
+            Deal information
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryAdmin.Currency">
@@ -363,7 +378,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.TransactionAmount">
             <summary>
-            Transaction amount (should be omitted in case of installment deal)
+            Transaction amount
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealUpdateRequest.BillingSchedule">
@@ -426,6 +441,11 @@
             Array of payment details, e.g. CreditCardDetails, ChequeDetails etc.
             </summary>
         </member>
+        <member name="M:Transactions.Api.Models.Invoicing.InvoiceRequest.Calculate(System.Decimal)">
+            <summary>
+            If VATRate, NetTotal and VatTotal properties were not specified, this method should be called
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InvoiceID">
             <summary>
             Primary reference
@@ -481,9 +501,24 @@
             Invoice amount (should be omitted in case of installment deal)
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InstallmentDetails">
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.NumberOfPayments">
             <summary>
-            Installment payments details (should be omitted in case of regular deal)
+            Number Of payments (cannot be more than 999)
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InitialPaymentAmount">
+            <summary>
+            Initial installment payment
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.TotalAmount">
+            <summary>
+            TotalAmount = InitialPaymentAmount + (NumberOfInstallments - 1) * InstallmentPaymentAmount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.InstallmentPaymentAmount">
+            <summary>
+            Amount of one instalment payment
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Invoicing.InvoiceResponse.CreditCardDetails">
@@ -834,11 +869,6 @@
             Email subject
             </summary>
         </member>
-        <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestCreate.ConsumerName">
-            <summary>
-            End-customer Name
-            </summary>
-        </member>
         <member name="P:Transactions.Api.Models.PaymentRequests.PaymentRequestInfo.PaymentRequestID">
             <summary>
             Primary reference
@@ -1030,6 +1060,11 @@
               Looks up a localized string similar to Terminal.
             </summary>
         </member>
+        <member name="T:Transactions.Api.Models.PaymentRequests.PaymentRequestUserPaidDetails">
+            <summary>
+            Information regarding what user actually paid in payment request (only relevant for UserAmount allowed PRs)
+            </summary>
+        </member>
         <member name="T:Transactions.Api.Models.Tokens.CreditCardSummaryResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -1126,6 +1161,11 @@
             Reference to initial transaction
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenKeyVault.OKNumber">
+            <summary>
+            Authorization code
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Tokens.CreditCardTokenSummary.ConsumerID">
             <summary>
             Consumer ID
@@ -1154,6 +1194,11 @@
         <member name="P:Transactions.Api.Models.Tokens.TokenRequest.ConsumerEmail">
             <summary>
             End-customer Email
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Tokens.TokenRequest.OKNumber">
+            <summary>
+            Authorization code
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.BlockCreditCardRequest">
@@ -1273,7 +1318,7 @@
         </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.TransactionAmount">
             <summary>
-            Transaction amount (should be omitted in case of installment deal)
+            Transaction amount. Must always be specified. In case of Installments must match InstallmentDetails.TotalAmount
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.CreateTransactionRequest.InstallmentDetails">
@@ -1514,6 +1559,11 @@
         <member name="P:Transactions.Api.Models.Transactions.RefundRequest.ConnectionID">
             <summary>
             SignalR connection id
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.RefundRequest.OKNumber">
+            <summary>
+            ShvaAuthNum
             </summary>
         </member>
         <member name="P:Transactions.Api.Models.Transactions.TransactionRequestBase.DealDetails">

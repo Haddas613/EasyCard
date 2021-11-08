@@ -45,21 +45,21 @@ namespace Transactions.Api.Models.Invoicing
         /// <summary>
         /// Invoice amount (should be omitted in case of installment deal)
         /// </summary>
-        [Range(0.01, double.MaxValue)]
+        [Range(0, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal? InvoiceAmount { get; set; }
+        public decimal InvoiceAmount { get; set; }
 
         [Range(0, 1)]
         [DataType(DataType.Currency)]
-        public decimal VATRate { get; set; }
+        public decimal? VATRate { get; set; }
 
         [Range(0, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal VATTotal { get; set; }
+        public decimal? VATTotal { get; set; }
 
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal NetTotal { get; set; }
+        public decimal? NetTotal { get; set; }
 
         /// <summary>
         /// Installment payments details (should be omitted in case of regular deal)
@@ -76,5 +76,23 @@ namespace Transactions.Api.Models.Invoicing
         /// Array of payment details, e.g. CreditCardDetails, ChequeDetails etc.
         /// </summary>
         public IEnumerable<PaymentDetails> PaymentDetails { get; set; }
+
+        public TransactionTypeEnum? TransactionType { get; set; }
+
+        /// <summary>
+        /// If VATRate, NetTotal and VatTotal properties were not specified, this method should be called
+        /// </summary>
+        public void Calculate(decimal vatRate)
+        {
+            //Only calculated if values are not present and amount is > 0
+            if (VATRate.HasValue || InvoiceAmount <= 0)
+            {
+                return;
+            }
+
+            VATRate = vatRate;
+            NetTotal = Math.Round(InvoiceAmount / (1m + VATRate.Value), 2, MidpointRounding.AwayFromZero);
+            VATTotal = InvoiceAmount - NetTotal;
+        }
     }
 }

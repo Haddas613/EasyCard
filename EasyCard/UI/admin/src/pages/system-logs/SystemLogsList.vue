@@ -47,24 +47,25 @@
         :header-props="{ sortIcon: null }"
         class="elevation-1"
       >
-      <template v-slot:item.timestamp="{ item }">
-        {{item.$timestamp | ecdate}}
-      </template> 
-      <template v-slot:item.logLevel="{ item }">
-          <span v-if="logLevels[item.logLevel]" v-bind:class="logLevels[item.logLevel].color">{{logLevels[item.logLevel].title}}</span>
-          <span v-else>{{item.logLevel}}</span>
-      </template> 
-      <template v-slot:item.categoryName="{ item }">
-        <small>{{item.categoryName}}</small>
-      </template> 
-      <template v-slot:item.message="{ item }">
-        <span class="cursor-pointer primary--text" @click="showLogDetails(item)">
-          {{item.message | length(100)}}...
-        </span>
-      </template>
-      <template v-slot:item.correlationID="{ item }">
-        <small>{{item.correlationID | guid}}</small>
-      </template>
+        <template v-slot:item.timestamp="{ item }">
+          {{item.$timestamp | ecdate}}
+        </template> 
+        <template v-slot:item.logLevel="{ item }">
+            <span v-if="logLevels[item.logLevel]" v-bind:class="logLevels[item.logLevel].color">{{logLevels[item.logLevel].title}}</span>
+            <span v-else>{{item.logLevel}}</span>
+        </template> 
+        <template v-slot:item.categoryName="{ item }">
+          <small>{{item.categoryName}}</small>
+        </template> 
+        <template v-slot:item.message="{ item }">
+          <span class="cursor-pointer primary--text" @click="showLogDetails(item)">
+            {{item.message | length(100)}}...
+          </span>
+        </template>
+        <template v-slot:item.correlationID="{ item }">
+          <small>{{item.correlationID | guid}}</small>
+        </template>
+        <template v-slot:footer.page-text></template>
       </v-data-table>
     </div>
   </v-card>
@@ -132,16 +133,19 @@ export default {
     async getDataFromApi() {
       if(this.loading) { return; }
       this.loading = true;
-      let data = await this.$api.system.getSystemLogs({
-        ...this.systemLogsFilter,
-        ...this.options
-      });
-      this.systemLogs = data.data;
-      this.totalAmount = data.numberOfRecords;
-      this.loading = false;
+      try{
+        let data = await this.$api.system.getSystemLogs({
+          ...this.systemLogsFilter,
+          ...this.options
+        });
+        this.systemLogs = data.data;
+        this.totalAmount = (data.data.length >= this.options.itemsPerPage ? data.data.length + 1 : data.data.length) * this.options.page;
 
-      if (!this.headers || this.headers.length === 0) {
-        this.headers = data.headers;
+        if (!this.headers || this.headers.length === 0) {
+          this.headers = data.headers;
+        }
+      }finally{
+        this.loading = false;
       }
     },
     async applyFilter(filter) {

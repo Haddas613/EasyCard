@@ -7,28 +7,43 @@
 </template>
 
 <script>
-import CustomerForm from "../../components/customers/CustomerForm";
-
 export default {
-  components: { CustomerForm },
+  components: {
+    CustomerForm: () => import("../../components/customers/CustomerForm")
+  },
   data() {
     return {
       model: {
-          terminalID: null,
-          consumerName: null,
-          consumerPhone: null,
-          consumerEmail: null,
-          consumerAddress: null,
-          externalReference: null,
-      }
+        terminalID: null,
+        consumerName: null,
+        consumerPhone: null,
+        consumerEmail: null,
+        consumerAddress: {
+          city: null,
+          zip: null,
+          street: null,
+          house: null,
+          apartment: null
+        },
+        externalReference: null,
+        origin: null
+      },
+      loading: false
     };
   },
   methods: {
     async createCustomer(data) {
+      if (this.loading) return;
+
+      this.loading = true;
       let result = await this.$api.consumers.createConsumer(data);
+      this.loading = false;
       if (!this.$apiSuccess(result)) return;
-      
-      this.$router.push({ name: "Customer", params: { id: result.entityReference } });
+
+      this.$router.push({
+        name: "Customer",
+        params: { id: result.entityReference }
+      });
     }
   }
 };

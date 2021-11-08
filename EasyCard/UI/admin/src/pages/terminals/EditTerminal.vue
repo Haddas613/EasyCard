@@ -141,10 +141,14 @@ export default {
         return this.$router.push({ name: "Terminals" });
       }
 
+      if (!terminal.bankDetails) {
+        terminal.bankDetails = {};
+      }
+
       this.terminal = terminal;
     },
     confirmLeave($event){
-      if(this.$refs.terminalSettingsRef.changed && !window.confirm(this.$t("UnsavedChangesWarningMessage"))){
+      if(this.$refs.terminalSettingsRef && this.$refs.terminalSettingsRef.changed && !window.confirm(this.$t("UnsavedChangesWarningMessage"))){
           if($event){
             $event.preventDefault();
           }

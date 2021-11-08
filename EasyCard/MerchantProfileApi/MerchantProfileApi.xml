@@ -221,6 +221,11 @@
             ID in external system
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.Origin">
+            <summary>
+            Origin of customer
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerResponse.ConsumerEmail">
             <summary>
             End-customer Email
@@ -310,6 +315,11 @@
         <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ExternalReference">
             <summary>
             ID in external system
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.Origin">
+            <summary>
+            Origin of customer
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.UpdateTimestamp">

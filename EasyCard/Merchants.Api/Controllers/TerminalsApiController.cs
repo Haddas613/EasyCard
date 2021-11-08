@@ -135,7 +135,16 @@ namespace Merchants.Api.Controllers
 
                 var response = new SummariesResponse<TerminalSummary>();
 
-                query = query.OrderByDynamic(filter.SortBy ?? nameof(Terminal.TerminalID), filter.SortDesc).ApplyPagination(filter);
+                if (!string.IsNullOrWhiteSpace(filter.SortBy))
+                {
+                    query = query.OrderByDynamic(filter.SortBy, filter.SortDesc);
+                }
+                else
+                {
+                    query = query.OrderByDescending(d => d.MerchantID).ThenByDescending(d => d.TerminalID);
+                }
+
+                query = query.ApplyPagination(filter);
 
                 response.Data = await mapper.ProjectTo<TerminalSummary>(query).Future().ToListAsync();
 
@@ -319,7 +328,7 @@ namespace Merchants.Api.Controllers
         {
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => m.TerminalID == terminalID));
 
-            var opResult = await userManagementClient.CreateTerminalApiKey(new CreateTerminalApiKeyRequest { TerminalID = terminal.TerminalID, MerchantID = terminal.MerchantID });
+            var opResult = await userManagementClient.GetTerminalApiKey(terminal.TerminalID);
 
             // TODO: failed case
             return Ok(new OperationResponse { EntityReference = opResult.ApiKey, Status = StatusEnum.Success });
@@ -417,7 +426,7 @@ namespace Merchants.Api.Controllers
 
                 var filename = $"merchantdata/{terminal.TerminalID.ToString().Substring(0, 8)}/logo{Path.GetExtension(file.FileName)}";
 
-                var url = await blobStorageService.Upload(filename, uploadStream);
+                var url = await blobStorageService.Upload(filename, uploadStream, file.ContentType);
 
                 terminal.PaymentRequestSettings.MerchantLogo = url;
                 await terminalsService.UpdateEntity(terminal);
@@ -481,7 +490,7 @@ namespace Merchants.Api.Controllers
 
                 var filename = $"merchantdata/{terminal.TerminalID.ToString().Substring(0, 8)}/style.css";
 
-                var url = await blobStorageService.Upload(filename, uploadStream);
+                var url = await blobStorageService.Upload(filename, uploadStream, file.ContentType);
 
                 terminal.CheckoutSettings.CustomCssReference = url;
                 await terminalsService.UpdateEntity(terminal);

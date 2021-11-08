@@ -50,7 +50,7 @@
     "Type": "pinpadProcessor",
     "InstanceTypeFullName": "Nayax.NayaxProcessor, Nayax",
     "SettingsTypeFullName": "Nayax.NayaxTerminalSettings, Nayax",
-    "Name": "Nayax",
+    "Name": "Devices",
     "Key": "nayax",
     "Active": true
   },

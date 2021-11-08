@@ -76,23 +76,23 @@ namespace Transactions.Api.Models.Transactions
         public Guid? CreditCardToken { get; set; }
 
         /// <summary>
-        /// Transaction amount (should be omitted in case of installment deal)
+        /// Transaction amount. Must always be specified. In case of Installments must match InstallmentDetails.TotalAmount
         /// </summary>
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal? TransactionAmount { get; set; }
+        public decimal TransactionAmount { get; set; }
 
         [Range(0, 1)]
         [DataType(DataType.Currency)]
-        public decimal VATRate { get; set; }
+        public decimal? VATRate { get; set; }
 
         [Range(0, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal VATTotal { get; set; }
+        public decimal? VATTotal { get; set; }
 
         [Range(0.01, double.MaxValue)]
         [DataType(DataType.Currency)]
-        public decimal NetTotal { get; set; }
+        public decimal? NetTotal { get; set; }
 
         /// <summary>
         /// Installment payments details (should be omitted in case of regular deal)
@@ -137,32 +137,46 @@ namespace Transactions.Api.Models.Transactions
 
         public Guid? PaymentRequestID { get; set; }
 
+        [SwaggerExclude]
+        public Guid? PaymentIntentID { get; set; }
+
+        // ShvaAuthNum
         public string OKNumber { get; set; }
 
         public void Calculate()
         {
             if (NetTotal == 0)
             {
-                NetTotal = Math.Round(TransactionAmount.GetValueOrDefault() / (1m + VATRate), 2, MidpointRounding.AwayFromZero);
-                VATTotal = TransactionAmount.GetValueOrDefault() - NetTotal;
+                NetTotal = Math.Round(TransactionAmount / (1m + VATRate.GetValueOrDefault(0)), 2, MidpointRounding.AwayFromZero);
+                VATTotal = TransactionAmount - NetTotal;
             }
+        }
+
+        public void Calculate(decimal vatRate)
+        {
+            VATRate = vatRate;
+            NetTotal = Math.Round(TransactionAmount / (1m + VATRate.GetValueOrDefault(0)), 2, MidpointRounding.AwayFromZero);
+            VATTotal = TransactionAmount - NetTotal;
         }
 
         /// <summary>
         /// Only to be used for pin pad transactions when CreditCardSecureDetails is not available
         /// </summary>
         [StringLength(20)]
+        [SwaggerExclude]
         public string CardOwnerNationalID { get; set; }
 
         /// <summary>
         /// Only to be used for pin pad transactions when CreditCardSecureDetails is not available
         /// </summary>
         [StringLength(50, MinimumLength = 2)]
+        [SwaggerExclude]
         public string CardOwnerName { get; set; }
 
         /// <summary>
         /// SignalR connection id
         /// </summary>
+        [SwaggerExclude]
         public string ConnectionID { get; set; }
 
         [SwaggerExclude]

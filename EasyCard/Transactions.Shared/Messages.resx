@@ -120,11 +120,17 @@
   <data name="AggregatorNotDefined" xml:space="preserve">
     <value>Aggregator is not defined</value>
   </data>
+  <data name="AllVatCalculationsMustBeSpecified" xml:space="preserve">
+    <value>In case if at least one of the following parameters is specified: VatRate, NetTotal, VatTotal, each one must be specified as well (or left null correspondingly). These parameters are mutually dependend</value>
+  </data>
+  <data name="AmountRequiredForPinpadDeal" xml:space="preserve">
+    <value>Amount required for pinpad deal</value>
+  </data>
   <data name="ApproveTransactionOnDevice" xml:space="preserve">
     <value>Approve transaction on device</value>
   </data>
   <data name="AuthorizationCodeRequired" xml:space="preserve">
-    <value>Authorization code is required. Call @number and tell them the supplier number @retailer to get the authorization code and create a new transaction with it specified.</value>
+    <value>Authorization code is required. Call @number and tell them the supplier number @retailer to get the authorization code and try again.</value>
   </data>
   <data name="AwaitingForTransmission" xml:space="preserve">
     <value>Awaiting for Transmission</value>
@@ -195,6 +201,9 @@
   <data name="ConfirmedByProcessor" xml:space="preserve">
     <value>Confirmed By Processor</value>
   </data>
+  <data name="ConsumerNameAndConsumerEmailRequired" xml:space="preserve">
+    <value>Consumer Name and Consumer Email are required</value>
+  </data>
   <data name="ConsumerNatIdIsNotEqTranNatId" xml:space="preserve">
     <value>Consumer National Id is not equal to credit card National Id</value>
   </data>
@@ -227,6 +236,9 @@
   </data>
   <data name="EmailSent" xml:space="preserve">
     <value>Email sent</value>
+  </data>
+  <data name="ExpectedValue" xml:space="preserve">
+    <value>Expected @value got @input</value>
   </data>
   <data name="FailedToCancelByAggregator" xml:space="preserve">
     <value>Failed To Cancel By Aggregator</value>
@@ -334,10 +346,10 @@
     <value>Processor is not defined</value>
   </data>
   <data name="RejectedByAggregator" xml:space="preserve">
-    <value>Transaction rejected by Aggregator</value>
+    <value>Failed To Process Transaction</value>
   </data>
   <data name="RejectedByProcessor" xml:space="preserve">
-    <value>Transaction rejected by Processor</value>
+    <value>Failed To Process Transaction</value>
   </data>
   <data name="Required" xml:space="preserve">
     <value>Required</value>
@@ -365,6 +377,9 @@
   </data>
   <data name="TransactionAlreadyHasInvoice" xml:space="preserve">
     <value>Transaction already has invoice</value>
+  </data>
+  <data name="TransactionAmountDoesNotMatchInstallmentsAmount" xml:space="preserve">
+    <value>Transaction Amount does not match Installments Total Amount</value>
   </data>
   <data name="TransactionCanceled" xml:space="preserve">
     <value>Transaction Canceled</value>
@@ -407,6 +422,12 @@
   </data>
   <data name="TransmittedByProcessor" xml:space="preserve">
     <value>Transmitted By Processor</value>
+  </data>
+  <data name="UserAmountRequiredValidationMessage" xml:space="preserve">
+    <value>User Amount must be set to true when making transaction without amount</value>
+  </data>
+  <data name="UserAmountValidationMessage" xml:space="preserve">
+    <value>User Amount can only be specified if Request Amount is 0</value>
   </data>
   <data name="Viewed" xml:space="preserve">
     <value>Payment Request Viewed</value>

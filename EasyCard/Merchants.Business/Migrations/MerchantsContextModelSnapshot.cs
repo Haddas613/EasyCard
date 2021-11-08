@@ -83,6 +83,11 @@ namespace Merchants.Business.Migrations
                         .IsUnicode(false)
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Origin")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("SourceIP")
                         .HasMaxLength(50)
                         .IsUnicode(false)

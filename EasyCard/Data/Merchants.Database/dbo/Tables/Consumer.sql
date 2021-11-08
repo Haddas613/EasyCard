@@ -5,7 +5,7 @@
     [UpdateTimestamp]    ROWVERSION       NULL,
     [ConsumerEmail]      NVARCHAR (50)    NOT NULL,
     [ConsumerName]       NVARCHAR (50)    NOT NULL,
-    [ConsumerPhone]      NVARCHAR (50)    NOT NULL,
+    [ConsumerPhone]      NVARCHAR (50)    NULL,
     [ConsumerAddress]    NVARCHAR (MAX)   NULL,
     [Created]            DATETIME2 (7)    NULL,
     [OperationDoneBy]    NVARCHAR (50)    NOT NULL,
@@ -15,6 +15,7 @@
     [TerminalID]         UNIQUEIDENTIFIER DEFAULT ('00000000-0000-0000-0000-000000000000') NOT NULL,
     [ConsumerNationalID] NVARCHAR (50)    NULL,
     [ExternalReference]  NVARCHAR (50)    NULL,
+    [Origin]             NVARCHAR (50)    NULL,
     CONSTRAINT [PK_Consumer] PRIMARY KEY CLUSTERED ([ConsumerID] ASC)
 );
 
@@ -23,6 +24,21 @@
 
 
 
-GO
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Consumer_TerminalID_ExternalReference]
+    ON [dbo].[Consumer]([TerminalID] ASC, [ExternalReference] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Consumer_TerminalID_ConsumerID]
+    ON [dbo].[Consumer]([TerminalID] ASC, [ConsumerID] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Consumer_TerminalID]
+    ON [dbo].[Consumer]([TerminalID] ASC);
 

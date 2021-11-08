@@ -2,12 +2,13 @@
   <ec-dialog :dialog.sync="visible">
     <template v-slot:title>{{$t('AddToken')}}</template>
     <template>
-      <card-token-form :data="model" :show-actions="false" ref="ctokenFormRef"></card-token-form>
+      <card-token-form :auth-code-required="needAuthorizationCodeMsg" :data="model" :show-actions="false" ref="ctokenFormRef"></card-token-form>
       <div class="d-flex px-2 pt-4 justify-end">
         <v-btn
           color="primary"
           class="white--text"
           :block="$vuetify.breakpoint.smAndDown"
+          :loading="loading"
           @click="ok()"
         >{{$t("OK")}}</v-btn>
       </div>
@@ -44,6 +45,8 @@ export default {
         consumerEmail: null,
         consumerID: this.customerId
       },
+      needAuthorizationCodeMsg: null,
+      loading: false,
     };
   },
   computed: {
@@ -58,10 +61,23 @@ export default {
   },
   methods: {
     async ok() {  
+      if(this.loading) return;
+
       let data = this.$refs.ctokenFormRef.getData();
-      if(data){
-          this.$emit("ok", data);
+      if(!data) return;
+
+      this.loading = true;
+      let result = await this.$api.cardTokens.createCardToken(data);
+      this.loading = false;
+      if(result.additionalData && result.additionalData.authorizationCodeRequired){
+        this.needAuthorizationCodeMsg = result.additionalData.message;
+      }else{
+        this.needAuthorizationCodeMsg = null;
       }
+
+      if (!this.$apiSuccess(result)) return;
+
+      this.$emit("ok", data);
     },
     reset() {
       this.model = {

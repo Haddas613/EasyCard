@@ -34,7 +34,7 @@
             step="0.01"
             :rules="[vr.primitives.required, vr.primitives.lessThan(totalAmount)]"
             v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
-            @input="updateInstallments(true)"
+            @input="updateInstallmentsTimeout(true)"
             outlined
           ></v-text-field>
         </v-col>
@@ -97,7 +97,8 @@ export default {
       },
       minInstallments: 1,
       maxInstallments: 36,
-      numberOfPaymentsArr: []
+      numberOfPaymentsArr: [],
+      installmentsTimeout: null
     };
   },
   computed: {
@@ -112,28 +113,37 @@ export default {
         totalAmount: this.totalAmount
       };
     },
+    updateInstallmentsTimeout(skipInitial = false){
+      if(this.installmentsTimeout){
+        clearTimeout(this.installmentsTimeout);
+      }
+      this.installmentsTimeout = setTimeout(() => this.updateInstallments(skipInitial), 1000);
+    },
     updateInstallments(skipInitial = false){
-      if (!this.model.initialPaymentAmount || !this.model.numberOfPayments) {
+      // if (!this.model.initialPaymentAmount || !this.model.numberOfPayments) {
+      //   return 0;
+      // }
+      if (!this.model.numberOfPayments || this.model.numberOfPayments === 1) {
         return 0;
       }
 
-      if (this.model.numberOfPayments === 1){ return 0;}
-      
-      this.model.installmentPaymentAmount = ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1)).toFixed(2);
+      //let leftover = this.totalAmount % 1;
+      // this.model.installmentPaymentAmount = ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments)).toFixed(2);
+
       if(!skipInitial){
+        let installmentPaymentAmountRaw = Math.floor((this.totalAmount) / (this.model.numberOfPayments));
+        this.model.installmentPaymentAmount = installmentPaymentAmountRaw.toFixed(2);
+        //this.model.initialPaymentAmount = (installmentPaymentAmountRaw + leftover).toFixed(2);
         this.model.initialPaymentAmount = (this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1))).toFixed(2);
+
+      }else{
+        let installmentPaymentAmountRaw = ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1));
+        this.model.installmentPaymentAmount = installmentPaymentAmountRaw.toFixed(2);
+        this.model.initialPaymentAmount = (this.totalAmount - this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1)).toFixed(2);
       }
     }
   },
   mounted() {
-    if (!this.model.numberOfPayments) {
-      this.model.numberOfPayments = 1;
-    }
-    if (!this.model.initialPaymentAmount) {
-      this.model.initialPaymentAmount =
-        this.totalAmount / this.model.numberOfPayments;
-    }
-    
     if(this.transactionType == appConstants.transaction.types.credit){
       this.minInstallments = this.terminalStore.settings.minCreditInstallments || 1;
       this.maxInstallments = this.terminalStore.settings.maxCreditInstallments || 36;
@@ -143,6 +153,11 @@ export default {
     }
     this.numberOfPaymentsArr = this.lodash.range(this.minInstallments, this.maxInstallments + 1);
     this.model.numberOfPayments = this.minInstallments;
+
+    // if (!this.model.initialPaymentAmount) {
+    //   this.model.initialPaymentAmount = this.totalAmount / this.model.numberOfPayments;
+    // }
+    this.updateInstallments();
   }
 };
 </script>

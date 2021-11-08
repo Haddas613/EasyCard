@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Shared.Api.Models.Binding;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -52,9 +53,7 @@ namespace MerchantProfileApi.Models.Billing
         /// <summary>
         /// End-customer address
         /// </summary>
-        [JsonConverter(typeof(TrimmingJsonConverter))]
-        [StringLength(250)]
-        public string ConsumerAddress { get; set; }
+        public Address ConsumerAddress { get; set; }
 
         /// <summary>
         /// ID in external system
@@ -62,5 +61,12 @@ namespace MerchantProfileApi.Models.Billing
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [StringLength(50)]
         public string ExternalReference { get; set; }
+
+        /// <summary>
+        /// Origin of customer
+        /// </summary>
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [StringLength(50)]
+        public string Origin { get; set; }
     }
 }

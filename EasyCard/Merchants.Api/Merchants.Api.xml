@@ -147,6 +147,11 @@
               Looks up a localized string similar to Device paired successfully.
             </summary>
         </member>
+        <member name="P:Merchants.Api.Models.Integrations.RapidOne.CompanySummary.DbName">
+            <summary>
+            DbName in R1
+            </summary>
+        </member>
         <member name="T:Merchants.Api.Models.Integrations.Shva.ShvaMessagesResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.

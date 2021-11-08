@@ -114,5 +114,7 @@ namespace Transactions.Api.Models.Transactions
         /// SignalR connection ID
         /// </summary>
         public string ConnectionID { get; set; }
+
+        public string OKNumber { get; set; }
     }
 }

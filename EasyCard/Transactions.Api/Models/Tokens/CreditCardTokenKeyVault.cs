@@ -21,5 +21,10 @@ namespace Transactions.Api.Models.Tokens
         /// Reference to initial transaction
         /// </summary>
         public Guid? InitialTransactionID { get; set; }
+
+        /// <summary>
+        /// Authorization code
+        /// </summary>
+        public string OKNumber { get; set; }
     }
 }

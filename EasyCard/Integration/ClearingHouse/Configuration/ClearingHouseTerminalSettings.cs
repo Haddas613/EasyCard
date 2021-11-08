@@ -10,5 +10,7 @@ namespace ClearingHouse
 
         // TODO: this is temporary implementation
         public string ShvaTerminalReference { get; set; }
+
+        public long? MerchantID { get; set; }
     }
 }

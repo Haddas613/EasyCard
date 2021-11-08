@@ -175,3 +175,7 @@ $secondary : var(--v-secondary-base);
   border-color: #e0e0e0;
   border-style: solid;
 }
+
+.centered-input .v-text-field__slot input {
+  text-align: center
+}

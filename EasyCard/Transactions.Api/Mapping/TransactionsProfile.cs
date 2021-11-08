@@ -72,16 +72,20 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.QuickStatus, o => o.MapFrom(src => src.Status.GetQuickStatus(src.JDealType)));
 
             CreateMap<SharedIntegration.Models.DealDetails, Business.Entities.DealDetails>()
-                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => new Address { Street = src.ConsumerAddress }))
-                  .ForMember(c => c.ConsumerExternalReference, o => o.MapFrom(src => src.ConsumerExternalReference));
+                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => src.ConsumerAddress))
+                .ForMember(c => c.ConsumerExternalReference, o => o.MapFrom(src => src.ConsumerExternalReference));
 
             CreateMap<Business.Entities.DealDetails, SharedIntegration.Models.DealDetails>()
-                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => src.ConsumerAddress != null ? src.ConsumerAddress.Street : null))
+                .ForMember(c => c.ConsumerAddress, o => o.MapFrom(src => src.ConsumerAddress))
                  .ForMember(c => c.ConsumerExternalReference, o => o.MapFrom(src => src.ConsumerExternalReference));
 
             CreateMap<CreditCardTokenKeyVault, Business.Entities.CreditCardDetails>()
                 .ForMember(d => d.CardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardDigits(d.CardNumber)))
                 .ForMember(d => d.CardBin, o => o.MapFrom(d => CreditCardHelpers.GetCardBin(d.CardNumber)));
+
+            CreateMap<CreditCardTokenKeyVault, PaymentTransaction>()
+                .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.OKNumber))
+                .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<RefundRequest, CreateTransactionRequest>();
             CreateMap<BlockCreditCardRequest, CreateTransactionRequest>();
@@ -93,6 +97,7 @@ namespace Transactions.Api.Mapping
 
             CreateMap<PRCreateTransactionRequest, CreateTransactionRequest>()
                 .ForMember(d => d.ConnectionID, s => s.MapFrom(src => src.ConnectionID))
+                .ForMember(d => d.OKNumber, s => s.MapFrom(src => src.OKNumber))
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.PaymentRequestAmount)); // TODO only for user amount
 
             CreateMap<PaymentTransaction, CreateTransactionRequest>()

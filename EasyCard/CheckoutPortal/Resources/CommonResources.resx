@@ -219,4 +219,16 @@
   <data name="TotalSum" xml:space="preserve">
     <value>Total Sum</value>
   </data>
+  <data name="OnlyAddCard" xml:space="preserve">
+    <value>Add card</value>
+  </data>
+  <data name="InitialPaymentAmount" xml:space="preserve">
+    <value>Initial Payment Amount</value>
+  </data>
+  <data name="AuthorizationCode" xml:space="preserve">
+    <value>Authorization Code</value>
+  </data>
+  <data name="AuthorizationCodeOptional" xml:space="preserve">
+    <value>Authorization Code (optional)</value>
+  </data>
 </root>

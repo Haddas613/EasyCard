@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Integration.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace MerchantProfileApi.Models.Billing
         /// </summary>
         public string ConsumerPhone { get; set; }
 
-        public string ConsumerAddress { get; set; }
+        public Address ConsumerAddress { get; set; }
 
         public string ConsumerNationalID { get; set; }
 
@@ -40,5 +41,7 @@ namespace MerchantProfileApi.Models.Billing
         public string CorrelationId { get; set; }
 
         public string ExternalReference { get; set; }
+
+        public string Origin { get; set; }
     }
 }

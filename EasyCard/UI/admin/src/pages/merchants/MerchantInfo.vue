@@ -91,7 +91,12 @@
           </template>
 
           <template v-slot:right="{ item }">
-            <v-col class="text-end" cols="12" md="6">
+            <v-col class="text-start" cols="6" md="6">
+              <span class="success--text" v-if="item.processorTerminalReference">
+                <b>{{item.processorTerminalReference}}</b>
+              </span>
+            </v-col>
+            <v-col class="text-end" cols="6" md="6">
               <span v-bind:class="terminalStatusColors[item.$status]">{{item.status}}</span>
             </v-col>
           </template>
@@ -157,7 +162,12 @@
             <v-col cols="12" md="6" lg="6">{{item.email}}</v-col>
           </template>
           <template v-slot:right="{ item }">
-            <v-col cols="12" class="text-end">
+            <v-col cols="12" md="6" lg="6">
+              <span v-if="item.displayName != item.email">
+                <b>{{item.displayName}}</b>
+              </span>
+            </v-col>
+            <v-col cols="12" md="6" lg="6" class="text-end">
               <span v-bind:class="userStatusColors[item.status]">{{userStatuses[item.status]}}</span>
             </v-col>
           </template>
@@ -202,7 +212,7 @@
                 color="orange darken-3"
                 icon
                 :title="$t('ResetPassword')"
-                :disabled="actionInProgress"
+                :disabled="actionInProgress || item.status == 'invited'"
                 @click="invokeAction('resetUserPassword', item)"
               >
                 <v-icon>mdi-lock-reset</v-icon>

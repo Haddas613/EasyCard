@@ -22,6 +22,7 @@ using Shared.Integration.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
+using Shared.Api.Configuration;
 
 namespace CheckoutPortal.Controllers
 {
@@ -34,6 +35,7 @@ namespace CheckoutPortal.Controllers
         private readonly IMapper mapper;
         private readonly RequestLocalizationOptions localizationOptions;
         private readonly IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext;
+        private readonly ApiSettings apiSettings;
 
         public HomeController(
             ILogger<HomeController> logger,
@@ -41,7 +43,8 @@ namespace CheckoutPortal.Controllers
             ICryptoServiceCompact cryptoServiceCompact,
             IMapper mapper,
             IOptions<RequestLocalizationOptions> localizationOptions,
-            IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext)
+            IHubContext<Hubs.TransactionsHub, Transactions.Shared.Hubs.ITransactionsHub> transactionsHubContext,
+            IOptions<ApiSettings> apiSettings)
         {
             this.logger = logger;
             this.transactionsApiClient = transactionsApiClient;
@@ -49,6 +52,7 @@ namespace CheckoutPortal.Controllers
             this.mapper = mapper;
             this.localizationOptions = localizationOptions.Value;
             this.transactionsHubContext = transactionsHubContext;
+            this.apiSettings = apiSettings.Value;
         }
 
         /// <summary>
@@ -136,15 +140,14 @@ namespace CheckoutPortal.Controllers
         public async Task<IActionResult> Charge(ChargeViewModel request)
         {
             CheckoutData checkoutConfig;
+            bool isPaymentIntent = request.PaymentIntent != null;
 
-            if(request.ApiKey != null)
+            if (request.ApiKey != null)
             {
                 checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
             }
             else
             {
-                bool isPaymentIntent = request.PaymentIntent != null;
-
                 if(!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
                 {
                     throw new BusinessException(Messages.InvalidCheckoutData);
@@ -161,6 +164,24 @@ namespace CheckoutPortal.Controllers
                 }
             }
 
+            if (checkoutConfig.PaymentRequest != null)
+            {
+                if (checkoutConfig.PaymentRequest.OnlyAddCard)
+                {
+                    request.SaveCreditCard = true;
+                    request.Amount = null;
+                }
+                else
+                {
+                    if (!checkoutConfig.PaymentRequest.UserAmount && checkoutConfig.PaymentRequest.TotalAmount > 0)
+                    {
+                        request.Amount = checkoutConfig.PaymentRequest.TotalAmount;
+                        ModelState[nameof(request.Amount)].Errors.Clear();
+                        ModelState[nameof(request.Amount)].ValidationState = ModelValidationState.Skipped;
+                    }
+                }
+            }
+
             // TODO: add merchant site origin instead of unsafe-inline
             //Response.Headers.Add("Content-Security-Policy", "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'");
 
@@ -170,9 +191,9 @@ namespace CheckoutPortal.Controllers
                 if (!request.PinPad && !request.SavedTokens.Any(t => t.Key == request.CreditCardToken))
                 {
                     ModelState.AddModelError(nameof(request.CreditCardToken), "Token is not recognized");
-                    mapper.Map(checkoutConfig.Settings, request);
+
                     logger.LogWarning($"{nameof(Charge)}: unrecognized token from user. Token: {request.CreditCardToken.Value}; PaymentRequestId: {(checkoutConfig.PaymentRequest?.PaymentRequestID.ToString() ?? "-")}");
-                    return View("Index", request);
+                    return await IndexViewResult(checkoutConfig, request);
                 }
 
                 if (request.PinPad)
@@ -201,8 +222,8 @@ namespace CheckoutPortal.Controllers
             if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
             {
                 ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
-                mapper.Map(checkoutConfig.Settings, request);
-                return View("Index", request);
+
+                return await IndexViewResult(checkoutConfig, request);
             }
 
             InstallmentDetails installmentDetails = null;
@@ -210,8 +231,8 @@ namespace CheckoutPortal.Controllers
             if (!checkoutConfig.Settings.TransactionTypes.Any(t => t == request.TransactionType))
             {
                 ModelState.AddModelError(nameof(request.TransactionType), $"{request.TransactionType} is not allowed for this transaction");
-                mapper.Map(checkoutConfig.Settings, request);
-                return View("Index", request);
+
+                return await IndexViewResult(checkoutConfig, request);
             }
 
             if (request.TransactionType == TransactionTypeEnum.Installments || request.TransactionType == TransactionTypeEnum.Credit)
@@ -225,9 +246,11 @@ namespace CheckoutPortal.Controllers
                 {
                     if (checkoutConfig.PaymentRequest != null && !checkoutConfig.PaymentRequest.UserAmount)
                     {
+                        var installmentPaymentAmount = Math.Floor(checkoutConfig.PaymentRequest.TotalAmount / request.NumberOfPayments.Value);
+
                         checkoutConfig.PaymentRequest.NumberOfPayments = request.NumberOfPayments.Value;
-                        checkoutConfig.PaymentRequest.InitialPaymentAmount =
-                            checkoutConfig.PaymentRequest.InstallmentPaymentAmount = checkoutConfig.PaymentRequest.TotalAmount / checkoutConfig.PaymentRequest.NumberOfPayments;
+                        checkoutConfig.PaymentRequest.InitialPaymentAmount = checkoutConfig.PaymentRequest.TotalAmount - installmentPaymentAmount * (request.NumberOfPayments.Value - 1);
+                        checkoutConfig.PaymentRequest.InstallmentPaymentAmount = installmentPaymentAmount;
 
                         installmentDetails = new InstallmentDetails
                         {
@@ -239,7 +262,7 @@ namespace CheckoutPortal.Controllers
                     }
                     else
                     {
-                        var installmentPaymentAmount = Math.Round(request.Amount.Value / request.NumberOfPayments.Value, 2, MidpointRounding.AwayFromZero);
+                        var installmentPaymentAmount = Math.Floor(request.Amount.Value / request.NumberOfPayments.Value);
 
                         installmentDetails = new InstallmentDetails
                         {
@@ -252,6 +275,7 @@ namespace CheckoutPortal.Controllers
                 }
             }
 
+            // only add card case
             if (request.Amount.GetValueOrDefault() == 0 && request.SaveCreditCard)
             {
                 ModelState[nameof(request.Amount)].Errors.Clear();
@@ -265,8 +289,7 @@ namespace CheckoutPortal.Controllers
 
             if (!ModelState.IsValid)
             {
-                mapper.Map(checkoutConfig.Settings, request);
-                return View("Index", request);
+                return await IndexViewResult(checkoutConfig, request);
             }
 
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
@@ -311,7 +334,7 @@ namespace CheckoutPortal.Controllers
 
                 if (checkoutConfig.PaymentRequest.UserAmount)
                 {
-                    mdel.PaymentRequestAmount = request.Amount;
+                    mdel.PaymentRequestAmount = request.Amount ?? checkoutConfig.PaymentRequest.PaymentRequestAmount;
                     mdel.NetTotal = Math.Round(mdel.PaymentRequestAmount.GetValueOrDefault() / (1m + mdel.VATRate.GetValueOrDefault()), 2, MidpointRounding.AwayFromZero);
                     mdel.VATTotal = mdel.PaymentRequestAmount.GetValueOrDefault() - mdel.NetTotal;
                 }
@@ -331,11 +354,7 @@ namespace CheckoutPortal.Controllers
                         }
                     }
 
-                    mapper.Map(checkoutConfig.Settings, request);
-
-                    return View("Index", request);
-
-                    //return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message });
+                    return await IndexViewResult(checkoutConfig, request);
                 }
             }
             else//PR IS NULL
@@ -346,7 +365,8 @@ namespace CheckoutPortal.Controllers
                     DealDetails = new DealDetails(),
                     CreditCardToken = request.CreditCardToken,
                     InstallmentDetails = installmentDetails,
-                    TransactionType = request.TransactionType
+                    TransactionType = request.TransactionType,
+                    PaymentIntentID = isPaymentIntent ? new Guid(request.PaymentIntent) : (Guid?)null
                 };
                 mapper.Map(request, mdel);
                 mapper.Map(request, mdel.CreditCardSecureDetails);
@@ -374,11 +394,7 @@ namespace CheckoutPortal.Controllers
                         }
                     }
 
-                    mapper.Map(checkoutConfig.Settings, request);
-
-                    return View("Index", request);
-
-                    //return View("PaymentError", new PaymentErrorViewModel { ErrorMessage = result.Message, RequestId = HttpContext.TraceIdentifier });
+                    return await IndexViewResult(checkoutConfig, request);
                 }
             }
 
@@ -400,7 +416,14 @@ namespace CheckoutPortal.Controllers
                 }
                 else
                 {
-                    return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { transactionID = result.EntityUID }));
+                    if (checkoutConfig.PaymentRequest.OnlyAddCard)
+                    {
+                        return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { tokenID = result.EntityUID }));
+                    }
+                    else
+                    {
+                        return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { transactionID = result.EntityUID }));
+                    }
                 }
             }
         }
@@ -410,7 +433,28 @@ namespace CheckoutPortal.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> CancelPayment(ChargeViewModel request)
         {
-            var checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+            CheckoutData checkoutConfig;
+
+            if (request.ApiKey != null)
+            {
+                checkoutConfig = await GetCheckoutData(request.ApiKey, request.PaymentRequest, request.PaymentIntent, request.RedirectUrl);
+            }
+            else
+            {
+                //TODO
+                //bool isPaymentIntent = request.PaymentIntent != null;
+
+                //if (!Guid.TryParse(isPaymentIntent ? request.PaymentIntent : request.PaymentRequest, out var id))
+                //{
+                //    throw new BusinessException(Messages.InvalidCheckoutData);
+                //}
+
+                if (!Guid.TryParse(request.PaymentRequest, out var id))
+                {
+                    throw new BusinessException(Messages.InvalidCheckoutData);
+                }
+                checkoutConfig = await GetCheckoutData(id, request.RedirectUrl, false);
+            }
 
             if (checkoutConfig.PaymentRequest != null)
             {
@@ -529,7 +573,28 @@ namespace CheckoutPortal.Controllers
 
             ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
 
-            return View(nameof(Index), model);
+            return await Task.FromResult(View(nameof(Index), model));
+        }
+
+        private async Task<IActionResult> IndexViewResult(CheckoutData checkoutConfig, ChargeViewModel model)
+        {
+            mapper.Map(checkoutConfig.PaymentRequest, model);
+            mapper.Map(checkoutConfig.Settings, model);
+            model.PaymentIntent = checkoutConfig.PaymentIntentID?.ToString();
+
+            if (checkoutConfig.Consumer != null)
+            {
+                mapper.Map(checkoutConfig.Consumer, model);
+
+                if (checkoutConfig.Consumer.Tokens?.Count() > 0)
+                {
+                    model.SavedTokens = checkoutConfig.Consumer.Tokens.Select(d => new KeyValuePair<Guid, string>(d.CreditCardTokenID, $"{d.CardNumber} {d.CardExpiration} {d.CardVendor}"));
+                }
+            }
+
+            ViewBag.MainLayoutViewModel = checkoutConfig.Settings;
+
+            return await Task.FromResult(View(nameof(Index), model));
         }
 
         /// <summary>
@@ -609,7 +674,7 @@ namespace CheckoutPortal.Controllers
             }
 
             checkoutConfig.Settings.TransactionTypes = transactionTypes;
-
+            checkoutConfig.Settings.BlobBaseAddress = apiSettings.BlobBaseAddress;
             return checkoutConfig;
         }
 

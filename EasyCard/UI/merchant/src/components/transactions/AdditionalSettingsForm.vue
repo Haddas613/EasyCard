@@ -10,28 +10,10 @@
           :label="$t('JDealType')"
           outlined
         ></v-select>
-        <v-select
-          :items="dictionaries.transactionTypeEnum"
-          item-text="description"
-          item-value="code"
-          v-model="model.transactionType"
-          :label="$t('TransactionType')"
-          @change="updateTransactionType()"
-          outlined
-        ></v-select>
-
-        <installment-details
-          ref="instDetails"
-          :data="model.installmentDetails"
-          v-if="isInstallmentTransaction"
-          :total-amount="model.transactionAmount"
-          :key="model.transactionType"
-          :transaction-type="model.transactionType"
-        ></installment-details>
 
         <deal-details
           ref="dealDetails"
-          :data="model.dealDetails"
+          :data="model"
           :key="model.dealDetails ? model.dealDetails.consumerEmail : model.dealDetails"
         ></deal-details>
 
@@ -46,7 +28,10 @@
       </v-form>
     </v-card-text>
     <v-card-actions class="px-2">
-      <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t('Confirm')}}</v-btn>
+      <v-btn color="primary" bottom :x-large="true" block @click="ok()">
+        {{$t('Confirm')}}
+        <ec-money :amount="data.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -58,7 +43,7 @@ import { mapState } from "vuex";
 
 export default {
   components: {
-    InstallmentDetails: () => import("./InstallmentDetailsForm"),
+    EcMoney: () => import("../ec/EcMoney"),
     DealDetails: () => import("../transactions/DealDetailsFields"),
     InvoiceDetailsFields: () => import("../invoicing/InvoiceDetailsFields"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
@@ -133,6 +118,7 @@ export default {
         }
       }
       this.jDealTypes = filteredJDealTypes;
+      
       // this.model.cardPresence = this.dictionaries.cardPresenceEnum[1].code;
     }
     if(this.model.currency != 'ILS'){
@@ -142,25 +128,23 @@ export default {
     else if(this.issueDocument){
       this.switchIssueDocument = this.$integrationAvailable(this.terminalStore, appConstants.terminal.integrations.invoicing);
     }
+    this.updateTransactionType();
   },
   methods: {
-    ok() {
-      if (!this.$refs.form.validate()) return false;
-
-      let result = { ...this.model };
-      if (this.$refs.instDetails) {
-        result.installmentDetails = this.$refs.instDetails.getData();
-      }else{
-        result.installmentDetails = null;
+    ok(quickCharge) {
+      if (!quickCharge) {
+        if (!this.$refs.form.validate()) return false;
       }
 
+      let result = { ...this.model };
+      
       if (this.switchIssueDocument) {
         result.invoiceDetails = this.$refs.invoiceDetails.getData();
       } else {
         result.invoiceDetails = null;
       }
       result.dealDetails = this.$refs.dealDetails.getData();
-      this.$emit("ok", result);
+      if (!quickCharge) this.$emit("ok", result);
       return result;
     },
     updateTransactionType(){

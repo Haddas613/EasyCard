@@ -9,7 +9,7 @@
           @click="ok()"
           block
           tile
-          :disabled="totalAmount == 0 && model.discount == 0"
+          :disabled="!supportZeroAmount && totalAmount == 0"
         >
           {{$t(btnText)}}
           <ec-money :amount="totalAmount - model.discount" class="px-1" :currency="currencyStore.code"></ec-money>
@@ -24,7 +24,7 @@
           block
           tile
           :dark="totalAmount > 0"
-          :disabled="totalAmount == 0 && model.discount == 0"
+          :disabled="totalAmount == 0"
         >
           {{$t(`Quick${btnText}`)}}
         </v-btn>
@@ -49,12 +49,15 @@
         </v-row>
         <v-row dir="ltr">
           <v-col cols="4" class="numpad-btn numpad-num" @click="reset()">C</v-col>
+          <!-- <v-col cols="2" class="numpad-btn numpad-text-btn flex-column" @click="resetItems()">
+            {{$t("ClearItems")}}
+          </v-col> -->
           <v-col cols="4" class="numpad-btn numpad-num" @click="addDigit(0)">0</v-col>
           <v-col cols="2" class="numpad-btn numpad-num secondary--text" @click="addDot()">.</v-col>
           <v-col cols="2" class="numpad-btn numpad-num accent--text" @click="stash()">+</v-col>
         </v-row>
       </template>
-      <v-footer :fixed="$vuetify.breakpoint.smAndDown" :padless="true" color="white">
+      <v-footer v-if="!itemsOnly" :fixed="$vuetify.breakpoint.smAndDown" :padless="true" color="white">
         <v-row dir="ltr">
           <v-col cols="6" class="numpad-btn py-5" @click="activeArea = 'calc'">
             <v-icon v-bind:class="{'primary--text': (activeArea == 'calc')}">mdi-calculator-variant</v-icon>
@@ -87,7 +90,7 @@
 
           <template v-slot:right="{ item }">
             <v-col cols="12" md="6" lg="6" class="text-end caption">
-              <span>{{item.quantity || ''}}</span>
+              <!-- <span>{{item.quantity || ''}}</span> -->
             </v-col>
             <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold subtitle-2">
               <ec-money
@@ -134,6 +137,14 @@ export default {
     supportQuickCharge: {
       type: Boolean,
       default: false
+    },
+    supportZeroAmount: {
+      type: Boolean,
+      default: false
+    },
+    itemsOnly: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -153,9 +164,10 @@ export default {
         itemName: null,
         currency: null,
         quantity: 1,
-        externalReference: null
+        externalReference: null,
+        default: true
       },
-      activeArea: "calc",
+      activeArea: this.itemsOnly ? "items" : "calc",
       search: null,
       searchTimeout: null,
     };
@@ -182,7 +194,7 @@ export default {
     totalAmount() {
       return (
         parseFloat(this.defaultItem.price) +
-        this.lodash.sumBy(this.model.dealDetails.items, "amount")
+        this.lodash.sumBy(this.model.dealDetails.items, e => e.price - e.discount)
       );
     },
     ...mapState({
@@ -193,16 +205,27 @@ export default {
   async mounted() {
     this.defaultItem.currency = this.currencyStore.code;
     this.defaultItem.itemName = this.terminalStore.settings.defaultItemName || 'Custom Charge';
+    
+    //Default item price may be set externally if data.amount is present
+    if(this.data.amount > 0){
+      //If external data is bigger than current total amount, it's put in the default item price
+      this.defaultItem.price = this.data.amount - this.totalAmount;
+    }
+
     if(this.model.vatRate === null){
       this.model.vatRate = this.terminalStore.settings.vatRate
     }
     await this.getItems();
     this.$emit('update', this.model);
-
-    window.addEventListener("keypress", this.handleKeyPress);
+    
+    if(!this.itemsOnly){
+      window.addEventListener("keydown", this.handleKeyPress);
+    }
   },
   destroyed () {
-    window.removeEventListener("keypress", this.handleKeyPress);
+    if(!this.itemsOnly){
+      window.removeEventListener("keydown", this.handleKeyPress);
+    }
   },
   methods: {
     handleKeyPress($event){
@@ -211,6 +234,7 @@ export default {
         return;
       }
       switch($event.key){
+        
         case ".":
         case ",":
           this.addDot();
@@ -218,11 +242,17 @@ export default {
         case "+":
           this.stash();
           break;
+        case "Delete":
+          this.reset();
+          break;
+        case "Backspace":
+          this.removeDigit();
+          break;
       }
     },
     addDigit(d) {
       if (this.defaultItem.price == "0") this.defaultItem.price = d;
-      else if (this.defaultItem.price < 100000) {
+      else if (this.defaultItem.price < 1000000) {
         if (
           `${this.defaultItem.price}`.indexOf(".") > -1 &&
           `${this.defaultItem.price}`.split(".")[1].length == 2
@@ -232,6 +262,11 @@ export default {
         //TODO: config for max allowed transaction amount
         this.defaultItem.price += "" + d;
       }
+    },
+    removeDigit(d) {
+      if (this.defaultItem.price == "0") return;
+      else if (this.defaultItem.price.length == 1) this.defaultItem.price = "0";
+      else this.defaultItem.price = this.defaultItem.price.substring(0, this.defaultItem.price.length - 1);
     },
     addDot() {
       if (!this.defaultItem.price) {
@@ -261,11 +296,13 @@ export default {
       }
     },
     ok(quickCharge) {
-      this.stash();
-      this.$emit("ok", {
-        ...this.getData(),
-        quickCharge
-      });
+      if (this.supportZeroAmount || this.totalAmount > 0) {
+        this.stash();
+        this.$emit("ok", {
+          ...this.getData(),
+          quickCharge
+        });
+      }
     },
     getData(){
       this.stash();
@@ -295,6 +332,8 @@ export default {
     reset() {
       this.defaultItem.price = 0;
       this.defaultItem.discount = 0;
+
+      this.resetItems();
     },
     async resetItems() {
       this.model.dealDetails.items = [];
@@ -310,9 +349,39 @@ export default {
         quantity: 1,
         externalReference: item.externalReference
       };
-
       this.calculatePricingForItem(newItem);
       this.model.dealDetails.items.push(newItem);
+    },
+    adjustItemsToAmount(amount){
+      if(this.model.dealDetails.items.length == 0){
+        this.defaultItem.price = amount;
+        return;
+      }
+
+      for(let item of this.model.dealDetails.items){
+        item.discount = 0;
+      }
+      this.defaultItem.price = 0;
+      let diff = this.totalAmount - amount;
+
+      //we need to distribute difference between items in their discount in descending (by price) order
+      if(diff > 0){
+        for(let item of this.lodash.sortBy(this.model.dealDetails.items, e => e.price).reverse()){
+          if(diff <= 0){
+            break;
+          }
+          item.discount = item.price > diff ? diff : item.price;
+          diff -= item.discount;
+        }
+      }
+      //we need to add sum instead of deducting it
+      else{
+        //first remove all default items (extra price will be added as default item, so to remove duplication)
+        this.lodash.remove(this.model.dealDetails.items, e => e.default);
+        let newItem = this.prepareItem();
+        newItem.price = Math.abs(diff);
+        this.model.dealDetails.items.push(newItem);
+      }
     }
   }
 };
@@ -327,12 +396,17 @@ export default {
   font-size: 2rem;
   font-weight: 300;
   min-height: 4rem;
-  line-height: 2.5rem;
+  //line-height: 2.5rem;
 }
 button.complete-btn {
   z-index: 2;
   &[disabled] {
     background-color: var(--v-ecdgray-lighten5) !important;
   }
+}
+.numpad-text-btn{
+  font-size: 1.1rem;
+  line-height: 1.5rem;
+  font-weight: 300;
 }
 </style>

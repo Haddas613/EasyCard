@@ -29,30 +29,38 @@
         </ec-radio-group>
       </template>
     </ec-dialog>
-    <v-card-text class="py-2">
+    <v-card-text class="py-0">
       <v-form class="ec-form" ref="form" lazy-validation>
-        <v-switch v-if="includeDevice"
-          v-model="model.pinPad" :label="$t('UsePinPad')" :disabled="!availableDevices.length">
-        </v-switch>
+        <div class="d-flex justify-center" v-if="includeDevice && availableDevices.length">
+          <v-switch
+            dense
+            hide-details
+            v-model="model.pinPad"
+            :label="$t('UsePinPad')"
+            :disabled="!availableDevices.length">
+          </v-switch>
+        </div>
         <template v-if="model.pinPad">
-            <v-col cols="12" v-if="availableDevices.length > 0">
-              <v-select :items="availableDevices" v-model="selectedDevice" return-object :item-value="deviceValue" outlined>
-                <template v-slot:item="{ item }">
-                  {{item.deviceID + '-' + item.deviceName}}
-                </template>
-                <template v-slot:selection="{ item }">
-                  {{item.deviceID + '-' + item.deviceName}}
-                </template>
-              </v-select>
-            </v-col>
-            <v-col cols="12">
-              <v-text-field
-                v-model="model.cardOwnerNationalID"
-                :rules="[vr.special.israeliNationalId]"
-                :label="$t('NationalID')"
-                outlined
-              ></v-text-field>
-            </v-col>
+            <v-row no-gutters>
+              <v-col cols="12" v-if="availableDevices.length > 0">
+                <v-select :items="availableDevices" v-model="selectedDevice" return-object :item-value="deviceValue" outlined>
+                  <template v-slot:item="{ item }">
+                    {{item.deviceID + '-' + item.deviceName}}
+                  </template>
+                  <template v-slot:selection="{ item }">
+                    {{item.deviceID + '-' + item.deviceName}}
+                  </template>
+                </v-select>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  v-model="model.cardOwnerNationalID"
+                  :rules="[vr.special.israeliNationalId]"
+                  :label="$t('NationalID')"
+                  outlined
+                ></v-text-field>
+              </v-col>
+            </v-row>
         </template>
         <template v-if="!model.pinPad">
           <ec-dialog-invoker
@@ -84,19 +92,53 @@
                 :data="model.creditCardSecureDetails"
                 ref="ccsecuredetailsform"
                 :tokens="customerTokens"
+                :show-customer-select-btn="includeCustomer"
+                v-on:select-customer="onCustomerSelect()"
               ></credit-card-secure-details-fields>
-              <v-checkbox v-model="model.saveCreditCard" :label="model.dealDetails.consumerID ? $t('SaveCard') : $t('SaveCardCreateNewCustomer')"></v-checkbox>
+              <v-row no-gutters>
+                <v-col cols="5" md="3">
+                  <v-checkbox v-model="model.saveCreditCard" :label="$t('SaveCard')"></v-checkbox>
+                </v-col>
+                <v-col cols="7" md="9">
+                  <v-text-field
+                    class="mt-2"
+                    v-model="model.oKNumber"
+                    :label="$t('AuthorizationCode')"
+                    :rules="[vr.primitives.stringLength(1, 50)]">
+                  </v-text-field>
+                </v-col>
+              </v-row>
             </template>
             <v-text-field
+              v-else
               v-model="model.oKNumber"
-              :label="$t('AuthorizationCode')"
+              :label="$t('AuthorizationCodeOptional')"
               :rules="[vr.primitives.stringLength(1, 50)]">
             </v-text-field>
         </template>
+        <v-select
+          :items="dictionaries.transactionTypeEnum"
+          item-text="description"
+          item-value="code"
+          v-model="model.transactionType"
+          :label="$t('TransactionType')"
+          outlined
+        ></v-select>
+        <installment-details
+          ref="instDetails"
+          :data="model.installmentDetails"
+          v-if="isInstallmentTransaction"
+          :total-amount="data.transactionAmount"
+          :key="model.transactionType"
+          :transaction-type="model.transactionType"
+        ></installment-details>
       </v-form>
     </v-card-text>
-    <v-card-actions class="px-4">
-      <v-btn color="primary" bottom :x-large="true" block @click="ok()">{{$t(btnText)}}</v-btn>
+    <v-card-actions class="px-4" v-if="btnText">
+      <v-btn color="primary" bottom :x-large="true" block @click="ok()">
+        {{$t(btnText)}}
+        <ec-money :amount="data.transactionAmount" class="px-1" :currency="data.currency"></ec-money>
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -108,12 +150,14 @@ import appConstants from "../../helpers/app-constants";
 
 export default {
   components: {
+    EcMoney: () => import("../ec/EcMoney"),
     CreditCardSecureDetailsFields: () => import("./CreditCardSecureDetailsFields"),
     EcDialog: () => import("../../components/ec/EcDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
     EcRadioGroup: () => import("../../components/inputs/EcRadioGroup"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
-    CardTokenString: () => import("../../components/ctokens/CardTokenString")
+    CardTokenString: () => import("../../components/ctokens/CardTokenString"),
+    InstallmentDetails: () => import("./InstallmentDetailsForm"),
   },
   props: {
     data: {
@@ -129,6 +173,10 @@ export default {
     includeDevice: {
       type: Boolean,
       default: false
+    },
+    includeCustomer: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -141,10 +189,16 @@ export default {
       appConstants: appConstants,
       selectedPinPadDevice: null,
       availableDevices: [],
-      vr: ValidationRules
+      vr: ValidationRules,
+      dictionaries: {},
     };
   },
   async mounted() {
+    let dictionaries = await this.$api.dictionaries.getTransactionDictionaries();
+    if (dictionaries) {
+      this.dictionaries = dictionaries;
+      this.model.transactionType = this.dictionaries.transactionTypeEnum[0].code;
+    }
     if (this.model.dealDetails.consumerID) {
       this.customerTokens =
         (
@@ -173,44 +227,66 @@ export default {
     ...mapState({
       terminalStore: state => state.settings.terminal
     }),
+    isInstallmentTransaction() {
+      return (
+        this.model.transactionType === "installments" ||
+        this.model.transactionType === "credit"
+      );
+    }
   },
   methods: {
     ok() {
       let form = this.$refs.form.validate();
       if (!form) return;
+      
+      let result = null;
 
       if (this.model.pinPad) {
-        this.okDevice();
+        result = this.okDevice();
       } 
       else if (this.selectedToken) {
-        this.okCardToken();
+        result = this.okCardToken();
       } else {
-        this.okCreditCard();
+        result = this.okCreditCard();
       }
+
+      if(result == null){
+        return;
+      }
+
+      if (this.$refs.instDetails) {
+        result.installmentDetails = this.$refs.instDetails.getData();
+      }else{
+        result.installmentDetails = null;
+      }
+      result.transactionType = this.model.transactionType;
+      this.$emit("ok", result);
+
+      return true;
     },
     resetToken() {
       this.token = null;
     },
     okDevice(){
       if(!this.cardOwnerNationalID)
-      this.$emit("ok", {
+      return {
         type: "device",
+        oKNumber: this.model.oKNumber,
         data: {
           pinPad: true,
           pinPadDeviceID: this.selectedDevice.deviceID,
-          oKNumber: this.model.oKNumber,
           cardOwnerNationalID: this.model.cardOwnerNationalID
         }
-      });
+      };
     },
     okCardToken() {
       if (!this.selectedToken) return;
 
-      this.$emit("ok", {
+      return {
         type: "token",
-        data: this.selectedToken,
-        oKNumber: this.model.oKNumber
-      });
+        oKNumber: this.model.oKNumber,
+        data: this.selectedToken
+      };
     },
     okCreditCard() {
       let data = this.$refs.ccsecuredetailsform.getData();
@@ -219,15 +295,15 @@ export default {
         return;
       }
 
-      this.$emit("ok", {
+      return {
         type: "creditcard",
+        oKNumber: this.model.oKNumber,
         data: {
           ...this.model.creditCardSecureDetails,
           ...data,
           saveCreditCard: this.model.saveCreditCard,
-          oKNumber: this.model.oKNumber
         }
-      });
+      };
     },
     handleClick() {
       this.tokensDialog = this.customerTokens && this.customerTokens.length > 0;
@@ -240,6 +316,11 @@ export default {
     },
     deviceValue(a){
       return `${a.deviceID}-${a.deviceName}`;
+    },
+    onCustomerSelect(){
+      if(this.includeCustomer){
+        this.$emit('select-customer');
+      }
     }
   }
 };

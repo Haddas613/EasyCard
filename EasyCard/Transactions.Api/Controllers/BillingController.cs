@@ -31,6 +31,7 @@ using Shared.Helpers.Templating;
 using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
+using Transactions.Api.Extensions;
 using Transactions.Api.Extensions.Filtering;
 using Transactions.Api.Models.Billing;
 using Transactions.Api.Models.Tokens;
@@ -42,6 +43,7 @@ using Transactions.Business.Services;
 using Transactions.Shared;
 using Transactions.Shared.Enums;
 using Z.EntityFramework.Plus;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
@@ -189,9 +191,15 @@ namespace Transactions.Api.Controllers
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
             var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
+            BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
+
+            // Optional calculate if values were not specified
+            model.Calculate(terminal.Settings.VATRate.GetValueOrDefault(0));
+
             var newBillingDeal = mapper.Map<BillingDeal>(model);
             newBillingDeal.Active = true;
             newBillingDeal.MerchantID = terminal.MerchantID;
+            newBillingDeal.TerminalID = terminal.TerminalID;
 
             if (model.PaymentType == PaymentTypeEnum.Card)
             {
@@ -215,6 +223,13 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse($"{model.PaymentType} payment type is not supported", StatusEnum.Error));
             }
 
+            newBillingDeal.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newBillingDeal, null);
+
+            if (newBillingDeal.InvoiceDetails == null && newBillingDeal.IssueInvoice)
+            {
+                newBillingDeal.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
+            }
+
             // TODO: calculation
 
             newBillingDeal.ApplyAuditInfo(httpContextAccessor);
@@ -233,6 +248,8 @@ namespace Transactions.Api.Controllers
             var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
             var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+
+            BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
 
             if (model.IssueInvoice != true)
             {
@@ -285,6 +302,54 @@ namespace Transactions.Api.Controllers
             }
 
             mapper.Map(model, billingDeal);
+
+            billingDeal.DealDetails.UpdateDealDetails(consumer, terminal.Settings, billingDeal, null);
+
+            if (billingDeal.InvoiceDetails == null && billingDeal.IssueInvoice)
+            {
+                billingDeal.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
+            }
+
+            billingDeal.ApplyAuditInfo(httpContextAccessor);
+
+            await billingDealService.UpdateEntity(billingDeal);
+
+            return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
+        }
+
+        [HttpPatch]
+        [Route("{BillingDealID}/change-token/{tokenID}")]
+        public async Task<ActionResult<OperationResponse>> UpdateBillingDealToken([FromRoute] Guid billingDealID, [FromRoute] Guid tokenID)
+        {
+            var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+            var consumer = EnsureExists(
+                await consumersService.GetConsumers()
+                .FirstOrDefaultAsync(d => d.TerminalID == billingDeal.TerminalID && d.ConsumerID == billingDeal.DealDetails.ConsumerID), "Consumer");
+
+            if (billingDeal.PaymentType != PaymentTypeEnum.Card)
+            {
+                return BadRequest(new OperationResponse($"{billingDeal.PaymentType} payment type is not supported", StatusEnum.Error));
+            }
+
+            var token = EnsureExists(
+                await creditCardTokenService.GetTokens()
+                .FirstOrDefaultAsync(d => d.TerminalID == billingDeal.TerminalID && d.CreditCardTokenID == tokenID && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+
+            billingDeal.InitialTransactionID = token.InitialTransactionID;
+            billingDeal.CreditCardDetails = new Business.Entities.CreditCardDetails();
+
+            if (billingDeal.CreditCardToken != token.CreditCardTokenID)
+            {
+                if (token.ReplacementOfTokenID == null && billingDeal.CreditCardToken != null)
+                {
+                    token.ReplacementOfTokenID = billingDeal.CreditCardToken;
+                    await creditCardTokenService.UpdateEntity(token);
+                }
+
+                await billingDealService.AddCardTokenChangedHistory(billingDeal, token.CreditCardTokenID);
+            }
+
+            mapper.Map(token, billingDeal.CreditCardDetails);
 
             billingDeal.ApplyAuditInfo(httpContextAccessor);
 

@@ -1,4 +1,5 @@
-﻿using Shared.Business;
+﻿using Newtonsoft.Json.Linq;
+using Shared.Business;
 using Shared.Business.Financial;
 using Shared.Business.Security;
 using Shared.Helpers;
@@ -161,11 +162,26 @@ namespace Transactions.Business.Entities
                 InitialPaymentAmount = PaymentRequestAmount;
             }
 
+            if (PaymentRequestAmount > 0)
+            {
+                if (NetTotal == default)
+                {
+                    NetTotal = Math.Round(PaymentRequestAmount / (1m + VATRate), 2, MidpointRounding.AwayFromZero);
+                }
+
+                if (VATTotal == default)
+                {
+                    VATTotal = PaymentRequestAmount - NetTotal;
+                }
+            }
+
             TotalAmount = InitialPaymentAmount + (InstallmentPaymentAmount * (NumberOfPayments - 1));
         }
 
         public string RedirectUrl { get; set; }
 
         public bool UserAmount { get; set; }
+
+        public JObject Extension { get; set; }
     }
 }

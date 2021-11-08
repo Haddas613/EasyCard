@@ -45,8 +45,11 @@
     [ConsumerName]              NVARCHAR (50)    NULL,
     [ConsumerNationalID]        VARCHAR (20)     NULL,
     [RedirectUrl]               NVARCHAR (MAX)   NULL,
+    [Extension]                 NVARCHAR (MAX)   NULL,
     CONSTRAINT [PK_PaymentRequest] PRIMARY KEY CLUSTERED ([PaymentRequestID] ASC)
 );
+
+
 
 
 

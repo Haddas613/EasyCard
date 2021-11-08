@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Integration.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +23,6 @@ namespace MerchantProfileApi.Models.Billing
 
         public string ConsumerNationalID { get; set; }
 
-        public string ConsumerAddress { get; set; }
+        public Address ConsumerAddress { get; set; }
     }
 }

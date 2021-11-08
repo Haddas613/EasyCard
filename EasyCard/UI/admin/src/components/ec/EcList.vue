@@ -5,10 +5,10 @@
         <slot v-bind:item="item" v-bind:index="index" name="prepend"></slot>
       </v-list-item-action>
       <v-list-item-content class="body-2">
-        <v-row no-gutters class="flex-adjust" :class="{'col-reverse' : $vuetify.breakpoint.smAndDown, 'w50': !stretch}">
+        <v-row no-gutters class="flex-adjust align-center" :class="{'col-reverse' : $vuetify.breakpoint.smAndDown, 'w50': !stretch}">
           <slot v-bind:item="item" v-bind:index="index" name="left"></slot>
         </v-row>
-        <v-row no-gutters class="flex-adjust" :class="{'col-reverse' : $vuetify.breakpoint.smAndDown, 'w50': !stretch}" v-if="hasSlot('right')">
+        <v-row no-gutters class="flex-adjust align-center" :class="{'col-reverse' : $vuetify.breakpoint.smAndDown, 'w50': !stretch}" v-if="hasSlot('right')">
           <slot v-bind:item="item" v-bind:index="index" name="right"></slot>
         </v-row>
       </v-list-item-content>

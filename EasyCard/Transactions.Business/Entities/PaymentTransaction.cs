@@ -253,6 +253,11 @@ namespace Transactions.Business.Entities
         /// </summary>
         public Guid? PaymentRequestID { get; set; }
 
+        /// <summary>
+        /// Payment intent reference
+        /// </summary>
+        public Guid? PaymentIntentID { get; set; }
+
         public DocumentOriginEnum DocumentOrigin { get; set; }
 
         public long? TerminalTemplateID { get; set; }
@@ -280,6 +285,16 @@ namespace Transactions.Business.Entities
             if (NumberOfPayments == 0)
             {
                 NumberOfPayments = 1;
+            }
+
+            if (NetTotal == default)
+            {
+                NetTotal = Math.Round(TransactionAmount / (1m + VATRate), 2, MidpointRounding.AwayFromZero);
+            }
+
+            if (VATTotal == default)
+            {
+                VATTotal = TransactionAmount - NetTotal;
             }
 
             if (InitialPaymentAmount == 0)

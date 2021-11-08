@@ -14,7 +14,7 @@ namespace FunctionsCompositionApp.UpdateParameters
     {
         [FunctionName("SendTerminalsToUpdateParametersQueue")]
         public static async Task Run(
-            [TimerTrigger("%SendTerminalsToUpdateParametersQueue%")]TimerInfo myTimer,
+            [TimerTrigger("%SendTerminalsToUpdateParametersTrigger%")]TimerInfo myTimer,
             ILogger log,
             ExecutionContext context)
         {

@@ -75,6 +75,7 @@
         </v-card-text>
       </v-card>
       <amount-details :model="model" amount-key="invoiceAmount"></amount-details>
+      <installment-details v-if="isInstallmentTransaction" :model="model"></installment-details>
       <v-card flat class="my-2" v-if="model.dealDetails && model.dealDetails.items.length > 0">
         <v-card-title
           class="py-3 ecdgray--text subtitle-2 text-uppercase info-block-title"
@@ -104,6 +105,7 @@ export default {
     AmountDetails: () => import("../../components/details/AmountDetails"),
     CreditCardDetails: () => import("../../components/details/CreditCardDetails"),
     PaymentDetails: () => import("../../components/details/PaymentDetails"),
+    InstallmentDetails: () => import("../../components/details/InstallmentDetails")
   },
   data() {
     return {
@@ -150,6 +152,14 @@ export default {
     if (this.model.invoiceDetails.invoiceType) {
       this.model.invoiceDetails.invoiceType =
         $dictionaries.invoiceTypeEnum[this.model.invoiceDetails.invoiceType];
+    }
+  },
+  computed: {
+    isInstallmentTransaction() {
+      return (
+        this.model.transactionType === "installments" ||
+        this.model.transactionType === "credit"
+      );
     }
   }
 };

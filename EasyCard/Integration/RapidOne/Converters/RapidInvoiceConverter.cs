@@ -53,14 +53,15 @@ namespace RapidOne.Converters
                         Currency = "₪"
                     },
                     Subtotal = item.NetAmount.GetValueOrDefault(),
-                    VatPercent = item.VATRate.GetValueOrDefault(),
+                    VatPercent = (item.VATRate.GetValueOrDefault()) * 100m,
                     Vat = item.VAT.GetValueOrDefault(),
                     Total = item.Amount.GetValueOrDefault(),
                     ToPay = item.Amount.GetValueOrDefault(),
                     Discount = item.Discount.GetValueOrDefault(),
                     Rate = 1,
                     Users = new string[] { }, // there is no null-check in R1 so this empty array required
-                    Charge = terminalSettings.Charge
+                    Charge = terminalSettings.Charge,
+                    Extension = item.Extension
                 };
 
                 listProducts.Add(productInvoice);
@@ -122,8 +123,22 @@ namespace RapidOne.Converters
 
                 cc.VoucherNum = GetVoucherNum(creditCardPayment?.ShovarNumber);
                 cc.Payments = message.NumberOfPayments;
-                cc.FirstPayment = message.InitialPaymentAmount;
+                
                 cc.DealType = GetDealType(message.TransactionType);
+
+                if (message.TransactionType == TransactionTypeEnum.Credit)
+                {
+
+                }
+                else if (message.TransactionType == TransactionTypeEnum.Installments)
+                {
+                    cc.FirstPayment = message.InitialPaymentAmount;
+                    cc.Remaining = message.InstallmentPaymentAmount;
+                }
+                else
+                {
+
+                }
 
                 result.Add(cc);
             }

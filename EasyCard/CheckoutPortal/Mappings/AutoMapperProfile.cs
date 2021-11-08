@@ -44,12 +44,15 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.NationalID, o => o.MapFrom(d => d.CardOwnerNationalID))
                 .ForMember(d => d.ConsumerID, o => o.MapFrom(d => d.DealDetails == null ? null : d.DealDetails.ConsumerID))
                 .ForMember(d => d.Phone, o => o.MapFrom(d => d.DealDetails == null ? null : d.DealDetails.ConsumerPhone))
-                .ForMember(d => d.NumberOfPayments, o => o.MapFrom(d => d.NumberOfPayments))
+                .ForMember(d => d.NumberOfPayments, o => o.MapFrom((f, src) => src.NumberOfPayments.HasValue ? src.NumberOfPayments : f.NumberOfPayments))
                 .ForMember(d => d.InstallmentPaymentAmount, o => o.MapFrom(d => d.InstallmentPaymentAmount))
                 .ForMember(d => d.TotalAmount, o => o.MapFrom(d => d.TotalAmount))
                 .ForMember(d => d.InitialPaymentAmount, o => o.MapFrom(d => d.InitialPaymentAmount))
-                .ForMember(d => d.TransactionType, o => o.MapFrom(d => d.NumberOfPayments > 1 ? TransactionTypeEnum.Installments : TransactionTypeEnum.RegularDeal))
+                .ForMember(d => d.TransactionType, o => o.MapFrom((f, src) =>
+                    src.NumberOfPayments > 1 ? (src.TransactionType == TransactionTypeEnum.RegularDeal ? TransactionTypeEnum.Installments : src.TransactionType) : TransactionTypeEnum.RegularDeal))
                 .ForMember(d => d.IsRefund, o => o.MapFrom(src => src.IsRefund))
+                .ForMember(d => d.UserAmount, o => o.MapFrom(src => src.UserAmount))
+                .ForMember(d => d.OnlyAddCard, o => o.MapFrom(src => src.OnlyAddCard))
                 .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<Transactions.Api.Models.Checkout.TerminalCheckoutCombinedSettings, ChargeViewModel>()
@@ -74,6 +77,7 @@ namespace CheckoutPortal.Mappings
                    .ForMember(d => d.PinPad, o => o.MapFrom(d => d.PinPad))
                    .ForMember(d => d.PinPadDeviceID, o => o.MapFrom(d => d.PinPadDeviceID))
                    .ForMember(d => d.CardOwnerNationalID, o => o.MapFrom(d => d.NationalID))
+                   .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.AuthNum))
                    .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.Name));
 
 
@@ -81,6 +85,7 @@ namespace CheckoutPortal.Mappings
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.Amount))
                 .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
                 .ForMember(d => d.CardOwnerNationalID, o => o.MapFrom(d => d.NationalID))
+                .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.AuthNum))
                 .ForMember(d => d.CardOwnerName, o => o.MapFrom(d => d.Name));
 
             CreateMap<ChargeViewModel, Shared.Integration.Models.CreditCardSecureDetails>()

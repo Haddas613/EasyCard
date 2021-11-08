@@ -120,7 +120,7 @@
   <data name="AfterNumberOfPayments" xml:space="preserve">
     <value>לאחר מספר תשלומים</value>
   </data>
-  <data name="BiMontly" xml:space="preserve">
+  <data name="BiMonthly" xml:space="preserve">
     <value>דו-חודשי</value>
   </data>
   <data name="Day" xml:space="preserve">
@@ -129,7 +129,7 @@
   <data name="Month" xml:space="preserve">
     <value>חודש</value>
   </data>
-  <data name="Montly" xml:space="preserve">
+  <data name="Monthly" xml:space="preserve">
     <value>חודשי</value>
   </data>
   <data name="Never" xml:space="preserve">

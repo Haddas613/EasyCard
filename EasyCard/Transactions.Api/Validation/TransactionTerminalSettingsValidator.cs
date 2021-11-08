@@ -105,6 +105,11 @@ namespace Transactions.Api.Validation
                 {
                     errors.Add(new SharedHelpers.Error($"{nameof(model.InstallmentDetails)}.{nameof(model.InstallmentDetails.TotalAmount)}", Messages.TotalAmountIsInvalid));
                 }
+
+                if (model.TransactionAmount != model.InstallmentDetails.TotalAmount)
+                {
+                    errors.Add(new SharedHelpers.Error($"{nameof(model.TransactionAmount)}", Messages.TransactionAmountDoesNotMatchInstallmentsAmount));
+                }
             }
 
             if (model.TransactionType == TransactionTypeEnum.Credit)
@@ -130,6 +135,28 @@ namespace Transactions.Api.Validation
                 {
                     errors.Add(new SharedHelpers.Error($"{nameof(model.InstallmentDetails)}.{nameof(model.InstallmentDetails.NumberOfPayments)}", string.Format(Messages.NumberOfPaymentsShouldBeLessThan, terminalSettings.MaxInstallments)));
                 }
+            }
+
+            //If all fields are present validate the totals
+            if (model.VATRate.HasValue && model.VATTotal.HasValue && model.NetTotal.HasValue)
+            {
+                var correctNetTotal = Math.Round(model.TransactionAmount / (1m + model.VATRate.Value), 2, MidpointRounding.AwayFromZero);
+
+                if (correctNetTotal != model.NetTotal.Value)
+                {
+                    errors.Add(new Error(nameof(model.NetTotal), Messages.ExpectedValue.Replace("@value", correctNetTotal.ToString()).Replace("@input", model.NetTotal.Value.ToString())));
+                }
+
+                var correctVatTotal = model.TransactionAmount - correctNetTotal;
+
+                if (correctVatTotal != model.VATTotal.Value)
+                {
+                    errors.Add(new Error(nameof(model.VATTotal), Messages.ExpectedValue.Replace("@value", correctVatTotal.ToString()).Replace("@input", model.VATTotal.Value.ToString())));
+                }
+            }
+            else if (!(!model.VATRate.HasValue && !model.VATTotal.HasValue && !model.NetTotal.HasValue)) //If not all fields are null, show an error
+            {
+                throw new BusinessException(Messages.AllVatCalculationsMustBeSpecified);
             }
 
             if (errors.Count == 1)

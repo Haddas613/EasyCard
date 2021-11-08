@@ -90,19 +90,11 @@ namespace Transactions.Api.Models.PaymentRequests
         [StringLength(100)]
         public string FromAddress { get; set; }
 
-        /// <summary>
-        /// End-customer Name
-        /// </summary>
-        [StringLength(50)]
-        [JsonConverter(typeof(TrimmingJsonConverter))]
-        public string ConsumerName { get; set; }
-
         public bool IsRefund { get; set; }
 
         [StringLength(1000)]
         public string RedirectUrl { get; set; }
 
-        // TODO: va;idate - this flag is required if amount is 0 or null
         public bool UserAmount { get; set; }
 
         public string CardOwnerNationalID { get; set; }

@@ -35,6 +35,24 @@
               <p class="caption ecgray--text text--darken-2">{{$t('Email')}}</p>
               <p class="primary--text">{{model.consumerEmail}}</p>
             </div>
+            <template v-if="model.consumerAddress">
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('City')}}</p>
+                <p>{{model.consumerAddress.city || '-'}}</p>
+              </div>
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('Street')}}</p>
+                <p>{{model.consumerAddress.street || '-'}}</p>
+              </div>
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('House')}}</p>
+                <p>{{model.consumerAddress.house || '-'}}</p>
+              </div>
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('Apartment')}}</p>
+                <p>{{model.consumerAddress.apartment || '-'}}</p>
+              </div>
+            </template>
           </v-col>
           <v-col cols="12" md="6">
             <div class="info-block">
@@ -42,13 +60,19 @@
               <p>{{model.consumerNationalID || '-'}}</p>
             </div>
             <div class="info-block">
-              <p class="caption ecgray--text text--darken-2">{{$t('Address')}}</p>
-              <p>{{model.consumerAddress || '-'}}</p>
-            </div>
-            <div class="info-block">
               <p class="caption ecgray--text text--darken-2">{{$t('ExternalReference')}}</p>
               <p>{{model.externalReference || '-'}}</p>
             </div>
+            <div class="info-block">
+              <p class="caption ecgray--text text--darken-2">{{$t('Origin')}}</p>
+              <p>{{model.origin || '-'}}</p>
+            </div>
+            <template v-if="model.consumerAddress">
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('Zip')}}</p>
+                <p>{{model.consumerAddress.zip || '-'}}</p>
+              </div>
+            </template>
           </v-col>
         </v-row>
       </v-card-text>
@@ -194,6 +218,15 @@ export default {
             fn: () => {
               this.$router.push({
                 name: "Refund",
+                params: { customerid: this.$route.params.id }
+              });
+            }
+          },
+          {
+            text: this.$t("CreateBillingDeal"),
+            fn: () => {
+              this.$router.push({
+                name: "CreateBillingDeal",
                 params: { customerid: this.$route.params.id }
               });
             }

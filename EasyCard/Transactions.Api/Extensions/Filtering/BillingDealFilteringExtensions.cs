@@ -106,6 +106,11 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.CreditCardDetails.CardVendor == filter.CreditCardVendor);
             }
 
+            if (!string.IsNullOrWhiteSpace(filter.DealReference))
+            {
+                src = src.Where(t => t.DealDetails.DealReference == filter.DealReference);
+            }
+
             return src;
         }
 

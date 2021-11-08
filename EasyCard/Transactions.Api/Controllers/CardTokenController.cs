@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Shared.Api;
 using Shared.Api.Extensions;
 using Shared.Api.Models;
@@ -243,6 +244,7 @@ namespace Transactions.Api.Controllers
             storageData.InitialTransactionID = transaction.PaymentTransactionID;
             dbData.InitialTransactionID = transaction.PaymentTransactionID;
 
+            mapper.Map(storageData, transaction);
             mapper.Map(storageData, transaction.CreditCardDetails);
 
             // terminal settings
@@ -277,7 +279,22 @@ namespace Transactions.Api.Controllers
                 {
                     await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);
 
-                    return BadRequest(new OperationResponse($"{Messages.RejectedByProcessor}", StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, processorResponse.Errors));
+                    if (processorResponse.RejectReasonCode == RejectionReasonEnum.AuthorizationCodeRequired)
+                    {
+                        var message = Messages.AuthorizationCodeRequired.Replace("@number", processorResponse.TelToGetAuthNum).Replace("@retailer", processorResponse.CompRetailerNum);
+                        return BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier) { AdditionalData = JObject.FromObject(new { authorizationCodeRequired = true, message }) });
+                    }
+                    else
+                    {
+                        var message = Messages.RejectedByProcessor;
+                        if (processorResponse.Errors?.Count() > 0)
+                        {
+                            message = string.Join(". ", processorResponse.Errors.Select(s => s.Description));
+                        }
+
+                        //TODO: show errors in message
+                        return BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, processorResponse.Errors));
+                    }
                 }
                 else
                 {
@@ -299,7 +316,7 @@ namespace Transactions.Api.Controllers
 
             await creditCardTokenService.CreateEntity(dbData);
 
-            return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID);
+            return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID) { InnerResponse = new OperationResponse(Messages.TokenCreated, StatusEnum.Success, transaction.PaymentTransactionID) };
         }
     }
 }

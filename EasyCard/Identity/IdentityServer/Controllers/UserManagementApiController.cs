@@ -323,6 +323,11 @@ namespace IdentityServer.Controllers
                 return NotFound($"User {userId} does not exist");
             }
 
+            if (user.PasswordHash == null)
+            {
+                return Conflict(new UserOperationResponse { ResponseCode = UserOperationResponseCodeEnum.UserIsNotRegistered, Message = "User did not set password yet" });
+            }
+
             var code = cryptoService.EncryptWithExpiration(user.Id, TimeSpan.FromHours(configuration.ResetPasswordEmailExpirationInHours));
 
             var callbackUrl = Url.ResetPasswordCallbackLink(code, Request.Scheme);

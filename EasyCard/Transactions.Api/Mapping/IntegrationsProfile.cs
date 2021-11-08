@@ -82,6 +82,9 @@ namespace Transactions.Api.Mapping
             CreateMap<AggregatorTransactionResponse, PaymentTransaction>();
 
             CreateMap<CreditCardTokenKeyVault, CreditCardSecureDetails>();
+            CreateMap<CreditCardTokenKeyVault, PaymentTransaction>()
+                .ForMember(d => d.OKNumber, o => o.MapFrom(d => d.OKNumber))
+                .ForAllOtherMembers(d => d.Ignore());
 
             CreateMap<CreditCardSecureDetails, CreditCardSecureDetails>();
 

@@ -717,6 +717,10 @@ namespace Transactions.Business.Migrations
                     b.Property<DateTime?>("DueDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Extension")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FromAddress")
                         .HasMaxLength(100)
                         .IsUnicode(true)
@@ -956,6 +960,9 @@ namespace Transactions.Business.Migrations
 
                     b.Property<int>("NumberOfPayments")
                         .HasColumnType("int");
+
+                    b.Property<Guid?>("PaymentIntentID")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("PaymentRequestID")
                         .HasColumnType("uniqueidentifier");

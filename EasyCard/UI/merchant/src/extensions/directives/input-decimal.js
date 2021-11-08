@@ -64,7 +64,6 @@ const evts = {
             if(value){
                 value = parseFloat(value).toFixed(precision);
                 target.value = value;
-                console.log(value)
             }
         });
     }

@@ -1,6 +1,7 @@
 ﻿using Shared.Business;
 using Shared.Business.Security;
 using Shared.Helpers;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -39,7 +40,7 @@ namespace Merchants.Business.Entities.Billing
 
         public string ConsumerNationalID { get; set; }
 
-        public string ConsumerAddress { get; set; }
+        public Address ConsumerAddress { get; set; }
 
         public DateTime? Created { get; set; }
 
@@ -52,6 +53,8 @@ namespace Merchants.Business.Entities.Billing
         public string ExternalReference { get; set; }
 
         public string SourceIP { get; set; }
+
+        public string Origin { get; set; }
 
         public Guid GetID()
         {

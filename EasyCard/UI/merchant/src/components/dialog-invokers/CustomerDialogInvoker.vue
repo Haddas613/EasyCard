@@ -1,19 +1,42 @@
 <template>
   <div>
-    <ec-dialog :dialog.sync="customersDialog" color="ecbg">
+    <customer-create-dialog
+      :terminal="terminal"
+      :show.sync="customerCreateDialog"
+      v-on:ok="processCustomer($event)"
+    ></customer-create-dialog>
+    <ec-dialog :dialog.sync="visible" color="ecbg">
       <template v-slot:title>{{$t('Customers')}}</template>
       <template>
         <div class="d-flex pb-2 justify-end">
-          <v-btn
-            color="red"
-            class="white--text"
-            :disabled="selectedCustomer == null"
-            :block="$vuetify.breakpoint.smAndDown"
-            @click="selectedCustomer = null; customersDialog = false;"
-          >
-            <v-icon left>mdi-delete</v-icon>
-            {{$t("CancelSelection")}}
-          </v-btn>
+          <v-row justify="space-between" no-gutters>
+            <v-spacer class="hidden-sm-and-down"></v-spacer>
+            <!-- <v-col cols="12" md="4" lg="3">
+              <v-btn
+                color="red"
+                small
+                block
+                class="white--text px-1"
+                :disabled="selectedCustomer == null"
+                @click="selectedCustomer = null; customersDialog = false;"
+              >
+                <v-icon left>mdi-delete</v-icon>
+                {{$t("CancelSelection")}}
+              </v-btn>
+            </v-col> -->
+            <v-col cols="12" md="4" lg="3">
+              <v-btn
+                color="success"
+                small
+                block
+                class="px-1"
+                @click="customerCreateDialog = true;"
+              >
+                <v-icon left>mdi-plus</v-icon>
+                {{$t("CreateCustomer")}}
+              </v-btn>
+            </v-col>
+          </v-row>
         </div>
         <customers-list
           :key="terminal"
@@ -23,7 +46,7 @@
         ></customers-list>
       </template>
     </ec-dialog>
-    <ec-dialog-invoker v-on:click="customersDialog = true">
+    <ec-dialog-invoker v-if="!dialogOnly" v-on:click="showDialog()">
       <template v-slot:prepend>
         <v-icon>mdi-account</v-icon>
       </template>
@@ -48,19 +71,32 @@ export default {
       default: null
     },
     terminal: {
-        default: null
+      default: null
+    },
+    //component can function as dialog invoker or purely as dialog dependent on dialogOnly prop
+    //if dialogOnly is specified, show prop is required as well
+    dialogOnly:{
+      type: Boolean,
+      default: false
+    },
+    show: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
     EcDialog: () => import("../../components/ec/EcDialog"),
     EcDialogInvoker: () => import("../../components/ec/EcDialogInvoker"),
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
-    CustomersList: () => import("../../components/customers/CustomersList")
+    CustomersList: () => import("../../components/customers/CustomersList"),
+    CustomerCreateDialog: () =>
+      import("../../components/customers/CustomerCreateDialog")
   },
   data() {
     return {
       selectedCustomer: null,
-      customersDialog: false
+      customersDialog: false,
+      customerCreateDialog: false
     };
   },
   async mounted() {
@@ -72,18 +108,33 @@ export default {
         consumerID: customer.consumerID,
         consumerAddress: customer.consumerAddress,
         consumerNationalID: customer.consumerNationalID,
-        consumerName: customer.consumerName,
+        consumerName: customer.consumerName
       });
+    }
+  },
+  computed: {
+    visible: {
+      get: function() {
+        return this.dialogOnly ? this.show : this.customersDialog;
+      },
+      set: function(val) {
+        if(this.dialogOnly){
+          this.$emit("update:show", val);
+        }else{
+          this.customersDialog = val;
+        }
+      }
     }
   },
   methods: {
     processCustomer(data) {
       this.selectedCustomer = data;
       this.$emit("update", data);
-      this.customersDialog = false;
+      this.visible = false;
+      this.customerCreateDialog = false;
     },
-    showDialog(){
-      this.customersDialog = true;
+    showDialog() {
+      this.visible = true;
     }
   }
 };

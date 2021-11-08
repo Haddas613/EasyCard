@@ -5,11 +5,11 @@
       <ec-radio-group :data="terminals" valuekey="terminalID" return-object :model.sync="terminal"></ec-radio-group>
     </ec-dialog>
     <v-app-bar app fixed flat color="white">
-      <v-row :align="'center'" class="top-area">
-        <v-col class="d-flex justify-start px-1" cols="2" md="3" lg="4">
-          <v-spacer></v-spacer>
+      <v-row :align="'center'" v-bind:class="{'top-area': !oneLevel}">
+        <v-col class="d-flex justify-start" cols="4" md="3" lg="4">
+          <img v-bind:class="{'logo-top-m': $vuetify.breakpoint.smAndDown, 'logo-top-d': $vuetify.breakpoint.mdAndUp}" src="/assets/img/logon.png" />
         </v-col>
-        <v-col class="d-flex justify-space-around">
+        <v-col class="d-flex justify-space-around overflow-hidden">
           <v-toolbar-title
             v-if="canchangeterminal"
             class="subtitle-1" v-bind:class="{'primary--text': terminal, 'error--text': !terminal}"
@@ -20,7 +20,12 @@
             class="subtitle-1 ecgray--text"
           >{{terminalName}}</v-toolbar-title>
         </v-col>
-        <v-col cols="2" md="3" lg="4" class="d-flex justify-end">
+        <v-col cols="1" md="3" lg="4" class="d-flex px-1 justify-end" v-if="oneLevel && closeable">
+          <v-btn color="error darken-3" icon>
+            <v-icon icon size="1.5rem" @click="onClickClose()">mdi-close</v-icon>
+          </v-btn>
+        </v-col>
+        <v-col v-else-if="$vuetify.breakpoint.mdAndUp" cols="1" md="3" lg="4" class="d-flex justify-end">
           <v-menu offset-y dark v-if="tdmenuitems && tdmenuitems.length > 0">
             <template v-slot:activator="{ on, attrs }">
               <v-icon v-bind="attrs" v-on="on">mdi-dots-vertical</v-icon>
@@ -33,8 +38,9 @@
           </v-menu>
           <v-spacer v-if="!tdmenuitems || tdmenuitems.length == 0"></v-spacer>
         </v-col>
+        <span v-else class="delimiter-m"></span>
       </v-row>
-      <template v-slot:extension>
+      <template v-if="!oneLevel" v-slot:extension>
         <v-row :align="'center'">
           <v-col cols="2" class="d-flex px-1 justify-start" v-if="completed">
             <v-spacer></v-spacer>
@@ -115,6 +121,10 @@ export default {
     canchangeterminal: {
       type: Boolean,
       default: false
+    },
+    oneLevel: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -177,5 +187,14 @@ export default {
 }
 .bottom-area {
   border-bottom: 4px solid var(--v-ecbg-base);
+}
+.logo-top-m{
+  width: 110px;
+}
+.logo-top-d{
+  width: 130px;
+}
+.delimiter-m{
+  width: 1px;
 }
 </style>

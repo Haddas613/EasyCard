@@ -7,10 +7,11 @@
 </template>
 
 <script>
-import CustomerForm from "../../components/customers/CustomerForm";
 
 export default {
-  components: { CustomerForm },
+  components: { 
+    CustomerForm: () => import("../../components/customers/CustomerForm")
+  },
   data() {
     return {
       model: null
@@ -34,7 +35,7 @@ export default {
     if (!result) {
       this.$router.push({ name: "Customers" });
     }
-
+    
     this.model = result;
     this.$store.commit("ui/changeHeader", {
       value: {

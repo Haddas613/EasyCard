@@ -42,7 +42,7 @@
           <v-btn class="mx-1" color="success" outlined small :title="$t('Unlock')" :disabled="actionInProgress" @click="invokeAction('unlockUser', item)" v-if="item.$status == 'locked'">
             <v-icon small>mdi-lock-open</v-icon>
           </v-btn>
-          <v-btn class="mx-1" color="orange darken-3" outlined small :title="$t('ResetPassword')" :disabled="actionInProgress" @click="invokeAction('resetUserPassword', item)">
+          <v-btn class="mx-1" color="orange darken-3" outlined small :title="$t('ResetPassword')" v-if="item.$status != 'invited'" :disabled="actionInProgress" @click="invokeAction('resetUserPassword', item)">
             <v-icon small>mdi-lock-reset</v-icon>
           </v-btn>
           <v-btn class="mx-1" color="deep-purple" outlined link small :title="$t('SeeHistory')" :to="{name:'Audits',params:{filters:{userID: item.$userID}}}">
@@ -103,19 +103,22 @@ export default {
     async getDataFromApi() {
       if(this.loading) { return; }
       this.loading = true;
-      let data = await this.$api.users.get({
-        ...this.usersFilter,
-        ...this.options
-      });
-      this.users = data.data;
-      this.totalAmount = data.numberOfRecords;
-      this.loading = false;
+      try{
+        let data = await this.$api.users.get({
+          ...this.usersFilter,
+          ...this.options
+        });
+        this.users = data.data;
+        this.totalAmount = data.numberOfRecords;
 
-      if (!this.headers || this.headers.length === 0) {
-        this.headers = [
-          ...data.headers,
-          { value: "actions", text: this.$t("Actions"), sortable: false  }
-        ];
+        if (!this.headers || this.headers.length === 0) {
+          this.headers = [
+            ...data.headers,
+            { value: "actions", text: this.$t("Actions"), sortable: false  }
+          ];
+        }
+      }finally{
+        this.loading = false;
       }
     },
     async applyFilter(filter) {

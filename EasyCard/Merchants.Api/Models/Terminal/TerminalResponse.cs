@@ -19,7 +19,7 @@ namespace Merchants.Api.Models.Terminal
             InvoiceSettings = new TerminalInvoiceSettings();
             PaymentRequestSettings = new TerminalPaymentRequestSettings();
             CheckoutSettings = new TerminalCheckoutSettings();
-            BankDetails = new TerminalBankDetails();
+            /*BankDetails = new TerminalBankDetails();*/
         }
 
         public Guid TerminalID { get; set; }

@@ -36,6 +36,7 @@ using Shared.Integration;
 using Shared.Helpers.Sms;
 using Merchants.Business.Extensions;
 using System.Web;
+using SharedIntegration = Shared.Integration;
 
 namespace Transactions.Api.Controllers
 {
@@ -58,6 +59,7 @@ namespace Transactions.Api.Controllers
         private readonly ISystemSettingsService systemSettingsService;
         private readonly IEmailSender emailSender;
         private readonly ISmsService smsService;
+        private readonly ITransactionsService transactionsService;
 
         public PaymentRequestsController(
                     IPaymentRequestsService paymentRequestsService,
@@ -71,7 +73,8 @@ namespace Transactions.Api.Controllers
                     ISystemSettingsService systemSettingsService,
                     IEmailSender emailSender,
                     IOptions<ApiSettings> apiSettings,
-                    ISmsService smsService)
+                    ISmsService smsService,
+                    ITransactionsService transactionsService)
         {
             this.paymentRequestsService = paymentRequestsService;
             this.mapper = mapper;
@@ -85,6 +88,7 @@ namespace Transactions.Api.Controllers
             this.systemSettingsService = systemSettingsService;
             this.emailSender = emailSender;
             this.smsService = smsService;
+            this.transactionsService = transactionsService;
         }
 
         [HttpGet]
@@ -166,6 +170,13 @@ namespace Transactions.Api.Controllers
 
                 paymentRequest.TerminalName = terminal.Label;
 
+                var transaction = await transactionsService.GetTransaction(t => t.PaymentRequestID == paymentRequestID);
+
+                if (transaction != null)
+                {
+                    paymentRequest.UserPaidDetails = mapper.Map<PaymentRequestUserPaidDetails>(transaction);
+                }
+
                 return Ok(paymentRequest);
             }
         }
@@ -185,6 +196,12 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse(Messages.CheckoutFeatureMustBeEnabled, StatusEnum.Error));
             }
 
+            // TODO: validation procedure
+            //if (model.AllowPinPad == true && !(model.PaymentRequestAmount > 0))
+            //{
+            //    return BadRequest(new OperationResponse(Messages.AmountRequiredForPinpadDeal, StatusEnum.Error));
+            //}
+
             // TODO: caching
             var systemSettings = await systemSettingsService.GetSystemSettings();
 
@@ -196,6 +213,11 @@ namespace Transactions.Api.Controllers
 
             if (model.IssueInvoice.GetValueOrDefault())
             {
+                if (model.InvoiceDetails == null)
+                {
+                    model.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
+                }
+
                 model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings);
             }
 
@@ -204,17 +226,37 @@ namespace Transactions.Api.Controllers
                 model.PinPadDetails = model.PinPadDetails.UpdatePinPadDetails(terminal.Integrations.FirstOrDefault(i => i.ExternalSystemID == ExternalSystemHelpers.NayaxPinpadProcessorExternalSystemID));
             }
 
+            if (!model.VATRate.HasValue)
+            {
+                model.VATRate = terminal.Settings.VATRate;
+            }
+
             var newPaymentRequest = mapper.Map<PaymentRequest>(model);
+
+            newPaymentRequest.Calculate();
 
             // Update details if needed
             newPaymentRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newPaymentRequest, null);
+
             if (consumer != null)
             {
                 newPaymentRequest.CardOwnerName = consumer.ConsumerName;
                 newPaymentRequest.CardOwnerNationalID = consumer.ConsumerNationalID;
             }
+            else
+            {
+                var consumerID = await CreateConsumer(model, merchantID.Value);
+                if (consumerID.HasValue)
+                {
+                    newPaymentRequest.DealDetails.ConsumerID = consumerID;
+                }
+            }
 
-            newPaymentRequest.Calculate();
+            if (string.IsNullOrWhiteSpace(newPaymentRequest.DealDetails.ConsumerEmail))
+            {
+                // TODO: prper message
+                return BadRequest(new OperationResponse("Email required", StatusEnum.Error, newPaymentRequest.PaymentRequestID, httpContextAccessor.TraceIdentifier));
+            }
 
             newPaymentRequest.MerchantID = terminal.MerchantID;
 
@@ -259,17 +301,14 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse { EntityUID = paymentRequestID, Status = StatusEnum.Success, Message = Messages.PaymentRequestCanceled });
         }
 
-        private Tuple<string, string> GetPaymentRequestUrl(PaymentRequest dbPaymentRequest, byte[] sharedTerminalApiKey)
+        private Tuple<string, string> GetPaymentRequestUrl(PaymentRequest dbPaymentRequest)
         {
-            if (sharedTerminalApiKey == null)
-            {
-                return null;
-            }
-
             var uriBuilder = new UriBuilder(apiSettings.CheckoutPortalUrl);
+            uriBuilder.Path = "/p";
+            var encrypted = cryptoServiceCompact.EncryptCompact(dbPaymentRequest.PaymentRequestID.ToByteArray());
+
             var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
-            query["paymentRequest"] = Convert.ToBase64String(dbPaymentRequest.PaymentRequestID.ToByteArray());
-            query["apiKey"] = Convert.ToBase64String(sharedTerminalApiKey);
+            query["r"] = encrypted;
 
             uriBuilder.Query = query.ToString();
             var url = uriBuilder.ToString();
@@ -300,7 +339,7 @@ namespace Transactions.Api.Controllers
 
             var emailSubject = paymentRequest.RequestSubject ?? (paymentRequest.IsRefund ? settings.DefaultRefundRequestSubject : settings.DefaultRequestSubject);
             var emailTemplateCode = $"{settings.EmailTemplateCode ?? nameof(PaymentRequest)}{(paymentRequest.IsRefund ? "Refund" : string.Empty)}";
-            var url = GetPaymentRequestUrl(paymentRequest, terminal.SharedApiKey);
+            var url = GetPaymentRequestUrl(paymentRequest);
             var substitutions = new List<TextSubstitution>();
 
             substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));
@@ -355,6 +394,36 @@ namespace Transactions.Api.Controllers
                 To = paymentRequest.DealDetails.ConsumerPhone,
                 CorrelationId = httpContextAccessor.GetCorrelationId()
             });
+        }
+
+        private async Task<Guid?> CreateConsumer(PaymentRequestCreate transaction, Guid merchantID)
+        {
+            try
+            {
+                var consumer = new Merchants.Business.Entities.Billing.Consumer();
+
+                mapper.Map(transaction.DealDetails, consumer);
+                consumer.ConsumerName = transaction.DealDetails?.ConsumerName;
+                consumer.ConsumerEmail = transaction.DealDetails?.ConsumerEmail;
+                consumer.ConsumerNationalID = transaction.CardOwnerNationalID;
+                consumer.TerminalID = transaction.TerminalID.GetValueOrDefault();
+                consumer.MerchantID = merchantID;
+                consumer.ApplyAuditInfo(httpContextAccessor);
+
+                if (!(!string.IsNullOrWhiteSpace(consumer.ConsumerName) && !string.IsNullOrWhiteSpace(consumer.ConsumerEmail)))
+                {
+                    return null;
+                }
+
+                await consumersService.CreateEntity(consumer);
+
+                return consumer.ConsumerID;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Cannot create consumer: {ex.Message}", ex);
+                return null;
+            }
         }
     }
 }
