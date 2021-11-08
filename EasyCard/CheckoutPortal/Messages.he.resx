@@ -132,4 +132,7 @@
   <data name="PaymentRequestClosed" xml:space="preserve">
     <value>בקשת תשלום סגורה</value>
   </data>
+  <data name="TotalAmountIsInvalid" xml:space="preserve">
+    <value>סה"כ סכום תשלומים לא תקין</value>
+  </data>
 </root>
