@@ -56,6 +56,8 @@ namespace Merchants.Business.Entities.Billing
 
         public string ExternalReference { get; set; }
 
+        public string BillingDesktopRefNumber { get; set; }
+
         public string SourceIP { get; set; }
 
         public string Origin { get; set; }
