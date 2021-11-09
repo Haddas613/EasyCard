@@ -579,7 +579,7 @@ namespace CheckoutPortal.Controllers
                     model.Amount = 0;
                     model.TotalAmount = 0;
                 }
-                else
+                else if(request.Amount.GetValueOrDefault(0) == 0 && !request.UserAmount)
                 {
                     throw new BusinessException(Messages.InvalidCheckoutData);
                 }
