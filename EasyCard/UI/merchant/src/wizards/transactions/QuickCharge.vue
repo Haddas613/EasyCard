@@ -13,11 +13,10 @@
           <v-text-field
             class="centered-input amount-input"
             v-model.number="model.transactionAmount"
-            type="number"
+            type="tel"
             min="0"
             outlined
-            :rules="[vr.primitives.numeric(true), vr.primitives.biggerThan(0)]"
-            hide-details="true"
+            :rules="[vr.primitives.numeric(true), vr.primitives.biggerThan(0), vr.primitives.precision(2)]"
             autofocus
             @input="adjustItemsAmountToTotalAmount()"
           >
@@ -28,17 +27,18 @@
         </v-col>
         <v-col cols="12" class="pt-1">
           <numpad-dialog-invoker
-          :amount="model.transactionAmount"
-          items-only
-          class="mx-4"
-          :data="model"
-          ref="numpadInvoker"
-          @ok="processAmount($event)"></numpad-dialog-invoker>
+            :amount="model.transactionAmount"
+            items-only
+            class="mx-4"
+            :data="model"
+            ref="numpadInvoker"
+            @ok="processAmount($event)"
+          ></numpad-dialog-invoker>
         </v-col>
         <v-col cols="12" class="pt-0">
           <basket
             v-if="model.dealDetails.items && model.dealDetails.items.length" 
-            :key="model.dealDetails.items.length + model.totalAmount" 
+            :key="(model.vatRate > 0 ? model.vatRate : 1) + model.dealDetails.items.length + model.totalAmount"
             embed
             v-on:update="processAmount($event)" 
             :data="model"></basket>
@@ -80,7 +80,7 @@
       </v-row>
       <v-row no-gutters class="mx-2">
         <v-col cols="12">
-          <v-btn color="primary" :disabled="!model.transactionAmount" bottom block @click="createTransaction()">
+          <v-btn color="primary" :disabled="!valid" bottom block @click="createTransaction()">
             {{$t("Charge")}}
             <ec-money :amount="model.transactionAmount" class="px-1" :currency="model.currency"></ec-money>
           </v-btn>
@@ -185,6 +185,7 @@ export default {
       customer: null,
       model: {
         key: "0",
+        pinPad: false,
         terminalID: null,
         transactionType: null,
         jDealType: null,
@@ -212,7 +213,10 @@ export default {
           numberOfPayments: 0,
           initialPaymentAmount: 0,
           installmentPaymentAmount: 0
-        }
+        },
+        vatTotal: null,
+        netTotal: null,
+        vatRate: null
       },
       customersDialog: false,
       success: true,
@@ -248,6 +252,10 @@ export default {
           data.consumerNationalID;
       }
     }
+    if(this.model.vatRate === null || this.model.vatRate === undefined){
+      this.model.vatRate = this.terminal.settings.vatExempt ? null : this.terminal.settings.vatRate;
+    }
+    
     this.model.dealDetails.dealDescription = this.terminal.settings.defaultChargeDescription;
   },
   methods: {
@@ -302,6 +310,10 @@ export default {
       this.model.oKNumber = data.oKNumber;
       this.$set(this.model, 'installmentDetails', data.installmentDetails);
       this.model.transactionType = data.transactionType;
+
+      if(data.dealDetails){
+        this.model.dealDetails.consumerName = data.dealDetails.consumerName;
+      }
       
       if (data.type === "creditcard") {
         data = data.data;
@@ -350,23 +362,24 @@ export default {
       await this.createTransaction();
     },
     async retry(){
-      await this.createTransaction();
+      await this.createTransaction(true);
     },
-    async createTransaction(){
-      if (this.loading || !this.validate()) return;
+    async createTransaction(retry = false){
+      if (this.loading || (!retry && !this.validate())) return;
       try {
         this.loading = true;
         if(this.model.pinPad){
           await this.establishSignalRConnection();
         }
 
-        let asf = this.$refs.additionalSettingsForm.ok(true)
-        
-        if (!asf) {
-          this.$toasted.show(this.$t("SomethingWentWrong"), { type: "error" });
-          return;
-        } else {
-          this.processAdditionalSettings(asf)
+        if(!retry){
+          let asf = this.$refs.additionalSettingsForm.ok(true)
+          if (!asf) {
+            this.$toasted.show(this.$t("SomethingWentWrong"), { type: "error" });
+            return;
+          } else {
+            this.processAdditionalSettings(asf)
+          }
         }
 
         let result = await this.$api.transactions.processTransaction(this.model);
@@ -460,12 +473,13 @@ export default {
       if(this.totalAmountTimeout){
         clearTimeout(this.totalAmountTimeout);
       }
-      if( this.model.totalAmount < 0){
+      if( this.model.transactionAmount < 0){
         return;
       }
+      //this.$refs.numpadInvoker.recalculate();
       this.totalAmountTimeout = setTimeout(() => {
-        this.$refs.numpadInvoker.recalculate();
-      }, 1000);
+        this.$refs.numpadInvoker.recalculate(this.model.vatRate);
+      }, 500);
     }
   },
   async beforeDestroy () {

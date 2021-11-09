@@ -54,6 +54,13 @@
               </v-col>
               <v-col cols="12">
                 <v-text-field
+                  v-model="model.dealDetails.consumerName"
+                  :label="$t('CustomerName')"
+                  outlined
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
                   v-model="model.cardOwnerNationalID"
                   :rules="[vr.special.israeliNationalId]"
                   :label="$t('NationalID')"
@@ -259,6 +266,7 @@ export default {
       }else{
         result.installmentDetails = null;
       }
+      result.dealDetails = this.model.dealDetails;
       result.transactionType = this.model.transactionType;
       this.$emit("ok", result);
 
