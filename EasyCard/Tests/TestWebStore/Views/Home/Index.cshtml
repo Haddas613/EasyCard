@@ -115,6 +115,13 @@
                         </div>
 
                         <div class="form-group">
+                            <label asp-for="UserAmount">Allow User Amount</label>
+                            <input type="checkbox" class="form-check-inline" asp-for="UserAmount">
+                            <span asp-validation-for="UserAmount"></span>
+                            <span class="control-validation"></span>
+                        </div>
+
+                        <div class="form-group">
                             <input type="submit" class="btn btn-primary" name="submit" value="Pay with EasyCard" />
 
                         </div>

@@ -572,6 +572,17 @@ namespace CheckoutPortal.Controllers
             if (request != null)
             {
                 mapper.Map(request, model);
+
+                if (!request.Amount.HasValue && request.UserAmount)
+                {
+                    request.Amount = 0;
+                    model.Amount = 0;
+                    model.TotalAmount = 0;
+                }
+                else
+                {
+                    throw new BusinessException(Messages.InvalidCheckoutData);
+                }
             }
 
             mapper.Map(checkoutConfig.PaymentRequest, model);
