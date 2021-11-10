@@ -12,13 +12,14 @@
         <v-col cols="12">
           <v-text-field
             class="centered-input amount-input"
-            v-model.number="model.transactionAmount"
+            v-model="model.transactionAmount"
             type="number"
             inputmode="decimal"
             min="0"
             outlined
             :rules="[vr.primitives.numeric(true), vr.primitives.biggerThan(0), vr.primitives.precision(2)]"
             autofocus
+            v-decimal-coma
             @input="adjustItemsAmountToTotalAmount()"
           >
             <template v-slot:append>
@@ -130,6 +131,7 @@
           <v-text-field
             v-model="model.oKNumber"
             :label="$t('AuthorizationCode')"
+            type="number"
             :rules="[vr.primitives.stringLength(1, 50)]">
           </v-text-field>
           <v-btn color="primary" bottom :x-large="true" block @click="retry()">
