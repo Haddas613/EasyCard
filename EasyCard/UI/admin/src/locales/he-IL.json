@@ -404,6 +404,7 @@
   "House": "בַּיִת",
   "Apartment": "דירה",
   "UseQuickChargeByDefault": "בצע עסקה מהירה כברירת מחדל",
+  "DoNotCreateSaveTokenInitialDeal": "אל תיצור עסקת אתחול לשמירת טוקן",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",
