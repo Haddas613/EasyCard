@@ -253,9 +253,6 @@ export default {
           data.consumerNationalID;
       }
     }
-    if(this.model.vatRate === null || this.model.vatRate === undefined){
-      this.model.vatRate = this.terminal.settings.vatExempt ? null : this.terminal.settings.vatRate;
-    }
     
     this.model.dealDetails.dealDescription = this.terminal.settings.defaultChargeDescription;
   },
