@@ -13,7 +13,8 @@
           <v-text-field
             class="centered-input amount-input"
             v-model.number="model.transactionAmount"
-            type="tel"
+            type="number"
+            inputmode="decimal"
             min="0"
             outlined
             :rules="[vr.primitives.numeric(true), vr.primitives.biggerThan(0), vr.primitives.precision(2)]"
@@ -492,6 +493,8 @@ export default {
   font-size: 1.25rem;
 }
 .amount-input{
+  -webkit-appearance: none;
+  line-height: 2rem;
   font-size: 2rem;
 }
 </style>
