@@ -101,7 +101,7 @@
                                 @localizer.Get("InitialPaymentAmount") (@Model.Currency.GetCurrencySymbol())
                                 @*<label asp-for="InitialPaymentAmount" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("InitialPaymentAmount") (@Model.Currency.GetCurrencySymbol())</label>*@
                                 <div class="col">
-                                    <input id="initial-payment-amount" type="number" step="0.1" class="form-control form-control-sm text-end"
+                                    <input id="initial-payment-amount" type="number" step="0.01" class="form-control form-control-sm text-end"
                                            placeholder="@localizer.Get("TotalSum")" asp-for="InitialPaymentAmount" autocomplete="off">
                                     <span asp-validation-for="InitialPaymentAmount"></span>
                                 </div>
@@ -140,7 +140,7 @@
                                 <div class="form-group row">
                                     <label asp-for="Amount" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("TotalSum") (@Model.Currency.GetCurrencySymbol())</label>
                                     <div class="col-sm-9">
-                                        <input type="tel" class="form-control form-control-sm" placeholder="@localizer.Get("TotalSum")" asp-for="Amount" autocomplete="off">
+                                        <input type="number" step="0.01" class="form-control form-control-sm" placeholder="@localizer.Get("TotalSum")" asp-for="Amount" autocomplete="off">
                                         <span asp-validation-for="Amount"></span>
                                     </div>
                                 </div>
