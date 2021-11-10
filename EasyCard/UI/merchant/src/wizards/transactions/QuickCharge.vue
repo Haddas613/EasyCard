@@ -12,14 +12,14 @@
         <v-col cols="12">
           <v-text-field
             class="centered-input amount-input"
-            v-model="model.transactionAmount"
-            type="number"
+            v-model.number="model.transactionAmount"
+            type="text"
             inputmode="decimal"
             min="0"
             outlined
             :rules="[vr.primitives.numeric(true), vr.primitives.biggerThan(0), vr.primitives.precision(2)]"
             autofocus
-            v-decimal-coma
+            v-input-decimal
             @input="adjustItemsAmountToTotalAmount()"
           >
             <template v-slot:append>
