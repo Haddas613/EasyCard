@@ -41,7 +41,5 @@ namespace TestWebStore.Models
         public bool IssueInvoice { get; set; }
 
         public bool AllowPinPad { get; set; }
-
-        public bool UserAmount { get; set; }
     }
 }
