@@ -11,6 +11,23 @@
       <v-row no-gutters>
         <v-col cols="12">
           <v-text-field
+            v-if="browser.os == 'Android OS'"
+            class="centered-input amount-input"
+            v-model.number="model.transactionAmount"
+            type="number"
+            inputmode="decimal"
+            min="0"
+            outlined
+            :rules="[vr.primitives.numeric(true), vr.primitives.biggerThan(0), vr.primitives.precision(2)]"
+            autofocus
+            @input="adjustItemsAmountToTotalAmount()"
+          >
+            <template v-slot:append>
+              <span class="currency-icon">{{currency.description}}</span>
+            </template>
+          </v-text-field>
+          <v-text-field
+            v-else
             class="centered-input amount-input"
             v-model.number="model.transactionAmount"
             type="text"
@@ -166,6 +183,8 @@
 import { mapState } from "vuex";
 import * as signalR from "@microsoft/signalr";
 import ValidationRules from "../../helpers/validation-rules";
+import { detect } from "detect-browser";
+
 export default {
   components: {
     Navbar: () => import("../../components/wizard/NavBar"),
@@ -231,7 +250,8 @@ export default {
       signalRToast: null,
       transaction: null,
       transactionSlipDialog: false,
-      totalAmountTimeout: null
+      totalAmountTimeout: null,
+      browser: detect()
     };
   },
   computed: {
