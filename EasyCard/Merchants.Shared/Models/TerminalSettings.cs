@@ -66,6 +66,12 @@ namespace Merchants.Shared.Models
 
         public bool? UseQuickChargeByDefault { get; set; }
 
+        /// <summary>
+        /// if 0 takes values from BankOfIsrael
+        /// </summary>
+        public decimal EuroRate { get; set; }
+        public decimal DollarRate { get; set; }
+
         public TerminalSettings()
         {
             J5ExpirationDays = 1;

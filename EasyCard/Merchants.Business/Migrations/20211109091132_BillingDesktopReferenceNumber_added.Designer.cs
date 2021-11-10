@@ -4,14 +4,16 @@ using Merchants.Business.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Merchants.Business.Migrations
 {
     [DbContext(typeof(MerchantsContext))]
-    partial class MerchantsContextModelSnapshot : ModelSnapshot
+    [Migration("20211109091132_BillingDesktopReferenceNumber_added")]
+    partial class BillingDesktopReferenceNumber_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

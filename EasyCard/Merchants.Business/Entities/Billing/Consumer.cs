@@ -38,7 +38,11 @@ namespace Merchants.Business.Entities.Billing
         /// </summary>
         public string ConsumerPhone { get; set; }
 
+        public string ConsumeSecondPhone { get; set; }
+
         public string ConsumerNationalID { get; set; }
+
+        public string ConsumerNote { get; set; }
 
         public Address ConsumerAddress { get; set; }
 
@@ -51,6 +55,8 @@ namespace Merchants.Business.Entities.Billing
         public string CorrelationId { get; set; }
 
         public string ExternalReference { get; set; }
+
+        public string BillingDesktopRefNumber { get; set; }
 
         public string SourceIP { get; set; }
 
