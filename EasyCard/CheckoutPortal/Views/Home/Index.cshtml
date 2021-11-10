@@ -97,28 +97,16 @@
                                     <span asp-validation-for="NumberOfPayments"></span>
                                 </div>
                             </li>
-                            @if (Model.UserAmount)
-                            {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    @localizer.Get("InitialPaymentAmount") (@Model.Currency.GetCurrencySymbol())
-                                    @*<label asp-for="InitialPaymentAmount" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("InitialPaymentAmount") (@Model.Currency.GetCurrencySymbol())</label>*@
-                                    <div class="col">
-                                        <input id="initial-payment-amount" type="number"  step="0.1" class="form-control form-control-sm text-end"
-                                               placeholder="@localizer.Get("TotalSum")" asp-for="InitialPaymentAmount" autocomplete="off">
-                                        <span asp-validation-for="InitialPaymentAmount"></span>
-                                    </div>
-                                    <input type="hidden" asp-for="InstallmentPaymentAmount"/>
-                                </li>                            }
-                            else
-                            {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    @localizer.Get("InitialPaymentAmount")
-                                    <span class="text-end">
-                                        <b id="initial-payment-amount">@Model.InitialPaymentAmount?.ToString("N")@Model.Currency.GetCurrencySymbol()</b>
-                                    </span>
-                                    <span class="badge badge-primary badge-pill"></span>
-                                </li>
-                            }
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @localizer.Get("InitialPaymentAmount") (@Model.Currency.GetCurrencySymbol())
+                                @*<label asp-for="InitialPaymentAmount" class="col-sm-3 col-form-label col-form-label-sm">@localizer.Get("InitialPaymentAmount") (@Model.Currency.GetCurrencySymbol())</label>*@
+                                <div class="col">
+                                    <input id="initial-payment-amount" type="number" step="0.1" class="form-control form-control-sm text-end"
+                                           placeholder="@localizer.Get("TotalSum")" asp-for="InitialPaymentAmount" autocomplete="off">
+                                    <span asp-validation-for="InitialPaymentAmount"></span>
+                                </div>
+                                <input type="hidden" asp-for="InstallmentPaymentAmount" />
+                            </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 @localizer.Get("PaymentAmount")
                                 <span class="text-end">
@@ -507,60 +495,44 @@
                 let initialAmount = (totalAmount - newAmount * (e.target.value - 1));
 
                 $("#payment-amount").text(newAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())");
-
-                @if (Model.UserAmount)
-                {
-                <text>
-                    $("#initial-payment-amount").val(initialAmount);
-                </text>
-                }
-                else
-                {
-                <text>
-                    $("#initial-payment-amount").text(initialAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())");
-                </text>
-                }
+                $("#InstallmentPaymentAmount").val(newAmount)
+                $("#initial-payment-amount").val(initialAmount);
 
                 $("#total-amount").text(totalAmount + "@Html.Raw(Model.Currency.GetCurrencySymbol())")
             });
 
-            @if (Model.UserAmount)
-            {
-                <text>
-                $("#initial-payment-amount").on("input", function (e) {
-                    let self = this;
-                    if (self.ipaTimeout) {
-                        clearTimeout(self.ipaTimeout);
+            $("#initial-payment-amount").on("input", function (e) {
+                let self = this;
+                if (self.ipaTimeout) {
+                    clearTimeout(self.ipaTimeout);
+                }
+                self.ipaTimeout = setTimeout(() => {
+                    let totalAmount = $("#Amount").val();
+                    if (!Number(totalAmount)) {
+                        $("#initial-payment-amount").val(0);
+                        return;
                     }
-                    self.ipaTimeout = setTimeout(() => {
-                        let totalAmount = $("#Amount").val();
-                        if (!Number(totalAmount)) {
-                            $("#initial-payment-amount").val(0);
-                            return;
-                        }
 
-                        let numOfPayments = parseInt($("#number-of-payments").val());
-                        let val = parseFloat(e.target.value);
-                        let max = parseFloat(e.target.getAttribute("max"));
+                    let numOfPayments = parseInt($("#number-of-payments").val());
+                    let val = parseFloat(e.target.value);
+                    let max = parseFloat(e.target.getAttribute("max"));
 
-                        if (val > max || val == max) {
-                            val = e.target.value = totalAmount - 0.1 * numOfPayments;
-                        }
+                    if (val > max || val == max) {
+                        val = e.target.value = totalAmount - 0.1 * numOfPayments;
+                    }
 
-                        let newAmount = (totalAmount - val) / (numOfPayments - 1);
-                        let initialAmount = parseFloat((totalAmount - newAmount * (numOfPayments - 1)).toFixed(2));
+                    let newAmount = (totalAmount - val) / (numOfPayments - 1);
+                    let initialAmount = parseFloat((totalAmount - newAmount * (numOfPayments - 1)).toFixed(2));
 
-                        //console.log(totalAmount, numOfPayments, val, newAmount, initialAmount)
+                    //console.log(totalAmount, numOfPayments, val, newAmount, initialAmount)
 
-                        let installmentAmountRounded = parseFloat(newAmount.toFixed(2))
-                        $("#InstallmentPaymentAmount").val(installmentAmountRounded)
-                        $("#payment-amount").text(installmentAmountRounded + "@Html.Raw(Model.Currency.GetCurrencySymbol())");
-                        $("#initial-payment-amount").val();
+                    let installmentAmountRounded = parseFloat(newAmount.toFixed(2))
+                    $("#InstallmentPaymentAmount").val(installmentAmountRounded)
+                    $("#payment-amount").text(installmentAmountRounded + "@Html.Raw(Model.Currency.GetCurrencySymbol())");
+                    $("#initial-payment-amount").val();
 
-                    }, 1000);
-                });
-                </text>
-            }
+                }, 1000);
+            });
 
             $("#Amount").on('input', function (e) {
                 $("#number-of-payments").trigger("change");

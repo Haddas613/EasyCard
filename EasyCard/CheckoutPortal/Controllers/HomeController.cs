@@ -244,50 +244,32 @@ namespace CheckoutPortal.Controllers
                 }
                 else
                 {
-                    if (checkoutConfig.PaymentRequest != null && !checkoutConfig.PaymentRequest.UserAmount)
+                    installmentDetails = new InstallmentDetails
                     {
-                        var installmentPaymentAmount = Math.Floor(checkoutConfig.PaymentRequest.TotalAmount / request.NumberOfPayments.Value);
+                        NumberOfPayments = request.NumberOfPayments.Value,
+                        TotalAmount = request.Amount.Value
+                    };
 
-                        checkoutConfig.PaymentRequest.NumberOfPayments = request.NumberOfPayments.Value;
-                        checkoutConfig.PaymentRequest.InitialPaymentAmount = checkoutConfig.PaymentRequest.TotalAmount - installmentPaymentAmount * (request.NumberOfPayments.Value - 1);
-                        checkoutConfig.PaymentRequest.InstallmentPaymentAmount = installmentPaymentAmount;
+                    if (request.InitialPaymentAmount.HasValue)
+                    {
+                        var installmentPaymentAmount = Math.Floor(request.Amount.Value / request.NumberOfPayments.Value);
 
-                        installmentDetails = new InstallmentDetails
+                        installmentDetails.InitialPaymentAmount = request.InitialPaymentAmount.Value;
+                        installmentDetails.InstallmentPaymentAmount = request.InstallmentPaymentAmount.HasValue ? 
+                            request.InstallmentPaymentAmount.Value : (request.Amount.Value - request.InitialPaymentAmount.Value) / (request.NumberOfPayments.Value - 1);
+
+                        if (installmentDetails.InitialPaymentAmount + installmentDetails.InstallmentPaymentAmount * (request.NumberOfPayments.Value - 1) != request.Amount.Value 
+                            || installmentDetails.InitialPaymentAmount < 0.1m || installmentDetails.InstallmentPaymentAmount < 0.1m)
                         {
-                            NumberOfPayments = checkoutConfig.PaymentRequest.NumberOfPayments,
-                            InitialPaymentAmount = checkoutConfig.PaymentRequest.InitialPaymentAmount,
-                            InstallmentPaymentAmount = checkoutConfig.PaymentRequest.InstallmentPaymentAmount,
-                            TotalAmount = checkoutConfig.PaymentRequest.TotalAmount
-                        };
+                            ModelState.AddModelError(nameof(InstallmentDetails), Messages.TotalAmountIsInvalid);
+                        }
                     }
                     else
                     {
-                        installmentDetails = new InstallmentDetails
-                        {
-                            NumberOfPayments = request.NumberOfPayments.Value,
-                            TotalAmount = request.Amount.Value
-                        };
+                        var installmentPaymentAmount = Math.Floor(request.Amount.Value / request.NumberOfPayments.Value);
 
-                        if (request.InstallmentPaymentAmount.HasValue)
-                        {
-                            var installmentPaymentAmount = Math.Floor(request.Amount.Value / request.NumberOfPayments.Value);
-
-                            installmentDetails.InitialPaymentAmount = request.InitialPaymentAmount.Value;
-                            installmentDetails.InstallmentPaymentAmount = (request.Amount.Value - request.InitialPaymentAmount.Value) / (request.NumberOfPayments.Value - 1);
-
-                            if (installmentDetails.InitialPaymentAmount + installmentDetails.InstallmentPaymentAmount * (request.NumberOfPayments.Value - 1) != request.Amount.Value 
-                                || installmentDetails.InitialPaymentAmount < 0.1m || installmentDetails.InstallmentPaymentAmount < 0.1m)
-                            {
-                                ModelState.AddModelError(nameof(InstallmentDetails), Messages.TotalAmountIsInvalid);
-                            }
-                        }
-                        else
-                        {
-                            var installmentPaymentAmount = Math.Floor(request.Amount.Value / request.NumberOfPayments.Value);
-
-                            installmentDetails.InitialPaymentAmount = request.Amount.Value - installmentPaymentAmount * (request.NumberOfPayments.Value - 1);
-                            installmentDetails.InstallmentPaymentAmount = installmentPaymentAmount;
-                        }
+                        installmentDetails.InitialPaymentAmount = request.Amount.Value - installmentPaymentAmount * (request.NumberOfPayments.Value - 1);
+                        installmentDetails.InstallmentPaymentAmount = installmentPaymentAmount;
                     }
                 }
             }
