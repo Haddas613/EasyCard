@@ -497,4 +497,13 @@ export default {
   line-height: 2rem;
   font-size: 2rem;
 }
+/* Safari 11+ */
+@media not all and (min-resolution:.001dpcm)
+  { @supports (-webkit-appearance:none) and (stroke-color:transparent) {
+  .amount-input{
+    -webkit-appearance: none;
+    line-height: 1rem !important;
+    font-size: 1rem !important;
+  }
+}}
 </style>
