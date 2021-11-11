@@ -376,6 +376,8 @@ export default {
             break;
           }
           item.discount = item.price > diff ? diff : item.price;
+          //need to recalculate vats with the new discount
+          this.calculatePricingForItem(item);
           diff -= item.discount;
         }
       }

@@ -4,7 +4,6 @@ const itemFunctions = {
     calculate: function(item, opts){
         let amount = this.calculateAmount(item);
         //let vatRate = item.vatRate >= 0 ? item.vatRate : opts.vatRate;
-
         let netAmount = amount ? this.calculateNetAmount(amount, opts.vatRate) : 0;
         let vat = this.calculateVat(amount, netAmount);
         
@@ -54,7 +53,7 @@ const totalFunctions = {
         let intermediateVat = lodash.sumBy(items, "vat");
 
         if(vat != intermediateVat){
-            items[items.length - 1].vat += parseFloat((vat - intermediateVat).toFixed(2));
+            items[items.length - 1].vat = parseFloat((items[items.length - 1].vat + parseFloat((vat - intermediateVat).toFixed(2))).toFixed(2));
         }
         return vat;
     },
