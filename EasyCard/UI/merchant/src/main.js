@@ -24,6 +24,8 @@ import mixin from './extensions/mixins';
 import appInsights from "./plugins/app-insights";
 import TerminalSelect from "./components/common/TerminalSelect";
 
+import inputDecimal from "./extensions/directives/input-decimal";
+
 import config from './app.config';
 
 Vue.config.productionTip = false
@@ -64,6 +66,7 @@ Vue.filter('guid', guid);
 Vue.filter('length', length);
 Vue.filter('rlength', rlength);
 Vue.filter('billingschedule', billingschedule);
+Vue.directive('inputDecimal', inputDecimal);
 Vue.mixin(mixin);
 
 new Vue({

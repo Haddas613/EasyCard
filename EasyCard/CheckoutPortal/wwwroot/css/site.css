@@ -168,3 +168,6 @@ input[type="checkbox"].input-validation-error {
     background-color: #0f99c7;
     opacity: 1 !important;
 }
+.text-end{
+    text-align: end !important;
+}

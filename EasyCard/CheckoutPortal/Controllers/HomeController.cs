@@ -244,33 +244,32 @@ namespace CheckoutPortal.Controllers
                 }
                 else
                 {
-                    if (checkoutConfig.PaymentRequest != null && !checkoutConfig.PaymentRequest.UserAmount)
+                    installmentDetails = new InstallmentDetails
                     {
-                        var installmentPaymentAmount = Math.Floor(checkoutConfig.PaymentRequest.TotalAmount / request.NumberOfPayments.Value);
+                        NumberOfPayments = request.NumberOfPayments.Value,
+                        TotalAmount = request.Amount.Value
+                    };
 
-                        checkoutConfig.PaymentRequest.NumberOfPayments = request.NumberOfPayments.Value;
-                        checkoutConfig.PaymentRequest.InitialPaymentAmount = checkoutConfig.PaymentRequest.TotalAmount - installmentPaymentAmount * (request.NumberOfPayments.Value - 1);
-                        checkoutConfig.PaymentRequest.InstallmentPaymentAmount = installmentPaymentAmount;
+                    if (request.InitialPaymentAmount.HasValue)
+                    {
+                        var installmentPaymentAmount = Math.Floor(request.Amount.Value / request.NumberOfPayments.Value);
 
-                        installmentDetails = new InstallmentDetails
+                        installmentDetails.InitialPaymentAmount = request.InitialPaymentAmount.Value;
+                        installmentDetails.InstallmentPaymentAmount = request.InstallmentPaymentAmount.HasValue ? 
+                            request.InstallmentPaymentAmount.Value : (request.Amount.Value - request.InitialPaymentAmount.Value) / (request.NumberOfPayments.Value - 1);
+
+                        if (installmentDetails.InitialPaymentAmount + installmentDetails.InstallmentPaymentAmount * (request.NumberOfPayments.Value - 1) != request.Amount.Value 
+                            || installmentDetails.InitialPaymentAmount < 0.1m || installmentDetails.InstallmentPaymentAmount < 0.1m)
                         {
-                            NumberOfPayments = checkoutConfig.PaymentRequest.NumberOfPayments,
-                            InitialPaymentAmount = checkoutConfig.PaymentRequest.InitialPaymentAmount,
-                            InstallmentPaymentAmount = checkoutConfig.PaymentRequest.InstallmentPaymentAmount,
-                            TotalAmount = checkoutConfig.PaymentRequest.TotalAmount
-                        };
+                            ModelState.AddModelError(nameof(InstallmentDetails), Messages.TotalAmountIsInvalid);
+                        }
                     }
                     else
                     {
                         var installmentPaymentAmount = Math.Floor(request.Amount.Value / request.NumberOfPayments.Value);
 
-                        installmentDetails = new InstallmentDetails
-                        {
-                            NumberOfPayments = request.NumberOfPayments.Value,
-                            InitialPaymentAmount = request.Amount.Value - installmentPaymentAmount * (request.NumberOfPayments.Value - 1),
-                            InstallmentPaymentAmount = installmentPaymentAmount,
-                            TotalAmount = request.Amount.Value
-                        };
+                        installmentDetails.InitialPaymentAmount = request.Amount.Value - installmentPaymentAmount * (request.NumberOfPayments.Value - 1);
+                        installmentDetails.InstallmentPaymentAmount = installmentPaymentAmount;
                     }
                 }
             }
@@ -555,6 +554,17 @@ namespace CheckoutPortal.Controllers
             if (request != null)
             {
                 mapper.Map(request, model);
+
+                if (!request.Amount.HasValue && request.UserAmount)
+                {
+                    request.Amount = 0;
+                    model.Amount = 0;
+                    model.TotalAmount = 0;
+                }
+                else if(request.Amount.GetValueOrDefault(0) == 0 && !request.UserAmount)
+                {
+                    throw new BusinessException(Messages.InvalidCheckoutData);
+                }
             }
 
             mapper.Map(checkoutConfig.PaymentRequest, model);

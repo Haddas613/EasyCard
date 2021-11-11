@@ -108,6 +108,11 @@
               :label="$t('UseQuickChargeByDefault')"
               hide-details
             ></v-switch>
+            <v-switch
+              v-model="model.settings.doNotCreateSaveTokenInitialDeal"
+              :label="$t('DoNotCreateSaveTokenInitialDeal')"
+              hide-details
+            ></v-switch>
           </v-col>
           <v-col md="6" cols="12">
             <v-switch

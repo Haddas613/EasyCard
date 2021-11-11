@@ -132,4 +132,7 @@
   <data name="PaymentRequestClosed" xml:space="preserve">
     <value>Payment Request Closed</value>
   </data>
+  <data name="TotalAmountIsInvalid" xml:space="preserve">
+    <value>Total Amount of installment payments is invalid</value>
+  </data>
 </root>

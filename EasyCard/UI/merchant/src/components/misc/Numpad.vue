@@ -211,12 +211,11 @@ export default {
       //If external data is bigger than current total amount, it's put in the default item price
       this.defaultItem.price = this.data.amount - this.totalAmount;
     }
-
     if(this.model.vatRate === null){
-      this.model.vatRate = this.terminalStore.settings.vatRate
+      this.model.vatRate = this.terminalStore.settings.vatExempt ? null : this.terminalStore.settings.vatRate;
     }
     await this.getItems();
-    this.$emit('update', this.model);
+    //this.$emit('update', this.model);
     
     if(!this.itemsOnly){
       window.addEventListener("keydown", this.handleKeyPress);
@@ -358,12 +357,18 @@ export default {
         return;
       }
 
-      for(let item of this.model.dealDetails.items){
-        item.discount = 0;
+      //first remove all default items (extra price will be added as default item, so to remove duplication)
+      for(let i in this.model.dealDetails.items){
+        if(this.model.dealDetails.items[i].default){
+          this.model.dealDetails.items.splice(i, 1);
+        }else{
+          this.model.dealDetails.items[i].discount = 0;
+        }
       }
       this.defaultItem.price = 0;
-      let diff = this.totalAmount - amount;
-
+      let total = this.lodash.sumBy(this.model.dealDetails.items, e => e.price - e.discount);
+      let diff = total - amount;
+      
       //we need to distribute difference between items in their discount in descending (by price) order
       if(diff > 0){
         for(let item of this.lodash.sortBy(this.model.dealDetails.items, e => e.price).reverse()){
@@ -371,17 +376,20 @@ export default {
             break;
           }
           item.discount = item.price > diff ? diff : item.price;
+          //need to recalculate vats with the new discount
+          this.calculatePricingForItem(item);
           diff -= item.discount;
         }
       }
       //we need to add sum instead of deducting it
-      else{
-        //first remove all default items (extra price will be added as default item, so to remove duplication)
-        this.lodash.remove(this.model.dealDetails.items, e => e.default);
+      else if(diff < 0){
         let newItem = this.prepareItem();
         newItem.price = Math.abs(diff);
         this.model.dealDetails.items.push(newItem);
       }
+
+      itemPricingService.total.calculate(this.model, { vatRate: this.model.vatRate});
+      this.$emit('update', this.model)
     }
   }
 };

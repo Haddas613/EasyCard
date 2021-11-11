@@ -76,5 +76,7 @@ namespace Merchants.Shared.Models
         {
             J5ExpirationDays = 1;
         }
+
+        public bool DoNotCreateSaveTokenInitialDeal { get; set; }
     }
 }

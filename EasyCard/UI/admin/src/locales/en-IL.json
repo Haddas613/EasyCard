@@ -400,6 +400,7 @@
   "House": "House",
   "Apartment": "Apartment",
   "UseQuickChargeByDefault": "Use Quick Charge by Default",
+  "DoNotCreateSaveTokenInitialDeal": "Do not create initial deal for save token",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",

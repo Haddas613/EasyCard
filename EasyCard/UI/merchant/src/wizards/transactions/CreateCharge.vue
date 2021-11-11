@@ -384,6 +384,11 @@ export default {
       this.model.oKNumber = data.oKNumber;
       this.$set(this.model, 'installmentDetails', data.installmentDetails);
       this.model.transactionType = data.transactionType;
+
+      if(data.dealDetails && this.model.dealDetails.consumerName){
+        this.model.key = `${this.terminal.terminalID}-${this.model.dealDetails.consumerName}`;
+        this.model.dealDetails.consumerName = data.dealDetails.consumerName;
+      }
       
       if (data.type === "creditcard") {
         data = data.data;
