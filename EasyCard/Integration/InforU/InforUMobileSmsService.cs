@@ -11,6 +11,8 @@ using Shared.Integration.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -83,7 +85,10 @@ namespace InforU
 
             try
             {
-                svcResStr = await this.apiClient.PostRawForm(this.configuration.InforUMobileBaseUrl, "/SendMessageXml.ashx", dict, () => Task.FromResult(headers));
+                svcResStr = await this.apiClient.PostRawForm(this.configuration.InforUMobileBaseUrl, "/SendMessageXml.ashx", dict, () => Task.FromResult(headers), 
+                    onResponse: (string response, HttpStatusCode responseStatus, HttpResponseHeaders responseHeaders) => {
+                        integrationMessage.ResponseStatus = responseStatus.ToString();
+                    });
             }
             catch (Exception ex)
             {
@@ -95,6 +100,7 @@ namespace InforU
                 throw new IntegrationException("InforUMobileSms integration request failed", message.MessageId);
             }
 
+            integrationMessage.Response = svcResStr;
             await storageService.Save(integrationMessage);
 
             if (svcResStr == null) {
