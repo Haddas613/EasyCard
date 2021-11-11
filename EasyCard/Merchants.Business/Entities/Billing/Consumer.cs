@@ -38,7 +38,7 @@ namespace Merchants.Business.Entities.Billing
         /// </summary>
         public string ConsumerPhone { get; set; }
 
-        public string ConsumeSecondPhone { get; set; }
+        public string ConsumerSecondPhone { get; set; }
 
         public string ConsumerNationalID { get; set; }
 
