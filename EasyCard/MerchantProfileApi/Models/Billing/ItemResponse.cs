@@ -25,5 +25,7 @@ namespace MerchantProfileApi.Models.Billing
         public string CorrelationId { get; set; }
 
         public string ExternalReference { get; set; }
+
+        public string BillingDesktopRefNumber { get; set; }
     }
 }

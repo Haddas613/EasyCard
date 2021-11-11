@@ -335,6 +335,9 @@
   "UseQuickChargeByDefault": "Use Quick Charge by Default",
   "EuroRate": "Euro Rate",
   "DollarRate": "Dollar Rate",
+  "BillingDesktopRefNumber": "Billing Desktop Reference Number",
+  "SecondPhone": "Second Phone",
+  "Note": "Note",
 
   "--BUTTONS--": null,
   "Cancel": "Cancel",
