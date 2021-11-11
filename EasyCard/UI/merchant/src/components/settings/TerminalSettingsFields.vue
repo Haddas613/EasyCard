@@ -58,6 +58,29 @@
       </v-col>
       <v-col cols="12" md="6">
         <v-text-field
+          v-model="model.settings.euroRate"
+          :label="$t('EuroRate')"
+          :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(2)]"
+          required
+          outlined
+          :hint="$t('CurrencyRateZeroValueHint')"
+          persistent-hint
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-text-field
+          v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
+          v-model="model.settings.dollarRate"
+          :label="$t('DollarRate')"
+          :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(2)]"
+          required
+          outlined
+          :hint="$t('CurrencyRateZeroValueHint')"
+          persistent-hint
+        ></v-text-field>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-text-field
           :value="(model.settings.vatRate * 100).toFixed(0)"
           :label="$t('VATPercent')"
           :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(2)]"

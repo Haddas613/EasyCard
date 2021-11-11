@@ -43,5 +43,12 @@ namespace MerchantProfileApi.Models.Terminal
         public bool? SendTransactionSlipEmailToMerchant { get; set; }
 
         public bool? UseQuickChargeByDefault { get; set; }
+
+        /// <summary>
+        /// if 0 takes values from BankOfIsrael
+        /// </summary>
+        public decimal EuroRate { get; set; }
+
+        public decimal DollarRate { get; set; }
     }
 }
