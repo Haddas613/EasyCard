@@ -335,6 +335,9 @@
   "UseQuickChargeByDefault": "בצע עסקה מהירה כברירת מחדל",
   "EuroRate": "שער יורו",
   "DollarRate": "שער דולר",
+  "BillingDesktopRefNumber": "מזהה ממערכת בילינג דסקטופ",
+  "SecondPhone": "טלפון שני",
+  "Note": "הערה",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",
