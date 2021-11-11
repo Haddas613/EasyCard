@@ -282,6 +282,7 @@ export default {
 
       let data = await this.$api.items.getItems({
         search: searchApply ? this.search : "",
+        terminalID: this.terminalStore.terminalID,
         currency: this.currencyStore.code
       });
       if (data && data.data) {

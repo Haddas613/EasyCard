@@ -401,6 +401,8 @@
   "Apartment": "Apartment",
   "UseQuickChargeByDefault": "Use Quick Charge by Default",
   "DoNotCreateSaveTokenInitialDeal": "Do not create initial deal for save token",
+  "EuroRate": "Euro Rate",
+  "DollarRate": "Dollar Rate",
   
   "--BUTTONS--": null,
   "Cancel": "Cancel",
@@ -528,6 +530,7 @@
   "ThisCreditCardIsAlreadyAddedAsToken": "This credit card is already added as Token",
   "WhenEnabledVATWillBeIgnored": "When enabled VAT will be ignored",
   "ClickToDownload": "Click to download",
+  "CurrencyRateZeroValueHint": "When set to 0 the rate from Bank of Israel will be used",
 
   "--MESSAGES--": null,
   "AreYouSureYouWantToDeleteBillingDeal": "Are you sure you want to delete billing deal?",

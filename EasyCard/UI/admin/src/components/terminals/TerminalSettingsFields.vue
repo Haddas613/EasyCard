@@ -70,7 +70,28 @@
               :label="$t('DefaultRefundDescription')"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="4" class="mb-2">
+            <v-text-field
+              v-model="model.settings.euroRate"
+              :label="$t('EuroRate')"
+              :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(2)]"
+              required
+              :hint="$t('CurrencyRateZeroValueHint')"
+              persistent-hint
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4" class="mb-2">
+            <v-text-field
+              class="px-1"
+              v-model="model.settings.dollarRate"
+              :label="$t('DollarRate')"
+              :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(2)]"
+              required
+              :hint="$t('CurrencyRateZeroValueHint')"
+              persistent-hint
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="2">
             <v-text-field
               class="w99"
               :value="(model.settings.vatRate * 100).toFixed(0)"
@@ -81,7 +102,7 @@
               hide-details
             ></v-text-field>
           </v-col>
-          <v-col cols="12" md="6">
+          <v-col cols="12" md="2">
             <v-switch
               class="pt-0 mt-0 pb-2"
               v-model="model.settings.vatExempt"

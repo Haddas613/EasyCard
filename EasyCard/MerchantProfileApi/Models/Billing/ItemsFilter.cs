@@ -12,5 +12,7 @@ namespace MerchantProfileApi.Models.Billing
         public string Search { get; set; }
 
         public CurrencyEnum? Currency { get; set; }
+
+        public Guid? TerminalID { get; set; }
     }
 }

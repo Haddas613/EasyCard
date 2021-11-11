@@ -64,11 +64,6 @@ export default {
     EcList: () => import("../ec/EcList"),
     ReIcon: () => import("../misc/ResponsiveIcon"),
   },
-  props: {
-    filterByTerminal: {
-      default: true
-    }
-  },
   data() {
     return {
       items: [],
@@ -97,7 +92,7 @@ export default {
 
       let data = await this.$api.items.getItems({
           search: searchApply ? this.search : null,
-          terminalID: this.filterByTerminal ? this.terminalStore.terminalID : null,
+          terminalID: this.terminalStore.terminalID,
           ...this.paging
       });
       if (data) {

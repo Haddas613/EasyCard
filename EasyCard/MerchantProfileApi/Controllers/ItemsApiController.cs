@@ -39,19 +39,22 @@ namespace MerchantProfileApi.Controllers
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly IMerchantsService merchantsService;
         private readonly ICurrencyRateService currencyRateService;
+        private readonly ITerminalsService terminalsService;
 
         public ItemsApiController(
             IItemsService itemsService,
             IMapper mapper,
             IHttpContextAccessorWrapper httpContextAccessor,
             IMerchantsService merchantsService,
-            ICurrencyRateService currencyRateService)
+            ICurrencyRateService currencyRateService,
+            ITerminalsService terminalsService)
         {
             this.itemsService = itemsService;
             this.mapper = mapper;
             this.httpContextAccessor = httpContextAccessor;
             this.merchantsService = merchantsService;
             this.currencyRateService = currencyRateService;
+            this.terminalsService = terminalsService;
         }
 
         [HttpGet]
@@ -84,6 +87,13 @@ namespace MerchantProfileApi.Controllers
                 {
                     var rates = await currencyRateService.GetLatestRates(); // TODO: caching
                     var currency = filter.Currency.GetValueOrDefault(CurrencyEnum.ILS);
+
+                    if (filter.TerminalID.HasValue)
+                    {
+                        var terminal = EnsureExists(await terminalsService.GetTerminal(filter.TerminalID.Value));
+                        rates.EURRate = terminal.Settings.EuroRate > 0 ? terminal.Settings.EuroRate : rates.EURRate;
+                        rates.USDRate = terminal.Settings.DollarRate > 0 ? terminal.Settings.DollarRate : rates.USDRate;
+                    }
 
                     var data = await query.OrderByDescending(i => i.Created).ApplyPagination(filter).Future().ToListAsync();
 

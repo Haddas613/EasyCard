@@ -405,6 +405,8 @@
   "Apartment": "דירה",
   "UseQuickChargeByDefault": "בצע עסקה מהירה כברירת מחדל",
   "DoNotCreateSaveTokenInitialDeal": "אל תיצור עסקת אתחול לשמירת טוקן",
+  "EuroRate": "שער יורו",
+  "DollarRate": "שער דולר",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",
@@ -533,6 +535,7 @@
   "ThisCreditCardIsAlreadyAddedAsToken": "כרטיס האשראי כבר קיים כטוקן",
   "WhenEnabledVATWillBeIgnored": "כאשר מופעל מע\"מ לא יחושב",
   "ClickToDownload": "לחץ להורדה",
+  "CurrencyRateZeroValueHint": "כאשר מוגדר 0 שער המטבע יוגדר עפ\"י בנק ישראל",
 
   "--MESSAGES--": null,
   "AreYouSureYouWantToDeleteBillingDeal": "האם אתה בטוח שאתה מעוניין למחוק עסקה מחזורית?",
