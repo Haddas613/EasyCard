@@ -241,7 +241,7 @@ namespace CheckoutPortal.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of payments must be less than @min.
+        ///   Looks up a localized string similar to Number of payments must be less than @max.
         /// </summary>
         public static string NumberOfPaymentsMustBeLessThan {
             get {

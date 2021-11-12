@@ -23,11 +23,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Monitoring\" />
+    <Folder Include="NewFolder\" />
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="Properties\ServiceDependencies\" />
     <Folder Include="Reporting\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Integration\BankOfIsrael\BankOfIsrael.csproj" />
     <ProjectReference Include="..\..\Shared.Helpers\Shared.Helpers.csproj" />
     <ProjectReference Include="..\..\Transactions.Api.Client\Transactions.Api.Client.csproj" />
   </ItemGroup>

@@ -193,7 +193,7 @@
     <value>Make Pinpad Deal</value>
   </data>
   <data name="NumberOfPaymentsMustBeLessThan" xml:space="preserve">
-    <value>Number of payments must be less than @min</value>
+    <value>Number of payments must be less than @max</value>
   </data>
   <data name="RegularDeal" xml:space="preserve">
     <value>Regular Deal</value>

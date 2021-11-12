@@ -193,7 +193,7 @@
     <value>בצע עסקת פינפד</value>
   </data>
   <data name="NumberOfPaymentsMustBeLessThan" xml:space="preserve">
-    <value>@min - מספר התשלומים חייב להיות פחות מ</value>
+    <value>@max - מספר התשלומים חייב להיות פחות מ</value>
   </data>
   <data name="TransactionType" xml:space="preserve">
     <value>סוג עסקה</value>

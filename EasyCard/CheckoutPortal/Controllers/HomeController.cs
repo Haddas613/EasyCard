@@ -237,10 +237,11 @@ namespace CheckoutPortal.Controllers
 
             if (request.TransactionType == TransactionTypeEnum.Installments || request.TransactionType == TransactionTypeEnum.Credit)
             {
-                if (request.NumberOfPayments > (request.TransactionType == TransactionTypeEnum.Credit ? checkoutConfig.Settings.MaxCreditInstallments : checkoutConfig.Settings.MaxInstallments))
+                var maxNumberOfPayments = (request.TransactionType == TransactionTypeEnum.Credit ? checkoutConfig.Settings.MaxCreditInstallments : checkoutConfig.Settings.MaxInstallments);
+                if (request.NumberOfPayments > maxNumberOfPayments)
                 {
-                    ModelState.AddModelError(nameof(request.NumberOfPayments),
-                       Resources.CommonResources.NumberOfPaymentsMustBeLessThan.Replace("@min", checkoutConfig.Settings.MaxCreditInstallments.Value.ToString()));
+                    ModelState.AddModelError(nameof(request.NumberOfPayments), 
+                        Resources.CommonResources.NumberOfPaymentsMustBeLessThan.Replace("@max", maxNumberOfPayments.GetValueOrDefault(0).ToString()));
                 }
                 else
                 {

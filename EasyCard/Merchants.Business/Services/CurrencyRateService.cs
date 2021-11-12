@@ -41,5 +41,22 @@ namespace Merchants.Business.Services
                 USDRate = usdRate,
             };
         }
+
+        public async Task CreateOrUpdate(CurrencyRate currencyRate)
+        {
+            var dbEntity = await context.CurrencyRates.FirstOrDefaultAsync(e => e.Currency == currencyRate.Currency);
+
+            if (dbEntity != null)
+            {
+                dbEntity.Date = currencyRate.Date;
+                dbEntity.Rate = currencyRate.Rate;
+            }
+            else
+            {
+                context.CurrencyRates.Add(currencyRate);
+            }
+
+            await context.SaveChangesAsync();
+        }
     }
 }
