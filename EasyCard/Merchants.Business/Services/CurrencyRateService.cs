@@ -10,6 +10,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace Merchants.Business.Services
 {
@@ -18,6 +19,8 @@ namespace Merchants.Business.Services
         private readonly MerchantsContext context;
         private readonly ClaimsPrincipal user;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
+
+        private readonly string currencyRateCacheTag = nameof(CurrencyRate);
 
         public CurrencyRateService(MerchantsContext context, IHttpContextAccessorWrapper httpContextAccessor)
             : base(context)
@@ -31,32 +34,33 @@ namespace Merchants.Business.Services
 
         public async Task<CurrencyRateTuple> GetLatestRates(DateTime? date = null)
         {
-            var usdRate = await GetRates().OrderByDescending(d => d.Date).Where(d => (date == null || d.Date <= date) && d.Currency == CurrencyEnum.USD).Select(d => d.Rate).FirstOrDefaultAsync();
+            var usdRate = await GetRates().OrderByDescending(d => d.Date)
+                .Where(d => (date == null || d.Date <= date) && d.Currency == CurrencyEnum.USD)
+                .DeferredFirstOrDefault()
+                .FromCacheAsync(currencyRateCacheTag);
 
-            var eurRate = await GetRates().OrderByDescending(d => d.Date).Where(d => (date == null || d.Date <= date) && d.Currency == CurrencyEnum.EUR).Select(d => d.Rate).FirstOrDefaultAsync();
+            var eurRate = await GetRates().OrderByDescending(d => d.Date)
+                .Where(d => (date == null || d.Date <= date) && d.Currency == CurrencyEnum.EUR)
+                .DeferredFirstOrDefault()
+                .FromCacheAsync(currencyRateCacheTag);
 
             return new CurrencyRateTuple
             {
-                EURRate = eurRate,
-                USDRate = usdRate,
+                EURRate = eurRate?.Rate,
+                USDRate = usdRate?.Rate,
             };
         }
 
         public async Task CreateOrUpdate(CurrencyRate currencyRate)
         {
-            var dbEntity = await context.CurrencyRates.FirstOrDefaultAsync(e => e.Currency == currencyRate.Currency);
+            var dbEntity = await context.CurrencyRates.FirstOrDefaultAsync(e => e.Currency == currencyRate.Currency && e.Date == currencyRate.Date);
 
-            if (dbEntity != null)
-            {
-                dbEntity.Date = currencyRate.Date;
-                dbEntity.Rate = currencyRate.Rate;
-            }
-            else
-            {
-                context.CurrencyRates.Add(currencyRate);
-            }
+            if (dbEntity != null) { return; }
 
+            context.CurrencyRates.Add(currencyRate);
             await context.SaveChangesAsync();
+
+            QueryCacheManager.ExpireTag(currencyRateCacheTag);
         }
     }
 }
