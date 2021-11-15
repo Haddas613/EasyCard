@@ -183,5 +183,8 @@ namespace Transactions.Business.Entities
         public bool UserAmount { get; set; }
 
         public JObject Extension { get; set; }
+
+        [NotMapped]
+        public Guid? BillingDealID { get; set; }
     }
 }
