@@ -9,6 +9,7 @@ using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -537,6 +538,22 @@ namespace Transactions.Api.Controllers
             return response;
         }
 
+        private string GetBillingDealLink(Guid billingDealID)
+        {
+            var uriBuilder = new UriBuilder(apiSettings.MerchantsManagementApiAddress);
+            uriBuilder.Path = $"/billing-deals/view/{billingDealID}";
+
+            var aTag = new TagBuilder("a");
+
+            aTag.MergeAttribute("href", uriBuilder.ToString());
+            aTag.InnerHtml.Append(billingDealID.ToString());
+
+            var writer = new System.IO.StringWriter();
+            aTag.WriteTo(writer, System.Text.Encodings.Web.HtmlEncoder.Default);
+
+            return writer.ToString();
+        }
+
         private async Task SendBillingDealCreditCardTokenExpiredEmail(BillingDeal billingDeal, Terminal terminal)
         {
             var settings = terminal.PaymentRequestSettings;
@@ -546,7 +563,7 @@ namespace Transactions.Api.Controllers
             var emailTemplateCode = "BillingDealCardExpired";
             var substitutions = new List<TextSubstitution>
             {
-                new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo),
+                new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : $"{apiSettings.BlobBaseAddress}/{settings.MerchantLogo}"),
                 new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName),
 
                 new TextSubstitution(nameof(billingDeal.DealDetails.DealDescription), billingDeal.DealDetails?.DealDescription ?? string.Empty),
@@ -554,7 +571,7 @@ namespace Transactions.Api.Controllers
                 new TextSubstitution(nameof(billingDeal.CreditCardDetails.CardNumber), billingDeal.CreditCardDetails?.CardNumber ?? string.Empty),
                 new TextSubstitution(nameof(billingDeal.CreditCardDetails.CardOwnerName), billingDeal.CreditCardDetails?.CardOwnerName ?? string.Empty),
                 new TextSubstitution(nameof(billingDeal.DealDetails.ConsumerID), billingDeal.DealDetails.ConsumerID?.ToString() ?? string.Empty),
-                new TextSubstitution(nameof(billingDeal.BillingDealID), billingDeal.BillingDealID.ToString()),
+                new TextSubstitution(nameof(billingDeal.BillingDealID), GetBillingDealLink(billingDeal.BillingDealID))
             };
 
             if (!string.IsNullOrWhiteSpace(billingDeal.DealDetails?.ConsumerEmail))
