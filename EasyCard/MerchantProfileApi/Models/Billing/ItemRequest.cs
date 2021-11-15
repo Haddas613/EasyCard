@@ -22,5 +22,8 @@ namespace MerchantProfileApi.Models.Billing
 
         [StringLength(50)]
         public string ExternalReference { get; set; }
+
+        [StringLength(50)]
+        public string BillingDesktopRefNumber { get; set; }
     }
 }
