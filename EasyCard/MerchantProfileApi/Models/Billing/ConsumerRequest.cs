@@ -44,11 +44,26 @@ namespace MerchantProfileApi.Models.Billing
         public string ConsumerPhone { get; set; }
 
         /// <summary>
+        /// End-customer Phone
+        /// </summary>
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [Required(AllowEmptyStrings = false)]
+        [StringLength(50)]
+        public string ConsumerPhone2 { get; set; }
+
+        /// <summary>
         /// End-customer National ID
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [StringLength(50)]
         public string ConsumerNationalID { get; set; }
+
+        /// <summary>
+        /// End-customer note details
+        /// </summary>
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [StringLength(256)]
+        public string Note { get; set; }
 
         /// <summary>
         /// End-customer address
@@ -61,6 +76,14 @@ namespace MerchantProfileApi.Models.Billing
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [StringLength(50)]
         public string ExternalReference { get; set; }
+
+        /// <summary>
+        /// ID in BillingDesktop system
+        /// </summary>
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [StringLength(50)]
+
+        public string BillingDesktopRefNumber { get; set; }
 
         /// <summary>
         /// Origin of customer
