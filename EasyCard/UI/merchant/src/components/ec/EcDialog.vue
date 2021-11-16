@@ -4,7 +4,7 @@
       <v-card-title class="headline py-0 white">
         <v-row :align="'center'">
           <v-col class="d-flex justify-start px-1" cols="2">
-            <v-btn icon @click="$emit('update:dialog', false)">
+            <v-btn icon @click="onDismiss()">
               <re-icon class="px-2">mdi-arrow-left</re-icon>
             </v-btn>
           </v-col>
@@ -57,9 +57,12 @@ export default {
       default: "white",
       required: false
     }
-  }
+  },
+  methods: {
+    onDismiss() {
+      this.$emit('update:dialog', false);
+      this.$emit('dismiss');
+    }
+  },
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
