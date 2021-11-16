@@ -49,6 +49,7 @@ namespace Transactions.Api.Mapping
                 .ForMember(m => m.DealDetails, s => s.MapFrom(src => src.DealDetails));
 
             CreateMap<PaymentTransaction, ProcessorCreateTransactionRequest>()
+                .ForMember(m => m.PaymentTransactionID, s => s.MapFrom(src => src.PaymentTransactionID.ToString()))
                 .ForMember(m => m.CreditCardToken, s => s.Ignore())
                 .ForMember(m => m.EasyCardTerminalID, s => s.MapFrom(src => src.TerminalID))
                 .ForMember(m => m.PinpadDeviceID, s => s.MapFrom(src => src.PinPadDeviceID))
@@ -89,6 +90,7 @@ namespace Transactions.Api.Mapping
             CreateMap<CreditCardSecureDetails, CreditCardSecureDetails>();
 
             CreateMap<Invoice, InvoicingCreateDocumentRequest>()
+                 .ForMember(m => m.InvoiceID, s => s.MapFrom(src => src.InvoiceID.ToString()))
                  .ForMember(m => m.ConsumerName, s => s.MapFrom(src => src.DealDetails.ConsumerName))
                  .ForMember(m => m.ConsumerNationalID, s => s.MapFrom(src => src.DealDetails.ConsumerNationalID))
                  .ForMember(m => m.TransactionType, s => s.MapFrom(src => src.TransactionType))

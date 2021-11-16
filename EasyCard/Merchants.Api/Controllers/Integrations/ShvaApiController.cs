@@ -127,7 +127,8 @@ namespace Merchants.Api.Controllers.Integrations
             {
                 NewPassword = newPassword,
                 CorrelationId = GetCorrelationID(),
-                ProcessorSettings = processorSettings
+                ProcessorSettings = processorSettings,
+                TerminalID = externalSystem.TerminalID
             };
 
             return await shvaProcessor.ChangePassword(processorRequest);

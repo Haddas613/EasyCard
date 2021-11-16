@@ -192,7 +192,13 @@ namespace Transactions.Api.Controllers
                     terminalProcessor,
                     shvaTerminalSettings != null ? JObject.FromObject(shvaTerminalSettings) : terminalProcessor.Settings);
 
-                var processorRequest = new ProcessorTransmitTransactionsRequest { TransactionIDs = processorIds, ProcessorSettings = processorSettings, CorrelationId = GetCorrelationID() };
+                var processorRequest = new ProcessorTransmitTransactionsRequest 
+                {
+                    TransactionIDs = processorIds,
+                    ProcessorSettings = processorSettings,
+                    CorrelationId = GetCorrelationID(),
+                    TerminalID = terminal.TerminalID
+                };
 
                 var processorResponse = await processor.TransmitTransactions(processorRequest);
 

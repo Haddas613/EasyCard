@@ -142,7 +142,7 @@ namespace ClearingHouse
             }
             finally
             {
-                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, transactionRequest.CorrelationId);
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, transactionRequest.TransactionID, integrationMessageId, transactionRequest.CorrelationId);
 
                 integrationMessage.Request = requestStr;
                 integrationMessage.Response = responseStr;

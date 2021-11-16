@@ -92,7 +92,7 @@ namespace Upay
                 }
                 finally
                 {
-                    IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, transactionRequest.CorrelationId);
+                    IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, transactionRequest.TransactionID, integrationMessageId, transactionRequest.CorrelationId);
 
                     integrationMessage.Request = jsonResult;
                     integrationMessage.Response = responseStr;
@@ -187,7 +187,7 @@ namespace Upay
                 }
                 finally
                 {
-                    IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, transactionRequest.CorrelationId);
+                    IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, transactionRequest.TransactionID, integrationMessageId, transactionRequest.CorrelationId);
 
                     integrationMessage.Request = jsonResult;
                     integrationMessage.Response = responseStr;

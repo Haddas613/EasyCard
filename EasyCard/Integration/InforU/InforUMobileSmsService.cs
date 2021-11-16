@@ -48,7 +48,7 @@ namespace InforU
         {
             var integrationMessageId = Guid.NewGuid().GetSortableStr(DateTime.UtcNow);
             var correlationId = message.CorrelationId;
-            IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.Now, integrationMessageId, correlationId);
+            IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.Now, message.To, integrationMessageId, correlationId);
 
             integrationMessage.MessageId = message.MessageId;
             integrationMessage.MerchantID = message.MerchantID;

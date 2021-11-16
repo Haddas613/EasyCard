@@ -88,7 +88,7 @@ namespace Nayax
             }
             finally
             {
-                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, paymentTransactionRequest.CorrelationId);
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, nayaxParameters.TerminalID, integrationMessageId, paymentTransactionRequest.CorrelationId);
 
                 //Do not expose credit card and cvv numbers in log
                 //requestStr = Regex.Replace(requestStr, "\\<clientInputPan\\>\\d{9,16}\\</clientInputPan\\>", "<clientInputPan>****************</clientInputPan>");
@@ -175,7 +175,7 @@ namespace Nayax
             }
             finally
             {
-                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, paymentTransactionRequest.CorrelationId);
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, paymentTransactionRequest.PaymentTransactionID, integrationMessageId, paymentTransactionRequest.CorrelationId);
 
                 //Do not expose credit card and cvv numbers in log
                 //requestStr = Regex.Replace(requestStr, "\\<clientInputPan\\>\\d{9,16}\\</clientInputPan\\>", "<clientInputPan>****************</clientInputPan>");
@@ -262,7 +262,7 @@ namespace Nayax
             }
             finally
             {
-                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, pairRequest.CorrelationId);
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, pairRequest.terminalID, integrationMessageId, pairRequest.CorrelationId);
 
                 integrationMessage.Request = requestStr;
                 integrationMessage.Response = responseStr;
@@ -377,7 +377,7 @@ namespace Nayax
             }
             finally
             {
-                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, updateParamRequest.CorrelationId);
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, nayaxParameters.TerminalID, integrationMessageId, updateParamRequest.CorrelationId);
 
                 integrationMessage.Request = requestStr;
                 integrationMessage.Response = responseStr;

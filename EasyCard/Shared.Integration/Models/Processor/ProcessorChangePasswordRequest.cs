@@ -24,5 +24,10 @@ namespace Shared.Integration.Models
         /// Request ID
         /// </summary>
         public string CorrelationId { get; set; }
+
+        /// <summary>
+        /// Easy Card Terminal ID
+        /// </summary>
+        public Guid TerminalID { get; set; }
     }
 }
