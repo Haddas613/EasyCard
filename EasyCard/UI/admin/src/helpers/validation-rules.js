@@ -2,7 +2,7 @@ import i18n from '../i18n'
 
 const primitives = {
     /**Common */
-    required: (v) => !!v || i18n.t('Required'),
+    required: (v) => (v === 0 || !!v) || i18n.t('Required'),
 
     /**Only required if dependent value is truthy */
     requiredDepends: (d) => (v) => (!d || !!v) || i18n.t('Required'),
