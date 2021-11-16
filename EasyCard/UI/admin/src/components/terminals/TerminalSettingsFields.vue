@@ -360,7 +360,7 @@
         <v-row no-gutters>
           <v-col cols="12" md="12">
             <v-btn color="primary" small @click="resetPrivateKey()">{{$t("ResetPrivateKey")}}</v-btn>
-            <v-btn color="success" class="mx-1" :disabled="privateApiKey" small @click="showPrivateKey()">{{$t("ShowPrivateKey")}}</v-btn>
+            <v-btn color="success" class="mx-1" :disabled="!!privateApiKey" small @click="showPrivateKey()">{{$t("ShowPrivateKey")}}</v-btn>
           </v-col>
           <v-col cols="12" md="12" class="mt-4">
             <v-text-field

@@ -2,13 +2,13 @@ import i18n from '../i18n'
 
 const primitives = {
     /**Common */
-    required: (v) => !!v || i18n.t('Required'),
+    required: (v) => (v === 0 || !!v) || i18n.t('Required'),
 
     /**Only required if dependent value is truthy */
-    requiredDepends: (d) => (v) => (!d || !!v) || i18n.t('Required'),
+    requiredDepends: (d) => (v) => (!d || (v === 0 || !!v)) || i18n.t('Required'),
 
     /**Only required if dependent value is false */
-    requiredDependsOnFalsy: (d) => (v) => (!!v || (!!d)) || i18n.t('Required'),
+    requiredDependsOnFalsy: (d) => (v) => ((v === 0 || !!v) || (!!d)) || i18n.t('Required'),
 
     maxLength: (max) => (v) => (!v || v.length <= max) || i18n.t('@MaxLength').replace("@max", max),
     stringLength: (min, max) => (v) => (!v || (v.length >= min && v.length <= max)) || (
