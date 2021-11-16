@@ -76,7 +76,7 @@
           <customer-dialog-invoker
             :show.sync="customersDialog"
             dialog-only
-            :terminal="model.terminalID" 
+            :terminal="terminal.terminalID" 
             :customer-id="model.dealDetails.consumerID" 
             @update="processCustomer($event)"></customer-dialog-invoker>
         </v-col>
