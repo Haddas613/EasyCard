@@ -133,7 +133,6 @@ namespace MerchantProfileApi.Controllers
             var newItem = mapper.Map<Item>(model);
 
             newItem.MerchantID = User.GetMerchantID().GetValueOrDefault();
-            newItem.Active = true;
 
             newItem.ApplyAuditInfo(httpContextAccessor);
 
