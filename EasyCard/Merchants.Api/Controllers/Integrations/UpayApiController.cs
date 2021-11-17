@@ -12,32 +12,24 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Api;
 using Shared.Api.Models;
+using Upay;
 
 namespace Merchants.Api.Controllers.Integrations
 {
-    [Route("api/integrations/clearing-house")]
+    [Route("api/integrations/upay")]
     [Produces("application/json")]
     [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = Policy.AnyAdmin)]
     [ApiExplorerSettings(IgnoreApi = true)]
-    public class ClearingHouseApiController : ApiControllerBase
+    public class UpayApiController : ApiControllerBase
     {
-        private readonly ClearingHouseAggregator clearingHouseAggregator;
+        private readonly UpayAggregator upayAggregator;
         private readonly IMapper mapper;
 
-        public ClearingHouseApiController(ClearingHouseAggregator clearingHouseAggregator, IMapper mapper)
+        public UpayApiController(UpayAggregator upayAggregator, IMapper mapper)
         {
-            this.clearingHouseAggregator = clearingHouseAggregator;
+            this.upayAggregator = upayAggregator;
             this.mapper = mapper;
-        }
-
-        [HttpGet]
-        [Route("merchants")]
-        public async Task<ActionResult<SummariesResponse<MerchantSummary>>> GetMerchants([FromQuery]GetCHMerchantsRequest request)
-        {
-            var response = await clearingHouseAggregator.GetMerchants(new GetMerchantsQuery { MerchantID = request.MerchantID, MerchantName = request.MerchantName });
-
-            return Ok(response);
         }
 
         [HttpGet]
@@ -49,7 +41,7 @@ namespace Merchants.Api.Controllers.Integrations
                 return NotFound();
             }
 
-            var data = mapper.Map<IEnumerable<IntegrationRequestLog>>(await clearingHouseAggregator.GetStorageLogs(entityID));
+            var data = mapper.Map<IEnumerable<IntegrationRequestLog>>(await upayAggregator.GetStorageLogs(entityID));
 
             var response = new SummariesResponse<IntegrationRequestLog>
             {

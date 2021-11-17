@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Merchants.Api.Models.Integrations;
 using Merchants.Api.Models.Integrations.Shva;
 using Merchants.Api.Models.Terminal;
 using Merchants.Business.Entities.System;
@@ -70,6 +71,26 @@ namespace Merchants.Api.Controllers.Integrations
             {
                 return await SetNewPasswordForTerminal(request.TerminalID.Value, request.NewPassword);
             }
+        }
+
+        [HttpGet]
+        [Route("request-logs/{entityID}")]
+        public async Task<ActionResult<SummariesResponse<IntegrationRequestLog>>> GetRequestLogs([FromRoute]string entityID)
+        {
+            if (string.IsNullOrWhiteSpace(entityID))
+            {
+                return NotFound();
+            }
+
+            var data = mapper.Map<IEnumerable<IntegrationRequestLog>>(await shvaProcessor.GetStorageLogs(entityID));
+
+            var response = new SummariesResponse<IntegrationRequestLog>
+            {
+                Data = data,
+                NumberOfRecords = data.Count()
+            };
+
+            return Ok(response);
         }
 
         private async Task<OperationResponse> SetNewPasswordForTerminal(Guid terminalID, string newPassword)

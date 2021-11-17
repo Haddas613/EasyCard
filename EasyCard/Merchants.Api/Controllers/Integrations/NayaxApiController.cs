@@ -1,4 +1,6 @@
-﻿using Merchants.Api.Models.Integrations.Nayax;
+﻿using AutoMapper;
+using Merchants.Api.Models.Integrations;
+using Merchants.Api.Models.Integrations.Nayax;
 using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,13 +26,16 @@ namespace Merchants.Api.Controllers.Integrations
     {
         private readonly Nayax.NayaxProcessor nayaxProcessor;
         private readonly ITerminalsService terminalsService;
+        private readonly IMapper mapper;
 
         public NayaxApiController(
             NayaxProcessor nayaxProcessor,
-            ITerminalsService terminalsService)
+            ITerminalsService terminalsService,
+            IMapper mapper)
         {
             this.nayaxProcessor = nayaxProcessor;
             this.terminalsService = terminalsService;
+            this.mapper = mapper;
         }
 
         [HttpPost]
@@ -107,6 +112,26 @@ namespace Merchants.Api.Controllers.Integrations
 
                 return BadRequest(response);
             }
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("request-logs/{entityID}")]
+        public async Task<ActionResult<SummariesResponse<IntegrationRequestLog>>> GetRequestLogs([FromRoute]string entityID)
+        {
+            if (string.IsNullOrWhiteSpace(entityID))
+            {
+                return NotFound();
+            }
+
+            var data = mapper.Map<IEnumerable<IntegrationRequestLog>>(await nayaxProcessor.GetStorageLogs(entityID));
+
+            var response = new SummariesResponse<IntegrationRequestLog>
+            {
+                Data = data,
+                NumberOfRecords = data.Count()
+            };
 
             return Ok(response);
         }

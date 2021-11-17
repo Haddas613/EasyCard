@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Merchants.Api.Models.Integrations;
 using Merchants.Api.Models.System;
 using Merchants.Api.Models.User;
 using Merchants.Business.Entities.System;
@@ -42,6 +43,18 @@ namespace Merchants.Api.Controllers
             {
                 Columns = typeof(DatabaseLogEntry)
                     .GetObjectMeta(DatabaseLogEntryResource.ResourceManager, CurrentCulture)
+            };
+        }
+
+        [HttpGet]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Route("$meta-integration-logs")]
+        public TableMeta GetIntegrationLogsMetadata()
+        {
+            return new TableMeta
+            {
+                Columns = typeof(IntegrationRequestLog)
+                    .GetObjectMeta(IntegrationRequestLogResource.ResourceManager, CurrentCulture)
             };
         }
 

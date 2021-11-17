@@ -111,6 +111,77 @@
               Looks up a localized string similar to Customer created successfully.
             </summary>
         </member>
+        <member name="T:Merchants.Api.Models.Integrations.IntegrationRequestLogResource">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.IntegrationRequestLogResource.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.IntegrationRequestLogResource.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.IntegrationRequestLogResource.Action">
+            <summary>
+              Looks up a localized string similar to Action.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.IntegrationRequestLogResource.Address">
+            <summary>
+              Looks up a localized string similar to Address.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.IntegrationRequestLogResource.CorrelationId">
+            <summary>
+              Looks up a localized string similar to Correlation ID.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.IntegrationRequestLogResource.EntityID">
+            <summary>
+              Looks up a localized string similar to ID.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.IntegrationRequestLogResource.MerchantID">
+            <summary>
+              Looks up a localized string similar to Merchant.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.IntegrationRequestLogResource.MessageDate">
+            <summary>
+              Looks up a localized string similar to Date.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.IntegrationRequestLogResource.MessageId">
+            <summary>
+              Looks up a localized string similar to MessageId.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.IntegrationRequestLogResource.Request">
+            <summary>
+              Looks up a localized string similar to Request.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.IntegrationRequestLogResource.Response">
+            <summary>
+              Looks up a localized string similar to Response.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.IntegrationRequestLogResource.ResponseStatus">
+            <summary>
+              Looks up a localized string similar to Response Status.
+            </summary>
+        </member>
+        <member name="P:Merchants.Api.Models.Integrations.IntegrationRequestLogResource.TerminalID">
+            <summary>
+              Looks up a localized string similar to Terminal.
+            </summary>
+        </member>
         <member name="T:Merchants.Api.Models.Integrations.Nayax.NayaxMessagesResource">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
