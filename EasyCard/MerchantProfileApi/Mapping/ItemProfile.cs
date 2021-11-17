@@ -23,7 +23,8 @@ namespace MerchantProfileApi.Mapping
 
             CreateMap<Item, ItemResponse>();
 
-            CreateMap<ItemRequest, Item>();
+            CreateMap<ItemRequest, Item>()
+                .ForMember(d => d.Active, o => o.MapFrom(d => d.Active.GetValueOrDefault(true)));
 
             CreateMap<UpdateItemRequest, Item>()
                 .ForMember(d => d.ItemID, o => o.Ignore())

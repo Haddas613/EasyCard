@@ -19,7 +19,7 @@ namespace MerchantProfileApi.Models.Billing
 
         public decimal Price { get; set; }
 
-        public bool Active { get; set; } = true;
+        public bool? Active { get; set; }
 
         public CurrencyEnum Currency { get; set; }
 
