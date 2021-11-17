@@ -225,6 +225,11 @@ namespace RapidOne
             }
         }
 
+        public Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID)
+        {
+            return storageService.GetAll(entityID);
+        }
+
         private string GetDocumentNumber(IEnumerable<DocumentItemModel> documents)
         {
             var invoice = documents.FirstOrDefault(d => d.DocType == 13)?.DocEntry;

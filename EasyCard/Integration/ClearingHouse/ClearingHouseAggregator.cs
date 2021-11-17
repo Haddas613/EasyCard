@@ -202,6 +202,11 @@ namespace ClearingHouse
 
         public bool AllowTransmissionCancellation() => true;
 
+        public Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID)
+        {
+            return integrationRequestLogStorageService.GetAll(entityID);
+        }
+
         private async Task HandleIntegrationMessage(IntegrationMessage msg)
         {
             await integrationRequestLogStorageService.Save(msg);

@@ -261,6 +261,11 @@ namespace EasyInvoice
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID)
+        {
+            return storageService.GetAll(entityID);
+        }
+
         private NameValueCollection GetAuthorizedHeaders(string username, string password, string integrationMessageId, string correlationId)
         {
             try

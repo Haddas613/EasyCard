@@ -9,6 +9,7 @@ using Shared.Integration.Exceptions;
 using Shared.Integration.ExternalSystems;
 using Shared.Integration.Models;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 
@@ -388,6 +389,10 @@ namespace Nayax
             }
         }
 
+        public Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID)
+        {
+            return integrationRequestLogStorageService.GetAll(entityID);
+        }
 
         private async Task<NameValueCollection> BuildHeaders()
         {

@@ -227,7 +227,7 @@ namespace Shva
 
             var changePasswordReq = shvaParameters.GetChangePasswordRequestBody(changePasswordRequest.NewPassword);
 
-            var changePasswordReqResult = await this.DoRequest(changePasswordReq, ChangePasswordUrl, changePasswordRequest.CorrelationId, HandleIntegrationMessage);
+            var changePasswordReqResult = await this.DoRequest(changePasswordReq, changePasswordRequest.TerminalID.ToString(), ChangePasswordUrl, changePasswordRequest.CorrelationId, HandleIntegrationMessage);
 
             var changePasswordResultBody = changePasswordReqResult?.Body?.Content as ChangePasswordResponseBody;
 
@@ -246,6 +246,11 @@ namespace Shva
             {
                 return new ProcessorChangePasswordResponse(Messages.CannotGetErrorCodeFromResponse, RejectionReasonEnum.Unknown, changePasswordResultBody.ChangePasswordResult.ToString());
             }
+        }
+
+        public Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID)
+        {
+            return integrationRequestLogStorageService.GetAll(entityID);
         }
 
         protected async Task<Envelope> DoRequest(object request, string soapAction, string entityID, string correlationId, Func<IntegrationMessage, Task> handleIntegrationMessage = null)

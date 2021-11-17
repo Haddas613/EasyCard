@@ -242,5 +242,10 @@ namespace Upay
         {
             return false;
         }
+
+        public Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID)
+        {
+            return integrationRequestLogStorageService.GetAll(entityID);
+        }
     }
 }
