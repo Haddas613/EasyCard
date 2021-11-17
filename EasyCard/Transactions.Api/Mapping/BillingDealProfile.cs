@@ -59,6 +59,15 @@ namespace Transactions.Api.Mapping
                     .MapFrom(d => (d.CreditCardDetails != null && d.CreditCardDetails.CardExpiration != null) ? d.CreditCardDetails.CardExpiration.Expired : default))
                 .ForMember(d => d.Paused, o => o.MapFrom(d => d.Paused()));
 
+            CreateMap<BillingDeal, PaymentRequest>()
+                .ForMember(d => d.BillingDealID, o => o.MapFrom(e => e.BillingDealID))
+                .ForMember(d => d.Amount, o => o.Ignore())
+                .ForMember(d => d.InitialPaymentAmount, o => o.Ignore())
+                .ForMember(d => d.InstallmentPaymentAmount, o => o.Ignore())
+                .ForMember(d => d.PaymentRequestAmount, o => o.Ignore())
+                .ForMember(d => d.TotalAmount, o => o.Ignore())
+                .ForMember(d => d.UserAmount, o => o.MapFrom(e => false));
+
             CreateMap<BillingDeal, CreateTransactionRequest>()
                 .ForMember(d => d.BankTransferDetails, o => o.MapFrom(s => s.BankDetails))
                 .ForMember(d => d.PaymentTypeEnum, o => o.MapFrom(s => s.PaymentType));

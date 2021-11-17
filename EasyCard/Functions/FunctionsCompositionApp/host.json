@@ -28,5 +28,8 @@
   },
   "API": {
     "TransactionsApiAddress": "https://ecng-transactions.azurewebsites.net"
+  },
+  "BankOfIsrael": {
+    "URL": "https://www.boi.org.il/currency.xml"
   }
 }

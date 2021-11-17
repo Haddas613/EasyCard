@@ -9,17 +9,17 @@
       v-on:ok="saveItem($event)"
     ></item-pricing-dialog>
     <v-btn
-      :color="model.totalAmount > 0 ? 'primary' : 'error darken-2'"
+      :color="totalAmount > 0 ? 'primary' : 'error darken-2'"
       class="text-none complete-btn v-btn--flat"
       height="48px"
       @click="ok()"
       block
-      :disabled="model.totalAmount == 0"
+      :disabled="totalAmount == 0"
       :fixed="$vuetify.breakpoint.smAndDown"
       v-if="!embed"
     >
       {{$t(btnText)}}
-      <ec-money :amount="model.totalAmount" class="px-1"></ec-money>
+      <ec-money :amount="totalAmount" class="px-1"></ec-money>
     </v-btn>
     <v-spacer style="height: 48px" v-if="!embed && $vuetify.breakpoint.smAndDown"></v-spacer>
     <v-flex class="text-center align-stretch px-3" v-bind:class="{'white': !embed}">
@@ -53,8 +53,7 @@
             <v-row no-gutters>
               <v-col cols="6" class="text-start">{{$t("Total")}}</v-col>
               <v-col cols="3" class="text-end">{{model.dealDetails.items.length}}</v-col>
-              <v-col cols="3" class="text-end" v-if="!embed">{{model.totalAmount | currency(currencyStore.code)}}</v-col>
-              <v-col cols="3" class="text-end" v-else>{{totalAmount | currency(currencyStore.code)}}</v-col>
+              <v-col cols="3" class="text-end">{{totalAmount | currency(currencyStore.code)}}</v-col>
             </v-row>
           </v-list-item-content>
         </v-list-item>
@@ -79,7 +78,7 @@
           </v-col>
           <v-col cols="12" md="6" lg="6" class="text-end font-weight-bold subtitle-2">
             <ec-money
-              :amount="item.price - (item.discount ? item.discount : 0)"
+              :amount="item.price"
               :currency="item.$currency"
             ></ec-money>
           </v-col>
@@ -136,6 +135,9 @@ export default {
     }
   },
   mounted () {
+    if(this.model.vatRate === null){
+      this.model.vatRate = this.terminalStore.settings.vatExempt ? null : this.terminalStore.settings.vatRate;
+    }
     //this.vatExempt = this.model.vatRate === 0;
     //itemPricingService.total.calculate(this.model, { vatRate: this.model.vatRate});
   },

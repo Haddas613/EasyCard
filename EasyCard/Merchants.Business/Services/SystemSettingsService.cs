@@ -5,10 +5,12 @@ using Shared.Business.Security;
 using Shared.Helpers.Security;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Z.EntityFramework.Plus;
 
 namespace Merchants.Business.Services
 {
@@ -16,6 +18,8 @@ namespace Merchants.Business.Services
     {
         private readonly MerchantsContext context;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
+
+        private readonly string systemSettingsCacheTag = nameof(SystemSettings);
 
         public SystemSettingsService(MerchantsContext context, IHttpContextAccessorWrapper httpContextAccessor)
         {
@@ -32,6 +36,7 @@ namespace Merchants.Business.Services
 
             using var transaction = context.Database.BeginTransaction();
             var exist = context.SystemSettings.Find(entity.SystemSettingsID);
+
             if (exist == null)
             {
                 context.SystemSettings.Add(entity);
@@ -43,11 +48,13 @@ namespace Merchants.Business.Services
 
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
+
+            QueryCacheManager.ExpireTag(systemSettingsCacheTag);
         }
 
         public async Task<SystemSettings> GetSystemSettings()
         {
-            return await context.SystemSettings.AsNoTracking().FirstOrDefaultAsync();
+            return await context.SystemSettings.AsNoTracking().DeferredFirstOrDefault().FromCacheAsync(systemSettingsCacheTag);
         }
     }
 }

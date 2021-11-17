@@ -342,7 +342,7 @@ namespace Transactions.Api.Controllers
             var url = GetPaymentRequestUrl(paymentRequest);
             var substitutions = new List<TextSubstitution>();
 
-            substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo));
+            substitutions.Add(new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : $"{apiSettings.BlobBaseAddress}/{settings.MerchantLogo}"));
             substitutions.Add(new TextSubstitution("PayWithEasyCardBtnUrl", $"{apiSettings.CheckoutPortalUrl}/img/pay-with-easycard.png")); // TODO: make dynamic path to fill "viewed" status
             substitutions.Add(new TextSubstitution(nameof(paymentRequest.DueDate), paymentRequest.DueDate.HasValue ? paymentRequest.DueDate.Value.ToString("dd/MM/yyyy") : "-")); // TODO: locale
             substitutions.Add(new TextSubstitution(nameof(paymentRequest.PaymentRequestAmount), $"{paymentRequest.PaymentRequestAmount.ToString("F2")}{paymentRequest.Currency.GetCurrencySymbol()}"));

@@ -56,8 +56,7 @@ namespace CheckoutPortal.Models
         /// <summary>
         /// Initial installment payment
         /// </summary>
-        [BindNever]
-        [DataType(DataType.Currency)]
+        [Range(0.01, 999999)]
         public decimal? InitialPaymentAmount { get; set; }
 
         [BindNever]
@@ -67,8 +66,7 @@ namespace CheckoutPortal.Models
         /// <summary>
         /// Amount of one instalment payment
         /// </summary>
-        [BindNever]
-        [DataType(DataType.Currency)]
+        [Range(0.01, 999999)]
         public decimal? InstallmentPaymentAmount { get; set; }
 
         [StringLength(500)]

@@ -104,5 +104,14 @@ namespace CheckoutPortal {
                 return ResourceManager.GetString("PaymentRequestClosed", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Amount of installment payments is invalid.
+        /// </summary>
+        public static string TotalAmountIsInvalid {
+            get {
+                return ResourceManager.GetString("TotalAmountIsInvalid", resourceCulture);
+            }
+        }
     }
 }

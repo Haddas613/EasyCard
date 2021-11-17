@@ -36,7 +36,7 @@ namespace CheckoutPortal.Models
                 Total = paymentTransaction.TotalAmount.ToString("F2"),
                 CardOwner = request.Name,
                 OwnerEmail = request.Email,
-                Id = !string.IsNullOrWhiteSpace(request.PaymentIntent) ? (new Guid(Convert.FromBase64String(request.PaymentIntent))).ToString() : (string)null,
+                Id = request.PaymentIntent,
 
                 OkNumber = shvaDetails["shvaAuthNum"]?.ToString(),
                 Code = paymentTransaction.ProcessorResultCode.ToString(),

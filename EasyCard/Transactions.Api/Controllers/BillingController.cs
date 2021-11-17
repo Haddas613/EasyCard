@@ -9,6 +9,7 @@ using Merchants.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -68,6 +69,8 @@ namespace Transactions.Api.Controllers
         private readonly IQueue billingDealsQueue;
         private readonly ApiSettings apiSettings;
         private readonly IEmailSender emailSender;
+        private readonly ICryptoServiceCompact cryptoServiceCompact;
+        private readonly IPaymentIntentService paymentIntentService;
 
         public BillingController(
             ITransactionsService transactionsService,
@@ -83,7 +86,9 @@ namespace Transactions.Api.Controllers
             IConsumersService consumersService,
             IQueueResolver queueResolver,
             IOptions<ApiSettings> apiSettings,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ICryptoServiceCompact cryptoServiceCompact,
+            IPaymentIntentService paymentIntentService)
         {
             this.transactionsService = transactionsService;
             this.creditCardTokenService = creditCardTokenService;
@@ -100,6 +105,9 @@ namespace Transactions.Api.Controllers
             this.billingDealsQueue = queueResolver.GetQueue(QueueResolver.BillingDealsQueue);
             this.apiSettings = apiSettings.Value;
             this.emailSender = emailSender;
+
+            this.cryptoServiceCompact = cryptoServiceCompact;
+            this.paymentIntentService = paymentIntentService;
         }
 
         [HttpGet]
@@ -337,6 +345,7 @@ namespace Transactions.Api.Controllers
 
             billingDeal.InitialTransactionID = token.InitialTransactionID;
             billingDeal.CreditCardDetails = new Business.Entities.CreditCardDetails();
+            billingDeal.Active = true;
 
             if (billingDeal.CreditCardToken != token.CreditCardTokenID)
             {
@@ -537,6 +546,35 @@ namespace Transactions.Api.Controllers
             return response;
         }
 
+        private string GetBillingDealLink(Guid billingDealID)
+        {
+            var uriBuilder = new UriBuilder(apiSettings.MerchantsManagementApiAddress);
+            uriBuilder.Path = $"/billing-deals/view/{billingDealID}";
+
+            var aTag = new TagBuilder("a");
+
+            aTag.MergeAttribute("href", uriBuilder.ToString());
+            aTag.InnerHtml.Append(billingDealID.ToString());
+
+            var writer = new System.IO.StringWriter();
+            aTag.WriteTo(writer, System.Text.Encodings.Web.HtmlEncoder.Default);
+
+            return writer.ToString();
+        }
+
+        private string GetBillingDealRenewLink(Guid paymentRequestID)
+        {
+            var uriBuilder = new UriBuilder(apiSettings.CheckoutPortalUrl);
+            uriBuilder.Path = "/i";
+            var encrypted = cryptoServiceCompact.EncryptCompact(paymentRequestID.ToByteArray());
+
+            var query = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+            query["r"] = encrypted;
+            uriBuilder.Query = query.ToString();
+
+            return uriBuilder.ToString();
+        }
+
         private async Task SendBillingDealCreditCardTokenExpiredEmail(BillingDeal billingDeal, Terminal terminal)
         {
             var settings = terminal.PaymentRequestSettings;
@@ -544,9 +582,14 @@ namespace Transactions.Api.Controllers
             //TODO: resources?
             var emailSubject = $"{terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName}: - פג תוקף כרטיס אשראי המשמש לעסקה מחזורית";
             var emailTemplateCode = "BillingDealCardExpired";
+
+            //Creating payment intent with 0 amount so user can renew billing deal with new credit card
+            var paymentIntent = mapper.Map<BillingDeal, PaymentRequest>(billingDeal);
+            await paymentIntentService.SavePaymentIntent(paymentIntent);
+
             var substitutions = new List<TextSubstitution>
             {
-                new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : settings.MerchantLogo),
+                new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : $"{apiSettings.BlobBaseAddress}/{settings.MerchantLogo}"),
                 new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName),
 
                 new TextSubstitution(nameof(billingDeal.DealDetails.DealDescription), billingDeal.DealDetails?.DealDescription ?? string.Empty),
@@ -554,7 +597,8 @@ namespace Transactions.Api.Controllers
                 new TextSubstitution(nameof(billingDeal.CreditCardDetails.CardNumber), billingDeal.CreditCardDetails?.CardNumber ?? string.Empty),
                 new TextSubstitution(nameof(billingDeal.CreditCardDetails.CardOwnerName), billingDeal.CreditCardDetails?.CardOwnerName ?? string.Empty),
                 new TextSubstitution(nameof(billingDeal.DealDetails.ConsumerID), billingDeal.DealDetails.ConsumerID?.ToString() ?? string.Empty),
-                new TextSubstitution(nameof(billingDeal.BillingDealID), billingDeal.BillingDealID.ToString()),
+                new TextSubstitution(nameof(billingDeal.BillingDealID), GetBillingDealLink(billingDeal.BillingDealID)),
+                new TextSubstitution("RenewLink", GetBillingDealRenewLink(paymentIntent.PaymentRequestID)),
             };
 
             if (!string.IsNullOrWhiteSpace(billingDeal.DealDetails?.ConsumerEmail))

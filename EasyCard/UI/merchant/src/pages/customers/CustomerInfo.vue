@@ -45,14 +45,22 @@
                 <p>{{model.consumerAddress.street || '-'}}</p>
               </div>
               <div class="info-block">
-                <p class="caption ecgray--text text--darken-2">{{$t('House')}}</p>
-                <p>{{model.consumerAddress.house || '-'}}</p>
-              </div>
-              <div class="info-block">
-                <p class="caption ecgray--text text--darken-2">{{$t('Apartment')}}</p>
-                <p>{{model.consumerAddress.apartment || '-'}}</p>
+                <p class="caption ecgray--text text--darken-2">{{$t('Zip')}}</p>
+                <p>{{model.consumerAddress.zip || '-'}}</p>
               </div>
             </template>
+            <div class="info-block" v-if="model.billingDesktopRefNumber">
+              <p class="caption ecgray--text text--darken-2">{{$t('BillingDesktopRefNumber')}}</p>
+              <p>{{model.billingDesktopRefNumber}}</p>
+            </div>
+            <div class="info-block" v-if="model.consumerSecondPhone">
+              <p class="caption ecgray--text text--darken-2">{{$t('SecondPhone')}}</p>
+              <p>{{model.consumerSecondPhone}}</p>
+            </div>
+            <div class="info-block" v-if="model.consumerNote">
+              <p class="caption ecgray--text text--darken-2">{{$t('Note')}}</p>
+              <p>{{model.consumerNote}}</p>
+            </div>
           </v-col>
           <v-col cols="12" md="6">
             <div class="info-block">
@@ -69,8 +77,12 @@
             </div>
             <template v-if="model.consumerAddress">
               <div class="info-block">
-                <p class="caption ecgray--text text--darken-2">{{$t('Zip')}}</p>
-                <p>{{model.consumerAddress.zip || '-'}}</p>
+                <p class="caption ecgray--text text--darken-2">{{$t('House')}}</p>
+                <p>{{model.consumerAddress.house || '-'}}</p>
+              </div>
+              <div class="info-block">
+                <p class="caption ecgray--text text--darken-2">{{$t('Apartment')}}</p>
+                <p>{{model.consumerAddress.apartment || '-'}}</p>
               </div>
             </template>
           </v-col>

@@ -6,7 +6,8 @@
         <v-flex fluid fill-height>
           <numpad
             btn-text="OK"
-            v-on:ok="processAmount($event);"
+            @ok="processAmount($event);"
+            @update="processAmount($event, true)"
             ref="numpadRef"
             :data="getModel()"
             :items-only="itemsOnly"
@@ -82,10 +83,12 @@ export default {
     })
   },
   methods: {
-    processAmount(data) {
+    processAmount(data, hidden) {
       //this.updateAmount(data);
       this.$emit("ok", data);
-      this.numpadDialog = false;
+      if(!hidden){
+        this.numpadDialog = false;
+      }
     },
     updateAmount(data){},
     // updateAmount(data){
@@ -100,7 +103,7 @@ export default {
         discount: 0,
         netTotal: 0,
         totalAmount: 0,
-        vatRate: 0,
+        vatRate: null,
         vatTotal: 0,
         ...this.data
       }

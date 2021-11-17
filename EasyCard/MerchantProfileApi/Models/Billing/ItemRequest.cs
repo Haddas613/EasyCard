@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Shared.Api.Models.Binding;
+using Shared.Api.Swagger;
 using Shared.Helpers;
 using System;
 using System.Collections.Generic;
@@ -18,12 +19,16 @@ namespace MerchantProfileApi.Models.Billing
 
         public decimal Price { get; set; }
 
+        public bool Active { get; set; } = true;
+
         public CurrencyEnum Currency { get; set; }
 
         [StringLength(50)]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ExternalReference { get; set; }
 
-        [StringLength(50)]
+        [SwaggerExclude]
+        [JsonConverter(typeof(TrimmingJsonConverter))]
         public string BillingDesktopRefNumber { get; set; }
     }
 }

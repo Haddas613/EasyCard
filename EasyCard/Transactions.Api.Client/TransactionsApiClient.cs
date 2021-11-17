@@ -15,6 +15,7 @@ using Shared.Api.Configuration;
 using Transactions.Api.Models.Billing;
 using SharedApi = Shared.Api;
 using Transactions.Api.Models.UpdateParameters;
+using Transactions.Api.Models.Currency;
 
 namespace Transactions.Api.Client
 {
@@ -225,6 +226,18 @@ namespace Transactions.Api.Client
             }
 
             return headers;
+        }
+
+        public async Task<OperationResponse> UpdateCurrencyRates(CurrencyRateUpdateRequest request)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/currency", request, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
+            }
         }
     }
 }

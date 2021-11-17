@@ -34,7 +34,7 @@
             step="0.01"
             :rules="[vr.primitives.required, vr.primitives.lessThan(totalAmount)]"
             v-bind:class="{'px-1' : $vuetify.breakpoint.mdAndUp}"
-            @input="updateInstallmentsTimeout(true)"
+            @blur="updateInstallmentsTimeout(true, 0)"
             outlined
           ></v-text-field>
         </v-col>
@@ -113,11 +113,11 @@ export default {
         totalAmount: this.totalAmount
       };
     },
-    updateInstallmentsTimeout(skipInitial = false){
+    updateInstallmentsTimeout(skipInitial = false, timeout = 1000){
       if(this.installmentsTimeout){
         clearTimeout(this.installmentsTimeout);
       }
-      this.installmentsTimeout = setTimeout(() => this.updateInstallments(skipInitial), 1000);
+      this.installmentsTimeout = setTimeout(() => this.updateInstallments(skipInitial), timeout);
     },
     updateInstallments(skipInitial = false){
       // if (!this.model.initialPaymentAmount || !this.model.numberOfPayments) {
@@ -132,14 +132,14 @@ export default {
 
       if(!skipInitial){
         let installmentPaymentAmountRaw = Math.floor((this.totalAmount) / (this.model.numberOfPayments));
-        this.model.installmentPaymentAmount = installmentPaymentAmountRaw.toFixed(2);
+        this.model.installmentPaymentAmount = parseFloat(installmentPaymentAmountRaw.toFixed(2));
         //this.model.initialPaymentAmount = (installmentPaymentAmountRaw + leftover).toFixed(2);
-        this.model.initialPaymentAmount = (this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1))).toFixed(2);
+        this.model.initialPaymentAmount = parseFloat((this.totalAmount - (this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1))).toFixed(2));
 
       }else{
         let installmentPaymentAmountRaw = ((this.totalAmount - this.model.initialPaymentAmount) / (this.model.numberOfPayments - 1));
-        this.model.installmentPaymentAmount = installmentPaymentAmountRaw.toFixed(2);
-        this.model.initialPaymentAmount = (this.totalAmount - this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1)).toFixed(2);
+        this.model.installmentPaymentAmount = parseFloat(installmentPaymentAmountRaw.toFixed(2));
+        this.model.initialPaymentAmount = parseFloat((this.totalAmount - this.model.installmentPaymentAmount * (this.model.numberOfPayments - 1)).toFixed(2));
       }
     }
   },

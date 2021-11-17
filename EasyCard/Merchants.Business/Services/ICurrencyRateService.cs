@@ -13,5 +13,7 @@ namespace Merchants.Business.Services
         IQueryable<CurrencyRate> GetRates();
 
         Task<CurrencyRateTuple> GetLatestRates(DateTime? date = null);
+
+        Task CreateOrUpdate(CurrencyRate currencyRate);
     }
 }

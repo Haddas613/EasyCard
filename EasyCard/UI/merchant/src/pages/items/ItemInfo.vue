@@ -39,6 +39,10 @@
           <p class="caption ecgray--text text--darken-2">{{$t('ExternalReference')}}</p>
           <p>{{model.externalReference || '-'}}</p>
         </div>
+        <div class="info-block" v-if="model.billingDesktopRefNumber">
+          <p class="caption ecgray--text text--darken-2">{{$t('BillingDesktopRefNumber')}}</p>
+          <p>{{model.billingDesktopRefNumber}}</p>
+        </div>
       </v-card-text>
     </v-card>
   </v-flex>

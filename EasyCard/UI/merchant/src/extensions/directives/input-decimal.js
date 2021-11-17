@@ -1,4 +1,3 @@
-//TODO: DELETE
 const directive = {
     bind: function (el, binding, vnode) {
         // let split = vnode.data.model.expression.split(".");
@@ -13,59 +12,30 @@ const directive = {
             el = el.querySelector('input');
         }
 
-        el.addEventListener('keypress', evts.restrictDecimal);
-        el.addEventListener('paste', evts.restrictDecimalPaste);
-        el.addEventListener('input', evts.formatDecimal);
+        el.addEventListener('keydown', evts.formatDecimal);
+        el.addEventListener('input', evts.restrictDecimal);
         // el.addEventListener('change', evts.formatDecimal);
     }
 };
 
 const evts = {
     restrictDecimal: function (e) {
-        // Key event is for a browser shortcut
-        if (e.metaKey || e.ctrlKey) { return true; }
-
-        // If keycode is a space
-        if (e.which === 32) { return false; }
-
-        // If keycode is a special char (WebKit)
-        if (e.which === 0) { return true; }
-
-        // If char is a special char (Firefox)
-        if (e.which < 33) { return true; }
-
-        var input = String.fromCharCode(e.which);
-
-        if (input === "." && (!e.target.value || e.target.value.indexOf(".") === -1)) { return true; }
-
-        // Char is a number or a space
-        return (!!/[\d\s]/.test(input)) ? true : e.preventDefault();
-    },
-    restrictDecimalPaste: function (e) {
-        let value = e.clipboardData.getData("text").toString();
-        try {
-            let float = parseFloat(value);
-            if (!float){ e.preventDefault(); }
-        } catch{
+        if(e.target.value.indexOf(".") > -1){
             e.preventDefault();
-            return false;
         }
     },
-    formatDecimal: function(e, precision = 2){
+    formatDecimal: function(e){
         var target = e.currentTarget;
-        // var value = target.value;
-        //     if(value){
-        //         value = Math.floor(parseFloat(value)).toFixed(2);
-        //         target.value = value;
-        //         console.log(value)
-        //     }
-        return setTimeout(function () {
-            var value = target.value;
-            if(value){
-                value = parseFloat(value).toFixed(precision);
-                target.value = value;
+        var value = target.value;
+        if(value){
+            if (e.keyCode === 8 || (e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105)) { 
+                return;
             }
-        });
+            if((e.keyCode === 188 || e.keyCode === 190) && e.target.value.indexOf(".") === -1) {
+                target.value += ".";
+            }
+            e.preventDefault();
+        }
     }
 }
 

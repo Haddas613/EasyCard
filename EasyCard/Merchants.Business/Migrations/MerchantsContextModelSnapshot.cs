@@ -34,9 +34,6 @@ namespace Merchants.Business.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("ConsumeSecondPhone")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ConsumerAddress")
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
@@ -59,9 +56,16 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("ConsumerNote")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(512)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(512)");
 
                     b.Property<string>("ConsumerPhone")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ConsumerSecondPhone")
                         .HasMaxLength(50)
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(50)");

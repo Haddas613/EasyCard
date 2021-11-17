@@ -391,6 +391,10 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.ConsumerPhone).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
+                builder.Property(b => b.ConsumerSecondPhone).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+
+                builder.Property(b => b.ConsumerNote).IsRequired(false).HasMaxLength(512).IsUnicode(true);
+
                 builder.Property(b => b.ConsumerNationalID).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);

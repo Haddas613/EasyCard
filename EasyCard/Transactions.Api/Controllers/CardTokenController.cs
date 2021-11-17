@@ -230,84 +230,88 @@ namespace Transactions.Api.Controllers
             storageData.TerminalID = dbData.TerminalID = terminal.TerminalID;
             storageData.MerchantID = dbData.MerchantID = terminal.MerchantID;
 
-            // initial transaction
-            var transaction = new PaymentTransaction();
-            mapper.Map(terminal, transaction);
-
-            transaction.MerchantIP = GetIP();
-            transaction.CorrelationId = GetCorrelationID();
-
-            transaction.CardPresence = CardPresenceEnum.CardNotPresent; // TODO
-            transaction.JDealType = JDealTypeEnum.J5;
-
-            transaction.SpecialTransactionType = SpecialTransactionTypeEnum.InitialDeal;
-            storageData.InitialTransactionID = transaction.PaymentTransactionID;
-            dbData.InitialTransactionID = transaction.PaymentTransactionID;
-
-            mapper.Map(storageData, transaction);
-            mapper.Map(storageData, transaction.CreditCardDetails);
-
-            // terminal settings
-
-            var terminalProcessor = ValidateExists(
-                terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
-                Messages.ProcessorNotDefined);
-
-            var processor = processorResolver.GetProcessor(terminalProcessor);
-
-            var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
-            mapper.Map(processorSettings, transaction);
-
-            transaction.Calculate();
-
-            await transactionsService.CreateEntity(transaction);
-
-            // create transaction in processor (Shva)
-            try
+            if (!terminal.Settings.DoNotCreateSaveTokenInitialDeal)
             {
-                var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
 
-                mapper.Map(model, processorRequest.CreditCardToken);
+                // initial transaction
+                var transaction = new PaymentTransaction();
+                mapper.Map(terminal, transaction);
 
-                processorRequest.ProcessorSettings = processorSettings;
+                transaction.MerchantIP = GetIP();
+                transaction.CorrelationId = GetCorrelationID();
 
-                var processorResponse = await processor.CreateTransaction(processorRequest);
-                mapper.Map(processorResponse, transaction);
-                mapper.Map(processorResponse, dbData);
+                transaction.CardPresence = CardPresenceEnum.CardNotPresent; // TODO
+                transaction.JDealType = JDealTypeEnum.J5;
 
-                if (!processorResponse.Success)
+                transaction.SpecialTransactionType = SpecialTransactionTypeEnum.InitialDeal;
+                storageData.InitialTransactionID = transaction.PaymentTransactionID;
+                dbData.InitialTransactionID = transaction.PaymentTransactionID;
+
+                mapper.Map(storageData, transaction);
+                mapper.Map(storageData, transaction.CreditCardDetails);
+
+                // terminal settings
+
+                var terminalProcessor = ValidateExists(
+                    terminal.Integrations.FirstOrDefault(t => t.Type == Merchants.Shared.Enums.ExternalSystemTypeEnum.Processor),
+                    Messages.ProcessorNotDefined);
+
+                var processor = processorResolver.GetProcessor(terminalProcessor);
+
+                var processorSettings = processorResolver.GetProcessorTerminalSettings(terminalProcessor, terminalProcessor.Settings);
+                mapper.Map(processorSettings, transaction);
+
+                transaction.Calculate();
+
+                await transactionsService.CreateEntity(transaction);
+
+                // create transaction in processor (Shva)
+                try
                 {
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);
+                    var processorRequest = mapper.Map<ProcessorCreateTransactionRequest>(transaction);
 
-                    if (processorResponse.RejectReasonCode == RejectionReasonEnum.AuthorizationCodeRequired)
+                    mapper.Map(model, processorRequest.CreditCardToken);
+
+                    processorRequest.ProcessorSettings = processorSettings;
+
+                    var processorResponse = await processor.CreateTransaction(processorRequest);
+                    mapper.Map(processorResponse, transaction);
+                    mapper.Map(processorResponse, dbData);
+
+                    if (!processorResponse.Success)
                     {
-                        var message = Messages.AuthorizationCodeRequired.Replace("@number", processorResponse.TelToGetAuthNum).Replace("@retailer", processorResponse.CompRetailerNum);
-                        return BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier) { AdditionalData = JObject.FromObject(new { authorizationCodeRequired = true, message }) });
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.RejectedByProcessor, TransactionFinalizationStatusEnum.Initial, rejectionMessage: processorResponse.ErrorMessage, rejectionReason: processorResponse.RejectReasonCode);
+
+                        if (processorResponse.RejectReasonCode == RejectionReasonEnum.AuthorizationCodeRequired)
+                        {
+                            var message = Messages.AuthorizationCodeRequired.Replace("@number", processorResponse.TelToGetAuthNum).Replace("@retailer", processorResponse.CompRetailerNum);
+                            return BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier) { AdditionalData = JObject.FromObject(new { authorizationCodeRequired = true, message }) });
+                        }
+                        else
+                        {
+                            var message = Messages.RejectedByProcessor;
+                            if (processorResponse.Errors?.Count() > 0)
+                            {
+                                message = string.Join(". ", processorResponse.Errors.Select(s => s.Description));
+                            }
+
+                            //TODO: show errors in message
+                            return BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, processorResponse.Errors));
+                        }
                     }
                     else
                     {
-                        var message = Messages.RejectedByProcessor;
-                        if (processorResponse.Errors?.Count() > 0)
-                        {
-                            message = string.Join(". ", processorResponse.Errors.Select(s => s.Description));
-                        }
-
-                        //TODO: show errors in message
-                        return BadRequest(new OperationResponse(message, StatusEnum.Error, transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, processorResponse.Errors));
+                        await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed);
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.Completed);
+                    logger.LogError(ex, $"Processor Create Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
+
+                    await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, TransactionFinalizationStatusEnum.Initial, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
+
+                    return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByProcesor.ToString(), (ex as IntegrationException)?.Message));
                 }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, $"Processor Create Transaction request failed. TransactionID: {transaction.PaymentTransactionID}");
-
-                await transactionsService.UpdateEntityWithStatus(transaction, TransactionStatusEnum.FailedToConfirmByProcesor, TransactionFinalizationStatusEnum.Initial, rejectionReason: RejectionReasonEnum.Unknown, rejectionMessage: ex.Message);
-
-                return BadRequest(new OperationResponse($"{Messages.FailedToProcessTransaction}", transaction.PaymentTransactionID, httpContextAccessor.TraceIdentifier, TransactionStatusEnum.FailedToConfirmByProcesor.ToString(), (ex as IntegrationException)?.Message));
             }
 
             // save token itself
@@ -316,7 +320,7 @@ namespace Transactions.Api.Controllers
 
             await creditCardTokenService.CreateEntity(dbData);
 
-            return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID) { InnerResponse = new OperationResponse(Messages.TokenCreated, StatusEnum.Success, transaction.PaymentTransactionID) };
+            return new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID) { InnerResponse = new OperationResponse(Messages.TokenCreated, StatusEnum.Success, dbData.CreditCardTokenID) };
         }
     }
 }

@@ -131,7 +131,6 @@ namespace MerchantProfileApi.Controllers
             // NOTE: this is security assignment
             mapper.Map(terminal, newConsumer);
 
-            newConsumer.Active = true;
             newConsumer.ApplyAuditInfo(httpContextAccessor);
 
             await consumersService.CreateEntity(newConsumer);

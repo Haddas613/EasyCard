@@ -76,6 +76,7 @@ namespace Transactions.Api.Controllers
         private readonly ITerminalsService terminalsService;
         private readonly IConsumersService consumersService;
         private readonly CardTokenController cardTokenController;
+        private readonly BillingController billingController;
         private readonly IPaymentRequestsService paymentRequestsService;
         private readonly IHttpContextAccessorWrapper httpContextAccessor;
         private readonly IInvoiceService invoiceService;
@@ -111,7 +112,8 @@ namespace Transactions.Api.Controllers
             IOptions<ApiSettings> apiSettings,
             IMetricsService metrics,
             IPaymentIntentService paymentIntentService,
-            IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext)
+            IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext,
+            BillingController billingController)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -126,6 +128,7 @@ namespace Transactions.Api.Controllers
             this.billingDealService = billingDealService;
             this.consumersService = consumersService;
             this.cardTokenController = cardTokenController;
+            this.billingController = billingController;
             this.invoiceService = invoiceService;
             this.paymentRequestsService = paymentRequestsService;
             this.httpContextAccessor = httpContextAccessor;
@@ -454,6 +457,12 @@ namespace Transactions.Api.Controllers
                         else if (prmodel.PaymentRequestID != null)
                         {
                             await paymentRequestsService.UpdateEntityWithStatus(dbPaymentRequest, PaymentRequestStatusEnum.Payed, paymentTransactionID: prmodel.PaymentRequestID, message: Transactions.Shared.Messages.PaymentRequestPaymentSuccessed);
+                        }
+
+                        //If billingDealID is present that means it was renew request, we need to reactivate expired billing deal with new token
+                        if (dbPaymentRequest.BillingDealID.HasValue)
+                        {
+                            return await billingController.UpdateBillingDealToken(dbPaymentRequest.BillingDealID.Value, tokenResponse.Value.EntityUID.Value);
                         }
 
                         return tokenResponse;

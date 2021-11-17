@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Billing;
 using Transactions.Api.Models.Checkout;
+using Transactions.Api.Models.Currency;
 using Transactions.Api.Models.Transactions;
 using Transactions.Api.Models.UpdateParameters;
 
@@ -39,6 +40,8 @@ namespace Transactions.Api.Client
         Task<UpdateParametersResponse> UpdateTerminalParameters(Guid terminalID);
 
         Task<OperationResponse> GenerateMasavFile();
+
+        Task<OperationResponse> UpdateCurrencyRates(CurrencyRateUpdateRequest request);
 
     }
 }
