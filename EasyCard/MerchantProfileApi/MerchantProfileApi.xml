@@ -206,9 +206,19 @@
             End-customer Phone
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ConsumerPhone2">
+            <summary>
+            End-customer Phone
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ConsumerNationalID">
             <summary>
             End-customer National ID
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.Note">
+            <summary>
+            End-customer note details
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ConsumerAddress">
@@ -219,6 +229,11 @@
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ExternalReference">
             <summary>
             ID in external system
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.BillingDesktopRefNumber">
+            <summary>
+            ID in BillingDesktop system
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.Origin">

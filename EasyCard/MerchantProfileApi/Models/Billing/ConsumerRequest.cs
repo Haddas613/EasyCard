@@ -2,6 +2,7 @@
 using Shared.Api.Models.Binding;
 using Shared.Api.Swagger;
 using Shared.Integration.Models;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -103,8 +104,7 @@ namespace MerchantProfileApi.Models.Billing
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ConsumerNote { get; set; }
 
-        [SwaggerExclude]
-        [JsonConverter(typeof(TrimmingJsonConverter))]
-        public string BillingDesktopRefNumber { get; set; }
+        public  BankDetails BankDetails { get; set; }
+
     }
 }
