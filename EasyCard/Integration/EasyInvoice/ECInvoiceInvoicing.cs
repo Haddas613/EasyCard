@@ -84,7 +84,7 @@ namespace EasyInvoice
             }
             finally
             {
-                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, documentCreationRequest.CorrelationId)
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, documentCreationRequest.InvoiceID, integrationMessageId, documentCreationRequest.CorrelationId)
                 {
                     Request = requestStr,
                     Response = responseStr,
@@ -196,7 +196,7 @@ namespace EasyInvoice
             }
             finally
             {
-                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, correlationId)
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, terminal.UserName, integrationMessageId, correlationId)
                 {
                     Request = requestStr,
                     Response = responseStr,
@@ -259,6 +259,11 @@ namespace EasyInvoice
         public Task<IEnumerable<string>> GetDownloadUrls(JObject externalSystemData, object invoiceingSettings)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID)
+        {
+            return storageService.GetAll(entityID);
         }
 
         private NameValueCollection GetAuthorizedHeaders(string username, string password, string integrationMessageId, string correlationId)

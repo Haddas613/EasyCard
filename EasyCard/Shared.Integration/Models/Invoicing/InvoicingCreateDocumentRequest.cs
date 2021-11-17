@@ -12,6 +12,8 @@ namespace Shared.Integration.Models.Invoicing
             this.DealDetails = new DealDetails();
         }
 
+        public string InvoiceID { get; set; }
+
         public object InvoiceingSettings { get; set; }
 
         /// <summary>

@@ -12,5 +12,7 @@ namespace Shared.Integration.ExternalSystems
         Task<InvoicingCreateDocumentResponse> CreateDocument(InvoicingCreateDocumentRequest documentCreationRequest);
 
         Task<IEnumerable<string>> GetDownloadUrls(JObject externalSystemData, object invoiceingSettings);
+
+        Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID);
     }
 }
