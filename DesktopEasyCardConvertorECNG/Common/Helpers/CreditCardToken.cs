@@ -10,7 +10,7 @@ namespace Common.Helpers
     {
         public static bool AddCreditCardToken(string cardNumber, int month, int year, string cardOwnerName, string cardOwnerNationalID, string consumerID, string terminalID)
         {
-            CardExpiration cardExpiration = new CardExpiration() { Month = month, Year = year };
+            Shared.Helpers.CardExpiration cardExpiration = new Shared.Helpers.CardExpiration() { Month = month, Year = year };
             Guid consumerIDg;
             Guid.TryParse(consumerID, out consumerIDg);
             Guid terminalIDg;

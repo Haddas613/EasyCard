@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace DesktopEasyCardConvertorECNG
 {
@@ -12,6 +13,8 @@ namespace DesktopEasyCardConvertorECNG
             // bool billingAllowed = false;
             //  Common.Helpers.Settings.CheckSettings("d09bd9bb-f371-4df0-9c7e-abdc0069b415", "95297b3b-2595-4f72-82f7-abdc006a1c2a", out merchantTerminalExist, out billingAllowed);
 
+            var task = Task.Run(async () => await Common.Helpers.ReadMDBFile.ReadDataFromMDBFile("C:\\Users\\hadas\\Documents\\Convert\\ConvertDesktopOnline\\EasyCardBillingComplexe\\EasyCardBilling.mdb"));
+            task.Wait();
             Common.Helpers.Settings.UpdateTerminalSettings("95297b3b-2595-4f72-82f7-abdc006a1c2a","","","",1.32M,1.3M,true);
             
             decimal maaxPercent = 17;
