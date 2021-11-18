@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Shared.Api.Models.Binding;
-using Shared.Business;
+using Shared.Helpers;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
