@@ -9,7 +9,7 @@
       closeable></navbar>
     <v-form v-if="!result" class="px-1 pt-4" ref="form" v-model="valid" lazy-validation :key="terminal.terminalID">
       <v-row no-gutters>
-        <v-col cols="12">
+        <v-col cols="12" class="px-4">
           <v-text-field
             v-if="browser.os == 'Android OS'"
             class="centered-input amount-input"
@@ -21,6 +21,8 @@
             :rules="[vr.primitives.numeric(true), vr.primitives.biggerThan(0), vr.primitives.precision(2)]"
             autofocus
             @input="adjustItemsAmountToTotalAmount()"
+            @click="clearAmountInputIfRequired()"
+            @focus="clearAmountInputIfRequired()"
           >
             <template v-slot:append>
               <span class="currency-icon">{{currency.description}}</span>
@@ -38,6 +40,8 @@
             autofocus
             v-input-decimal
             @input="adjustItemsAmountToTotalAmount()"
+            @click="clearAmountInputIfRequired()"
+            @focus="clearAmountInputIfRequired()"
           >
             <template v-slot:append>
               <span class="currency-icon">{{currency.description}}</span>
@@ -221,7 +225,7 @@ export default {
           cardOwnerNationalID: null,
           cardOwnerName: null
         },
-        transactionAmount: 0.0,
+        transactionAmount: 0,
         dealDetails: {
           dealReference: null,
           consumerEmail: null,
@@ -500,6 +504,11 @@ export default {
       this.totalAmountTimeout = setTimeout(() => {
         this.$refs.numpadInvoker.recalculate(this.model.vatRate);
       }, 500);
+    },
+    clearAmountInputIfRequired(){
+      if(this.model.transactionAmount === 0){
+        this.model.transactionAmount = null;
+      }
     }
   },
   async beforeDestroy () {
