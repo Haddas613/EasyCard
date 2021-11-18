@@ -10,15 +10,19 @@ namespace DesktopEasyCardConvertorECNG
 
             var metadataService = serviceFactory.GetMerchantMetadataApiClient();
 
-            var res = metadataService.CreateConsumer(new MerchantProfileApi.Models.Billing.ConsumerRequest
-            {
-                 ConsumerName = "Test from conversion tool",
-                 ConsumerPhone = "798695987987",
-                 ConsumerEmail = "testtool@gmail.com"
-                   
-            }).Result;
+            //var res = metadataService.CreateConsumer(new MerchantProfileApi.Models.Billing.ConsumerRequest
+            //{
+            //     ConsumerName = "Test from conversion tool",
+            //     ConsumerPhone = "798695987987",
+            //     ConsumerEmail = "testtool@gmail.com"
 
-            Console.WriteLine(res.Status);
+            //}).Result;
+
+            //Console.WriteLine(res.Status);
+
+            var res = ReadMDBFile.ReadDataFromMDBFile(null).Result;
+
+            Console.WriteLine(res.Customers?.Count);
         }
     }
 }
