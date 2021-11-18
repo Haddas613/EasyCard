@@ -14,14 +14,17 @@ namespace Merchants.Api.Models.Integrations
 
         public string Request { get; set; }
 
+        [MetadataOptions(Hidden = true)]
         public string Response { get; set; }
 
         public string Address { get; set; }
 
         public string ResponseStatus { get; set; }
 
+        [MetadataOptions(Hidden = true)]
         public Guid? MerchantID { get; set; }
 
+        [MetadataOptions(Hidden = true)]
         public Guid? TerminalID { get; set; }
 
         public string CorrelationId { get; set; }

@@ -69,7 +69,7 @@ namespace Shared.Integration
 
         private void SetPartitionKey()
         {
-            this.PartitionKey = $"{this.messageDate.ToString("yy-MM-dd")}-{this.correlationId}";
+            this.PartitionKey = $"{this.EntityID}";
         }
     }
 }

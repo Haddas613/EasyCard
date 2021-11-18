@@ -1,35 +1,35 @@
 <template>
   <v-card class="mx-auto" outlined>
-    <ec-dialog :dialog.sync="showDetailsDialog">
-      <template v-slot:title>{{$t('LogDetails')}}</template>
+    <ec-dialog :dialog.sync="showDetailsDialog" paddings="1">
+      <template v-slot:title>{{$t('RequestLog')}}</template>
       <template>
-        <div v-if="selectedLog" class="body-1 black--text">
+        <div v-if="requestLog" class="body-1 black--text">
           <h3>
-            <span class="log-type">
-              <span v-if="logLevels[selectedLog.logLevel]" v-bind:class="logLevels[selectedLog.logLevel].color">{{logLevels[selectedLog.logLevel].title}}</span>
-              <span v-else>{{selectedLog.logLevel}}</span>
-            </span>
-            {{selectedLog.userName || '-NO USER-'}}, {{selectedLog.$timestamp | ecdate}}
+            {{requestLog.$messageDate | ecdate}}
           </h3>
-          <p class="pt-1">{{$t('CorrelationID')}}: <b>{{selectedLog.correlationID}}</b></p>
-          <v-switch :label="$t('FormatCode')" v-model="preMode"></v-switch>
+          <p class="pt-1">{{$t('CorrelationID')}}: <b>{{requestLog.correlationId}}</b></p>
+          <p class="pt-1">{{$t('URL')}}: <b>{{requestLog.address}}</b></p>
           <div class="py-2 body-2">
-            <code v-if="preMode">
-              <pre>{{selectedLog.message}}</pre>
-            </code>
-            <p v-else>{{selectedLog.message}}</p>
-          </div>
-          <div class="py-2 body-2" v-if="selectedLog.exception">
-            <code v-if="preMode">
-              <pre>{{selectedLog.exception}}</pre>
-            </code>
-            <p v-else>{{selectedLog.exception}}</p>
+            <v-row no-gutters>
+              <v-col cols="12" md="6">
+                <p>{{$t("Request")}}</p>
+                <code>
+                  <pre v-if="requestLog.request">{{requestLog.request}}</pre>
+                </code>
+              </v-col>
+              <v-col cols="12" md="6">
+                <p>{{$t("Response")}} <b>{{requestLog.responseStatus}}</b></p>
+                <code>
+                  <pre>{{requestLog.response}}</pre>
+                </code>
+              </v-col>
+            </v-row>
           </div>
         </div>
       </template>
     </ec-dialog>
-    <div class="d-flex items-group">
-      <v-btn class="mx-1" v-for="i in integrations" :key="i">
+    <div class="d-flex justify-center items-group my-2">
+      <v-btn class="mx-1" v-for="i in integrations" :key="i" @click="loadLogsFor(i)" :disabled="currentIntegration == i">
         {{i}}
       </v-btn>
     </div>
@@ -37,26 +37,24 @@
     <div>
       <v-data-table
         :headers="headers"
-        :items="systemLogs"
+        :items="integrationLogs"
         :options.sync="options"
         :server-items-length="totalAmount"
         :loading="loading"
         :header-props="{ sortIcon: null }"
         class="elevation-1"
       >
-        <template v-slot:item.timestamp="{ item }">
-          {{item.$timestamp | ecdate}}
+        <template v-slot:item.messageDate="{ item }">
+          {{item.$messageDate | ecdate}}
         </template> 
-        <template v-slot:item.logLevel="{ item }">
-            <span v-if="logLevels[item.logLevel]" v-bind:class="logLevels[item.logLevel].color">{{logLevels[item.logLevel].title}}</span>
-            <span v-else>{{item.logLevel}}</span>
-        </template> 
-        <template v-slot:item.categoryName="{ item }">
-          <small>{{item.categoryName}}</small>
-        </template> 
-        <template v-slot:item.message="{ item }">
+        <template v-slot:item.request="{ item }">
           <span class="cursor-pointer primary--text" @click="showLogDetails(item)">
-            {{item.message | length(100)}}...
+            {{item.request | length(100)}}...
+          </span>
+        </template> 
+        <template v-slot:item.address="{ item }">
+          <span class="cursor-pointer primary--text" @click="showLogDetails(item)">
+            {{item.address | length(100)}}...
           </span>
         </template>
         <template v-slot:item.correlationID="{ item }">
@@ -70,30 +68,37 @@
 
 <script>
 export default {
+  props: {
+    entityId: {
+      type: String,
+      default: null,
+      required: true
+    },
+  },
   components: {
     ReIcon: () => import("../../components/misc/ResponsiveIcon"),
     EcDialog: () => import("../../components/ec/EcDialog"),
-    SystemLogsFilter: () => import("../../components/system-logs/SystemLogsFilter")
   },
   data() {
     return {
       totalAmount: 0,
-      systemLogs: [],
+      integrationLogs: [],
       loading: false,
       options: {},
       pagination: {},
       headers: [],
-      systemLogsFilter: {},
+      integrationLogsFilter: {},
       showDetailsDialog: false,
-      selectedLog: null,
+      requestLog: null,
       preMode: false,
-      integrations: ["shva", "clearing-house", "upay", "nayax", "rapidone", "easy-invoice"]
+      integrations: ["shva", "clearing-house", "upay", "nayax", "rapidone", "easy-invoice"],
+      currentIntegration: null,
     };
   },
   watch: {
     options: {
       handler: async function() {
-        //await this.getDataFromApi();
+        await this.getDataFromApi();
       },
       deep: true
     }
@@ -103,14 +108,11 @@ export default {
   },
   methods: {
     async getDataFromApi() {
-      if(this.loading) { return; }
+      if(this.loading || !this.currentIntegration) { return; }
       this.loading = true;
       try{
-        let data = await this.$api.system.getSystemLogs({
-          ...this.systemLogsFilter,
-          ...this.options
-        });
-        this.systemLogs = data.data;
+        let data = await this.$api.integrations.common.getIntegrationLogs(this.currentIntegration, this.entityId);
+        this.integrationLogs = data.data;
         this.totalAmount = (data.data.length >= this.options.itemsPerPage ? data.data.length + 1 : data.data.length) * this.options.page;
 
         if (!this.headers || this.headers.length === 0) {
@@ -122,12 +124,16 @@ export default {
     },
     async applyFilter(filter) {
       this.options.page = 1;
-      this.systemLogsFilter = filter;
+      this.integrationLogsFilter = filter;
       await this.getDataFromApi();
     },
     showLogDetails(log){
-      this.selectedLog = log;
+      this.requestLog = log;
       this.showDetailsDialog = true;
+    },
+    async loadLogsFor(integration){
+      this.currentIntegration = integration;
+      await this.getDataFromApi();
     }
   }
 };
