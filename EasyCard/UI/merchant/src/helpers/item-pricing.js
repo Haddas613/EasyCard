@@ -28,8 +28,13 @@ const totalFunctions = {
     calculate: function(model, opts){
         let totalAmount = parseFloat(lodash.sumBy(model.dealDetails.items, e => e.price - e.discount).toFixed(2));
         let vatRate = model.vatRate >= 0 ? model.vatRate : opts.vatRate;
-        let netTotal = totalAmount ? this.calculateNetTotal(totalAmount, vatRate) : 0;
-        let vatTotal = this.calculateVatTotal(model.dealDetails.items, totalAmount, netTotal);
+        let netTotal = null;
+        let vatTotal = null;
+
+        if(vatRate !== null){
+            netTotal = totalAmount ? this.calculateNetTotal(totalAmount, vatRate) : 0;
+            vatTotal = this.calculateVatTotal(model.dealDetails.items, totalAmount, netTotal);
+        }
         
         model.totalAmount = totalAmount;
         model.netTotal = netTotal;
@@ -39,8 +44,13 @@ const totalFunctions = {
     calculateWithoutItems: function(model, key, opts){
         let totalAmount = model[key];
         let vatRate = model.vatRate >= 0 ? model.vatRate : opts.vatRate;
-        let netTotal = totalAmount ? this.calculateNetTotal(totalAmount, vatRate) : 0;
-        let vatTotal = parseFloat((totalAmount - netTotal).toFixed(2));
+        let netTotal = null;
+        let vatTotal = null;
+        
+        if(vatRate !== null){
+            netTotal = totalAmount ? this.calculateNetTotal(totalAmount, vatRate) : 0;
+            vatTotal = parseFloat((totalAmount - netTotal).toFixed(2));
+        }
         model.netTotal = netTotal;
         model.vatTotal = vatTotal;
         model.vatRate = vatRate;
