@@ -101,6 +101,10 @@ export default {
     },
     filterByTerminal: {
       default: false
+    },
+    allowShowDeleted: {
+      default: false,
+      type: Boolean
     }
   },
   data() {
@@ -164,7 +168,8 @@ export default {
       let customers = await this.$api.consumers.getConsumers({
         search: searchApply ? this.search : "",
         ...this.paging,
-        terminalID: terminalID
+        terminalID: terminalID,
+        showDeleted: this.allowShowDeleted ? this.showDeletedCustomers : false
       });
       this.customers = customers.data;
       this.totalAmount = customers.numberOfRecords;
@@ -208,12 +213,19 @@ export default {
     },
     async 'terminalStore.terminalID'(newValue){
       await this.getCustomers();
+    },
+    async 'showDeletedCustomers'(){
+      if(!this.allowShowDeleted){
+        return;
+      }
+      await this.getCustomers();
     }
   },
   computed: {
     ...mapState({
       lastChargedCustomersStore: state => state.payment.lastChargedCustomers,
-      terminalStore: state => state.settings.terminal
+      terminalStore: state => state.settings.terminal,
+      showDeletedCustomers: state => state.ui.showDeletedCustomers,
     }),
     canLoadMore() {
       return this.totalAmount > 0 && this.paging.take < this.totalAmount && this.paging.skip < this.totalAmount;

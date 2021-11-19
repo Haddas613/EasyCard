@@ -91,6 +91,8 @@
   "TransmissionsList": "רשימת שידורים",
   "FilterTransmissions": "מסנן שידורים",
   "UserPaid": "שולם על ידי המשתמש",
+  "DeletedItems": "פריטים שנמחקו",
+  "DeletedCustomers": "לקוחות שנמחקו",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -391,6 +393,8 @@
   "GenerateMasavFile": "וגם: הצג מפתח פרטי",
   "ConvertToJ4": "המרה ל- J4",
   "ClearItems": "למחוק פריט",
+  "ShowActive": "הצג פעיל",
+  "ShowDeleted": "הצג שנמחקו",
 
   "--AUTH--": null,
   "Login": "כניסה",

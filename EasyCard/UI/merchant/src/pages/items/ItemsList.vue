@@ -5,13 +5,12 @@
 </template>
 
 <script>
-import EcList from "../../components/ec/EcList";
-import ReIcon from "../../components/misc/ResponsiveIcon";
-import EcMoney from "../../components/ec/EcMoney";
-import ItemsList from "../../components/items/ItemsList";
+import { mapState } from "vuex";
 
 export default {
-  components: { EcList, ReIcon, EcMoney, ItemsList },
+  components: { 
+    ItemsList: () => import("../../components/items/ItemsList")
+  },
   data() {
     return {
       totalAmount: 0,
@@ -24,6 +23,11 @@ export default {
       },
     };
   },
+  computed: {
+    ...mapState({
+      showDeletedItems: state => state.ui.showDeletedItems,
+    })
+  },
   methods: {
     async deleteSelected(){
       let selectedItems = this.$refs.itemsListComponent.getSelectedItems();
@@ -34,22 +38,37 @@ export default {
       await this.$api.items.bulkDeleteItems(selected);
       await this.$refs.itemsListComponent.refresh();
     },
+    initThreeDotMenu(){
+      let tdm = [
+        {
+          text: this.$t("CreateItem"),
+          fn: () => this.$router.push({name: 'CreateItem'})
+        },
+        {
+          text: this.$t("DeleteSelected"),
+          fn: () => this.deleteSelected(),
+          disabled: this.showDeletedItems
+        },
+        {
+          text: this.showDeletedItems ? this.$t("ShowActive") : this.$t("ShowDeleted"),
+          fn: () => this.$store.commit("ui/setShowDeletedItems", !this.showDeletedItems)
+        }
+      ];
+      this.$store.commit("ui/changeHeader", {
+        value: {
+          threeDotMenu: tdm,
+          text: { translate: true, value: this.showDeletedItems ? "DeletedItems" : "Items" }
+        }
+      });
+    }
   },
   async mounted() {
-    this.$store.commit("ui/changeHeader", {
-      value: {
-        threeDotMenu: [
-          {
-            text: this.$t("CreateItem"),
-            fn: () => {this.$router.push({name: 'CreateItem'});}
-          },
-          {
-            text: this.$t("DeleteSelected"),
-            fn: this.deleteSelected.bind(this)
-          }
-        ]
-      }
-    });
-  }
+    this.initThreeDotMenu();
+  },
+  watch: {
+    showDeletedItems(newValue, oldValue) {
+      this.initThreeDotMenu();
+    }
+  },
 };
 </script>

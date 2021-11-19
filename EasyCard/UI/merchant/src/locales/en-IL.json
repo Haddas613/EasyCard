@@ -91,6 +91,8 @@
   "TransmissionsList": "Transmissions List",
   "FilterTransmissions": "Filter Transmissions",
   "UserPaid": "User Paid",
+  "DeletedItems": "Deleted Items",
+  "DeletedCustomers": "Deleted Customers",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "Required",
@@ -391,6 +393,8 @@
   "GenerateMasavFile": "Generate Masav File",
   "ConvertToJ4": "Convert to J4",
   "ClearItems": "Clear Items",
+  "ShowActive": "Show Active",
+  "ShowDeleted": "Show Deleted",
 
   "--AUTH--": null,
   "Login": "Login",
