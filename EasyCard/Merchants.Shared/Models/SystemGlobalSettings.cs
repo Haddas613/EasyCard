@@ -48,5 +48,7 @@ namespace Merchants.Shared.Models
 
         [Range(0, 1)]
         public decimal? VATRate { get; set; }
+
+        public bool? UseQuickChargeByDefault { get; set; }
     }
 }
