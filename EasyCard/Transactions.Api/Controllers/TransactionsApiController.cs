@@ -599,7 +599,14 @@ namespace Transactions.Api.Controllers
             var transaction = mapper.Map<CreateTransactionRequest>(model);
             transaction.TransactionAmount = 1;
 
-            return await ProcessTransaction(transaction, null, JDealTypeEnum.J2);
+            CreditCardTokenKeyVault token = null;
+
+            if (model.CreditCardToken != null)
+            {
+                token = EnsureExists(await keyValueStorage.Get(model.CreditCardToken), "CreditCardToken");
+            }
+
+            return await ProcessTransaction(transaction, token, JDealTypeEnum.J2);
         }
 
         /// <summary>
