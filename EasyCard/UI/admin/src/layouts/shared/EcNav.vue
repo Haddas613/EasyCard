@@ -126,6 +126,16 @@ export default {
               to: { name: "Merchants" }
             },
             {
+              icon: "mdi-plus",
+              text: "CreateMerchant",
+              to: { name: "CreateMerchant" }
+            },
+            {
+              icon: "mdi-format-list-bulleted",
+              text: "TerminalsList",
+              to: { name: "Terminals" }
+            },
+            {
               icon: "mdi-account-network",
               text: "UsersList",
               to: { name: "Users" }
@@ -134,11 +144,6 @@ export default {
               icon: "mdi-credit-card-settings",
               text: "CreditCardTokens",
               to: { name: "CardTokens" }
-            },
-            {
-              icon: "mdi-plus",
-              text: "CreateMerchant",
-              to: { name: "CreateMerchant" }
             }
           ]
         },
@@ -148,11 +153,6 @@ export default {
           text: "Terminals",
           expanded: false,
           children: [
-            {
-              icon: "mdi-format-list-bulleted",
-              text: "TerminalsList",
-              to: { name: "Terminals" }
-            },
             {
               icon: "mdi-format-list-bulleted-type",
               text: "TerminalTemplates",
