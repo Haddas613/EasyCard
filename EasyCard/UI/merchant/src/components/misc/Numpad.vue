@@ -211,7 +211,7 @@ export default {
       //If external data is bigger than current total amount, it's put in the default item price
       this.defaultItem.price = this.data.amount - this.totalAmount;
     }
-    if(this.model.vatRate === null){
+    if(this.model.vatRate === null || this.terminalStore.settings.vatExempt){
       this.model.vatRate = this.terminalStore.settings.vatExempt ? null : this.terminalStore.settings.vatRate;
     }
     await this.getItems();
