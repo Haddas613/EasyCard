@@ -30,6 +30,8 @@ namespace MerchantProfileApi.Client
 
         public NameValueCollection Headers { get; } = new NameValueCollection();
 
+        // consumers
+
         public async Task<SummariesResponse<ConsumerSummary>> GetConsumers(ConsumersFilter filter)
         {
             var consumers = await webApiClient.Get<SummariesResponse<ConsumerSummary>>(apiConfiguration.MerchantProfileURL, $"/api/consumers", filter, BuildHeaders);
@@ -47,6 +49,29 @@ namespace MerchantProfileApi.Client
         public async Task<OperationResponse> UpdateConsumer(UpdateConsumerRequest request)
         {
             var consumerResp = await webApiClient.Put<OperationResponse>(apiConfiguration.MerchantProfileURL, $"/api/consumers/{request.ConsumerID}", request, BuildHeaders);
+
+            return consumerResp;
+        }
+
+        // items
+
+        public async Task<SummariesResponse<ConsumerSummary>> GetItems(ItemsFilter filter)
+        {
+            var consumers = await webApiClient.Get<SummariesResponse<ConsumerSummary>>(apiConfiguration.MerchantProfileURL, $"/api/items", filter, BuildHeaders);
+
+            return consumers;
+        }
+
+        public async Task<OperationResponse> CreateItem(ItemRequest request)
+        {
+            var consumerResp = await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantProfileURL, $"/api/items", request, BuildHeaders);
+
+            return consumerResp;
+        }
+
+        public async Task<OperationResponse> UpdateItem(UpdateItemRequest request)
+        {
+            var consumerResp = await webApiClient.Put<OperationResponse>(apiConfiguration.MerchantProfileURL, $"/api/items/{request.ItemID}", request, BuildHeaders);
 
             return consumerResp;
         }
