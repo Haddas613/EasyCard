@@ -66,7 +66,6 @@ namespace DesktopEasyCardConvertorECNG
                         ConsumerName = string.Format("{0} {1}", customerInFile.LastName, customerInFile.FirstName),
                         ConsumerNationalID = customerInFile.ClientCode,
                         ConsumerPhone = customerInFile.Phone1,
-                        ConsumerPhone2 = customerInFile.Phone2,
                         ConsumerSecondPhone = customerInFile.Phone2,
                         ExternalReference = string.Format("{0}{1}", RapidClient ? "RPS_" : "", customerInFile.RivCode),
                         Origin = string.Format("BillingDesktop for {0}", MerchantName)//,
@@ -77,8 +76,24 @@ namespace DesktopEasyCardConvertorECNG
             #endregion  Create_Customer
 
             #region Add_Items
-            var AddUtemsRes =  metadataTerminalService.
+            foreach (var product in dataFromFile.Products)
+            {
+                var AddUtemsRes = metadataMerchantService.CreateItem(new ItemRequest()
+                {
+                    Active = true,
+                    BillingDesktopRefNumber = product.RevID,
+                    ItemName = product.RivName,
+                    Price = product.RivSum,
+                    //IncomeFund = product.RivCode tocheck incomeFund
+                    ExternalReference = product.RevID
+                });
+            }
+
             #endregion Add_Items
+
+            #region Add_Token
+            //var AddToken =  metadataTerminalService.
+            #endregion Add_Token
             // var res = metadataService.CreateConsumer(new MerchantProfileApi.Models.Billing.ConsumerRequest
             //{
 
