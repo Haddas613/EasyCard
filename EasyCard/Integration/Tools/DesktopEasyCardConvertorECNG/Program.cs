@@ -43,7 +43,6 @@ namespace DesktopEasyCardConvertorECNG
                     ConsumerName = string.Format("{0} {1}", customerInFile.LastName, customerInFile.FirstName),
                     ConsumerNationalID = customerInFile.ClientCode,
                     ConsumerPhone = customerInFile.Phone1,
-                    ConsumerPhone2 = customerInFile.Phone2,
                     ConsumerSecondPhone = customerInFile.Phone2,
                     ExternalReference = string.Format("{0}{1}", RapidClient ? "RPS_" : "", customerInFile.RivCode),
                     Origin = string.Format("BillingDesktop for {0}", MerchantName),

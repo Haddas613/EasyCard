@@ -387,7 +387,7 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.ConsumerName).IsRequired(true).HasMaxLength(50).IsUnicode(true);
 
-                builder.Property(b => b.ConsumerEmail).IsRequired(true).HasMaxLength(50).IsUnicode(true);
+                builder.Property(b => b.ConsumerEmail).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.ConsumerPhone).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
