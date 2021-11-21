@@ -6,10 +6,10 @@ namespace Common.Models.MDBSource
 {
     public class BillingSettings
     {
-        public string billingDay { get;set;}
+        public int billingDay { get;set;}
         public string MasavName { get; set; }
         public string MasavCode1 { get; set; }
         public string MasavCode2 { get; set; }
-        public string AddMaam { get; set; }
+        public bool AddMaam { get; set; }
     }
 }

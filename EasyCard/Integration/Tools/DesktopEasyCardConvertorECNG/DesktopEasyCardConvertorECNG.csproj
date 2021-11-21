@@ -20,4 +20,8 @@
     <ProjectReference Include="..\..\..\Transactions.Api.Client\Transactions.Api.Client.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Enums\" />
+  </ItemGroup>
+
 </Project>

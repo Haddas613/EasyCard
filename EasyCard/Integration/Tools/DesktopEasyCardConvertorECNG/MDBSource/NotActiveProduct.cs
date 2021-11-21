@@ -9,6 +9,6 @@ namespace Common.Models.MDBSource
         public string ProductName { get; set; }
         public string RivCoded { get; set; }
         public string DesktopRecordID { get; set; }
-        public string ProdSum { get; set; }
+        public decimal ProdSum { get; set; }
     }
 }

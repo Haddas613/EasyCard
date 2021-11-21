@@ -16,7 +16,7 @@ namespace DesktopEasyCardConvertorECNG
         {
             try
             {
-                string connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\\Users\\vvs\\Downloads\\EasyCardBilling.mdb;Jet OLEDB:Database Password=D09h3c;";
+                string connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\\Users\\hadas\\Documents\\Convert\\ConvertDesktopOnline\\EasyCardBillingComplex\\EasyCardBilling.mdb;Jet OLEDB:Database Password=D09h3c;";
                 using (OleDbConnection myConnection = new OleDbConnection(connectionString))
                 {
                     myConnection.Open();

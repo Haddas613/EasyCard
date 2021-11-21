@@ -67,7 +67,7 @@ namespace DesktopEasyCardConvertorECNG
             tokenService = new TokensService(privateKey, webApiClient, configuration);
         }
 
-        public TransactionsApiClient GetTransactionsApiClient(string privateKey, string environmentStr)
+        public TransactionsApiClient GetTransactionsApiClient()
         {
             var apiSettings = new ApiSettings
             {

@@ -9,6 +9,6 @@ namespace Common.Models.MDBSource
         public string RivName { get; set; }
         public string RivCode { get; set; }
         public string RevID { get; set; }
-        public string RivSum { get; set; }
+        public decimal RivSum { get; set; }
     }
 }

@@ -8,8 +8,8 @@ namespace Common.Models.MDBSource
     {
         public string DealID { get; set; }
         public string DealText { get; set; }
-        public string ProdSum { get; set; }
+        public decimal ProdSum { get; set; }
         public string RivID { get; set; }
-        public string DealCount { get; set; }
+        public int DealCount { get; set; }
     }
 }
