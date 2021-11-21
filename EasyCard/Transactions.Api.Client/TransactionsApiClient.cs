@@ -284,6 +284,13 @@ namespace Transactions.Api.Client
             return res;
         }
 
+        public async Task<OperationResponse> CreateToken(TokenRequest model)
+        {
+            var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/cardtokens", model, BuildHeaders);
+
+            return res;
+        }
+
         public async Task<OperationResponse> DeleteToken(string key)
         {
             var res = await webApiClient.Delete<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/cardtokens/{key}", BuildHeaders);
