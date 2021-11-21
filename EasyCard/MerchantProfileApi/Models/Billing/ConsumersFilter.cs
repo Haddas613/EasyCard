@@ -23,5 +23,7 @@ namespace MerchantProfileApi.Models.Billing
         public string Phone { get; set; }
 
         public string ExternalReference { get; set; }
+
+        public string BillingDesktopRefNumber { get; set; }
     }
 }
