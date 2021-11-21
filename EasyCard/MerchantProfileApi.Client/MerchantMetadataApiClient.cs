@@ -44,6 +44,13 @@ namespace MerchantProfileApi.Client
             return consumerResp;
         }
 
+        public async Task<OperationResponse> UpdateConsumer(UpdateConsumerRequest request)
+        {
+            var consumerResp = await webApiClient.Put<OperationResponse>(apiConfiguration.MerchantProfileURL, $"/api/consumers/{request.ConsumerID}", request, BuildHeaders);
+
+            return consumerResp;
+        }
+
         private async Task<NameValueCollection> BuildHeaders()
         {
             var token = await tokenService.GetToken();
