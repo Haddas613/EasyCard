@@ -2,6 +2,7 @@
 using Shared.Api.Models.Binding;
 using Shared.Helpers;
 using Shared.Integration.Models;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -97,5 +98,7 @@ namespace MerchantProfileApi.Models.Billing
         public string BillingDesktopRefNumber { get; set; }
 
         public bool Active { get; set; } = true;
+
+        public BankDetails BankDetails { get; set; }
     }
 }

@@ -206,11 +206,6 @@
             End-customer Phone
             </summary>
         </member>
-        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ConsumerPhone2">
-            <summary>
-            End-customer Phone
-            </summary>
-        </member>
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ConsumerNationalID">
             <summary>
             End-customer National ID
@@ -340,6 +335,21 @@
         <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.UpdateTimestamp">
             <summary>
             Concurrency check
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.TerminalID">
+            <summary>
+            Target terminal
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ConsumerPhone2">
+            <summary>
+            End-customer Phone
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.BillingDesktopRefNumber">
+            <summary>
+            ID in BillingDesktop system
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Models.Terminal.ExternalSystemRequest.ExternalProcessorReference">

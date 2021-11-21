@@ -25,7 +25,7 @@ namespace MerchantProfileApi.Mapping
 
             CreateMap<ConsumerRequest, Consumer>()
                 .ForMember(d => d.ConsumerNote, src => src.MapFrom(x => x.Note))
-                .ForMember(d => d.ConsumerSecondPhone, src => src.MapFrom(x => x.ConsumerPhone2));
+                .ForMember(d => d.ConsumerSecondPhone, src => src.MapFrom(x => x.ConsumerSecondPhone));
 
             CreateMap<UpdateConsumerRequest, Consumer>()
                 .ForMember(d => d.TerminalID, o => o.Ignore())

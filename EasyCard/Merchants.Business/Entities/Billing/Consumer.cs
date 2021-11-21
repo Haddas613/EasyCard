@@ -48,6 +48,7 @@ namespace Merchants.Business.Entities.Billing
         public Address ConsumerAddress { get; set; }
 
         public BankDetails BankDetails { get; set; }
+
         public DateTime? Created { get; set; }
 
         public string OperationDoneBy { get; set; }
