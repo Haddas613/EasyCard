@@ -26,5 +26,7 @@ namespace Shared.Integration.ExternalSystems
         bool AllowTransmissionCancellation();
 
         Task<AggregatorTransactionResponse> GetTransaction(string aggregatorTransactionID);
+
+        Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID);
     }
 }

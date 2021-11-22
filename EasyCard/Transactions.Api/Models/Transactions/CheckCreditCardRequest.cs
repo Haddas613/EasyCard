@@ -35,9 +35,21 @@ namespace Transactions.Api.Models.Transactions
         public CardPresenceEnum CardPresence { get; set; }
 
         /// <summary>
+        /// EasyCard terminal reference
+        /// </summary>
+        [Required(AllowEmptyStrings = false)]
+        public Guid TerminalID { get; set; }
+
+        /// <summary>
         /// Credit card details
         /// </summary>
-        [Required]
+        //[Required]
         public CreditCardSecureDetails CreditCardSecureDetails { get; set; }
+
+        /// <summary>
+        /// Stored credit card details token (should be omitted in case if full credit card details used)
+        /// </summary>
+        [StringLength(50)]
+        public string CreditCardToken { get; set; }
     }
 }

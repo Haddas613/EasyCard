@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ec-dialog :dialog.sync="numpadDialog" color="ecbg">
+    <ec-dialog :dialog.sync="numpadDialog" @dismiss="ok()" color="ecbg">
       <template v-slot:title>{{$t('AddItems')}}</template>
       <template>
         <v-flex fluid fill-height>
@@ -112,6 +112,12 @@ export default {
       //may have not been yet initialized
       if(this.$refs.numpadRef){
         this.$refs.numpadRef.adjustItemsToAmount(this.amount);
+      }
+    },
+    ok(){
+      //may have not been yet initialized. only recalculate if items were added
+      if(this.$refs.numpadRef && this.data.dealDetails.items.length > 0){
+        this.$refs.numpadRef.ok();
       }
     }
   }

@@ -352,7 +352,7 @@ namespace Merchants.Business.Data
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
-                builder.Property(b => b.Active).HasDefaultValue(true);
+                builder.Property(b => b.Active);
 
                 builder.Property(b => b.ItemName).IsRequired(true).HasMaxLength(128).IsUnicode(true);
                 builder.Property(b => b.SKU).IsRequired(false).HasMaxLength(50).IsUnicode(true);
@@ -384,7 +384,7 @@ namespace Merchants.Business.Data
 
                 builder.Property(p => p.UpdateTimestamp).IsRowVersion();
 
-                builder.Property(b => b.Active).HasDefaultValue(true);
+                builder.Property(b => b.Active);
 
                 builder.Property(b => b.ConsumerName).IsRequired(true).HasMaxLength(50).IsUnicode(true);
 

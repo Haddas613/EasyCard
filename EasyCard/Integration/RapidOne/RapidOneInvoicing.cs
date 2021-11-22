@@ -114,7 +114,7 @@ namespace RapidOne
             }
             finally
             {
-                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, documentCreationRequest.CorrelationId)
+                IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, documentCreationRequest.InvoiceID, integrationMessageId, documentCreationRequest.CorrelationId)
                 {
                     Request = requestStr,
                     Response = responseStr,
@@ -223,6 +223,11 @@ namespace RapidOne
 
                 throw new IntegrationException("RapidOne integration request failed", null);
             }
+        }
+
+        public Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID)
+        {
+            return storageService.GetAll(entityID);
         }
 
         private string GetDocumentNumber(IEnumerable<DocumentItemModel> documents)

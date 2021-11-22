@@ -50,7 +50,7 @@ namespace DesktopEasyCardConvertorECNG
             foreach (var customerInFile in dataFromFile.Customers)
             {
                 Guid customerID = ImportCustomer(RapidClient, MerchantName, metadataMerchantService, customerInFile);
-                var findcustomer = metadataMerchantService.GetConsumers(new ConsumersFilter() { BillingDesktopRefNumber = customerInFile.DealID );
+                var findcustomer = metadataMerchantService.GetConsumers(new ConsumersFilter() { BillingDesktopRefNumber = customerInFile.DealID });
                 var token = CreateTokenPerCustomer(customerInFile.CardNumber, metadataTerminalService, customerID, customerInFile);
                 var itemsPerCustomerInFile = dataFromFile.ProductsPerCustomer.FindAll(x => x.DealID == customerInFile.DealID);
                 List<Item> items = new List<Item>();

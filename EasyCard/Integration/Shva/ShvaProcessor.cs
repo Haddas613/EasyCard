@@ -61,7 +61,7 @@ namespace Shva
             ashStartReq.pinpad = new clsPinPad();
             ashStartReq.globalObj = new ShvaEMV.clsGlobal(); // { shareD = new clsShareDetails { dealType = DealType.MAGNET } };
 
-            var ashStartReqResult = await this.DoRequest(ashStartReq, AshStartUrl, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
+            var ashStartReqResult = await this.DoRequest(ashStartReq, AshStartUrl, paymentTransactionRequest.PaymentTransactionID, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
 
             var ashStartResultBody = ashStartReqResult?.Body?.Content as AshStartResponseBody;
 
@@ -90,7 +90,7 @@ namespace Shva
                 var ashAuthReq = ashStartResultBody.GetAshAuthRequestBody(shvaParameters);
                 ashAuthReq.inputObj = cls;
 
-                var resultAuth = await this.DoRequest(ashAuthReq, AshAuthUrl, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
+                var resultAuth = await this.DoRequest(ashAuthReq, AshAuthUrl, paymentTransactionRequest.PaymentTransactionID, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
                 var authResultBody = resultAuth?.Body?.Content as AshAuthResponseBody;
 
                 if (((AshAuthResultEnum)authResultBody.AshAuthResult).IsSuccessful())
@@ -117,7 +117,7 @@ namespace Shva
                 ashEndReq.globalObj = authResultBody.globalObj;
                 ashEndReq.pinpad = authResultBody.pinpad;
 
-                var resultAshEnd = await this.DoRequest(ashEndReq, AshEndUrl, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
+                var resultAshEnd = await this.DoRequest(ashEndReq, AshEndUrl, paymentTransactionRequest.PaymentTransactionID, paymentTransactionRequest.CorrelationId, HandleIntegrationMessage);
                 var resultAshEndBody = resultAshEnd?.Body?.Content as AshEndResponseBody;
 
                 if (((AshEndResultEnum)resultAshEndBody.AshEndResult).IsSuccessful())
@@ -158,7 +158,7 @@ namespace Shva
             updateParamsReq.Password = shvaParameters.Password;
             updateParamsReq.MerchantNumber = shvaParameters.MerchantNumber;
 
-            var result = await this.DoRequest(updateParamsReq, GetTerminalDataUrl, updateParamRequest.CorrelationId, HandleIntegrationMessage);
+            var result = await this.DoRequest(updateParamsReq, GetTerminalDataUrl, updateParamRequest.TerminalID.ToString(), updateParamRequest.CorrelationId, HandleIntegrationMessage);
 
             var getTerminalDataResultBody = (GetTerminalDataResponseBody)result?.Body?.Content;
 
@@ -194,7 +194,7 @@ namespace Shva
             tranEMV.MerchantNumber = shvaParameters.MerchantNumber;
             tranEMV.DATA = string.Join(";", transmitTransactionsRequest.TransactionIDs);
 
-            var result = await this.DoRequest(tranEMV, TransEMVUrl, transmitTransactionsRequest.CorrelationId, HandleIntegrationMessage);
+            var result = await this.DoRequest(tranEMV, TransEMVUrl, transmitTransactionsRequest.TerminalID.ToString(), transmitTransactionsRequest.CorrelationId, HandleIntegrationMessage);
 
             var transResultBody = (TransEMVResponseBody)result?.Body?.Content;
 
@@ -227,7 +227,7 @@ namespace Shva
 
             var changePasswordReq = shvaParameters.GetChangePasswordRequestBody(changePasswordRequest.NewPassword);
 
-            var changePasswordReqResult = await this.DoRequest(changePasswordReq, ChangePasswordUrl, changePasswordRequest.CorrelationId, HandleIntegrationMessage);
+            var changePasswordReqResult = await this.DoRequest(changePasswordReq, changePasswordRequest.TerminalID.ToString(), ChangePasswordUrl, changePasswordRequest.CorrelationId, HandleIntegrationMessage);
 
             var changePasswordResultBody = changePasswordReqResult?.Body?.Content as ChangePasswordResponseBody;
 
@@ -248,7 +248,12 @@ namespace Shva
             }
         }
 
-        protected async Task<Envelope> DoRequest(object request, string soapAction, string correlationId, Func<IntegrationMessage, Task> handleIntegrationMessage = null)
+        public Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID)
+        {
+            return integrationRequestLogStorageService.GetAll(entityID);
+        }
+
+        protected async Task<Envelope> DoRequest(object request, string soapAction, string entityID, string correlationId, Func<IntegrationMessage, Task> handleIntegrationMessage = null)
         {
             var soap = new Envelope
             {
@@ -293,7 +298,7 @@ namespace Shva
             {
                 if (handleIntegrationMessage != null)
                 {
-                    IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, integrationMessageId, correlationId);
+                    IntegrationMessage integrationMessage = new IntegrationMessage(DateTime.UtcNow, entityID, integrationMessageId, correlationId);
 
                     //Do not expose credit card and cvv numbers in log
                     requestStr = Regex.Replace(requestStr, "\\<clientInputPan\\>\\d{9,16}\\</clientInputPan\\>", "<clientInputPan>****************</clientInputPan>");

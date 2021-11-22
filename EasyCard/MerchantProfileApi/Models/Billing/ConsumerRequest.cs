@@ -84,7 +84,7 @@ namespace MerchantProfileApi.Models.Billing
         [StringLength(50)]
         public string Origin { get; set; }
 
-        public bool Active { get; set; } = true;
+        public bool? Active { get; set; }
 
         [SwaggerExclude]
         [JsonConverter(typeof(TrimmingJsonConverter))]

@@ -1266,9 +1266,19 @@
             Is the card physically scanned (telephone deal or magnetic)
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Transactions.CheckCreditCardRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Transactions.CheckCreditCardRequest.CreditCardSecureDetails">
             <summary>
             Credit card details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Transactions.CheckCreditCardRequest.CreditCardToken">
+            <summary>
+            Stored credit card details token (should be omitted in case if full credit card details used)
             </summary>
         </member>
         <member name="T:Transactions.Api.Models.Transactions.CreateTransactionRequest">

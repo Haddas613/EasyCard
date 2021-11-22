@@ -14,6 +14,8 @@ namespace Shared.Integration.Models
             CreditCardToken = new CreditCardSecureDetails();
         }
 
+        public string PaymentTransactionID { get; set; }
+
         /// <summary>
         /// Shva terminal settings
         /// </summary>

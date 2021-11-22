@@ -1,5 +1,6 @@
 ﻿using Shared.Integration.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Shared.Integration.ExternalSystems
@@ -13,5 +14,7 @@ namespace Shared.Integration.ExternalSystems
         Task ParamsUpdateTransaction(ProcessorUpdateParametersRequest updateParametersRequest);
 
         Task<ProcessorPreCreateTransactionResponse> PreCreateTransaction(ProcessorCreateTransactionRequest paymentTransactionRequest);
+
+        Task<IEnumerable<IntegrationMessage>> GetStorageLogs(string entityID);
     }
 }

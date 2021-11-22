@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using EasyInvoice;
+using Merchants.Api.Models.Integrations;
 using Merchants.Api.Models.Integrations.EasyInvoice;
 using Merchants.Business.Entities.Terminal;
 using Merchants.Business.Services;
@@ -26,15 +28,18 @@ namespace Merchants.Api.Controllers.Integrations
         private readonly ECInvoiceInvoicing eCInvoicing;
         private readonly ITerminalsService terminalsService;
         private readonly ITerminalTemplatesService terminalTemplatesService;
+        private readonly IMapper mapper;
 
         public EasyInvoiceApiController(
             ECInvoiceInvoicing eCInvoicing,
             ITerminalsService terminalsService,
-            ITerminalTemplatesService terminalTemplatesService)
+            ITerminalTemplatesService terminalTemplatesService,
+            IMapper mapper)
         {
             this.eCInvoicing = eCInvoicing;
             this.terminalsService = terminalsService;
             this.terminalTemplatesService = terminalTemplatesService;
+            this.mapper = mapper;
         }
 
         [HttpPost]
@@ -93,6 +98,26 @@ namespace Merchants.Api.Controllers.Integrations
             await terminalsService.SaveTerminalExternalSystem(easyInvoiceIntegration, terminal);
 
             response.AdditionalData = easyInvoiceIntegration.Settings;
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("request-logs/{entityID}")]
+        public async Task<ActionResult<SummariesResponse<IntegrationRequestLog>>> GetRequestLogs([FromRoute]string entityID)
+        {
+            if (string.IsNullOrWhiteSpace(entityID))
+            {
+                return NotFound();
+            }
+
+            var data = mapper.Map<IEnumerable<IntegrationRequestLog>>(await eCInvoicing.GetStorageLogs(entityID));
+
+            var response = new SummariesResponse<IntegrationRequestLog>
+            {
+                Data = data,
+                NumberOfRecords = data.Count()
+            };
+
             return Ok(response);
         }
     }
