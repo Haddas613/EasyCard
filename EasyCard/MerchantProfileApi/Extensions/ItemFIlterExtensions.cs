@@ -27,6 +27,16 @@ namespace MerchantProfileApi.Extensions
                 src = src.Where(c => EF.Functions.Like(c.ItemName, $"%{search}%"));
             }
 
+            if (!string.IsNullOrWhiteSpace(filter.ExternalReference))
+            {
+                src = src.Where(d => d.ExternalReference == filter.ExternalReference);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.BillingDesktopRefNumber))
+            {
+                src = src.Where(d => d.BillingDesktopRefNumber == filter.BillingDesktopRefNumber);
+            }
+
             return src;
         }
     }
