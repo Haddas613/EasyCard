@@ -2,6 +2,7 @@
 using Shared.Business.Security;
 using Shared.Helpers;
 using Shared.Integration.Models;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -45,6 +46,8 @@ namespace Merchants.Business.Entities.Billing
         public string ConsumerNote { get; set; }
 
         public Address ConsumerAddress { get; set; }
+
+        public BankDetails BankDetails { get; set; }
 
         public DateTime? Created { get; set; }
 

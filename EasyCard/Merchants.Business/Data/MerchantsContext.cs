@@ -355,6 +355,7 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.Active);
 
                 builder.Property(b => b.ItemName).IsRequired(true).HasMaxLength(128).IsUnicode(true);
+                builder.Property(b => b.SKU).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
@@ -387,7 +388,7 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.ConsumerName).IsRequired(true).HasMaxLength(50).IsUnicode(true);
 
-                builder.Property(b => b.ConsumerEmail).IsRequired(true).HasMaxLength(50).IsUnicode(true);
+                builder.Property(b => b.ConsumerEmail).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.ConsumerPhone).IsRequired(false).HasMaxLength(50).IsUnicode(true);
 
@@ -406,6 +407,7 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.SourceIP).IsRequired(false).HasMaxLength(50).IsUnicode(false);
 
                 builder.Property(b => b.ConsumerAddress).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasJsonConversion();
+                builder.Property(b => b.BankDetails).IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true).HasJsonConversion();
 
                 builder.Property(b => b.ExternalReference).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.BillingDesktopRefNumber).IsRequired(false).HasMaxLength(50).IsUnicode(true);

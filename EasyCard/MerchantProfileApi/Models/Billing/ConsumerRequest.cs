@@ -2,6 +2,7 @@
 using Shared.Api.Models.Binding;
 using Shared.Api.Swagger;
 using Shared.Integration.Models;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -24,7 +25,6 @@ namespace MerchantProfileApi.Models.Billing
         /// End-customer Email
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
-        [Required(AllowEmptyStrings = false)]
         [StringLength(50)]
         public string ConsumerEmail { get; set; }
 
@@ -40,7 +40,6 @@ namespace MerchantProfileApi.Models.Billing
         /// End-customer Phone
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
-        [Required(AllowEmptyStrings = false)]
         [StringLength(50)]
         public string ConsumerPhone { get; set; }
 
@@ -50,6 +49,13 @@ namespace MerchantProfileApi.Models.Billing
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [StringLength(50)]
         public string ConsumerNationalID { get; set; }
+
+        /// <summary>
+        /// End-customer note details
+        /// </summary>
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [StringLength(256)]
+        public string Note { get; set; }
 
         /// <summary>
         /// End-customer address
@@ -62,6 +68,14 @@ namespace MerchantProfileApi.Models.Billing
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [StringLength(50)]
         public string ExternalReference { get; set; }
+
+        /// <summary>
+        /// ID in BillingDesktop system
+        /// </summary>
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [StringLength(50)]
+
+        public string BillingDesktopRefNumber { get; set; }
 
         /// <summary>
         /// Origin of customer
@@ -80,8 +94,7 @@ namespace MerchantProfileApi.Models.Billing
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ConsumerNote { get; set; }
 
-        [SwaggerExclude]
-        [JsonConverter(typeof(TrimmingJsonConverter))]
-        public string BillingDesktopRefNumber { get; set; }
+        public BankDetails BankDetails { get; set; }
+
     }
 }

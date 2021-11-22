@@ -83,6 +83,11 @@ namespace MerchantProfileApi.Extensions
                 src = src.Where(c => c.ExternalReference == filter.ExternalReference);
             }
 
+            if (!string.IsNullOrWhiteSpace(filter.BillingDesktopRefNumber))
+            {
+                src = src.Where(c => c.BillingDesktopRefNumber == filter.BillingDesktopRefNumber);
+            }
+
             return src;
         }
     }

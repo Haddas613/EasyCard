@@ -29,6 +29,10 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
+                    b.Property<string>("BankDetails")
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("BillingDesktopRefNumber")
                         .HasMaxLength(50)
                         .IsUnicode(true)
@@ -39,7 +43,6 @@ namespace Merchants.Business.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConsumerEmail")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(50)");
@@ -202,6 +205,11 @@ namespace Merchants.Business.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(19,4)");
+
+                    b.Property<string>("SKU")
+                        .HasMaxLength(50)
+                        .IsUnicode(true)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("SourceIP")
                         .HasMaxLength(50)

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Shared.Business
+namespace Shared.Helpers
 {
     public interface IConcurrencyCheck
     {

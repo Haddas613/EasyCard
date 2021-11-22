@@ -211,6 +211,11 @@
             End-customer National ID
             </summary>
         </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.Note">
+            <summary>
+            End-customer note details
+            </summary>
+        </member>
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ConsumerAddress">
             <summary>
             End-customer address
@@ -219,6 +224,11 @@
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.ExternalReference">
             <summary>
             ID in external system
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.BillingDesktopRefNumber">
+            <summary>
+            ID in BillingDesktop system
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Models.Billing.ConsumerRequest.Origin">
@@ -325,6 +335,21 @@
         <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.UpdateTimestamp">
             <summary>
             Concurrency check
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.TerminalID">
+            <summary>
+            Target terminal
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ConsumerPhone2">
+            <summary>
+            End-customer Phone
+            </summary>
+        </member>
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.BillingDesktopRefNumber">
+            <summary>
+            ID in BillingDesktop system
             </summary>
         </member>
         <member name="P:MerchantProfileApi.Models.Terminal.ExternalSystemRequest.ExternalProcessorReference">

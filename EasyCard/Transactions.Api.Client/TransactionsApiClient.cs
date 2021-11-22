@@ -16,6 +16,8 @@ using Transactions.Api.Models.Billing;
 using SharedApi = Shared.Api;
 using Transactions.Api.Models.UpdateParameters;
 using Transactions.Api.Models.Currency;
+using Transactions.Api.Models.Tokens;
+using Transactions.Api.Models.PaymentRequests;
 
 namespace Transactions.Api.Client
 {
@@ -214,6 +216,88 @@ namespace Transactions.Api.Client
             }
         }
 
+        public async Task<OperationResponse> UpdateCurrencyRates(CurrencyRateUpdateRequest request)
+        {
+            try
+            {
+                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/currency", request, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
+            }
+        }
+
+        public async Task<TransactionResponse> GetTransaction(string transactionID)
+        {
+            var transaction = await webApiClient.Get<TransactionResponse>(apiConfiguration.TransactionsApiAddress, $"/api/transactions/{transactionID}", null, BuildHeaders);
+
+            return transaction;
+        }
+
+        public async Task<OperationResponse> CreatePaymentIntent(PaymentRequestCreate model)
+        {
+            var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/paymentIntent", model, BuildHeaders);
+
+            return res;
+        }
+
+        public async Task<SummariesResponse<BillingDealSummary>> GetBillingDeals(BillingDealsFilter filter)
+        {
+            var transaction = await webApiClient.Get<SummariesResponse<BillingDealSummary>>(apiConfiguration.TransactionsApiAddress, $"/api/billing", filter, BuildHeaders);
+
+            return transaction;
+        }
+
+        public async Task<BillingDealResponse> GetBillingDeal(Guid billingDealID)
+        {
+            var transaction = await webApiClient.Get<BillingDealResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing/{billingDealID}", null, BuildHeaders);
+
+            return transaction;
+        }
+
+        public async Task<OperationResponse> CreateBillingDeal(BillingDealRequest model)
+        {
+            var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing", model, BuildHeaders);
+
+            return res;
+        }
+
+        public async Task<OperationResponse> UpdateBillingDeal(Guid billingDealID, BillingDealUpdateRequest model)
+        {
+            var res = await webApiClient.Put<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing/{billingDealID}", model, BuildHeaders);
+
+            return res;
+        }
+
+        public async Task<OperationResponse> SwitchBillingDeal(Guid billingDealID)
+        {
+            var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing/{billingDealID}/switch", null, BuildHeaders);
+
+            return res;
+        }
+
+        public async Task<SummariesResponse<CreditCardTokenSummary>> GetTokens(CreditCardTokenFilter filter)
+        {
+            var res = await webApiClient.Get<SummariesResponse<CreditCardTokenSummary>>(apiConfiguration.TransactionsApiAddress, $"/api/cardtokens", filter, BuildHeaders);
+
+            return res;
+        }
+
+        public async Task<OperationResponse> CreateToken(TokenRequest model)
+        {
+            var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/cardtokens", model, BuildHeaders);
+
+            return res;
+        }
+
+        public async Task<OperationResponse> DeleteToken(string key)
+        {
+            var res = await webApiClient.Delete<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/cardtokens/{key}", BuildHeaders);
+
+            return res;
+        }
+
         private async Task<NameValueCollection> BuildHeaders()
         {
             var token = await tokenService.GetToken();
@@ -226,18 +310,6 @@ namespace Transactions.Api.Client
             }
 
             return headers;
-        }
-
-        public async Task<OperationResponse> UpdateCurrencyRates(CurrencyRateUpdateRequest request)
-        {
-            try
-            {
-                return await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"api/currency", request, BuildHeaders);
-            }
-            catch (WebApiClientErrorException clientError)
-            {
-                return clientError.TryConvert(new OperationResponse { Message = clientError.Message, Status = SharedApi.Models.Enums.StatusEnum.Error });
-            }
         }
     }
 }

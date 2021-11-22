@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Shared.Api.Models.Binding;
-using Shared.Business;
+using Shared.Helpers;
 using Shared.Integration.Models;
+using Shared.Integration.Models.PaymentDetails;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -26,7 +27,6 @@ namespace MerchantProfileApi.Models.Billing
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [EmailAddress]
-        [Required(AllowEmptyStrings = false)]
         public string ConsumerEmail { get; set; }
 
         /// <summary>
@@ -41,7 +41,6 @@ namespace MerchantProfileApi.Models.Billing
         /// End-customer Phone
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
-        [Required(AllowEmptyStrings = false)]
         [StringLength(50)]
         public string ConsumerPhone { get; set; }
 
@@ -76,5 +75,30 @@ namespace MerchantProfileApi.Models.Billing
         /// </summary>
         [Required]
         public byte[] UpdateTimestamp { get; set; }
+
+        /// <summary>
+        /// Target terminal
+        /// </summary>
+        public Guid? TerminalID { get; set; }
+
+        /// <summary>
+        /// End-customer Phone
+        /// </summary>
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [Required(AllowEmptyStrings = false)]
+        [StringLength(50)]
+        public string ConsumerPhone2 { get; set; }
+
+        /// <summary>
+        /// ID in BillingDesktop system
+        /// </summary>
+        [JsonConverter(typeof(TrimmingJsonConverter))]
+        [StringLength(50)]
+
+        public string BillingDesktopRefNumber { get; set; }
+
+        public bool Active { get; set; } = true;
+
+        public BankDetails BankDetails { get; set; }
     }
 }
