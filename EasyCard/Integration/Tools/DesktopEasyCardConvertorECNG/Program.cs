@@ -59,7 +59,8 @@ namespace DesktopEasyCardConvertorECNG
                     BillingDesktopRefNumber = product.RevID,
                     ItemName = product.RivName,
                     Price = product.RivSum,
-                    ExternalReference = product.RevID
+                    ExternalReference = product.RevID,
+                    SKU = product.RivCode
                 });
             }
 
@@ -72,7 +73,7 @@ namespace DesktopEasyCardConvertorECNG
                 List<Item> items = new List<Item>();
                 foreach (var itemInFile in itemsPerCustomerInFile)
                 {
-                    items.Add(new Item() { Price = itemInFile.ProdSum, ExternalReference = itemInFile.RivID, ItemName = itemInFile.DealText, Quantity = itemInFile.DealCount /*SKU = itemInFile.RivID todo to do */});
+                    items.Add(new Item() { Price = itemInFile.ProdSum, ExternalReference = itemInFile.RivID, ItemName = itemInFile.DealText, Quantity = itemInFile.DealCount , SKU = itemInFile.RivCode,  });
                 }
                 CreateBillingDeal(metadataTerminalService, customerInFile, token.Result.EntityUID??Guid.Empty, findcustomer.Result, items);
             }
