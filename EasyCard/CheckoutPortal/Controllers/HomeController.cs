@@ -408,11 +408,18 @@ namespace CheckoutPortal.Controllers
             {
                 if (checkoutConfig.Settings.LegacyRedirectResponse)
                 {
-                    var paymentTransaction = await transactionsApiClient.GetTransaction(result.EntityUID);
+                    if (checkoutConfig.PaymentRequest.OnlyAddCard)
+                    {
+                        return Redirect(UrlHelper.BuildUrl(redirectUrl, null, new { tokenID = result.EntityUID }));
+                    }
+                    else
+                    {
+                        var paymentTransaction = await transactionsApiClient.GetTransaction(result.EntityUID);
 
-                    redirectUrl = UrlHelper.BuildUrl(redirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction));
+                        redirectUrl = UrlHelper.BuildUrl(redirectUrl, null, LegacyQueryStringConvertor.GetLegacyQueryString(request, paymentTransaction));
 
-                    return Redirect(redirectUrl);
+                        return Redirect(redirectUrl);
+                    }
                 }
                 else
                 {
