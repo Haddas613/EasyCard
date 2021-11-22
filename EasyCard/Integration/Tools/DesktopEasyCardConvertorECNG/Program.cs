@@ -2,6 +2,8 @@
 using DesktopEasyCardConvertorECNG.Models.Helper;
 using MerchantProfileApi.Client;
 using MerchantProfileApi.Models.Billing;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using Shared.Api.Models;
 using Shared.Integration.Models;
 using System;
@@ -16,6 +18,21 @@ namespace DesktopEasyCardConvertorECNG
     {
         static void Main(string[] args)
         {
+            using var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder
+                    .AddFilter("Microsoft", LogLevel.Warning)
+                    .AddFilter("System", LogLevel.Warning)
+                    .AddFilter("DesktopEasyCardConvertorECNG.Program", LogLevel.Debug)
+                    .AddConsole()
+                    .AddDebug()
+                    .AddSerilog(dispose: false);
+            });
+            Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger<Program>();
+            logger.LogInformation("Application started");
+
+
+
             bool RapidClient = false;
             string MerchantName = "Test";
 
