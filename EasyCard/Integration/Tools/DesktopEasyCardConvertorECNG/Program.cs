@@ -1,7 +1,10 @@
-﻿using Common.Models.MDBSource;
+﻿using AutoMapper;
+using Common.Models.MDBSource;
+using DesktopEasyCardConvertorECNG.Mapping;
 using DesktopEasyCardConvertorECNG.Models.Helper;
 using MerchantProfileApi.Client;
 using MerchantProfileApi.Models.Billing;
+using MerchantProfileApi.Models.Terminal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RapidOne;
@@ -13,6 +16,7 @@ using Shared.Integration;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Client;
 using Transactions.Api.Models.Tokens;
@@ -37,6 +41,15 @@ namespace DesktopEasyCardConvertorECNG
             });
             Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger<Program>();
             logger.LogInformation("Application started");
+
+
+            var config = new MapperConfiguration(cfg => {
+                cfg.AddProfile<TerminalProfile>();
+            });
+
+            var mapper = config.CreateMapper();
+
+
 
 
             RapidOneGlobalSettings rapidOneGlobalSettings = new RapidOneGlobalSettings
@@ -72,6 +85,13 @@ namespace DesktopEasyCardConvertorECNG
             
             var metadataMerchantService = serviceFactory.GetMerchantMetadataApiClient();
             var metadataTerminalService = serviceFactory.GetTransactionsApiClient();
+
+
+            var terminalRef = metadataMerchantService.GetTerminals().Result.Data.First();
+            var terminal = metadataMerchantService.GetTerminal(terminalRef.TerminalID).Result;
+
+            var updateTerminal = mapper.Map<UpdateTerminalRequest>(terminal);
+            var resp = metadataMerchantService.UpdateTerminal(updateTerminal).Result;
 
             //metadataTerminalService.UpdateTerminalParameters()
             foreach (var product in dataFromFile.Products)
