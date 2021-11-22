@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined class="ecbg border-primary">
+  <v-card class="ecbg">
     <v-card-subtitle v-if="!hideTitle" class="subtitle-1 px-1 pt-0">{{$t('InstallmentDetails')}}</v-card-subtitle>
     <v-container fluid class="px-0">
       <v-row no-gutters>
