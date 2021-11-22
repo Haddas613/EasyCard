@@ -55,9 +55,9 @@ namespace MerchantProfileApi.Client
 
         // items
 
-        public async Task<SummariesResponse<ConsumerSummary>> GetItems(ItemsFilter filter)
+        public async Task<SummariesResponse<ItemSummary>> GetItems(ItemsFilter filter)
         {
-            var consumers = await webApiClient.Get<SummariesResponse<ConsumerSummary>>(apiConfiguration.MerchantProfileURL, $"/api/items", filter, BuildHeaders);
+            var consumers = await webApiClient.Get<SummariesResponse<ItemSummary>>(apiConfiguration.MerchantProfileURL, $"/api/items", filter, BuildHeaders);
 
             return consumers;
         }
