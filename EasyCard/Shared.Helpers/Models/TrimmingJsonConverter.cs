@@ -7,6 +7,17 @@ namespace Shared.Api.Models.Binding
 {
     public class TrimmingJsonConverter : JsonConverter
     {
+        private readonly bool nullIfEmpty = true;
+
+        public TrimmingJsonConverter()
+        {
+        }
+
+        public TrimmingJsonConverter(bool nullIfEmpty)
+        {
+            this.nullIfEmpty = nullIfEmpty;
+        }
+
         public override bool CanRead => true;
 
         public override bool CanWrite => false;
@@ -17,7 +28,16 @@ namespace Shared.Api.Models.Binding
         {
             if (reader.TokenType == JsonToken.String)
             {
-                return ((string)reader.Value)?.Trim();
+                var res = ((string)reader.Value)?.Trim();
+
+                if (nullIfEmpty)
+                {
+                    return res == string.Empty ? null : res;
+                }
+                else
+                {
+                    return res;
+                }
             }
 
             return reader.Value;
