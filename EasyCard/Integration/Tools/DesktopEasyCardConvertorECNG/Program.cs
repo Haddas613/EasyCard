@@ -130,11 +130,10 @@ namespace DesktopEasyCardConvertorECNG
                 BillingSchedule = new Transactions.Shared.Models.BillingSchedule()
                 {
                     RepeatPeriodType = Models.Helper.EnumConvertor.ConvertToBillingType(customerInFile.BillingTypeID),
-                    StartAt = customerInFile.StartDate,
+                    StartAt = CalculateDate.GetStartPayDate(customerInFile.BillingDay, customerInFile.StartDate??DateTime.Today),
                     EndAt = customerInFile.finishDate,
                     EndAtType = customerInFile.finishDate == null ? Transactions.Shared.Enums.EndAtTypeEnum.Never : Transactions.Shared.Enums.EndAtTypeEnum.SpecifiedDate,
-                    StartAtType = customerInFile.StartDate == null ? Transactions.Shared.Enums.StartAtTypeEnum.Today : Transactions.Shared.Enums.StartAtTypeEnum.SpecifiedDate,///// todo need to calculate it with payday from file
-
+                    StartAtType = Transactions.Shared.Enums.StartAtTypeEnum.SpecifiedDate,
                 },
                 CreditCardToken = TokenCreditCard,
                 //Currency =  todo
