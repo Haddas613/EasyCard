@@ -1,4 +1,5 @@
 ﻿using MerchantProfileApi.Models.Billing;
+using MerchantProfileApi.Models.Terminal;
 using Microsoft.Extensions.Options;
 using Shared.Api.Configuration;
 using Shared.Api.Models;
@@ -75,6 +76,31 @@ namespace MerchantProfileApi.Client
 
             return consumerResp;
         }
+
+        // terminal
+
+        public async Task<SummariesResponse<TerminalSummary>> GetTerminals()
+        {
+            var terminals = await webApiClient.Get<SummariesResponse<TerminalSummary>>(apiConfiguration.MerchantProfileURL, $"/api/terminals", null, BuildHeaders);
+
+            return terminals;
+        }
+
+        public async Task<TerminalResponse> GetTerminal(Guid terminalID)
+        {
+            var consumerResp = await webApiClient.Get<TerminalResponse>(apiConfiguration.MerchantProfileURL, $"/api/terminals/{terminalID}", null, BuildHeaders);
+
+            return consumerResp;
+        }
+
+        public async Task<OperationResponse> UpdateTerminal(UpdateTerminalRequest request)
+        {
+            var consumerResp = await webApiClient.Put<OperationResponse>(apiConfiguration.MerchantProfileURL, $"/api/terminals/{request.TerminalID}", request, BuildHeaders);
+
+            return consumerResp;
+        }
+
+        // common
 
         private async Task<NameValueCollection> BuildHeaders()
         {

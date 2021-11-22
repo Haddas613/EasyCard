@@ -23,6 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\MerchantProfileApi.Client\MerchantProfileApi.Client.csproj" />
     <ProjectReference Include="..\..\..\Transactions.Api.Client\Transactions.Api.Client.csproj" />
+    <ProjectReference Include="..\..\RapidOne\RapidOne.csproj" />
   </ItemGroup>
 
   <ItemGroup>

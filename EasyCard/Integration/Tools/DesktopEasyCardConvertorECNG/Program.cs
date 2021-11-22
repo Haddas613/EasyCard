@@ -3,8 +3,13 @@ using DesktopEasyCardConvertorECNG.Models.Helper;
 using MerchantProfileApi.Client;
 using MerchantProfileApi.Models.Billing;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using RapidOne;
+using RapidOne.Configuration;
 using Serilog;
 using Shared.Api.Models;
+using Shared.Helpers;
+using Shared.Integration;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
@@ -16,6 +21,8 @@ namespace DesktopEasyCardConvertorECNG
 {
     class Program
     {
+        private static readonly WebApiClient webApiClient = new WebApiClient();
+
         static void Main(string[] args)
         {
             using var loggerFactory = LoggerFactory.Create(builder =>
@@ -31,6 +38,19 @@ namespace DesktopEasyCardConvertorECNG
             Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger<Program>();
             logger.LogInformation("Application started");
 
+
+            RapidOneGlobalSettings rapidOneGlobalSettings = new RapidOneGlobalSettings
+            {
+                 
+            };
+
+            ConsoleIntegrationRequestLogService requestLogService = new ConsoleIntegrationRequestLogService(loggerFactory.CreateLogger<ConsoleIntegrationRequestLogService>());
+
+            RapidOneInvoicing rapidOneService = new RapidOneInvoicing(webApiClient, Options.Create(rapidOneGlobalSettings), loggerFactory.CreateLogger<RapidOneInvoicing>(), requestLogService);
+
+
+
+            var allR1Items = rapidOneService.GetItems("TODO: rapid one site", "TODO: rapid one api key").Result;
 
 
             bool RapidClient = false;
