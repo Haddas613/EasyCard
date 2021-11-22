@@ -27,6 +27,8 @@ namespace Merchants.Business.Entities.Billing
 
         public string ItemName { get; set; }
 
+        public string SKU { get; set; }
+
         public decimal Price { get; set; }
 
         public CurrencyEnum Currency { get; set; }

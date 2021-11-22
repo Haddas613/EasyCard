@@ -30,5 +30,8 @@ namespace MerchantProfileApi.Models.Billing
         [SwaggerExclude]
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string BillingDesktopRefNumber { get; set; }
+
+        [StringLength(50)]
+        public string SKU { get; set; }
     }
 }

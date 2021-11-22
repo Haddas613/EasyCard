@@ -355,6 +355,7 @@ namespace Merchants.Business.Data
                 builder.Property(b => b.Active).HasDefaultValue(true);
 
                 builder.Property(b => b.ItemName).IsRequired(true).HasMaxLength(128).IsUnicode(true);
+                builder.Property(b => b.SKU).IsRequired(false).HasMaxLength(50).IsUnicode(true);
                 builder.Property(b => b.OperationDoneBy).IsRequired().HasMaxLength(50).IsUnicode(true);
 
                 builder.Property(b => b.OperationDoneByID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
