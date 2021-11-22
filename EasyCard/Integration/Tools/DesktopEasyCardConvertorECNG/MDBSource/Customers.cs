@@ -37,5 +37,7 @@ namespace Common.Models.MDBSource
         public string RivCode { get; set; }
         public string DealID { get; set; }
         public string RivName { get; set; }
+
+        public decimal TotalSum { get; set; }
     }
 }
