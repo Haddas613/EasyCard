@@ -417,6 +417,10 @@ namespace Transactions.Business.Data
                         .Metadata.SetValueComparer(StringArrayComparer);
                 });
 
+                builder.Property(p => p.PaymentDetails).HasColumnName("PaymentDetails").IsRequired(false).HasColumnType("nvarchar(max)").IsUnicode(true)
+                    .HasConversion(PaymentDetailsConverter)
+                    .Metadata.SetValueComparer(PaymentDetailsComparer);
+
                 builder.Property(b => b.TransactionAmount).HasColumnType("decimal(19,4)").IsRequired();
 
                 builder.Property(b => b.VATRate).HasColumnType("decimal(19,4)").IsRequired();
