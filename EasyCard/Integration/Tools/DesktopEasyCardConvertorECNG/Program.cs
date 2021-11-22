@@ -56,7 +56,9 @@ namespace DesktopEasyCardConvertorECNG
                 List<Item> items = new List<Item>();
                 foreach (var itemInFile in itemsPerCustomerInFile)
                 {
-                    items.Add(new Item() { Price = itemInFile.ProdSum, ExternalReference = itemInFile.RivID, ItemName = itemInFile.DealText, Quantity = itemInFile.DealCount , SKU = itemInFile.RivCode,  });
+                    var item = metadataMerchantService.GetItems(new ItemsFilter() {     })
+                    items.Add(new Item() { Price = itemInFile.ProdSum, ExternalReference = itemInFile.RivID, ItemName = itemInFile.DealText, Quantity = itemInFile.DealCount, SKU = itemInFile.RivCode, Amount = Math.Round(itemInFile.ProdSum * itemInFile.DealCount, 2, MidpointRounding.AwayFromZero)/*, ItemID = */   
+                });
                 }
                 CreateBillingDeal(metadataTerminalService, customerInFile, token.Result.EntityUID??Guid.Empty, findcustomer.Result, items);
             }
