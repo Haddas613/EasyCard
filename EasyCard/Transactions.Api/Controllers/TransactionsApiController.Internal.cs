@@ -731,6 +731,118 @@ namespace Transactions.Api.Controllers
             return CreatedAtAction(nameof(GetTransaction), new { transactionID = transaction.PaymentTransactionID }, endResponse);
         }
 
+        private async Task<ActionResult<OperationResponse>> ProcessBillingInvoice(BillingDeal model)
+        {
+            //TODO
+            throw new NotImplementedException();
+            // TODO: caching
+            var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
+
+            // TODO: caching
+            var systemSettings = await systemSettingsService.GetSystemSettings();
+
+            // merge system settings with terminal settings
+            mapper.Map(systemSettings, terminal);
+
+            if (model.Currency != CurrencyEnum.ILS)
+            {
+                return new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", model.BillingDealID,
+                    httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Only ILS invoices allowed");
+            }
+
+            if (string.IsNullOrWhiteSpace(model.DealDetails.ConsumerEmail) || string.IsNullOrWhiteSpace(model.DealDetails.ConsumerName))
+            {
+                return new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", model.BillingDealID,
+                    httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", "Both ConsumerEmail and ConsumerName must be specified");
+            }
+
+            Invoice invoiceRequest = new Invoice();
+            mapper.Map(model, invoiceRequest);
+
+            invoiceRequest.DocumentOrigin = GetDocumentOrigin(model?.BillingDealID, null, false);
+
+            if (invoiceRequest.DealDetails == null)
+            {
+                invoiceRequest.DealDetails = new Business.Entities.DealDetails();
+            }
+
+            if (model.InvoiceDetails == null)
+            {
+                //TODO: Handle refund & credit default invoice types
+                model.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
+            }
+
+            // Check consumer
+            var consumer = model.DealDetails.ConsumerID != null ?
+                EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.ConsumerID == model.DealDetails.ConsumerID && d.TerminalID == terminal.TerminalID), "Consumer") : null;
+
+            // Update details if needed
+            invoiceRequest.DealDetails.UpdateDealDetails(consumer, terminal.Settings, invoiceRequest, null);
+
+            model.InvoiceDetails.UpdateInvoiceDetails(terminal.InvoiceSettings, null);
+
+            invoiceRequest.Calculate();
+
+            //invoiceRequest.MerchantIP = GetIP();
+            invoiceRequest.CorrelationId = GetCorrelationID();
+
+            //TODO
+            //model.UpdateNextScheduledDate(transaction);
+
+            await billingDealService.UpdateEntity(model);
+
+            var endResponse = new OperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, model.BillingDealID);
+
+            using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
+            {
+                try
+                {
+                    invoiceRequest.InvoiceDetails = model.InvoiceDetails;
+
+                    invoiceRequest.MerchantID = terminal.MerchantID;
+
+                    invoiceRequest.ApplyAuditInfo(httpContextAccessor);
+
+                    invoiceRequest.Calculate();
+
+                    await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
+
+                    endResponse.InnerResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
+
+                    //await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
+
+                    var invoicesToResend = await invoiceService.StartSending(terminal.TerminalID, new Guid[] { invoiceRequest.InvoiceID }, dbTransaction);
+
+                    // TODO: validate, rollback
+                    if (invoicesToResend.Count() > 0)
+                    {
+                        await invoiceQueue.PushToQueue(invoicesToResend.First());
+                    }
+
+                    await dbTransaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, $"Failed to create invoice. BillingDealID: {model.BillingDealID}");
+
+                    endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", model.BillingDealID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
+
+                    await dbTransaction.RollbackAsync();
+                }
+            }
+
+            try
+            {
+                //await SendTransactionSuccessEmails(transaction, terminal);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, $"{nameof(ProcessTransaction)}: Email sending failed");
+            }
+
+            return CreatedAtAction(nameof(GetTransaction), new { billingDealID = model.BillingDealID }, endResponse);
+        }
+
         private async Task<ShvaTransactionDetails> GetLastShvaTransactionDetails(string shvaTerminalNumber)
         {
             return await this.transactionsService.GetTransactions().Where(x => x.ShvaTransactionDetails.ShvaTerminalID == shvaTerminalNumber)
@@ -854,7 +966,11 @@ namespace Transactions.Api.Controllers
             {
                 ActionResult<OperationResponse> actionResult = null;
 
-                if (billingDeal.BankDetails != null)
+                if (billingDeal.InvoiceOnly != null)
+                {
+                    actionResult = await ProcessBillingInvoice(billingDeal);
+                }
+                else if (billingDeal.BankDetails != null)
                 {
                     actionResult = await ProcessBankTransaction(transaction, specialTransactionType: SpecialTransactionTypeEnum.RegularDeal, billingDeal: billingDeal);
                 }

@@ -130,6 +130,8 @@ namespace Transactions.Business.Entities
         /// </summary>
         public bool IssueInvoice { get; set; }
 
+        public bool InvoiceOnly { get; set; }
+
         /// <summary>
         /// Date-time when transaction status updated
         /// </summary>
@@ -189,6 +191,8 @@ namespace Transactions.Business.Entities
         public string LastError { get; set; }
 
         public string LastErrorCorrelationID { get; set; }
+
+        public IEnumerable<PaymentDetails> PaymentDetails { get; set; }
 
         public void UpdateNextScheduledDate(PaymentTransaction transaction)
         {
