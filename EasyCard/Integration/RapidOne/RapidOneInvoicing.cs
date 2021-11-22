@@ -25,6 +25,8 @@ namespace RapidOne
         private const string getCompaniesUrl = "/gateway/companies";
         private const string getBranchesUrl = "/gateway/branches";
         private const string getDepartmentsUrl = "/gateway/departments";
+        private const string getItemsUrl = "/gateway/items";
+        
         private const string ResponseTokenHeader = "Authorization";
         private readonly IIntegrationRequestLogStorageService storageService;
         private readonly IWebApiClient apiClient;
@@ -187,6 +189,29 @@ namespace RapidOne
             {
                 var res = await this.apiClient.Get<RapidOneSummaryResponse<BranchDto>>(baseurl, getBranchesUrl, null, () => Task.FromResult(headers));
                 return res?.Data ?? Enumerable.Empty<BranchDto>();
+            }
+            catch (WebApiClientErrorException wex)
+            {
+                this.logger.LogError(wex, $"RapidOne integration request failed. {wex.Message}");
+
+                throw new IntegrationException("RapidOne integration request failed", null);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"RapidOne integration request failed. {ex.Message}");
+
+                throw new IntegrationException("RapidOne integration request failed", null);
+            }
+        }
+
+        public async Task<IEnumerable<ItemWithPricesDto>> GetItems(string baseurl, string token)
+        {
+            NameValueCollection headers = GetAuthorizedHeaders(baseurl, token, null, null);
+
+            try
+            {
+                var res = await this.apiClient.Get<RapidOneSummaryResponse<ItemWithPricesDto>>(baseurl, getItemsUrl, null, () => Task.FromResult(headers));
+                return res?.Data ?? Enumerable.Empty<ItemWithPricesDto>();
             }
             catch (WebApiClientErrorException wex)
             {
