@@ -4,6 +4,13 @@
         <name>Transactions.Api</name>
     </assembly>
     <members>
+        <member name="M:Transactions.Api.Controllers.BillingController.CreateBillingDealInvoice(Transactions.Api.Models.Billing.BillingDealInvoiceRequest)">
+            <summary>
+            Billing deal that only process invoice. Does not produce transaction
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="M:Transactions.Api.Controllers.BillingController.GetFilteredQueueBillingDeals">
             <summary>
             Retrieves billing deals for queue and sends credit card expired emails to customers if required.
@@ -64,6 +71,71 @@
             </summary>
             <param name="filter"></param>
             <returns></returns>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceRequest.TransactionAmount">
+            <summary>
+            Transaction amount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceRequest.BillingSchedule">
+            <summary>
+            Billing Schedule
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceRequest.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceRequest.PaymentDetails">
+            <summary>
+            Array of payment details, e.g. CreditCardDetails, ChequeDetails etc.
+            </summary>
+        </member>
+        <member name="M:Transactions.Api.Models.Billing.BillingDealInvoiceRequest.Calculate(System.Decimal)">
+            <summary>
+            If VATRate, NetTotal and VatTotal properties were not specified, this method should be called
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceUpdateRequest.TerminalID">
+            <summary>
+            EasyCard terminal reference
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceUpdateRequest.Currency">
+            <summary>
+            Currency
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceUpdateRequest.TransactionAmount">
+            <summary>
+            Transaction amount
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceUpdateRequest.BillingSchedule">
+            <summary>
+            Billing Schedule
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceUpdateRequest.InvoiceDetails">
+            <summary>
+            Invoice details
+            </summary>
+        </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealInvoiceUpdateRequest.PaymentDetails">
+            <summary>
+            Array of payment details, e.g. CreditCardDetails, ChequeDetails etc.
+            </summary>
         </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealRequest.TerminalID">
             <summary>
