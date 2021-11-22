@@ -1,4 +1,5 @@
-﻿using MerchantProfileApi.Models.Billing;
+﻿using AutoMapper;
+using MerchantProfileApi.Models.Billing;
 using MerchantProfileApi.Models.Terminal;
 using Microsoft.Extensions.Options;
 using Shared.Api.Configuration;
@@ -19,6 +20,7 @@ namespace MerchantProfileApi.Client
         private readonly IWebApiClient webApiClient;
         private readonly ApiSettings apiConfiguration;
         //private readonly ILogger logger;
+        //private readonly IMapper mapper;
         private readonly IWebApiClientTokenService tokenService;
 
         public MerchantMetadataApiClient(IWebApiClient webApiClient, /*ILogger logger,*/ IWebApiClientTokenService tokenService, IOptions<ApiSettings> apiConfiguration)

@@ -2,6 +2,7 @@
 using DesktopEasyCardConvertorECNG.Models.Helper;
 using MerchantProfileApi.Client;
 using MerchantProfileApi.Models.Billing;
+using MerchantProfileApi.Models.Terminal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RapidOne;
@@ -72,6 +73,23 @@ namespace DesktopEasyCardConvertorECNG
             
             var metadataMerchantService = serviceFactory.GetMerchantMetadataApiClient();
             var metadataTerminalService = serviceFactory.GetTransactionsApiClient();
+            
+            var terminalID = metadataMerchantService.GetTerminals().Result.Data.GetEnumerator().Current.TerminalID;
+            var terminalSettings = metadataMerchantService.GetTerminal(terminalID).Result;
+            UpdateTerminalRequest terminalUPdateModel =new UpdateTerminalRequest()
+            {
+                 Settings = terminalSettings new TerminalSettingsUpdate(){ DefaultChargeDescription =  terminalSettings.Settings.DefaultChargeDescription, DefaultItemName = terminalSettings.Settings.DefaultItemName, 
+            }
+            var res =    metadataMerchantService.UpdateTerminal(new MerchantProfileApi.Models.Terminal.UpdateTerminalRequest(){ TerminalID = terminalSettings.TerminalID,
+                 BillingSettings = terminalSettings.BillingSettings,
+                  CheckoutSettings = terminalSettings.CheckoutSettings,
+                   InvoiceSettings = terminalSettings.InvoiceSettings,
+                    Label = terminalSettings.Label,
+                     PaymentRequestSettings = terminalSettings.PaymentRequestSettings,
+                      Settings = terminalSettings.Settings
+                      );
+
+
 
             //metadataTerminalService.UpdateTerminalParameters()
             foreach (var product in dataFromFile.Products)
