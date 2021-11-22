@@ -49,8 +49,11 @@ namespace DesktopEasyCardConvertorECNG
             var dataFromFile = ReadMDBFile.ReadDataFromMDBFile(null).Result;
             var serviceFactory = new ServiceFactory(args[0], Environment.QA);
 
+            
             var metadataMerchantService = serviceFactory.GetMerchantMetadataApiClient();
             var metadataTerminalService = serviceFactory.GetTransactionsApiClient();
+
+            //metadataTerminalService.UpdateTerminalParameters()
             foreach (var product in dataFromFile.Products)
             {
                 var AddUtemsRes = metadataMerchantService.CreateItem(new ItemRequest()
@@ -58,9 +61,9 @@ namespace DesktopEasyCardConvertorECNG
                     Active = true,
                     BillingDesktopRefNumber = product.RevID,
                     ItemName = product.RivName,
-                    Price = product.RivSum,
-                    ExternalReference = product.RevID,
-                    SKU = product.RivCode
+                    Price = product.RivSum//,
+                    //ExternalReference = product.RevID,
+                   // SKU = //product.RivCodeקופת הכנסה לא קוד
                 });
             }
 
@@ -73,9 +76,9 @@ namespace DesktopEasyCardConvertorECNG
                 List<Item> items = new List<Item>();
                 foreach (var itemInFile in itemsPerCustomerInFile)
                 {
-                    var item = metadataMerchantService.GetItems(new ItemsFilter() {     })
-                    items.Add(new Item() { Price = itemInFile.ProdSum, ExternalReference = itemInFile.RivID, ItemName = itemInFile.DealText, Quantity = itemInFile.DealCount, SKU = itemInFile.RivCode, Amount = Math.Round(itemInFile.ProdSum * itemInFile.DealCount, 2, MidpointRounding.AwayFromZero)/*, ItemID = */   
-                });
+                    var item = metadataMerchantService.GetItems(new ItemsFilter() { BillingDesktopRefNumber = itemInFile.RivID });
+                    items.Add(new Item() { Price = itemInFile.ProdSum, ExternalReference = itemInFile.RivID, ItemName = itemInFile.DealText, Quantity = itemInFile.DealCount,/* SKU = itemInFile.RivCode from rapid ifit's rapid todo to do ,*/ Amount = Math.Round(itemInFile.ProdSum * itemInFile.DealCount, 2, MidpointRounding.AwayFromZero), ItemID = item.Result.Data.GetEnumerator().Current.ItemID/*,  todo to do var values*/
+                    });
                 }
                 CreateBillingDeal(metadataTerminalService, customerInFile, token.Result.EntityUID??Guid.Empty, findcustomer.Result, items);
             }
