@@ -68,7 +68,7 @@
             </span>
           </template>
           <template v-slot:item.invoiceOnly="{ item }">
-            <span v-bind:class="{'success--text': item.invoiceOnly, 'error--text': !item.invoiceOnly}">
+            <span v-bind:class="{'success--text': item.invoiceOnly, 'ecgray--text': !item.invoiceOnly}">
               {{item.invoiceOnly ? $t("Yes") : $t("No")}}
             </span>
           </template>
