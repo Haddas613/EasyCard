@@ -47,6 +47,8 @@ namespace Transactions.Api.Mapping
             CreateMap<CreditCardDetails, CreditCardPaymentDetails>()
                 .ForMember(d => d.СardNumber, o => o.MapFrom(d => CreditCardHelpers.GetCardLastFourDigitsWithPrefix(d.CardNumber)));
 
+            CreateMap<BillingDeal, Invoice>();
+
             // TODO: specify all members and ignore rest
             CreateMap<PaymentTransaction, Invoice>()
                 .ForMember(d => d.InvoiceID, o => o.Ignore())

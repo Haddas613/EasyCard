@@ -37,6 +37,7 @@ using Transactions.Api.Extensions;
 using Newtonsoft.Json;
 using Transactions.Api.Validation;
 using SharedIntegration = Shared.Integration;
+using Shared.Api.Swagger;
 
 namespace Transactions.Api.Controllers
 {
@@ -486,7 +487,7 @@ namespace Transactions.Api.Controllers
                     }
                     else
                     {
-                        await emailSender.SendEmail(BuildInvoiceEmail(dbInvoice.DealDetails?.ConsumerEmail, dbInvoice, terminal));
+                        await SendInvoiceEmail(dbInvoice.DealDetails?.ConsumerEmail, dbInvoice, terminal);
 
                         dbInvoice.Status = Shared.Enums.InvoiceStatusEnum.Sent;
 
@@ -540,7 +541,7 @@ namespace Transactions.Api.Controllers
                         {
                             foreach (var cc in dbInvoice.InvoiceDetails.SendCCTo)
                             {
-                                await emailSender.SendEmail(BuildInvoiceEmail(cc, dbInvoice, terminal));
+                                await SendInvoiceEmail(cc, dbInvoice, terminal);
                             }
                         }
 
@@ -559,7 +560,8 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        private Email BuildInvoiceEmail(string emailTo, Invoice invoice, Terminal terminal)
+        [NonAction]
+        public async Task SendInvoiceEmail(string emailTo, Invoice invoice, Terminal terminal)
         {
             var settings = terminal.InvoiceSettings;
 
@@ -570,7 +572,15 @@ namespace Transactions.Api.Controllers
             substitutions.Add(new TextSubstitution(nameof(invoice.InvoiceNumber), invoice.InvoiceNumber));
             substitutions.Add(new TextSubstitution(nameof(invoice.InvoiceDate), invoice.InvoiceDate.GetValueOrDefault().ToString("d"))); // TODO: locale
             substitutions.Add(new TextSubstitution(nameof(invoice.InvoiceAmount), $"{invoice.InvoiceAmount.ToString("F2")}{invoice.Currency.GetCurrencySymbol()}"));
-            substitutions.Add(new TextSubstitution(nameof(invoice.CopyDonwnloadUrl), invoice.CopyDonwnloadUrl));
+
+            var invoiceDownloadUrl = invoice.CopyDonwnloadUrl;
+            if (invoiceDownloadUrl == null)
+            {
+                var actionResult = (await GetInvoiceDownloadURL(invoice.InvoiceID)).GetResult();
+                invoiceDownloadUrl = actionResult.DownloadLinks?.FirstOrDefault();
+            }
+
+            substitutions.Add(new TextSubstitution(nameof(invoice.CopyDonwnloadUrl), invoiceDownloadUrl));
             substitutions.Add(new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName));
 
             var email = new Email
@@ -581,7 +591,7 @@ namespace Transactions.Api.Controllers
                 Substitutions = substitutions.ToArray()
             };
 
-            return email;
+            await emailSender.SendEmail(email);
         }
     }
 }

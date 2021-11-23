@@ -325,6 +325,80 @@ namespace Transactions.Api.Controllers
             return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
         }
 
+        /// <summary>
+        /// Billing deal that only process invoice. Does not produce transaction
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost("invoice")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult<OperationResponse>> CreateBillingDealInvoice([FromBody] BillingDealInvoiceRequest model)
+        {
+            // TODO: caching
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+
+            BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
+
+            // Optional calculate if values were not specified
+            model.Calculate(terminal.Settings.VATRate.GetValueOrDefault(0));
+
+            var newBillingDeal = mapper.Map<BillingDeal>(model);
+            newBillingDeal.Active = true;
+            newBillingDeal.MerchantID = terminal.MerchantID;
+            newBillingDeal.TerminalID = terminal.TerminalID;
+
+            newBillingDeal.DealDetails.UpdateDealDetails(consumer, terminal.Settings, newBillingDeal, null);
+
+            if (newBillingDeal.InvoiceDetails == null && newBillingDeal.IssueInvoice)
+            {
+                newBillingDeal.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
+            }
+
+            // TODO: calculation
+
+            newBillingDeal.ApplyAuditInfo(httpContextAccessor);
+
+            newBillingDeal.NextScheduledTransaction = newBillingDeal.BillingSchedule.GetInitialScheduleDate();
+
+            await billingDealService.CreateEntity(newBillingDeal);
+
+            return CreatedAtAction(nameof(GetBillingDeal), new { BillingDealID = newBillingDeal.BillingDealID }, new OperationResponse(Messages.BillingDealCreated, StatusEnum.Success, newBillingDeal.BillingDealID));
+        }
+
+        [HttpPut]
+        [Route("invoice/{BillingDealID}")]
+        public async Task<ActionResult<OperationResponse>> UpdateBillingDealInvoice([FromRoute] Guid billingDealID, [FromBody] BillingDealInvoiceUpdateRequest model)
+        {
+            var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
+            var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
+            var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
+
+            BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
+
+            if (model.PaymentType != billingDeal.PaymentType)
+            {
+                return BadRequest(new OperationResponse(Messages.PaymentTypeCannotBeChanged, StatusEnum.Error));
+            }
+
+            EnsureExists(model.DealDetails);
+
+            mapper.Map(model, billingDeal);
+
+            billingDeal.DealDetails.UpdateDealDetails(consumer, terminal.Settings, billingDeal, null);
+
+            if (billingDeal.InvoiceDetails == null && billingDeal.IssueInvoice)
+            {
+                billingDeal.InvoiceDetails = new SharedIntegration.Models.Invoicing.InvoiceDetails { InvoiceType = terminal.InvoiceSettings.DefaultInvoiceType.GetValueOrDefault() };
+            }
+
+            billingDeal.ApplyAuditInfo(httpContextAccessor);
+
+            await billingDealService.UpdateEntity(billingDeal);
+
+            return Ok(new OperationResponse(Messages.BillingDealUpdated, StatusEnum.Success, billingDealID));
+        }
+
         [HttpPatch]
         [Route("{BillingDealID}/change-token/{tokenID}")]
         public async Task<ActionResult<OperationResponse>> UpdateBillingDealToken([FromRoute] Guid billingDealID, [FromRoute] Guid tokenID)

@@ -30,5 +30,29 @@ namespace Shared.Api.Extensions
                 return null;
             }
         }
+
+        public static T GetResult<T>(this ActionResult<T> result)
+            where T : class
+        {
+            if (result.Value != null)
+            {
+                return result.Value;
+            }
+            else if (result.Result != null)
+            {
+                if ((result.Result as ObjectResult)?.Value is T res)
+                {
+                    return res;
+                }
+                else
+                {
+                    return result.Value;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }
