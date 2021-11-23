@@ -227,6 +227,11 @@ namespace RapidOne
             }
         }
 
+        public async Task CreateItem(string baseurl, string token, ItemDto model)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<DepartmentDto>> GetDepartments(string baseurl, string token, int? branchId = null)
         {
             NameValueCollection headers = GetAuthorizedHeaders(baseurl, token, null, null);
