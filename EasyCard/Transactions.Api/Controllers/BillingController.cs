@@ -330,7 +330,7 @@ namespace Transactions.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("invoice")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<OperationResponse>> CreateBillingDealInvoice([FromBody] BillingDealInvoiceRequest model)
         {
@@ -367,7 +367,7 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpPut]
-        [Route("{BillingDealID}")]
+        [Route("invoice/{BillingDealID}")]
         public async Task<ActionResult<OperationResponse>> UpdateBillingDealInvoice([FromRoute] Guid billingDealID, [FromBody] BillingDealInvoiceUpdateRequest model)
         {
             var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
