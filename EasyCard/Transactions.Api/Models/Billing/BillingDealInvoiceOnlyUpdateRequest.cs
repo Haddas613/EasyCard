@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+﻿using Newtonsoft.Json.Converters;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
@@ -8,13 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Transactions.Api.Models.Transactions;
 using Transactions.Shared.Models;
 
 namespace Transactions.Api.Models.Billing
 {
-    public class BillingDealInvoiceRequest : TransactionRequestBase
+    public class BillingDealInvoiceOnlyUpdateRequest : TransactionRequestBase
     {
         /// <summary>
         /// EasyCard terminal reference
@@ -50,7 +50,6 @@ namespace Transactions.Api.Models.Billing
         /// <summary>
         /// Billing Schedule
         /// </summary>
-        [Required]
         public BillingSchedule BillingSchedule { get; set; }
 
         /// <summary>
@@ -65,21 +64,5 @@ namespace Transactions.Api.Models.Billing
         /// Array of payment details, e.g. CreditCardDetails, ChequeDetails etc.
         /// </summary>
         public IEnumerable<PaymentDetails> PaymentDetails { get; set; }
-
-        /// <summary>
-        /// If VATRate, NetTotal and VatTotal properties were not specified, this method should be called
-        /// </summary>
-        public void Calculate(decimal vatRate)
-        {
-            //Only calculated if values are not present
-            if (VATRate.HasValue)
-            {
-                return;
-            }
-
-            VATRate = vatRate;
-            NetTotal = Math.Round(TransactionAmount / (1m + VATRate.Value), 2, MidpointRounding.AwayFromZero);
-            VATTotal = TransactionAmount - NetTotal;
-        }
     }
 }

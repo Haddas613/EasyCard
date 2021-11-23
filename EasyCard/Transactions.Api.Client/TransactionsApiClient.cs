@@ -270,6 +270,20 @@ namespace Transactions.Api.Client
             return res;
         }
 
+        public async Task<OperationResponse> CreateBillingDealInvoiceOnly(BillingDealInvoiceOnlyRequest model)
+        {
+            var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/invoiceonlybilling", model, BuildHeaders);
+
+            return res;
+        }
+
+        public async Task<OperationResponse> UpdateBillingDealInvoiceOnly(Guid billingDealID, BillingDealInvoiceOnlyUpdateRequest model)
+        {
+            var res = await webApiClient.Put<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/invoiceonlybilling/{billingDealID}", model, BuildHeaders);
+
+            return res;
+        }
+
         public async Task<OperationResponse> SwitchBillingDeal(Guid billingDealID)
         {
             var res = await webApiClient.Post<OperationResponse>(apiConfiguration.TransactionsApiAddress, $"/api/billing/{billingDealID}/switch", null, BuildHeaders);

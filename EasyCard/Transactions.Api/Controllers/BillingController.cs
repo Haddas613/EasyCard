@@ -330,9 +330,10 @@ namespace Transactions.Api.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost("invoice")]
+        [HttpPost]
+        [Route("/api/invoiceonlybilling")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<OperationResponse>> CreateBillingDealInvoice([FromBody] BillingDealInvoiceRequest model)
+        public async Task<ActionResult<OperationResponse>> CreateBillingDealInvoice([FromBody] BillingDealInvoiceOnlyRequest model)
         {
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
@@ -367,8 +368,8 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpPut]
-        [Route("invoice/{BillingDealID}")]
-        public async Task<ActionResult<OperationResponse>> UpdateBillingDealInvoice([FromRoute] Guid billingDealID, [FromBody] BillingDealInvoiceUpdateRequest model)
+        [Route("/api/invoiceonlybilling/{BillingDealID}")]
+        public async Task<ActionResult<OperationResponse>> UpdateBillingDealInvoice([FromRoute] Guid billingDealID, [FromBody] BillingDealInvoiceOnlyUpdateRequest model)
         {
             var billingDeal = EnsureExists(await billingDealService.GetBillingDealsForUpdate().FirstOrDefaultAsync(m => m.BillingDealID == billingDealID));
             var terminal = EnsureExists(await terminalsService.GetTerminals().FirstOrDefaultAsync(m => model.TerminalID == null || m.TerminalID == model.TerminalID));
