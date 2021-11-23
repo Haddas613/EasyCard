@@ -429,4 +429,10 @@
   <data name="TransactionAmountDoesNotMatchInstallmentsAmount" xml:space="preserve">
     <value>הסכום אינו תואם לסכום הכולל של תשלומים</value>
   </data>
+  <data name="ThisMethodCannotBeUsedForInvoiceOnlyBillings" xml:space="preserve">
+    <value>לא ניתן להשתמש בפעולה חשבונית מס לבילינג</value>
+  </data>
+  <data name="ThisMethodCannotBeUsedForRegularBillings" xml:space="preserve">
+    <value>לא ניתן להשתמש בפעולה לבילינג רגיל</value>
+  </data>
 </root>

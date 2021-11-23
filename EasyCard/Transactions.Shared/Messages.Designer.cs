@@ -808,6 +808,24 @@ namespace Transactions.Shared {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This method cannot be used for invoice-only Billings.
+        /// </summary>
+        public static string ThisMethodCannotBeUsedForInvoiceOnlyBillings {
+            get {
+                return ResourceManager.GetString("ThisMethodCannotBeUsedForInvoiceOnlyBillings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This method cannot be used for regular Billings.
+        /// </summary>
+        public static string ThisMethodCannotBeUsedForRegularBillings {
+            get {
+                return ResourceManager.GetString("ThisMethodCannotBeUsedForRegularBillings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Credit Card Token Created.
         /// </summary>
         public static string TokenCreated {

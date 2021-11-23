@@ -264,6 +264,11 @@ namespace Transactions.Api.Controllers
                 model.InvoiceDetails = null;
             }
 
+            if (billingDeal.InvoiceOnly)
+            {
+                return BadRequest(new OperationResponse(Messages.ThisMethodCannotBeUsedForInvoiceOnlyBillings, StatusEnum.Error));
+            }
+
             if (model.PaymentType != billingDeal.PaymentType)
             {
                 return BadRequest(new OperationResponse(Messages.PaymentTypeCannotBeChanged, StatusEnum.Error));
@@ -375,6 +380,11 @@ namespace Transactions.Api.Controllers
             var consumer = EnsureExists(await consumersService.GetConsumers().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.ConsumerID == model.DealDetails.ConsumerID), "Consumer");
 
             BillingDealTerminalSettingsValidator.Validate(terminal.Settings, model);
+
+            if (!billingDeal.InvoiceOnly)
+            {
+                return BadRequest(new OperationResponse(Messages.ThisMethodCannotBeUsedForRegularBillings, StatusEnum.Error));
+            }
 
             if (model.PaymentType != billingDeal.PaymentType)
             {
