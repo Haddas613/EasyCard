@@ -24,5 +24,7 @@ namespace MerchantProfileApi.Models.Billing
         public string ConsumerNationalID { get; set; }
 
         public Address ConsumerAddress { get; set; }
+
+        public string ExternalReference { get; set; }
     }
 }
