@@ -86,6 +86,7 @@ namespace Transactions.Api.Controllers
         private readonly IEmailSender emailSender;
         private readonly IMetricsService metrics;
         private readonly IPaymentIntentService paymentIntentService;
+        private readonly InvoicingController invoicingController;
 
         private readonly IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext;
 
@@ -113,7 +114,8 @@ namespace Transactions.Api.Controllers
             IMetricsService metrics,
             IPaymentIntentService paymentIntentService,
             IHubContext<Hubs.TransactionsHub, Shared.Hubs.ITransactionsHub> transactionsHubContext,
-            BillingController billingController)
+            BillingController billingController,
+            InvoicingController invoicingController)
         {
             this.transactionsService = transactionsService;
             this.keyValueStorage = keyValueStorage;
@@ -139,6 +141,7 @@ namespace Transactions.Api.Controllers
             this.metrics = metrics;
             this.paymentIntentService = paymentIntentService;
             this.transactionsHubContext = transactionsHubContext;
+            this.invoicingController = invoicingController;
         }
 
         [HttpGet]

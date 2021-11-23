@@ -515,7 +515,7 @@ namespace Transactions.Api.Controllers
 
             if (billingDeal != null && jDealType == JDealTypeEnum.J4)
             {
-                billingDeal.UpdateNextScheduledDate(transaction);
+                billingDeal.UpdateNextScheduledDate(transaction.TransactionTimestamp, transaction.TransactionDate);
 
                 await billingDealService.UpdateEntity(billingDeal);
             }
@@ -659,7 +659,7 @@ namespace Transactions.Api.Controllers
 
             if (billingDeal != null)
             {
-                billingDeal.UpdateNextScheduledDate(transaction);
+                billingDeal.UpdateNextScheduledDate(transaction.TransactionTimestamp, transaction.TransactionDate);
 
                 await billingDealService.UpdateEntity(billingDeal);
             }
@@ -733,8 +733,6 @@ namespace Transactions.Api.Controllers
 
         private async Task<ActionResult<OperationResponse>> ProcessBillingInvoice(BillingDeal model)
         {
-            //TODO
-            throw new NotImplementedException();
             // TODO: caching
             var terminal = EnsureExists(await terminalsService.GetTerminal(model.TerminalID));
 
@@ -786,12 +784,12 @@ namespace Transactions.Api.Controllers
             //invoiceRequest.MerchantIP = GetIP();
             invoiceRequest.CorrelationId = GetCorrelationID();
 
-            //TODO
-            //model.UpdateNextScheduledDate(transaction);
+            model.UpdateNextScheduledDate(invoiceRequest.InvoiceTimestamp, invoiceRequest.InvoiceDate);
 
             await billingDealService.UpdateEntity(model);
 
-            var endResponse = new OperationResponse(Transactions.Shared.Messages.TransactionCreated, StatusEnum.Success, model.BillingDealID);
+            OperationResponse endResponse = null;
+            Guid? invoiceID = null;
 
             using (var dbTransaction = transactionsService.BeginDbTransaction(System.Data.IsolationLevel.RepeatableRead))
             {
@@ -807,7 +805,9 @@ namespace Transactions.Api.Controllers
 
                     await invoiceService.CreateEntity(invoiceRequest, dbTransaction: dbTransaction);
 
-                    endResponse.InnerResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceRequest.InvoiceID);
+                    invoiceID = invoiceRequest.InvoiceID;
+
+                    endResponse = new OperationResponse(Transactions.Shared.Messages.InvoiceCreated, StatusEnum.Success, invoiceID);
 
                     //await transactionsService.UpdateEntity(transaction, Transactions.Shared.Messages.InvoiceCreated, TransactionOperationCodesEnum.InvoiceCreated, dbTransaction: dbTransaction);
 
@@ -825,7 +825,7 @@ namespace Transactions.Api.Controllers
                 {
                     logger.LogError(ex, $"Failed to create invoice. BillingDealID: {model.BillingDealID}");
 
-                    endResponse.InnerResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", model.BillingDealID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
+                    endResponse = new OperationResponse($"{Transactions.Shared.Messages.FailedToCreateInvoice}", model.BillingDealID, httpContextAccessor.TraceIdentifier, "FailedToCreateInvoice", ex.Message);
 
                     await dbTransaction.RollbackAsync();
                 }
@@ -833,14 +833,14 @@ namespace Transactions.Api.Controllers
 
             try
             {
-                //await SendTransactionSuccessEmails(transaction, terminal);
+                await invoicingController.SendInvoiceEmail(invoiceRequest.DealDetails.ConsumerEmail, invoiceRequest, terminal);
             }
             catch (Exception e)
             {
                 logger.LogError(e, $"{nameof(ProcessTransaction)}: Email sending failed");
             }
 
-            return CreatedAtAction(nameof(GetTransaction), new { billingDealID = model.BillingDealID }, endResponse);
+            return CreatedAtAction(nameof(GetTransaction), new { billingDealID = model.BillingDealID, invoiceID }, endResponse);
         }
 
         private async Task<ShvaTransactionDetails> GetLastShvaTransactionDetails(string shvaTerminalNumber)
@@ -883,7 +883,7 @@ namespace Transactions.Api.Controllers
             }
         }
 
-        private async Task SendTransactionSuccessEmails(PaymentTransaction transaction, Merchants.Business.Entities.Terminal.Terminal terminal, string emailTo = null)
+        private async Task SendTransactionSuccessEmails(PaymentTransaction transaction, Terminal terminal, string emailTo = null)
         {
             if (transaction.DealDetails?.ConsumerEmail == null)
             {
@@ -955,6 +955,72 @@ namespace Transactions.Api.Controllers
             }
         }
 
+        private async Task SendBillingInvoiceSuccessEmails(BillingDeal billingDeal, Invoice invoice, Terminal terminal, string emailTo = null)
+        {
+            if (billingDeal.DealDetails?.ConsumerEmail == null)
+            {
+                return;
+
+                //throw new ArgumentNullException(nameof(transaction.DealDetails.ConsumerEmail));
+            }
+
+            var settings = terminal.PaymentRequestSettings;
+
+            var emailSubject = "Invoice";
+            var emailTemplateCode = nameof(PaymentTransaction);
+            var substitutions = new List<TextSubstitution>
+            {
+                new TextSubstitution(nameof(settings.MerchantLogo), string.IsNullOrWhiteSpace(settings.MerchantLogo) ? $"{apiSettings.CheckoutPortalUrl}/img/merchant-logo.png" : $"{apiSettings.BlobBaseAddress}/{settings.MerchantLogo}"),
+                new TextSubstitution(nameof(terminal.Merchant.MarketingName), terminal.Merchant.MarketingName ?? terminal.Merchant.BusinessName),
+                new TextSubstitution(nameof(PaymentTransaction.TransactionDate), TimeZoneInfo.ConvertTimeFromUtc(billingDeal.CurrentTransactionTimestamp.GetValueOrDefault(), UserCultureInfo.TimeZone).ToString("d")), // TODO: locale
+                new TextSubstitution(nameof(billingDeal.TransactionAmount), $"{billingDeal.TransactionAmount.ToString("F2")}{billingDeal.Currency.GetCurrencySymbol()}"),
+
+                new TextSubstitution(nameof(PaymentTransaction.ShvaTransactionDetails.ShvaTerminalID), string.Empty),
+                new TextSubstitution(nameof(PaymentTransaction.ShvaTransactionDetails.ShvaShovarNumber), string.Empty),
+
+                new TextSubstitution(nameof(billingDeal.CreditCardDetails.CardNumber), billingDeal.CreditCardDetails?.CardNumber ?? string.Empty),
+                new TextSubstitution(nameof(billingDeal.CreditCardDetails.CardOwnerName), billingDeal.CreditCardDetails?.CardOwnerName ?? string.Empty),
+
+                new TextSubstitution(nameof(billingDeal.DealDetails.DealDescription), billingDeal.DealDetails?.DealDescription ?? string.Empty)
+            };
+
+            var dictionaries = DictionariesService.GetDictionaries(CurrentCulture);
+
+            var originKey = typeof(DocumentOriginEnum).GetDataContractAttrForEnum(billingDeal.DocumentOrigin.ToString());
+
+            var originStr = dictionaries.DocumentOriginEnum[originKey];
+
+            substitutions.Add(new TextSubstitution(nameof(PaymentTransaction.DocumentOrigin), originStr));
+
+            var email = new Email
+            {
+                EmailTo = billingDeal.DealDetails.ConsumerEmail,
+                Subject = emailSubject,
+                TemplateCode = emailTemplateCode,
+                Substitutions = substitutions.ToArray()
+            };
+
+            await emailSender.SendEmail(email);
+
+            if (terminal.Settings.SendTransactionSlipEmailToMerchant == true && terminal.BillingSettings.BillingNotificationsEmails?.Count() > 0)
+            {
+                var merchantEmailTemplateCode = nameof(PaymentTransaction) + "Merchant";
+
+                foreach (var notificationEmail in terminal.BillingSettings.BillingNotificationsEmails)
+                {
+                    var emailToMerchant = new Email
+                    {
+                        EmailTo = notificationEmail,
+                        Subject = emailSubject,
+                        TemplateCode = merchantEmailTemplateCode,
+                        Substitutions = substitutions.ToArray()
+                    };
+
+                    await emailSender.SendEmail(emailToMerchant);
+                }
+            }
+        }
+
         private async Task<OperationResponse> NextBillingDeal(BillingDeal billingDeal)
         {
             var transaction = mapper.Map<CreateTransactionRequest>(billingDeal);
@@ -966,7 +1032,7 @@ namespace Transactions.Api.Controllers
             {
                 ActionResult<OperationResponse> actionResult = null;
 
-                if (billingDeal.InvoiceOnly != null)
+                if (billingDeal.InvoiceOnly)
                 {
                     actionResult = await ProcessBillingInvoice(billingDeal);
                 }
