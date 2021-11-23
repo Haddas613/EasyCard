@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Common.Models;
 using Common.Models.MDBSource;
 using DesktopEasyCardConvertorECNG.Mapping;
 using DesktopEasyCardConvertorECNG.Models.Helper;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RapidOne;
 using RapidOne.Configuration;
+using RapidOne.Models;
 using Serilog;
 using Shared.Api.Models;
 using Shared.Helpers;
@@ -44,37 +46,28 @@ namespace DesktopEasyCardConvertorECNG
             logger.LogInformation("Application started");
 
 
-            var config = new MapperConfiguration(cfg => {
+            var config = new MapperConfiguration(cfg =>
+            {
                 cfg.AddProfile<TerminalProfile>();
             });
 
             var mapper = config.CreateMapper();
 
-
-
-
             RapidOneGlobalSettings rapidOneGlobalSettings = new RapidOneGlobalSettings
             {
-                 
+
             };
 
             ConsoleIntegrationRequestLogService requestLogService = new ConsoleIntegrationRequestLogService(loggerFactory.CreateLogger<ConsoleIntegrationRequestLogService>());
 
             RapidOneInvoicing rapidOneService = new RapidOneInvoicing(webApiClient, Options.Create(rapidOneGlobalSettings), loggerFactory.CreateLogger<RapidOneInvoicing>(), requestLogService);
 
-
-
-            var allR1Items = rapidOneService.GetItems(ConfigurationManager.AppSettings["RapidBaseUrl"], ConfigurationManager.AppSettings["RapidAPIKey"]).Result;
-            //allR1Items.Where(x=>x.Name == )
-            //rapidOneService.
-
+           
             bool RapidClient = false;
-            string MerchantName = "Test";
-
-
+            string MerchantName = ConfigurationManager.AppSettings["MerchantName"];
 
             Console.WriteLine("Enter true if the client is Rapid Client or false if not:");
-            string RapidClientStr = Console.ReadLine();
+            string RapidClientStr = ConfigurationManager.AppSettings["RapidClient"];
             while (!Boolean.TryParse(RapidClientStr, out RapidClient))
             {
                 Console.WriteLine("Error typing, Please type true or false");
@@ -83,35 +76,48 @@ namespace DesktopEasyCardConvertorECNG
 
             var dataFromFile = ReadMDBFile.ReadDataFromMDBFile(null).Result;
             var serviceFactory = new ServiceFactory(args[0], Environment.QA);
+            List<ItemWithPricesDto> allR1Items = new List<ItemWithPricesDto>();
+            if (RapidClient)
+            {
+                 allR1Items = rapidOneService.GetItems(ConfigurationManager.AppSettings["RapidBaseUrl"], ConfigurationManager.AppSettings["RapidAPIKey"]).Result.ToList();
+                foreach (var item in dataFromFile.Products)
+                {
+                      var foundItemsInRapid = allR1Items.Where(x => x.Name == item.RivName).ToList();
+                    if (!(foundItemsInRapid != null && foundItemsInRapid.Count > 0))
+                    {
+                        rapidOneService.CreateItem("", "", new RapidOne.Models.ItemDto() { Name = item.RivName, Prices = new[] { new RapidOne.Models.ItemPriceDto() { Price = item.RivSum  } } });
+                    }
+                }
+               
 
-            
+            }
+
             var metadataMerchantService = serviceFactory.GetMerchantMetadataApiClient();
             var metadataTerminalService = serviceFactory.GetTransactionsApiClient();
-            
 
             var terminalRef = metadataMerchantService.GetTerminals().Result.Data.First();
             var terminal = metadataMerchantService.GetTerminal(terminalRef.TerminalID).Result;
 
-            var updateTerminalReq = mapper.Map<UpdateTerminalRequest>(terminal);
-            updateTerminalReq.Settings.VATExempt = !dataFromFile.BillingSetting.AddMaam;
-            updateTerminalReq.BillingSettings.CreateRecurrentPaymentsAutomatically = false;
-            decimal RateVat = terminal.Settings.VATRate??0;
-            //to do save vat rate todo
-            var resp = metadataMerchantService.UpdateTerminal(updateTerminalReq).Result;
-            
-           
-            //metadataTerminalService.UpdateTerminalParameters()
+            OperationResponse updateRes= UpdateTerminalSettings(mapper, dataFromFile, metadataMerchantService, terminal);
+            string rapidCode = string.Empty;
             foreach (var product in dataFromFile.Products)
             {
+                if (RapidClient)
+                {
+                    allR1Items = rapidOneService.GetItems(ConfigurationManager.AppSettings["RapidBaseUrl"], ConfigurationManager.AppSettings["RapidAPIKey"]).Result.ToList();
+                    rapidCode = allR1Items.Where(x => x.Name == product.RivName).Select(x=>x.Code).ToList().FirstOrDefault();
+                }
                 var AddUtemsRes = metadataMerchantService.CreateItem(new ItemRequest()
                 {
                     Active = true,
                     BillingDesktopRefNumber = product.RevID,
                     ItemName = product.RivName,
-                    Price = product.RivSum//,
+                    Price = product.RivSum,
+                    ExternalReference = rapidCode
+                    // Currency = product. no currency in this lever in Desktop
                     //ExternalReference = product.RevID,
-                   // SKU = //product.RivCodeקופת הכנסה לא קוד
-                });
+                    // SKU = //product.RivCodeקופת הכנסה לא קוד
+                }) ;
             }
 
             foreach (var customerInFile in dataFromFile.Customers)
@@ -132,17 +138,28 @@ namespace DesktopEasyCardConvertorECNG
                         ExternalReference = itemInFile.RivID,
                         ItemName = itemInFile.DealText,
                         Quantity = itemInFile.DealCount,
-                     //   SKU = itemInFile.RivCode,/* from rapid ifit's rapid todo to do ,*/
+                        //   SKU = itemInFile.RivCode,/* from rapid ifit's rapid todo to do ,*/
                         Amount = amount,
                         ItemID = item.Result.Data.GetEnumerator().Current.ItemID,
                         NetAmount = netAmount,
                         VAT = Math.Round(netAmount * RateVat, 2, MidpointRounding.AwayFromZero),
                         VATRate = RateVat
-                });
+                    });
                 }
-                CreateBillingDeal(metadataTerminalService, customerInFile, token.Result.EntityUID??Guid.Empty, findcustomer.Result, items);
+                CreateBillingDeal(metadataTerminalService, customerInFile, token.Result.EntityUID ?? Guid.Empty, findcustomer.Result, items);
             }
             Console.WriteLine("success"/*res.Customers?.Count*/);
+        }
+
+        private static OperationResponse UpdateTerminalSettings(IMapper mapper, DataFromMDBFile dataFromFile, MerchantMetadataApiClient metadataMerchantService, TerminalResponse terminal)
+        {
+            var updateTerminalReq = mapper.Map<UpdateTerminalRequest>(terminal);
+            updateTerminalReq.Settings.VATExempt = !dataFromFile.BillingSetting.AddMaam;
+            updateTerminalReq.BillingSettings.CreateRecurrentPaymentsAutomatically = false;
+            //to do save vat rate todo
+            //decimal RateVat = terminal.Settings.VATRate ?? 0;
+            var resp = metadataMerchantService.UpdateTerminal(updateTerminalReq).Result;
+            return resp;
         }
 
         private static Guid ImportCustomer(bool RapidClient, string MerchantName, MerchantMetadataApiClient metadataMerchantService, Customer customerInFile)
