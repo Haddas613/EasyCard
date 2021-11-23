@@ -15,6 +15,10 @@
                   <p class="caption ecgray--text text--darken-2">{{$t('BillingDealID')}}</p>
                   <v-chip color="primary" small>{{model.$billingDealID | guid}}</v-chip>
                 </v-col>
+                <v-col cols="12" md="4" class="info-block" v-if="model.invoiceOnly">
+                  <p class="caption ecgray--text text--darken-2">{{$t('InvoiceOnly')}}</p>
+                  <p>{{$t("Yes")}}</p>
+                </v-col>
                 <v-col cols="12" md="4" class="info-block">
                   <p class="caption ecgray--text text--darken-2">{{$t('Terminal')}}</p>
                   <p>{{model.terminalName}}</p>
@@ -78,6 +82,7 @@
             :consumer-name="model.creditCardDetails ? model.creditCardDetails.cardOwnerName : null"
           ></deal-details>
 
+          <payment-details v-if="model.paymentDetails" :model="model.paymentDetails"></payment-details>
           <credit-card-details v-if="model.creditCardDetails" :model="model.creditCardDetails"></credit-card-details>
           <bank-payment-details card v-if="model.bankDetails" :model="model.bankDetails"></bank-payment-details>
 
@@ -128,6 +133,7 @@ export default {
     BankPaymentDetails: () => import("../../components/details/BankPaymentDetails"),
     CreditCardDetails: () =>
       import("../../components/details/CreditCardDetails"),
+    PaymentDetails: () => import("../../components/details/PaymentDetails"),
     BillingDealPauseDialog: () =>
       import("../../components/billing-deals/BillingDealPauseDialog"),
   },
@@ -180,7 +186,8 @@ export default {
               });
             }
           }
-        ]
+        ],
+        text: {translate: true, value: this.model.invoiceOnly ? "InvoiceOnlyBillingDeal" : "BillingDeal"}
       };
 
       if(this.model.$nextScheduledTransaction || this.model.nextScheduledTransaction){

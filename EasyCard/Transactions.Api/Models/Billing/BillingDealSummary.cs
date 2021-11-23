@@ -62,5 +62,7 @@ namespace Transactions.Api.Models.Billing
         /// </summary>
         [MetadataOptions(Hidden = true)]
         public SharedIntegration.Models.DealDetails DealDetails { get; set; }
+
+        public bool InvoiceOnly { get; set; }
     }
 }

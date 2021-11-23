@@ -93,6 +93,7 @@
   "UserPaid": "שולם על ידי המשתמש",
   "DeletedItems": "פריטים שנמחקו",
   "DeletedCustomers": "לקוחות שנמחקו",
+  "InvoiceOnlyBillingDeal": "בילינג חשבון חיוב בלבד",
 
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
@@ -340,6 +341,7 @@
   "BillingDesktopRefNumber": "מזהה ממערכת בילינג דסקטופ",
   "SecondPhone": "טלפון שני",
   "Note": "הערה",
+  "InvoiceOnly": "חשבונית מס בלבד",
 
   "--BUTTONS--": null,
   "Cancel": "בטל",

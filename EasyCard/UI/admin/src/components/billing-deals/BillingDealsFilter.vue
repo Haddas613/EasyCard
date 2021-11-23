@@ -54,6 +54,13 @@
       </v-row>
       <v-row class="d-flex" justify="end">
         <v-col cols="3" md="2">
+          <v-switch v-model="model.invoiceOnly">
+            <template v-slot:label>
+              <small>{{$t('InvoiceOnly')}}</small>
+            </template>
+          </v-switch>
+        </v-col>
+        <v-col cols="3" md="2">
           <v-switch v-model="model.hasError" @change="switchFilterChanged('hasError')">
             <template v-slot:label>
               <small>{{$t('HasError')}}</small>

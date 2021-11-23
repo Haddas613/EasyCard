@@ -12,6 +12,7 @@
         <v-flex class="d-flex px-2">
             <credit-card-payment-details :model="d" v-if="d.paymentType == appConstants.transaction.paymentTypes.card"></credit-card-payment-details>
             <cheque-payment-details :model="d" v-else-if="d.paymentType == appConstants.transaction.paymentTypes.cheque"></cheque-payment-details>
+            <bank-transfer-payment-details :model="d" v-else-if="d.paymentType == appConstants.transaction.paymentTypes.bank"></bank-transfer-payment-details>
             <v-spacer v-else class="py-2"></v-spacer>
         </v-flex>
       </fieldset>
@@ -26,6 +27,7 @@ export default {
   components: {
     CreditCardPaymentDetails: () => import("./CreditCardPaymentDetails"),
     ChequePaymentDetails: () => import("./ChequePaymentDetails"),
+    BankTransferPaymentDetails: () => import("./BankTransferPaymentDetails")
   },
   props: {
     model: {

@@ -120,7 +120,8 @@
   "TerminalsTokens": "מסופי אסימונים",
   "TokensTransactions": "עסקאות אסימונים",
   "ListOfPinpadDevices": "רשימת מכשירי פינפד",
-  
+  "InvoiceOnlyBillingDeal": "בילינג חשבון חיוב בלבד",
+
   "--VALIDATION & PLACEHOLDER MESSAGES--": null,
   "Required": "חובה",
   "Invalid": "לא תקף",
@@ -407,6 +408,7 @@
   "DoNotCreateSaveTokenInitialDeal": "אל תיצור עסקת אתחול לשמירת טוקן",
   "EuroRate": "שער יורו",
   "DollarRate": "שער דולר",
+  "InvoiceOnly": "חשבונית מס בלבד",
   
   "--BUTTONS--": null,
   "Cancel": "בטל",

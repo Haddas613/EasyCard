@@ -55,6 +55,16 @@
             </v-switch>
           </v-col>
           <v-col cols="3">
+            <v-switch
+              v-model="billingDealsFilter.invoiceOnly"
+              @change="getDataFromApi(false)"
+            >
+              <template v-slot:label>
+                <small>{{$t('InvoiceOnly')}}</small>
+              </template>
+            </v-switch>
+          </v-col>
+          <v-col cols="3">
             <v-switch v-model="billingDealsFilter.showDeleted" @change="switchFilterChanged('showDeleted')">
               <template v-slot:label>
                 <small>{{$t('Inactive')}}</small>
@@ -168,11 +178,18 @@
             >
               {{item.currentDeal || '-'}}
             </v-col>
+            <v-col cols="12" md="6" class="text-end font-weight-bold button primary--text"
+              v-if="item.invoiceOnly"
+            >
+            <p class="my-0 py-0"><small>{{$t("InvoiceOnly")}}</small></p>
+            {{item.transactionAmount | currency(item.$currency)}}
+            </v-col>
             <v-col
               cols="12"
               md="6"
               lg="6"
               class="text-end font-weight-bold button"
+              v-else
               v-bind:class="{'ecred--text': item.cardExpired, 'ecgray--text': !item.active}"
             >{{item.transactionAmount | currency(item.$currency)}}</v-col>
           </template>

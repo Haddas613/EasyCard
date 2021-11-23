@@ -378,6 +378,11 @@
               Looks up a localized string similar to Current deal.
             </summary>
         </member>
+        <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.InvoiceOnly">
+            <summary>
+              Looks up a localized string similar to Invoice Only.
+            </summary>
+        </member>
         <member name="P:Transactions.Api.Models.Billing.BillingDealSummaryResource.MerchantID">
             <summary>
               Looks up a localized string similar to Merchant ID.

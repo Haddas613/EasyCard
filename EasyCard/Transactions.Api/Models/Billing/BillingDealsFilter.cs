@@ -66,5 +66,7 @@ namespace Transactions.Api.Models.Billing
         /// Merchant deal reference
         /// </summary>
         public string DealReference { get; set; }
+
+        public bool InvoiceOnly { get; set; }
     }
 }

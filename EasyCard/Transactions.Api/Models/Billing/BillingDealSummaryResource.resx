@@ -144,6 +144,9 @@
   <data name="CurrentDeal" xml:space="preserve">
     <value>Current deal</value>
   </data>
+  <data name="InvoiceOnly" xml:space="preserve">
+    <value>Invoice Only</value>
+  </data>
   <data name="MerchantID" xml:space="preserve">
     <value>Merchant ID</value>
   </data>

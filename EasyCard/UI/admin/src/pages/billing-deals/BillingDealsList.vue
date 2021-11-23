@@ -67,6 +67,11 @@
               {{item.paused ? $t("Yes") : $t("No")}}
             </span>
           </template>
+          <template v-slot:item.invoiceOnly="{ item }">
+            <span v-bind:class="{'success--text': item.invoiceOnly, 'error--text': !item.invoiceOnly}">
+              {{item.invoiceOnly ? $t("Yes") : $t("No")}}
+            </span>
+          </template>
           <template v-slot:item.actions="{ item }">
             <v-btn color="primary" outlined small link :to="{name: 'BillingDeal', params: {id: item.$billingDealID}}">
               <re-icon small>mdi-arrow-right</re-icon>
