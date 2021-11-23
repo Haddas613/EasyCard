@@ -16,6 +16,7 @@ using Shared.Integration;
 using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Transactions.Api.Client;
@@ -63,8 +64,9 @@ namespace DesktopEasyCardConvertorECNG
 
 
 
-            var allR1Items = rapidOneService.GetItems("TODO: rapid one site", "TODO: rapid one api key").Result;
-
+            var allR1Items = rapidOneService.GetItems(ConfigurationManager.AppSettings["RapidBaseUrl"], ConfigurationManager.AppSettings["RapidAPIKey"]).Result;
+            //allR1Items.Where(x=>x.Name == )
+            //rapidOneService.
 
             bool RapidClient = false;
             string MerchantName = "Test";
@@ -140,7 +142,6 @@ namespace DesktopEasyCardConvertorECNG
                 }
                 CreateBillingDeal(metadataTerminalService, customerInFile, token.Result.EntityUID??Guid.Empty, findcustomer.Result, items);
             }
-
             Console.WriteLine("success"/*res.Customers?.Count*/);
         }
 
@@ -226,7 +227,7 @@ namespace DesktopEasyCardConvertorECNG
                 {
                     ConsumerAddress = summeriesReponseConsumer.Data.GetEnumerator().Current.ConsumerAddress,
                     ConsumerEmail = summeriesReponseConsumer.Data.GetEnumerator().Current.ConsumerEmail,
-                    // todo ConsumerExternalReference = summeriesReponseConsumer.Data.GetEnumerator().Current.cus//
+                    ConsumerExternalReference = summeriesReponseConsumer.Data.GetEnumerator().Current.ExternalReference,
                     ConsumerID = summeriesReponseConsumer.Data.GetEnumerator().Current.ConsumerID,
                     ConsumerName = summeriesReponseConsumer.Data.GetEnumerator().Current.ConsumerName,
                     ConsumerNationalID = summeriesReponseConsumer.Data.GetEnumerator().Current.ConsumerNationalID,
