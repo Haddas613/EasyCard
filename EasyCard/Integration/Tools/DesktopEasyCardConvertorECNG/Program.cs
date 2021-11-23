@@ -86,30 +86,18 @@ namespace DesktopEasyCardConvertorECNG
             var metadataMerchantService = serviceFactory.GetMerchantMetadataApiClient();
             var metadataTerminalService = serviceFactory.GetTransactionsApiClient();
             
-            var terminalID = metadataMerchantService.GetTerminals().Result.Data.GetEnumerator().Current.TerminalID;
-            var terminalSettings = metadataMerchantService.GetTerminal(terminalID).Result;
-            UpdateTerminalRequest terminalUPdateModel =new UpdateTerminalRequest()
-            {
-                 Settings = terminalSettings new TerminalSettingsUpdate(){ DefaultChargeDescription =  terminalSettings.Settings.DefaultChargeDescription, DefaultItemName = terminalSettings.Settings.DefaultItemName, 
-            }
-            var res =    metadataMerchantService.UpdateTerminal(new MerchantProfileApi.Models.Terminal.UpdateTerminalRequest(){ TerminalID = terminalSettings.TerminalID,
-                 BillingSettings = terminalSettings.BillingSettings,
-                  CheckoutSettings = terminalSettings.CheckoutSettings,
-                   InvoiceSettings = terminalSettings.InvoiceSettings,
-                    Label = terminalSettings.Label,
-                     PaymentRequestSettings = terminalSettings.PaymentRequestSettings,
-                      Settings = terminalSettings.Settings
-                      );
-
-
-
 
             var terminalRef = metadataMerchantService.GetTerminals().Result.Data.First();
             var terminal = metadataMerchantService.GetTerminal(terminalRef.TerminalID).Result;
 
-            var updateTerminal = mapper.Map<UpdateTerminalRequest>(terminal);
-            var resp = metadataMerchantService.UpdateTerminal(updateTerminal).Result;
-
+            var updateTerminalReq = mapper.Map<UpdateTerminalRequest>(terminal);
+            updateTerminalReq.Settings.VATExempt = !dataFromFile.BillingSetting.AddMaam;
+            updateTerminalReq.BillingSettings.CreateRecurrentPaymentsAutomatically = false;
+            decimal RateVat = terminal.Settings.VATRate??0;
+            //to do save vat rate todo
+            var resp = metadataMerchantService.UpdateTerminal(updateTerminalReq).Result;
+            
+           
             //metadataTerminalService.UpdateTerminalParameters()
             foreach (var product in dataFromFile.Products)
             {
@@ -134,8 +122,21 @@ namespace DesktopEasyCardConvertorECNG
                 foreach (var itemInFile in itemsPerCustomerInFile)
                 {
                     var item = metadataMerchantService.GetItems(new ItemsFilter() { BillingDesktopRefNumber = itemInFile.RivID });
-                    items.Add(new Item() { Price = itemInFile.ProdSum, ExternalReference = itemInFile.RivID, ItemName = itemInFile.DealText, Quantity = itemInFile.DealCount,/* SKU = itemInFile.RivCode from rapid ifit's rapid todo to do ,*/ Amount = Math.Round(itemInFile.ProdSum * itemInFile.DealCount, 2, MidpointRounding.AwayFromZero), ItemID = item.Result.Data.GetEnumerator().Current.ItemID/*,  todo to do var values*/
-                    });
+                    decimal amount = Math.Round(itemInFile.ProdSum * itemInFile.DealCount, 2, MidpointRounding.AwayFromZero);
+                    decimal netAmount = dataFromFile.BillingSetting.AddMaam ? amount : Math.Round(((amount) / 1m + RateVat), 2, MidpointRounding.AwayFromZero);
+                    items.Add(new Item()
+                    {
+                        Price = itemInFile.ProdSum,
+                        ExternalReference = itemInFile.RivID,
+                        ItemName = itemInFile.DealText,
+                        Quantity = itemInFile.DealCount,
+                     //   SKU = itemInFile.RivCode,/* from rapid ifit's rapid todo to do ,*/
+                        Amount = amount,
+                        ItemID = item.Result.Data.GetEnumerator().Current.ItemID,
+                        NetAmount = netAmount,
+                        VAT = Math.Round(netAmount * RateVat, 2, MidpointRounding.AwayFromZero),
+                        VATRate = RateVat
+                });
                 }
                 CreateBillingDeal(metadataTerminalService, customerInFile, token.Result.EntityUID??Guid.Empty, findcustomer.Result, items);
             }
@@ -216,8 +217,8 @@ namespace DesktopEasyCardConvertorECNG
                     StartAtType = Transactions.Shared.Enums.StartAtTypeEnum.SpecifiedDate,
                 },
                 CreditCardToken = TokenCreditCard,
-                //Currency =  todo
-                //InvoiceDetails = new Shared.Integration.Models.Invoicing.InvoiceDetails() {}
+                Currency =   Models.Helper.EnumConvertor.ConvertToCurrecy(customerInFile.MTypeID),
+                //InvoiceDetails = new Shared.Integration.Models.Invoicing.InvoiceDetails() { }
                 PaymentType = Models.Helper.EnumConvertor.ConvertToPaymentType(customerInFile.PayType),
                 TransactionAmount = customerInFile.TotalSum,
 
@@ -225,12 +226,13 @@ namespace DesktopEasyCardConvertorECNG
                 {
                     ConsumerAddress = summeriesReponseConsumer.Data.GetEnumerator().Current.ConsumerAddress,
                     ConsumerEmail = summeriesReponseConsumer.Data.GetEnumerator().Current.ConsumerEmail,
-                    //ConsumerExternalReference = summeriesReponseConsumer.Data.GetEnumerator().Current. TODO TO DO 
+                    // todo ConsumerExternalReference = summeriesReponseConsumer.Data.GetEnumerator().Current.cus//
                     ConsumerID = summeriesReponseConsumer.Data.GetEnumerator().Current.ConsumerID,
                     ConsumerName = summeriesReponseConsumer.Data.GetEnumerator().Current.ConsumerName,
                     ConsumerNationalID = summeriesReponseConsumer.Data.GetEnumerator().Current.ConsumerNationalID,
                     ConsumerPhone = summeriesReponseConsumer.Data.GetEnumerator().Current.ConsumerPhone,
                     Items = items
+                    //, DealDescription
                     //DealReference = 
                 }
             });

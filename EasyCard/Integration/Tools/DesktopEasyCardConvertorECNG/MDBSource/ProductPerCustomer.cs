@@ -12,6 +12,6 @@ namespace Common.Models.MDBSource
         public string RivID { get; set; }
         public int DealCount { get; set; }
 
-        public string RivCode { get; set; }
+       // public string RivCode { get; set; } IncomeFund not relevant
     }
 }

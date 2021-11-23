@@ -6,6 +6,7 @@ namespace Common.Models.MDBSource
 {
     public class Customer
     {
+        public string MTypeID { get; set; }
         public string Street { get; set; }
         public string BankAccount { get; set; }
         public int BankBranch { get; set; }
