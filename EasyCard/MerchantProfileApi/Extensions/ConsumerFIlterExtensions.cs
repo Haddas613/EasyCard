@@ -88,6 +88,11 @@ namespace MerchantProfileApi.Extensions
                 src = src.Where(c => c.BillingDesktopRefNumber == filter.BillingDesktopRefNumber);
             }
 
+            if (!string.IsNullOrWhiteSpace(filter.Origin))
+            {
+                src = src.Where(c => c.Origin == filter.Origin);
+            }
+
             return src;
         }
     }

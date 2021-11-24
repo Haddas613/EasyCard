@@ -178,7 +178,7 @@ namespace DesktopEasyCardConvertorECNG
 
         private async Task<Dictionary<string, ItemSummary>> SyncECNGItems()
         {
-            var allEcngItems = (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = true })).Data.ToDictionary(d => d.ExternalReference);
+            var allEcngItems = (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = true, Origin = config.Origin })).Data.ToDictionary(d => d.ExternalReference);
 
             foreach (var product in dataFromFile.Products)
             {
@@ -204,7 +204,7 @@ namespace DesktopEasyCardConvertorECNG
                 }
             }
 
-            return (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = true })).Data.ToDictionary(d => d.ExternalReference);
+            return (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = true, Origin = config.Origin })).Data.ToDictionary(d => d.ExternalReference);
         }
 
         private async Task SyncECNGCustomers()
@@ -250,8 +250,12 @@ namespace DesktopEasyCardConvertorECNG
             var bankDetails = new Shared.Integration.Models.PaymentDetails.BankDetails() { Bank = customerInFile.BankID, BankAccount = customerInFile.BankAccount, BankBranch = customerInFile.BankBranch/*, PaymentType = Shared.Integration.Models.PaymentTypeEnum.Bank* todo to check*/ };
             var customerName = string.Format("{0} {1}", customerInFile.LastName, customerInFile.FirstName);
 
-            ConsumersFilter cf = new ConsumersFilter();
-            cf.BillingDesktopRefNumber = customerInFile.DealID;
+            ConsumersFilter cf = new ConsumersFilter
+            {
+                BillingDesktopRefNumber = customerInFile.DealID,
+                ShowDeleted = true,
+                Origin = config.Origin
+            };
 
             Guid? consumerID = (await metadataMerchantService.GetConsumers(cf))?.Data.FirstOrDefault()?.ConsumerID;
             if (consumerID.HasValue)
