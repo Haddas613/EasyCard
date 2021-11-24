@@ -151,7 +151,7 @@ namespace Merchants.Api.Controllers
                 //TODO: filter on DB level
                 if (filter.HasFeature.HasValue)
                 {
-                    response.Data = response.Data.Where(t => t.EnabledFeatures.Contains(filter.HasFeature.Value));
+                    response.Data = response.Data.Where(t => t.EnabledFeatures?.Contains(filter.HasFeature.Value) == true);
                 }
 
                 response.NumberOfRecords = numberOfRecords.Value;
