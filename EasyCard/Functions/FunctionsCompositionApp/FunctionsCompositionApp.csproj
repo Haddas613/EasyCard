@@ -30,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Integration\BankOfIsrael\BankOfIsrael.csproj" />
+    <ProjectReference Include="..\..\Merchants.Api.Client\Merchants.Api.Client.csproj" />
     <ProjectReference Include="..\..\Shared.Helpers\Shared.Helpers.csproj" />
     <ProjectReference Include="..\..\Transactions.Api.Client\Transactions.Api.Client.csproj" />
   </ItemGroup>

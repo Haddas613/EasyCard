@@ -32,5 +32,9 @@ namespace Merchants.Api.Models.Terminal
         public string AggregatorTerminalReference { get; set; }
 
         public string ProcessorTerminalReference { get; set; }
+
+        public bool ActiveOnly { get; set; }
+
+        public FeatureEnum? HasFeature { get; set; }
     }
 }

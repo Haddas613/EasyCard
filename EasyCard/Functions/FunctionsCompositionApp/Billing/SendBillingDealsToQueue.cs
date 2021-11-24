@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,10 +28,49 @@ namespace FunctionsCompositionApp.Billing
                 .Build();
 
             var transactionsApiClient = TransactionsApiClientHelper.GetTransactionsApiClient(log, config);
+            var merchantsApiClient = MerchantsApiClientHelper.GetMerchantsApiClient(log, config);
 
-            var response = await transactionsApiClient.SendBillingDealsToQueue();
+            var filter = new Merchants.Api.Models.Terminal.TerminalsFilter
+            {
+                ActiveOnly = true,
+                HasFeature = Merchants.Shared.Enums.FeatureEnum.Billing,
+                Skip = 0,
+                Take = 100
+            };
 
-            log.LogInformation($"Send {response.Count} billing queue messages");
+            bool fetch = true;
+            int totalBillingDeals = 0;
+            int totalTerminalsCount = 0;
+
+            while (fetch)
+            {
+                var terminals = await merchantsApiClient.GetTerminals(filter);
+                if (terminals.NumberOfRecords == 0 || !terminals.Data.Any())
+                {
+                    log.LogInformation($"No terminals to process");
+                    fetch = false;
+                    break;
+                }
+
+                if (totalTerminalsCount == 0)
+                {
+                    totalTerminalsCount = terminals.NumberOfRecords;
+                }
+
+                filter.Skip += terminals.Data.Count();
+                fetch = terminals.NumberOfRecords > filter.Skip;
+
+                log.LogInformation($"Sending {terminals.Data.Count()} of {terminals.NumberOfRecords} terminals");
+
+                foreach (var terminal in terminals.Data)
+                {
+                    log.LogInformation($"Sending billing deals for terminal #{terminal.TerminalID}:{terminal.Label}");
+                    var response = await transactionsApiClient.SendBillingDealsToQueue(terminal.TerminalID);
+                    totalBillingDeals += response.Count;
+                }
+            }
+
+            log.LogInformation($"Send {totalBillingDeals} billing deals from {totalTerminalsCount} terminals billing queue messages");
         }
     }
 }

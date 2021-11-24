@@ -1,5 +1,4 @@
-﻿using Merchants.Api.Models.Merchant;
-using Merchants.Shared.Enums;
+﻿using Merchants.Shared.Enums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Shared.Api.UI;
