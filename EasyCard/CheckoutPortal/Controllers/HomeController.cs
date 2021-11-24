@@ -792,6 +792,7 @@ namespace CheckoutPortal.Controllers
             }
 
             checkoutConfig.Settings.TransactionTypes = transactionTypes;
+            checkoutConfig.Settings.BlobBaseAddress = apiSettings.BlobBaseAddress;
 
             return checkoutConfig;
         }
