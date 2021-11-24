@@ -129,11 +129,11 @@ namespace Transactions.Api.Client
             }
         }
 
-        public async Task<SendBillingDealsToQueueResponse> SendBillingDealsToQueue()
+        public async Task<SendBillingDealsToQueueResponse> SendBillingDealsToQueue(Guid terminalID)
         {
             try
             {
-                return await webApiClient.Post<SendBillingDealsToQueueResponse>(apiConfiguration.TransactionsApiAddress, $"api/billing/due-billings", null, BuildHeaders);
+                return await webApiClient.Post<SendBillingDealsToQueueResponse>(apiConfiguration.TransactionsApiAddress, $"api/billing/due-billings/{terminalID}", null, BuildHeaders);
             }
             catch (WebApiClientErrorException)
             {

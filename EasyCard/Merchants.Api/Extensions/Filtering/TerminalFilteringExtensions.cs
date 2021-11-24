@@ -63,6 +63,10 @@ namespace Merchants.Api.Extensions.Filtering
             {
                 src = src.Where(t => t.Status == filter.Status.Value);
             }
+            else if (filter.ActiveOnly)
+            {
+                src = src.Where(t => t.Status != Shared.Enums.TerminalStatusEnum.Disabled);
+            }
 
             if (!string.IsNullOrWhiteSpace(filter.AggregatorTerminalReference))
             {
