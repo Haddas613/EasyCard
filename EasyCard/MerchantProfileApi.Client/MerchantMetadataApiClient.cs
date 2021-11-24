@@ -1,4 +1,6 @@
-﻿using MerchantProfileApi.Models.Billing;
+﻿using AutoMapper;
+using MerchantProfileApi.Models.Billing;
+using MerchantProfileApi.Models.Terminal;
 using Microsoft.Extensions.Options;
 using Shared.Api.Configuration;
 using Shared.Api.Models;
@@ -18,6 +20,7 @@ namespace MerchantProfileApi.Client
         private readonly IWebApiClient webApiClient;
         private readonly ApiSettings apiConfiguration;
         //private readonly ILogger logger;
+        //private readonly IMapper mapper;
         private readonly IWebApiClientTokenService tokenService;
 
         public MerchantMetadataApiClient(IWebApiClient webApiClient, /*ILogger logger,*/ IWebApiClientTokenService tokenService, IOptions<ApiSettings> apiConfiguration)
@@ -39,6 +42,13 @@ namespace MerchantProfileApi.Client
             return consumers;
         }
 
+        public async Task<ConsumerResponse> GetConsumer(Guid consumerID)
+        {
+            var consumer = await webApiClient.Get<ConsumerResponse>(apiConfiguration.MerchantProfileURL, $"/api/consumers/{consumerID}", null, BuildHeaders);
+
+            return consumer;
+        }
+
         public async Task<OperationResponse> CreateConsumer(ConsumerRequest request)
         {
             var consumerResp = await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantProfileURL, $"/api/consumers", request, BuildHeaders);
@@ -55,9 +65,9 @@ namespace MerchantProfileApi.Client
 
         // items
 
-        public async Task<SummariesResponse<ConsumerSummary>> GetItems(ItemsFilter filter)
+        public async Task<SummariesResponse<ItemSummary>> GetItems(ItemsFilter filter)
         {
-            var consumers = await webApiClient.Get<SummariesResponse<ConsumerSummary>>(apiConfiguration.MerchantProfileURL, $"/api/items", filter, BuildHeaders);
+            var consumers = await webApiClient.Get<SummariesResponse<ItemSummary>>(apiConfiguration.MerchantProfileURL, $"/api/items", filter, BuildHeaders);
 
             return consumers;
         }
@@ -76,6 +86,31 @@ namespace MerchantProfileApi.Client
             return consumerResp;
         }
 
+        // terminal
+
+        public async Task<SummariesResponse<TerminalSummary>> GetTerminals()
+        {
+            var terminals = await webApiClient.Get<SummariesResponse<TerminalSummary>>(apiConfiguration.MerchantProfileURL, $"/api/terminals", null, BuildHeaders);
+
+            return terminals;
+        }
+
+        public async Task<TerminalResponse> GetTerminal(Guid terminalID)
+        {
+            var consumerResp = await webApiClient.Get<TerminalResponse>(apiConfiguration.MerchantProfileURL, $"/api/terminals/{terminalID}", null, BuildHeaders);
+
+            return consumerResp;
+        }
+
+        public async Task<OperationResponse> UpdateTerminal(UpdateTerminalRequest request)
+        {
+            var consumerResp = await webApiClient.Put<OperationResponse>(apiConfiguration.MerchantProfileURL, $"/api/terminals/{request.TerminalID}", request, BuildHeaders);
+
+            return consumerResp;
+        }
+
+        // common
+
         private async Task<NameValueCollection> BuildHeaders()
         {
             var token = await tokenService.GetToken();
@@ -89,5 +124,7 @@ namespace MerchantProfileApi.Client
 
             return headers;
         }
+
+
     }
 }

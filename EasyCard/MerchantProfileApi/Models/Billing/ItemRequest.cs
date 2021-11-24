@@ -33,5 +33,7 @@ namespace MerchantProfileApi.Models.Billing
 
         [StringLength(50)]
         public string SKU { get; set; }
+
+        public string Origin { get; set; }
     }
 }

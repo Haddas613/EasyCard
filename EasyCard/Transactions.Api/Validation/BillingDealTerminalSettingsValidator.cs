@@ -97,7 +97,7 @@ namespace Transactions.Api.Validation
             }
         }
 
-        public static void Validate(TerminalSettings terminalSettings, BillingDealInvoiceRequest request)
+        public static void Validate(TerminalSettings terminalSettings, BillingDealInvoiceOnlyRequest request)
         {
             if (terminalSettings == null)
             {
@@ -144,7 +144,7 @@ namespace Transactions.Api.Validation
             }
         }
 
-        public static void Validate(TerminalSettings terminalSettings, BillingDealInvoiceUpdateRequest request)
+        public static void Validate(TerminalSettings terminalSettings, BillingDealInvoiceOnlyUpdateRequest request)
         {
             if (terminalSettings == null)
             {

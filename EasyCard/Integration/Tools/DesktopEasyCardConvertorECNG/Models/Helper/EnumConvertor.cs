@@ -1,4 +1,5 @@
-﻿using Shared.Integration.Models;
+﻿using Shared.Helpers;
+using Shared.Integration.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,14 +12,22 @@ namespace DesktopEasyCardConvertorECNG.Models.Helper
         {
             switch (paymentTypeStr)
             {
-                case "0": 
+                case "0":
                     return PaymentTypeEnum.Card;
                 case "1":
                     return PaymentTypeEnum.Bank;
-              //  case "2":
+                //  case "2":
                 //    return PaymentTypeEnum. to implement invoice only!!!!!!todo to do
                 default:
                     return PaymentTypeEnum.Card;
+            }
+        }
+        public static CurrencyEnum ConvertToCurrecy(string currencyDesktopStr)
+        {
+            switch (currencyDesktopStr)
+            {
+                case "2": return CurrencyEnum.USD;
+                default: return CurrencyEnum.ILS;
             }
         }
 
@@ -31,11 +40,11 @@ namespace DesktopEasyCardConvertorECNG.Models.Helper
                 case "2":
                     return Transactions.Shared.Enums.RepeatPeriodTypeEnum.BiMonthly;
                 case "3":
-                    return Transactions.Shared.Enums.RepeatPeriodTypeEnum.Quarter; 
-                case "4": 
-                    return  Transactions.Shared.Enums.RepeatPeriodTypeEnum.Quarter;
+                    return Transactions.Shared.Enums.RepeatPeriodTypeEnum.Quarter;
+                case "4":
+                    return Transactions.Shared.Enums.RepeatPeriodTypeEnum.Quarter;
                 case "12":
-                    return  Transactions.Shared.Enums.RepeatPeriodTypeEnum.Year;
+                    return Transactions.Shared.Enums.RepeatPeriodTypeEnum.Year;
                 case "99":
                     return Transactions.Shared.Enums.RepeatPeriodTypeEnum.OneTime;
                 default: return Transactions.Shared.Enums.RepeatPeriodTypeEnum.Monthly;

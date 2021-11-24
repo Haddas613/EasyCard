@@ -24,7 +24,7 @@ namespace Transactions.Api.Mapping
         private void RegisterBillingDealMappings()
         {
             CreateMap<BillingDealRequest, BillingDeal>();
-            CreateMap<BillingDealInvoiceRequest, BillingDeal>()
+            CreateMap<BillingDealInvoiceOnlyRequest, BillingDeal>()
                 .ForMember(d => d.InvoiceOnly, o => o.MapFrom(d => true))
                 .ForMember(d => d.IssueInvoice, o => o.MapFrom(d => true));
 
@@ -41,7 +41,7 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.IssueInvoice, o => o.MapFrom(d => d.IssueInvoice))
                 .ForAllOtherMembers(o => o.Ignore());
 
-            CreateMap<BillingDealInvoiceUpdateRequest, BillingDeal>()
+            CreateMap<BillingDealInvoiceOnlyUpdateRequest, BillingDeal>()
                 .ForMember(d => d.DealDetails, o => o.MapFrom(d => d.DealDetails))
                 .ForMember(d => d.TransactionAmount, o => o.MapFrom(d => d.TransactionAmount))
                 .ForMember(d => d.BillingSchedule, o => o.MapFrom(d => d.BillingSchedule))

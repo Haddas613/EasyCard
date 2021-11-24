@@ -74,7 +74,6 @@ namespace MerchantProfileApi.Models.Billing
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [StringLength(50)]
-
         public string BillingDesktopRefNumber { get; set; }
 
         /// <summary>

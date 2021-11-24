@@ -17,5 +17,7 @@ namespace MerchantProfileApi.Models.Billing
         public CurrencyEnum Currency { get; set; }
 
         public string ExternalReference { get; set; }
+
+        public string BillingDesktopRefNumber { get; set; }
     }
 }
