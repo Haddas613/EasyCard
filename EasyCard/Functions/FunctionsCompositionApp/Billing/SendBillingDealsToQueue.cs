@@ -39,8 +39,7 @@ namespace FunctionsCompositionApp.Billing
             };
 
             bool fetch = true;
-            int totalBillingDeals = 0;
-            int totalTerminalsCount = 0;
+            int totalBillingDeals = 0, processedTerminalCount = 0, totalTerminalsCount = 0;
 
             while (fetch)
             {
@@ -66,10 +65,13 @@ namespace FunctionsCompositionApp.Billing
                 }
 
                 filter.Skip += filter.Take;
-                fetch = terminals.Data.Count() > 0;
+
+                var batchSize = terminals.Data.Count();
+                processedTerminalCount += batchSize;
+                fetch = batchSize > 0;
             }
 
-            log.LogInformation($"Send {totalBillingDeals} billing deals from {totalTerminalsCount} terminals billing queue messages");
+            log.LogInformation($"Send {totalBillingDeals} billing deals from {processedTerminalCount} out of total {totalTerminalsCount} terminals billing queue messages");
         }
     }
 }
