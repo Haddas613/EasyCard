@@ -16,8 +16,8 @@ export default {
   },
   async mounted () {
       let banks = await this.$api.dictionaries.getBanks();
-
-      if(this.data){
+      
+      if(this.data || this.data === 0 || this.data === "0"){
           let bank = this.lodash.find(banks, e => e.value == this.data);
           this.displayModel = bank ? bank.description : this.data;
       }else{
