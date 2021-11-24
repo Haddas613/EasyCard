@@ -58,5 +58,7 @@ namespace Merchants.Api.Models.Terminal
         public TerminalStatusEnum Status { get; set; }
 
         public DateTime? ActivityStartDate { get; set; }
+
+        public IEnumerable<FeatureEnum> EnabledFeatures { get; set; }
     }
 }
