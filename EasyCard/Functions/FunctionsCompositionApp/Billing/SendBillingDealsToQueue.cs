@@ -56,11 +56,7 @@ namespace FunctionsCompositionApp.Billing
                 {
                     totalTerminalsCount = terminals.NumberOfRecords;
                 }
-
-                filter.Skip += terminals.Data.Count();
-                fetch = terminals.NumberOfRecords > filter.Skip;
-
-                log.LogInformation($"Sending {terminals.Data.Count()} of {terminals.NumberOfRecords} terminals");
+                log.LogInformation($"Sending {filter.Skip} of {terminals.NumberOfRecords} terminals");
 
                 foreach (var terminal in terminals.Data)
                 {
@@ -68,6 +64,9 @@ namespace FunctionsCompositionApp.Billing
                     var response = await transactionsApiClient.SendBillingDealsToQueue(terminal.TerminalID);
                     totalBillingDeals += response.Count;
                 }
+
+                filter.Skip += filter.Take;
+                fetch = terminals.Data.Count() > 0;
             }
 
             log.LogInformation($"Send {totalBillingDeals} billing deals from {totalTerminalsCount} terminals billing queue messages");
