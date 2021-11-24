@@ -2,7 +2,7 @@
   "profiles": {
     "DesktopEasyCardConvertorECNG": {
       "commandName": "Project",
-      "commandLineArgs": "Q3fCQBtuRyVgimt26wYuxYLDAjhFnaVOhS0JDyJWzLXMbdvNqGOF7XYiIBJQBAndfSUhCJNAw4CR6GiHTLfdtw=="
+      "commandLineArgs": "C:\\Workspace\\easycardng\\EasyCard\\Integration\\Tools\\DesktopEasyCardConvertorECNG\\obj\\Debug\\netcoreapp3.1\\jsconfig.json"
     }
   }
 }

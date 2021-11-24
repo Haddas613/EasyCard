@@ -36,7 +36,8 @@ namespace DesktopEasyCardConvertorECNG
 
         static int Main(string[] args)
         {
-            AppConfig appConfig = JsonConvert.DeserializeObject<AppConfig>(File.ReadAllText(args[0]));
+            string content = File.ReadAllText(args[0]);
+            AppConfig appConfig = JsonConvert.DeserializeObject<AppConfig>(content);
 
             using var loggerFactory = LoggerFactory.Create(builder =>
             {
@@ -84,14 +85,7 @@ namespace DesktopEasyCardConvertorECNG
 
 
             return converter.ProcessMdbFile().Result;
-
         }
-
-
-
-
-
-
     }
 
 }

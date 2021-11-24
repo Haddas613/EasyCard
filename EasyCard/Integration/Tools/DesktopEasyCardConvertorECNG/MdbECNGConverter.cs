@@ -67,7 +67,7 @@ namespace DesktopEasyCardConvertorECNG
 
                 ecngTerminal = await SyncTerminalSettings();
 
-                RateVat = ecngTerminal.Settings.VATRate.GetValueOrDefault();
+                RateVat = ecngTerminal.Settings.VATRate.GetValueOrDefault() == 0 ? 0.17m : ecngTerminal.Settings.VATRate.GetValueOrDefault();
 
                 if (isRapidOneClient)
                 {
