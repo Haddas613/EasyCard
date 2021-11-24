@@ -1,6 +1,5 @@
 ﻿using Merchants.Api.Client.Models;
 using Merchants.Api.Models.Terminal;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shared.Api.Configuration;
 using Shared.Api.Models;

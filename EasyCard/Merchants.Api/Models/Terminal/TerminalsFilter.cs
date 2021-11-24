@@ -19,7 +19,7 @@ namespace Merchants.Api.Models.Terminal
 
         public string Label { get; set; }
 
-        public DateFilterTypeEnum DateType { get; set; }
+        //public DateFilterTypeEnum DateType { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? DateFrom { get; set; }

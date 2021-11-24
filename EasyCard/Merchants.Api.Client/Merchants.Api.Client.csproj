@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Merchants.Shared\Merchants.Shared.csproj" />
-    <ProjectReference Include="..\Shared.Api\Shared.Api.csproj" />
     <ProjectReference Include="..\Shared.Helpers\Shared.Helpers.csproj" />
   </ItemGroup>
 
