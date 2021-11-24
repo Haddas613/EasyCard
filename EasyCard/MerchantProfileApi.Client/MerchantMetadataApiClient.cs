@@ -42,6 +42,13 @@ namespace MerchantProfileApi.Client
             return consumers;
         }
 
+        public async Task<ConsumerResponse> GetConsumer(Guid consumerID)
+        {
+            var consumer = await webApiClient.Get<ConsumerResponse>(apiConfiguration.MerchantProfileURL, $"/api/consumers/{consumerID}", null, BuildHeaders);
+
+            return consumer;
+        }
+
         public async Task<OperationResponse> CreateConsumer(ConsumerRequest request)
         {
             var consumerResp = await webApiClient.Post<OperationResponse>(apiConfiguration.MerchantProfileURL, $"/api/consumers", request, BuildHeaders);
@@ -117,5 +124,7 @@ namespace MerchantProfileApi.Client
 
             return headers;
         }
+
+
     }
 }

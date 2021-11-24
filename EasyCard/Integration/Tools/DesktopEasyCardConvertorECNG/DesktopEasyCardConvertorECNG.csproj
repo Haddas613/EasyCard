@@ -11,6 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\Enums\**" />
+    <EmbeddedResource Remove="Models\Enums\**" />
+    <None Remove="Models\Enums\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Dapper" Version="2.0.35" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
@@ -26,10 +32,6 @@
     <ProjectReference Include="..\..\..\MerchantProfileApi.Client\MerchantProfileApi.Client.csproj" />
     <ProjectReference Include="..\..\..\Transactions.Api.Client\Transactions.Api.Client.csproj" />
     <ProjectReference Include="..\..\RapidOne\RapidOne.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\Enums\" />
   </ItemGroup>
 
 </Project>

@@ -87,7 +87,7 @@ namespace MerchantProfileApi.Models.Billing
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [Required(AllowEmptyStrings = false)]
         [StringLength(50)]
-        public string ConsumerPhone2 { get; set; }
+        public string ConsumerSecondPhone { get; set; }
 
         /// <summary>
         /// ID in BillingDesktop system

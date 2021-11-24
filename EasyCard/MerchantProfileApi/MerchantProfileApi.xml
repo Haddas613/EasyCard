@@ -342,7 +342,7 @@
             Target terminal
             </summary>
         </member>
-        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ConsumerPhone2">
+        <member name="P:MerchantProfileApi.Models.Billing.UpdateConsumerRequest.ConsumerSecondPhone">
             <summary>
             End-customer Phone
             </summary>
