@@ -68,11 +68,6 @@ namespace Merchants.Api.Extensions.Filtering
                 src = src.Where(t => t.Status != Shared.Enums.TerminalStatusEnum.Disabled);
             }
 
-            if (filter.HasFeature.HasValue)
-            {
-                src = src.Where(t => t.EnabledFeatures.Contains(filter.HasFeature.Value));
-            }
-
             if (!string.IsNullOrWhiteSpace(filter.AggregatorTerminalReference))
             {
                 src = src.Where(t => EF.Functions.Like(t.AggregatorTerminalReference, filter.AggregatorTerminalReference.UseWildCard(true)));
