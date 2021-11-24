@@ -11,7 +11,7 @@
             <param name="model"></param>
             <returns></returns>
         </member>
-        <member name="M:Transactions.Api.Controllers.BillingController.GetFilteredQueueBillingDeals">
+        <member name="M:Transactions.Api.Controllers.BillingController.GetFilteredQueueBillingDeals(Merchants.Business.Entities.Terminal.Terminal)">
             <summary>
             Retrieves billing deals for queue and sends credit card expired emails to customers if required.
             </summary>

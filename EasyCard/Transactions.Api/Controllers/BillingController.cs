@@ -473,13 +473,19 @@ namespace Transactions.Api.Controllers
         }
 
         [HttpPost]
-        [Route("due-billings")]
+        [Route("due-billings/{terminalID:guid}")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<ActionResult<SendBillingDealsToQueueResponse>> SendDueBillingDealsToQueue()
+        public async Task<ActionResult<SendBillingDealsToQueueResponse>> SendDueBillingDealsToQueue(Guid terminalID)
         {
-            var response = new SummariesResponse<Guid>();
+            var terminal = EnsureExists(await terminalsService.GetTerminal(terminalID));
 
-            var billings = await GetFilteredQueueBillingDeals();
+            if (terminal.Status == Merchants.Shared.Enums.TerminalStatusEnum.Disabled || !terminal.EnabledFeatures.Contains(Merchants.Shared.Enums.FeatureEnum.Billing))
+            {
+                return new SendBillingDealsToQueueResponse { Status = StatusEnum.Error,
+                    Message = $"Terminal does not meet requirements. Status: {terminal.Status} is incorrect or Billing feature is not enabled" };
+            }
+
+            var billings = await GetFilteredQueueBillingDeals(terminal);
 
             var numberOfRecords = billings.Count();
 
@@ -568,11 +574,12 @@ namespace Transactions.Api.Controllers
         /// Retrieves billing deals for queue and sends credit card expired emails to customers if required.
         /// </summary>
         /// <returns></returns>
-        private async Task<IEnumerable<BillingDealQueueEntry>> GetFilteredQueueBillingDeals()
+        private async Task<IEnumerable<BillingDealQueueEntry>> GetFilteredQueueBillingDeals(Terminal terminal)
         {
             var filter = new BillingDealsFilter
             {
-                Actual = true
+                Actual = true,
+                TerminalID = terminal.TerminalID
             };
 
             var allBillings = await billingDealService.GetBillingDeals()
@@ -589,32 +596,17 @@ namespace Transactions.Api.Controllers
                 return response;
             }
 
-            var allTerminalsID = allBillings.Select(t => t.TerminalID).Distinct().ToList();
-
-            // we need all terminals to mark billing inactive in case if card expired even if it is not automatic
-            var terminals = (await terminalsService.GetTerminals().Include(d => d.Merchant).Where(t => allTerminalsID.Contains(t.TerminalID)).ToListAsync())
-                .ToDictionary(k => k.TerminalID, v => v);
-
             var billingsToDeactivate = new List<Guid>();
 
             foreach (var billing in allBillings)
             {
-                if (!terminals.TryGetValue(billing.TerminalID, out var terminal))
-                {
-                    logger.LogError($"Could not send {nameof(SendBillingDealCreditCardTokenExpiredEmail)}. Terminal {billing.TerminalID} was not present in dictionary.");
-                    continue;
-                }
-
                 if (billing.CardExpiration?.Expired == true)
                 {
                     billingsToDeactivate.Add(billing.BillingDealID);
                 }
-                else
+                else if (terminal.BillingSettings.CreateRecurrentPaymentsAutomatically == true)
                 {
-                    if (terminal.EnabledFeatures?.Contains(Merchants.Shared.Enums.FeatureEnum.Billing) == true && terminal.BillingSettings.CreateRecurrentPaymentsAutomatically == true)
-                    {
-                        response.Add(new BillingDealQueueEntry { BillingDealID = billing.BillingDealID, TerminalID = billing.TerminalID });
-                    }
+                    response.Add(new BillingDealQueueEntry { BillingDealID = billing.BillingDealID, TerminalID = billing.TerminalID });
                 }
             }
 
@@ -625,7 +617,7 @@ namespace Transactions.Api.Controllers
             {
                 logger.LogInformation($"Billing Deal {dealEntity?.BillingDealID} credit card {CreditCardHelpers.GetCardBin(dealEntity?.CreditCardDetails.CardNumber)} has expired ({dealEntity?.CreditCardDetails.CardExpiration}). Setting it as inactive.");
 
-                await SendBillingDealCreditCardTokenExpiredEmail(dealEntity, terminals[dealEntity.TerminalID]);
+                await SendBillingDealCreditCardTokenExpiredEmail(dealEntity, terminal);
             }
 
             return response;

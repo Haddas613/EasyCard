@@ -27,7 +27,9 @@
     "ClientSecret": "yuwsCT8cbJVgw2W6"
   },
   "API": {
-    "TransactionsApiAddress": "https://ecng-transactions.azurewebsites.net"
+    "TransactionsApiAddress": "https://ecng-transactions.azurewebsites.net",
+    "MerchantsManagementApiAddress": "https://ecng-merchants.azurewebsites.net",
+    "MerchantProfileURL": "https://ecng-profile.azurewebsites.net"
   },
   "BankOfIsrael": {
     "URL": "https://www.boi.org.il/currency.xml"

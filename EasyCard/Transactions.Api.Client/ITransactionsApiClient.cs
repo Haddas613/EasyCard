@@ -27,7 +27,7 @@ namespace Transactions.Api.Client
 
         Task<IEnumerable<Guid>> GetNonTransmittedTransactionsTerminals();
 
-        Task<SendBillingDealsToQueueResponse> SendBillingDealsToQueue();
+        Task<SendBillingDealsToQueueResponse> SendBillingDealsToQueue(Guid terminalID);
 
         Task<OperationResponse> CancelPaymentRequest(Guid paymentRequestID);
 

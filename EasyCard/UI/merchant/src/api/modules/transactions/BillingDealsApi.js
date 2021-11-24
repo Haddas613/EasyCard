@@ -52,11 +52,11 @@ export default class BillingDealsApi {
     }
 
     async createBillingDealInvoice(data) {
-        return await this.base.post(this.billingUrl + '/invoice', data);
+        return await this.base.post(this.billingUrl + '/invoiceonlybilling', data);
     }
 
     async updateBillingDealInvoice(id, data) {
-        return await this.base.put(this.billingUrl + `/invoice/${id}`, data);
+        return await this.base.put(this.billingUrl + `/invoiceonlybilling/${id}`, data);
     }
 
     async switchBillingDeal(id, data) {

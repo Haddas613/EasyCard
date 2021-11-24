@@ -303,7 +303,7 @@ namespace IdentityServer
             services.AddScoped<IMerchantsApiClient, MerchantsApiClient>(serviceProvider =>
             {
                 var apiCfg = serviceProvider.GetRequiredService<IOptions<ApiSettings>>();
-                var logger = serviceProvider.GetRequiredService<ILogger<MerchantsApiClient>>();
+                //var logger = serviceProvider.GetRequiredService<ILogger<MerchantsApiClient>>();
 
                 var webApiClient = serviceProvider.GetRequiredService<IWebApiClient>();
                 var tokenService = serviceProvider.GetRequiredService<IWebApiClientTokenService>();
@@ -311,7 +311,7 @@ namespace IdentityServer
                 var context = serviceProvider.GetRequiredService<IHttpContextAccessor>();
                 var cultureFeature = context.HttpContext.Features.Get<IRequestCultureFeature>();
 
-                var merchantsApiClient = new MerchantsApiClient(webApiClient, logger, tokenService, apiCfg);
+                var merchantsApiClient = new MerchantsApiClient(webApiClient, /*logger,*/ tokenService, apiCfg);
 
                 merchantsApiClient.Headers.Add("Accept-Language", cultureFeature.RequestCulture.Culture.Name);
 

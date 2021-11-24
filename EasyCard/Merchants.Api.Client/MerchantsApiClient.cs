@@ -1,5 +1,5 @@
 ﻿using Merchants.Api.Client.Models;
-using Microsoft.Extensions.Logging;
+using Merchants.Api.Models.Terminal;
 using Microsoft.Extensions.Options;
 using Shared.Api.Configuration;
 using Shared.Api.Models;
@@ -19,16 +19,13 @@ namespace Merchants.Api.Client
     {
         private readonly IWebApiClient webApiClient;
         private readonly ApiSettings apiConfiguration;
-        private readonly ILogger logger;
         private readonly IWebApiClientTokenService tokenService;
 
-        public MerchantsApiClient(IWebApiClient webApiClient, 
-            ILogger<MerchantsApiClient> logger, 
+        public MerchantsApiClient(IWebApiClient webApiClient,
             IWebApiClientTokenService tokenService, 
             IOptions<ApiSettings> apiConfiguration)
         {
             this.webApiClient = webApiClient;
-            this.logger = logger;
             this.apiConfiguration = apiConfiguration.Value;
             this.tokenService = tokenService;
         }
@@ -43,7 +40,7 @@ namespace Merchants.Api.Client
             }
             catch (WebApiClientErrorException clientError)
             {
-                logger.LogError(clientError.Message);
+                //logger?.LogError(clientError.Message);
                 return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
             }
         }
@@ -56,7 +53,7 @@ namespace Merchants.Api.Client
             }
             catch (WebApiClientErrorException clientError)
             {
-                logger.LogError(clientError.Message);
+                //logger?.LogError(clientError.Message);
                 return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
             }
         }
@@ -69,7 +66,7 @@ namespace Merchants.Api.Client
             }
             catch (WebApiClientErrorException clientError)
             {
-                logger.LogError(clientError.Message);
+                //logger?.LogError(clientError.Message);
                 return new SummariesResponse<PlanSummary>();
             }
         }
@@ -82,7 +79,7 @@ namespace Merchants.Api.Client
             }
             catch (WebApiClientErrorException clientError)
             {
-                logger.LogError(clientError.Message);
+                //logger?.LogError(clientError.Message);
                 return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
             }
         }
@@ -95,7 +92,7 @@ namespace Merchants.Api.Client
             }
             catch (WebApiClientErrorException clientError)
             {
-                logger.LogError(clientError.Message);
+                //logger?.LogError(clientError.Message);
                 return clientError.TryConvert(new OperationResponse { Message = clientError.Message });
             }
         }
@@ -122,8 +119,21 @@ namespace Merchants.Api.Client
             }
             catch (WebApiClientErrorException clientError)
             {
-                logger.LogError(clientError.Message);
+                //logger?.LogError(clientError.Message);
                 return new OperationResponse("Error", SharedApi.Models.Enums.StatusEnum.Error);
+            }
+        }
+
+        public async Task<SummariesResponse<TerminalSummary>> GetTerminals(TerminalsFilter filter)
+        {
+            try
+            {
+                return await webApiClient.Get<SummariesResponse<TerminalSummary>>(apiConfiguration.MerchantsManagementApiAddress, "api/terminals", filter, BuildHeaders);
+            }
+            catch (WebApiClientErrorException clientError)
+            {
+                //logger?.LogError(clientError.Message);
+                return new SummariesResponse<TerminalSummary>();
             }
         }
     }
