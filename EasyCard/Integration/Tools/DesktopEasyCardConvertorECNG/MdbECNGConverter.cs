@@ -41,6 +41,7 @@ namespace DesktopEasyCardConvertorECNG
         private DataFromMDBFile dataFromFile;
         private Dictionary<string, ItemSummary> ecngItems;
         private decimal RateVat = 0;
+        private ItemCategoryDto defaultRapidItemCategory;
 
         public MdbECNGConverter(ILogger logger, AppConfig config, IMapper mapper, RapidOneService rapidOneService, TransactionsApiClient transactionsService, MerchantMetadataApiClient metadataMerchantService)
         {
@@ -71,10 +72,13 @@ namespace DesktopEasyCardConvertorECNG
 
                 if (isRapidOneClient)
                 {
+                    defaultRapidItemCategory = await SyncDefaultRapidItemCategory();
                     rapidOneItems = await SyncRapidOneItems(dataFromFile.Products);
                 }
 
                 ecngItems = await SyncECNGItems();
+
+                await SyncECNGCustomers();
 
                 return 0;
             }
@@ -152,6 +156,24 @@ namespace DesktopEasyCardConvertorECNG
             return await metadataMerchantService.GetTerminal(terminalRef.TerminalID);
         }
 
+        private async Task<ItemCategoryDto> SyncDefaultRapidItemCategory()
+        {
+            var itemCategory = (await rapidOneService.GetItemCategories())?.FirstOrDefault(d => d.Name == config.RapidItemCategoryName);
+
+            if (itemCategory == null)
+            {
+                itemCategory = new ItemCategoryDto
+                {
+                    Active = 1,
+                    Name = config.RapidItemCategoryName
+                };
+
+                itemCategory = (await rapidOneService.CreateItemCategory(itemCategory)); // TODO: process error case
+            }
+
+            return itemCategory;
+        }
+
         private async Task<Dictionary<string, ItemWithPricesDto>> SyncRapidOneItems(IEnumerable<Product> products)
         {
             var allR1Items = (await rapidOneService.GetItems()).ToDictionary(d => d.Name);
@@ -163,6 +185,9 @@ namespace DesktopEasyCardConvertorECNG
                 {
                     var newR1Item = new RapidOne.Models.ItemDto() {
                         Name = item.RivName,
+                        Active = 1,
+                        ManufacturerCode = -1,
+                        CategoryCode = (defaultRapidItemCategory?.Code).GetValueOrDefault(),
                         Prices = new[] { new RapidOne.Models.ItemPriceDto() { 
                             Price = item.RivSum
                             }
@@ -220,7 +245,8 @@ namespace DesktopEasyCardConvertorECNG
                 List<Item> items = new List<Item>();
                 foreach (var itemInFile in itemsPerCustomerInFile)
                 {
-                    var item = metadataMerchantService.GetItems(new ItemsFilter() { BillingDesktopRefNumber = itemInFile.RivID });
+                    var ecngItemExists = ecngItems.TryGetValue(itemInFile.RivID, out var item);
+                    
                     decimal amount = Math.Round(itemInFile.ProdSum * itemInFile.DealCount, 2, MidpointRounding.AwayFromZero);
                     decimal netAmount = dataFromFile.BillingSetting.AddMaam ? amount : Math.Round(((amount) / 1m + RateVat), 2, MidpointRounding.AwayFromZero);
                     items.Add(new Item()
@@ -231,7 +257,7 @@ namespace DesktopEasyCardConvertorECNG
                         Quantity = itemInFile.DealCount,
                         //   SKU = itemInFile.RivCode,/* from rapid ifit's rapid todo to do ,*/
                         Amount = amount,
-                        ItemID = item.Result.Data.GetEnumerator().Current.ItemID,
+                        ItemID = item?.ItemID,
                         NetAmount = netAmount,
                         VAT = Math.Round(netAmount * RateVat, 2, MidpointRounding.AwayFromZero),
                         VATRate = RateVat

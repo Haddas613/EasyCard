@@ -17,6 +17,8 @@ namespace DesktopEasyCardConvertorECNG.Models
 
         public string RapidAPIKey { get; set; }
 
+        public string RapidItemCategoryName { get; set; }
+
         public string ECNGAPIKey { get; set; }
 
         public Environment ECNGEnvironment { get; set; }
