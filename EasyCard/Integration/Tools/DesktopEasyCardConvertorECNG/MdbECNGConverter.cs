@@ -269,7 +269,7 @@ namespace DesktopEasyCardConvertorECNG
         private async Task<Dictionary<string, ItemSummary>> SyncECNGItems()
         {
             var allEcngSrvItems = (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = Shared.Helpers.Models.ShowDeletedEnum.All, Origin = config.Origin })).Data;
-            var allEcngItems = allEcngSrvItems.Where(d => string.IsNullOrWhiteSpace(d.BillingDesktopRefNumber)).GroupBy(d => d.BillingDesktopRefNumber).Select(x => x.FirstOrDefault()).ToDictionary(d => d.BillingDesktopRefNumber);
+            var allEcngItems = allEcngSrvItems.Where(d => !string.IsNullOrWhiteSpace(d.BillingDesktopRefNumber)).GroupBy(d => d.BillingDesktopRefNumber).Select(x => x.FirstOrDefault()).ToDictionary(d => d.BillingDesktopRefNumber);
 
             logger.LogInformation($"Loaded ECNG Items: {allEcngItems.Count} ({allEcngSrvItems.Count()})");
 
@@ -303,7 +303,7 @@ namespace DesktopEasyCardConvertorECNG
                 }
             }
 
-            return (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = Shared.Helpers.Models.ShowDeletedEnum.All, Origin = config.Origin })).Data.Where(d => string.IsNullOrWhiteSpace(d.ExternalReference)).GroupBy(d => d.ExternalReference).Select(x => x.FirstOrDefault()).ToDictionary(d => d.ExternalReference);
+            return (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = Shared.Helpers.Models.ShowDeletedEnum.All, Origin = config.Origin })).Data.Where(d => string.IsNullOrWhiteSpace(d.BillingDesktopRefNumber)).GroupBy(d => d.BillingDesktopRefNumber).Select(x => x.FirstOrDefault()).ToDictionary(d => d.BillingDesktopRefNumber);
         }
 
         private async Task SyncECNGCustomers()
@@ -382,21 +382,20 @@ namespace DesktopEasyCardConvertorECNG
             Guid? consumerID = (await metadataMerchantService.GetConsumers(cf))?.Data.FirstOrDefault()?.ConsumerID;
             if (consumerID.HasValue)
             {
-                var resCreateCustomer = await metadataMerchantService.UpdateConsumer(new MerchantProfileApi.Models.Billing.UpdateConsumerRequest
-                {
-                    Active = customerInFile.Active,
-                    BankDetails = bankDetails,
-                    BillingDesktopRefNumber = customerInFile.DealID,
-                    ConsumerAddress = consumerAddress,
-                    ConsumerName = customerName,
-                    ConsumerNationalID = customerInFile.ClientCode,
-                    ConsumerPhone = customerInFile.Phone1,
-                    ConsumerID = consumerID.Value,
-                    ConsumerSecondPhone = customerInFile.Phone2,
-                    ExternalReference = externalReference,
-                    Origin = config.Origin,
-                    TerminalID = ecngTerminal.TerminalID
-                });
+                var existingConsumer = await metadataMerchantService.GetConsumer(consumerID.Value);
+
+                var request = mapper.Map<UpdateConsumerRequest>(existingConsumer);
+
+                request.Active = customerInFile.Active;
+                request.BankDetails = bankDetails;
+                request.ConsumerAddress = consumerAddress;
+                request.ConsumerName = customerName;
+                request.ConsumerNationalID = customerInFile.ClientCode;
+                request.ConsumerPhone = customerInFile.Phone1;
+                request.ConsumerSecondPhone = customerInFile.Phone2;
+                request.ExternalReference = externalReference;
+
+                var resUpdateCustomer = await metadataMerchantService.UpdateConsumer(request);
 
                 logger.LogInformation($"Updated ECNG customer {customerName} ({consumerID} - {externalReference})");
             }
@@ -425,23 +424,45 @@ namespace DesktopEasyCardConvertorECNG
 
         }
 
-        // TODO: check if token for this card already exists
+        // TODO: do not create token for expired card
         private async Task<Guid?> CreateTokenPerCustomer(Customer customerInFile, ConsumerResponse ecngCustomer)
         {
+            var fltr = new Transactions.Api.Models.Tokens.CreditCardTokenFilter
+            {
+                ConsumerID = ecngCustomer.ConsumerID,
+                CardNumber = CreditCardHelpers.GetCardDigits(customerInFile.CardNumber)
+            };
+
+            var existingToken = (await transactionsService.GetTokens(fltr))?.Data?.FirstOrDefault();
+
+            if (existingToken != null)
+            {
+                logger.LogInformation($"Token already exist {fltr.CardNumber} ({existingToken.CreditCardTokenID}) for {ecngCustomer.ConsumerName} ({ecngCustomer.ConsumerID})");
+
+                return existingToken.CreditCardTokenID;
+            }
+
             if (!String.IsNullOrEmpty(customerInFile.CardNumber))
             {
+                var expiration = ConvertCardDateToMonthYearcs.GetMonthYearFromCardDate(customerInFile.CardDate);
+
+                if (expiration.Expired)
+                {
+                    logger.LogError($"Card expired {fltr.CardNumber} for { ecngCustomer.ConsumerName} ({ ecngCustomer.ConsumerID})");
+                }
+
                 var request = new Transactions.Api.Models.Tokens.TokenRequest()
                 {
                     TerminalID = ecngTerminal.TerminalID,
                     ConsumerID = ecngCustomer.ConsumerID,
                     CardNumber = customerInFile.CardNumber,
-                    CardExpiration = ConvertCardDateToMonthYearcs.GetMonthYearFromCardDate(customerInFile.CardDate),
+                    CardExpiration = expiration,
                     CardOwnerName = string.Format("{0} {1}", customerInFile.LastName, customerInFile.FirstName),
                 };
 
                 var res = (await transactionsService.CreateToken(request)).EntityUID;
 
-                logger.LogInformation($"Created token {res} for {request.CardOwnerName} ({ecngCustomer.ConsumerID})");
+                logger.LogInformation($"Created token {fltr.CardNumber} ({res}) for {request.CardOwnerName} ({ecngCustomer.ConsumerID})");
 
                 return res;
             }
@@ -469,6 +490,21 @@ namespace DesktopEasyCardConvertorECNG
             if (paymentType != PaymentTypeEnum.Card)
             {
                 logger.LogError($"Skipped TODO: payment type {paymentType} billing for {customerInFile.DealID}");
+                return;
+            }
+
+            var existingBilling = (await transactionsService.GetBillingDeals(new Transactions.Api.Models.Billing.BillingDealsFilter 
+            { 
+                 PaymentType = paymentType,
+                 CreditCardTokenID = TokenCreditCard,
+                 TerminalID = ecngTerminal.TerminalID,
+                 Origin = config.Origin,
+                 DealReference = customerInFile.DealID
+            }))?.Data?.FirstOrDefault();
+
+            if (existingBilling != null)
+            {
+                logger.LogInformation($"Skipped creating billing for {customerInFile.DealID} because it is exist already");
                 return;
             }
 
@@ -503,7 +539,8 @@ namespace DesktopEasyCardConvertorECNG
 
                     DealDescription = "Export from MDB", // TODO
                     DealReference = customerInFile.DealID
-                }
+                },
+                Origin = config.Origin
             };
 
             var res = await transactionsService.CreateBillingDeal(request);

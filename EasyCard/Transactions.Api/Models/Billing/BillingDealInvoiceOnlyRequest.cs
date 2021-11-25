@@ -66,6 +66,9 @@ namespace Transactions.Api.Models.Billing
         /// </summary>
         public IEnumerable<PaymentDetails> PaymentDetails { get; set; }
 
+        [StringLength(50)]
+        public string Origin { get; set; }
+
         /// <summary>
         /// If VATRate, NetTotal and VatTotal properties were not specified, this method should be called
         /// </summary>

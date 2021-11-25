@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Shared.Api.Models.Binding;
+using Shared.Api.Swagger;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.PaymentDetails;
@@ -85,7 +86,7 @@ namespace MerchantProfileApi.Models.Billing
         /// End-customer Phone
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
-        [Required(AllowEmptyStrings = false)]
+        [SwaggerExclude]
         [StringLength(50)]
         public string ConsumerSecondPhone { get; set; }
 
@@ -94,7 +95,7 @@ namespace MerchantProfileApi.Models.Billing
         /// </summary>
         [JsonConverter(typeof(TrimmingJsonConverter))]
         [StringLength(50)]
-
+        [SwaggerExclude]
         public string BillingDesktopRefNumber { get; set; }
 
         public bool Active { get; set; } = true;
