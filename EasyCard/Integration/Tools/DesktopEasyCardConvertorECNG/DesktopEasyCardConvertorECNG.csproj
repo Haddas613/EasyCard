@@ -34,4 +34,10 @@
     <ProjectReference Include="..\..\RapidOne\RapidOne.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ExampleConfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

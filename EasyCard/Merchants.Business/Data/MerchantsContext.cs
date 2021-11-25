@@ -369,6 +369,8 @@ namespace Merchants.Business.Data
 
                 builder.Property(b => b.Price).HasColumnType("decimal(19,4)").IsRequired();
 
+                builder.Property(b => b.Origin).IsRequired(false).HasMaxLength(50).IsUnicode(true);
+
                 builder.HasIndex(d => d.MerchantID);
             }
         }

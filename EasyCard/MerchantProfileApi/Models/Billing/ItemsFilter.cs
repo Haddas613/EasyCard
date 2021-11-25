@@ -26,5 +26,7 @@ namespace MerchantProfileApi.Models.Billing
         [SwaggerExclude]
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string BillingDesktopRefNumber { get; set; }
+
+        public string Origin { get; set; }
     }
 }

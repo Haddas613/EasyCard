@@ -8,6 +8,7 @@ namespace DesktopEasyCardConvertorECNG
     {
         QA = 0,
         STAGE = 1,
-        LIVE = 2
+        LIVE = 2,
+        DEV = 3
     }
 }

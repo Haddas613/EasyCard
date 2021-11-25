@@ -27,9 +27,19 @@ namespace DesktopEasyCardConvertorECNG.RapidOneClient
             return await rapidOneService.GetItems(config.RapidBaseUrl, config.RapidAPIKey);
         }
 
-        public async Task CreateItem(ItemDto itemDto)
+        public async Task<ItemDto> CreateItem(ItemDto itemDto)
         {
-            await rapidOneService.CreateItem(config.RapidBaseUrl, config.RapidAPIKey, itemDto);
+            return await rapidOneService.CreateItem(config.RapidBaseUrl, config.RapidAPIKey, itemDto);
+        }
+
+        public async Task<ItemCategoryDto> CreateItemCategory(ItemCategoryDto model)
+        {
+            return await rapidOneService.CreateItemCategory(config.RapidBaseUrl, config.RapidAPIKey, model);
+        }
+
+        public async Task<IEnumerable<ItemCategoryDto>> GetItemCategories()
+        {
+            return await rapidOneService.GetItemCategories(config.RapidBaseUrl, config.RapidAPIKey);
         }
     }
 }
