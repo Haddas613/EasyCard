@@ -268,7 +268,7 @@ namespace DesktopEasyCardConvertorECNG
 
         private async Task<Dictionary<string, ItemSummary>> SyncECNGItems()
         {
-            var allEcngSrvItems = (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = true, Origin = config.Origin })).Data;
+            var allEcngSrvItems = (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = Shared.Helpers.Models.ShowDeletedEnum.All, Origin = config.Origin })).Data;
             var allEcngItems = allEcngSrvItems.Where(d => string.IsNullOrWhiteSpace(d.BillingDesktopRefNumber)).GroupBy(d => d.BillingDesktopRefNumber).Select(x => x.FirstOrDefault()).ToDictionary(d => d.BillingDesktopRefNumber);
 
             logger.LogInformation($"Loaded ECNG Items: {allEcngItems.Count} ({allEcngSrvItems.Count()})");
@@ -303,7 +303,7 @@ namespace DesktopEasyCardConvertorECNG
                 }
             }
 
-            return (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = true, Origin = config.Origin })).Data.Where(d => string.IsNullOrWhiteSpace(d.ExternalReference)).GroupBy(d => d.ExternalReference).Select(x => x.FirstOrDefault()).ToDictionary(d => d.ExternalReference);
+            return (await metadataMerchantService.GetItems(new ItemsFilter { ShowDeleted = Shared.Helpers.Models.ShowDeletedEnum.All, Origin = config.Origin })).Data.Where(d => string.IsNullOrWhiteSpace(d.ExternalReference)).GroupBy(d => d.ExternalReference).Select(x => x.FirstOrDefault()).ToDictionary(d => d.ExternalReference);
         }
 
         private async Task SyncECNGCustomers()
@@ -375,7 +375,7 @@ namespace DesktopEasyCardConvertorECNG
             ConsumersFilter cf = new ConsumersFilter
             {
                 BillingDesktopRefNumber = customerInFile.DealID,
-                ShowDeleted = true,
+                ShowDeleted = Shared.Helpers.Models.ShowDeletedEnum.All,
                 Origin = config.Origin
             };
 

@@ -13,11 +13,11 @@ namespace MerchantProfileApi.Extensions
     {
         public static IQueryable<Consumer> Filter(this IQueryable<Consumer> src, ConsumersFilter filter)
         {
-            if (filter.ShowDeleted)
+            if (filter.ShowDeleted == Shared.Helpers.Models.ShowDeletedEnum.OnlyDeleted)
             {
                 src = src.Where(d => d.Active == false);
             }
-            else
+            else if (filter.ShowDeleted == Shared.Helpers.Models.ShowDeletedEnum.OnlyActive)
             {
                 src = src.Where(d => d.Active == true);
             }

@@ -49,6 +49,16 @@ namespace DesktopEasyCardConvertorECNG
                     TransactionApiAddress = "https://api.e-c.co.il",
                     CheckoutAddress = "https://checkout.e-c.co.il"
                 }
+            },
+            {
+                Environment.DEV,
+                new Configuration
+                {
+                    IdentityApiAddress = "https://ecng-identity.azurewebsites.net",
+                    MetadataApiAddress = "https://localhost:44339",
+                    TransactionApiAddress = "https://localhost:44322",
+                    CheckoutAddress = "https://ecng-checkout.azurewebsites.net"
+                }
             }
         };
 
