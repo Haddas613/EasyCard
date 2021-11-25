@@ -12,15 +12,15 @@
         </v-col>
         <v-col cols="6" md="3" class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('VATAmount')}}</p>
-          <p>{{model.vatTotal | currency(currency || model.$currency)}}</p>
+          <p>{{model.vatTotal | currency(currency || model.$currency || model.currency)}}</p>
         </v-col>
         <v-col cols="6" md="3" class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('NetAmount')}}</p>
-          <p>{{model.netTotal | currency(currency || model.$currency)}}</p>
+          <p>{{model.netTotal | currency(currency || model.$currency || model.currency)}}</p>
         </v-col>
         <v-col cols="6" md="3" class="info-block">
           <p class="caption ecgray--text text--darken-2">{{$t('Amount')}}</p>
-          <p>{{model[amountKey] | currency(currency || model.$currency)}}</p>
+          <p>{{model[amountKey] | currency(currency || model.$currency || model.currency)}}</p>
         </v-col>
       </v-row>
     </v-card-text>
@@ -43,7 +43,8 @@ export default {
       default: "AmountDetails"
     },
     currency: {
-      type: String
+      type: String,
+      default: null
     }
   }
 };
