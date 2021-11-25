@@ -47,6 +47,8 @@ namespace Merchants.Business.Entities.Billing
 
         public string BillingDesktopRefNumber { get; set; }
 
+        public string Origin { get; set; }
+
         public Guid GetID()
         {
             return ItemID;

@@ -12,11 +12,11 @@ namespace MerchantProfileApi.Extensions
     {
         public static IQueryable<Item> Filter(this IQueryable<Item> src, ItemsFilter filter)
         {
-            if (filter.ShowDeleted)
+            if (filter.ShowDeleted == Shared.Helpers.Models.ShowDeletedEnum.OnlyDeleted)
             {
                 src = src.Where(d => d.Active == false);
             }
-            else
+            else if (filter.ShowDeleted == Shared.Helpers.Models.ShowDeletedEnum.OnlyActive)
             {
                 src = src.Where(d => d.Active == true);
             }
@@ -35,6 +35,11 @@ namespace MerchantProfileApi.Extensions
             if (!string.IsNullOrWhiteSpace(filter.BillingDesktopRefNumber))
             {
                 src = src.Where(d => d.BillingDesktopRefNumber == filter.BillingDesktopRefNumber);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Origin))
+            {
+                src = src.Where(c => c.Origin == filter.Origin);
             }
 
             return src;
