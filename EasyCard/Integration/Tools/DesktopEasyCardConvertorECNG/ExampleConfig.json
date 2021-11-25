@@ -1,0 +1,9 @@
+{
+  "RapidBaseUrl": "https://revitalc.rapid-image.net",
+  "RapidAPIKey": "4DZjImwIrlEcKa5PEhSNY4fYRHlfB5zaWlBM5Ls0a5JwhULGmh77CWQ4yendWlpiXaC5Mb6u8DUKev009yovNg==",
+  "RapidItemCategoryName": "Test Mdb",
+  "Origin": "https://revitalc.rapid-image.net",
+  "ECNGAPIKey": "KK3rHZWqwuB+LYnR8sXMohMg3nW0laJNkerp7AMJzfimsNeZ+Rl/kB06qtjSY59Zr/RXlVJJ5udZKjvXeb6Fhw==",
+  "ECNGEnvironment": "QA",
+  "FullPathToMDBFile": "c:\\Users\\vvs\\Downloads\\EasyCardBilling.mdb"
+}
