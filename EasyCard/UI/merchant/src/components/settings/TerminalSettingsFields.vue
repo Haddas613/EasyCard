@@ -5,7 +5,7 @@
         <v-text-field
           v-model="model.label"
           :counter="50"
-          :rules="[vr.primitives.maxLength(50)]"
+          :rules="[vr.primitives.stringLength(3, 50)]"
           :label="$t('Label')"
           outlined
           required

@@ -15,7 +15,7 @@ namespace MerchantProfileApi.Models.Terminal
         public Guid? TerminalID { get; set; }
 
         [Required(AllowEmptyStrings = false)]
-        [StringLength(50, MinimumLength = 6)]
+        [StringLength(50, MinimumLength = 3)]
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string Label { get; set; }
 

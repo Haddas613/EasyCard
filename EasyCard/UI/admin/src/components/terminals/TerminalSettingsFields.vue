@@ -11,7 +11,7 @@
             <v-text-field
               v-model="model.label"
               :counter="50"
-              :rules="[vr.primitives.required, vr.primitives.maxLength(50)]"
+              :rules="[vr.primitives.required, vr.primitives.stringLength(3, 50)]"
               :label="$t('Label')"
               required
             ></v-text-field>

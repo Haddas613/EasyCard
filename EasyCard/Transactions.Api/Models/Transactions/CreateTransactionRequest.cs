@@ -145,7 +145,7 @@ namespace Transactions.Api.Models.Transactions
 
         public void Calculate()
         {
-            if (NetTotal == 0)
+            if (NetTotal.GetValueOrDefault(0) == 0)
             {
                 NetTotal = Math.Round(TransactionAmount / (1m + VATRate.GetValueOrDefault(0)), 2, MidpointRounding.AwayFromZero);
                 VATTotal = TransactionAmount - NetTotal;
