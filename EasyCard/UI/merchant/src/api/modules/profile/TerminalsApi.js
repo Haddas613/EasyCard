@@ -8,7 +8,7 @@ export default class TerminalsApi {
     async getTerminals(params, opts) {
         opts = {
             refreshCache: false,
-            showDeleted: false,
+            showDeleted: 0,
             ...opts
         };
         

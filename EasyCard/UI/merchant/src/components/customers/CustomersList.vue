@@ -169,7 +169,7 @@ export default {
         search: searchApply ? this.search : "",
         ...this.paging,
         terminalID: terminalID,
-        showDeleted: this.allowShowDeleted ? this.showDeletedCustomers : false
+        showDeleted: this.allowShowDeleted ? this.$showDeleted(this.showDeletedCustomers) : false
       });
       this.customers = customers.data;
       this.totalAmount = customers.numberOfRecords;
