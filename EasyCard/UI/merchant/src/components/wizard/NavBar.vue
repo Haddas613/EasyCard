@@ -138,8 +138,8 @@ export default {
       get: function() {
         return this.terminalStore;
       },
-      set: function(nv) {
-        this.$store.dispatch("settings/changeTerminal", {
+      set: async function(nv) {
+        await this.$store.dispatch("settings/changeTerminal", {
           api: this.$api,
           newTerminal: nv
         });

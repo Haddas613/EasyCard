@@ -297,6 +297,8 @@ export default {
         this.model.creditCardToken = null;
         this.$refs.ccSecureDetails.resetToken();
       }
+      this.model.dealDetails.dealDescription = this.terminal.settings.defaultChargeDescription;
+      this.model.vatRate = this.terminal.settings.vatExempt ? 0 : this.terminal.settings.vatRate;
     },
     processCustomer(data) {
       this.customer = data;

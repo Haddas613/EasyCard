@@ -37,7 +37,7 @@
             <v-row no-gutters align="center">
               <v-col cols="3" class="text-start">{{$t("VAT")}}</v-col>
               <v-col cols="3" class="text-initial">
-                <v-switch class="pt-0 mt-0" v-model="vatExempt" dense hide-details>
+                <v-switch class="pt-0 mt-0" v-model="vatExempt" :disabled="!model.vatRate" dense hide-details>
                   <template v-slot:label>
                     <small>{{$t('VATExempt')}}</small>
                   </template>
@@ -138,7 +138,7 @@ export default {
     if(this.model.vatRate === null){
       this.model.vatRate = this.terminalStore.settings.vatExempt ? null : this.terminalStore.settings.vatRate;
     }
-    //this.vatExempt = this.model.vatRate === 0;
+    this.vatExempt = !this.model.vatRate;
     //itemPricingService.total.calculate(this.model, { vatRate: this.model.vatRate});
   },
   computed: {

@@ -94,7 +94,7 @@
           <v-col cols="12" md="2">
             <v-text-field
               class="w99"
-              :value="(model.settings.vatRate * 100).toFixed(0)"
+              :value="model.settings.vatExempt ? 0 : (model.settings.vatRateGlobal * 100).toFixed(0)"
               :label="$t('VATPercent')"
               :rules="[vr.primitives.required, vr.primitives.inRange(0, 99), vr.primitives.precision(0)]"
               required
