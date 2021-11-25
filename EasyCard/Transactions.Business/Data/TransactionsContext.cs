@@ -447,6 +447,8 @@ namespace Transactions.Business.Data
                 builder.Property(b => b.PaymentType).IsRequired();
 
                 builder.Property(b => b.LastErrorCorrelationID).IsRequired(false).HasMaxLength(50).IsUnicode(false);
+
+                builder.Property(b => b.Origin).IsRequired(false).HasMaxLength(50).IsUnicode(true);
             }
         }
 

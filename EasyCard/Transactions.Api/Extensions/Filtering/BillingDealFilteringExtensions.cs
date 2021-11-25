@@ -117,6 +117,11 @@ namespace Transactions.Api.Extensions.Filtering
                 src = src.Where(t => t.DealDetails.DealReference == filter.DealReference);
             }
 
+            if (!string.IsNullOrWhiteSpace(filter.Origin))
+            {
+                src = src.Where(t => t.Origin == filter.Origin);
+            }
+
             return src;
         }
 

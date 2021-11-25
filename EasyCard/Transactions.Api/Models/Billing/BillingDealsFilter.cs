@@ -68,5 +68,7 @@ namespace Transactions.Api.Models.Billing
         public string DealReference { get; set; }
 
         public bool InvoiceOnly { get; set; }
+
+        public string Origin { get; set; }
     }
 }

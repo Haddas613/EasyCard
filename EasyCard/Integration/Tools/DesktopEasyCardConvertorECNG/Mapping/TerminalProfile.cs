@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MerchantProfileApi.Models.Billing;
 using MerchantProfileApi.Models.Terminal;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace DesktopEasyCardConvertorECNG.Mapping
         internal void RegisterMappings()
         {
             RegisterTerminalMappings();
+
+            RegisterConsumerMappings();
         }
 
         private void RegisterTerminalMappings()
@@ -25,6 +28,11 @@ namespace DesktopEasyCardConvertorECNG.Mapping
             CreateMap<Merchants.Shared.Models.TerminalInvoiceSettings, TerminalInvoiceSettingsUpdate>();
             CreateMap<Merchants.Shared.Models.TerminalCheckoutSettings, TerminalCheckoutSettingsUpdate>();
             CreateMap<Merchants.Shared.Models.TerminalPaymentRequestSettings, TerminalPaymentRequestSettingsUpdate>();
+        }
+
+        private void RegisterConsumerMappings()
+        {
+            CreateMap<ConsumerResponse, UpdateConsumerRequest>();
         }
     }
 }
