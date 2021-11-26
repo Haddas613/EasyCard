@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Shared.Api.Swagger;
 using Shared.Helpers;
 using Shared.Integration.Models;
 using Shared.Integration.Models.Invoicing;
@@ -116,5 +117,17 @@ namespace Transactions.Api.Models.Transactions
         public string ConnectionID { get; set; }
 
         public string OKNumber { get; set; }
+
+        /// <summary>
+        /// For Bit Processor only
+        /// </summary>
+        [SwaggerExclude]
+        public string BitPaymentInitiationId { get; set; }
+
+        /// <summary>
+        /// For Bit Processor only
+        /// </summary>
+        [SwaggerExclude]
+        public string BitTransactionSerialId { get; set; }
     }
 }

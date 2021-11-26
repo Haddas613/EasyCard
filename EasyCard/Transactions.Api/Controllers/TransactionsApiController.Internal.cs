@@ -231,6 +231,8 @@ namespace Transactions.Api.Controllers
             transaction.ProcessorID = terminalProcessor.ExternalSystemID;
 
             var aggregator = aggregatorResolver.GetAggregator(terminalAggregator);
+
+            //TODO: if Bit parameters present, do not user resolver, use BitProcessor directly
             var processor = processorResolver.GetProcessor(terminalProcessor);
             IProcessor pinpadProcessor = null;
             if (pinpadDeal)

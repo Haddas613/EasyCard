@@ -122,5 +122,15 @@ namespace Shared.Integration.Models
         public Processor.ShvaTransactionDetails LastDealShvaDetails { get; set; }
 
         public string OKNumber { get; set; }
+
+        /// <summary>
+        /// For Bit Processor only
+        /// </summary>
+        public string BitPaymentInitiationId { get; set; }
+
+        /// <summary>
+        /// For Bit Processor only
+        /// </summary>
+        public string BitTransactionSerialId { get; set; }
     }
 }

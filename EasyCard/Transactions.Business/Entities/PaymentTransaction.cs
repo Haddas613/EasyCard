@@ -316,5 +316,15 @@ namespace Transactions.Business.Entities
         }
 
         public JObject Extension { get; set; }
+
+        /// <summary>
+        /// Resource ID created by bit backend. ID represents the payment initiation. Used for Get /Delete, etc.
+        /// </summary>
+        public string BitPaymentInitiationId { get; set; }
+
+        /// <summary>
+        /// Additional UUID used for authentication. When using web client application this ID, along with paymentInitiationId, should be sent upon opening bit payment page (openBitPaymentPage).
+        /// </summary>
+        public string BitTransactionSerialId { get; set; }
     }
 }
