@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.Cosmos.Table;
+﻿using Azure.Data.Tables;
 using Newtonsoft.Json;
 using Shared.Helpers;
 using System;
@@ -12,52 +12,38 @@ namespace Transactions.Business.Services
     public class PaymentIntentService : IPaymentIntentService
     {
         private const string PartitionKey = "1";
-        private readonly CloudTable table;
+        private readonly TableClient table;
 
         public PaymentIntentService(string storageConnectionString, string tableName)
         {
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConnectionString);
-
-            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
-
-            table = tableClient.GetTableReference(tableName);
+            table = new TableClient(storageConnectionString, tableName);
 
             table.CreateIfNotExists();
         }
 
         public async Task DeletePaymentIntent(Guid paymentIntentID)
         {
-            TableOperation getOperation = TableOperation.Retrieve<PaymentIntent>(PartitionKey, paymentIntentID.ToString());
+            // TODO: do we need to throw exception here ?
 
-            var res = await table.ExecuteAsync(getOperation);
+            var paymentIntent = (await table.GetEntityAsync<PaymentIntent>(PartitionKey, paymentIntentID.ToString())).Value;
 
-            var paymentIntent = res.Result as PaymentIntent;
-
-            if (paymentIntent == null)
+            if (paymentIntent != null)
             {
-                throw new EntityNotFoundException("Payment Intent not found", "PaymentIntent", paymentIntentID.ToString());
+                paymentIntent.Deleted = true;
+
+                await table.UpdateEntityAsync(paymentIntent, paymentIntent.ETag);
             }
 
-            paymentIntent.Deleted = true;
-
-            TableOperation updateOperation = TableOperation.Replace(paymentIntent);
-            var resUpdate = await table.ExecuteAsync(updateOperation);
-
-            // TODO: do we need to throw exception here ?
         }
 
         public async Task<PaymentRequest> GetPaymentIntent(Guid paymentIntentID)
         {
-            TableOperation getOperation = TableOperation.Retrieve<PaymentIntent>(PartitionKey, paymentIntentID.ToString());
-
             PaymentRequest response = null;
 
-            var res = await table.ExecuteAsync(getOperation);
+            var paymentIntent = (await table.GetEntityAsync<PaymentIntent>(PartitionKey, paymentIntentID.ToString())).Value;
 
-            if (res.Result != null)
+            if (paymentIntent != null)
             {
-                var paymentIntent = (PaymentIntent)res.Result;
-
                 if (!paymentIntent.Deleted && !string.IsNullOrWhiteSpace(paymentIntent?.PaymentRequest))
                 {
                     response = JsonConvert.DeserializeObject<PaymentRequest>(paymentIntent?.PaymentRequest);
@@ -71,9 +57,7 @@ namespace Transactions.Business.Services
         {
             var entity = new PaymentIntent(request.TerminalID.GetValueOrDefault(), request.PaymentRequestID) { PaymentRequest = JsonConvert.SerializeObject(request) };
 
-            TableOperation insertOperation = TableOperation.Insert(entity);
-
-            await table.ExecuteAsync(insertOperation);
+            await table.AddEntityAsync(entity);
         }
     }
 }

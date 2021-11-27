@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.Cosmos.Table;
+﻿using Azure.Data.Tables;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -9,42 +9,25 @@ namespace Shared.Api
 {
     public class RequestLogStorageService : IRequestLogStorageService
     {
-        private readonly CloudTable table;
+        private readonly TableClient table;
 
         public RequestLogStorageService(IOptions<RequestResponseLoggingSettings> configuration)
         {
             var cfg = configuration?.Value;
 
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(cfg.StorageConnectionString);
-
-            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
-
-            table = tableClient.GetTableReference(cfg.RequestsLogStorageTable);
+            table = new TableClient(cfg.StorageConnectionString, cfg.RequestsLogStorageTable);
 
             table.CreateIfNotExistsAsync().Wait();
         }
 
         public async Task Save(LogRequestEntity entity)
         {
-            TableOperation insertOperation = TableOperation.Insert(entity);
-
-            await table.ExecuteAsync(insertOperation);
+            await table.AddEntityAsync(entity);
         }
 
         public async Task<LogRequestEntity> Get(DateTime requestDate, string correlationId)
         {
-            TableOperation getOperation = TableOperation.Retrieve<LogRequestEntity>(requestDate.ToString("yy-MM-dd"), correlationId);
-
-            var result = await table.ExecuteAsync(getOperation);
-
-            if (result.Result != null)
-            {
-                return (LogRequestEntity)result.Result;
-            }
-            else
-            {
-                return null;
-            }
+            return await table.GetEntityAsync<LogRequestEntity>(requestDate.ToString("yy-MM-dd"), correlationId);
         }
     }
 }

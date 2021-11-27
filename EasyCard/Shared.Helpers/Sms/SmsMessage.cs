@@ -1,11 +1,12 @@
-﻿using Microsoft.Azure.Cosmos.Table;
+﻿using Azure;
+using Azure.Data.Tables;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Shared.Helpers.Sms
 {
-    public class SmsMessage : TableEntity
+    public class SmsMessage : ITableEntity
     {
         public SmsMessage()
         {
@@ -44,9 +45,17 @@ namespace Shared.Helpers.Sms
 
         public Guid? TerminalID { get; set; }
 
-        [IgnoreProperty]
+        //[IgnoreProperty]
         public string MessageId { get => RowKey; set => RowKey = value; }
 
         public string CorrelationId { get; set; }
+
+        public string PartitionKey { get; set; }
+
+        public string RowKey { get; set; }
+
+        public DateTimeOffset? Timestamp { get; set; }
+
+        public ETag ETag { get; set; }
     }
 }
