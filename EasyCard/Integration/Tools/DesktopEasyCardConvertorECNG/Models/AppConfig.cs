@@ -13,6 +13,8 @@ namespace DesktopEasyCardConvertorECNG.Models
 
         public string FullPathToMDBFile { get; set; }
 
+        public string MDBFilePassword { get; set; }
+
         public string RapidBaseUrl { get; set; }
 
         public string RapidAPIKey { get; set; }
