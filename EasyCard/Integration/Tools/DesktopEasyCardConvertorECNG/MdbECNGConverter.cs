@@ -410,7 +410,6 @@ namespace DesktopEasyCardConvertorECNG
 
         }
 
-        // TODO: do not create token for expired card
         private async Task<Guid?> CreateTokenPerCustomer(Customer customerInFile, ConsumerResponse ecngCustomer)
         {
             if (String.IsNullOrEmpty(customerInFile.CardNumber))
@@ -440,6 +439,7 @@ namespace DesktopEasyCardConvertorECNG
             if (expiration.Expired)
             {
                 logger.LogError($"Card expired {fltr.CardNumber} for { ecngCustomer.ConsumerName} ({ ecngCustomer.ConsumerID})");
+                return null;
             }
 
             var request = new Transactions.Api.Models.Tokens.TokenRequest()
