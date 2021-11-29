@@ -51,6 +51,8 @@ using Transactions.Api.Services;
 using Transactions.Business.Data;
 using Transactions.Business.Services;
 using Transactions.Shared;
+using Unchase.Swashbuckle.AspNetCore.Extensions.Extensions;
+using Unchase.Swashbuckle.AspNetCore.Extensions.Options;
 using Upay;
 using SharedApi = Shared.Api;
 using SharedHelpers = Shared.Helpers;
@@ -334,6 +336,16 @@ namespace Transactions.Api
                     Title = "EasyCard Transactions API",
                 });
 
+                var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath1 = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath1);
+
+                var xmlPath2 = System.IO.Path.Combine(AppContext.BaseDirectory, "Transactions.Shared.xml");
+                c.IncludeXmlComments(xmlPath2);
+
+                var xmlPath3 = System.IO.Path.Combine(AppContext.BaseDirectory, "Shared.Integration.xml");
+                c.IncludeXmlComments(xmlPath3);
+
                 c.ExampleFilters();
 
                 c.SchemaFilter<EnumSchemaFilter>();
@@ -341,14 +353,20 @@ namespace Transactions.Api
 
                 //Temporary fix for Can't use schemaId .. The same schemaId is already used for type. Exception
                 //TODO: fix types and remove
-                c.CustomSchemaIds(type => type.ToString());
+                c.CustomSchemaIds(type =>
+                {
+                    if (type.IsGenericType)
+                    {
+                        return $"{type.Name}_{type.GetGenericArguments().FirstOrDefault().Name}";
+                    }
+                    else
+                    {
+                        return type.Name;
+                    }
+                });
 
                 //c.DocumentFilter<PolymorphismDocumentFilter<Models.Transactions.CreateTransactionRequest>>();
                 //c.SchemaFilter<PolymorphismSchemaFilter<Models.Transactions.CreateTransactionRequest>>();
-
-                var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
 
                 // Adds "(Auth)" to the summary so that you can see which endpoints have Authorization
                 c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
@@ -357,12 +375,63 @@ namespace Transactions.Api
                 c.OperationFilter<SecurityRequirementsOperationFilter>();
 
                 // if you're using the SecurityRequirementsOperationFilter, you also need to tell Swashbuckle you're using OAuth2
-                c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                //c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                //{
+                //    Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
+                //    In = ParameterLocation.Header,
+                //    Name = "Authorization",
+                //    Type = SecuritySchemeType.OAuth2
+                //});
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
-                    In = ParameterLocation.Header,
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
+                        },
+                        new string[] { }
+                    }
+                });
+
+                c.AddEnumsWithValuesFixFilters(services, o =>
+                {
+                    // add schema filter to fix enums (add 'x-enumNames' for NSwag or its alias from XEnumNamesAlias) in schema
+                    //o.ApplySchemaFilter = true;
+
+                    // alias for replacing 'x-enumNames' in swagger document
+                    //o.XEnumNamesAlias = "x-enum-varnames";
+
+                    // alias for replacing 'x-enumDescriptions' in swagger document
+                    //o.XEnumDescriptionsAlias = "x-enum-descriptions";
+
+                    // add parameter filter to fix enums (add 'x-enumNames' for NSwag or its alias from XEnumNamesAlias) in schema parameters
+                    //o.ApplyParameterFilter = true;
+
+                    // add document filter to fix enums displaying in swagger document
+                    // o.ApplyDocumentFilter = true;
+
+                    // add descriptions from DescriptionAttribute or xml-comments to fix enums (add 'x-enumDescriptions' or its alias from XEnumDescriptionsAlias for schema extensions) for applied filters
+                    o.IncludeDescriptions = true;
+
+                    // add remarks for descriptions from xml-comments
+                    o.IncludeXEnumRemarks = true;
+
+                    // get descriptions from DescriptionAttribute then from xml-comments
+                    o.DescriptionSource = DescriptionSources.DescriptionAttributesThenXmlComments;
+
+                    // get descriptions from xml-file comments on the specified path
+                    // should use "options.IncludeXmlComments(xmlFilePath);" before
+                    o.IncludeXmlCommentsFrom(xmlPath1);
+                    o.IncludeXmlCommentsFrom(xmlPath2);
+                    o.IncludeXmlCommentsFrom(xmlPath3);
                 });
             });
 

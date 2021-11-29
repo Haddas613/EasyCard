@@ -9,20 +9,20 @@ using System.Text;
 namespace Shared.Integration.Models
 {
     /// <summary>
-    /// Additional deal information
+    /// Additional deal information. All these data are not required and used only for merchant's business purposes.
     /// </summary>
     [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     public class DealDetails
     {
         /// <summary>
-        /// Deal reference on merchant side
+        /// Deal identifier in merchant's system
         /// </summary>
         [StringLength(50)]
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string DealReference { get; set; }
 
         /// <summary>
-        /// Deal description
+        /// Deal description. In case of generating payment link, these description will be displayed on Checkout Page
         /// </summary>
         [StringLength(250)]
         [JsonConverter(typeof(TrimmingJsonConverter))]
@@ -43,6 +43,9 @@ namespace Shared.Integration.Models
         [JsonConverter(typeof(TrimmingJsonConverter))]
         public string ConsumerName { get; set; }
 
+        /// <summary>
+        /// End-customer National Id
+        /// </summary>
         [StringLength(20)]
         public string ConsumerNationalID { get; set; }
 
@@ -54,7 +57,7 @@ namespace Shared.Integration.Models
         public string ConsumerPhone { get; set; }
 
         /// <summary>
-        /// End-customer reference
+        /// End-customer record UUId in EasyCard system
         /// </summary>
         public Guid? ConsumerID { get; set; }
 
@@ -65,12 +68,12 @@ namespace Shared.Integration.Models
         public IEnumerable<Item> Items { get; set; }
 
         /// <summary>
-        /// Consumer address
+        /// End-customer address
         /// </summary>
         public Address ConsumerAddress { get; set; }
 
         /// <summary>
-        /// External system consumer code for example Rapid customer code
+        /// External system consumer identifier for example RapidOne customer code
         /// </summary>
         [StringLength(50)]
         [JsonConverter(typeof(TrimmingJsonConverter))]
