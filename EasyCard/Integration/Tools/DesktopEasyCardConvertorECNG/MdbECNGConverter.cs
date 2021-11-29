@@ -414,7 +414,7 @@ namespace DesktopEasyCardConvertorECNG
         {
             if (String.IsNullOrEmpty(customerInFile.CardNumber))
             {
-                logger.LogError($"Card number is empty. Deal {customerInFile.DealID} for {ecngCustomer.ConsumerName} ({ecngCustomer.ConsumerID})");
+                logger.LogWarning($"Card number is empty. Deal {customerInFile.DealID} for {ecngCustomer.ConsumerName} ({ecngCustomer.ConsumerID})");
                 return null;
             }
 
@@ -438,7 +438,7 @@ namespace DesktopEasyCardConvertorECNG
 
             if (expiration.Expired)
             {
-                logger.LogError($"Card expired {fltr.CardNumber} for { ecngCustomer.ConsumerName} ({ ecngCustomer.ConsumerID})");
+                logger.LogWarning($"Card expired {fltr.CardNumber} for { ecngCustomer.ConsumerName} ({ ecngCustomer.ConsumerID})");
                 return null;
             }
 
