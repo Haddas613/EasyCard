@@ -188,6 +188,11 @@ export default {
       tokenAlreadyExists: false
     };
   },
+  computed: {
+    ...mapState({
+      terminalStore: state => state.settings.terminal
+    })
+  },
   methods: {
     clearProp(propName) {
       if (this.errors[propName]) {
@@ -207,7 +212,7 @@ export default {
         this.errors.cardNumber = this.$t("Invalid");
       }
 
-      if (!this.$cardFormat.validateCardCVC(this.$refs.cvvInp.value)) {
+      if ((this.terminalStore.settings.cvvRequired || this.$refs.cvvInp.value) && !this.$cardFormat.validateCardCVC(this.$refs.cvvInp.value)) {
         this.errors.cvv = this.$t("Invalid");
       }
 
@@ -221,17 +226,19 @@ export default {
           cardExpiration = `${trimmed.slice(0, 3)}${trimmed.slice(-2)}`;
       }
 
-      let nationalIdValidation = ValidationRules.primitives.required(
-        this.model.cardOwnerNationalID
-      );
-      if (nationalIdValidation !== true) {
-        this.errors.nationalId = this.$t(nationalIdValidation);
-      }
-      nationalIdValidation = ValidationRules.special.israeliNationalId(
-        this.model.cardOwnerNationalID
-      );
-      if (nationalIdValidation !== true) {
-        this.errors.nationalId = this.$t(nationalIdValidation);
+      if (this.terminalStore.settings.nationalIDRequired || this.model.cardOwnerNationalID) {
+        let nationalIdValidation = ValidationRules.primitives.required(
+          this.model.cardOwnerNationalID
+        );
+        if (nationalIdValidation !== true) {
+          this.errors.nationalId = this.$t(nationalIdValidation);
+        }
+        nationalIdValidation = ValidationRules.special.israeliNationalId(
+          this.model.cardOwnerNationalID
+        );
+        if (nationalIdValidation !== true) {
+          this.errors.nationalId = this.$t(nationalIdValidation);
+        }
       }
 
       if (!this.lodash.every(this.errors, e => e === false)) return;
@@ -241,8 +248,8 @@ export default {
         cardOwnerName: this.model.cardOwnerName,
         cardNumber: this.$refs.cardNumberInp.value.replace(/\s/g, ""),
         cardExpiration: cardExpiration.replace(/\s/g, ""),
-        cardOwnerNationalID: this.model.cardOwnerNationalID,
-        cvv: this.$refs.cvvInp.value,
+        cardOwnerNationalID: this.model.cardOwnerNationalID || null,
+        cvv: this.$refs.cvvInp.value || null,
         cardReaderInput: this.model.cardReaderInput
       };
     },
