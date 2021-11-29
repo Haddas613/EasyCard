@@ -376,7 +376,7 @@ namespace DesktopEasyCardConvertorECNG
                 request.BankDetails = bankDetails;
                 request.ConsumerAddress = consumerAddress;
                 request.ConsumerName = customerName;
-                request.ConsumerNationalID = customerInFile.ClientCode;
+                request.ConsumerNationalID = customerInFile.ClientCode.NormalizeIsraelNationalID();
                 request.ConsumerPhone = customerInFile.Phone1;
                 request.ConsumerSecondPhone = customerInFile.Phone2;
                 request.ExternalReference = externalReference;
@@ -394,7 +394,7 @@ namespace DesktopEasyCardConvertorECNG
                     BillingDesktopRefNumber = customerInFile.DealID,
                     ConsumerAddress = consumerAddress,
                     ConsumerName = customerName,
-                    ConsumerNationalID = customerInFile.ClientCode,
+                    ConsumerNationalID = customerInFile.ClientCode.NormalizeIsraelNationalID(),
                     ConsumerPhone = customerInFile.Phone1,
                     ConsumerSecondPhone = customerInFile.Phone2,
                     ExternalReference = externalReference,
