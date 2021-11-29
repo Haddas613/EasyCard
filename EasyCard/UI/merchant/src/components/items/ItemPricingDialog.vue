@@ -3,112 +3,123 @@
     <template v-slot:title>{{$t('EditItem')}}</template>
     <template>
       <v-flex class="px-2">
-        <v-row no-gutters>
-          <v-col cols="12">
-            <v-text-field
-              class="mx-2 mt-4"
-              v-model="model.itemName"
-              outlined
-              :label="$t('Name')"
-              hide-details="true"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-row no-gutters>
-          <v-col cols="12" md="6">
-            <v-text-field
-              class="mx-2 mt-4"
-              v-model="model.price"
-              outlined
-              :label="$t('Price')"
-              hide-details="true"
-              @input="calculateItemPricing()"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field
-              class="mx-2 mt-4"
-              v-if="model"
-              :value="model.netAmount"
-              outlined
-              readonly
-              disabled
-              :label="$t('NetAmount')"
-              hide-details="true"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field
-              class="mx-2 mt-4"
-              v-if="model"
-              v-model.number="discount"
-              outlined
-              :label="$t('Discount')"
-              hide-details="true"
-              @input="calculateItemPricing()"
-            >
-              <template v-slot:append>
-                <v-btn
-                  class="shadow-none"
-                  :color="percentageMode ? 'primary' : 'eclgray'"
-                  fab
-                  style="margin-top:-4px"
-                  x-small
-                  @click="percentageMode = !percentageMode; calculateItemPricing()"
-                  :title="$t('ApplyAsPercentage')"
-                >
-                  <v-icon>mdi-percent</v-icon>
+        <v-form ref="form" v-model="formIsValid">
+          <v-row no-gutters>
+            <v-col cols="12">
+              <v-text-field
+                class="mx-2 mt-4"
+                v-model="model.itemName"
+                outlined
+                :label="$t('Name')"
+                hide-details="true"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row no-gutters>
+            <v-col cols="12" md="6">
+              <v-text-field
+                class="mx-2 mt-4"
+                v-model="model.price"
+                outlined
+                :label="$t('Price')"
+                hide-details="true"
+                @input="calculateItemPricing()"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field
+                class="mx-2 mt-4"
+                :value="model.netAmount"
+                outlined
+                readonly
+                disabled
+                :label="$t('NetAmount')"
+                hide-details="true"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="8" md="4">
+              <v-text-field
+                v-if="discountType == 'raw'"
+                class="mx-2 mt-4"
+                v-model.number="discount"
+                outlined
+                :label="$t('Discount')"
+                hide-details="true"
+                :rules="[vr.primitives.positiveOnly, vr.primitives.precision(2)]"
+                @input="calculateItemPricing()"
+              >
+              </v-text-field>
+              <v-text-field
+                class="mx-2 mt-4"
+                v-else
+                v-model.number="percentageDiscount"
+                outlined
+                :label="$t('Discount')"
+                :hide-details="formIsValid"
+                :rules="[vr.primitives.inRange(0.01, 100), vr.primitives.precision(2)]"
+                @input="applyPercentageDiscount()"
+              >
+              </v-text-field>
+            </v-col>
+            <v-col cols="4" md="2">
+              <v-btn-toggle class="mt-5" v-model="discountType" color="secondary" @change="onDiscountTypeChange()">
+                <v-btn value="raw" icon>
+                  <v-icon color="primary">mdi-cash</v-icon>
                 </v-btn>
-              </template>
-            </v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field
-              class="mx-2 mt-4"
-              v-if="model"
-              :value="model.amount"
-              outlined
-              readonly
-              disabled
-              :label="$t('Total')"
-              hide-details="true"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <v-row no-gutters>
-          <v-col cols="12" md="6">
-            <v-text-field
-              class="mx-2 mt-4"
-              v-if="model"
-              :value="model.vat"
-              outlined
-              readonly
-              disabled
-              :label="$t('VAT')"
-              hide-details="true"
-            ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field
-              class="mx-2 mt-4"
-              v-if="model"
-              :value="`${(basket.vatRate * 100).toFixed(0)}%`"
-              readonly
-              disabled
-              outlined
-              :label="$t('VATPercent')"
-              hide-details="true"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <div class="d-flex px-2 pt-4 justify-end">
-          <v-btn
-            color="primary"
-            class="white--text"
-            :block="$vuetify.breakpoint.smAndDown"
-            @click="ok()"
-          >{{$t("OK")}}</v-btn>
-        </div>
+                <v-btn value="percent" icon>
+                  <v-icon color="primary">mdi-percent</v-icon>
+                </v-btn>
+              </v-btn-toggle>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field
+                class="mx-2 mt-4"
+                v-if="model"
+                :value="model.amount"
+                outlined
+                readonly
+                disabled
+                :label="$t('Total')"
+                hide-details="true"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row no-gutters>
+            <v-col cols="12" md="6">
+              <v-text-field
+                class="mx-2 mt-4"
+                v-if="model"
+                :value="model.vat"
+                outlined
+                readonly
+                disabled
+                :label="$t('VAT')"
+                hide-details="true"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field
+                class="mx-2 mt-4"
+                v-if="model"
+                :value="`${(basket.vatRate * 100).toFixed(0)}%`"
+                readonly
+                disabled
+                outlined
+                :label="$t('VATPercent')"
+                hide-details="true"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <div class="d-flex px-2 pt-4 justify-end">
+            <v-btn
+              color="primary"
+              class="white--text"
+              :block="$vuetify.breakpoint.smAndDown"
+              @click="ok()"
+              :disabled="!formIsValid"
+            >{{$t("OK")}}</v-btn>
+          </div>
+        </v-form>
       </v-flex>
     </template>
   </ec-dialog>
@@ -116,6 +127,7 @@
 
 <script>
 import itemPricingService from "../../helpers/item-pricing";
+import ValidationRules from "../../helpers/validation-rules";
 import { mapState } from "vuex";
 export default {
   props: {
@@ -131,7 +143,12 @@ export default {
       type: Boolean,
       default: false,
       required: true
-    }
+    },
+    // currency: {
+    //   type: String,
+    //   default: false,
+    //   required: true
+    // }
   },
   components: {
     EcDialog: () => import("../../components/ec/EcDialog")
@@ -139,8 +156,11 @@ export default {
   data() {
     return {
       model: { ...this.item },
-      percentageMode: false,
+      discountType: "raw",
       discount: this.item.discount,
+      percentageDiscount: 0,
+      vr: ValidationRules,
+      formIsValid: false
     };
   },
   watch: {
@@ -148,7 +168,8 @@ export default {
       if (newValue) {
         this.$set(this, "model", this.item);
         this.discount = this.item.discount;
-        this.percentageMode = false;
+        this.discountType = "raw";
+        this.percentageDiscount = 0;
       }
     }
   },
@@ -167,33 +188,34 @@ export default {
   },
   methods: {
     async ok() {
-      //TODO: validation
+      if (!this.$refs.form.validate()) return;
       let result = { ...this.model };
       
       this.$emit("ok", result);
     },
+    onDiscountTypeChange(){
+      if(this.discountType == "percent"){
+        this.calculatePercentageDiscount();
+      }
+    },
+    applyPercentageDiscount(){
+      if (!this.$refs.form.validate()) return;
+      this.discount = parseFloat((this.model.price * (this.percentageDiscount / 100)).toFixed(2));
+      this.calculateItemPricing();
+    },
+    calculatePercentageDiscount(){
+      if(this.discount >= this.model.price){
+        this.discount = this.model.price;
+        this.percentageDiscount = 100;
+        this.calculateItemPricing();
+      }else{
+        this.percentageDiscount = parseFloat((this.discount / this.model.price * 100).toFixed(2));
+      }
+    },
     calculateItemPricing() {
-      if (this.percentageMode) {
-        if (this.discount >= 100) {
-          return this.$toasted.show(
-            this.$t("PercentageShouldBeLessThanOneHundred"),
-            { type: "error" }
-          );
-        }
-
-        let discountTemp =
-          ((this.model.price * this.model.quantity) / 100) * this.discount;
-        if (discountTemp) {
-          discountTemp = discountTemp.toFixed(2);
-        }
-
-        this.model.discount = parseFloat(discountTemp);
-      } else {
-        this.model.discount = this.discount
+      this.model.discount = this.discount
           ? parseFloat(this.discount.toFixed(2))
           : 0;
-      }
-
       itemPricingService.item.calculate(this.model, { vatRate: this.basket.vatRate });
     }
   }
