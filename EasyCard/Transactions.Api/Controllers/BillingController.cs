@@ -314,6 +314,23 @@ namespace Transactions.Api.Controllers
                 return BadRequest(new OperationResponse($"{model.PaymentType} payment type is not supported", StatusEnum.Error));
             }
 
+            if (model.BillingSchedule?.StartAtType == StartAtTypeEnum.SpecifiedDate && model.BillingSchedule?.StartAt.HasValue == true)
+            {
+                if (model.BillingSchedule?.StartAt > billingDeal.BillingSchedule?.StartAt)
+                {
+                    billingDeal.NextScheduledTransaction = model.BillingSchedule.GetInitialScheduleDate();
+                }
+                else if (model.BillingSchedule?.StartAt < billingDeal.BillingSchedule?.StartAt)
+                {
+                    return BadRequest(new OperationResponse($"{nameof(model.BillingSchedule.StartAt)} must be bigger than {billingDeal.BillingSchedule?.StartAt}", StatusEnum.Error));
+                }
+            }
+            else if (model.BillingSchedule?.StartAtType == StartAtTypeEnum.Today && billingDeal.BillingSchedule?.StartAtType != StartAtTypeEnum.Today)
+            {
+                //only re-evaluate to today if it was changed, to not update it each time
+                billingDeal.NextScheduledTransaction = model.BillingSchedule.GetInitialScheduleDate();
+            }
+
             mapper.Map(model, billingDeal);
 
             billingDeal.DealDetails.UpdateDealDetails(consumer, terminal.Settings, billingDeal, null);
