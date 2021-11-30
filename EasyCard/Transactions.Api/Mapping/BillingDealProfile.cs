@@ -34,6 +34,7 @@ namespace Transactions.Api.Mapping
                 .ForMember(d => d.BillingSchedule, o => o.MapFrom(d => d.BillingSchedule))
                 .ForMember(d => d.VATRate, o => o.MapFrom(d => d.VATRate))
                 .ForMember(d => d.VATTotal, o => o.MapFrom(d => d.VATTotal))
+                .ForMember(d => d.NetTotal, o => o.MapFrom(d => d.NetTotal))
                 .ForMember(d => d.BankDetails, o => o.MapFrom(d => d.BankDetails))
                 .ForMember(d => d.CreditCardToken, o => o.MapFrom(d => d.CreditCardToken))
                 .ForMember(d => d.Currency, o => o.MapFrom(d => d.Currency))
