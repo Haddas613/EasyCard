@@ -669,9 +669,15 @@ namespace Transactions.Api
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Transactions Api V1");
+            //});
+
+            app.UseReDoc(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Transactions Api V1");
+                c.DocumentTitle = "EasyCard Transactions Api V1";
+                c.SpecUrl = "/swagger/v1/swagger.json";
             });
 
             app.UseRouting();
