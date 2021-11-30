@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[Item] (
     [ItemID]                  UNIQUEIDENTIFIER NOT NULL,
     [MerchantID]              UNIQUEIDENTIFIER NOT NULL,
-    [Active]                  BIT              DEFAULT (CONVERT([bit],(1))) NOT NULL,
+    [Active]                  BIT              NOT NULL,
     [UpdateTimestamp]         ROWVERSION       NULL,
     [ItemName]                NVARCHAR (128)   NOT NULL,
     [Price]                   DECIMAL (19, 4)  NOT NULL,
@@ -13,9 +13,13 @@
     [SourceIP]                VARCHAR (50)     NULL,
     [ExternalReference]       NVARCHAR (50)    NULL,
     [BillingDesktopRefNumber] NVARCHAR (50)    NULL,
+    [SKU]                     NVARCHAR (50)    NULL,
+    [Origin]                  NVARCHAR (50)    NULL,
     CONSTRAINT [PK_Item] PRIMARY KEY CLUSTERED ([ItemID] ASC),
     CONSTRAINT [FK_Item_Merchant_MerchantID] FOREIGN KEY ([MerchantID]) REFERENCES [dbo].[Merchant] ([MerchantID])
 );
+
+
 
 
 

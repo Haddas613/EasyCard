@@ -187,6 +187,11 @@ namespace Transactions.Api.Controllers
                     billingDeal.TerminalName = await terminalsService.GetTerminals().Where(t => t.TerminalID == billingDeal.TerminalID.Value).Select(t => t.Label).FirstOrDefaultAsync();
                 }
 
+                if (dbBillingDeal.PaymentType == PaymentTypeEnum.Card && dbBillingDeal.CreditCardToken.HasValue)
+                {
+                    billingDeal.TokenNotAvailable = (await keyValueStorage.Get(dbBillingDeal.CreditCardToken.ToString())) == null;
+                }
+
                 return Ok(billingDeal);
             }
         }
@@ -289,6 +294,10 @@ namespace Transactions.Api.Controllers
                 }
 
                 var token = EnsureExists(await creditCardTokenService.GetTokens().FirstOrDefaultAsync(d => d.TerminalID == terminal.TerminalID && d.CreditCardTokenID == model.CreditCardToken.Value && d.ConsumerID == consumer.ConsumerID), "CreditCardToken");
+
+                //Ensure that token is not removed from key vault
+                EnsureExists(await keyValueStorage.Get(token.CreditCardTokenID.ToString()), "CreditCardToken");
+
                 billingDeal.InitialTransactionID = token.InitialTransactionID;
                 billingDeal.CreditCardDetails = new Business.Entities.CreditCardDetails();
 

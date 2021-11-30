@@ -106,9 +106,9 @@ export default class TransactionsApi {
     }
 
     async triggerBillingDeals(billingDealsID) {
-      return await this.base.post(this.transactionsUrl + '/trigger-billing-deals', {
-          billingDealsID
-      });
+      return await this.base.post(this.transactionsUrl + '/trigger-billing-deals', { billingDealsID }, {
+          showSuccessToastr: false
+        });
     } 
 
     async sendTransactionSlipEmail(data) {

@@ -37,7 +37,7 @@
             <v-row no-gutters align="center">
               <v-col cols="3" class="text-start">{{$t("VAT")}}</v-col>
               <v-col cols="3" class="text-initial">
-                <v-switch class="pt-0 mt-0" v-model="vatExempt" :disabled="!model.vatRate" dense hide-details>
+                <v-switch class="pt-0 mt-0" v-model="vatExempt" dense hide-details>
                   <template v-slot:label>
                     <small>{{$t('VATExempt')}}</small>
                   </template>

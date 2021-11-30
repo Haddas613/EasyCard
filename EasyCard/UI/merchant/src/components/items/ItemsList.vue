@@ -48,7 +48,7 @@
       </ec-list>
     </v-card-text>
     <v-card-actions class="text-center" v-if="canLoadMore">
-        <v-btn outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
+        <v-btn class="my-4" outlined color="primary" :loading="loading" @click="loadMore()">{{$t("LoadMore")}}</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -124,7 +124,7 @@ export default {
       if (!searchWasAppliable && !searchApply) {
         return;
       }
-
+      this.paging.skip = 0;
       this.searchTimeout = setTimeout(
         (async () => {
           await this.getItems();
@@ -145,7 +145,7 @@ export default {
       showDeletedItems: state => state.ui.showDeletedItems,
     }),
     canLoadMore() {
-      return this.totalAmount > 0 && this.paging.take < this.totalAmount && this.paging.skip < this.totalAmount;
+      return (this.paging.take + this.paging.skip) < this.totalAmount;
     }
   }
 };

@@ -224,18 +224,13 @@ namespace CheckoutPortal.Controllers
                 ModelState.AddModelError(nameof(request.Cvv), "CVV is required");
             }
 
-            if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == false)
+            if (string.IsNullOrWhiteSpace(request.NationalID) && checkoutConfig.Settings.NationalIDRequired == true)
             {
                 ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
             } 
             else if (request.NationalID != null && !IsraelNationalIdHelpers.Valid(request.NationalID))
             {
                 ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return await IndexViewResult(checkoutConfig, request);
             }
 
             InstallmentDetails installmentDetails = null;
@@ -292,11 +287,6 @@ namespace CheckoutPortal.Controllers
             {
                 ModelState[nameof(request.Amount)].Errors.Clear();
                 ModelState[nameof(request.Amount)].ValidationState = ModelValidationState.Skipped;
-
-                if (string.IsNullOrWhiteSpace(request.NationalID))
-                {
-                    ModelState.AddModelError(nameof(request.NationalID), Messages.NationalIDRequiredWhenSaveCardSelected);
-                }
             }
 
             if (!ModelState.IsValid)
