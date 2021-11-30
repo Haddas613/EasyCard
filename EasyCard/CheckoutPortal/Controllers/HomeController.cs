@@ -233,11 +233,6 @@ namespace CheckoutPortal.Controllers
                 ModelState.AddModelError(nameof(request.NationalID), Resources.CommonResources.NationalIDInvalid);
             }
 
-            if (!ModelState.IsValid)
-            {
-                return await IndexViewResult(checkoutConfig, request);
-            }
-
             InstallmentDetails installmentDetails = null;
 
             if (!checkoutConfig.Settings.TransactionTypes.Any(t => t == request.TransactionType))
@@ -292,11 +287,6 @@ namespace CheckoutPortal.Controllers
             {
                 ModelState[nameof(request.Amount)].Errors.Clear();
                 ModelState[nameof(request.Amount)].ValidationState = ModelValidationState.Skipped;
-
-                if (string.IsNullOrWhiteSpace(request.NationalID))
-                {
-                    ModelState.AddModelError(nameof(request.NationalID), Messages.NationalIDRequiredWhenSaveCardSelected);
-                }
             }
 
             if (!ModelState.IsValid)
