@@ -317,8 +317,8 @@ namespace CheckoutPortal.Controllers
                 // TODO: consumer IP
                 mapper.Map(request, mdel);
                 mapper.Map(request, mdel.CreditCardSecureDetails);
-                mapper.Map(checkoutConfig.PaymentRequest, mdel);
                 mapper.Map(checkoutConfig.Settings, mdel);
+                mapper.Map(checkoutConfig.PaymentRequest, mdel);
 
                 if (checkoutConfig.PaymentIntentID != null)
                 {
